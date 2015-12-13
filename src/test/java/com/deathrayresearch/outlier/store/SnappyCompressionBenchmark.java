@@ -62,14 +62,13 @@ public class SnappyCompressionBenchmark {
 
     File TEST_FOLDER = Paths.get("testfolder").toFile();
     Relation t = new Table("Test");
-    final IntColumn c = new IntColumn("fc");
+    final IntColumn c = new IntColumn("fc", 10_000_000);
     t.addColumn(c);
     RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
 
-    for (int i = 0; i < 1_000_000; i++) {
+    for (int i = 0; i < 10_000_000; i++) {
       c.add(randomDataGenerator.nextInt(0, 1_000_000));
     }
-
 
     Path path = Paths.get("testfolder");
     if (!Files.exists(path)) {

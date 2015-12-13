@@ -1,6 +1,7 @@
 target/
 .idea/
 databases/
+bigdata/
 testfolder/
 *.iml
 

@@ -192,7 +192,6 @@ public class FloatColumn extends AbstractColumn {
   @Override
   public Column sortDescending() {
     FloatColumn copy = this.copy();
-    Arrays.sort(copy.data);
     Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
     return copy;
   }

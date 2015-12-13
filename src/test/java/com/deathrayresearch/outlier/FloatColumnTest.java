@@ -7,6 +7,8 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertTrue;
+
 /**
  *
  */
@@ -23,7 +25,6 @@ public class FloatColumnTest {
     }
     Stopwatch stopwatch = Stopwatch.createStarted();
     RoaringBitmap results = floatColumn.isLessThan(.5f);
-
     System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
@@ -46,7 +47,6 @@ public class FloatColumnTest {
         count++;
       }
     }
-
     System.out.println("Matches = " + count);
   }
 
@@ -69,19 +69,28 @@ public class FloatColumnTest {
         count++;
       }
     }
-
     System.out.println("Matches = " + count);
   }
 
   @Test
   public void testSort() {
-    FloatColumn floatColumn = new FloatColumn("test", 10);
-    for (int i = 0; i < 10; i++) {
+    FloatColumn floatColumn = new FloatColumn("test", 100_000_000);
+    for (int i = 0; i < 100_000_000; i++) {
       floatColumn.add((float) Math.random());
     }
     FloatColumn sorted = (FloatColumn) floatColumn.sortAscending();
+    float last = Float.NEGATIVE_INFINITY;
     while (sorted.hasNext()) {
-      System.out.println(sorted.next());
+      float n = sorted.next();
+      assertTrue(n >= last);
+      last = n;
+    }
+    sorted = (FloatColumn) floatColumn.sortDescending();
+    last = Float.POSITIVE_INFINITY;
+    while (sorted.hasNext()) {
+      float n = sorted.next();
+      assertTrue(n <= last);
+      last = n;
     }
   }
 
@@ -99,7 +108,7 @@ public class FloatColumnTest {
     }
 
     Stopwatch stopwatch = Stopwatch.createStarted();
-    RoaringBitmap results = null;
+    RoaringBitmap results;
     RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
     int count = 0;
     for (int i = 0; i < 100; i++) {
@@ -108,7 +117,6 @@ public class FloatColumnTest {
       count = count + results.getCardinality();
     }
     System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-
     System.out.println("Matches = " + count);
   }
 }

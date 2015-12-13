@@ -1,6 +1,9 @@
 package com.deathrayresearch.outlier;
 
+import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
+
+import java.util.Arrays;
 
 /**
  *
@@ -166,12 +169,23 @@ public class IntColumn extends AbstractColumn {
 
   @Override
   public Column sortAscending() {
-    return null;
+    IntColumn copy = this.copy();
+    Arrays.sort(copy.data);
+    return copy;
   }
 
   @Override
   public Column sortDescending() {
-    return null;
+    IntColumn copy = this.copy();
+    Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
+    return copy;
+  }
+
+  private IntColumn copy() {
+    IntColumn copy = emptyCopy();
+    copy.data = this.data;
+    copy.N = this.N;
+    return copy;
   }
 
   public void reset() {
