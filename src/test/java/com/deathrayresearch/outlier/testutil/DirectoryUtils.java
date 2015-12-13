@@ -1,4 +1,4 @@
-package com.deathrayresearch.outlier;
+package com.deathrayresearch.outlier.testutil;
 
 import java.io.File;
 
