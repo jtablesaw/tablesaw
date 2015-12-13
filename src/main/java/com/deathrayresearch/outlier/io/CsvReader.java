@@ -142,10 +142,11 @@ final public class CsvReader {
         } else if (column.type() == ColumnType.LOCAL_TIME) {
           LocalTimeColumn bc = (LocalTimeColumn) column;
           bc.addCell(nextLine[columnIndex]);
-        } else if (column.type() == ColumnType.BOOLEAN) {
+        } */
+        else if (column.type() == ColumnType.BOOLEAN) {
           BooleanColumn bc = (BooleanColumn) column;
           bc.addCell(nextLine[columnIndex]);
-        } else {
+        } /*else {
           ObjectColumn.addCell(column, nextLine[columnIndex]);
         }*/
         cellIndex++;
@@ -172,7 +173,6 @@ final public class CsvReader {
     }
     reader.close();
   }
-
 
   /**
    * Provides placeholder column names for when the file read has no header

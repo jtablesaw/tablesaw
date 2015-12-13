@@ -114,6 +114,9 @@ public class StorageManager {
         case INTEGER:
           writeColumn(fileName, (IntColumn) column);
           break;
+        case BOOLEAN:
+          writeColumn(fileName, (BooleanColumn) column);
+          break;
         default:
           throw new RuntimeException("Unhandled column type writing columns");
       }
@@ -144,6 +147,18 @@ public class StorageManager {
         dos.writeFloat(cell);
       }
       column.reset();
+      dos.flush();
+    }
+  }
+
+  public static void writeColumn(String fileName, BooleanColumn column) throws IOException {
+    try (FileOutputStream fos = new FileOutputStream(fileName + "_" + column.name());
+         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
+         DataOutputStream dos = new DataOutputStream(sos)) {
+      for(int i = 0; i < column.size(); i++) {
+        boolean value = column.get(i);
+        dos.writeBoolean(value);
+      }
       dos.flush();
     }
   }
