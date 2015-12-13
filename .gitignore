@@ -1,0 +1,6 @@
+target/
+.idea/
+databases/
+testfolder/
+*.iml
+
