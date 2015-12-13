@@ -119,4 +119,16 @@ public class TextColumn extends AbstractColumn {
     Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
     return copy;
   }
+
+  // TODO(lwhite): Implement column summary()
+  @Override
+  public Table summary() {
+    return null;
+  }
+
+  // TODO(lwhite): Implement countUnique()
+  @Override
+  public int countUnique() {
+    return 0;
+  }
 }

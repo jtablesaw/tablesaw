@@ -13,41 +13,6 @@ import java.util.concurrent.TimeUnit;
 public class FloatColumnTest {
 
   @Test
-  public void testSize() {
-
-  }
-
-  @Test
-  public void testType() {
-
-  }
-
-  @Test
-  public void testHasNext() {
-
-  }
-
-  @Test
-  public void testNext() {
-
-  }
-
-  @Test
-  public void testSum() {
-
-  }
-
-  @Test
-  public void testAdd() {
-
-  }
-
-  @Test
-  public void testCompact() {
-
-  }
-
-  @Test
   public void testApplyFilter() {
 
     Relation table = new Table("t");

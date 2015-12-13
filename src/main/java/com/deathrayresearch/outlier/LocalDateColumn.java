@@ -121,6 +121,18 @@ public class LocalDateColumn extends AbstractColumn {
     return copy;
   }
 
+  // TODO(lwhite): Implement column summary()
+  @Override
+  public Table summary() {
+    return null;
+  }
+
+  // TODO(lwhite): Implement countUnique()
+  @Override
+  public int countUnique() {
+    return 0;
+  }
+
   public static Column create(String name) {
     return null;
   }

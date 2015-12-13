@@ -137,6 +137,18 @@ public class IntColumn extends AbstractColumn {
     return results;
   }
 
+  // TODO(lwhite): Implement column summary()
+  @Override
+  public Table summary() {
+    return null;
+  }
+
+  // TODO(lwhite): Implement countUnique()
+  @Override
+  public int countUnique() {
+    return 0;
+  }
+
   @Override
   public String getString(int row) {
     return String.valueOf(data[row]);

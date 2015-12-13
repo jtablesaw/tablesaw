@@ -1,6 +1,5 @@
 package com.deathrayresearch.outlier;
 
-import com.google.common.primitives.Primitives;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -33,6 +32,18 @@ public class FloatColumn extends AbstractColumn {
 
   public int size() {
     return N;
+  }
+
+  // TODO(lwhite): Implement column summary()
+  @Override
+  public Table summary() {
+    return null;
+  }
+
+  // TODO(lwhite): Implement countUnique()
+  @Override
+  public int countUnique() {
+    return 0;
   }
 
   @Override

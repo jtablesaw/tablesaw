@@ -48,11 +48,6 @@ public class TableTest {
   }
 
   @Test
-  public void testSelectIf() {
-
-  }
-
-  @Test
   public void testRun() {
     Table table = new Table("daf");
     RandomDataGenerator random = new RandomDataGenerator();

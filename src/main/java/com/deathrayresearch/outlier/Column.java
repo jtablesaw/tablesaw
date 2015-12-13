@@ -9,6 +9,10 @@ public interface Column {
 
   int size();
 
+  Table summary();
+
+  int countUnique();
+
   String name();
 
   ColumnType type();

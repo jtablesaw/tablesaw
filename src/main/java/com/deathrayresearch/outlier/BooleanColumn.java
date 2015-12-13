@@ -33,6 +33,18 @@ public class BooleanColumn extends AbstractColumn {
     return N;
   }
 
+  // TODO(lwhite): Implement column summary()
+  @Override
+  public Table summary() {
+    return null;
+  }
+
+  // TODO(lwhite): Implement countUnique()
+  @Override
+  public int countUnique() {
+    return 0;
+  }
+
   @Override
   public ColumnType type() {
     return ColumnType.FLOAT;
