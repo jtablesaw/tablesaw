@@ -1,8 +1,6 @@
 package com.deathrayresearch.outlier.store;
 
 import com.deathrayresearch.outlier.*;
-import com.deathrayresearch.outlier.testutil.DirectoryUtils;
-import com.deathrayresearch.outlier.testutil.NanoBench;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.Test;
 
@@ -11,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Random;
 
 /**
  *
@@ -86,6 +85,7 @@ public class SnappyCompressionBenchmark {
         new Runnable() {
           @Override
           public void run() {
+            System.out.println(c.size());
             try {
               StorageManager.writeColumn(TEST_FOLDER + File.separator + "foo", c);
             } catch (IOException e) {

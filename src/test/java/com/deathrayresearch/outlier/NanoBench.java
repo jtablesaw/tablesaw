@@ -1,4 +1,4 @@
-package com.deathrayresearch.outlier.testutil;
+package com.deathrayresearch.outlier;
 
 import java.lang.management.ManagementFactory;
 import java.text.DecimalFormat;
