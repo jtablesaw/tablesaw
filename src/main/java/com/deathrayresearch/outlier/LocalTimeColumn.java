@@ -1,7 +1,10 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.io.TypeUtils;
+import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 
 /**
@@ -127,5 +130,25 @@ public class LocalTimeColumn extends AbstractColumn {
   @Override
   public boolean isEmpty() {
     return N == 0;
+  }
+
+  public int convert(String value) {
+    if (Strings.isNullOrEmpty(value)
+        || TypeUtils.MISSING_INDICATORS.contains(value)
+        || value.equals("-1")) {
+      return (int) ColumnType.LOCAL_TIME.getMissingValue();
+    }
+    value = Strings.padStart(value, 4, '0');
+    return PackedLocalTime.pack(LocalTime.parse(value, TypeUtils.timeFormatter));
+  }
+
+  public void addCell(String object) {
+    try {
+      add(convert(object));
+    } catch (NullPointerException e) {
+      throw new RuntimeException(name() + ": "
+          + String.valueOf(object) + ": "
+          + e.getMessage());
+    }
   }
 }

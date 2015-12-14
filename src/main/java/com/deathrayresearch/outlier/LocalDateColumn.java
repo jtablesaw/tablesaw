@@ -1,11 +1,14 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.io.TypeUtils;
+import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.mintern.primitive.Primitive;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 
 /**
@@ -191,4 +194,25 @@ public class LocalDateColumn extends AbstractColumn {
     column.data = dates.elements();
     return column;
   }
+
+  public int convert(String value) {
+    if (Strings.isNullOrEmpty(value)
+        || TypeUtils.MISSING_INDICATORS.contains(value)
+        || value.equals("-1")) {
+      return (int) ColumnType.LOCAL_DATE.getMissingValue();
+    }
+    value = Strings.padStart(value, 4, '0');
+    return PackedLocalDate.pack(LocalDate.parse(value, TypeUtils.DATE_FORMATTER));
+  }
+
+  public void addCell(String string) {
+    try {
+      add(convert(string));
+    } catch (NullPointerException e) {
+      throw new RuntimeException(name() + ": "
+          + string + ": "
+          + e.getMessage());
+    }
+  }
+
 }

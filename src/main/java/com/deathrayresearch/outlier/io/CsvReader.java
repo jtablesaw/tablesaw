@@ -136,19 +136,20 @@ final public class CsvReader {
         } else if (column.type() == ColumnType.INTEGER) {
           IntColumn ic = (IntColumn) column;
           ic.add(Integer.parseInt(nextLine[columnIndex]));
-        } /*else if (column.type() == ColumnType.CAT) {
+        } else if (column.type() == ColumnType.CAT) {
           CategoryColumn cc = (CategoryColumn) column;
           cc.addCell(nextLine[columnIndex]);
         } else if (column.type() == ColumnType.LOCAL_TIME) {
           LocalTimeColumn bc = (LocalTimeColumn) column;
           bc.addCell(nextLine[columnIndex]);
-        } */
+        } else if (column.type() == ColumnType.LOCAL_DATE) {
+          LocalDateColumn bc = (LocalDateColumn) column;
+          bc.addCell(nextLine[columnIndex]);
+        }
         else if (column.type() == ColumnType.BOOLEAN) {
           BooleanColumn bc = (BooleanColumn) column;
           bc.addCell(nextLine[columnIndex]);
-        } /*else {
-          ObjectColumn.addCell(column, nextLine[columnIndex]);
-        }*/
+        }
         cellIndex++;
       }
     }

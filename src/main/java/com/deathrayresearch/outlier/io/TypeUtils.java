@@ -125,7 +125,7 @@ public final class TypeUtils {
 
 
   // A formatter that handles all the date formats defined above
-  private static final DateTimeFormatter DATE_FORMATTER =
+  public static final DateTimeFormatter DATE_FORMATTER =
       new DateTimeFormatterBuilder()
           .appendOptional(dtf1)
           .appendOptional(dtf2)

@@ -1,16 +1,38 @@
 package com.deathrayresearch.outlier.store;
 
-import com.deathrayresearch.outlier.*;
+import com.deathrayresearch.outlier.BooleanColumn;
+import com.deathrayresearch.outlier.Column;
+import com.deathrayresearch.outlier.FloatColumn;
+import com.deathrayresearch.outlier.IntColumn;
+import com.deathrayresearch.outlier.LocalDateColumn;
+import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.TableMetadata;
+import com.deathrayresearch.outlier.TextColumn;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.iq80.snappy.SnappyFramedInputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -218,5 +240,29 @@ public class StorageManager {
       }
     }
     return BooleanColumn.create(fileName, bools);
+  }
+
+  /**
+   * Writes out a json-formatted representation of the given {@code table}'s metadata to the given {@code file}
+   *
+   * @param fileName Expected to be fully specified
+   * @throws IOException if the file can not be read
+   */
+  public static void writeTableMetada(String fileName, Table table) throws IOException {
+    Files.write(Paths.get(fileName), new TableMetadata(table).toString().getBytes());
+  }
+
+  /**
+   * Reads in a json-formatted file and creates a TableMetadata instance from it. Files are expected to be in
+   * the format provided by TableMetadata}
+   *
+   * @param fileName Expected to be fully specified
+   * @throws IOException if the file can not be read
+   */
+  public static TableMetadata readTableMetadata(String fileName) throws IOException {
+
+    try (FileReader fileReader = new FileReader(fileName)) {
+      return TableMetadata.fromJson(fileReader.toString());
+    }
   }
 }
