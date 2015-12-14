@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 
 /**
  * A column in a base table that contains float values
@@ -157,5 +158,11 @@ public class BooleanColumn extends AbstractColumn {
   @Override
   public boolean isEmpty() {
     return N == 0;
+  }
+
+  public static BooleanColumn create(String fileName, BooleanArrayList bools) {
+    BooleanColumn booleanColumn = new BooleanColumn(fileName, bools.size());
+    booleanColumn.data = bools.elements();
+    return booleanColumn;
   }
 }

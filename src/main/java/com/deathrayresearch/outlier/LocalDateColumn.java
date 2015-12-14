@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.mintern.primitive.Primitive;
@@ -183,5 +184,11 @@ public class LocalDateColumn extends AbstractColumn {
   @Override
   public boolean isEmpty() {
     return N == 0;
+  }
+
+  public static LocalDateColumn create(String fileName, IntArrayList dates) {
+    LocalDateColumn column = new LocalDateColumn(fileName, dates.size());
+    column.data = dates.elements();
+    return column;
   }
 }

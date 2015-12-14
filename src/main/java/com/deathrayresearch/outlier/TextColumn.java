@@ -1,7 +1,5 @@
 package com.deathrayresearch.outlier;
 
-import net.mintern.primitive.Primitive;
-
 import java.util.Arrays;
 
 /**
@@ -17,16 +15,20 @@ public class TextColumn extends AbstractColumn {
   // The number of elements, which may be less than the size of the array
   private int N = 0;
 
-  private float[] data;
+  private String[] data;
 
-  public TextColumn(String name) {
+  public static TextColumn create(String name) {
+    return new TextColumn(name);
+  }
+
+  private TextColumn(String name) {
     super(name);
-    data = new float[DEFAULT_ARRAY_SIZE];
+    data = new String[DEFAULT_ARRAY_SIZE];
   }
 
   public TextColumn(String name, int initialSize) {
     super(name);
-    data = new float[initialSize];
+    data = new String[initialSize];
   }
 
   public int size() {
@@ -43,19 +45,11 @@ public class TextColumn extends AbstractColumn {
     return pointer < N;
   }
 
-  public float next() {
+  public String next() {
     return data[pointer++];
   }
 
-  public float sum() {
-    float sum = 0.0f;
-    while (hasNext()) {
-      sum += next();
-    }
-    return sum;
-  }
-
-  public void add(float f) {
+  public void add(String f) {
     if (N >= data.length) {
       resize();
     }
@@ -64,7 +58,7 @@ public class TextColumn extends AbstractColumn {
 
   // TODO(lwhite): Redo to reduce the increase for large columns
   private void resize() {
-    float[] temp = new float[Math.round(data.length * 2)];
+    String[] temp = new String[Math.round(data.length * 2)];
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
@@ -73,7 +67,7 @@ public class TextColumn extends AbstractColumn {
    * Removes (most) extra space (empty elements) from the data array
    */
   public void compact() {
-    float[] temp = new float[N + 100];
+    String[] temp = new String[N + 100];
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
@@ -91,7 +85,7 @@ public class TextColumn extends AbstractColumn {
 
   @Override
   public void clear() {
-    data = new float[DEFAULT_ARRAY_SIZE];
+    data = new String[DEFAULT_ARRAY_SIZE];
   }
 
   public void reset() {
@@ -115,8 +109,8 @@ public class TextColumn extends AbstractColumn {
   @Override
   public Column sortDescending() {
     TextColumn copy = this.copy();
+    // TODO(lwhite): BUG This sort is reversed (Q: Can we use this sort and reverse the iterator?)
     Arrays.sort(copy.data);
-    Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
     return copy;
   }
 

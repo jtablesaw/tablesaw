@@ -1,6 +1,8 @@
 package com.deathrayresearch.outlier.store;
 
 import com.deathrayresearch.outlier.*;
+import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.iq80.snappy.SnappyFramedInputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 
@@ -75,6 +77,43 @@ public class StorageManager {
     floats.compact();
     return floats;
   }
+
+  public static LocalDateColumn readLocalDateColumn(String fileName, String column) throws IOException {
+    IntArrayList dates = new IntArrayList();
+    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+         DataInputStream dis = new DataInputStream(sis)) {
+      boolean EOF = false;
+      while (!EOF) {
+        try {
+          int cell = dis.readInt();
+          dates.add(cell);
+        } catch (EOFException e) {
+          EOF = true;
+        }
+      }
+    }
+    return LocalDateColumn.create(fileName, dates);
+  }
+
+  public static TextColumn readStringColumn(String fileName, String column) throws IOException {
+    TextColumn stringColumn = TextColumn.create(column);
+    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+         DataInputStream dis = new DataInputStream(sis)) {
+      boolean EOF = false;
+      while (!EOF) {
+        try {
+          String cell = dis.readUTF();
+          stringColumn.add(cell);
+        } catch (EOFException e) {
+          EOF = true;
+        }
+      }
+    }
+    return stringColumn;
+  }
+
 
   public static void write(String pathName, Relation table) throws IOException {
 
@@ -161,5 +200,23 @@ public class StorageManager {
       }
       dos.flush();
     }
+  }
+
+  public static BooleanColumn readBooleanColumn(String fileName, String column) throws IOException {
+    BooleanArrayList bools = new BooleanArrayList();
+    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+         DataInputStream dis = new DataInputStream(sis)) {
+      boolean EOF = false;
+      while (!EOF) {
+        try {
+          boolean cell = dis.readBoolean();
+          bools.add(cell);
+        } catch (EOFException e) {
+          EOF = true;
+        }
+      }
+    }
+    return BooleanColumn.create(fileName, bools);
   }
 }

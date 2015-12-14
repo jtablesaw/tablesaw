@@ -17,16 +17,16 @@ public class LocalTimeColumn extends AbstractColumn {
   // The number of elements, which may be less than the size of the array
   private int N = 0;
 
-  private float[] data;
+  private int[] data;
 
   public LocalTimeColumn(String name) {
     super(name);
-    data = new float[DEFAULT_ARRAY_SIZE];
+    data = new int[DEFAULT_ARRAY_SIZE];
   }
 
   public LocalTimeColumn(String name, int initialSize) {
     super(name);
-    data = new float[initialSize];
+    data = new int[initialSize];
   }
 
   public int size() {
@@ -47,15 +47,7 @@ public class LocalTimeColumn extends AbstractColumn {
     return data[pointer++];
   }
 
-  public float sum() {
-    float sum = 0.0f;
-    while (hasNext()) {
-      sum += next();
-    }
-    return sum;
-  }
-
-  public void add(float f) {
+  public void add(int f) {
     if (N >= data.length) {
       resize();
     }
@@ -64,7 +56,7 @@ public class LocalTimeColumn extends AbstractColumn {
 
   // TODO(lwhite): Redo to reduce the increase for large columns
   private void resize() {
-    float[] temp = new float[Math.round(data.length * 2)];
+    int[] temp = new int[Math.round(data.length * 2)];
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
@@ -73,7 +65,7 @@ public class LocalTimeColumn extends AbstractColumn {
    * Removes (most) extra space (empty elements) from the data array
    */
   public void compact() {
-    float[] temp = new float[N + 100];
+    int[] temp = new int[N + 100];
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
@@ -91,7 +83,7 @@ public class LocalTimeColumn extends AbstractColumn {
 
   @Override
   public void clear() {
-    data = new float[DEFAULT_ARRAY_SIZE];
+    data = new int[DEFAULT_ARRAY_SIZE];
   }
 
   public void reset() {
