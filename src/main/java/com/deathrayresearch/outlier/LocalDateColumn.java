@@ -1,8 +1,10 @@
 package com.deathrayresearch.outlier;
 
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.mintern.primitive.Primitive;
-import org.roaringbitmap.RoaringBitmap;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 /**
@@ -18,16 +20,16 @@ public class LocalDateColumn extends AbstractColumn {
   // The number of elements, which may be less than the size of the array
   private int N = 0;
 
-  private float[] data;
+  private int[] data;
 
   public LocalDateColumn(String name) {
     super(name);
-    data = new float[DEFAULT_ARRAY_SIZE];
+    data = new int[DEFAULT_ARRAY_SIZE];
   }
 
   public LocalDateColumn(String name, int initialSize) {
     super(name);
-    data = new float[initialSize];
+    data = new int[initialSize];
   }
 
   public int size() {
@@ -48,15 +50,7 @@ public class LocalDateColumn extends AbstractColumn {
     return data[pointer++];
   }
 
-  public float sum() {
-    float sum = 0.0f;
-    while (hasNext()) {
-      sum += next();
-    }
-    return sum;
-  }
-
-  public void add(float f) {
+  public void add(int f) {
     if (N >= data.length) {
       resize();
     }
@@ -65,7 +59,7 @@ public class LocalDateColumn extends AbstractColumn {
 
   // TODO(lwhite): Redo to reduce the increase for large columns
   private void resize() {
-    float[] temp = new float[Math.round(data.length * 2)];
+    int[] temp = new int[Math.round(data.length * 2)];
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
@@ -74,7 +68,7 @@ public class LocalDateColumn extends AbstractColumn {
    * Removes (most) extra space (empty elements) from the data array
    */
   public void compact() {
-    float[] temp = new float[N + 100];
+    int[] temp = new int[N + 100];
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
@@ -92,7 +86,7 @@ public class LocalDateColumn extends AbstractColumn {
 
   @Override
   public void clear() {
-    data = new float[DEFAULT_ARRAY_SIZE];
+    data = new int[DEFAULT_ARRAY_SIZE];
   }
 
   public void reset() {
@@ -127,13 +121,67 @@ public class LocalDateColumn extends AbstractColumn {
     return null;
   }
 
-  // TODO(lwhite): Implement countUnique()
   @Override
   public int countUnique() {
-    return 0;
+    IntSet ints = new IntOpenHashSet(data.length);
+    for (int i : data) {
+      ints.add(i);
+    }
+    return ints.size();
   }
 
+  public LocalDate first() {
+    if (isEmpty()) {
+      return null;
+    }
+    return PackedLocalDate.asLocalDate(data[0]);
+  }
+
+  public LocalDate max() {
+    int max;
+    int missing = Integer.MIN_VALUE;
+    if (!isEmpty()) {
+      max = data[0];
+    } else {
+      return null;
+    }
+    for (int aData : data) {
+      if (missing != aData) {
+        max = (max > aData) ? max : aData;
+      }
+    }
+
+    if (missing == max) {
+      return null;
+    }
+    return PackedLocalDate.asLocalDate(max);
+  }
+
+  public LocalDate min() {
+    int min;
+    int missing = Integer.MIN_VALUE;
+
+    if (!isEmpty()) {
+      min = data[0];
+    } else {
+      return null;
+    }
+    for (int aData : data) {
+      if (missing != aData) {
+        min = (min < aData) ? min : aData;
+      }
+    }
+    if (Integer.MIN_VALUE == min) {
+      return null;
+    }
+    return PackedLocalDate.asLocalDate(min);
+  }
   public static Column create(String name) {
     return null;
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return N == 0;
   }
 }

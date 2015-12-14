@@ -195,4 +195,9 @@ public class FloatColumn extends AbstractColumn {
     Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
     return copy;
   }
+
+  @Override
+  public boolean isEmpty() {
+    return N == 0;
+  }
 }

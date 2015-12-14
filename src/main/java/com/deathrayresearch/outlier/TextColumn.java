@@ -131,4 +131,9 @@ public class TextColumn extends AbstractColumn {
   public int countUnique() {
     return 0;
   }
+
+  @Override
+  public boolean isEmpty() {
+    return N == 0;
+  }
 }

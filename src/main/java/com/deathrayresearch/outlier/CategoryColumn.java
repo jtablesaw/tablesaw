@@ -180,4 +180,9 @@ public class CategoryColumn extends AbstractColumn {
           + e.getMessage());
     }
   }
+
+  @Override
+  public boolean isEmpty() {
+    return values.isEmpty();
+  }
 }

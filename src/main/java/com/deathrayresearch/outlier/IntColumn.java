@@ -191,4 +191,9 @@ public class IntColumn extends AbstractColumn {
   public void reset() {
     pointer = 0;
   }
+
+  @Override
+  public boolean isEmpty() {
+    return N == 0;
+  }
 }

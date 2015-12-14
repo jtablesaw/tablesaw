@@ -153,4 +153,9 @@ public class BooleanColumn extends AbstractColumn {
   public boolean get(int i) {
     return data[i];
   }
+
+  @Override
+  public boolean isEmpty() {
+    return N == 0;
+  }
 }

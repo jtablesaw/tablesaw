@@ -29,6 +29,8 @@ public interface Column {
 
   Column sortDescending();
 
+  boolean isEmpty();
+
   /**
    * Returns a unique string that identifies this column
    */
