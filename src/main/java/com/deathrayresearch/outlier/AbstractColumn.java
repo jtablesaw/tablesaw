@@ -33,4 +33,10 @@ abstract  class AbstractColumn implements Column {
   public static Column create(String name) {
     return null;
   }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public abstract void addCell(String stringvalue);
 }

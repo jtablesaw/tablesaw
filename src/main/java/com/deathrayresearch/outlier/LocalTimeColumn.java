@@ -22,7 +22,11 @@ public class LocalTimeColumn extends AbstractColumn {
 
   private int[] data;
 
-  public LocalTimeColumn(String name) {
+  public static LocalTimeColumn create(String name) {
+    return new LocalTimeColumn(name);
+  }
+
+  private LocalTimeColumn(String name) {
     super(name);
     data = new int[DEFAULT_ARRAY_SIZE];
   }
@@ -38,7 +42,7 @@ public class LocalTimeColumn extends AbstractColumn {
 
   @Override
   public ColumnType type() {
-    return ColumnType.FLOAT;
+    return ColumnType.LOCAL_TIME;
   }
 
   @Override
@@ -75,8 +79,9 @@ public class LocalTimeColumn extends AbstractColumn {
 
 
   @Override
+  // TODO(lwhite): return the date format without converting to a local time first
   public String getString(int row) {
-    return String.valueOf(data[row]);
+    return String.valueOf(PackedLocalTime.asLocalTime(data[row]));
   }
 
   @Override

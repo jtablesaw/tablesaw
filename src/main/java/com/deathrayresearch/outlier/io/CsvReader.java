@@ -132,10 +132,10 @@ final public class CsvReader {
         Column column = table.column(cellIndex);
         if (column.type() == ColumnType.FLOAT) {
           FloatColumn fc = (FloatColumn) column;
-          fc.add(Float.parseFloat(nextLine[columnIndex]));
+          fc.addCell(nextLine[columnIndex]);
         } else if (column.type() == ColumnType.INTEGER) {
           IntColumn ic = (IntColumn) column;
-          ic.add(Integer.parseInt(nextLine[columnIndex]));
+          ic.addCell(nextLine[columnIndex]);
         } else if (column.type() == ColumnType.CAT) {
           CategoryColumn cc = (CategoryColumn) column;
           cc.addCell(nextLine[columnIndex]);

@@ -165,4 +165,24 @@ public class BooleanColumn extends AbstractColumn {
     booleanColumn.data = bools.elements();
     return booleanColumn;
   }
+
+  public int countTrue() {
+    int count = 0;
+    for (boolean b : data) {
+      if (b) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  public int countFalse() {
+    int count = 0;
+    for (boolean b : data) {
+      if (!b) {
+        count++;
+      }
+    }
+    return count;
+  }
 }

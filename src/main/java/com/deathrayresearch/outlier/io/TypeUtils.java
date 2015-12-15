@@ -368,6 +368,8 @@ public final class TypeUtils {
         return LocalDateTimeColumn.create(name);
       case TEXT:
         return TextColumn.create(name);
+      case INTEGER:
+        return IntColumn.create(name);
       case FLOAT:
         return FloatColumn.create(name);
       case BOOLEAN:

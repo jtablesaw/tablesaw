@@ -24,6 +24,11 @@ public class LocalDateTimeColumn extends AbstractColumn {
     data = new float[DEFAULT_ARRAY_SIZE];
   }
 
+  @Override
+  public void addCell(String stringvalue) {
+    throw new UnsupportedOperationException("Not yet implemented");
+  }
+
   public LocalDateTimeColumn(String name, int initialSize) {
     super(name);
     data = new float[initialSize];

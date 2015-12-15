@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import net.mintern.primitive.Primitive;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Arrays;
 
 /**
@@ -26,12 +25,12 @@ public class LocalDateColumn extends AbstractColumn {
 
   private int[] data;
 
-  public LocalDateColumn(String name) {
+  private LocalDateColumn(String name) {
     super(name);
     data = new int[DEFAULT_ARRAY_SIZE];
   }
 
-  public LocalDateColumn(String name, int initialSize) {
+  private LocalDateColumn(String name, int initialSize) {
     super(name);
     data = new int[initialSize];
   }
@@ -42,7 +41,7 @@ public class LocalDateColumn extends AbstractColumn {
 
   @Override
   public ColumnType type() {
-    return ColumnType.FLOAT;
+    return ColumnType.LOCAL_DATE;
   }
 
   @Override
@@ -79,8 +78,9 @@ public class LocalDateColumn extends AbstractColumn {
 
 
   @Override
+  // TODO(lwhite): return the date format without converting to a local date first
   public String getString(int row) {
-    return String.valueOf(data[row]);
+    return String.valueOf(PackedLocalDate.asLocalDate(data[row]));
   }
 
   @Override
@@ -181,7 +181,7 @@ public class LocalDateColumn extends AbstractColumn {
     return PackedLocalDate.asLocalDate(min);
   }
   public static Column create(String name) {
-    return null;
+    return new LocalDateColumn(name);
   }
 
   @Override
@@ -214,5 +214,4 @@ public class LocalDateColumn extends AbstractColumn {
           + e.getMessage());
     }
   }
-
 }

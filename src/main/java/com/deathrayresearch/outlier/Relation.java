@@ -70,4 +70,7 @@ public interface Relation {
    * Returns the unique identifier for this relation
    */
   String id();
+
+  List<String> columnNames();
+
 }

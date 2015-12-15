@@ -1,9 +1,14 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.io.TypeUtils;
+import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A column in a base table that contains float values
@@ -204,5 +209,33 @@ public class FloatColumn extends AbstractColumn {
   public static FloatColumn create(String name) {
     return new FloatColumn(name);
   }
+
+  @Override
+  public void addCell(String object) {
+    try {
+      add(convert(object));
+    } catch (NumberFormatException nfe) {
+      throw new NumberFormatException(name() + ": "  + nfe.getMessage());
+    } catch (NullPointerException e) {
+      throw new RuntimeException(name() + ": "
+          + String.valueOf(object) + ": "
+          + e.getMessage());
+    }
+  }
+
+  /**
+   * Returns a float that is parsed from the given String
+   *
+   * We remove any commas before parsing
+   */
+  public static float convert(String stringValue) {
+    if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
+      return Float.NaN;
+    }
+    Matcher matcher = COMMA_PATTERN.matcher(stringValue);
+    return Float.parseFloat(matcher.replaceAll(""));
+  };
+
+  private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
 }

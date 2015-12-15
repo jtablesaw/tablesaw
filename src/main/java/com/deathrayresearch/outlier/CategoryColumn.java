@@ -32,7 +32,7 @@ public class CategoryColumn extends AbstractColumn {
 
   @Override
   public ColumnType type() {
-    return ColumnType.FLOAT;
+    return ColumnType.CAT;
   }
 
   //TODO(lwhite): implement iteration

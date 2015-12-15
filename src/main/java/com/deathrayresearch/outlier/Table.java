@@ -208,4 +208,20 @@ public class Table implements Relation {
   public String id() {
     return id;
   }
+
+  /**
+   * Returns a new table containing the first {@code nrows} of data in this table
+   */
+  public View head(int nRows) {
+    return new View(this, nRows);
+  }
+
+  public String shape() {
+    return rowCount() + " rows X " + columnCount() + " cols";
+  }
+
+  public LocalTimeColumn timeColumn(String name) {
+    return LocalTimeColumn.create(name);
+
+  }
 }

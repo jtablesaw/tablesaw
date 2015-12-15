@@ -26,12 +26,22 @@ public class View implements Relation {
     rowMap.add(0, table.rowCount());
   }
 
+  public View(Relation table, int headRows) {
+    this.table = table;
+    for (String col : table.columnNames()) {
+      columnIds.add(table.columnIndex(col));
+    }
+    rowMap = new RoaringBitmap();
+    rowMap.add(0, table.rowCount());
+    rowMap.flip(headRows, table.rowCount());
+  }
+
   public View where(RoaringBitmap bitmap) {
     rowMap.and(bitmap);
     return this;
   }
 
-  void print() {
+  public void print() {
     for (int i : columnIds) {
       System.out.println(table.column(i).name());
     }
@@ -99,5 +109,14 @@ public class View implements Relation {
   @Override
   public String id() {
     return id;
+  }
+
+  @Override
+  public List<String> columnNames() {
+    List<String> names = new ArrayList<>();
+    for (Integer columnId : columnIds) {
+      names.add(table.column(columnId).name());
+    }
+    return names;
   }
 }

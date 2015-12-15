@@ -1,9 +1,13 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.io.TypeUtils;
+import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -16,7 +20,11 @@ public class IntColumn extends AbstractColumn {
 
   private int[] data;
 
-  public IntColumn(String name) {
+  public static IntColumn create(String name) {
+    return new IntColumn(name);
+  }
+
+  private IntColumn(String name) {
     super(name);
     data = new int[DEFAULT_ARRAY_SIZE];
   }
@@ -196,4 +204,32 @@ public class IntColumn extends AbstractColumn {
   public boolean isEmpty() {
     return N == 0;
   }
+
+  @Override
+  public void addCell(String object) {
+    try {
+      add(convert(object));
+    } catch (NumberFormatException nfe) {
+      throw new NumberFormatException(name() + ": "  + nfe.getMessage());
+    } catch (NullPointerException e) {
+      throw new RuntimeException(name() + ": "
+          + String.valueOf(object) + ": "
+          + e.getMessage());
+    }
+  }
+
+  /**
+   * Returns a float that is parsed from the given String
+   *
+   * We remove any commas before parsing
+   */
+  public static int convert(String stringValue) {
+    if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
+      return (int) ColumnType.INTEGER.getMissingValue();
+    }
+    Matcher matcher = COMMA_PATTERN.matcher(stringValue);
+    return Integer.parseInt(matcher.replaceAll(""));
+  };
+
+  private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 }
