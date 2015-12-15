@@ -2,6 +2,8 @@ package com.deathrayresearch.outlier;
 
 import org.roaringbitmap.RoaringBitmap;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -59,7 +61,7 @@ public class Table implements Relation {
       }
     }
     if (columnIndex == -1) {
-      throw new IllegalArgumentException(String.format("Column %s is not present in table %s", columnName , name));
+      throw new IllegalArgumentException(String.format("Column %s is not present in table %s", columnName, name));
     }
     return columnIndex;
   }
@@ -97,6 +99,18 @@ public class Table implements Relation {
     }
     return table;
   }
+
+  /**
+   * Returns a List of the names of all the columns in this table
+   */
+  public List<String> columnNames() {
+    List<String> names = new ArrayList<>(columnList.size());
+    for (Column column : columnList) {
+      names.add(column.name());
+    }
+    return names;
+  }
+
 
   @Override
   public String get(int c, int r) {
@@ -139,12 +153,56 @@ public class Table implements Relation {
     return floatColumn(columnIndex);
   }
 
-  public void print() {
-    for (Column c : columnList) {
-      for (int r = 0; r < rowCount(); r++) {
-        System.out.println(c.getString(r));
+  public String print() {
+    StringBuilder buf = new StringBuilder();
+
+    int[] colWidths = colWidths();
+    buf.append(name()).append('\n');
+    List<String> names = this.columnNames();
+
+    for (int colNum = 0; colNum < columnCount(); colNum++) {
+      buf.append(
+          StringUtils.rightPad(
+              StringUtils.defaultString(String.valueOf(names.get(colNum))), colWidths[colNum]));
+      buf.append(' ');
+    }
+    buf.append('\n');
+
+    for (int r = 0; r < rowCount(); r++) {
+      for (int c = 0; c < columnCount(); c++) {
+        String cell = StringUtils.rightPad(
+            String.valueOf(get(c, r)), colWidths[c]);
+        buf.append(cell);
+        buf.append(' ');
+      }
+      buf.append('\n');
+
+    }
+    return buf.toString();
+  }
+
+
+  /**
+   * Returns an array of column widths for printing tables
+   */
+  private int[] colWidths() {
+
+    int cols = columnCount();
+    int[] widths = new int[cols];
+
+    List<String> columnNames = columnNames();
+    for (int i = 0; i < columnCount(); i++) {
+      widths[i] = columnNames.get(i).length();
+    }
+
+    // for (Row row : this) {
+    for (int rowNum = 0; rowNum < rowCount(); rowNum++) {
+      for (int colNum = 0; colNum < cols; colNum++) {
+        widths[colNum]
+            = Math.max(widths[colNum], StringUtils.length(get(colNum, rowNum)));
       }
     }
+    return widths;
   }
 
   public String id() {

@@ -200,4 +200,9 @@ public class FloatColumn extends AbstractColumn {
   public boolean isEmpty() {
     return N == 0;
   }
+
+  public static FloatColumn create(String name) {
+    return new FloatColumn(name);
+  }
+
 }

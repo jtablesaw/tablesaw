@@ -37,7 +37,7 @@ public class TextColumn extends AbstractColumn {
 
   @Override
   public ColumnType type() {
-    return ColumnType.FLOAT;
+    return ColumnType.TEXT;
   }
 
   @Override
@@ -71,7 +71,6 @@ public class TextColumn extends AbstractColumn {
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
-
 
   @Override
   public String getString(int row) {
@@ -129,5 +128,9 @@ public class TextColumn extends AbstractColumn {
   @Override
   public boolean isEmpty() {
     return N == 0;
+  }
+
+  public void addCell(String s) {
+    this.add(s);
   }
 }

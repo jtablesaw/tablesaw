@@ -145,6 +145,9 @@ final public class CsvReader {
         } else if (column.type() == ColumnType.LOCAL_DATE) {
           LocalDateColumn bc = (LocalDateColumn) column;
           bc.addCell(nextLine[columnIndex]);
+        } else if (column.type() == ColumnType.TEXT) {
+          TextColumn tc = (TextColumn) column;
+          tc.addCell(nextLine[columnIndex]);
         }
         else if (column.type() == ColumnType.BOOLEAN) {
           BooleanColumn bc = (BooleanColumn) column;
