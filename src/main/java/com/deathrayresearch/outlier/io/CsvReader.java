@@ -148,8 +148,10 @@ final public class CsvReader {
         } else if (column.type() == ColumnType.TEXT) {
           TextColumn tc = (TextColumn) column;
           tc.addCell(nextLine[columnIndex]);
-        }
-        else if (column.type() == ColumnType.BOOLEAN) {
+        }else if (column.type() == ColumnType.LOCAL_DATE_TIME) {
+          LocalDateTimeColumn dtc = (LocalDateTimeColumn) column;
+          dtc.addCell(nextLine[columnIndex]);
+        } else if (column.type() == ColumnType.BOOLEAN) {
           BooleanColumn bc = (BooleanColumn) column;
           bc.addCell(nextLine[columnIndex]);
         }

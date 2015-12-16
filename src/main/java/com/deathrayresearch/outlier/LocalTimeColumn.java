@@ -77,11 +77,9 @@ public class LocalTimeColumn extends AbstractColumn {
     data = temp;
   }
 
-
   @Override
-  // TODO(lwhite): return the date format without converting to a local time first
   public String getString(int row) {
-    return String.valueOf(PackedLocalTime.asLocalTime(data[row]));
+    return PackedLocalTime.toShortTimeString(data[row]);
   }
 
   @Override
@@ -115,8 +113,7 @@ public class LocalTimeColumn extends AbstractColumn {
   @Override
   public Column sortDescending() {
     LocalTimeColumn copy = this.copy();
-    Arrays.sort(copy.data);
-    Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
+    Primitive.sort(copy.data, (d1, d2) -> Integer.compare(d2, d1), false);
     return copy;
   }
 
@@ -147,6 +144,7 @@ public class LocalTimeColumn extends AbstractColumn {
     return PackedLocalTime.pack(LocalTime.parse(value, TypeUtils.timeFormatter));
   }
 
+  @Override
   public void addCell(String object) {
     try {
       add(convert(object));

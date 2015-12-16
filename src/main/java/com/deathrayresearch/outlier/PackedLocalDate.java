@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 
 import java.time.LocalDate;
@@ -64,5 +65,20 @@ public class PackedLocalDate {
         byte2,
         m,
         d);
+  }
+
+  public static String toDateString(int date) {
+    if (date == Integer.MIN_VALUE) {
+      return "NA";
+    }
+
+    // get first two bytes, then each of the other two
+    byte yearByte1 = (byte)(date >> 24);
+    byte yearByte2 = (byte)(date >> 16);
+
+    return String.format("%d-%s-%s",
+        (short) ((yearByte2 << 8) + (yearByte1&0xFF)),
+        Strings.padStart(Byte.toString((byte) (date >> 8)), 2, '0'),
+        Strings.padStart(Byte.toString((byte) date), 2, '0'));
   }
 }

@@ -78,9 +78,8 @@ public class LocalDateColumn extends AbstractColumn {
 
 
   @Override
-  // TODO(lwhite): return the date format without converting to a local date first
   public String getString(int row) {
-    return String.valueOf(PackedLocalDate.asLocalDate(data[row]));
+    return PackedLocalDate.toDateString(data[row]);
   }
 
   @Override
@@ -114,8 +113,7 @@ public class LocalDateColumn extends AbstractColumn {
   @Override
   public Column sortDescending() {
     LocalDateColumn copy = this.copy();
-    Arrays.sort(copy.data);
-    Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
+    Primitive.sort(copy.data, (d1, d2) -> Integer.compare(d2, d1), false);
     return copy;
   }
 

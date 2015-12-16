@@ -30,10 +30,6 @@ abstract  class AbstractColumn implements Column {
     return new ColumnMetadata(this).toJson();
   }
 
-  public static Column create(String name) {
-    return null;
-  }
-
   public void setName(String name) {
     this.name = name;
   }

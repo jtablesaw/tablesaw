@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 
 import java.time.LocalTime;
@@ -98,4 +99,24 @@ public class PackedLocalTime {
         d);
   }
 */
+
+  public static String toShortTimeString(int time) {
+    if (time == -1) {
+      return "NA";
+    }
+
+    byte hourByte = (byte)(time >> 24);
+    byte minuteByte = (byte)(time >> 16);
+    byte millisecondByte1 = (byte)(time >> 8);
+    byte millisecondByte2 = (byte) time;
+    char millis = (char) ((millisecondByte1 << 8) | (millisecondByte2 & 0xFF));
+    int second = millis / 1000;
+    int millisOnly = millis % 1000;
+
+    return String.format("%s:%s:%s",
+        Strings.padStart(Byte.toString(hourByte), 2, '0'),
+        Strings.padStart(Byte.toString(minuteByte), 2, '0'),
+        Strings.padStart(Integer.toString(second), 2, '0'));
+
+  }
 }

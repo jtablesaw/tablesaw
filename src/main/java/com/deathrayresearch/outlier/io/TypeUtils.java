@@ -150,7 +150,7 @@ public final class TypeUtils {
           .toFormatter();
 
   // A formatter that handles date time formats defined above
-  private static final DateTimeFormatter dateTimeFormatter =
+  public static final DateTimeFormatter dateTimeFormatter =
       new DateTimeFormatterBuilder()
           .appendOptional(dtTimef2)
           .appendOptional(dtTimef3)

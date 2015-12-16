@@ -1,7 +1,10 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.io.TypeUtils;
+import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 /**
@@ -17,21 +20,50 @@ public class LocalDateTimeColumn extends AbstractColumn {
   // The number of elements, which may be less than the size of the array
   private int N = 0;
 
-  private float[] data;
-
-  public LocalDateTimeColumn(String name) {
-    super(name);
-    data = new float[DEFAULT_ARRAY_SIZE];
-  }
+  private long[] dateTimes;
 
   @Override
   public void addCell(String stringvalue) {
-    throw new UnsupportedOperationException("Not yet implemented");
+
+    if (stringvalue == null) {
+      add(Long.MIN_VALUE);
+    } else {
+        LocalDateTime dateTime = convert(stringvalue);
+        if (dateTime != null) {
+          add(dateTime);
+        } else {
+          add(Long.MIN_VALUE);
+        }
+    }
+  }
+
+  public void add(LocalDateTime dateTime) {
+    long dt = PackedLocalDateTime.pack(dateTime);
+    add(dt);
+  }
+
+  public LocalDateTime convert(String value) {
+    if (Strings.isNullOrEmpty(value)
+        || TypeUtils.MISSING_INDICATORS.contains(value)
+        || value.equals("-1")) {
+      return null;
+    }
+    value = Strings.padStart(value, 4, '0');
+    return LocalDateTime.parse(value, TypeUtils.dateTimeFormatter);
+  }
+
+  public static LocalDateTimeColumn create(String name) {
+    return new LocalDateTimeColumn(name);
+  }
+
+  private LocalDateTimeColumn(String name) {
+    super(name);
+    dateTimes = new long[DEFAULT_ARRAY_SIZE];
   }
 
   public LocalDateTimeColumn(String name, int initialSize) {
     super(name);
-    data = new float[initialSize];
+    dateTimes = new long[initialSize];
   }
 
   public int size() {
@@ -40,7 +72,7 @@ public class LocalDateTimeColumn extends AbstractColumn {
 
   @Override
   public ColumnType type() {
-    return ColumnType.FLOAT;
+    return ColumnType.LOCAL_DATE_TIME;
   }
 
   @Override
@@ -49,44 +81,36 @@ public class LocalDateTimeColumn extends AbstractColumn {
   }
 
   public float next() {
-    return data[pointer++];
+    return dateTimes[pointer++];
   }
 
-  public float sum() {
-    float sum = 0.0f;
-    while (hasNext()) {
-      sum += next();
-    }
-    return sum;
-  }
-
-  public void add(float f) {
-    if (N >= data.length) {
+  public void add(long dateTime) {
+    if (N >= dateTimes.length) {
       resize();
     }
-    data[N++] = f;
+    dateTimes[N++] = dateTime;
   }
 
   // TODO(lwhite): Redo to reduce the increase for large columns
   private void resize() {
-    float[] temp = new float[Math.round(data.length * 2)];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
+    int size = Math.round(dateTimes.length * 2);
+    long[] tempDates = new long[size];
+    System.arraycopy(dateTimes, 0, tempDates, 0, N);
+    dateTimes = tempDates;
   }
 
   /**
    * Removes (most) extra space (empty elements) from the data array
    */
   public void compact() {
-    float[] temp = new float[N + 100];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
+    long[] tempDates = new long[N + 100];
+    System.arraycopy(dateTimes, 0, tempDates, 0, N);
+    dateTimes = tempDates;
   }
-
 
   @Override
   public String getString(int row) {
-    return String.valueOf(data[row]);
+    return PackedLocalDateTime.toString(dateTimes[row]);
   }
 
   @Override
@@ -96,7 +120,7 @@ public class LocalDateTimeColumn extends AbstractColumn {
 
   @Override
   public void clear() {
-    data = new float[DEFAULT_ARRAY_SIZE];
+    dateTimes = new long[DEFAULT_ARRAY_SIZE];
   }
 
   public void reset() {
@@ -105,7 +129,7 @@ public class LocalDateTimeColumn extends AbstractColumn {
 
   private LocalDateTimeColumn copy() {
     LocalDateTimeColumn copy = emptyCopy();
-    copy.data = this.data;
+    copy.dateTimes = this.dateTimes;
     copy.N = this.N;
     return copy;
   }
@@ -113,15 +137,15 @@ public class LocalDateTimeColumn extends AbstractColumn {
   @Override
   public Column sortAscending() {
     LocalDateTimeColumn copy = this.copy();
-    Arrays.sort(copy.data);
+    Arrays.sort(copy.dateTimes);
     return copy;
+
   }
 
   @Override
   public Column sortDescending() {
     LocalDateTimeColumn copy = this.copy();
-    Arrays.sort(copy.data);
-    Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
+    Primitive.sort(copy.dateTimes, (d1, d2) -> Long.compare(d2, d1), false);
     return copy;
   }
 
