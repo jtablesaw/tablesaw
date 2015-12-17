@@ -6,6 +6,7 @@ import net.mintern.primitive.Primitive;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * A column in a base table that contains float values
@@ -20,7 +21,7 @@ public class LocalDateTimeColumn extends AbstractColumn {
   // The number of elements, which may be less than the size of the array
   private int N = 0;
 
-  private long[] dateTimes;
+  private long[] data;
 
   @Override
   public void addCell(String stringvalue) {
@@ -58,12 +59,12 @@ public class LocalDateTimeColumn extends AbstractColumn {
 
   private LocalDateTimeColumn(String name) {
     super(name);
-    dateTimes = new long[DEFAULT_ARRAY_SIZE];
+    data = new long[DEFAULT_ARRAY_SIZE];
   }
 
   public LocalDateTimeColumn(String name, int initialSize) {
     super(name);
-    dateTimes = new long[initialSize];
+    data = new long[initialSize];
   }
 
   public int size() {
@@ -81,22 +82,22 @@ public class LocalDateTimeColumn extends AbstractColumn {
   }
 
   public float next() {
-    return dateTimes[pointer++];
+    return data[pointer++];
   }
 
   public void add(long dateTime) {
-    if (N >= dateTimes.length) {
+    if (N >= data.length) {
       resize();
     }
-    dateTimes[N++] = dateTime;
+    data[N++] = dateTime;
   }
 
   // TODO(lwhite): Redo to reduce the increase for large columns
   private void resize() {
-    int size = Math.round(dateTimes.length * 2);
+    int size = Math.round(data.length * 2);
     long[] tempDates = new long[size];
-    System.arraycopy(dateTimes, 0, tempDates, 0, N);
-    dateTimes = tempDates;
+    System.arraycopy(data, 0, tempDates, 0, N);
+    data = tempDates;
   }
 
   /**
@@ -104,13 +105,13 @@ public class LocalDateTimeColumn extends AbstractColumn {
    */
   public void compact() {
     long[] tempDates = new long[N + 100];
-    System.arraycopy(dateTimes, 0, tempDates, 0, N);
-    dateTimes = tempDates;
+    System.arraycopy(data, 0, tempDates, 0, N);
+    data = tempDates;
   }
 
   @Override
   public String getString(int row) {
-    return PackedLocalDateTime.toString(dateTimes[row]);
+    return PackedLocalDateTime.toString(data[row]);
   }
 
   @Override
@@ -120,7 +121,7 @@ public class LocalDateTimeColumn extends AbstractColumn {
 
   @Override
   public void clear() {
-    dateTimes = new long[DEFAULT_ARRAY_SIZE];
+    data = new long[DEFAULT_ARRAY_SIZE];
   }
 
   public void reset() {
@@ -129,7 +130,7 @@ public class LocalDateTimeColumn extends AbstractColumn {
 
   private LocalDateTimeColumn copy() {
     LocalDateTimeColumn copy = emptyCopy();
-    copy.dateTimes = this.dateTimes;
+    copy.data = this.data;
     copy.N = this.N;
     return copy;
   }
@@ -137,7 +138,7 @@ public class LocalDateTimeColumn extends AbstractColumn {
   @Override
   public Column sortAscending() {
     LocalDateTimeColumn copy = this.copy();
-    Arrays.sort(copy.dateTimes);
+    Arrays.sort(copy.data);
     return copy;
 
   }
@@ -145,7 +146,7 @@ public class LocalDateTimeColumn extends AbstractColumn {
   @Override
   public Column sortDescending() {
     LocalDateTimeColumn copy = this.copy();
-    Primitive.sort(copy.dateTimes, (d1, d2) -> Long.compare(d2, d1), false);
+    Primitive.sort(copy.data, (d1, d2) -> Long.compare(d2, d1), false);
     return copy;
   }
 
@@ -165,4 +166,23 @@ public class LocalDateTimeColumn extends AbstractColumn {
   public boolean isEmpty() {
     return N == 0;
   }
+
+  public long get(int index) {
+    return data[index];
+  }
+
+  @Override
+  public Comparator<Integer> rowComparator() {
+    return comparator;
+  }
+
+  Comparator<Integer> comparator = new Comparator<Integer>() {
+
+    @Override
+    public int compare(Integer r1, Integer r2) {
+      long f1 = data[r1];
+      long f2 = data[r2];
+      return Long.compare(f1, f2);
+    }
+  };
 }

@@ -4,6 +4,8 @@ import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 
+import java.util.Comparator;
+
 /**
  * A column in a base table that contains float values
  */
@@ -185,4 +187,19 @@ public class BooleanColumn extends AbstractColumn {
     }
     return count;
   }
+
+  @Override
+  public Comparator<Integer> rowComparator() {
+    return comparator;
+  }
+
+  Comparator<Integer> comparator = new Comparator<Integer>() {
+
+    @Override
+    public int compare(Integer r1, Integer r2) {
+      boolean f1 = data[r1];
+      boolean f2 = data[r2];
+      return Boolean.compare(f1, f2);
+    }
+  };
 }

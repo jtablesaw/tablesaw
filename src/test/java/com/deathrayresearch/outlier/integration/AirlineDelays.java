@@ -51,11 +51,11 @@ public class AirlineDelays {
   public static void main(String[] args) throws Exception {
 
     new AirlineDelays();
-/*
+
     Stopwatch stopwatch = Stopwatch.createStarted();
     flights2008.sortAscendingOn("Origin", "UniqueCarrier");
     System.out.println("Sorting " + stopwatch.elapsed(TimeUnit.SECONDS));
-    Table xtab = flights2008.xCount("Origin", "UniqueCarrier");
+/*    Table xtab = flights2008.xCount("Origin", "UniqueCarrier");
     System.out.println("xtabs " + stopwatch.elapsed(TimeUnit.SECONDS));
 */
 

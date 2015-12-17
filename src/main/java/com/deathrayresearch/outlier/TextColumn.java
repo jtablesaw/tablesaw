@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * A column in a base table that contains float values
@@ -133,4 +134,23 @@ public class TextColumn extends AbstractColumn {
   public void addCell(String s) {
     this.add(s);
   }
+
+  public String get(int index) {
+    return data[index];
+  }
+
+  @Override
+  public Comparator<Integer> rowComparator() {
+    return comparator;
+  }
+
+  Comparator<Integer> comparator = new Comparator<Integer>() {
+
+    @Override
+    public int compare(Integer r1, Integer r2) {
+      String f1 = data[r1];
+      String f2 = data[r2];
+      return f1.compareTo(f2);
+    }
+  };
 }

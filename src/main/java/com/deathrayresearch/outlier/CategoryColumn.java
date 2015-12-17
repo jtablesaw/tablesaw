@@ -6,6 +6,7 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortList;
 
+import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -163,6 +164,12 @@ public class CategoryColumn extends AbstractColumn {
     }
     values.add(valueId);
   }
+
+  @Override
+  public final Comparator<Integer> rowComparator() {
+    return (r1, r2) -> getString(r1).compareTo(getString(r2));
+  }
+
 
   public static String convert(String stringValue) {
     if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {

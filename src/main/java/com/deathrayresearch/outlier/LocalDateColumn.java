@@ -9,6 +9,7 @@ import net.mintern.primitive.Primitive;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * A column in a base table that contains float values
@@ -187,6 +188,21 @@ public class LocalDateColumn extends AbstractColumn {
     return N == 0;
   }
 
+  @Override
+  public Comparator<Integer> rowComparator() {
+    return comparator;
+  }
+
+  Comparator<Integer> comparator = new Comparator<Integer>() {
+
+    @Override
+    public int compare(Integer r1, Integer r2) {
+      int f1 = data[r1];
+      int f2 = data[r2];
+      return Integer.compare(f1, f2);
+    }
+  };
+
   public static LocalDateColumn create(String fileName, IntArrayList dates) {
     LocalDateColumn column = new LocalDateColumn(fileName, dates.size());
     column.data = dates.elements();
@@ -211,5 +227,9 @@ public class LocalDateColumn extends AbstractColumn {
           + string + ": "
           + e.getMessage());
     }
+  }
+
+  public int get(int index) {
+    return data[index];
   }
 }

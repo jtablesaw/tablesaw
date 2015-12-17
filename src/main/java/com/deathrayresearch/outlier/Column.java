@@ -2,6 +2,8 @@ package com.deathrayresearch.outlier;
 
 import org.roaringbitmap.RoaringBitmap;
 
+import java.util.Comparator;
+
 /**
  *
  */
@@ -41,4 +43,7 @@ public interface Column {
    * Returns a String containing the column's metadata in json format
    */
   String metadata();
+
+
+  Comparator<Integer> rowComparator();
 }

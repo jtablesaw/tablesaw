@@ -6,6 +6,7 @@ import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -232,4 +233,24 @@ public class IntColumn extends AbstractColumn {
   };
 
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
+
+  public int get(int index) {
+    return data[index];
+  }
+
+  @Override
+  public Comparator<Integer> rowComparator() {
+    return comparator;
+  }
+
+  Comparator<Integer> comparator = new Comparator<Integer>() {
+
+    @Override
+    public int compare(Integer r1, Integer r2) {
+      int f1 = data[r1];
+      int f2 = data[r2];
+      return Integer.compare(f1, f2);
+    }
+  };
+
 }

@@ -6,6 +6,7 @@ import net.mintern.primitive.Primitive;
 
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * A column in a base table that contains float values
@@ -154,4 +155,24 @@ public class LocalTimeColumn extends AbstractColumn {
           + e.getMessage());
     }
   }
+
+  public int get(int index) {
+    return data[index];
+  }
+
+  @Override
+  public Comparator<Integer> rowComparator() {
+    return comparator;
+  }
+
+  Comparator<Integer> comparator = new Comparator<Integer>() {
+
+    @Override
+    public int compare(Integer r1, Integer r2) {
+      int f1 = data[r1];
+      int f2 = data[r2];
+      return Integer.compare(f1, f2);
+    }
+  };
+
 }
