@@ -1,11 +1,13 @@
 package com.deathrayresearch.outlier.filter;
 
 import com.deathrayresearch.outlier.Relation;
+import org.roaringbitmap.RoaringBitmap;
 
 /**
  *
  */
-public interface Filter {
+public abstract class Filter {
 
-  AbstractColumnFilter asColumnFilter(Relation t);
+  public abstract RoaringBitmap apply(Relation relation);
+
 }

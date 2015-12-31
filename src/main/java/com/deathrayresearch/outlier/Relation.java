@@ -35,6 +35,11 @@ public interface Relation {
   int columnIndex(String col);
 
   /**
+   * Returns the index of the given column
+   */
+  int columnIndex(Column col);
+
+  /**
    * Returns a String representing the value found at column index c and row index r
    */
   String get(int c, int r);

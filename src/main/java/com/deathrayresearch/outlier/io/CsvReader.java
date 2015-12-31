@@ -113,6 +113,7 @@ final public class CsvReader {
       columnNames = makeColumnNames(types);
       headerRow = Lists.newArrayList(columnNames);
     }
+
     Table table = new Table(fileName);
     for (int x = 0; x < types.length; x++) {
       if (types[x] != ColumnType.SKIP) {
@@ -120,41 +121,20 @@ final public class CsvReader {
         table.addColumn(newColumn);
       }
     }
-    // Add the rows
+    int[] columnIndexes = new int[columnNames.length];
+    for (int i = 0; i < columnIndexes.length; i++) {
+      // get the index in the original table, which includes skipped fields
+      columnIndexes[i] = headerRow.indexOf(columnNames[i]);
+    }
+      // Add the rows
     String[] nextLine;
     while (it.hasNext()) {
       nextLine = it.next();
       // for each column that we're including (not skipping)
       int cellIndex = 0;
-      for (String columnName : columnNames) {
-        // get the index in the original table, which includes skipped fields
-        int columnIndex = headerRow.indexOf(columnName);
+      for (int columnIndex : columnIndexes) {
         Column column = table.column(cellIndex);
-        if (column.type() == ColumnType.FLOAT) {
-          FloatColumn fc = (FloatColumn) column;
-          fc.addCell(nextLine[columnIndex]);
-        } else if (column.type() == ColumnType.INTEGER) {
-          IntColumn ic = (IntColumn) column;
-          ic.addCell(nextLine[columnIndex]);
-        } else if (column.type() == ColumnType.CAT) {
-          CategoryColumn cc = (CategoryColumn) column;
-          cc.addCell(nextLine[columnIndex]);
-        } else if (column.type() == ColumnType.LOCAL_TIME) {
-          LocalTimeColumn bc = (LocalTimeColumn) column;
-          bc.addCell(nextLine[columnIndex]);
-        } else if (column.type() == ColumnType.LOCAL_DATE) {
-          LocalDateColumn bc = (LocalDateColumn) column;
-          bc.addCell(nextLine[columnIndex]);
-        } else if (column.type() == ColumnType.TEXT) {
-          TextColumn tc = (TextColumn) column;
-          tc.addCell(nextLine[columnIndex]);
-        }else if (column.type() == ColumnType.LOCAL_DATE_TIME) {
-          LocalDateTimeColumn dtc = (LocalDateTimeColumn) column;
-          dtc.addCell(nextLine[columnIndex]);
-        } else if (column.type() == ColumnType.BOOLEAN) {
-          BooleanColumn bc = (BooleanColumn) column;
-          bc.addCell(nextLine[columnIndex]);
-        }
+        column.addCell(nextLine[columnIndex]);
         cellIndex++;
       }
     }

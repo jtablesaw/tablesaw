@@ -26,6 +26,15 @@ public class View implements Relation {
     rowMap.add(0, table.rowCount());
   }
 
+  public View(Relation table, List<String> columnName) {
+    this.table = table;
+    for (String col : columnName) {
+      columnIds.add(table.columnIndex(col));
+    }
+    rowMap = new RoaringBitmap();
+    rowMap.add(0, table.rowCount());
+  }
+
   public View(Relation table, int headRows) {
     this.table = table;
     for (String col : table.columnNames()) {
@@ -34,6 +43,14 @@ public class View implements Relation {
     rowMap = new RoaringBitmap();
     rowMap.add(0, table.rowCount());
     rowMap.flip(headRows, table.rowCount());
+  }
+
+  public View(Relation table, Column[] columnSelection, RoaringBitmap rowSelection) {
+    this.rowMap = rowSelection;
+    this.table = table;
+    for (Column aColumnSelection : columnSelection) {
+      this.columnIds.add(table.columnIndex(aColumnSelection));
+    }
   }
 
   public View where(RoaringBitmap bitmap) {
@@ -80,6 +97,21 @@ public class View implements Relation {
   }
 
   @Override
+  public int columnIndex(Column column) {
+    int columnIndex = -1;
+    for (int i = 0; i < columnIds.size(); i++) {
+      if (column(columnIds.get(i)).equals(column)) {
+        columnIndex = i;
+        break;
+      }
+    }
+    if (columnIndex == -1) {
+      throw new IllegalArgumentException(String.format("Column %s is not present in view %s", column.name(), name()));
+    }
+    return columnIndex;
+  }
+
+  @Override
   public String get(int c, int r) {
     return null;
   }
@@ -119,4 +151,5 @@ public class View implements Relation {
     }
     return names;
   }
+
 }

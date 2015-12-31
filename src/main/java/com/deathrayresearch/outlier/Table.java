@@ -76,6 +76,20 @@ public class Table implements Relation {
     return columnIndex;
   }
 
+  public int columnIndex(Column column) {
+    int columnIndex = -1;
+    for (int i = 0; i < columnList.size(); i++) {
+      if (columnList.get(i).equals(column)) {
+        columnIndex = i;
+        break;
+      }
+    }
+    if (columnIndex == -1) {
+      throw new IllegalArgumentException(String.format("Column %s is not present in table %s", column.name(), name));
+    }
+    return columnIndex;
+  }
+
   @Override
   public Column column(String columnName) {
     int columnIndex = -1;
@@ -346,5 +360,9 @@ public class Table implements Relation {
     } else {
       return rowComparator;
     }
+  }
+
+  Query select() {
+    return new Query(this);
   }
 }

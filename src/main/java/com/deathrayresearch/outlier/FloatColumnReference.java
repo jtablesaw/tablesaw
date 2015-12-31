@@ -1,7 +1,5 @@
 package com.deathrayresearch.outlier;
 
-import com.deathrayresearch.outlier.filter.GreaterThan;
-
 /**
  *
  */
@@ -19,10 +17,6 @@ public class FloatColumnReference {
 
   public static FloatColumnReference column(String columnName) {
     return FloatColumnReference.col(columnName);
-  }
-
-  public GreaterThan isGreaterThan(float f) {
-    return new GreaterThan(this, f);
   }
 
   public String getColumnName() {

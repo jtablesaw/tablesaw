@@ -4,4 +4,5 @@ databases/
 bigdata/
 testfolder/
 *.iml
+test_col_test
 

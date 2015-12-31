@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
+import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Comparator;
 
@@ -187,6 +188,33 @@ public class BooleanColumn extends AbstractColumn {
     }
     return count;
   }
+
+  public RoaringBitmap isFalse() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while(hasNext()) {
+      if (!next()) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isTrue() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while(hasNext()) {
+      if (next()) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
 
   @Override
   public Comparator<Integer> rowComparator() {

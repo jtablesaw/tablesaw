@@ -1,5 +1,7 @@
 package com.deathrayresearch.outlier;
 
+import org.roaringbitmap.RoaringBitmap;
+
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -137,6 +139,19 @@ public class TextColumn extends AbstractColumn {
 
   public String get(int index) {
     return data[index];
+  }
+
+  public RoaringBitmap isEqualTo(String string) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while(hasNext()) {
+      if (string.equals(next())) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
   }
 
   @Override

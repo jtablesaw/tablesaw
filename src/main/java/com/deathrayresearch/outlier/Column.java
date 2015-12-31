@@ -33,6 +33,8 @@ public interface Column {
 
   boolean isEmpty();
 
+  void addCell(String stringValue);
+
   /**
    * Returns a unique string that identifies this column
    */
