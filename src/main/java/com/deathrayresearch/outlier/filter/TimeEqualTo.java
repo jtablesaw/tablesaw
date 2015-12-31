@@ -1,12 +1,10 @@
 package com.deathrayresearch.outlier.filter;
 
 import com.deathrayresearch.outlier.ColumnReference;
-import com.deathrayresearch.outlier.LocalDateColumn;
 import com.deathrayresearch.outlier.LocalTimeColumn;
 import com.deathrayresearch.outlier.Relation;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
