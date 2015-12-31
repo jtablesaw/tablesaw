@@ -45,7 +45,6 @@ public class StorageManager {
       new ExecutorCompletionService<>(executorService);
 
   /**
-   *
    * @param fileName Expected to be fully specified
    * @throws IOException
    */
@@ -190,7 +189,7 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName + "_" + column.name());
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      while(column.hasNext()) {
+      while (column.hasNext()) {
         float cell = column.next();
         dos.writeFloat(cell);
       }
@@ -203,7 +202,7 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      while(column.hasNext()) {
+      while (column.hasNext()) {
         int cell = column.next();
         dos.writeFloat(cell);
       }
@@ -216,7 +215,7 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName + "_" + column.name());
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      for(int i = 0; i < column.size(); i++) {
+      for (int i = 0; i < column.size(); i++) {
         boolean value = column.get(i);
         dos.writeBoolean(value);
       }

@@ -99,7 +99,7 @@ public class FloatColumn extends AbstractColumn {
   public RoaringBitmap isLessThan(float f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (next() < f) {
         results.add(i);
       }
@@ -112,7 +112,7 @@ public class FloatColumn extends AbstractColumn {
   public RoaringBitmap isGreaterThan(float f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (next() > f) {
         results.add(i);
       }
@@ -125,7 +125,7 @@ public class FloatColumn extends AbstractColumn {
   public RoaringBitmap isGreaterThanOrEqualTo(float f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (next() >= f) {
         results.add(i);
       }
@@ -138,7 +138,7 @@ public class FloatColumn extends AbstractColumn {
   public RoaringBitmap isLessThanOrEqualTo(float f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (next() <= f) {
         results.add(i);
       }
@@ -151,7 +151,7 @@ public class FloatColumn extends AbstractColumn {
   public RoaringBitmap isEqualTo(float f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (next() == f) {
         results.add(i);
       }
@@ -215,7 +215,7 @@ public class FloatColumn extends AbstractColumn {
     try {
       add(convert(object));
     } catch (NumberFormatException nfe) {
-      throw new NumberFormatException(name() + ": "  + nfe.getMessage());
+      throw new NumberFormatException(name() + ": " + nfe.getMessage());
     } catch (NullPointerException e) {
       throw new RuntimeException(name() + ": "
           + String.valueOf(object) + ": "
@@ -225,7 +225,7 @@ public class FloatColumn extends AbstractColumn {
 
   /**
    * Returns a float that is parsed from the given String
-   *
+   * <p>
    * We remove any commas before parsing
    */
   public static float convert(String stringValue) {
@@ -234,7 +234,9 @@ public class FloatColumn extends AbstractColumn {
     }
     Matcher matcher = COMMA_PATTERN.matcher(stringValue);
     return Float.parseFloat(matcher.replaceAll(""));
-  };
+  }
+
+  ;
 
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 

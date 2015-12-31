@@ -8,13 +8,13 @@ import org.roaringbitmap.RoaringBitmap;
  */
 public class ColumnFilter extends Filter {
 
-    ColumnReference columnReference;
+  ColumnReference columnReference;
 
-    public ColumnFilter(ColumnReference columnReference) {
-        this.columnReference = columnReference;
-    }
+  public ColumnFilter(ColumnReference columnReference) {
+    this.columnReference = columnReference;
+  }
 
-    public RoaringBitmap apply(Relation relation) {
-        return null;
-    }
+  public RoaringBitmap apply(Relation relation) {
+    return null;
+  }
 }

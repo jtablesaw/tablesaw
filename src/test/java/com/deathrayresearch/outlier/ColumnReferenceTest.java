@@ -4,6 +4,7 @@ import static com.deathrayresearch.outlier.ColumnType.*;
 import static com.deathrayresearch.outlier.QueryUtil.valueOf;
 
 import static org.junit.Assert.*;
+
 import com.deathrayresearch.outlier.io.CsvReader;
 import org.junit.Test;
 

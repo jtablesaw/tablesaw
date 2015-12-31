@@ -144,7 +144,7 @@ public class TextColumn extends AbstractColumn {
   public RoaringBitmap isEqualTo(String string) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (string.equals(next())) {
         results.add(i);
       }

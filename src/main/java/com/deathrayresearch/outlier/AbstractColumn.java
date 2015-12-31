@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  *
  */
-abstract  class AbstractColumn implements Column {
+abstract class AbstractColumn implements Column {
 
   private final String id = UUID.randomUUID().toString();
 

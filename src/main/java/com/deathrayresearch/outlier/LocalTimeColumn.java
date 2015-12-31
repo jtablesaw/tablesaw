@@ -180,7 +180,7 @@ public class LocalTimeColumn extends AbstractColumn {
     RoaringBitmap results = new RoaringBitmap();
     int packedLocalTime = PackedLocalTime.pack(value);
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (packedLocalTime == next()) {
         results.add(i);
       }

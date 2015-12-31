@@ -137,12 +137,13 @@ public class BooleanColumn extends AbstractColumn {
       return true;
     } else if (TypeUtils.FALSE_STRINGS.contains(stringValue)) {
       return false;
-    }
-    else {
+    } else {
       throw new IllegalArgumentException("Attempting to convert non-boolean value " +
           stringValue + " to Boolean");
     }
-  };
+  }
+
+  ;
 
   public void addCell(String object) {
     try {
@@ -192,7 +193,7 @@ public class BooleanColumn extends AbstractColumn {
   public RoaringBitmap isFalse() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (!next()) {
         results.add(i);
       }
@@ -205,7 +206,7 @@ public class BooleanColumn extends AbstractColumn {
   public RoaringBitmap isTrue() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (next()) {
         results.add(i);
       }

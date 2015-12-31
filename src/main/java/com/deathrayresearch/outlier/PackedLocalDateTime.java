@@ -10,21 +10,20 @@ import java.time.LocalTime;
 /**
  * A short localdatetime packed into a single long value. The long is comprised of an int for the date and an int
  * for the time
- *
+ * <p>
  * The bytes are packed into the date int as:
  * First two bytes: short (year)
  * next byte (month of year)
  * last byte (day of month)
- *
+ * <p>
  * The bytes are packed into the time int as
  * First byte: hourOfDay
  * next byte: minuteOfHour
  * last two bytes (short): millisecond of minute
- *
+ * <p>
  * Storing the millisecond of minute in an short requires that we treat the short as if it were unsigned. Unfortunately,
  * Neither Java nor Guava provide unsigned short support so we use char, which is a 16-bit unsigned int to
  * store values of up to 60,000 milliseconds (60 secs * 1000)
-
  */
 public class PackedLocalDateTime {
 
@@ -34,9 +33,9 @@ public class PackedLocalDateTime {
 
   public static short getYear(int date) {
     // get first two bytes, then convert to a short
-    byte byte1 = (byte)(date >> 24);
-    byte byte2 = (byte)(date >> 16);
-    return (short) ((byte2 << 8) + (byte1&0xFF));
+    byte byte1 = (byte) (date >> 24);
+    byte byte2 = (byte) (date >> 16);
+    return (short) ((byte2 << 8) + (byte1 & 0xFF));
   }
 
   public static LocalDateTime asLocalDateTime(long dateTime) {
@@ -51,7 +50,7 @@ public class PackedLocalDateTime {
 
   public static byte getMonthValue(long dateTime) {
     int date = date(dateTime);
-    return (byte)(date >> 8);
+    return (byte) (date >> 8);
   }
 
   public static long pack(LocalDate date, LocalTime time) {
@@ -68,9 +67,9 @@ public class PackedLocalDateTime {
     return (((long) d) << 32) | (t & 0xffffffffL);
   }
 
-  public static long pack(short yr, byte m, byte d, byte hr, byte min, byte s,  byte n) {
-    byte byte1= (byte) yr;
-    byte byte2= (byte) ((yr >> 8) & 0xff);
+  public static long pack(short yr, byte m, byte d, byte hr, byte min, byte s, byte n) {
+    byte byte1 = (byte) yr;
+    byte byte2 = (byte) ((yr >> 8) & 0xff);
     int date = Ints.fromBytes(
         byte1,
         byte2,
@@ -83,11 +82,11 @@ public class PackedLocalDateTime {
   }
 
   static int date(long packedDateTIme) {
-    return (int)(packedDateTIme >> 32);
+    return (int) (packedDateTIme >> 32);
   }
 
   static int time(long packedDateTIme) {
-    return (int)packedDateTIme;
+    return (int) packedDateTIme;
   }
 
   public static String toString(long dateTime) {
@@ -98,11 +97,11 @@ public class PackedLocalDateTime {
     int time = time(dateTime);
 
     // get first two bytes, then each of the other two
-    byte yearByte1 = (byte)(date >> 24);
-    byte yearByte2 = (byte)(date >> 16);
+    byte yearByte1 = (byte) (date >> 24);
+    byte yearByte2 = (byte) (date >> 16);
 
     return String.format("%d-%s-%s:%d:%d:%d",
-        (short) ((yearByte2 << 8) + (yearByte1&0xFF)),
+        (short) ((yearByte2 << 8) + (yearByte1 & 0xFF)),
         Strings.padStart(Byte.toString((byte) (date >> 8)), 2, '0'),
         Strings.padStart(Byte.toString((byte) date), 2, '0'),
         PackedLocalTime.getHour(time),

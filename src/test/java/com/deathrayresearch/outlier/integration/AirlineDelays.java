@@ -44,7 +44,7 @@ public class AirlineDelays {
       FLOAT, // NASDelay
       FLOAT, // SecurityDelay
       FLOAT  // LateAircraftDelay
-      };
+  };
 
   private static Table flights2008;
 

@@ -180,6 +180,7 @@ public class LocalDateColumn extends AbstractColumn {
     }
     return PackedLocalDate.asLocalDate(min);
   }
+
   public static Column create(String name) {
     return new LocalDateColumn(name);
   }
@@ -238,7 +239,7 @@ public class LocalDateColumn extends AbstractColumn {
     RoaringBitmap results = new RoaringBitmap();
     int packedLocalDate = PackedLocalDate.pack(value);
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (packedLocalDate == next()) {
         results.add(i);
       }

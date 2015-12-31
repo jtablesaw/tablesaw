@@ -167,8 +167,7 @@ public class CategoryColumn extends AbstractColumn {
     if (!b) {
       valueId = (short) id.getAndIncrement();
       lookupTable.put(valueId, stringValue);
-    }
-    else {
+    } else {
       valueId = lookupTable.get(stringValue);
     }
     values.add(valueId);
@@ -184,7 +183,9 @@ public class CategoryColumn extends AbstractColumn {
       return (String) ColumnType.CAT.getMissingValue();
     }
     return stringValue;
-  };
+  }
+
+  ;
 
   public void addCell(String object) {
     try {
@@ -204,7 +205,7 @@ public class CategoryColumn extends AbstractColumn {
   public RoaringBitmap isEqualTo(String string) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while(hasNext()) {
+    while (hasNext()) {
       if (string.equals(next())) {
         results.add(i);
       }

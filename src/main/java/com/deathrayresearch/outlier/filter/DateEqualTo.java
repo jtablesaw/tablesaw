@@ -11,15 +11,15 @@ import java.time.LocalDate;
  */
 public class DateEqualTo extends ColumnFilter {
 
-    LocalDate value;
+  LocalDate value;
 
-    public DateEqualTo(ColumnReference reference, LocalDate value) {
-        super(reference);
-        this.value = value;
-    }
+  public DateEqualTo(ColumnReference reference, LocalDate value) {
+    super(reference);
+    this.value = value;
+  }
 
-    public RoaringBitmap apply(Relation relation) {
-        LocalDateColumn dateColumn = (LocalDateColumn) relation.column(columnReference.getColumnName());
-        return dateColumn.isEqualTo(value);
-    }
+  public RoaringBitmap apply(Relation relation) {
+    LocalDateColumn dateColumn = (LocalDateColumn) relation.column(columnReference.getColumnName());
+    return dateColumn.isEqualTo(value);
+  }
 }

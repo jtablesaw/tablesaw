@@ -52,7 +52,7 @@ final public class CsvReader {
    */
   public static Table read(String fileName, ColumnType types[], boolean header)
       throws IOException {
-     return read(fileName, types, ',', header);
+    return read(fileName, types, ',', header);
   }
 
   public static Table read(String fileName,
@@ -82,16 +82,16 @@ final public class CsvReader {
     return read(fileName, newTypes, columnSeparator, header);
   }
 
-    /**
-     * Constructs a Table from a CSV File.
-     *
-     * @param fileName        The fully specified file name
-     * @param types           An array of the types of columns in the file, in the order they appear
-     * @param columnSeparator the delimiter
-     * @param header          Is the first row in the file a header?
-     * @return A Table containing the data in the csv file.
-     * @throws IOException
-     */
+  /**
+   * Constructs a Table from a CSV File.
+   *
+   * @param fileName        The fully specified file name
+   * @param types           An array of the types of columns in the file, in the order they appear
+   * @param columnSeparator the delimiter
+   * @param header          Is the first row in the file a header?
+   * @return A Table containing the data in the csv file.
+   * @throws IOException
+   */
   public static Table read(String fileName,
                            ColumnType types[],
                            char columnSeparator,
@@ -126,7 +126,7 @@ final public class CsvReader {
       // get the index in the original table, which includes skipped fields
       columnIndexes[i] = headerRow.indexOf(columnNames[i]);
     }
-      // Add the rows
+    // Add the rows
     String[] nextLine;
     while (it.hasNext()) {
       nextLine = it.next();
@@ -143,8 +143,8 @@ final public class CsvReader {
   }
 
   public static void read(String inputFileName,
-                               List<Integer> columns,
-                               boolean header)
+                          List<Integer> columns,
+                          boolean header)
       throws IOException {
 
     CSVReader reader = new CSVReader(new FileReader(inputFileName));

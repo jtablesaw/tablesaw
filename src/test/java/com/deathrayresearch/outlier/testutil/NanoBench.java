@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 /**
  * From LinkedIn palDb
- *
+ * <p>
  * Lightweight CPU and memory benchmarking utility. <p> Inspired from nanobench
  * (http://code.google.com/p/nanobench/)
  */

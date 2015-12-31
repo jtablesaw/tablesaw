@@ -7,12 +7,12 @@ import java.time.LocalTime;
 
 /**
  * A localTime with millisecond precision packed into a single int value.
- *
+ * <p>
  * The bytes are packed into the int as:
  * First byte: hourOfDay
  * next byte: minuteOfHour
  * last two bytes (short): millisecond of minute
- *
+ * <p>
  * Storing the millisecond of minute in an short requires that we treat the short as if it were unsigned. Unfortunately,
  * Neither Java nor Guava provide unsigned short support so we use char, which is a 16-bit unsigned int to
  * store values of up to 60,000 milliseconds (60 secs * 1000)
@@ -20,7 +20,7 @@ import java.time.LocalTime;
 public class PackedLocalTime {
 
   public static byte getHour(int time) {
-    return (byte)(time >> 24);
+    return (byte) (time >> 24);
   }
 
   public static char getMillisecondsOfMinute(int time) {
@@ -51,9 +51,9 @@ public class PackedLocalTime {
       return null;
     }
 
-    byte hourByte = (byte)(time >> 24);
-    byte minuteByte = (byte)(time >> 16);
-    byte millisecondByte1 = (byte)(time >> 8);
+    byte hourByte = (byte) (time >> 24);
+    byte minuteByte = (byte) (time >> 16);
+    byte millisecondByte1 = (byte) (time >> 8);
     byte millisecondByte2 = (byte) time;
     char millis = (char) ((millisecondByte1 << 8) | (millisecondByte2 & 0xFF));
     int second = millis / 1000;
@@ -66,7 +66,7 @@ public class PackedLocalTime {
   }
 
   public static byte getMinute(int time) {
-    return (byte)(time >> 16);
+    return (byte) (time >> 16);
   }
 
   public static int pack(LocalTime time) {
@@ -74,7 +74,7 @@ public class PackedLocalTime {
     byte minute = (byte) time.getMinute();
     char millis = (char) (time.getNano() / 1_000_000.0);
     millis = (char) (millis + (char) (time.getSecond() * 1000));
-    byte m1 = (byte)(millis >> 8);
+    byte m1 = (byte) (millis >> 8);
     byte m2 = (byte) millis;
 
     return Ints.fromBytes(
@@ -105,9 +105,9 @@ public class PackedLocalTime {
       return "NA";
     }
 
-    byte hourByte = (byte)(time >> 24);
-    byte minuteByte = (byte)(time >> 16);
-    byte millisecondByte1 = (byte)(time >> 8);
+    byte hourByte = (byte) (time >> 24);
+    byte minuteByte = (byte) (time >> 16);
+    byte millisecondByte1 = (byte) (time >> 8);
     byte millisecondByte2 = (byte) time;
     char millis = (char) ((millisecondByte1 << 8) | (millisecondByte2 & 0xFF));
     int second = millis / 1000;

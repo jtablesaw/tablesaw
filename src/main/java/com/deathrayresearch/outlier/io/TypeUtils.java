@@ -57,7 +57,7 @@ public final class TypeUtils {
     return result;
   };
 
-  public static final UnaryOperator<Comparable> CONVERT_TO_CATEGORY =  t -> {
+  public static final UnaryOperator<Comparable> CONVERT_TO_CATEGORY = t -> {
     @Nullable String result = String.valueOf(t);
     if (Strings.isNullOrEmpty(result) || result.equals("null")) {
       return ColumnType.CAT.getMissingValue();
@@ -191,9 +191,9 @@ public final class TypeUtils {
   /**
    * A lambda expression that attempts to convert a variety of formats to java.time.LocalDate
    * values. The formats LocalDate, java.util.Date, and (appropriate) strings.
-   * <p/>
+   * <p>
    * If the string is a long, it is assumed to be the UTC time in nanoseconds since the epoch.
-   * <p/>
+   * <p>
    * Throws a java.lang.IllegalArgumentException if it gets a value it can't convert
    */
   public static final UnaryOperator<Comparable> CONVERT_TO_LOCAL_DATE = value -> {
@@ -203,12 +203,10 @@ public final class TypeUtils {
     }
     if (value instanceof LocalDate) {
       return (LocalDate) value;
-    }
-    else if (value instanceof Date) {
+    } else if (value instanceof Date) {
       Date d = ((Date) value);
       return d.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-    else if (value instanceof String) {
+    } else if (value instanceof String) {
 
       String stringValue = (String) value;
       if (stringValue.isEmpty() || MISSING_INDICATORS.contains(stringValue)) {
@@ -228,9 +226,9 @@ public final class TypeUtils {
   /**
    * A lambda expression that attempts to convert a variety of formats to java.time.LocalDateTime
    * values. The formats LocalDate, java.util.Date, and (appropriate) strings.
-   * <p/>
+   * <p>
    * If the string is a long, it is assumed to be the UTC time in nanoseconds since the epoch.
-   * <p/>
+   * <p>
    * Throws a java.lang.IllegalArgumentException if it gets a value it can't convert
    */
   public static final UnaryOperator<Comparable> CONVERT_TO_LOCAL_DATE_TIME = value -> {
@@ -263,9 +261,9 @@ public final class TypeUtils {
   /**
    * A lambda expression that attempts to convert a variety of formats to java.time.LocalDateTime
    * values. The formats LocalDate, java.util.Date, and (appropriate) strings.
-   * <p/>
+   * <p>
    * If the string is a long, it is assumed to be the UTC time in nanoseconds since the epoch.
-   * <p/>
+   * <p>
    * Throws a java.lang.IllegalArgumentException if it gets a value it can't convert
    */
   public static final UnaryOperator<Comparable> CONVERT_TO_LOCAL_TIME = value -> {

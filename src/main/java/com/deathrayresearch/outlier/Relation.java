@@ -9,6 +9,7 @@ public interface Relation {
 
   /**
    * Returns the column at columnIndex (0-based)
+   *
    * @param columnIndex an integer >= 0 and < number of columns in the relation
    * @return the column at the given index
    */
@@ -46,7 +47,7 @@ public interface Relation {
 
   /**
    * Adds the given column to the end of this relation.
-   *
+   * <p>
    * The index of the new column in the table will be one less than the number of columns
    */
   void addColumn(Column column);

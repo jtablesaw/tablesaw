@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 
 /**
  * A map that supports reversible key value pairs of short->String
- *
+ * <p>
  * TODO(lwhite): Generify this class if it turns out to be useful
  */
 public class DictionaryMap {

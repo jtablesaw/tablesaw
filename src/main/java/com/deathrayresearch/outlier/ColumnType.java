@@ -11,16 +11,16 @@ import java.util.function.UnaryOperator;
  */
 public enum ColumnType {
 
-/*
-  SKIP(Object.class, SKIP_COLUMN, null),
-  STRING(String.class, CONVERT_TO_STRING, ""),
-  CAT(String.class, CONVERT_TO_CATEGORY, ""),
-  REAL(Float.class, CONVERT_TO_REAL, Float.NaN),
-  BOOLEAN(Boolean.class, CONVERT_TO_BOOLEAN, false),
-  LOCAL_DATE(LocalDate.class, CONVERT_TO_LOCAL_DATE, Integer.MIN_VALUE),
-  LOCAL_TIME(LocalTime.class, CONVERT_TO_LOCAL_TIME, -1),
-  LOCAL_DATE_TIME(LocalDateTime.class, CONVERT_TO_LOCAL_DATE_TIME, null);
-*/
+  /*
+    SKIP(Object.class, SKIP_COLUMN, null),
+    STRING(String.class, CONVERT_TO_STRING, ""),
+    CAT(String.class, CONVERT_TO_CATEGORY, ""),
+    REAL(Float.class, CONVERT_TO_REAL, Float.NaN),
+    BOOLEAN(Boolean.class, CONVERT_TO_BOOLEAN, false),
+    LOCAL_DATE(LocalDate.class, CONVERT_TO_LOCAL_DATE, Integer.MIN_VALUE),
+    LOCAL_TIME(LocalTime.class, CONVERT_TO_LOCAL_TIME, -1),
+    LOCAL_DATE_TIME(LocalDateTime.class, CONVERT_TO_LOCAL_DATE_TIME, null);
+  */
   BOOLEAN(false),
   CAT(""),
   FLOAT(Float.NaN),
@@ -31,30 +31,31 @@ public enum ColumnType {
   LOCAL_TIME(-1),
   SKIP(null);
 
- // private final Class<?> clazz;
- // private final UnaryOperator<Comparable> converter;
+  // private final Class<?> clazz;
+  // private final UnaryOperator<Comparable> converter;
   private final Comparable missingValue;
 
   ColumnType(
       //Class<?> clazz, UnaryOperator<Comparable> converter,
       Comparable missingValue) {
-   // this.clazz = clazz;
-   // this.converter = converter;
+    // this.clazz = clazz;
+    // this.converter = converter;
     this.missingValue = missingValue;
   }
 /*
 
   */
 /**
-   * Returns the java class represented by this ColumnType
-   *//*
+ * Returns the java class represented by this ColumnType
+ *//*
 
   public Class<?> clazz() {
     return clazz;
   }
 
   */
-/**
+
+  /**
    * Returns a short, end-user friendly descriptor for the ColumnType
    *//*
 

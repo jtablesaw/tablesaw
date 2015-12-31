@@ -29,12 +29,12 @@ public class LocalDateTimeColumn extends AbstractColumn {
     if (stringvalue == null) {
       add(Long.MIN_VALUE);
     } else {
-        LocalDateTime dateTime = convert(stringvalue);
-        if (dateTime != null) {
-          add(dateTime);
-        } else {
-          add(Long.MIN_VALUE);
-        }
+      LocalDateTime dateTime = convert(stringvalue);
+      if (dateTime != null) {
+        add(dateTime);
+      } else {
+        add(Long.MIN_VALUE);
+      }
     }
   }
 

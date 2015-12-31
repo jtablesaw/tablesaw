@@ -251,7 +251,7 @@ public class Table implements Relation {
 
   /**
    * Returns a sort Key that can be used for simple or chained comparator sorting
-   *
+   * <p>
    * You can extend the sort key by using .next() to fill more columns to the sort order
    */
   private Sort first(String columnName, Sort.Order order) {
@@ -294,7 +294,7 @@ public class Table implements Relation {
 
   /**
    * Returns a copy of this table sorted on the given columns
-   * <p/>
+   * <p>
    * The columns are sorted in reverse order if they value matching the name is {@code true}
    */
   public Table sortOn(Sort key) {

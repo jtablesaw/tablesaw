@@ -8,7 +8,6 @@ public abstract class AbstractColumnFilter {
   int columnNumber;
 
 
-
   AbstractColumnFilter(int columnNumber) {
     this.columnNumber = columnNumber;
   }
