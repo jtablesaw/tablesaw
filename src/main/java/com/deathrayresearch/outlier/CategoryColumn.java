@@ -134,7 +134,7 @@ public class CategoryColumn extends AbstractColumn {
 
   @Override
   public Table summary() {
-    return null;
+    return new Table(name());
   }
 
   @Override

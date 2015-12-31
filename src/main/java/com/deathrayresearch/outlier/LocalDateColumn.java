@@ -5,12 +5,16 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A column in a base table that contains float values
@@ -60,6 +64,13 @@ public class LocalDateColumn extends AbstractColumn {
       resize();
     }
     data[N++] = f;
+  }
+
+  public void add(LocalDate f) {
+    if (N >= data.length) {
+      resize();
+    }
+    data[N++] = PackedLocalDate.pack(f);
   }
 
   // TODO(lwhite): Redo to reduce the increase for large columns
@@ -119,11 +130,6 @@ public class LocalDateColumn extends AbstractColumn {
     return copy;
   }
 
-  // TODO(lwhite): Implement column summary()
-  @Override
-  public Table summary() {
-    return null;
-  }
 
   @Override
   public int countUnique() {
@@ -248,4 +254,39 @@ public class LocalDateColumn extends AbstractColumn {
     reset();
     return results;
   }
+
+  /**
+   * Returns a table of dates and the number of observations of those dates
+   */
+  public Table summary() {
+
+    Object2IntMap<LocalDate> counts = new Object2IntOpenHashMap<>();
+
+    for (int i = 0; i < N; i++) {
+      LocalDate value;
+      int next = data[i];
+      if (next == Integer.MIN_VALUE) {
+        value = null;
+      } else {
+        value = PackedLocalDate.asLocalDate(next);
+      }
+      if (counts.containsKey(value)) {
+        counts.put(value, counts.get(value) + 1);
+      } else {
+        counts.put(value, 1);
+      }
+    }
+
+    Table table = new Table(name());
+    table.addColumn(LocalDateColumn.create("Date"));
+    table.addColumn(IntColumn.create("Count"));
+
+    for (Map.Entry<LocalDate, Integer> entry : counts.object2IntEntrySet()) {
+      //Row row = table.newRow();
+      table.localDateColumn(0).add(entry.getKey());
+      table.intColumn(1).add(entry.getValue());
+    }
+    return table;
+  }
+
 }

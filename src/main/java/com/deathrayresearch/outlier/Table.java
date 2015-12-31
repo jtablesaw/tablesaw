@@ -153,16 +153,37 @@ public class Table implements Relation {
     return (FloatColumn) column(columnName);
   }
 
+  public IntColumn intColumn(String columnName) {
+    return (IntColumn) column(columnName);
+  }
+
+  public TextColumn textColumn(String columnName) {
+    return (TextColumn) column(columnName);
+  }
+
+  public BooleanColumn booleanColumn(String columnName) {
+    return (BooleanColumn) column(columnName);
+  }
+
+  public LocalDateColumn localDateColumn(String columnName) {
+    return (LocalDateColumn) column(columnName);
+  }
+
+  public LocalTimeColumn localTimeColumn(String columnName) {
+    return (LocalTimeColumn) column(columnName);
+  }
+
+
   public FloatColumn floatColumn(int columnIndex) {
     return (FloatColumn) column(columnIndex);
   }
 
-  public FloatColumn fColumn(String columnName) {
-    return floatColumn(columnName);
+  public IntColumn intColumn(int columnIndex) {
+    return (IntColumn) column(columnIndex);
   }
 
-  public FloatColumn fColumn(int columnIndex) {
-    return floatColumn(columnIndex);
+  public LocalDateColumn localDateColumn(int columnIndex) {
+    return (LocalDateColumn) column(columnIndex);
   }
 
   public String print() {
@@ -356,5 +377,82 @@ public class Table implements Relation {
 
   Query select(String ... columnName) {
     return new Query(this, columnName);
+  }
+
+  public Table structure() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("Table: ")
+        .append(name)
+        .append(" - ")
+        .append(rowCount())
+        .append(" observations (rows) of ")
+        .append(columnCount())
+        .append(" variables (cols)");
+
+    Table structure = new Table(builder.toString());
+    structure.addColumn(IntColumn.create("Index"));
+    structure.addColumn(TextColumn.create("Column Name"));
+    structure.addColumn(TextColumn.create("Type"));
+    structure.addColumn(IntColumn.create("Unique Values"));
+    structure.addColumn(TextColumn.create("First"));
+    structure.addColumn(TextColumn.create("Last"));
+
+    for (Column column : columnList) {
+      structure.intColumn("Index").add(columnIndex(column));
+      structure.textColumn("Column Name").add(column.name());
+      structure.textColumn("Type").add(column.type().name());
+      structure.intColumn("Unique Values").add(column.countUnique());
+     // newRow.set("First", column.first());
+     // newRow.set("Last", column.last());
+    }
+    return structure;
+  }
+
+  public String summary() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("\n")
+        .append("Table summary for: ")
+        .append(name)
+        .append("\n");
+    for (Column column : columnList) {
+      switch (column.type()) {
+        case INTEGER:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case FLOAT:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case LOCAL_DATE:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case LOCAL_DATE_TIME:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case LOCAL_TIME:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case BOOLEAN:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case TEXT:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case CAT:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        default:
+          throw new RuntimeException("ColumnType not found");
+      }
+    }
+    builder.append("\n");
+    return builder.toString();
   }
 }

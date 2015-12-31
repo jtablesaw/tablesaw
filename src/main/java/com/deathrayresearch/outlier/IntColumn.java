@@ -152,13 +152,16 @@ public class IntColumn extends AbstractColumn {
   // TODO(lwhite): Implement column summary()
   @Override
   public Table summary() {
-    return null;
+    return new Table(name());
   }
 
-  // TODO(lwhite): Implement countUnique()
   @Override
   public int countUnique() {
-    return 0;
+    RoaringBitmap roaringBitmap = new RoaringBitmap();
+    for (int i : data) {
+      roaringBitmap.add(i);
+    }
+    return roaringBitmap.getCardinality();
   }
 
   @Override
@@ -231,8 +234,6 @@ public class IntColumn extends AbstractColumn {
     Matcher matcher = COMMA_PATTERN.matcher(stringValue);
     return Integer.parseInt(matcher.replaceAll(""));
   }
-
-  ;
 
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
