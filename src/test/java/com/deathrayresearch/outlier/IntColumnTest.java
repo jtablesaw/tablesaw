@@ -11,7 +11,6 @@ public class IntColumnTest {
 
   private IntColumn column = new IntColumn("t1", 100);
 
-
   @Test
   public void testSum() {
     for (int i = 0; i < 100; i++) {
@@ -60,6 +59,5 @@ public class IntColumnTest {
       column.add(i);
     }
     assertEquals(1, column.isEqualTo(10).getCardinality());
-
   }
 }

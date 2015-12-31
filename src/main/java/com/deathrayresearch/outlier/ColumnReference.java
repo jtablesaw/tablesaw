@@ -3,8 +3,15 @@ package com.deathrayresearch.outlier;
 import com.deathrayresearch.outlier.filter.DateEqualTo;
 import com.deathrayresearch.outlier.filter.Filter;
 import com.deathrayresearch.outlier.filter.FloatEqualTo;
+import com.deathrayresearch.outlier.filter.FloatGreaterThan;
+import com.deathrayresearch.outlier.filter.FloatGreaterThanOrEqualTo;
+import com.deathrayresearch.outlier.filter.FloatLessThan;
+import com.deathrayresearch.outlier.filter.FloatLessThanOrEqualTo;
 import com.deathrayresearch.outlier.filter.IntEqualTo;
 import com.deathrayresearch.outlier.filter.IntGreaterThan;
+import com.deathrayresearch.outlier.filter.IntGreaterThanOrEqualTo;
+import com.deathrayresearch.outlier.filter.IntLessThan;
+import com.deathrayresearch.outlier.filter.IntLessThanOrEqualTo;
 import com.deathrayresearch.outlier.filter.StringEqualTo;
 import com.deathrayresearch.outlier.filter.TimeEqualTo;
 
@@ -44,6 +51,34 @@ public class ColumnReference {
 
   Filter isGreaterThan(int value) {
     return new IntGreaterThan(this, value);
+  }
+
+  Filter isLessThan(int value) {
+    return new IntLessThan(this, value);
+  }
+
+  Filter isLessThanOrEqualTo(int value) {
+    return new IntLessThanOrEqualTo(this, value);
+  }
+
+  Filter isGreaterThanOrEqualTo(int value) {
+    return new IntGreaterThanOrEqualTo(this, value);
+  }
+
+  Filter isGreaterThan(float value) {
+    return new FloatGreaterThan(this, value);
+  }
+
+  Filter isLessThan(float value) {
+    return new FloatLessThan(this, value);
+  }
+
+  Filter isLessThanOrEqualTo(float value) {
+    return new FloatLessThanOrEqualTo(this, value);
+  }
+
+  Filter isGreaterThanOrEqualTo(float value) {
+    return new FloatGreaterThanOrEqualTo(this, value);
   }
 
   public String getColumnName() {
