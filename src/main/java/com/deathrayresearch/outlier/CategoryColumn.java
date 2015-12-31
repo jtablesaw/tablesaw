@@ -5,6 +5,7 @@ import com.deathrayresearch.outlier.util.DictionaryMap;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortList;
+import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,6 +14,14 @@ import java.util.concurrent.atomic.AtomicInteger;
  * A column in a base table that contains float values
  */
 public class CategoryColumn extends AbstractColumn {
+
+  private static int DEFAULT_ARRAY_SIZE = 128;
+
+  // For internal iteration. What element are we looking at right now
+  private int pointer = 0;
+
+  // The number of elements, which may be less than the size of the array
+  private int N = 0;
 
   // initialize the unique value id number to the smalllest possible short to maximize range
   private static AtomicInteger id = new AtomicInteger(Short.MIN_VALUE);
@@ -43,8 +52,8 @@ public class CategoryColumn extends AbstractColumn {
   }
 
   //TODO(lwhite): implement iteration
-  public float next() {
-    return Float.NaN;
+  public String next() {
+    return lookupTable.get(values.getShort(pointer++));
   }
 
   // TODO(lwhite): implement?
@@ -170,7 +179,6 @@ public class CategoryColumn extends AbstractColumn {
     return (r1, r2) -> getString(r1).compareTo(getString(r2));
   }
 
-
   public static String convert(String stringValue) {
     if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
       return (String) ColumnType.CAT.getMissingValue();
@@ -192,4 +200,18 @@ public class CategoryColumn extends AbstractColumn {
   public boolean isEmpty() {
     return values.isEmpty();
   }
+
+  public RoaringBitmap isEqualTo(String string) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while(hasNext()) {
+      if (string.equals(next())) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
 }

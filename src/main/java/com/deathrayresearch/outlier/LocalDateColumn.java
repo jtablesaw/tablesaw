@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.mintern.primitive.Primitive;
+import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -50,7 +51,7 @@ public class LocalDateColumn extends AbstractColumn {
     return pointer < N;
   }
 
-  public float next() {
+  public int next() {
     return data[pointer++];
   }
 
@@ -231,5 +232,19 @@ public class LocalDateColumn extends AbstractColumn {
 
   public int get(int index) {
     return data[index];
+  }
+
+  public RoaringBitmap isEqualTo(LocalDate value) {
+    RoaringBitmap results = new RoaringBitmap();
+    int packedLocalDate = PackedLocalDate.pack(value);
+    int i = 0;
+    while(hasNext()) {
+      if (packedLocalDate == next()) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
   }
 }
