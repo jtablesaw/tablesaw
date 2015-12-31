@@ -9,7 +9,7 @@ import org.roaringbitmap.RoaringBitmap;
  */
 public class IntGreaterThan extends ColumnFilter {
 
-  int value;
+  private int value;
 
   public IntGreaterThan(ColumnReference reference, int value) {
     super(reference);
@@ -18,6 +18,6 @@ public class IntGreaterThan extends ColumnFilter {
 
   public RoaringBitmap apply(Relation relation) {
     IntColumn intColumn = (IntColumn) relation.column(columnReference.getColumnName());
-    return intColumn.isEqualTo(value);
+    return intColumn.isGreaterThan(value);
   }
 }

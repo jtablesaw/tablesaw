@@ -19,6 +19,15 @@ public class Query {
     }
   }
 
+  public Query(Table table, String[] columnName) {
+    this.table = table;
+    columnSelection = new Column[columnName.length];
+    for (int i = 0; i < columnName.length; i++) {
+      String name = columnName[i];
+      columnSelection[i] = table.column(name);
+    }
+  }
+
   Query where(Filter filter) {
     this.filter = filter;
     return this;

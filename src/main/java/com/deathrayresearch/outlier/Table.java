@@ -353,4 +353,8 @@ public class Table implements Relation {
   Query select() {
     return new Query(this);
   }
+
+  Query select(String ... columnName) {
+    return new Query(this, columnName);
+  }
 }

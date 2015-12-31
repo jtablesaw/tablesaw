@@ -23,8 +23,11 @@ public class ColumnReferenceTest {
     System.out.println(view.columnNames());
     assertFalse(view.columnNames().isEmpty());
     assertEquals(table.rowCount(), view.rowCount());
-    query = table.select().where(valueOf("stop_name").isEqualTo("cat"));
+
+    query = table.select("stop_name", "stop_id").where(valueOf("stop_name").isEqualTo("cat"));
+
     View view1 = query.run();
+    System.out.println(view1.columnNames());
     assertEquals(0, view1.rowCount());
   }
 }
