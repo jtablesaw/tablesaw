@@ -255,4 +255,14 @@ public class IntColumn extends AbstractColumn {
     }
   };
 
+  public int min() {
+    int min = Integer.MAX_VALUE;
+    while (this.hasNext()) {
+      int next = next();
+      if (next < min) {
+        min = next;
+      }
+    }
+    return min;
+  }
 }
