@@ -9,12 +9,13 @@ import com.deathrayresearch.outlier.TextColumn;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
+ * Implements EqualTo testing for Category and Text Columns
  */
-public class TextEqualTo extends ColumnFilter {
+public class StringEqualTo extends ColumnFilter {
 
-  String value;
+  private String value;
 
-  public TextEqualTo(ColumnReference reference, String value) {
+  public StringEqualTo(ColumnReference reference, String value) {
     super(reference);
     this.value = value;
   }

@@ -2,7 +2,7 @@ package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.filter.Filter;
 import com.deathrayresearch.outlier.filter.IntEqualTo;
-import com.deathrayresearch.outlier.filter.TextEqualTo;
+import com.deathrayresearch.outlier.filter.StringEqualTo;
 
 /**
  *
@@ -20,7 +20,7 @@ public class ColumnReference {
   }
 
   Filter isEqualTo(String value) {
-    return new TextEqualTo(this, value);
+    return new StringEqualTo(this, value);
   }
 
   public String getColumnName() {

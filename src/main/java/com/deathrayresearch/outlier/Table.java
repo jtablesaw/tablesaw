@@ -4,7 +4,6 @@ import com.deathrayresearch.outlier.sorting.Sort;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.collections4.comparators.ComparatorChain;
-import org.roaringbitmap.RoaringBitmap;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -111,17 +110,6 @@ public class Table implements Relation {
   @Override
   public String name() {
     return name;
-  }
-
-  public Relation selectIf(RoaringBitmap roaringBitmap) {
-    Relation table = emptyCopy();
-
-    while (roaringBitmap.getIntIterator().hasNext()) {
-      for (Column c : columnList) {
-
-      }
-    }
-    return table;
   }
 
   /**
