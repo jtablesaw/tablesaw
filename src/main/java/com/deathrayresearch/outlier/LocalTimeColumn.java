@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
+import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -175,4 +176,17 @@ public class LocalTimeColumn extends AbstractColumn {
     }
   };
 
+  public RoaringBitmap isEqualTo(LocalTime value) {
+    RoaringBitmap results = new RoaringBitmap();
+    int packedLocalTime = PackedLocalTime.pack(value);
+    int i = 0;
+    while(hasNext()) {
+      if (packedLocalTime == next()) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
 }
