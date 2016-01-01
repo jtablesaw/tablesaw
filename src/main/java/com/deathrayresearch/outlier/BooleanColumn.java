@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.deathrayresearch.outlier.mapper.BooleanMapUtils;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import org.roaringbitmap.RoaringBitmap;
@@ -10,7 +11,7 @@ import java.util.Comparator;
 /**
  * A column in a base table that contains float values
  */
-public class BooleanColumn extends AbstractColumn {
+public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
@@ -214,6 +215,13 @@ public class BooleanColumn extends AbstractColumn {
     }
     reset();
     return results;
+  }
+
+  public void set(int i, boolean b) {
+    if (i > data.length) {
+      resize();
+    }
+    data[i] = b;
   }
 
 

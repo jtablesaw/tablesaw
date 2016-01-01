@@ -31,7 +31,7 @@ public class GettingStarted {
   public void printStructure() throws Exception {
     out(table.structure().print());
 
-    out(table.head(10));
+    table.head(10).print();
     out(table.print());
     out(table.summary());
 
@@ -39,7 +39,6 @@ public class GettingStarted {
 
     Column approval = table.column("approval");
     out(approval.summary().print());
-
 
     Column who = table.column("who");
     out(who.summary().print());
