@@ -186,58 +186,6 @@ public class Table implements Relation {
     return (LocalDateColumn) column(columnIndex);
   }
 
-  public String print() {
-    StringBuilder buf = new StringBuilder();
-
-    int[] colWidths = colWidths();
-    buf.append(name()).append('\n');
-    List<String> names = this.columnNames();
-
-    for (int colNum = 0; colNum < columnCount(); colNum++) {
-      buf.append(
-          StringUtils.rightPad(
-              StringUtils.defaultString(String.valueOf(names.get(colNum))), colWidths[colNum]));
-      buf.append(' ');
-    }
-    buf.append('\n');
-
-    for (int r = 0; r < rowCount(); r++) {
-      for (int c = 0; c < columnCount(); c++) {
-        String cell = StringUtils.rightPad(
-            String.valueOf(get(c, r)), colWidths[c]);
-        buf.append(cell);
-        buf.append(' ');
-      }
-      buf.append('\n');
-
-    }
-    return buf.toString();
-  }
-
-
-  /**
-   * Returns an array of column widths for printing tables
-   */
-  private int[] colWidths() {
-
-    int cols = columnCount();
-    int[] widths = new int[cols];
-
-    List<String> columnNames = columnNames();
-    for (int i = 0; i < columnCount(); i++) {
-      widths[i] = columnNames.get(i).length();
-    }
-
-    // for (Row row : this) {
-    for (int rowNum = 0; rowNum < rowCount(); rowNum++) {
-      for (int colNum = 0; colNum < cols; colNum++) {
-        widths[colNum]
-            = Math.max(widths[colNum], StringUtils.length(get(colNum, rowNum)));
-      }
-    }
-    return widths;
-  }
-
   public String id() {
     return id;
   }
@@ -455,4 +403,23 @@ public class Table implements Relation {
     builder.append("\n");
     return builder.toString();
   }
+
+  /**
+   * Removes the given column
+   */
+  @Override
+  public void removeColumn(Column column) {
+    columnList.remove(column);
+  }
+
+  @Override
+  public void removeColumn(int columnIndex) {
+    columnList.remove(column(columnIndex));
+  }
+
+  @Override
+  public void removeColumn(String columnName) {
+    removeColumn(column(columnName));
+  }
+
 }

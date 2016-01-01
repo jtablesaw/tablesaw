@@ -15,9 +15,9 @@ import static com.deathrayresearch.outlier.ColumnType.*;
 public class GettingStarted {
 
   ColumnType[] types = {
-      LOCAL_DATE,   // date of poll
+      LOCAL_DATE,     // date of poll
       INTEGER,        // approval rating (pct)
-      CAT           // polling org
+      CAT             // polling org
   };
 
   Table table;

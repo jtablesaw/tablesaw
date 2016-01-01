@@ -14,13 +14,20 @@ public class IoTest1 {
   @Test
   public void testWithBusData() throws Exception {
     // Read the CSV file
-    ColumnType[] types = {FLOAT, TEXT, TEXT, FLOAT, FLOAT};
+    ColumnType[] types = {INTEGER, TEXT, TEXT, FLOAT, FLOAT};
     Table table = CsvReader.read("data/bus_stop_test.csv", types);
 
     // Look at the column names
     print(table.columnNames());
 
-    print(table.print());
+   // print(table.print());
+
+    print(table.head(3).print());
+
+    table = table.sortDescendingOn("stop_id");
+    print(table.head(3).print());
+    table.removeColumn("stop_desc");
+    print(table.columnNames());
   }
 
   @Test

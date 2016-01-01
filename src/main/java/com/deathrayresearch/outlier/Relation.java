@@ -1,5 +1,7 @@
 package com.deathrayresearch.outlier;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 /**
@@ -79,4 +81,56 @@ public interface Relation {
 
   List<String> columnNames();
 
+  /**
+   * Returns an array of column widths for printing tables
+   */
+  default int[] colWidths() {
+
+    int cols = columnCount();
+    int[] widths = new int[cols];
+
+    List<String> columnNames = columnNames();
+    for (int i = 0; i < columnCount(); i++) {
+      widths[i] = columnNames.get(i).length();
+    }
+
+    // for (Row row : this) {
+    for (int rowNum = 0; rowNum < rowCount(); rowNum++) {
+      for (int colNum = 0; colNum < cols; colNum++) {
+        widths[colNum]
+            = Math.max(widths[colNum], StringUtils.length(get(colNum, rowNum)));
+      }
+    }
+    return widths;
+  }
+
+  default String print() {
+    StringBuilder buf = new StringBuilder();
+
+    int[] colWidths = colWidths();
+    buf.append(name()).append('\n');
+    List<String> names = this.columnNames();
+
+    for (int colNum = 0; colNum < columnCount(); colNum++) {
+      buf.append(
+          StringUtils.rightPad(
+              StringUtils.defaultString(String.valueOf(names.get(colNum))), colWidths[colNum]));
+      buf.append(' ');
+    }
+    buf.append('\n');
+
+    for (int r = 0; r < rowCount(); r++) {
+      for (int c = 0; c < columnCount(); c++) {
+        String cell = StringUtils.rightPad(get(c, r), colWidths[c]);
+        buf.append(cell);
+        buf.append(' ');
+      }
+      buf.append('\n');
+    }
+    return buf.toString();
+  }
+
+  void removeColumn(String columnName);
+  void removeColumn(int columnIndex);
+  void removeColumn(Column column);
 }

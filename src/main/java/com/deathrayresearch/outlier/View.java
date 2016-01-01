@@ -1,6 +1,5 @@
 package com.deathrayresearch.outlier;
 
-import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
@@ -41,8 +40,7 @@ public class View implements Relation {
       columnIds.add(table.columnIndex(col));
     }
     rowMap = new RoaringBitmap();
-    rowMap.add(0, table.rowCount());
-    rowMap.flip(headRows, table.rowCount());
+    rowMap.add(0, headRows);
   }
 
   public View(Relation table, Column[] columnSelection, RoaringBitmap rowSelection) {
@@ -56,19 +54,6 @@ public class View implements Relation {
   public View where(RoaringBitmap bitmap) {
     rowMap.and(bitmap);
     return this;
-  }
-
-  public void print() {
-    for (int i : columnIds) {
-      System.out.println(table.column(i).name());
-    }
-    IntIterator intIterator = rowMap.getIntIterator();
-    while (intIterator.hasNext()) {
-      int r = intIterator.next();
-      for (int c : columnIds) {
-        System.out.println(table.get(c, r));
-      }
-    }
   }
 
   @Override
@@ -113,7 +98,7 @@ public class View implements Relation {
 
   @Override
   public String get(int c, int r) {
-    return null;
+    return table.get(c, r);
   }
 
   @Override
@@ -151,6 +136,21 @@ public class View implements Relation {
       names.add(table.column(columnId).name());
     }
     return names;
+  }
+
+  @Override
+  public void removeColumn(String columnName) {
+    columnIds.remove(columnIndex(columnName));
+  }
+
+  @Override
+  public void removeColumn(int columnIndex) {
+    columnIds.remove(columnIndex);
+  }
+
+  @Override
+  public void removeColumn(Column column) {
+    columnIds.remove(columnIndex(column));
   }
 
 }
