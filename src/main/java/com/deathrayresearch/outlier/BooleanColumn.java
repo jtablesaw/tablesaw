@@ -224,7 +224,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     data[i] = b;
   }
 
-
   @Override
   public Comparator<Integer> rowComparator() {
     return comparator;

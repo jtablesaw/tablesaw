@@ -259,4 +259,10 @@ public class FloatColumn extends AbstractColumn {
     return data[index];
   }
 
+  public void set(int r, float value) {
+    if (r >= data.length) {
+      resize();
+    }
+    data[r] = value;
+  }
 }

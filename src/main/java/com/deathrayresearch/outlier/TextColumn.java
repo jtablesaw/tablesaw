@@ -168,4 +168,11 @@ public class TextColumn extends AbstractColumn {
       return f1.compareTo(f2);
     }
   };
+
+  public void set(int i, String s) {
+    if (i > data.length) {
+      resize();
+    }
+    data[i] = s;
+  }
 }
