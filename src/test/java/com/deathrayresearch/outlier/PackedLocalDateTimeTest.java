@@ -34,7 +34,7 @@ public class PackedLocalDateTimeTest {
 
   @Test
   public void testGetMonthValue() {
-    long dateTime = PackedLocalDateTime.pack(LocalDate.now(), LocalTime.now());
+    long dateTime = PackedLocalDateTime.pack(LocalDate.of(2015, 12, 25), LocalTime.now());
     assertEquals(12, PackedLocalDateTime.getMonthValue(dateTime));
   }
 

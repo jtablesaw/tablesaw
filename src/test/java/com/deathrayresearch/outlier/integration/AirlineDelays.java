@@ -78,16 +78,16 @@ public class AirlineDelays {
     flights2008.head(10).print();
 
     stopwatch.reset().start();
-    System.out.println("Selecting");
-/*
+/*    System.out.println("Selecting");
+
     Table ord = flights2008.selectIf(
         both(
             column("Origin").isEqualTo("ORD"),
             column("Cancelled").isFalse()));
-*/
+
 
     System.out.println("selecting " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-
+*/
 /*
     BooleanColumn depDelayed = ord.when(column("DepDelay").isGreaterThanOrEqualTo(15.0f));
     depDelayed.setName("DepDelayed");

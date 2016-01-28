@@ -5,8 +5,6 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.collections4.comparators.ComparatorChain;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -319,11 +317,11 @@ public class Table implements Relation {
     }
   }
 
-  Query select() {
+  public Query select() {
     return new Query(this);
   }
 
-  Query select(String ... columnName) {
+  public Query select(String ... columnName) {
     return new Query(this, columnName);
   }
 

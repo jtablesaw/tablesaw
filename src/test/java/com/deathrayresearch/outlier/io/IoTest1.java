@@ -1,10 +1,14 @@
 package com.deathrayresearch.outlier.io;
 
+import com.deathrayresearch.outlier.Column;
 import com.deathrayresearch.outlier.ColumnType;
+import com.deathrayresearch.outlier.FloatColumn;
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.View;
 import org.junit.Test;
 
 import static com.deathrayresearch.outlier.ColumnType.*;
+import static com.deathrayresearch.outlier.QueryUtil.valueOf;
 
 /**
  *
@@ -20,14 +24,20 @@ public class IoTest1 {
     // Look at the column names
     print(table.columnNames());
 
-   // print(table.print());
-
     print(table.head(3).print());
 
     table = table.sortDescendingOn("stop_id");
     print(table.head(3).print());
     table.removeColumn("stop_desc");
     print(table.columnNames());
+
+    Column c = table.floatColumn("stop_lat");
+
+    print(table.floatColumn("stop_lon").describe());
+
+    View v = table.select("stop_lon", "stop_id").where(valueOf("stop_lon").isGreaterThan(-0.1f)).run();
+    print(v.print());
+    print(v.rowCount());
   }
 
   @Test
@@ -40,6 +50,7 @@ public class IoTest1 {
     print(table.columnNames());
 
     print(table.print());
+    print(table.rowCount());
   }
 
   private void print(Object o) {

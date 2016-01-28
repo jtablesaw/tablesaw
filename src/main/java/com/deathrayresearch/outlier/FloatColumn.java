@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
@@ -42,7 +43,12 @@ public class FloatColumn extends AbstractColumn {
   // TODO(lwhite): Implement column summary()
   @Override
   public Table summary() {
+
     return null;
+  }
+
+  public String describe() {
+    return StatUtil.stats(this);
   }
 
   // TODO(lwhite): Implement countUnique()
@@ -66,11 +72,28 @@ public class FloatColumn extends AbstractColumn {
   }
 
   public float sum() {
-    float sum = 0.0f;
-    while (hasNext()) {
-      sum += next();
+    reset();
+    return StatUtil.sum(this);
+  }
+
+  public float first() {
+    if (size() > 0) {
+      return data[0];
     }
-    return sum;
+    return Float.MIN_VALUE;
+  }
+
+  public float max() {
+    reset();
+    float f = StatUtil.max(this);
+    reset();
+    return f;
+  }
+
+  public float min() {
+    float f = StatUtil.min(this);
+    reset();
+    return f;
   }
 
   public void add(float f) {
@@ -235,8 +258,6 @@ public class FloatColumn extends AbstractColumn {
     Matcher matcher = COMMA_PATTERN.matcher(stringValue);
     return Float.parseFloat(matcher.replaceAll(""));
   }
-
-  ;
 
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 

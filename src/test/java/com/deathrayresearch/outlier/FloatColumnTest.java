@@ -78,6 +78,7 @@ public class FloatColumnTest {
     for (int i = 0; i < 100_000_000; i++) {
       floatColumn.add((float) Math.random());
     }
+    System.out.println("Data loaded, beginning first sort");
     FloatColumn sorted = (FloatColumn) floatColumn.sortAscending();
     float last = Float.NEGATIVE_INFINITY;
     while (sorted.hasNext()) {
@@ -85,6 +86,7 @@ public class FloatColumnTest {
       assertTrue(n >= last);
       last = n;
     }
+    System.out.println("Beginning second sort");
     sorted = (FloatColumn) floatColumn.sortDescending();
     last = Float.POSITIVE_INFINITY;
     while (sorted.hasNext()) {

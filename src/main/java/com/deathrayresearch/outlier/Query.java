@@ -28,12 +28,12 @@ public class Query {
     }
   }
 
-  Query where(Filter filter) {
+  public Query where(Filter filter) {
     this.filter = filter;
     return this;
   }
 
-  View run() {
+  public View run() {
     RoaringBitmap rowSelection;
     if (filter != null) {
       rowSelection = filter.apply(this.table);

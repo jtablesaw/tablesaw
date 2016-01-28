@@ -80,15 +80,15 @@ Let's take a look at the longitude column:
 
 This outputs:
 
-    DescriptiveStatistics:
+    Descriptive Stats 
     n: 2729
+    missing: 0
     min: -97.9911
-    max: -97.370389
-    mean: -97.73796530524001
-    std dev: 0.049913423361134406
-    median: -97.732951
-    skewness: -0.8116399231128226
-    kurtosis: 4.640251148668222
+    max: -97.37039
+    range: 0.62070465
+    mean: -97.73799133300781
+    std.dev: 0.049913406
+    variance: 0.0024913481902331114
 
 ### Create new columns from the data in existing columns
 
