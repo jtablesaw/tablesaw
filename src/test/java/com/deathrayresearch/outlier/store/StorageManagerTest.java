@@ -29,12 +29,11 @@ public class StorageManagerTest {
       floatColumn.add((float) i);
     }
     table.addColumn(floatColumn);
-
   }
 
   @Test
   public void testReadTable() {
-
+    System.out.println(floatColumn.size());
   }
 
   @Test
