@@ -16,8 +16,8 @@ public class MainMenu extends MenuBar {
 
   MainMenu() {
     Menu project = new Menu("Project");
-    MenuItem newProject = new MenuItem("New Project");
 
+    MenuItem newProject = new MenuItem("New Project");
     newProject.setOnAction(event -> new NewProjectDialog());
 
     MenuItem openProject = new MenuItem("Open Project");
@@ -25,8 +25,8 @@ public class MainMenu extends MenuBar {
     MenuItem closeProject = new MenuItem("Close Project");
     MenuItem saveProject = new MenuItem("Save Project");
     MenuItem saveProjectAs = new MenuItem("Save Project as...");
-    MenuItem exit = new MenuItem("Exit");
 
+    MenuItem exit = new MenuItem("Exit");
     exit.setOnAction(event -> Platform.exit());
 
     project.getItems().add(newProject);

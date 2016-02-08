@@ -1,8 +1,11 @@
 package com.deathrayresearch.outlier.app.model;
 
+import com.deathrayresearch.outlier.Relation;
 import com.google.common.base.MoreObjects;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -14,6 +17,7 @@ public class Project {
   private String goals;
   private String notes;
   private String folderName;
+  private List<Relation> activeTables = new ArrayList<>();
 
   public Project(String name, LocalDate startDate, String goals, String notes, String folderName) {
     this.creationDate = startDate;
@@ -61,6 +65,18 @@ public class Project {
 
   public void setGoals(String goals) {
     this.goals = goals;
+  }
+
+  public void addTable(Relation r) {
+    activeTables.add(r);
+  }
+
+  public void removeTable(Relation r) {
+    activeTables.remove(r);
+  }
+
+  public List<Relation> getActiveTables() {
+    return activeTables;
   }
 
   @Override

@@ -1,5 +1,8 @@
 package com.deathrayresearch.outlier.app.ui.project;
 
+import com.deathrayresearch.outlier.app.events.AppEvent;
+import com.deathrayresearch.outlier.app.events.AppEventPublisher;
+import com.deathrayresearch.outlier.app.events.AppEventType;
 import com.deathrayresearch.outlier.app.model.Project;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -22,7 +25,7 @@ import java.util.Optional;
 /**
  *
  */
-public class NewProjectDialog extends Dialog<Project> {
+public class NewProjectDialog extends Dialog<Project> implements AppEventPublisher {
 
   private final TextField projectName = new TextField();
   private final DatePicker createDate = new DatePicker(LocalDate.now());
@@ -69,7 +72,9 @@ public class NewProjectDialog extends Dialog<Project> {
     });
 
     Optional<Project> result = this.showAndWait();
-    result.ifPresent(projectData -> System.out.println(result.toString()));
+    result.ifPresent(
+        project -> publish(new AppEvent<>(AppEventType.PROJECT_CHANGED, project))
+    );
   }
 
   private GridPane getProjectForm() {
