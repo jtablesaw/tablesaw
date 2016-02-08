@@ -4,7 +4,6 @@ package com.deathrayresearch.outlier.app.ui;
 import com.deathrayresearch.outlier.app.ui.project.NewProjectDialog;
 import com.deathrayresearch.outlier.app.ui.table.ImportTableDialog;
 import javafx.application.Platform;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -16,16 +15,11 @@ import javafx.stage.Stage;
  */
 public class MainMenu extends MenuBar {
 
-
   MainMenu(Stage stage) {
     Menu project = new Menu("Project");
     MenuItem newProject = new MenuItem("New Project");
 
-    newProject.setOnAction(event -> {
-      NewProjectDialog dialog = new NewProjectDialog();
-      dialog.show();
-      System.out.println("New Project Created!");
-    });
+    newProject.setOnAction(event -> new NewProjectDialog());
 
     MenuItem openProject = new MenuItem("Open Project");
     MenuItem openRecentProject = new MenuItem("Open Recent Project...");
@@ -50,10 +44,7 @@ public class MainMenu extends MenuBar {
     Menu table = new Menu("Table");
     MenuItem loadTable = new MenuItem("Import Table...");
 
-    loadTable.setOnAction(event -> {
-      Dialog dialog = new ImportTableDialog(stage);
-      dialog.show();
-    });
+    loadTable.setOnAction(event -> new ImportTableDialog(stage));
 
     MenuItem openTable = new MenuItem("Open Table...");
     MenuItem renameTable = new MenuItem("Rename Table...");

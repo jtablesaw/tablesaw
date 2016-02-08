@@ -23,33 +23,64 @@ import java.util.Optional;
  */
 public class NewProjectDialog extends Dialog<Project> {
 
-  public NewProjectDialog() {
-    // Create the custom dialog.
-    this.setTitle("New Project Dialog");
-    this.setHeaderText("Create a new Outlier project");
+  private final TextField projectName = new TextField();
+  private final DatePicker createDate = new DatePicker(LocalDate.now());
+  private final TextField goals = new TextField();
+  private final TextField notes = new TextField();
+  private final TextField selectedDirectoryText = new TextField();
 
-// Set the button types.
+  public NewProjectDialog() {
+
+    this.setTitle("New Project Dialog");
+    this.setHeaderText("Create a new project");
+
+    // Set the button types.
     ButtonType createButtonType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
     this.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
 
-// Create the projectName and notes labels and fields.
+    // Enable/Disable create button depending on whether a projectName was entered.
+    Node newProjectButton = this.getDialogPane().lookupButton(createButtonType);
+    newProjectButton.setDisable(true);
+
+    // Do some validation
+    projectName.textProperty().addListener((observable, oldValue, newValue) -> {
+      newProjectButton.setDisable(newValue.trim().isEmpty());
+    });
+
+    this.getDialogPane().setContent(getProjectForm());
+
+    // Request focus on the projectName field by default.
+    Platform.runLater(projectName::requestFocus);
+
+    // Convert the result to a projectName-notes-pair when the login button is clicked.
+    this.setResultConverter(dialogButton -> {
+      if (dialogButton == createButtonType) {
+
+        return new Project(projectName.getText(),
+                            createDate.getValue(),
+                            goals.getText(),
+                            notes.getText(),
+                            selectedDirectoryText.getText());
+      }
+      return null;
+    });
+
+    Optional<Project> result = this.showAndWait();
+    result.ifPresent(projectData -> System.out.println(result.toString()));
+  }
+
+  private GridPane getProjectForm() {
     GridPane grid = new GridPane();
     grid.setHgap(10);
     grid.setVgap(10);
     grid.setPadding(new Insets(20, 150, 10, 10));
 
-    TextField projectName = new TextField();
     projectName.setPromptText("Project Name");
 
-    DatePicker createDate = new DatePicker(LocalDate.now());
-
-    TextField goals = new TextField();
     goals.setPromptText("goals");
 
-    TextField notes = new TextField();
     notes.setPromptText("Notes");
 
-    TextField selectedDirectoryText = new TextField();
     selectedDirectoryText.setPromptText("Folder");
 
     Button btnOpenDirectoryChooser = new Button();
@@ -57,12 +88,10 @@ public class NewProjectDialog extends Dialog<Project> {
 
     btnOpenDirectoryChooser.setOnAction(event -> {
       DirectoryChooser directoryChooser = new DirectoryChooser();
-      File selectedDirectory =
-          directoryChooser.showDialog(this.getOwner());
 
-      if(selectedDirectory == null){
-        selectedDirectoryText.setText("No Directory selected");
-      }else{
+      File selectedDirectory = directoryChooser.showDialog(this.getOwner());
+
+      if(selectedDirectory != null) {
         selectedDirectoryText.setText(selectedDirectory.getAbsolutePath());
       }
     });
@@ -83,35 +112,6 @@ public class NewProjectDialog extends Dialog<Project> {
     grid.add(selectedDirectoryText, 1, 4);
     grid.add(btnOpenDirectoryChooser, 2,4);
 
-    // Enable/Disable create button depending on whether a projectName was entered.
-    Node loginButton = this.getDialogPane().lookupButton(createButtonType);
-    loginButton.setDisable(true);
-
-    // Do some validation
-    projectName.textProperty().addListener((observable, oldValue, newValue) -> {
-      loginButton.setDisable(newValue.trim().isEmpty());
-    });
-
-    this.getDialogPane().setContent(grid);
-
-    // Request focus on the projectName field by default.
-    Platform.runLater(projectName::requestFocus);
-
-    // Convert the result to a projectName-notes-pair when the login button is clicked.
-    this.setResultConverter(dialogButton -> {
-      if (dialogButton == createButtonType) {
-
-        return new Project(projectName.getText(),
-                            createDate.getValue(),
-                            goals.getText(),
-                            notes.getText(),
-                            selectedDirectoryText.getText());
-      }
-      return null;
-    });
-
-    Optional<Project> result = this.showAndWait();
-
-    result.ifPresent(projectData -> System.out.println(result.toString()));
+    return grid;
   }
 }
