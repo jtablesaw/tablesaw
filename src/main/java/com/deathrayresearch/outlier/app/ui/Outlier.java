@@ -15,7 +15,7 @@ public class Outlier extends Application {
   @Override
   public void start(Stage primaryStage) {
     primaryStage.setTitle("Outlier!");
-    MenuBar menuBar = new MainMenu(primaryStage);
+    MenuBar menuBar = new MainMenu();
     VBox root = new VBox();
     root.getChildren().add(menuBar);
 

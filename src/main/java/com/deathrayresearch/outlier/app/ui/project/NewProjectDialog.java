@@ -88,9 +88,7 @@ public class NewProjectDialog extends Dialog<Project> {
 
     btnOpenDirectoryChooser.setOnAction(event -> {
       DirectoryChooser directoryChooser = new DirectoryChooser();
-
       File selectedDirectory = directoryChooser.showDialog(this.getOwner());
-
       if(selectedDirectory != null) {
         selectedDirectoryText.setText(selectedDirectory.getAbsolutePath());
       }

@@ -8,14 +8,13 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.stage.Stage;
 
 /**
  *
  */
 public class MainMenu extends MenuBar {
 
-  MainMenu(Stage stage) {
+  MainMenu() {
     Menu project = new Menu("Project");
     MenuItem newProject = new MenuItem("New Project");
 
@@ -44,7 +43,7 @@ public class MainMenu extends MenuBar {
     Menu table = new Menu("Table");
     MenuItem loadTable = new MenuItem("Import Table...");
 
-    loadTable.setOnAction(event -> new ImportTableDialog(stage));
+    loadTable.setOnAction(event -> new ImportTableDialog());
 
     MenuItem openTable = new MenuItem("Open Table...");
     MenuItem renameTable = new MenuItem("Rename Table...");

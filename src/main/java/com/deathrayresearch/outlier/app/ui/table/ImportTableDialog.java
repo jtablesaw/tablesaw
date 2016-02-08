@@ -4,8 +4,6 @@ import com.deathrayresearch.outlier.app.model.CsvFile;
 import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.io.CsvReader;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -17,7 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,42 +25,17 @@ import java.util.Optional;
  */
 public class ImportTableDialog extends Dialog<CsvFile> {
 
-    public ImportTableDialog(Stage stage) {
-    // Create the custom dialog.
+  private final TextField columnTypes = new TextField();
+  private final TextField selectedFilePath = new TextField();
+
+  public ImportTableDialog() {
 
     this.setTitle("Import Table Dialog");
     this.setHeaderText("Import a table from a file");
 
-// Set the button types.
+    // Set the button types.
     ButtonType importButtonType = new ButtonType("Import", ButtonBar.ButtonData.OK_DONE);
     this.getDialogPane().getButtonTypes().addAll(importButtonType, ButtonType.CANCEL);
-
-// Create the columnTypes and description labels and fields.
-    GridPane grid = new GridPane();
-    grid.setHgap(10);
-    grid.setVgap(10);
-    grid.setPadding(new Insets(20, 150, 10, 10));
-
-    TextField columnTypes = new TextField();
-    columnTypes.setPromptText("Column Types");
-
-    TextField selectedFilePath = new TextField();
-    selectedFilePath.setPromptText("Table");
-
-    Button btnOpenFileChooser = new Button();
-
-    btnOpenFileChooser.setText("Select File");
-    btnOpenFileChooser.setOnAction(event -> {
-      FileChooser fileChooser = new FileChooser();
-      File selectedFile = fileChooser.showOpenDialog(stage);
-      selectedFilePath.setText(selectedFile.getAbsolutePath());
-    });
-
-    grid.add(new Label("File path:"), 0, 0);
-    grid.add(selectedFilePath, 1, 0);
-    grid.add(new Label("Column types:"), 0, 1);
-    grid.add(columnTypes, 1, 1);
-    grid.add(btnOpenFileChooser, 2, 0);
 
     // Enable/Disable create button depending on whether a columnTypes was entered.
     Node importButton = this.getDialogPane().lookupButton(importButtonType);
@@ -74,7 +46,7 @@ public class ImportTableDialog extends Dialog<CsvFile> {
       importButton.setDisable(newValue.trim().isEmpty());
     });
 
-    this.getDialogPane().setContent(grid);
+    this.getDialogPane().setContent(getForm());
 
     // Request focus on the columnTypes field by default.
     Platform.runLater(selectedFilePath::requestFocus);
@@ -106,5 +78,31 @@ public class ImportTableDialog extends Dialog<CsvFile> {
       }
       this.close();
     });
+  }
+
+  private GridPane getForm() {
+    GridPane grid = new GridPane();
+    grid.setHgap(10);
+    grid.setVgap(10);
+    grid.setPadding(new Insets(20, 150, 10, 10));
+
+    columnTypes.setPromptText("Column Types");
+    selectedFilePath.setPromptText("Table");
+
+    Button btnOpenFileChooser = new Button();
+
+    btnOpenFileChooser.setText("Select File");
+    btnOpenFileChooser.setOnAction(event -> {
+      FileChooser fileChooser = new FileChooser();
+      File selectedFile = fileChooser.showOpenDialog(this.getOwner());
+      selectedFilePath.setText(selectedFile.getAbsolutePath());
+    });
+
+    grid.add(new Label("File path:"), 0, 0);
+    grid.add(selectedFilePath, 1, 0);
+    grid.add(new Label("Column types:"), 0, 1);
+    grid.add(columnTypes, 1, 1);
+    grid.add(btnOpenFileChooser, 2, 0);
+    return grid;
   }
 }
