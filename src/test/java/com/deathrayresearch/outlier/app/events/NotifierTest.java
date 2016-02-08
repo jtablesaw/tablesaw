@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.app.events;
 
 import com.deathrayresearch.outlier.app.model.Project;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ import static org.junit.Assert.*;
  */
 public class NotifierTest {
 
-  private Notifier notifier = Notifier.getInstance();
+  private Notifier notifier;
 
   private AppEventListener listener = new AppEventListener() {
 
@@ -27,6 +28,12 @@ public class NotifierTest {
       return "Project Changed Listener";
     }
   };
+
+  @Before
+  public void setUp() throws Exception {
+    notifier = Notifier.getInstance();
+    notifier.clearRegistry();
+  }
 
   @Test
   public void testSubscribe() {
@@ -49,6 +56,5 @@ public class NotifierTest {
   public void testPublish() {
     notifier.subscribe(AppEventType.PROJECT_CHANGED, listener);
     notifier.publish(new AppEvent<>(AppEventType.PROJECT_CHANGED, new Project("x", LocalDate.now(), "", "", "")));
-
   }
 }

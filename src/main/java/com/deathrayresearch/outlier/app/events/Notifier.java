@@ -38,4 +38,8 @@ public class Notifier {
   public int subscriberCount() {
     return registry.size();
   }
+
+  public void clearRegistry() {
+    registry.clear();
+  }
 }
