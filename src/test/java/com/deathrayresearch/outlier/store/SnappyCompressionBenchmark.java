@@ -1,6 +1,8 @@
 package com.deathrayresearch.outlier.store;
 
 import com.deathrayresearch.outlier.*;
+import com.deathrayresearch.outlier.columns.FloatColumn;
+import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.testutil.DirectoryUtils;
 import com.deathrayresearch.outlier.testutil.NanoBench;
 import org.apache.commons.math3.random.RandomDataGenerator;

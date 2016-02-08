@@ -1,5 +1,6 @@
-package com.deathrayresearch.outlier;
+package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;

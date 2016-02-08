@@ -1,5 +1,6 @@
-package com.deathrayresearch.outlier;
+package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -13,7 +14,6 @@ import org.roaringbitmap.RoaringBitmap;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

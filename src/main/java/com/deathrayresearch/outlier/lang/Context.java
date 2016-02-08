@@ -1,11 +1,9 @@
 package com.deathrayresearch.outlier.lang;
 
-import com.deathrayresearch.outlier.Column;
+import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.Relation;
-import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.filter.Filter;
-import com.google.common.base.MoreObjects;
 
 import java.util.HashMap;
 import java.util.List;

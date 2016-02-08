@@ -1,11 +1,11 @@
 package com.deathrayresearch.outlier.filter;
 
-import com.deathrayresearch.outlier.CategoryColumn;
-import com.deathrayresearch.outlier.Column;
-import com.deathrayresearch.outlier.ColumnReference;
-import com.deathrayresearch.outlier.ColumnType;
+import com.deathrayresearch.outlier.columns.CategoryColumn;
+import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.ColumnReference;
+import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.Relation;
-import com.deathrayresearch.outlier.TextColumn;
+import com.deathrayresearch.outlier.columns.TextColumn;
 import org.roaringbitmap.RoaringBitmap;
 
 /**

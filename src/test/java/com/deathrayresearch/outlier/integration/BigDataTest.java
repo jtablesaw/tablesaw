@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.integration;
 
-import com.deathrayresearch.outlier.ColumnType;
+import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.CsvReader;
 import com.deathrayresearch.outlier.io.CsvWriter;
@@ -8,7 +8,7 @@ import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.deathrayresearch.outlier.ColumnType.*;
+import static com.deathrayresearch.outlier.columns.ColumnType.*;
 
 /**
  *

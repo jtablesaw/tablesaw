@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.columns.FloatColumn;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

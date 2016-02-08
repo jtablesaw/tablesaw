@@ -1,9 +1,4 @@
-package com.deathrayresearch.outlier;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.function.UnaryOperator;
+package com.deathrayresearch.outlier.columns;
 
 
 /**
@@ -11,16 +6,6 @@ import java.util.function.UnaryOperator;
  */
 public enum ColumnType {
 
-  /*
-    SKIP(Object.class, SKIP_COLUMN, null),
-    STRING(String.class, CONVERT_TO_STRING, ""),
-    CAT(String.class, CONVERT_TO_CATEGORY, ""),
-    REAL(Float.class, CONVERT_TO_REAL, Float.NaN),
-    BOOLEAN(Boolean.class, CONVERT_TO_BOOLEAN, false),
-    LOCAL_DATE(LocalDate.class, CONVERT_TO_LOCAL_DATE, Integer.MIN_VALUE),
-    LOCAL_TIME(LocalTime.class, CONVERT_TO_LOCAL_TIME, -1),
-    LOCAL_DATE_TIME(LocalDateTime.class, CONVERT_TO_LOCAL_DATE_TIME, null);
-  */
   BOOLEAN(false),
   CAT(""),
   FLOAT(Float.NaN),

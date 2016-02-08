@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.store;
 
-import com.deathrayresearch.outlier.FloatColumn;
+import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.Relation;
 import com.google.common.base.Stopwatch;

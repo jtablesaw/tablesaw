@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.filter.Filter;
 import org.roaringbitmap.RoaringBitmap;
 

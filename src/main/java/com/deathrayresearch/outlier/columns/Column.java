@@ -1,6 +1,6 @@
-package com.deathrayresearch.outlier;
+package com.deathrayresearch.outlier.columns;
 
-import org.roaringbitmap.RoaringBitmap;
+import com.deathrayresearch.outlier.Table;
 
 import java.util.Comparator;
 

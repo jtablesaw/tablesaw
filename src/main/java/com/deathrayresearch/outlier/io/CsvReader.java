@@ -2,6 +2,8 @@ package com.deathrayresearch.outlier.io;
 
 import au.com.bytecode.opencsv.CSVReader;
 import com.deathrayresearch.outlier.*;
+import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.ColumnType;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;

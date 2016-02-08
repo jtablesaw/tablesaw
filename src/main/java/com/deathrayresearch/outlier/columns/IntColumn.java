@@ -1,7 +1,7 @@
-package com.deathrayresearch.outlier;
+package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
-import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
@@ -12,54 +12,37 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A column in a base table that contains float values
+ *
  */
-public class FloatColumn extends AbstractColumn {
+public class IntColumn extends AbstractColumn {
 
   private static int DEFAULT_ARRAY_SIZE = 128;
-
-  // For internal iteration. What element are we looking at right now
   private int pointer = 0;
-
-  // The number of elements, which may be less than the size of the array
   private int N = 0;
 
-  private float[] data;
+  private int[] data;
 
-  public FloatColumn(String name) {
-    super(name);
-    data = new float[DEFAULT_ARRAY_SIZE];
+  public static IntColumn create(String name) {
+    return new IntColumn(name);
   }
 
-  public FloatColumn(String name, int initialSize) {
+  private IntColumn(String name) {
     super(name);
-    data = new float[initialSize];
+    data = new int[DEFAULT_ARRAY_SIZE];
+  }
+
+  public IntColumn(String name, int initialSize) {
+    super(name);
+    data = new int[initialSize];
   }
 
   public int size() {
     return N;
   }
 
-  // TODO(lwhite): Implement column summary()
-  @Override
-  public Table summary() {
-
-    return null;
-  }
-
-  public String describe() {
-    return StatUtil.stats(this);
-  }
-
-  // TODO(lwhite): Implement countUnique()
-  @Override
-  public int countUnique() {
-    return 0;
-  }
-
   @Override
   public ColumnType type() {
-    return ColumnType.FLOAT;
+    return ColumnType.INTEGER;
   }
 
   @Override
@@ -67,45 +50,28 @@ public class FloatColumn extends AbstractColumn {
     return pointer < N;
   }
 
-  public float next() {
+  public int next() {
     return data[pointer++];
   }
 
-  public float sum() {
-    reset();
-    return StatUtil.sum(this);
-  }
-
-  public float first() {
-    if (size() > 0) {
-      return data[0];
+  public int sum() {
+    int sum = 0;
+    while (hasNext()) {
+      sum += next();
     }
-    return Float.MIN_VALUE;
+    return sum;
   }
 
-  public float max() {
-    reset();
-    float f = StatUtil.max(this);
-    reset();
-    return f;
-  }
-
-  public float min() {
-    float f = StatUtil.min(this);
-    reset();
-    return f;
-  }
-
-  public void add(float f) {
+  public void add(int i) {
     if (N >= data.length) {
       resize();
     }
-    data[N++] = f;
+    data[N++] = i;
   }
 
   // TODO(lwhite): Redo to reduce the increase for large columns
   private void resize() {
-    float[] temp = new float[Math.round(data.length * 2)];
+    int[] temp = new int[Math.round(data.length * 2)];
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
@@ -114,12 +80,12 @@ public class FloatColumn extends AbstractColumn {
    * Removes (most) extra space (empty elements) from the data array
    */
   public void compact() {
-    float[] temp = new float[N + 100];
+    int[] temp = new int[N + 100];
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
 
-  public RoaringBitmap isLessThan(float f) {
+  public RoaringBitmap isLessThan(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     while (hasNext()) {
@@ -132,7 +98,7 @@ public class FloatColumn extends AbstractColumn {
     return results;
   }
 
-  public RoaringBitmap isGreaterThan(float f) {
+  public RoaringBitmap isGreaterThan(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     while (hasNext()) {
@@ -145,7 +111,7 @@ public class FloatColumn extends AbstractColumn {
     return results;
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(float f) {
+  public RoaringBitmap isGreaterThanOrEqualTo(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     while (hasNext()) {
@@ -158,7 +124,7 @@ public class FloatColumn extends AbstractColumn {
     return results;
   }
 
-  public RoaringBitmap isLessThanOrEqualTo(float f) {
+  public RoaringBitmap isLessThanOrEqualTo(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     while (hasNext()) {
@@ -171,7 +137,7 @@ public class FloatColumn extends AbstractColumn {
     return results;
   }
 
-  public RoaringBitmap isEqualTo(float f) {
+  public RoaringBitmap isEqualTo(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     while (hasNext()) {
@@ -184,53 +150,64 @@ public class FloatColumn extends AbstractColumn {
     return results;
   }
 
+  // TODO(lwhite): Implement column summary()
+  @Override
+  public Table summary() {
+    return new Table(name());
+  }
+
+  @Override
+  public int countUnique() {
+    RoaringBitmap roaringBitmap = new RoaringBitmap();
+    for (int i : data) {
+      roaringBitmap.add(i);
+    }
+    return roaringBitmap.getCardinality();
+  }
+
   @Override
   public String getString(int row) {
     return String.valueOf(data[row]);
   }
 
   @Override
-  public FloatColumn emptyCopy() {
-    return new FloatColumn(name());
+  public IntColumn emptyCopy() {
+    return new IntColumn(name());
   }
 
   @Override
   public void clear() {
-    data = new float[DEFAULT_ARRAY_SIZE];
-  }
-
-  public void reset() {
-    pointer = 0;
-  }
-
-  private FloatColumn copy() {
-    FloatColumn copy = emptyCopy();
-    copy.data = this.data;
-    copy.N = this.N;
-    return copy;
+    data = new int[DEFAULT_ARRAY_SIZE];
   }
 
   @Override
   public Column sortAscending() {
-    FloatColumn copy = this.copy();
+    IntColumn copy = this.copy();
     Arrays.sort(copy.data);
     return copy;
   }
 
   @Override
   public Column sortDescending() {
-    FloatColumn copy = this.copy();
+    IntColumn copy = this.copy();
     Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
     return copy;
+  }
+
+  private IntColumn copy() {
+    IntColumn copy = emptyCopy();
+    copy.data = this.data;
+    copy.N = this.N;
+    return copy;
+  }
+
+  public void reset() {
+    pointer = 0;
   }
 
   @Override
   public boolean isEmpty() {
     return N == 0;
-  }
-
-  public static FloatColumn create(String name) {
-    return new FloatColumn(name);
   }
 
   @Override
@@ -251,39 +228,43 @@ public class FloatColumn extends AbstractColumn {
    * <p>
    * We remove any commas before parsing
    */
-  public static float convert(String stringValue) {
+  public static int convert(String stringValue) {
     if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-      return Float.NaN;
+      return (int) ColumnType.INTEGER.getMissingValue();
     }
     Matcher matcher = COMMA_PATTERN.matcher(stringValue);
-    return Float.parseFloat(matcher.replaceAll(""));
+    return Integer.parseInt(matcher.replaceAll(""));
   }
 
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
+
+  public int get(int index) {
+    return data[index];
+  }
 
   @Override
   public Comparator<Integer> rowComparator() {
     return comparator;
   }
 
-  private final Comparator<Integer> comparator = new Comparator<Integer>() {
+  Comparator<Integer> comparator = new Comparator<Integer>() {
 
     @Override
     public int compare(Integer r1, Integer r2) {
-      float f1 = data[r1];
-      float f2 = data[r2];
-      return Float.compare(f1, f2);
+      int f1 = data[r1];
+      int f2 = data[r2];
+      return Integer.compare(f1, f2);
     }
   };
 
-  float get(int index) {
-    return data[index];
-  }
-
-  public void set(int r, float value) {
-    if (r >= data.length) {
-      resize();
+  public int min() {
+    int min = Integer.MAX_VALUE;
+    while (this.hasNext()) {
+      int next = next();
+      if (next < min) {
+        min = next;
+      }
     }
-    data[r] = value;
+    return min;
   }
 }

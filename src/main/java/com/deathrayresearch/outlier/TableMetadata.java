@@ -1,5 +1,7 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.ColumnMetadata;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

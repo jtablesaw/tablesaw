@@ -1,13 +1,12 @@
 package com.deathrayresearch.outlier.io;
 
-import com.deathrayresearch.outlier.Column;
-import com.deathrayresearch.outlier.ColumnType;
-import com.deathrayresearch.outlier.FloatColumn;
+import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
 import org.junit.Test;
 
-import static com.deathrayresearch.outlier.ColumnType.*;
+import static com.deathrayresearch.outlier.columns.ColumnType.*;
 import static com.deathrayresearch.outlier.QueryUtil.valueOf;
 
 /**

@@ -1,5 +1,7 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.FloatColumn;
 import org.junit.Before;
 import org.junit.Test;
 

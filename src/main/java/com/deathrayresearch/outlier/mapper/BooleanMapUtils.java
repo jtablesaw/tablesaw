@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier.mapper;
 
-import com.deathrayresearch.outlier.BooleanColumn;
-import com.deathrayresearch.outlier.Column;
+import com.deathrayresearch.outlier.columns.BooleanColumn;
+import com.deathrayresearch.outlier.columns.Column;
 
 /**
  *   An interface for mapping operations unique to Boolean columns

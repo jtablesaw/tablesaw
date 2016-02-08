@@ -1,6 +1,16 @@
 package com.deathrayresearch.outlier.io;
 
-import com.deathrayresearch.outlier.*;
+import com.deathrayresearch.outlier.columns.BooleanColumn;
+import com.deathrayresearch.outlier.columns.CategoryColumn;
+import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.columns.FloatColumn;
+import com.deathrayresearch.outlier.columns.IntColumn;
+import com.deathrayresearch.outlier.columns.LocalDateColumn;
+import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
+import com.deathrayresearch.outlier.columns.LocalTimeColumn;
+import com.deathrayresearch.outlier.columns.PackedLocalTime;
+import com.deathrayresearch.outlier.columns.TextColumn;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -18,7 +28,7 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 /**
- * Utilities for working with {@link com.deathrayresearch.outlier.ColumnType}s
+ * Utilities for working with {@link ColumnType}s
  */
 public final class TypeUtils {
 

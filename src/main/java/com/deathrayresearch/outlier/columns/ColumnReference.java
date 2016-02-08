@@ -1,4 +1,4 @@
-package com.deathrayresearch.outlier;
+package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.filter.DateEqualTo;
 import com.deathrayresearch.outlier.filter.Filter;
@@ -25,7 +25,7 @@ public class ColumnReference {
 
   private String columnName;
 
-  ColumnReference(String column) {
+  public ColumnReference(String column) {
     this.columnName = column;
   }
 

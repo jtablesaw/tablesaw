@@ -1,9 +1,8 @@
 package com.deathrayresearch.outlier.mapper;
 
-import com.deathrayresearch.outlier.Column;
-import com.deathrayresearch.outlier.Column;
-import com.deathrayresearch.outlier.FloatColumn;
-import com.deathrayresearch.outlier.TextColumn;
+import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.FloatColumn;
+import com.deathrayresearch.outlier.columns.TextColumn;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 

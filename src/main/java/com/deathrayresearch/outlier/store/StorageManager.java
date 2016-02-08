@@ -1,16 +1,14 @@
 package com.deathrayresearch.outlier.store;
 
-import com.deathrayresearch.outlier.BooleanColumn;
-import com.deathrayresearch.outlier.Column;
-import com.deathrayresearch.outlier.FloatColumn;
-import com.deathrayresearch.outlier.IntColumn;
-import com.deathrayresearch.outlier.LocalDateColumn;
+import com.deathrayresearch.outlier.columns.BooleanColumn;
+import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.FloatColumn;
+import com.deathrayresearch.outlier.columns.IntColumn;
+import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.TableMetadata;
-import com.deathrayresearch.outlier.TextColumn;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.deathrayresearch.outlier.columns.TextColumn;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.iq80.snappy.SnappyFramedInputStream;

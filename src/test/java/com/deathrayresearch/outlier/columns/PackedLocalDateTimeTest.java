@@ -1,4 +1,4 @@
-package com.deathrayresearch.outlier;
+package com.deathrayresearch.outlier.columns;
 
 import org.junit.Test;
 
@@ -47,6 +47,8 @@ public class PackedLocalDateTimeTest {
 
     LocalDate d1 = PackedLocalDate.asLocalDate(PackedLocalDateTime.date(packed));
     LocalTime t1 = PackedLocalTime.asLocalTime(PackedLocalDateTime.time(packed));
+    assertNotNull(d1);
+    assertNotNull(t1);
     assertEquals(date, d1);
     System.out.println(d1.toString());
     System.out.println(time.toString());

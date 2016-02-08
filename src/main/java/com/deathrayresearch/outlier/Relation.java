@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.columns.Column;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;

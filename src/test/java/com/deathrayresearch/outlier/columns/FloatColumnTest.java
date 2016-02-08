@@ -1,5 +1,7 @@
-package com.deathrayresearch.outlier;
+package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import com.google.common.base.Stopwatch;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.Test;

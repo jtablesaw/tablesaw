@@ -1,13 +1,13 @@
 package com.deathrayresearch.outlier.examples;
 
-import com.deathrayresearch.outlier.Column;
-import com.deathrayresearch.outlier.ColumnType;
+import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.CsvReader;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.deathrayresearch.outlier.ColumnType.*;
+import static com.deathrayresearch.outlier.columns.ColumnType.*;
 
 /**
  *

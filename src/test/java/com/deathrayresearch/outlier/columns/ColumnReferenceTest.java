@@ -1,10 +1,13 @@
-package com.deathrayresearch.outlier;
+package com.deathrayresearch.outlier.columns;
 
-import static com.deathrayresearch.outlier.ColumnType.*;
+import static com.deathrayresearch.outlier.columns.ColumnType.*;
 import static com.deathrayresearch.outlier.QueryUtil.valueOf;
 
 import static org.junit.Assert.*;
 
+import com.deathrayresearch.outlier.Query;
+import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.CsvReader;
 import org.junit.Test;
 

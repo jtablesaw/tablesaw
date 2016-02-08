@@ -1,6 +1,4 @@
-package com.deathrayresearch.outlier;
-
-import com.google.gson.Gson;
+package com.deathrayresearch.outlier.columns;
 
 import java.util.UUID;
 

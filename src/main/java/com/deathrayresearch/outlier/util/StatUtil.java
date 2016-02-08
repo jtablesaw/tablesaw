@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.util;
 
-import com.deathrayresearch.outlier.FloatColumn;
+import com.deathrayresearch.outlier.columns.FloatColumn;
 import org.apache.commons.math3.util.FastMath;
 
 /**

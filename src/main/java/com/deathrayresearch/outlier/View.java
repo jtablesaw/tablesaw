@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.columns.Column;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;

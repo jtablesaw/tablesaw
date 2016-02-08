@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier.filter;
 
-import com.deathrayresearch.outlier.ColumnReference;
-import com.deathrayresearch.outlier.LocalDateColumn;
+import com.deathrayresearch.outlier.columns.ColumnReference;
+import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.Relation;
 import org.roaringbitmap.RoaringBitmap;
 

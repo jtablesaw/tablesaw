@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.util;
 
-import com.deathrayresearch.outlier.FloatColumn;
+import com.deathrayresearch.outlier.columns.FloatColumn;
 import org.junit.Test;
 
 import java.util.Random;
@@ -20,7 +20,7 @@ public class StatUtilTest {
     for (int i = 0; i < 100; i++) {
       float f = random.nextFloat();
       column.add(f);
-      sum+= f;
+      sum += f;
     }
     assertEquals(sum, column.sum(), 0.01f);
   }
@@ -58,7 +58,7 @@ public class StatUtilTest {
   @Test
   public void testStats() {
     Random random = new Random();
-   // assertEquals(sum, column.sum(), 0.01f);
+    // assertEquals(sum, column.sum(), 0.01f);
 
   }
 }

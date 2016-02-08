@@ -1,5 +1,7 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.columns.ColumnReference;
+
 /**
  */
 public class QueryUtil {
