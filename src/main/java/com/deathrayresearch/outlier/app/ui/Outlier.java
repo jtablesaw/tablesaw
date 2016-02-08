@@ -1,6 +1,5 @@
 package com.deathrayresearch.outlier.app.ui;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.HBox;
@@ -23,9 +22,6 @@ public class Outlier extends Application {
     HBox main = new HBox();
     root.getChildren().add(main);
     primaryStage.setScene(new Scene(root, 640, 480));
-    //this makes all stages close and the app exit when the main stage is closed
-    primaryStage.setOnCloseRequest(e -> Platform.exit());
-
     primaryStage.show();
   }
 }
