@@ -10,6 +10,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
@@ -25,11 +26,13 @@ public class NewProjectDialog extends Dialog<Project> {
 
   private final TextField projectName = new TextField();
   private final DatePicker createDate = new DatePicker(LocalDate.now());
-  private final TextField goals = new TextField();
-  private final TextField notes = new TextField();
+  private final TextArea goals = new TextArea();
+  private final TextArea notes = new TextArea();
   private final TextField selectedDirectoryText = new TextField();
 
   public NewProjectDialog() {
+
+    selectedDirectoryText.setPrefColumnCount(36);
 
     this.setTitle("New Project Dialog");
     this.setHeaderText("Create a new project");
@@ -42,17 +45,17 @@ public class NewProjectDialog extends Dialog<Project> {
     Node newProjectButton = this.getDialogPane().lookupButton(createButtonType);
     newProjectButton.setDisable(true);
 
-    // Do some validation
+    // validate
     projectName.textProperty().addListener((observable, oldValue, newValue) -> {
       newProjectButton.setDisable(newValue.trim().isEmpty());
     });
 
     this.getDialogPane().setContent(getProjectForm());
 
-    // Request focus on the projectName field by default.
+    // Request focus on the projectName field
     Platform.runLater(projectName::requestFocus);
 
-    // Convert the result to a projectName-notes-pair when the login button is clicked.
+    // return the results when the create button is clicked.
     this.setResultConverter(dialogButton -> {
       if (dialogButton == createButtonType) {
 

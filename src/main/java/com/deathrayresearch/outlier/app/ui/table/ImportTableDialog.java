@@ -30,6 +30,8 @@ public class ImportTableDialog extends Dialog<CsvFile> {
 
   public ImportTableDialog() {
 
+    selectedFilePath.setPrefColumnCount(36);
+
     this.setTitle("Import Table Dialog");
     this.setHeaderText("Import a table from a file");
 
@@ -41,7 +43,7 @@ public class ImportTableDialog extends Dialog<CsvFile> {
     Node importButton = this.getDialogPane().lookupButton(importButtonType);
     importButton.setDisable(true);
 
-    // Do some validation
+    // validate
     columnTypes.textProperty().addListener((observable, oldValue, newValue) -> {
       importButton.setDisable(newValue.trim().isEmpty());
     });
