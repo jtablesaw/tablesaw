@@ -49,7 +49,6 @@ public class NotifierTest {
 
     notifier.cancelSubscription(AppEventType.PROJECT_CHANGED, listener);
     assertEquals(0, notifier.registry.size());
-
   }
 
   @Test

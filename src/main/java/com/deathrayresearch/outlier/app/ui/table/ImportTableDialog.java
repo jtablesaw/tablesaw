@@ -1,5 +1,9 @@
 package com.deathrayresearch.outlier.app.ui.table;
 
+import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.app.events.AppEvent;
+import com.deathrayresearch.outlier.app.events.AppEventType;
+import com.deathrayresearch.outlier.app.events.Notifier;
 import com.deathrayresearch.outlier.app.model.CsvFile;
 import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.io.CsvReader;
@@ -70,12 +74,12 @@ public class ImportTableDialog extends Dialog<CsvFile> {
     Optional<CsvFile> result = this.showAndWait();
 
     result.ifPresent(projectData -> {
-      System.out.println(result.toString());
       try {
-        CsvReader.read(result.get().getPath(), result.get().getColumnTypes());
+        Table table = CsvReader.read(result.get().getPath(), result.get().getColumnTypes());
+        Notifier.getInstance().publish(new AppEvent<>(AppEventType.TABLE_LOADED, table));
       } catch (IOException e) {
         e.printStackTrace();
-        Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to open");
+        Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to open file");
         alert.show();
       }
       this.close();

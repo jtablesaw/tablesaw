@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 
 import java.util.Comparator;
@@ -11,7 +12,7 @@ public interface Column {
 
   int size();
 
-  Table summary();
+  Relation summary();
 
   int countUnique();
 

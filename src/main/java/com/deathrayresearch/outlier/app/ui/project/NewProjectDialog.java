@@ -105,18 +105,18 @@ public class NewProjectDialog extends Dialog<Project> implements AppEventPublish
     grid.add(new Label("Project Name:"), 0, 0);
     grid.add(projectName, 1, 0);
 
-    grid.add(new Label("Start date:"), 0, 1);
-    grid.add(createDate, 1, 1);
+    grid.add(new Label("Folder:"), 0, 1);
+    grid.add(selectedDirectoryText, 1, 1);
+    grid.add(btnOpenDirectoryChooser, 2, 1);
 
-    grid.add(new Label("Goals:"), 0, 2);
-    grid.add(goals, 1, 2);
+    grid.add(new Label("Start date:"), 0, 2);
+    grid.add(createDate, 1, 2);
 
-    grid.add(new Label("Notes:"), 0, 3);
-    grid.add(notes, 1, 3);
+    grid.add(new Label("Goals:"), 0, 3);
+    grid.add(goals, 1, 3);
 
-    grid.add(new Label("Folder:"), 0, 4);
-    grid.add(selectedDirectoryText, 1, 4);
-    grid.add(btnOpenDirectoryChooser, 2,4);
+    grid.add(new Label("Notes:"), 0, 4);
+    grid.add(notes, 1, 4);
 
     return grid;
   }

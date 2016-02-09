@@ -92,6 +92,7 @@ public class FloatColumn extends AbstractColumn {
   }
 
   public float min() {
+    reset();
     float f = StatUtil.min(this);
     reset();
     return f;

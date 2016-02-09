@@ -1,6 +1,8 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -258,7 +260,7 @@ public class LocalDateColumn extends AbstractColumn {
   /**
    * Returns a table of dates and the number of observations of those dates
    */
-  public Table summary() {
+  public View summary() {
 
     Object2IntMap<LocalDate> counts = new Object2IntOpenHashMap<>();
 
@@ -286,7 +288,9 @@ public class LocalDateColumn extends AbstractColumn {
       table.localDateColumn(0).add(entry.getKey());
       table.intColumn(1).add(entry.getValue());
     }
-    return table;
+    table = table.sortDescendingOn("Count");
+
+    return table.head(5);
   }
 
 }
