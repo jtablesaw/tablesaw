@@ -1,5 +1,7 @@
 package com.deathrayresearch.outlier.sorting;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -55,5 +57,12 @@ public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
   @Override
   public Iterator<Map.Entry<String, Order>> iterator() {
     return sortOrder.entrySet().iterator();
+  }
+
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("order", sortOrder)
+        .toString();
   }
 }

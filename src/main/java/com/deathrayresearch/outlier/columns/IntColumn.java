@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.deathrayresearch.outlier.sorting.IntComparator;
 import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
@@ -247,13 +248,13 @@ public class IntColumn extends AbstractColumn {
     return comparator;
   }
 
-  Comparator<Integer> comparator = new Comparator<Integer>() {
+  final Comparator<Integer> comparator = new Comparator<Integer>() {
 
     @Override
-    public int compare(Integer r1, Integer r2) {
-      int f1 = data[r1];
-      int f2 = data[r2];
-      return Integer.compare(f1, f2);
+    public int compare(Integer i1, Integer i2) {
+      int prim1 = data[i1];
+      int prim2 = data[i2];
+      return IntComparator.getInstance().compare(prim1, prim2);
     }
   };
 
