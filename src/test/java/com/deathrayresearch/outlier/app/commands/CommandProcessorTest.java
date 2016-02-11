@@ -3,8 +3,6 @@ package com.deathrayresearch.outlier.app.commands;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.annotation.Nullable;
-
 import static org.junit.Assert.*;
 
 /**
