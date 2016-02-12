@@ -1,26 +1,22 @@
 package com.deathrayresearch.outlier.mapper;
 
-import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
-import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
-import com.deathrayresearch.outlier.columns.LocalTimeColumn;
+import com.deathrayresearch.outlier.columns.PackedLocalDate;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 
 /**
  * An interface for mapping operations unique to Date columns
  */
 public interface DateMapUtils extends Column {
-/*
-  default FloatColumn differenceInDays(LocalDateColumn column2) {
-    return difference(this, column2, ChronoUnit.DAYS);
-  }
 
+  default FloatColumn differenceInDays(LocalDateColumn column1, LocalDateColumn column2) {
+    return difference(column1, column2, ChronoUnit.DAYS);
+  }
+/*
   default FloatColumn differenceInWeeks(LocalDateColumn column2) {
     return difference(this, column2, ChronoUnit.WEEKS);
   }
@@ -33,43 +29,45 @@ public interface DateMapUtils extends Column {
     return difference(this, column2, ChronoUnit.YEARS);
   }
 
-  default FloatColumn difference(Column column1, Column column2, ChronoUnit unit) {
+*/
+  default FloatColumn difference(LocalDateColumn column1, LocalDateColumn column2, ChronoUnit unit) {
 
 
     FloatColumn newColumn = FloatColumn.create(column1.name() + " - " + column2.name());
     for (int r = 0; r < column1.size(); r++) {
-      Comparable c1 = column1.get(r);
-      Comparable c2 = column2.get(r);
-      if (c1 == null || c2 == null) {
-        newColumn.set(r, null);
+      int c1 = column1.getInt(r);
+      int c2 = column2.getInt(r);
+      if (c1 == FloatColumn.MISSING_VALUE || c2 == FloatColumn.MISSING_VALUE) {
+        newColumn.set(r, FloatColumn.MISSING_VALUE);
       } else {
-        LocalDate value1 = (LocalDate) c1;
-        LocalDate value2 = (LocalDate) c2;
+        LocalDate value1 = PackedLocalDate.asLocalDate(c1);
+        LocalDate value2 = PackedLocalDate.asLocalDate(c2);
         newColumn.set(r, unit.between(value1, value2));
       }
     }
     return newColumn;
   }
-*/
+
+  /*
 
   // These functions fill some amount of time to a date, producing a new date column
 
 /*
   default LocalDateColumn plusDays(Column column1, int days) {
-    return plus(column1, days, ChronoUnit.DAYS);
+    return and(column1, days, ChronoUnit.DAYS);
   }
 
 
   default LocalDateColumn plusWeeks(Column column1, int weeks) {
-    return plus(column1, weeks, ChronoUnit.WEEKS);
+    return and(column1, weeks, ChronoUnit.WEEKS);
   }
 
   default LocalDateColumn plusYears(Column column1, int years) {
-    return plus(column1, years, ChronoUnit.YEARS);
+    return and(column1, years, ChronoUnit.YEARS);
   }
 
   default LocalDateColumn plusMonths(Column column1, int months) {
-    return plus(column1, months, ChronoUnit.MONTHS);
+    return and(column1, months, ChronoUnit.MONTHS);
   }
 
   // These functions subtract some amount of time to a date, producing a new date column
@@ -90,7 +88,7 @@ public interface DateMapUtils extends Column {
     return minus(column1, months, ChronoUnit.MONTHS);
   }
 
-  default LocalDateColumn plus(Column column1, int value, TemporalUnit unit) {
+  default LocalDateColumn and(Column column1, int value, TemporalUnit unit) {
 
     LocalDateColumn newColumn = LocalDateColumn.create(dateColumnName(column1, value, unit));
     for (int r = 0; r < column1.size(); r++) {
@@ -99,7 +97,7 @@ public interface DateMapUtils extends Column {
         newColumn.set(r, null);
       } else {
         LocalDate value1 = (LocalDate) c1;
-        newColumn.set(r, value1.plus(value, unit));
+        newColumn.set(r, value1.and(value, unit));
       }
     }
     return newColumn;

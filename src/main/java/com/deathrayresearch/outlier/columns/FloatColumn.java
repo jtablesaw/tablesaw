@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
  */
 public class FloatColumn extends AbstractColumn {
 
+  public static final float MISSING_VALUE = (float) ColumnType.FLOAT.getMissingValue();
+
   private static int DEFAULT_ARRAY_SIZE = 128;
 
   // For internal iteration. What element are we looking at right now
