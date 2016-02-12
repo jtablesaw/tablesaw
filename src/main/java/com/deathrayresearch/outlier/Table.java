@@ -100,24 +100,6 @@ public class Table implements Relation {
   }
 
   @Override
-  public Column column(String columnName) {
-    int columnIndex = -1;
-    int actualIndex = 0;
-    for (Column column : columnList) {
-      // TODO(lwhite): Consider caching the uppercase name and doing equals() instead of equalsIgnoreCase()
-      if (column.name().equalsIgnoreCase(columnName)) {
-        columnIndex = actualIndex;
-        break;
-      }
-      actualIndex++;
-    }
-    if (columnIndex == -1) {
-      throw new RuntimeException(String.format("Column %s does not exist in table %s", columnName, name));
-    }
-    return column(columnIndex);
-  }
-
-  @Override
   public String name() {
     return name;
   }
@@ -207,13 +189,8 @@ public class Table implements Relation {
     return new View(this, nRows);
   }
 
-  public String shape() {
-    return rowCount() + " rows X " + columnCount() + " cols";
-  }
-
   public LocalTimeColumn timeColumn(String name) {
     return LocalTimeColumn.create(name);
-
   }
 
   /**
@@ -337,35 +314,6 @@ public class Table implements Relation {
     return new Query(this, columnName);
   }
 
-  public Table structure() {
-    StringBuilder builder = new StringBuilder();
-    builder.append("Table: ")
-        .append(name)
-        .append(" - ")
-        .append(rowCount())
-        .append(" observations (rows) of ")
-        .append(columnCount())
-        .append(" variables (cols)");
-
-    Table structure = new Table(builder.toString());
-    structure.addColumn(IntColumn.create("Index"));
-    structure.addColumn(TextColumn.create("Column Name"));
-    structure.addColumn(TextColumn.create("Type"));
-    structure.addColumn(IntColumn.create("Unique Values"));
-    structure.addColumn(TextColumn.create("First"));
-    structure.addColumn(TextColumn.create("Last"));
-
-    for (Column column : columnList) {
-      structure.intColumn("Index").add(columnIndex(column));
-      structure.textColumn("Column Name").add(column.name());
-      structure.textColumn("Type").add(column.type().name());
-      structure.intColumn("Unique Values").add(column.countUnique());
-     // newRow.set("First", column.first());
-     // newRow.set("Last", column.last());
-    }
-    return structure;
-  }
-
   public String summary() {
     StringBuilder builder = new StringBuilder();
     builder.append("\n")
@@ -421,15 +369,4 @@ public class Table implements Relation {
   public void removeColumn(Column column) {
     columnList.remove(column);
   }
-
-  @Override
-  public void removeColumn(int columnIndex) {
-    columnList.remove(column(columnIndex));
-  }
-
-  @Override
-  public void removeColumn(String columnName) {
-    removeColumn(column(columnName));
-  }
-
 }

@@ -93,11 +93,6 @@ public class View implements Relation {
   }
 
   @Override
-  public int columnIndex(String col) {
-    return 0;
-  }
-
-  @Override
   public int columnIndex(Column column) {
     int columnIndex = -1;
     for (int i = 0; i < columnIds.size(); i++) {
@@ -119,11 +114,6 @@ public class View implements Relation {
 
   @Override
   public void addColumn(Column column) {
-  }
-
-  @Override
-  public Column column(String columnName) {
-    return null;
   }
 
   @Override
@@ -155,26 +145,12 @@ public class View implements Relation {
   }
 
   @Override
-  public void removeColumn(String columnName) {
-    columnIds.remove(columnIndex(columnName));
-  }
-
-  @Override
-  public void removeColumn(int columnIndex) {
-    columnIds.remove(columnIndex);
-  }
-
-  @Override
   public void removeColumn(Column column) {
     columnIds.remove(columnIndex(column));
   }
 
   public View head(int i) {
     return new View(this, i);
-  }
-
-  public boolean isEmpty() {
-    return rowMap.isEmpty();
   }
 
   @Override

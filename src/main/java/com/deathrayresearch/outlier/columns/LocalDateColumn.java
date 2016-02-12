@@ -141,7 +141,7 @@ public class LocalDateColumn extends AbstractColumn {
     return ints.size();
   }
 
-  public LocalDate first() {
+  public LocalDate firstElement() {
     if (isEmpty()) {
       return null;
     }

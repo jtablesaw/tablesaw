@@ -42,7 +42,7 @@ public class StatUtil {
     if (values.size() == 0) {
       return Float.NaN;
     }
-    float min = values.first();
+    float min = values.firstElement();
     while (values.hasNext()) {
       float value = values.next();
       if (!Float.isNaN(value)) {
@@ -56,7 +56,7 @@ public class StatUtil {
     if (values.size() == 0) {
       return Float.NaN;
     }
-    float max = values.first();
+    float max = values.firstElement();
     values.reset();
     while (values.hasNext()) {
       float value = values.next();

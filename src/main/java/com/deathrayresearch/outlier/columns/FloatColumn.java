@@ -77,7 +77,7 @@ public class FloatColumn extends AbstractColumn {
     return StatUtil.sum(this);
   }
 
-  public float first() {
+  public float firstElement() {
     if (size() > 0) {
       return data[0];
     }

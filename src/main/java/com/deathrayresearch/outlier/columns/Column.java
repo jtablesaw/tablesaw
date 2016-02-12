@@ -1,7 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Relation;
-import com.deathrayresearch.outlier.Table;
 
 import java.util.Comparator;
 
@@ -48,4 +47,12 @@ public interface Column {
 
 
   Comparator<Integer> rowComparator();
+
+  default String first() {
+    return getString(0);
+  }
+
+  default String last() {
+    return getString(size() - 1);
+  }
 }

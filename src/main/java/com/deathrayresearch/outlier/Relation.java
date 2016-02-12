@@ -1,6 +1,8 @@
 package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.IntColumn;
+import com.deathrayresearch.outlier.columns.TextColumn;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -13,7 +15,58 @@ public interface Relation {
 
   void setName(String name);
 
-  boolean isEmpty();
+  default boolean isEmpty() {
+    return rowCount() == 0;
+  }
+
+  default String shape() {
+    return rowCount() + " rows X " + columnCount() + " cols";
+  }
+
+  default void removeColumn(int columnIndex) {
+    removeColumn(column(columnIndex));
+  }
+
+  default void removeColumn(String columnName) {
+    removeColumn(column(columnName));
+  }
+
+  /**
+   * Returns the index of the column with the given columnName
+   */
+  default int columnIndex(String columnName) {
+    int columnIndex = -1;
+    for (int i = 0; i < columnCount(); i++) {
+      if (columnNames().get(i).equalsIgnoreCase(columnName)) {
+        columnIndex = i;
+        break;
+      }
+    }
+    if (columnIndex == -1) {
+      throw new IllegalArgumentException(String.format("Column %s is not present in table %s", columnName, name()));
+    }
+    return columnIndex;
+  }
+
+  /**
+   * Returns the column with the given columnName
+   */
+  default Column column(String columnName) {
+    int columnIndex = -1;
+    int actualIndex = 0;
+    for (Column column : columns()) {
+      // TODO(lwhite): Consider caching the uppercase name and doing equals() instead of equalsIgnoreCase()
+      if (column.name().equalsIgnoreCase(columnName)) {
+        columnIndex = actualIndex;
+        break;
+      }
+      actualIndex++;
+    }
+    if (columnIndex == -1) {
+      throw new RuntimeException(String.format("Column %s does not exist in table %s", columnName, name()));
+    }
+    return column(columnIndex);
+  }
 
   /**
    * Returns the column at columnIndex (0-based)
@@ -39,11 +92,6 @@ public interface Relation {
   List<Column> columns();
 
   /**
-   * Returns the index of the column with the given name
-   */
-  int columnIndex(String col);
-
-  /**
    * Returns the index of the given column
    */
   int columnIndex(Column col);
@@ -59,11 +107,6 @@ public interface Relation {
    * The index of the new column in the table will be one less than the number of columns
    */
   void addColumn(Column column);
-
-  /**
-   * Returns the column with the given columnName
-   */
-  Column column(String columnName);
 
   /**
    * Returns the name of this relation
@@ -136,7 +179,35 @@ public interface Relation {
     return buf.toString();
   }
 
-  void removeColumn(String columnName);
-  void removeColumn(int columnIndex);
   void removeColumn(Column column);
+
+  default Table structure() {
+
+    StringBuilder nameBuilder = new StringBuilder();
+    nameBuilder.append("Table: ")
+        .append(name())
+        .append(" - ")
+        .append(rowCount())
+        .append(" observations (rows) of ")
+        .append(columnCount())
+        .append(" variables (cols)");
+
+    Table structure = new Table(nameBuilder.toString());
+    structure.addColumn(IntColumn.create("Index"));
+    structure.addColumn(TextColumn.create("Column Name"));
+    structure.addColumn(TextColumn.create("Type"));
+    structure.addColumn(IntColumn.create("Unique Values"));
+    structure.addColumn(TextColumn.create("First"));
+    structure.addColumn(TextColumn.create("Last"));
+
+    for (Column column : columns()) {
+      structure.intColumn("Index").add(columnIndex(column));
+      structure.textColumn("Column Name").add(column.name());
+      structure.textColumn("Type").add(column.type().name());
+      structure.intColumn("Unique Values").add(column.countUnique());
+      structure.textColumn("First").add(column.first());
+      structure.textColumn("Last").add(column.getString(column.size() - 1));
+    }
+    return structure;
+  }
 }
