@@ -1,7 +1,11 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.columns.BooleanColumn;
 import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
+import com.deathrayresearch.outlier.columns.LocalDateColumn;
+import com.deathrayresearch.outlier.columns.LocalTimeColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
 import org.apache.commons.lang3.StringUtils;
 
@@ -210,4 +214,92 @@ public interface Relation {
     }
     return structure;
   }
+
+  default String summary() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("\n")
+        .append("Table summary for: ")
+        .append(name())
+        .append("\n");
+    for (Column column : columns()) {
+      switch (column.type()) {
+        case INTEGER:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case FLOAT:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case LOCAL_DATE:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case LOCAL_DATE_TIME:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case LOCAL_TIME:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case BOOLEAN:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case TEXT:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        case CAT:
+          builder.append(column.summary().print());
+          builder.append("\n");
+          break;
+        default:
+          throw new RuntimeException("ColumnType not found");
+      }
+    }
+    builder.append("\n");
+    return builder.toString();
+  }
+
+  default BooleanColumn booleanColumn(int columnIndex) {
+    return (BooleanColumn) column(columnIndex);
+  }
+  default BooleanColumn booleanColumn(String columnName) {
+    return (BooleanColumn) column(columnName);
+  }
+
+  default FloatColumn floatColumn(int columnIndex) {
+    return (FloatColumn) column(columnIndex);
+  }
+  default FloatColumn floatColumn(String columnName) {
+    return (FloatColumn) column(columnName);
+  }
+
+  default IntColumn intColumn(String columnName) {
+    return (IntColumn) column(columnName);
+  }
+  default IntColumn intColumn(int columnIndex) {
+    return (IntColumn) column(columnIndex);
+  }
+
+  default TextColumn textColumn(int columnIndex) {
+    return (TextColumn) column(columnIndex);
+  }
+  default TextColumn textColumn(String columnName) {
+    return (TextColumn) column(columnName);
+  }
+
+  default LocalDateColumn localDateColumn(int columnIndex) {
+    return (LocalDateColumn) column(columnIndex);
+  }
+  default LocalDateColumn localDateColumn(String columnName) {
+    return (LocalDateColumn) column(columnName);
+  }
+
+  default LocalTimeColumn localTimeColumn(String columnName) {
+    return (LocalTimeColumn) column(columnName);
+  }
+  default LocalTimeColumn timeColumn(String name) {return LocalTimeColumn.create(name);}
 }

@@ -141,43 +141,6 @@ public class Table implements Relation {
     }
   }
 
-  public FloatColumn floatColumn(String columnName) {
-    return (FloatColumn) column(columnName);
-  }
-
-  public IntColumn intColumn(String columnName) {
-    return (IntColumn) column(columnName);
-  }
-
-  public TextColumn textColumn(String columnName) {
-    return (TextColumn) column(columnName);
-  }
-
-  public BooleanColumn booleanColumn(String columnName) {
-    return (BooleanColumn) column(columnName);
-  }
-
-  public LocalDateColumn localDateColumn(String columnName) {
-    return (LocalDateColumn) column(columnName);
-  }
-
-  public LocalTimeColumn localTimeColumn(String columnName) {
-    return (LocalTimeColumn) column(columnName);
-  }
-
-
-  public FloatColumn floatColumn(int columnIndex) {
-    return (FloatColumn) column(columnIndex);
-  }
-
-  public IntColumn intColumn(int columnIndex) {
-    return (IntColumn) column(columnIndex);
-  }
-
-  public LocalDateColumn localDateColumn(int columnIndex) {
-    return (LocalDateColumn) column(columnIndex);
-  }
-
   public String id() {
     return id;
   }
@@ -187,10 +150,6 @@ public class Table implements Relation {
    */
   public View head(int nRows) {
     return new View(this, nRows);
-  }
-
-  public LocalTimeColumn timeColumn(String name) {
-    return LocalTimeColumn.create(name);
   }
 
   /**
@@ -312,54 +271,6 @@ public class Table implements Relation {
 
   public Query select(String ... columnName) {
     return new Query(this, columnName);
-  }
-
-  public String summary() {
-    StringBuilder builder = new StringBuilder();
-    builder.append("\n")
-        .append("Table summary for: ")
-        .append(name)
-        .append("\n");
-    for (Column column : columnList) {
-      switch (column.type()) {
-        case INTEGER:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case FLOAT:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case LOCAL_DATE:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case LOCAL_DATE_TIME:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case LOCAL_TIME:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case BOOLEAN:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case TEXT:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case CAT:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        default:
-          throw new RuntimeException("ColumnType not found");
-      }
-    }
-    builder.append("\n");
-    return builder.toString();
   }
 
   /**
