@@ -33,4 +33,5 @@ abstract class AbstractColumn implements Column {
   }
 
   public abstract void addCell(String stringvalue);
+
 }

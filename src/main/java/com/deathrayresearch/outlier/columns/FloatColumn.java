@@ -79,6 +79,11 @@ public class FloatColumn extends AbstractColumn {
     return StatUtil.sum(this);
   }
 
+  public float mean() {
+    reset();
+    return StatUtil.mean(this);
+  }
+
   public float firstElement() {
     if (size() > 0) {
       return data[0];

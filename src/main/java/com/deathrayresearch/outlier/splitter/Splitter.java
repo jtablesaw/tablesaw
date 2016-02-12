@@ -1,6 +1,5 @@
 package com.deathrayresearch.outlier.splitter;
 
-import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
 

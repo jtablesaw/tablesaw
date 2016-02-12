@@ -11,8 +11,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Splits a table into a list of table, such that for every unique value in column ColumnReference
- * in the input table, there is one output table containing all such rows
+ * Splits a table into a list of table, such that for every unique value
+ * in the input table that is returned by the splitter function,
+ * there is an output table containing all such rows
  */
 
 public class GenericSplitter extends AbstractSplitter {

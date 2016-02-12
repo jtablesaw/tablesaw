@@ -88,8 +88,7 @@ public class TableGroup {
     return tables;
   }
 
-/*
-  public Table apply(ToDoubleFunction<IntColumn> fun,
+  public Table apply(ToDoubleFunction<FloatColumn> fun,
                      String calcColumn,
                      String resultColumnName) {
 
@@ -100,6 +99,7 @@ public class TableGroup {
     t.addColumn(FloatColumn.create(resultColumnName));
 
 
+/*
     for (View subTable : subTables) {
       float result = (float) fun.applyAsDouble(subTable.floatColumn(calcColumn));
       Row r = t.newRow();
@@ -110,9 +110,9 @@ public class TableGroup {
       }
       r.set(values.size(), result);
     }
+*/
     return t;
   }
-*/
 
   public Table apply(ToIntFunction<IntColumn> fun,
                      String calcColumn,

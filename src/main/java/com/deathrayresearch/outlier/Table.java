@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.sorting.Sort;
+import com.deathrayresearch.outlier.splitter.functions.Average;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.collections4.comparators.ComparatorChain;
@@ -274,4 +275,11 @@ public class Table implements Relation {
   public void removeColumn(Column column) {
     columnList.remove(column);
   }
+
+
+
+  public Average average(String summarizedColumnName) {
+    return new Average(this, summarizedColumnName);
+  }
+
 }
