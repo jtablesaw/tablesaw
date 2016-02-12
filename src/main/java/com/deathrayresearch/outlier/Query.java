@@ -15,7 +15,7 @@ public class Query {
   public Query(Relation table) {
     this.table = table;
     columnSelection = new Column[table.columnCount()];
-    for (int i = 0; i < table.getColumns().size(); i++) {
+    for (int i = 0; i < table.columns().size(); i++) {
       columnSelection[i] = table.column(i);
     }
   }

@@ -7,6 +7,7 @@ import com.deathrayresearch.outlier.filter.FloatGreaterThan;
 import com.deathrayresearch.outlier.filter.FloatGreaterThanOrEqualTo;
 import com.deathrayresearch.outlier.filter.FloatLessThan;
 import com.deathrayresearch.outlier.filter.FloatLessThanOrEqualTo;
+import com.deathrayresearch.outlier.filter.IntBetween;
 import com.deathrayresearch.outlier.filter.IntEqualTo;
 import com.deathrayresearch.outlier.filter.IntGreaterThan;
 import com.deathrayresearch.outlier.filter.IntGreaterThanOrEqualTo;
@@ -31,6 +32,10 @@ public class ColumnReference {
 
   public Filter isEqualTo(int value) {
     return new IntEqualTo(this, value);
+  }
+
+  public Filter isBetween(int low, int high) {
+    return new IntBetween(this, low, high);
   }
 
   public Filter isEqualTo(float value) {

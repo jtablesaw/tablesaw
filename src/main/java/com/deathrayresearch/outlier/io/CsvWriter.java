@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier.io;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.Relation;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,11 +17,11 @@ final public class CsvWriter {
   private CsvWriter() {
   }
 
-  public static void write(String fileName, Table table) throws IOException {
+  public static void write(String fileName, Relation table) throws IOException {
     write(fileName, table, null);
   }
 
-  public static void write(String fileName, Table table, String missing) throws IOException {
+  public static void write(String fileName, Relation table, String missing) throws IOException {
     CSVWriter writer = new CSVWriter(new FileWriter(fileName));
     String[] header = new String[table.columnCount()];
     for (int c = 0; c < table.columnCount(); c++) {

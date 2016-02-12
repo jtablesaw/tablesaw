@@ -44,7 +44,7 @@ public class TableView extends VBox {
     HBox row = new HBox();
     row.setSpacing(10);
 
-    for(Column column : table.getColumns()) {
+    for(Column column : table.columns()) {
       ColumnView columnView = new ColumnView(column);
       columnView.setOnDragDetected(new EventHandler<MouseEvent>() {
         @Override

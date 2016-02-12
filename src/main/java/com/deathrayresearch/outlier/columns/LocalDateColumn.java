@@ -1,6 +1,5 @@
 package com.deathrayresearch.outlier.columns;
 
-import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.TypeUtils;
@@ -189,7 +188,12 @@ public class LocalDateColumn extends AbstractColumn {
     return PackedLocalDate.asLocalDate(min);
   }
 
-  public static Column create(String name) {
+  public LocalDate get(int index) {
+    return PackedLocalDate.asLocalDate(data[index]);
+  }
+
+
+  public static LocalDateColumn create(String name) {
     return new LocalDateColumn(name);
   }
 
@@ -239,7 +243,7 @@ public class LocalDateColumn extends AbstractColumn {
     }
   }
 
-  public int get(int index) {
+  public int getInt(int index) {
     return data[index];
   }
 

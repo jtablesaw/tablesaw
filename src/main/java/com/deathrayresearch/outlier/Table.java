@@ -43,6 +43,11 @@ public class Table implements Relation {
   }
 
   @Override
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  @Override
   public Column column(int columnIndex) {
     return columnList.get(columnIndex);
   }
@@ -62,7 +67,7 @@ public class Table implements Relation {
   }
 
   @Override
-  public List<Column> getColumns() {
+  public List<Column> columns() {
     return columnList;
   }
 

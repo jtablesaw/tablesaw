@@ -26,7 +26,7 @@ public class TableMetadata {
     this.id = table.id();
     this.name = table.name();
     this.rowCount = table.rowCount();
-    for (Column column : table.getColumns()) {
+    for (Column column : table.columns()) {
       columnMetadataList.add(new ColumnMetadata(column));
     }
   }

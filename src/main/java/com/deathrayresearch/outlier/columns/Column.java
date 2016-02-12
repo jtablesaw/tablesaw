@@ -41,7 +41,6 @@ public interface Column {
    */
   String id();
 
-
   /**
    * Returns a String containing the column's metadata in json format
    */

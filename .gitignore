@@ -2,6 +2,7 @@ target/
 .idea/
 databases/
 bigdata/
+data/filtered_bus_stops.csv
 testfolder/
 *.iml
 test_col_test

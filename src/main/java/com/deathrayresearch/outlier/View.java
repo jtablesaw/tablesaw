@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.columns.Column;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ import java.util.UUID;
  */
 public class View implements Relation {
 
+  private String name;
   private Relation table;
   private final List<Integer> columnIds = new ArrayList<>();
   private final RoaringBitmap rowMap;
@@ -35,13 +37,26 @@ public class View implements Relation {
     rowMap.add(0, table.rowCount());
   }
 
-  public View(Relation table, int headRows) {
+  public View(Table table, int headRows) {
     this.table = table;
     for (String col : table.columnNames()) {
       columnIds.add(table.columnIndex(col));
     }
     rowMap = new RoaringBitmap();
     rowMap.add(0, headRows);
+  }
+
+  public View(View view, int headRows) {
+    this.table = view;
+    for (String col : table.columnNames()) {
+      columnIds.add(table.columnIndex(col));
+    }
+    int i = 0;
+    Iterator<Integer> it = view.rowMap.iterator();
+    rowMap = new RoaringBitmap();
+    while (i < headRows && it.hasNext()) {
+      rowMap.add(it.next());
+    }
   }
 
   public View(Relation table, Column[] columnSelection, RoaringBitmap rowSelection) {
@@ -59,7 +74,7 @@ public class View implements Relation {
 
   @Override
   public Column column(int columnIndex) {
-    return null;
+    return table.column(columnIds.get(columnIndex));
   }
 
   @Override
@@ -73,7 +88,7 @@ public class View implements Relation {
   }
 
   @Override
-  public List<Column> getColumns() {
+  public List<Column> columns() {
     return null;
   }
 
@@ -113,7 +128,7 @@ public class View implements Relation {
 
   @Override
   public String name() {
-    return table.name();
+    return name;
   }
 
   @Override
@@ -154,4 +169,16 @@ public class View implements Relation {
     columnIds.remove(columnIndex(column));
   }
 
+  public View head(int i) {
+    return new View(this, i);
+  }
+
+  public boolean isEmpty() {
+    return rowMap.isEmpty();
+  }
+
+  @Override
+  public void setName(String name) {
+    this.name = name;
+  }
 }

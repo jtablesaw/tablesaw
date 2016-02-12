@@ -25,6 +25,7 @@ public class FloatColumnTest {
     for (int i = 0; i < 1_000_000_000; i++) {
       floatColumn.add((float) Math.random());
     }
+    System.out.println(floatColumn.describe());
     Stopwatch stopwatch = Stopwatch.createStarted();
     RoaringBitmap results = floatColumn.isLessThan(.5f);
     System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));

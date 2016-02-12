@@ -23,7 +23,6 @@ public class TableMetadataTest {
     table.addColumn(column2);
   }
 
-
   @Test
   public void testToJson() {
     TableMetadata tableMetadata = new TableMetadata(table);

@@ -50,7 +50,7 @@ public class StorageManager {
 
     Table table = null;
 
-    for (Column column : table.getColumns()) {
+    for (Column column : table.columns()) {
       readColumn(fileName, column);
     }
   }
@@ -146,7 +146,7 @@ public class StorageManager {
     }
 
     try {
-      for (Column column : table.getColumns()) {
+      for (Column column : table.columns()) {
         completionService.submit(() -> {
           Path columnPath = path.resolve(column.id());
           StorageManager.writeColumn(columnPath.toString(), column);

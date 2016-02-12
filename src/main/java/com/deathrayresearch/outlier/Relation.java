@@ -10,6 +10,11 @@ import java.util.List;
  */
 public interface Relation {
 
+
+  void setName(String name);
+
+  boolean isEmpty();
+
   /**
    * Returns the column at columnIndex (0-based)
    *
@@ -31,7 +36,7 @@ public interface Relation {
   /**
    * Returns a list of all the columns in the relation
    */
-  List<Column> getColumns();
+  List<Column> columns();
 
   /**
    * Returns the index of the column with the given name

@@ -101,6 +101,8 @@ for a column-wise addition:
     Column total = add(table.get("stop_lat", "stop_lon"));
 ```
 
+(Yeah, I know that's a stupid example. Imagine it was two columns you'd actually want to add.)
+
 ### Filtering Rows
 
 Let's filter out records that don't have Stop IDs between 524 and 624. Filters can also be arbitrary

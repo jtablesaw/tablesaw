@@ -35,25 +35,17 @@ public class SnappyCompressionBenchmark {
         e.printStackTrace();
       }
     }
-
+    for (int i = 0; i < 1_000_000; i++) {
+      c.add((float) Math.random());
+    }
 
     NanoBench nanoBench = NanoBench.create();
-    nanoBench.warmUps(5).measurements(20).cpuAndMemory().measure("Compression",
-
-        new Runnable() {
-          @Override
-          public void run() {
-            try {
-/*
-              for (int i = 0; i < 1_000_000; i++) {
-                c.add((float) Math.random());
-              }
-*/
-
-              StorageManager.writeColumn(TEST_FOLDER + File.separator + "foo", c);
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
+    nanoBench.warmUps(5).measurements(20).cpuAndMemory().measure("Compression and file writing",
+        () -> {
+          try {
+            StorageManager.writeColumn(TEST_FOLDER + File.separator + "foo", c);
+          } catch (IOException e) {
+            e.printStackTrace();
           }
         });
     System.out.println("Compressed size: " + DirectoryUtils.folderSize(TEST_FOLDER));
