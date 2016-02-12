@@ -4,28 +4,30 @@ import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.filter.Filter;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  */
 public class Query {
 
   private Relation table;
-  Column[] columnSelection = new Column[0];
+  List<Column> columnSelection;
   Filter filter;
 
   public Query(Relation table) {
     this.table = table;
-    columnSelection = new Column[table.columnCount()];
+    columnSelection = new ArrayList<>(table.columnCount());
     for (int i = 0; i < table.columns().size(); i++) {
-      columnSelection[i] = table.column(i);
+      columnSelection.add(table.column(i));
     }
   }
 
   public Query(Table table, String[] columnName) {
     this.table = table;
-    columnSelection = new Column[columnName.length];
-    for (int i = 0; i < columnName.length; i++) {
-      String name = columnName[i];
-      columnSelection[i] = table.column(name);
+    columnSelection = new ArrayList<>(columnName.length);
+    for (String name : columnName) {
+      columnSelection.add(table.column(name));
     }
   }
 

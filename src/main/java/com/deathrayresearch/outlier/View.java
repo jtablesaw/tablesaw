@@ -28,15 +28,6 @@ public class View implements Relation {
     rowMap.add(0, table.rowCount());
   }
 
-  public View(Relation table, List<String> columnName) {
-    this.table = table;
-    for (String col : columnName) {
-      columnIds.add(table.columnIndex(col));
-    }
-    rowMap = new RoaringBitmap();
-    rowMap.add(0, table.rowCount());
-  }
-
   public View(Table table, int headRows) {
     this.table = table;
     for (String col : table.columnNames()) {
@@ -59,8 +50,16 @@ public class View implements Relation {
     }
   }
 
-  public View(Relation table, Column[] columnSelection, RoaringBitmap rowSelection) {
+  public View(Relation table, List<Column> columnSelection, RoaringBitmap rowSelection) {
     this.rowMap = rowSelection;
+    this.table = table;
+    for (Column aColumnSelection : columnSelection) {
+      this.columnIds.add(table.columnIndex(aColumnSelection));
+    }
+  }
+
+  public View(Relation table, List<Column> columnSelection) {
+    this.rowMap = new RoaringBitmap();
     this.table = table;
     for (Column aColumnSelection : columnSelection) {
       this.columnIds.add(table.columnIndex(aColumnSelection));
@@ -142,6 +141,14 @@ public class View implements Relation {
       names.add(table.column(columnId).name());
     }
     return names;
+  }
+
+  /**
+   * Adds the given index to the rowmap for this view.
+   * @param index an index representing a row in the backing table
+   */
+  public void addIndex(int index) {
+    this.rowMap.add(index);
   }
 
   @Override

@@ -1,12 +1,6 @@
 package com.deathrayresearch.outlier;
 
-import com.deathrayresearch.outlier.columns.BooleanColumn;
 import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.FloatColumn;
-import com.deathrayresearch.outlier.columns.IntColumn;
-import com.deathrayresearch.outlier.columns.LocalDateColumn;
-import com.deathrayresearch.outlier.columns.LocalTimeColumn;
-import com.deathrayresearch.outlier.columns.TextColumn;
 import com.deathrayresearch.outlier.sorting.Sort;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
