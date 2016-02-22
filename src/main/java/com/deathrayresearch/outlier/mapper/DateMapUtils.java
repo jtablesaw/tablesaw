@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.mapper;
 
+import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
@@ -135,21 +136,6 @@ public interface DateMapUtils extends Column {
     return newColumn;
   }
 
-  default LocalDateTimeColumn atTime(LocalTimeColumn c) {
-    LocalDateTimeColumn newColumn = LocalDateTimeColumn.create(this.name() + " " + c.name());
-    for (int r = 0; r < this.size(); r++) {
-      Comparable c1 = this.get(r);
-      Comparable c2 = c.get(r);
-      if (c1 == null || c2 == null) {
-        newColumn.set(r, null);
-      } else {
-        LocalDate value1 = (LocalDate) c1;
-        LocalTime time = (LocalTime) c2;
-        newColumn.set(r, value1.atTime(time));
-      }
-    }
-    return newColumn;
-  }
 
   default LocalDateTimeColumn atTime(LocalTime time) {
     LocalDateTimeColumn newColumn = LocalDateTimeColumn.create(this.name() + " " + time.toString());
@@ -165,89 +151,6 @@ public interface DateMapUtils extends Column {
     return newColumn;
   }
 
-  default FloatColumn year() {
-    FloatColumn newColumn = FloatColumn.create(this.name() + " year");
-    for (int r = 0; r < this.size(); r++) {
-      Comparable c1 = this.get(r);
-      if (c1 == null) {
-        newColumn.set(r, null);
-      } else {
-        LocalDate value1 = (LocalDate) c1;
-        newColumn.set(r, value1.getYear());
-      }
-    }
-    return newColumn;
-  }
-
-  default CategoryColumn dayOfWeek() {
-    CategoryColumn newColumn = CategoryColumn.create(this.name() + " year");
-    for (int r = 0; r < this.size(); r++) {
-      Comparable c1 = this.get(r);
-      if (c1 == null) {
-        newColumn.set(r, null);
-      } else {
-        LocalDate value1 = (LocalDate) c1;
-        newColumn.set(r, value1.getDayOfWeek().toString());
-      }
-    }
-    return newColumn;
-  }
-
-  default FloatColumn dayOfMonth() {
-    FloatColumn newColumn = FloatColumn.create(this.name() + " day of month");
-    for (int r = 0; r < this.size(); r++) {
-      Comparable c1 = this.get(r);
-      if (c1 == null) {
-        newColumn.set(r, null);
-      } else {
-        LocalDate value1 = (LocalDate) c1;
-        newColumn.set(r, value1.getDayOfMonth());
-      }
-    }
-    return newColumn;
-  }
-
-  default FloatColumn dayOfYear() {
-    FloatColumn newColumn = FloatColumn.create(this.name() + " day of year");
-    for (int r = 0; r < this.size(); r++) {
-      Comparable c1 = this.get(r);
-      if (c1 == null) {
-        newColumn.set(r, null);
-      } else {
-        LocalDate value1 = (LocalDate) c1;
-        newColumn.set(r, value1.getDayOfYear());
-      }
-    }
-    return newColumn;
-  }
-
-  default FloatColumn monthNumber() {
-    FloatColumn newColumn = FloatColumn.create(this.name() + " month");
-    for (int r = 0; r < this.size(); r++) {
-      Comparable c1 = this.get(r);
-      if (c1 == null) {
-        newColumn.set(r, null);
-      } else {
-        LocalDate value1 = (LocalDate) c1;
-        newColumn.set(r, value1.getMonthValue());
-      }
-    }
-    return newColumn;
-  }
-
-  default CategoryColumn monthName() {
-    CategoryColumn newColumn = CategoryColumn.create(this.name() + " month");
-    for (int r = 0; r < this.size(); r++) {
-      Comparable c1 = this.get(r);
-      if (c1 == null) {
-        newColumn.set(r, null);
-      } else {
-        LocalDate value1 = (LocalDate) c1;
-        newColumn.set(r, value1.getMonth().name());
-      }
-    }
-    return newColumn;
-  }
 */
 
 /*

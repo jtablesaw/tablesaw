@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
  */
 public class IntColumn extends AbstractColumn {
 
+  public static final int MISSING_VALUE = (int) ColumnType.INTEGER.getMissingValue();
   private static int DEFAULT_ARRAY_SIZE = 128;
   private int pointer = 0;
   private int N = 0;
@@ -24,12 +25,11 @@ public class IntColumn extends AbstractColumn {
   private int[] data;
 
   public static IntColumn create(String name) {
-    return new IntColumn(name);
+    return new IntColumn(name, DEFAULT_ARRAY_SIZE);
   }
 
-  private IntColumn(String name) {
-    super(name);
-    data = new int[DEFAULT_ARRAY_SIZE];
+  public static IntColumn create(String name, int arraySize) {
+    return new IntColumn(name, arraySize);
   }
 
   public IntColumn(String name, int initialSize) {
@@ -173,7 +173,7 @@ public class IntColumn extends AbstractColumn {
 
   @Override
   public IntColumn emptyCopy() {
-    return new IntColumn(name());
+    return new IntColumn(name(), DEFAULT_ARRAY_SIZE);
   }
 
   @Override

@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.sorting.Sort;
 import com.deathrayresearch.outlier.splitter.functions.Average;
@@ -276,10 +277,11 @@ public class Table implements Relation {
     columnList.remove(column);
   }
 
-
-
   public Average average(String summarizedColumnName) {
     return new Average(this, summarizedColumnName);
   }
 
+  public CategoryColumn categoryColumn(String pdDistrict) {
+    return (CategoryColumn) column(pdDistrict);
+  }
 }

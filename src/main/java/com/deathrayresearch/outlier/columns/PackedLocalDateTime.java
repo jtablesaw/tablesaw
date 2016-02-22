@@ -6,6 +6,10 @@ import com.google.common.primitives.Ints;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.chrono.IsoChronology;
+
+import static com.deathrayresearch.outlier.columns.PackedLocalDate.asLocalDate;
 
 /**
  * A short localdatetime packed into a single long value. The long is comprised of an int for the date and an int
@@ -27,8 +31,8 @@ import java.time.LocalTime;
  */
 public class PackedLocalDateTime {
 
-  public static byte getDayOfMonth(int date) {
-    return (byte) date;  // last byte
+  public static byte getDayOfMonth(long date) {
+    return (byte) date(date);  // last byte
   }
 
   public static short getYear(int date) {
@@ -38,6 +42,10 @@ public class PackedLocalDateTime {
     return (short) ((byte2 << 8) + (byte1 & 0xFF));
   }
 
+  public static short getYear(long dateTime) {
+    return getYear(date(dateTime));
+  }
+
   public static LocalDateTime asLocalDateTime(long dateTime) {
     if (dateTime == Long.MIN_VALUE) {
       return null;
@@ -45,7 +53,7 @@ public class PackedLocalDateTime {
     int date = date(dateTime);
     int time = time(dateTime);
 
-    return LocalDateTime.of(PackedLocalDate.asLocalDate(date), PackedLocalTime.asLocalTime(time));
+    return LocalDateTime.of(asLocalDate(date), PackedLocalTime.asLocalTime(time));
   }
 
   public static byte getMonthValue(long dateTime) {
@@ -108,6 +116,36 @@ public class PackedLocalDateTime {
         PackedLocalTime.getMinute(time),
         PackedLocalTime.getSecond(time)
     );
+  }
+
+  public static int getDayOfYear(long packedDate) {
+    return getMonth(packedDate).firstDayOfYear(isLeapYear(packedDate)) + getDayOfMonth(packedDate) - 1;
+  }
+
+  public static boolean isLeapYear(long packedDate) {
+    return IsoChronology.INSTANCE.isLeapYear(getYear(packedDate));
+  }
+
+  public static Month getMonth(long packedDate) {
+    return Month.of(getMonthValue(packedDate));
+  }
+
+  public static int lengthOfMonth(long packedDateTime) {
+    switch (getMonthValue(packedDateTime)) {
+      case 2:
+        return (isLeapYear(packedDateTime) ? 29 : 28);
+      case 4:
+      case 6:
+      case 9:
+      case 11:
+        return 30;
+      default:
+        return 31;
+    }
+  }
+
+  public int lengthOfYear(long packedDateTime) {
+    return (isLeapYear(packedDateTime) ? 366 : 365);
   }
 
 }

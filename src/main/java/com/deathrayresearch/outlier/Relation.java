@@ -5,6 +5,7 @@ import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
+import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import com.deathrayresearch.outlier.columns.LocalTimeColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
 import org.apache.commons.lang3.StringUtils;
@@ -302,4 +303,11 @@ public interface Relation {
     return (LocalTimeColumn) column(columnName);
   }
   default LocalTimeColumn timeColumn(String name) {return LocalTimeColumn.create(name);}
+
+  default LocalDateTimeColumn localDateTimeColumn(int columnIndex) {
+    return (LocalDateTimeColumn) column(columnIndex);
+  }
+  default LocalDateTimeColumn localDateTimeColumn(String columnName) {
+    return (LocalDateTimeColumn) column(columnName);
+  }
 }

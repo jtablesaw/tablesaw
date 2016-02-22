@@ -12,7 +12,7 @@ public enum ColumnType {
   INTEGER(Integer.MIN_VALUE),
   TEXT(""),
   LOCAL_DATE(Integer.MIN_VALUE),
-  LOCAL_DATE_TIME(null),
+  LOCAL_DATE_TIME(Long.MIN_VALUE),
   LOCAL_TIME(-1),
   SKIP(null);
 

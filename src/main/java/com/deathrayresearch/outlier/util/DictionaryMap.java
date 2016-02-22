@@ -5,6 +5,9 @@ import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 
+import java.util.Collection;
+import java.util.Set;
+
 /**
  * A map that supports reversible key value pairs of short->String
  * <p>
@@ -50,5 +53,13 @@ public class DictionaryMap {
 
   public short size() {
     return (short) valueToKey.size();
+  }
+
+  public Set<String> categories() {
+    return valueToKey.keySet();
+  }
+
+  public Collection<Short> values() {
+    return valueToKey.values();
   }
 }

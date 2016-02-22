@@ -2,17 +2,21 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.deathrayresearch.outlier.mapper.DateTimeMapUtils;
 import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.Comparator;
 
 /**
  * A column in a base table that contains float values
  */
-public class LocalDateTimeColumn extends AbstractColumn {
+public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUtils {
+
+  public static final Long MISSING_VALUE = Long.MIN_VALUE;
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
@@ -186,4 +190,84 @@ public class LocalDateTimeColumn extends AbstractColumn {
       return Long.compare(f1, f2);
     }
   };
+
+  public CategoryColumn dayOfWeek() {
+    CategoryColumn newColumn = CategoryColumn.create(this.name() + " day of week" , this.size());
+    for (int r = 0; r < this.size(); r++) {
+      Long c1 = this.get(r);
+      if (c1.equals(LocalDateTimeColumn.MISSING_VALUE)) {
+        newColumn.set(r, null);
+      } else {
+        LocalDateTime value1 = PackedLocalDateTime.asLocalDateTime(c1);
+        newColumn.add(value1.getDayOfWeek().toString());
+      }
+    }
+    return newColumn;
+  }
+
+  public IntColumn dayOfYear() {
+    IntColumn newColumn = IntColumn.create(this.name() + " day of year", this.size());
+    for (int r = 0; r < this.size(); r++) {
+      Long c1 = this.get(r);
+      if (c1.equals(LocalDateTimeColumn.MISSING_VALUE)) {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(PackedLocalDateTime.getDayOfYear(c1));
+      }
+    }
+    return newColumn;
+  }
+
+  public IntColumn dayOfMonth() {
+    IntColumn newColumn = IntColumn.create(this.name() + " day of month");
+    for (int r = 0; r < this.size(); r++) {
+      Long c1 = this.get(r);
+      if (c1 == FloatColumn.MISSING_VALUE) {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(PackedLocalDateTime.getDayOfMonth(c1));
+      }
+    }
+    return newColumn;
+  }
+
+  public IntColumn monthNumber() {
+    IntColumn newColumn = IntColumn.create(this.name() + " month");
+    for (int r = 0; r < this.size(); r++) {
+      long c1 = this.get(r);
+      if (c1 == MISSING_VALUE) {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(PackedLocalDateTime.getMonthValue(c1));
+      }
+    }
+    return newColumn;
+  }
+
+  public CategoryColumn monthName() {
+    CategoryColumn newColumn = CategoryColumn.create(this.name() + " month");
+    for (int r = 0; r < this.size(); r++) {
+      long c1 = this.get(r);
+      if (c1 == MISSING_VALUE) {
+        newColumn.add(CategoryColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(Month.of(PackedLocalDateTime.getMonthValue(c1)).name());
+      }
+    }
+    return newColumn;
+  }
+
+  public IntColumn year() {
+    IntColumn newColumn = IntColumn.create(this.name() + " year");
+    for (int r = 0; r < this.size(); r++) {
+      long c1 = this.get(r);
+      if (c1 == MISSING_VALUE) {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(PackedLocalDateTime.getYear(PackedLocalDateTime.date(c1)));
+      }
+    }
+    return newColumn;
+  }
+
 }

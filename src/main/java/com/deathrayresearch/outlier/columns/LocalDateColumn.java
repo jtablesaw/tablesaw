@@ -13,6 +13,7 @@ import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
@@ -22,6 +23,7 @@ import java.util.Map;
  */
 public class LocalDateColumn extends AbstractColumn {
 
+  public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue() ;
   private static int DEFAULT_ARRAY_SIZE = 128;
 
   // For internal iteration. What element are we looking at right now
@@ -188,6 +190,59 @@ public class LocalDateColumn extends AbstractColumn {
     return PackedLocalDate.asLocalDate(min);
   }
 
+  public CategoryColumn dayOfWeek() {
+    CategoryColumn newColumn = CategoryColumn.create(this.name() + " day of week");
+    for (int r = 0; r < this.size(); r++) {
+      int c1 = this.getInt(r);
+      if (c1 == LocalDateColumn.MISSING_VALUE) {
+        newColumn.set(r, null);
+      } else {
+        newColumn.set(r, PackedLocalDate.getDayOfWeek(c1).toString());
+      }
+    }
+    return newColumn;
+  }
+
+  public IntColumn dayOfMonth() {
+    IntColumn newColumn = IntColumn.create(this.name() + " day of month");
+    for (int r = 0; r < this.size(); r++) {
+      int c1 = this.getInt(r);
+      if (c1 == LocalDateColumn.MISSING_VALUE) {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(PackedLocalDate.getDayOfMonth(c1));
+      }
+    }
+    return newColumn;
+  }
+
+  public IntColumn dayOfYear() {
+    IntColumn newColumn = IntColumn.create(this.name() + " day of month");
+    for (int r = 0; r < this.size(); r++) {
+      int c1 = this.getInt(r);
+      if (c1 == LocalDateColumn.MISSING_VALUE) {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(PackedLocalDate.getDayOfYear(c1));
+      }
+    }
+    return newColumn;
+  }
+
+  public IntColumn month() {
+    IntColumn newColumn = IntColumn.create(this.name() + " month");
+    for (int r = 0; r < this.size(); r++) {
+      int c1 = this.getInt(r);
+      if (c1 == LocalDateColumn.MISSING_VALUE) {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(PackedLocalDate.getMonthValue(c1));
+      }
+    }
+    return newColumn;
+  }
+
+
   public LocalDate get(int index) {
     return PackedLocalDate.asLocalDate(data[index]);
   }
@@ -295,6 +350,22 @@ public class LocalDateColumn extends AbstractColumn {
     table = table.sortDescendingOn("Count");
 
     return table.head(5);
+  }
+
+  public LocalDateTimeColumn atTime(LocalTimeColumn c) {
+    LocalDateTimeColumn newColumn = LocalDateTimeColumn.create(this.name() + " " + c.name());
+    for (int r = 0; r < this.size(); r++) {
+      int c1 = this.getInt(r);
+      int c2 = c.get(r);
+      if (c1 == MISSING_VALUE || c2 == LocalTimeColumn.MISSING_VALUE) {
+        newColumn.add(LocalDateTimeColumn.MISSING_VALUE);
+      } else {
+        LocalDate value1 = PackedLocalDate.asLocalDate(c1);
+        LocalTime time = PackedLocalTime.asLocalTime(c2);
+        newColumn.add(PackedLocalDateTime.pack(value1, time));
+      }
+    }
+    return newColumn;
   }
 
 }

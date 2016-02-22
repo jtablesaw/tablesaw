@@ -15,6 +15,8 @@ import java.util.Comparator;
  */
 public class LocalTimeColumn extends AbstractColumn {
 
+  public static final int MISSING_VALUE = (int) ColumnType.LOCAL_TIME.getMissingValue() ;
+
   private static int DEFAULT_ARRAY_SIZE = 128;
 
   // For internal iteration. What element are we looking at right now

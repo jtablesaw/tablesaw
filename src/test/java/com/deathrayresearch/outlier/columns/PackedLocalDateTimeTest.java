@@ -15,12 +15,15 @@ public class PackedLocalDateTimeTest {
 
   @Test
   public void testGetDayOfMonth() {
-
+    LocalDateTime today = LocalDateTime.now();
+    assertEquals(today.getDayOfMonth(),
+        PackedLocalDateTime.getDayOfMonth(PackedLocalDateTime.pack(today)));
   }
 
   @Test
   public void testGetYear() {
-
+    LocalDateTime today = LocalDateTime.now();
+    assertEquals(today.getYear(), PackedLocalDateTime.getYear(PackedLocalDateTime.pack(today)));
   }
 
   @Test
@@ -53,25 +56,5 @@ public class PackedLocalDateTimeTest {
     System.out.println(d1.toString());
     System.out.println(time.toString());
     System.out.println(t1.toString());
-  }
-
-  @Test
-  public void testPack1() {
-
-  }
-
-  @Test
-  public void testToDateTimeString() {
-
-  }
-
-  @Test
-  public void testDate() {
-
-  }
-
-  @Test
-  public void testTime() {
-
   }
 }

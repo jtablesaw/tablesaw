@@ -4,17 +4,24 @@ import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.util.DictionaryMap;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortList;
+import jsat.classifiers.CategoricalData;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A column in a base table that contains float values
  */
 public class CategoryColumn extends AbstractColumn {
+
+  public static final String MISSING_VALUE = (String) ColumnType.CAT.getMissingValue();
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
@@ -24,21 +31,26 @@ public class CategoryColumn extends AbstractColumn {
   // The number of elements, which may be less than the size of the array
   private int N = 0;
 
-  // initialize the unique value id number to the smalllest possible short to maximize range
-  private static AtomicInteger id = new AtomicInteger(Short.MIN_VALUE);
+  // initialize the unique value id number to the smallest possible short to maximize range
+  private AtomicInteger id = new AtomicInteger(0);
 
   // holds a key for each row in the table. the key can be used to lookup the backing string value
-  private ShortList values = new ShortArrayList();
+  private ShortList values;
 
   // a bidirectional map of keys to backing string values.
   private DictionaryMap lookupTable = new DictionaryMap();
 
   public static CategoryColumn create(String name) {
+    return create(name, DEFAULT_ARRAY_SIZE);
+  }
+
+  public static CategoryColumn create(String name, int size) {
     return new CategoryColumn(name);
   }
 
   public CategoryColumn(String name) {
     super(name);
+    values = new ShortArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   @Override
@@ -46,13 +58,11 @@ public class CategoryColumn extends AbstractColumn {
     return ColumnType.CAT;
   }
 
-  //TODO(lwhite): implement iteration
   @Override
   public boolean hasNext() {
-    return false;
+    return pointer + 1 < N;
   }
 
-  //TODO(lwhite): implement iteration
   public String next() {
     return lookupTable.get(values.getShort(pointer++));
   }
@@ -135,7 +145,28 @@ public class CategoryColumn extends AbstractColumn {
 
   @Override
   public Table summary() {
-    return new Table(name());
+    Table t = new Table(name());
+    CategoryColumn categories = CategoryColumn.create("Category");
+    IntColumn counts = IntColumn.create("Count");
+
+    Object2IntMap<String> valueToKey = new Object2IntOpenHashMap<>();
+
+    while (this.hasNext()) {
+      String category = this.next();
+      if (valueToKey.containsKey(category)) {
+        int count = valueToKey.get(category);
+        valueToKey.put(category, count + 1);
+      } else {
+        valueToKey.put(category, 1);
+      }
+    }
+    for (Map.Entry<String, Integer> entry : valueToKey.entrySet()) {
+      categories.add(entry.getKey());
+      counts.add(entry.getValue());
+    }
+    t.addColumn(categories);
+    t.addColumn(counts);
+    return t;
   }
 
   @Override
@@ -172,6 +203,7 @@ public class CategoryColumn extends AbstractColumn {
       valueId = lookupTable.get(stringValue);
     }
     values.add(valueId);
+    N++;
   }
 
   @Override
@@ -216,4 +248,26 @@ public class CategoryColumn extends AbstractColumn {
     return results;
   }
 
+  public CategoricalData asCategoricalData() {
+    CategoricalData categoricalData = new CategoricalData(lookupTable.size());
+    categoricalData.setCategoryName(name());
+
+    for (String category : lookupTable.categories()) {
+      int v = lookupTable.get(category);
+      categoricalData.setOptionName(category, v);
+    }
+    return categoricalData;
+  }
+
+  public int getInt(int rowNumber) {
+    return values.get(rowNumber);
+  }
+
+  public Collection<? extends String> valueSet() {
+    return lookupTable.categories();
+  }
+
+  public DictionaryMap dictionaryMap() {
+    return lookupTable;
+  }
 }
