@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.deathrayresearch.outlier.mapper.DateMapUtils;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -21,7 +22,7 @@ import java.util.Map;
 /**
  * A column in a base table that contains float values
  */
-public class LocalDateColumn extends AbstractColumn {
+public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue() ;
   private static int DEFAULT_ARRAY_SIZE = 128;

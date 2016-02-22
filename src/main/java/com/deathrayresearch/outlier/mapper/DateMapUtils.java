@@ -17,20 +17,20 @@ public interface DateMapUtils extends Column {
   default FloatColumn differenceInDays(LocalDateColumn column1, LocalDateColumn column2) {
     return difference(column1, column2, ChronoUnit.DAYS);
   }
-/*
-  default FloatColumn differenceInWeeks(LocalDateColumn column2) {
-    return difference(this, column2, ChronoUnit.WEEKS);
+
+  default FloatColumn differenceInWeeks(LocalDateColumn column1, LocalDateColumn column2) {
+    return difference(column1, column2, ChronoUnit.WEEKS);
   }
 
-  default FloatColumn differenceInMonths(LocalDateColumn column2) {
-    return difference(this, column2, ChronoUnit.MONTHS);
+  default FloatColumn differenceInMonths(LocalDateColumn column1, LocalDateColumn column2) {
+    return difference(column1, column2, ChronoUnit.MONTHS);
   }
 
-  default FloatColumn differenceInYears(LocalDateColumn column2) {
-    return difference(this, column2, ChronoUnit.YEARS);
+  default FloatColumn differenceInYears(LocalDateColumn column1, LocalDateColumn column2) {
+    return difference(column1, column2, ChronoUnit.YEARS);
   }
 
-*/
+
   default FloatColumn difference(LocalDateColumn column1, LocalDateColumn column2, ChronoUnit unit) {
 
 

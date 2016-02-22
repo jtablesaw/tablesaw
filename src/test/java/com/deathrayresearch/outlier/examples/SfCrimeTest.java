@@ -31,7 +31,7 @@ public class SfCrimeTest {
 
   @Before
   public void setUp() throws Exception {
-    table = CsvReader.read("data/train.csv", heading);
+    table = CsvReader.read("bigdata/train.csv", heading);
   }
 
   @Test
