@@ -17,4 +17,8 @@ public class ColumnFilter extends Filter {
   public RoaringBitmap apply(Relation relation) {
     return null;
   }
+
+  public ColumnReference columnReference() {
+    return columnReference;
+  }
 }

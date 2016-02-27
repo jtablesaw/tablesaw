@@ -155,4 +155,29 @@ public class PackedLocalDate {
     return DayOfWeek.of(dow0 + 1);
   }
 
+  public static boolean isInQ1(int packedDate) {
+    Month month = getMonth(packedDate);
+    return month == Month.JANUARY ||
+        month == Month.FEBRUARY ||
+        month == Month.MARCH;
+  }
+
+  public static boolean isInQ2(int packedDate) {
+    Month month = getMonth(packedDate);
+    return month == Month.APRIL ||
+        month == Month.MAY ||
+        month == Month.JUNE;
+  }
+  public static boolean isInQ3(int packedDate) {
+    Month month = getMonth(packedDate);
+    return month == Month.JULY ||
+        month == Month.AUGUST ||
+        month == Month.SEPTEMBER;
+  }
+  public static boolean isInQ4(int packedDate) {
+    Month month = getMonth(packedDate);
+    return month == Month.OCTOBER ||
+        month == Month.NOVEMBER ||
+        month == Month.DECEMBER;
+  }
 }

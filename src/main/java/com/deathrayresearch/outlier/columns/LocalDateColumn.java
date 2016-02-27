@@ -15,6 +15,7 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
@@ -369,4 +370,60 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return newColumn;
   }
 
+  public RoaringBitmap isInQ1() {
+
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInQ1(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInQ2() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInQ2(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInQ3() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInQ3(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInQ4() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInQ4(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
 }
