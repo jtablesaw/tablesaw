@@ -77,11 +77,13 @@ public class FloatColumnTest {
 
   @Test
   public void testSort() {
-    FloatColumn floatColumn = new FloatColumn("test", 100_000_000);
-    for (int i = 0; i < 100_000_000; i++) {
+    int records = 100_000_000;
+    FloatColumn floatColumn = new FloatColumn("test", records);
+    for (int i = 0; i < records; i++) {
       floatColumn.add((float) Math.random());
     }
     System.out.println("Data loaded, beginning first sort");
+    Stopwatch stopwatch = Stopwatch.createStarted();
     FloatColumn sorted = (FloatColumn) floatColumn.sortAscending();
     float last = Float.NEGATIVE_INFINITY;
     while (sorted.hasNext()) {
@@ -89,7 +91,9 @@ public class FloatColumnTest {
       assertTrue(n >= last);
       last = n;
     }
+    System.out.println(String.format("Sorted %d records in %d seconds", records, stopwatch.elapsed(TimeUnit.SECONDS)));
     System.out.println("Beginning second sort");
+    stopwatch.reset().start();
     sorted = (FloatColumn) floatColumn.sortDescending();
     last = Float.POSITIVE_INFINITY;
     while (sorted.hasNext()) {
@@ -97,6 +101,7 @@ public class FloatColumnTest {
       assertTrue(n <= last);
       last = n;
     }
+    System.out.println(String.format("Sorted %d records in %d seconds", records, stopwatch.elapsed(TimeUnit.SECONDS)));
   }
 
   @Test
