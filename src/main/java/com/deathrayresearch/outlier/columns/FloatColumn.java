@@ -5,10 +5,17 @@ import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
+import org.apache.commons.math3.exception.MathIllegalArgumentException;
+import org.apache.commons.math3.exception.NotPositiveException;
+import org.apache.commons.math3.exception.NullArgumentException;
+import org.apache.commons.math3.exception.util.LocalizedFormats;
+import org.apache.commons.math3.stat.Frequency;
+import org.apache.commons.math3.stat.StatUtils;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -268,6 +275,152 @@ public class FloatColumn extends AbstractColumn {
     return Float.parseFloat(matcher.replaceAll(""));
   }
 
+  /**
+   * Returns the natural log of the values in this column as a new FloatColumn
+   */
+  public FloatColumn logN() {
+    FloatColumn newColumn = FloatColumn.create(name() + "[logN]");
+
+    for (int r = 0; r < size(); r++) {
+      float value = data[r];
+      newColumn.set(r, (float) Math.log(value));
+    }
+    return newColumn;
+  }
+
+  public FloatColumn log10() {
+    FloatColumn newColumn = FloatColumn.create(name() + "[log10]");
+
+    for (int r = 0; r < size(); r++) {
+      float value = data[r];
+      newColumn.set(r, (float) Math.log10(value));
+    }
+    return newColumn;
+  }
+
+  /**
+   * Returns the natural log of the values in this column, after adding 1 to each so that zero
+   * values don't return -Infinity
+   */
+  public FloatColumn log1p() {
+    FloatColumn newColumn = FloatColumn.create(name() + "[1og1p]");
+    for (int r = 0; r < size(); r++) {
+      float value = data[r];
+      newColumn.set(r, (float) Math.log1p(value));
+    }
+    return newColumn;
+  }
+
+
+  public FloatColumn round() {
+
+    FloatColumn newColumn = FloatColumn.create(name() + "[rounded]");
+
+    for (int r = 0; r < size(); r++) {
+      float value = data[r];
+      newColumn.set(r, Math.round(value));
+    }
+    return newColumn;
+  }
+
+  public FloatColumn abs() {
+
+    FloatColumn newColumn = FloatColumn.create(name() + "[abs]");
+
+    for (int r = 0; r < size(); r++) {
+      float value = data[r];
+      newColumn.set(r, Math.abs(value));
+    }
+    return newColumn;
+  }
+
+  public FloatColumn square() {
+
+    FloatColumn newColumn = FloatColumn.create(name() + "[sq]");
+
+    for (int r = 0; r < size(); r++) {
+      float value = data[r];
+      newColumn.set(r, value * value);
+    }
+    return newColumn;
+  }
+
+  public FloatColumn sqrt() {
+
+    FloatColumn newColumn = FloatColumn.create(name() + "[sqrt]");
+
+    for (int r = 0; r < size(); r++) {
+      float value = data[r];
+      newColumn.set(r, (float) Math.sqrt(value));
+    }
+    return newColumn;
+  }
+
+  public FloatColumn cubeRoot() {
+
+    FloatColumn newColumn = FloatColumn.create(name() + "[cbrt]");
+
+    for (int r = 0; r < size(); r++) {
+      float value = data[r];
+      newColumn.set(r, (float) Math.cbrt(value));
+    }
+    return newColumn;
+  }
+
+  public FloatColumn cube() {
+
+    FloatColumn newColumn = FloatColumn.create(name() + "[cb]");
+
+    for (int r = 0; r < size(); r++) {
+      float value = data[r];
+      newColumn.set(r, value * value * value);
+    }
+    return newColumn;
+  }
+
+  public FloatColumn mod(FloatColumn column2) {
+
+    FloatColumn result = FloatColumn.create(name() + " % " + column2.name());
+
+    for (int r = 0; r < size(); r++) {
+      result.set(r, mod(data[r], column2.data[r]));
+    }
+
+    return result;
+  }
+
+  public FloatColumn difference(FloatColumn column2) {
+
+    FloatColumn result = FloatColumn.create(name() + " - " + column2.name());
+
+    for (int r = 0; r < size(); r++) {
+      result.set(r, subtract(data[r], column2.data[r]));
+    }
+
+    return result;
+  }
+
+  public float[] mode() {
+    return StatUtil.mode(data);
+  }
+
+  /**
+   * For each item in the column, returns the same number with the sign changed.
+   * For example:
+   * -1.3   returns  1.3,
+   *  2.135 returns -2.135
+   *  0     returns  0
+   */
+  public FloatColumn neg() {
+    FloatColumn newColumn = FloatColumn.create(name() + "[neg]");
+
+    for (int r = 0; r < size(); r++) {
+      float value = data[r];
+      newColumn.set(r, value * -1);
+    }
+    return newColumn;
+  }
+
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
   @Override
@@ -294,5 +447,21 @@ public class FloatColumn extends AbstractColumn {
       resize();
     }
     data[r] = value;
+  }
+
+  public static float multiply(float a, float b) {
+    return a * b;
+  }
+
+  public static float divide(float a, float b) {
+    return a / b;
+  }
+
+  public static float mod(float a, float b) {
+    return a % b;
+  }
+
+  public static float subtract(float a, float b) {
+    return a - b;
   }
 }
