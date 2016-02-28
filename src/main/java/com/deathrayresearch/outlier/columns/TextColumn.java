@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -10,7 +11,7 @@ import java.util.Comparator;
 /**
  * A column in a base table that contains float values
  */
-public class TextColumn extends AbstractColumn implements StringMapUtils {
+public class TextColumn extends AbstractColumn implements StringMapUtils, StringFilters {
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 

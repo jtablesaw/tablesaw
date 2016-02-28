@@ -1,7 +1,9 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import com.deathrayresearch.outlier.util.DictionaryMap;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -22,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * A column in a base table that contains float values
  */
-public class CategoryColumn extends AbstractColumn {
+public class CategoryColumn extends AbstractColumn implements StringMapUtils, StringFilters {
 
   public static final String MISSING_VALUE = (String) ColumnType.CAT.getMissingValue();
 
@@ -272,203 +274,5 @@ public class CategoryColumn extends AbstractColumn {
 
   public DictionaryMap dictionaryMap() {
     return lookupTable;
-  }
-
-  public RoaringBitmap equalToIgnoringCase(String string) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (next.endsWith(string)) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap startsWith(String string) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (next.startsWith(string)) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap endsWith(String string) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (next.endsWith(string)) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap contains(String string) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (next.contains(string)) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap matchesRegex(String string) {
-    Pattern p = Pattern.compile(string);
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      Matcher m = p.matcher(next);
-      if (m.matches()) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap empty() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (next.isEmpty()) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap isAlpha() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (StringUtils.isAlpha(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap isNumeric() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (StringUtils.isNumeric(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap isAlphaNumeric() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (StringUtils.isAlphanumeric(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap isUpperCase() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (StringUtils.isAllUpperCase(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap isLowerCase() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (StringUtils.isAllLowerCase(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap hasLengthEqualTo(int lengthChars) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (next.length() == lengthChars) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap hasLengthLessThan(int lengthChars) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (next.length() < lengthChars) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
-  }
-
-  public RoaringBitmap hasLengthGreaterThan(int lengthChars) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    while (hasNext()) {
-      String next = next();
-      if (next.length() > lengthChars) {
-        results.add(i);
-      }
-      i++;
-    }
-    reset();
-    return results;
   }
 }
