@@ -7,7 +7,8 @@ a set of tools for data manipulation, and an integrated column-oriented storage 
 With Tablesaw, you can import, sort, transform, filter and summarize tables of over 100 million rows on a laptop. 
 (Some tests work today on columns of 1 billion records; more tests at this scale will be added.)
 To get here, we've taken tools and tricks developed for high-frequency trading (e.g. primitive-backed arrays) and 
-data warehouses (e.g. compressed, column-oriented storage), and used them to maximize what you can do in a single VM.
+data warehouses (e.g. compressed, column-oriented storage and data structures), 
+and used them to maximize what you can do in a single VM.
 
 The intent is to make all but the biggest data wrangling jobs approachable without the complexity of distributed computing (HDFS, Hadoop, etc.). 
 Analysis is more productive because there's less engineering overhead and shorter iteration cycles, and the fluent API is designed to let developers express 
