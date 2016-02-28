@@ -119,16 +119,16 @@ public class PackedLocalDateTime {
     );
   }
 
-  public static int getDayOfYear(long packedDate) {
-    return getMonth(packedDate).firstDayOfYear(isLeapYear(packedDate)) + getDayOfMonth(packedDate) - 1;
+  public static int getDayOfYear(long packedDateTime) {
+    return getMonth(packedDateTime).firstDayOfYear(isLeapYear(packedDateTime)) + getDayOfMonth(packedDateTime) - 1;
   }
 
-  public static boolean isLeapYear(long packedDate) {
-    return IsoChronology.INSTANCE.isLeapYear(getYear(packedDate));
+  public static boolean isLeapYear(long packedDateTime) {
+    return IsoChronology.INSTANCE.isLeapYear(getYear(packedDateTime));
   }
 
-  public static Month getMonth(long packedDate) {
-    return Month.of(getMonthValue(packedDate));
+  public static Month getMonth(long packedDateTime) {
+    return Month.of(getMonthValue(packedDateTime));
   }
 
   public static int lengthOfMonth(long packedDateTime) {
@@ -150,143 +150,141 @@ public class PackedLocalDateTime {
   }
 
 
-  public static DayOfWeek getDayOfWeek(int packedDate) {
-    int dow0 = (int) Math.floorMod(toEpochDay(packedDate) + 3, 7);
+  public static DayOfWeek getDayOfWeek(long packedDateTime) {
+    int dow0 = (int) Math.floorMod(toEpochDay(packedDateTime) + 3, 7);
     return DayOfWeek.of(dow0 + 1);
   }
 
-  private static long toEpochDay(int packedDateTime) {
+  private static long toEpochDay(long packedDateTime) {
     return PackedLocalDate.toEpochDay(date(packedDateTime));
   }
 
-  public static boolean isInQ1(int packedDate) {
-    Month month = getMonth(packedDate);
+  public static boolean isInQ1(long packedDateTime) {
+    Month month = getMonth(packedDateTime);
     return month == Month.JANUARY ||
         month == Month.FEBRUARY ||
         month == Month.MARCH;
   }
 
-  public static boolean isInQ2(int packedDate) {
-    Month month = getMonth(packedDate);
+  public static boolean isInQ2(long packedDateTime) {
+    Month month = getMonth(packedDateTime);
     return month == Month.APRIL ||
         month == Month.MAY ||
         month == Month.JUNE;
   }
-  public static boolean isInQ3(int packedDate) {
-    Month month = getMonth(packedDate);
+  public static boolean isInQ3(long packedDateTime) {
+    Month month = getMonth(packedDateTime);
     return month == Month.JULY ||
         month == Month.AUGUST ||
         month == Month.SEPTEMBER;
   }
-  public static boolean isInQ4(int packedDate) {
-    Month month = getMonth(packedDate);
+  public static boolean isInQ4(long packedDateTime) {
+    Month month = getMonth(packedDateTime);
     return month == Month.OCTOBER ||
         month == Month.NOVEMBER ||
         month == Month.DECEMBER;
   }
 
-  public static boolean isAfter(int packedDate, int value) {
-    return packedDate > value;
+  public static boolean isAfter(long packedDateTime, long value) {
+    return packedDateTime > value;
   }
 
-  public static boolean isBefore(int packedDate, int value) {
-    return packedDate < value;
+  public static boolean isBefore(long packedDateTime, long value) {
+    return packedDateTime < value;
   }
 
-  public static boolean isSunday(int packedDate) {
-    DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
+  public static boolean isSunday(long packedDateTime) {
+    DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
     return dayOfWeek == DayOfWeek.SUNDAY;
   }
 
-  public static boolean isMonday(int packedDate) {
-    DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
+  public static boolean isMonday(long packedDateTime) {
+    DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
     return dayOfWeek == DayOfWeek.MONDAY;
   }
 
-  public static boolean isTuesday(int packedDate) {
-    DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
+  public static boolean isTuesday(long packedDateTime) {
+    DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
     return dayOfWeek == DayOfWeek.TUESDAY;
   }
 
-  public static boolean isWednesday(int packedDate) {
-    DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
+  public static boolean isWednesday(long packedDateTime) {
+    DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
     return dayOfWeek == DayOfWeek.WEDNESDAY;
   }
 
-  public static boolean isThursday(int packedDate) {
-    DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
+  public static boolean isThursday(long packedDateTime) {
+    DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
     return dayOfWeek == DayOfWeek.THURSDAY;
   }
 
-  public static boolean isFriday(int packedDate) {
-    DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
+  public static boolean isFriday(long packedDateTime) {
+    DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
     return dayOfWeek == DayOfWeek.FRIDAY;
   }
 
-  public static boolean isSaturday(int packedDate) {
-    DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
+  public static boolean isSaturday(long packedDateTime) {
+    DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
     return dayOfWeek == DayOfWeek.SATURDAY;
   }
 
-  public static boolean isFirstDayOfMonth(int packedDate) {
-    return getDayOfMonth(packedDate) == 1;
+  public static boolean isFirstDayOfMonth(long packedDateTime) {
+    return getDayOfMonth(packedDateTime) == 1;
   }
 
-  public static boolean isInJanuary(int packedDate) {
-    return getMonth(packedDate) == Month.JANUARY;
+  public static boolean isInJanuary(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.JANUARY;
   }
 
-  public static boolean isInFebruary(int packedDate) {
-    return getMonth(packedDate) == Month.FEBRUARY;
+  public static boolean isInFebruary(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.FEBRUARY;
   }
 
-  public static boolean isInMarch(int packedDate) {
-    return getMonth(packedDate) == Month.MARCH;
+  public static boolean isInMarch(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.MARCH;
   }
 
-  public static boolean isInApril(int packedDate) {
-    return getMonth(packedDate) == Month.APRIL;
+  public static boolean isInApril(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.APRIL;
   }
 
-  public static boolean isInMay(int packedDate) {
-    return getMonth(packedDate) == Month.MAY;
+  public static boolean isInMay(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.MAY;
   }
 
-  public static boolean isInJune(int packedDate) {
-    return getMonth(packedDate) == Month.JUNE;
+  public static boolean isInJune(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.JUNE;
   }
 
-  public static boolean isInJuly(int packedDate) {
-    return getMonth(packedDate) == Month.JULY;
+  public static boolean isInJuly(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.JULY;
   }
 
-  public static boolean isInAugust(int packedDate) {
-    return getMonth(packedDate) == Month.AUGUST;
+  public static boolean isInAugust(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.AUGUST;
   }
 
-  public static boolean isInSeptember(int packedDate) {
-    return getMonth(packedDate) == Month.SEPTEMBER;
+  public static boolean isInSeptember(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.SEPTEMBER;
   }
 
-  public static boolean isInOctober(int packedDate) {
-    return getMonth(packedDate) == Month.OCTOBER;
+  public static boolean isInOctober(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.OCTOBER;
   }
 
-  public static boolean isInNovember(int packedDate) {
-    return getMonth(packedDate) == Month.NOVEMBER;
+  public static boolean isInNovember(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.NOVEMBER;
   }
 
-  public static boolean isInDecember(int packedDate) {
-    return getMonth(packedDate) == Month.DECEMBER;
+  public static boolean isInDecember(long packedDateTime) {
+    return getMonth(packedDateTime) == Month.DECEMBER;
   }
 
-  public static boolean isLastDayOfMonth(int packedDate) {
-    return getDayOfMonth(packedDate) == lengthOfMonth(packedDate);
+  public static boolean isLastDayOfMonth(long packedDateTime) {
+    return getDayOfMonth(packedDateTime) == lengthOfMonth(packedDateTime);
   }
 
-  public static boolean isInYear(int next, int year) {
-    return getYear(next) == year;
+  public static boolean isInYear(long packedDateTime, int year) {
+    return getYear(packedDateTime) == year;
   }
-
-
 }
