@@ -5,17 +5,10 @@ import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
-import org.apache.commons.math3.exception.MathIllegalArgumentException;
-import org.apache.commons.math3.exception.NotPositiveException;
-import org.apache.commons.math3.exception.NullArgumentException;
-import org.apache.commons.math3.exception.util.LocalizedFormats;
-import org.apache.commons.math3.stat.Frequency;
-import org.apache.commons.math3.stat.StatUtils;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -383,7 +376,7 @@ public class FloatColumn extends AbstractColumn {
     FloatColumn result = FloatColumn.create(name() + " % " + column2.name());
 
     for (int r = 0; r < size(); r++) {
-      result.set(r, mod(data[r], column2.data[r]));
+      result.set(r, data[r] % column2.data[r]);
     }
 
     return result;
@@ -394,7 +387,7 @@ public class FloatColumn extends AbstractColumn {
     FloatColumn result = FloatColumn.create(name() + " - " + column2.name());
 
     for (int r = 0; r < size(); r++) {
-      result.set(r, subtract(data[r], column2.data[r]));
+      result.set(r, data[r] - column2.data[r]);
     }
 
     return result;
@@ -449,19 +442,68 @@ public class FloatColumn extends AbstractColumn {
     data[r] = value;
   }
 
-  public static float multiply(float a, float b) {
-    return a * b;
+  RoaringBitmap isCloseTo(float target) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      if (Float.compare(next(), target) == 0) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
   }
 
-  public static float divide(float a, float b) {
-    return a / b;
+  RoaringBitmap isCloseTo(double target) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      if (Double.compare(next(), 0.0) == 0) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
   }
 
-  public static float mod(float a, float b) {
-    return a % b;
+  RoaringBitmap isPositive() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      if (next() > 0.0) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
   }
 
-  public static float subtract(float a, float b) {
-    return a - b;
+  RoaringBitmap isNegative() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      if (next() < 0.0) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  RoaringBitmap isNoNegative() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      if (next() >= 0.0) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
   }
 }
