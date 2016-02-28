@@ -9,9 +9,9 @@ import org.roaringbitmap.RoaringBitmap;
 /**
  *
  */
-public class LocalDateIsInQ2 extends ColumnFilter {
+public class LocalDateIsMonday extends ColumnFilter {
 
-  public LocalDateIsInQ2(ColumnReference reference) {
+  public LocalDateIsMonday(ColumnReference reference) {
     super(reference);
   }
 
@@ -19,6 +19,6 @@ public class LocalDateIsInQ2 extends ColumnFilter {
   public RoaringBitmap apply(Relation relation) {
 
     LocalDateColumn dateColumn = (LocalDateColumn) relation.column(columnReference().getColumnName());;
-    return dateColumn.isInQ2();
+    return dateColumn.isMonday();
   }
 }

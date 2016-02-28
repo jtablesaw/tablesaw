@@ -11,13 +11,9 @@ import org.roaringbitmap.RoaringBitmap;
  */
 public class LocalDateIsInQ4 extends ColumnFilter {
 
-
-  public LocalDateIsInQ4(ColumnReference reference, int value) {
+  public LocalDateIsInQ4(ColumnReference reference) {
     super(reference);
-    this.value = value;
   }
-
-  int value;
 
   @Override
   public RoaringBitmap apply(Relation relation) {

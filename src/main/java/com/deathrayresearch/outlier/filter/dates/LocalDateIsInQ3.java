@@ -6,21 +6,15 @@ import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.filter.ColumnFilter;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.time.LocalDate;
-import java.time.Month;
-
 /**
  *
  */
 public class LocalDateIsInQ3 extends ColumnFilter {
 
 
-  public LocalDateIsInQ3(ColumnReference reference, int value) {
+  public LocalDateIsInQ3(ColumnReference reference) {
     super(reference);
-    this.value = value;
   }
-
-  int value;
 
   @Override
   public RoaringBitmap apply(Relation relation) {

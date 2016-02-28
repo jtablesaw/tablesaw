@@ -426,4 +426,339 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     reset();
     return results;
   }
+
+  public RoaringBitmap isAfter(int value) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isAfter(next, value)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isBefore(int value) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isBefore(next, value)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isMonday() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isMonday(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isTuesday() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isTuesday(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isWednesday() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isWednesday(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+  public RoaringBitmap isThursday() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isThursday(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isFriday() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isFriday(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isSaturday() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isSaturday(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isSunday() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isSunday(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInJanuary() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInJanuary(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInFebruary() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInFebruary(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInMarch() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInMarch(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInApril() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInApril(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInMay() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInMay(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInJune() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInJune(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInJuly() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInJuly(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInAugust() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInAugust(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInSeptember() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInSeptember(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInOctober() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInOctober(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInNovember() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInNovember(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInDecember() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInDecember(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isFirstDayOfMonth() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isFirstDayOfMonth(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isLastDayOfMonth() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isLastDayOfMonth(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isInYear(int year) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (PackedLocalDate.isInYear(next, year)) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
 }
