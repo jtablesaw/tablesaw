@@ -442,6 +442,8 @@ public class FloatColumn extends AbstractColumn {
     data[r] = value;
   }
 
+  // TODO(lwhite): Reconsider the implementation of this functionality to allow user to provide a specific max error.
+  // TODO(lwhite): continued: Also see section in Effective Java on floating point comparisons.
   RoaringBitmap isCloseTo(float target) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;

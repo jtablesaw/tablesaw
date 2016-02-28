@@ -2,9 +2,9 @@ Tablesaw
 =======
    
 Tablesaw is the replacement for Outlier. It's a high-performance, in-memory, table-like data structure, 
-a set of tools for data manipulation, and an integrated column-oriented storage format. 
+a set of tools for data manipulation, and an integrated, column-oriented storage format. 
 
-With Tablesaw, you can import, sort, transform, filter and summarize tables of over 100 million rows on a laptop. 
+With Tablesaw, you can import, sort, transform, filter, and summarize tables of over 100 million rows on a laptop. 
 (Some tests work today on columns of 1 billion records; more tests at this scale will be added.)
 To get here, we've taken tools and tricks developed for high-frequency trading (e.g. primitive-backed arrays) and 
 data warehouses (e.g. compressed, column-oriented storage and data structures), 

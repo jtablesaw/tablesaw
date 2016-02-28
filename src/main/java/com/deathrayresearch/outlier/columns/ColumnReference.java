@@ -15,6 +15,9 @@ import com.deathrayresearch.outlier.filter.IntLessThan;
 import com.deathrayresearch.outlier.filter.IntLessThanOrEqualTo;
 import com.deathrayresearch.outlier.filter.StringEqualTo;
 import com.deathrayresearch.outlier.filter.TimeEqualTo;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsMonday;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsSunday;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsTuesday;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -88,5 +91,16 @@ public class ColumnReference {
 
   public String getColumnName() {
     return columnName;
+  }
+
+  public Filter isSunday(LocalDate date) {
+    return new LocalDateIsSunday(this);
+  }
+
+  public Filter isMonday(LocalDate date) {
+    return new LocalDateIsMonday(this);
+  }
+  public Filter isTuesday(LocalDate date) {
+    return new LocalDateIsTuesday(this);
   }
 }

@@ -17,7 +17,6 @@ import java.util.List;
  */
 public interface Relation {
 
-
   void setName(String name);
 
   default boolean isEmpty() {
