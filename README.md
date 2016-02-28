@@ -1,15 +1,22 @@
-ColumnStorm
+Tablesaw
 =======
    
-ColumnStorm is revised version of Outlier. Outlier is a high-performance, in-memory, table-like data structure, 
-file-format, and tools for data manipulation. 
-With Outlier, you can import, sort, transform, filter and summarize tables of over 100 million rows on a laptop. 
-We've taken tools and tricks developed for high-frequency trading (e.g. primitive-backed arrays) and 
-data warehouses (e.g. compressed, column-oriented storage), and used them to maximize what you can do in a single VM. 
+Tablesaw is the replacement for Outlier. It's a high-performance, in-memory, table-like data structure, 
+a set of tools tools for data manipulation, and an integrated column-oriented storage format. 
 
-Now all but the biggest jobs can be done without the complexity of distributed computing (HDFS, Hadoop, etc.). 
+With Tablesaw, you can import, sort, transform, filter and summarize tables of over 100 million rows on a laptop. 
+(Currently, some of the tests work on columns of 1 billion records, and more tests at this scale will be added.)
+To get here, we've taken tools and tricks developed for high-frequency trading (e.g. primitive-backed arrays) and 
+data warehouses (e.g. compressed, column-oriented storage), and used them to maximize what you can do in a single VM.
+
+The intent is to make all but the biggest data wrangling jobs approachable without the complexity of distributed computing (HDFS, Hadoop, etc.). 
 Analysis is more productive because there's less engineering overhead and shorter iteration cycles, and the fluent API is designed to let developers express 
-operations in a concise and readable fashion.
+operations in a concise and readable fashion. 
+
+While Tablesaw provides general-purpose analytic support, the goal is to provide especially rich functionality for 
+working with time-series, including specialized column types for local dates, times and datetimes (combined). 
+
+At the same time, we want to provide a degree of usability that is at least the equal of Pandas and R data-frames.
 
 Better yet, with Java 9, you'll be able to do your work interactively in the REPL, without writing a bunch of code before you get started. 
 
@@ -125,15 +132,16 @@ CsvWriter.write("filtered_bus_stops.csv", f);
 
 And there you have it. 
 
-This is just the beginning of what Outlier can do. Other features include:
+This is just the beginning of what Tablesaw can do. Other features include:
 
 * Powerful Group-by functionality (aka: Split, Aggregate, Combine) 
 * Map arbitrary lambda expressions over tables
-* Load data direct from an RDBMS
 
 More advanced operations are described on the project web site:
  https://javadatascience.wordpress.com
  
 ## A work-in-progress
-Outlier is still in an experimental state, with a production release planned to roughly coincide with the
- release of Java 9 in 2017.
+Tablesaw is in an experimental state, with a production release planned for late 2016. 
+Not all of the functionality of Outlier has been implemented yet, 
+ and a great deal of additional functionality is planned, including window operations (like rolling averages), 
+ outlier detection, and integrated machine-learning.
