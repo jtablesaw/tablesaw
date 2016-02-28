@@ -19,6 +19,9 @@ import java.time.LocalTime;
  */
 public class PackedLocalTime {
 
+  public static final int MIDNIGHT = pack(LocalTime.MIDNIGHT);
+  public static final int NOON = pack(LocalTime.NOON);
+
   public static byte getHour(int time) {
     return (byte) (time >> 24);
   }
@@ -118,5 +121,29 @@ public class PackedLocalTime {
         Strings.padStart(Byte.toString(minuteByte), 2, '0'),
         Strings.padStart(Integer.toString(second), 2, '0'));
 
+  }
+
+  public static boolean isMidnight(int packedTime) {
+    return packedTime == MIDNIGHT;
+  }
+
+  public static boolean isNoon(int packedTime) {
+    return packedTime == NOON;
+  }
+
+  /**
+   * Returns true if the time is in the AM or "before noon".
+   * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
+   */
+  public static boolean AM(int packedTime) {
+    return packedTime < NOON;
+  }
+
+  /**
+   * Returns true if the time is in the PM or "after noon".
+   * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
+   */
+  public static boolean PM(int packedTime) {
+    return packedTime >= NOON;
   }
 }

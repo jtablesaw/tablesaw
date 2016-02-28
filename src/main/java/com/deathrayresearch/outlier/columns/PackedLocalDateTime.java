@@ -287,4 +287,28 @@ public class PackedLocalDateTime {
   public static boolean isInYear(long packedDateTime, int year) {
     return getYear(packedDateTime) == year;
   }
+
+  public static boolean isMidnight(long packedDateTime) {
+    return PackedLocalTime.isMidnight(time(packedDateTime));
+  }
+
+  public static boolean isNoon(long packedDateTime) {
+    return PackedLocalTime.isNoon(time(packedDateTime));
+  }
+
+  /**
+   * Returns true if the time is in the AM or "before noon".
+   * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
+   */
+  public static boolean AM(long packedDateTime) {
+    return PackedLocalTime.AM(time(packedDateTime));
+  }
+
+  /**
+   * Returns true if the time is in the PM or "after noon".
+   * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
+   */
+  public static boolean PM(long packedDateTime) {
+    return PackedLocalTime.PM(time(packedDateTime));
+  }
 }
