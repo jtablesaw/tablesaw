@@ -268,4 +268,88 @@ public class IntColumn extends AbstractColumn {
     }
     return min;
   }
+
+  public RoaringBitmap isPositive() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (next > 0) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isNegative() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (next < 0) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isNonNegative() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (next >= 0) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isZero() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if (next == 0) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isEven() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if ((next & 1) == 0 ) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
+
+  public RoaringBitmap isOdd() {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    while (hasNext()) {
+      int next = next();
+      if ((next & 1) != 0 ) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
 }
