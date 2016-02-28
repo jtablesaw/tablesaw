@@ -17,6 +17,7 @@ public class View implements Relation {
   private Relation table;
   private final List<Integer> columnIds = new ArrayList<>();
   private final RoaringBitmap rowMap;
+  private final int mask[];
   private final String id = UUID.randomUUID().toString();
 
   public View(Relation table, String... columnName) {
@@ -26,6 +27,7 @@ public class View implements Relation {
     }
     rowMap = new RoaringBitmap();
     rowMap.add(0, table.rowCount());
+    mask = rowMap.toArray();
   }
 
   public View(Table table, int headRows) {
@@ -35,6 +37,7 @@ public class View implements Relation {
     }
     rowMap = new RoaringBitmap();
     rowMap.add(0, headRows);
+    mask = rowMap.toArray();
   }
 
   public View(View view, int headRows) {
@@ -48,6 +51,7 @@ public class View implements Relation {
     while (i < headRows && it.hasNext()) {
       rowMap.add(it.next());
     }
+    mask = rowMap.toArray();
   }
 
   public View(Relation table, List<Column> columnSelection, RoaringBitmap rowSelection) {
@@ -56,6 +60,7 @@ public class View implements Relation {
     for (Column aColumnSelection : columnSelection) {
       this.columnIds.add(table.columnIndex(aColumnSelection));
     }
+    mask = rowMap.toArray();
   }
 
   public View(Relation table, List<Column> columnSelection) {
@@ -64,6 +69,7 @@ public class View implements Relation {
     for (Column aColumnSelection : columnSelection) {
       this.columnIds.add(table.columnIndex(aColumnSelection));
     }
+    mask = rowMap.toArray();
   }
 
   public View where(RoaringBitmap bitmap) {
@@ -141,6 +147,11 @@ public class View implements Relation {
       names.add(table.column(columnId).name());
     }
     return names;
+  }
+
+  @Override
+  public int row(int r) {
+    return mask[r];
   }
 
   /**

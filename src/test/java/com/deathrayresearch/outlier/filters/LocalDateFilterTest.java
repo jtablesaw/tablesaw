@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.filters;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.columns.ColumnReference;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.filter.dates.LocalDateIsFirstDayOfTheMonth;
@@ -16,6 +17,7 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 
+import static com.deathrayresearch.outlier.QueryUtil.valueOf;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
@@ -108,5 +110,16 @@ public class LocalDateFilterTest {
     assertFalse(bitmap.contains(0));
     assertFalse(bitmap.contains(1));
     assertFalse(bitmap.contains(2));
+  }
+
+  @Test
+  public void testFilters() {
+    View filtered = table.select().where(valueOf("testing").isMonday()).run();
+    print(filtered.print());
+    print(filtered.head(1).print());
+  }
+
+  private void print(Object o) {
+    System.out.println(o);
   }
 }

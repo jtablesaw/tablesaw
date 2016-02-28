@@ -15,9 +15,34 @@ import com.deathrayresearch.outlier.filter.IntLessThan;
 import com.deathrayresearch.outlier.filter.IntLessThanOrEqualTo;
 import com.deathrayresearch.outlier.filter.StringEqualTo;
 import com.deathrayresearch.outlier.filter.TimeEqualTo;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsAfter;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsBefore;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsFirstDayOfTheMonth;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsFriday;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInApril;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInAugust;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInDecember;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInFebruary;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInJanuary;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInJuly;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInJune;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInMarch;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInMay;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInNovember;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInOctober;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInQ1;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInQ2;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInQ3;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInQ4;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInSeptember;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsInYear;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsLastDayOfTheMonth;
 import com.deathrayresearch.outlier.filter.dates.LocalDateIsMonday;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsSaturday;
 import com.deathrayresearch.outlier.filter.dates.LocalDateIsSunday;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsThursday;
 import com.deathrayresearch.outlier.filter.dates.LocalDateIsTuesday;
+import com.deathrayresearch.outlier.filter.dates.LocalDateIsWednesday;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -93,14 +118,114 @@ public class ColumnReference {
     return columnName;
   }
 
-  public Filter isSunday(LocalDate date) {
+  public Filter isSunday() {
     return new LocalDateIsSunday(this);
   }
 
-  public Filter isMonday(LocalDate date) {
+  public Filter isMonday() {
     return new LocalDateIsMonday(this);
   }
-  public Filter isTuesday(LocalDate date) {
+  public Filter isTuesday() {
     return new LocalDateIsTuesday(this);
+  }
+
+  public Filter isWednesday() {
+    return new LocalDateIsWednesday(this);
+  }
+
+  public Filter isThursday() {
+    return new LocalDateIsThursday(this);
+  }
+
+  public Filter isFriday() {
+    return new LocalDateIsFriday(this);
+  }
+
+  public Filter isSaturday() {
+    return new LocalDateIsSaturday(this);
+  }
+
+  public Filter isInJanuary() {
+    return new LocalDateIsInJanuary(this);
+  }
+
+  public Filter isInFebruary() {
+    return new LocalDateIsInFebruary(this);
+  }
+
+  public Filter isInMarch() {
+    return new LocalDateIsInMarch(this);
+  }
+
+  public Filter isInApril() {
+    return new LocalDateIsInApril(this);
+  }
+
+  public Filter isInMay() {
+    return new LocalDateIsInMay(this);
+  }
+
+  public Filter isInJune() {
+    return new LocalDateIsInJune(this);
+  }
+
+  public Filter isInJuly() {
+    return new LocalDateIsInJuly(this);
+  }
+
+  public Filter isInAugust() {
+    return new LocalDateIsInAugust(this);
+  }
+
+  public Filter isInSeptember() {
+    return new LocalDateIsInSeptember(this);
+  }
+
+  public Filter isInOctober() {
+    return new LocalDateIsInOctober(this);
+  }
+
+  public Filter isInNovember() {
+    return new LocalDateIsInNovember(this);
+  }
+
+  public Filter isInDecember() {
+    return new LocalDateIsInDecember(this);
+  }
+
+  public Filter isInQ1() {
+    return new LocalDateIsInQ1(this);
+  }
+
+  public Filter isInQ2() {
+    return new LocalDateIsInQ2(this);
+  }
+
+  public Filter isInQ3() {
+    return new LocalDateIsInQ3(this);
+  }
+
+  public Filter isInQ4() {
+    return new LocalDateIsInQ4(this);
+  }
+
+  public Filter isFirstDayOfMonth() {
+    return new LocalDateIsFirstDayOfTheMonth(this);
+  }
+
+  public Filter isLastDayOfMonth() {
+    return new LocalDateIsLastDayOfTheMonth(this);
+  }
+
+  public Filter isInYear(int year) {
+    return new LocalDateIsInYear(this, year);
+  }
+
+  public Filter isBefore(LocalDate date) {
+    return new LocalDateIsBefore(this, PackedLocalDate.pack(date));
+  }
+
+  public Filter isAfter(LocalDate date) {
+    return new LocalDateIsAfter(this, PackedLocalDate.pack(date));
   }
 }

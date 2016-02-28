@@ -111,6 +111,11 @@ public class Table implements Relation {
     return names;
   }
 
+  @Override
+  public int row(int r) {
+    return r;
+  }
+
 
   @Override
   public String get(int c, int r) {
