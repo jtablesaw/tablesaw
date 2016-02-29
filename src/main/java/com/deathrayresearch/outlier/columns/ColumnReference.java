@@ -290,7 +290,7 @@ public class ColumnReference {
   public Filter endsWith(String string) {
     return new TextEndsWith(this, string);
   }
-  
+
   public Filter contains(String string) {
     return new TextContains(this, string);
   }
