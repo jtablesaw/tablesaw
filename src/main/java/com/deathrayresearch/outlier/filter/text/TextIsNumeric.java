@@ -1,8 +1,10 @@
 package com.deathrayresearch.outlier.filter.text;
 
-
 import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.columns.CategoryColumn;
+import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.ColumnReference;
+import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.columns.TextColumn;
 import com.deathrayresearch.outlier.filter.ColumnFilter;
 import org.roaringbitmap.RoaringBitmap;
@@ -21,8 +23,12 @@ public class TextIsNumeric extends ColumnFilter {
 
   @Override
   public RoaringBitmap apply(Relation relation) {
-
-    TextColumn textColumn = (TextColumn) relation.column(columnReference().getColumnName());
+    Column column = relation.column(columnReference().getColumnName());
+    if (column.type() == ColumnType.CAT) {
+      CategoryColumn textColumn = (CategoryColumn) column;
+      return textColumn.isNumeric();
+    }
+    TextColumn textColumn = (TextColumn) column;
     return textColumn.isNumeric();
   }
 }

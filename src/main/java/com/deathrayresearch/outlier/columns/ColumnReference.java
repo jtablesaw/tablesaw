@@ -139,6 +139,7 @@ public class ColumnReference {
   public Filter isMonday() {
     return new LocalDateIsMonday(this);
   }
+
   public Filter isTuesday() {
     return new LocalDateIsTuesday(this);
   }
