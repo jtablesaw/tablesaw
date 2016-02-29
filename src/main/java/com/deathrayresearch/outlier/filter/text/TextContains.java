@@ -13,16 +13,19 @@ import javax.annotation.concurrent.Immutable;
  * A filter that selects cells in which all text is uppercase
  */
 @Immutable
-public class TextIsUpperCase extends ColumnFilter {
+public class TextContains extends ColumnFilter {
 
-  public TextIsUpperCase(ColumnReference reference) {
+  private String string;
+
+  public TextContains(ColumnReference reference, String string) {
     super(reference);
+    this.string = string;
   }
 
   @Override
   public RoaringBitmap apply(Relation relation) {
 
     TextColumn textColumn = (TextColumn) relation.column(columnReference().getColumnName());
-    return textColumn.isUpperCase();
+    return textColumn.contains(string);
   }
 }

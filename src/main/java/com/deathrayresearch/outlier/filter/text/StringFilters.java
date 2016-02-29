@@ -185,7 +185,7 @@ public interface StringFilters {
     return results;
   }
 
-  default RoaringBitmap hasLengthLessThan(int lengthChars) {
+  default RoaringBitmap isShorterThan(int lengthChars) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     while (hasNext()) {
@@ -199,7 +199,7 @@ public interface StringFilters {
     return results;
   }
 
-  default RoaringBitmap hasLengthGreaterThan(int lengthChars) {
+  default RoaringBitmap isLongerThan(int lengthChars) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     while (hasNext()) {

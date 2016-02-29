@@ -43,6 +43,20 @@ import com.deathrayresearch.outlier.filter.dates.LocalDateIsSunday;
 import com.deathrayresearch.outlier.filter.dates.LocalDateIsThursday;
 import com.deathrayresearch.outlier.filter.dates.LocalDateIsTuesday;
 import com.deathrayresearch.outlier.filter.dates.LocalDateIsWednesday;
+import com.deathrayresearch.outlier.filter.text.TextContains;
+import com.deathrayresearch.outlier.filter.text.TextEndsWith;
+import com.deathrayresearch.outlier.filter.text.TextEqualToIgnoringCase;
+import com.deathrayresearch.outlier.filter.text.TextHasLengthEqualTo;
+import com.deathrayresearch.outlier.filter.text.TextIsAlpha;
+import com.deathrayresearch.outlier.filter.text.TextIsAlphaNumeric;
+import com.deathrayresearch.outlier.filter.text.TextIsEmpty;
+import com.deathrayresearch.outlier.filter.text.TextIsLongerThan;
+import com.deathrayresearch.outlier.filter.text.TextIsLowerCase;
+import com.deathrayresearch.outlier.filter.text.TextIsNumeric;
+import com.deathrayresearch.outlier.filter.text.TextIsShorterThan;
+import com.deathrayresearch.outlier.filter.text.TextIsUpperCase;
+import com.deathrayresearch.outlier.filter.text.TextMatchesRegex;
+import com.deathrayresearch.outlier.filter.text.TextStartsWith;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -227,5 +241,61 @@ public class ColumnReference {
 
   public Filter isAfter(LocalDate date) {
     return new LocalDateIsAfter(this, PackedLocalDate.pack(date));
+  }
+
+  public Filter isUpperCase() {
+    return new TextIsUpperCase(this);
+  }
+
+  public Filter isLowerCase() {
+    return new TextIsLowerCase(this);
+  }
+
+  public Filter isAlpha() {
+    return new TextIsAlpha(this);
+  }
+
+  public Filter isAlphaNumeric() {
+    return new TextIsAlphaNumeric(this);
+  }
+
+  public Filter isNumeric() {
+    return new TextIsNumeric(this);
+  }
+
+  public Filter isEmpty() {
+    return new TextIsEmpty(this);
+  }
+
+  public Filter isLongerThan(int length) {
+    return new TextIsLongerThan(this, length);
+  }
+
+  public Filter isShorterThan(int length) {
+    return new TextIsShorterThan(this, length);
+  }
+
+  public Filter hasLengthEqualTo(int length) {
+    return new TextHasLengthEqualTo(this, length);
+  }
+
+  public Filter equalToIgnoringCase(String string) {
+    return new TextEqualToIgnoringCase(this, string);
+  }
+
+  public Filter startsWith(String string) {
+    return new TextStartsWith(this, string);
+  }
+
+  public Filter endsWith(String string) {
+    return new TextEndsWith(this, string);
+  }
+  
+  public Filter contains(String string) {
+    return new TextContains(this, string);
+  }
+
+  public Filter matchesRegex(String string) {
+    return new TextMatchesRegex(this, string);
   }
 }

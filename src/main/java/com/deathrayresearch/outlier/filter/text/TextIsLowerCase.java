@@ -22,7 +22,7 @@ public class TextIsLowerCase extends ColumnFilter {
   @Override
   public RoaringBitmap apply(Relation relation) {
 
-    TextColumn textColumn = (TextColumn) relation.column(columnReference().getColumnName());;
+    TextColumn textColumn = (TextColumn) relation.column(columnReference().getColumnName());
     return textColumn.isLowerCase();
   }
 }

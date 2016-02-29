@@ -10,12 +10,12 @@ import org.roaringbitmap.RoaringBitmap;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A filter that selects cells in which all text is uppercase
+ * A filter that selects cells in which all text is lowercase
  */
 @Immutable
-public class TextIsUpperCase extends ColumnFilter {
+public class TextIsEmpty extends ColumnFilter {
 
-  public TextIsUpperCase(ColumnReference reference) {
+  public TextIsEmpty(ColumnReference reference) {
     super(reference);
   }
 
@@ -23,6 +23,6 @@ public class TextIsUpperCase extends ColumnFilter {
   public RoaringBitmap apply(Relation relation) {
 
     TextColumn textColumn = (TextColumn) relation.column(columnReference().getColumnName());
-    return textColumn.isUpperCase();
+    return textColumn.empty();
   }
 }
