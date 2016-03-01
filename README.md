@@ -17,7 +17,7 @@ operations in a concise and readable fashion.
 While Tablesaw provides general-purpose analytic support, the goal is to provide especially rich functionality for 
 working with time-series, including specialized column types for local dates, times and datetimes (combined). 
 
-At the same time, we want to provide a degree of usability that is at least the equal of Pandas and R data-frames.
+At the same time, we want to provide usability at least as good as Pandas and R data-frames.
 
 Better yet, with Java 9, you'll be able to do your work interactively in the REPL, without writing a bunch of code before you get started. 
 

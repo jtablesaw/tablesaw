@@ -5,6 +5,7 @@ import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateTimeMapUtils;
 import com.google.common.base.Strings;
 import net.mintern.primitive.Primitive;
+import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -270,4 +271,17 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return newColumn;
   }
 
+  public RoaringBitmap isEqualTo(LocalDateTime value) {
+    RoaringBitmap results = new RoaringBitmap();
+    long packedLocalDate = PackedLocalDateTime.pack(value);
+    int i = 0;
+    while (hasNext()) {
+      if (packedLocalDate == next()) {
+        results.add(i);
+      }
+      i++;
+    }
+    reset();
+    return results;
+  }
 }
