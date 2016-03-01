@@ -14,6 +14,8 @@ public enum ColumnType {
   LOCAL_DATE(Integer.MIN_VALUE),
   LOCAL_DATE_TIME(Long.MIN_VALUE),
   LOCAL_TIME(-1),
+  PERIOD(Integer.MIN_VALUE),
+  DURATION(Long.MIN_VALUE),
   SKIP(null);
 
   // private final Class<?> clazz;

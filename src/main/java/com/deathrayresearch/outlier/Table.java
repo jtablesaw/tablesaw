@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.PeriodColumn;
 import com.deathrayresearch.outlier.sorting.Sort;
 import com.deathrayresearch.outlier.splitter.functions.Average;
 import com.google.common.base.Preconditions;
@@ -288,5 +289,9 @@ public class Table implements Relation {
 
   public CategoryColumn categoryColumn(String pdDistrict) {
     return (CategoryColumn) column(pdDistrict);
+  }
+
+  public PeriodColumn periodColumn(int i) {
+    return (PeriodColumn) column(i);
   }
 }
