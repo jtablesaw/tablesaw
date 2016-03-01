@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.aggregator.NumReduceUtils;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 /**
  * A column in a base table that contains float values
  */
-public class FloatColumn extends AbstractColumn {
+public class FloatColumn extends AbstractColumn implements NumReduceUtils {
 
   public static final float MISSING_VALUE = (float) ColumnType.FLOAT.getMissingValue();
 
@@ -496,7 +497,7 @@ public class FloatColumn extends AbstractColumn {
     return results;
   }
 
-  RoaringBitmap isNoNegative() {
+  RoaringBitmap isNonNegative() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     while (hasNext()) {
@@ -507,5 +508,14 @@ public class FloatColumn extends AbstractColumn {
     }
     reset();
     return results;
+  }
+
+  public double[] toDoubleArray() {
+    double[] output = new double[data.length];
+    for (int i = 0; i < data.length; i++)
+    {
+      output[i] = data[i];
+    }
+    return output;
   }
 }
