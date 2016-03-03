@@ -333,6 +333,7 @@ public class StorageManager {
     }
   }
 
+  //TODO(lwhite): write the column using dictionary encoding (and integer compression)
   public static void writeColumn(String fileName, CategoryColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos)) {
@@ -345,6 +346,7 @@ public class StorageManager {
     }
   }
 
+  //TODO(lwhite): write the column using integer compression
   public static void writeColumn(String fileName, IntColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -358,6 +360,7 @@ public class StorageManager {
     }
   }
 
+  //TODO(lwhite): write the column using integer compression
   public static void writeColumn(String fileName, LocalDateColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -384,6 +387,7 @@ public class StorageManager {
     }
   }
 
+  //TODO(lwhite): write the column using integer compression
   public static void writeColumn(String fileName, LocalTimeColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -397,6 +401,7 @@ public class StorageManager {
     }
   }
 
+  //TODO(lwhite): write the column using integer compression
   public static void writeColumn(String fileName, PeriodColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -410,6 +415,7 @@ public class StorageManager {
     }
   }
 
+  //TODO(lwhite): write the column using compressed bitmap
   public static void writeColumn(String fileName, BooleanColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName + "_" + column.name());
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
