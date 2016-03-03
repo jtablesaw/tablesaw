@@ -14,6 +14,36 @@ import static com.deathrayresearch.outlier.columns.ColumnType.*;
  */
 public class AirlineDelays {
 
+  private static Table flights2008;
+
+  public static void main(String[] args) throws Exception {
+
+    new AirlineDelays();
+
+    Stopwatch stopwatch = Stopwatch.createStarted();
+    flights2008.sortAscendingOn("Origin", "UniqueCarrier");
+    System.out.println("Sorting " + stopwatch.elapsed(TimeUnit.SECONDS));
+  }
+
+  private AirlineDelays() throws Exception {
+    Stopwatch stopwatch = Stopwatch.createStarted();
+    System.out.println("loading");
+    flights2008 = CsvReader.read("bigdata/2008.csv", reduced_set);
+    System.out.println(String.format("loaded %d records in %d seconds",
+        flights2008.rowCount(),
+        (int) stopwatch.elapsed(TimeUnit.SECONDS)));
+    out(flights2008.shape());
+    out(flights2008.columnNames().toString());
+    flights2008.head(10).print();
+
+    stopwatch.reset().start();
+  }
+
+  private static void out(Object obj) {
+    System.out.println(String.valueOf(obj));
+  }
+
+  // The full set of all available columns in tbe dataset
   static ColumnType[] heading = {
       INTEGER, // year
       INTEGER, // month
@@ -46,75 +76,7 @@ public class AirlineDelays {
       FLOAT  // LateAircraftDelay
   };
 
-  private static Table flights2008;
-
-  public static void main(String[] args) throws Exception {
-
-    new AirlineDelays();
-
-    Stopwatch stopwatch = Stopwatch.createStarted();
-    flights2008.sortAscendingOn("Origin", "UniqueCarrier");
-    System.out.println("Sorting " + stopwatch.elapsed(TimeUnit.SECONDS));
-/*    Table xtab = flights2008.xCount("Origin", "UniqueCarrier");
-    System.out.println("xtabs " + stopwatch.elapsed(TimeUnit.SECONDS));
-*/
-
-/*
-    out("Cross Tab: Origin by Unique Carrier");
-    out(xtab.print());
-    out(xtab.shape());
-*/
-  }
-
-  private AirlineDelays() throws Exception {
-    Stopwatch stopwatch = Stopwatch.createStarted();
-    System.out.println("loading");
-    flights2008 = CsvReader.read("bigdata/2008.csv", reduced_set);
-    System.out.println(String.format("loaded %d records in %d seconds",
-        flights2008.rowCount(),
-        (int) stopwatch.elapsed(TimeUnit.SECONDS)));
-    out(flights2008.shape());
-    out(flights2008.columnNames().toString());
-    flights2008.head(10).print();
-
-    stopwatch.reset().start();
-/*    System.out.println("Selecting");
-
-    Table ord = flights2008.selectIf(
-        both(
-            column("Origin").isEqualTo("ORD"),
-            column("Cancelled").isFalse()));
-
-
-    System.out.println("selecting " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-*/
-/*
-    BooleanColumn depDelayed = ord.when(column("DepDelay").isGreaterThanOrEqualTo(15.0f));
-    depDelayed.setName("DepDelayed");
-    ord.addColumn(depDelayed);
-
-    stopwatch.reset();
-    System.out.println("Extracting hour from localtime");
-    TextColumn hourOfDay = ord.timeColumn("CRSDepTime").hour();
-    hourOfDay.setName("HourOfDay");
-    ord.addColumn(hourOfDay);
-    System.out.println("Extracting hour from localtime " + stopwatch.elapsed(TimeUnit.SECONDS));
-
-    ord = ord.rejectColumns("Cancelled", "Origin");
-
-    out(ord.shape());
-    out("total flights: " + ord.rowCount());
-    out("total delays: " + depDelayed.countTrue());
-
-
-    CsvWriter.write("selected.csv", ord);
-    */
-  }
-
-  private static void out(Object obj) {
-    System.out.println(String.valueOf(obj));
-  }
-
+  // A filtered set of columns
   static ColumnType[] reduced_set = {
       SKIP, // year
       INTEGER, // month

@@ -145,8 +145,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     }
   }
 
-  ;
-
   public void addCell(String object) {
     try {
       add(convert(object));

@@ -85,11 +85,11 @@ public final class TypeUtils {
 
   // These Strings will convert to true booleans
   public static final List<String> TRUE_STRINGS =
-      Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "1");
+      Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "1", "1.00");
 
   // These Strings will convert to true booleans
   public static final List<String> FALSE_STRINGS =
-      Arrays.asList("F", "f", "N", "n", "FALSE", "false", "0");
+      Arrays.asList("F", "f", "N", "n", "FALSE", "false", "0", "0.00");
 
   // Formats that we accept in parsing dates from strings
   // TODO: Add more types, especially dates with month names spelled-out fully.
