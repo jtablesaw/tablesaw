@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -31,6 +32,12 @@ public class LocalTimeColumn extends AbstractColumn {
     return new LocalTimeColumn(name);
   }
 
+  public static LocalTimeColumn create(String fileName, IntArrayList times) {
+    LocalTimeColumn column = new LocalTimeColumn(fileName, times.size());
+    column.data = times.elements();
+    return column;
+  }
+
   private LocalTimeColumn(String name) {
     super(name);
     data = new int[DEFAULT_ARRAY_SIZE];
@@ -55,7 +62,7 @@ public class LocalTimeColumn extends AbstractColumn {
     return pointer < N;
   }
 
-  public float next() {
+  public int next() {
     return data[pointer++];
   }
 
