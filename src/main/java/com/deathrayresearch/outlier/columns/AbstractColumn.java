@@ -1,5 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.store.ColumnMetadata;
+
 import java.util.UUID;
 
 /**

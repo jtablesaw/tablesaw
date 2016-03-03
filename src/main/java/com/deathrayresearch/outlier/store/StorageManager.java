@@ -9,7 +9,6 @@ import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.TableMetadata;
 import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import com.deathrayresearch.outlier.columns.LocalTimeColumn;
 import com.deathrayresearch.outlier.columns.PeriodColumn;

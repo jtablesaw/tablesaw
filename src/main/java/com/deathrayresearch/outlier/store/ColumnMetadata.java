@@ -1,12 +1,13 @@
-package com.deathrayresearch.outlier.columns;
+package com.deathrayresearch.outlier.store;
 
+import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.ColumnType;
 import com.google.gson.Gson;
 
 /**
- *
+ * Data about a specific column used in it's persistence
  */
 public class ColumnMetadata {
-
 
   static final Gson GSON = new Gson();
 
@@ -54,7 +55,6 @@ public class ColumnMetadata {
     if (!id.equals(that.id)) return false;
     if (!name.equals(that.name)) return false;
     return type == that.type;
-
   }
 
   @Override

@@ -1,14 +1,14 @@
-package com.deathrayresearch.outlier;
+package com.deathrayresearch.outlier.store;
 
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.ColumnMetadata;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Data about a specific physical table used in it's persistence
  */
 public class TableMetadata {
 

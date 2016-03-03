@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
+import com.deathrayresearch.outlier.store.TableMetadata;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.store.ColumnMetadata;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
