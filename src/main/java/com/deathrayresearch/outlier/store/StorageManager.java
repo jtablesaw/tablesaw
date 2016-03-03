@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.store;
 
 import com.deathrayresearch.outlier.columns.BooleanColumn;
+import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.columns.FloatColumn;
@@ -9,11 +10,13 @@ import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.TableMetadata;
+import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import com.deathrayresearch.outlier.columns.LocalTimeColumn;
 import com.deathrayresearch.outlier.columns.PeriodColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import org.iq80.snappy.SnappyFramedInputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 
@@ -84,6 +87,9 @@ public class StorageManager {
       case TEXT:
         readTextColumn(fileName, columnName);
         break;
+      case CAT:
+        readCategoryColumn(fileName, columnName);
+        break;
       default:
         throw new RuntimeException("Unhandled column type writing columns");
     }
@@ -145,6 +151,24 @@ public class StorageManager {
     return LocalDateColumn.create(fileName, dates);
   }
 
+  public static LocalDateTimeColumn readLocalDateTimeColumn(String fileName, String column) throws IOException {
+    LongArrayList dates = new LongArrayList();
+    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+         DataInputStream dis = new DataInputStream(sis)) {
+      boolean EOF = false;
+      while (!EOF) {
+        try {
+          long cell = dis.readLong();
+          dates.add(cell);
+        } catch (EOFException e) {
+          EOF = true;
+        }
+      }
+    }
+    return LocalDateTimeColumn.create(fileName, dates);
+  }
+
   public static LocalTimeColumn readLocalTimeColumn(String fileName, String column) throws IOException {
     IntArrayList times = new IntArrayList();
     try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
@@ -183,6 +207,24 @@ public class StorageManager {
 
   public static TextColumn readTextColumn(String fileName, String column) throws IOException {
     TextColumn stringColumn = TextColumn.create(column);
+    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+         DataInputStream dis = new DataInputStream(sis)) {
+      boolean EOF = false;
+      while (!EOF) {
+        try {
+          String cell = dis.readUTF();
+          stringColumn.add(cell);
+        } catch (EOFException e) {
+          EOF = true;
+        }
+      }
+    }
+    return stringColumn;
+  }
+
+  public static CategoryColumn readCategoryColumn(String fileName, String column) throws IOException {
+    CategoryColumn stringColumn = CategoryColumn.create(column);
     try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -246,11 +288,17 @@ public class StorageManager {
         case LOCAL_TIME:
           writeColumn(fileName, (LocalTimeColumn) column);
           break;
+        case LOCAL_DATE_TIME:
+          writeColumn(fileName, (LocalDateTimeColumn) column);
+          break;
         case PERIOD:
-          writeColumn(fileName, (LocalTimeColumn) column);
+          writeColumn(fileName, (PeriodColumn) column);
           break;
         case TEXT:
           writeColumn(fileName, (TextColumn) column);
+          break;
+        case CAT:
+          writeColumn(fileName, (CategoryColumn) column);
           break;
         default:
           throw new RuntimeException("Unhandled column type writing columns");
@@ -285,6 +333,18 @@ public class StorageManager {
     }
   }
 
+  public static void writeColumn(String fileName, CategoryColumn column) throws IOException {
+    try (FileOutputStream fos = new FileOutputStream(fileName);
+         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos)) {
+      while (column.hasNext()) {
+        String cell = column.next();
+        sos.write(cell.getBytes(StandardCharsets.UTF_8));
+      }
+      column.reset();
+      sos.flush();
+    }
+  }
+
   public static void writeColumn(String fileName, IntColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -304,6 +364,19 @@ public class StorageManager {
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
         int cell = column.next();
+        dos.writeFloat(cell);
+      }
+      column.reset();
+      dos.flush();
+    }
+  }
+
+  public static void writeColumn(String fileName, LocalDateTimeColumn column) throws IOException {
+    try (FileOutputStream fos = new FileOutputStream(fileName);
+         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
+         DataOutputStream dos = new DataOutputStream(sos)) {
+      while (column.hasNext()) {
+        long cell = column.next();
         dos.writeFloat(cell);
       }
       column.reset();
@@ -373,7 +446,7 @@ public class StorageManager {
    * @param fileName Expected to be fully specified
    * @throws IOException if the file can not be read
    */
-  public static void writeTableMetada(String fileName, Table table) throws IOException {
+  public static void writeTableMetadata(String fileName, Table table) throws IOException {
     Files.write(Paths.get(fileName), new TableMetadata(table).toString().getBytes());
   }
 

@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateTimeMapUtils;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -87,7 +88,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return pointer < N;
   }
 
-  public float next() {
+  public long next() {
     return data[pointer++];
   }
 
@@ -283,5 +284,11 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     }
     reset();
     return results;
+  }
+
+  public static LocalDateTimeColumn create(String fileName, LongArrayList dateTimes) {
+    LocalDateTimeColumn column = new LocalDateTimeColumn(fileName, dateTimes.size());
+    column.data = dateTimes.elements();
+    return column;
   }
 }
