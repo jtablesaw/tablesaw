@@ -2,7 +2,6 @@ package com.deathrayresearch.outlier.util;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
-import com.deathrayresearch.outlier.io.CsvWriter;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -11,7 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * Utility that takes all CSV files in a folder and combines them into a single file
+ * Utility that takes all CSV files in a folder and combines them into a single file.  The files should all have the
+ * same structure (number and type of columns) and be consistent in having or not having header lines at the beginning
  */
 public class CsvCombiner {
 
