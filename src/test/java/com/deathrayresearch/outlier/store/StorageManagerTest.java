@@ -49,11 +49,6 @@ public class StorageManagerTest {
   }
 
   @Test
-  public void testReadTable() {
-
-  }
-
-  @Test
   public void testWriteTable() throws IOException {
     System.out.println(table.head(5).print());
     Stopwatch stopwatch = Stopwatch.createStarted();
@@ -65,16 +60,15 @@ public class StorageManagerTest {
   }
 
   @Test
-  public void testRead() {
-
-  }
-
-  @Test
-  public void testReadFloatColumn() throws IOException {
+  public void testWriteReadFloatColumn() throws IOException {
     Stopwatch stopwatch = Stopwatch.createStarted();
-    FloatColumn floatColumn1 = StorageManager.readFloatColumn("test_col", "test");
+    StorageManager.writeColumn("testfolder/test_col", floatColumn);
+    System.out.println("Milliseconds to write float col:"  + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+
+    stopwatch = Stopwatch.createStarted();
+    FloatColumn floatColumn1 = StorageManager.readFloatColumn("testfolder/test_col", "test");
     assertEquals(COUNT, floatColumn1.size());
-    System.out.println(stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    System.out.println("Milliseconds to read float col:"  + stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
   public static void main(String[] args) throws Exception {
@@ -95,17 +89,6 @@ public class StorageManagerTest {
     flights2015 = StorageManager.readTable("databases/" + flights2015.id());
     out("Read time from column store: " + stopwatch.elapsed(TimeUnit.SECONDS));
     out(flights2015.head(5).print());
-  }
-
-  @Test
-  public void testWriteRead() throws Exception {
-  }
-
-  @Test
-  public void testWriteColumn() throws IOException {
-    Stopwatch stopwatch = Stopwatch.createStarted();
-    StorageManager.writeColumn("test_col", floatColumn);
-    System.out.println(stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
   private static void out(Object obj) {
