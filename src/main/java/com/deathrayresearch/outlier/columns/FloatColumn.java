@@ -5,6 +5,10 @@ import com.deathrayresearch.outlier.aggregator.NumReduceUtils;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
+import it.unimi.dsi.fastutil.floats.FloatSet;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -44,21 +48,22 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
     return N;
   }
 
-  // TODO(lwhite): Implement column summary()
   @Override
   public Table summary() {
-
-    return null;
+    return StatUtil.stats(this).asTable();
   }
 
   public String describe() {
-    return StatUtil.stats(this);
+    return StatUtil.stats(this).printString();
   }
 
-  // TODO(lwhite): Implement countUnique()
   @Override
   public int countUnique() {
-    return 0;
+    FloatSet floats = new FloatOpenHashSet();
+    for (int i = 0; i < N; i++) {
+      floats.add(data[i]);
+    }
+    return floats.size();
   }
 
   @Override
@@ -242,6 +247,13 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
   public static FloatColumn create(String name) {
     return new FloatColumn(name);
   }
+
+  public static FloatColumn create(String fileName, FloatArrayList floats) {
+    FloatColumn column = new FloatColumn(fileName, floats.size());
+    column.data = floats.elements();
+    return column;
+  }
+
 
   @Override
   public void addCell(String object) {

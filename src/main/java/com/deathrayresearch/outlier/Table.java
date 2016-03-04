@@ -157,7 +157,7 @@ public class Table implements Relation {
    * Returns a new table containing the first {@code nrows} of data in this table
    */
   public View head(int nRows) {
-    return new View(this, nRows);
+    return new View(this, Math.min(nRows, rowCount()));
   }
 
   /**

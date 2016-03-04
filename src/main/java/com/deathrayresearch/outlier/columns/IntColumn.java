@@ -3,7 +3,9 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.sorting.IntComparator;
+import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -151,10 +153,9 @@ public class IntColumn extends AbstractColumn {
     return results;
   }
 
-  // TODO(lwhite): Implement column summary()
   @Override
   public Table summary() {
-    return new Table(name());
+    return StatUtil.stats(this).asTable();
   }
 
   @Override
@@ -351,5 +352,18 @@ public class IntColumn extends AbstractColumn {
     }
     reset();
     return results;
+  }
+
+  public FloatArrayList toFloatArray() {
+    FloatArrayList output = new FloatArrayList(data.length);
+    for (int aData : data) {
+      output.add(aData);
+    }
+    return output;
+  }
+
+  public FloatColumn toFloatColumn() {
+    FloatArrayList output = toFloatArray();
+    return FloatColumn.create(this.name(), output);
   }
 }

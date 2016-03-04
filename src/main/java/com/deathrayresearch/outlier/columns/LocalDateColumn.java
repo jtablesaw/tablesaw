@@ -5,6 +5,8 @@ import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateMapUtils;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -134,12 +136,11 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return copy;
   }
 
-
   @Override
   public int countUnique() {
     IntSet ints = new IntOpenHashSet(data.length);
-    for (int i : data) {
-      ints.add(i);
+    for (int i = 0; i < N; i++) {
+      ints.add(data[i]);
     }
     return ints.size();
   }
@@ -322,15 +323,15 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
    */
   public View summary() {
 
-    Object2IntMap<LocalDate> counts = new Object2IntOpenHashMap<>();
+    Int2IntMap counts = new Int2IntOpenHashMap();
 
     for (int i = 0; i < N; i++) {
-      LocalDate value;
+      int value;
       int next = data[i];
       if (next == Integer.MIN_VALUE) {
-        value = null;
+        value = LocalDateColumn.MISSING_VALUE;
       } else {
-        value = PackedLocalDate.asLocalDate(next);
+        value = next;
       }
       if (counts.containsKey(value)) {
         counts.put(value, counts.get(value) + 1);
@@ -338,13 +339,12 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
         counts.put(value, 1);
       }
     }
-
     Table table = new Table(name());
     table.addColumn(LocalDateColumn.create("Date"));
     table.addColumn(IntColumn.create("Count"));
 
-    for (Map.Entry<LocalDate, Integer> entry : counts.object2IntEntrySet()) {
-      //Row row = table.newRow();
+    for (Map.Entry<Integer, Integer> entry : counts.int2IntEntrySet()) {
+      //table.localDateColumn(0).add(PackedLocalDate.asLocalDate(entry.getKey()));
       table.localDateColumn(0).add(entry.getKey());
       table.intColumn(1).add(entry.getValue());
     }

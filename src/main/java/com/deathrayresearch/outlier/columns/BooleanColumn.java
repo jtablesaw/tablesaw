@@ -8,6 +8,10 @@ import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A column in a base table that contains float values
@@ -42,16 +46,40 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return N;
   }
 
-  // TODO(lwhite): Implement column summary()
   @Override
   public Table summary() {
-    return null;
+
+    Map<Boolean, Integer> counts = new HashMap<>(3);
+    counts.put(true, 0);
+    counts.put(false, 0);
+
+    while (hasNext()) {
+      boolean next = next();
+      counts.put(next, counts.get(next) + 1);
+    }
+
+    Table table = new Table(name());
+
+    BooleanColumn booleanColumn = BooleanColumn.create("Value");
+    IntColumn countColumn = IntColumn.create("Count");
+    table.addColumn(booleanColumn);
+    table.addColumn(countColumn);
+
+    for (Map.Entry<Boolean, Integer> entry : counts.entrySet()) {
+      booleanColumn.add(entry.getKey());
+      countColumn.add(entry.getValue());
+    }
+    reset();
+    return table;
   }
 
-  // TODO(lwhite): Implement countUnique()
   @Override
   public int countUnique() {
-    return 0;
+    Set<Boolean> count = new HashSet<>(3);
+    while (hasNext()) {
+      count.add(next());
+    }
+    return count.size();
   }
 
   @Override

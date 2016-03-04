@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.util;
 
 import com.deathrayresearch.outlier.columns.FloatColumn;
+import com.deathrayresearch.outlier.columns.IntColumn;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.exception.NotPositiveException;
 import org.apache.commons.math3.exception.NullArgumentException;
@@ -123,14 +124,25 @@ public class StatUtil {
     return values.sum() / (float) values.size();
   }
 
-  public static String stats(final FloatColumn values) {
+  public static Stats stats(final FloatColumn values) {
     Stats stats = new Stats();
     stats.min = min(values);
     stats.max = max(values);
     stats.n = values.size();
     stats.mean = values.sum() / (float) stats.n;
     stats.variance = variance(values);
-    return stats.printString();
+    return stats;
+  }
+
+  public static Stats stats(final IntColumn ints) {
+    FloatColumn values = FloatColumn.create(ints.name(), ints.toFloatArray());
+    Stats stats = new Stats();
+    stats.min = min(values);
+    stats.max = max(values);
+    stats.n = values.size();
+    stats.mean = values.sum() / (float) stats.n;
+    stats.variance = variance(values);
+    return stats;
   }
 
 

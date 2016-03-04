@@ -313,7 +313,7 @@ public interface Relation {
   default LocalTimeColumn localTimeColumn(String columnName) {
     return (LocalTimeColumn) column(columnName);
   }
-  default LocalTimeColumn timeColumn(String name) {return LocalTimeColumn.create(name);}
+  default LocalTimeColumn localTimeColumn(int columnIndex) {return (LocalTimeColumn) column(columnIndex);}
 
   default LocalDateTimeColumn localDateTimeColumn(int columnIndex) {
     return (LocalDateTimeColumn) column(columnIndex);

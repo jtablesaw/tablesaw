@@ -1,5 +1,8 @@
 package com.deathrayresearch.outlier.util;
 
+import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.columns.CategoryColumn;
+import com.deathrayresearch.outlier.columns.FloatColumn;
 import org.apache.commons.math3.util.FastMath;
 
 /**
@@ -98,5 +101,36 @@ public class Stats {
     buffer.append(variance);
     buffer.append('\n');
     return buffer.toString();
+  }
+
+  public Table asTable() {
+    Table t = new Table("");
+    CategoryColumn measure = CategoryColumn.create("Measure");
+    FloatColumn value = FloatColumn.create("Value");
+    t.addColumn(measure);
+    t.addColumn(value);
+
+    measure.add("n");
+    value.add(n);
+
+    measure.add("Missing");
+    value.add(missing);
+
+    measure.add("Mean");
+    value.add((float) mean());
+
+    measure.add("Min");
+    value.add(min);
+
+    measure.add("Max");
+    value.add(max);
+
+    measure.add("Range");
+    value.add(range());
+
+    measure.add("Std. Dev");
+    value.add(stdDev());
+
+    return t;
   }
 }

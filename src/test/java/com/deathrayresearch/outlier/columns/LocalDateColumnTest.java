@@ -7,8 +7,6 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,7 +29,6 @@ public class LocalDateColumnTest {
     column1.addCell("12/23/1924");
     column1.addCell("12-May-2015");
     column1.addCell("12-Jan-2015");
-    Calendar calendar = new GregorianCalendar();
     LocalDate date = LocalDate.now();
     column1.add(date);
   }
@@ -60,6 +57,15 @@ public class LocalDateColumnTest {
     assertEquals(12, c2.get(1));
     assertEquals(5, c2.get(2));
     assertEquals(1, c2.get(3));
+  }
+
+  @Test
+  public void testSummary() throws Exception {
+    column1.addCell("2013-10-23");
+    column1.addCell("12/24/1924");
+    column1.addCell("12-May-2015");
+    column1.addCell("14-Jan-2015");
+    System.out.println(column1.summary().print());
   }
 
   @Test

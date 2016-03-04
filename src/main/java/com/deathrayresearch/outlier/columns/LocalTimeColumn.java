@@ -1,15 +1,21 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Map;
 
 /**
  * A column in a base table that contains float values
@@ -129,16 +135,45 @@ public class LocalTimeColumn extends AbstractColumn {
     return copy;
   }
 
-  // TODO(lwhite): Implement column summary()
   @Override
-  public Table summary() {
-    return null;
+  public Relation summary() {
+
+    Int2IntMap counts = new Int2IntOpenHashMap();
+
+    for (int i = 0; i < N; i++) {
+      int value;
+      int next = data[i];
+      if (next == Integer.MIN_VALUE) {
+        value = LocalTimeColumn.MISSING_VALUE;
+      } else {
+        value = next;
+      }
+      if (counts.containsKey(value)) {
+        counts.put(value, counts.get(value) + 1);
+      } else {
+        counts.put(value, 1);
+      }
+    }
+    Table table = new Table(name());
+    table.addColumn(LocalTimeColumn.create("Time"));
+    table.addColumn(IntColumn.create("Count"));
+
+    for (Map.Entry<Integer, Integer> entry : counts.int2IntEntrySet()) {
+      table.localTimeColumn(0).add(entry.getKey());
+      table.intColumn(1).add(entry.getValue());
+    }
+    table = table.sortDescendingOn("Count");
+
+    return table.head(5);
   }
 
-  // TODO(lwhite): Implement countUnique()
   @Override
   public int countUnique() {
-    return 0;
+    IntSet ints = new IntOpenHashSet();
+    for (int i = 0; i < N; i++) {
+      ints.add(data[i]);
+    }
+    return ints.size();
   }
 
   @Override

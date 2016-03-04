@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Table;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -55,6 +56,18 @@ public class BooleanColumnTest {
   @Test
   public void testGetType() throws Exception {
     assertEquals("Boolean".toUpperCase(), column.type().name());
+  }
+
+  @Test
+  public void testSummary() throws Exception {
+    Table summary = column.summary();
+    System.out.println(summary.print());
+  }
+
+  @Test
+  public void testCountUnique() throws Exception {
+    int result = column.countUnique();
+    assertEquals(2, result);
   }
 
   /**
