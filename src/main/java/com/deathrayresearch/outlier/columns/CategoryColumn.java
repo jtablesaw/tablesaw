@@ -10,16 +10,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortList;
-import jsat.classifiers.CategoricalData;
-import org.apache.commons.lang3.StringUtils;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A column in a base table that contains float values
@@ -223,8 +219,6 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     return stringValue;
   }
 
-  ;
-
   public void addCell(String object) {
     try {
       add(convert(object));
@@ -251,17 +245,6 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     }
     reset();
     return results;
-  }
-
-  public CategoricalData asCategoricalData() {
-    CategoricalData categoricalData = new CategoricalData(lookupTable.size());
-    categoricalData.setCategoryName(name());
-
-    for (String category : lookupTable.categories()) {
-      int v = lookupTable.get(category);
-      categoricalData.setOptionName(category, v);
-    }
-    return categoricalData;
   }
 
   public int getInt(int rowNumber) {
