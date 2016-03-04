@@ -36,6 +36,8 @@ public interface Relation {
     removeColumn(column(columnName));
   }
 
+  View head(int nRows);
+
   /**
    * Returns the index of the column with the given columnName
    */

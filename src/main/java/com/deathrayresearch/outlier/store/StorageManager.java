@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.store;
 
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.BooleanColumn;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
@@ -8,7 +9,6 @@ import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.Relation;
-import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import com.deathrayresearch.outlier.columns.LocalTimeColumn;
 import com.deathrayresearch.outlier.columns.PeriodColumn;
@@ -25,12 +25,13 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -52,51 +53,48 @@ public class StorageManager {
    * @param fileName Expected to be fully specified
    * @throws IOException
    */
-  public static void readTable(String fileName) throws IOException {
+  public static Table readTable(String fileName) throws IOException {
 
-    Table table = null;
-
-    for (Column column : table.columns()) {
-      readColumn(fileName, column.name(), column.type());
+    TableMetadata tableMetadata = readTableMetadata(fileName + File.separator + "Metadata.json");
+    List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
+    Table table = new Table(tableMetadata);
+    for (ColumnMetadata column : columnMetadata) {
+      Column c = readColumn(fileName + File.separator + column.getId(), column.getName(), column.getType());
+      table.addColumn(c);
     }
+    return table;
   }
 
-  private static void readColumn(String fileName, String columnName, ColumnType columnType)
+  private static Column readColumn(String fileName, String columnName, ColumnType columnType)
       throws IOException {
 
     switch (columnType) {
       case FLOAT:
-        readFloatColumn(fileName, columnName);
-        break;
+        return readFloatColumn(fileName, columnName);
       case INTEGER:
-        readIntColumn(fileName, columnName);
-        break;
+        return readIntColumn(fileName, columnName);
       case BOOLEAN:
-        readBooleanColumn(fileName, columnName);
-        break;
+        return readBooleanColumn(fileName, columnName);
       case LOCAL_DATE:
-        readLocalDateColumn(fileName, columnName);
-        break;
+        return readLocalDateColumn(fileName, columnName);
       case LOCAL_TIME:
-        readLocalTimeColumn(fileName, columnName);
-        break;
+        return readLocalTimeColumn(fileName, columnName);
+      case LOCAL_DATE_TIME:
+        return readLocalDateTimeColumn(fileName, columnName);
       case PERIOD:
-        readPeriodColumn(fileName, columnName);
-        break;
+        return readPeriodColumn(fileName, columnName);
       case TEXT:
-        readTextColumn(fileName, columnName);
-        break;
+        return readTextColumn(fileName, columnName);
       case CAT:
-        readCategoryColumn(fileName, columnName);
-        break;
+        return readCategoryColumn(fileName, columnName);
       default:
         throw new RuntimeException("Unhandled column type writing columns");
     }
   }
 
   public static FloatColumn readFloatColumn(String fileName, String columnName) throws IOException {
-    FloatColumn floats = new FloatColumn(fileName);
-    try (FileInputStream fis = new FileInputStream(fileName + "_" + columnName);
+    FloatColumn floats = new FloatColumn(columnName);
+    try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
       boolean EOF = false;
@@ -114,8 +112,8 @@ public class StorageManager {
   }
 
   public static FloatColumn readIntColumn(String fileName, String column) throws IOException {
-    FloatColumn floats = new FloatColumn(fileName);
-    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+    FloatColumn floats = new FloatColumn(column);
+    try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
       boolean EOF = false;
@@ -134,7 +132,7 @@ public class StorageManager {
 
   public static LocalDateColumn readLocalDateColumn(String fileName, String column) throws IOException {
     IntArrayList dates = new IntArrayList();
-    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+    try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
       boolean EOF = false;
@@ -147,12 +145,12 @@ public class StorageManager {
         }
       }
     }
-    return LocalDateColumn.create(fileName, dates);
+    return LocalDateColumn.create(column, dates);
   }
 
   public static LocalDateTimeColumn readLocalDateTimeColumn(String fileName, String column) throws IOException {
     LongArrayList dates = new LongArrayList();
-    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+    try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
       boolean EOF = false;
@@ -165,12 +163,12 @@ public class StorageManager {
         }
       }
     }
-    return LocalDateTimeColumn.create(fileName, dates);
+    return LocalDateTimeColumn.create(column, dates);
   }
 
   public static LocalTimeColumn readLocalTimeColumn(String fileName, String column) throws IOException {
     IntArrayList times = new IntArrayList();
-    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+    try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
       boolean EOF = false;
@@ -183,12 +181,12 @@ public class StorageManager {
         }
       }
     }
-    return LocalTimeColumn.create(fileName, times);
+    return LocalTimeColumn.create(column, times);
   }
 
   public static PeriodColumn readPeriodColumn(String fileName, String column) throws IOException {
     IntArrayList packedPeriods = new IntArrayList();
-    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+    try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
       boolean EOF = false;
@@ -201,12 +199,12 @@ public class StorageManager {
         }
       }
     }
-    return PeriodColumn.create(fileName, packedPeriods);
+    return PeriodColumn.create(column, packedPeriods);
   }
 
   public static TextColumn readTextColumn(String fileName, String column) throws IOException {
     TextColumn stringColumn = TextColumn.create(column);
-    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+    try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
       boolean EOF = false;
@@ -224,7 +222,7 @@ public class StorageManager {
 
   public static CategoryColumn readCategoryColumn(String fileName, String column) throws IOException {
     CategoryColumn stringColumn = CategoryColumn.create(column);
-    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+    try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
       boolean EOF = false;
@@ -243,6 +241,7 @@ public class StorageManager {
   public static void write(String pathName, Relation table) throws IOException {
 
     Path path = Paths.get(pathName + File.separator + table.id());
+
     if (!Files.exists(path)) {
       try {
         Files.createDirectories(path);
@@ -251,15 +250,16 @@ public class StorageManager {
       }
     }
 
+    writeTableMetadata(path.toString() + File.separator + "Metadata.json", table);
+
     try {
       for (Column column : table.columns()) {
         completionService.submit(() -> {
           Path columnPath = path.resolve(column.id());
-          StorageManager.writeColumn(columnPath.toString(), column);
+          writeColumn(columnPath.toString(), column);
           return null;
         });
       }
-
       for (int i = 0; i < table.columnCount(); i++) {
         Future future = completionService.take();
         future.get();
@@ -267,6 +267,7 @@ public class StorageManager {
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
+    executorService.shutdown();
   }
 
   private static void writeColumn(String fileName, Column column) {
@@ -308,7 +309,7 @@ public class StorageManager {
   }
 
   public static void writeColumn(String fileName, FloatColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName + "_" + column.name());
+    try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
@@ -322,26 +323,28 @@ public class StorageManager {
 
   public static void writeColumn(String fileName, TextColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
-         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos)) {
+         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
+         DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
         String cell = column.next();
-        sos.write(cell.getBytes(StandardCharsets.UTF_8));
+        dos.writeUTF(cell);
       }
       column.reset();
-      sos.flush();
+      dos.flush();
     }
   }
 
   //TODO(lwhite): write the column using dictionary encoding (and integer compression)
   public static void writeColumn(String fileName, CategoryColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
-         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos)) {
+         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
+         DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
         String cell = column.next();
-        sos.write(cell.getBytes(StandardCharsets.UTF_8));
+        dos.writeUTF(cell);
       }
       column.reset();
-      sos.flush();
+      dos.flush();
     }
   }
 
@@ -352,7 +355,7 @@ public class StorageManager {
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
         int cell = column.next();
-        dos.writeFloat(cell);
+        dos.writeInt(cell);
       }
       column.reset();
       dos.flush();
@@ -366,7 +369,7 @@ public class StorageManager {
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
         int cell = column.next();
-        dos.writeFloat(cell);
+        dos.writeInt(cell);
       }
       column.reset();
       dos.flush();
@@ -379,7 +382,7 @@ public class StorageManager {
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
         long cell = column.next();
-        dos.writeFloat(cell);
+        dos.writeLong(cell);
       }
       column.reset();
       dos.flush();
@@ -393,7 +396,7 @@ public class StorageManager {
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
         int cell = column.next();
-        dos.writeFloat(cell);
+        dos.writeInt(cell);
       }
       column.reset();
       dos.flush();
@@ -407,7 +410,7 @@ public class StorageManager {
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
         int cell = column.next();
-        dos.writeFloat(cell);
+        dos.writeInt(cell);
       }
       column.reset();
       dos.flush();
@@ -416,7 +419,7 @@ public class StorageManager {
 
   //TODO(lwhite): write the column using compressed bitmap
   public static void writeColumn(String fileName, BooleanColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName + "_" + column.name());
+    try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       for (int i = 0; i < column.size(); i++) {
@@ -429,7 +432,7 @@ public class StorageManager {
 
   public static BooleanColumn readBooleanColumn(String fileName, String column) throws IOException {
     BooleanArrayList bools = new BooleanArrayList();
-    try (FileInputStream fis = new FileInputStream(fileName + "_" + column);
+    try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
       boolean EOF = false;
@@ -442,7 +445,7 @@ public class StorageManager {
         }
       }
     }
-    return BooleanColumn.create(fileName, bools);
+    return BooleanColumn.create(column, bools);
   }
 
   /**
@@ -451,8 +454,14 @@ public class StorageManager {
    * @param fileName Expected to be fully specified
    * @throws IOException if the file can not be read
    */
-  public static void writeTableMetadata(String fileName, Table table) throws IOException {
-    Files.write(Paths.get(fileName), new TableMetadata(table).toString().getBytes());
+  public static void writeTableMetadata(String fileName, Relation table) throws IOException {
+    File myFile = Paths.get(fileName).toFile();
+    myFile.createNewFile();
+    FileOutputStream fOut = new FileOutputStream(myFile);
+    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+    myOutWriter.append(new TableMetadata(table).toJson());
+    myOutWriter.close();
+    fOut.close();
   }
 
   /**
@@ -464,8 +473,7 @@ public class StorageManager {
    */
   public static TableMetadata readTableMetadata(String fileName) throws IOException {
 
-    try (FileReader fileReader = new FileReader(fileName)) {
-      return TableMetadata.fromJson(fileReader.toString());
-    }
+    byte[] encoded = Files.readAllBytes(Paths.get(fileName));
+    return TableMetadata.fromJson(new String(encoded, StandardCharsets.UTF_8));
   }
 }

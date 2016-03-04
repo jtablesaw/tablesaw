@@ -5,6 +5,7 @@ import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.PeriodColumn;
 import com.deathrayresearch.outlier.sorting.Sort;
 import com.deathrayresearch.outlier.splitter.functions.Average;
+import com.deathrayresearch.outlier.store.TableMetadata;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.collections4.comparators.ComparatorChain;
@@ -24,7 +25,7 @@ import static com.deathrayresearch.outlier.sorting.Sort.Order;
  */
 public class Table implements Relation {
 
-  private final String id = UUID.randomUUID().toString();
+  private String id = UUID.randomUUID().toString();
 
   private String name;
 
@@ -32,6 +33,11 @@ public class Table implements Relation {
 
   public Table(String name) {
     this.name = name;
+  }
+
+  public Table(TableMetadata metadata) {
+    this.name = metadata.getName();
+    this.id = metadata.getId();
   }
 
   @Override

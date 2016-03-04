@@ -65,4 +65,20 @@ public class ColumnMetadata {
     result = 31 * result + size;
     return result;
   }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public ColumnType getType() {
+    return type;
+  }
+
+  public int getSize() {
+    return size;
+  }
 }

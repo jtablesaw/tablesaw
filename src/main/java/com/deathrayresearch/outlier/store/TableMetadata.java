@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.store;
 
-import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.columns.Column;
 import com.google.gson.Gson;
 
@@ -22,7 +22,7 @@ public class TableMetadata {
 
   private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
 
-  public TableMetadata(Table table) {
+  public TableMetadata(Relation table) {
     this.id = table.id();
     this.name = table.name();
     this.rowCount = table.rowCount();
@@ -50,7 +50,6 @@ public class TableMetadata {
     if (!id.equals(that.id)) return false;
     if (!name.equals(that.name)) return false;
     return columnMetadataList.equals(that.columnMetadataList);
-
   }
 
   @Override
@@ -60,5 +59,21 @@ public class TableMetadata {
     result = 31 * result + rowCount;
     result = 31 * result + columnMetadataList.hashCode();
     return result;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public int getRowCount() {
+    return rowCount;
+  }
+
+  public List<ColumnMetadata> getColumnMetadataList() {
+    return columnMetadataList;
   }
 }

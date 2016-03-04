@@ -273,8 +273,8 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     }
   };
 
-  public static LocalDateColumn create(String fileName, IntArrayList dates) {
-    LocalDateColumn column = new LocalDateColumn(fileName, dates.size());
+  public static LocalDateColumn create(String columnName, IntArrayList dates) {
+    LocalDateColumn column = new LocalDateColumn(columnName, dates.size());
     column.data = dates.elements();
     return column;
   }
