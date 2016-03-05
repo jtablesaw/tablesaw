@@ -4,9 +4,9 @@ import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.mintern.primitive.Primitive;
@@ -14,7 +14,6 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Map;
 
 /**
@@ -138,7 +137,7 @@ public class LocalTimeColumn extends AbstractColumn {
   @Override
   public Relation summary() {
 
-    Int2IntMap counts = new Int2IntOpenHashMap();
+    Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
 
     for (int i = 0; i < N; i++) {
       int value;
@@ -149,7 +148,7 @@ public class LocalTimeColumn extends AbstractColumn {
         value = next;
       }
       if (counts.containsKey(value)) {
-        counts.put(value, counts.get(value) + 1);
+        counts.addTo(value, 1);
       } else {
         counts.put(value, 1);
       }
@@ -202,19 +201,31 @@ public class LocalTimeColumn extends AbstractColumn {
     }
   }
 
-  public int get(int index) {
+  public int getInt(int index) {
     return data[index];
   }
 
+  public LocalTime get(int index) {
+    return PackedLocalTime.asLocalTime(data[index]);
+  }
+
   @Override
-  public Comparator<Integer> rowComparator() {
+  public IntComparator rowComparator() {
     return comparator;
   }
 
-  Comparator<Integer> comparator = new Comparator<Integer>() {
+  IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer r1, Integer r2) {
+      int f1 = data[r1];
+      int f2 = data[r2];
+      System.out.println("Comparing with object in time");
+      return Integer.compare(f1, f2);
+    }
+
+    @Override
+    public int compare(int r1, int r2) {
       int f1 = data[r1];
       int f2 = data[r2];
       return Integer.compare(f1, f2);

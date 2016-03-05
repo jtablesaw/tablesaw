@@ -2,7 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
-import com.deathrayresearch.outlier.sorting.IntComparator;
+import com.deathrayresearch.outlier.sorting.IntComparisonUtil;
 import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -10,12 +10,11 @@ import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * A column that contains signed integer values
  */
 public class IntColumn extends AbstractColumn {
 
@@ -245,17 +244,23 @@ public class IntColumn extends AbstractColumn {
   }
 
   @Override
-  public Comparator<Integer> rowComparator() {
+  public it.unimi.dsi.fastutil.ints.IntComparator rowComparator() {
     return comparator;
   }
 
-  final Comparator<Integer> comparator = new Comparator<Integer>() {
+  final it.unimi.dsi.fastutil.ints.IntComparator comparator = new it.unimi.dsi.fastutil.ints.IntComparator() {
 
     @Override
     public int compare(Integer i1, Integer i2) {
       int prim1 = data[i1];
       int prim2 = data[i2];
-      return IntComparator.getInstance().compare(prim1, prim2);
+      return IntComparisonUtil.getInstance().compare(prim1, prim2);
+    }
+
+    public int compare(int i1, int i2) {
+      int prim1 = data[i1];
+      int prim2 = data[i2];
+      return IntComparisonUtil.getInstance().compare(prim1, prim2);
     }
   };
 

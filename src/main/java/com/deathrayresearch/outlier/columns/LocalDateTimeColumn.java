@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateTimeMapUtils;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
@@ -11,7 +12,6 @@ import org.roaringbitmap.RoaringBitmap;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * A column in a base table that contains float values
@@ -174,19 +174,30 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return N == 0;
   }
 
-  public long get(int index) {
+  public long getLong(int index) {
     return data[index];
   }
 
+  public LocalDateTime get(int index) {
+    return PackedLocalDateTime.asLocalDateTime(data[index]);
+  }
+
   @Override
-  public Comparator<Integer> rowComparator() {
+  public IntComparator rowComparator() {
     return comparator;
   }
 
-  Comparator<Integer> comparator = new Comparator<Integer>() {
+  IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer r1, Integer r2) {
+      long f1 = data[r1];
+      long f2 = data[r2];
+      return Long.compare(f1, f2);
+    }
+
+    @Override
+    public int compare(int r1, int r2) {
       long f1 = data[r1];
       long f2 = data[r2];
       return Long.compare(f1, f2);
@@ -196,8 +207,8 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   public CategoryColumn dayOfWeek() {
     CategoryColumn newColumn = CategoryColumn.create(this.name() + " day of week" , this.size());
     for (int r = 0; r < this.size(); r++) {
-      Long c1 = this.get(r);
-      if (c1.equals(LocalDateTimeColumn.MISSING_VALUE)) {
+      long c1 = this.getLong(r);
+      if (c1 == (LocalDateTimeColumn.MISSING_VALUE)) {
         newColumn.set(r, null);
       } else {
         LocalDateTime value1 = PackedLocalDateTime.asLocalDateTime(c1);
@@ -210,8 +221,8 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   public IntColumn dayOfYear() {
     IntColumn newColumn = IntColumn.create(this.name() + " day of year", this.size());
     for (int r = 0; r < this.size(); r++) {
-      Long c1 = this.get(r);
-      if (c1.equals(LocalDateTimeColumn.MISSING_VALUE)) {
+      long c1 = this.getLong(r);
+      if (c1 == (LocalDateTimeColumn.MISSING_VALUE)) {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {
         newColumn.add(PackedLocalDateTime.getDayOfYear(c1));
@@ -223,7 +234,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   public IntColumn dayOfMonth() {
     IntColumn newColumn = IntColumn.create(this.name() + " day of month");
     for (int r = 0; r < this.size(); r++) {
-      Long c1 = this.get(r);
+      long c1 = this.getLong(r);
       if (c1 == FloatColumn.MISSING_VALUE) {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {
@@ -236,7 +247,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   public IntColumn monthNumber() {
     IntColumn newColumn = IntColumn.create(this.name() + " month");
     for (int r = 0; r < this.size(); r++) {
-      long c1 = this.get(r);
+      long c1 = this.getLong(r);
       if (c1 == MISSING_VALUE) {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {
@@ -249,7 +260,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   public CategoryColumn monthName() {
     CategoryColumn newColumn = CategoryColumn.create(this.name() + " month");
     for (int r = 0; r < this.size(); r++) {
-      long c1 = this.get(r);
+      long c1 = this.getLong(r);
       if (c1 == MISSING_VALUE) {
         newColumn.add(CategoryColumn.MISSING_VALUE);
       } else {
@@ -262,7 +273,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   public IntColumn year() {
     IntColumn newColumn = IntColumn.create(this.name() + " year");
     for (int r = 0; r < this.size(); r++) {
-      long c1 = this.get(r);
+      long c1 = this.getLong(r);
       if (c1 == MISSING_VALUE) {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {

@@ -1,8 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Relation;
-
-import java.util.Comparator;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 
 /**
  *
@@ -46,7 +45,7 @@ public interface Column {
   String metadata();
 
 
-  Comparator<Integer> rowComparator();
+  IntComparator rowComparator();
 
   default String first() {
     return getString(0);

@@ -5,9 +5,9 @@ import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.BooleanMapUtils;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -252,14 +252,21 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   }
 
   @Override
-  public Comparator<Integer> rowComparator() {
+  public IntComparator rowComparator() {
     return comparator;
   }
 
-  Comparator<Integer> comparator = new Comparator<Integer>() {
+  IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer r1, Integer r2) {
+      boolean f1 = data[r1];
+      boolean f2 = data[r2];
+      return Boolean.compare(f1, f2);
+    }
+
+    @Override
+    public int compare(int r1, int r2) {
       boolean f1 = data[r1];
       boolean f2 = data[r2];
       return Boolean.compare(f1, f2);

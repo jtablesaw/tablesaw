@@ -8,12 +8,11 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -430,14 +429,20 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
   @Override
-  public Comparator<Integer> rowComparator() {
+  public IntComparator rowComparator() {
     return comparator;
   }
 
-  private final Comparator<Integer> comparator = new Comparator<Integer>() {
+  private final IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer r1, Integer r2) {
+      float f1 = data[r1];
+      float f2 = data[r2];
+      return Float.compare(f1, f2);
+    }
+
+    public int compare(int r1, int r2) {
       float f1 = data[r1];
       float f2 = data[r2];
       return Float.compare(f1, f2);

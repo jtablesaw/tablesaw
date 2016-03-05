@@ -8,6 +8,7 @@ import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import com.deathrayresearch.outlier.columns.LocalTimeColumn;
+import com.deathrayresearch.outlier.columns.PeriodColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
@@ -45,6 +46,9 @@ public class Rows {
         case LOCAL_TIME:
           copy(rows, (LocalTimeColumn) oldTable.column(columnIndex), (LocalTimeColumn) newTable.column(columnIndex));
           break;
+        case PERIOD:
+          copy(rows, (PeriodColumn) oldTable.column(columnIndex), (PeriodColumn) newTable.column(columnIndex));
+          break;
       }
     }
   }
@@ -81,19 +85,25 @@ public class Rows {
 
   private static void copy(IntArrayList rows, LocalDateTimeColumn oldColumn, LocalDateTimeColumn newColumn) {
     for (int index : rows) {
-      newColumn.add(oldColumn.get(index));
+      newColumn.add(oldColumn.getLong(index));
     }
   }
 
   private static void copy(IntArrayList rows, LocalDateColumn oldColumn, LocalDateColumn newColumn) {
     for (int index : rows) {
-      newColumn.add(oldColumn.get(index));
+      newColumn.add(oldColumn.getInt(index));
     }
   }
 
   private static void copy(IntArrayList rows, LocalTimeColumn oldColumn, LocalTimeColumn newColumn) {
     for (int index : rows) {
-      newColumn.add(oldColumn.get(index));
+      newColumn.add(oldColumn.getInt(index));
+    }
+  }
+
+  private static void copy(IntArrayList rows, PeriodColumn oldColumn, PeriodColumn newColumn) {
+    for (int index : rows) {
+      newColumn.add(oldColumn.getInt(index));
     }
   }
 }

@@ -6,9 +6,13 @@ import com.deathrayresearch.outlier.columns.PeriodColumn;
 import com.deathrayresearch.outlier.sorting.Sort;
 import com.deathrayresearch.outlier.splitter.functions.Average;
 import com.deathrayresearch.outlier.store.TableMetadata;
+import com.deathrayresearch.outlier.util.IntComparatorChain;
+import com.deathrayresearch.outlier.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.Arrays;
+import it.unimi.dsi.fastutil.Swapper;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import org.apache.commons.collections4.comparators.ComparatorChain;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -213,7 +217,7 @@ public class Table implements Relation {
     Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
     Map.Entry<String, Sort.Order> sort = entries.next();
 
-    Comparator<Integer> comparator;
+    IntComparator comparator;
     if (sort.getValue() == Order.ASCEND) {
       comparator = rowComparator(sort.getKey(), false);
     } else {
@@ -224,7 +228,7 @@ public class Table implements Relation {
       return sortOn(comparator);
     }
 
-    ComparatorChain<Integer> chain = new ComparatorChain<>(comparator);
+    IntComparatorChain chain = new IntComparatorChain(comparator);
     while (entries.hasNext()) {
       sort = entries.next();
       if (sort.getValue() == Order.ASCEND) {
@@ -239,10 +243,19 @@ public class Table implements Relation {
   /**
    * Returns a copy of this table sorted using the given comparator
    */
-  public Table sortOn(Comparator<Integer> rowComparator) {
+  public Table sortOn(IntComparator rowComparator) {
     Table newTable = (Table) emptyCopy();
     IntArrayList rows1 = rows();
-    Collections.sort(rows1, rowComparator);
+
+    //TODO(lwhite): This is very expensive. It converts the contents of intArrayList to Integers
+    rows1.sort(rowComparator);
+    Arrays.mergeSort(0, rowCount(), rowComparator, new Swapper() {
+      @Override
+      public void swap(int i, int i1) {
+        
+      }
+    });
+
     Rows.copyRowsToTable(rows1, this, newTable);
     return newTable;
   }
@@ -261,13 +274,13 @@ public class Table implements Relation {
    * @param columnName The name of the column to sort
    * @param reverse    {@code true} if the column should be sorted in reverse
    */
-  private Comparator<Integer> rowComparator(String columnName, Boolean reverse) {
+  private IntComparator rowComparator(String columnName, Boolean reverse) {
 
     Column column = this.column(columnName);
-    Comparator<Integer> rowComparator = column.rowComparator();
+    IntComparator rowComparator = column.rowComparator();
 
     if (reverse) {
-      return rowComparator.reversed();
+      return ReverseIntComparator.reverse(rowComparator);
     } else {
       return rowComparator;
     }

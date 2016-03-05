@@ -38,8 +38,8 @@ public interface DateTimeMapUtils extends Column {
 
     FloatColumn newColumn = FloatColumn.create(name() + " - " + column2.name());
     for (int r = 0; r < size(); r++) {
-      long c1 = this.get(r);
-      long c2 = column2.get(r);
+      long c1 = this.getLong(r);
+      long c2 = column2.getLong(r);
       if (c1 == LocalDateTimeColumn.MISSING_VALUE || c2 == LocalDateTimeColumn.MISSING_VALUE) {
         newColumn.add(FloatColumn.MISSING_VALUE);
       } else {
@@ -51,5 +51,7 @@ public interface DateTimeMapUtils extends Column {
     return newColumn;
   }
 
-  long get(int r);
+  LocalDateTime get(int r);
+
+  long getLong(int r);
 }

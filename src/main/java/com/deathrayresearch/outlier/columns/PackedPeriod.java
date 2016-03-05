@@ -76,5 +76,4 @@ public class PackedPeriod {
   public static boolean equalTo(int thisPackedPeriod, int otherPackedPeriod) {
     return Integer.compare(thisPackedPeriod, otherPackedPeriod) == 0;
   }
-
 }

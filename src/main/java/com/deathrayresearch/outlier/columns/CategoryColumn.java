@@ -6,15 +6,13 @@ import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import com.deathrayresearch.outlier.util.DictionaryMap;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortList;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -136,7 +134,7 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
    * @throws IndexOutOfBoundsException if the given rowIndex is not in the column
    */
   public String get(int rowIndex) {
-    short k = values.get(rowIndex);
+    short k = values.getShort(rowIndex);
     return lookupTable.get(k);
   }
 
@@ -150,20 +148,19 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     CategoryColumn categories = CategoryColumn.create("Category");
     IntColumn counts = IntColumn.create("Count");
 
-    Object2IntMap<String> valueToKey = new Object2IntOpenHashMap<>();
+    Object2IntOpenHashMap<String> valueToKey = new Object2IntOpenHashMap<>();
 
     while (this.hasNext()) {
       String category = this.next();
       if (valueToKey.containsKey(category)) {
-        int count = valueToKey.get(category);
-        valueToKey.put(category, count + 1);
+        valueToKey.addTo(category, 1);
       } else {
         valueToKey.put(category, 1);
       }
     }
-    for (Map.Entry<String, Integer> entry : valueToKey.entrySet()) {
+    for (Object2IntOpenHashMap.Entry<String> entry : valueToKey.object2IntEntrySet()) {
       categories.add(entry.getKey());
-      counts.add(entry.getValue());
+      counts.add(entry.getIntValue());
     }
     t.addColumn(categories);
     t.addColumn(counts);
@@ -207,10 +204,19 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     N++;
   }
 
-  @Override
-  public final Comparator<Integer> rowComparator() {
-    return (r1, r2) -> getString(r1).compareTo(getString(r2));
-  }
+  public final IntComparator rowComparator = new IntComparator() {
+
+    @Override
+    public int compare(int i, int i1) {
+      return getString(i).compareTo(getString(i1));
+    }
+
+    @Override
+    public int compare(Integer o1, Integer o2) {
+      System.out.println("Comparaing on objects in CatColumn");
+      return getString(o1).compareTo(getString(o2));
+    }
+  };
 
   public static String convert(String stringValue) {
     if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
@@ -227,6 +233,11 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
           + String.valueOf(object) + ": "
           + e.getMessage());
     }
+  }
+
+  @Override
+  public IntComparator rowComparator() {
+    return rowComparator;
   }
 
   @Override

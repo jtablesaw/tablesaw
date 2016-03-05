@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
@@ -158,11 +159,17 @@ public class TextColumn extends AbstractColumn implements StringMapUtils, String
   }
 
   @Override
-  public Comparator<Integer> rowComparator() {
+  public IntComparator rowComparator() {
     return comparator;
   }
 
-  Comparator<Integer> comparator = new Comparator<Integer>() {
+  IntComparator comparator = new IntComparator() {
+    @Override
+    public int compare(int i, int i1) {
+      String f1 = data[i];
+      String f2 = data[i1];
+      return f1.compareTo(f2);
+    }
 
     @Override
     public int compare(Integer r1, Integer r2) {

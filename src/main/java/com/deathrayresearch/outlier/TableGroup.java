@@ -78,7 +78,6 @@ public class TableGroup {
         //newView.setValues(values);
         lastKey = newKey;
       }
-
    //   newView.addRow(row);  //todo should clone row
     }
 

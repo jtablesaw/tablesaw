@@ -5,6 +5,7 @@ import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -135,7 +136,6 @@ public class PeriodColumn extends AbstractColumn {
     return copy;
   }
 
-
   @Override
   public int countUnique() {
     IntSet ints = new IntOpenHashSet(data.length);
@@ -244,11 +244,9 @@ public class PeriodColumn extends AbstractColumn {
     return newColumn;
   }
 
-
   public LocalDate get(int index) {
     return PackedLocalDate.asLocalDate(data[index]);
   }
-
 
   public static PeriodColumn create(String name) {
     return new PeriodColumn(name);
@@ -260,14 +258,21 @@ public class PeriodColumn extends AbstractColumn {
   }
 
   @Override
-  public Comparator<Integer> rowComparator() {
+  public IntComparator rowComparator() {
     return comparator;
   }
 
-  Comparator<Integer> comparator = new Comparator<Integer>() {
+  IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer r1, Integer r2) {
+      int f1 = data[r1];
+      int f2 = data[r2];
+      return Integer.compare(f1, f2);
+    }
+
+    @Override
+    public int compare(int r1, int r2) {
       int f1 = data[r1];
       int f2 = data[r2];
       return Integer.compare(f1, f2);
@@ -334,7 +339,7 @@ public class PeriodColumn extends AbstractColumn {
         value = PackedPeriod.asPeriod(next);
       }
       if (counts.containsKey(value)) {
-        counts.put(value, counts.get(value) + 1);
+        counts.put(value, counts.getInt(value) + 1);
       } else {
         counts.put(value, 1);
       }

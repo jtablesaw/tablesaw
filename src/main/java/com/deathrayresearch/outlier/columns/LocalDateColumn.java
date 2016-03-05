@@ -8,18 +8,15 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
 
 /**
  * A column in a base table that contains float values
@@ -94,7 +91,6 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
-
 
   @Override
   public String getString(int row) {
@@ -260,14 +256,22 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   @Override
-  public Comparator<Integer> rowComparator() {
+  public IntComparator rowComparator() {
     return comparator;
   }
 
-  Comparator<Integer> comparator = new Comparator<Integer>() {
+  IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer r1, Integer r2) {
+      int f1 = data[r1];
+      int f2 = data[r2];
+      System.out.println("Comparing with object");
+      return Integer.compare(f1, f2);
+    }
+
+    @Override
+    public int compare(int r1, int r2) {
       int f1 = data[r1];
       int f2 = data[r2];
       return Integer.compare(f1, f2);
@@ -323,7 +327,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
    */
   public View summary() {
 
-    Int2IntMap counts = new Int2IntOpenHashMap();
+    Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
 
     for (int i = 0; i < N; i++) {
       int value;
@@ -334,7 +338,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
         value = next;
       }
       if (counts.containsKey(value)) {
-        counts.put(value, counts.get(value) + 1);
+        counts.addTo(value, 1);
       } else {
         counts.put(value, 1);
       }
@@ -343,10 +347,9 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     table.addColumn(LocalDateColumn.create("Date"));
     table.addColumn(IntColumn.create("Count"));
 
-    for (Map.Entry<Integer, Integer> entry : counts.int2IntEntrySet()) {
-      //table.localDateColumn(0).add(PackedLocalDate.asLocalDate(entry.getKey()));
-      table.localDateColumn(0).add(entry.getKey());
-      table.intColumn(1).add(entry.getValue());
+    for (Int2IntMap.Entry entry : counts.int2IntEntrySet()) {
+      table.localDateColumn(0).add(entry.getIntKey());
+      table.intColumn(1).add(entry.getIntValue());
     }
     table = table.sortDescendingOn("Count");
 
@@ -357,7 +360,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     LocalDateTimeColumn newColumn = LocalDateTimeColumn.create(this.name() + " " + c.name());
     for (int r = 0; r < this.size(); r++) {
       int c1 = this.getInt(r);
-      int c2 = c.get(r);
+      int c2 = c.getInt(r);
       if (c1 == MISSING_VALUE || c2 == LocalTimeColumn.MISSING_VALUE) {
         newColumn.add(LocalDateTimeColumn.MISSING_VALUE);
       } else {
