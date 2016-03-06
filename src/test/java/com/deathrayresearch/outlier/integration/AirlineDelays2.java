@@ -30,23 +30,16 @@ public class AirlineDelays2 {
     Stopwatch stopwatch = Stopwatch.createStarted();
     System.out.println("loading");
 
-/*
-    flights2015 = CsvReader.read("bigdata/2015.csv", reduced_set );
-    StorageManager.write("bigdata", flights2015);
-*/
-
-
-    flights2015 = StorageManager.readTable("bigdata/00d9730b-8636-4a19-8f25-683ca0664e13");
+    flights2015 = StorageManager.readTable("bigdata/3f07b9bf-053f-4f9b-9dff-9d354835b276");
 
     System.out.println(String.format("loaded %d records in %d seconds",
         flights2015.rowCount(),
         (int) stopwatch.elapsed(TimeUnit.SECONDS)));
+
     out(flights2015.shape());
     out(flights2015.columnNames().toString());
     flights2015.head(10).print();
     stopwatch.reset().start();
-
-   // StorageManager.write("databases", flights2015);
   }
 
   private static void out(Object obj) {
