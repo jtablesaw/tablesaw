@@ -19,10 +19,10 @@ public class AirlineDelays2 {
   public static void main(String[] args) throws Exception {
 
     new AirlineDelays2();
-
     Stopwatch stopwatch = Stopwatch.createStarted();
-    flights2015.sortAscendingOn("ORIGIN", "UNIQUE_CARRIER");
+    Table sorted = flights2015.sortAscendingOn("ORIGIN", "UNIQUE_CARRIER");
     System.out.println("Sorting " + stopwatch.elapsed(TimeUnit.SECONDS));
+    System.out.println(sorted.head(1000).print());
   }
 
   private AirlineDelays2() throws Exception {
@@ -109,5 +109,4 @@ public class AirlineDelays2 {
       FLOAT, // SecurityDelay
       FLOAT  // LateAircraftDelay
   };
-
 }

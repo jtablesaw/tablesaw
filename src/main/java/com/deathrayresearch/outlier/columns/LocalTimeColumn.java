@@ -220,7 +220,6 @@ public class LocalTimeColumn extends AbstractColumn {
     public int compare(Integer r1, Integer r2) {
       int f1 = data[r1];
       int f2 = data[r2];
-      System.out.println("Comparing with object in time");
       return Integer.compare(f1, f2);
     }
 

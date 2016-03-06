@@ -16,7 +16,6 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -246,15 +245,18 @@ public class Table implements Relation {
   public Table sortOn(IntComparator rowComparator) {
     Table newTable = (Table) emptyCopy();
     IntArrayList rows1 = rows();
+    Collections.sort(rows1, rowComparator);
+/*    int[] values = rows1.elements();
 
-    //TODO(lwhite): This is very expensive. It converts the contents of intArrayList to Integers
-    rows1.sort(rowComparator);
-    Arrays.mergeSort(0, rowCount(), rowComparator, new Swapper() {
+    Arrays.quickSort(0, rows1.size(), rowComparator, new Swapper() {
+
       @Override
-      public void swap(int i, int i1) {
-        
+      public void swap(int a, int b) {
+        int temp = values[a];
+        values[a] = values[b];
+        values[b] = temp;
       }
-    });
+    })*/;
 
     Rows.copyRowsToTable(rows1, this, newTable);
     return newTable;

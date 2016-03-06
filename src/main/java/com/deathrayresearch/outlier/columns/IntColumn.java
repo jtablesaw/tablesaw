@@ -367,8 +367,9 @@ public class IntColumn extends AbstractColumn {
     return output;
   }
 
-  public FloatColumn toFloatColumn() {
-    FloatArrayList output = toFloatArray();
-    return FloatColumn.create(this.name(), output);
+  public void print() {
+    while(this.hasNext()) {
+      System.out.println(next());
+    }
   }
 }

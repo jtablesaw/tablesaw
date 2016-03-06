@@ -24,7 +24,7 @@ import java.util.Arrays;
 public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue() ;
-  private static int DEFAULT_ARRAY_SIZE = 128;
+  private static final int DEFAULT_ARRAY_SIZE = 128;
 
   // For internal iteration. What element are we looking at right now
   private int pointer = 0;
@@ -240,11 +240,9 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return newColumn;
   }
 
-
   public LocalDate get(int index) {
     return PackedLocalDate.asLocalDate(data[index]);
   }
-
 
   public static LocalDateColumn create(String name) {
     return new LocalDateColumn(name);
@@ -260,13 +258,12 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return comparator;
   }
 
-  IntComparator comparator = new IntComparator() {
+    IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer r1, Integer r2) {
       int f1 = data[r1];
       int f2 = data[r2];
-      System.out.println("Comparing with object");
       return Integer.compare(f1, f2);
     }
 

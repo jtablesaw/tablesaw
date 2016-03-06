@@ -62,4 +62,8 @@ public class DictionaryMap {
   public Collection<Short> values() {
     return valueToKey.values();
   }
+
+  public Short2ObjectMap<String> keyToValueMap() {
+    return keyToValue;
+  }
 }

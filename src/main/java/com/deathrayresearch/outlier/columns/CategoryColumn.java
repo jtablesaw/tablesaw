@@ -8,12 +8,15 @@ import com.deathrayresearch.outlier.util.DictionaryMap;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortList;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
 
 /**
  * A column in a base table that contains float values
@@ -30,8 +33,8 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
   // The number of elements, which may be less than the size of the array
   private int N = 0;
 
-  // initialize the unique value id number to the smallest possible short to maximize range
-  private AtomicInteger id = new AtomicInteger(0);
+  // TODO(lwhite) initialize the unique value id number to the smallest possible short to maximize range
+  private short id = 0;
 
   // holds a key for each row in the table. the key can be used to lookup the backing string value
   private ShortList values;
@@ -88,8 +91,9 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     return new CategoryColumn(name());
   }
 
-  // TODO(lwhite): Implement?
+  @Override
   public void reset() {
+    pointer = 0;
   }
 
   // TODO(lwhite): review if reference assignment of data (values, lookupTable) is appropriate or copy needed
@@ -100,11 +104,10 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     return copy;
   }
 
-  // TODO(lwhite): Implement sorting
   @Override
   public Column sortAscending() {
     CategoryColumn copy = this.copy();
-    //Arrays.sort(copy.data);
+    Arrays.sort(copy.values.toArray());
     return copy;
   }
 
@@ -122,7 +125,6 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
   /**
    * Returns the number of elements (a.k.a. rows or cells) in the column
    */
-
   @Override
   public int size() {
     return values.size();
@@ -177,7 +179,8 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     boolean b = lookupTable.contains(stringValue);
     short valueId;
     if (!b) {
-      valueId = (short) id.getAndIncrement();
+// TODO(lwhite): synchronize id() or column-level write lock so we can increment id safely without atomic integer objects
+      valueId = id++;
       lookupTable.put(valueId, stringValue);
     } else {
       valueId = lookupTable.get(stringValue);
@@ -195,7 +198,7 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     boolean b = lookupTable.contains(stringValue);
     short valueId;
     if (!b) {
-      valueId = (short) id.getAndIncrement();
+      valueId = id++;
       lookupTable.put(valueId, stringValue);
     } else {
       valueId = lookupTable.get(stringValue);
@@ -213,7 +216,6 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
 
     @Override
     public int compare(Integer o1, Integer o2) {
-      System.out.println("Comparaing on objects in CatColumn");
       return getString(o1).compareTo(getString(o2));
     }
   };
@@ -257,6 +259,37 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     reset();
     return results;
   }
+
+  /**
+   * Returns a list of boolean columns suitable for use as dummy variables in, for example, regression analysis,
+   * where a column of categorical data must be encoded as a list of columns, such that each column represents a single
+   * category and indicates whether it is present (1) or not present (0)
+   */
+  public List<BooleanColumn> getDummies() {
+    List<BooleanColumn> results = new ArrayList<>();
+
+    // create the necessary columns
+    for (Short2ObjectMap.Entry<String> entry: lookupTable.keyToValueMap().short2ObjectEntrySet()) {
+      BooleanColumn column = BooleanColumn.create(entry.getValue());
+      results.add(column);
+    }
+
+    // iterate over the values, updating the dummy variable columns as appropriate
+    while(hasNext()) {
+      String category = next();
+      for (BooleanColumn column : results) {
+        if (category.equals(column.name())) {
+          //TODO(lwhite): update the correct row more efficiently, by using set rather than add & only updating true
+          column.add(true);
+        } else {
+          column.add(false);
+        }
+      }
+    }
+    reset();
+    return results;
+  }
+
 
   public int getInt(int rowNumber) {
     return values.get(rowNumber);
