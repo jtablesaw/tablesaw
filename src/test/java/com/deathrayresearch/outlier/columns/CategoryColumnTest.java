@@ -24,17 +24,17 @@ public class CategoryColumnTest {
 
   @Test
   public void testType() {
-
+    assertEquals(ColumnType.CAT, column.type());
   }
 
   @Test
   public void testGetString() {
-
+    assertEquals("Value 2", column.getString(1));
   }
 
   @Test
   public void testSize() {
-
+    assertEquals(4, column.size());
   }
 
   @Test
