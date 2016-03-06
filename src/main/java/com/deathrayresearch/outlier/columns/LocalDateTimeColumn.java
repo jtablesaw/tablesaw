@@ -303,4 +303,10 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     column.N = dateTimes.size();
     return column;
   }
+
+  @Override
+  public String toString() {
+    return "LocalDateTime column: " + name();
+  }
+
 }

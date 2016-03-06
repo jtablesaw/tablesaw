@@ -5,6 +5,7 @@ import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import com.deathrayresearch.outlier.util.DictionaryMap;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -291,5 +292,10 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
 
   public DictionaryMap dictionaryMap() {
     return lookupTable;
+  }
+
+  @Override
+  public String toString() {
+    return "Category column: " + name();
   }
 }

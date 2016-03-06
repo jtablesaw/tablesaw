@@ -388,4 +388,9 @@ public class IntColumn extends AbstractColumn {
       System.out.println(next());
     }
   }
+
+  @Override
+  public String toString() {
+    return "Int column: " + name();
+  }
 }

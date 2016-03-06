@@ -765,4 +765,9 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     reset();
     return results;
   }
+
+  @Override
+  public String toString() {
+    return "LocalDate column: " + name();
+  }
 }

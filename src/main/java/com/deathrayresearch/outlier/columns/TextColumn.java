@@ -185,4 +185,10 @@ public class TextColumn extends AbstractColumn implements StringMapUtils, String
     }
     data[i] = s;
   }
+
+  @Override
+  public String toString() {
+    return "Text column: " + name();
+  }
+
 }

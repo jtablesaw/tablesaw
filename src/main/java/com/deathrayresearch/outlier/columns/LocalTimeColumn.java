@@ -245,4 +245,10 @@ public class LocalTimeColumn extends AbstractColumn {
     reset();
     return results;
   }
+
+  @Override
+  public String toString() {
+    return "LocalTime column: " + name();
+  }
+
 }

@@ -388,4 +388,10 @@ public class PeriodColumn extends AbstractColumn {
     reset();
     return results;
   }
+
+  @Override
+  public String toString() {
+    return "Period column: " + name();
+  }
+
 }

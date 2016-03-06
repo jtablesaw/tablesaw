@@ -535,4 +535,9 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
     }
     return output;
   }
+
+  @Override
+  public String toString() {
+    return "Float column: " + name();
+  }
 }
