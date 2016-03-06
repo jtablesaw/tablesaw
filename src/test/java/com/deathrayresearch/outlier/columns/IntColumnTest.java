@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,7 +10,12 @@ import static org.junit.Assert.*;
  */
 public class IntColumnTest {
 
-  private IntColumn column = new IntColumn("t1", 100);
+  private IntColumn column;
+
+  @Before
+  public void setUp() throws Exception {
+    column = new IntColumn("t1");
+  }
 
   @Test
   public void testSum() {

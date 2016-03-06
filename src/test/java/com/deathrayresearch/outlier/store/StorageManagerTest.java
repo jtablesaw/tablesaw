@@ -53,9 +53,10 @@ public class StorageManagerTest {
     System.out.println(table.head(5).print());
     Stopwatch stopwatch = Stopwatch.createStarted();
     StorageManager.write("databases", table);
-    System.out.println(stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    System.out.println("Write time (ms) " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
     Table t = StorageManager.readTable("databases/" + table.id());
+    t.sortOn("cat");
     System.out.print(t.head(5).print());
   }
 
@@ -81,7 +82,7 @@ public class StorageManagerTest {
         (int) stopwatch.elapsed(TimeUnit.SECONDS)));
     out(flights2015.shape());
     out(flights2015.columnNames().toString());
-    flights2015.head(10).print();
+    out(flights2015.head(10).print());
     stopwatch.reset().start();
     StorageManager.write("databases", flights2015);
     out("Write time in column store: " + stopwatch.elapsed(TimeUnit.SECONDS));

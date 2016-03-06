@@ -279,9 +279,10 @@ public class PeriodColumn extends AbstractColumn {
     }
   };
 
-  public static PeriodColumn create(String fileName, IntArrayList dates) {
-    PeriodColumn column = new PeriodColumn(fileName, dates.size());
-    column.data = dates.elements();
+  public static PeriodColumn create(String fileName, IntArrayList periods) {
+    PeriodColumn column = new PeriodColumn(fileName, periods.size());
+    column.data = periods.elements();
+    column.N = periods.size();
     return column;
   }
 

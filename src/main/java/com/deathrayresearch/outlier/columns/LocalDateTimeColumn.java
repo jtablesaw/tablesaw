@@ -300,6 +300,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   public static LocalDateTimeColumn create(String fileName, LongArrayList dateTimes) {
     LocalDateTimeColumn column = new LocalDateTimeColumn(fileName, dateTimes.size());
     column.data = dateTimes.elements();
+    column.N = dateTimes.size();
     return column;
   }
 }

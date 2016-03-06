@@ -6,6 +6,7 @@ import com.deathrayresearch.outlier.sorting.IntComparisonUtil;
 import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -19,7 +20,7 @@ import java.util.regex.Pattern;
 public class IntColumn extends AbstractColumn {
 
   public static final int MISSING_VALUE = (int) ColumnType.INTEGER.getMissingValue();
-  private static int DEFAULT_ARRAY_SIZE = 128;
+  private static final int DEFAULT_ARRAY_SIZE = 128;
   private int pointer = 0;
   private int N = 0;
 
@@ -33,9 +34,20 @@ public class IntColumn extends AbstractColumn {
     return new IntColumn(name, arraySize);
   }
 
+  public static IntColumn create(String name, IntArrayList ints) {
+    IntColumn column = new IntColumn(name, ints.size());
+    column.data = ints.elements();
+    return column;
+  }
+
   public IntColumn(String name, int initialSize) {
     super(name);
     data = new int[initialSize];
+  }
+
+  public IntColumn(String name) {
+    super(name);
+    data = new int[DEFAULT_ARRAY_SIZE];
   }
 
   public int size() {
@@ -71,9 +83,13 @@ public class IntColumn extends AbstractColumn {
     data[N++] = i;
   }
 
+  public void set(int index, int value) {
+    data[index] = value;
+  }
+
   // TODO(lwhite): Redo to reduce the increase for large columns
   private void resize() {
-    int[] temp = new int[Math.round(data.length * 2)];
+    int[] temp = new int[Math.round(data.length + data.length)];
     System.arraycopy(data, 0, temp, 0, N);
     data = temp;
   }
@@ -336,7 +352,7 @@ public class IntColumn extends AbstractColumn {
     int i = 0;
     while (hasNext()) {
       int next = next();
-      if ((next & 1) == 0 ) {
+      if ((next & 1) == 0) {
         results.add(i);
       }
       i++;
@@ -350,7 +366,7 @@ public class IntColumn extends AbstractColumn {
     int i = 0;
     while (hasNext()) {
       int next = next();
-      if ((next & 1) != 0 ) {
+      if ((next & 1) != 0) {
         results.add(i);
       }
       i++;
@@ -368,7 +384,7 @@ public class IntColumn extends AbstractColumn {
   }
 
   public void print() {
-    while(this.hasNext()) {
+    while (this.hasNext()) {
       System.out.println(next());
     }
   }

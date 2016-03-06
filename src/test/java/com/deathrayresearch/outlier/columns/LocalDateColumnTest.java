@@ -15,12 +15,14 @@ import static org.junit.Assert.assertEquals;
  */
 public class LocalDateColumnTest {
 
-  Table table = new Table("Test");
-  LocalDateColumn column1 = LocalDateColumn.create("Game date");
+  Table table;
+  LocalDateColumn column1;
 
   @Before
   public void setUp() throws Exception {
+    table = new Table("Test");
     table.addColumn(column1);
+    column1 = LocalDateColumn.create("Game date");
   }
 
   @Test

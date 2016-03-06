@@ -30,9 +30,6 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
   // For internal iteration. What element are we looking at right now
   private int pointer = 0;
 
-  // The number of elements, which may be less than the size of the array
-  private int N = 0;
-
   // TODO(lwhite) initialize the unique value id number to the smallest possible short to maximize range
   private short id = 0;
 
@@ -47,12 +44,17 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
   }
 
   public static CategoryColumn create(String name, int size) {
-    return new CategoryColumn(name);
+    return new CategoryColumn(name, size);
   }
 
   public CategoryColumn(String name) {
     super(name);
     values = new ShortArrayList(DEFAULT_ARRAY_SIZE);
+  }
+
+  public CategoryColumn(String name, int size) {
+    super(name);
+    values = new ShortArrayList(size);
   }
 
   @Override
@@ -62,24 +64,12 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
 
   @Override
   public boolean hasNext() {
-    return pointer + 1 < N;
+    return pointer < values.size();
   }
 
   public String next() {
     return lookupTable.get(values.getShort(pointer++));
   }
-
-  // TODO(lwhite): implement?
-  private void resize() {
-  }
-
-  /**
-   * Removes (most) extra space (empty elements) from the data array
-   */
-  public void compact() {
-    //TODO(lwhite): Implement?
-  }
-
 
   @Override
   public String getString(int row) {
@@ -166,6 +156,7 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     }
     t.addColumn(categories);
     t.addColumn(counts);
+    reset();
     return t;
   }
 
@@ -204,7 +195,6 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
       valueId = lookupTable.get(stringValue);
     }
     values.add(valueId);
-    N++;
   }
 
   public final IntComparator rowComparator = new IntComparator() {
@@ -222,7 +212,7 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
 
   public static String convert(String stringValue) {
     if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-      return (String) ColumnType.CAT.getMissingValue();
+      return MISSING_VALUE;
     }
     return stringValue;
   }

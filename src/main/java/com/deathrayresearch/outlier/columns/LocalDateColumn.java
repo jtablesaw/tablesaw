@@ -69,6 +69,10 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     data[N++] = f;
   }
 
+  public void set(int index, int value) {
+    data[index] = value;
+  }
+
   public void add(LocalDate f) {
     if (N >= data.length) {
       resize();
@@ -193,9 +197,9 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     for (int r = 0; r < this.size(); r++) {
       int c1 = this.getInt(r);
       if (c1 == LocalDateColumn.MISSING_VALUE) {
-        newColumn.set(r, null);
+        newColumn.add(null);
       } else {
-        newColumn.set(r, PackedLocalDate.getDayOfWeek(c1).toString());
+        newColumn.add(PackedLocalDate.getDayOfWeek(c1).toString());
       }
     }
     return newColumn;
@@ -229,6 +233,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   public IntColumn month() {
     IntColumn newColumn = IntColumn.create(this.name() + " month");
+
     for (int r = 0; r < this.size(); r++) {
       int c1 = this.getInt(r);
       if (c1 == LocalDateColumn.MISSING_VALUE) {

@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
@@ -111,23 +112,21 @@ public class StorageManager {
     return floats;
   }
 
-  public static FloatColumn readIntColumn(String fileName, String column) throws IOException {
-    FloatColumn floats = new FloatColumn(column);
+  public static IntColumn readIntColumn(String fileName, String column) throws IOException {
+    IntArrayList ints = new IntArrayList();
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
       boolean EOF = false;
       while (!EOF) {
         try {
-          float cell = dis.readFloat();
-          floats.add(cell);
+          ints.add(dis.readInt());
         } catch (EOFException e) {
           EOF = true;
         }
       }
     }
-    floats.compact();
-    return floats;
+    return IntColumn.create(column, ints);
   }
 
   public static LocalDateColumn readLocalDateColumn(String fileName, String column) throws IOException {
@@ -228,8 +227,7 @@ public class StorageManager {
       boolean EOF = false;
       while (!EOF) {
         try {
-          String cell = dis.readUTF();
-          stringColumn.add(cell);
+          stringColumn.add(dis.readUTF());
         } catch (EOFException e) {
           EOF = true;
         }
@@ -340,8 +338,7 @@ public class StorageManager {
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
-        String cell = column.next();
-        dos.writeUTF(cell);
+        dos.writeUTF(column.next());
       }
       column.reset();
       dos.flush();
@@ -354,8 +351,7 @@ public class StorageManager {
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
-        int cell = column.next();
-        dos.writeInt(cell);
+        dos.writeInt(column.next());
       }
       column.reset();
       dos.flush();
@@ -368,8 +364,7 @@ public class StorageManager {
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
-        int cell = column.next();
-        dos.writeInt(cell);
+        dos.writeInt(column.next());
       }
       column.reset();
       dos.flush();
@@ -381,8 +376,7 @@ public class StorageManager {
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
-        long cell = column.next();
-        dos.writeLong(cell);
+        dos.writeLong(column.next());
       }
       column.reset();
       dos.flush();
@@ -395,8 +389,7 @@ public class StorageManager {
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
-        int cell = column.next();
-        dos.writeInt(cell);
+        dos.writeInt(column.next());
       }
       column.reset();
       dos.flush();
@@ -409,8 +402,7 @@ public class StorageManager {
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       while (column.hasNext()) {
-        int cell = column.next();
-        dos.writeInt(cell);
+        dos.writeInt(column.next());
       }
       column.reset();
       dos.flush();

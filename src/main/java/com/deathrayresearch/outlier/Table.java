@@ -9,8 +9,6 @@ import com.deathrayresearch.outlier.store.TableMetadata;
 import com.deathrayresearch.outlier.util.IntComparatorChain;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.Arrays;
-import it.unimi.dsi.fastutil.Swapper;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
@@ -246,18 +244,6 @@ public class Table implements Relation {
     Table newTable = (Table) emptyCopy();
     IntArrayList rows1 = rows();
     Collections.sort(rows1, rowComparator);
-/*    int[] values = rows1.elements();
-
-    Arrays.quickSort(0, rows1.size(), rowComparator, new Swapper() {
-
-      @Override
-      public void swap(int a, int b) {
-        int temp = values[a];
-        values[a] = values[b];
-        values[b] = temp;
-      }
-    })*/;
-
     Rows.copyRowsToTable(rows1, this, newTable);
     return newTable;
   }

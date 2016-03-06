@@ -40,6 +40,7 @@ public class LocalTimeColumn extends AbstractColumn {
   public static LocalTimeColumn create(String fileName, IntArrayList times) {
     LocalTimeColumn column = new LocalTimeColumn(fileName, times.size());
     column.data = times.elements();
+    column.N = times.size();
     return column;
   }
 
