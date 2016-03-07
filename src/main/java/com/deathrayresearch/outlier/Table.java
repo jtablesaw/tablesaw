@@ -9,10 +9,13 @@ import com.deathrayresearch.outlier.store.TableMetadata;
 import com.deathrayresearch.outlier.util.IntComparatorChain;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -242,18 +245,23 @@ public class Table implements Relation {
    */
   public Table sortOn(IntComparator rowComparator) {
     Table newTable = (Table) emptyCopy();
-    IntArrayList rows1 = rows();
-    Collections.sort(rows1, rowComparator);
-    Rows.copyRowsToTable(rows1, this, newTable);
+    Integer[] integers = new Integer[rowCount()];
+    for (int i = 0; i < rowCount(); i++) {
+      integers[i] = i;
+    }
+    Arrays.parallelSort(integers, rowComparator);
+    IntArrayList newRows = new IntArrayList(rowCount());
+    newRows.addAll(Arrays.asList(integers).subList(0, rowCount()));
+    Rows.copyRowsToTable(newRows, this, newTable);
     return newTable;
   }
 
   private IntArrayList rows() {
-    IntArrayList ints = new IntArrayList(rowCount());
+    IntArrayList rowIndexes = new IntArrayList(rowCount());
     for (int i = 0; i < rowCount(); i++) {
-      ints.add(i);
+      rowIndexes.add(i);
     }
-    return ints;
+    return rowIndexes;
   }
 
   /**

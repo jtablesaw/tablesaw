@@ -31,7 +31,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
@@ -45,10 +44,15 @@ import java.util.concurrent.Future;
  */
 public class StorageManager {
 
-  private static final ExecutorService executorService = Executors.newFixedThreadPool(10);
+  private static final ExecutorService READER_SERVICE = Executors.newFixedThreadPool(10);
 
-  private static final CompletionService completionService =
-      new ExecutorCompletionService<>(executorService);
+  private static final CompletionService READER_COMPLETION_SERVICE =
+      new ExecutorCompletionService<>(READER_SERVICE);
+
+  private static final ExecutorService WRITER_SERVICE = Executors.newFixedThreadPool(10);
+
+  private static final CompletionService WRITER_COMPLETION_SERVICE =
+      new ExecutorCompletionService<>(WRITER_SERVICE);
 
   /**
    * @param fileName Expected to be fully specified
@@ -59,10 +63,22 @@ public class StorageManager {
     TableMetadata tableMetadata = readTableMetadata(fileName + File.separator + "Metadata.json");
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
     Table table = new Table(tableMetadata);
-    for (ColumnMetadata column : columnMetadata) {
-      Column c = readColumn(fileName + File.separator + column.getId(), column.getName(), column.getType());
-      table.addColumn(c);
+    try {
+      for (ColumnMetadata column : columnMetadata) {
+        READER_COMPLETION_SERVICE.submit(() -> {
+          Column c = readColumn(fileName + File.separator + column.getId(), column.getName(), column.getType());
+          table.addColumn(c);
+          return null;
+        });
+      }
+      for (int i = 0; i < columnMetadata.size(); i++) {
+        Future future = READER_COMPLETION_SERVICE.take();
+        future.get();
+      }
+    } catch (InterruptedException | ExecutionException e) {
+      throw new RuntimeException(e);
     }
+    READER_SERVICE.shutdown();
     return table;
   }
 
@@ -252,20 +268,20 @@ public class StorageManager {
 
     try {
       for (Column column : table.columns()) {
-        completionService.submit(() -> {
+        WRITER_COMPLETION_SERVICE.submit(() -> {
           Path columnPath = path.resolve(column.id());
           writeColumn(columnPath.toString(), column);
           return null;
         });
       }
       for (int i = 0; i < table.columnCount(); i++) {
-        Future future = completionService.take();
+        Future future = WRITER_COMPLETION_SERVICE.take();
         future.get();
       }
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
-    executorService.shutdown();
+    WRITER_SERVICE.shutdown();
   }
 
   private static void writeColumn(String fileName, Column column) {

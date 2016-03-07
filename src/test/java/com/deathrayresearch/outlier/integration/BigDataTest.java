@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.CsvReader;
 import com.deathrayresearch.outlier.io.CsvWriter;
+import com.deathrayresearch.outlier.store.StorageManager;
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
@@ -30,7 +31,9 @@ public class BigDataTest {
 
   public static void main(String[] args) throws Exception {
 
+
     Stopwatch stopwatch = Stopwatch.createStarted();
+/*
     Table table = CsvReader.read(file, types, wanted, ',', true);
     out(String.format("Loaded %d rows in %d seconds", table.rowCount(), stopwatch.elapsed(TimeUnit.SECONDS)));
 
@@ -40,6 +43,18 @@ public class BigDataTest {
     stopwatch.start();
     CsvWriter.write("testfolder/BigData.csv", table);
     out(String.format("Table written as csv file in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
+    stopwatch.reset();
+
+    stopwatch.start();
+    StorageManager.write("bigdata", table);
+    out(String.format("Table written to column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
+    stopwatch.reset();
+*/
+
+    //stopwatch.start();
+    Table table = StorageManager.readTable("bigdata/" + "70699a04-c567-4b4b-b3b5-39406c1ad39b");
+    out(String.format("Table read from column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
+    out(table.head(3).print());
   }
 
   //@Test
