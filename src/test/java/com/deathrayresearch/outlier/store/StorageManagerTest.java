@@ -52,7 +52,7 @@ public class StorageManagerTest {
   public void testWriteTable() throws IOException {
     System.out.println(table.head(5).print());
     Stopwatch stopwatch = Stopwatch.createStarted();
-    StorageManager.write("databases", table);
+    StorageManager.saveTable("databases", table);
     System.out.println("Write time (ms) " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
     Table t = StorageManager.readTable("databases/" + table.id());
@@ -84,7 +84,7 @@ public class StorageManagerTest {
     out(flights2015.columnNames().toString());
     out(flights2015.head(10).print());
     stopwatch.reset().start();
-    StorageManager.write("databases", flights2015);
+    StorageManager.saveTable("databases", flights2015);
     out("Write time in column store: " + stopwatch.elapsed(TimeUnit.SECONDS));
     stopwatch.reset().start();
     flights2015 = StorageManager.readTable("databases/" + flights2015.id());

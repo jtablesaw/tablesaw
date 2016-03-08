@@ -16,7 +16,8 @@ import java.util.List;
  */
 public class StatUtil {
 
-  private StatUtil() {}
+  private StatUtil() {
+  }
 
   public static float sum(final FloatColumn values) {
     float sum;
@@ -78,7 +79,7 @@ public class StatUtil {
 
   /**
    * Returns the (sample) variance of the available values.
-   *
+   * <p>
    * <p>This method returns the bias-corrected sample variance (using {@code n - 1} in
    * the denominator).
    *
@@ -154,7 +155,7 @@ public class StatUtil {
    * order.  For example, if {@code sample} is {0, 12, 5, 6, 0, 13, 5, 17},
    * the returned array will have length two, with 0 in the first element and
    * 5 in the second.
-   *
+   * <p>
    * <p>NaN values are ignored when computing the mode - i.e., NaNs will never
    * appear in the output array.  If the sample includes only NaNs or has
    * length 0, an empty array is returned.</p>
@@ -179,15 +180,14 @@ public class StatUtil {
    * order.  For example, if {@code sample} is {0, 12, 5, 6, 0, 13, 5, 17},
    * the returned array will have length two, with 0 in the first element and
    * 5 in the second.
-   *
+   * <p>
    * <p>NaN values are ignored when computing the mode - i.e., NaNs will never
    * appear in the output array.  If the sample includes only NaNs or has
    * length 0, an empty array is returned.</p>
    *
    * @param sample input data
-   * @param begin index (0-based) of the first array element to include
+   * @param begin  index (0-based) of the first array element to include
    * @param length the number of elements to include
-   *
    * @return array of array of the most frequently occurring element(s) sorted in ascending order.
    * @throws MathIllegalArgumentException if the indices are invalid or the array is null
    * @since 3.3
@@ -211,8 +211,9 @@ public class StatUtil {
   /**
    * Private helper method.
    * Assumes parameters have been validated.
+   *
    * @param values input data
-   * @param begin index (0-based) of the first array element to include
+   * @param begin  index (0-based) of the first array element to include
    * @param length the number of elements to include
    * @return array of array of the most frequently occurring element(s) sorted in ascending order.
    */
@@ -229,7 +230,7 @@ public class StatUtil {
     // Convert the list to an array of primitive double
     float[] modes = new float[list.size()];
     int i = 0;
-    for(Comparable<?> c : list) {
+    for (Comparable<?> c : list) {
       modes[i++] = ((Float) c).floatValue();
     }
     return modes;

@@ -20,11 +20,11 @@ public class ReverseIntComparator implements IntComparator {
 
   @Override
   public int compare(int i, int i1) {
-    return - intComparator.compare(i, i1);
+    return -intComparator.compare(i, i1);
   }
 
   @Override
   public int compare(Integer o1, Integer o2) {
-    return - intComparator.compare(o1, o2);
+    return -intComparator.compare(o1, o2);
   }
 }

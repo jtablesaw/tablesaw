@@ -7,6 +7,7 @@ import com.deathrayresearch.outlier.sorting.Sort;
 import com.deathrayresearch.outlier.splitter.functions.Average;
 import com.deathrayresearch.outlier.store.TableMetadata;
 import com.deathrayresearch.outlier.util.IntComparatorChain;
+import com.deathrayresearch.outlier.util.IntSort;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -245,6 +246,16 @@ public class Table implements Relation {
    */
   public Table sortOn(IntComparator rowComparator) {
     Table newTable = (Table) emptyCopy();
+    int[] integers = new int[rowCount()];
+    for (int i = 0; i < rowCount(); i++) {
+      integers[i] = i;
+    }
+
+    IntSort.qsort(integers, (IntComparatorChain) rowComparator);
+    IntArrayList newRows = IntArrayList.wrap(integers);
+
+
+/*
     Integer[] integers = new Integer[rowCount()];
     for (int i = 0; i < rowCount(); i++) {
       integers[i] = i;
@@ -252,6 +263,8 @@ public class Table implements Relation {
     Arrays.parallelSort(integers, rowComparator);
     IntArrayList newRows = new IntArrayList(rowCount());
     newRows.addAll(Arrays.asList(integers).subList(0, rowCount()));
+*/
+
     Rows.copyRowsToTable(newRows, this, newTable);
     return newTable;
   }

@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.util;
 /**
  *
  */
+
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
 import java.io.Serializable;
@@ -12,7 +13,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-public class IntComparatorChain implements IntComparator, Serializable {
+public class IntComparatorChain implements IntComparator, Serializable, IntSort.CompareInt {
+
   private static final long serialVersionUID = -721644942746081630L;
   private final List<IntComparator> comparatorChain;
   private BitSet orderingBits;
@@ -32,7 +34,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
     this.comparatorChain = new ArrayList<>(1);
     this.comparatorChain.add(comparator);
     this.orderingBits = new BitSet(1);
-    if(reverse) {
+    if (reverse) {
       this.orderingBits.set(0);
     }
 
@@ -56,7 +58,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
   public void addComparator(IntComparator comparator, boolean reverse) {
     this.checkLocked();
     this.comparatorChain.add(comparator);
-    if(reverse) {
+    if (reverse) {
       this.orderingBits.set(this.comparatorChain.size() - 1);
     }
   }
@@ -68,7 +70,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
   public void setComparator(int index, IntComparator comparator, boolean reverse) {
     this.checkLocked();
     this.comparatorChain.set(index, comparator);
-    if(reverse) {
+    if (reverse) {
       this.orderingBits.set(index);
     } else {
       this.orderingBits.clear(index);
@@ -94,31 +96,31 @@ public class IntComparatorChain implements IntComparator, Serializable {
   }
 
   private void checkLocked() {
-    if(this.isLocked) {
+    if (this.isLocked) {
       throw new UnsupportedOperationException("Comparator ordering cannot be changed after the first comparison is performed");
     }
   }
 
   private void checkChainIntegrity() {
-    if(this.comparatorChain.size() == 0) {
+    if (this.comparatorChain.size() == 0) {
       throw new UnsupportedOperationException("ComparatorChains must contain at least one Comparator");
     }
   }
 
   public int compare(Integer o1, Integer o2) throws UnsupportedOperationException {
-    if(!this.isLocked) {
+    if (!this.isLocked) {
       this.checkChainIntegrity();
       this.isLocked = true;
     }
 
     Iterator comparators = this.comparatorChain.iterator();
 
-    for(int comparatorIndex = 0; comparators.hasNext(); ++comparatorIndex) {
-      Comparator comparator = (Comparator)comparators.next();
+    for (int comparatorIndex = 0; comparators.hasNext(); ++comparatorIndex) {
+      Comparator comparator = (Comparator) comparators.next();
       int retval = comparator.compare(o1, o2);
-      if(retval != 0) {
-        if(this.orderingBits.get(comparatorIndex)) {
-          if(retval > 0) {
+      if (retval != 0) {
+        if (this.orderingBits.get(comparatorIndex)) {
+          if (retval > 0) {
             retval = -1;
           } else {
             retval = 1;
@@ -131,19 +133,19 @@ public class IntComparatorChain implements IntComparator, Serializable {
   }
 
   public int compare(int o1, int o2) throws UnsupportedOperationException {
-    if(!this.isLocked) {
+    if (!this.isLocked) {
       this.checkChainIntegrity();
       this.isLocked = true;
     }
 
     Iterator comparators = this.comparatorChain.iterator();
 
-    for(int comparatorIndex = 0; comparators.hasNext(); ++comparatorIndex) {
+    for (int comparatorIndex = 0; comparators.hasNext(); ++comparatorIndex) {
       IntComparator comparator = (IntComparator) comparators.next();
       int retval = comparator.compare(o1, o2);
-      if(retval != 0) {
-        if(this.orderingBits.get(comparatorIndex)) {
-          if(retval > 0) {
+      if (retval != 0) {
+        if (this.orderingBits.get(comparatorIndex)) {
+          if (retval > 0) {
             retval = -1;
           } else {
             retval = 1;
@@ -157,41 +159,43 @@ public class IntComparatorChain implements IntComparator, Serializable {
 
   public int hashCode() {
     int hash = 0;
-    if(null != this.comparatorChain) {
+    if (null != this.comparatorChain) {
       hash ^= this.comparatorChain.hashCode();
     }
 
-    if(null != this.orderingBits) {
+    if (null != this.orderingBits) {
       hash ^= this.orderingBits.hashCode();
     }
     return hash;
   }
 
   public boolean equals(Object object) {
-    if(this == object) {
+    if (this == object) {
       return true;
-    } else if(null == object) {
+    } else if (null == object) {
       return false;
-    } else if(!object.getClass().equals(this.getClass())) {
+    } else if (!object.getClass().equals(this.getClass())) {
       return false;
     } else {
       boolean var10000;
-      label48: {
-        label32: {
-          IntComparatorChain chain = (IntComparatorChain)object;
-          if(null == this.orderingBits) {
-            if(null != chain.orderingBits) {
+      label48:
+      {
+        label32:
+        {
+          IntComparatorChain chain = (IntComparatorChain) object;
+          if (null == this.orderingBits) {
+            if (null != chain.orderingBits) {
               break label32;
             }
-          } else if(!this.orderingBits.equals(chain.orderingBits)) {
+          } else if (!this.orderingBits.equals(chain.orderingBits)) {
             break label32;
           }
 
-          if(null == this.comparatorChain) {
-            if(null == chain.comparatorChain) {
+          if (null == this.comparatorChain) {
+            if (null == chain.comparatorChain) {
               break label48;
             }
-          } else if(this.comparatorChain.equals(chain.comparatorChain)) {
+          } else if (this.comparatorChain.equals(chain.comparatorChain)) {
             break label48;
           }
         }
@@ -203,5 +207,10 @@ public class IntComparatorChain implements IntComparator, Serializable {
       var10000 = true;
       return var10000;
     }
+  }
+
+  @Override
+  public boolean lessThan(int a, int b) {
+    return a - b < 0;
   }
 }

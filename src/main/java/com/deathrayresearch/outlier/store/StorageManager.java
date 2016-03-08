@@ -252,7 +252,7 @@ public class StorageManager {
     return stringColumn;
   }
 
-  public static void write(String pathName, Relation table) throws IOException {
+  public static void saveTable(String pathName, Relation table) throws IOException {
 
     Path path = Paths.get(pathName + File.separator + table.id());
 
@@ -348,7 +348,7 @@ public class StorageManager {
     }
   }
 
-  //TODO(lwhite): write the column using dictionary encoding (and integer compression)
+  //TODO(lwhite): saveTable the column using dictionary encoding (and integer compression)
   public static void writeColumn(String fileName, CategoryColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -361,7 +361,7 @@ public class StorageManager {
     }
   }
 
-  //TODO(lwhite): write the column using integer compression
+  //TODO(lwhite): saveTable the column using integer compression
   public static void writeColumn(String fileName, IntColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -374,7 +374,7 @@ public class StorageManager {
     }
   }
 
-  //TODO(lwhite): write the column using integer compression
+  //TODO(lwhite): saveTable the column using integer compression
   public static void writeColumn(String fileName, LocalDateColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -399,7 +399,7 @@ public class StorageManager {
     }
   }
 
-  //TODO(lwhite): write the column using integer compression
+  //TODO(lwhite): saveTable the column using integer compression
   public static void writeColumn(String fileName, LocalTimeColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -412,7 +412,7 @@ public class StorageManager {
     }
   }
 
-  //TODO(lwhite): write the column using integer compression
+  //TODO(lwhite): saveTable the column using integer compression
   public static void writeColumn(String fileName, PeriodColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -425,7 +425,7 @@ public class StorageManager {
     }
   }
 
-  //TODO(lwhite): write the column using compressed bitmap
+  //TODO(lwhite): saveTable the column using compressed bitmap
   public static void writeColumn(String fileName, BooleanColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);

@@ -17,6 +17,9 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
  */
 public class Rows {
 
+  // Don't instantiate
+  private Rows() {}
+
   public static void copyRowsToTable(IntArrayList rows, Table oldTable, Table newTable) {
 
     for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {

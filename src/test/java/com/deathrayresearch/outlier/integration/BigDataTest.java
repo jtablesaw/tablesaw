@@ -41,12 +41,12 @@ public class BigDataTest {
     stopwatch.reset();
 
     stopwatch.start();
-    CsvWriter.write("testfolder/BigData.csv", table);
+    CsvWriter.saveTable("testfolder/BigData.csv", table);
     out(String.format("Table written as csv file in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
     stopwatch.reset();
 
     stopwatch.start();
-    StorageManager.write("bigdata", table);
+    StorageManager.saveTable("bigdata", table);
     out(String.format("Table written to column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
     stopwatch.reset();
 */

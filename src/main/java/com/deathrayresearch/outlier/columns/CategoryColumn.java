@@ -171,7 +171,7 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     boolean b = lookupTable.contains(stringValue);
     short valueId;
     if (!b) {
-// TODO(lwhite): synchronize id() or column-level write lock so we can increment id safely without atomic integer objects
+// TODO(lwhite): synchronize id() or column-level saveTable lock so we can increment id safely without atomic integer objects
       valueId = id++;
       lookupTable.put(valueId, stringValue);
     } else {
