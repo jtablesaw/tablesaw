@@ -246,24 +246,20 @@ public class Table implements Relation {
    */
   public Table sortOn(IntComparator rowComparator) {
     Table newTable = (Table) emptyCopy();
-    int[] integers = new int[rowCount()];
+/*    int[] integers = new int[rowCount()];
     for (int i = 0; i < rowCount(); i++) {
       integers[i] = i;
-    }
-
-    IntSort.qsort(integers, (IntComparatorChain) rowComparator);
-    IntArrayList newRows = IntArrayList.wrap(integers);
+    }*/
 
 
-/*
     Integer[] integers = new Integer[rowCount()];
     for (int i = 0; i < rowCount(); i++) {
       integers[i] = i;
     }
+
     Arrays.parallelSort(integers, rowComparator);
     IntArrayList newRows = new IntArrayList(rowCount());
     newRows.addAll(Arrays.asList(integers).subList(0, rowCount()));
-*/
 
     Rows.copyRowsToTable(newRows, this, newTable);
     return newTable;
