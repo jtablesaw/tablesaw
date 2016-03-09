@@ -6,6 +6,8 @@ import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.io.CsvReader;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import static com.deathrayresearch.outlier.columns.ColumnType.*;
 
@@ -26,14 +28,17 @@ public class SfCrimeTest {
       FLOAT, // lat
  };
 
-  static Table table;
+  Table table;
 
   @Before
   public void setUp() throws Exception {
     table = CsvReader.read("bigdata/train.csv", heading);
   }
 
-  public static void main(String[] args) {
+
+  @Test
+  @Ignore
+  public void test() {
 
     out(table.columnNames().toString());
 
@@ -85,7 +90,7 @@ public class SfCrimeTest {
    // out(max.print());
   }
 
-  private static void out(String str) {
+  private void out(String str) {
     System.out.println(str);
   }
 }
