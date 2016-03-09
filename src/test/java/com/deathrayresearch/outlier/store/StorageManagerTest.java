@@ -1,15 +1,16 @@
 package com.deathrayresearch.outlier.store;
 
+import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.columns.FloatColumn;
-import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
 import com.deathrayresearch.outlier.io.CsvReader;
 import com.google.common.base.Stopwatch;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -17,8 +18,7 @@ import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 import static com.deathrayresearch.outlier.columns.ColumnType.*;
-import static com.deathrayresearch.outlier.columns.ColumnType.FLOAT;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -60,6 +60,7 @@ public class StorageManagerTest {
     System.out.print(t.head(5).print());
   }
 
+  @Ignore
   @Test
   public void testWriteReadFloatColumn() throws IOException {
     Stopwatch stopwatch = Stopwatch.createStarted();
