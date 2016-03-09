@@ -186,6 +186,18 @@ public class TextColumn extends AbstractColumn implements StringMapUtils, String
     data[i] = s;
   }
 
+  public int[] indexes() {
+    int[] rowIndexes = new int[size()];
+    for (int i = 0; i < size(); i++) {
+      rowIndexes[i] = i;
+    }
+    return rowIndexes;
+  }
+
+  public String[] elements() {
+    return data;
+  }
+
   @Override
   public String toString() {
     return "Text column: " + name();

@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-public class IntComparatorChain implements IntComparator, Serializable, IntSort.CompareInt {
+public class IntComparatorChain implements IntComparator, Serializable {
 
   private static final long serialVersionUID = -721644942746081630L;
   private final List<IntComparator> comparatorChain;
@@ -207,10 +207,5 @@ public class IntComparatorChain implements IntComparator, Serializable, IntSort.
       var10000 = true;
       return var10000;
     }
-  }
-
-  @Override
-  public boolean lessThan(int a, int b) {
-    return a - b < 0;
   }
 }

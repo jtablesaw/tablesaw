@@ -23,6 +23,7 @@ public class AirlineDelays2 {
     Table sorted = flights2015.sortAscendingOn("ORIGIN", "UNIQUE_CARRIER");
     System.out.println("Sorting " + stopwatch.elapsed(TimeUnit.SECONDS));
     System.out.println(sorted.head(1000).print());
+    System.exit(0);
   }
 
   private AirlineDelays2() throws Exception {
@@ -37,8 +38,7 @@ public class AirlineDelays2 {
 
     out(flights2015.shape());
     out(flights2015.columnNames().toString());
-    flights2015.head(10).print();
-    stopwatch.reset().start();
+    out(flights2015.head(10).print());
   }
 
   private static void out(Object obj) {

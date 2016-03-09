@@ -7,17 +7,13 @@ import com.deathrayresearch.outlier.sorting.Sort;
 import com.deathrayresearch.outlier.splitter.functions.Average;
 import com.deathrayresearch.outlier.store.TableMetadata;
 import com.deathrayresearch.outlier.util.IntComparatorChain;
-import com.deathrayresearch.outlier.util.IntSort;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -170,7 +166,7 @@ public class Table implements Relation {
    * <p>
    * You can extend the sort key by using .next() to fill more columns to the sort order
    */
-  private Sort first(String columnName, Sort.Order order) {
+  private static Sort first(String columnName, Sort.Order order) {
     return Sort.on(columnName, order);
   }
 
@@ -197,6 +193,11 @@ public class Table implements Relation {
    * Returns a copy of this table sorted on the given column names, applied in order, descending
    */
   public Table sortDescendingOn(String... columnNames) {
+    Sort key = getSort(columnNames);
+    return sortOn(key);
+  }
+
+  public static Sort getSort(String ... columnNames) {
     Sort key = null;
     for (String s : columnNames) {
       if (key == null) {
@@ -205,7 +206,7 @@ public class Table implements Relation {
         key.next(s, Order.DESCEND);
       }
     }
-    return sortOn(key);
+    return key;
   }
 
   /**
@@ -215,6 +216,27 @@ public class Table implements Relation {
    */
   public Table sortOn(Sort key) {
     Preconditions.checkArgument(!key.isEmpty());
+    if (key.size() == 1) {
+      IntComparator comparator = getComparator(key);
+      return sortOn(comparator);
+    }
+    IntComparatorChain chain = getChain(key);
+    return sortOn(chain);
+  }
+
+  public IntComparator getComparator(Sort key) {
+    Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
+    Map.Entry<String, Sort.Order> sort = entries.next();
+    IntComparator comparator;
+    if (sort.getValue() == Order.ASCEND) {
+      comparator = rowComparator(sort.getKey(), false);
+    } else {
+      comparator = rowComparator(sort.getKey(), true);
+    }
+    return comparator;
+  }
+
+  public IntComparatorChain getChain(Sort key) {
     Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
     Map.Entry<String, Sort.Order> sort = entries.next();
 
@@ -223,10 +245,6 @@ public class Table implements Relation {
       comparator = rowComparator(sort.getKey(), false);
     } else {
       comparator = rowComparator(sort.getKey(), true);
-    }
-
-    if (key.size() == 1) {
-      return sortOn(comparator);
     }
 
     IntComparatorChain chain = new IntComparatorChain(comparator);
@@ -238,7 +256,7 @@ public class Table implements Relation {
         chain.addComparator(rowComparator(sort.getKey(), true));
       }
     }
-    return sortOn(chain);
+    return chain;
   }
 
   /**
@@ -246,29 +264,17 @@ public class Table implements Relation {
    */
   public Table sortOn(IntComparator rowComparator) {
     Table newTable = (Table) emptyCopy();
-/*    int[] integers = new int[rowCount()];
-    for (int i = 0; i < rowCount(); i++) {
-      integers[i] = i;
-    }*/
 
-
-    Integer[] integers = new Integer[rowCount()];
-    for (int i = 0; i < rowCount(); i++) {
-      integers[i] = i;
-    }
-
-    Arrays.parallelSort(integers, rowComparator);
-    IntArrayList newRows = new IntArrayList(rowCount());
-    newRows.addAll(Arrays.asList(integers).subList(0, rowCount()));
-
-    Rows.copyRowsToTable(newRows, this, newTable);
+    int[] newRows = rows();
+    IntArrays.mergeSort(newRows, rowComparator);
+    Rows.copyRowsToTable(IntArrayList.wrap(newRows), this, newTable);
     return newTable;
   }
 
-  private IntArrayList rows() {
-    IntArrayList rowIndexes = new IntArrayList(rowCount());
+  public int[] rows() {
+    int[] rowIndexes = new int[rowCount()];
     for (int i = 0; i < rowCount(); i++) {
-      rowIndexes.add(i);
+      rowIndexes[i] = i;
     }
     return rowIndexes;
   }

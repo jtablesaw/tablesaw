@@ -7,6 +7,7 @@ import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import com.deathrayresearch.outlier.util.DictionaryMap;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
@@ -202,12 +203,15 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
 
     @Override
     public int compare(int i, int i1) {
-      return getString(i).compareTo(getString(i1));
+      //return getString(values.getShort(i)).compareTo(getString(values.getShort(i1)));
+      String f1 = getString(i);
+      String f2 = getString(i1);
+      return f1.compareTo(f2);
     }
 
     @Override
-    public int compare(Integer o1, Integer o2) {
-      return getString(o1).compareTo(getString(o2));
+    public int compare(Integer i, Integer i1) {
+      return getString(values.getShort(i)).compareTo(getString(values.getShort(i1)));
     }
   };
 
@@ -297,5 +301,13 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
   @Override
   public String toString() {
     return "Category column: " + name();
+  }
+
+  public int[] indexes() {
+    int[] rowIndexes = new int[size()];
+    for (int i = 0; i < size(); i++) {
+      rowIndexes[i] = i;
+    }
+    return rowIndexes;
   }
 }

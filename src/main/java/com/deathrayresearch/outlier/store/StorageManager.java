@@ -78,7 +78,7 @@ public class StorageManager {
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
-    READER_SERVICE.shutdown();
+    //READER_SERVICE.shutdown();
     return table;
   }
 

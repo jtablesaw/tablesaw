@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.integration;
 import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.CsvReader;
+import com.deathrayresearch.outlier.store.StorageManager;
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
@@ -35,7 +36,7 @@ public class AirlineDelays {
     out(flights2008.shape());
     out(flights2008.columnNames().toString());
     flights2008.head(10).print();
-
+    StorageManager.saveTable("bigdata", flights2008);
     stopwatch.reset().start();
   }
 
@@ -56,16 +57,16 @@ public class AirlineDelays {
       CAT, // Carrier
       CAT, // FlightNum
       CAT, // TailNum
-      FLOAT, // ActualElapsedTime
-      FLOAT, // CRSElapsedTime
-      FLOAT, // AirTime
-      FLOAT, // ArrDelay
-      FLOAT, // DepDelay
+      INTEGER, // ActualElapsedTime
+      INTEGER, // CRSElapsedTime
+      INTEGER, // AirTime
+      INTEGER, // ArrDelay
+      INTEGER, // DepDelay
       CAT, // Origin
       CAT, // Dest
-      FLOAT, // Distance
-      FLOAT, // TaxiIn
-      FLOAT, // TaxiOut
+      INTEGER, // Distance
+      INTEGER, // TaxiIn
+      INTEGER, // TaxiOut
       BOOLEAN, // Cancelled
       CAT, // CancellationCode
       BOOLEAN, // Diverted
