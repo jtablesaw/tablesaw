@@ -6,6 +6,7 @@ import com.deathrayresearch.outlier.columns.IntColumn;
 import com.google.common.base.Stopwatch;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -50,6 +51,7 @@ public class TableTest {
     assertEquals(2, table.rowCount());
   }
 
+  @Ignore
   @Test
   public void testRun() {
     Table table = new Table("daf");

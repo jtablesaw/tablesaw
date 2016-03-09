@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import com.google.common.base.Stopwatch;
 import org.apache.commons.math3.random.RandomDataGenerator;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -16,6 +17,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class FloatColumnTest {
 
+  @Ignore
   @Test
   public void testApplyFilter() {
 

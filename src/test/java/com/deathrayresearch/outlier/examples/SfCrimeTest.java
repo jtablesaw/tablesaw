@@ -6,6 +6,7 @@ import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.io.CsvReader;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.deathrayresearch.outlier.columns.ColumnType.*;
@@ -34,7 +35,9 @@ public class SfCrimeTest {
     table = CsvReader.read("bigdata/train.csv", heading);
   }
 
+
   @Test
+  @Ignore
   public void test() {
 
     out(table.columnNames().toString());
