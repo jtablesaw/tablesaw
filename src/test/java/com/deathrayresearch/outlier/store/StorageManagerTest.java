@@ -71,7 +71,7 @@ public class StorageManagerTest {
 
     t.floatColumn(0).setName("a floater column");
     System.out.println(t.head(3).print());
-    StorageManager.saveTable("databases", t);
+ //   StorageManager.saveTable("databases", t);
   }
 
   @Ignore
