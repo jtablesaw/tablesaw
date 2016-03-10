@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A column that contains signed integer values
+ * A column that contains signed 4 byte integer values
  */
 public class IntColumn extends AbstractColumn {
 
@@ -290,15 +290,25 @@ public class IntColumn extends AbstractColumn {
     }
   };
 
+  public int max() {
+    reset();
+    int f = StatUtil.max(this);
+    reset();
+    return f;
+  }
+
   public int min() {
-    int min = Integer.MAX_VALUE;
-    while (this.hasNext()) {
-      int next = next();
-      if (next < min) {
-        min = next;
-      }
+    reset();
+    int f = StatUtil.min(this);
+    reset();
+    return f;
+  }
+
+  public int firstElement() {
+    if (size() > 0) {
+      return data[0];
     }
-    return min;
+    return MISSING_VALUE;
   }
 
   public RoaringBitmap isPositive() {

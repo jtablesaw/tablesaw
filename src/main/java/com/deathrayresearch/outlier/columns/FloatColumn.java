@@ -100,7 +100,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
     if (size() > 0) {
       return data[0];
     }
-    return Float.MIN_VALUE;
+    return MISSING_VALUE;
   }
 
   public float max() {

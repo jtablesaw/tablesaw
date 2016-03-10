@@ -320,6 +320,13 @@ public class Table implements Relation {
     return new Average(this, summarizedColumnName);
   }
 
+/*
+  public Table countBy(String byColumnName) {
+
+
+  }
+*/
+
   public CategoryColumn categoryColumn(String pdDistrict) {
     return (CategoryColumn) column(pdDistrict);
   }

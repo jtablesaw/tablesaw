@@ -60,6 +60,20 @@ public class StatUtil {
     return min;
   }
 
+  public static int min(final IntColumn values) {
+    if (values.size() == 0) {
+      return IntColumn.MISSING_VALUE;
+    }
+    int min = values.firstElement();
+    while (values.hasNext()) {
+      int value = values.next();
+      if (value != IntColumn.MISSING_VALUE) {
+        min = (min < value) ? min : value;
+      }
+    }
+    return min;
+  }
+
   public static float max(final FloatColumn values) {
     if (values.size() == 0) {
       return Float.NaN;
@@ -68,6 +82,23 @@ public class StatUtil {
     values.reset();
     while (values.hasNext()) {
       float value = values.next();
+      if (!Float.isNaN(value)) {
+        if (value > max) {
+          max = value;
+        }
+      }
+    }
+    return max;
+  }
+
+  public static int max(final IntColumn values) {
+    if (values.size() == 0) {
+      return IntColumn.MISSING_VALUE;
+    }
+    int max = values.firstElement();
+    values.reset();
+    while (values.hasNext()) {
+      int value = values.next();
       if (!Float.isNaN(value)) {
         if (value > max) {
           max = value;

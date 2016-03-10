@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
 /**
  *
  */
@@ -23,6 +22,22 @@ public class IntColumnTest {
       column.add(1);
     }
     assertEquals(100, column.sum());
+  }
+
+  @Test
+  public void testMin() {
+    for (int i = 0; i < 100; i++) {
+      column.add(i);
+    }
+    assertEquals(0, column.min());
+  }
+
+  @Test
+  public void testMax() {
+    for (int i = 0; i < 100; i++) {
+      column.add(i);
+    }
+    assertEquals(99, column.max());
   }
 
   @Test

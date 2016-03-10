@@ -19,8 +19,8 @@ import static org.junit.Assert.assertNotNull;
  */
 public class TableTest {
 
-  private Relation table;
-  private Column column = new FloatColumn("f1");
+  private Table table;
+  private FloatColumn column = new FloatColumn("f1");
 
   @Before
   public void setUp() throws Exception {
@@ -51,6 +51,16 @@ public class TableTest {
     assertEquals(2, table.rowCount());
   }
 
+/*
+  @Test
+  public void testAverage() throws Exception {
+    column.add(2f);
+    column.add(4f);
+    Table avgs = table.average(column.name()).by("");
+    System.out.println(avgs.print());
+  }
+*/
+
   @Ignore
   @Test
   public void testRun() {
@@ -63,9 +73,7 @@ public class TableTest {
       for (int k = 0; k < max; k++) {
         column1.add(k);
       }
-
       Stopwatch stopwatch = Stopwatch.createStarted();
-
       View view = new View(table, "f1");
       int v = random.nextInt(0, max);
       View view2 = view.where(column1.isEqualTo(v));
