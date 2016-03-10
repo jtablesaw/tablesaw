@@ -168,7 +168,9 @@ public class View implements Relation {
   }
 
   public View head(int i) {
-    return new View(this, Math.min(i, rowCount()));
+    View view = new View(this, Math.min(i, rowCount()));
+    view.setName(name());
+    return view;
   }
 
   @Override
