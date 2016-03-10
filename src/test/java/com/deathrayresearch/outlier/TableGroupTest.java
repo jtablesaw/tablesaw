@@ -40,4 +40,11 @@ public class TableGroupTest {
     Table groups = table.countBy("who");
     System.out.println(groups.print());
   }
+
+  @Test
+  public void testSumGroup() {
+    System.out.println(table.columnNames());
+    Table groups = table.sum(table.intColumn(1), table.categoryColumn(2));
+    System.out.println(groups.print());
+  }
 }

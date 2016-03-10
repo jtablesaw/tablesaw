@@ -364,24 +364,22 @@ public class Table implements Relation {
     return resultTable;
   }
 
-
-/*
   public Table sum(IntColumn sumColumn, Column byColumn) {
     TableGroup group = new TableGroup(this, byColumn);
     Table resultTable = new Table(name + " summary");
-    Column column1;
-    IntColumn sumColumn;
-    resultTable.addColumn(column1);
-    resultTable.addColumn(sumColumn);
+    CategoryColumn groupColumn = CategoryColumn.create("Group", group.size());
+    IntColumn countColumn = IntColumn.create("Sum", group.size());
+    resultTable.addColumn(groupColumn);
+    resultTable.addColumn(countColumn);
 
-    for (View subTable : group.getSubTables()) {
-      int result = subTable.intColumn(sumColumn.name()).sum();
-
-      resultTable(values.size(), result);
+    for (SubTable subTable : group.getSubTables()) {
+      int sum = subTable.intColumn(sumColumn.name()).sum();
+      String groupName = subTable.name();
+      groupColumn.add(groupName);
+      countColumn.add(sum);
     }
     return resultTable;
   }
-*/
 
   public CategoryColumn categoryColumn(String columnName) {
     return (CategoryColumn) column(columnName);
