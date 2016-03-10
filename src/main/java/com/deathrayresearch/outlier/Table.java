@@ -26,7 +26,7 @@ import static com.deathrayresearch.outlier.sorting.Sort.Order;
  */
 public class Table implements Relation {
 
-  private String id = UUID.randomUUID().toString();
+  private final String id;
 
   private String name;
 
@@ -34,6 +34,7 @@ public class Table implements Relation {
 
   public Table(String name) {
     this.name = name;
+    this.id = UUID.randomUUID().toString();
   }
 
   public Table(TableMetadata metadata) {

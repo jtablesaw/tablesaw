@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.aggregator.NumReduceUtils;
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -13,6 +14,7 @@ import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +43,11 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
   public FloatColumn(String name, int initialSize) {
     super(name);
     data = new float[initialSize];
+  }
+
+  public FloatColumn(ColumnMetadata metadata) {
+    super(metadata);
+    data = new float[metadata.getSize()];
   }
 
   public int size() {

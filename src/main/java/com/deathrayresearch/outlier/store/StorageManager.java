@@ -66,7 +66,7 @@ public class StorageManager {
     try {
       for (ColumnMetadata column : columnMetadata) {
         READER_COMPLETION_SERVICE.submit(() -> {
-          Column c = readColumn(fileName + File.separator + column.getId(), column.getName(), column.getType());
+          Column c = readColumn(fileName + File.separator + column.getId(), column);
           table.addColumn(c);
           return null;
         });
@@ -82,35 +82,35 @@ public class StorageManager {
     return table;
   }
 
-  private static Column readColumn(String fileName, String columnName, ColumnType columnType)
+  private static Column readColumn(String fileName, ColumnMetadata columnMetadata)
       throws IOException {
 
-    switch (columnType) {
+    switch (columnMetadata.getType()) {
       case FLOAT:
-        return readFloatColumn(fileName, columnName);
+        return readFloatColumn(fileName, columnMetadata);
       case INTEGER:
-        return readIntColumn(fileName, columnName);
+        return readIntColumn(fileName, columnMetadata);
       case BOOLEAN:
-        return readBooleanColumn(fileName, columnName);
+        return readBooleanColumn(fileName, columnMetadata);
       case LOCAL_DATE:
-        return readLocalDateColumn(fileName, columnName);
+        return readLocalDateColumn(fileName, columnMetadata);
       case LOCAL_TIME:
-        return readLocalTimeColumn(fileName, columnName);
+        return readLocalTimeColumn(fileName, columnMetadata);
       case LOCAL_DATE_TIME:
-        return readLocalDateTimeColumn(fileName, columnName);
+        return readLocalDateTimeColumn(fileName, columnMetadata);
       case PERIOD:
-        return readPeriodColumn(fileName, columnName);
+        return readPeriodColumn(fileName, columnMetadata);
       case TEXT:
-        return readTextColumn(fileName, columnName);
+        return readTextColumn(fileName, columnMetadata);
       case CAT:
-        return readCategoryColumn(fileName, columnName);
+        return readCategoryColumn(fileName, columnMetadata);
       default:
         throw new RuntimeException("Unhandled column type writing columns");
     }
   }
 
-  public static FloatColumn readFloatColumn(String fileName, String columnName) throws IOException {
-    FloatColumn floats = new FloatColumn(columnName);
+  public static FloatColumn readFloatColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    FloatColumn floats = new FloatColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -128,8 +128,8 @@ public class StorageManager {
     return floats;
   }
 
-  public static IntColumn readIntColumn(String fileName, String column) throws IOException {
-    IntArrayList ints = new IntArrayList();
+  public static IntColumn readIntColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    IntColumn ints = new IntColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -142,11 +142,11 @@ public class StorageManager {
         }
       }
     }
-    return IntColumn.create(column, ints);
+    return ints;
   }
 
-  public static LocalDateColumn readLocalDateColumn(String fileName, String column) throws IOException {
-    IntArrayList dates = new IntArrayList();
+  public static LocalDateColumn readLocalDateColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    LocalDateColumn dates = new LocalDateColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -160,11 +160,11 @@ public class StorageManager {
         }
       }
     }
-    return LocalDateColumn.create(column, dates);
+    return dates;
   }
 
-  public static LocalDateTimeColumn readLocalDateTimeColumn(String fileName, String column) throws IOException {
-    LongArrayList dates = new LongArrayList();
+  public static LocalDateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    LocalDateTimeColumn dates = new LocalDateTimeColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -178,11 +178,11 @@ public class StorageManager {
         }
       }
     }
-    return LocalDateTimeColumn.create(column, dates);
+    return dates;
   }
 
-  public static LocalTimeColumn readLocalTimeColumn(String fileName, String column) throws IOException {
-    IntArrayList times = new IntArrayList();
+  public static LocalTimeColumn readLocalTimeColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    LocalTimeColumn times = new LocalTimeColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -196,11 +196,11 @@ public class StorageManager {
         }
       }
     }
-    return LocalTimeColumn.create(column, times);
+    return times;
   }
 
-  public static PeriodColumn readPeriodColumn(String fileName, String column) throws IOException {
-    IntArrayList packedPeriods = new IntArrayList();
+  public static PeriodColumn readPeriodColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    PeriodColumn packedPeriods = new PeriodColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -214,11 +214,11 @@ public class StorageManager {
         }
       }
     }
-    return PeriodColumn.create(column, packedPeriods);
+    return packedPeriods;
   }
 
-  public static TextColumn readTextColumn(String fileName, String column) throws IOException {
-    TextColumn stringColumn = TextColumn.create(column);
+  public static TextColumn readTextColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    TextColumn stringColumn = new TextColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -235,8 +235,8 @@ public class StorageManager {
     return stringColumn;
   }
 
-  public static CategoryColumn readCategoryColumn(String fileName, String column) throws IOException {
-    CategoryColumn stringColumn = CategoryColumn.create(column);
+  public static CategoryColumn readCategoryColumn(String fileName,ColumnMetadata metadata) throws IOException {
+    CategoryColumn stringColumn = new CategoryColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -250,6 +250,24 @@ public class StorageManager {
       }
     }
     return stringColumn;
+  }
+
+  public static BooleanColumn readBooleanColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    BooleanColumn bools = new BooleanColumn(metadata);
+    try (FileInputStream fis = new FileInputStream(fileName);
+         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+         DataInputStream dis = new DataInputStream(sis)) {
+      boolean EOF = false;
+      while (!EOF) {
+        try {
+          boolean cell = dis.readBoolean();
+          bools.add(cell);
+        } catch (EOFException e) {
+          EOF = true;
+        }
+      }
+    }
+    return bools;
   }
 
   public static void saveTable(String pathName, Relation table) throws IOException {
@@ -436,24 +454,6 @@ public class StorageManager {
       }
       dos.flush();
     }
-  }
-
-  public static BooleanColumn readBooleanColumn(String fileName, String column) throws IOException {
-    BooleanArrayList bools = new BooleanArrayList();
-    try (FileInputStream fis = new FileInputStream(fileName);
-         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-         DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          boolean cell = dis.readBoolean();
-          bools.add(cell);
-        } catch (EOFException e) {
-          EOF = true;
-        }
-      }
-    }
-    return BooleanColumn.create(column, bools);
   }
 
   /**

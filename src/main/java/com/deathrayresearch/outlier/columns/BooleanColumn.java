@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.BooleanMapUtils;
+import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -30,6 +31,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   public static BooleanColumn create(String name) {
     return new BooleanColumn(name);
+  }
+
+  public BooleanColumn(ColumnMetadata metadata) {
+    super(metadata);
+    data = new boolean[DEFAULT_ARRAY_SIZE];
   }
 
   private BooleanColumn(String name) {

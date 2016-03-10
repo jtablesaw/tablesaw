@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateMapUtils;
+import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -36,6 +37,11 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   private LocalDateColumn(String name) {
     super(name);
+    data = new int[DEFAULT_ARRAY_SIZE];
+  }
+
+  public LocalDateColumn(ColumnMetadata metadata) {
+    super(metadata);
     data = new int[DEFAULT_ARRAY_SIZE];
   }
 

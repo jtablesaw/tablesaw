@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -46,6 +47,11 @@ public class LocalTimeColumn extends AbstractColumn {
 
   private LocalTimeColumn(String name) {
     super(name);
+    data = new int[DEFAULT_ARRAY_SIZE];
+  }
+
+  public LocalTimeColumn(ColumnMetadata metadata) {
+    super(metadata);
     data = new int[DEFAULT_ARRAY_SIZE];
   }
 

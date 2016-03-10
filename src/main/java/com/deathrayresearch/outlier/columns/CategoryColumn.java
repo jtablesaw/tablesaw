@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
+import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.DictionaryMap;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
@@ -49,8 +50,13 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     return new CategoryColumn(name, size);
   }
 
-  public CategoryColumn(String name) {
+  private CategoryColumn(String name) {
     super(name);
+    values = new ShortArrayList(DEFAULT_ARRAY_SIZE);
+  }
+
+  public CategoryColumn(ColumnMetadata metadata) {
+    super(metadata);
     values = new ShortArrayList(DEFAULT_ARRAY_SIZE);
   }
 

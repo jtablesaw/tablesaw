@@ -9,12 +9,18 @@ import java.util.UUID;
  */
 abstract class AbstractColumn implements Column {
 
-  private final String id = UUID.randomUUID().toString();
+  private String id;
 
   private String name;
 
   public AbstractColumn(String name) {
     this.name = name;
+    this.id = UUID.randomUUID().toString();
+  }
+
+  public AbstractColumn(ColumnMetadata metadata) {
+    this.name = metadata.getName();
+    this.id = metadata.getId();
   }
 
   public String name() {

@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  */
 public class CategoryColumnTest {
 
-  CategoryColumn column = new CategoryColumn("testing");
+  CategoryColumn column = CategoryColumn.create("testing");
 
   @Before
   public void setUp() throws Exception {

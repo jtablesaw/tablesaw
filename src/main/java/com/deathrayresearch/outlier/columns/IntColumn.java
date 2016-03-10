@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.sorting.IntComparisonUtil;
+import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -30,6 +31,10 @@ public class IntColumn extends AbstractColumn {
     return new IntColumn(name, DEFAULT_ARRAY_SIZE);
   }
 
+  public static IntColumn create(ColumnMetadata metadata) {
+    return new IntColumn(metadata);
+  }
+
   public static IntColumn create(String name, int arraySize) {
     return new IntColumn(name, arraySize);
   }
@@ -43,6 +48,11 @@ public class IntColumn extends AbstractColumn {
   public IntColumn(String name, int initialSize) {
     super(name);
     data = new int[initialSize];
+  }
+
+  public IntColumn(ColumnMetadata metadata) {
+    super(metadata);
+    data = new int[metadata.getSize()];
   }
 
   public IntColumn(String name) {

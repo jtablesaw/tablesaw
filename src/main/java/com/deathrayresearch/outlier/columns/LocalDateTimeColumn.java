@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateTimeMapUtils;
+import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
@@ -66,6 +67,11 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
   private LocalDateTimeColumn(String name) {
     super(name);
+    data = new long[DEFAULT_ARRAY_SIZE];
+  }
+
+  public LocalDateTimeColumn(ColumnMetadata metadata) {
+    super(metadata);
     data = new long[DEFAULT_ARRAY_SIZE];
   }
 

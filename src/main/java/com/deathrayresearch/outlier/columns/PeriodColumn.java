@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -36,6 +37,11 @@ public class PeriodColumn extends AbstractColumn {
   private int N = 0;
 
   private int[] data;
+
+  public PeriodColumn(ColumnMetadata metadata) {
+    super(metadata);
+    data = new int[DEFAULT_ARRAY_SIZE];
+  }
 
   private PeriodColumn(String name) {
     super(name);

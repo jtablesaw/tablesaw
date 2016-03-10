@@ -13,8 +13,10 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.deathrayresearch.outlier.columns.ColumnType.*;
@@ -62,13 +64,29 @@ public class StorageManagerTest {
 
   @Ignore
   @Test
+  public void testWriteTableTwice() throws IOException {
+
+    StorageManager.saveTable("databases", table);
+    Table t = StorageManager.readTable("databases/" + "28d8c085-4add-4573-a506-b87ab85e50c4");
+
+    t.floatColumn(0).setName("a floater column");
+    System.out.println(t.head(3).print());
+    StorageManager.saveTable("databases", t);
+  }
+
+  @Ignore
+  @Test
   public void testWriteReadFloatColumn() throws IOException {
     Stopwatch stopwatch = Stopwatch.createStarted();
-    StorageManager.writeColumn("testfolder/test_col", floatColumn);
+    String fileName = "testfolder/test_col";
+    StorageManager.writeColumn(fileName, floatColumn);
     System.out.println("Milliseconds to write float col:"  + stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
     stopwatch = Stopwatch.createStarted();
-    FloatColumn floatColumn1 = StorageManager.readFloatColumn("testfolder/test_col", "test");
+    TableMetadata tableMetadata = StorageManager.readTableMetadata(fileName + File.separator + "Metadata.json");
+    List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
+
+    FloatColumn floatColumn1 = StorageManager.readFloatColumn("testfolder/test_col", columnMetadata.get(0));
     assertEquals(COUNT, floatColumn1.size());
     System.out.println("Milliseconds to read float col:"  + stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }

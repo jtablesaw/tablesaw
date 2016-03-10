@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
+import com.deathrayresearch.outlier.store.ColumnMetadata;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -26,6 +27,11 @@ public class TextColumn extends AbstractColumn implements StringMapUtils, String
 
   public static TextColumn create(String name) {
     return new TextColumn(name);
+  }
+
+  public TextColumn(ColumnMetadata metadata) {
+    super(metadata);
+    data = new String[DEFAULT_ARRAY_SIZE];
   }
 
   private TextColumn(String name) {

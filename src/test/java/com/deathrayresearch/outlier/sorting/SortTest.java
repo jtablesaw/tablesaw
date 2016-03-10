@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -33,6 +34,7 @@ public class SortTest {
     column2 = table2.categoryColumn("ORIGIN");
   }
 
+  @Ignore
   @Test
   public void sort() {
 
@@ -50,6 +52,7 @@ public class SortTest {
     assertTrue(java.util.Arrays.equals(values, rows1.elements()));
   }
 
+  @Ignore
   @Test
   public void sortColumn() {
 
