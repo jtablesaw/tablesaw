@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.PeriodColumn;
 import com.deathrayresearch.outlier.sorting.Sort;
 import com.deathrayresearch.outlier.splitter.functions.Average;
@@ -40,6 +41,19 @@ public class Table implements Relation {
   public Table(TableMetadata metadata) {
     this.name = metadata.getName();
     this.id = metadata.getId();
+  }
+
+  /**
+   * Returns a new Table initialized with the given names and columns
+   *
+   * @param name    The name of the table
+   * @param columns One or more columns, all of which must have either the same length or size 0
+   */
+  public Table(String name, Column ... columns) {
+    this(name);
+    for (Column column : columns) {
+      this.addColumn(column);
+    }
   }
 
   @Override
@@ -120,11 +134,22 @@ public class Table implements Relation {
     return names;
   }
 
+  /**
+   * Returns a List of the names of all the columns in this table
+   */
+  public String[] columnNameArray() {
+    String[] names = new String[columnList.size()];
+    for (int i = 0; i < columnList.size(); i++) {
+      Column column = columnList.get(i);
+      names[i] = column.name();
+    }
+    return names;
+  }
+
   @Override
   public int row(int r) {
     return r;
   }
-
 
   @Override
   public String get(int c, int r) {
@@ -318,17 +343,52 @@ public class Table implements Relation {
 
   public Average average(String summarizedColumnName) {
     return new Average(this, summarizedColumnName);
+
   }
 
-/*
+
   public Table countBy(String byColumnName) {
+    TableGroup group = new TableGroup(this, byColumnName);
+    Table resultTable = new Table(name + " summary");
+    CategoryColumn groupColumn = CategoryColumn.create("Group", group.size());
+    IntColumn countColumn = IntColumn.create("Count", group.size());
+    resultTable.addColumn(groupColumn);
+    resultTable.addColumn(countColumn);
+
+    for (SubTable subTable : group.getSubTables()) {
+      int count = subTable.rowCount();
+      String groupName = subTable.name();
+      groupColumn.add(groupName);
+      countColumn.add(count);
+    }
+    return resultTable;
+  }
 
 
+/*
+  public Table sum(IntColumn sumColumn, Column byColumn) {
+    TableGroup group = new TableGroup(this, byColumn);
+    Table resultTable = new Table(name + " summary");
+    Column column1;
+    IntColumn sumColumn;
+    resultTable.addColumn(column1);
+    resultTable.addColumn(sumColumn);
+
+    for (View subTable : group.getSubTables()) {
+      int result = subTable.intColumn(sumColumn.name()).sum();
+
+      resultTable(values.size(), result);
+    }
+    return resultTable;
   }
 */
 
-  public CategoryColumn categoryColumn(String pdDistrict) {
-    return (CategoryColumn) column(pdDistrict);
+  public CategoryColumn categoryColumn(String columnName) {
+    return (CategoryColumn) column(columnName);
+  }
+
+  public CategoryColumn categoryColumn(int columnIndex) {
+    return (CategoryColumn) column(columnIndex);
   }
 
   public PeriodColumn periodColumn(int i) {

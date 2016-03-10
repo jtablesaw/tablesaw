@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
@@ -17,53 +18,55 @@ import java.util.function.ToIntFunction;
 public class TableGroup {
 
   private final Table original;
-  private final List<View> subTables;
-  private final String[] columnNames;
+  private final List<SubTable> subTables;
 
-  public TableGroup(Table original, String... columnNames) {
+  // the name(s) of the column(s) we're splitting the table on
+  private final String[] splitColumnNames;
+
+  public TableGroup(Table original, String... splitColumnNames) {
     this.original = original;
-    this.subTables = splitOn(columnNames);
+    this.subTables = splitOn(splitColumnNames);
     Preconditions.checkState(!subTables.isEmpty());
-    this.columnNames = columnNames;
+    this.splitColumnNames = splitColumnNames;
   }
 
   public TableGroup(Table original, Column... columns) {
     this.original = original;
-    columnNames = new String[columns.length];
+    splitColumnNames = new String[columns.length];
     for (int i = 0; i < columns.length; i++) {
-      columnNames[i] = columns[i].name();
+      splitColumnNames[i] = columns[i].name();
     }
-    this.subTables = splitOn(columnNames);
+    this.subTables = splitOn(splitColumnNames);
     Preconditions.checkState(!subTables.isEmpty());
   }
 
   /**
-   * Splits the original table into subtables, grouping on the columns whose names are given in columnNames
+   * Splits the original table into sub-tables, grouping on the columns whose names are given in splitColumnNames
    */
-  private List<View> splitOn(String... columnNames) {
+  private List<SubTable> splitOn(String... columnNames) {
 
-    List<View> tables = new ArrayList<>();
+    List<SubTable> tables = new ArrayList<>();
 
-    int[] indices = new int[columnNames.length];
-
+    int[] columnIndices = new int[columnNames.length];
     for (int i = 0; i < columnNames.length; i++) {
-      indices[i] = original.columnIndex(columnNames[i]);
+      columnIndices[i] = original.columnIndex(columnNames[i]);
     }
 
     Table t = original.sortOn(columnNames);
-    Relation empty = t.emptyCopy();
+    Table empty = (Table) t.emptyCopy();
 
-    View newView = new View(empty);
+    SubTable newView = new SubTable(empty);
     String lastKey = "";
 
     for (int row = 0; row < t.rowCount(); row++) {
 
       String newKey = "";
-      //List<Comparable> values = new ArrayList<>();
+      List<String> values = new ArrayList<>();
+
       for (int col = 0; col < columnNames.length; col++) {
-        Comparable comparable = t.get(indices[col], row);
-        newKey = newKey + comparable;
-        //values.add(comparable);
+        String groupKey = t.get(columnIndices[col], row);
+        newKey = newKey + groupKey;
+        values.add(groupKey);
         if (col < columnNames.length - 2)
           newKey = newKey + "|||";
       }
@@ -73,12 +76,12 @@ public class TableGroup {
           tables.add(newView);
         }
 
-        newView = new View(empty);
+        newView = new SubTable(empty);
         newView.setName(String.valueOf(newKey));
-        //newView.setValues(values);
+        newView.setValues(values);
         lastKey = newKey;
       }
-   //   newView.addRow(row);  //todo should clone row
+      newView.addRow(row, original);
     }
 
     if (!tables.contains(newView) && !newView.isEmpty()) {
@@ -92,7 +95,7 @@ public class TableGroup {
                      String resultColumnName) {
 
     Table t = new Table(original.name() + " summary");
-    for (String columnName : columnNames) {
+    for (String columnName : splitColumnNames) {
       t.addColumn(TypeUtils.newColumn(columnName, original.column(columnName).type()));
     }
     t.addColumn(FloatColumn.create(resultColumnName));
@@ -103,7 +106,7 @@ public class TableGroup {
       float result = (float) fun.applyAsDouble(subTable.floatColumn(calcColumn));
       Row r = t.newRow();
       List<Comparable> values = subTable.getValues();
-      for (int i = 0; i < columnNames.length; i++) {
+      for (int i = 0; i < splitColumnNames.length; i++) {
         Comparable columnValue = values.get(i);
         r.set(i, columnValue);
       }
@@ -119,7 +122,7 @@ public class TableGroup {
 
     Preconditions.checkArgument(!subTables.isEmpty());
     Table t = new Table(original.name() + " summary");
-    for (String columnName : columnNames) {
+    for (String columnName : splitColumnNames) {
       t.addColumn(TypeUtils.newColumn(columnName, original.column(columnName).type()));
     }
     t.addColumn(FloatColumn.create(resultColumnName));
@@ -129,12 +132,20 @@ public class TableGroup {
       int result = fun.applyAsInt(subTable.column(calcColumn));
       Row r = t.newRow();
       List<Comparable> values = subTable.getValues();
-      for (int i = 0; i < columnNames.length; i++) {
+      for (int i = 0; i < splitColumnNames.length; i++) {
         Comparable columnValue = values.get(i);
         r.set(i, columnValue);
       }
       r.set(values.size(), result);
     }*/
     return t;
+  }
+
+  public List<SubTable> getSubTables() {
+    return subTables;
+  }
+
+  public int size() {
+    return subTables.size();
   }
 }
