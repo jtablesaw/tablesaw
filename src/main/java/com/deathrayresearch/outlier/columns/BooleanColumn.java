@@ -49,19 +49,18 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     data = new boolean[initialSize];
   }
 
-  public BooleanColumn(String name, RoaringBitmap hits) {
+  public BooleanColumn(String name, RoaringBitmap hits, int columnSize) {
     super(name);
-    if (hits.isEmpty()) {
+    if (columnSize == 0) {
       return;
     }
-    IntIterator it = hits.getReverseIntIterator();
-    int max = it.next();
-    boolean[] data = new boolean[max+1];
-    data[max] = true;
+    boolean[] data = new boolean[columnSize];
+    IntIterator it = hits.getIntIterator();
     while(it.hasNext()) {
       data[it.next()] = true;
     }
     this.data = data;
+    this.N = columnSize;
   }
 
   public int size() {

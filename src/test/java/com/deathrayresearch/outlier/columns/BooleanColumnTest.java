@@ -72,7 +72,7 @@ public class BooleanColumnTest {
 
   @Test
   public void testRoaringBitmapConstructor() throws Exception {
-    BooleanColumn bc = new BooleanColumn("Is false", column.isFalse());
+    BooleanColumn bc = new BooleanColumn("Is false", column.isFalse(), column.size());
     System.out.println(bc);
   }
 
