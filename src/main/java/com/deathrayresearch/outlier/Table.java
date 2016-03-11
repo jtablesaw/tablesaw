@@ -11,10 +11,10 @@ import com.deathrayresearch.outlier.util.IntComparatorChain;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -154,7 +154,7 @@ public class Table implements Relation {
   @Override
   public String get(int c, int r) {
     Column column = column(c);
-    return String.valueOf(column.getString(r));
+    return column.getString(r);
   }
 
   /**
@@ -293,9 +293,15 @@ public class Table implements Relation {
   public Table sortOn(IntComparator rowComparator) {
     Table newTable = (Table) emptyCopy();
 
+/*
     int[] newRows = rows();
     IntArrays.mergeSort(newRows, rowComparator);
-    Rows.copyRowsToTable(IntArrayList.wrap(newRows), this, newTable);
+*/
+
+    IntArrayList newRows = new IntArrayList(rows());
+    Collections.sort(newRows, rowComparator);
+
+    Rows.copyRowsToTable(newRows, this, newTable);
     return newTable;
   }
 
