@@ -35,7 +35,6 @@ public class SfCrimeTest {
     table = CsvReader.read("bigdata/train.csv", heading);
   }
 
-
   @Test
   @Ignore
   public void test() {

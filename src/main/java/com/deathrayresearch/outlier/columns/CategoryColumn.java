@@ -6,9 +6,7 @@ import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.DictionaryMap;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
@@ -213,11 +211,17 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
       String f1 = getString(i);
       String f2 = getString(i1);
       return f1.compareTo(f2);
+/*
+      String f1 = getString(values.getShort(i));
+      String f2 = getString(values.getShort(i1));
+      return f1.compareTo(f2);
+*/
     }
 
     @Override
     public int compare(Integer i, Integer i1) {
-      return getString(values.getShort(i)).compareTo(getString(values.getShort(i1)));
+      //return getString(values.getShort(i)).compareTo(getString(values.getShort(i1)));
+      return getString(i).compareTo(getString(i1));
     }
   };
 

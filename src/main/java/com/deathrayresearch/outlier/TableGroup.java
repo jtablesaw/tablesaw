@@ -3,10 +3,11 @@ package com.deathrayresearch.outlier;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
+import com.deathrayresearch.outlier.io.CsvWriter;
 import com.deathrayresearch.outlier.io.TypeUtils;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.ToDoubleFunction;
@@ -24,19 +25,25 @@ public class TableGroup {
   private final String[] splitColumnNames;
 
   public TableGroup(Table original, String... splitColumnNames) {
-    this.original = original;
+    this.original = original.sortOn(splitColumnNames);
     this.subTables = splitOn(splitColumnNames);
     Preconditions.checkState(!subTables.isEmpty());
     this.splitColumnNames = splitColumnNames;
   }
 
   public TableGroup(Table original, Column... columns) {
-    this.original = original;
     splitColumnNames = new String[columns.length];
     for (int i = 0; i < columns.length; i++) {
       splitColumnNames[i] = columns[i].name();
     }
+    this.original = original.sortOn(splitColumnNames);
+    try {
+      CsvWriter.write("sorted.csv", original);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     this.subTables = splitOn(splitColumnNames);
+
     Preconditions.checkState(!subTables.isEmpty());
   }
 
@@ -52,19 +59,18 @@ public class TableGroup {
       columnIndices[i] = original.columnIndex(columnNames[i]);
     }
 
-    Table t = original.sortOn(columnNames);
-    Table empty = (Table) t.emptyCopy();
+    Table empty = (Table) original.emptyCopy();
 
     SubTable newView = new SubTable(empty);
     String lastKey = "";
 
-    for (int row = 0; row < t.rowCount(); row++) {
+    for (int row = 0; row < original.rowCount(); row++) {
 
       String newKey = "";
       List<String> values = new ArrayList<>();
 
       for (int col = 0; col < columnNames.length; col++) {
-        String groupKey = t.get(columnIndices[col], row);
+        String groupKey = original.get(columnIndices[col], row);
         newKey = newKey + groupKey;
         values.add(groupKey);
         if (col < columnNames.length - 2)
