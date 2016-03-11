@@ -7,6 +7,7 @@ import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.HashMap;
@@ -46,6 +47,21 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   private BooleanColumn(String name, int initialSize) {
     super(name);
     data = new boolean[initialSize];
+  }
+
+  public BooleanColumn(String name, RoaringBitmap hits) {
+    super(name);
+    if (hits.isEmpty()) {
+      return;
+    }
+    IntIterator it = hits.getReverseIntIterator();
+    int max = it.next();
+    boolean[] data = new boolean[max+1];
+    data[max] = true;
+    while(it.hasNext()) {
+      data[it.next()] = true;
+    }
+    this.data = data;
   }
 
   public int size() {

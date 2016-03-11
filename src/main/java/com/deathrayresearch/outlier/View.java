@@ -167,9 +167,9 @@ public class View implements Relation {
     columnIds.remove(columnIndex(column));
   }
 
-  public View head(int i) {
-    View view = new View(this, Math.min(i, rowCount()));
-    view.setName(name());
+  public View head(int nRows) {
+    View view = new View(this, Math.min(nRows, rowCount()));
+    view.setName(name);
     return view;
   }
 

@@ -70,6 +70,12 @@ public class BooleanColumnTest {
     assertEquals(2, result);
   }
 
+  @Test
+  public void testRoaringBitmapConstructor() throws Exception {
+    BooleanColumn bc = new BooleanColumn("Is false", column.isFalse());
+    System.out.println(bc);
+  }
+
   /**
    * Returns true if the last item added to the column is true and false otherwise
    */

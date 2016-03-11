@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * A column in a base table that contains float values
