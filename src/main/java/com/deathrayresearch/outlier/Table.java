@@ -365,18 +365,20 @@ public class Table implements Relation {
   }
 
   public Table sum(IntColumn sumColumn, Column byColumn) {
-    TableGroup group = new TableGroup(this, byColumn);
+    TableGroup groupTable = new TableGroup(this, byColumn);
     Table resultTable = new Table(name + " summary");
-    CategoryColumn groupColumn = CategoryColumn.create("Group", group.size());
-    IntColumn countColumn = IntColumn.create("Sum", group.size());
-    resultTable.addColumn(groupColumn);
-    resultTable.addColumn(countColumn);
 
-    for (SubTable subTable : group.getSubTables()) {
+    CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
+    IntColumn sumColumn1 = IntColumn.create("Sum", groupTable.size());
+
+    resultTable.addColumn(groupColumn);
+    resultTable.addColumn(sumColumn1);
+
+    for (SubTable subTable : groupTable.getSubTables()) {
       int sum = subTable.intColumn(sumColumn.name()).sum();
       String groupName = subTable.name();
       groupColumn.add(groupName);
-      countColumn.add(sum);
+      sumColumn1.add(sum);
     }
     return resultTable;
   }
