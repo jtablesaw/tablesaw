@@ -20,6 +20,8 @@ public interface StringMapUtils extends Column {
 
   String next();
 
+  void reset();
+
   default TextColumn upperCase() {
     TextColumn newColumn = TextColumn.create(this.name() + "[ucase]");
     TextColumn thisColumn = (TextColumn) this;
@@ -204,19 +206,16 @@ public interface StringMapUtils extends Column {
    * element of the receiver
    */
   default IntColumn countOccurrences(String ... value) {
-    Preconditions.checkArgument(value.length == 0, "Parameter array must not be empty");
-    IntColumn intColumn = IntColumn.create("Occurances of " + value[0]);
+    Preconditions.checkArgument(value.length != 0, "Parameter array must not be empty");
+    IntColumn intColumn = IntColumn.create("Occurrences of " + value[0]);
 
     while (hasNext()) {
       String str = next();
       int count = 0;
       for (String findStr : value) {
         int lastIndex = 0;
-
         while (lastIndex != -1) {
-
           lastIndex = str.indexOf(findStr, lastIndex);
-
           if (lastIndex != -1) {
             count++;
             lastIndex += findStr.length();
@@ -225,7 +224,7 @@ public interface StringMapUtils extends Column {
       }
       intColumn.add(count);
     }
-
+    reset();
     return intColumn;
   }
 
@@ -238,8 +237,12 @@ public interface StringMapUtils extends Column {
       Matcher matcher = pattern.matcher(mydata);
       if (matcher.find()) {
         column.add(matcher.group(0));
+      } else {
+        column.add(CategoryColumn.MISSING_VALUE);
+        System.out.println(CategoryColumn.MISSING_VALUE);
       }
     }
+    reset();
     return column;
   }
 }
