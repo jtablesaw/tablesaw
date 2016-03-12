@@ -1,14 +1,15 @@
 package com.deathrayresearch.outlier.mapper;
 
 import com.deathrayresearch.outlier.columns.Column;
+import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
 
 /**
  *
  */
-public class IntMapUtils {
+public interface IntMapUtils extends Column {
 
-  public IntColumn plus(IntColumn ... columns) {
+  default IntColumn plus(IntColumn ... columns) {
 
     // TODO(lwhite): Assert all columns are the same size.
     String nString = names(columns);
@@ -26,7 +27,7 @@ public class IntMapUtils {
   }
 
   // TODO(lwhite): make this a shared utility
-  private String names(IntColumn[] columns) {
+  default String names(IntColumn[] columns) {
     StringBuilder builder = new StringBuilder();
     int count = 0;
     for (Column column: columns) {
@@ -38,4 +39,25 @@ public class IntMapUtils {
     }
     return builder.toString();
   }
+
+  /**
+   * Return the elements of this column expressed as ratios of their value and the sum of all
+   * elements
+   */
+  default FloatColumn asRatio() {
+    FloatColumn pctColumn = new FloatColumn(name() + " percents");
+    float total = sum();
+    reset();
+    // TODO(lwhite): Handle div by 0 value total
+    while (hasNext()) {
+      pctColumn.add((float) next() / total);
+    }
+    return pctColumn;
+  }
+
+  int sum();
+
+  int next();
+
+  void reset();
 }
