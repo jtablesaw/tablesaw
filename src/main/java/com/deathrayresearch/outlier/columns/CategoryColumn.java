@@ -48,6 +48,14 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     return new CategoryColumn(name, size);
   }
 
+  public static CategoryColumn create(String name, List<String> categories) {
+    CategoryColumn column = new CategoryColumn(name, categories.size());
+    for (String string : categories) {
+      column.add(string);
+    }
+    return column;
+  }
+
   private CategoryColumn(String name) {
     super(name);
     values = new ShortArrayList(DEFAULT_ARRAY_SIZE);
@@ -300,8 +308,11 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     return values.get(rowNumber);
   }
 
-  public Collection<? extends String> valueSet() {
-    return lookupTable.categories();
+  public CategoryColumn unique() {
+    List<String> strings = new ArrayList<>();
+    strings.addAll(lookupTable.categories());
+    return CategoryColumn.create(name() + " Unique values", strings);
+
   }
 
   public DictionaryMap dictionaryMap() {

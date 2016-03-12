@@ -193,6 +193,15 @@ public class IntColumn extends AbstractColumn {
   }
 
   @Override
+  public IntColumn unique() {
+    RoaringBitmap roaringBitmap = new RoaringBitmap();
+    for (int i : data) {
+      roaringBitmap.add(i);
+    }
+    return IntColumn.create(name() + " Unique values", IntArrayList.wrap(roaringBitmap.toArray()));
+  }
+
+  @Override
   public String getString(int row) {
     return String.valueOf(data[row]);
   }

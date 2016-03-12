@@ -8,6 +8,9 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A column in a base table that contains float values
@@ -131,10 +134,21 @@ public class TextColumn extends AbstractColumn implements StringMapUtils, String
     return null;
   }
 
-  // TODO(lwhite): Implement countUnique()
   @Override
   public int countUnique() {
-    return 0;
+    Set<String> stringSet = new HashSet<>();
+    Collections.addAll(stringSet, data);
+    return stringSet.size();
+  }
+
+  public TextColumn unique() {
+    TextColumn textColumn = TextColumn.create(name() + " Unique values");
+    Set<String> stringSet = new HashSet<>();
+    Collections.addAll(stringSet, data);
+    for (String string : stringSet) {
+      textColumn.add(string);
+    }
+    return textColumn;
   }
 
   @Override

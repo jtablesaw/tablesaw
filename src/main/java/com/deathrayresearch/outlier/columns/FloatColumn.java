@@ -14,7 +14,6 @@ import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,6 +69,19 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
       floats.add(data[i]);
     }
     return floats.size();
+  }
+
+  @Override
+  public FloatColumn unique() {
+    FloatSet floats = new FloatOpenHashSet();
+    for (int i = 0; i < N; i++) {
+      floats.add(data[i]);
+    }
+    FloatColumn column = new FloatColumn(name() + " Unique values", floats.size());
+    for (float f : floats) {
+      column.add(f);
+    }
+    return column;
   }
 
   @Override

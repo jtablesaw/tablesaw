@@ -101,7 +101,6 @@ public class PeriodColumn extends AbstractColumn {
     data = temp;
   }
 
-
   @Override
   public String getString(int row) {
     return PackedLocalDate.toDateString(data[row]);
@@ -149,6 +148,15 @@ public class PeriodColumn extends AbstractColumn {
       ints.add(i);
     }
     return ints.size();
+  }
+
+  @Override
+  public PeriodColumn unique() {
+    IntSet ints = new IntOpenHashSet(data.length);
+    for (int i : data) {
+      ints.add(i);
+    }
+    return PeriodColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
   }
 
   public Period firstElement() {

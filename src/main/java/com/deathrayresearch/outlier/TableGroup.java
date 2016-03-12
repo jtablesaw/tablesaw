@@ -3,11 +3,9 @@ package com.deathrayresearch.outlier;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
-import com.deathrayresearch.outlier.io.CsvWriter;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.google.common.base.Preconditions;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.ToDoubleFunction;
@@ -37,13 +35,7 @@ public class TableGroup {
       splitColumnNames[i] = columns[i].name();
     }
     this.original = original.sortOn(splitColumnNames);
-    try {
-      CsvWriter.write("sorted.csv", original);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
     this.subTables = splitOn(splitColumnNames);
-
     Preconditions.checkState(!subTables.isEmpty());
   }
 

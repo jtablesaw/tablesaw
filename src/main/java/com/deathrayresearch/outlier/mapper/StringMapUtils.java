@@ -1,16 +1,24 @@
 package com.deathrayresearch.outlier.mapper;
 
+import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
+import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * String utility functions. Each function takes one or more String columns as input and produces
  * another Column as output. The resulting column need not be a string column.
  */
 public interface StringMapUtils extends Column {
+
+  String next();
 
   default TextColumn upperCase() {
     TextColumn newColumn = TextColumn.create(this.name() + "[ucase]");
@@ -164,7 +172,7 @@ public interface StringMapUtils extends Column {
   /**
    * Returns a column containing the levenshtein distance between the two given string columns
    */
-  default Column distance(TextColumn column2) {
+  default FloatColumn distance(TextColumn column2) {
 
     FloatColumn newColumn = FloatColumn.create(name() + column2.name() + "[distance]");
     TextColumn thisColumn = (TextColumn) this;
@@ -189,5 +197,49 @@ public interface StringMapUtils extends Column {
       newColumn.set(r, StringUtils.join(values, delimiter));
     }
     return newColumn;
+  }
+
+  /**
+   * Returns an IntColumn, the elements of which represent the sum of number of times each input String appears in each
+   * element of the receiver
+   */
+  default IntColumn countOccurrences(String ... value) {
+    Preconditions.checkArgument(value.length == 0, "Parameter array must not be empty");
+    IntColumn intColumn = IntColumn.create("Occurances of " + value[0]);
+
+    while (hasNext()) {
+      String str = next();
+      int count = 0;
+      for (String findStr : value) {
+        int lastIndex = 0;
+
+        while (lastIndex != -1) {
+
+          lastIndex = str.indexOf(findStr, lastIndex);
+
+          if (lastIndex != -1) {
+            count++;
+            lastIndex += findStr.length();
+          }
+        }
+      }
+      intColumn.add(count);
+    }
+
+    return intColumn;
+  }
+
+  default CategoryColumn extractFirstMatch(String regex) {
+    CategoryColumn column = CategoryColumn.create(name() + " matches of \"" + regex + "\"");
+    Pattern pattern = Pattern.compile(regex);
+
+    while (hasNext()) {
+      String mydata = next();
+      Matcher matcher = pattern.matcher(mydata);
+      if (matcher.find()) {
+        column.add(matcher.group(0));
+      }
+    }
+    return column;
   }
 }

@@ -183,6 +183,15 @@ public class LocalTimeColumn extends AbstractColumn {
   }
 
   @Override
+  public LocalTimeColumn unique() {
+    IntSet ints = new IntOpenHashSet(data.length);
+    for (int i : data) {
+      ints.add(i);
+    }
+    return LocalTimeColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
+  }
+
+  @Override
   public boolean isEmpty() {
     return N == 0;
   }

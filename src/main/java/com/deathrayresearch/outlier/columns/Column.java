@@ -1,7 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Relation;
-import com.google.common.base.MoreObjects;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
 /**
@@ -14,6 +13,11 @@ public interface Column {
   Relation summary();
 
   int countUnique();
+
+  /**
+   * Returns a column of the same type as the receiver, containing only the unique values of the receiver
+   */
+  Column unique();
 
   String name();
 

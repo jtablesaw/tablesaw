@@ -151,6 +151,15 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return ints.size();
   }
 
+  @Override
+  public LocalDateColumn unique() {
+    IntSet ints = new IntOpenHashSet(data.length);
+    for (int i = 0; i < N; i++) {
+      ints.add(data[i]);
+    }
+    return LocalDateColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
+  }
+
   public LocalDate firstElement() {
     if (isEmpty()) {
       return null;

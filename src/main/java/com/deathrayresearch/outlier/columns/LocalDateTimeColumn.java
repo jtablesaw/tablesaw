@@ -7,6 +7,8 @@ import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -173,6 +175,15 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   @Override
   public int countUnique() {
     return 0;
+  }
+
+  @Override
+  public LocalDateTimeColumn unique() {
+    LongSet ints = new LongOpenHashSet(data.length);
+    for (long i : data) {
+      ints.add(i);
+    }
+    return LocalDateTimeColumn.create(name() + " Unique values", LongArrayList.wrap(ints.toLongArray()));
   }
 
   @Override

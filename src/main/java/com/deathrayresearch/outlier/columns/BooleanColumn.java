@@ -49,6 +49,12 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     data = new boolean[initialSize];
   }
 
+  private BooleanColumn(String name, BooleanArrayList values) {
+    super(name);
+    data = values.elements();
+    N = values.size();
+  }
+
   public BooleanColumn(String name, RoaringBitmap hits, int columnSize) {
     super(name);
     if (columnSize == 0) {
@@ -101,6 +107,17 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
       count.add(next());
     }
     return count.size();
+  }
+
+  @Override
+  public BooleanColumn unique() {
+    Set<Boolean> count = new HashSet<>(3);
+    while (hasNext()) {
+      count.add(next());
+    }
+    BooleanArrayList list = new BooleanArrayList();
+    list.addAll(count);
+    return new BooleanColumn(name() + " Unique values", list);
   }
 
   @Override
