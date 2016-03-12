@@ -41,7 +41,7 @@ public interface IntMapUtils extends Column {
   }
 
   /**
-   * Return the elements of this column expressed as ratios of their value and the sum of all
+   * Return the elements of this column as the ratios of their value and the sum of all
    * elements
    */
   default FloatColumn asRatio() {
