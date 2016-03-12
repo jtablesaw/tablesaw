@@ -20,6 +20,9 @@ public interface StringMapUtils extends Column {
 
   String next();
 
+  // Reset the pointer after running a scan so that the next scan succeeds
+  void reset();
+
   default TextColumn upperCase() {
     TextColumn newColumn = TextColumn.create(this.name() + "[ucase]");
     TextColumn thisColumn = (TextColumn) this;
@@ -31,6 +34,7 @@ public interface StringMapUtils extends Column {
         newColumn.set(r, value.toUpperCase());
       }
     }
+    reset();
     return newColumn;
   }
 
@@ -43,6 +47,7 @@ public interface StringMapUtils extends Column {
       String value = thisColumn.get(r);
       newColumn.set(r, value.toLowerCase());
     }
+    reset();
     return newColumn;
   }
 
@@ -55,6 +60,7 @@ public interface StringMapUtils extends Column {
       String value = thisColumn.get(r);
       newColumn.set(r, value.trim());
     }
+    reset();
     return newColumn;
   }
 
@@ -67,6 +73,7 @@ public interface StringMapUtils extends Column {
       String value = thisColumn.get(r);
       newColumn.set(r, value.replaceAll(regex, replacement));
     }
+    reset();
     return newColumn;
   }
 
@@ -79,6 +86,7 @@ public interface StringMapUtils extends Column {
       String value = thisColumn.get(r);
       newColumn.set(r, value.replaceFirst(regex, replacement));
     }
+    reset();
     return newColumn;
   }
 
@@ -91,6 +99,7 @@ public interface StringMapUtils extends Column {
       String value = thisColumn.get(r);
       newColumn.set(r, value.substring(start, end));
     }
+    reset();
     return newColumn;
   }
 
@@ -104,6 +113,7 @@ public interface StringMapUtils extends Column {
       String value = thisColumn.get(r);
       newColumn.set(r, value.substring(start));
     }
+    reset();
     return newColumn;
   }
 
@@ -116,6 +126,7 @@ public interface StringMapUtils extends Column {
       String value = thisColumn.get(r);
       newColumn.set(r, StringUtils.abbreviate(value, maxWidth));
     }
+    reset();
     return newColumn;
   }
 
@@ -128,6 +139,7 @@ public interface StringMapUtils extends Column {
       String value = thisColumn.get(r);
       newColumn.set(r, Strings.padEnd(value, minLength, padChar));
     }
+    reset();
     return newColumn;
   }
 
@@ -140,6 +152,7 @@ public interface StringMapUtils extends Column {
       String value = thisColumn.get(r);
       newColumn.set(r, Strings.padStart(value, minLength, padChar));
     }
+    reset();
     return newColumn;
   }
 
@@ -153,6 +166,7 @@ public interface StringMapUtils extends Column {
       String value2 = column2.get(r);
       newColumn.set(r, Strings.commonPrefix(value1, value2));
     }
+    reset();
     return newColumn;
   }
 
@@ -166,6 +180,7 @@ public interface StringMapUtils extends Column {
       String value2 = column2.get(r);
       newColumn.set(r, Strings.commonSuffix(value1, value2));
     }
+    reset();
     return newColumn;
   }
 
@@ -182,6 +197,7 @@ public interface StringMapUtils extends Column {
       String value2 = column2.get(r);
       newColumn.set(r, StringUtils.getLevenshteinDistance(value1, value2));
     }
+    reset();
     return newColumn;
   }
 
@@ -196,6 +212,7 @@ public interface StringMapUtils extends Column {
       values[1] = column2.get(r);
       newColumn.set(r, StringUtils.join(values, delimiter));
     }
+    reset();
     return newColumn;
   }
 
@@ -225,7 +242,7 @@ public interface StringMapUtils extends Column {
       }
       intColumn.add(count);
     }
-
+    reset();
     return intColumn;
   }
 
@@ -240,6 +257,7 @@ public interface StringMapUtils extends Column {
         column.add(matcher.group(0));
       }
     }
+    reset();
     return column;
   }
 }
