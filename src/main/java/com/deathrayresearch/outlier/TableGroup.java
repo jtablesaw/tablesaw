@@ -55,6 +55,7 @@ public class TableGroup {
 
     SubTable newView = new SubTable(empty);
     String lastKey = "";
+    newView.setName(lastKey);
 
     for (int row = 0; row < original.rowCount(); row++) {
 
@@ -75,7 +76,7 @@ public class TableGroup {
         }
 
         newView = new SubTable(empty);
-        newView.setName(String.valueOf(newKey));
+        newView.setName(newKey);
         newView.setValues(values);
         lastKey = newKey;
       }
