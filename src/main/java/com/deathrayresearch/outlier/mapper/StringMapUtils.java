@@ -229,7 +229,18 @@ public interface StringMapUtils extends Column {
     return intColumn;
   }
 
+  /**
+   * Returns the first segment matching the regex (regular expression group 0)
+   */
   default CategoryColumn extractFirstMatch(String regex) {
+    return extractFirstMatch(regex, 0);
+  }
+  
+  /**
+   * Returns the first segment matching the regex, allowing the caller to specify which regular expression group to
+   * return
+   */
+  default CategoryColumn extractFirstMatch(String regex, int regexGroup) {
     CategoryColumn column = CategoryColumn.create(name() + " matches of \"" + regex + "\"");
     Pattern pattern = Pattern.compile(regex);
 
@@ -237,7 +248,7 @@ public interface StringMapUtils extends Column {
       String mydata = next();
       Matcher matcher = pattern.matcher(mydata);
       if (matcher.find()) {
-        column.add(matcher.group(0));
+        column.add(matcher.group(regexGroup));
       } else {
         column.add(CategoryColumn.MISSING_VALUE);
       }
