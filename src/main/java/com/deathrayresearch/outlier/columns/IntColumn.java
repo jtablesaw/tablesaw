@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
+import com.deathrayresearch.outlier.mapper.IntMapUtils;
 import com.deathrayresearch.outlier.sorting.IntComparisonUtil;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.StatUtil;
@@ -18,7 +19,7 @@ import java.util.regex.Pattern;
 /**
  * A column that contains signed 4 byte integer values
  */
-public class IntColumn extends AbstractColumn {
+public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.INTEGER.getMissingValue();
   private static final int DEFAULT_ARRAY_SIZE = 128;
@@ -417,6 +418,8 @@ public class IntColumn extends AbstractColumn {
       System.out.println(next());
     }
   }
+
+
 
   @Override
   public String toString() {

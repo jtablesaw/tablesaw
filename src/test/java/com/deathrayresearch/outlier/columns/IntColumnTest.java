@@ -81,4 +81,13 @@ public class IntColumnTest {
     }
     assertEquals(1, column.isEqualTo(10).getCardinality());
   }
+
+  @Test
+  public void testPercents() {
+    for (int i = 0; i < 100; i++) {
+      column.add(i);
+    }
+    FloatColumn floatColumn = column.asRatio();
+    assertEquals(1.0, floatColumn.sum(), 0.1);
+  }
 }

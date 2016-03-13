@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.io;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.columns.Column;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -33,11 +34,20 @@ final public class CsvWriter {
       for (int c = 0; c < table.columnCount(); c++) {
         Object cell = table.get(c, r);
         String valueString = String.valueOf(cell);
-        if (cell == null || valueString.equals("null")) {
-          cell = missing;
-        }
         entries[c] = valueString;
       }
+      writer.writeNext(entries);
+    }
+    writer.close();
+  }
+
+  public static void write(String fileName, Column column) throws IOException {
+    CSVWriter writer = new CSVWriter(new FileWriter(fileName));
+    String[] header = {column.name()};
+    writer.writeNext(header);
+
+    for (int r = 0; r < column.size(); r++) {
+      String[] entries = {column.getString(r)};
       writer.writeNext(entries);
     }
     writer.close();
