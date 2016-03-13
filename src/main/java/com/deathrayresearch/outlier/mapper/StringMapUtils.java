@@ -20,6 +20,7 @@ public interface StringMapUtils extends Column {
 
   String next();
 
+  // Reset the pointer after running a scan so that the next scan succeeds
   void reset();
 
   default TextColumn upperCase() {
@@ -60,18 +61,20 @@ public interface StringMapUtils extends Column {
     return newColumn;
   }
 
-  default TextColumn replaceAll(String regex, String replacement) {
+  default TextColumn replaceAll(String[] regexArray, String replacement) {
 
     TextColumn newColumn = TextColumn.create(name() + "[repl]");
     TextColumn thisColumn = (TextColumn) this;
 
     for (int r = 0; r < size(); r++) {
       String value = thisColumn.get(r);
-      newColumn.set(r, value.replaceAll(regex, replacement));
+      for (String regex : regexArray) {
+        newColumn.set(r, value.replaceAll(regex, replacement));
+      }
     }
     return newColumn;
   }
-
+  
   default TextColumn replaceFirst(String regex, String replacement) {
 
     TextColumn newColumn = TextColumn.create(name() + "[repl]");
@@ -224,11 +227,22 @@ public interface StringMapUtils extends Column {
       }
       intColumn.add(count);
     }
-    reset();
+
     return intColumn;
   }
 
+  /**
+   * Returns the first segment matching the regex (regular expression group 0)
+   */
   default CategoryColumn extractFirstMatch(String regex) {
+    return extractFirstMatch(regex, 0);
+  }
+
+  /**
+   * Returns the first segment matching the regex, allowing the caller to specify which regular expression group to
+   * return
+   */
+  default CategoryColumn extractFirstMatch(String regex, int regexGroup) {
     CategoryColumn column = CategoryColumn.create(name() + " matches of \"" + regex + "\"");
     Pattern pattern = Pattern.compile(regex);
 
@@ -236,10 +250,9 @@ public interface StringMapUtils extends Column {
       String mydata = next();
       Matcher matcher = pattern.matcher(mydata);
       if (matcher.find()) {
-        column.add(matcher.group(0));
+        column.add(matcher.group(regexGroup));
       } else {
         column.add(CategoryColumn.MISSING_VALUE);
-        System.out.println(CategoryColumn.MISSING_VALUE);
       }
     }
     reset();

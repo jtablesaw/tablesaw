@@ -16,6 +16,8 @@ import java.util.function.ToIntFunction;
  */
 public class TableGroup {
 
+  private static final String SPLIT_STRING = "|||";
+
   private final Table original;
   private final List<SubTable> subTables;
 
@@ -44,10 +46,12 @@ public class TableGroup {
    */
   private List<SubTable> splitOn(String... columnNames) {
 
+    int columnCount = columnNames.length;
+    List<Column> columns = original.columns(columnNames);
     List<SubTable> tables = new ArrayList<>();
 
-    int[] columnIndices = new int[columnNames.length];
-    for (int i = 0; i < columnNames.length; i++) {
+    int[] columnIndices = new int[columnCount];
+    for (int i = 0; i < columnCount; i++) {
       columnIndices[i] = original.columnIndex(columnNames[i]);
     }
 
@@ -62,12 +66,12 @@ public class TableGroup {
       String newKey = "";
       List<String> values = new ArrayList<>();
 
-      for (int col = 0; col < columnNames.length; col++) {
+      for (int col = 0; col < columnCount; col++) {
         String groupKey = original.get(columnIndices[col], row);
         newKey = newKey + groupKey;
         values.add(groupKey);
-        if (col < columnNames.length - 2)
-          newKey = newKey + "|||";
+        if (col < columnCount - 2)
+          newKey = newKey + SPLIT_STRING;
       }
 
       if (!newKey.equals(lastKey)) {
@@ -84,9 +88,29 @@ public class TableGroup {
     }
 
     if (!tables.contains(newView) && !newView.isEmpty()) {
-      tables.add(newView);
+      if (columnCount == 1) {
+        tables.add(newView);
+      } else {
+        tables.add(splitGroupingColumn(newView, columns));
+      }
     }
     return tables;
+  }
+
+  private SubTable splitGroupingColumn(SubTable subTable, List<Column> columnNames) {
+    List<Column> temp = new ArrayList<>();
+    for (Column column : columnNames) {
+      Column newColumn = column.emptyCopy();
+      subTable.addColumn(newColumn);
+      temp.add(newColumn);
+    }
+    for (int row = 0; row < subTable.rowCount(); row++) {
+      String[] strings = subTable.column(0).getString(row).split(SPLIT_STRING);
+      for (int col = 0; col < temp.size(); col++) {
+        temp.get(col).addCell(strings[col]);
+      }
+    }
+    return subTable;
   }
 
   public Table apply(ToDoubleFunction<FloatColumn> fun,
