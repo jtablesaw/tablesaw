@@ -1,6 +1,9 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.columns.LocalDateColumn;
+import com.deathrayresearch.outlier.columns.PackedLocalDate;
 import com.deathrayresearch.outlier.io.CsvReader;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +34,24 @@ public class TableGroupTest {
   public void testGetSubTables() {
     TableGroup tableGroup = new TableGroup(table, table.column(2).name());
     List<SubTable> tables = tableGroup.getSubTables();
+    System.out.println(tables.size());
+  }
+
+  @Test
+  public void testWith2GroupingCols() {
+    CategoryColumn month = CategoryColumn.create("month");
+    LocalDateColumn dateColumn = table.localDateColumn(0);
+    while (dateColumn.hasNext()){
+      int date = dateColumn.next();
+      month.add(String.valueOf(PackedLocalDate.getMonth(date)));
+    }
+    table.addColumn(month);
+    String[] splitColumnNames = {table.column(2).name(), "month"};
+    TableGroup tableGroup = new TableGroup(table, splitColumnNames);
+    List<SubTable> tables = tableGroup.getSubTables();
+    Table t = table.sum(table.intColumn(1), splitColumnNames);
+
+    System.out.println(t.print());
     System.out.println(tables.size());
   }
 

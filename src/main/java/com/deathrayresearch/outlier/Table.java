@@ -90,6 +90,15 @@ public class Table implements Relation {
     return columnList;
   }
 
+  // TODO(lwhite): Implement for views and add to relation api
+  public List<Column> columns(String[] columnNames) {
+    List<Column> columns = new ArrayList<>();
+    for (String columnName : columnNames) {
+      columns.add(column(columnName));
+    }
+    return columns;
+  }
+
   public int columnIndex(String columnName) {
     int columnIndex = -1;
     for (int i = 0; i < columnList.size(); i++) {
@@ -372,6 +381,25 @@ public class Table implements Relation {
 
   public Table sum(IntColumn sumColumn, Column byColumn) {
     TableGroup groupTable = new TableGroup(this, byColumn);
+    Table resultTable = new Table(name + " summary");
+
+    CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
+    IntColumn sumColumn1 = IntColumn.create("Sum", groupTable.size());
+
+    resultTable.addColumn(groupColumn);
+    resultTable.addColumn(sumColumn1);
+
+    for (SubTable subTable : groupTable.getSubTables()) {
+      int sum = subTable.intColumn(sumColumn.name()).sum();
+      String groupName = subTable.name();
+      groupColumn.add(groupName);
+      sumColumn1.add(sum);
+    }
+    return resultTable;
+  }
+
+  public Table sum(IntColumn sumColumn, String[] byColumnNames) {
+    TableGroup groupTable = new TableGroup(this, byColumnNames);
     Table resultTable = new Table(name + " summary");
 
     CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
