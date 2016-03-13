@@ -235,7 +235,7 @@ public interface StringMapUtils extends Column {
   default CategoryColumn extractFirstMatch(String regex) {
     return extractFirstMatch(regex, 0);
   }
-  
+
   /**
    * Returns the first segment matching the regex, allowing the caller to specify which regular expression group to
    * return
