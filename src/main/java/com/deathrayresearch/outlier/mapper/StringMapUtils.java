@@ -61,18 +61,20 @@ public interface StringMapUtils extends Column {
     return newColumn;
   }
 
-  default TextColumn replaceAll(String regex, String replacement) {
+  default TextColumn replaceAll(String[] regexArray, String replacement) {
 
     TextColumn newColumn = TextColumn.create(name() + "[repl]");
     TextColumn thisColumn = (TextColumn) this;
 
     for (int r = 0; r < size(); r++) {
       String value = thisColumn.get(r);
-      newColumn.set(r, value.replaceAll(regex, replacement));
+      for (String regex : regexArray) {
+        newColumn.set(r, value.replaceAll(regex, replacement));
+      }
     }
     return newColumn;
   }
-
+  
   default TextColumn replaceFirst(String regex, String replacement) {
 
     TextColumn newColumn = TextColumn.create(name() + "[repl]");
