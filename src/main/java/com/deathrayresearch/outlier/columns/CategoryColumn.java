@@ -330,4 +330,19 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     }
     return rowIndexes;
   }
+
+  public CategoryColumn replaceAll(String[] regexArray, String replacement) {
+
+    CategoryColumn newColumn = CategoryColumn.create(name() + "[repl]", this.size());
+
+    for (int r = 0; r < size(); r++) {
+      String value = get(r);
+      for (String regex : regexArray) {
+        value = value.replaceAll(regex, replacement);
+      }
+      newColumn.add(value);
+    }
+    return newColumn;
+  }
+
 }

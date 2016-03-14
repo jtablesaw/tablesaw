@@ -31,9 +31,13 @@ public class TextColumn extends AbstractColumn implements StringMapUtils, String
     return new TextColumn(name);
   }
 
+  public static TextColumn create(String name, int size) {
+    return new TextColumn(name, size);
+  }
+
   public TextColumn(ColumnMetadata metadata) {
     super(metadata);
-    data = new String[DEFAULT_ARRAY_SIZE];
+    data = new String[metadata.getSize()];
   }
 
   private TextColumn(String name) {
@@ -220,6 +224,21 @@ public class TextColumn extends AbstractColumn implements StringMapUtils, String
   @Override
   public String toString() {
     return "Text column: " + name();
+  }
+
+
+  public TextColumn replaceAll(String[] regexArray, String replacement) {
+
+    TextColumn newColumn = TextColumn.create(name() + "[repl]", this.size());
+
+    for (int r = 0; r < size(); r++) {
+      String value = get(r);
+      for (String regex : regexArray) {
+        value = value.replaceAll(regex, replacement);
+      }
+      newColumn.add(value);
+    }
+    return newColumn;
   }
 
 }
