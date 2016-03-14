@@ -555,6 +555,14 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
     return output;
   }
 
+  public String print() {
+    StringBuilder builder = new StringBuilder();
+    while (hasNext()) {
+      builder.append(String.valueOf(next()));
+    }
+    return builder.toString();
+  }
+
   @Override
   public String toString() {
     return "Float column: " + name();

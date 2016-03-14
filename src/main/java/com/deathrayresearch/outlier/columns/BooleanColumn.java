@@ -312,6 +312,14 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     }
   };
 
+  public String print() {
+    StringBuilder builder = new StringBuilder();
+    while (hasNext()) {
+      builder.append(String.valueOf(next()));
+    }
+    return builder.toString();
+  }
+
   @Override
   public String toString() {
     return "Boolean column: " + name();

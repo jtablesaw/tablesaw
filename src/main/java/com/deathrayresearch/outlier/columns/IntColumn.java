@@ -413,13 +413,13 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return output;
   }
 
-  public void print() {
-    while (this.hasNext()) {
-      System.out.println(next());
+  public String print() {
+    StringBuilder builder = new StringBuilder();
+    while (hasNext()) {
+      builder.append(String.valueOf(next()));
     }
+    return builder.toString();
   }
-
-
 
   @Override
   public String toString() {

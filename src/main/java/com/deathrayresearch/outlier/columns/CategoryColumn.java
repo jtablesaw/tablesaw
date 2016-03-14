@@ -397,4 +397,12 @@ public class CategoryColumn extends AbstractColumn
     }
     return newColumn;
   }
+
+  public String print() {
+    StringBuilder builder = new StringBuilder();
+    while (hasNext()) {
+      builder.append(String.valueOf(next()));
+    }
+    return builder.toString();
+  }
 }

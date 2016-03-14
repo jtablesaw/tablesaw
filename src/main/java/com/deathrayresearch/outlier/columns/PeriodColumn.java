@@ -17,7 +17,6 @@ import org.roaringbitmap.RoaringBitmap;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Map;
 
 /**
@@ -402,6 +401,15 @@ public class PeriodColumn extends AbstractColumn {
     reset();
     return results;
   }
+
+  public String print() {
+    StringBuilder builder = new StringBuilder();
+    while (hasNext()) {
+      builder.append(String.valueOf(PackedPeriod.asPeriod(next())));
+    }
+    return builder.toString();
+  }
+
 
   @Override
   public String toString() {

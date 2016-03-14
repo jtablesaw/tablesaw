@@ -261,6 +261,14 @@ public class LocalTimeColumn extends AbstractColumn {
     return results;
   }
 
+  public String print() {
+    StringBuilder builder = new StringBuilder();
+    while (hasNext()) {
+      builder.append(String.valueOf(PackedLocalTime.asLocalTime(next())));
+    }
+    return builder.toString();
+  }
+
   @Override
   public String toString() {
     return "LocalTime column: " + name();
