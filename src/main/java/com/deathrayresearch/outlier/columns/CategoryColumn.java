@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.aggregator.StringReduceUtils;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
@@ -25,7 +26,8 @@ import java.util.List;
 /**
  * A column in a base table that contains float values
  */
-public class CategoryColumn extends AbstractColumn implements StringMapUtils, StringFilters {
+public class CategoryColumn extends AbstractColumn
+        implements StringMapUtils, StringFilters, StringReduceUtils {
 
   public static final String MISSING_VALUE = (String) ColumnType.CAT.getMissingValue();
 

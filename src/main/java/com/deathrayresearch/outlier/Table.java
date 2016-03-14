@@ -398,6 +398,25 @@ public class Table implements Relation {
     return resultTable;
   }
 
+  public Table appendText(CategoryColumn sumColumn, CategoryColumn byColumn) {
+    TableGroup groupTable = new TableGroup(this, byColumn);
+    Table resultTable = new Table(name + " summary");
+
+    CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
+    CategoryColumn sumColumn1 = CategoryColumn.create("Appended", groupTable.size());
+
+    resultTable.addColumn(groupColumn);
+    resultTable.addColumn(sumColumn1);
+
+    for (SubTable subTable : groupTable.getSubTables()) {
+      String sum = subTable.categoryColumn(sumColumn.name()).appendAll();
+      String groupName = subTable.name();
+      groupColumn.add(groupName);
+      sumColumn1.add(sum);
+    }
+    return resultTable;
+  }
+
   public Table sum(IntColumn sumColumn, String[] byColumnNames) {
     TableGroup groupTable = new TableGroup(this, byColumnNames);
     Table resultTable = new Table(name + " summary");

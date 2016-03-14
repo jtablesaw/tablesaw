@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.aggregator.StringReduceUtils;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
@@ -15,7 +16,8 @@ import java.util.Set;
 /**
  * A column in a base table that contains float values
  */
-public class TextColumn extends AbstractColumn implements StringMapUtils, StringFilters {
+public class TextColumn extends AbstractColumn
+        implements StringMapUtils, StringFilters, StringReduceUtils {
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
