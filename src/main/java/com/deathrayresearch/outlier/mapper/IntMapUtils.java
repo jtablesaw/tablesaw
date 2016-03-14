@@ -55,6 +55,21 @@ public interface IntMapUtils extends Column {
     return pctColumn;
   }
 
+  /**
+   * Return the elements of this column as the percentages of their value relative to the sum of all
+   * elements
+   */
+  default FloatColumn asPercent() {
+    FloatColumn pctColumn = new FloatColumn(name() + " percents");
+    float total = sum();
+    reset();
+    // TODO(lwhite): Handle div by 0 value total
+    while (hasNext()) {
+      pctColumn.add(((float) next() / total) * 100);
+    }
+    return pctColumn;
+  }
+
   int sum();
 
   int next();

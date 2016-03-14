@@ -357,8 +357,11 @@ public class CategoryColumn extends AbstractColumn
     for (int r = 0; r < size(); r++) {
       String value = get(r);
 
+      Splitter splitter = Splitter.on(separator);
+      splitter = splitter.trimResults();
+      splitter = splitter.omitEmptyStrings();
       List<String> tokens =
-              new ArrayList<>(Splitter.on(separator).trimResults().splitToList(value));
+              new ArrayList<>(splitter.splitToList(value));
       Collections.sort(tokens);
       value = String.join(" ", tokens);
       newColumn.add(value);
@@ -374,9 +377,10 @@ public class CategoryColumn extends AbstractColumn
 
     for (int r = 0; r < size(); r++) {
       String value = get(r);
-
-      List<String> tokens =
-              new ArrayList<>(Splitter.on(CharMatcher.WHITESPACE).trimResults().splitToList(value));
+      Splitter splitter = Splitter.on(CharMatcher.WHITESPACE);
+      splitter = splitter.trimResults();
+      splitter = splitter.omitEmptyStrings();
+      List<String> tokens = new ArrayList<>(splitter.splitToList(value));
       Collections.sort(tokens);
       value = String.join(" ", tokens);
       newColumn.add(value);
@@ -385,12 +389,15 @@ public class CategoryColumn extends AbstractColumn
   }
 
   public CategoryColumn tokenizeAndRemoveDuplicates() {
-    CategoryColumn newColumn = CategoryColumn.create(name() + "[repl]", this.size());
+    CategoryColumn newColumn = CategoryColumn.create(name() + "[without duplicates]", this.size());
 
     for (int r = 0; r < size(); r++) {
       String value = get(r);
 
-      List<String> tokens = Splitter.on(CharMatcher.WHITESPACE).trimResults().splitToList(value);
+      Splitter splitter = Splitter.on(CharMatcher.WHITESPACE);
+      splitter = splitter.trimResults();
+      splitter = splitter.omitEmptyStrings();
+      List<String> tokens = new ArrayList<>(splitter.splitToList(value));
 
       value = String.join(" ", new HashSet<>(tokens));
       newColumn.add(value);
