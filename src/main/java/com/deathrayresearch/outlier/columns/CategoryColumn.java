@@ -6,6 +6,8 @@ import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.DictionaryMap;
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -16,6 +18,8 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -345,4 +349,50 @@ public class CategoryColumn extends AbstractColumn implements StringMapUtils, St
     return newColumn;
   }
 
+  public CategoryColumn tokenizeAndSort(String separator) {
+    CategoryColumn newColumn = CategoryColumn.create(name() + "[sorted]", this.size());
+
+    for (int r = 0; r < size(); r++) {
+      String value = get(r);
+
+      List<String> tokens =
+              new ArrayList<>(Splitter.on(separator).trimResults().splitToList(value));
+      Collections.sort(tokens);
+      value = String.join(" ", tokens);
+      newColumn.add(value);
+    }
+    return newColumn;
+  }
+
+  /**
+   * Splits on Whitespace and returns the lexicographically sorted result
+   */
+  public CategoryColumn tokenizeAndSort() {
+    CategoryColumn newColumn = CategoryColumn.create(name() + "[sorted]", this.size());
+
+    for (int r = 0; r < size(); r++) {
+      String value = get(r);
+
+      List<String> tokens =
+              new ArrayList<>(Splitter.on(CharMatcher.WHITESPACE).trimResults().splitToList(value));
+      Collections.sort(tokens);
+      value = String.join(" ", tokens);
+      newColumn.add(value);
+    }
+    return newColumn;
+  }
+
+  public CategoryColumn tokenizeAndRemoveDuplicates() {
+    CategoryColumn newColumn = CategoryColumn.create(name() + "[repl]", this.size());
+
+    for (int r = 0; r < size(); r++) {
+      String value = get(r);
+
+      List<String> tokens = Splitter.on(CharMatcher.WHITESPACE).trimResults().splitToList(value);
+
+      value = String.join(" ", new HashSet<>(tokens));
+      newColumn.add(value);
+    }
+    return newColumn;
+  }
 }
