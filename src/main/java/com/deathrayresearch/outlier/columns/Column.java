@@ -21,6 +21,8 @@ public interface Column {
 
   String name();
 
+  void setName(String name);
+
   ColumnType type();
 
   boolean hasNext();
