@@ -67,11 +67,13 @@ public class TableGroup {
       List<String> values = new ArrayList<>();
 
       for (int col = 0; col < columnCount; col++) {
+        if (col > 0)
+          newKey = newKey + SPLIT_STRING;
+
         String groupKey = original.get(columnIndices[col], row);
         newKey = newKey + groupKey;
         values.add(groupKey);
-        if (col < columnCount - 2)
-          newKey = newKey + SPLIT_STRING;
+
       }
 
       if (!newKey.equals(lastKey)) {
@@ -98,17 +100,23 @@ public class TableGroup {
   }
 
   private SubTable splitGroupingColumn(SubTable subTable, List<Column> columnNames) {
-    List<Column> temp = new ArrayList<>();
+
+    List<Column> newColumns = new ArrayList<>();
+
     for (Column column : columnNames) {
       Column newColumn = column.emptyCopy();
-      subTable.addColumn(newColumn);
-      temp.add(newColumn);
+      newColumns.add(newColumn);
     }
+    // iterate through the rows in the table and split each of the grouping columns into multiple
+    // columns
     for (int row = 0; row < subTable.rowCount(); row++) {
-      String[] strings = subTable.column(0).getString(row).split(SPLIT_STRING);
-      for (int col = 0; col < temp.size(); col++) {
-        temp.get(col).addCell(strings[col]);
+      String[] strings = subTable.name().split(SPLIT_STRING);
+      for (int col = 0; col < newColumns.size(); col++) {
+        newColumns.get(col).addCell(strings[col]);
       }
+    }
+    for (Column c : newColumns) {
+      subTable.addColumn(c);
     }
     return subTable;
   }

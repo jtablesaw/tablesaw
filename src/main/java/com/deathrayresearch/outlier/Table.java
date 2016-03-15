@@ -379,6 +379,36 @@ public class Table implements Relation {
     return resultTable;
   }
 
+  private SubTable splitGroupingColumn(SubTable subTable, List<Column> columnNames) {
+    ArrayList newColumns = new ArrayList();
+    Iterator row = columnNames.iterator();
+
+    Column c;
+    while(row.hasNext()) {
+      c = (Column)row.next();
+      Column col = c.emptyCopy();
+      newColumns.add(col);
+    }
+
+    for(int var7 = 0; var7 < subTable.rowCount(); ++var7) {
+      String[] var8 = subTable.name().split("|||");
+
+      for(int var9 = 0; var9 < newColumns.size(); ++var9) {
+        ((Column)newColumns.get(var9)).addCell(var8[var9]);
+      }
+    }
+
+    row = newColumns.iterator();
+
+    while(row.hasNext()) {
+      c = (Column)row.next();
+      subTable.addColumn(c);
+    }
+
+    return subTable;
+  }
+
+
   public Table sum(IntColumn sumColumn, Column byColumn) {
     TableGroup groupTable = new TableGroup(this, byColumn);
     Table resultTable = new Table(name + " summary");
@@ -433,6 +463,7 @@ public class Table implements Relation {
       groupColumn.add(groupName);
       sumColumn1.add(sum);
     }
+
     return resultTable;
   }
 

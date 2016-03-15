@@ -105,14 +105,6 @@ public class CategoryColumn extends AbstractColumn
     pointer = 0;
   }
 
-  // TODO(lwhite): review if reference assignment of data (values, lookupTable) is appropriate or copy needed
-  private CategoryColumn copy() {
-    CategoryColumn copy = emptyCopy();
-    copy.lookupTable = this.lookupTable;
-    copy.values = this.values;
-    return copy;
-  }
-
   @Override
   public Column sortAscending() {
     CategoryColumn copy = this.copy();
@@ -411,5 +403,13 @@ public class CategoryColumn extends AbstractColumn
       builder.append(String.valueOf(next()));
     }
     return builder.toString();
+  }
+
+  public CategoryColumn copy() {
+    CategoryColumn newCol = CategoryColumn.create(name() + "1", size());
+    while (hasNext()) {
+      newCol.add(next());
+    }
+    return newCol;
   }
 }
