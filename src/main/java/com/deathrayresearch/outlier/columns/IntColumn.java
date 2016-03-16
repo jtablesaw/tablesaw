@@ -364,6 +364,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     StringBuilder builder = new StringBuilder();
     for (int i : data){
       builder.append(String.valueOf(i));
+      builder.append('\n');
     }
     return builder.toString();
   }

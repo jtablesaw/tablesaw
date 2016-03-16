@@ -60,4 +60,24 @@ public interface Column {
   }
 
   void appendColumnData(Column column);
+
+  default Column head(int numRows) {
+    Column col = emptyCopy();
+    int rows = Math.min(numRows, size());
+    for (int i = 0; i < rows; i++) {
+      col.addCell(getString(i));
+    }
+    return col;
+  }
+
+  default Column tail(int numRows) {
+    Column col = emptyCopy();
+    int rows = Math.min(numRows, size());
+    for (int i = size() - rows; i < size(); i++) {
+      col.addCell(getString(i));
+    }
+    return col;
+  }
+
+  String print();
 }

@@ -365,6 +365,7 @@ public class PeriodColumn extends AbstractColumn {
     StringBuilder builder = new StringBuilder();
     for (int next : data) {
       builder.append(String.valueOf(PackedPeriod.asPeriod(next)));
+      builder.append('\n');
     }
     return builder.toString();
   }

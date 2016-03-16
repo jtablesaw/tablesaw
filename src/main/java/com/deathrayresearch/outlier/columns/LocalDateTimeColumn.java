@@ -286,6 +286,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     StringBuilder builder = new StringBuilder();
     for (long next : data) {
       builder.append(String.valueOf(PackedLocalDateTime.asLocalDateTime(next)));
+      builder.append('\n');
     }
     return builder.toString();
   }

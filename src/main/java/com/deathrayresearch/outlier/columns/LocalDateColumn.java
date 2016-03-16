@@ -691,6 +691,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     StringBuilder builder = new StringBuilder();
     for (int next : data) {
       builder.append(String.valueOf(PackedLocalDate.asLocalDate(next)));
+      builder.append('\n');
     }
     return builder.toString();
   }
