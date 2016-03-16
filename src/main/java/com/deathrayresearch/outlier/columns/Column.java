@@ -25,8 +25,6 @@ public interface Column {
 
   ColumnType type();
 
-  boolean hasNext();
-
   String getString(int row);
 
   Column emptyCopy();
@@ -51,7 +49,6 @@ public interface Column {
    */
   String metadata();
 
-
   IntComparator rowComparator();
 
   default String first() {
@@ -61,4 +58,6 @@ public interface Column {
   default String last() {
     return getString(size() - 1);
   }
+
+  void appendColumnData(Column column);
 }

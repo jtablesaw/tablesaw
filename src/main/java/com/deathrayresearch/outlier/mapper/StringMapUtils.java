@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier.mapper;
 
+import com.deathrayresearch.outlier.aggregator.StringColumnUtils;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
-import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
@@ -16,12 +16,7 @@ import java.util.regex.Pattern;
  * String utility functions. Each function takes one or more String columns as input and produces
  * another Column as output. The resulting column need not be a string column.
  */
-public interface StringMapUtils extends Column {
-
-  String next();
-
-  // Reset the pointer after running a scan so that the next scan succeeds
-  void reset();
+public interface StringMapUtils extends StringColumnUtils {
 
   default TextColumn upperCase() {
     TextColumn newColumn = TextColumn.create(this.name() + "[ucase]");
@@ -199,8 +194,7 @@ public interface StringMapUtils extends Column {
     Preconditions.checkArgument(value.length != 0, "Parameter array must not be empty");
     IntColumn intColumn = IntColumn.create("Occurrences of " + value[0]);
 
-    while (hasNext()) {
-      String str = next();
+    for (String str : data()) {
       int count = 0;
       for (String findStr : value) {
         int lastIndex = 0;
@@ -233,16 +227,14 @@ public interface StringMapUtils extends Column {
     CategoryColumn column = CategoryColumn.create(name() + " matches of \"" + regex + "\"");
     Pattern pattern = Pattern.compile(regex);
 
-    while (hasNext()) {
-      String mydata = next();
-      Matcher matcher = pattern.matcher(mydata);
+    for (String myData : data()) {
+      Matcher matcher = pattern.matcher(myData);
       if (matcher.find()) {
         column.add(matcher.group(regexGroup));
       } else {
         column.add(CategoryColumn.MISSING_VALUE);
       }
     }
-    reset();
     return column;
   }
 }

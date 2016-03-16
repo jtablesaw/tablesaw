@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.mapper;
 
+import com.deathrayresearch.outlier.aggregator.DateColumnUtils;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
@@ -15,7 +16,7 @@ import java.time.temporal.TemporalUnit;
 /**
  * An interface for mapping operations unique to Date columns
  */
-public interface DateMapUtils extends Column {
+public interface DateMapUtils extends DateColumnUtils {
 
   default FloatColumn differenceInDays(LocalDateColumn column2) {
     LocalDateColumn column1 = (LocalDateColumn) this;
@@ -57,19 +58,14 @@ public interface DateMapUtils extends Column {
   default RoaringBitmap isLessThan(LocalDate d) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      if (next() < PackedLocalDate.pack(d)) {
+    for (int next : data()) {
+      if (next < PackedLocalDate.pack(d)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
-
-  void reset();
-
-  int next();
 
   // These functions fill some amount of time to a date, producing a new date column
 

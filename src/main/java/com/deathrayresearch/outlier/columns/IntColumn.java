@@ -6,13 +6,13 @@ import com.deathrayresearch.outlier.mapper.IntMapUtils;
 import com.deathrayresearch.outlier.sorting.IntComparisonUtil;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.StatUtil;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,10 +23,8 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.INTEGER.getMissingValue();
   private static final int DEFAULT_ARRAY_SIZE = 128;
-  private int pointer = 0;
-  private int N = 0;
 
-  private int[] data;
+  private IntArrayList data;
 
   public static IntColumn create(String name) {
     return new IntColumn(name, DEFAULT_ARRAY_SIZE);
@@ -42,27 +40,31 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   public static IntColumn create(String name, IntArrayList ints) {
     IntColumn column = new IntColumn(name, ints.size());
-    column.data = ints.elements();
+    column.data = ints;
     return column;
   }
 
   public IntColumn(String name, int initialSize) {
     super(name);
-    data = new int[initialSize];
+    data = new IntArrayList(initialSize);
   }
 
   public IntColumn(ColumnMetadata metadata) {
     super(metadata);
-    data = new int[metadata.getSize()];
+    data = new IntArrayList(metadata.getSize());
+  }
+
+  public IntArrayList data() {
+    return data;
   }
 
   public IntColumn(String name) {
     super(name);
-    data = new int[DEFAULT_ARRAY_SIZE];
+    data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   public int size() {
-    return N;
+    return data.size();
   }
 
   @Override
@@ -70,112 +72,79 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return ColumnType.INTEGER;
   }
 
-  @Override
-  public boolean hasNext() {
-    return pointer < N;
-  }
-
-  public int next() {
-    return data[pointer++];
-  }
-
   public int sum() {
     int sum = 0;
-    while (hasNext()) {
-      sum += next();
+    for (int i : data) {
+      sum += i;
     }
     return sum;
   }
 
   public void add(int i) {
-    if (N >= data.length) {
-      resize();
-    }
-    data[N++] = i;
+    data.add(i);
   }
 
   public void set(int index, int value) {
-    data[index] = value;
-  }
-
-  // TODO(lwhite): Redo to reduce the increase for large columns
-  private void resize() {
-    int[] temp = new int[Math.round(data.length + data.length)];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
-  }
-
-  /**
-   * Removes (most) extra space (empty elements) from the data array
-   */
-  public void compact() {
-    int[] temp = new int[N + 100];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
+    data.set(index, value);
   }
 
   public RoaringBitmap isLessThan(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      if (next() < f) {
+    for (int next : data) {
+      if (next < f) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isGreaterThan(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      if (next() > f) {
+    for (int next : data) {
+      if (next > f) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isGreaterThanOrEqualTo(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      if (next() >= f) {
+    for (int next : data) {
+      if (next >= f) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isLessThanOrEqualTo(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      if (next() <= f) {
+    for (int next : data) {
+      if (next <= f) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isEqualTo(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      if (next() == f) {
+    for (int next : data) {
+      if (next == f) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
@@ -204,7 +173,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   @Override
   public String getString(int row) {
-    return String.valueOf(data[row]);
+    return String.valueOf(data.get(row));
   }
 
   @Override
@@ -214,37 +183,35 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   @Override
   public void clear() {
-    data = new int[DEFAULT_ARRAY_SIZE];
+    data.clear();
   }
 
   @Override
   public Column sortAscending() {
     IntColumn copy = this.copy();
-    Arrays.sort(copy.data);
+    Collections.sort(copy.data);
     return copy;
   }
 
   @Override
   public Column sortDescending() {
     IntColumn copy = this.copy();
-    Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
+    Collections.sort(copy.data);
+    Collections.reverse(copy.data);
     return copy;
   }
 
   private IntColumn copy() {
     IntColumn copy = emptyCopy();
-    copy.data = this.data;
-    copy.N = this.N;
+    for (int i : data) {
+      copy.add(i);
+    }
     return copy;
-  }
-
-  public void reset() {
-    pointer = 0;
   }
 
   @Override
   public boolean isEmpty() {
-    return N == 0;
+    return data.isEmpty();
   }
 
   @Override
@@ -276,7 +243,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
   public int get(int index) {
-    return data[index];
+    return data.getInt(index);
   }
 
   @Override
@@ -288,35 +255,27 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
     @Override
     public int compare(Integer i1, Integer i2) {
-      int prim1 = data[i1];
-      int prim2 = data[i2];
-      return IntComparisonUtil.getInstance().compare(prim1, prim2);
+      return compare((int) i1, (int) i2);
     }
 
     public int compare(int i1, int i2) {
-      int prim1 = data[i1];
-      int prim2 = data[i2];
+      int prim1 = get(i1);
+      int prim2 = get(i2);
       return IntComparisonUtil.getInstance().compare(prim1, prim2);
     }
   };
 
   public int max() {
-    reset();
-    int f = StatUtil.max(this);
-    reset();
-    return f;
+    return StatUtil.max(this);
   }
 
   public int min() {
-    reset();
-    int f = StatUtil.min(this);
-    reset();
-    return f;
+    return StatUtil.min(this);
   }
 
   public int firstElement() {
     if (size() > 0) {
-      return data[0];
+      return get(0);
     }
     return MISSING_VALUE;
   }
@@ -324,89 +283,77 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   public RoaringBitmap isPositive() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (next > 0) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isNegative() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (next < 0) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isNonNegative() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (next >= 0) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isZero() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (next == 0) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isEven() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if ((next & 1) == 0) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isOdd() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
-      if ((next & 1) != 0) {
+    for (int x : data) {
+      if ((x & 1) != 0) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public FloatArrayList toFloatArray() {
-    FloatArrayList output = new FloatArrayList(data.length);
+    FloatArrayList output = new FloatArrayList(data.size());
     for (int aData : data) {
       output.add(aData);
     }
@@ -415,8 +362,8 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   public String print() {
     StringBuilder builder = new StringBuilder();
-    while (hasNext()) {
-      builder.append(String.valueOf(next()));
+    for (int i : data){
+      builder.append(String.valueOf(i));
     }
     return builder.toString();
   }
@@ -424,5 +371,14 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   @Override
   public String toString() {
     return "Int column: " + name();
+  }
+
+  @Override
+  public void appendColumnData(Column column) {
+    Preconditions.checkArgument(column.type() == this.type());
+    IntColumn intColumn = (IntColumn) column;
+    for (int i = 0; i < intColumn.size(); i++) {
+      add(intColumn.get(i));
+    }
   }
 }

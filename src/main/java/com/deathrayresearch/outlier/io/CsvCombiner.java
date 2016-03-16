@@ -1,4 +1,4 @@
-package com.deathrayresearch.outlier.util;
+package com.deathrayresearch.outlier.io;
 
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;

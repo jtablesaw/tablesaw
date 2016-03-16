@@ -35,6 +35,19 @@ final public class CsvReader {
     return read(fileName, types, ',', true);
   }
 
+  public static Table read(ColumnType types[], String ... fileNames) throws IOException {
+    if (fileNames.length == 1) {
+      return read(fileNames[0], types, ',', true);
+    } else {
+      Table table = read(fileNames[0], types, ',', true);
+      for (int i = 1; i < fileNames.length; i++) {
+        String fileName = fileNames[i];
+        table.append( read(fileName, types, ',', true));
+      }
+      return table;
+    }
+  }
+
   /**
    * Constructs a {@link com.deathrayresearch.outlier.Table} from a CSV file. This constructor
    * assumes that the file has a one-row header file, which is used to populate the column names.
@@ -142,24 +155,6 @@ final public class CsvReader {
     }
     it.close();
     return table;
-  }
-
-  public static void read(String inputFileName,
-                          List<Integer> columns,
-                          boolean header)
-      throws IOException {
-
-    CSVReader reader = new CSVReader(new FileReader(inputFileName));
-
-    // Add the rows
-    String[] nextLine;
-    String[] newLine = new String[columns.size()];
-    while ((nextLine = reader.readNext()) != null) {
-      for (int i = 0; i < columns.size(); i++) {
-        newLine[i] = nextLine[columns.get(i)];
-      }
-    }
-    reader.close();
   }
 
   /**

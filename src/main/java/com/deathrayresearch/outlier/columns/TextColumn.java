@@ -5,12 +5,15 @@ import com.deathrayresearch.outlier.aggregator.StringReduceUtils;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -19,15 +22,9 @@ import java.util.Set;
 public class TextColumn extends AbstractColumn
         implements StringMapUtils, StringFilters, StringReduceUtils {
 
-  private static int DEFAULT_ARRAY_SIZE = 128;
+  private static final int DEFAULT_ARRAY_SIZE = 128;
 
-  // For internal iteration. What element are we looking at right now
-  private int pointer = 0;
-
-  // The number of elements, which may be less than the size of the array
-  private int N = 0;
-
-  private String[] data;
+  private List<String> data;
 
   public static TextColumn create(String name) {
     return new TextColumn(name);
@@ -39,21 +36,21 @@ public class TextColumn extends AbstractColumn
 
   public TextColumn(ColumnMetadata metadata) {
     super(metadata);
-    data = new String[metadata.getSize()];
+    data = new ArrayList<>(metadata.getSize());
   }
 
   private TextColumn(String name) {
     super(name);
-    data = new String[DEFAULT_ARRAY_SIZE];
+    data = new ArrayList<>(DEFAULT_ARRAY_SIZE);
   }
 
   public TextColumn(String name, int initialSize) {
     super(name);
-    data = new String[initialSize];
+    data = new ArrayList<>(initialSize);
   }
 
   public int size() {
-    return N;
+    return data.size();
   }
 
   @Override
@@ -61,26 +58,14 @@ public class TextColumn extends AbstractColumn
     return ColumnType.TEXT;
   }
 
-  @Override
-  public boolean hasNext() {
-    return pointer < N;
-  }
-
-  public String next() {
-    return data[pointer++];
-  }
-
-  public void add(String f) {
-    if (N >= data.length) {
-      resize();
-    }
-    data[N++] = f;
+  public void add(String text) {
+    data.add(text);
   }
 
   // TODO(lwhite): Redo to reduce the increase for large columns
   private void resize() {
-    String[] temp = new String[Math.round(data.length * 2)];
-    System.arraycopy(data, 0, temp, 0, N);
+    List<String> temp = new ArrayList<>(size() * 2);
+    temp.addAll(data);
     data = temp;
   }
 
@@ -88,14 +73,14 @@ public class TextColumn extends AbstractColumn
    * Removes (most) extra space (empty elements) from the data array
    */
   public void compact() {
-    String[] temp = new String[N + 100];
-    System.arraycopy(data, 0, temp, 0, N);
+    List<String> temp = new ArrayList<>(size() + 100);
+    temp.addAll(data);
     data = temp;
   }
 
   @Override
   public String getString(int row) {
-    return String.valueOf(data[row]);
+    return String.valueOf(data.get(row));
   }
 
   @Override
@@ -105,24 +90,22 @@ public class TextColumn extends AbstractColumn
 
   @Override
   public void clear() {
-    data = new String[DEFAULT_ARRAY_SIZE];
-  }
-
-  public void reset() {
-    pointer = 0;
+    data.clear();
   }
 
   private TextColumn copy() {
     TextColumn copy = emptyCopy();
-    copy.data = this.data;
-    copy.N = this.N;
+    Iterator<String> iterator = data.iterator();
+    while (iterator.hasNext()) {
+      copy.add(iterator.next());
+    }
     return copy;
   }
 
   @Override
   public Column sortAscending() {
     TextColumn copy = this.copy();
-    Arrays.sort(copy.data);
+    Collections.sort(copy.data);
     return copy;
   }
 
@@ -130,7 +113,7 @@ public class TextColumn extends AbstractColumn
   public Column sortDescending() {
     TextColumn copy = this.copy();
     // TODO(lwhite): BUG This sort is reversed (Q: Can we use this sort and reverse the iterator?)
-    Arrays.sort(copy.data);
+    Collections.sort(copy.data);
     return copy;
   }
 
@@ -143,14 +126,14 @@ public class TextColumn extends AbstractColumn
   @Override
   public int countUnique() {
     Set<String> stringSet = new HashSet<>();
-    Collections.addAll(stringSet, data);
+    stringSet.addAll(data);
     return stringSet.size();
   }
 
   public TextColumn unique() {
     TextColumn textColumn = TextColumn.create(name() + " Unique values");
     Set<String> stringSet = new HashSet<>();
-    Collections.addAll(stringSet, data);
+    stringSet.addAll(data);
     for (String string : stringSet) {
       textColumn.add(string);
     }
@@ -159,7 +142,7 @@ public class TextColumn extends AbstractColumn
 
   @Override
   public boolean isEmpty() {
-    return N == 0;
+    return data.isEmpty();
   }
 
   public void addCell(String s) {
@@ -167,19 +150,18 @@ public class TextColumn extends AbstractColumn
   }
 
   public String get(int index) {
-    return data[index];
+    return data.get(index);
   }
 
   public RoaringBitmap isEqualTo(String string) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      if (string.equals(next())) {
+    for (String next : data) {
+      if (string.equals(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
@@ -191,24 +173,24 @@ public class TextColumn extends AbstractColumn
   IntComparator comparator = new IntComparator() {
     @Override
     public int compare(int i, int i1) {
-      String f1 = data[i];
-      String f2 = data[i1];
+      String f1 = data.get(i);
+      String f2 = data.get(i1);
       return f1.compareTo(f2);
     }
 
     @Override
     public int compare(Integer r1, Integer r2) {
-      String f1 = data[r1];
-      String f2 = data[r2];
+      String f1 = data.get(r1);
+      String f2 = data.get(r2);
       return f1.compareTo(f2);
     }
   };
 
   public void set(int i, String s) {
-    if (i > data.length) {
+    if (i > data.size()) {
       resize();
     }
-    data[i] = s;
+    data.set(i, s);
   }
 
   public int[] indexes() {
@@ -217,10 +199,6 @@ public class TextColumn extends AbstractColumn
       rowIndexes[i] = i;
     }
     return rowIndexes;
-  }
-
-  public String[] elements() {
-    return data;
   }
 
   @Override
@@ -245,9 +223,23 @@ public class TextColumn extends AbstractColumn
 
   public String print() {
     StringBuilder builder = new StringBuilder();
-    while (hasNext()) {
-      builder.append(String.valueOf(next()));
+    for (String next : data) {
+      builder.append(String.valueOf(next));
     }
     return builder.toString();
+  }
+
+  @Override
+  public List<String> data() {
+    return data;
+  }
+
+  @Override
+  public void appendColumnData(Column column) {
+    Preconditions.checkArgument(column.type() == this.type());
+    TextColumn intColumn = (TextColumn) column;
+    for (int i = 0; i < intColumn.size(); i++) {
+      add(intColumn.get(i));
+    }
   }
 }

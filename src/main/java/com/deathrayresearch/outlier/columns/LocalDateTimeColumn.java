@@ -4,17 +4,17 @@ import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateTimeMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * A column in a base table that contains float values
@@ -25,13 +25,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
-  // For internal iteration. What element are we looking at right now
-  private int pointer = 0;
-
-  // The number of elements, which may be less than the size of the array
-  private int N = 0;
-
-  private long[] data;
+  private LongArrayList data;
 
   @Override
   public void addCell(String stringvalue) {
@@ -69,21 +63,25 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
   private LocalDateTimeColumn(String name) {
     super(name);
-    data = new long[DEFAULT_ARRAY_SIZE];
+    data = new LongArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   public LocalDateTimeColumn(ColumnMetadata metadata) {
     super(metadata);
-    data = new long[DEFAULT_ARRAY_SIZE];
+    data = new LongArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   public LocalDateTimeColumn(String name, int initialSize) {
     super(name);
-    data = new long[initialSize];
+    data = new LongArrayList(initialSize);
   }
 
   public int size() {
-    return N;
+    return data.size();
+  }
+
+  public LongArrayList data() {
+    return data;
   }
 
   @Override
@@ -91,42 +89,13 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return ColumnType.LOCAL_DATE_TIME;
   }
 
-  @Override
-  public boolean hasNext() {
-    return pointer < N;
-  }
-
-  public long next() {
-    return data[pointer++];
-  }
-
   public void add(long dateTime) {
-    if (N >= data.length) {
-      resize();
-    }
-    data[N++] = dateTime;
-  }
-
-  // TODO(lwhite): Redo to reduce the increase for large columns
-  private void resize() {
-    int size = Math.round(data.length * 2);
-    long[] tempDates = new long[size];
-    System.arraycopy(data, 0, tempDates, 0, N);
-    data = tempDates;
-  }
-
-  /**
-   * Removes (most) extra space (empty elements) from the data array
-   */
-  public void compact() {
-    long[] tempDates = new long[N + 100];
-    System.arraycopy(data, 0, tempDates, 0, N);
-    data = tempDates;
+    data.add(dateTime);
   }
 
   @Override
   public String getString(int row) {
-    return PackedLocalDateTime.toString(data[row]);
+    return PackedLocalDateTime.toString(getLong(row));
   }
 
   @Override
@@ -136,32 +105,27 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
   @Override
   public void clear() {
-    data = new long[DEFAULT_ARRAY_SIZE];
-  }
-
-  public void reset() {
-    pointer = 0;
+    data.clear();
   }
 
   private LocalDateTimeColumn copy() {
     LocalDateTimeColumn copy = emptyCopy();
-    copy.data = this.data;
-    copy.N = this.N;
+    copy.data.addAll(data);
     return copy;
   }
 
   @Override
-  public Column sortAscending() {
+  public LocalDateTimeColumn sortAscending() {
     LocalDateTimeColumn copy = this.copy();
-    Arrays.sort(copy.data);
+    Collections.sort(copy.data);
     return copy;
 
   }
 
   @Override
   public Column sortDescending() {
-    LocalDateTimeColumn copy = this.copy();
-    Primitive.sort(copy.data, (d1, d2) -> Long.compare(d2, d1), false);
+    LocalDateTimeColumn copy = sortAscending();
+    Collections.reverse(copy.data);
     return copy;
   }
 
@@ -179,24 +143,25 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
   @Override
   public LocalDateTimeColumn unique() {
-    LongSet ints = new LongOpenHashSet(data.length);
+    LongSet ints = new LongOpenHashSet(data.size());
     for (long i : data) {
       ints.add(i);
     }
-    return LocalDateTimeColumn.create(name() + " Unique values", LongArrayList.wrap(ints.toLongArray()));
+    return LocalDateTimeColumn.create(name() + " Unique values",
+            LongArrayList.wrap(ints.toLongArray()));
   }
 
   @Override
   public boolean isEmpty() {
-    return N == 0;
+    return data.isEmpty();
   }
 
   public long getLong(int index) {
-    return data[index];
+    return data.getLong(index);
   }
 
   public LocalDateTime get(int index) {
-    return PackedLocalDateTime.asLocalDateTime(data[index]);
+    return PackedLocalDateTime.asLocalDateTime(getLong(index));
   }
 
   @Override
@@ -208,15 +173,13 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
     @Override
     public int compare(Integer r1, Integer r2) {
-      long f1 = data[r1];
-      long f2 = data[r2];
-      return Long.compare(f1, f2);
+      return compare((int) r1, (int) r2);
     }
 
     @Override
     public int compare(int r1, int r2) {
-      long f1 = data[r1];
-      long f2 = data[r2];
+      long f1 = getLong(r1);
+      long f2 = getLong(r2);
       return Long.compare(f1, f2);
     }
   };
@@ -304,27 +267,25 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     RoaringBitmap results = new RoaringBitmap();
     long packedLocalDate = PackedLocalDateTime.pack(value);
     int i = 0;
-    while (hasNext()) {
-      if (packedLocalDate == next()) {
+    for (long next : data) {
+      if (packedLocalDate == next) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public static LocalDateTimeColumn create(String fileName, LongArrayList dateTimes) {
     LocalDateTimeColumn column = new LocalDateTimeColumn(fileName, dateTimes.size());
-    column.data = dateTimes.elements();
-    column.N = dateTimes.size();
+    column.data = dateTimes;
     return column;
   }
 
   public String print() {
     StringBuilder builder = new StringBuilder();
-    while (hasNext()) {
-      builder.append(String.valueOf(PackedLocalDateTime.asLocalDateTime(next())));
+    for (long next : data) {
+      builder.append(String.valueOf(PackedLocalDateTime.asLocalDateTime(next)));
     }
     return builder.toString();
   }
@@ -334,4 +295,12 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return "LocalDateTime column: " + name();
   }
 
+  @Override
+  public void appendColumnData(Column column) {
+    Preconditions.checkArgument(column.type() == this.type());
+    LocalDateTimeColumn intColumn = (LocalDateTimeColumn) column;
+    for (int i = 0; i < intColumn.size(); i++) {
+      add(intColumn.get(i));
+    }
+  }
 }

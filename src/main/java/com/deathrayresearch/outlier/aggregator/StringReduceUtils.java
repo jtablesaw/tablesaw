@@ -3,19 +3,15 @@ package com.deathrayresearch.outlier.aggregator;
 /**
  *
  */
-public interface StringReduceUtils {
-
-    boolean hasNext();
-
-    String next();
+public interface StringReduceUtils extends StringColumnUtils {
 
     int size();
 
     default String appendAll(String lineBreak) {
         StringBuilder builder = new StringBuilder();
         int count = 0;
-        while (hasNext()) {
-            builder.append(next());
+        for (String next : data()) {
+            builder.append(next);
             if (count < size() - 1) {
                 builder.append(lineBreak);
                 count++;

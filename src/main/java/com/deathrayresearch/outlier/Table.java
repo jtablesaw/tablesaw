@@ -302,11 +302,6 @@ public class Table implements Relation {
   public Table sortOn(IntComparator rowComparator) {
     Table newTable = (Table) emptyCopy();
 
-/*
-    int[] newRows = rows();
-    IntArrays.mergeSort(newRows, rowComparator);
-*/
-
     IntArrayList newRows = new IntArrayList(rows());
     Collections.sort(newRows, rowComparator);
 
@@ -408,7 +403,6 @@ public class Table implements Relation {
     return subTable;
   }
 
-
   public Table sum(IntColumn sumColumn, Column byColumn) {
     TableGroup groupTable = new TableGroup(this, byColumn);
     Table resultTable = new Table(name + " summary");
@@ -477,5 +471,14 @@ public class Table implements Relation {
 
   public PeriodColumn periodColumn(int i) {
     return (PeriodColumn) column(i);
+  }
+
+  public void append(Table tableToAppend) {
+    for (Column column : columnList) {
+      Column columnToAppend = tableToAppend.column(column.name());
+      for (int i = 0; i < columnToAppend.size(); i++) {
+        column.appendColumnData(columnToAppend);
+      }
+    }
   }
 }

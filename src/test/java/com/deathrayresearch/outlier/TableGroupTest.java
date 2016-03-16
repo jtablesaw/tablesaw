@@ -41,8 +41,7 @@ public class TableGroupTest {
   public void testWith2GroupingCols() {
     CategoryColumn month = CategoryColumn.create("month");
     LocalDateColumn dateColumn = table.localDateColumn(0);
-    while (dateColumn.hasNext()){
-      int date = dateColumn.next();
+    for (int date : dateColumn.data()) {
       month.add(String.valueOf(PackedLocalDate.getMonth(date)));
     }
     table.addColumn(month);

@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -11,12 +12,11 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -29,31 +29,25 @@ public class PeriodColumn extends AbstractColumn {
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue() ;
   private static int DEFAULT_ARRAY_SIZE = 128;
 
-  // For internal iteration. What element are we looking at right now
-  private int pointer = 0;
-
-  // The number of elements, which may be less than the size of the array
-  private int N = 0;
-
-  private int[] data;
+  private IntArrayList data;
 
   public PeriodColumn(ColumnMetadata metadata) {
     super(metadata);
-    data = new int[DEFAULT_ARRAY_SIZE];
+    data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   private PeriodColumn(String name) {
     super(name);
-    data = new int[DEFAULT_ARRAY_SIZE];
+    data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   private PeriodColumn(String name, int initialSize) {
     super(name);
-    data = new int[initialSize];
+    data = new IntArrayList(initialSize);
   }
 
   public int size() {
-    return N;
+    return data.size();
   }
 
   @Override
@@ -61,48 +55,17 @@ public class PeriodColumn extends AbstractColumn {
     return ColumnType.PERIOD;
   }
 
-  @Override
-  public boolean hasNext() {
-    return pointer < N;
-  }
-
-  public int next() {
-    return data[pointer++];
-  }
-
   public void add(int f) {
-    if (N >= data.length) {
-      resize();
-    }
-    data[N++] = f;
+    data.add(f);
   }
 
   public void add(Period f) {
-    if (N >= data.length) {
-      resize();
-    }
-    data[N++] = PackedPeriod.pack(f);
-  }
-
-  // TODO(lwhite): Redo to reduce the increase for large columns
-  private void resize() {
-    int[] temp = new int[Math.round(data.length * 2)];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
-  }
-
-  /**
-   * Removes (most) extra space (empty elements) from the data array
-   */
-  public void compact() {
-    int[] temp = new int[N + 100];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
+    add(PackedPeriod.pack(f));
   }
 
   @Override
   public String getString(int row) {
-    return PackedLocalDate.toDateString(data[row]);
+    return PackedLocalDate.toDateString(getInt(row));
   }
 
   @Override
@@ -112,46 +75,48 @@ public class PeriodColumn extends AbstractColumn {
 
   @Override
   public void clear() {
-    data = new int[DEFAULT_ARRAY_SIZE];
-  }
-
-  public void reset() {
-    pointer = 0;
+    data.clear();
   }
 
   private PeriodColumn copy() {
     PeriodColumn copy = emptyCopy();
-    copy.data = this.data;
-    copy.N = this.N;
+    for (int date : data) {
+      copy.add(date);
+    }
     return copy;
   }
 
   @Override
   public Column sortAscending() {
     PeriodColumn copy = this.copy();
-    Arrays.sort(copy.data);
+    Collections.sort(copy.data);
     return copy;
   }
 
   @Override
   public Column sortDescending() {
     PeriodColumn copy = this.copy();
-    Primitive.sort(copy.data, (d1, d2) -> Integer.compare(d2, d1), false);
+    Collections.sort(copy.data);
+    Collections.reverse(copy.data);
     return copy;
   }
 
   @Override
   public int countUnique() {
-    IntSet ints = new IntOpenHashSet(data.length);
+    IntSet ints = new IntOpenHashSet(data.size());
     for (int i : data) {
       ints.add(i);
     }
     return ints.size();
   }
 
+  public IntArrayList data() {
+    return data;
+  }
+
   @Override
   public PeriodColumn unique() {
-    IntSet ints = new IntOpenHashSet(data.length);
+    IntSet ints = new IntOpenHashSet(data.size());
     for (int i : data) {
       ints.add(i);
     }
@@ -162,14 +127,14 @@ public class PeriodColumn extends AbstractColumn {
     if (isEmpty()) {
       return null;
     }
-    return PackedPeriod.asPeriod(data[0]);
+    return PackedPeriod.asPeriod(getInt(0));
   }
 
   public LocalDate max() {
     int max;
     int missing = Integer.MIN_VALUE;
     if (!isEmpty()) {
-      max = data[0];
+      max = getInt(0);
     } else {
       return null;
     }
@@ -190,7 +155,7 @@ public class PeriodColumn extends AbstractColumn {
     int missing = Integer.MIN_VALUE;
 
     if (!isEmpty()) {
-      min = data[0];
+      min = getInt(0);
     } else {
       return null;
     }
@@ -258,7 +223,7 @@ public class PeriodColumn extends AbstractColumn {
   }
 
   public LocalDate get(int index) {
-    return PackedLocalDate.asLocalDate(data[index]);
+    return PackedLocalDate.asLocalDate(getInt(index));
   }
 
   public static PeriodColumn create(String name) {
@@ -267,7 +232,7 @@ public class PeriodColumn extends AbstractColumn {
 
   @Override
   public boolean isEmpty() {
-    return N == 0;
+    return data.isEmpty();
   }
 
   @Override
@@ -279,23 +244,22 @@ public class PeriodColumn extends AbstractColumn {
 
     @Override
     public int compare(Integer r1, Integer r2) {
-      int f1 = data[r1];
-      int f2 = data[r2];
+      int f1 = getInt(r1);
+      int f2 = getInt(r2);
       return Integer.compare(f1, f2);
     }
 
     @Override
     public int compare(int r1, int r2) {
-      int f1 = data[r1];
-      int f2 = data[r2];
+      int f1 = getInt(r1);
+      int f2 = getInt(r2);
       return Integer.compare(f1, f2);
     }
   };
 
   public static PeriodColumn create(String fileName, IntArrayList periods) {
     PeriodColumn column = new PeriodColumn(fileName, periods.size());
-    column.data = periods.elements();
-    column.N = periods.size();
+    column.data = periods;
     return column;
   }
 
@@ -320,20 +284,19 @@ public class PeriodColumn extends AbstractColumn {
   }
 
   public int getInt(int index) {
-    return data[index];
+    return data.getInt(index);
   }
 
   public RoaringBitmap isEqualTo(Period value) {
     RoaringBitmap results = new RoaringBitmap();
     int packedPeriod = PackedPeriod.pack(value);
     int i = 0;
-    while (hasNext()) {
-      if (packedPeriod == next()) {
+    for (int next : data) {
+      if (packedPeriod == next) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
@@ -344,9 +307,9 @@ public class PeriodColumn extends AbstractColumn {
 
     Object2IntMap<Period> counts = new Object2IntOpenHashMap<>();
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < size(); i++) {
       Period value;
-      int next = data[i];
+      int next = getInt(i);
       if (next == Integer.MIN_VALUE) {
         value = null;
       } else {
@@ -377,35 +340,31 @@ public class PeriodColumn extends AbstractColumn {
   public RoaringBitmap isLongerThan(int value) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedPeriod.isLongerThan(next, value)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isShorterThan(int value) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedPeriod.isShorterThan(next, value)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public String print() {
     StringBuilder builder = new StringBuilder();
-    while (hasNext()) {
-      builder.append(String.valueOf(PackedPeriod.asPeriod(next())));
+    for (int next : data) {
+      builder.append(String.valueOf(PackedPeriod.asPeriod(next)));
     }
     return builder.toString();
   }
@@ -416,4 +375,12 @@ public class PeriodColumn extends AbstractColumn {
     return "Period column: " + name();
   }
 
+  @Override
+  public void appendColumnData(Column column) {
+    Preconditions.checkArgument(column.type() == this.type());
+    PeriodColumn intColumn = (PeriodColumn) column;
+    for (int i = 0; i < intColumn.size(); i++) {
+      add(intColumn.getInt(i));
+    }
+  }
 }

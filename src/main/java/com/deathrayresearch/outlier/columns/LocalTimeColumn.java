@@ -4,18 +4,18 @@ import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.Collections;
 
 /**
  * A column in a base table that contains float values
@@ -26,13 +26,7 @@ public class LocalTimeColumn extends AbstractColumn {
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
-  // For internal iteration. What element are we looking at right now
-  private int pointer = 0;
-
-  // The number of elements, which may be less than the size of the array
-  private int N = 0;
-
-  private int[] data;
+  private IntArrayList data;
 
   public static LocalTimeColumn create(String name) {
     return new LocalTimeColumn(name);
@@ -40,28 +34,31 @@ public class LocalTimeColumn extends AbstractColumn {
 
   public static LocalTimeColumn create(String fileName, IntArrayList times) {
     LocalTimeColumn column = new LocalTimeColumn(fileName, times.size());
-    column.data = times.elements();
-    column.N = times.size();
+    column.data = times;
     return column;
   }
 
   private LocalTimeColumn(String name) {
     super(name);
-    data = new int[DEFAULT_ARRAY_SIZE];
+    data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   public LocalTimeColumn(ColumnMetadata metadata) {
     super(metadata);
-    data = new int[DEFAULT_ARRAY_SIZE];
+    data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   public LocalTimeColumn(String name, int initialSize) {
     super(name);
-    data = new int[initialSize];
+    data = new IntArrayList(initialSize);
   }
 
   public int size() {
-    return N;
+    return data.size();
+  }
+
+  public void add(int f) {
+    data.add(f);
   }
 
   @Override
@@ -70,40 +67,8 @@ public class LocalTimeColumn extends AbstractColumn {
   }
 
   @Override
-  public boolean hasNext() {
-    return pointer < N;
-  }
-
-  public int next() {
-    return data[pointer++];
-  }
-
-  public void add(int f) {
-    if (N >= data.length) {
-      resize();
-    }
-    data[N++] = f;
-  }
-
-  // TODO(lwhite): Redo to reduce the increase for large columns
-  private void resize() {
-    int[] temp = new int[Math.round(data.length * 2)];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
-  }
-
-  /**
-   * Removes (most) extra space (empty elements) from the data array
-   */
-  public void compact() {
-    int[] temp = new int[N + 100];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
-  }
-
-  @Override
   public String getString(int row) {
-    return PackedLocalTime.toShortTimeString(data[row]);
+    return PackedLocalTime.toShortTimeString(getInt(row));
   }
 
   @Override
@@ -113,31 +78,26 @@ public class LocalTimeColumn extends AbstractColumn {
 
   @Override
   public void clear() {
-    data = new int[DEFAULT_ARRAY_SIZE];
-  }
-
-  public void reset() {
-    pointer = 0;
+    data.clear();
   }
 
   private LocalTimeColumn copy() {
     LocalTimeColumn copy = emptyCopy();
-    copy.data = this.data;
-    copy.N = this.N;
+    copy.data.addAll(data);
     return copy;
   }
 
   @Override
-  public Column sortAscending() {
+  public LocalTimeColumn sortAscending() {
     LocalTimeColumn copy = this.copy();
-    Arrays.sort(copy.data);
+    Collections.sort(copy.data);
     return copy;
   }
 
   @Override
   public Column sortDescending() {
-    LocalTimeColumn copy = this.copy();
-    Primitive.sort(copy.data, (d1, d2) -> Integer.compare(d2, d1), false);
+    LocalTimeColumn copy = sortAscending();
+    Collections.reverse(copy.data);
     return copy;
   }
 
@@ -146,9 +106,9 @@ public class LocalTimeColumn extends AbstractColumn {
 
     Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < size(); i++) {
       int value;
-      int next = data[i];
+      int next = getInt(i);
       if (next == Integer.MIN_VALUE) {
         value = LocalTimeColumn.MISSING_VALUE;
       } else {
@@ -164,9 +124,9 @@ public class LocalTimeColumn extends AbstractColumn {
     table.addColumn(LocalTimeColumn.create("Time"));
     table.addColumn(IntColumn.create("Count"));
 
-    for (Map.Entry<Integer, Integer> entry : counts.int2IntEntrySet()) {
-      table.localTimeColumn(0).add(entry.getKey());
-      table.intColumn(1).add(entry.getValue());
+    for (Int2IntMap.Entry entry : counts.int2IntEntrySet()) {
+      table.localTimeColumn(0).add(entry.getIntKey());
+      table.intColumn(1).add(entry.getIntValue());
     }
     table = table.sortDescendingOn("Count");
 
@@ -176,24 +136,20 @@ public class LocalTimeColumn extends AbstractColumn {
   @Override
   public int countUnique() {
     IntSet ints = new IntOpenHashSet();
-    for (int i = 0; i < N; i++) {
-      ints.add(data[i]);
-    }
+    ints.addAll(data);
     return ints.size();
   }
 
   @Override
   public LocalTimeColumn unique() {
-    IntSet ints = new IntOpenHashSet(data.length);
-    for (int i : data) {
-      ints.add(i);
-    }
+    IntSet ints = new IntOpenHashSet(size());
+    ints.addAll(data);
     return LocalTimeColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
   }
 
   @Override
   public boolean isEmpty() {
-    return N == 0;
+    return data.isEmpty();
   }
 
   public int convert(String value) {
@@ -218,11 +174,11 @@ public class LocalTimeColumn extends AbstractColumn {
   }
 
   public int getInt(int index) {
-    return data[index];
+    return data.getInt(index);
   }
 
   public LocalTime get(int index) {
-    return PackedLocalTime.asLocalTime(data[index]);
+    return PackedLocalTime.asLocalTime(getInt(index));
   }
 
   @Override
@@ -234,15 +190,13 @@ public class LocalTimeColumn extends AbstractColumn {
 
     @Override
     public int compare(Integer r1, Integer r2) {
-      int f1 = data[r1];
-      int f2 = data[r2];
-      return Integer.compare(f1, f2);
+      return compare((int) r1, (int) r2);
     }
 
     @Override
     public int compare(int r1, int r2) {
-      int f1 = data[r1];
-      int f2 = data[r2];
+      int f1 = getInt(r1);
+      int f2 = getInt(r2);
       return Integer.compare(f1, f2);
     }
   };
@@ -251,22 +205,25 @@ public class LocalTimeColumn extends AbstractColumn {
     RoaringBitmap results = new RoaringBitmap();
     int packedLocalTime = PackedLocalTime.pack(value);
     int i = 0;
-    while (hasNext()) {
-      if (packedLocalTime == next()) {
+    for (int next : data) {
+      if (packedLocalTime == next) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public String print() {
     StringBuilder builder = new StringBuilder();
-    while (hasNext()) {
-      builder.append(String.valueOf(PackedLocalTime.asLocalTime(next())));
+    for (int next : data) {
+      builder.append(String.valueOf(PackedLocalTime.asLocalTime(next)));
     }
     return builder.toString();
+  }
+
+  public IntArrayList data() {
+    return data;
   }
 
   @Override
@@ -274,4 +231,12 @@ public class LocalTimeColumn extends AbstractColumn {
     return "LocalTime column: " + name();
   }
 
+  @Override
+  public void appendColumnData(Column column) {
+    Preconditions.checkArgument(column.type() == this.type());
+    LocalTimeColumn intColumn = (LocalTimeColumn) column;
+    for (int i = 0; i < intColumn.size(); i++) {
+      add(intColumn.getInt(i));
+    }
+  }
 }

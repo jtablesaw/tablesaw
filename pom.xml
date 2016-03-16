@@ -97,11 +97,6 @@
             <version>2.3</version>
         </dependency>
         <dependency>
-            <groupId>net.mintern</groupId>
-            <artifactId>primitive</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.iq80.snappy</groupId>
             <artifactId>snappy</artifactId>
             <version>0.4</version>

@@ -29,7 +29,7 @@ public class FloatColumnTest {
     }
     System.out.println(floatColumn.describe());
     Stopwatch stopwatch = Stopwatch.createStarted();
-    RoaringBitmap results = floatColumn.isLessThan(.5f);
+    floatColumn.isLessThan(.5f);
     System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
@@ -86,10 +86,9 @@ public class FloatColumnTest {
     }
     System.out.println("Data loaded, beginning first sort");
     Stopwatch stopwatch = Stopwatch.createStarted();
-    FloatColumn sorted = (FloatColumn) floatColumn.sortAscending();
+    FloatColumn sorted = floatColumn.sortAscending();
     float last = Float.NEGATIVE_INFINITY;
-    while (sorted.hasNext()) {
-      float n = sorted.next();
+    for (float n : sorted.data()) {
       assertTrue(n >= last);
       last = n;
     }
@@ -98,12 +97,20 @@ public class FloatColumnTest {
     stopwatch.reset().start();
     sorted = (FloatColumn) floatColumn.sortDescending();
     last = Float.POSITIVE_INFINITY;
-    while (sorted.hasNext()) {
-      float n = sorted.next();
+    for (float n : sorted.data()) {
       assertTrue(n <= last);
       last = n;
     }
     System.out.println(String.format("Sorted %d records in %d seconds", records, stopwatch.elapsed(TimeUnit.SECONDS)));
+
+    records = 10;
+    floatColumn = new FloatColumn("test", records);
+    for (int i = 0; i < records; i++) {
+      floatColumn.add((float) Math.random());
+    }
+    sorted = (FloatColumn) floatColumn.sortDescending();
+    System.out.println(sorted.print());
+
   }
 
   @Test

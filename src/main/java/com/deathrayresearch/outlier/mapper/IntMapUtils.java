@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.mapper;
 
+import com.deathrayresearch.outlier.aggregator.IntColumnUtils;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
@@ -7,7 +8,7 @@ import com.deathrayresearch.outlier.columns.IntColumn;
 /**
  *
  */
-public interface IntMapUtils extends Column {
+public interface IntMapUtils extends IntColumnUtils {
 
   default IntColumn plus(IntColumn ... columns) {
 
@@ -47,10 +48,9 @@ public interface IntMapUtils extends Column {
   default FloatColumn asRatio() {
     FloatColumn pctColumn = new FloatColumn(name() + " percents");
     float total = sum();
-    reset();
     // TODO(lwhite): Handle div by 0 value total
-    while (hasNext()) {
-      pctColumn.add((float) next() / total);
+    for (int next : data()) {
+      pctColumn.add((float) next / total);
     }
     return pctColumn;
   }
@@ -62,17 +62,12 @@ public interface IntMapUtils extends Column {
   default FloatColumn asPercent() {
     FloatColumn pctColumn = new FloatColumn(name() + " percents");
     float total = sum();
-    reset();
     // TODO(lwhite): Handle div by 0 value total
-    while (hasNext()) {
-      pctColumn.add(((float) next() / total) * 100);
+    for (int next : data()) {
+      pctColumn.add(((float) next / total) * 100);
     }
     return pctColumn;
   }
 
   int sum();
-
-  int next();
-
-  void reset();
 }

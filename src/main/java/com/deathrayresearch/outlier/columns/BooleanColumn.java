@@ -4,12 +4,14 @@ import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.BooleanMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -22,13 +24,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
-  // For internal iteration. What element are we looking at right now
-  private int pointer = 0;
-
-  // The number of elements, which may be less than the size of the array
-  private int N = 0;
-
-  private boolean[] data;
+  private BooleanArrayList data;
 
   public static BooleanColumn create(String name) {
     return new BooleanColumn(name);
@@ -36,23 +32,22 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   public BooleanColumn(ColumnMetadata metadata) {
     super(metadata);
-    data = new boolean[DEFAULT_ARRAY_SIZE];
+    data = new BooleanArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   private BooleanColumn(String name) {
     super(name);
-    data = new boolean[DEFAULT_ARRAY_SIZE];
+    data = new BooleanArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   private BooleanColumn(String name, int initialSize) {
     super(name);
-    data = new boolean[initialSize];
+    data = new BooleanArrayList(initialSize);
   }
 
   private BooleanColumn(String name, BooleanArrayList values) {
     super(name);
-    data = values.elements();
-    N = values.size();
+    data = values;
   }
 
   public BooleanColumn(String name, RoaringBitmap hits, int columnSize) {
@@ -60,17 +55,16 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     if (columnSize == 0) {
       return;
     }
-    boolean[] data = new boolean[columnSize];
+    BooleanArrayList data = BooleanArrayList.wrap(new boolean[columnSize]);
     IntIterator it = hits.getIntIterator();
     while(it.hasNext()) {
-      data[it.next()] = true;
+      data.set(it.next(), true);
     }
     this.data = data;
-    this.N = columnSize;
   }
 
   public int size() {
-    return N;
+    return data.size();
   }
 
   @Override
@@ -80,8 +74,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     counts.put(true, 0);
     counts.put(false, 0);
 
-    while (hasNext()) {
-      boolean next = next();
+    for (boolean next : data) {
       counts.put(next, counts.get(next) + 1);
     }
 
@@ -96,15 +89,14 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
       booleanColumn.add(entry.getKey());
       countColumn.add(entry.getValue());
     }
-    reset();
     return table;
   }
 
   @Override
   public int countUnique() {
     Set<Boolean> count = new HashSet<>(3);
-    while (hasNext()) {
-      count.add(next());
+    for (boolean next : data) {
+      count.add(next);
     }
     return count.size();
   }
@@ -112,8 +104,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   @Override
   public BooleanColumn unique() {
     Set<Boolean> count = new HashSet<>(3);
-    while (hasNext()) {
-      count.add(next());
+    for (boolean next : data) {
+      count.add(next);
     }
     BooleanArrayList list = new BooleanArrayList();
     list.addAll(count);
@@ -125,42 +117,13 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return ColumnType.BOOLEAN;
   }
 
-  @Override
-  public boolean hasNext() {
-    return pointer < N;
-  }
-
-  public boolean next() {
-    return data[pointer++];
-  }
-
   public void add(boolean f) {
-    if (N >= data.length) {
-      resize();
-    }
-    data[N++] = f;
+    data.add(f);
   }
-
-  // TODO(lwhite): Redo to reduce the increase for large columns
-  private void resize() {
-    boolean[] temp = new boolean[Math.round(data.length * 2)];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
-  }
-
-  /**
-   * Removes (most) extra space (empty elements) from the data array
-   */
-  public void compact() {
-    boolean[] temp = new boolean[N + 100];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
-  }
-
 
   @Override
   public String getString(int row) {
-    return String.valueOf(data[row]);
+    return String.valueOf(get(row));
   }
 
   @Override
@@ -170,31 +133,28 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   @Override
   public void clear() {
-    data = new boolean[DEFAULT_ARRAY_SIZE];
-  }
-
-  public void reset() {
-    pointer = 0;
+    data.clear();
   }
 
   private BooleanColumn copy() {
     BooleanColumn copy = emptyCopy();
-    copy.data = this.data;
-    copy.N = this.N;
+    for (boolean b : data) {
+      copy.add(b);
+    }
     return copy;
   }
 
   @Override
-  public Column sortAscending() {
-    BooleanColumn copy = this.copy();
-    //Arrays.sort(copy.data);
+  public BooleanColumn sortAscending() {
+    BooleanColumn copy = copy();
+    Collections.sort(copy.data);
     return copy;
   }
 
   @Override
   public Column sortDescending() {
-    BooleanColumn copy = this.copy();
-//    Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
+    BooleanColumn copy = sortAscending();
+    Collections.reverse(copy.data);
     return copy;
   }
 
@@ -222,18 +182,17 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   }
 
   public boolean get(int i) {
-    return data[i];
+    return data.getBoolean(i);
   }
 
   @Override
   public boolean isEmpty() {
-    return N == 0;
+    return data.isEmpty();
   }
 
   public static BooleanColumn create(String fileName, BooleanArrayList bools) {
     BooleanColumn booleanColumn = new BooleanColumn(fileName, bools.size());
-    booleanColumn.data = bools.elements();
-    booleanColumn.N = bools.size();
+    booleanColumn.data = bools;
     return booleanColumn;
   }
 
@@ -260,34 +219,33 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   public RoaringBitmap isFalse() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      if (!next()) {
+    for (boolean next : data) {
+      if (!next) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isTrue() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      if (next()) {
+    for (boolean next : data) {
+      if (next) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
+  public BooleanArrayList data() {
+    return data;
+  }
+
   public void set(int i, boolean b) {
-    if (i > data.length) {
-      resize();
-    }
-    data[i] = b;
+    data.set(i, b);
   }
 
   @Override
@@ -295,27 +253,34 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return comparator;
   }
 
+  @Override
+  public void appendColumnData(Column column) {
+    Preconditions.checkArgument(column.type() == this.type());
+    BooleanColumn booleanColumn = (BooleanColumn) column;
+    for (int i = 0; i < booleanColumn.size(); i++) {
+      add(booleanColumn.get(i));
+    }
+  }
+
   IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer r1, Integer r2) {
-      boolean f1 = data[r1];
-      boolean f2 = data[r2];
-      return Boolean.compare(f1, f2);
+      return compare((int) r1, (int) r2);
     }
 
     @Override
     public int compare(int r1, int r2) {
-      boolean f1 = data[r1];
-      boolean f2 = data[r2];
+      boolean f1 = get(r1);
+      boolean f2 = get(r2);
       return Boolean.compare(f1, f2);
     }
   };
 
   public String print() {
     StringBuilder builder = new StringBuilder();
-    while (hasNext()) {
-      builder.append(String.valueOf(next()));
+    for (boolean next : data) {
+      builder.append(String.valueOf(next));
     }
     return builder.toString();
   }

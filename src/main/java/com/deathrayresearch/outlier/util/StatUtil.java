@@ -22,8 +22,7 @@ public class StatUtil {
   public static float sum(final FloatColumn values) {
     float sum;
     sum = 0.0f;
-    while (values.hasNext()) {
-      float value = values.next();
+    for (float value : values.data()) {
       if (value != Float.NaN) {
         sum += value;
       }
@@ -51,8 +50,7 @@ public class StatUtil {
       return Float.NaN;
     }
     float min = values.firstElement();
-    while (values.hasNext()) {
-      float value = values.next();
+    for (float value : values.data()) {
       if (!Float.isNaN(value)) {
         min = (min < value) ? min : value;
       }
@@ -65,8 +63,7 @@ public class StatUtil {
       return IntColumn.MISSING_VALUE;
     }
     int min = values.firstElement();
-    while (values.hasNext()) {
-      int value = values.next();
+    for (int value : values.data()) {
       if (value != IntColumn.MISSING_VALUE) {
         min = (min < value) ? min : value;
       }
@@ -79,9 +76,7 @@ public class StatUtil {
       return Float.NaN;
     }
     float max = values.firstElement();
-    values.reset();
-    while (values.hasNext()) {
-      float value = values.next();
+    for (float value : values.data()) {
       if (!Float.isNaN(value)) {
         if (value > max) {
           max = value;
@@ -96,9 +91,7 @@ public class StatUtil {
       return IntColumn.MISSING_VALUE;
     }
     int max = values.firstElement();
-    values.reset();
-    while (values.hasNext()) {
-      int value = values.next();
+    for (int value : values.data()) {
       if (!Float.isNaN(value)) {
         if (value > max) {
           max = value;
@@ -119,11 +112,9 @@ public class StatUtil {
    */
   public static float variance(FloatColumn column) {
     float avg = mean(column);
-    column.reset();
     float sumSquaredDiffs = 0.0f;
-    while (column.hasNext()) {
-      float next = column.next();
-      float diff = next - avg;
+    for (float value : column.data()) {
+      float diff = value - avg;
       float sqrdDiff = diff * diff;
       sumSquaredDiffs += sqrdDiff;
     }

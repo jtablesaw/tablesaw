@@ -1,21 +1,17 @@
 package com.deathrayresearch.outlier.store;
 
+import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.BooleanColumn;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
-import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import com.deathrayresearch.outlier.columns.LocalTimeColumn;
 import com.deathrayresearch.outlier.columns.PeriodColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
-import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
 import org.iq80.snappy.SnappyFramedInputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 
@@ -78,7 +74,6 @@ public class StorageManager {
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
-    //READER_SERVICE.shutdown();
     return table;
   }
 
@@ -124,7 +119,6 @@ public class StorageManager {
         }
       }
     }
-    floats.compact();
     return floats;
   }
 
@@ -344,11 +338,9 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      while (column.hasNext()) {
-        float cell = column.next();
-        dos.writeFloat(cell);
+      for (float d : column.data()) {
+        dos.writeFloat(d);
       }
-      column.reset();
       dos.flush();
     }
   }
@@ -357,11 +349,9 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      while (column.hasNext()) {
-        String cell = column.next();
-        dos.writeUTF(cell);
+      for (String d : column.data()) {
+        dos.writeUTF(d);
       }
-      column.reset();
       dos.flush();
     }
   }
@@ -371,10 +361,9 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      while (column.hasNext()) {
-        dos.writeUTF(column.next());
+      for (String d : column.data()) {
+        dos.writeUTF(d);
       }
-      column.reset();
       dos.flush();
     }
   }
@@ -384,10 +373,9 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      while (column.hasNext()) {
-        dos.writeInt(column.next());
+      for (int d : column.data()) {
+        dos.writeInt(d);
       }
-      column.reset();
       dos.flush();
     }
   }
@@ -397,10 +385,9 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      while (column.hasNext()) {
-        dos.writeInt(column.next());
+      for (int d : column.data()) {
+        dos.writeInt(d);
       }
-      column.reset();
       dos.flush();
     }
   }
@@ -409,10 +396,9 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      while (column.hasNext()) {
-        dos.writeLong(column.next());
+      for (long d : column.data()) {
+        dos.writeLong(d);
       }
-      column.reset();
       dos.flush();
     }
   }
@@ -422,10 +408,9 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      while (column.hasNext()) {
-        dos.writeInt(column.next());
+      for (int d : column.data()) {
+        dos.writeInt(d);
       }
-      column.reset();
       dos.flush();
     }
   }
@@ -435,10 +420,9 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
-      while (column.hasNext()) {
-        dos.writeInt(column.next());
+      for (int d : column.data()) {
+        dos.writeInt(d);
       }
-      column.reset();
       dos.flush();
     }
   }

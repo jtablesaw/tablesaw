@@ -8,6 +8,7 @@ import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.DictionaryMap;
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -18,7 +19,6 @@ import it.unimi.dsi.fastutil.shorts.ShortList;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -32,9 +32,6 @@ public class CategoryColumn extends AbstractColumn
   public static final String MISSING_VALUE = (String) ColumnType.CAT.getMissingValue();
 
   private static int DEFAULT_ARRAY_SIZE = 128;
-
-  // For internal iteration. What element are we looking at right now
-  private int pointer = 0;
 
   // TODO(lwhite) initialize the unique value id number to the smallest possible short to maximize range
   private short id = 0;
@@ -82,15 +79,6 @@ public class CategoryColumn extends AbstractColumn
   }
 
   @Override
-  public boolean hasNext() {
-    return pointer < values.size();
-  }
-
-  public String next() {
-    return lookupTable.get(values.getShort(pointer++));
-  }
-
-  @Override
   public String getString(int row) {
     return get(row);
   }
@@ -101,25 +89,17 @@ public class CategoryColumn extends AbstractColumn
   }
 
   @Override
-  public void reset() {
-    pointer = 0;
-  }
-
-  @Override
-  public Column sortAscending() {
+  public CategoryColumn sortAscending() {
     CategoryColumn copy = this.copy();
-    Arrays.sort(copy.values.toArray());
+    // TODO(lwhite): Fix sorting. it needs to operate on value from lookup table and not the key
+    Collections.sort(copy.values);
     return copy;
   }
 
-  // TODO(lwhite): Implement sorting
   @Override
-  public Column sortDescending() {
-    CategoryColumn copy = this.copy();
-/*
-    Arrays.sort(copy.data);
-    Primitive.sort(copy.data, (d1, d2) -> Float.compare(d2, d1), false);
-*/
+  public CategoryColumn sortDescending() {
+    CategoryColumn copy = sortAscending();
+    Collections.reverse(copy.values);
     return copy;
   }
 
@@ -153,8 +133,8 @@ public class CategoryColumn extends AbstractColumn
 
     Object2IntOpenHashMap<String> valueToKey = new Object2IntOpenHashMap<>();
 
-    while (this.hasNext()) {
-      String category = this.next();
+    for (short next : values) {
+      String category = get(next);
       if (valueToKey.containsKey(category)) {
         valueToKey.addTo(category, 1);
       } else {
@@ -167,7 +147,6 @@ public class CategoryColumn extends AbstractColumn
     }
     t.addColumn(categories);
     t.addColumn(counts);
-    reset();
     return t;
   }
 
@@ -187,7 +166,6 @@ public class CategoryColumn extends AbstractColumn
     } else {
       valueId = lookupTable.get(stringValue);
     }
-
     values.set(rowIndex, valueId);
   }
 
@@ -212,21 +190,14 @@ public class CategoryColumn extends AbstractColumn
 
     @Override
     public int compare(int i, int i1) {
-      //return getString(values.getShort(i)).compareTo(getString(values.getShort(i1)));
-      String f1 = getString(i);
-      String f2 = getString(i1);
+      String f1 = get(i);
+      String f2 = get(i1);
       return f1.compareTo(f2);
-/*
-      String f1 = getString(values.getShort(i));
-      String f2 = getString(values.getShort(i1));
-      return f1.compareTo(f2);
-*/
     }
 
     @Override
     public int compare(Integer i, Integer i1) {
-      //return getString(values.getShort(i)).compareTo(getString(values.getShort(i1)));
-      return getString(i).compareTo(getString(i1));
+      return compare((int) i, (int) i1);
     }
   };
 
@@ -260,13 +231,12 @@ public class CategoryColumn extends AbstractColumn
   public RoaringBitmap isEqualTo(String string) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      if (string.equals(next())) {
+    for (short next : values) {
+      if (string.equals(get(next))) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
@@ -285,8 +255,8 @@ public class CategoryColumn extends AbstractColumn
     }
 
     // iterate over the values, updating the dummy variable columns as appropriate
-    while(hasNext()) {
-      String category = next();
+    for (short next : values) {
+      String category = get(next);
       for (BooleanColumn column : results) {
         if (category.equals(column.name())) {
           //TODO(lwhite): update the correct row more efficiently, by using set rather than add & only updating true
@@ -296,7 +266,6 @@ public class CategoryColumn extends AbstractColumn
         }
       }
     }
-    reset();
     return results;
   }
 
@@ -399,17 +368,35 @@ public class CategoryColumn extends AbstractColumn
 
   public String print() {
     StringBuilder builder = new StringBuilder();
-    while (hasNext()) {
-      builder.append(String.valueOf(next()));
+    for (short next : values) {
+      builder.append(get(next));
     }
     return builder.toString();
   }
 
   public CategoryColumn copy() {
     CategoryColumn newCol = CategoryColumn.create(name() + "1", size());
-    while (hasNext()) {
-      newCol.add(next());
+    for (short next : values) {
+      newCol.add(get(next));
     }
     return newCol;
+  }
+
+  // TODO(lwhite): Very bad performance, fix
+  public List<String> data() {
+    List<String> list = new ArrayList<>();
+    for (short s : values) {
+      list.add(lookupTable.get(s));
+    }
+    return list;
+  }
+
+  @Override
+  public void appendColumnData(Column column) {
+    Preconditions.checkArgument(column.type() == this.type());
+    CategoryColumn intColumn = (CategoryColumn) column;
+    for (int i = 0; i < intColumn.size(); i++) {
+      add(intColumn.get(i));
+    }
   }
 }

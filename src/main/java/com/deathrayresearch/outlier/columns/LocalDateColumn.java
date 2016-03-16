@@ -5,6 +5,7 @@ import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
@@ -12,12 +13,11 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.mintern.primitive.Primitive;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * A column in a base table that contains float values
@@ -27,31 +27,25 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue() ;
   private static final int DEFAULT_ARRAY_SIZE = 128;
 
-  // For internal iteration. What element are we looking at right now
-  private int pointer = 0;
-
-  // The number of elements, which may be less than the size of the array
-  private int N = 0;
-
-  private int[] data;
+  private IntArrayList data;
 
   private LocalDateColumn(String name) {
     super(name);
-    data = new int[DEFAULT_ARRAY_SIZE];
+    data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   public LocalDateColumn(ColumnMetadata metadata) {
     super(metadata);
-    data = new int[DEFAULT_ARRAY_SIZE];
+    data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   private LocalDateColumn(String name, int initialSize) {
     super(name);
-    data = new int[initialSize];
+    data = new IntArrayList(initialSize);
   }
 
   public int size() {
-    return N;
+    return data.size();
   }
 
   @Override
@@ -59,52 +53,25 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return ColumnType.LOCAL_DATE;
   }
 
-  @Override
-  public boolean hasNext() {
-    return pointer < N;
-  }
-
-  public int next() {
-    return data[pointer++];
-  }
-
   public void add(int f) {
-    if (N >= data.length) {
-      resize();
-    }
-    data[N++] = f;
+    data.add(f);
+  }
+
+  public IntArrayList data() {
+    return data;
   }
 
   public void set(int index, int value) {
-    data[index] = value;
+    data.set(index, value);
   }
 
   public void add(LocalDate f) {
-    if (N >= data.length) {
-      resize();
-    }
-    data[N++] = PackedLocalDate.pack(f);
-  }
-
-  // TODO(lwhite): Redo to reduce the increase for large columns
-  private void resize() {
-    int[] temp = new int[Math.round(data.length * 2)];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
-  }
-
-  /**
-   * Removes (most) extra space (empty elements) from the data array
-   */
-  public void compact() {
-    int[] temp = new int[N + 100];
-    System.arraycopy(data, 0, temp, 0, N);
-    data = temp;
+    add(PackedLocalDate.pack(f));
   }
 
   @Override
   public String getString(int row) {
-    return PackedLocalDate.toDateString(data[row]);
+    return PackedLocalDate.toDateString(getInt(row));
   }
 
   @Override
@@ -114,48 +81,46 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   @Override
   public void clear() {
-    data = new int[DEFAULT_ARRAY_SIZE];
-  }
-
-  public void reset() {
-    pointer = 0;
+    data.clear();
   }
 
   private LocalDateColumn copy() {
     LocalDateColumn copy = emptyCopy();
-    copy.data = this.data;
-    copy.N = this.N;
+    for (int i : data) {
+      copy.add(i);
+    }
     return copy;
   }
 
   @Override
   public Column sortAscending() {
     LocalDateColumn copy = this.copy();
-    Arrays.sort(copy.data);
+    Collections.sort(copy.data);
     return copy;
   }
 
   @Override
   public Column sortDescending() {
     LocalDateColumn copy = this.copy();
-    Primitive.sort(copy.data, (d1, d2) -> Integer.compare(d2, d1), false);
+    Collections.sort(copy.data);
+    Collections.reverse(copy.data);
     return copy;
   }
 
   @Override
   public int countUnique() {
-    IntSet ints = new IntOpenHashSet(data.length);
-    for (int i = 0; i < N; i++) {
-      ints.add(data[i]);
+    IntSet ints = new IntOpenHashSet(size());
+    for (int i = 0; i < size(); i++) {
+      ints.add(data.getInt(i));
     }
     return ints.size();
   }
 
   @Override
   public LocalDateColumn unique() {
-    IntSet ints = new IntOpenHashSet(data.length);
-    for (int i = 0; i < N; i++) {
-      ints.add(data[i]);
+    IntSet ints = new IntOpenHashSet(data.size());
+    for (int i = 0; i < size(); i++) {
+      ints.add(data.getInt(i));
     }
     return LocalDateColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
   }
@@ -164,14 +129,14 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     if (isEmpty()) {
       return null;
     }
-    return PackedLocalDate.asLocalDate(data[0]);
+    return PackedLocalDate.asLocalDate(getInt(0));
   }
 
   public LocalDate max() {
     int max;
     int missing = Integer.MIN_VALUE;
     if (!isEmpty()) {
-      max = data[0];
+      max = getInt(0);
     } else {
       return null;
     }
@@ -192,7 +157,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     int missing = Integer.MIN_VALUE;
 
     if (!isEmpty()) {
-      min = data[0];
+      min = getInt(0);
     } else {
       return null;
     }
@@ -261,7 +226,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   public LocalDate get(int index) {
-    return PackedLocalDate.asLocalDate(data[index]);
+    return PackedLocalDate.asLocalDate(getInt(index));
   }
 
   public static LocalDateColumn create(String name) {
@@ -270,7 +235,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   @Override
   public boolean isEmpty() {
-    return N == 0;
+    return data.isEmpty();
   }
 
   @Override
@@ -282,23 +247,20 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
     @Override
     public int compare(Integer r1, Integer r2) {
-      int f1 = data[r1];
-      int f2 = data[r2];
-      return Integer.compare(f1, f2);
+      return compare((int) r1, (int) r2);
     }
 
     @Override
     public int compare(int r1, int r2) {
-      int f1 = data[r1];
-      int f2 = data[r2];
+      int f1 = getInt(r1);
+      int f2 = getInt(r2);
       return Integer.compare(f1, f2);
     }
   };
 
   public static LocalDateColumn create(String columnName, IntArrayList dates) {
     LocalDateColumn column = new LocalDateColumn(columnName, dates.size());
-    column.data = dates.elements();
-    column.N = dates.size();
+    column.data = dates;
     return column;
   }
 
@@ -323,20 +285,19 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   public int getInt(int index) {
-    return data[index];
+    return data.getInt(index);
   }
 
   public RoaringBitmap isEqualTo(LocalDate value) {
     RoaringBitmap results = new RoaringBitmap();
     int packedLocalDate = PackedLocalDate.pack(value);
     int i = 0;
-    while (hasNext()) {
-      if (packedLocalDate == next()) {
+    for (int next : data) {
+      if (packedLocalDate == next) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
@@ -347,9 +308,9 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
     Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < size(); i++) {
       int value;
-      int next = data[i];
+      int next = getInt(i);
       if (next == Integer.MIN_VALUE) {
         value = LocalDateColumn.MISSING_VALUE;
       } else {
@@ -394,398 +355,342 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInQ1(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInQ2() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInQ2(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInQ3() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInQ3(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInQ4() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInQ4(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isAfter(int value) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isAfter(next, value)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isBefore(int value) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isBefore(next, value)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isMonday() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isMonday(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isTuesday() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isTuesday(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isWednesday() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isWednesday(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
   public RoaringBitmap isThursday() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isThursday(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isFriday() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isFriday(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isSaturday() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isSaturday(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isSunday() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isSunday(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInJanuary() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInJanuary(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInFebruary() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInFebruary(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInMarch() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInMarch(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInApril() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInApril(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInMay() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInMay(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInJune() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInJune(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInJuly() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInJuly(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInAugust() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInAugust(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInSeptember() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInSeptember(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInOctober() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInOctober(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInNovember() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInNovember(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInDecember() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInDecember(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isFirstDayOfMonth() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isFirstDayOfMonth(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isLastDayOfMonth() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isLastDayOfMonth(next)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public RoaringBitmap isInYear(int year) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    while (hasNext()) {
-      int next = next();
+    for (int next : data) {
       if (PackedLocalDate.isInYear(next, year)) {
         results.add(i);
       }
       i++;
     }
-    reset();
     return results;
   }
 
   public String print() {
     StringBuilder builder = new StringBuilder();
-    while (hasNext()) {
-      builder.append(String.valueOf(PackedLocalDate.asLocalDate(next())));
+    for (int next : data) {
+      builder.append(String.valueOf(PackedLocalDate.asLocalDate(next)));
     }
     return builder.toString();
   }
@@ -793,5 +698,14 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   @Override
   public String toString() {
     return "LocalDate column: " + name();
+  }
+
+  @Override
+  public void appendColumnData(Column column) {
+    Preconditions.checkArgument(column.type() == this.type());
+    LocalDateColumn intColumn = (LocalDateColumn) column;
+    for (int i = 0; i < intColumn.size(); i++) {
+      add(intColumn.getInt(i));
+    }
   }
 }
