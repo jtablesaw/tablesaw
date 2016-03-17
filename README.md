@@ -1,20 +1,19 @@
 Tablesaw
 =======
    
-Tablesaw is the replacement for Outlier. It's a high-performance, in-memory, table-like data structure, 
-a set of tools for data manipulation, and an integrated, column-oriented storage format. 
+Tablesaw is a high-performance, in-memory data table, combined with tools for data manipulation, 
+and a column-oriented storage format. In Java.
 
 __With Tablesaw, you can import, sort, transform, filter, and summarize tables of _one billion rows_ on a laptop.__ 
-To get here, we've taken tools and tricks developed for high-frequency trading (e.g. primitive-backed arrays) and 
+To get here, we took tools from high-frequency trading (e.g. primitive collections) and 
 data warehouses (e.g. compressed, column-oriented storage and data structures), 
 and used them to maximize what you can do in a single VM.
 
-The intent is to make all but the biggest data wrangling jobs approachable without the complexity of distributed computing (HDFS, Hadoop, etc.). 
-Analysis is more productive because there's less engineering overhead and shorter iteration cycles, and the fluent API is designed to let developers express 
-operations in a concise and readable fashion. 
+The goal is to make all but the biggest data wrangling jobs approachable without the complexity of distributed computing (HDFS, Hadoop, etc.). 
+Analysis is more productive with less engineering overhead and shorter iteration cycles. A fluent API lets developers express operations in a concise and readable fashion. 
 
 While Tablesaw provides general-purpose analytic support, the goal is to provide especially rich functionality for 
-working with time-series, including specialized column types for local dates, times and datetimes (combined), as well as periods. 
+working with time-series, including specialized column types for local dates, times and timestamps, as well as periods. 
 
 At the same time, we want to provide usability at least as good as Pandas and R data-frames.
 
