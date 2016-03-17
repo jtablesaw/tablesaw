@@ -8,12 +8,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrays;
+import it.unimi.dsi.fastutil.longs.LongComparator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -116,18 +119,32 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
   @Override
   public LocalDateTimeColumn sortAscending() {
-    LocalDateTimeColumn copy = this.copy();
-    Collections.sort(copy.data);
+    LocalDateTimeColumn copy = copy();
+    Arrays.parallelSort(copy.data.elements());
     return copy;
-
   }
 
   @Override
   public Column sortDescending() {
-    LocalDateTimeColumn copy = sortAscending();
-    Collections.reverse(copy.data);
+    LocalDateTimeColumn copy = copy();
+    LongArrays.parallelQuickSort(copy.data.elements(), reverseLongComparator);
     return copy;
   }
+
+  LongComparator reverseLongComparator =  new LongComparator() {
+
+    @Override
+    public int compare(Long o2, Long o1) {
+      return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
+    }
+
+    @Override
+    public int compare(long o2, long o1) {
+      return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
+    }
+  };
+
+
 
   // TODO(lwhite): Implement column summary()
   @Override

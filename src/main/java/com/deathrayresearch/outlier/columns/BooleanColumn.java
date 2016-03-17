@@ -7,11 +7,12 @@ import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
+import it.unimi.dsi.fastutil.booleans.BooleanArrays;
+import it.unimi.dsi.fastutil.booleans.BooleanComparator;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -147,16 +148,29 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   @Override
   public BooleanColumn sortAscending() {
     BooleanColumn copy = copy();
-    Collections.sort(copy.data);
+    BooleanArrays.mergeSort(copy.data.elements());
     return copy;
   }
 
   @Override
   public Column sortDescending() {
-    BooleanColumn copy = sortAscending();
-    Collections.reverse(copy.data);
+    BooleanColumn copy = copy();
+    BooleanArrays.mergeSort(copy.data.elements(), reverseBooleanComparator);
     return copy;
   }
+
+  BooleanComparator reverseBooleanComparator =  new BooleanComparator() {
+
+    @Override
+    public int compare(Boolean o1, Boolean o2) {
+      return Boolean.compare(o2, o1);
+    }
+
+    @Override
+    public int compare(boolean o1, boolean o2) {
+      return Boolean.compare(o2, o1);
+    }
+  };
 
   public static boolean convert(String stringValue) {
     if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {

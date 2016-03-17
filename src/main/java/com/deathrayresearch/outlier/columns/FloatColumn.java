@@ -231,8 +231,8 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
   FloatComparator reverseFloatComparator =  new FloatComparator() {
 
     @Override
-    public int compare(Float o1, Float o2) {
-      return (o1<o2 ? -1 : (o1==o2 ? 0 : 1));
+    public int compare(Float o2, Float o1) {
+      return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
     }
 
     @Override
@@ -354,7 +354,6 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
 
     for (int r = 0; r < size(); r++) {
       float value = data.getFloat(r);
-
       newColumn.set(r, (float) Math.cbrt(value));
     }
     return newColumn;
@@ -363,7 +362,6 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
   public FloatColumn cube() {
 
     FloatColumn newColumn = FloatColumn.create(name() + "[cb]");
-
     for (int r = 0; r < size(); r++) {
       float value = data.getFloat(r);
       newColumn.set(r, value * value * value);
@@ -378,7 +376,6 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
     for (int r = 0; r < size(); r++) {
       result.set(r, get(r) % column2.get(r));
     }
-
     return result;
   }
 
@@ -495,7 +492,6 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
       }
       i++;
     }
-    
     return results;
   }
 
@@ -508,7 +504,6 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
       }
       i++;
     }
-    
     return results;
   }
 

@@ -9,12 +9,14 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -90,16 +92,29 @@ public class LocalTimeColumn extends AbstractColumn {
   @Override
   public LocalTimeColumn sortAscending() {
     LocalTimeColumn copy = this.copy();
-    Collections.sort(copy.data);
+    Arrays.parallelSort(copy.data.elements());
     return copy;
   }
 
   @Override
   public Column sortDescending() {
-    LocalTimeColumn copy = sortAscending();
-    Collections.reverse(copy.data);
+    LocalTimeColumn copy = copy();
+    IntArrays.parallelQuickSort(copy.data.elements());
     return copy;
   }
+
+  IntComparator reverseIntComparator =  new IntComparator() {
+
+    @Override
+    public int compare(Integer o2, Integer o1) {
+      return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
+    }
+
+    @Override
+    public int compare(int o2, int o1) {
+      return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
+    }
+  };
 
   @Override
   public Relation summary() {

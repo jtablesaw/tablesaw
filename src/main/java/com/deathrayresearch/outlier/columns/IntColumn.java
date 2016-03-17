@@ -10,9 +10,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -188,18 +190,31 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   @Override
   public Column sortAscending() {
-    IntColumn copy = this.copy();
-    Collections.sort(copy.data);
+    IntColumn copy = copy();
+    Arrays.parallelSort(copy.data.elements());
     return copy;
   }
 
   @Override
   public Column sortDescending() {
-    IntColumn copy = this.copy();
-    Collections.sort(copy.data);
-    Collections.reverse(copy.data);
+    IntColumn copy = copy();
+    IntArrays.parallelQuickSort(copy.data.elements(), reverseIntComparator);
     return copy;
   }
+
+  IntComparator reverseIntComparator =  new IntComparator() {
+
+    @Override
+    public int compare(Integer o2, Integer o1) {
+      return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
+    }
+
+    @Override
+    public int compare(int o2, int o1) {
+      return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
+    }
+  };
+
 
   private IntColumn copy() {
     IntColumn copy = emptyCopy();

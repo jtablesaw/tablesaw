@@ -7,6 +7,7 @@ import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -16,6 +17,7 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 
@@ -88,18 +90,30 @@ public class PeriodColumn extends AbstractColumn {
 
   @Override
   public Column sortAscending() {
-    PeriodColumn copy = this.copy();
-    Collections.sort(copy.data);
+    PeriodColumn copy = copy();
+    Arrays.parallelSort(copy.data.elements());
     return copy;
   }
 
   @Override
   public Column sortDescending() {
-    PeriodColumn copy = this.copy();
-    Collections.sort(copy.data);
-    Collections.reverse(copy.data);
+    PeriodColumn copy = copy();
+    IntArrays.parallelQuickSort(copy.data.elements(), reverseIntComparator);
     return copy;
   }
+
+  IntComparator reverseIntComparator =  new IntComparator() {
+
+    @Override
+    public int compare(Integer o2, Integer o1) {
+      return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
+    }
+
+    @Override
+    public int compare(int o2, int o1) {
+      return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
+    }
+  };
 
   @Override
   public int countUnique() {

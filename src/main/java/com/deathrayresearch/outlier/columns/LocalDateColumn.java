@@ -10,6 +10,7 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -17,7 +18,7 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collections;
+import java.util.Arrays;
 
 /**
  * A column in a base table that contains float values
@@ -25,6 +26,7 @@ import java.util.Collections;
 public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue() ;
+
   private static final int DEFAULT_ARRAY_SIZE = 128;
 
   private IntArrayList data;
@@ -94,18 +96,30 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   @Override
   public Column sortAscending() {
-    LocalDateColumn copy = this.copy();
-    Collections.sort(copy.data);
+    LocalDateColumn copy = copy();
+    Arrays.parallelSort(copy.data.elements());
     return copy;
   }
 
   @Override
   public Column sortDescending() {
-    LocalDateColumn copy = this.copy();
-    Collections.sort(copy.data);
-    Collections.reverse(copy.data);
+    LocalDateColumn copy = copy();
+    IntArrays.parallelQuickSort(copy.data.elements(), reverseIntComparator);
     return copy;
   }
+
+  IntComparator reverseIntComparator =  new IntComparator() {
+
+    @Override
+    public int compare(Integer o2, Integer o1) {
+      return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
+    }
+
+    @Override
+    public int compare(int o2, int o1) {
+      return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
+    }
+  };
 
   @Override
   public int countUnique() {

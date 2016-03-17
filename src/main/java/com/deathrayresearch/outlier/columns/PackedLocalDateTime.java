@@ -149,7 +149,6 @@ public class PackedLocalDateTime {
     return (isLeapYear(packedDateTime) ? 366 : 365);
   }
 
-
   public static DayOfWeek getDayOfWeek(long packedDateTime) {
     int dow0 = (int) Math.floorMod(toEpochDay(packedDateTime) + 3, 7);
     return DayOfWeek.of(dow0 + 1);
