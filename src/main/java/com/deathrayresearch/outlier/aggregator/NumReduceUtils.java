@@ -1,4 +1,4 @@
-package com.deathrayresearch.outlier.columns;
+package com.deathrayresearch.outlier.aggregator;
 
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
