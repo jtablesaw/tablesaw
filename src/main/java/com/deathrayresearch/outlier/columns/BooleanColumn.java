@@ -279,6 +279,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   public String print() {
     StringBuilder builder = new StringBuilder();
+    builder.append(title());
     for (boolean next : data) {
       builder.append(String.valueOf(next));
       builder.append('\n');

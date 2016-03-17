@@ -523,6 +523,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
 
   public String print() {
     StringBuilder builder = new StringBuilder();
+    builder.append(title());
     for (Float aData : data) {
       builder.append(String.valueOf(aData));
       builder.append('\n');

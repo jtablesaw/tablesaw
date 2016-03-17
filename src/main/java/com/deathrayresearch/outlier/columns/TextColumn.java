@@ -223,6 +223,7 @@ public class TextColumn extends AbstractColumn
 
   public String print() {
     StringBuilder builder = new StringBuilder();
+    builder.append(title());
     for (String next : data) {
       builder.append(String.valueOf(next));
       builder.append('\n');

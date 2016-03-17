@@ -216,6 +216,7 @@ public class LocalTimeColumn extends AbstractColumn {
 
   public String print() {
     StringBuilder builder = new StringBuilder();
+    builder.append(title());
     for (int next : data) {
       builder.append(String.valueOf(PackedLocalTime.asLocalTime(next)));
       builder.append('\n');

@@ -39,7 +39,7 @@ public class View implements Relation {
     rowMap.add(0, headRows);
     mask = rowMap.toArray();
   }
-
+  
   public View(View view, int headRows) {
     this.table = view;
     for (String col : table.columnNames()) {

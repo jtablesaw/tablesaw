@@ -363,6 +363,7 @@ public class PeriodColumn extends AbstractColumn {
 
   public String print() {
     StringBuilder builder = new StringBuilder();
+    builder.append(title());
     for (int next : data) {
       builder.append(String.valueOf(PackedPeriod.asPeriod(next)));
       builder.append('\n');

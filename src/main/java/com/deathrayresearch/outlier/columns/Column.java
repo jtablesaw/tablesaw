@@ -80,4 +80,8 @@ public interface Column {
   }
 
   String print();
+
+  default String title() {
+    return "Column: " + name() + '\n';
+  }
 }

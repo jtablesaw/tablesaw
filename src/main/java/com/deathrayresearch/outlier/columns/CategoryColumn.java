@@ -368,6 +368,7 @@ public class CategoryColumn extends AbstractColumn
 
   public String print() {
     StringBuilder builder = new StringBuilder();
+    builder.append(title());
     for (short next : values) {
       builder.append(get(next));
       builder.append('\n');
