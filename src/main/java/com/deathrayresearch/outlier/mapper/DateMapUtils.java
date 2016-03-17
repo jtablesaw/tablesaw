@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.mapper;
 
-import com.deathrayresearch.outlier.aggregator.DateColumnUtils;
+import com.deathrayresearch.outlier.columns.DateColumnUtils;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;

@@ -1,10 +1,9 @@
 package com.deathrayresearch.outlier.filter.text;
 
-import com.deathrayresearch.outlier.aggregator.StringColumnUtils;
+import com.deathrayresearch.outlier.columns.StringColumnUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

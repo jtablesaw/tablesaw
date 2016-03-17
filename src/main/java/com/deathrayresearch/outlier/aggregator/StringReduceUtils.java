@@ -1,5 +1,7 @@
 package com.deathrayresearch.outlier.aggregator;
 
+import com.deathrayresearch.outlier.columns.StringColumnUtils;
+
 /**
  *
  */

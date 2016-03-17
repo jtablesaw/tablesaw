@@ -1,7 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.aggregator.NumReduceUtils;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.StatUtil;

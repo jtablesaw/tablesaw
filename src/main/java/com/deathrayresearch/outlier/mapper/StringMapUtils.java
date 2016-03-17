@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.mapper;
 
-import com.deathrayresearch.outlier.aggregator.StringColumnUtils;
+import com.deathrayresearch.outlier.columns.StringColumnUtils;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
