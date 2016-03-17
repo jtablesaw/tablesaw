@@ -17,7 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builds complex ColumnTables from Comma Separated Value (CSV) files.
+ * Builds Tables from Comma Separated Value (CSV) files.
+ *
+ * TODO(lwhite): Change header param from a boolean to an int, representing the number of lines for the header
+ * TODO(lwhite): Add multi-file read methods that take header, separator, and maybe, wanted as params
  */
 final public class CsvReader {
 
@@ -27,19 +30,10 @@ final public class CsvReader {
   private CsvReader() {}
 
   /**
-   * Constructs and returns a {@link com.deathrayresearch.outlier.Table} from a CSV file
+   * Constructs and returns a table from one or more CSV files, all containing the same column types
    * <p>
-   * This constructor assumes the file has a one-line header, which is used to populate the column names,
-   * and that the file uses a comma to separate between columns.
-   */
-  public static Table read(ColumnType types[], String fileName) throws IOException {
-    return read(types, true, ',', fileName);
-  }
-
-  /**
-   * Constructs and returns a table from one or more CSV files, all containing the same column types, and all having a
-   * one-line header
-   *
+   * This constructor assumes the files have a one-line header, which is used to populate the column names,
+   * and that they use a comma to separate between columns.
    * @throws IOException If there is an issue reading any of the files
    */
   public static Table read(ColumnType types[], String ... fileNames) throws IOException {

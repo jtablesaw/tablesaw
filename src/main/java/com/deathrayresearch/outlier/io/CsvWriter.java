@@ -8,20 +8,30 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Builds complex ColumnTables form other data sources. *
+ * Writes Tables and individual columns to CSV files
+ *
+ * TODO(lwhite): Do something with the missing indicator param in write() method
+ * TODO(lwhite): Add a missing indicator to the column write method, plus a method defining a default missing indicator
  */
 final public class CsvWriter {
 
   /**
    * Private constructor to prevent instantiation
    */
-  private CsvWriter() {
-  }
+  private CsvWriter() {}
 
+  /**
+   * Writes the given table to a file with the given filename
+   * @throws IOException
+   */
   public static void write(String fileName, Relation table) throws IOException {
     write(fileName, table, null);
   }
 
+  /**
+   * Writes the given table to a file with the given filename, using the given string to represent missing data
+   * @throws IOException
+   */
   public static void write(String fileName, Relation table, String missing) throws IOException {
     CSVWriter writer = new CSVWriter(new FileWriter(fileName));
     String[] header = new String[table.columnCount()];
@@ -32,8 +42,7 @@ final public class CsvWriter {
     for (int r = 0; r < table.rowCount(); r++) {
       String[] entries = new String[table.columnCount()];
       for (int c = 0; c < table.columnCount(); c++) {
-        Object cell = table.get(c, r);
-        String valueString = String.valueOf(cell);
+        String valueString = table.get(c, r);
         entries[c] = valueString;
       }
       writer.writeNext(entries);
@@ -41,6 +50,10 @@ final public class CsvWriter {
     writer.close();
   }
 
+  /**
+   * Writes the given column to a file with the given fileName as a single column CSV file
+   * @throws IOException
+   */
   public static void write(String fileName, Column column) throws IOException {
     CSVWriter writer = new CSVWriter(new FileWriter(fileName));
     String[] header = {column.name()};
