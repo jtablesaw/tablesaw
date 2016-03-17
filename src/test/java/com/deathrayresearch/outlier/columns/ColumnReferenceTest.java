@@ -19,7 +19,7 @@ public class ColumnReferenceTest {
   @Test
   public void testColumn() throws Exception {
     ColumnType[] types = {FLOAT, TEXT, TEXT, TEXT, FLOAT};
-    Table table = CsvReader.read("data/bus_stop_test.csv", types);
+    Table table = CsvReader.read(types, "data/bus_stop_test.csv");
     Query query = table.select();
     assertNotNull(query);
     View view = query.run();

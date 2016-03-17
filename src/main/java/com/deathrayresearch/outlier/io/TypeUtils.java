@@ -1,16 +1,6 @@
 package com.deathrayresearch.outlier.io;
 
-import com.deathrayresearch.outlier.columns.BooleanColumn;
-import com.deathrayresearch.outlier.columns.CategoryColumn;
-import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.ColumnType;
-import com.deathrayresearch.outlier.columns.FloatColumn;
-import com.deathrayresearch.outlier.columns.IntColumn;
-import com.deathrayresearch.outlier.columns.LocalDateColumn;
-import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
-import com.deathrayresearch.outlier.columns.LocalTimeColumn;
-import com.deathrayresearch.outlier.columns.PackedLocalTime;
-import com.deathrayresearch.outlier.columns.TextColumn;
+import com.deathrayresearch.outlier.columns.*;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -355,8 +345,7 @@ public final class TypeUtils {
   /**
    * Private constructor to prevent instantiation
    */
-  private TypeUtils() {
-  }
+  private TypeUtils() {}
 
   /**
    * Constructs and returns a column for the given {@code name} and {@code type}
@@ -366,6 +355,9 @@ public final class TypeUtils {
 
     Preconditions.checkArgument(!Strings.isNullOrEmpty(name),
         "There must be a valid name for a new column");
+
+    Preconditions.checkArgument(type != ColumnType.SKIP,
+        "SKIP-ped columns should be handled outside of this method.");
 
     switch (type) {
       case LOCAL_DATE:
@@ -382,20 +374,12 @@ public final class TypeUtils {
         return FloatColumn.create(name);
       case BOOLEAN:
         return BooleanColumn.create(name);
+      case PERIOD:
+        return PeriodColumn.create(name);
       case CAT:
         return CategoryColumn.create(name);
-      case SKIP:
-        break;
+      default:
+        throw new IllegalArgumentException("Unknown ColumnType: " + type);
     }
-    throw new IllegalArgumentException("Unknown ColumnType: " + type);
   }
-
-  /**
-   * Constructs and returns a column for the given {@code definition}
-   */
-/*
-  public static Column newColumn(ColumnDefinition definition) {
-    return newColumn(definition.name(), definition.type());
-  }
-*/
 }

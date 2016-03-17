@@ -24,7 +24,7 @@ public class GettingStarted {
 
   @Before
   public void setUp() throws Exception {
-    table = CsvReader.read("data/BushApproval.csv", types);
+    table = CsvReader.read(types, "data/BushApproval.csv");
   }
 
   @Test

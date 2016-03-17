@@ -23,7 +23,7 @@ public class ExamplesTest  {
 
     // Read the CSV file
     ColumnType[] types = {INTEGER, TEXT, CAT, FLOAT, FLOAT};
-    Table table = CsvReader.read("data/bus_stop_test.csv", types);
+    Table table = CsvReader.read(types, "data/bus_stop_test.csv");
 
     // Look at the column names
     print(table.columnNames());

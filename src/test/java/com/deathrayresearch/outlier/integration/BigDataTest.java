@@ -3,7 +3,6 @@ package com.deathrayresearch.outlier.integration;
 import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.CsvReader;
-import com.deathrayresearch.outlier.io.CsvWriter;
 import com.deathrayresearch.outlier.store.StorageManager;
 import com.google.common.base.Stopwatch;
 
@@ -60,7 +59,7 @@ public class BigDataTest {
   //@Test
   public void readCsvTest() throws Exception {
     Stopwatch stopwatch = Stopwatch.createStarted();
-    Table table = CsvReader.read("data/BigData.csv", types, true);
+    Table table = CsvReader.read(types, true, "data/BigData.csv");
     table.head(3).print();
     out(table.rowCount());
     out("Table read from csv file");

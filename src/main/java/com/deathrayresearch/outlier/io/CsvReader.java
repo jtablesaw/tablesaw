@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier.io;
 
 import au.com.bytecode.opencsv.CSVReader;
-import com.deathrayresearch.outlier.*;
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.ColumnType;
 import com.fasterxml.jackson.databind.MappingIterator;
@@ -24,25 +24,32 @@ final public class CsvReader {
   /**
    * Private constructor to prevent instantiation
    */
-  private CsvReader() {
+  private CsvReader() {}
+
+  /**
+   * Constructs and returns a {@link com.deathrayresearch.outlier.Table} from a CSV file
+   * <p>
+   * This constructor assumes the file has a one-line header, which is used to populate the column names,
+   * and that the file uses a comma to separate between columns.
+   */
+  public static Table read(ColumnType types[], String fileName) throws IOException {
+    return read(types, true, ',', fileName);
   }
 
   /**
-   * Constructs a {@link com.deathrayresearch.outlier.Table} from a CSV file. This constructor
-   * assumes that the file has a one-row header file, which is used to populate the column names.
+   * Constructs and returns a table from one or more CSV files, all containing the same column types, and all having a
+   * one-line header
+   *
+   * @throws IOException If there is an issue reading any of the files
    */
-  public static Table read(String fileName, ColumnType types[]) throws IOException {
-    return read(fileName, types, ',', true);
-  }
-
   public static Table read(ColumnType types[], String ... fileNames) throws IOException {
     if (fileNames.length == 1) {
-      return read(fileNames[0], types, ',', true);
+      return read(types, true, ',', fileNames[0]);
     } else {
-      Table table = read(fileNames[0], types, ',', true);
+      Table table = read(types, true, ',', fileNames[0]);
       for (int i = 1; i < fileNames.length; i++) {
         String fileName = fileNames[i];
-        table.append( read(fileName, types, ',', true));
+        table.append(read(types, true, ',', fileName));
       }
       return table;
     }
@@ -50,31 +57,37 @@ final public class CsvReader {
 
   /**
    * Constructs a {@link com.deathrayresearch.outlier.Table} from a CSV file. This constructor
-   * assumes that the file has a one-row header file, which is used to populate the column names.
+   * assumes that the file has a one-line header, which is used to populate the column names.
    */
-  public static Table read(String fileName, ColumnType types[], char delimiter) throws IOException {
-    return read(fileName, types, delimiter, true);
+  public static Table read(ColumnType types[], char delimiter, String fileName) throws IOException {
+    return read(types, true, delimiter, fileName);
   }
 
   /**
-   * Constructs a Table from a CSV File.
+   * Returns a Table constructed from a CSV File.
    *
-   * @param fileName The fully specified file name
    * @param types    An array of the types of columns in the file, in the order they appear
    * @param header   Is the first row in the file a header?
+   * @param fileName The fully specified file name
    * @return A Table containing the data in the csv file.
    * @throws IOException
    */
-  public static Table read(String fileName, ColumnType types[], boolean header)
+  public static Table read(ColumnType types[], boolean header, String fileName)
       throws IOException {
-    return read(fileName, types, ',', header);
+    return read(types, header, ',', fileName);
   }
 
-  public static Table read(String fileName,
-                           ColumnType types[],
-                           int[] wanted,
-                           char columnSeparator,
-                           boolean header)
+  /**
+   * Returns a Table constructed from a CSV File.
+   *
+   * @param types    An array of the types of columns in the file, in the order they appear
+   * @param header   Is the first row in the file a header?
+   * @param columnSeparator The character used to separate the columns in the input file
+   * @param fileName The fully specified file name
+   * @return A Table containing the data in the csv file.
+   * @throws IOException
+   */
+  public static Table read(ColumnType types[], boolean header, int[] wanted, char columnSeparator, String fileName)
       throws IOException {
 
     CSVReader reader = new CSVReader(new FileReader(fileName));
@@ -94,23 +107,20 @@ final public class CsvReader {
       newTypes[columnNumber] = types[j];
     }
 
-    return read(fileName, newTypes, columnSeparator, header);
+    return read(newTypes, header, columnSeparator, fileName);
   }
 
   /**
    * Constructs a Table from a CSV File.
    *
-   * @param fileName        The fully specified file name
    * @param types           An array of the types of columns in the file, in the order they appear
-   * @param columnSeparator the delimiter
    * @param header          Is the first row in the file a header?
+   * @param columnSeparator the delimiter
+   * @param fileName        The fully specified file name
    * @return A Table containing the data in the csv file.
    * @throws IOException
    */
-  public static Table read(String fileName,
-                           ColumnType types[],
-                           char columnSeparator,
-                           boolean header)
+  public static Table read(ColumnType types[], boolean header, char columnSeparator, String fileName)
       throws IOException {
 
     CsvMapper mapper = new CsvMapper();

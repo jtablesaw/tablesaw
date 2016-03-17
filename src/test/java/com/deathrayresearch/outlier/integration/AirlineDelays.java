@@ -29,7 +29,7 @@ public class AirlineDelays {
   private AirlineDelays() throws Exception {
     Stopwatch stopwatch = Stopwatch.createStarted();
     System.out.println("loading");
-    flights2008 = CsvReader.read("bigdata/2008.csv", reduced_set);
+    flights2008 = CsvReader.read(reduced_set, "bigdata/2008.csv");
     System.out.println(String.format("loaded %d records in %d seconds",
         flights2008.rowCount(),
         (int) stopwatch.elapsed(TimeUnit.SECONDS)));
