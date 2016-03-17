@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.io;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,9 +14,12 @@ import java.nio.file.Paths;
  * Utility that takes all CSV files in a folder and combines them into a single file.  The files should all have the
  * same structure (number and type of columns) and be consistent in having or not having header lines at the beginning
  */
+@Immutable
 public class CsvCombiner {
 
-  public static void readAll(String foldername, String newFileName, char columnSeparator, boolean headers)
+  private CsvCombiner() {}
+
+  public static void combineAll(String foldername, String newFileName, char columnSeparator, boolean headers)
       throws IOException {
 
     FileWriter fileWriter = new FileWriter(newFileName);

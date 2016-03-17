@@ -4,15 +4,17 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.columns.Column;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Writes Tables and individual columns to CSV files
+ * Static utility class that writes tables and individual columns to CSV files
  *
  * TODO(lwhite): Do something with the missing indicator param in write() method
  * TODO(lwhite): Add a missing indicator to the column write method, plus a method defining a default missing indicator
  */
+@Immutable
 final public class CsvWriter {
 
   /**

@@ -17,7 +17,6 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * A column in a base table that contains float values
@@ -174,7 +173,7 @@ public class LocalTimeColumn extends AbstractColumn {
       return (int) ColumnType.LOCAL_TIME.getMissingValue();
     }
     value = Strings.padStart(value, 4, '0');
-    return PackedLocalTime.pack(LocalTime.parse(value, TypeUtils.timeFormatter));
+    return PackedLocalTime.pack(LocalTime.parse(value, TypeUtils.TIME_FORMATTER));
   }
 
   @Override

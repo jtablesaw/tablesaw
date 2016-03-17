@@ -6,6 +6,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Arrays;
@@ -14,7 +15,13 @@ import java.util.List;
 /**
  * Utilities for working with {@link ColumnType}s
  */
+@Immutable
 public final class TypeUtils {
+
+  /**
+   * Private constructor to prevent instantiation
+   */
+  private TypeUtils() {}
 
   // These Strings will convert to true booleans
   public static final List<String> TRUE_STRINGS =
@@ -93,7 +100,7 @@ public final class TypeUtils {
           .toFormatter();
 
   // A formatter that handles date time formats defined above
-  public static final DateTimeFormatter dateTimeFormatter =
+  public static final DateTimeFormatter DATE_TIME_FORMATTER =
       new DateTimeFormatterBuilder()
           .appendOptional(dtTimef2)
           .appendOptional(dtTimef3)
@@ -105,7 +112,7 @@ public final class TypeUtils {
           .toFormatter();
 
   // A formatter that handles time formats defined above
-  public static final DateTimeFormatter timeFormatter =
+  public static final DateTimeFormatter TIME_FORMATTER =
       new DateTimeFormatterBuilder()
           .appendOptional(timef5)
           .appendOptional(timef2)
@@ -130,11 +137,6 @@ public final class TypeUtils {
       missingInd3,
       missingInd4
   );
-
-  /**
-   * Private constructor to prevent instantiation
-   */
-  private TypeUtils() {}
 
   /**
    * Constructs and returns a column for the given {@code name} and {@code type}

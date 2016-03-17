@@ -10,6 +10,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvParser;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.collect.Lists;
 
+import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,11 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builds Tables from Comma Separated Value (CSV) files.
+ * Static utility class that Builds Tables from Comma Separated Value (CSV) files.
  *
  * TODO(lwhite): Change header param from a boolean to an int, representing the number of lines for the header
  * TODO(lwhite): Add multi-file read methods that take header, separator, and maybe, wanted as params
  */
+@Immutable
 final public class CsvReader {
 
   /**
