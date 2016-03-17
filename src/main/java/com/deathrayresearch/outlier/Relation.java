@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 
 /**
- * A tablular data structure like a table in a relational database, but not formally implementing the relational algebra
+ * A tabular data structure like a table in a relational database, but not formally implementing the relational algebra
  */
 public interface Relation {
 

@@ -8,12 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A query, waiting to be executed
  */
 public class Query {
 
   private Relation table;
-  List<Column> columnSelection;
-  Filter filter;
+  private List<Column> columnSelection;
+  private Filter filter;
 
   public Query(Relation table) {
     this.table = table;
