@@ -117,7 +117,7 @@ public class TextColumn extends AbstractColumn
   // TODO(lwhite): Implement column summary()
   @Override
   public Table summary() {
-    return null;
+    return new Table("");
   }
 
   @Override
