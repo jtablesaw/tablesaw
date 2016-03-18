@@ -13,9 +13,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortList;
+import it.unimi.dsi.fastutil.shorts.*;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
@@ -37,7 +35,7 @@ public class CategoryColumn extends AbstractColumn
   private short id = 0;
 
   // holds a key for each row in the table. the key can be used to lookup the backing string value
-  private ShortList values;
+  private ShortArrayList values;
 
   // a bidirectional map of keys to backing string values.
   private DictionaryMap lookupTable = new DictionaryMap();
@@ -90,16 +88,39 @@ public class CategoryColumn extends AbstractColumn
 
   @Override
   public CategoryColumn sortAscending() {
-    CategoryColumn copy = this.copy();
-    // TODO(lwhite): Fix sorting. it needs to operate on value from lookup table and not the key
-    Collections.sort(copy.values);
+    CategoryColumn copy = copy();
+    ShortArrays.parallelQuickSort(copy.values.elements(), dictionarySortComparator);
     return copy;
   }
 
+  private ShortComparator dictionarySortComparator = new ShortComparator() {
+    @Override
+    public int compare(short i, short i1) {
+      return lookupTable.get(i).compareTo(lookupTable.get(i1));
+    }
+
+    @Override
+    public int compare(Short o1, Short o2) {
+      return compare((short) o1, (short) o2);
+    }
+  };
+
+  private ShortComparator reverseDictionarySortComparator = new ShortComparator() {
+    @Override
+    public int compare(short i, short i1) {
+      return -lookupTable.get(i).compareTo(lookupTable.get(i1));
+    }
+
+    @Override
+    public int compare(Short o1, Short o2) {
+      return compare((short) o1, (short) o2);
+    }
+  };
+
   @Override
   public CategoryColumn sortDescending() {
-    CategoryColumn copy = sortAscending();
-    Collections.reverse(copy.values);
+    CategoryColumn copy = copy();
+    ShortArrays.parallelQuickSort(copy.values.elements(), reverseDictionarySortComparator);
     return copy;
   }
 

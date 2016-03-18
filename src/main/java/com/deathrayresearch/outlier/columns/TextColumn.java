@@ -9,12 +9,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A column in a base table that contains float values
@@ -104,18 +99,20 @@ public class TextColumn extends AbstractColumn
 
   @Override
   public Column sortAscending() {
-    TextColumn copy = this.copy();
+    TextColumn copy = copy();
     Collections.sort(copy.data);
     return copy;
   }
 
   @Override
   public Column sortDescending() {
-    TextColumn copy = this.copy();
-    // TODO(lwhite): BUG This sort is reversed (Q: Can we use this sort and reverse the iterator?)
-    Collections.sort(copy.data);
+    TextColumn copy = copy();
+    Collections.sort(copy.data, reverseStringComparator);
     return copy;
   }
+
+  /** Sorts strings in reverse lexicographical order */
+  private Comparator<String> reverseStringComparator = (o1, o2) -> -o1.compareTo(o2);
 
   // TODO(lwhite): Implement column summary()
   @Override
