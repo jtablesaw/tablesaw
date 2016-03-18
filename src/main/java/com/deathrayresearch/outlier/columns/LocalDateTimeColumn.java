@@ -17,7 +17,6 @@ import org.roaringbitmap.RoaringBitmap;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * A column in a base table that contains float values
@@ -57,7 +56,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
       return null;
     }
     value = Strings.padStart(value, 4, '0');
-    return LocalDateTime.parse(value, TypeUtils.dateTimeFormatter);
+    return LocalDateTime.parse(value, TypeUtils.DATE_TIME_FORMATTER);
   }
 
   public static LocalDateTimeColumn create(String name) {

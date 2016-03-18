@@ -95,7 +95,7 @@ public class StorageManagerTest {
 
     Stopwatch stopwatch = Stopwatch.createStarted();
     System.out.println("loading");
-    Table flights2015 = CsvReader.read("bigdata/2015.csv", heading);
+    Table flights2015 = CsvReader.read(heading, "bigdata/2015.csv");
     System.out.println(String.format("loaded %d records in %d seconds",
         flights2015.rowCount(),
         (int) stopwatch.elapsed(TimeUnit.SECONDS)));

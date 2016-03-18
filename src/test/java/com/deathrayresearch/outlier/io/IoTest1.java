@@ -18,7 +18,7 @@ public class IoTest1 {
   public void testWithBusData() throws Exception {
     // Read the CSV file
     ColumnType[] types = {INTEGER, TEXT, TEXT, FLOAT, FLOAT};
-    Table table = CsvReader.read("data/bus_stop_test.csv", types);
+    Table table = CsvReader.read(types, "data/bus_stop_test.csv");
 
     // Look at the column names
     print(table.columnNames());
@@ -43,7 +43,7 @@ public class IoTest1 {
   public void testWithBushData() throws Exception {
     // Read the CSV file
     ColumnType[] types = {LOCAL_DATE, INTEGER, CAT};
-    Table table = CsvReader.read("data/BushApproval.csv", types);
+    Table table = CsvReader.read(types, "data/BushApproval.csv");
 
     // Look at the column names
     print(table.columnNames());
