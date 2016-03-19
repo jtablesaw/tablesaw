@@ -44,8 +44,8 @@ final public class CsvWriter {
     for (int r = 0; r < table.rowCount(); r++) {
       String[] entries = new String[table.columnCount()];
       for (int c = 0; c < table.columnCount(); c++) {
-        String valueString = table.get(c, r);
-        entries[c] = valueString;
+        table.get(c, r);
+        entries[c] = table.get(c, r);
       }
       writer.writeNext(entries);
     }

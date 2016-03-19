@@ -210,6 +210,7 @@ public interface Relation {
     structure.addColumn(TextColumn.create("Last"));
 
     for (Column column : columns()) {
+      System.out.println(column.name());
       structure.intColumn("Index").add(columnIndex(column));
       structure.textColumn("Column Name").add(column.name());
       structure.textColumn("Type").add(column.type().name());

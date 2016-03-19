@@ -28,10 +28,24 @@ import static com.deathrayresearch.outlier.columns.ColumnType.*;
 public class LargeDataTest {
 
   public static void main(String[] args) throws Exception {
-
+    System.out.println("Running. Please wait...");
     Stopwatch stopwatch = Stopwatch.createStarted();
-    createPeopleAndStoreAsColumns();
-    System.out.println("Time to generate & write columnStore " + stopwatch.elapsed(TimeUnit.SECONDS));
+    Table t = StorageManager.readTable("bigdata/people/aa04d18e-2755-4846-a9f9-9ee93208ea94");
+    System.out.println("Time to load from columnStore " + stopwatch.elapsed(TimeUnit.SECONDS));
+    System.out.println(t.categoryColumn("first name").head(5).print());
+    stopwatch.reset().start();
+    //createPeopleAndStoreAsColumns();
+    System.out.println(t.intColumn("weight").summary().print());
+    System.out.println("Time to summarize int column " + stopwatch.elapsed(TimeUnit.SECONDS));
+    stopwatch.reset().start();
+    System.out.println(t.intColumn("height").summary().print());
+    System.out.println("Time to summarize second int column " + stopwatch.elapsed(TimeUnit.SECONDS));
+    stopwatch.reset().start();
+    System.out.println(t.head(5).print());
+    System.out.println("Time to print head(5) " + stopwatch.elapsed(TimeUnit.SECONDS));
+    stopwatch.reset().start();
+    System.out.println(t.structure().print());
+    System.out.println("Time to print structure " + stopwatch.elapsed(TimeUnit.SECONDS));
   }
 
   private static void createPeople() throws Exception {
@@ -47,7 +61,6 @@ public class LargeDataTest {
     IntColumn height = IntColumn.create("height");
     IntColumn weight = IntColumn.create("weight");
     IntColumn female = IntColumn.create("female");
-    IntColumn control = IntColumn.create("control");
 
     t.addColumn(fName);
     t.addColumn(lName);
@@ -59,12 +72,10 @@ public class LargeDataTest {
     t.addColumn(height);
     t.addColumn(weight);
     t.addColumn(female);
-    t.addColumn(control);
 
     CSVWriter writer = new CSVWriter(new FileWriter("people.csv"));
     String[] header = {"first name", "last name", "company",
-        "city", "postal code", "state",
-        "birthdate", "height", "weight", "female", "control"};
+            "city", "postal code", "state", "birthdate", "height", "weight", "female"};
     writer.writeNext(header);
     Person person;
 
@@ -85,11 +96,6 @@ public class LargeDataTest {
       entries[7] = String.valueOf(fairy.baseProducer().randomBetween(65, 280));
       entries[8] = String.valueOf(fairy.baseProducer().randomBetween(64, 78));
       entries[9] = String.valueOf(person.isFemale());
-      entries[10] = String.valueOf(fairy.baseProducer().trueOrFalse());
-      //entries[6] = person.getAddress().street();
-      //entries[6] = person.telephoneNumber();
-      //entries[2] = person.email();
-
       writer.writeNext(entries);
     }
     writer.close();
@@ -110,7 +116,6 @@ public class LargeDataTest {
     IntColumn height = IntColumn.create("height");
     IntColumn weight = IntColumn.create("weight");
     BooleanColumn female = BooleanColumn.create("female");
-    BooleanColumn control = BooleanColumn.create("control");
 
     t.addColumn(fName);
     t.addColumn(lName);
@@ -122,7 +127,6 @@ public class LargeDataTest {
     t.addColumn(height);
     t.addColumn(weight);
     t.addColumn(female);
-    t.addColumn(control);
 
     Person person;
 
@@ -137,18 +141,16 @@ public class LargeDataTest {
       birthDate.add(PackedLocalDate.pack(LocalDate.parse(person.dateOfBirth().toLocalDate().toString())));
       city.add(person.getAddress().getCity());
       postalCode.add(person.getAddress().getPostalCode());
-      fairy.baseProducer().randomElement(usStateArray);
+      state.add(fairy.baseProducer().randomElement(usStateArray));
       weight.add(fairy.baseProducer().randomBetween(65, 280));
       height.add(fairy.baseProducer().randomBetween(64, 78));
       female.add(person.isFemale());
-      control.add(fairy.baseProducer().trueOrFalse());
     }
     System.out.println("Time to generate " + stopwatch.elapsed(TimeUnit.SECONDS));
     stopwatch.reset();
 
     StorageManager.saveTable("bigdata/people", t);
     System.out.println("Time to write columnStore " + stopwatch.elapsed(TimeUnit.SECONDS));
-
   }
 
   private static void storeInDb() throws Exception {
@@ -157,12 +159,12 @@ public class LargeDataTest {
     StorageManager.saveTable("bigdata/people", t);
   }
 
-  private static String[] usStateArray = {"Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware",
-      "District Of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky",
-      "Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana",
-      "Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota",
-      "Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas",
-      "Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
+  private static String[] usStateArray = {"Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
+      "Delaware","District Of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas",
+      "Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri",
+      "Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina",
+      "North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota",
+      "Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
 
   private static List<String> usStates = Arrays.asList(usStateArray);
 }

@@ -414,10 +414,10 @@ public class Table implements Relation {
     resultTable.addColumn(sumColumn1);
 
     for (SubTable subTable : groupTable.getSubTables()) {
-      int sum = subTable.intColumn(sumColumn.name()).sum();
+      long sum = subTable.intColumn(sumColumn.name()).sum();
       String groupName = subTable.name();
       groupColumn.add(groupName);
-      sumColumn1.add(sum);
+      sumColumn1.add((int) sum);
     }
     return resultTable;
   }
@@ -452,10 +452,10 @@ public class Table implements Relation {
     resultTable.addColumn(sumColumn1);
 
     for (SubTable subTable : groupTable.getSubTables()) {
-      int sum = subTable.intColumn(sumColumn.name()).sum();
+      long sum = subTable.intColumn(sumColumn.name()).sum();
       String groupName = subTable.name();
       groupColumn.add(groupName);
-      sumColumn1.add(sum);
+      sumColumn1.add((int) sum);
     }
 
     return resultTable;

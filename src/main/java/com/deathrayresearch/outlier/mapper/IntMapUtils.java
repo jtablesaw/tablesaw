@@ -69,5 +69,5 @@ public interface IntMapUtils extends IntColumnUtils {
     return pctColumn;
   }
 
-  int sum();
+  long sum();
 }

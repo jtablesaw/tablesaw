@@ -74,8 +74,8 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return ColumnType.INTEGER;
   }
 
-  public int sum() {
-    int sum = 0;
+  public long sum() {
+    long sum = 0;
     for (int i : data) {
       sum += i;
     }

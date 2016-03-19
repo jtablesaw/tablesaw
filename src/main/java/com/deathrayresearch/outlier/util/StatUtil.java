@@ -144,10 +144,10 @@ public class StatUtil {
 
 
   public static float mean(FloatColumn values) {
-    return values.sum() / (float) values.size();
+    return (values.sum()) / (float) values.size();
   }
 
-  public static Stats stats(final FloatColumn values) {
+  public static Stats stats(final FloatColumn  values) {
     Stats stats = new Stats();
     stats.min = min(values);
     stats.max = max(values);
@@ -163,7 +163,7 @@ public class StatUtil {
     stats.min = min(values);
     stats.max = max(values);
     stats.n = values.size();
-    stats.mean = values.sum() / (float) stats.n;
+    stats.mean = mean(values);
     stats.variance = variance(values);
     return stats;
   }
