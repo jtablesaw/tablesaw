@@ -338,8 +338,13 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
+      int i = 0;
       for (float d : column.data()) {
         dos.writeFloat(d);
+        if (i % 100_000 == 0) {
+          dos.flush();
+        }
+        i++;
       }
       dos.flush();
     }
@@ -349,8 +354,13 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
+      int i = 0;
       for (String d : column.data()) {
         dos.writeUTF(d);
+        if (i % 10_000 == 0) {
+          dos.flush();
+        }
+        i++;
       }
       dos.flush();
     }
@@ -361,8 +371,13 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
+      int i = 0;
       for (String d : column.data()) {
         dos.writeUTF(d);
+        if (i % 10_000 == 0) {
+          dos.flush();
+        }
+        i++;
       }
       dos.flush();
     }
@@ -373,8 +388,13 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
+      int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
+        if (i % 100_000 == 0) {
+          dos.flush();
+        }
+        i++;
       }
       dos.flush();
     }
@@ -385,8 +405,13 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
+      int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
+        if (i % 100_000 == 0) {
+          dos.flush();
+        }
+        i++;
       }
       dos.flush();
     }
@@ -396,8 +421,13 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
+      int i = 0;
       for (long d : column.data()) {
         dos.writeLong(d);
+        if (i % 100_000 == 0) {
+          dos.flush();
+        }
+        i++;
       }
       dos.flush();
     }
@@ -408,8 +438,13 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
+      int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
+        if (i % 100_000 == 0) {
+          dos.flush();
+        }
+        i++;
       }
       dos.flush();
     }
@@ -420,8 +455,13 @@ public class StorageManager {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
+      int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
+        if (i % 100_000 == 0) {
+          dos.flush();
+        }
+        i++;
       }
       dos.flush();
     }
@@ -435,6 +475,9 @@ public class StorageManager {
       for (int i = 0; i < column.size(); i++) {
         boolean value = column.get(i);
         dos.writeBoolean(value);
+        if (i % 100_000 == 0) {
+          dos.flush();
+        }
       }
       dos.flush();
     }
