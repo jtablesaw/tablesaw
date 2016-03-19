@@ -89,7 +89,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
     return ColumnType.FLOAT;
   }
 
-  public float sum() {
+  public double sum() {
     return StatUtil.sum(this);
   }
 

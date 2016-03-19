@@ -142,9 +142,8 @@ public class StatUtil {
     return stdDev;
   }
 
-
   public static float mean(FloatColumn values) {
-    return (values.sum()) / (float) values.size();
+    return (float) (values.sum()) / (float) values.size();
   }
 
   public static Stats stats(final FloatColumn  values) {
@@ -152,18 +151,18 @@ public class StatUtil {
     stats.min = min(values);
     stats.max = max(values);
     stats.n = values.size();
-    stats.mean = values.sum() / (float) stats.n;
+    stats.sum = values.sum();
     stats.variance = variance(values);
     return stats;
   }
 
-  public static Stats stats(final IntColumn ints) {
+  public static IntStats stats(final IntColumn ints) {
     FloatColumn values = FloatColumn.create(ints.name(), ints.toFloatArray());
-    Stats stats = new Stats();
-    stats.min = min(values);
-    stats.max = max(values);
+    IntStats stats = new IntStats();
+    stats.min = min(ints);
+    stats.max = max(ints);
     stats.n = values.size();
-    stats.mean = mean(values);
+    stats.sum = ints.sum();
     stats.variance = variance(values);
     return stats;
   }

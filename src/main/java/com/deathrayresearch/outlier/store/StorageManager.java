@@ -50,6 +50,8 @@ public class StorageManager {
   private static final CompletionService WRITER_COMPLETION_SERVICE =
       new ExecutorCompletionService<>(WRITER_SERVICE);
 
+  public static final int FLUSH_AFTER_ITERATIONS = 10_000;
+
   /**
    * @param fileName Expected to be fully specified
    * @throws IOException
@@ -341,7 +343,7 @@ public class StorageManager {
       int i = 0;
       for (float d : column.data()) {
         dos.writeFloat(d);
-        if (i % 100_000 == 0) {
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
         i++;
@@ -357,7 +359,7 @@ public class StorageManager {
       int i = 0;
       for (String d : column.data()) {
         dos.writeUTF(d);
-        if (i % 10_000 == 0) {
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
         i++;
@@ -374,7 +376,7 @@ public class StorageManager {
       int i = 0;
       for (String d : column.data()) {
         dos.writeUTF(d);
-        if (i % 10_000 == 0) {
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
         i++;
@@ -391,7 +393,7 @@ public class StorageManager {
       int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
-        if (i % 100_000 == 0) {
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
         i++;
@@ -408,7 +410,7 @@ public class StorageManager {
       int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
-        if (i % 100_000 == 0) {
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
         i++;
@@ -424,7 +426,7 @@ public class StorageManager {
       int i = 0;
       for (long d : column.data()) {
         dos.writeLong(d);
-        if (i % 100_000 == 0) {
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
         i++;
@@ -441,7 +443,7 @@ public class StorageManager {
       int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
-        if (i % 100_000 == 0) {
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
         i++;
@@ -458,7 +460,7 @@ public class StorageManager {
       int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
-        if (i % 100_000 == 0) {
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
         i++;
@@ -475,7 +477,7 @@ public class StorageManager {
       for (int i = 0; i < column.size(); i++) {
         boolean value = column.get(i);
         dos.writeBoolean(value);
-        if (i % 100_000 == 0) {
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
       }

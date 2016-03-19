@@ -8,19 +8,20 @@ import org.apache.commons.math3.util.FastMath;
 /**
  *
  */
-public class Stats {
+public class IntStats {
 
   int n;
   int missing;
-  double sum;
-  float median;
-  float min;
-  float max;
+  long sum;
+  int median;
+  int min;
+  int max;
   double variance;
   double kurtosis;
   double skewness;
 
-  float range() {
+
+  int range() {
     return max - min;
   }
 
@@ -44,19 +45,19 @@ public class Stats {
     return sum / (double) n;
   }
 
-  public float median() {
+  public int median() {
     return median;
   }
 
-  public float min() {
+  public int min() {
     return min;
   }
 
-  public float max() {
+  public int max() {
     return max;
   }
 
-  public double sum() {
+  public long sum() {
     return sum;
   }
 
