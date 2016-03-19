@@ -20,7 +20,6 @@ public class IntStats {
   double kurtosis;
   double skewness;
 
-
   int range() {
     return max - min;
   }

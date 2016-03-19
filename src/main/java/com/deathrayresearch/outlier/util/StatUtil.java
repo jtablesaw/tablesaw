@@ -219,11 +219,11 @@ public class StatUtil {
     }
 
     if (begin < 0) {
-      throw new NotPositiveException(LocalizedFormats.START_POSITION, Integer.valueOf(begin));
+      throw new NotPositiveException(LocalizedFormats.START_POSITION, begin);
     }
 
     if (length < 0) {
-      throw new NotPositiveException(LocalizedFormats.LENGTH, Integer.valueOf(length));
+      throw new NotPositiveException(LocalizedFormats.LENGTH, length);
     }
 
     return getMode(sample, begin, length);
@@ -244,7 +244,7 @@ public class StatUtil {
     for (int i = begin; i < begin + length; i++) {
       final float value = values[i];
       if (!Float.isNaN(value)) {
-        freq.addValue(Float.valueOf(value));
+        freq.addValue(value);
       }
     }
     List<Comparable<?>> list = freq.getMode();
@@ -252,7 +252,7 @@ public class StatUtil {
     float[] modes = new float[list.size()];
     int i = 0;
     for (Comparable<?> c : list) {
-      modes[i++] = ((Float) c).floatValue();
+      modes[i++] = ((Float) c);
     }
     return modes;
   }
