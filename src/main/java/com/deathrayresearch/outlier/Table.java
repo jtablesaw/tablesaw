@@ -323,7 +323,7 @@ public class Table implements Relation {
    * @param columnName The name of the column to sort
    * @param reverse    {@code true} if the column should be sorted in reverse
    */
-  private IntComparator rowComparator(String columnName, Boolean reverse) {
+  private IntComparator rowComparator(String columnName, boolean reverse) {
 
     Column column = this.column(columnName);
     IntComparator rowComparator = column.rowComparator();

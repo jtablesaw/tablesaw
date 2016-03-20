@@ -28,7 +28,12 @@ import static com.deathrayresearch.outlier.columns.ColumnType.*;
 public class LargeDataTest {
 
   public static void main(String[] args) throws Exception {
-    createPeopleAndStoreAsColumns();
+    Table t = createPeoples(300_000_000);
+    System.out.println("Done");
+    Stopwatch stopwatch = Stopwatch.createStarted();
+    storeInDb(t);
+    System.out.println("Time to store in columnStore " + stopwatch.elapsed(TimeUnit.SECONDS));
+
 /*
     System.out.println("Running. Please wait...");
     Stopwatch stopwatch = Stopwatch.createStarted();
@@ -76,32 +81,32 @@ public class LargeDataTest {
     t.addColumn(weight);
     t.addColumn(female);
 
-    CSVWriter writer = new CSVWriter(new FileWriter("people.csv"));
-    String[] header = {"first name", "last name", "company",
-            "city", "postal code", "state", "birthdate", "height", "weight", "female"};
-    writer.writeNext(header);
-    Person person;
+    try (CSVWriter writer = new CSVWriter(new FileWriter("people.csv"))) {
+      String[] header = {"first name", "last name", "company",
+          "city", "postal code", "state", "birthdate", "height", "weight", "female"};
+      writer.writeNext(header);
+      Person person;
 
-    for (int r = 0; r < 300_000_000; r++) {
-      if (r % 1_000_000 == 0) {
-        System.out.println(r);
-        writer.flush();
+      for (int r = 0; r < 300_000_000; r++) {
+        if (r % 1_000_000 == 0) {
+          System.out.println(r);
+          writer.flush();
+        }
+        String[] entries = new String[header.length];
+        person = fairy.person();
+        entries[0] = person.firstName();
+        entries[1] = person.lastName();
+        entries[2] = person.getCompany().name();
+        entries[3] = person.dateOfBirth().toLocalDate().toString();
+        entries[4] = person.getAddress().getCity();
+        entries[5] = person.getAddress().getPostalCode();
+        entries[6] = fairy.baseProducer().randomElement(usStateArray);
+        entries[7] = String.valueOf(fairy.baseProducer().randomBetween(65, 280));
+        entries[8] = String.valueOf(fairy.baseProducer().randomBetween(64, 78));
+        entries[9] = String.valueOf(person.isFemale());
+        writer.writeNext(entries);
       }
-      String[] entries = new String[header.length];
-      person = fairy.person();
-      entries[0] = person.firstName();
-      entries[1] = person.lastName();
-      entries[2] = person.getCompany().name();
-      entries[3] = person.dateOfBirth().toLocalDate().toString();
-      entries[4] = person.getAddress().getCity();
-      entries[5] = person.getAddress().getPostalCode();
-      entries[6] = fairy.baseProducer().randomElement(usStateArray);
-      entries[7] = String.valueOf(fairy.baseProducer().randomBetween(65, 280));
-      entries[8] = String.valueOf(fairy.baseProducer().randomBetween(64, 78));
-      entries[9] = String.valueOf(person.isFemale());
-      writer.writeNext(entries);
     }
-    writer.close();
   }
 
   private static void createPeopleAndStoreAsColumns() throws Exception {
@@ -156,9 +161,62 @@ public class LargeDataTest {
     System.out.println("Time to write columnStore " + stopwatch.elapsed(TimeUnit.SECONDS));
   }
 
+  private static Table createPeoples(int quantity) throws Exception {
+    Stopwatch stopwatch = Stopwatch.createStarted();
+
+    Fairy fairy = Fairy.create();
+    Table t = new Table("People");
+    CategoryColumn fName = CategoryColumn.create("first name");
+    CategoryColumn lName = CategoryColumn.create("last name");
+   // CategoryColumn company = CategoryColumn.create("company");
+    CategoryColumn city = CategoryColumn.create("city");
+   // CategoryColumn postalCode = CategoryColumn.create("postal code");
+   // CategoryColumn state = CategoryColumn.create("state");
+    LocalDateColumn birthDate = LocalDateColumn.create("birth date");
+    IntColumn height = IntColumn.create("height");
+    IntColumn weight = IntColumn.create("weight");
+    BooleanColumn female = BooleanColumn.create("female");
+
+    t.addColumn(fName);
+    t.addColumn(lName);
+    //t.addColumn(company);
+    t.addColumn(city);
+    //t.addColumn(postalCode);
+    //t.addColumn(state);
+    t.addColumn(birthDate);
+    t.addColumn(height);
+    t.addColumn(weight);
+    t.addColumn(female);
+
+    Person person;
+
+    for (int r = 0; r < quantity; r++) {
+      if (r % 1_000_000 == 0) {
+        System.out.println(r);
+      }
+      person = fairy.person();
+      fName.add(person.firstName());
+      lName.add(person.lastName());
+      //company.add(person.getCompany().name());
+      birthDate.add(PackedLocalDate.pack(LocalDate.parse(person.dateOfBirth().toLocalDate().toString())));
+      city.add(person.getAddress().getCity());
+      //postalCode.add(person.getAddress().getPostalCode());
+      //state.add(fairy.baseProducer().randomElement(usStateArray));
+      weight.add(fairy.baseProducer().randomBetween(65, 280));
+      height.add(fairy.baseProducer().randomBetween(64, 78));
+      female.add(person.isFemale());
+    }
+    System.out.println("Time to generate " + stopwatch.elapsed(TimeUnit.SECONDS));
+    return t;
+  }
+
   private static void storeInDb() throws Exception {
     ColumnType[] columnTypes = {CAT, CAT, CAT, LOCAL_DATE, CAT, CAT, CAT, INTEGER, INTEGER, BOOLEAN, BOOLEAN};
     Table t = CsvReader.read(columnTypes, "bigdata/people.csv");
+    StorageManager.saveTable("bigdata/people", t);
+  }
+
+  private static void storeInDb(Table t) throws Exception {
     StorageManager.saveTable("bigdata/people", t);
   }
 

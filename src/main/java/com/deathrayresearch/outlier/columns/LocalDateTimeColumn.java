@@ -23,7 +23,7 @@ import java.util.Arrays;
  */
 public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUtils {
 
-  public static final Long MISSING_VALUE = Long.MIN_VALUE;
+  public static final long MISSING_VALUE = Long.MIN_VALUE;
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 

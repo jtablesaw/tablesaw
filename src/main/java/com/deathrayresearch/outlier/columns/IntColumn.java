@@ -175,7 +175,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   @Override
   public String getString(int row) {
-    return String.valueOf(data.get(row));
+    return String.valueOf(data.getInt(row));
   }
 
   @Override

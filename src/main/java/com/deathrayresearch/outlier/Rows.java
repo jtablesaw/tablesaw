@@ -46,6 +46,8 @@ public class Rows {
         case PERIOD:
           copy(rows, (PeriodColumn) oldTable.column(columnIndex), (PeriodColumn) newTable.column(columnIndex));
           break;
+        default:
+          throw new RuntimeException("Unhandled column type in case statement");
       }
     }
   }

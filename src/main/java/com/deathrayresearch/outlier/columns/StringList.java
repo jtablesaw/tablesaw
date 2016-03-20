@@ -20,7 +20,7 @@ public class StringList implements List<String> {
 
     ShortArrayList values;
 
-    DictionaryMap dictionaryMap;
+    DictionaryMap dictionaryMap = new DictionaryMap();
     /**
      * Returns the number of elements in this list.  If this list contains
      * more than <tt>Integer.MAX_VALUE</tt> elements, returns

@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
@@ -357,7 +358,7 @@ public class StorageManager {
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (String d : column.data()) {
+      for (String d : column) {
         dos.writeUTF(d);
         if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
@@ -374,7 +375,7 @@ public class StorageManager {
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (String d : column.data()) {
+      for (String d : column) {
         dos.writeUTF(d);
         if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
@@ -494,11 +495,11 @@ public class StorageManager {
   public static void writeTableMetadata(String fileName, Relation table) throws IOException {
     File myFile = Paths.get(fileName).toFile();
     myFile.createNewFile();
-    FileOutputStream fOut = new FileOutputStream(myFile);
-    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-    myOutWriter.append(new TableMetadata(table).toJson());
-    myOutWriter.close();
-    fOut.close();
+    try (
+        FileOutputStream fOut = new FileOutputStream(myFile);
+        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
+      myOutWriter.append(new TableMetadata(table).toJson());
+    }
   }
 
   /**

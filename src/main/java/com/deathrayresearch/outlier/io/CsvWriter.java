@@ -35,21 +35,21 @@ final public class CsvWriter {
    * @throws IOException
    */
   public static void write(String fileName, Relation table, String missing) throws IOException {
-    CSVWriter writer = new CSVWriter(new FileWriter(fileName));
-    String[] header = new String[table.columnCount()];
-    for (int c = 0; c < table.columnCount(); c++) {
-      header[c] = table.column(c).name();
-    }
-    writer.writeNext(header);
-    for (int r = 0; r < table.rowCount(); r++) {
-      String[] entries = new String[table.columnCount()];
+    try (CSVWriter writer = new CSVWriter(new FileWriter(fileName))) {
+      String[] header = new String[table.columnCount()];
       for (int c = 0; c < table.columnCount(); c++) {
-        table.get(c, r);
-        entries[c] = table.get(c, r);
+        header[c] = table.column(c).name();
       }
-      writer.writeNext(entries);
+      writer.writeNext(header);
+      for (int r = 0; r < table.rowCount(); r++) {
+        String[] entries = new String[table.columnCount()];
+        for (int c = 0; c < table.columnCount(); c++) {
+          table.get(c, r);
+          entries[c] = table.get(c, r);
+        }
+        writer.writeNext(entries);
+      }
     }
-    writer.close();
   }
 
   /**
@@ -57,14 +57,14 @@ final public class CsvWriter {
    * @throws IOException
    */
   public static void write(String fileName, Column column) throws IOException {
-    CSVWriter writer = new CSVWriter(new FileWriter(fileName));
-    String[] header = {column.name()};
-    writer.writeNext(header);
+    try (CSVWriter writer = new CSVWriter(new FileWriter(fileName))) {
+      String[] header = {column.name()};
+      writer.writeNext(header);
 
-    for (int r = 0; r < column.size(); r++) {
-      String[] entries = {column.getString(r)};
-      writer.writeNext(entries);
+      for (int r = 0; r < column.size(); r++) {
+        String[] entries = {column.getString(r)};
+        writer.writeNext(entries);
+      }
     }
-    writer.close();
   }
 }

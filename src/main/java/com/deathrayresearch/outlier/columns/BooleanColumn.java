@@ -9,14 +9,14 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.booleans.BooleanArrays;
 import it.unimi.dsi.fastutil.booleans.BooleanComparator;
+import it.unimi.dsi.fastutil.booleans.BooleanOpenHashSet;
+import it.unimi.dsi.fastutil.booleans.BooleanSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A column in a base table that contains float values
@@ -95,7 +95,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   @Override
   public int countUnique() {
-    Set<Boolean> count = new HashSet<>(3);
+    BooleanSet count = new BooleanOpenHashSet(3);
     for (boolean next : data) {
       count.add(next);
     }
@@ -104,12 +104,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   @Override
   public BooleanColumn unique() {
-    Set<Boolean> count = new HashSet<>(3);
+    BooleanSet count = new BooleanOpenHashSet(3);
     for (boolean next : data) {
       count.add(next);
     }
-    BooleanArrayList list = new BooleanArrayList();
-    list.addAll(count);
+    BooleanArrayList list = new BooleanArrayList(count);
     return new BooleanColumn(name() + " Unique values", list);
   }
 

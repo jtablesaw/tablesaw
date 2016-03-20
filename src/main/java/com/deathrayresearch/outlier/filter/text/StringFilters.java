@@ -15,7 +15,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap equalToIgnoringCase(String string) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (next.endsWith(string)) {
         results.add(i);
       }
@@ -27,7 +27,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap startsWith(String string) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (next.startsWith(string)) {
         results.add(i);
       }
@@ -39,7 +39,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap endsWith(String string) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (next.endsWith(string)) {
         results.add(i);
       }
@@ -51,7 +51,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap contains(String string) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (next.contains(string)) {
         results.add(i);
       }
@@ -64,7 +64,7 @@ public interface StringFilters extends StringColumnUtils {
     Pattern p = Pattern.compile(string);
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       Matcher m = p.matcher(next);
       if (m.matches()) {
         results.add(i);
@@ -77,7 +77,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap empty() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (next.isEmpty()) {
         results.add(i);
       }
@@ -89,7 +89,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap isAlpha() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (StringUtils.isAlpha(next)) {
         results.add(i);
       }
@@ -101,7 +101,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap isNumeric() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (StringUtils.isNumeric(next)) {
         results.add(i);
       }
@@ -113,7 +113,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap isAlphaNumeric() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (StringUtils.isAlphanumeric(next)) {
         results.add(i);
       }
@@ -125,7 +125,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap isUpperCase() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (StringUtils.isAllUpperCase(next)) {
         results.add(i);
       }
@@ -137,7 +137,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap isLowerCase() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (StringUtils.isAllLowerCase(next)) {
         results.add(i);
       }
@@ -149,7 +149,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap hasLengthEqualTo(int lengthChars) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (next.length() == lengthChars) {
         results.add(i);
       }
@@ -161,7 +161,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap isShorterThan(int lengthChars) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (next.length() < lengthChars) {
         results.add(i);
       }
@@ -173,7 +173,7 @@ public interface StringFilters extends StringColumnUtils {
   default RoaringBitmap isLongerThan(int lengthChars) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (String next : data()) {
+    for (String next : this) {
       if (next.length() > lengthChars) {
         results.add(i);
       }

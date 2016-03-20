@@ -18,7 +18,7 @@ public class LocalDateIsInQ4 extends ColumnFilter {
   @Override
   public RoaringBitmap apply(Relation relation) {
 
-    LocalDateColumn dateColumn = (LocalDateColumn) relation.column(columnReference().getColumnName());;
+    LocalDateColumn dateColumn = (LocalDateColumn) relation.column(columnReference().getColumnName());
     return dateColumn.isInQ4();
   }
 }

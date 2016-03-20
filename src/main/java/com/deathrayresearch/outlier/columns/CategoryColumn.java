@@ -19,13 +19,14 @@ import org.roaringbitmap.RoaringBitmap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * A column in a base table that contains float values
  */
 public class CategoryColumn extends AbstractColumn
-        implements StringMapUtils, StringFilters, StringReduceUtils {
+        implements StringMapUtils, StringFilters, StringReduceUtils, Iterable<String> {
 
   public static final String MISSING_VALUE = (String) ColumnType.CAT.getMissingValue();
 
@@ -290,14 +291,12 @@ public class CategoryColumn extends AbstractColumn
     return results;
   }
 
-
-  public int getInt(int rowNumber) {
-    return values.get(rowNumber);
+  public short getShort(int rowNumber) {
+    return values.getShort(rowNumber);
   }
 
   public CategoryColumn unique() {
-    List<String> strings = new ArrayList<>();
-    strings.addAll(lookupTable.categories());
+    List<String> strings = new ArrayList<>(lookupTable.categories());
     return CategoryColumn.create(name() + " Unique values", strings);
 
   }
@@ -405,15 +404,6 @@ public class CategoryColumn extends AbstractColumn
     return newCol;
   }
 
-  // TODO(lwhite): Very bad performance, fix
-  public List<String> data() {
-    List<String> list = new ArrayList<>();
-    for (short s : values) {
-      list.add(lookupTable.get(s));
-    }
-    return list;
-  }
-
   @Override
   public void appendColumnData(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
@@ -421,5 +411,23 @@ public class CategoryColumn extends AbstractColumn
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.get(i));
     }
+  }
+
+  @Override
+  public Iterator<String> iterator() {
+    return new Iterator<String>() {
+
+      private ShortListIterator valuesIt = values.iterator();
+
+      @Override
+      public boolean hasNext() {
+        return valuesIt.hasNext();
+      }
+
+      @Override
+      public String next() {
+        return lookupTable.get(valuesIt.next());
+      }
+    };
   }
 }

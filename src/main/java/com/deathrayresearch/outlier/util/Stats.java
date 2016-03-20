@@ -77,7 +77,7 @@ public class Stats {
   }
 
   public String printString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append("Descriptive Stats \n");
     buffer.append("n: ");
     buffer.append(n);

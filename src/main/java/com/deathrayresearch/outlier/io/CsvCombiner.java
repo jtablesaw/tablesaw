@@ -23,17 +23,17 @@ public class CsvCombiner {
       throws IOException {
 
     FileWriter fileWriter = new FileWriter(newFileName);
-    CSVWriter writer = new CSVWriter(fileWriter, ',');
-    final boolean[] skipHeader = {false};
-    Files.walk(Paths.get(foldername)).forEach(filePath -> {
+    try (CSVWriter writer = new CSVWriter(fileWriter, ',')) {
+      final boolean[] skipHeader = {false};
+      Files.walk(Paths.get(foldername)).forEach(filePath -> {
 
-      if (Files.isRegularFile(filePath) && filePath.toString().endsWith(".csv")) {
-        CsvCombiner.append(filePath.toString(), writer, columnSeparator, headers && skipHeader[0]);
-        skipHeader[0] = true;
-      }
-    });
-    writer.flush();
-    writer.close();
+        if (Files.isRegularFile(filePath) && filePath.toString().endsWith(".csv")) {
+          CsvCombiner.append(filePath.toString(), writer, columnSeparator, headers && skipHeader[0]);
+          skipHeader[0] = true;
+        }
+      });
+      writer.flush();
+    }
   }
 
   public static void append(String fileName, final CSVWriter writer, char columnSeparator, boolean skipHeader) {

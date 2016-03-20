@@ -1,11 +1,9 @@
 package com.deathrayresearch.outlier.columns;
 
-import java.util.List;
+import java.util.Iterator;
 
 /**
  *
  */
-public interface StringColumnUtils extends Column {
-
-    List<String> data();
+public interface StringColumnUtils extends Column, Iterable<String> {
 }

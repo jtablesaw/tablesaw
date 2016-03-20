@@ -8,7 +8,6 @@ import com.deathrayresearch.outlier.filter.ColumnFilter;
 import org.roaringbitmap.RoaringBitmap;
 
 import javax.annotation.concurrent.Immutable;
-import java.time.LocalDate;
 
 /**
  *
@@ -26,7 +25,7 @@ public class LocalDateIsAfter extends ColumnFilter {
   @Override
   public RoaringBitmap apply(Relation relation) {
 
-    LocalDateColumn dateColumn = (LocalDateColumn) relation.column(columnReference().getColumnName());;
+    LocalDateColumn dateColumn = (LocalDateColumn) relation.column(columnReference().getColumnName());
     return dateColumn.isAfter(value);
   }
 }

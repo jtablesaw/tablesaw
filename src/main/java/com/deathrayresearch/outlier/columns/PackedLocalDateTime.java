@@ -109,14 +109,18 @@ public class PackedLocalDateTime {
     byte yearByte1 = (byte) (date >> 24);
     byte yearByte2 = (byte) (date >> 16);
 
-    return String.format("%d-%s-%s:%d:%d:%d",
-        (short) ((yearByte2 << 8) + (yearByte1 & 0xFF)),
-        Strings.padStart(Byte.toString((byte) (date >> 8)), 2, '0'),
-        Strings.padStart(Byte.toString((byte) date), 2, '0'),
-        PackedLocalTime.getHour(time),
-        PackedLocalTime.getMinute(time),
-        PackedLocalTime.getSecond(time)
-    );
+    return
+        "" + (short) ((yearByte2 << 8) + (yearByte1 & 0xFF))
+            + "-"
+            + Strings.padStart(Byte.toString((byte) (date >> 8)), 2, '0')
+            + "-"
+            + Strings.padStart(Byte.toString((byte) date), 2, '0')
+            + ":"
+            + PackedLocalTime.getHour(time)
+            + ":"
+            + PackedLocalTime.getMinute(time)
+            + ":"
+            + PackedLocalTime.getSecond(time);
   }
 
   public static int getDayOfYear(long packedDateTime) {

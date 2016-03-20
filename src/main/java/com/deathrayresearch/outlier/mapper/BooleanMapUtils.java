@@ -38,8 +38,7 @@ public interface BooleanMapUtils extends Column {
     BooleanColumn thisColumn = (BooleanColumn) this;
 
     for (int i = 0; i < this.size(); i++) {
-      Comparable value = thisColumn.get(i);
-      boolean booleanValue = (Boolean) value;
+      boolean booleanValue = thisColumn.get(i);
       if (booleanValue) {
         newColumn.set(i, true);
       } else {

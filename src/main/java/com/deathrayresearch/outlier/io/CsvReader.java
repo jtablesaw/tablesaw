@@ -86,14 +86,14 @@ final public class CsvReader {
   public static Table read(ColumnType types[], boolean header, int[] wanted, char columnSeparator, String fileName)
       throws IOException {
 
-    CSVReader reader = new CSVReader(new FileReader(fileName));
-
-    // Add the rows
     String[] nextLine;
-    nextLine = reader.readNext();
-    reader.close();
+    ColumnType[] newTypes;
+    try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
+      // Add the rows
+      nextLine = reader.readNext();
+    }
 
-    ColumnType[] newTypes = new ColumnType[nextLine.length];
+    newTypes = new ColumnType[nextLine.length];
     for (int i = 0; i < nextLine.length; i++) {
       newTypes[i] = ColumnType.SKIP;
     }

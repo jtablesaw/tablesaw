@@ -1,14 +1,7 @@
 package com.deathrayresearch.outlier.splitter.functions;
 
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.TableGroup;
-import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.FloatColumn;
-import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.mapper.SummaryFunction;
-
-import java.util.function.ToDoubleFunction;
-import java.util.function.ToIntFunction;
 
 /**
  *

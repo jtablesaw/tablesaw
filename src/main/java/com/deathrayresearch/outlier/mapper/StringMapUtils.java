@@ -194,7 +194,7 @@ public interface StringMapUtils extends StringColumnUtils {
     Preconditions.checkArgument(value.length != 0, "Parameter array must not be empty");
     IntColumn intColumn = IntColumn.create("Occurrences of " + value[0]);
 
-    for (String str : data()) {
+    for (String str : this) {
       int count = 0;
       for (String findStr : value) {
         int lastIndex = 0;
@@ -227,7 +227,7 @@ public interface StringMapUtils extends StringColumnUtils {
     CategoryColumn column = CategoryColumn.create(name() + " matches of \"" + regex + "\"");
     Pattern pattern = Pattern.compile(regex);
 
-    for (String myData : data()) {
+    for (String myData : this) {
       Matcher matcher = pattern.matcher(myData);
       if (matcher.find()) {
         column.add(matcher.group(regexGroup));

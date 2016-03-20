@@ -12,7 +12,7 @@ public interface StringReduceUtils extends StringColumnUtils {
     default String appendAll(String lineBreak) {
         StringBuilder builder = new StringBuilder();
         int count = 0;
-        for (String next : data()) {
+        for (String next : this) {
             builder.append(next);
             if (count < size() - 1) {
                 builder.append(lineBreak);

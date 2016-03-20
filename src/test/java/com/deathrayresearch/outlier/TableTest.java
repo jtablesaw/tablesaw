@@ -43,7 +43,7 @@ public class TableTest {
   @Test
   public void testRowCount() throws Exception {
     assertEquals(0, table.rowCount());
-    FloatColumn floatColumn = (FloatColumn) column;
+    FloatColumn floatColumn = column;
     floatColumn.add(2f);
     assertEquals(1, table.rowCount());
 

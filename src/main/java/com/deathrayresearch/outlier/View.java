@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.Column;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public class View implements Relation {
 
   private String name;
   private Relation table;
-  private final List<Integer> columnIds = new ArrayList<>();
+  private final IntArrayList columnIds = new IntArrayList();
   private final RoaringBitmap rowMap;
   private final int mask[];
   private final String id = UUID.randomUUID().toString();
@@ -32,6 +33,7 @@ public class View implements Relation {
 
   public View(Table table, int headRows) {
     this.table = table;
+    //noinspection Convert2streamapi
     for (String col : table.columnNames()) {
       columnIds.add(table.columnIndex(col));
     }
@@ -42,6 +44,7 @@ public class View implements Relation {
   
   public View(View view, int headRows) {
     this.table = view;
+    //noinspection Convert2streamapi
     for (String col : table.columnNames()) {
       columnIds.add(table.columnIndex(col));
     }
@@ -57,6 +60,7 @@ public class View implements Relation {
   public View(Relation table, List<Column> columnSelection, RoaringBitmap rowSelection) {
     this.rowMap = rowSelection;
     this.table = table;
+    //noinspection Convert2streamapi
     for (Column aColumnSelection : columnSelection) {
       this.columnIds.add(table.columnIndex(aColumnSelection));
     }
@@ -66,6 +70,7 @@ public class View implements Relation {
   public View(Relation table, List<Column> columnSelection) {
     this.rowMap = new RoaringBitmap();
     this.table = table;
+    //noinspection Convert2streamapi
     for (Column aColumnSelection : columnSelection) {
       this.columnIds.add(table.columnIndex(aColumnSelection));
     }
@@ -79,7 +84,7 @@ public class View implements Relation {
 
   @Override
   public Column column(int columnIndex) {
-    return table.column(columnIds.get(columnIndex));
+    return table.column(columnIds.getInt(columnIndex));
   }
 
   @Override
@@ -101,7 +106,7 @@ public class View implements Relation {
   public int columnIndex(Column column) {
     int columnIndex = -1;
     for (int i = 0; i < columnIds.size(); i++) {
-      if (column(columnIds.get(i)).equals(column)) {
+      if (column(columnIds.getInt(i)).equals(column)) {
         columnIndex = i;
         break;
       }
@@ -143,6 +148,7 @@ public class View implements Relation {
   @Override
   public List<String> columnNames() {
     List<String> names = new ArrayList<>();
+    //noinspection Convert2streamapi
     for (Integer columnId : columnIds) {
       names.add(table.column(columnId).name());
     }
@@ -164,7 +170,7 @@ public class View implements Relation {
 
   @Override
   public void removeColumn(Column column) {
-    columnIds.remove(columnIndex(column));
+    columnIds.removeInt(columnIndex(column));
   }
 
   public View head(int nRows) {

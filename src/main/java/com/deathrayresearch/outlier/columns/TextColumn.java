@@ -15,7 +15,7 @@ import java.util.*;
  * A column in a base table that contains float values
  */
 public class TextColumn extends AbstractColumn
-        implements StringMapUtils, StringFilters, StringReduceUtils {
+        implements StringMapUtils, StringFilters, StringReduceUtils, Iterable<String> {
 
   private static final int DEFAULT_ARRAY_SIZE = 128;
 
@@ -90,9 +90,8 @@ public class TextColumn extends AbstractColumn
 
   private TextColumn copy() {
     TextColumn copy = emptyCopy();
-    Iterator<String> iterator = data.iterator();
-    while (iterator.hasNext()) {
-      copy.add(iterator.next());
+    for (String aData : data) {
+      copy.add(aData);
     }
     return copy;
   }
@@ -229,16 +228,17 @@ public class TextColumn extends AbstractColumn
   }
 
   @Override
-  public List<String> data() {
-    return data;
-  }
-
-  @Override
   public void appendColumnData(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     TextColumn intColumn = (TextColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.get(i));
     }
+  }
+
+
+  @Override
+  public Iterator<String> iterator() {
+    return data.iterator();
   }
 }
