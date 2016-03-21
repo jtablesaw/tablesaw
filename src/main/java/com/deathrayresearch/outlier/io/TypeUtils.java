@@ -169,6 +169,8 @@ public final class TypeUtils {
         return PeriodColumn.create(name);
       case CAT:
         return CategoryColumn.create(name);
+      case SHORT_INT:
+        return ShortColumn.create(name);
       default:
         throw new IllegalArgumentException("Unknown ColumnType: " + type);
     }

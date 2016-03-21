@@ -10,6 +10,7 @@ import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import com.deathrayresearch.outlier.columns.LocalTimeColumn;
 import com.deathrayresearch.outlier.columns.PeriodColumn;
+import com.deathrayresearch.outlier.columns.ShortColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
 
 import java.util.List;
@@ -53,6 +54,10 @@ class SubTable extends Table {
         case INTEGER:
           IntColumn intColumn = (IntColumn) column;
           intColumn.add(sourceTable.intColumn(i).get(rowIndex));
+          break;
+        case SHORT_INT:
+          ShortColumn shortColumn = (ShortColumn) column;
+          shortColumn.add(sourceTable.shortColumn(i).get(rowIndex));
           break;
         case BOOLEAN:
           BooleanColumn booleanColumn = (BooleanColumn) column;

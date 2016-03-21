@@ -52,7 +52,7 @@ public class DictionaryMap {
   }
 
   public short size() {
-    return (short) valueToKey.size();
+    return (short) categories().size();
   }
 
   public Set<String> categories() {

@@ -1,16 +1,17 @@
 package com.deathrayresearch.outlier.mapper;
 
-import com.deathrayresearch.outlier.columns.IntColumnUtils;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
+import com.deathrayresearch.outlier.columns.ShortColumn;
+import com.deathrayresearch.outlier.columns.ShortColumnUtils;
 
 /**
  *
  */
-public interface IntMapUtils extends IntColumnUtils {
+public interface ShortMapUtils extends ShortColumnUtils {
 
-  default IntColumn plus(IntColumn ... columns) {
+  default IntColumn plus(ShortColumn... columns) {
 
     // TODO(lwhite): Assert all columns are the same size.
     String nString = names(columns);
@@ -19,7 +20,7 @@ public interface IntMapUtils extends IntColumnUtils {
 
     for (int r = 0; r < columns[0].size(); r++) {
       int result = 0;
-      for (IntColumn column : columns) {
+      for (ShortColumn column : columns) {
         result = result + column.get(r);
       }
       newColumn.add(result);
@@ -28,7 +29,7 @@ public interface IntMapUtils extends IntColumnUtils {
   }
 
   // TODO(lwhite): make this a shared utility
-  default String names(IntColumn[] columns) {
+  default String names(ShortColumn[] columns) {
     StringBuilder builder = new StringBuilder();
     int count = 0;
     for (Column column: columns) {
@@ -49,7 +50,7 @@ public interface IntMapUtils extends IntColumnUtils {
     FloatColumn pctColumn = new FloatColumn(name() + " percents");
     float total = sum();
     // TODO(lwhite): Handle div by 0 value total
-    for (int next : this) {
+    for (short next : this) {
       pctColumn.add((float) next / total);
     }
     return pctColumn;
@@ -63,7 +64,7 @@ public interface IntMapUtils extends IntColumnUtils {
     FloatColumn pctColumn = new FloatColumn(name() + " percents");
     float total = sum();
     // TODO(lwhite): Handle div by 0 value total
-    for (int next : this) {
+    for (short next : this) {
       pctColumn.add(((float) next / total) * 100);
     }
     return pctColumn;

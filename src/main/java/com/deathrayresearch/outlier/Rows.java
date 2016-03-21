@@ -25,6 +25,9 @@ public class Rows {
         case INTEGER:
           copy(rows, (IntColumn) oldTable.column(columnIndex), (IntColumn) newTable.column(columnIndex));
           break;
+        case SHORT_INT:
+          copy(rows, (ShortColumn) oldTable.column(columnIndex), (ShortColumn) newTable.column(columnIndex));
+          break;
         case CAT:
           copy(rows, (CategoryColumn) oldTable.column(columnIndex), (CategoryColumn) newTable.column(columnIndex));
           break;
@@ -77,6 +80,12 @@ public class Rows {
   }
 
   private static void copy(IntArrayList rows, IntColumn oldColumn, IntColumn newColumn) {
+    for (int index : rows) {
+      newColumn.add(oldColumn.get(index));
+    }
+  }
+
+  private static void copy(IntArrayList rows, ShortColumn oldColumn, ShortColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.get(index));
     }

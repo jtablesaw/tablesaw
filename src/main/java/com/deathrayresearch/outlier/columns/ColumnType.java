@@ -9,6 +9,7 @@ public enum ColumnType {
   BOOLEAN(false),
   CAT(""),
   FLOAT(Float.NaN),
+  SHORT_INT(Short.MIN_VALUE),
   INTEGER(Integer.MIN_VALUE),
   TEXT(""),
   LOCAL_DATE(Integer.MIN_VALUE),

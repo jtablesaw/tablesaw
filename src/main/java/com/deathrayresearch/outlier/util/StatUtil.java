@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.util;
 
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
+import com.deathrayresearch.outlier.columns.ShortColumn;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.exception.NotPositiveException;
 import org.apache.commons.math3.exception.NullArgumentException;
@@ -16,8 +17,7 @@ import java.util.List;
  */
 public class StatUtil {
 
-  private StatUtil() {
-  }
+  private StatUtil() {}
 
   public static float sum(final FloatColumn values) {
     float sum;
@@ -167,6 +167,17 @@ public class StatUtil {
     return stats;
   }
 
+  public static IntStats stats(final ShortColumn ints) {
+    FloatColumn values = FloatColumn.create(ints.name(), ints.toFloatArray());
+    IntStats stats = new IntStats();
+    stats.min = min(ints);
+    stats.max = max(ints);
+    stats.n = values.size();
+    stats.sum = ints.sum();
+    stats.variance = variance(values);
+    return stats;
+  }
+
 
   /**
    * Returns the sample mode(s).  The mode is the most frequently occurring
@@ -255,5 +266,33 @@ public class StatUtil {
       modes[i++] = ((Float) c);
     }
     return modes;
+  }
+
+  public static short max(ShortColumn values) {
+    if (values.size() == 0) {
+      return ShortColumn.MISSING_VALUE;
+    }
+    short max = values.firstElement();
+    for (short value : values) {
+      if (!Float.isNaN(value)) {
+        if (value > max) {
+          max = value;
+        }
+      }
+    }
+    return max;
+  }
+
+  public static short min(ShortColumn values) {
+    if (values.size() == 0) {
+      return ShortColumn.MISSING_VALUE;
+    }
+    short min = values.firstElement();
+    for (short value : values) {
+      if (value != ShortColumn.MISSING_VALUE) {
+        min = (min < value) ? min : value;
+      }
+    }
+    return min;
   }
 }

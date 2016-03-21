@@ -8,6 +8,7 @@ import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import com.deathrayresearch.outlier.columns.LocalTimeColumn;
 import com.deathrayresearch.outlier.columns.PeriodColumn;
+import com.deathrayresearch.outlier.columns.ShortColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
 import org.apache.commons.lang3.StringUtils;
 
@@ -210,7 +211,6 @@ public interface Relation {
     structure.addColumn(TextColumn.create("Last"));
 
     for (Column column : columns()) {
-      System.out.println(column.name());
       structure.intColumn("Index").add(columnIndex(column));
       structure.textColumn("Column Name").add(column.name());
       structure.textColumn("Type").add(column.type().name());
@@ -228,42 +228,8 @@ public interface Relation {
         .append(name())
         .append("\n");
     for (Column column : columns()) {
-      switch (column.type()) {
-        case INTEGER:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case FLOAT:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case LOCAL_DATE:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case LOCAL_DATE_TIME:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case LOCAL_TIME:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case BOOLEAN:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case TEXT:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        case CAT:
-          builder.append(column.summary().print());
-          builder.append("\n");
-          break;
-        default:
-          throw new RuntimeException("ColumnType not found");
-      }
+      builder.append(column.summary().print());
+      builder.append("\n");
     }
     builder.append("\n");
     return builder.toString();
@@ -288,6 +254,13 @@ public interface Relation {
   }
   default IntColumn intColumn(int columnIndex) {
     return (IntColumn) column(columnIndex);
+  }
+
+  default ShortColumn shortColumn(String columnName) {
+    return (ShortColumn) column(columnName);
+  }
+  default ShortColumn shortColumn(int columnIndex) {
+    return (ShortColumn) column(columnIndex);
   }
 
   default TextColumn textColumn(int columnIndex) {

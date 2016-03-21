@@ -11,6 +11,7 @@ import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import com.deathrayresearch.outlier.columns.LocalTimeColumn;
 import com.deathrayresearch.outlier.columns.PeriodColumn;
+import com.deathrayresearch.outlier.columns.ShortColumn;
 import com.deathrayresearch.outlier.columns.TextColumn;
 import org.iq80.snappy.SnappyFramedInputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
@@ -27,7 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
@@ -102,6 +102,8 @@ public class StorageManager {
         return readTextColumn(fileName, columnMetadata);
       case CAT:
         return readCategoryColumn(fileName, columnMetadata);
+      case SHORT_INT:
+        return readShortColumn(fileName, columnMetadata);
       default:
         throw new RuntimeException("Unhandled column type writing columns");
     }
@@ -134,6 +136,23 @@ public class StorageManager {
       while (!EOF) {
         try {
           ints.add(dis.readInt());
+        } catch (EOFException e) {
+          EOF = true;
+        }
+      }
+    }
+    return ints;
+  }
+
+  public static ShortColumn readShortColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    ShortColumn ints = new ShortColumn(metadata);
+    try (FileInputStream fis = new FileInputStream(fileName);
+         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+         DataInputStream dis = new DataInputStream(sis)) {
+      boolean EOF = false;
+      while (!EOF) {
+        try {
+          ints.add(dis.readShort());
         } catch (EOFException e) {
           EOF = true;
         }
@@ -329,6 +348,9 @@ public class StorageManager {
         case CAT:
           writeColumn(fileName, (CategoryColumn) column);
           break;
+        case SHORT_INT:
+          writeColumn(fileName, (ShortColumn) column);
+          break;
         default:
           throw new RuntimeException("Unhandled column type writing columns");
       }
@@ -394,6 +416,22 @@ public class StorageManager {
       int i = 0;
       for (int d : column.data()) {
         dos.writeInt(d);
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
+          dos.flush();
+        }
+        i++;
+      }
+      dos.flush();
+    }
+  }
+
+  public static void writeColumn(String fileName, ShortColumn column) throws IOException {
+    try (FileOutputStream fos = new FileOutputStream(fileName);
+         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
+         DataOutputStream dos = new DataOutputStream(sos)) {
+      int i = 0;
+      for (short d : column) {
+        dos.writeShort(d);
         if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
