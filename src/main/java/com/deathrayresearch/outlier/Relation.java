@@ -1,15 +1,6 @@
 package com.deathrayresearch.outlier;
 
-import com.deathrayresearch.outlier.columns.BooleanColumn;
-import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.FloatColumn;
-import com.deathrayresearch.outlier.columns.IntColumn;
-import com.deathrayresearch.outlier.columns.LocalDateColumn;
-import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
-import com.deathrayresearch.outlier.columns.LocalTimeColumn;
-import com.deathrayresearch.outlier.columns.PeriodColumn;
-import com.deathrayresearch.outlier.columns.ShortColumn;
-import com.deathrayresearch.outlier.columns.TextColumn;
+import com.deathrayresearch.outlier.columns.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -137,6 +128,18 @@ public interface Relation {
   String id();
 
   List<String> columnNames();
+
+  /**
+   * Returns an array of the column types of all columns in the relation, including duplicates as appropriate,
+   * and maintaining order
+   */
+  default ColumnType[] columnTypes() {
+    ColumnType[] columnTypes = new ColumnType[columnCount()];
+    for (int i = 0; i < columnCount(); i++) {
+      columnTypes[i] = columns().get(i).type();
+    }
+    return columnTypes;
+  }
 
   /**
    * Returns an array of column widths for printing tables

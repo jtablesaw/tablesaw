@@ -49,9 +49,13 @@ public interface ShortMapUtils extends ShortColumnUtils {
   default FloatColumn asRatio() {
     FloatColumn pctColumn = new FloatColumn(name() + " percents");
     float total = sum();
-    // TODO(lwhite): Handle div by 0 value total
     for (short next : this) {
-      pctColumn.add((float) next / total);
+      if (total != 0) {
+        pctColumn.add((float) next / total);
+      } else {
+        pctColumn.add(FloatColumn.MISSING_VALUE);
+      }
+
     }
     return pctColumn;
   }
@@ -63,9 +67,12 @@ public interface ShortMapUtils extends ShortColumnUtils {
   default FloatColumn asPercent() {
     FloatColumn pctColumn = new FloatColumn(name() + " percents");
     float total = sum();
-    // TODO(lwhite): Handle div by 0 value total
     for (short next : this) {
-      pctColumn.add(((float) next / total) * 100);
+      if (total != 0) {
+        pctColumn.add(((float) next / total) * 100);
+      } else {
+        pctColumn.add(FloatColumn.MISSING_VALUE);
+      }
     }
     return pctColumn;
   }

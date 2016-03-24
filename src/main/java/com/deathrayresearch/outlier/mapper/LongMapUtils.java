@@ -1,25 +1,22 @@
 package com.deathrayresearch.outlier.mapper;
 
-import com.deathrayresearch.outlier.columns.IntColumnUtils;
-import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.FloatColumn;
-import com.deathrayresearch.outlier.columns.IntColumn;
+import com.deathrayresearch.outlier.columns.*;
 
 /**
  *
  */
-public interface IntMapUtils extends IntColumnUtils {
+public interface LongMapUtils extends LongColumnUtils {
 
-  default IntColumn plus(IntColumn ... columns) {
+  default LongColumn plus(LongColumn... columns) {
 
     // TODO(lwhite): Assert all columns are the same size.
     String nString = names(columns);
     String name = String.format("sum(%s)", nString);
-    IntColumn newColumn = IntColumn.create(name);
+    LongColumn newColumn = LongColumn.create(name);
 
     for (int r = 0; r < columns[0].size(); r++) {
-      int result = 0;
-      for (IntColumn column : columns) {
+      long result = 0;
+      for (LongColumn column : columns) {
         result = result + column.get(r);
       }
       newColumn.add(result);
@@ -28,7 +25,7 @@ public interface IntMapUtils extends IntColumnUtils {
   }
 
   // TODO(lwhite): make this a shared utility
-  default String names(IntColumn[] columns) {
+  default String names(LongColumn[] columns) {
     StringBuilder builder = new StringBuilder();
     int count = 0;
     for (Column column: columns) {
@@ -48,14 +45,13 @@ public interface IntMapUtils extends IntColumnUtils {
   default FloatColumn asRatio() {
     FloatColumn pctColumn = new FloatColumn(name() + " percents");
     float total = sum();
-    for (int next : this) {
+    for (long next : this) {
       if (total != 0) {
         pctColumn.add((float) next / total);
       } else {
-      pctColumn.add(FloatColumn.MISSING_VALUE);
+        pctColumn.add(FloatColumn.MISSING_VALUE);
+      }
     }
-
-  }
     return pctColumn;
   }
 
@@ -66,7 +62,7 @@ public interface IntMapUtils extends IntColumnUtils {
   default FloatColumn asPercent() {
     FloatColumn pctColumn = new FloatColumn(name() + " percents");
     float total = sum();
-    for (int next : this) {
+    for (long next : this) {
       if (total != 0) {
         pctColumn.add(((float) next / total) * 100);
       } else {
@@ -77,15 +73,4 @@ public interface IntMapUtils extends IntColumnUtils {
   }
 
   long sum();
-
-  int get(int index);
-
-  default IntColumn difference(IntColumn column2) {
-    IntColumn result = IntColumn.create(name() + " - " + column2.name());
-    for (int r = 0; r < size(); r++) {
-      result.set(r, get(r) - column2.get(r));
-    }
-    return result;
-  }
-
 }

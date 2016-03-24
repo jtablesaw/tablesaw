@@ -7,11 +7,7 @@ import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparator;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.longs.*;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDateTime;
@@ -320,5 +316,45 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.get(i));
     }
+  }
+
+  public LocalDateTime max() {
+    long max;
+    long missing = Long.MIN_VALUE;
+    if (!isEmpty()) {
+      max = getLong(0);
+    } else {
+      return null;
+    }
+    for (long aData : data) {
+      if (missing != aData) {
+        max = (max > aData) ? max : aData;
+      }
+    }
+
+    if (missing == max) {
+      return null;
+    }
+    return PackedLocalDateTime.asLocalDateTime(max);
+  }
+
+  public LocalDateTime min() {
+    long min;
+    long missing = Long.MIN_VALUE;
+
+    if (!isEmpty()) {
+      min = getLong(0);
+    } else {
+      return null;
+    }
+    for (long aData : data) {
+      if (missing != aData) {
+        min = (min < aData) ? min : aData;
+      }
+    }
+    if (Integer.MIN_VALUE == min) {
+      return null;
+    }
+    return PackedLocalDateTime.asLocalDateTime(min);
   }
 }

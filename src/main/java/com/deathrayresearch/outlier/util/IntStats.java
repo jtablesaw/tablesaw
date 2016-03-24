@@ -10,17 +10,17 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class IntStats {
 
-  int n;
-  int missing;
+  long n;
+  long missing;
   long sum;
-  int median;
-  int min;
-  int max;
+  long median;
+  long min;
+  long max;
   double variance;
   double kurtosis;
   double skewness;
 
-  int range() {
+  long range() {
     return max - min;
   }
 
@@ -36,7 +36,7 @@ public class IntStats {
     return stdDev;
   }
 
-  public int n() {
+  public long n() {
     return n;
   }
 
@@ -44,15 +44,15 @@ public class IntStats {
     return sum / (double) n;
   }
 
-  public int median() {
+  public long median() {
     return median;
   }
 
-  public int min() {
+  public long min() {
     return min;
   }
 
-  public int max() {
+  public long max() {
     return max;
   }
 
@@ -72,7 +72,7 @@ public class IntStats {
     return skewness;
   }
 
-  public int missing() {
+  public long missing() {
     return missing;
   }
 
