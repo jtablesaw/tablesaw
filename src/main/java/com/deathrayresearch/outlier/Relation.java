@@ -266,6 +266,13 @@ public interface Relation {
     return (ShortColumn) column(columnIndex);
   }
 
+  default LongColumn longColumn(String columnName) {
+    return (LongColumn) column(columnName);
+  }
+  default LongColumn longColumn(int columnIndex) {
+    return (LongColumn) column(columnIndex);
+  }
+
   default TextColumn textColumn(int columnIndex) {
     return (TextColumn) column(columnIndex);
   }

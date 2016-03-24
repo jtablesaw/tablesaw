@@ -1,17 +1,6 @@
 package com.deathrayresearch.outlier;
 
-import com.deathrayresearch.outlier.columns.BooleanColumn;
-import com.deathrayresearch.outlier.columns.CategoryColumn;
-import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.ColumnType;
-import com.deathrayresearch.outlier.columns.FloatColumn;
-import com.deathrayresearch.outlier.columns.IntColumn;
-import com.deathrayresearch.outlier.columns.LocalDateColumn;
-import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
-import com.deathrayresearch.outlier.columns.LocalTimeColumn;
-import com.deathrayresearch.outlier.columns.PeriodColumn;
-import com.deathrayresearch.outlier.columns.ShortColumn;
-import com.deathrayresearch.outlier.columns.TextColumn;
+import com.deathrayresearch.outlier.columns.*;
 
 import java.util.List;
 
@@ -58,6 +47,10 @@ class SubTable extends Table {
         case SHORT_INT:
           ShortColumn shortColumn = (ShortColumn) column;
           shortColumn.add(sourceTable.shortColumn(i).get(rowIndex));
+          break;
+        case LONG_INT:
+          LongColumn longColumn = (LongColumn) column;
+          longColumn.add(sourceTable.longColumn(i).get(rowIndex));
           break;
         case BOOLEAN:
           BooleanColumn booleanColumn = (BooleanColumn) column;

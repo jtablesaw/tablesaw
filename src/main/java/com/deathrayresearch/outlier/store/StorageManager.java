@@ -2,39 +2,17 @@ package com.deathrayresearch.outlier.store;
 
 import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.columns.BooleanColumn;
-import com.deathrayresearch.outlier.columns.CategoryColumn;
-import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.FloatColumn;
-import com.deathrayresearch.outlier.columns.IntColumn;
-import com.deathrayresearch.outlier.columns.LocalDateColumn;
-import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
-import com.deathrayresearch.outlier.columns.LocalTimeColumn;
-import com.deathrayresearch.outlier.columns.PeriodColumn;
-import com.deathrayresearch.outlier.columns.ShortColumn;
-import com.deathrayresearch.outlier.columns.TextColumn;
+import com.deathrayresearch.outlier.columns.*;
 import org.iq80.snappy.SnappyFramedInputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  *
@@ -104,6 +82,8 @@ public class StorageManager {
         return readCategoryColumn(fileName, columnMetadata);
       case SHORT_INT:
         return readShortColumn(fileName, columnMetadata);
+      case LONG_INT:
+        return readLongColumn(fileName, columnMetadata);
       default:
         throw new RuntimeException("Unhandled column type writing columns");
     }
@@ -153,6 +133,23 @@ public class StorageManager {
       while (!EOF) {
         try {
           ints.add(dis.readShort());
+        } catch (EOFException e) {
+          EOF = true;
+        }
+      }
+    }
+    return ints;
+  }
+
+  public static LongColumn readLongColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    LongColumn ints = new LongColumn(metadata);
+    try (FileInputStream fis = new FileInputStream(fileName);
+         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+         DataInputStream dis = new DataInputStream(sis)) {
+      boolean EOF = false;
+      while (!EOF) {
+        try {
+          ints.add(dis.readLong());
         } catch (EOFException e) {
           EOF = true;
         }
