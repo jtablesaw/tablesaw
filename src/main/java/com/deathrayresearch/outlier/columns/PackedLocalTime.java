@@ -41,6 +41,15 @@ public class PackedLocalTime {
     return (int) millis;
   }
 
+  public static int getMilliseconds(int time) {
+    long millis = getMillisecondsOfMinute(time);
+    millis = millis * 1_000_000L; // convert to nanos of minute
+    byte seconds = getSecond(time);
+    long nanos = seconds * 1_000_000_000L;
+    millis = millis - nanos;         // remove the part in seconds
+    return (int) (millis / 1_000_000L);
+  }
+
   public static long toNanoOfDay(int time) {
     long nano = getHour(time) * 3_600_000_000_000L;
     nano += getMinute(time) * 60_000_000_000L;

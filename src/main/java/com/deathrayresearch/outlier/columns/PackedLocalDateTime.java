@@ -115,12 +115,14 @@ public class PackedLocalDateTime {
             + Strings.padStart(Byte.toString((byte) (date >> 8)), 2, '0')
             + "-"
             + Strings.padStart(Byte.toString((byte) date), 2, '0')
+            + "T"
+            + Strings.padStart(Byte.toString(PackedLocalTime.getHour(time)), 2, '0')
             + ":"
-            + PackedLocalTime.getHour(time)
+            + Strings.padStart(Byte.toString(PackedLocalTime.getMinute(time)), 2, '0')
             + ":"
-            + PackedLocalTime.getMinute(time)
-            + ":"
-            + PackedLocalTime.getSecond(time);
+            + Strings.padStart(Byte.toString(PackedLocalTime.getSecond(time)), 2, '0')
+            + "."
+            + Strings.padStart(String.valueOf(PackedLocalTime.getMilliseconds(time)), 3, '0');
   }
 
   public static int getDayOfYear(long packedDateTime) {

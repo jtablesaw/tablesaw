@@ -82,7 +82,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     data.add(i);
   }
 
-  public void set(int index, short value) {
+  public void set(int index, long value) {
     data.set(index, value);
   }
 

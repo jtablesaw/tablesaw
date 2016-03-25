@@ -26,12 +26,12 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   private LongArrayList data;
 
   @Override
-  public void addCell(String stringvalue) {
+  public void addCell(String stringValue) {
 
-    if (stringvalue == null) {
+    if (stringValue == null) {
       add(Long.MIN_VALUE);
     } else {
-      LocalDateTime dateTime = convert(stringvalue);
+      LocalDateTime dateTime = convert(stringValue);
       if (dateTime != null) {
         add(dateTime);
       } else {
@@ -139,18 +139,19 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     }
   };
 
-
-
   // TODO(lwhite): Implement column summary()
   @Override
   public Table summary() {
-    return null;
+    return new Table("Unimplemented");
   }
 
-  // TODO(lwhite): Implement countUnique()
   @Override
   public int countUnique() {
-    return 0;
+    LongSet ints = new LongOpenHashSet(data.size());
+    for (long i : data) {
+      ints.add(i);
+    }
+    return ints.size();
   }
 
   @Override

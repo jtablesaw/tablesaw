@@ -56,9 +56,9 @@ public interface DateTimeMapUtils extends Column {
       String value;
       if (c1 != null) {
         value = String.valueOf(c1.getHour());
-        newColumn.set(r, value);
+        newColumn.add(value);
       }
-        newColumn.set(r, CategoryColumn.MISSING_VALUE);
+        newColumn.add(CategoryColumn.MISSING_VALUE);
     }
     return newColumn;
   }
