@@ -12,6 +12,7 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.ChronoField;
 import java.util.Arrays;
 
 /**
@@ -358,4 +359,19 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     }
     return PackedLocalDateTime.asLocalDateTime(min);
   }
+
+  public IntColumn minuteOfDay() {
+    IntColumn newColumn = IntColumn.create(this.name() + " minute of day");
+    for (int r = 0; r < this.size(); r++) {
+      long c1 = getLong(r);
+      LocalDateTime localDateTime = PackedLocalDateTime.asLocalDateTime(c1);
+      if (c1 == LocalDateColumn.MISSING_VALUE) {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(localDateTime.toLocalTime().get(ChronoField.MINUTE_OF_DAY));
+      }
+    }
+    return newColumn;
+  }
+
 }

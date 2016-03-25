@@ -316,4 +316,8 @@ public class PackedLocalDateTime {
   public static boolean PM(long packedDateTime) {
     return PackedLocalTime.PM(time(packedDateTime));
   }
+
+  public static int getMinuteOfDay(long c1) {
+    return 0;
+  }
 }
