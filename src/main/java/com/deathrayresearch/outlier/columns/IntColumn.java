@@ -153,7 +153,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   @Override
   public Table summary() {
-    return StatUtil.stats(this).asTable();
+    return StatUtil.stats(this).asTable(name());
   }
 
   @Override

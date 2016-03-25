@@ -151,7 +151,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   @Override
   public Table summary() {
-    return StatUtil.stats(this).asTable();
+    return StatUtil.stats(this).asTable(name());
   }
 
   @Override

@@ -98,7 +98,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return results;
   }
 
-  public RoaringBitmap isGreaterThan(short f) {
+  public RoaringBitmap isGreaterThan(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     for (long next : data) {
@@ -110,7 +110,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return results;
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(short f) {
+  public RoaringBitmap isGreaterThanOrEqualTo(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     for (long next : data) {
@@ -122,7 +122,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return results;
   }
 
-  public RoaringBitmap isLessThanOrEqualTo(short f) {
+  public RoaringBitmap isLessThanOrEqualTo(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     for (long next : data) {
@@ -134,7 +134,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return results;
   }
 
-  public RoaringBitmap isEqualTo(short f) {
+  public RoaringBitmap isEqualTo(long f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     for (long next : data) {
@@ -148,7 +148,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
 
   @Override
   public Table summary() {
-    return StatUtil.stats(this).asTable();
+    return StatUtil.stats(this).asTable(name());
   }
 
   @Override
@@ -243,12 +243,12 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
    * <p>
    * We remove any commas before parsing
    */
-  public static short convert(String stringValue) {
+  public static long convert(String stringValue) {
     if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-      return (short) ColumnType.SHORT_INT.getMissingValue();
+      return (long) ColumnType.LONG_INT.getMissingValue();
     }
     Matcher matcher = COMMA_PATTERN.matcher(stringValue);
-    return Short.parseShort(matcher.replaceAll(""));
+    return Long.parseLong(matcher.replaceAll(""));
   }
 
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
@@ -383,7 +383,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
 
   @Override
   public String toString() {
-    return "ShortInt column: " + name();
+    return "LongInt column: " + name();
   }
 
   @Override
