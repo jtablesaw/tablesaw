@@ -193,17 +193,13 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   }
 
   @Override
-  public Column sortAscending() {
-    ShortColumn copy = copy();
-    Arrays.parallelSort(copy.data.elements());
-    return copy;
+  public void sortAscending() {
+    Arrays.parallelSort(data.elements());
   }
 
   @Override
-  public Column sortDescending() {
-    ShortColumn copy = copy();
-    ShortArrays.parallelQuickSort(copy.data.elements(), reverseIntComparator);
-    return copy;
+  public void sortDescending() {
+    ShortArrays.parallelQuickSort(data.elements(), reverseIntComparator);
   }
 
   ShortComparator reverseIntComparator =  new ShortComparator() {

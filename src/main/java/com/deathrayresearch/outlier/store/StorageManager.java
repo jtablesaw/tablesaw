@@ -364,7 +364,7 @@ public class StorageManager {
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
       int i = 0;
-      for (float d : column.data()) {
+      for (float d : column) {
         dos.writeFloat(d);
         if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();

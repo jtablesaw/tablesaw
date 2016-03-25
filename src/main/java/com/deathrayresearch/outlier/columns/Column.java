@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Relation;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
 /**
@@ -31,9 +32,9 @@ public interface Column {
 
   void clear();
 
-  Column sortAscending();
+  void sortAscending();
 
-  Column sortDescending();
+  void sortDescending();
 
   boolean isEmpty();
 
@@ -78,6 +79,8 @@ public interface Column {
     }
     return col;
   }
+
+  void sortOn(IntArrayList rows);
 
   String print();
 

@@ -97,17 +97,13 @@ public class TextColumn extends AbstractColumn
   }
 
   @Override
-  public Column sortAscending() {
-    TextColumn copy = copy();
-    Collections.sort(copy.data);
-    return copy;
+  public void sortAscending() {
+    Collections.sort(data);
   }
 
   @Override
-  public Column sortDescending() {
-    TextColumn copy = copy();
-    Collections.sort(copy.data, reverseStringComparator);
-    return copy;
+  public void sortDescending() {
+    Collections.sort(data, reverseStringComparator);
   }
 
   /** Sorts strings in reverse lexicographical order */

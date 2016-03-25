@@ -89,17 +89,13 @@ public class LocalTimeColumn extends AbstractColumn {
   }
 
   @Override
-  public LocalTimeColumn sortAscending() {
-    LocalTimeColumn copy = this.copy();
-    Arrays.parallelSort(copy.data.elements());
-    return copy;
+  public void sortAscending() {
+    Arrays.parallelSort(data.elements());
   }
 
   @Override
-  public Column sortDescending() {
-    LocalTimeColumn copy = copy();
-    IntArrays.parallelQuickSort(copy.data.elements());
-    return copy;
+  public void sortDescending() {
+    IntArrays.parallelQuickSort(data.elements());
   }
 
   IntComparator reverseIntComparator =  new IntComparator() {

@@ -22,7 +22,7 @@ public class StatUtil {
   public static float sum(final FloatColumn values) {
     float sum;
     sum = 0.0f;
-    for (float value : values.data()) {
+    for (float value : values) {
       if (value != Float.NaN) {
         sum += value;
       }
@@ -50,7 +50,7 @@ public class StatUtil {
       return Float.NaN;
     }
     float min = values.firstElement();
-    for (float value : values.data()) {
+    for (float value : values) {
       if (!Float.isNaN(value)) {
         min = (min < value) ? min : value;
       }
@@ -76,7 +76,7 @@ public class StatUtil {
       return Float.NaN;
     }
     float max = values.firstElement();
-    for (float value : values.data()) {
+    for (float value : values) {
       if (!Float.isNaN(value)) {
         if (value > max) {
           max = value;
@@ -113,7 +113,7 @@ public class StatUtil {
   public static float variance(FloatColumn column) {
     float avg = mean(column);
     float sumSquaredDiffs = 0.0f;
-    for (float value : column.data()) {
+    for (float value : column) {
       float diff = value - avg;
       float sqrdDiff = diff * diff;
       sumSquaredDiffs += sqrdDiff;

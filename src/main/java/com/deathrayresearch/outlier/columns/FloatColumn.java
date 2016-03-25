@@ -10,6 +10,8 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrays;
 import it.unimi.dsi.fastutil.floats.FloatComparator;
+import it.unimi.dsi.fastutil.floats.FloatIterable;
+import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -22,7 +24,7 @@ import java.util.regex.Pattern;
 /**
  * A column in a base table that contains float values
  */
-public class FloatColumn extends AbstractColumn implements NumReduceUtils {
+public class FloatColumn extends AbstractColumn implements NumReduceUtils, FloatIterable {
 
   public static final float MISSING_VALUE = (float) ColumnType.FLOAT.getMissingValue();
 
@@ -43,10 +45,6 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
   public FloatColumn(ColumnMetadata metadata) {
     super(metadata);
     data = new FloatArrayList(metadata.getSize());
-  }
-
-  public FloatArrayList data() {
-    return data;
   }
 
   public int size() {
@@ -200,17 +198,13 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
   }
 
   @Override
-  public FloatColumn sortAscending() {
-    FloatColumn copy = copy();
-    Arrays.parallelSort(copy.data.elements());
-    return copy;
+  public void sortAscending() {
+    Arrays.parallelSort(data.elements());
   }
 
   @Override
-  public Column sortDescending() {
-    FloatColumn copy = copy();
-    FloatArrays.parallelQuickSort(copy.data.elements(), reverseFloatComparator);
-    return copy;
+  public void sortDescending() {
+    FloatArrays.parallelQuickSort(data.elements(), reverseFloatComparator);
   }
 
   @Override
@@ -228,6 +222,9 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
     return column;
   }
 
+  /**
+   * Compares two floats, such that a sort based on this comparator would sort in descending order
+   */
   FloatComparator reverseFloatComparator =  new FloatComparator() {
 
     @Override
@@ -413,6 +410,10 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
 
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
+  /**
+   * Compares the given ints, which refer to the indexes of the floats in this column, according to the values of the
+   * floats themselves
+   */
   @Override
   public IntComparator rowComparator() {
     return comparator;
@@ -539,4 +540,10 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils {
       add(floatColumn.get(i));
     }
   }
+
+  @Override
+  public FloatIterator iterator() {
+    return data.iterator();
+  }
+
 }

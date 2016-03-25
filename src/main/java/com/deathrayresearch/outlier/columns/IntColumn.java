@@ -190,17 +190,13 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   }
 
   @Override
-  public Column sortAscending() {
-    IntColumn copy = copy();
-    Arrays.parallelSort(copy.data.elements());
-    return copy;
+  public void sortAscending() {
+    Arrays.parallelSort(data.elements());
   }
 
   @Override
-  public Column sortDescending() {
-    IntColumn copy = copy();
-    IntArrays.parallelQuickSort(copy.data.elements(), reverseIntComparator);
-    return copy;
+  public void sortDescending() {
+    IntArrays.parallelQuickSort(data.elements(), reverseIntComparator);
   }
 
   IntComparator reverseIntComparator =  new IntComparator() {

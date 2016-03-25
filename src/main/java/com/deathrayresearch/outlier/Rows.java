@@ -1,7 +1,9 @@
 package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.*;
+import com.deathrayresearch.outlier.util.ReverseIntComparator;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -55,10 +57,21 @@ public class Rows {
     }
   }
 
+  public static void sortRows(IntArrayList rows, Table oldTable) {
+
+    for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
+      oldTable.column(columnIndex).sortOn(rows);
+    }
+  }
+
   private static void copy(IntArrayList rows, FloatColumn oldColumn, FloatColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.get(index));
     }
+  }
+
+  private static void sort(IntArrayList rows, FloatColumn oldColumn) {
+    oldColumn.sortOn(rows);
   }
 
   private static void copy(IntArrayList rows, CategoryColumn oldColumn, CategoryColumn newColumn) {
@@ -112,6 +125,20 @@ public class Rows {
   private static void copy(IntArrayList rows, PeriodColumn oldColumn, PeriodColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.getInt(index));
+    }
+  }
+
+  /**
+   * Returns a comparator for the column matching the specified name
+   */
+  private IntComparator rowComparator(Column column, boolean reverse) {
+
+    IntComparator rowComparator = column.rowComparator();
+
+    if (reverse) {
+      return ReverseIntComparator.reverse(rowComparator);
+    } else {
+      return rowComparator;
     }
   }
 }

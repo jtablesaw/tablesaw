@@ -117,17 +117,13 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   }
 
   @Override
-  public LocalDateTimeColumn sortAscending() {
-    LocalDateTimeColumn copy = copy();
-    Arrays.parallelSort(copy.data.elements());
-    return copy;
+  public void sortAscending() {
+    Arrays.parallelSort(data.elements());
   }
 
   @Override
-  public Column sortDescending() {
-    LocalDateTimeColumn copy = copy();
-    LongArrays.parallelQuickSort(copy.data.elements(), reverseLongComparator);
-    return copy;
+  public void sortDescending() {
+    LongArrays.parallelQuickSort(data.elements(), reverseLongComparator);
   }
 
   LongComparator reverseLongComparator =  new LongComparator() {

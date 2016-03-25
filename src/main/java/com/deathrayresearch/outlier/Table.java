@@ -11,10 +11,10 @@ import com.deathrayresearch.outlier.util.IntComparatorChain;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -302,10 +302,10 @@ public class Table implements Relation {
   public Table sortOn(IntComparator rowComparator) {
     Table newTable = (Table) emptyCopy();
 
-    IntArrayList newRows = new IntArrayList(rows());
-    Collections.sort(newRows, rowComparator);
+    int[] newRows = rows();
+    IntArrays.parallelQuickSort(newRows, rowComparator);
 
-    Rows.copyRowsToTable(newRows, this, newTable);
+    Rows.copyRowsToTable(IntArrayList.wrap(newRows), this, newTable);
     return newTable;
   }
 

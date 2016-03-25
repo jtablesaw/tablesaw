@@ -41,7 +41,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     data = new BooleanArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  private BooleanColumn(String name, int initialSize) {
+  public BooleanColumn(String name, int initialSize) {
     super(name);
     data = new BooleanArrayList(initialSize);
   }
@@ -145,17 +145,13 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   }
 
   @Override
-  public BooleanColumn sortAscending() {
-    BooleanColumn copy = copy();
-    BooleanArrays.mergeSort(copy.data.elements());
-    return copy;
+  public void sortAscending() {
+    BooleanArrays.mergeSort(data.elements());
   }
 
   @Override
-  public Column sortDescending() {
-    BooleanColumn copy = copy();
-    BooleanArrays.mergeSort(copy.data.elements(), reverseBooleanComparator);
-    return copy;
+  public void sortDescending() {
+    BooleanArrays.mergeSort(data.elements(), reverseBooleanComparator);
   }
 
   BooleanComparator reverseBooleanComparator =  new BooleanComparator() {

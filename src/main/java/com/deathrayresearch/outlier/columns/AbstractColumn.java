@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.store.ColumnMetadata;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 import java.util.UUID;
 
@@ -34,6 +35,11 @@ abstract class AbstractColumn implements Column {
   @Override
   public String metadata() {
     return new ColumnMetadata(this).toJson();
+  }
+
+  @Override
+  public void sortOn(IntArrayList rows) {
+
   }
 
   public void setName(String name) {

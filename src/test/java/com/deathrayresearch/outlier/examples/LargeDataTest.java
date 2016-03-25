@@ -69,7 +69,7 @@ public class LargeDataTest {
     System.out.println(t.structure().print());
     System.out.println("Time to print structure " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
     System.out.println();
-    
+
     stopwatch.reset().start();
     CsvWriter.write("bigdata/shortpeople2.csv", t);
     System.out.println("Time to write csv file " + stopwatch.elapsed(TimeUnit.SECONDS));

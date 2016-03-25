@@ -88,10 +88,8 @@ public class CategoryColumn extends AbstractColumn
   }
 
   @Override
-  public CategoryColumn sortAscending() {
-    CategoryColumn copy = copy();
-    ShortArrays.parallelQuickSort(copy.values.elements(), dictionarySortComparator);
-    return copy;
+  public void sortAscending() {
+    ShortArrays.parallelQuickSort(values.elements(), dictionarySortComparator);
   }
 
   private ShortComparator dictionarySortComparator = new ShortComparator() {
@@ -119,10 +117,8 @@ public class CategoryColumn extends AbstractColumn
   };
 
   @Override
-  public CategoryColumn sortDescending() {
-    CategoryColumn copy = copy();
-    ShortArrays.parallelQuickSort(copy.values.elements(), reverseDictionarySortComparator);
-    return copy;
+  public void sortDescending() {
+    ShortArrays.parallelQuickSort(values.elements(), reverseDictionarySortComparator);
   }
 
   /**
