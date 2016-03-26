@@ -72,8 +72,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   public Table summary() {
 
     Map<Boolean, Integer> counts = new HashMap<>(3);
-    counts.put(true, 0);
-    counts.put(false, 0);
+    counts.put(Boolean.TRUE, 0);
+    counts.put(Boolean.FALSE, 0);
 
     for (boolean next : data) {
       counts.put(next, counts.get(next) + 1);
@@ -137,11 +137,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   }
 
   private BooleanColumn copy() {
-    BooleanColumn copy = emptyCopy();
-    for (boolean b : data) {
-      copy.add(b);
-    }
-    return copy;
+    return BooleanColumn.create(name(), data);
   }
 
   @Override
