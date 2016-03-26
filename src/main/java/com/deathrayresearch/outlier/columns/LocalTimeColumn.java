@@ -83,9 +83,7 @@ public class LocalTimeColumn extends AbstractColumn {
   }
 
   private LocalTimeColumn copy() {
-    LocalTimeColumn copy = emptyCopy();
-    copy.data.addAll(data);
-    return copy;
+    return LocalTimeColumn.create(name(), data);
   }
 
   @Override
@@ -95,7 +93,7 @@ public class LocalTimeColumn extends AbstractColumn {
 
   @Override
   public void sortDescending() {
-    IntArrays.parallelQuickSort(data.elements());
+    IntArrays.parallelQuickSort(data.elements(), reverseIntComparator);
   }
 
   IntComparator reverseIntComparator =  new IntComparator() {
@@ -145,15 +143,13 @@ public class LocalTimeColumn extends AbstractColumn {
 
   @Override
   public int countUnique() {
-    IntSet ints = new IntOpenHashSet();
-    ints.addAll(data);
+    IntSet ints = new IntOpenHashSet(data);
     return ints.size();
   }
 
   @Override
   public LocalTimeColumn unique() {
-    IntSet ints = new IntOpenHashSet(size());
-    ints.addAll(data);
+    IntSet ints = new IntOpenHashSet(data);
     return LocalTimeColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
   }
 
@@ -162,7 +158,7 @@ public class LocalTimeColumn extends AbstractColumn {
     return data.isEmpty();
   }
 
-  public int convert(String value) {
+  public static int convert(String value) {
     if (Strings.isNullOrEmpty(value)
         || TypeUtils.MISSING_INDICATORS.contains(value)
         || value.equals("-1")) {
@@ -251,6 +247,4 @@ public class LocalTimeColumn extends AbstractColumn {
       add(intColumn.getInt(i));
     }
   }
-
-
 }
