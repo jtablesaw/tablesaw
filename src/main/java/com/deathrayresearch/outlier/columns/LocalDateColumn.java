@@ -87,11 +87,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   private LocalDateColumn copy() {
-    LocalDateColumn copy = emptyCopy();
-    for (int i : data) {
-      copy.add(i);
-    }
-    return copy;
+    return LocalDateColumn.create(name(), data);
   }
 
   @Override
@@ -274,7 +270,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return column;
   }
 
-  public int convert(String value) {
+  public static int convert(String value) {
     if (Strings.isNullOrEmpty(value)
         || TypeUtils.MISSING_INDICATORS.contains(value)
         || value.equals("-1")) {
