@@ -371,5 +371,4 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     }
     return newColumn;
   }
-
 }
