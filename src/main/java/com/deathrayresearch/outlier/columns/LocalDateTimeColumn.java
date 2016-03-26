@@ -46,7 +46,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     add(dt);
   }
 
-  public LocalDateTime convert(String value) {
+  public static LocalDateTime convert(String value) {
     if (Strings.isNullOrEmpty(value)
         || TypeUtils.MISSING_INDICATORS.contains(value)
         || value.equals("-1")) {
@@ -108,9 +108,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   }
 
   private LocalDateTimeColumn copy() {
-    LocalDateTimeColumn copy = emptyCopy();
-    copy.data.addAll(data);
-    return copy;
+    return LocalDateTimeColumn.create(name(), data);
   }
 
   @Override
@@ -202,7 +200,11 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
         newColumn.set(r, null);
       } else {
         LocalDateTime value1 = PackedLocalDateTime.asLocalDateTime(c1);
-        newColumn.add(value1.getDayOfWeek().toString());
+        if (value1 == null) {
+          newColumn.add(CategoryColumn.MISSING_VALUE);
+        } else {
+          newColumn.add(value1.getDayOfWeek().toString());
+        }
       }
     }
     return newColumn;
