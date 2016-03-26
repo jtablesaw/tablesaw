@@ -159,18 +159,14 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   @Override
   public int countUnique() {
     RoaringBitmap roaringBitmap = new RoaringBitmap();
-    for (int i : data) {
-      roaringBitmap.add(i);
-    }
+    data.forEach(roaringBitmap::add);
     return roaringBitmap.getCardinality();
   }
 
   @Override
   public IntColumn unique() {
     RoaringBitmap roaringBitmap = new RoaringBitmap();
-    for (int i : data) {
-      roaringBitmap.add(i);
-    }
+    data.forEach(roaringBitmap::add);
     return IntColumn.create(name() + " Unique values", IntArrayList.wrap(roaringBitmap.toArray()));
   }
 
@@ -214,11 +210,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
 
   private IntColumn copy() {
-    IntColumn copy = emptyCopy();
-    for (int i : data) {
-      copy.add(i);
-    }
-    return copy;
+    return IntColumn.create(name(), data);
   }
 
   @Override
