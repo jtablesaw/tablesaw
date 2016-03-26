@@ -11,7 +11,7 @@ data warehouses (e.g. compressed, column-oriented storage and data structures), 
 The goal is to make all but the biggest data wrangling jobs approachable without the complexity of distributed computing (HDFS, Hadoop, etc.). 
 Analysis is more productive with less engineering overhead and shorter iteration cycles. A fluent API lets developers express operations in a concise and readable fashion. 
 
-Tablesaw provides general-purpose analytic support, including rich functionality for working with time-series, 
+Tablesaw provides general-purpose analytic support, with rich functionality for working with time-series, 
 including specialized column types for dates, times, timestamps and intervals. 
 
 I'm aiming for usability at least as good as R dataframes or Pandas. And with Java 9, you'll be able to work interactively in the REPL. 
@@ -42,7 +42,7 @@ Here we read a csv file of bus stop data. First, we say what column types are pr
 ```
 
 ### Viewing data
-Take a look at some data. The head(n) method returns the first n rows.
+The head(n) method returns the first n rows.
 
 ```java
 
@@ -50,7 +50,7 @@ Take a look at some data. The head(n) method returns the first n rows.
     
 ```
 
-produces:
+producing:
 
     data/bus_stop_test.csv
     stop_id stop_name                stop_desc                                                stop_lat  stop_lon   
