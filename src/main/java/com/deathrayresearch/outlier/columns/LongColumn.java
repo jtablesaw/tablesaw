@@ -5,6 +5,7 @@ import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.LongMapUtils;
 import com.deathrayresearch.outlier.sorting.LongComparisonUtil;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
+import com.deathrayresearch.outlier.util.ReverseLongComparator;
 import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -191,22 +192,8 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
 
   @Override
   public void sortDescending() {
-    LongArrays.parallelQuickSort(data.elements(), reverseIntComparator);
+    LongArrays.parallelQuickSort(data.elements(), ReverseLongComparator.instance());
   }
-
-  LongComparator reverseIntComparator =  new LongComparator() {
-
-    @Override
-    public int compare(Long o2, Long o1) {
-      return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
-    }
-
-    @Override
-    public int compare(long o2, long o1) {
-      return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
-    }
-  };
-
 
   private LongColumn copy() {
     LongColumn copy = emptyCopy();

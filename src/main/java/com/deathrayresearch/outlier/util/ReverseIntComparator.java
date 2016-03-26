@@ -2,11 +2,13 @@ package com.deathrayresearch.outlier.util;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
-/**
- *
- */
+import javax.annotation.concurrent.Immutable;
 
-public class ReverseIntComparator implements IntComparator {
+/**
+ * A Comparator for int primitives for sorting in reverse order, using the given comparator
+ */
+@Immutable
+public final class ReverseIntComparator implements IntComparator {
 
   public static IntComparator reverse(IntComparator intComparator) {
     return new ReverseIntComparator(intComparator);
