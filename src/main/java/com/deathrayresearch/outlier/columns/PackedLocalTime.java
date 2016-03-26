@@ -26,14 +26,14 @@ public class PackedLocalTime {
     return (byte) (time >> 24);
   }
 
-  public static char getMillisecondsOfMinute(int time) {
+  public static char getMillisecondOfMinute(int time) {
     byte byte1 = (byte) (time >> 8);
     byte byte2 = (byte) time;
     return (char) ((byte1 << 8) | (byte2 & 0xFF));
   }
 
   public static int getNano(int time) {
-    long millis = getMillisecondsOfMinute(time);
+    long millis = getMillisecondOfMinute(time);
     millis = millis * 1_000_000L; // convert to nanos of minute
     byte seconds = getSecond(time);
     long nanos = seconds * 1_000_000_000L;
@@ -42,7 +42,7 @@ public class PackedLocalTime {
   }
 
   public static int getMilliseconds(int time) {
-    long millis = getMillisecondsOfMinute(time);
+    long millis = getMillisecondOfMinute(time);
     millis = millis * 1_000_000L; // convert to nanos of minute
     byte seconds = getSecond(time);
     long nanos = seconds * 1_000_000_000L;
@@ -97,7 +97,22 @@ public class PackedLocalTime {
   }
 
   public static byte getSecond(int packedLocalTime) {
-    return (byte) (getMillisecondsOfMinute(packedLocalTime) / 1000);
+    return (byte) (getMillisecondOfMinute(packedLocalTime) / 1000);
+  }
+
+  public static int getMinuteOfDay(int packedLocalTime) {
+    return getHour(packedLocalTime) * 60 + getMinute(packedLocalTime);
+  }
+
+  public static int getSecondOfDay(int packedLocalTime) {
+    int total = getHour(packedLocalTime) * 60 * 60;
+    total += getMinute(packedLocalTime) * 60;
+    total += getSecond(packedLocalTime);
+    return total;
+  }
+
+  public static int getMillisecondOfDay(int packedLocalTime) {
+    return (int) (toNanoOfDay(packedLocalTime) / 1000_000);
   }
 
 /*
@@ -129,7 +144,6 @@ public class PackedLocalTime {
         Strings.padStart(Byte.toString(hourByte), 2, '0'),
         Strings.padStart(Byte.toString(minuteByte), 2, '0'),
         Strings.padStart(Integer.toString(second), 2, '0'));
-
   }
 
   public static boolean isMidnight(int packedTime) {

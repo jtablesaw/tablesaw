@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 
 import static org.junit.Assert.*;
 
@@ -56,5 +57,41 @@ public class PackedLocalDateTimeTest {
     System.out.println(d1.toString());
     System.out.println(time.toString());
     System.out.println(t1.toString());
+  }
+
+  @Test
+  public void testGetHour() {
+    LocalDateTime now = LocalDateTime.now();
+    assertEquals(now.getHour(), PackedLocalDateTime.getHour(PackedLocalDateTime.pack(now)));
+  }
+
+  @Test
+  public void testGetMinute() {
+    LocalDateTime now = LocalDateTime.now();
+    assertEquals(now.getMinute(), PackedLocalDateTime.getMinute(PackedLocalDateTime.pack(now)));
+  }
+
+  @Test
+  public void testGetSecond() {
+    LocalDateTime now = LocalDateTime.now();
+    assertEquals(now.getSecond(), PackedLocalDateTime.getSecond(PackedLocalDateTime.pack(now)));
+  }
+
+  @Test
+  public void testGetSecondOfDay() {
+    LocalDateTime now = LocalDateTime.now();
+    assertEquals(now.get(ChronoField.SECOND_OF_DAY), PackedLocalDateTime.getSecondOfDay(PackedLocalDateTime.pack(now)));
+  }
+
+  @Test
+  public void testGetMinuteOfDay() {
+    LocalDateTime now = LocalDateTime.now();
+    assertEquals(now.get(ChronoField.MINUTE_OF_DAY), PackedLocalDateTime.getMinuteOfDay(PackedLocalDateTime.pack(now)));
+  }
+
+  @Test
+  public void testGetMillisecondOfDay() {
+    LocalDateTime now = LocalDateTime.now();
+    assertEquals(now.get(ChronoField.MILLI_OF_DAY), PackedLocalDateTime.getMillisecondOfDay(PackedLocalDateTime.pack(now)));
   }
 }

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.chrono.IsoChronology;
+import java.time.temporal.ChronoField;
 
 import static com.deathrayresearch.outlier.columns.PackedLocalDate.asLocalDate;
 
@@ -317,7 +318,44 @@ public class PackedLocalDateTime {
     return PackedLocalTime.PM(time(packedDateTime));
   }
 
-  public static int getMinuteOfDay(long c1) {
-    return 0;
+  public static int getMinuteOfDay(long packedLocalDateTime) {
+    return getHour(packedLocalDateTime) * 60 + getMinute(packedLocalDateTime);
   }
+
+  public static byte getSecond(int packedLocalDateTime) {
+    return (byte) (getMillisecondOfMinute(packedLocalDateTime) / 1000);
+  }
+
+  public static byte getHour(long packedLocalDateTime) {
+    return (byte) PackedLocalDateTime.asLocalDateTime(packedLocalDateTime).getHour();
+  }
+
+  public static byte getMinute(long packedLocalDateTime) {
+    return (byte) PackedLocalDateTime.asLocalDateTime(packedLocalDateTime).getMinute();
+  }
+
+  public static byte getSecond(long packedLocalDateTime) {
+    return (byte) PackedLocalDateTime.asLocalDateTime(packedLocalDateTime).getSecond();
+  }
+
+  public static int getSecondOfDay(long packedLocalDateTime) {
+    return PackedLocalDateTime.asLocalDateTime(packedLocalDateTime).get(ChronoField.SECOND_OF_DAY);
+  }
+
+  public static short getMillisecondOfMinute(long packedLocalDateTime) {
+    LocalDateTime localDateTime = LocalDateTime.now();
+    short total = (short) localDateTime.get(ChronoField.MILLI_OF_SECOND);
+    total += localDateTime.getSecond() * 1000;
+    return total;
+  }
+
+  public static long getMillisecondOfDay(long packedLocalDateTime) {
+    LocalDateTime localDateTime = PackedLocalDateTime.asLocalDateTime(packedLocalDateTime);
+    long total = (long) localDateTime.get(ChronoField.MILLI_OF_SECOND);
+    total += localDateTime.getSecond() * 1000;
+    total += localDateTime.getMinute() * 60 * 1000;
+    total += localDateTime.getHour() * 60 * 60 * 1000;
+    return total;
+  }
+
 }
