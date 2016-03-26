@@ -68,7 +68,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
 
   @Override
   public ColumnType type() {
-    return ColumnType.SHORT_INT;
+    return ColumnType.LONG_INT;
   }
 
   public long sum() {
