@@ -76,9 +76,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
       floats.add(data.getFloat(i));
     }
     FloatColumn column = new FloatColumn(name() + " Unique values", floats.size());
-    for (float f : floats) {
-      column.add(f);
-    }
+    floats.forEach(column::add);
     return column;
   }
 
@@ -190,11 +188,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
   }
 
   private FloatColumn copy() {
-    FloatColumn copy = emptyCopy();
-    for (float f : data) {
-      copy.add(f);
-    }
-    return copy;
+    return FloatColumn.create(name(), data);
   }
 
   @Override
@@ -467,7 +461,6 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
       }
       i++;
     }
-    
     return results;
   }
 
@@ -480,7 +473,6 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
       }
       i++;
     }
-    
     return results;
   }
 
@@ -545,5 +537,4 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
   public FloatIterator iterator() {
     return data.iterator();
   }
-
 }
