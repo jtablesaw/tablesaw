@@ -327,19 +327,19 @@ public class PackedLocalDateTime {
   }
 
   public static byte getHour(long packedLocalDateTime) {
-    return (byte) PackedLocalDateTime.asLocalDateTime(packedLocalDateTime).getHour();
+    return PackedLocalTime.getHour(time(packedLocalDateTime));
   }
 
   public static byte getMinute(long packedLocalDateTime) {
-    return (byte) PackedLocalDateTime.asLocalDateTime(packedLocalDateTime).getMinute();
+    return PackedLocalTime.getMinute(time(packedLocalDateTime));
   }
 
   public static byte getSecond(long packedLocalDateTime) {
-    return (byte) PackedLocalDateTime.asLocalDateTime(packedLocalDateTime).getSecond();
+    return PackedLocalTime.getSecond(time(packedLocalDateTime));
   }
 
   public static int getSecondOfDay(long packedLocalDateTime) {
-    return PackedLocalDateTime.asLocalDateTime(packedLocalDateTime).get(ChronoField.SECOND_OF_DAY);
+    return PackedLocalTime.getSecondOfDay(time(packedLocalDateTime));
   }
 
   public static short getMillisecondOfMinute(long packedLocalDateTime) {
