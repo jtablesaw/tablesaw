@@ -80,11 +80,7 @@ public class PeriodColumn extends AbstractColumn {
   }
 
   private PeriodColumn copy() {
-    PeriodColumn copy = emptyCopy();
-    for (int date : data) {
-      copy.add(date);
-    }
-    return copy;
+    return PeriodColumn.create(name(), data);
   }
 
   @Override
@@ -272,16 +268,20 @@ public class PeriodColumn extends AbstractColumn {
     return column;
   }
 
-  public int convert(String value) {
+  public static int convert(String value) {
     if (Strings.isNullOrEmpty(value)
         || TypeUtils.MISSING_INDICATORS.contains(value)
         || value.equals("-1")) {
-      return (int) ColumnType.LOCAL_DATE.getMissingValue();
+      return (int) ColumnType.PERIOD.getMissingValue();
     }
     value = Strings.padStart(value, 4, '0');
-    return PackedLocalDate.pack(LocalDate.parse(value, TypeUtils.DATE_FORMATTER));
+    return PackedPeriod.pack(Period.parse(value));
   }
 
+  /**
+   * Converts the given String to a period and adds it to the column
+   * @param string A string representing a period, in a format supported by Period.parse()
+   */
   public void addCell(String string) {
     try {
       add(convert(string));
