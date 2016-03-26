@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class FloatColumnTest {
 
+  @Ignore
   @Test
   public void testApplyFilter() {
 

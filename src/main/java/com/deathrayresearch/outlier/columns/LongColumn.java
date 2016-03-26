@@ -2,18 +2,15 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.TypeUtils;
-import com.deathrayresearch.outlier.mapper.ShortMapUtils;
-import com.deathrayresearch.outlier.sorting.IntComparisonUtil;
+import com.deathrayresearch.outlier.mapper.LongMapUtils;
+import com.deathrayresearch.outlier.sorting.LongComparisonUtil;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.StatUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrays;
-import it.unimi.dsi.fastutil.shorts.ShortComparator;
-import it.unimi.dsi.fastutil.shorts.ShortIterator;
+import it.unimi.dsi.fastutil.longs.*;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
@@ -23,45 +20,45 @@ import java.util.regex.Pattern;
 /**
  * A column that contains signed 4 byte integer values
  */
-public class ShortColumn extends AbstractColumn implements ShortMapUtils {
+public class LongColumn extends AbstractColumn implements LongMapUtils {
 
-  public static final short MISSING_VALUE = (short) ColumnType.SHORT_INT.getMissingValue();
+  public static final long MISSING_VALUE = (long) ColumnType.LONG_INT.getMissingValue();
 
   private static final int DEFAULT_ARRAY_SIZE = 128;
 
-  private ShortArrayList data;
+  private LongArrayList data;
 
-  public static ShortColumn create(String name) {
-    return new ShortColumn(name, DEFAULT_ARRAY_SIZE);
+  public static LongColumn create(String name) {
+    return new LongColumn(name, DEFAULT_ARRAY_SIZE);
   }
 
-  public static ShortColumn create(ColumnMetadata metadata) {
-    return new ShortColumn(metadata);
+  public static LongColumn create(ColumnMetadata metadata) {
+    return new LongColumn(metadata);
   }
 
-  public static ShortColumn create(String name, int arraySize) {
-    return new ShortColumn(name, arraySize);
+  public static LongColumn create(String name, int arraySize) {
+    return new LongColumn(name, arraySize);
   }
 
-  public static ShortColumn create(String name, ShortArrayList ints) {
-    ShortColumn column = new ShortColumn(name, ints.size());
+  public static LongColumn create(String name, LongArrayList ints) {
+    LongColumn column = new LongColumn(name, ints.size());
     column.data = ints;
     return column;
   }
 
-  public ShortColumn(String name, int initialSize) {
+  public LongColumn(String name, int initialSize) {
     super(name);
-    data = new ShortArrayList(initialSize);
+    data = new LongArrayList(initialSize);
   }
 
-  public ShortColumn(ColumnMetadata metadata) {
+  public LongColumn(ColumnMetadata metadata) {
     super(metadata);
-    data = new ShortArrayList(metadata.getSize());
+    data = new LongArrayList(metadata.getSize());
   }
 
-  public ShortColumn(String name) {
+  public LongColumn(String name) {
     super(name);
-    data = new ShortArrayList(DEFAULT_ARRAY_SIZE);
+    data = new LongArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   public int size() {
@@ -75,24 +72,24 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   public long sum() {
     long sum = 0;
-    for (int i : data) {
+    for (long i : data) {
       sum += i;
     }
     return sum;
   }
 
-  public void add(short i) {
+  public void add(long i) {
     data.add(i);
   }
 
-  public void set(int index, short value) {
+  public void set(int index, long value) {
     data.set(index, value);
   }
 
-  public RoaringBitmap isLessThan(short f) {
+  public RoaringBitmap isLessThan(long f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (int next : data) {
+    for (long next : data) {
       if (next < f) {
         results.add(i);
       }
@@ -101,10 +98,10 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return results;
   }
 
-  public RoaringBitmap isGreaterThan(short f) {
+  public RoaringBitmap isGreaterThan(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (int next : data) {
+    for (long next : data) {
       if (next > f) {
         results.add(i);
       }
@@ -113,10 +110,10 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return results;
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(short f) {
+  public RoaringBitmap isGreaterThanOrEqualTo(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (int next : data) {
+    for (long next : data) {
       if (next >= f) {
         results.add(i);
       }
@@ -125,10 +122,10 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return results;
   }
 
-  public RoaringBitmap isLessThanOrEqualTo(short f) {
+  public RoaringBitmap isLessThanOrEqualTo(int f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (int next : data) {
+    for (long next : data) {
       if (next <= f) {
         results.add(i);
       }
@@ -137,10 +134,10 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return results;
   }
 
-  public RoaringBitmap isEqualTo(short f) {
+  public RoaringBitmap isEqualTo(long f) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (int next : data) {
+    for (long next : data) {
       if (next == f) {
         results.add(i);
       }
@@ -156,35 +153,30 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   @Override
   public int countUnique() {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
-    for (int i : data) {
-      roaringBitmap.add(i);
+    LongSet longSet = new LongArraySet();
+    for (long i : data) {
+      longSet.add(i);
     }
-    return roaringBitmap.getCardinality();
+    return longSet.size();
   }
 
   @Override
-  public ShortColumn unique() {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
-    for (short i : data) {
-      roaringBitmap.add(i);
+  public LongColumn unique() {
+    LongSet longSet = new LongArraySet();
+    for (long i : data) {
+      longSet.add(i);
     }
-    int[] ints = roaringBitmap.toArray();
-    short[] shorts = new short[ints.length];
-    for (int i = 0; i < ints.length; i++) {
-      shorts[i] = (short) ints[i];
-    }
-    return ShortColumn.create(name() + " Unique values", ShortArrayList.wrap(shorts));
+    return LongColumn.create(name() + " Unique values", new LongArrayList(longSet));
   }
 
   @Override
   public String getString(int row) {
-    return String.valueOf(data.getShort(row));
+    return String.valueOf(data.getLong(row));
   }
 
   @Override
-  public ShortColumn emptyCopy() {
-    return new ShortColumn(name(), DEFAULT_ARRAY_SIZE);
+  public LongColumn emptyCopy() {
+    return new LongColumn(name(), DEFAULT_ARRAY_SIZE);
   }
 
   @Override
@@ -199,26 +191,26 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   @Override
   public void sortDescending() {
-    ShortArrays.parallelQuickSort(data.elements(), reverseIntComparator);
+    LongArrays.parallelQuickSort(data.elements(), reverseIntComparator);
   }
 
-  ShortComparator reverseIntComparator =  new ShortComparator() {
+  LongComparator reverseIntComparator =  new LongComparator() {
 
     @Override
-    public int compare(Short o2, Short o1) {
+    public int compare(Long o2, Long o1) {
       return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
     }
 
     @Override
-    public int compare(short o2, short o1) {
+    public int compare(long o2, long o1) {
       return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
     }
   };
 
 
-  private ShortColumn copy() {
-    ShortColumn copy = emptyCopy();
-    for (short i : data) {
+  private LongColumn copy() {
+    LongColumn copy = emptyCopy();
+    for (long i : data) {
       copy.add(i);
     }
     return copy;
@@ -247,18 +239,18 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
    * <p>
    * We remove any commas before parsing
    */
-  public static short convert(String stringValue) {
+  public static long convert(String stringValue) {
     if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-      return (short) ColumnType.SHORT_INT.getMissingValue();
+      return (long) ColumnType.LONG_INT.getMissingValue();
     }
     Matcher matcher = COMMA_PATTERN.matcher(stringValue);
-    return Short.parseShort(matcher.replaceAll(""));
+    return Long.parseLong(matcher.replaceAll(""));
   }
 
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
-  public short get(int index) {
-    return data.getShort(index);
+  public long get(int index) {
+    return data.getLong(index);
   }
 
   @Override
@@ -274,21 +266,21 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     }
 
     public int compare(int i1, int i2) {
-      int prim1 = get(i1);
-      int prim2 = get(i2);
-      return IntComparisonUtil.getInstance().compare(prim1, prim2);
+      long prim1 = get(i1);
+      long prim2 = get(i2);
+      return LongComparisonUtil.getInstance().compare(prim1, prim2);
     }
   };
 
-  public short max() {
+  public long max() {
     return StatUtil.max(this);
   }
 
-  public short min() {
+  public long min() {
     return StatUtil.min(this);
   }
 
-  public short firstElement() {
+  public long firstElement() {
     if (size() > 0) {
       return get(0);
     }
@@ -298,7 +290,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public RoaringBitmap isPositive() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (short next : data) {
+    for (long next : data) {
       if (next > 0) {
         results.add(i);
       }
@@ -310,7 +302,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public RoaringBitmap isNegative() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (short next : data) {
+    for (long next : data) {
       if (next < 0) {
         results.add(i);
       }
@@ -322,7 +314,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public RoaringBitmap isNonNegative() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (short next : data) {
+    for (long next : data) {
       if (next >= 0) {
         results.add(i);
       }
@@ -334,7 +326,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public RoaringBitmap isZero() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (short next : data) {
+    for (long next : data) {
       if (next == 0) {
         results.add(i);
       }
@@ -346,7 +338,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public RoaringBitmap isEven() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (short next : data) {
+    for (long next : data) {
       if ((next & 1) == 0) {
         results.add(i);
       }
@@ -358,7 +350,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public RoaringBitmap isOdd() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (short x : data) {
+    for (long x : data) {
       if ((x & 1) != 0) {
         results.add(i);
       }
@@ -369,7 +361,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   public FloatArrayList toFloatArray() {
     FloatArrayList output = new FloatArrayList(data.size());
-    for (short aData : data) {
+    for (long aData : data) {
       output.add(aData);
     }
     return output;
@@ -378,7 +370,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public String print() {
     StringBuilder builder = new StringBuilder();
     builder.append(title());
-    for (short i : data){
+    for (long i : data){
       builder.append(String.valueOf(i));
       builder.append('\n');
     }
@@ -387,20 +379,20 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   @Override
   public String toString() {
-    return "ShortInt column: " + name();
+    return "LongInt column: " + name();
   }
 
   @Override
   public void appendColumnData(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
-    ShortColumn shortColumn = (ShortColumn) column;
-    for (int i = 0; i < shortColumn.size(); i++) {
-      add(shortColumn.get(i));
+    LongColumn longColumn = (LongColumn) column;
+    for (int i = 0; i < longColumn.size(); i++) {
+      add(longColumn.get(i));
     }
   }
 
   @Override
-  public ShortIterator iterator() {
+  public LongIterator iterator() {
     return data.iterator();
   }
 }

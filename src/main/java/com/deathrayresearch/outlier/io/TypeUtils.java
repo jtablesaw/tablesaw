@@ -65,6 +65,16 @@ public final class TypeUtils {
       DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm");
   private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
+  private static final DateTimeFormatter dtTimef6;
+  static {
+    dtTimef6 = new DateTimeFormatterBuilder()
+        .parseCaseInsensitive()
+        .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        .appendLiteral('.')
+        .appendPattern("SSS")
+        .toFormatter();
+  }
+
   private static final DateTimeFormatter timef1 = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
   private static final DateTimeFormatter timef2 = DateTimeFormatter.ofPattern("hh:mm:ss a");
   private static final DateTimeFormatter timef3 = DateTimeFormatter.ofPattern("h:mm:ss a");
@@ -108,7 +118,7 @@ public final class TypeUtils {
           .appendOptional(dtTimef1)
           .appendOptional(dtTimef0)
           .appendOptional(dtTimef5)
-
+          .appendOptional(dtTimef6)
           .toFormatter();
 
   // A formatter that handles time formats defined above
@@ -171,6 +181,8 @@ public final class TypeUtils {
         return CategoryColumn.create(name);
       case SHORT_INT:
         return ShortColumn.create(name);
+      case LONG_INT:
+        return LongColumn.create(name);
       default:
         throw new IllegalArgumentException("Unknown ColumnType: " + type);
     }

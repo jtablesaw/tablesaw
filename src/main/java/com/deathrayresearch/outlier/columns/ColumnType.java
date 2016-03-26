@@ -11,6 +11,7 @@ public enum ColumnType {
   FLOAT(Float.NaN),
   SHORT_INT(Short.MIN_VALUE),
   INTEGER(Integer.MIN_VALUE),
+  LONG_INT(Long.MIN_VALUE),
   TEXT(""),
   LOCAL_DATE(Integer.MIN_VALUE),
   LOCAL_DATE_TIME(Long.MIN_VALUE),

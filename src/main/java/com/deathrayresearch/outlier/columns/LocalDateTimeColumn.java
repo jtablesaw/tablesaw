@@ -7,15 +7,12 @@ import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparator;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.longs.*;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.temporal.ChronoField;
 import java.util.Arrays;
 
 /**
@@ -30,12 +27,12 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   private LongArrayList data;
 
   @Override
-  public void addCell(String stringvalue) {
+  public void addCell(String stringValue) {
 
-    if (stringvalue == null) {
+    if (stringValue == null) {
       add(Long.MIN_VALUE);
     } else {
-      LocalDateTime dateTime = convert(stringvalue);
+      LocalDateTime dateTime = convert(stringValue);
       if (dateTime != null) {
         add(dateTime);
       } else {
@@ -139,18 +136,19 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     }
   };
 
-
-
   // TODO(lwhite): Implement column summary()
   @Override
   public Table summary() {
-    return null;
+    return new Table("Unimplemented");
   }
 
-  // TODO(lwhite): Implement countUnique()
   @Override
   public int countUnique() {
-    return 0;
+    LongSet ints = new LongOpenHashSet(data.size());
+    for (long i : data) {
+      ints.add(i);
+    }
+    return ints.size();
   }
 
   @Override
@@ -317,4 +315,59 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
       add(intColumn.get(i));
     }
   }
+
+  public LocalDateTime max() {
+    long max;
+    long missing = Long.MIN_VALUE;
+    if (!isEmpty()) {
+      max = getLong(0);
+    } else {
+      return null;
+    }
+    for (long aData : data) {
+      if (missing != aData) {
+        max = (max > aData) ? max : aData;
+      }
+    }
+
+    if (missing == max) {
+      return null;
+    }
+    return PackedLocalDateTime.asLocalDateTime(max);
+  }
+
+  public LocalDateTime min() {
+    long min;
+    long missing = Long.MIN_VALUE;
+
+    if (!isEmpty()) {
+      min = getLong(0);
+    } else {
+      return null;
+    }
+    for (long aData : data) {
+      if (missing != aData) {
+        min = (min < aData) ? min : aData;
+      }
+    }
+    if (Integer.MIN_VALUE == min) {
+      return null;
+    }
+    return PackedLocalDateTime.asLocalDateTime(min);
+  }
+
+  public IntColumn minuteOfDay() {
+    IntColumn newColumn = IntColumn.create(this.name() + " minute of day");
+    for (int r = 0; r < this.size(); r++) {
+      long c1 = getLong(r);
+      LocalDateTime localDateTime = PackedLocalDateTime.asLocalDateTime(c1);
+      if (c1 == LocalDateColumn.MISSING_VALUE) {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(localDateTime.toLocalTime().get(ChronoField.MINUTE_OF_DAY));
+      }
+    }
+    return newColumn;
+  }
+
 }

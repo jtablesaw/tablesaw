@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.util;
 
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
+import com.deathrayresearch.outlier.columns.LongColumn;
 import com.deathrayresearch.outlier.columns.ShortColumn;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.exception.NotPositiveException;
@@ -179,6 +180,18 @@ public class StatUtil {
   }
 
 
+  public static IntStats stats(final LongColumn ints) {
+    FloatColumn values = FloatColumn.create(ints.name(), ints.toFloatArray());
+    IntStats stats = new IntStats();
+    stats.min = min(ints);
+    stats.max = max(ints);
+    stats.n = values.size();
+    stats.sum = ints.sum();
+    stats.variance = variance(values);
+    return stats;
+  }
+
+
   /**
    * Returns the sample mode(s).  The mode is the most frequently occurring
    * value in the sample. If there is a unique value with maximum frequency,
@@ -283,6 +296,21 @@ public class StatUtil {
     return max;
   }
 
+  public static long max(LongColumn values) {
+    if (values.size() == 0) {
+      return LongColumn.MISSING_VALUE;
+    }
+    long max = values.firstElement();
+    for (long value : values) {
+      if (!Float.isNaN(value)) {
+        if (value > max) {
+          max = value;
+        }
+      }
+    }
+    return max;
+  }
+
   public static short min(ShortColumn values) {
     if (values.size() == 0) {
       return ShortColumn.MISSING_VALUE;
@@ -290,6 +318,19 @@ public class StatUtil {
     short min = values.firstElement();
     for (short value : values) {
       if (value != ShortColumn.MISSING_VALUE) {
+        min = (min < value) ? min : value;
+      }
+    }
+    return min;
+  }
+
+  public static long min(LongColumn values) {
+    if (values.size() == 0) {
+      return LongColumn.MISSING_VALUE;
+    }
+    long min = values.firstElement();
+    for (long value : values) {
+      if (value != LongColumn.MISSING_VALUE) {
         min = (min < value) ? min : value;
       }
     }

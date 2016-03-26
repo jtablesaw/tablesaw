@@ -99,7 +99,11 @@ public class View implements Relation {
 
   @Override
   public List<Column> columns() {
-    return null;
+    List<Column> columns = new ArrayList<>();
+    for (int i = 0; i < columnCount(); i++) {
+      columns.add(column(i));
+    }
+    return columns;
   }
 
   @Override
