@@ -106,16 +106,12 @@ for a column-wise addition:
 
 ### Filtering Rows
 
-Let's filter out records that don't have Stop IDs between 524 and 624. Filters can also be arbitrary
-lambda expressions, but it's easier to use the filter classes as shown below:
+To filter records you can also be arbitrary lambda expressions, but it's often easier to use the built-in filter classes as shown below:
 
 ```java
 
 Table f = table.selectIf(column("stop_id").isBetween(524, 624)));
 ```
-
-New table "f" has all the columns from "table", but only rows where the value of stop_id 
-is in the range x where 524 < x < 624.
 
 ### Write the new CSV file to disk
 
@@ -123,8 +119,6 @@ is in the range x where 524 < x < 624.
 
 CsvWriter.write("filtered_bus_stops.csv", f);
 ```
-
-And there you have it. 
 
 This is just the beginning of what Tablesaw can do. Other features include:
 
