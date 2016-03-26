@@ -5,7 +5,7 @@ Tablesaw is a high-performance, in-memory data table, combined with tools for da
 and a column-oriented storage format. In Java.
 
 __With Tablesaw, you can import, sort, transform, filter, and summarize tables of up to one billion rows on a laptop.__ 
-Tablesaw combines tools from high-frequency trading (e.g. primitive collections) and 
+Tablesaw uses tricks from high-frequency trading apps (e.g. primitive collections) and 
 data warehouses (e.g. compressed, column-oriented storage and data structures), to maximize what you can do in a single VM.
 
 The goal is to make all but the biggest data wrangling jobs approachable without the complexity of distributed computing (HDFS, Hadoop, etc.). 
