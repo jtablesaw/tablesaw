@@ -4,20 +4,17 @@ Tablesaw
 Tablesaw is a high-performance, in-memory data table, combined with tools for data manipulation, 
 and a column-oriented storage format. In Java.
 
-__With Tablesaw, you can import, sort, transform, filter, and summarize tables of _one billion rows_ on a laptop.__ 
-To get here, we took tools from high-frequency trading (e.g. primitive collections) and 
-data warehouses (e.g. compressed, column-oriented storage and data structures), 
-and used them to maximize what you can do in a single VM.
+__With Tablesaw, you can import, sort, transform, filter, and summarize tables of up to one billion rows on a laptop.__ 
+Tablesaw combines tools from high-frequency trading (e.g. primitive collections) and 
+data warehouses (e.g. compressed, column-oriented storage and data structures), to maximize what you can do in a single VM.
 
 The goal is to make all but the biggest data wrangling jobs approachable without the complexity of distributed computing (HDFS, Hadoop, etc.). 
 Analysis is more productive with less engineering overhead and shorter iteration cycles. A fluent API lets developers express operations in a concise and readable fashion. 
 
-While Tablesaw provides general-purpose analytic support, the goal is to provide especially rich functionality for 
-working with time-series, including specialized column types for local dates, times and timestamps, as well as periods. 
+Tablesaw provides general-purpose analytic support, including rich functionality for working with time-series, 
+including specialized column types for dates, times, timestamps and intervals. 
 
-At the same time, we want to provide usability at least as good as Pandas and R data-frames.
-
-Better yet, with Java 9, you'll be able to do your work interactively in the REPL, without writing a bunch of code before you get started. 
+I'm aiming for usability at least as good as R dataframes or Pandas. And with Java 9, you'll be able to work interactively in the REPL. 
 
 For more information and examples see: https://javadatascience.wordpress.com
 
@@ -70,14 +67,12 @@ Now that we've some some data, lets sort the table in reverse order by the id co
 ```
 
 ### Removing a column
-Let's remove the "stop_desc" column:
 
 ```java
 
     table.removeColumn("stop_desc");
 ```    
 ### Descriptive statistics
-Let's take a look at the longitude column:
 
 ```java
 
@@ -99,7 +94,7 @@ This outputs:
 ### Create new columns from the data in existing columns
 
 Now let's add a column derived from the existing data. We can map arbitrary lambda expressions
-onto the data table, but many common operations (add, subtract, multiply, max, etc.) are built in. For example, 
+onto the data table, but many, many common operations (add, subtract, multiply, max, etc.) are built in. For example, 
 for a column-wise addition:
 
 ```java
@@ -140,7 +135,6 @@ More advanced operations are described on the project web site:
  https://javadatascience.wordpress.com
  
 ## A work-in-progress
-Tablesaw is in an experimental state, with a production release planned for late 2016. 
-Not all of the functionality of Outlier has been implemented yet, 
- and a great deal of additional functionality is planned, including window operations (like rolling averages), 
+__Tablesaw is in an experimental state__, with a production release planned for late 2016. 
+A great deal of additional functionality is planned, including window operations (like rolling averages), 
  outlier detection, and integrated machine-learning.
