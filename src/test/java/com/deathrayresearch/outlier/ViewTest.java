@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.IntColumn;
+import com.deathrayresearch.outlier.io.CsvWriter;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -78,6 +79,26 @@ public class ViewTest {
 
     View v1 = v.where(c1.isLessThan(50));
     System.out.print(v1.print());
+  }
+
+  @Test
+  public void testWriteAsCsv() throws Exception {
+    Relation t = new Table("Test");
+    FloatColumn c = new FloatColumn("fc");
+    t.addColumn(c);
+    IntColumn c1 = new IntColumn("ic1");
+    t.addColumn(c1);
+
+    for (int i = 0; i < 100; i++) {
+      c.add((float) Math.random());
+      c1.add(i);
+    }
+    View v = new View(t, c.name(), c1.name());
+    CsvWriter.write("testfolder/v.csv", v);
+    System.out.println(v.print());
+    v.where(c.isLessThan(.50f));
+    System.out.println(v.print());
+    CsvWriter.write("testfolder/v1.csv", v);
   }
 
   @Test

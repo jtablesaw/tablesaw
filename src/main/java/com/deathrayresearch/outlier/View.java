@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier;
 import com.deathrayresearch.outlier.columns.Column;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.lang3.StringUtils;
+import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ public class View implements Relation {
   private Relation table;
   private IntArrayList columnIds = new IntArrayList();
   private final RoaringBitmap rowMap;
-  private final int mask[];
+  private int mask[];
   private final String id = UUID.randomUUID().toString();
 
   public View(Relation table, String... columnName) {
@@ -76,6 +77,7 @@ public class View implements Relation {
 
   public View where(RoaringBitmap bitmap) {
     rowMap.and(bitmap);
+    mask = rowMap.toArray();
     return this;
   }
 
@@ -157,6 +159,8 @@ public class View implements Relation {
     return names;
   }
 
+  /**
+   */
   @Override
   public int row(int r) {
     return mask[r];
@@ -167,7 +171,11 @@ public class View implements Relation {
    * @param index an index representing a row in the backing table
    */
   public void addIndex(int index) {
+    //TODO(lwhite): Need to find another way to locate an item in bitmap by index. this is VERY BAD.
+
+    //TODO(lwhite): Could set a flag to mark the mask as dirty and recalculate when needed?
     this.rowMap.add(index);
+    mask = rowMap.toArray();
   }
 
   @Override
@@ -202,11 +210,12 @@ public class View implements Relation {
       buf.append(' ');
     }
     buf.append('\n');
-
-    for (int r = 0; r < rowCount(); r++) {
+    IntIterator iterator = rowMap.getIntIterator();
+    while (iterator.hasNext()) {
+      int r = iterator.next();
       for (int i = 0; i < columnCount(); i++) {
         int c = columnIds.getInt(i);
-        String cell = StringUtils.rightPad(get(c, row(r)), colWidths[i]);
+        String cell = StringUtils.rightPad(get(c, r), colWidths[i]);
         buf.append(cell);
         buf.append(' ');
       }
