@@ -17,7 +17,7 @@ public class View implements Relation {
 
   private String name;
   private Relation table;
-  private final IntArrayList columnIds = new IntArrayList();
+  private IntArrayList columnIds = new IntArrayList();
   private final RoaringBitmap rowMap;
   private final int mask[];
   private final String id = UUID.randomUUID().toString();
@@ -34,7 +34,6 @@ public class View implements Relation {
 
   public View(Table table, int headRows) {
     this.table = table;
-    //noinspection Convert2streamapi
     for (String col : table.columnNames()) {
       columnIds.add(table.columnIndex(col));
     }
@@ -45,15 +44,14 @@ public class View implements Relation {
   
   public View(View view, int headRows) {
     this.table = view;
-    //noinspection Convert2streamapi
-    for (String col : table.columnNames()) {
-      columnIds.add(table.columnIndex(col));
-    }
+
+    columnIds = view.columnIds.clone();
     int i = 0;
     Iterator<Integer> it = view.rowMap.iterator();
     rowMap = new RoaringBitmap();
     while (i < headRows && it.hasNext()) {
       rowMap.add(it.next());
+      i++;
     }
     mask = rowMap.toArray();
   }
@@ -61,7 +59,6 @@ public class View implements Relation {
   public View(Relation table, List<Column> columnSelection, RoaringBitmap rowSelection) {
     this.rowMap = rowSelection;
     this.table = table;
-    //noinspection Convert2streamapi
     for (Column aColumnSelection : columnSelection) {
       this.columnIds.add(table.columnIndex(aColumnSelection));
     }
@@ -71,7 +68,6 @@ public class View implements Relation {
   public View(Relation table, List<Column> columnSelection) {
     this.rowMap = new RoaringBitmap();
     this.table = table;
-    //noinspection Convert2streamapi
     for (Column aColumnSelection : columnSelection) {
       this.columnIds.add(table.columnIndex(aColumnSelection));
     }
