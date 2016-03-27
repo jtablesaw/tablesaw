@@ -348,6 +348,9 @@ public class StorageManager {
         case SHORT_INT:
           writeColumn(fileName, (ShortColumn) column);
           break;
+        case LONG_INT:
+          writeColumn(fileName, (LongColumn) column);
+          break;
         default:
           throw new RuntimeException("Unhandled column type writing columns");
       }
@@ -429,6 +432,22 @@ public class StorageManager {
       int i = 0;
       for (short d : column) {
         dos.writeShort(d);
+        if (i % FLUSH_AFTER_ITERATIONS == 0) {
+          dos.flush();
+        }
+        i++;
+      }
+      dos.flush();
+    }
+  }
+
+  public static void writeColumn(String fileName, LongColumn column) throws IOException {
+    try (FileOutputStream fos = new FileOutputStream(fileName);
+         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
+         DataOutputStream dos = new DataOutputStream(sos)) {
+      int i = 0;
+      for (long d : column) {
+        dos.writeLong(d);
         if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
