@@ -246,4 +246,8 @@ public class View implements Relation {
     }
     return widths;
   }
+
+  public IntIterator intIterator() {
+    return rowMap.getIntIterator();
+  }
 }
