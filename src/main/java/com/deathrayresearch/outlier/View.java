@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.Column;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import org.apache.commons.lang3.StringUtils;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
@@ -110,8 +111,9 @@ public class View implements Relation {
   public int columnIndex(Column column) {
     int columnIndex = -1;
     for (int i = 0; i < columnIds.size(); i++) {
-      if (column(columnIds.getInt(i)).equals(column)) {
-        columnIndex = i;
+      int viewIndex = columnIds.getInt(i);
+      if (column(i).equals(column)) {
+        columnIndex = viewIndex;
         break;
       }
     }
@@ -152,7 +154,7 @@ public class View implements Relation {
   @Override
   public List<String> columnNames() {
     List<String> names = new ArrayList<>();
-    //noinspection Convert2streamapi
+
     for (Integer columnId : columnIds) {
       names.add(table.column(columnId).name());
     }
@@ -186,5 +188,55 @@ public class View implements Relation {
   @Override
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String print() {
+    StringBuilder buf = new StringBuilder();
+
+    int[] colWidths = colWidths();
+    buf.append(name()).append('\n');
+    List<String> names = this.columnNames();
+
+    for (int colNum = 0; colNum < columnCount(); colNum++) {
+      buf.append(
+          StringUtils.rightPad(
+              StringUtils.defaultString(String.valueOf(names.get(colNum))), colWidths[colNum]));
+      buf.append(' ');
+    }
+    buf.append('\n');
+
+    for (int r = 0; r < rowCount(); r++) {
+      for (int i = 0; i < columnCount(); i++) {
+        int c = columnIds.getInt(i);
+        String cell = StringUtils.rightPad(get(c, row(r)), colWidths[i]);
+        buf.append(cell);
+        buf.append(' ');
+      }
+      buf.append('\n');
+    }
+    return buf.toString();
+  }
+
+  /**
+   * Returns an array of column widths for printing tables
+   */
+  public int[] colWidths() {
+
+    int cols = columnCount();
+    int[] widths = new int[cols];
+    List<String> columnNames = columnNames();
+
+    for (int i = 0; i < columnCount(); i++) {
+      widths[i] = columnNames.get(i).length();
+    }
+
+    for (int rowNum = 0; rowNum < rowCount(); rowNum++) {
+      for (int colNum = 0; colNum < cols; colNum++) {
+        int c = columnIds.getInt(colNum);
+        widths[colNum]
+            = Math.max(widths[colNum], StringUtils.length(get(c, rowNum)));
+      }
+    }
+    return widths;
   }
 }
