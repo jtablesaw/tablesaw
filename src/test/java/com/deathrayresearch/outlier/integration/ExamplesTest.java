@@ -32,7 +32,7 @@ public class ExamplesTest  {
     print(table.head(5).print());
 
     // Remove the description column
-    table.removeColumn("stop_desc");
+    table.removeColumns("stop_desc");
 
     // Check the column names to see that it's gone
     print(table.columnNames());

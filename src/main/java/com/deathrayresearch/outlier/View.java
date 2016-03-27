@@ -175,8 +175,10 @@ public class View implements Relation {
   }
 
   @Override
-  public void removeColumn(Column column) {
-    columnIds.removeInt(columnIndex(column));
+  public void removeColumns(Column... columns) {
+    for (Column c : columns) {
+      columnIds.removeInt(columnIndex(c));
+    }
   }
 
   public View head(int nRows) {

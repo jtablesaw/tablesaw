@@ -27,7 +27,7 @@ public class IoTest1 {
 
     table = table.sortDescendingOn("stop_id");
     print(table.head(3).print());
-    table.removeColumn("stop_desc");
+    table.removeColumns("stop_desc");
     print(table.columnNames());
 
     Column c = table.floatColumn("stop_lat");

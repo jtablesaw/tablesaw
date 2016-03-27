@@ -65,6 +65,32 @@ public interface DateTimeMapUtils extends Column {
     return newColumn;
   }
 
+  default IntColumn minuteOfDay() {
+    IntColumn newColumn = IntColumn.create(name() + "[" + "minute-of-day" + "]");
+    for (int r = 0; r < size(); r++) {
+      long c1 = getLong(r);
+      if (c1 != LocalDateTimeColumn.MISSING_VALUE) {
+        newColumn.add(PackedLocalDateTime.getMinuteOfDay(c1));
+      } else {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      }
+    }
+    return newColumn;
+  }
+
+  default IntColumn secondOfDay() {
+    IntColumn newColumn = IntColumn.create(name() + "[" + "second-of-day" + "]");
+    for (int r = 0; r < size(); r++) {
+      long c1 = getLong(r);
+      if (c1 != LocalDateTimeColumn.MISSING_VALUE) {
+        newColumn.add(PackedLocalDateTime.getSecondOfDay(c1));
+      } else {
+        newColumn.add(IntColumn.MISSING_VALUE);
+      }
+    }
+    return newColumn;
+  }
+
   LocalDateTime get(int r);
 
   long getLong(int r);

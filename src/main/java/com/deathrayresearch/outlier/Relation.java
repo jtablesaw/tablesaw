@@ -21,11 +21,17 @@ public interface Relation {
   }
 
   default void removeColumn(int columnIndex) {
-    removeColumn(column(columnIndex));
+    removeColumns(column(columnIndex));
   }
 
-  default void removeColumn(String columnName) {
-    removeColumn(column(columnName));
+  void removeColumns(Column... columns);
+
+  default void removeColumns(String... columnName) {
+    Column[] cols = new Column[columnName.length];
+    for (int i = 0; i < columnName.length; i++) {
+      cols[i] = column(columnName[i]);
+    }
+    removeColumns(cols);
   }
 
   View head(int nRows);
@@ -51,20 +57,18 @@ public interface Relation {
    * Returns the column with the given columnName
    */
   default Column column(String columnName) {
-    int columnIndex = -1;
-    int actualIndex = 0;
+    Column result = null;
     for (Column column : columns()) {
       // TODO(lwhite): Consider caching the uppercase name and doing equals() instead of equalsIgnoreCase()
       if (column.name().equalsIgnoreCase(columnName)) {
-        columnIndex = actualIndex;
+        result = column;
         break;
       }
-      actualIndex++;
     }
-    if (columnIndex == -1) {
+    if (result == null) {
       throw new RuntimeException(String.format("Column %s does not exist in table %s", columnName, name()));
     }
-    return column(columnIndex);
+    return result;
   }
 
   /**
@@ -191,8 +195,6 @@ public interface Relation {
   }
 
   int row(int r);
-
-  void removeColumn(Column column);
 
   default Table structure() {
 

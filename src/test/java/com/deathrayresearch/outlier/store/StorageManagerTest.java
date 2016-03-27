@@ -2,11 +2,7 @@ package com.deathrayresearch.outlier.store;
 
 import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.columns.CategoryColumn;
-import com.deathrayresearch.outlier.columns.ColumnType;
-import com.deathrayresearch.outlier.columns.FloatColumn;
-import com.deathrayresearch.outlier.columns.LocalDateColumn;
-import com.deathrayresearch.outlier.columns.TextColumn;
+import com.deathrayresearch.outlier.columns.*;
 import com.deathrayresearch.outlier.io.CsvReader;
 import com.google.common.base.Stopwatch;
 import org.junit.Before;
@@ -34,6 +30,7 @@ public class StorageManagerTest {
   TextColumn textColumn = TextColumn.create("text");
   CategoryColumn categoryColumn = CategoryColumn.create("cat");
   LocalDateColumn localDateColumn = LocalDateColumn.create("date");
+  LongColumn longColumn = LongColumn.create("long");
 
   @Before
   public void setUp() throws Exception {
@@ -43,19 +40,19 @@ public class StorageManagerTest {
       localDateColumn.add(LocalDate.now());
       textColumn.add("Testing");
       categoryColumn.add("Category");
+      longColumn.add(i);
     }
     table.addColumn(floatColumn);
     table.addColumn(localDateColumn);
     table.addColumn(textColumn);
     table.addColumn(categoryColumn);
+    table.addColumn(longColumn);
   }
 
   @Test
   public void testWriteTable() throws IOException {
     System.out.println(table.head(5).print());
-    Stopwatch stopwatch = Stopwatch.createStarted();
     StorageManager.saveTable("databases", table);
-    System.out.println("Write time (ms) " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
     Table t = StorageManager.readTable("databases/" + table.id());
     t.sortOn("cat");
@@ -67,11 +64,11 @@ public class StorageManagerTest {
   public void testWriteTableTwice() throws IOException {
 
     StorageManager.saveTable("databases", table);
-    Table t = StorageManager.readTable("databases/" + "28d8c085-4add-4573-a506-b87ab85e50c4");
+    Table t = StorageManager.readTable("databases/" + table.id());
 
     t.floatColumn(0).setName("a floater column");
     System.out.println(t.head(3).print());
- //   StorageManager.saveTable("databases", t);
+//    StorageManager.saveTable("databases", t);
   }
 
   @Ignore

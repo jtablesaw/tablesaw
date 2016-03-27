@@ -344,11 +344,12 @@ public class Table implements Relation {
   }
 
   /**
-   * Removes the given column
+   * Removes the given columns
    */
   @Override
-  public void removeColumn(Column column) {
-    columnList.remove(column);
+  public void removeColumns(Column... columns) {
+    for (Column c : columns)
+    columnList.remove(c);
   }
 
   public Average average(String summarizedColumnName) {
