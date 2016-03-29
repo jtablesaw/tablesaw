@@ -5,7 +5,6 @@ import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.PeriodColumn;
 import com.deathrayresearch.outlier.sorting.Sort;
-import com.deathrayresearch.outlier.splitter.functions.Average;
 import com.deathrayresearch.outlier.store.TableMetadata;
 import com.deathrayresearch.outlier.util.IntComparatorChain;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
@@ -14,11 +13,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static com.deathrayresearch.outlier.sorting.Sort.Order;
 
@@ -351,12 +346,6 @@ public class Table implements Relation {
     for (Column c : columns)
     columnList.remove(c);
   }
-
-  public Average average(String summarizedColumnName) {
-    return new Average(this, summarizedColumnName);
-
-  }
-
 
   public Table countBy(String byColumnName) {
     TableGroup group = new TableGroup(this, byColumnName);

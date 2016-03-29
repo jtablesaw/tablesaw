@@ -73,7 +73,6 @@ public class TableGroup {
         String groupKey = original.get(columnIndices[col], row);
         newKey = newKey + groupKey;
         values.add(groupKey);
-
       }
 
       if (!newKey.equals(lastKey)) {
