@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.IntMapUtils;
 import com.deathrayresearch.outlier.sorting.IntComparisonUtil;
@@ -386,6 +387,42 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.get(i));
     }
+  }
+
+  public IntColumn selectIf(IntPredicate predicate) {
+    IntColumn column = emptyCopy();
+    IntIterator intIterator = iterator();
+    while(intIterator.hasNext()) {
+      int next = intIterator.nextInt();
+      if (predicate.test(next)) {
+        column.add(next);
+      }
+    }
+    return column;
+  }
+
+  public long sumIf(IntPredicate predicate) {
+    long sum = 0;
+    IntIterator intIterator = iterator();
+    while(intIterator.hasNext()) {
+      int next = intIterator.nextInt();
+      if (predicate.test(next)) {
+        sum += next;
+      }
+    }
+    return sum;
+  }
+
+  public long countIf(IntPredicate predicate) {
+    long count = 0;
+    IntIterator intIterator = iterator();
+    while(intIterator.hasNext()) {
+      int next = intIterator.nextInt();
+      if (predicate.test(next)) {
+        count++;
+      }
+    }
+    return count;
   }
 
   @Override

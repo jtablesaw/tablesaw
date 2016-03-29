@@ -1,7 +1,9 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.filter.IntPredicate;
 import org.junit.Before;
 import org.junit.Test;
+
 
 import static org.junit.Assert.*;
 /**
@@ -89,5 +91,18 @@ public class IntColumnTest {
     }
     FloatColumn floatColumn = column.asRatio();
     assertEquals(1.0, floatColumn.sum(), 0.1);
+  }
+
+  @Test
+  public void testSelectIf() {
+
+    for (int i = 0; i < 100; i++) {
+      column.add(i);
+    }
+
+    IntPredicate predicate = value -> value < 10;
+    IntColumn column1 = column.selectIf(predicate);
+    assertEquals(10, column1.size());
+    System.out.println(column1.print());
   }
 }

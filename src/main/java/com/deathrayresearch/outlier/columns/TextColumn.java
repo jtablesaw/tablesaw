@@ -3,7 +3,9 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.aggregator.StringReduceUtils;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
+import com.deathrayresearch.outlier.mapper.StringIntMapper;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
+import com.deathrayresearch.outlier.mapper.StringStringMapper;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -232,6 +234,29 @@ public class TextColumn extends AbstractColumn
     }
   }
 
+  TextColumn collectIntoTextColumn(String newColumnName, StringStringMapper mapper) {
+    TextColumn result = new TextColumn(newColumnName);
+    for (String s : this) {
+      result.add(mapper.map(s));
+    }
+    return result;
+  }
+
+  CategoryColumn collectIntoCategoryColumn(String newColumnName, StringStringMapper mapper) {
+    CategoryColumn result = CategoryColumn.create(newColumnName);
+    for (String s : this) {
+      result.add(mapper.map(s));
+    }
+    return result;
+  }
+
+  IntColumn collectIntoIntColumn(String newColumnName, StringIntMapper mapper) {
+    IntColumn result = IntColumn.create(newColumnName);
+    for (String s : this) {
+      result.add(mapper.map(s));
+    }
+    return result;
+  }
 
   @Override
   public Iterator<String> iterator() {
