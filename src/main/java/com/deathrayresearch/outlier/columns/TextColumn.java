@@ -2,6 +2,8 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.aggregator.StringReduceUtils;
+import com.deathrayresearch.outlier.filter.IntPredicate;
+import com.deathrayresearch.outlier.filter.StringPredicate;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.mapper.StringIntMapper;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
@@ -9,6 +11,8 @@ import com.deathrayresearch.outlier.mapper.StringStringMapper;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.longs.LongIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.*;
@@ -256,6 +260,16 @@ public class TextColumn extends AbstractColumn
       result.add(mapper.map(s));
     }
     return result;
+  }
+
+  public TextColumn selectIf(StringPredicate predicate) {
+    TextColumn column = emptyCopy();
+    for (String next : this) {
+      if (predicate.test(next)) {
+        column.add(next);
+      }
+    }
+    return column;
   }
 
   @Override

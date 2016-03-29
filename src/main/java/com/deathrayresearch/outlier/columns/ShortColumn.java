@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.filter.ShortPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.ShortMapUtils;
 import com.deathrayresearch.outlier.sorting.IntComparisonUtil;
@@ -10,6 +11,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
@@ -397,6 +399,18 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     for (int i = 0; i < shortColumn.size(); i++) {
       add(shortColumn.get(i));
     }
+  }
+
+  ShortColumn selectIf(ShortPredicate predicate) {
+    ShortColumn column = emptyCopy();
+    ShortIterator intIterator = iterator();
+    while(intIterator.hasNext()) {
+      short next = intIterator.nextShort();
+      if (predicate.test(next)) {
+        column.add(next);
+      }
+    }
+    return column;
   }
 
   @Override

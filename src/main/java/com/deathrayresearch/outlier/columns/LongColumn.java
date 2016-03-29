@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.filter.LongPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.LongMapUtils;
 import com.deathrayresearch.outlier.sorting.LongComparisonUtil;
@@ -377,6 +378,19 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
       add(longColumn.get(i));
     }
   }
+
+  public LongColumn selectIf(LongPredicate predicate) {
+    LongColumn column = emptyCopy();
+    LongIterator intIterator = iterator();
+    while(intIterator.hasNext()) {
+      long next = intIterator.nextLong();
+      if (predicate.test(next)) {
+        column.add(next);
+      }
+    }
+    return column;
+  }
+
 
   @Override
   public LongIterator iterator() {

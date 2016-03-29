@@ -2,6 +2,8 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.filter.IntPredicate;
+import com.deathrayresearch.outlier.filter.LocalTimePredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
@@ -11,6 +13,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.roaringbitmap.RoaringBitmap;
@@ -239,6 +242,37 @@ public class LocalTimeColumn extends AbstractColumn {
     return "LocalTime column: " + name();
   }
 
+  public LocalTimeColumn selectIf(LocalTimePredicate predicate) {
+    LocalTimeColumn column = emptyCopy();
+    IntIterator iterator = intIterator();
+    while(iterator.hasNext()) {
+      int next = iterator.nextInt();
+      if (predicate.test(PackedLocalTime.asLocalTime(next))) {
+        column.add(next);
+      }
+    }
+    return column;
+  }
+
+  /**
+   * This version operates on predicates that treat the given IntPredicate as operating on a packed local time
+   * This is much more efficient that using a LocalTimePredicate, but requires that the developer understand the
+   * semantics of packedLocalTimes
+   */
+  public LocalTimeColumn selectIf(IntPredicate predicate) {
+    LocalTimeColumn column = emptyCopy();
+    IntIterator iterator = intIterator();
+    while(iterator.hasNext()) {
+      int next = iterator.nextInt();
+      if (predicate.test(next)) {
+        column.add(next);
+      }
+    }
+    return column;
+  }
+
+
+
   @Override
   public void appendColumnData(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
@@ -246,5 +280,9 @@ public class LocalTimeColumn extends AbstractColumn {
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.getInt(i));
     }
+  }
+
+  public IntIterator intIterator() {
+    return data.iterator();
   }
 }
