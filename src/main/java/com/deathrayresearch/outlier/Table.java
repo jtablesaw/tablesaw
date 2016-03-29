@@ -5,6 +5,7 @@ import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.PeriodColumn;
 import com.deathrayresearch.outlier.sorting.Sort;
+import com.deathrayresearch.outlier.splitter.Splitter;
 import com.deathrayresearch.outlier.store.TableMetadata;
 import com.deathrayresearch.outlier.util.IntComparatorChain;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
@@ -13,6 +14,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 import static com.deathrayresearch.outlier.sorting.Sort.Order;
@@ -256,6 +258,16 @@ public class Table implements Relation {
     return sortOn(chain);
   }
 
+  /**
+   * Returns a copy of this table sorted on the given columns
+   * <p>
+   * The columns are sorted in reverse order if they value matching the name is {@code true}
+   */
+  public Table sortOn(@Nonnull Splitter splitter, Order order) {
+    IntComparator comparator = getComparator(splitter, order);
+    return sortOn(comparator);
+  }
+
   public IntComparator getComparator(Sort key) {
     Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
     Map.Entry<String, Sort.Order> sort = entries.next();
@@ -268,7 +280,12 @@ public class Table implements Relation {
     return comparator;
   }
 
-  public IntComparatorChain getChain(Sort key) {
+  public IntComparator getComparator(Splitter splitter, Order order) {
+    //return rowComparator(splitter, order == Order.ASCEND);
+    return null;
+  }
+
+  private IntComparatorChain getChain(Sort key) {
     Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
     Map.Entry<String, Sort.Order> sort = entries.next();
 
@@ -329,6 +346,34 @@ public class Table implements Relation {
       return rowComparator;
     }
   }
+
+/*
+  */
+/**
+   * Returns a comparator for the column matching the specified name
+   *//*
+
+  private IntComparator rowComparator(Splitter splitter, boolean reverse) {
+
+    IntComparator rowComparator = new IntComparator() {
+      @Override
+      public int compare(int i, int i1) {
+        return 0;
+      }
+
+      @Override
+      public int compare(Integer o1, Integer o2) {
+        return compare((int) o1, (int) o2);
+      }
+    };
+
+    if (reverse) {
+      return ReverseIntComparator.reverse(rowComparator);
+    } else {
+      return rowComparator;
+    }
+  }
+*/
 
   public Query select() {
     return new Query(this);
@@ -453,6 +498,10 @@ public class Table implements Relation {
 
   public CategoryColumn categoryColumn(String columnName) {
     return (CategoryColumn) column(columnName);
+  }
+
+  public TableGroup splitOn(Splitter splitter) {
+    return new TableGroup(this, "");
   }
 
   public CategoryColumn categoryColumn(int columnIndex) {
