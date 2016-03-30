@@ -28,12 +28,8 @@ public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
     return new Sort(columnName, order);
   }
 
-  public static Sort first(String columnName, Order order) {
-    return on(columnName, order);
-  }
-
-  public Sort(String state, Order order) {
-    next(state, order);
+  public Sort(String columnName, Order order) {
+    next(columnName, order);
   }
 
   public Sort next(String columnName, Order order) {
