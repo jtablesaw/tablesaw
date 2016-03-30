@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -24,7 +25,7 @@ import java.util.Arrays;
 /**
  * A column in a base table that contains float values
  */
-public class LocalTimeColumn extends AbstractColumn {
+public class LocalTimeColumn extends AbstractColumn implements IntIterable {
 
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_TIME.getMissingValue() ;
 
@@ -244,7 +245,7 @@ public class LocalTimeColumn extends AbstractColumn {
 
   public LocalTimeColumn selectIf(LocalTimePredicate predicate) {
     LocalTimeColumn column = emptyCopy();
-    IntIterator iterator = intIterator();
+    IntIterator iterator = iterator();
     while(iterator.hasNext()) {
       int next = iterator.nextInt();
       if (predicate.test(PackedLocalTime.asLocalTime(next))) {
@@ -261,7 +262,7 @@ public class LocalTimeColumn extends AbstractColumn {
    */
   public LocalTimeColumn selectIf(IntPredicate predicate) {
     LocalTimeColumn column = emptyCopy();
-    IntIterator iterator = intIterator();
+    IntIterator iterator = iterator();
     while(iterator.hasNext()) {
       int next = iterator.nextInt();
       if (predicate.test(next)) {
@@ -270,8 +271,6 @@ public class LocalTimeColumn extends AbstractColumn {
     }
     return column;
   }
-
-
 
   @Override
   public void appendColumnData(Column column) {
@@ -282,7 +281,7 @@ public class LocalTimeColumn extends AbstractColumn {
     }
   }
 
-  public IntIterator intIterator() {
+  public IntIterator iterator() {
     return data.iterator();
   }
 }
