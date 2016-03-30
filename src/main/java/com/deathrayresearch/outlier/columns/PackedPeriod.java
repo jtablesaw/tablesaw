@@ -10,7 +10,6 @@ import java.time.Period;
  */
 public class PackedPeriod {
 
-
   public static int pack(Period period) {
     return pack((short) period.getYears(), (byte) period.getMonths(), (byte) period.getDays());
   }
@@ -76,4 +75,6 @@ public class PackedPeriod {
   public static boolean equalTo(int thisPackedPeriod, int otherPackedPeriod) {
     return Integer.compare(thisPackedPeriod, otherPackedPeriod) == 0;
   }
+
+
 }

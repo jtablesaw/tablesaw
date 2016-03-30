@@ -391,7 +391,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return column;
   }
 
-
   @Override
   public LongIterator iterator() {
     return data.iterator();

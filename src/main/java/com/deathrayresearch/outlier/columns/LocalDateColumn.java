@@ -2,6 +2,8 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
+import com.deathrayresearch.outlier.filter.IntPredicate;
+import com.deathrayresearch.outlier.filter.LocalDatePredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
@@ -12,6 +14,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.roaringbitmap.RoaringBitmap;
@@ -715,5 +718,38 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.getInt(i));
     }
+  }
+
+  public LocalDateColumn selectIf(LocalDatePredicate predicate) {
+    LocalDateColumn column = emptyCopy();
+    IntIterator iterator = iterator();
+    while(iterator.hasNext()) {
+      int next = iterator.nextInt();
+      if (predicate.test(PackedLocalDate.asLocalDate(next))) {
+        column.add(next);
+      }
+    }
+    return column;
+  }
+
+  /**
+   * This version operates on predicates that treat the given IntPredicate as operating on a packed local time
+   * This is much more efficient that using a LocalTimePredicate, but requires that the developer understand the
+   * semantics of packedLocalTimes
+   */
+  public LocalDateColumn selectIf(IntPredicate predicate) {
+    LocalDateColumn column = emptyCopy();
+    IntIterator iterator = iterator();
+    while(iterator.hasNext()) {
+      int next = iterator.nextInt();
+      if (predicate.test(next)) {
+        column.add(next);
+      }
+    }
+    return column;
+  }
+
+  public IntIterator iterator() {
+    return data.iterator();
   }
 }

@@ -1,6 +1,8 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.filter.LocalDateTimePredicate;
+import com.deathrayresearch.outlier.filter.LongPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateTimeMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
@@ -368,5 +370,33 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
       }
     }
     return newColumn;
+  }
+
+  public LocalDateTimeColumn selectIf(LocalDateTimePredicate predicate) {
+    LocalDateTimeColumn column = emptyCopy();
+    LongIterator iterator = iterator();
+    while(iterator.hasNext()) {
+      long next = iterator.nextLong();
+      if (predicate.test(PackedLocalDateTime.asLocalDateTime(next))) {
+        column.add(next);
+      }
+    }
+    return column;
+  }
+
+  public LocalDateTimeColumn selectIf(LongPredicate predicate) {
+    LocalDateTimeColumn column = emptyCopy();
+    LongIterator iterator = iterator();
+    while(iterator.hasNext()) {
+      long next = iterator.nextLong();
+      if (predicate.test(next)) {
+        column.add(next);
+      }
+    }
+    return column;
+  }
+
+  public LongIterator iterator() {
+    return data.iterator();
   }
 }

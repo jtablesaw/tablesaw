@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
+import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
@@ -9,6 +10,7 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -393,5 +395,21 @@ public class PeriodColumn extends AbstractColumn {
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.getInt(i));
     }
+  }
+
+  public PeriodColumn selectIf(IntPredicate predicate) {
+    PeriodColumn column = emptyCopy();
+    IntIterator intIterator = iterator();
+    while(intIterator.hasNext()) {
+      int next = intIterator.nextInt();
+      if (predicate.test(next)) {
+        column.add(next);
+      }
+    }
+    return column;
+  }
+
+  public IntIterator iterator() {
+    return data.iterator();
   }
 }

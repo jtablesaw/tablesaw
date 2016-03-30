@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.aggregator.StringReduceUtils;
+import com.deathrayresearch.outlier.filter.StringPredicate;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.StringMapUtils;
@@ -425,5 +426,16 @@ public class CategoryColumn extends AbstractColumn
         return lookupTable.get(valuesIt.next());
       }
     };
+  }
+
+
+  public CategoryColumn selectIf(StringPredicate predicate) {
+    CategoryColumn column = emptyCopy();
+    for (String next : this) {
+      if (predicate.test(next)) {
+        column.add(next);
+      }
+    }
+    return column;
   }
 }
