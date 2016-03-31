@@ -240,8 +240,9 @@ public class View implements Relation {
     for (int rowNum = 0; rowNum < rowCount(); rowNum++) {
       for (int colNum = 0; colNum < cols; colNum++) {
         int c = columnIds.getInt(colNum);
+        String value = get(c, rowNum);
         widths[colNum]
-            = Math.max(widths[colNum], StringUtils.length(get(c, rowNum)));
+            = Math.max(widths[colNum], StringUtils.length(value));
       }
     }
     return widths;
