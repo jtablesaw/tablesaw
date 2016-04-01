@@ -230,7 +230,7 @@ public class TextColumn extends AbstractColumn
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     TextColumn intColumn = (TextColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {

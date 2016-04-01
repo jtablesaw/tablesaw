@@ -69,6 +69,18 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
     return floats.size();
   }
 
+  //TODO(lwhite): Implement
+  @Override
+  public FloatColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public FloatColumn min(int n) {
+    return null;
+  }
+
   @Override
   public FloatColumn unique() {
     FloatSet floats = new FloatOpenHashSet();
@@ -525,7 +537,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     FloatColumn floatColumn = (FloatColumn) column;
     for (int i = 0; i < floatColumn.size(); i++) {

@@ -193,6 +193,18 @@ public class CategoryColumn extends AbstractColumn
     return lookupTable.size();
   }
 
+  //TODO(lwhite): Implement
+  @Override
+  public List<String> max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public List<String> min(int n) {
+    return null;
+  }
+
   public void add(String stringValue) {
     boolean b = lookupTable.contains(stringValue);
     short valueId;
@@ -402,7 +414,7 @@ public class CategoryColumn extends AbstractColumn
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     CategoryColumn intColumn = (CategoryColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {
@@ -427,7 +439,6 @@ public class CategoryColumn extends AbstractColumn
       }
     };
   }
-
 
   public CategoryColumn selectIf(StringPredicate predicate) {
     CategoryColumn column = emptyCopy();

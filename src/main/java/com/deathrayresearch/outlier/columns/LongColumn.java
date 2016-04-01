@@ -371,7 +371,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     LongColumn longColumn = (LongColumn) column;
     for (int i = 0; i < longColumn.size(); i++) {

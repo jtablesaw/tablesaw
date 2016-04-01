@@ -38,7 +38,7 @@ public class ExamplesTest  {
     out(table.columnNames());
 
     // Take a look at some data
-    out("In 'examples. Printing head(5)");
+    out("In 'examples. Printing first(5)");
     out(table.head(5).print());
 
     // Lets take a look at the latitude and longitude columns

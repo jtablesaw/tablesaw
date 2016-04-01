@@ -15,6 +15,9 @@ public interface Column {
 
   int countUnique();
 
+  Object max(int n);
+  Object min(int n);
+
   /**
    * Returns a column of the same type as the receiver, containing only the unique values of the receiver
    */
@@ -60,9 +63,9 @@ public interface Column {
     return getString(size() - 1);
   }
 
-  void appendColumnData(Column column);
+  void append(Column column);
 
-  default Column head(int numRows) {
+  default Column first(int numRows) {
     Column col = emptyCopy();
     int rows = Math.min(numRows, size());
     for (int i = 0; i < rows; i++) {
@@ -71,7 +74,7 @@ public interface Column {
     return col;
   }
 
-  default Column tail(int numRows) {
+  default Column last(int numRows) {
     Column col = emptyCopy();
     int rows = Math.min(numRows, size());
     for (int i = size() - rows; i < size(); i++) {

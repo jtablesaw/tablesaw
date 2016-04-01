@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.columns.ColumnReference;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
+import com.deathrayresearch.outlier.filter.LocalDatePredicate;
 import com.deathrayresearch.outlier.filter.dates.LocalDateIsFirstDayOfTheMonth;
 import com.deathrayresearch.outlier.filter.dates.LocalDateIsInFebruary;
 import com.deathrayresearch.outlier.filter.dates.LocalDateIsInMarch;
@@ -117,6 +118,21 @@ public class LocalDateFilterTest {
     View filtered = table.select().where(valueOf("testing").isMonday()).run();
     print(filtered.print());
     print(filtered.head(1).print());
+  }
+
+  @Test
+  public void testColumnFilters() {
+
+    LocalDatePredicate after_2_28 = new LocalDatePredicate() {
+      LocalDate date = LocalDate.of(2016, 2, 28);
+      @Override
+      public boolean test(LocalDate i) {
+        return i.isAfter(date);
+      }
+    };
+
+    LocalDateColumn filtered = localDateColumn.selectIf(after_2_28);
+
   }
 
   private void print(Object o) {

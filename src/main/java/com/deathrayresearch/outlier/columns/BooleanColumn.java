@@ -102,6 +102,18 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return count.size();
   }
 
+  //TODO(lwhite): Implement
+  @Override
+  public BooleanArrayList max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public BooleanArrayList min(int n) {
+    return null;
+  }
+
   @Override
   public BooleanColumn unique() {
     BooleanSet count = new BooleanOpenHashSet(3);
@@ -259,7 +271,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     BooleanColumn booleanColumn = (BooleanColumn) column;
     for (int i = 0; i < booleanColumn.size(); i++) {
