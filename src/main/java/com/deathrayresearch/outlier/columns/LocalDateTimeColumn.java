@@ -396,6 +396,18 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return column;
   }
 
+  //TODO(lwhite): Implement
+  @Override
+  public LocalDateTimeColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public LocalDateTimeColumn min(int n) {
+    return null;
+  }
+
   public LongIterator iterator() {
     return data.iterator();
   }

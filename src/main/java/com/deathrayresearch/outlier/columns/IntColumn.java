@@ -425,6 +425,18 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return count;
   }
 
+  //TODO(lwhite): Implement
+  @Override
+  public IntColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public IntColumn min(int n) {
+    return null;
+  }
+
   @Override
   public IntIterator iterator() {
     return data.iterator();

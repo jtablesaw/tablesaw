@@ -272,6 +272,18 @@ public class TextColumn extends AbstractColumn
     return column;
   }
 
+  //TODO(lwhite): Implement
+  @Override
+  public TextColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public TextColumn min(int n) {
+    return null;
+  }
+
   @Override
   public Iterator<String> iterator() {
     return data.iterator();

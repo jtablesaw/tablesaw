@@ -749,6 +749,19 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return column;
   }
 
+  //TODO(lwhite): Implement
+  @Override
+  public LocalDateColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public LocalDateColumn min(int n) {
+    return null;
+  }
+
+
   public IntIterator iterator() {
     return data.iterator();
   }

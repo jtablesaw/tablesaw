@@ -281,6 +281,18 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
     }
   }
 
+  //TODO(lwhite): Implement
+  @Override
+  public LocalTimeColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public LocalTimeColumn min(int n) {
+    return null;
+  }
+
   public IntIterator iterator() {
     return data.iterator();
   }

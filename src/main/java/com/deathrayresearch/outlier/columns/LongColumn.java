@@ -391,6 +391,18 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return column;
   }
 
+  //TODO(lwhite): Implement
+  @Override
+  public LongColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public LongColumn min(int n) {
+    return null;
+  }
+
   @Override
   public LongIterator iterator() {
     return data.iterator();

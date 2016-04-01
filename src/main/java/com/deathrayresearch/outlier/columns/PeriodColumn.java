@@ -409,6 +409,18 @@ public class PeriodColumn extends AbstractColumn {
     return column;
   }
 
+  //TODO(lwhite): Implement
+  @Override
+  public PeriodColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public PeriodColumn min(int n) {
+    return null;
+  }
+
   public IntIterator iterator() {
     return data.iterator();
   }
