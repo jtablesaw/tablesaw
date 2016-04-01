@@ -60,21 +60,10 @@ public class Rows {
     }
   }
 
-  public static void sortRows(IntArrayList rows, Table oldTable) {
-
-    for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
-      oldTable.column(columnIndex).sortOn(rows);
-    }
-  }
-
   private static void copy(IntArrayList rows, FloatColumn oldColumn, FloatColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.get(index));
     }
-  }
-
-  private static void sort(IntArrayList rows, FloatColumn oldColumn) {
-    oldColumn.sortOn(rows);
   }
 
   private static void copy(IntArrayList rows, CategoryColumn oldColumn, CategoryColumn newColumn) {

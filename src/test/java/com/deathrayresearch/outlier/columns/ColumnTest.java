@@ -8,6 +8,7 @@ import org.junit.Test;
 import static com.deathrayresearch.outlier.columns.ColumnType.CAT;
 import static com.deathrayresearch.outlier.columns.ColumnType.INTEGER;
 import static com.deathrayresearch.outlier.columns.ColumnType.LOCAL_DATE;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -39,5 +40,27 @@ public class ColumnTest {
     System.out.println(table.column(0).last(5).print());
     System.out.println(table.column(1).last(5).print());
     System.out.println(table.column(2).last(5).print());
+  }
+
+  @Test
+  public void testName() throws Exception {
+    System.out.println(table.columnNames());
+    Column c = table.intColumn("approval");
+    assertEquals("approval", c.name());
+  }
+
+  @Test
+  public void testComment() throws Exception {
+    System.out.println(table.columnNames());
+    Column c = table.intColumn("approval");
+    c.setComment("Dumb comment");
+    assertEquals("Dumb comment", c.comment());
+  }
+
+  @Test
+  public void testType() throws Exception {
+    System.out.println(table.columnNames());
+    Column c = table.intColumn("approval");
+    assertEquals(ColumnType.INTEGER, c.type());
   }
 }

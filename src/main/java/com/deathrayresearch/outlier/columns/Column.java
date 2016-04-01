@@ -1,11 +1,15 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Relation;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
+import java.util.List;
+
 /**
+ * The general interface for columns.
  *
+ * Columns can either exist on their own or be a part of a table. All the data in a single column is of a particular
+ * type.
  */
 public interface Column {
 
@@ -83,11 +87,15 @@ public interface Column {
     return col;
   }
 
-  void sortOn(IntArrayList rows);
-
   String print();
 
   default String title() {
     return "Column: " + name() + '\n';
   }
+
+  List<ChangeLog.ChangeLogEntry> getChangeLog();
+
+  String comment();
+
+  void setComment(String comment);
 }
