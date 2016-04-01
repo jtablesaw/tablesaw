@@ -62,7 +62,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- *
+ * A reference to a column, that can be used in evaluating query predicates
  */
 public class ColumnReference {
 
