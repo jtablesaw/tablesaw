@@ -389,7 +389,7 @@ public class PeriodColumn extends AbstractColumn {
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     PeriodColumn intColumn = (PeriodColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {
@@ -407,6 +407,18 @@ public class PeriodColumn extends AbstractColumn {
       }
     }
     return column;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public PeriodColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public PeriodColumn min(int n) {
+    return null;
   }
 
   public IntIterator iterator() {

@@ -712,7 +712,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     LocalDateColumn intColumn = (LocalDateColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {
@@ -748,6 +748,19 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     }
     return column;
   }
+
+  //TODO(lwhite): Implement
+  @Override
+  public LocalDateColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public LocalDateColumn min(int n) {
+    return null;
+  }
+
 
   public IntIterator iterator() {
     return data.iterator();

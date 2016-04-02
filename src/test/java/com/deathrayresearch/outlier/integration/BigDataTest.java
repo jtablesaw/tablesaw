@@ -36,7 +36,7 @@ public class BigDataTest {
     Table table = CsvReader.read(file, types, wanted, ',', true);
     out(String.format("Loaded %d rows in %d seconds", table.rowCount(), stopwatch.elapsed(TimeUnit.SECONDS)));
 
-    table.head(3).print();
+    table.first(3).print();
     stopwatch.reset();
 
     stopwatch.start();

@@ -1,11 +1,9 @@
 package com.deathrayresearch.outlier.examples;
 
-import au.com.bytecode.opencsv.CSVWriter;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.BooleanColumn;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.ColumnType;
-import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.columns.PackedLocalDate;
 import com.deathrayresearch.outlier.columns.ShortColumn;
@@ -16,7 +14,6 @@ import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;
 
-import java.io.FileWriter;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -46,8 +43,8 @@ public class LargeDataTest {
     System.out.println();
 
     stopwatch.reset().start();
-    System.out.println(t.categoryColumn("first name").head(5).print());
-    System.out.println("Time to print head for first name column " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    System.out.println(t.categoryColumn("first name").first(5).print());
+    System.out.println("Time to print first for first name column " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
     System.out.println();
 
     stopwatch.reset().start();
@@ -62,7 +59,7 @@ public class LargeDataTest {
 
     stopwatch.reset().start();
     System.out.println(t.head(5).print());
-    System.out.println("Time to print head(5) " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    System.out.println("Time to print first(5) " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
     System.out.println();
 
     stopwatch.reset().start();

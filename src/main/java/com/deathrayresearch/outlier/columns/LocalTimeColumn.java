@@ -273,12 +273,24 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     LocalTimeColumn intColumn = (LocalTimeColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.getInt(i));
     }
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public LocalTimeColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public LocalTimeColumn min(int n) {
+    return null;
   }
 
   public IntIterator iterator() {

@@ -311,7 +311,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     LocalDateTimeColumn intColumn = (LocalDateTimeColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {
@@ -394,6 +394,18 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
       }
     }
     return column;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public LocalDateTimeColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public LocalDateTimeColumn min(int n) {
+    return null;
   }
 
   public LongIterator iterator() {

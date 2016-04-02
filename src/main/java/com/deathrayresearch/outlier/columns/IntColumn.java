@@ -395,7 +395,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     IntColumn intColumn = (IntColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {
@@ -437,6 +437,18 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
       }
     }
     return count;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public IntColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public IntColumn min(int n) {
+    return null;
   }
 
   @Override

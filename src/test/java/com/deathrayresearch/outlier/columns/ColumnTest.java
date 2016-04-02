@@ -30,16 +30,16 @@ public class ColumnTest {
 
   @Test
   public void testHead() throws Exception {
-    System.out.println(table.column(0).head(5).print());
-    System.out.println(table.column(1).head(5).print());
-    System.out.println(table.column(2).head(5).print());
+    System.out.println(table.column(0).first(5).print());
+    System.out.println(table.column(1).first(5).print());
+    System.out.println(table.column(2).first(5).print());
   }
 
   @Test
   public void testTail() throws Exception {
-    System.out.println(table.column(0).tail(5).print());
-    System.out.println(table.column(1).tail(5).print());
-    System.out.println(table.column(2).tail(5).print());
+    System.out.println(table.column(0).last(5).print());
+    System.out.println(table.column(1).last(5).print());
+    System.out.println(table.column(2).last(5).print());
   }
 
   @Test

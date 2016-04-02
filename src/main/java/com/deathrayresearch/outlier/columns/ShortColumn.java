@@ -393,7 +393,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   }
 
   @Override
-  public void appendColumnData(Column column) {
+  public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
     ShortColumn shortColumn = (ShortColumn) column;
     for (int i = 0; i < shortColumn.size(); i++) {
@@ -411,6 +411,18 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
       }
     }
     return column;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public ShortColumn max(int n) {
+    return null;
+  }
+
+  //TODO(lwhite): Implement
+  @Override
+  public ShortColumn min(int n) {
+    return null;
   }
 
   @Override
