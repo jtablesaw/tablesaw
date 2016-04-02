@@ -1,62 +1,9 @@
 package com.deathrayresearch.outlier.columns;
 
-import com.deathrayresearch.outlier.filter.DateEqualTo;
-import com.deathrayresearch.outlier.filter.Filter;
-import com.deathrayresearch.outlier.filter.FloatEqualTo;
-import com.deathrayresearch.outlier.filter.FloatGreaterThan;
-import com.deathrayresearch.outlier.filter.FloatGreaterThanOrEqualTo;
-import com.deathrayresearch.outlier.filter.FloatLessThan;
-import com.deathrayresearch.outlier.filter.FloatLessThanOrEqualTo;
-import com.deathrayresearch.outlier.filter.IntBetween;
-import com.deathrayresearch.outlier.filter.IntEqualTo;
-import com.deathrayresearch.outlier.filter.IntGreaterThan;
-import com.deathrayresearch.outlier.filter.IntGreaterThanOrEqualTo;
-import com.deathrayresearch.outlier.filter.IntLessThan;
-import com.deathrayresearch.outlier.filter.IntLessThanOrEqualTo;
-import com.deathrayresearch.outlier.filter.StringEqualTo;
-import com.deathrayresearch.outlier.filter.TimeEqualTo;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsAfter;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsBefore;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsFirstDayOfTheMonth;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsFriday;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInApril;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInAugust;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInDecember;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInFebruary;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInJanuary;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInJuly;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInJune;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInMarch;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInMay;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInNovember;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInOctober;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInQ1;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInQ2;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInQ3;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInQ4;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInSeptember;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsInYear;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsLastDayOfTheMonth;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsMonday;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsSaturday;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsSunday;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsThursday;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsTuesday;
-import com.deathrayresearch.outlier.filter.dates.LocalDateIsWednesday;
-import com.deathrayresearch.outlier.filter.text.TextContains;
-import com.deathrayresearch.outlier.filter.text.TextEndsWith;
-import com.deathrayresearch.outlier.filter.text.TextEqualToIgnoringCase;
-import com.deathrayresearch.outlier.filter.text.TextHasLengthEqualTo;
-import com.deathrayresearch.outlier.filter.text.TextIsAlpha;
-import com.deathrayresearch.outlier.filter.text.TextIsAlphaNumeric;
-import com.deathrayresearch.outlier.filter.text.TextIsEmpty;
-import com.deathrayresearch.outlier.filter.text.TextIsLongerThan;
-import com.deathrayresearch.outlier.filter.text.TextIsLowerCase;
-import com.deathrayresearch.outlier.filter.text.TextIsNumeric;
-import com.deathrayresearch.outlier.filter.text.TextIsShorterThan;
-import com.deathrayresearch.outlier.filter.text.TextIsUpperCase;
-import com.deathrayresearch.outlier.filter.text.TextMatchesRegex;
-import com.deathrayresearch.outlier.filter.text.TextStartsWith;
+import com.deathrayresearch.outlier.filter.*;
+import com.deathrayresearch.outlier.filter.columnbased.ColumnEqualTo;
+import com.deathrayresearch.outlier.filter.dates.*;
+import com.deathrayresearch.outlier.filter.text.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -74,6 +21,10 @@ public class ColumnReference {
 
   public Filter isEqualTo(int value) {
     return new IntEqualTo(this, value);
+  }
+
+  public Filter isEqualTo(ColumnReference reference) {
+    return new ColumnEqualTo(this, reference);
   }
 
   public Filter isBetween(int low, int high) {

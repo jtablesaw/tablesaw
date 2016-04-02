@@ -152,6 +152,20 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return results;
   }
 
+  public RoaringBitmap isEqualTo(IntColumn other) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    IntIterator otherIterator = other.iterator();
+    for (int next : data) {
+      int otherNext = otherIterator.next();
+      if (next == otherNext) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
   @Override
   public Table summary() {
     return StatUtil.stats(this).asTable(name());

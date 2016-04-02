@@ -9,7 +9,7 @@ import org.roaringbitmap.RoaringBitmap;
  */
 public class IntEqualTo extends ColumnFilter {
 
-  int value;
+  private int value;
 
   public IntEqualTo(ColumnReference reference, int value) {
     super(reference);

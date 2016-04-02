@@ -2,7 +2,6 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.aggregator.StringReduceUtils;
-import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.filter.StringPredicate;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.mapper.StringIntMapper;
@@ -11,8 +10,6 @@ import com.deathrayresearch.outlier.mapper.StringStringMapper;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.longs.LongIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.*;
@@ -156,6 +153,20 @@ public class TextColumn extends AbstractColumn
     int i = 0;
     for (String next : data) {
       if (string.equals(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
+  public RoaringBitmap isEqualTo(TextColumn other) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    Iterator<String> otherIterator = other.iterator();
+    for (String next : data) {
+      String string = otherIterator.next();
+      if (next.equals(string)) {
         results.add(i);
       }
       i++;
