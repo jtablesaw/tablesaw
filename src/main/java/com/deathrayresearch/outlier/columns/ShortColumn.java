@@ -151,6 +151,19 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return results;
   }
 
+  public RoaringBitmap isEqualTo(ShortColumn f) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    ShortIterator shortIterator = f.iterator();
+    for (int next : data) {
+      if (next == shortIterator.next()) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
   @Override
   public Table summary() {
     return StatUtil.stats(this).asTable(name());
@@ -412,6 +425,8 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     }
     return column;
   }
+
+
 
   //TODO(lwhite): Implement
   @Override

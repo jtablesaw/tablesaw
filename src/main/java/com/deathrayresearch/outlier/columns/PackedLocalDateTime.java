@@ -2,6 +2,8 @@ package com.deathrayresearch.outlier.columns;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
+import it.unimi.dsi.fastutil.doubles.Double2IntMap;
+import it.unimi.dsi.fastutil.doubles.Double2IntOpenHashMap;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -127,6 +129,7 @@ public class PackedLocalDateTime {
   }
 
   public static int getDayOfYear(long packedDateTime) {
+
     return getMonth(packedDateTime).firstDayOfYear(isLeapYear(packedDateTime)) + getDayOfMonth(packedDateTime) - 1;
   }
 

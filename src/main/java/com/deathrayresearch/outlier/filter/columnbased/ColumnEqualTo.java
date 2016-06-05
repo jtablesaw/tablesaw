@@ -27,17 +27,32 @@ public class ColumnEqualTo extends ColumnFilter {
 
     if (column.type() == ColumnType.TEXT)
       return apply((TextColumn) column, (TextColumn) other);
+
     if (column.type() == ColumnType.INTEGER)
       return apply((IntColumn) column, (IntColumn) other);
+
+    if (column.type() == ColumnType.LONG_INT)
+      return apply((LongColumn) column, (LongColumn) other);
+
+    if (column.type() == ColumnType.SHORT_INT)
+      return apply((ShortColumn) column, (ShortColumn) other);
 
     throw new UnsupportedOperationException("Not yet implemented for this column type");
   }
 
-  private RoaringBitmap apply(TextColumn column1, TextColumn column2) {
+  private static RoaringBitmap apply(TextColumn column1, TextColumn column2) {
     return column1.isEqualTo(column2);
   }
 
-  private RoaringBitmap apply(IntColumn column1, IntColumn column2) {
+  private static RoaringBitmap apply(IntColumn column1, IntColumn column2) {
+    return column1.isEqualTo(column2);
+  }
+
+  private static RoaringBitmap apply(ShortColumn column1, ShortColumn column2) {
+    return column1.isEqualTo(column2);
+  }
+
+  private static RoaringBitmap apply(LongColumn column1, LongColumn column2) {
     return column1.isEqualTo(column2);
   }
 }

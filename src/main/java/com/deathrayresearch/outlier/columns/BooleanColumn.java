@@ -253,6 +253,19 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return results;
   }
 
+  public RoaringBitmap isEqualTo(BooleanColumn other) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    BooleanIterator booleanIterator = other.iterator();
+    for (boolean next : data) {
+      if (next == booleanIterator.nextBoolean()) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
   public BooleanArrayList data() {
     return data;
   }
@@ -298,6 +311,10 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
       builder.append('\n');
     }
     return builder.toString();
+  }
+
+  public BooleanIterator iterator() {
+    return data.iterator();
   }
 
   @Override

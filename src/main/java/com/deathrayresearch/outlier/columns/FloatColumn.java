@@ -184,6 +184,19 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
     return results;
   }
 
+  public RoaringBitmap isEqualTo(FloatColumn f) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    FloatIterator floatIterator = f.iterator();
+    for (float floats : data) {
+      if (floats == floatIterator.nextFloat()) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
   @Override
   public String getString(int row) {
     return String.valueOf(data.getFloat(row));

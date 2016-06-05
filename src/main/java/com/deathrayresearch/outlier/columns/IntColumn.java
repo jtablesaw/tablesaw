@@ -157,13 +157,17 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     int i = 0;
     IntIterator otherIterator = other.iterator();
     for (int next : data) {
-      int otherNext = otherIterator.next();
+      int otherNext = otherIterator.nextInt();
       if (next == otherNext) {
         results.add(i);
       }
       i++;
     }
     return results;
+  }
+
+  private static boolean equalTo(int thisInt, int otherInt) {
+    return thisInt == otherInt;
   }
 
   @Override

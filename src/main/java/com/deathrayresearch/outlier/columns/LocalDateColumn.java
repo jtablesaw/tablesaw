@@ -310,6 +310,19 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return results;
   }
 
+  public RoaringBitmap isEqualTo(LocalDateColumn column) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    IntIterator intIterator = column.iterator();
+    for (int next : data) {
+      if (next == intIterator.nextInt()) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
   /**
    * Returns a table of dates and the number of observations of those dates
    */

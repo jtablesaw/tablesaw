@@ -148,6 +148,19 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return results;
   }
 
+  public RoaringBitmap isEqualTo(LongColumn f) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    LongIterator longIterator = f.iterator();
+    for (long next : data) {
+      if (next == longIterator.next()) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
   @Override
   public Table summary() {
     return StatUtil.stats(this).asTable(name());
