@@ -57,7 +57,7 @@ public class TableGroup {
       columnIndices[i] = original.columnIndex(columnNames[i]);
     }
 
-    Table empty = (Table) original.emptyCopy();
+    Table empty = original.emptyCopy();
 
     SubTable newView = new SubTable(empty);
     String lastKey = "";

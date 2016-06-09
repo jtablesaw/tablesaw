@@ -3,7 +3,6 @@ package com.deathrayresearch.outlier.io;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.View;
 import org.junit.Test;
 
 import static com.deathrayresearch.outlier.columns.ColumnType.*;
@@ -34,7 +33,7 @@ public class IoTest1 {
 
     print(table.floatColumn("stop_lon").describe());
 
-    View v = table.select("stop_lon", "stop_id").where(column("stop_lon").isGreaterThan(-0.1f)).run();
+    Table v = table.selectIf(column("stop_lon").isGreaterThan(-0.1f));
     print(v.print());
     print(v.rowCount());
   }

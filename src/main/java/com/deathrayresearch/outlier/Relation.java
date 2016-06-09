@@ -34,7 +34,7 @@ public interface Relation {
     removeColumns(cols);
   }
 
-  View head(int nRows);
+  Table head(int nRows);
 
   /**
    * Returns the index of the column with the given columnName

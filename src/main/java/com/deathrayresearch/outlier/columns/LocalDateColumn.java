@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.filter.LocalDatePredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
@@ -327,7 +327,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
    * Returns a table of dates and the number of observations of those dates
    */
   @Override
-  public View summary() {
+  public Relation summary() {
 
     Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
 

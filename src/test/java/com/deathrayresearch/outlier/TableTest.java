@@ -49,35 +49,4 @@ public class TableTest {
     floatColumn.add(2.2342f);
     assertEquals(2, table.rowCount());
   }
-
-/*
-  @Test
-  public void testAverage() throws Exception {
-    column.add(2f);
-    column.add(4f);
-    Table avgs = table.average(column.name()).by("");
-    System.out.println(avgs.print());
-  }
-*/
-
-  @Test
-  public void testRun() {
-    Table table = new Table("daf");
-    RandomDataGenerator random = new RandomDataGenerator();
-    int max = 100_000_000;
-    for (int i = 100; i <= max; i *= 10) {
-      IntColumn column1 = new IntColumn("f1", max);
-      table.addColumn(column1);
-      for (int k = 0; k < max; k++) {
-        column1.add(k);
-      }
-      Stopwatch stopwatch = Stopwatch.createStarted();
-      View view = new View(table, "f1");
-      int v = random.nextInt(0, max);
-      View view2 = view.where(column1.isEqualTo(v));
-      view2.print();
-
-      System.out.println("Elapsed time in ms " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-    }
-  }
 }

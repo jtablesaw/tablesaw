@@ -185,10 +185,8 @@ public class View implements Relation {
     }
   }
 
-  public View head(int nRows) {
-    View view = new View(this, Math.min(nRows, rowCount()));
-    view.setName(name);
-    return view;
+  public Table head(int nRows) {
+    return this.asTable().head(nRows);
   }
 
   @Override

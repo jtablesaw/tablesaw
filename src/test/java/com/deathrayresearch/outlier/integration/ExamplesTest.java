@@ -1,7 +1,6 @@
 package com.deathrayresearch.outlier.integration;
 
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.io.CsvReader;
 import com.deathrayresearch.outlier.io.CsvWriter;
@@ -51,7 +50,7 @@ public class ExamplesTest  {
 
     // Lets filter out some of the rows. We're only interested in records with IDs between 524-624
 
-    View filtered = table.select().where(column("stop_id").isBetween(524, 624)).run();
+    Table filtered = table.selectIf(column("stop_id").isBetween(524, 624));
     out(filtered.head(5).print());
 
     // Write out the new CSV file

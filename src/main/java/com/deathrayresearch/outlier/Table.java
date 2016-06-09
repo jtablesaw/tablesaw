@@ -13,7 +13,6 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import javax.annotation.Nonnull;
@@ -191,10 +190,11 @@ public class Table implements Relation {
   /**
    * Returns a new table containing the first {@code nrows} of data in this table
    */
-  public View head(int nRows) {
-    View view = new View(this, Math.min(nRows, rowCount()));
-    view.setName(name);
-    return view;
+  public Table head(int nRows) {
+    nRows = Math.min(nRows, rowCount());
+    Table newTable = emptyCopy();
+    Rows.head(nRows, this, newTable);
+    return newTable;
   }
 
   /**

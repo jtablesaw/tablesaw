@@ -1,13 +1,9 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Relation;
-import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.View;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**

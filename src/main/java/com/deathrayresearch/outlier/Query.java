@@ -2,7 +2,6 @@ package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.filter.Filter;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +34,5 @@ public class Query {
   public Query where(Filter filter) {
     this.filter = filter;
     return this;
-  }
-
-  public View run() {
-    RoaringBitmap rowSelection;
-    if (filter != null) {
-      rowSelection = filter.apply(this.table);
-    } else {
-      rowSelection = new RoaringBitmap();
-      rowSelection.flip(0, table.rowCount());
-    }
-    return new View(table, columnSelection, rowSelection);
   }
 }

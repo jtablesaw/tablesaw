@@ -2,9 +2,7 @@ package com.deathrayresearch.outlier.io;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.columns.Column;
-import org.roaringbitmap.IntIterator;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.FileWriter;
@@ -33,14 +31,6 @@ final public class CsvWriter {
   }
 
   /**
-   * Writes the given table to a file with the given filename
-   * @throws IOException
-   */
-  public static void write(String fileName, View table) throws IOException {
-    write(fileName, table, null);
-  }
-
-  /**
    * Writes the given table to a file with the given filename, using the given string to represent missing data
    * @throws IOException
    */
@@ -52,26 +42,6 @@ final public class CsvWriter {
       }
       writer.writeNext(header);
       for (int r = 0; r < table.rowCount(); r++) {
-        String[] entries = new String[table.columnCount()];
-        for (int c = 0; c < table.columnCount(); c++) {
-          table.get(c, r);
-          entries[c] = table.get(c, r);
-        }
-        writer.writeNext(entries);
-      }
-    }
-  }
-
-  public static void write(String fileName, View table, String missing) throws IOException {
-    try (CSVWriter writer = new CSVWriter(new FileWriter(fileName))) {
-      String[] header = new String[table.columnCount()];
-      for (int c = 0; c < table.columnCount(); c++) {
-        header[c] = table.column(c).name();
-      }
-      writer.writeNext(header);
-      IntIterator iterator = table.intIterator();
-      while (iterator.hasNext()) {
-        int r = iterator.next();
         String[] entries = new String[table.columnCount()];
         for (int c = 0; c < table.columnCount(); c++) {
           table.get(c, r);

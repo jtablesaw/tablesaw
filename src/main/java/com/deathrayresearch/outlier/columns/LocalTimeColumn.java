@@ -1,8 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
-import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.filter.LocalTimePredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
@@ -115,7 +113,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
   };
 
   @Override
-  public View summary() {
+  public Table summary() {
 
     Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
 
