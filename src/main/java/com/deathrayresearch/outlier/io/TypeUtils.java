@@ -167,16 +167,12 @@ public final class TypeUtils {
         return LocalTimeColumn.create(name);
       case LOCAL_DATE_TIME:
         return LocalDateTimeColumn.create(name);
-      case TEXT:
-        return TextColumn.create(name);
       case INTEGER:
         return IntColumn.create(name);
       case FLOAT:
         return FloatColumn.create(name);
       case BOOLEAN:
         return BooleanColumn.create(name);
-      case PERIOD:
-        return PeriodColumn.create(name);
       case CAT:
         return CategoryColumn.create(name);
       case SHORT_INT:

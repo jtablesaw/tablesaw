@@ -74,10 +74,6 @@ public class StorageManager {
         return readLocalTimeColumn(fileName, columnMetadata);
       case LOCAL_DATE_TIME:
         return readLocalDateTimeColumn(fileName, columnMetadata);
-      case PERIOD:
-        return readPeriodColumn(fileName, columnMetadata);
-      case TEXT:
-        return readTextColumn(fileName, columnMetadata);
       case CAT:
         return readCategoryColumn(fileName, columnMetadata);
       case SHORT_INT:
@@ -212,42 +208,6 @@ public class StorageManager {
     return times;
   }
 
-  public static PeriodColumn readPeriodColumn(String fileName, ColumnMetadata metadata) throws IOException {
-    PeriodColumn packedPeriods = new PeriodColumn(metadata);
-    try (FileInputStream fis = new FileInputStream(fileName);
-         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-         DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          int cell = dis.readInt();
-          packedPeriods.add(cell);
-        } catch (EOFException e) {
-          EOF = true;
-        }
-      }
-    }
-    return packedPeriods;
-  }
-
-  public static TextColumn readTextColumn(String fileName, ColumnMetadata metadata) throws IOException {
-    TextColumn stringColumn = new TextColumn(metadata);
-    try (FileInputStream fis = new FileInputStream(fileName);
-         SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
-         DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          String cell = dis.readUTF();
-          stringColumn.add(cell);
-        } catch (EOFException e) {
-          EOF = true;
-        }
-      }
-    }
-    return stringColumn;
-  }
-
   public static CategoryColumn readCategoryColumn(String fileName,ColumnMetadata metadata) throws IOException {
     CategoryColumn stringColumn = new CategoryColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
@@ -336,12 +296,6 @@ public class StorageManager {
         case LOCAL_DATE_TIME:
           writeColumn(fileName, (LocalDateTimeColumn) column);
           break;
-        case PERIOD:
-          writeColumn(fileName, (PeriodColumn) column);
-          break;
-        case TEXT:
-          writeColumn(fileName, (TextColumn) column);
-          break;
         case CAT:
           writeColumn(fileName, (CategoryColumn) column);
           break;
@@ -366,22 +320,6 @@ public class StorageManager {
       int i = 0;
       for (float d : column) {
         dos.writeFloat(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
-          dos.flush();
-        }
-        i++;
-      }
-      dos.flush();
-    }
-  }
-
-  public static void writeColumn(String fileName, TextColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-         DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      for (String d : column) {
-        dos.writeUTF(d);
         if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
@@ -492,23 +430,6 @@ public class StorageManager {
 
   //TODO(lwhite): saveTable the column using integer compression
   public static void writeColumn(String fileName, LocalTimeColumn column) throws IOException {
-    try (FileOutputStream fos = new FileOutputStream(fileName);
-         SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
-         DataOutputStream dos = new DataOutputStream(sos)) {
-      int i = 0;
-      for (int d : column.data()) {
-        dos.writeInt(d);
-        if (i % FLUSH_AFTER_ITERATIONS == 0) {
-          dos.flush();
-        }
-        i++;
-      }
-      dos.flush();
-    }
-  }
-
-  //TODO(lwhite): saveTable the column using integer compression
-  public static void writeColumn(String fileName, PeriodColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {

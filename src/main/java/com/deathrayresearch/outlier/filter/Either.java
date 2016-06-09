@@ -6,12 +6,12 @@ import org.roaringbitmap.RoaringBitmap;
 /**
  *
  */
-public class Both extends CompositeFilter {
+public class Either extends CompositeFilter {
 
   private final Filter a;
   private final Filter b;
 
-  public Both(Filter a, Filter b) {
+  public Either(Filter a, Filter b) {
 
     this.a = a;
     this.b = b;
@@ -19,6 +19,8 @@ public class Both extends CompositeFilter {
 
   @Override
   public RoaringBitmap apply(Relation relation) {
-    return null;
+    RoaringBitmap rb =  a.apply(relation);
+    rb.or(b.apply(relation));
+    return rb;
   }
 }

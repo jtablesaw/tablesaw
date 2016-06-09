@@ -5,7 +5,6 @@ import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.ColumnReference;
 import com.deathrayresearch.outlier.columns.ColumnType;
 import com.deathrayresearch.outlier.Relation;
-import com.deathrayresearch.outlier.columns.TextColumn;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
@@ -24,10 +23,6 @@ public class StringEqualTo extends ColumnFilter {
     Column column = relation.column(columnReference.getColumnName());
     ColumnType type = column.type();
     switch (type) {
-      case TEXT: {
-        TextColumn textColumn = (TextColumn) relation.column(columnReference.getColumnName());
-        return textColumn.isEqualTo(value);
-      }
       case CAT: {
         CategoryColumn categoryColumn = (CategoryColumn) relation.column(columnReference.getColumnName());
         return categoryColumn.isEqualTo(value);

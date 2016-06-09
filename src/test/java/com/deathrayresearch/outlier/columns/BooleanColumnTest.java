@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +61,7 @@ public class BooleanColumnTest {
 
   @Test
   public void testSummary() throws Exception {
-    Table summary = column.summary();
+    Relation summary = column.summary();
     System.out.println(summary.print());
   }
 

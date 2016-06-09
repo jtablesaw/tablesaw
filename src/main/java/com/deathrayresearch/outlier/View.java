@@ -248,6 +248,14 @@ public class View implements Relation {
     return widths;
   }
 
+  public Table asTable() {
+    Table table = new Table(this.name());
+    for (Column column : columns()) {
+      table.addColumn(column.subset(rowMap));
+    }
+    return table;
+  }
+
   public IntIterator intIterator() {
     return rowMap.getIntIterator();
   }

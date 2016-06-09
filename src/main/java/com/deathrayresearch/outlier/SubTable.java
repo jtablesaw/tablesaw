@@ -68,14 +68,6 @@ class SubTable extends Table {
           LocalDateTimeColumn localDateTimeColumn = (LocalDateTimeColumn) column;
           localDateTimeColumn.add(sourceTable.localDateTimeColumn(i).getLong(rowIndex));
           break;
-        case PERIOD:
-          PeriodColumn periodColumn = (PeriodColumn) column;
-          periodColumn.add(sourceTable.periodColumn(i).getInt(rowIndex));
-          break;
-        case TEXT:
-          TextColumn textColumn = (TextColumn) column;
-          textColumn.add(sourceTable.textColumn(i).get(rowIndex));
-          break;
         case CAT:
           CategoryColumn categoryColumn = (CategoryColumn) column;
           categoryColumn.add(sourceTable.categoryColumn(i).get(rowIndex));

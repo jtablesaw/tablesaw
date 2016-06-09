@@ -95,9 +95,9 @@ public class LargeDataTest {
         entries[4] = person.getAddress().getCity();
         entries[5] = person.getAddress().getPostalCode();
         entries[6] = fairy.baseProducer().randomElement(usStateArray);
-        entries[7] = String.valueOf(fairy.baseProducer().randomBetween(65, 280));
-        entries[8] = String.valueOf(fairy.baseProducer().randomBetween(64, 78));
-        entries[9] = String.valueOf(person.isFemale());
+        entries[7] = String.column(fairy.baseProducer().randomBetween(65, 280));
+        entries[8] = String.column(fairy.baseProducer().randomBetween(64, 78));
+        entries[9] = String.column(person.isFemale());
         writer.writeNext(entries);
       }
     }*/

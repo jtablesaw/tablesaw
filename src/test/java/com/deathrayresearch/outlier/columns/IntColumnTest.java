@@ -105,4 +105,21 @@ public class IntColumnTest {
     assertEquals(10, column1.size());
     System.out.println(column1.print());
   }
+
+  @Test
+  public void testSelect() {
+
+    for (int i = 0; i < 100; i++) {
+      column.add(i);
+    }
+
+    IntPredicate predicate = value -> value < 10;
+    IntColumn column1 = column.selectIf(predicate);
+    assertEquals(10, column1.size());
+
+    IntColumn column2 = column.select(column.apply(predicate));
+    assertEquals(10, column2.size());
+    System.out.println(column1.print());
+    System.out.println(column2.print());
+  }
 }

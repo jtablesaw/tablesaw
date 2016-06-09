@@ -29,10 +29,10 @@ public class AirlineDelays {
   private AirlineDelays() throws Exception {
     Stopwatch stopwatch = Stopwatch.createStarted();
     System.out.println("loading");
-    flights2008 = CsvReader.read(reduced_set, "bigdata/2008.csv");
+    flights2008 = CsvReader.read(reduced_set, "bigdata/2015.csv");
     System.out.println(String.format("loaded %d records in %d seconds",
         flights2008.rowCount(),
-        (int) stopwatch.elapsed(TimeUnit.SECONDS)));
+        stopwatch.elapsed(TimeUnit.SECONDS)));
     out(flights2008.shape());
     out(flights2008.columnNames().toString());
     flights2008.head(10).print();
@@ -78,7 +78,7 @@ public class AirlineDelays {
   };
 
   // A filtered set of columns
-  static ColumnType[] reduced_set = {
+  private static ColumnType[] reduced_set = {
       SKIP, // year
       INTEGER, // month
       INTEGER, // day

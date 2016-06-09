@@ -27,7 +27,7 @@ public class StorageManagerTest {
 
   Relation table = new Table("t");
   FloatColumn floatColumn = FloatColumn.create("float");
-  TextColumn textColumn = TextColumn.create("text");
+  CategoryColumn textColumn = CategoryColumn.create("text");
   CategoryColumn categoryColumn = CategoryColumn.create("cat");
   LocalDateColumn localDateColumn = LocalDateColumn.create("date");
   LongColumn longColumn = LongColumn.create("long");

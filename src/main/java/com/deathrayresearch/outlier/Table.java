@@ -3,7 +3,7 @@ package com.deathrayresearch.outlier;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.IntColumn;
-import com.deathrayresearch.outlier.columns.PeriodColumn;
+import com.deathrayresearch.outlier.filter.Filter;
 import com.deathrayresearch.outlier.sorting.Sort;
 import com.deathrayresearch.outlier.splitter.Splitter;
 import com.deathrayresearch.outlier.store.TableMetadata;
@@ -13,6 +13,8 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import org.roaringbitmap.IntIterator;
+import org.roaringbitmap.RoaringBitmap;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -167,8 +169,8 @@ public class Table implements Relation {
    * Returns a table with the same columns as this table, but no data
    */
   @Override
-  public Relation emptyCopy() {
-    Relation copy = new Table(name);
+  public Table emptyCopy() {
+    Table copy = new Table(name);
     for (Column column : columnList) {
       copy.addColumn(column.emptyCopy());
     }
@@ -347,36 +349,17 @@ public class Table implements Relation {
     }
   }
 
-/*
-  */
-/**
-   * Returns a comparator for the column matching the specified name
-   *//*
-
-  private IntComparator rowComparator(Splitter splitter, boolean reverse) {
-
-    IntComparator rowComparator = new IntComparator() {
-      @Override
-      public int compare(int i, int i1) {
-        return 0;
-      }
-
-      @Override
-      public int compare(Integer o1, Integer o2) {
-        return compare((int) o1, (int) o2);
-      }
-    };
-
-    if (reverse) {
-      return ReverseIntComparator.reverse(rowComparator);
-    } else {
-      return rowComparator;
-    }
+  public Table selectIf(RoaringBitmap map) {
+    Table newTable = this.emptyCopy();
+    Rows.copyRowsToTable(map, this, newTable);
+    return newTable;
   }
-*/
 
-  public Query select() {
-    return new Query(this);
+  public Table selectIf(Filter filter) {
+    Table newTable = this.emptyCopy();
+    RoaringBitmap map = filter.apply(this);
+    Rows.copyRowsToTable(map, this, newTable);
+    return newTable;
   }
 
   public Query select(String ... columnName) {
@@ -506,10 +489,6 @@ public class Table implements Relation {
 
   public CategoryColumn categoryColumn(int columnIndex) {
     return (CategoryColumn) column(columnIndex);
-  }
-
-  public PeriodColumn periodColumn(int i) {
-    return (PeriodColumn) column(i);
   }
 
   public void append(Table tableToAppend) {

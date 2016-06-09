@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  */
 public class CategoryColumnTest {
 
-  CategoryColumn column = CategoryColumn.create("testing");
+  private CategoryColumn column = CategoryColumn.create("testing");
 
   @Before
   public void setUp() throws Exception {
@@ -41,7 +41,6 @@ public class CategoryColumnTest {
   public void testGetDummies() {
     List<BooleanColumn> dummies = column.getDummies();
     assertEquals(4, dummies.size());
-
   }
 
   @Test

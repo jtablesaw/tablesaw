@@ -18,7 +18,7 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 
-import static com.deathrayresearch.outlier.QueryUtil.valueOf;
+import static com.deathrayresearch.outlier.api.QueryHelper.column;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
@@ -115,7 +115,7 @@ public class LocalDateFilterTest {
 
   @Test
   public void testFilters() {
-    View filtered = table.select().where(valueOf("testing").isMonday()).run();
+    View filtered = table.select().where(column("testing").isMonday()).run();
     print(filtered.print());
     print(filtered.head(1).print());
   }

@@ -209,19 +209,19 @@ public interface Relation {
 
     Table structure = new Table(nameBuilder.toString());
     structure.addColumn(IntColumn.create("Index"));
-    structure.addColumn(TextColumn.create("Column Name"));
-    structure.addColumn(TextColumn.create("Type"));
+    structure.addColumn(CategoryColumn.create("Column Name"));
+    structure.addColumn(CategoryColumn.create("Type"));
     structure.addColumn(IntColumn.create("Unique Values"));
-    structure.addColumn(TextColumn.create("First"));
-    structure.addColumn(TextColumn.create("Last"));
+    structure.addColumn(CategoryColumn.create("First"));
+    structure.addColumn(CategoryColumn.create("Last"));
 
     for (Column column : columns()) {
       structure.intColumn("Index").add(columnIndex(column));
-      structure.textColumn("Column Name").add(column.name());
-      structure.textColumn("Type").add(column.type().name());
+      structure.categoryColumn("Column Name").add(column.name());
+      structure.categoryColumn("Type").add(column.type().name());
       structure.intColumn("Unique Values").add(column.countUnique());
-      structure.textColumn("First").add(column.first());
-      structure.textColumn("Last").add(column.getString(column.size() - 1));
+      structure.categoryColumn("First").add(column.first());
+      structure.categoryColumn("Last").add(column.getString(column.size() - 1));
     }
     return structure;
   }
@@ -275,25 +275,11 @@ public interface Relation {
     return (LongColumn) column(columnIndex);
   }
 
-  default TextColumn textColumn(int columnIndex) {
-    return (TextColumn) column(columnIndex);
-  }
-  default TextColumn textColumn(String columnName) {
-    return (TextColumn) column(columnName);
-  }
-
   default LocalDateColumn localDateColumn(int columnIndex) {
     return (LocalDateColumn) column(columnIndex);
   }
   default LocalDateColumn localDateColumn(String columnName) {
     return (LocalDateColumn) column(columnName);
-  }
-
-  default PeriodColumn periodColumn(int columnIndex) {
-    return (PeriodColumn) column(columnIndex);
-  }
-  default PeriodColumn periodColumn(String columnName) {
-    return (PeriodColumn) column(columnName);
   }
 
   default LocalTimeColumn localTimeColumn(String columnName) {

@@ -1,16 +1,5 @@
 package com.deathrayresearch.outlier;
 
-import com.deathrayresearch.outlier.columns.ColumnType;
-import com.deathrayresearch.outlier.io.CsvReader;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.deathrayresearch.outlier.columns.ColumnType.*;
-import static com.deathrayresearch.outlier.QueryUtil.*;
-
 /**
  *
  */
@@ -26,7 +15,7 @@ public class TestDataUtils  {
     ColumnType[] types = {TEXT, CAT, SKIP};
     try {
       Table t = CsvReader.read(types, "data/first_names.csv");
-      //View f = t.select().where(valueOf()).run();
+      //View f = t.select().where(column()).run();
       System.out.println(t.columnNames());
     } catch (IOException e) {
       e.printStackTrace();

@@ -19,11 +19,11 @@ public class SfCrimeTest {
   ColumnType[] heading = {
       LOCAL_DATE_TIME,   // date and time
       CAT,   // category
-      TEXT,   // description
+      CAT,   // description
       CAT,   // day of week
       CAT,  // PD district
       CAT, // resolution
-      TEXT, // address
+      CAT, // address
       FLOAT, // lon
       FLOAT, // lat
  };
@@ -36,14 +36,14 @@ public class SfCrimeTest {
   }
 
   @Test
-  @Ignore
+  @Ignore  // uses a lot of memory
   public void test() {
 
     out(table.columnNames().toString());
 
     out(table.head(4).print());
 
-    out("" + table.columnCount());
+    out(table.columnCount());
     CategoryColumn district = table.categoryColumn("PdDistrict");
     out(district.summary().print());
 
@@ -89,7 +89,7 @@ public class SfCrimeTest {
    // out(max.print());
   }
 
-  private void out(String str) {
-    System.out.println(str);
+  private static void out(Object str) {
+    System.out.println(String.valueOf(str));
   }
 }

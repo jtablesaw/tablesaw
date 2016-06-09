@@ -1,5 +1,7 @@
-package com.deathrayresearch.outlier.columns;
+package com.deathrayresearch.outlier.api;
 
+
+import com.deathrayresearch.outlier.columns.Column;
 
 /**
  * Defines the type of data held by a {@link Column}

@@ -10,17 +10,17 @@ import org.junit.Test;
 import static com.deathrayresearch.outlier.columns.ColumnType.*;
 
 /**
- *
+ * Basic example code
  */
 public class GettingStarted {
 
-  ColumnType[] types = {
+  private ColumnType[] types = {
       LOCAL_DATE,     // date of poll
       INTEGER,        // approval rating (pct)
       CAT             // polling org
   };
 
-  Table table;
+  private Table table;
 
   @Before
   public void setUp() throws Exception {

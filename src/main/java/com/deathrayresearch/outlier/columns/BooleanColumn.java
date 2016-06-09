@@ -1,6 +1,8 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.View;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.BooleanMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
@@ -65,7 +67,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   }
 
   @Override
-  public Table summary() {
+  public Relation summary() {
 
     Map<Boolean, Integer> counts = new HashMap<>(3);
     counts.put(Boolean.TRUE, 0);

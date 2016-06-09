@@ -1,7 +1,5 @@
 package com.deathrayresearch.outlier.columns;
 
-import java.util.Iterator;
-
 /**
  *
  */

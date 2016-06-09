@@ -326,6 +326,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   /**
    * Returns a table of dates and the number of observations of those dates
    */
+  @Override
   public View summary() {
 
     Int2IntOpenHashMap counts = new Int2IntOpenHashMap();

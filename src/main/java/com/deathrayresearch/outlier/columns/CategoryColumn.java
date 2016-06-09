@@ -5,7 +5,6 @@ import com.deathrayresearch.outlier.aggregator.StringReduceUtils;
 import com.deathrayresearch.outlier.filter.StringPredicate;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.io.TypeUtils;
-import com.deathrayresearch.outlier.mapper.StringMapUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.DictionaryMap;
 import com.google.common.base.CharMatcher;
@@ -27,7 +26,7 @@ import java.util.List;
  * A column in a base table that contains float values
  */
 public class CategoryColumn extends AbstractColumn
-        implements StringMapUtils, StringFilters, StringReduceUtils, Iterable<String> {
+        implements StringFilters, StringReduceUtils, Iterable<String> {
 
   public static final String MISSING_VALUE = (String) ColumnType.CAT.getMissingValue();
 

@@ -7,7 +7,7 @@ import com.deathrayresearch.outlier.io.CsvReader;
 import com.deathrayresearch.outlier.io.CsvWriter;
 import org.junit.Test;
 
-import static com.deathrayresearch.outlier.QueryUtil.valueOf;
+import static com.deathrayresearch.outlier.api.QueryHelper.column;
 import static com.deathrayresearch.outlier.columns.ColumnType.*;
 
 /**
@@ -22,7 +22,7 @@ public class ExamplesTest  {
     out("Some Examples: ");
 
     // Read the CSV file
-    ColumnType[] types = {INTEGER, TEXT, CAT, FLOAT, FLOAT};
+    ColumnType[] types = {INTEGER, CAT, CAT, FLOAT, FLOAT};
     Table table = CsvReader.read(types, "data/bus_stop_test.csv");
 
     // Look at the column names
@@ -51,7 +51,7 @@ public class ExamplesTest  {
 
     // Lets filter out some of the rows. We're only interested in records with IDs between 524-624
 
-    View filtered = table.select().where(valueOf("stop_id").isBetween(524, 624)).run();
+    View filtered = table.select().where(column("stop_id").isBetween(524, 624)).run();
     out(filtered.head(5).print());
 
     // Write out the new CSV file

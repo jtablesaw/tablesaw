@@ -25,9 +25,6 @@ public class ColumnEqualTo extends ColumnFilter {
 
     Preconditions.checkArgument(column.type() == other.type());
 
-    if (column.type() == ColumnType.TEXT)
-      return apply((TextColumn) column, (TextColumn) other);
-
     if (column.type() == ColumnType.INTEGER)
       return apply((IntColumn) column, (IntColumn) other);
 
@@ -38,10 +35,6 @@ public class ColumnEqualTo extends ColumnFilter {
       return apply((ShortColumn) column, (ShortColumn) other);
 
     throw new UnsupportedOperationException("Not yet implemented for this column type");
-  }
-
-  private static RoaringBitmap apply(TextColumn column1, TextColumn column2) {
-    return column1.isEqualTo(column2);
   }
 
   private static RoaringBitmap apply(IntColumn column1, IntColumn column2) {

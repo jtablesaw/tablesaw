@@ -304,75 +304,27 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   }
 
   public RoaringBitmap isPositive() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next > 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(IntColumnUtils.isPositive);
   }
 
   public RoaringBitmap isNegative() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next < 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(IntColumnUtils.isNegative);
   }
 
   public RoaringBitmap isNonNegative() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next >= 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(IntColumnUtils.isNonNegative);
   }
 
   public RoaringBitmap isZero() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next == 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(IntColumnUtils.isZero);
   }
 
   public RoaringBitmap isEven() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if ((next & 1) == 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(IntColumnUtils.isEven);
   }
 
   public RoaringBitmap isOdd() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int x : data) {
-      if ((x & 1) != 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(IntColumnUtils.isOdd);
   }
 
   public FloatArrayList toFloatArray() {
@@ -417,6 +369,27 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
       }
     }
     return column;
+  }
+
+  public IntColumn select(RoaringBitmap bitmap) {
+    IntColumn column = emptyCopy();
+    org.roaringbitmap.IntIterator intIterator = bitmap.getIntIterator();
+    while(intIterator.hasNext()) {
+      int next = intIterator.next();
+        column.add(data.getInt(next));
+    }
+    return column;
+  }
+
+  public RoaringBitmap apply(IntPredicate predicate) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      int next = data.getInt(idx);
+      if (predicate.test(next)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
   }
 
   public long sumIf(IntPredicate predicate) {

@@ -7,7 +7,7 @@ import com.deathrayresearch.outlier.View;
 import org.junit.Test;
 
 import static com.deathrayresearch.outlier.columns.ColumnType.*;
-import static com.deathrayresearch.outlier.QueryUtil.valueOf;
+import static com.deathrayresearch.outlier.api.QueryHelper.column;
 
 /**
  *
@@ -17,7 +17,7 @@ public class IoTest1 {
   @Test
   public void testWithBusData() throws Exception {
     // Read the CSV file
-    ColumnType[] types = {INTEGER, TEXT, TEXT, FLOAT, FLOAT};
+    ColumnType[] types = {INTEGER, CAT, CAT, FLOAT, FLOAT};
     Table table = CsvReader.read(types, "data/bus_stop_test.csv");
 
     // Look at the column names
@@ -34,7 +34,7 @@ public class IoTest1 {
 
     print(table.floatColumn("stop_lon").describe());
 
-    View v = table.select("stop_lon", "stop_id").where(valueOf("stop_lon").isGreaterThan(-0.1f)).run();
+    View v = table.select("stop_lon", "stop_id").where(column("stop_lon").isGreaterThan(-0.1f)).run();
     print(v.print());
     print(v.rowCount());
   }

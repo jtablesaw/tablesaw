@@ -4,6 +4,7 @@ import com.deathrayresearch.outlier.columns.*;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import org.roaringbitmap.RoaringBitmap;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -39,9 +40,6 @@ public class Rows {
         case BOOLEAN:
           copy(rows, (BooleanColumn) oldTable.column(columnIndex), (BooleanColumn) newTable.column(columnIndex));
           break;
-        case TEXT:
-          copy(rows, (TextColumn) oldTable.column(columnIndex), (TextColumn) newTable.column(columnIndex));
-          break;
         case LOCAL_DATE:
           copy(rows, (LocalDateColumn) oldTable.column(columnIndex), (LocalDateColumn) newTable.column(columnIndex));
           break;
@@ -51,16 +49,19 @@ public class Rows {
         case LOCAL_TIME:
           copy(rows, (LocalTimeColumn) oldTable.column(columnIndex), (LocalTimeColumn) newTable.column(columnIndex));
           break;
-        case PERIOD:
-          copy(rows, (PeriodColumn) oldTable.column(columnIndex), (PeriodColumn) newTable.column(columnIndex));
-          break;
         default:
           throw new RuntimeException("Unhandled column type in case statement");
       }
     }
   }
 
-  private static void copy(IntArrayList rows, FloatColumn oldColumn, FloatColumn newColumn) {
+  public static void copyRowsToTable(RoaringBitmap rows, Table oldTable, Table newTable) {
+    int[] r = rows.toArray();
+    IntArrayList rowArray = new IntArrayList(r);
+    copyRowsToTable(rowArray, oldTable, newTable);
+  }
+
+    private static void copy(IntArrayList rows, FloatColumn oldColumn, FloatColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.get(index));
     }
@@ -73,12 +74,6 @@ public class Rows {
   }
 
   private static void copy(IntArrayList rows, BooleanColumn oldColumn, BooleanColumn newColumn) {
-    for (int index : rows) {
-      newColumn.add(oldColumn.get(index));
-    }
-  }
-
-  private static void copy(IntArrayList rows, TextColumn oldColumn, TextColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.get(index));
     }
@@ -115,12 +110,6 @@ public class Rows {
   }
 
   private static void copy(IntArrayList rows, LocalTimeColumn oldColumn, LocalTimeColumn newColumn) {
-    for (int index : rows) {
-      newColumn.add(oldColumn.getInt(index));
-    }
-  }
-
-  private static void copy(IntArrayList rows, PeriodColumn oldColumn, PeriodColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.getInt(index));
     }

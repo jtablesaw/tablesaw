@@ -9,6 +9,7 @@ import com.google.common.base.Stopwatch;
 import java.util.concurrent.TimeUnit;
 
 import static com.deathrayresearch.outlier.columns.ColumnType.*;
+import static java.lang.System.exit;
 
 /**
  *
@@ -51,9 +52,15 @@ public class BigDataTest {
 */
 
     //stopwatch.start();
-    Table table = StorageManager.readTable("bigdata/" + "70699a04-c567-4b4b-b3b5-39406c1ad39b");
+    Table table = StorageManager.readTable("bigdata/" + "3f07b9bf-053f-4f9b-9dff-9d354835b276");
     out(String.format("Table read from column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
     out(table.head(3).print());
+
+    out(table.columnNames());
+
+    out(table.floatColumn("DEP_DELAY").summary().print());
+    exit(1);
+
   }
 
   //@Test
