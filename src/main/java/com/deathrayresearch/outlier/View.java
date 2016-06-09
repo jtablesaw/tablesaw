@@ -135,8 +135,7 @@ public class View implements Relation {
     return name;
   }
 
-  @Override
-  public Relation emptyCopy() {
+  public Table emptyCopy() {
     return null;
   }
 

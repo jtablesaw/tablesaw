@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.filter;
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import org.roaringbitmap.RoaringBitmap;
 
 import javax.annotation.concurrent.Immutable;
@@ -23,9 +23,10 @@ public class IsTrue extends Filter {
 
   /**
    * Returns true if the element in the given row in my {@code column} is true
+   * @param relation
    */
   @Override
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
     return filter.apply(relation);
   }
 }

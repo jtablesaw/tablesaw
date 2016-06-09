@@ -1,5 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.api.ColumnType;
+
 /**
  * A group of columns derived from a single base column, each containing a subset of the original values
  */

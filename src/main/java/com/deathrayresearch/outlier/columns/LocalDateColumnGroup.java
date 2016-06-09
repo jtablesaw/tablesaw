@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.splitter.LocalDateSplitter;
 
 import java.util.ArrayList;

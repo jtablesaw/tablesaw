@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
-import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.filter.LocalDatePredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
@@ -327,7 +327,9 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
    * Returns a table of dates and the number of observations of those dates
    */
   @Override
-  public Relation summary() {
+  public Table summary() {
+
+    // TODO(lwhite): This is not a very useful summary. Fix it
 
     Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
 
@@ -345,7 +347,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
         counts.put(value, 1);
       }
     }
-    Table table = new Table(name());
+    Table table = new Table("Column: " + name());
     table.addColumn(LocalDateColumn.create("Date"));
     table.addColumn(IntColumn.create("Count"));
 
@@ -774,7 +776,6 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   public LocalDateColumn min(int n) {
     return null;
   }
-
 
   public IntIterator iterator() {
     return data.iterator();

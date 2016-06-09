@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.filter;
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  *  A composite filter that only returns {@code true} if all component filters return true
  */
-public class AnyOf extends CompositeFilter {
+public class AnyOf extends Filter {
 
   private List<Filter> filterList = new ArrayList<>();
 
@@ -29,7 +29,7 @@ public class AnyOf extends CompositeFilter {
     return new AnyOf(filters);
   }
 
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
     RoaringBitmap roaringBitmap = null;
     for (Filter filter : filterList) {
       if (roaringBitmap == null) {

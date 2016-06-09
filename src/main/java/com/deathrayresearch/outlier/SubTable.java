@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.*;
 
 import java.util.List;
@@ -68,7 +69,7 @@ class SubTable extends Table {
           LocalDateTimeColumn localDateTimeColumn = (LocalDateTimeColumn) column;
           localDateTimeColumn.add(sourceTable.localDateTimeColumn(i).getLong(rowIndex));
           break;
-        case CAT:
+        case CATEGORY:
           CategoryColumn categoryColumn = (CategoryColumn) column;
           categoryColumn.add(sourceTable.categoryColumn(i).get(rowIndex));
           break;

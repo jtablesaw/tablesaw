@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.*;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -34,7 +35,7 @@ public class Rows {
         case LONG_INT:
           copy(rows, (LongColumn) oldTable.column(columnIndex), (LongColumn) newTable.column(columnIndex));
           break;
-        case CAT:
+        case CATEGORY:
           copy(rows, (CategoryColumn) oldTable.column(columnIndex), (CategoryColumn) newTable.column(columnIndex));
           break;
         case BOOLEAN:

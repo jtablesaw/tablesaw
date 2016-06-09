@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.CategoryColumn;
-import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.columns.PackedLocalDate;
 import com.deathrayresearch.outlier.io.CsvReader;
@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static com.deathrayresearch.outlier.columns.ColumnType.*;
+import static com.deathrayresearch.outlier.api.ColumnType.*;
 
 /**
  *
@@ -20,7 +20,7 @@ public class TableGroupTest {
   ColumnType[] types = {
       LOCAL_DATE,     // date of poll
       INTEGER,        // approval rating (pct)
-      CAT             // polling org
+      CATEGORY             // polling org
   };
 
   Table table;

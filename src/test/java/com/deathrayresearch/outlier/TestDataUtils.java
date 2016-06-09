@@ -12,7 +12,7 @@ public class TestDataUtils  {
 
   @Test
   public static List<String> maleFirstNames() {
-    ColumnType[] types = {TEXT, CAT, SKIP};
+    ColumnType[] types = {TEXT, CATEGORY, SKIP};
     try {
       Table t = CsvReader.read(types, "data/first_names.csv");
       //View f = t.select().where(column()).run();

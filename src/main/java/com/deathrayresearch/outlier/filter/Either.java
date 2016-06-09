@@ -1,12 +1,12 @@
 package com.deathrayresearch.outlier.filter;
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
  *
  */
-public class Either extends CompositeFilter {
+public class Either extends Filter {
 
   private final Filter a;
   private final Filter b;
@@ -18,7 +18,7 @@ public class Either extends CompositeFilter {
   }
 
   @Override
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
     RoaringBitmap rb =  a.apply(relation);
     rb.or(b.apply(relation));
     return rb;

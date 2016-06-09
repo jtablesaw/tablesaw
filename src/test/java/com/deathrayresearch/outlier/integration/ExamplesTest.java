@@ -1,13 +1,13 @@
 package com.deathrayresearch.outlier.integration;
 
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.io.CsvReader;
 import com.deathrayresearch.outlier.io.CsvWriter;
 import org.junit.Test;
 
 import static com.deathrayresearch.outlier.api.QueryHelper.column;
-import static com.deathrayresearch.outlier.columns.ColumnType.*;
+import static com.deathrayresearch.outlier.api.ColumnType.*;
 
 /**
  * Some example code using the API
@@ -21,7 +21,7 @@ public class ExamplesTest  {
     out("Some Examples: ");
 
     // Read the CSV file
-    ColumnType[] types = {INTEGER, CAT, CAT, FLOAT, FLOAT};
+    ColumnType[] types = {INTEGER, CATEGORY, CATEGORY, FLOAT, FLOAT};
     Table table = CsvReader.read(types, "data/bus_stop_test.csv");
 
     // Look at the column names

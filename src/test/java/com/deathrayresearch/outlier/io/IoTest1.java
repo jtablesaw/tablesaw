@@ -1,11 +1,11 @@
 package com.deathrayresearch.outlier.io;
 
 import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.Table;
 import org.junit.Test;
 
-import static com.deathrayresearch.outlier.columns.ColumnType.*;
+import static com.deathrayresearch.outlier.api.ColumnType.*;
 import static com.deathrayresearch.outlier.api.QueryHelper.column;
 
 /**
@@ -16,7 +16,7 @@ public class IoTest1 {
   @Test
   public void testWithBusData() throws Exception {
     // Read the CSV file
-    ColumnType[] types = {INTEGER, CAT, CAT, FLOAT, FLOAT};
+    ColumnType[] types = {INTEGER, CATEGORY, CATEGORY, FLOAT, FLOAT};
     Table table = CsvReader.read(types, "data/bus_stop_test.csv");
 
     // Look at the column names
@@ -41,7 +41,7 @@ public class IoTest1 {
   @Test
   public void testWithBushData() throws Exception {
     // Read the CSV file
-    ColumnType[] types = {LOCAL_DATE, INTEGER, CAT};
+    ColumnType[] types = {LOCAL_DATE, INTEGER, CATEGORY};
     Table table = CsvReader.read(types, "data/BushApproval.csv");
 
     // Look at the column names

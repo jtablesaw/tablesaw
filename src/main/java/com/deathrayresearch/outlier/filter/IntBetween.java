@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.filter;
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.ColumnReference;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import org.roaringbitmap.RoaringBitmap;
@@ -17,7 +17,7 @@ public class IntBetween extends ColumnFilter {
     this.high = highValue;
   }
 
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
     IntColumn intColumn = (IntColumn) relation.column(columnReference.getColumnName());
     RoaringBitmap matches = intColumn.isGreaterThan(low);
     matches.and(intColumn.isLessThan(high));

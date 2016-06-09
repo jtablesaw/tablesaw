@@ -1,8 +1,8 @@
 package com.deathrayresearch.outlier.filter;
 
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.ColumnReference;
 import com.deathrayresearch.outlier.columns.IntColumn;
-import com.deathrayresearch.outlier.Relation;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
@@ -16,7 +16,7 @@ public class IntLessThan extends ColumnFilter {
     this.value = value;
   }
 
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
     IntColumn intColumn = (IntColumn) relation.column(columnReference.getColumnName());
     return intColumn.isLessThan(value);
   }

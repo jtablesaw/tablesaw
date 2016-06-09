@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.filter;
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.*;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -15,7 +15,7 @@ public class IntGreaterThan extends ColumnFilter {
     this.value = value;
   }
 
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
     Column column = relation.column(columnReference.getColumnName());
     switch(column.type()) {
       case INTEGER : return ((IntColumn) column).isGreaterThan(value);

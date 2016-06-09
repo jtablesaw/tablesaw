@@ -1,8 +1,8 @@
 package com.deathrayresearch.outlier.filter;
 
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.ColumnReference;
 import com.deathrayresearch.outlier.columns.FloatColumn;
-import com.deathrayresearch.outlier.Relation;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
@@ -17,7 +17,7 @@ public class FloatEqualTo extends ColumnFilter {
     this.value = value;
   }
 
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
     FloatColumn floatColumn = (FloatColumn) relation.column(columnReference.getColumnName());
     return floatColumn.isEqualTo(value);
   }

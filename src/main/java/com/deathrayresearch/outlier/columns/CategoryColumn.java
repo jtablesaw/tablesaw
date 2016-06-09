@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.aggregator.StringReduceUtils;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.filter.StringPredicate;
 import com.deathrayresearch.outlier.filter.text.StringFilters;
 import com.deathrayresearch.outlier.io.TypeUtils;
@@ -12,7 +13,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.*;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A column in a base table that contains float values
@@ -28,7 +29,7 @@ import java.util.List;
 public class CategoryColumn extends AbstractColumn
         implements StringFilters, StringReduceUtils, Iterable<String> {
 
-  public static final String MISSING_VALUE = (String) ColumnType.CAT.getMissingValue();
+  public static final String MISSING_VALUE = (String) ColumnType.CATEGORY.getMissingValue();
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
@@ -74,7 +75,7 @@ public class CategoryColumn extends AbstractColumn
 
   @Override
   public ColumnType type() {
-    return ColumnType.CAT;
+    return ColumnType.CATEGORY;
   }
 
   @Override
@@ -145,23 +146,23 @@ public class CategoryColumn extends AbstractColumn
 
   @Override
   public Table summary() {
-    Table t = new Table(name());
+    Table t = new Table("Column: " + name());
     CategoryColumn categories = CategoryColumn.create("Category");
     IntColumn counts = IntColumn.create("Count");
 
-    Object2IntOpenHashMap<String> valueToKey = new Object2IntOpenHashMap<>();
+    Short2IntMap valueToCount = new Short2IntOpenHashMap();
 
     for (short next : values) {
-      String category = get(next);
-      if (valueToKey.containsKey(category)) {
-        valueToKey.addTo(category, 1);
+      if (valueToCount.containsKey(next)) {
+        valueToCount.put(next, valueToCount.get(next) + 1);
       } else {
-        valueToKey.put(category, 1);
+        valueToCount.put(next, 1);
       }
     }
-    for (Object2IntOpenHashMap.Entry<String> entry : valueToKey.object2IntEntrySet()) {
-      categories.add(entry.getKey());
-      counts.add(entry.getIntValue());
+
+    for (Map.Entry<Short, Integer> entry : valueToCount.entrySet()) {
+      categories.add(lookupTable.get(entry.getKey()));
+      counts.add(entry.getValue());
     }
     t.addColumn(categories);
     t.addColumn(counts);

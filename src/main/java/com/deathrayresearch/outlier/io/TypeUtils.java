@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.io;
 
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.*;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -173,7 +174,7 @@ public final class TypeUtils {
         return FloatColumn.create(name);
       case BOOLEAN:
         return BooleanColumn.create(name);
-      case CAT:
+      case CATEGORY:
         return CategoryColumn.create(name);
       case SHORT_INT:
         return ShortColumn.create(name);

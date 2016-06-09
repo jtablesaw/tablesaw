@@ -3,7 +3,7 @@ package com.deathrayresearch.outlier.examples;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.BooleanColumn;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
-import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.columns.PackedLocalDate;
 import com.deathrayresearch.outlier.columns.ShortColumn;
@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.deathrayresearch.outlier.columns.ColumnType.*;
+import static com.deathrayresearch.outlier.api.ColumnType.*;
 
 /**
  *
@@ -153,7 +153,7 @@ public class LargeDataTest {
   }
 
   private static void storeInDb() throws Exception {
-    ColumnType[] columnTypes = {CAT, CAT, CAT, LOCAL_DATE, CAT, CAT, CAT, SHORT_INT, SHORT_INT, BOOLEAN, BOOLEAN};
+    ColumnType[] columnTypes = {CATEGORY, CATEGORY, CATEGORY, LOCAL_DATE, CATEGORY, CATEGORY, CATEGORY, SHORT_INT, SHORT_INT, BOOLEAN, BOOLEAN};
     Table t = CsvReader.read(columnTypes, "bigdata/people1.csv");
     StorageManager.saveTable("bigdata/people", t);
   }

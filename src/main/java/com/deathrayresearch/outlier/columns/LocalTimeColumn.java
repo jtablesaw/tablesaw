@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.filter.LocalTimePredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
@@ -131,7 +132,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
         counts.put(value, 1);
       }
     }
-    Table table = new Table(name());
+    Table table = new Table("Column: " + name());
     table.addColumn(LocalTimeColumn.create("Time"));
     table.addColumn(IntColumn.create("Count"));
 

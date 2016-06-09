@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.integration;
 
-import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.CsvReader;
 import com.deathrayresearch.outlier.store.StorageManager;
@@ -8,7 +8,7 @@ import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.deathrayresearch.outlier.columns.ColumnType.*;
+import static com.deathrayresearch.outlier.api.ColumnType.*;
 
 /**
  *
@@ -49,26 +49,26 @@ public class AirlineDelays {
       INTEGER, // year
       INTEGER, // month
       INTEGER, // day
-      CAT,  // dow
+      CATEGORY,  // dow
       LOCAL_TIME, // DepTime
       LOCAL_TIME, // CRSDepTime
       LOCAL_TIME, // ArrTime
       LOCAL_TIME, // CRSArrTime
-      CAT, // Carrier
-      CAT, // FlightNum
-      CAT, // TailNum
+      CATEGORY, // Carrier
+      CATEGORY, // FlightNum
+      CATEGORY, // TailNum
       INTEGER, // ActualElapsedTime
       INTEGER, // CRSElapsedTime
       INTEGER, // AirTime
       INTEGER, // ArrDelay
       INTEGER, // DepDelay
-      CAT, // Origin
-      CAT, // Dest
+      CATEGORY, // Origin
+      CATEGORY, // Dest
       INTEGER, // Distance
       INTEGER, // TaxiIn
       INTEGER, // TaxiOut
       BOOLEAN, // Cancelled
-      CAT, // CancellationCode
+      CATEGORY, // CancellationCode
       BOOLEAN, // Diverted
       FLOAT, // CarrierDelay
       FLOAT, // WeatherDelay
@@ -82,12 +82,12 @@ public class AirlineDelays {
       SKIP, // year
       INTEGER, // month
       INTEGER, // day
-      CAT,  // dow
+      CATEGORY,  // dow
       SKIP, // DepTime
       LOCAL_TIME, // CRSDepTime
       SKIP, // ArrTime
       SKIP, // CRSArrTime
-      CAT, // Carrier
+      CATEGORY, // Carrier
       SKIP, // FlightNum
       SKIP, // TailNum
       SKIP, // ActualElapsedTime
@@ -95,8 +95,8 @@ public class AirlineDelays {
       SKIP, // AirTime
       SKIP, // ArrDelay
       INTEGER, // DepDelay
-      CAT, // Origin
-      CAT, // Dest
+      CATEGORY, // Origin
+      CATEGORY, // Dest
       INTEGER, // Distance
       SKIP, // TaxiIn
       SKIP, // TaxiOut

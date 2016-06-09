@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier.store;
 
 import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.google.gson.Gson;
 
 /**

@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier.filter.text;
 
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.ColumnReference;
@@ -24,7 +24,7 @@ public class TextHasLengthEqualTo extends ColumnFilter {
   }
 
   @Override
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
     Column column = relation.column(columnReference().getColumnName());
     CategoryColumn textColumn = (CategoryColumn) column;
     return textColumn.hasLengthEqualTo(length);

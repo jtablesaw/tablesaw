@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.filter.ShortPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.ShortMapUtils;
@@ -11,7 +12,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
@@ -166,7 +166,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   @Override
   public Table summary() {
-    return StatUtil.stats(this).asTable(name());
+    return StatUtil.stats(this).asTable("Column: " + name());
   }
 
   @Override

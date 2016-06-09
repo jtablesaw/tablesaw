@@ -167,7 +167,6 @@ public class Table implements Relation {
   /**
    * Returns a table with the same columns as this table, but no data
    */
-  @Override
   public Table emptyCopy() {
     Table copy = new Table(name);
     for (Column column : columnList) {

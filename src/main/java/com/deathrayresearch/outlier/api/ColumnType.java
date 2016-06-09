@@ -9,7 +9,7 @@ import com.deathrayresearch.outlier.columns.Column;
 public enum ColumnType {
 
   BOOLEAN(false),
-  CAT(""),
+  CATEGORY(""),
   FLOAT(Float.NaN),
   SHORT_INT(Short.MIN_VALUE),
   INTEGER(Integer.MIN_VALUE),
@@ -17,7 +17,6 @@ public enum ColumnType {
   LOCAL_DATE(Integer.MIN_VALUE),
   LOCAL_DATE_TIME(Long.MIN_VALUE),
   LOCAL_TIME(-1),
-  DURATION(Long.MIN_VALUE),
   SKIP(null);
 
   private final Comparable missingValue;

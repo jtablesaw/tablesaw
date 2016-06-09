@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier;
 
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -115,11 +116,6 @@ public interface Relation {
    * Returns the name of this relation
    */
   String name();
-
-  /**
-   * Returns a copy of this relation with no data, but with the same name and column structure
-   */
-  Relation emptyCopy();
 
   /**
    * Clears all the dat in the relation, leaving the structure intact

@@ -74,7 +74,7 @@ public class StorageManager {
         return readLocalTimeColumn(fileName, columnMetadata);
       case LOCAL_DATE_TIME:
         return readLocalDateTimeColumn(fileName, columnMetadata);
-      case CAT:
+      case CATEGORY:
         return readCategoryColumn(fileName, columnMetadata);
       case SHORT_INT:
         return readShortColumn(fileName, columnMetadata);
@@ -296,7 +296,7 @@ public class StorageManager {
         case LOCAL_DATE_TIME:
           writeColumn(fileName, (LocalDateTimeColumn) column);
           break;
-        case CAT:
+        case CATEGORY:
           writeColumn(fileName, (CategoryColumn) column);
           break;
         case SHORT_INT:

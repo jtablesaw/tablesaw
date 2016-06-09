@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.api.ColumnType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class CategoryColumnTest {
 
   @Test
   public void testType() {
-    assertEquals(ColumnType.CAT, column.type());
+    assertEquals(ColumnType.CATEGORY, column.type());
   }
 
   @Test

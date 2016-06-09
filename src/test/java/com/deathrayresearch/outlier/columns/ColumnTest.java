@@ -1,13 +1,14 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.io.CsvReader;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.deathrayresearch.outlier.columns.ColumnType.CAT;
-import static com.deathrayresearch.outlier.columns.ColumnType.INTEGER;
-import static com.deathrayresearch.outlier.columns.ColumnType.LOCAL_DATE;
+import static com.deathrayresearch.outlier.api.ColumnType.CATEGORY;
+import static com.deathrayresearch.outlier.api.ColumnType.INTEGER;
+import static com.deathrayresearch.outlier.api.ColumnType.LOCAL_DATE;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -18,7 +19,7 @@ public class ColumnTest {
   private static final ColumnType[] types = {
       LOCAL_DATE,     // date of poll
       INTEGER,        // approval rating (pct)
-      CAT             // polling org
+      CATEGORY             // polling org
   };
 
   private Table table;

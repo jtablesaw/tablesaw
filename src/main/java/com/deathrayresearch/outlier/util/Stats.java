@@ -109,8 +109,8 @@ public class Stats {
     return buffer.toString();
   }
 
-  public Table asTable() {
-    Table t = new Table("");
+  public Table asTable(String name) {
+    Table t = new Table(name);
     CategoryColumn measure = CategoryColumn.create("Measure");
     FloatColumn value = FloatColumn.create("Value");
     t.addColumn(measure);

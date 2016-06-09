@@ -2,14 +2,14 @@ package com.deathrayresearch.outlier.examples;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
-import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.io.CsvReader;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static com.deathrayresearch.outlier.columns.ColumnType.*;
+import static com.deathrayresearch.outlier.api.ColumnType.*;
 
 /**
  *
@@ -18,12 +18,12 @@ public class SfCrimeTest {
 
   ColumnType[] heading = {
       LOCAL_DATE_TIME,   // date and time
-      CAT,   // category
-      CAT,   // description
-      CAT,   // day of week
-      CAT,  // PD district
-      CAT, // resolution
-      CAT, // address
+      CATEGORY,   // category
+      CATEGORY,   // description
+      CATEGORY,   // day of week
+      CATEGORY,  // PD district
+      CATEGORY, // resolution
+      CATEGORY, // address
       FLOAT, // lon
       FLOAT, // lat
  };

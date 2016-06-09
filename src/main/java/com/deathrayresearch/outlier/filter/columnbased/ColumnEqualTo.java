@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.filter.columnbased;
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.*;
 import com.deathrayresearch.outlier.filter.ColumnFilter;
 import com.google.common.base.Preconditions;
@@ -18,7 +19,7 @@ public class ColumnEqualTo extends ColumnFilter {
     otherColumn = b;
   }
 
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
 
     Column column = relation.column(columnReference().getColumnName());
     Column other = relation.column(otherColumn.getColumnName());

@@ -1,13 +1,13 @@
 package com.deathrayresearch.outlier.integration;
 
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.store.StorageManager;
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.deathrayresearch.outlier.columns.ColumnType.*;
+import static com.deathrayresearch.outlier.api.ColumnType.*;
 
 /**
  *
@@ -48,15 +48,15 @@ public class AirlineDelays2 {
   // A reduced set of available columns
   static ColumnType[] reduced_set = {
       LOCAL_DATE, // flight date
-      CAT,  // unique carrier
+      CATEGORY,  // unique carrier
       SKIP,  // airline id
       SKIP,  // carrier
       SKIP,  // TailNum
       SKIP,  // FlightNum
       SKIP, // Origin airport id
-      CAT,  // Origin
+      CATEGORY,  // Origin
       SKIP, // Dest airport id
-      CAT,  // Dest
+      CATEGORY,  // Dest
       LOCAL_TIME, // CRSDepTime
       LOCAL_TIME, // DepTime
       FLOAT, // DepDelay
@@ -82,15 +82,15 @@ public class AirlineDelays2 {
   // The full set of available columns in the dataset
   static ColumnType[] heading = {
       LOCAL_DATE, // flight date
-      CAT,  // unique carrier
-      CAT,  // airline id
-      CAT,  // carrier
-      CAT,  // TailNum
-      CAT,  // FlightNum
-      CAT,  // Origin airport id
-      CAT,  // Origin
-      CAT,  // Dest airport id
-      CAT,  // Dest
+      CATEGORY,  // unique carrier
+      CATEGORY,  // airline id
+      CATEGORY,  // carrier
+      CATEGORY,  // TailNum
+      CATEGORY,  // FlightNum
+      CATEGORY,  // Origin airport id
+      CATEGORY,  // Origin
+      CATEGORY,  // Dest airport id
+      CATEGORY,  // Dest
       LOCAL_TIME, // CRSDepTime
       LOCAL_TIME, // DepTime
       FLOAT, // DepDelay
@@ -100,7 +100,7 @@ public class AirlineDelays2 {
       LOCAL_TIME, // ArrTime
       FLOAT,   // ArrDelay
       BOOLEAN, // Cancelled
-      CAT,     // CancellationCode
+      CATEGORY,     // CancellationCode
       BOOLEAN, // Diverted
       FLOAT, // CRSElapsedTime
       FLOAT, // ActualElapsedTime

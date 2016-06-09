@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.store;
 
 import com.deathrayresearch.outlier.Relation;
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.*;
 import com.deathrayresearch.outlier.io.CsvReader;
 import com.google.common.base.Stopwatch;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.deathrayresearch.outlier.columns.ColumnType.*;
+import static com.deathrayresearch.outlier.api.ColumnType.*;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -115,15 +116,15 @@ public class StorageManagerTest {
   // The full set of available columns in the dataset
   static ColumnType[] heading = {
       LOCAL_DATE, // flight date
-      CAT,  // unique carrier
-      CAT,  // airline id
-      CAT,  // carrier
-      CAT,  // TailNum
-      CAT,  // FlightNum
-      CAT,  // Origin airport id
-      CAT,  // Origin
-      CAT,  // Dest airport id
-      CAT,  // Dest
+      CATEGORY,  // unique carrier
+      CATEGORY,  // airline id
+      CATEGORY,  // carrier
+      CATEGORY,  // TailNum
+      CATEGORY,  // FlightNum
+      CATEGORY,  // Origin airport id
+      CATEGORY,  // Origin
+      CATEGORY,  // Dest airport id
+      CATEGORY,  // Dest
       LOCAL_TIME, // CRSDepTime
       LOCAL_TIME, // DepTime
       FLOAT, // DepDelay
@@ -133,7 +134,7 @@ public class StorageManagerTest {
       LOCAL_TIME, // ArrTime
       FLOAT,   // ArrDelay
       BOOLEAN, // Cancelled
-      CAT,     // CancellationCode
+      CATEGORY,     // CancellationCode
       BOOLEAN, // Diverted
       FLOAT, // CRSElapsedTime
       FLOAT, // ActualElapsedTime

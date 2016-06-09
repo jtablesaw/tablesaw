@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.filter;
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.ColumnReference;
 import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import org.roaringbitmap.RoaringBitmap;
@@ -18,7 +18,7 @@ public class DateTimeEqualTo extends ColumnFilter {
     this.value = value;
   }
 
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
     LocalDateTimeColumn dateColumn = (LocalDateTimeColumn) relation.column(columnReference.getColumnName());
     return dateColumn.isEqualTo(value);
   }

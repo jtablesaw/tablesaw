@@ -1,7 +1,7 @@
 package com.deathrayresearch.outlier.filter.dates;
 
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.ColumnReference;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.filter.ColumnFilter;
@@ -23,7 +23,7 @@ public class LocalDateIsAfter extends ColumnFilter {
   }
 
   @Override
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
 
     LocalDateColumn dateColumn = (LocalDateColumn) relation.column(columnReference().getColumnName());
     return dateColumn.isAfter(value);

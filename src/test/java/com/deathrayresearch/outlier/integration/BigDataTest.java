@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.integration;
 
-import com.deathrayresearch.outlier.columns.ColumnType;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.io.CsvReader;
 import com.deathrayresearch.outlier.store.StorageManager;
@@ -8,7 +8,7 @@ import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.deathrayresearch.outlier.columns.ColumnType.*;
+import static com.deathrayresearch.outlier.api.ColumnType.*;
 import static java.lang.System.exit;
 
 /**
@@ -19,11 +19,11 @@ public class BigDataTest {
   static final ColumnType types[] = {
       LOCAL_DATE_TIME,
       LOCAL_DATE_TIME,
-      CAT,
-      CAT,
-      CAT,
-      CAT,
-      CAT
+      CATEGORY,
+      CATEGORY,
+      CATEGORY,
+      CATEGORY,
+      CATEGORY
   };
 
   static int[] wanted = {1, 2, 3, 5, 6, 16, 19};

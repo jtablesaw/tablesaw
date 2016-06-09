@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.api.ColumnType;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -16,7 +17,7 @@ public interface Column {
 
   int size();
 
-  Relation summary();
+  Table summary();
 
   default Column subset(RoaringBitmap rows) {
     Column c = this.emptyCopy();

@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.IntMapUtils;
@@ -172,7 +173,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   @Override
   public Table summary() {
-    return StatUtil.stats(this).asTable(name());
+    return StatUtil.stats(this).asTable("Column: " + name());
   }
 
   @Override

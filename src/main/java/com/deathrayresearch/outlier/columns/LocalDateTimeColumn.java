@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.filter.LocalDateTimePredicate;
 import com.deathrayresearch.outlier.filter.LongPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
@@ -138,7 +139,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   // TODO(lwhite): Implement column summary()
   @Override
   public Table summary() {
-    return new Table("Unimplemented");
+    return new Table("Column: " + "Unimplemented");
   }
 
   @Override

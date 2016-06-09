@@ -1,7 +1,8 @@
 package com.deathrayresearch.outlier.columns;
 
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.aggregator.NumReduceUtils;
+import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.StatUtil;
@@ -52,8 +53,8 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
   }
 
   @Override
-  public Relation summary() {
-    return StatUtil.stats(this).asTable();
+  public Table summary() {
+    return StatUtil.stats(this).asTable("Column: " + name());
   }
 
   public String describe() {

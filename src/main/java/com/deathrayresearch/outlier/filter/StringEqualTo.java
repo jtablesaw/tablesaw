@@ -1,10 +1,10 @@
 package com.deathrayresearch.outlier.filter;
 
+import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.ColumnReference;
-import com.deathrayresearch.outlier.columns.ColumnType;
-import com.deathrayresearch.outlier.Relation;
+import com.deathrayresearch.outlier.api.ColumnType;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
@@ -19,11 +19,11 @@ public class StringEqualTo extends ColumnFilter {
     this.value = value;
   }
 
-  public RoaringBitmap apply(Relation relation) {
+  public RoaringBitmap apply(Table relation) {
     Column column = relation.column(columnReference.getColumnName());
     ColumnType type = column.type();
     switch (type) {
-      case CAT: {
+      case CATEGORY: {
         CategoryColumn categoryColumn = (CategoryColumn) relation.column(columnReference.getColumnName());
         return categoryColumn.isEqualTo(value);
       }
