@@ -19,8 +19,6 @@ abstract class AbstractColumn implements Column {
 
   private ColumnType columnType;
 
-  private ChangeLog changeLog = new ChangeLog();
-
   public AbstractColumn(String name) {
     this.name = name;
     this.id = UUID.randomUUID().toString();
@@ -49,10 +47,6 @@ abstract class AbstractColumn implements Column {
   }
 
   public abstract void addCell(String stringvalue);
-
-  public List<ChangeLog.ChangeLogEntry> getChangeLog() {
-    return changeLog.getEntries();
-  }
 
   @Override
   public String comment() {

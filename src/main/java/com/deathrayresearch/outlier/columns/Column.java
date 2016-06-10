@@ -103,8 +103,6 @@ public interface Column {
     return "Column: " + name() + '\n';
   }
 
-  List<ChangeLog.ChangeLogEntry> getChangeLog();
-
   String comment();
 
   void setComment(String comment);

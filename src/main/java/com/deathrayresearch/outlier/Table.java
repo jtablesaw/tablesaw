@@ -5,7 +5,6 @@ import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.IntColumn;
 import com.deathrayresearch.outlier.filter.Filter;
 import com.deathrayresearch.outlier.sorting.Sort;
-import com.deathrayresearch.outlier.splitter.Splitter;
 import com.deathrayresearch.outlier.store.TableMetadata;
 import com.deathrayresearch.outlier.util.IntComparatorChain;
 import com.deathrayresearch.outlier.util.ReverseIntComparator;
@@ -15,7 +14,6 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 import static com.deathrayresearch.outlier.sorting.Sort.Order;
@@ -259,16 +257,6 @@ public class Table implements Relation {
     return sortOn(chain);
   }
 
-  /**
-   * Returns a copy of this table sorted on the given columns
-   * <p>
-   * The columns are sorted in reverse order if they value matching the name is {@code true}
-   */
-  public Table sortOn(@Nonnull Splitter splitter, Order order) {
-    IntComparator comparator = getComparator(splitter, order);
-    return sortOn(comparator);
-  }
-
   public IntComparator getComparator(Sort key) {
     Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
     Map.Entry<String, Sort.Order> sort = entries.next();
@@ -279,11 +267,6 @@ public class Table implements Relation {
       comparator = rowComparator(sort.getKey(), true);
     }
     return comparator;
-  }
-
-  public IntComparator getComparator(Splitter splitter, Order order) {
-    //return rowComparator(splitter, order == Order.ASCEND);
-    return null;
   }
 
   private IntComparatorChain getChain(Sort key) {
@@ -480,10 +463,6 @@ public class Table implements Relation {
 
   public CategoryColumn categoryColumn(String columnName) {
     return (CategoryColumn) column(columnName);
-  }
-
-  public TableGroup splitOn(Splitter splitter) {
-    return new TableGroup(this, "");
   }
 
   public CategoryColumn categoryColumn(int columnIndex) {

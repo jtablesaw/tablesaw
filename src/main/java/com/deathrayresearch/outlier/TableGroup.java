@@ -1,7 +1,6 @@
 package com.deathrayresearch.outlier;
 
 import com.deathrayresearch.outlier.columns.Column;
-import com.deathrayresearch.outlier.splitter.Splitter;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
@@ -15,6 +14,7 @@ public class TableGroup {
   private static final String SPLIT_STRING = "|||";
 
   private final Table original;
+  
   private final List<SubTable> subTables;
 
   // the name(s) of the column(s) we're splitting the table on
@@ -34,12 +34,6 @@ public class TableGroup {
     }
     this.original = original.sortOn(splitColumnNames);
     this.subTables = splitOn(splitColumnNames);
-    Preconditions.checkState(!subTables.isEmpty());
-  }
-
-  public TableGroup(Table original, Splitter splitter) {
-    this.original = original;
-    this.subTables = splitOn(splitter);
     Preconditions.checkState(!subTables.isEmpty());
   }
 
@@ -97,66 +91,6 @@ public class TableGroup {
         tables.add(splitGroupingColumn(newView, columns));
       }
     }
-    return tables;
-  }
-
-  /**
-   * Splits the original table into sub-tables, grouping on the columns whose names are given in splitColumnNames
-   */
-  private List<SubTable> splitOn(Splitter splitter) {
-
-    List<SubTable> tables = new ArrayList<>();
-
-/*
-    int columnCount = columnNames.length;
-    List<Column> columns = original.columns(columnNames);
-
-    int[] columnIndices = new int[columnCount];
-    for (int i = 0; i < columnCount; i++) {
-      columnIndices[i] = original.columnIndex(columnNames[i]);
-    }
-
-    Table empty = (Table) original.emptyCopy();
-
-    SubTable newView = new SubTable(empty);
-    String lastKey = "";
-    newView.setName(lastKey);
-
-    for (int row = 0; row < original.rowCount(); row++) {
-
-      String newKey = "";
-      List<String> values = new ArrayList<>();
-
-      for (int col = 0; col < columnCount; col++) {
-        if (col > 0)
-          newKey = newKey + SPLIT_STRING;
-
-        String groupKey = original.get(columnIndices[col], row);
-        newKey = newKey + groupKey;
-        values.add(groupKey);
-      }
-
-      if (!newKey.equals(lastKey)) {
-        if (!newView.isEmpty()) {
-          tables.add(newView);
-        }
-
-        newView = new SubTable(empty);
-        newView.setName(newKey);
-        newView.setValues(values);
-        lastKey = newKey;
-      }
-      newView.addRow(row, original);
-    }
-
-    if (!tables.contains(newView) && !newView.isEmpty()) {
-      if (columnCount == 1) {
-        tables.add(newView);
-      } else {
-        tables.add(splitGroupingColumn(newView, columns));
-      }
-    }
-*/
     return tables;
   }
 
