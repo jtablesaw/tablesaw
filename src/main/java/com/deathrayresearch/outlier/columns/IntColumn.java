@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.api.ColumnType;
+import com.deathrayresearch.outlier.filter.IntBiPredicate;
 import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.IntMapUtils;
@@ -93,64 +94,24 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     data.set(index, value);
   }
 
-  public RoaringBitmap isLessThan(int f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next < f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isLessThan(int i) {
+    return apply(isLessThan, i);
   }
 
-  public RoaringBitmap isGreaterThan(int f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next > f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isGreaterThan(int i) {
+    return apply(isGreaterThan, i);
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(int f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next >= f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isGreaterThanOrEqualTo(int i) {
+    return apply(isGreaterThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isLessThanOrEqualTo(int f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next <= f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isLessThanOrEqualTo(int i) {
+    return apply(isLessThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isEqualTo(int f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next == f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isEqualTo(int i) {
+    return apply(isEqualTo, i);
   }
 
   public RoaringBitmap isEqualTo(IntColumn other) {
@@ -165,10 +126,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
       i++;
     }
     return results;
-  }
-
-  private static boolean equalTo(int thisInt, int otherInt) {
-    return thisInt == otherInt;
   }
 
   @Override
@@ -387,6 +344,17 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     for(int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
+  }
+
+  public RoaringBitmap apply(IntBiPredicate predicate, int value) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      int next = data.getInt(idx);
+      if (predicate.test(next, value)) {
         bitmap.add(idx);
       }
     }

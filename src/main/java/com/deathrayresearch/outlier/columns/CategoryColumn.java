@@ -266,12 +266,15 @@ public class CategoryColumn extends AbstractColumn
 
   public RoaringBitmap isEqualTo(String string) {
     RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : values) {
-      if (string.equals(get(next))) {
-        results.add(i);
+    int key = lookupTable.get(string);
+    if (key >= 0) {
+      int i = 0;
+      for (int next : values) {
+        if (key == next) {
+          results.add(i);
+        }
+        i++;
       }
-      i++;
     }
     return results;
   }

@@ -2,7 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.api.ColumnType;
-import com.deathrayresearch.outlier.filter.IntPredicate;
+import com.deathrayresearch.outlier.filter.LongBiPredicate;
 import com.deathrayresearch.outlier.filter.LongPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.LongMapUtils;
@@ -90,64 +90,24 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     data.set(index, value);
   }
 
-  public RoaringBitmap isLessThan(long f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (long next : data) {
-      if (next < f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isLessThan(long i) {
+    return apply(isLessThan, i);
   }
 
-  public RoaringBitmap isGreaterThan(int f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (long next : data) {
-      if (next > f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isGreaterThan(int i) {
+    return apply(isGreaterThan, i);
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(int f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (long next : data) {
-      if (next >= f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isGreaterThanOrEqualTo(int i) {
+    return apply(isGreaterThanOrEqualTo, i);
   }
 
   public RoaringBitmap isLessThanOrEqualTo(int f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (long next : data) {
-      if (next <= f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isLessThanOrEqualTo, f);
   }
 
-  public RoaringBitmap isEqualTo(long f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (long next : data) {
-      if (next == f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isEqualTo(long i) {
+    return apply(isEqualTo, i);
   }
 
   public RoaringBitmap isEqualTo(LongColumn f) {
@@ -261,7 +221,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return comparator;
   }
 
-  final IntComparator comparator = new IntComparator() {
+  private final IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer i1, Integer i2) {
@@ -380,6 +340,17 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     for(int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
       if (predicate.test(next)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
+  }
+
+  public RoaringBitmap apply(LongBiPredicate predicate, long valueToCompareAgainst) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      long next = data.getLong(idx);
+      if (predicate.test(next, valueToCompareAgainst)) {
         bitmap.add(idx);
       }
     }

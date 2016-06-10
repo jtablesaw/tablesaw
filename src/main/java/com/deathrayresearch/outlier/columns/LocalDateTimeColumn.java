@@ -2,8 +2,12 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.api.ColumnType;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDate;
 import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDateTime;
+import com.deathrayresearch.outlier.filter.IntBiPredicate;
+import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.filter.LocalDateTimePredicate;
+import com.deathrayresearch.outlier.filter.LongBiPredicate;
 import com.deathrayresearch.outlier.filter.LongPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.DateTimeMapUtils;
@@ -202,12 +206,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
       if (c1 == (LocalDateTimeColumn.MISSING_VALUE)) {
         newColumn.set(r, null);
       } else {
-        LocalDateTime value1 = PackedLocalDateTime.asLocalDateTime(c1);
-        if (value1 == null) {
-          newColumn.add(CategoryColumn.MISSING_VALUE);
-        } else {
-          newColumn.add(value1.getDayOfWeek().toString());
-        }
+          newColumn.add(PackedLocalDateTime.getDayOfWeek(c1).toString());
       }
     }
     return newColumn;
@@ -279,16 +278,8 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   }
 
   public RoaringBitmap isEqualTo(LocalDateTime value) {
-    RoaringBitmap results = new RoaringBitmap();
-    long packedLocalDate = PackedLocalDateTime.pack(value);
-    int i = 0;
-    for (long next : data) {
-      if (packedLocalDate == next) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    long packed = PackedLocalDateTime.pack(value);
+    return apply(LongColumnUtils.isEqualTo, packed);
   }
 
   public static LocalDateTimeColumn create(String fileName, LongArrayList dateTimes) {
@@ -396,6 +387,128 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
       }
     }
     return column;
+  }
+
+  public RoaringBitmap isMonday() {
+    return apply(PackedLocalDateTime::isMonday);
+  }
+
+  public RoaringBitmap isTuesday() {
+    return apply(PackedLocalDateTime::isTuesday);
+  }
+
+  public RoaringBitmap isWednesday() {
+    return apply(PackedLocalDateTime::isWednesday);
+  }
+
+  public RoaringBitmap isThursday() {
+    return apply(PackedLocalDateTime::isThursday);
+  }
+
+  public RoaringBitmap isFriday() {
+    return apply(PackedLocalDateTime::isFriday);
+  }
+
+  public RoaringBitmap isSaturday() {
+    return apply(PackedLocalDateTime::isSaturday);
+  }
+
+  public RoaringBitmap isSunday() {
+    return apply(PackedLocalDateTime::isSunday);
+  }
+
+  public RoaringBitmap isInJanuary() {
+    return apply(PackedLocalDateTime::isInJanuary);
+  }
+
+  public RoaringBitmap isInFebruary() {
+    return apply(PackedLocalDateTime::isInFebruary);
+  }
+
+  public RoaringBitmap isInMarch() {
+    return apply(PackedLocalDateTime::isInMarch);
+  }
+
+  public RoaringBitmap isInApril() {
+    return apply(PackedLocalDateTime::isInApril);
+  }
+
+  public RoaringBitmap isInMay() {
+    return apply(PackedLocalDateTime::isInMay);
+  }
+
+  public RoaringBitmap isInJune() {
+    return apply(PackedLocalDateTime::isInJune);
+  }
+
+  public RoaringBitmap isInJuly() {
+    return apply(PackedLocalDateTime::isInJuly);
+  }
+
+  public RoaringBitmap isInAugust() {
+    return apply(PackedLocalDateTime::isInAugust);
+  }
+
+  public RoaringBitmap isInSeptember() {
+    return apply(PackedLocalDateTime::isInSeptember);
+  }
+
+  public RoaringBitmap isInOctober() {
+    return apply(PackedLocalDateTime::isInOctober);
+  }
+
+  public RoaringBitmap isInNovember() {
+    return apply(PackedLocalDateTime::isInNovember);
+  }
+
+  public RoaringBitmap isInDecember() {
+    return apply(PackedLocalDateTime::isInDecember);
+  }
+
+  public RoaringBitmap isFirstDayOfMonth() {
+    return apply(PackedLocalDateTime::isFirstDayOfMonth);
+  }
+
+  public RoaringBitmap isLastDayOfMonth() {
+    return apply(PackedLocalDateTime::isLastDayOfMonth);
+  }
+
+  public RoaringBitmap isInQ1() {
+    return apply(PackedLocalDateTime::isInQ1);
+  }
+
+  public RoaringBitmap isInQ2() {
+    return apply(PackedLocalDateTime::isInQ2);
+  }
+
+  public RoaringBitmap isInQ3() {
+    return apply(PackedLocalDateTime::isInQ3);
+  }
+
+  public RoaringBitmap isInQ4() {
+    return apply(PackedLocalDateTime::isInQ4);
+  }
+
+  public RoaringBitmap apply(LongPredicate predicate) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      long next = data.getLong(idx);
+      if (predicate.test(next)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
+  }
+
+  public RoaringBitmap apply(LongBiPredicate predicate, long value) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      long next = data.getLong(idx);
+      if (predicate.test(next, value)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
   }
 
   //TODO(lwhite): Implement

@@ -3,6 +3,7 @@ package com.deathrayresearch.outlier.columns;
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.packeddata.PackedLocalTime;
+import com.deathrayresearch.outlier.filter.IntBiPredicate;
 import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.filter.LocalTimePredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
@@ -282,6 +283,31 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
     }
   }
 
+  public RoaringBitmap isMidnight() {
+    return apply(PackedLocalTime::isMidnight);
+  }
+
+  public RoaringBitmap isNoon() {
+    return apply(PackedLocalTime::isNoon);
+  }
+
+  /**
+   * Applies a function to every value in this column that returns true if the time is in the AM or "before noon".
+   * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
+   */
+  public RoaringBitmap AM() {
+    return apply(PackedLocalTime::AM);
+  }
+
+  /**
+   * Applies a function to every value in this column that returns true if the time is in the PM or "after noon".
+   * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
+   */
+  public RoaringBitmap PM() {
+    return apply(PackedLocalTime::PM);
+  }
+
+
   //TODO(lwhite): Implement
   @Override
   public LocalTimeColumn max(int n) {
@@ -296,5 +322,27 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
 
   public IntIterator iterator() {
     return data.iterator();
+  }
+
+  public RoaringBitmap apply(IntPredicate predicate) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      int next = data.getInt(idx);
+      if (predicate.test(next)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
+  }
+
+  public RoaringBitmap apply(IntBiPredicate predicate, int value) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      int next = data.getInt(idx);
+      if (predicate.test(next, value)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
   }
 }

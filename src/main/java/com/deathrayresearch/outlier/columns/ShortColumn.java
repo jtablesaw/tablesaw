@@ -2,7 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.api.ColumnType;
-import com.deathrayresearch.outlier.filter.LongPredicate;
+import com.deathrayresearch.outlier.filter.ShortBiPredicate;
 import com.deathrayresearch.outlier.filter.ShortPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.ShortMapUtils;
@@ -92,64 +92,24 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     data.set(index, value);
   }
 
-  public RoaringBitmap isLessThan(short f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next < f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isLessThan(short i) {
+    return apply(isLessThan, i);
   }
 
-  public RoaringBitmap isGreaterThan(short f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next > f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isGreaterThan(short i) {
+    return apply(isGreaterThan, i);
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(short f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next >= f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isGreaterThanOrEqualTo(short i) {
+    return apply(isGreaterThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isLessThanOrEqualTo(short f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next <= f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isLessThanOrEqualTo(short i) {
+    return apply(isLessThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isEqualTo(short f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (next == f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+  public RoaringBitmap isEqualTo(short i) {
+    return apply(isEqualTo, i);
   }
 
   public RoaringBitmap isEqualTo(ShortColumn f) {
@@ -401,6 +361,17 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     for(int idx = 0; idx < data.size(); idx++) {
       short next = data.getShort(idx);
       if (predicate.test(next)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
+  }
+
+  public RoaringBitmap apply(ShortBiPredicate predicate, short valueToCompareAgainst) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      short next = data.getShort(idx);
+      if (predicate.test(next, valueToCompareAgainst)) {
         bitmap.add(idx);
       }
     }

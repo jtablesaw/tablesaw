@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.filter.ShortBiPredicate;
 import com.deathrayresearch.outlier.filter.ShortPredicate;
 import it.unimi.dsi.fastutil.shorts.ShortIterable;
 
@@ -20,4 +21,13 @@ public interface ShortColumnUtils extends Column, ShortIterable {
 
   ShortPredicate isOdd = i -> (i & 1) != 0;
 
+  ShortBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
+
+  ShortBiPredicate isGreaterThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest >= valueToCompareAgainst;
+
+  ShortBiPredicate isLessThan = (valueToTest, valueToCompareAgainst) -> valueToTest < valueToCompareAgainst;
+
+  ShortBiPredicate isLessThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
+
+  ShortBiPredicate isEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
 }

@@ -5,6 +5,7 @@ import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDate;
 import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDateTime;
 import com.deathrayresearch.outlier.columns.packeddata.PackedLocalTime;
+import com.deathrayresearch.outlier.filter.IntBiPredicate;
 import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.filter.LocalDatePredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
@@ -301,16 +302,8 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   public RoaringBitmap isEqualTo(LocalDate value) {
-    RoaringBitmap results = new RoaringBitmap();
-    int packedLocalDate = PackedLocalDate.pack(value);
-    int i = 0;
-    for (int next : data) {
-      if (packedLocalDate == next) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+      int packed = PackedLocalDate.pack(value);
+      return apply(IntColumnUtils.isEqualTo, packed);
   }
 
   public RoaringBitmap isEqualTo(LocalDateColumn column) {
@@ -379,340 +372,126 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return newColumn;
   }
 
-  public RoaringBitmap isInQ1() {
-
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInQ1(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
-  }
-
-  public RoaringBitmap isInQ2() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInQ2(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
-  }
-
-  public RoaringBitmap isInQ3() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInQ3(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
-  }
-
-  public RoaringBitmap isInQ4() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInQ4(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
-  }
-
   public RoaringBitmap isAfter(int value) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isAfter(next, value)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isAfter, value);
+  }
+
+  public RoaringBitmap isAfter(LocalDate value) {
+    int packed = PackedLocalDate.pack(value);
+    return apply(PackedLocalDate::isAfter, packed);
   }
 
   public RoaringBitmap isBefore(int value) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isBefore(next, value)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isBefore, value);
+  }
+
+  public RoaringBitmap isBefore(LocalDate value) {
+    int packed = PackedLocalDate.pack(value);
+    return apply(PackedLocalDate::isBefore, packed);
   }
 
   public RoaringBitmap isMonday() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isMonday(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isMonday);
   }
 
   public RoaringBitmap isTuesday() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isTuesday(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isTuesday);
   }
 
   public RoaringBitmap isWednesday() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isWednesday(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isWednesday);
   }
+
   public RoaringBitmap isThursday() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isThursday(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isThursday);
   }
 
   public RoaringBitmap isFriday() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isFriday(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isFriday);
   }
 
   public RoaringBitmap isSaturday() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isSaturday(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isSaturday);
   }
 
   public RoaringBitmap isSunday() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isSunday(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isSunday);
   }
 
   public RoaringBitmap isInJanuary() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInJanuary(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInJanuary);
   }
 
   public RoaringBitmap isInFebruary() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInFebruary(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInFebruary);
   }
 
   public RoaringBitmap isInMarch() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInMarch(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInMarch);
   }
 
   public RoaringBitmap isInApril() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInApril(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInApril);
   }
 
   public RoaringBitmap isInMay() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInMay(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInMay);
   }
 
   public RoaringBitmap isInJune() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInJune(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInJune);
   }
 
   public RoaringBitmap isInJuly() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInJuly(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInJuly);
   }
 
   public RoaringBitmap isInAugust() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInAugust(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInAugust);
   }
 
   public RoaringBitmap isInSeptember() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInSeptember(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInSeptember);
   }
 
   public RoaringBitmap isInOctober() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInOctober(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInOctober);
   }
 
   public RoaringBitmap isInNovember() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInNovember(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInNovember);
   }
 
   public RoaringBitmap isInDecember() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInDecember(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInDecember);
   }
 
   public RoaringBitmap isFirstDayOfMonth() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isFirstDayOfMonth(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isFirstDayOfMonth);
   }
 
   public RoaringBitmap isLastDayOfMonth() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isLastDayOfMonth(next)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isLastDayOfMonth);
+  }
+
+  public RoaringBitmap isInQ1() {
+    return apply(PackedLocalDate::isInQ1);
+  }
+
+  public RoaringBitmap isInQ2() {
+    return apply(PackedLocalDate::isInQ2);
+  }
+
+  public RoaringBitmap isInQ3() {
+    return apply(PackedLocalDate::isInQ3);
+  }
+
+  public RoaringBitmap isInQ4() {
+    return apply(PackedLocalDate::isInQ4);
   }
 
   public RoaringBitmap isInYear(int year) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (int next : data) {
-      if (PackedLocalDate.isInYear(next, year)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(PackedLocalDate::isInYear, year);
   }
 
   public String print() {
@@ -782,5 +561,27 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   public IntIterator iterator() {
     return data.iterator();
+  }
+
+  public RoaringBitmap apply(IntPredicate predicate) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      int next = data.getInt(idx);
+      if (predicate.test(next)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
+  }
+
+  public RoaringBitmap apply(IntBiPredicate predicate, int value) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      int next = data.getInt(idx);
+      if (predicate.test(next, value)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
   }
 }

@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.filter.LongBiPredicate;
 import com.deathrayresearch.outlier.filter.LongPredicate;
 import it.unimi.dsi.fastutil.longs.LongIterable;
 
@@ -20,4 +21,13 @@ public interface LongColumnUtils extends Column, LongIterable {
 
   LongPredicate isOdd = i -> (i & 1) != 0;
 
+  LongBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
+
+  LongBiPredicate isGreaterThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest >= valueToCompareAgainst;
+
+  LongBiPredicate isLessThan = (valueToTest, valueToCompareAgainst) -> valueToTest < valueToCompareAgainst;
+
+  LongBiPredicate isLessThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
+
+  LongBiPredicate isEqualTo = (long valueToTest, long valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
 }
