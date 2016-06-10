@@ -3,7 +3,7 @@ package com.deathrayresearch.outlier;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
-import com.deathrayresearch.outlier.columns.PackedLocalDate;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDate;
 import com.deathrayresearch.outlier.io.CsvReader;
 import org.junit.Before;
 import org.junit.Test;

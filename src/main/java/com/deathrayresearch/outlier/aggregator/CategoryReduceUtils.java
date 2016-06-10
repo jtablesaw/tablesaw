@@ -1,11 +1,11 @@
 package com.deathrayresearch.outlier.aggregator;
 
-import com.deathrayresearch.outlier.columns.StringColumnUtils;
+import com.deathrayresearch.outlier.columns.CategoryColumnUtils;
 
 /**
  *
  */
-public interface StringReduceUtils extends StringColumnUtils {
+public interface CategoryReduceUtils extends CategoryColumnUtils {
 
     int size();
 

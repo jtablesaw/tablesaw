@@ -1,6 +1,7 @@
 package com.deathrayresearch.outlier.mapper;
 
 import com.deathrayresearch.outlier.columns.*;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDateTime;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

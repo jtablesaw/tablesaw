@@ -1,4 +1,4 @@
-package com.deathrayresearch.outlier.columns;
+package com.deathrayresearch.outlier.columns.packeddata;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;

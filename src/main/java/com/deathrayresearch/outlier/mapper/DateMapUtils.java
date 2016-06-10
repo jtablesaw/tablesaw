@@ -5,7 +5,7 @@ import com.deathrayresearch.outlier.columns.Column;
 import com.deathrayresearch.outlier.columns.FloatColumn;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
 import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
-import com.deathrayresearch.outlier.columns.PackedLocalDate;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDate;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;

@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.api.ColumnType;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDateTime;
 import com.deathrayresearch.outlier.filter.LocalDateTimePredicate;
 import com.deathrayresearch.outlier.filter.LongPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;

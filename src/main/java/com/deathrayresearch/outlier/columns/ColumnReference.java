@@ -1,5 +1,6 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDate;
 import com.deathrayresearch.outlier.filter.*;
 import com.deathrayresearch.outlier.filter.columnbased.ColumnEqualTo;
 import com.deathrayresearch.outlier.filter.dates.*;

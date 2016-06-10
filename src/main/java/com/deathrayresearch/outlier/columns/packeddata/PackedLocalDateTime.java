@@ -1,9 +1,7 @@
-package com.deathrayresearch.outlier.columns;
+package com.deathrayresearch.outlier.columns.packeddata;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
-import it.unimi.dsi.fastutil.doubles.Double2IntMap;
-import it.unimi.dsi.fastutil.doubles.Double2IntOpenHashMap;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -13,7 +11,7 @@ import java.time.Month;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoField;
 
-import static com.deathrayresearch.outlier.columns.PackedLocalDate.asLocalDate;
+import static com.deathrayresearch.outlier.columns.packeddata.PackedLocalDate.asLocalDate;
 
 /**
  * A short localdatetime packed into a single long value. The long is comprised of an int for the date and an int

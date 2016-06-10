@@ -1,5 +1,7 @@
 package com.deathrayresearch.outlier.columns;
 
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDateTime;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalTime;
 import org.junit.Test;
 
 import java.time.LocalTime;

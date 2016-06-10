@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A group of tables formed by performing grouping operations on an original table
+ * A group of tables formed by performing splitting operations on an original table
  */
 public class TableGroup {
 
   private static final String SPLIT_STRING = "|||";
 
   private final Table original;
-  
+
   private final List<SubTable> subTables;
 
   // the name(s) of the column(s) we're splitting the table on

@@ -5,7 +5,7 @@ import com.deathrayresearch.outlier.columns.BooleanColumn;
 import com.deathrayresearch.outlier.columns.CategoryColumn;
 import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.columns.LocalDateColumn;
-import com.deathrayresearch.outlier.columns.PackedLocalDate;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDate;
 import com.deathrayresearch.outlier.columns.ShortColumn;
 import com.deathrayresearch.outlier.io.CsvReader;
 import com.deathrayresearch.outlier.io.CsvWriter;

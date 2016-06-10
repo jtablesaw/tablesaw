@@ -2,6 +2,9 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.api.ColumnType;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDate;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDateTime;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalTime;
 import com.deathrayresearch.outlier.filter.IntPredicate;
 import com.deathrayresearch.outlier.filter.LocalDatePredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;

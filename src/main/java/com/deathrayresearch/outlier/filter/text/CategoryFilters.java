@@ -1,6 +1,6 @@
 package com.deathrayresearch.outlier.filter.text;
 
-import com.deathrayresearch.outlier.columns.StringColumnUtils;
+import com.deathrayresearch.outlier.columns.CategoryColumnUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 /**
  *
  */
-public interface StringFilters extends StringColumnUtils {
+public interface CategoryFilters extends CategoryColumnUtils {
 
   default RoaringBitmap equalToIgnoringCase(String string) {
     RoaringBitmap results = new RoaringBitmap();

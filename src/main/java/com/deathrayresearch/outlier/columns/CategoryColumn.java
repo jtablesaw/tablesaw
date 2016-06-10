@@ -1,10 +1,10 @@
 package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
-import com.deathrayresearch.outlier.aggregator.StringReduceUtils;
+import com.deathrayresearch.outlier.aggregator.CategoryReduceUtils;
 import com.deathrayresearch.outlier.api.ColumnType;
 import com.deathrayresearch.outlier.filter.StringPredicate;
-import com.deathrayresearch.outlier.filter.text.StringFilters;
+import com.deathrayresearch.outlier.filter.text.CategoryFilters;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.store.ColumnMetadata;
 import com.deathrayresearch.outlier.util.DictionaryMap;
@@ -32,7 +32,7 @@ import java.util.Map;
  * A column in a base table that contains float values
  */
 public class CategoryColumn extends AbstractColumn
-        implements StringFilters, StringReduceUtils, Iterable<String> {
+        implements CategoryFilters, CategoryReduceUtils, Iterable<String> {
 
   public static final String MISSING_VALUE = (String) ColumnType.CATEGORY.getMissingValue();
 

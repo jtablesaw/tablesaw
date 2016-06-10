@@ -2,7 +2,7 @@ package com.deathrayresearch.outlier.mapper;
 
 import com.deathrayresearch.outlier.columns.LocalDateTimeColumn;
 import com.deathrayresearch.outlier.columns.LongColumn;
-import com.deathrayresearch.outlier.columns.PackedLocalDateTime;
+import com.deathrayresearch.outlier.columns.packeddata.PackedLocalDateTime;
 import com.deathrayresearch.outlier.columns.ShortColumn;
 import org.junit.Test;
 
