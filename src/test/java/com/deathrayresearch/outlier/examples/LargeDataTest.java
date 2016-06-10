@@ -22,29 +22,27 @@ import java.util.concurrent.TimeUnit;
 import static com.deathrayresearch.outlier.api.ColumnType.*;
 
 /**
- *
+ * Tests manipulation of large (but not big) data sets
  */
 public class LargeDataTest {
 
+  private static String CSV_FILE = "bigdata/people1.csv";
+
   public static void main(String[] args) throws Exception {
 
-    /*
-    Table t = createPeoples(400_000_000);
-    System.out.println("Done");
     Stopwatch stopwatch = Stopwatch.createStarted();
+
+    ColumnType[] columnTypes = {CATEGORY, CATEGORY, CATEGORY, CATEGORY, CATEGORY, CATEGORY, LOCAL_DATE, SHORT_INT, SHORT_INT, BOOLEAN};
+    Table t = CsvReader.read(columnTypes, CSV_FILE);
+    System.out.println("Time to read from CSV File " + stopwatch.elapsed(TimeUnit.SECONDS));
+
+    stopwatch = stopwatch.reset().start();
     storeInDb(t);
     System.out.println("Time to store in columnStore " + stopwatch.elapsed(TimeUnit.SECONDS));
-*/
-
-    System.out.println("Loading data. Please wait...");
-    Stopwatch stopwatch = Stopwatch.createStarted();
-    Table t = StorageManager.readTable("bigdata/peopleShort2/4683684b-b030-4d75-bd1a-4b4ce7815553");
-    System.out.println("Time to load from columnStore " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
-    System.out.println();
 
     stopwatch.reset().start();
     System.out.println(t.categoryColumn("first name").first(5).print());
-    System.out.println("Time to print first for first name column " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    System.out.println("Time to print first 5 from first name column " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
     System.out.println();
 
     stopwatch.reset().start();
@@ -71,8 +69,6 @@ public class LargeDataTest {
     CsvWriter.write("bigdata/shortpeople2.csv", t);
     System.out.println("Time to write csv file " + stopwatch.elapsed(TimeUnit.SECONDS));
     System.out.println();
-
-
   }
 
   private static void createPeople(Table t) throws Exception {
@@ -154,7 +150,7 @@ public class LargeDataTest {
 
   private static void storeInDb() throws Exception {
     ColumnType[] columnTypes = {CATEGORY, CATEGORY, CATEGORY, LOCAL_DATE, CATEGORY, CATEGORY, CATEGORY, SHORT_INT, SHORT_INT, BOOLEAN, BOOLEAN};
-    Table t = CsvReader.read(columnTypes, "bigdata/people1.csv");
+    Table t = CsvReader.read(columnTypes, CSV_FILE);
     StorageManager.saveTable("bigdata/people", t);
   }
 

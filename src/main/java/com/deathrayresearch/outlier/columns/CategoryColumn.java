@@ -12,8 +12,13 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.shorts.*;
+import it.unimi.dsi.fastutil.ints.IntListIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
@@ -37,7 +42,7 @@ public class CategoryColumn extends AbstractColumn
   private short id = 0;
 
   // holds a key for each row in the table. the key can be used to lookup the backing string value
-  private ShortArrayList values;
+  private IntArrayList values;
 
   // a bidirectional map of keys to backing string values.
   private DictionaryMap lookupTable = new DictionaryMap();
@@ -60,17 +65,17 @@ public class CategoryColumn extends AbstractColumn
 
   private CategoryColumn(String name) {
     super(name);
-    values = new ShortArrayList(DEFAULT_ARRAY_SIZE);
+    values = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   public CategoryColumn(ColumnMetadata metadata) {
     super(metadata);
-    values = new ShortArrayList(DEFAULT_ARRAY_SIZE);
+    values = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   public CategoryColumn(String name, int size) {
     super(name);
-    values = new ShortArrayList(size);
+    values = new IntArrayList(size);
   }
 
   @Override
@@ -90,36 +95,36 @@ public class CategoryColumn extends AbstractColumn
 
   @Override
   public void sortAscending() {
-    ShortArrays.parallelQuickSort(values.elements(), dictionarySortComparator);
+    IntArrays.parallelQuickSort(values.elements(), dictionarySortComparator);
   }
 
-  private ShortComparator dictionarySortComparator = new ShortComparator() {
+  private IntComparator dictionarySortComparator = new IntComparator() {
     @Override
-    public int compare(short i, short i1) {
+    public int compare(int i, int i1) {
       return lookupTable.get(i).compareTo(lookupTable.get(i1));
     }
 
     @Override
-    public int compare(Short o1, Short o2) {
-      return compare((short) o1, (short) o2);
+    public int compare(Integer o1, Integer o2) {
+      return compare((int) o1, (int) o2);
     }
   };
 
-  private ShortComparator reverseDictionarySortComparator = new ShortComparator() {
+  private IntComparator reverseDictionarySortComparator = new IntComparator() {
     @Override
-    public int compare(short i, short i1) {
+    public int compare(int i, int i1) {
       return -lookupTable.get(i).compareTo(lookupTable.get(i1));
     }
 
     @Override
-    public int compare(Short o1, Short o2) {
-      return compare((short) o1, (short) o2);
+    public int compare(Integer o1, Integer o2) {
+      return compare((int) o1, (int) o2);
     }
   };
 
   @Override
   public void sortDescending() {
-    ShortArrays.parallelQuickSort(values.elements(), reverseDictionarySortComparator);
+    IntArrays.parallelQuickSort(values.elements(), reverseDictionarySortComparator);
   }
 
   /**
@@ -136,12 +141,12 @@ public class CategoryColumn extends AbstractColumn
    * @throws IndexOutOfBoundsException if the given rowIndex is not in the column
    */
   public String get(int rowIndex) {
-    short k = values.getShort(rowIndex);
+    int k = values.getInt(rowIndex);
     return lookupTable.get(k);
   }
 
-  public short getKey(int index) {
-    return values.getShort(index);
+  public int getKey(int index) {
+    return values.getInt(index);
   }
 
   @Override
@@ -150,9 +155,9 @@ public class CategoryColumn extends AbstractColumn
     CategoryColumn categories = CategoryColumn.create("Category");
     IntColumn counts = IntColumn.create("Count");
 
-    Short2IntMap valueToCount = new Short2IntOpenHashMap();
+    Int2IntMap valueToCount = new Int2IntOpenHashMap();
 
-    for (short next : values) {
+    for (int next : values) {
       if (valueToCount.containsKey(next)) {
         valueToCount.put(next, valueToCount.get(next) + 1);
       } else {
@@ -160,7 +165,7 @@ public class CategoryColumn extends AbstractColumn
       }
     }
 
-    for (Map.Entry<Short, Integer> entry : valueToCount.entrySet()) {
+    for (Map.Entry<Integer, Integer> entry : valueToCount.entrySet()) {
       categories.add(lookupTable.get(entry.getKey()));
       counts.add(entry.getValue());
     }
@@ -177,7 +182,7 @@ public class CategoryColumn extends AbstractColumn
 
   public void set(int rowIndex, String stringValue) {
     boolean b = lookupTable.contains(stringValue);
-    short valueId;
+    int valueId;
     if (!b) {
 // TODO(lwhite): synchronize id() or column-level saveTable lock so we can increment id safely without atomic integer objects
       valueId = id++;
@@ -207,7 +212,7 @@ public class CategoryColumn extends AbstractColumn
 
   public void add(String stringValue) {
     boolean b = lookupTable.contains(stringValue);
-    short valueId;
+    int valueId;
     if (!b) {
       valueId = id++;
       lookupTable.put(valueId, stringValue);
@@ -262,7 +267,7 @@ public class CategoryColumn extends AbstractColumn
   public RoaringBitmap isEqualTo(String string) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (short next : values) {
+    for (int next : values) {
       if (string.equals(get(next))) {
         results.add(i);
       }
@@ -280,13 +285,13 @@ public class CategoryColumn extends AbstractColumn
     List<BooleanColumn> results = new ArrayList<>();
 
     // create the necessary columns
-    for (Short2ObjectMap.Entry<String> entry: lookupTable.keyToValueMap().short2ObjectEntrySet()) {
+    for (Int2ObjectMap.Entry<String> entry: lookupTable.keyToValueMap().int2ObjectEntrySet()) {
       BooleanColumn column = BooleanColumn.create(entry.getValue());
       results.add(column);
     }
 
     // iterate over the values, updating the dummy variable columns as appropriate
-    for (short next : values) {
+    for (int next : values) {
       String category = get(next);
       for (BooleanColumn column : results) {
         if (category.equals(column.name())) {
@@ -300,8 +305,8 @@ public class CategoryColumn extends AbstractColumn
     return results;
   }
 
-  public short getShort(int rowNumber) {
-    return values.getShort(rowNumber);
+  public int getInt(int rowNumber) {
+    return values.getInt(rowNumber);
   }
 
   public CategoryColumn unique() {
@@ -398,7 +403,7 @@ public class CategoryColumn extends AbstractColumn
   public String print() {
     StringBuilder builder = new StringBuilder();
     builder.append(title());
-    for (short next : values) {
+    for (int next : values) {
       builder.append(get(next));
       builder.append('\n');
     }
@@ -407,7 +412,7 @@ public class CategoryColumn extends AbstractColumn
 
   public CategoryColumn copy() {
     CategoryColumn newCol = CategoryColumn.create(name() + "1", size());
-    for (short next : values) {
+    for (int next : values) {
       newCol.add(get(next));
     }
     return newCol;
@@ -426,7 +431,7 @@ public class CategoryColumn extends AbstractColumn
   public Iterator<String> iterator() {
     return new Iterator<String>() {
 
-      private ShortListIterator valuesIt = values.iterator();
+      private IntListIterator valuesIt = values.iterator();
 
       @Override
       public boolean hasNext() {
