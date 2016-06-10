@@ -2,6 +2,7 @@ package com.deathrayresearch.outlier.columns;
 
 import com.deathrayresearch.outlier.Table;
 import com.deathrayresearch.outlier.api.ColumnType;
+import com.deathrayresearch.outlier.filter.LongPredicate;
 import com.deathrayresearch.outlier.filter.ShortPredicate;
 import com.deathrayresearch.outlier.io.TypeUtils;
 import com.deathrayresearch.outlier.mapper.ShortMapUtils;
@@ -311,75 +312,27 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   }
 
   public RoaringBitmap isPositive() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (short next : data) {
-      if (next > 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isPositive);
   }
 
   public RoaringBitmap isNegative() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (short next : data) {
-      if (next < 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isNegative);
   }
 
   public RoaringBitmap isNonNegative() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (short next : data) {
-      if (next >= 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isNonNegative);
   }
 
   public RoaringBitmap isZero() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (short next : data) {
-      if (next == 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isZero);
   }
 
   public RoaringBitmap isEven() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (short next : data) {
-      if ((next & 1) == 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isEven);
   }
 
   public RoaringBitmap isOdd() {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (short x : data) {
-      if ((x & 1) != 0) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isOdd);
   }
 
   public FloatArrayList toFloatArray() {
@@ -426,8 +379,6 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return column;
   }
 
-
-
   //TODO(lwhite): Implement
   @Override
   public ShortColumn max(int n) {
@@ -443,5 +394,16 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   @Override
   public ShortIterator iterator() {
     return data.iterator();
+  }
+
+  public RoaringBitmap apply(ShortPredicate predicate) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for(int idx = 0; idx < data.size(); idx++) {
+      short next = data.getShort(idx);
+      if (predicate.test(next)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
   }
 }

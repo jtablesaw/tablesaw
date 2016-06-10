@@ -305,27 +305,27 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   }
 
   public RoaringBitmap isPositive() {
-    return apply(IntColumnUtils.isPositive);
+    return apply(isPositive);
   }
 
   public RoaringBitmap isNegative() {
-    return apply(IntColumnUtils.isNegative);
+    return apply(isNegative);
   }
 
   public RoaringBitmap isNonNegative() {
-    return apply(IntColumnUtils.isNonNegative);
+    return apply(isNonNegative);
   }
 
   public RoaringBitmap isZero() {
-    return apply(IntColumnUtils.isZero);
+    return apply(isZero);
   }
 
   public RoaringBitmap isEven() {
-    return apply(IntColumnUtils.isEven);
+    return apply(isEven);
   }
 
   public RoaringBitmap isOdd() {
-    return apply(IntColumnUtils.isOdd);
+    return apply(isOdd);
   }
 
   public FloatArrayList toFloatArray() {
