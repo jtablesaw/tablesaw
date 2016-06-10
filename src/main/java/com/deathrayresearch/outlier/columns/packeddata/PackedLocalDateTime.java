@@ -91,11 +91,11 @@ public class PackedLocalDateTime {
     return (((long) date) << 32) | (time & 0xffffffffL);
   }
 
-  static int date(long packedDateTIme) {
+  public static int date(long packedDateTIme) {
     return (int) (packedDateTIme >> 32);
   }
 
-  static int time(long packedDateTIme) {
+  public static int time(long packedDateTIme) {
     return (int) packedDateTIme;
   }
 
