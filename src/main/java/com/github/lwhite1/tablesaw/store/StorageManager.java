@@ -20,7 +20,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
@@ -50,11 +53,14 @@ public class StorageManager {
     TableMetadata tableMetadata = readTableMetadata(path + File.separator + "Metadata.json");
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
     Table table = new Table(tableMetadata);
+
+    // NB: We do some extra work with the hashmap to ensure that the columns are added to the table in original order
+    Map<String, Column> columns = new HashMap<>();
     try {
       for (ColumnMetadata column : columnMetadata) {
         readerCompletionService.submit(() -> {
           Column c = readColumn(path + File.separator + column.getId(), column);
-          table.addColumn(c);
+          columns.put(c.id(), c);
           return null;
         });
       }
@@ -62,6 +68,12 @@ public class StorageManager {
         Future future = readerCompletionService.take();
         future.get();
       }
+
+      for (ColumnMetadata metadata : columnMetadata) {
+        String id = metadata.getId();
+        table.addColumn(columns.get(id));
+      }
+
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
