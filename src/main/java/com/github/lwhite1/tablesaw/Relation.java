@@ -131,11 +131,6 @@ public interface Relation {
    */
   void clear();
 
-  /**
-   * Returns the unique identifier for this relation
-   */
-  String id();
-
   List<String> columnNames();
 
   /**

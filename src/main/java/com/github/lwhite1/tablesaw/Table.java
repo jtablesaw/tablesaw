@@ -26,12 +26,6 @@ import static com.github.lwhite1.tablesaw.sorting.Sort.Order;
 public class Table implements Relation {
 
   /**
-   * A unique identifier for the table.
-   * TODO(lwhite): consider removing
-   */
-  private final String id;
-
-  /**
    * The name of the table
    */
   private String name;
@@ -46,7 +40,6 @@ public class Table implements Relation {
    */
   public Table(String name) {
     this.name = name;
-    this.id = UUID.randomUUID().toString();
   }
 
   /**
@@ -56,7 +49,6 @@ public class Table implements Relation {
    */
   public Table(TableMetadata metadata) {
     this.name = metadata.getName();
-    this.id = metadata.getId();
   }
 
   /**
@@ -245,13 +237,6 @@ public class Table implements Relation {
     for (Column column : columnList) {
       column.clear();
     }
-  }
-
-  /**
-   * Returns the unique id of this table
-   */
-  public String id() {
-    return id;
   }
 
   /**

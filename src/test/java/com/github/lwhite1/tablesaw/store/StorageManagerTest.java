@@ -78,7 +78,7 @@ public class StorageManagerTest {
 
     Stopwatch stopwatch = Stopwatch.createStarted();
     System.out.println("loading");
-    Table tornados = CsvReader.read(heading, "data/1950-2014_torn.csv");
+    Table tornados = CsvReader.read(COLUMN_TYPES, "data/1950-2014_torn.csv");
     tornados.setName("tornados");
     System.out.println(String.format("loaded %d records in %d seconds",
         tornados.rowCount(),
@@ -97,7 +97,8 @@ public class StorageManagerTest {
     System.out.println(String.valueOf(obj));
   }
 
-  private static final ColumnType[] heading = {
+  // column types for the tornado table
+  private static final ColumnType[] COLUMN_TYPES = {
       FLOAT,   // number by year
       FLOAT,   // year
       FLOAT,   // month

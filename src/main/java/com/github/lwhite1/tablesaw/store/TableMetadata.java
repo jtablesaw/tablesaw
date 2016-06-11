@@ -6,15 +6,14 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Data about a specific physical table used in it's persistence
  */
 public class TableMetadata {
 
-  static final Gson GSON = new Gson();
-
-  private final String id;
+  private static final Gson GSON = new Gson();
 
   private final String name;
 
@@ -23,7 +22,6 @@ public class TableMetadata {
   private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
 
   public TableMetadata(Relation table) {
-    this.id = table.id();
     this.name = table.name();
     this.rowCount = table.rowCount();
     for (Column column : table.columns()) {
@@ -43,26 +41,15 @@ public class TableMetadata {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-
     TableMetadata that = (TableMetadata) o;
-
-    if (rowCount != that.rowCount) return false;
-    if (!id.equals(that.id)) return false;
-    if (!name.equals(that.name)) return false;
-    return columnMetadataList.equals(that.columnMetadataList);
+    return rowCount == that.rowCount &&
+        Objects.equals(name, that.name) &&
+        Objects.equals(columnMetadataList, that.columnMetadataList);
   }
 
   @Override
   public int hashCode() {
-    int result = id.hashCode();
-    result = 31 * result + name.hashCode();
-    result = 31 * result + rowCount;
-    result = 31 * result + columnMetadataList.hashCode();
-    return result;
-  }
-
-  public String getId() {
-    return id;
+    return Objects.hash(name, rowCount, columnMetadataList);
   }
 
   public String getName() {

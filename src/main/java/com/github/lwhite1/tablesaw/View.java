@@ -9,19 +9,17 @@ import org.roaringbitmap.RoaringBitmap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * An un-materialized view on an underlying Table
  */
-public class View implements Relation {
+class View implements Relation {
 
   private String name;
   private Relation table;
   private IntArrayList columnIds = new IntArrayList();
   private final RoaringBitmap rowMap;
   private int mask[];
-  private final String id = UUID.randomUUID().toString();
 
   public View(Relation table, String... columnName) {
     this.table = table;
@@ -141,11 +139,6 @@ public class View implements Relation {
 
   @Override
   public void clear() {
-  }
-
-  @Override
-  public String id() {
-    return id;
   }
 
   @Override
