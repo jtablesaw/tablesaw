@@ -12,11 +12,30 @@ The goal is to make all but the biggest data wrangling jobs approachable without
 Analysis is more productive with less engineering overhead and shorter iteration cycles. A fluent API lets developers express operations in a concise and readable fashion. 
 
 Tablesaw provides general-purpose analytic support, with rich functionality for working with time-series, 
-including specialized column types for dates, times, timestamps and intervals. 
+including specialized column types for dates, times, and timestamps. 
 
 I'm aiming for usability at least as good as R dataframes or Pandas. And with Java 9, you'll be able to work interactively in the REPL. 
 
 For more information and examples see: https://javadatascience.wordpress.com
+
+## Getting started
+Tablesaw uses maven, but we're not on Maven Central yet.
+        
+Download the latest release from:
+
+    https://github.com/lwhite1/tablesaw/releases
+
+Build and install: 
+
+    mvn clean install
+    
+Then add a dependency to your pom file:
+    
+    <dependency>
+        <groupId>com.github.lwhite1</groupId>
+        <artifactId>tablesaw</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
 
 ## An introduction in 9 lines of code
 
