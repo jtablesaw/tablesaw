@@ -17,6 +17,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -46,38 +47,20 @@ public class ObservationDataTest {
 
   public static void main(String[] args) throws Exception {
 
-    // generate data
-    Table t = new Table("Observations");
-    CategoryColumn conceptId = CategoryColumn.create("concept");
-    LocalDateColumn date = LocalDateColumn.create("date");
-    FloatColumn value = FloatColumn.create("value");
-    IntColumn patientId = IntColumn.create("patient");
-
-    t.addColumn(conceptId);
-    t.addColumn(date);
-    t.addColumn(value);
-    t.addColumn(patientId);
-
+    int numberOfRecordsInTable = 500_000_000;
     Stopwatch stopwatch = Stopwatch.createStarted();
 
-    int numberOfRecordsInTable = 500_000_000;
+    Table t;
 
-//    System.out.println("Generating test data");
-//    generateData(numberOfRecordsInTable, t);
+   // t = defineSchema();
 
-//    System.out.println("Time to generate " + numberOfRecordsInTable + " records: " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+   // generateTestData(t, numberOfRecordsInTable, stopwatch);
 
+   // t = loadFromCsv(stopwatch);
 
-    stopwatch.reset().start();
+    t = loadFromColumnStore(stopwatch);
 
-    // ConceptId, Date, Value, PatientNo
-    ColumnType[] columnTypes = {CATEGORY, LOCAL_DATE, FLOAT, INTEGER};
-    t = CsvReader.read(columnTypes, CSV_FILE);
-    System.out.println("Time to read to CSV File " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
-
-    stopwatch = stopwatch.reset().start();
-    storeInDb(t);
-    System.out.println("Time to write out in columnStore format " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+   // writeToColumnStore(t, stopwatch);
 
     String randomConcept = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
 
@@ -89,8 +72,48 @@ public class ObservationDataTest {
 
   }
 
-  private static void storeInDb(Table t) throws Exception {
+  private static Table loadFromColumnStore(Stopwatch stopwatch) throws IOException {
+    stopwatch.reset().start();
+    Table t = StorageManager.readTable(DB + File.separator + "2bc6dca1-af95-4840-b07e-0c3f7b146bac");
+    System.out.println("Loaded from column store in " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    return t;
+  }
+
+  private static Table defineSchema() {
+    Table t;
+    t = new Table("Observations");
+    CategoryColumn conceptId = CategoryColumn.create("concept");
+    LocalDateColumn date = LocalDateColumn.create("date");
+    FloatColumn value = FloatColumn.create("value");
+    IntColumn patientId = IntColumn.create("patient");
+
+    t.addColumn(conceptId);
+    t.addColumn(date);
+    t.addColumn(value);
+    t.addColumn(patientId);
+    return t;
+  }
+
+  private static void generateTestData(Table t, int numberOfRecordsInTable, Stopwatch stopwatch) throws IOException {
+    stopwatch.reset().start();
+    System.out.println("Generating test data");
+    generateData(numberOfRecordsInTable, t);
+    System.out.println("Time to generate " + numberOfRecordsInTable + " records: " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+  }
+
+  private static void writeToColumnStore(Table t, Stopwatch stopwatch) throws Exception {
+    stopwatch = stopwatch.reset().start();
     StorageManager.saveTable(DB, t);
+    System.out.println("Time to write out in columnStore format " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+  }
+
+  private static Table loadFromCsv(Stopwatch stopwatch) throws IOException {
+    stopwatch.reset().start();
+    Table t;// ConceptId, Date, Value, PatientNo
+    ColumnType[] columnTypes = {CATEGORY, LOCAL_DATE, FLOAT, INTEGER};
+    t = CsvReader.read(columnTypes, CSV_FILE);
+    System.out.println("Time to read to CSV File " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    return t;
   }
 
   private static void generateData(int observationCount, Table table) throws IOException {
