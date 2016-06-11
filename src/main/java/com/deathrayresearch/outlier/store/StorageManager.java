@@ -245,7 +245,8 @@ public class StorageManager {
 
   public static void saveTable(String pathName, Relation table) throws IOException {
 
-    Path path = Paths.get(pathName + File.separator + table.id());
+    //Path path = Paths.get(pathName + File.separator + table.id());
+    Path path = Paths.get(pathName);
 
     if (!Files.exists(path)) {
       try {
