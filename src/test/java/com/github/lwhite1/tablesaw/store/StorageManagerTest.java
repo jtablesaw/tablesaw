@@ -53,9 +53,9 @@ public class StorageManagerTest {
   @Test
   public void testWriteTable() throws IOException {
     System.out.println(table.head(5).print());
-    StorageManager.saveTable("databases/mytable.db", table);
+    StorageManager.saveTable("/tmp/mytables", table);
 
-    Table t = StorageManager.readTable("databases/mytable.db");
+    Table t = StorageManager.readTable("/tmp/mytables/t.saw");
     t.sortOn("cat");
     System.out.print(t.head(5).print());
   }
@@ -64,10 +64,13 @@ public class StorageManagerTest {
   @Test
   public void testWriteTableTwice() throws IOException {
 
-    StorageManager.saveTable("databases/mytable.db", table);
-    Table t = StorageManager.readTable("databases/mytable.db");
+    StorageManager.saveTable("/tmp/mytables", table);
+    Table t = StorageManager.readTable("/tmp/mytables/t.saw");
+    t.floatColumn("float").setName("a float column");
 
-    t.floatColumn(0).setName("a float column");
+    StorageManager.saveTable("/tmp/mytables", table);
+    t = StorageManager.readTable("/tmp/mytables/t.saw");
+
     System.out.println(t.head(3).print());
   }
 
@@ -75,55 +78,52 @@ public class StorageManagerTest {
 
     Stopwatch stopwatch = Stopwatch.createStarted();
     System.out.println("loading");
-    Table flights2015 = CsvReader.read(heading, "bigdata/2015.csv");
+    Table tornados = CsvReader.read(heading, "data/1950-2014_torn.csv");
+    tornados.setName("tornados");
     System.out.println(String.format("loaded %d records in %d seconds",
-        flights2015.rowCount(),
+        tornados.rowCount(),
         stopwatch.elapsed(TimeUnit.SECONDS)));
-    out(flights2015.shape());
-    out(flights2015.columnNames().toString());
-    out(flights2015.head(10).print());
+    out(tornados.shape());
+    out(tornados.columnNames().toString());
+    out(tornados.head(10).print());
     stopwatch.reset().start();
-    StorageManager.saveTable("databases", flights2015);
+    StorageManager.saveTable("/tmp/tablesaw/testdata", tornados);
     stopwatch.reset().start();
-    flights2015 = StorageManager.readTable("databases/" + flights2015.id());
-    out(flights2015.head(5).print());
+    tornados = StorageManager.readTable("/tmp/tablesaw/testdata/tornados.saw");
+    out(tornados.head(5).print());
   }
 
   private static void out(Object obj) {
     System.out.println(String.valueOf(obj));
   }
 
-  // The full set of available columns in the dataset
-  static ColumnType[] heading = {
-      LOCAL_DATE, // flight date
-      CATEGORY,  // unique carrier
-      CATEGORY,  // airline id
-      CATEGORY,  // carrier
-      CATEGORY,  // TailNum
-      CATEGORY,  // FlightNum
-      CATEGORY,  // Origin airport id
-      CATEGORY,  // Origin
-      CATEGORY,  // Dest airport id
-      CATEGORY,  // Dest
-      LOCAL_TIME, // CRSDepTime
-      LOCAL_TIME, // DepTime
-      FLOAT, // DepDelay
-      FLOAT, // TaxiOut
-      FLOAT, // TaxiIn
-      LOCAL_TIME, // CRSArrTime
-      LOCAL_TIME, // ArrTime
-      FLOAT,   // ArrDelay
-      BOOLEAN, // Cancelled
-      CATEGORY,     // CancellationCode
-      BOOLEAN, // Diverted
-      FLOAT, // CRSElapsedTime
-      FLOAT, // ActualElapsedTime
-      FLOAT, // AirTime
-      FLOAT, // Distance
-      FLOAT, // CarrierDelay
-      FLOAT, // WeatherDelay
-      FLOAT, // NASDelay
-      FLOAT, // SecurityDelay
-      FLOAT  // LateAircraftDelay
-  };
+  private static final ColumnType[] heading = {
+      FLOAT,   // number by year
+      FLOAT,   // year
+      FLOAT,   // month
+      FLOAT,   // day
+      LOCAL_DATE,  // date
+      LOCAL_TIME,  // time
+      CATEGORY,  // tz
+      CATEGORY,  // st
+      CATEGORY, // state fips
+      FLOAT,   // state torn number
+      FLOAT,   // scale
+      FLOAT,   // injuries
+      FLOAT,    // fatalities
+      CATEGORY,  // loss
+      FLOAT,  // crop loss
+      FLOAT,  // St. Lat
+      FLOAT,  // St. Lon
+      FLOAT,  // End Lat
+      FLOAT,  // End Lon
+      FLOAT, // length
+      FLOAT,   // width
+      FLOAT,   // NS
+      FLOAT,   // SN
+      FLOAT,   // SG
+      CATEGORY,  // Count FIPS 1-4
+      CATEGORY,
+      CATEGORY,
+      CATEGORY};
 }

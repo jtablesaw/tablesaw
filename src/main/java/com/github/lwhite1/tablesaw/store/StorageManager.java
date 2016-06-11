@@ -22,48 +22,50 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.regex.Pattern;
 
 /**
- *
+ * A controller for reading and writing data in Tablesaw's own compressed, column-oriented file format
  */
 public class StorageManager {
 
-  private static final ExecutorService READER_SERVICE = Executors.newFixedThreadPool(10);
+  private static final int FLUSH_AFTER_ITERATIONS = 10_000;
 
-  private static final CompletionService READER_COMPLETION_SERVICE =
-      new ExecutorCompletionService<>(READER_SERVICE);
-
-  private static final ExecutorService WRITER_SERVICE = Executors.newFixedThreadPool(10);
-
-  private static final CompletionService WRITER_COMPLETION_SERVICE =
-      new ExecutorCompletionService<>(WRITER_SERVICE);
-
-  public static final int FLUSH_AFTER_ITERATIONS = 10_000;
+  private static final String FILE_EXTENSION = "saw";
+  private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
 
   /**
-   * @param fileName Expected to be fully specified
-   * @throws IOException
+   * Reads a tablesaw table into memory
+   *
+   * @param path  The location of the table. It is interpreted as relative to the working directory if not fully
+   *              specified. The path will typically end in ".saw", as in "mytables/nasdaq-2015.saw"
+   * @throws IOException if the file cannot be read
    */
-  public static Table readTable(String fileName) throws IOException {
+  public static Table readTable(String path) throws IOException {
 
-    TableMetadata tableMetadata = readTableMetadata(fileName + File.separator + "Metadata.json");
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
+    CompletionService readerCompletionService = new ExecutorCompletionService<>(executorService);
+
+
+    TableMetadata tableMetadata = readTableMetadata(path + File.separator + "Metadata.json");
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
     Table table = new Table(tableMetadata);
     try {
       for (ColumnMetadata column : columnMetadata) {
-        READER_COMPLETION_SERVICE.submit(() -> {
-          Column c = readColumn(fileName + File.separator + column.getId(), column);
+        readerCompletionService.submit(() -> {
+          Column c = readColumn(path + File.separator + column.getId(), column);
           table.addColumn(c);
           return null;
         });
       }
       for (int i = 0; i < columnMetadata.size(); i++) {
-        Future future = READER_COMPLETION_SERVICE.take();
+        Future future = readerCompletionService.take();
         future.get();
       }
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
+    executorService.shutdown();
     return table;
   }
 
@@ -252,10 +254,27 @@ public class StorageManager {
     return bools;
   }
 
-  public static void saveTable(String pathName, Relation table) throws IOException {
+  /**
+   * Saves the data from the given table in the location specified by folderName. Within that folder each table has
+   * its own sub-folder, whose name is based on the name of the table.
+   * <p/>
+   * NOTE: If you store a table with the same name in the same folder. The data in that folder will be over-written.
+   * <p/>
+   * The storage format is the tablesaw compressed column-oriented format, which consists of a set of file in a folder.
+   * The name of the folder is based on the name of the table.
+   *
+   * @param folderName  The location of the table (for example: "mytables")
+   * @param table       The table to be saved
+   * @throws IOException
+   */
+  public static void saveTable(String folderName, Relation table) throws IOException {
 
-    //Path path = Paths.get(pathName + File.separator + table.id());
-    Path path = Paths.get(pathName);
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
+    CompletionService writerCompletionService = new ExecutorCompletionService<>(executorService);
+
+    String name = WHITE_SPACE_PATTERN.matcher(table.name()).replaceAll(""); // remove whitespace from the table name
+    String storageFolder = folderName + File.separator + name + '.' + FILE_EXTENSION;
+    Path path = Paths.get(storageFolder);
 
     if (!Files.exists(path)) {
       try {
@@ -269,20 +288,20 @@ public class StorageManager {
 
     try {
       for (Column column : table.columns()) {
-        WRITER_COMPLETION_SERVICE.submit(() -> {
+        writerCompletionService.submit(() -> {
           Path columnPath = path.resolve(column.id());
           writeColumn(columnPath.toString(), column);
           return null;
         });
       }
       for (int i = 0; i < table.columnCount(); i++) {
-        Future future = WRITER_COMPLETION_SERVICE.take();
+        Future future = writerCompletionService.take();
         future.get();
       }
     } catch (InterruptedException | ExecutionException e) {
       throw new RuntimeException(e);
     }
-    WRITER_SERVICE.shutdown();
+    executorService.shutdown();
   }
 
   private static void writeColumn(String fileName, Column column) {
