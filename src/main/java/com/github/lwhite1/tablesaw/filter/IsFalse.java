@@ -9,7 +9,7 @@ import javax.annotation.concurrent.Immutable;
  * A boolean filter, returns true if the filter it wraps returns false, and vice-versa.
  */
 @Immutable
-public class IsFalse extends Filter {
+public class IsFalse extends CompositeFilter {
 
   private final Filter filter;
 

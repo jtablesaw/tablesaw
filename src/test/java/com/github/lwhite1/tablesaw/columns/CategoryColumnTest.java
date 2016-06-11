@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.columns;
 
+import com.github.lwhite1.tablesaw.TestDataUtil;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,5 +49,19 @@ public class CategoryColumnTest {
   @Test
   public void testToString() {
     System.out.println(column.toString());
+  }
+
+  @Test
+  public void testMax() {
+    CategoryColumn categoryColumn = CategoryColumn.create("US States");
+    categoryColumn.addAll(TestDataUtil.usStates());
+    assertTrue("Wyoming".equals(categoryColumn.max(5).get(0)));
+  }
+
+  @Test
+  public void testMin() {
+    CategoryColumn categoryColumn = CategoryColumn.create("US States");
+    categoryColumn.addAll(TestDataUtil.usStates());
+    assertTrue("Alabama".equals(categoryColumn.min(5).get(0)));
   }
 }

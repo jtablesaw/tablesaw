@@ -9,7 +9,7 @@ import javax.annotation.concurrent.Immutable;
  * A boolean filter. For symmetry with IsFalse
  */
 @Immutable
-public class IsTrue extends Filter {
+public class IsTrue extends CompositeFilter {
 
   private final Filter filter;
 

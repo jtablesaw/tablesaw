@@ -32,7 +32,7 @@ public class IoTest1 {
 
     print(table.floatColumn("stop_lon").describe());
 
-    Table v = table.selectIf(QueryHelper.column("stop_lon").isGreaterThan(-0.1f));
+    Table v = table.selectWhere(QueryHelper.column("stop_lon").isGreaterThan(-0.1f));
     print(v.print());
     print(v.rowCount());
   }

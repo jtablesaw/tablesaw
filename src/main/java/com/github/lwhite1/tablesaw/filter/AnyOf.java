@@ -11,11 +11,12 @@ import java.util.List;
 /**
  * A composite filter that only returns {@code true} if all component filters return true
  */
-public class AnyOf extends Filter {
+public class AnyOf extends CompositeFilter {
 
   private List<Filter> filterList = new ArrayList<>();
 
   AnyOf(Collection<Filter> filters) {
+
     this.filterList.addAll(filters);
   }
 

@@ -2,12 +2,14 @@ package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalTime;
 import com.github.lwhite1.tablesaw.filter.IntBiPredicate;
 import com.github.lwhite1.tablesaw.filter.IntPredicate;
 import com.github.lwhite1.tablesaw.filter.LocalTimePredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
@@ -21,8 +23,11 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A column in a base table that contains float values
@@ -307,15 +312,38 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
     return apply(PackedLocalTime::PM);
   }
 
-
-  //TODO(lwhite): Implement
-  public LocalTimeColumn max(int n) {
-    return null;
+  /**
+   * Returns the largest ("top") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the largest observations
+   */
+  public List<LocalTime> max(int n) {
+    List<LocalTime> top = new ArrayList<>();
+    int[] values = data.toIntArray();
+    IntArrays.parallelQuickSort(values, ReverseIntComparator.instance());
+    for (int i = 0; i < n && i < values.length; i++) {
+      top.add(PackedLocalTime.asLocalTime(values[i]));
+    }
+    return top;
   }
 
-  //TODO(lwhite): Implement
-  public LocalTimeColumn min(int n) {
-    return null;
+  /**
+   * Returns the smallest ("bottom") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the smallest n observations
+   */
+  public List<LocalTime> min(int n) {
+    List<LocalTime> bottom = new ArrayList<>();
+    int[] values = data.toIntArray();
+    IntArrays.parallelQuickSort(values);
+    for (int i = 0; i < n && i < values.length; i++) {
+      bottom.add(PackedLocalTime.asLocalTime(values[i]));
+    }
+    return bottom;
   }
 
   public IntIterator iterator() {

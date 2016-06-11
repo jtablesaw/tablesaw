@@ -11,6 +11,7 @@ import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalTime;
 import com.github.lwhite1.tablesaw.filter.IntBiPredicate;
 import com.github.lwhite1.tablesaw.filter.IntPredicate;
+import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
@@ -25,7 +26,9 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A column in a base table that contains float values
@@ -547,14 +550,38 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return column;
   }
 
-  //TODO(lwhite): Implement
-  public LocalDateColumn max(int n) {
-    return null;
+  /**
+   * Returns the largest ("top") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the largest observations
+   */
+  public List<LocalDate> max(int n) {
+    List<LocalDate> top = new ArrayList<>();
+    int[] values = data.toIntArray();
+    IntArrays.parallelQuickSort(values, ReverseIntComparator.instance());
+    for (int i = 0; i < n && i < values.length; i++) {
+      top.add(PackedLocalDate.asLocalDate(values[i]));
+    }
+    return top;
   }
 
-  //TODO(lwhite): Implement
-  public LocalDateColumn min(int n) {
-    return null;
+  /**
+   * Returns the smallest ("bottom") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the smallest n observations
+   */
+  public List<LocalDate> min(int n) {
+    List<LocalDate> bottom = new ArrayList<>();
+    int[] values = data.toIntArray();
+    IntArrays.parallelQuickSort(values);
+    for (int i = 0; i < n && i < values.length; i++) {
+      bottom.add(PackedLocalDate.asLocalDate(values[i]));
+    }
+    return bottom;
   }
 
   public IntIterator iterator() {

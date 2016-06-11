@@ -403,21 +403,21 @@ public class Table implements Relation {
     }
   }
 
-  public Table selectIf(RoaringBitmap map) {
+  public Table selectWhere(RoaringBitmap map) {
     Table newTable = this.emptyCopy();
     Rows.copyRowsToTable(map, this, newTable);
     return newTable;
   }
 
-  public Table selectIf(Filter filter) {
+  public Table selectWhere(Filter filter) {
     Table newTable = this.emptyCopy();
     RoaringBitmap map = filter.apply(this);
     Rows.copyRowsToTable(map, this, newTable);
     return newTable;
   }
 
-  public Query select(String... columnName) {
-    return new Query(this, columnName);
+  public Projection select(String... columnName) {
+    return new Projection(this, columnName);
   }
 
   /**

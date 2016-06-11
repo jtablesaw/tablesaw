@@ -8,11 +8,15 @@ import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapper.ShortMapUtils;
 import com.github.lwhite1.tablesaw.sorting.IntComparisonUtil;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.ReverseLongComparator;
+import com.github.lwhite1.tablesaw.util.ReverseShortComparator;
 import com.github.lwhite1.tablesaw.util.StatUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrays;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
@@ -175,21 +179,8 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   @Override
   public void sortDescending() {
-    ShortArrays.parallelQuickSort(data.elements(), reverseIntComparator);
+    ShortArrays.parallelQuickSort(data.elements(), ReverseShortComparator.instance());
   }
-
-  ShortComparator reverseIntComparator = new ShortComparator() {
-
-    @Override
-    public int compare(Short o2, Short o1) {
-      return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
-    }
-
-    @Override
-    public int compare(short o2, short o1) {
-      return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
-    }
-  };
 
 
   private ShortColumn copy() {
@@ -339,14 +330,38 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return column;
   }
 
-  //TODO(lwhite): Implement
-  public ShortColumn max(int n) {
-    return null;
+  /**
+   * Returns the largest ("top") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the largest observations
+   */
+  public ShortArrayList max(int n) {
+    ShortArrayList top = new ShortArrayList();
+    short[] values = data.toShortArray();
+    ShortArrays.parallelQuickSort(values, ReverseShortComparator.instance());
+    for (int i = 0; i < n && i < values.length; i++) {
+      top.add(values[i]);
+    }
+    return top;
   }
 
-  //TODO(lwhite): Implement
-  public ShortColumn min(int n) {
-    return null;
+  /**
+   * Returns the smallest ("bottom") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the smallest n observations
+   */
+  public ShortArrayList min(int n) {
+    ShortArrayList bottom = new ShortArrayList();
+    short[] values = data.toShortArray();
+    ShortArrays.parallelQuickSort(values);
+    for (int i = 0; i < n && i < values.length; i++) {
+      bottom.add(values[i]);
+    }
+    return bottom;
   }
 
   @Override

@@ -60,7 +60,7 @@ public class ObservationDataTest {
     String randomConcept = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
 
     stopwatch.reset().start();
-    Table result = t.selectIf(
+    Table result = t.selectWhere(
         QueryHelper.column("concept").isEqualTo(randomConcept));
     System.out.println("concept found in " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
     System.out.println(result.print());

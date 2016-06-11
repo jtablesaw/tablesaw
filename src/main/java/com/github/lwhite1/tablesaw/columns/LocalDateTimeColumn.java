@@ -9,6 +9,7 @@ import com.github.lwhite1.tablesaw.filter.LongBiPredicate;
 import com.github.lwhite1.tablesaw.filter.LongPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapper.DateTimeMapUtils;
+import com.github.lwhite1.tablesaw.util.ReverseLongComparator;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -17,7 +18,9 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * A column in a base table that contains float values
@@ -508,14 +511,38 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return bitmap;
   }
 
-  //TODO(lwhite): Implement
-  public LocalDateTimeColumn max(int n) {
-    return null;
+  /**
+   * Returns the largest ("top") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the largest observations
+   */
+  public List<LocalDateTime> max(int n) {
+    List<LocalDateTime> top = new ArrayList<>();
+    long[] values = data.toLongArray();
+    LongArrays.parallelQuickSort(values, ReverseLongComparator.instance());
+    for (int i = 0; i < n && i < values.length; i++) {
+      top.add(PackedLocalDateTime.asLocalDateTime(values[i]));
+    }
+    return top;
   }
 
-  //TODO(lwhite): Implement
-  public LocalDateTimeColumn min(int n) {
-    return null;
+  /**
+   * Returns the smallest ("bottom") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the smallest n observations
+   */
+  public List<LocalDateTime> min(int n) {
+    List<LocalDateTime> bottom = new ArrayList<>();
+    long[] values = data.toLongArray();
+    LongArrays.parallelQuickSort(values);
+    for (int i = 0; i < n && i < values.length; i++) {
+      bottom.add(PackedLocalDateTime.asLocalDateTime(values[i]));
+    }
+    return bottom;
   }
 
   public LongIterator iterator() {

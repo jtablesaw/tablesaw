@@ -1,12 +1,10 @@
 package com.github.lwhite1.tablesaw.filter;
 
-import com.github.lwhite1.tablesaw.Table;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import org.roaringbitmap.RoaringBitmap;
 
 /**
  */
-public class ColumnFilter extends Filter {
+public abstract class ColumnFilter extends Filter {
 
   ColumnReference columnReference;
 
@@ -14,11 +12,12 @@ public class ColumnFilter extends Filter {
     this.columnReference = columnReference;
   }
 
-  public RoaringBitmap apply(Table relation) {
-    return null;
-  }
-
   public ColumnReference columnReference() {
     return columnReference;
   }
+
+  public ColumnReference getColumnReference() {
+    return columnReference;
+  }
+
 }

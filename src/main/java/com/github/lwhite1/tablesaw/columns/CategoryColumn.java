@@ -38,8 +38,7 @@ public class CategoryColumn extends AbstractColumn
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
-  // TODO(lwhite) initialize the unique value id number to the smallest possible short to maximize range
-  private short id = 0;
+  private int id = 0;
 
   // holds a key for each row in the table. the key can be used to lookup the backing string value
   private IntArrayList values;
@@ -145,10 +144,6 @@ public class CategoryColumn extends AbstractColumn
     return lookupTable.get(k);
   }
 
-  public int getKey(int index) {
-    return values.getInt(index);
-  }
-
   @Override
   public Table summary() {
     Table t = new Table("Column: " + name());
@@ -199,14 +194,38 @@ public class CategoryColumn extends AbstractColumn
     return lookupTable.size();
   }
 
-  //TODO(lwhite): Implement
+  /**
+   * Returns the largest ("top") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the largest observations
+   */
   public List<String> max(int n) {
-    return null;
+    List<String> top = new ArrayList<>();
+    CategoryColumn copy = this.copy();
+    copy.sortDescending();
+    for (int i = 0; i < n; i++) {
+      top.add(copy.get(i));
+    }
+    return top;
   }
 
-  //TODO(lwhite): Implement
+  /**
+   * Returns the smallest ("bottom") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the smallest n observations
+   */
   public List<String> min(int n) {
-    return null;
+    List<String> bottom = new ArrayList<>();
+    CategoryColumn copy = this.copy();
+    copy.sortAscending();
+    for (int i = 0; i < n; i++) {
+      bottom.add(copy.get(i));
+    }
+    return bottom;
   }
 
   public void add(String stringValue) {
@@ -219,6 +238,15 @@ public class CategoryColumn extends AbstractColumn
       valueId = lookupTable.get(stringValue);
     }
     values.add(valueId);
+  }
+
+  /**
+   * Add all the strings in the list to this column
+   */
+  public void addAll(List<String> stringValues) {
+    for (String stringValue : stringValues) {
+      add(stringValue);
+    }
   }
 
   public final IntComparator rowComparator = new IntComparator() {
@@ -280,7 +308,7 @@ public class CategoryColumn extends AbstractColumn
 
   /**
    * Returns a list of boolean columns suitable for use as dummy variables in, for example, regression analysis,
-   * where a column of categorical data must be encoded as a list of columns, such that each column represents a single
+   * selectWhere a column of categorical data must be encoded as a list of columns, such that each column represents a single
    * category and indicates whether it is present (1) or not present (0)
    */
   public List<BooleanColumn> getDummies() {

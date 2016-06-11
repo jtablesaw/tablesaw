@@ -87,5 +87,4 @@ public interface IntMapUtils extends IntColumnUtils {
     }
     return result;
   }
-
 }

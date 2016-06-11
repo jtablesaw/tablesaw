@@ -1,6 +1,7 @@
 package com.github.lwhite1.tablesaw.examples;
 
 import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.TestDataUtil;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
@@ -15,8 +16,6 @@ import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -137,7 +136,7 @@ public class LargeDataTest {
       birthDate.add(PackedLocalDate.pack(LocalDate.parse(person.dateOfBirth().toLocalDate().toString())));
       city.add(person.getAddress().getCity());
       postalCode.add(person.getAddress().getPostalCode());
-      state.add(fairy.baseProducer().randomElement(usStateArray));
+      state.add(TestDataUtil.randomUsState());
       weight.add((short) fairy.baseProducer().randomBetween(65, 280));
       height.add((short) fairy.baseProducer().randomBetween(64, 78));
       female.add(person.isFemale());
@@ -155,13 +154,4 @@ public class LargeDataTest {
   private static void storeInDb(Table t) throws Exception {
     StorageManager.saveTable("bigdata/peopleShort2", t);
   }
-
-  private static String[] usStateArray = {"Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
-      "Delaware","District Of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas",
-      "Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri",
-      "Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina",
-      "North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota",
-      "Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"};
-
-  private static List<String> usStates = Arrays.asList(usStateArray);
 }

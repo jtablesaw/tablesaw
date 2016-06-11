@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A Comparator for int primitives for sorting in reverse order, using the given comparator
+ * A Comparator to sort int primitives in reverse order, selectWhere the un-reversed order is defined by another comparator
  */
 @Immutable
 public final class ReversingIntComparator implements IntComparator {
