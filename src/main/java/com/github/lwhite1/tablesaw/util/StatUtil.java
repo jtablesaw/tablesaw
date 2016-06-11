@@ -18,7 +18,8 @@ import java.util.List;
  */
 public class StatUtil {
 
-  private StatUtil() {}
+  private StatUtil() {
+  }
 
   public static float sum(final FloatColumn values) {
     float sum;
@@ -147,7 +148,7 @@ public class StatUtil {
     return (float) (values.sum()) / (float) values.size();
   }
 
-  public static Stats stats(final FloatColumn  values) {
+  public static Stats stats(final FloatColumn values) {
     Stats stats = new Stats();
     stats.min = min(values);
     stats.max = max(values);

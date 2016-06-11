@@ -4,7 +4,7 @@ import com.github.lwhite1.tablesaw.columns.BooleanColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 
 /**
- *   An interface for mapping operations unique to Boolean columns
+ * An interface for mapping operations unique to Boolean columns
  */
 public interface BooleanMapUtils extends Column {
 

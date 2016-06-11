@@ -10,7 +10,7 @@ import com.github.lwhite1.tablesaw.columns.FloatColumn;
  */
 public interface IntMapUtils extends IntColumnUtils {
 
-  default IntColumn plus(IntColumn ... columns) {
+  default IntColumn plus(IntColumn... columns) {
 
     // TODO(lwhite): Assert all columns are the same size.
     String nString = names(columns);
@@ -31,7 +31,7 @@ public interface IntMapUtils extends IntColumnUtils {
   default String names(IntColumn[] columns) {
     StringBuilder builder = new StringBuilder();
     int count = 0;
-    for (Column column: columns) {
+    for (Column column : columns) {
       builder.append(column.name());
       if (count < columns.length - 1) {
         builder.append(", ");
@@ -52,10 +52,10 @@ public interface IntMapUtils extends IntColumnUtils {
       if (total != 0) {
         pctColumn.add((float) next / total);
       } else {
-      pctColumn.add(FloatColumn.MISSING_VALUE);
-    }
+        pctColumn.add(FloatColumn.MISSING_VALUE);
+      }
 
-  }
+    }
     return pctColumn;
   }
 

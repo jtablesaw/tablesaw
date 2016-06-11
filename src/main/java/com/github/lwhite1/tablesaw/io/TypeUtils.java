@@ -31,7 +31,8 @@ public final class TypeUtils {
   /**
    * Private constructor to prevent instantiation
    */
-  private TypeUtils() {}
+  private TypeUtils() {
+  }
 
   // These Strings will convert to true booleans
   public static final List<String> TRUE_STRINGS =
@@ -76,6 +77,7 @@ public final class TypeUtils {
   private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
   private static final DateTimeFormatter dtTimef6;
+
   static {
     dtTimef6 = new DateTimeFormatterBuilder()
         .parseCaseInsensitive()

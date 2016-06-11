@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.shorts.ShortIterable;
  *
  */
 public interface ShortColumnUtils extends Column, ShortIterable {
-  
+
   ShortPredicate isZero = i -> i == 0;
 
   ShortPredicate isNegative = i -> i < 0;
@@ -23,7 +23,8 @@ public interface ShortColumnUtils extends Column, ShortIterable {
 
   ShortBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
 
-  ShortBiPredicate isGreaterThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest >= valueToCompareAgainst;
+  ShortBiPredicate isGreaterThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest >=
+      valueToCompareAgainst;
 
   ShortBiPredicate isLessThan = (valueToTest, valueToCompareAgainst) -> valueToTest < valueToCompareAgainst;
 

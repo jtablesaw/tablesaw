@@ -17,7 +17,8 @@ import java.nio.file.Paths;
 @Immutable
 public class CsvCombiner {
 
-  private CsvCombiner() {}
+  private CsvCombiner() {
+  }
 
   public static void combineAll(String foldername, String newFileName, char columnSeparator, boolean headers)
       throws IOException {

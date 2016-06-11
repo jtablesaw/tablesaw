@@ -20,13 +20,15 @@ import java.util.List;
  */
 class SubTable extends Table {
 
-  /** The values that will be summarized on */
+  /**
+   * The values that will be summarized on
+   */
   private List<String> values;
 
   /**
    * Returns a new SubTable from the given table that will include summaries for the given values
    *
-   * @param original  The table from which this one was derived
+   * @param original The table from which this one was derived
    */
   public SubTable(Table original) {
     super(original.name(),
@@ -46,7 +48,7 @@ class SubTable extends Table {
       Column column = column(i);
       ColumnType type = column.type();
       switch (type) {
-        case FLOAT :
+        case FLOAT:
           FloatColumn floatColumn = (FloatColumn) column;
           floatColumn.add(sourceTable.floatColumn(i).get(rowIndex));
           break;

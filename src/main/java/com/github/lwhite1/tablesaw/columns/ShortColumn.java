@@ -178,7 +178,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     ShortArrays.parallelQuickSort(data.elements(), reverseIntComparator);
   }
 
-  ShortComparator reverseIntComparator =  new ShortComparator() {
+  ShortComparator reverseIntComparator = new ShortComparator() {
 
     @Override
     public int compare(Short o2, Short o1) {
@@ -306,7 +306,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public String print() {
     StringBuilder builder = new StringBuilder();
     builder.append(title());
-    for (short i : data){
+    for (short i : data) {
       builder.append(String.valueOf(i));
       builder.append('\n');
     }
@@ -330,7 +330,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   ShortColumn selectIf(ShortPredicate predicate) {
     ShortColumn column = emptyCopy();
     ShortIterator intIterator = iterator();
-    while(intIterator.hasNext()) {
+    while (intIterator.hasNext()) {
       short next = intIterator.nextShort();
       if (predicate.test(next)) {
         column.add(next);
@@ -340,13 +340,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   }
 
   //TODO(lwhite): Implement
-  @Override
   public ShortColumn max(int n) {
     return null;
   }
 
   //TODO(lwhite): Implement
-  @Override
   public ShortColumn min(int n) {
     return null;
   }
@@ -358,7 +356,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   public RoaringBitmap apply(ShortPredicate predicate) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       short next = data.getShort(idx);
       if (predicate.test(next)) {
         bitmap.add(idx);
@@ -369,7 +367,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   public RoaringBitmap apply(ShortBiPredicate predicate, short valueToCompareAgainst) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       short next = data.getShort(idx);
       if (predicate.test(next, valueToCompareAgainst)) {
         bitmap.add(idx);

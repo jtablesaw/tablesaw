@@ -285,7 +285,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   public String print() {
     StringBuilder builder = new StringBuilder();
     builder.append(title());
-    for (long i : data){
+    for (long i : data) {
       builder.append(String.valueOf(i));
       builder.append('\n');
     }
@@ -309,7 +309,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   public LongColumn selectIf(LongPredicate predicate) {
     LongColumn column = emptyCopy();
     LongIterator intIterator = iterator();
-    while(intIterator.hasNext()) {
+    while (intIterator.hasNext()) {
       long next = intIterator.nextLong();
       if (predicate.test(next)) {
         column.add(next);
@@ -318,16 +318,38 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return column;
   }
 
-  //TODO(lwhite): Implement
-  @Override
-  public LongColumn max(int n) {
-    return null;
+  /**
+   * Returns the largest ("top") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the largest observations
+   */
+  public LongArrayList max(int n) {
+    LongArrayList top = new LongArrayList();
+    long[] values = data.toLongArray();
+    LongArrays.parallelQuickSort(values, ReverseLongComparator.instance());
+    for (int i = 0; i < n && i < values.length; i++) {
+      top.add(values[i]);
+    }
+    return top;
   }
 
-  //TODO(lwhite): Implement
-  @Override
-  public LongColumn min(int n) {
-    return null;
+  /**
+   * Returns the smallest ("bottom") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the smallest n observations
+   */
+  public LongArrayList min(int n) {
+    LongArrayList bottom = new LongArrayList();
+    long[] values = data.toLongArray();
+    LongArrays.parallelQuickSort(values);
+    for (int i = 0; i < n && i < values.length; i++) {
+      bottom.add(values[i]);
+    }
+    return bottom;
   }
 
   @Override
@@ -337,7 +359,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
 
   public RoaringBitmap apply(LongPredicate predicate) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
       if (predicate.test(next)) {
         bitmap.add(idx);
@@ -348,7 +370,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
 
   public RoaringBitmap apply(LongBiPredicate predicate, long valueToCompareAgainst) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
       if (predicate.test(next, valueToCompareAgainst)) {
         bitmap.add(idx);

@@ -32,7 +32,7 @@ import java.util.Arrays;
  */
 public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
-  public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue() ;
+  public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue();
 
   private static final int DEFAULT_ARRAY_SIZE = 128;
 
@@ -107,7 +107,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     IntArrays.parallelQuickSort(data.elements(), reverseIntComparator);
   }
 
-  IntComparator reverseIntComparator =  new IntComparator() {
+  IntComparator reverseIntComparator = new IntComparator() {
 
     @Override
     public int compare(Integer o2, Integer o1) {
@@ -256,7 +256,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return comparator;
   }
 
-    IntComparator comparator = new IntComparator() {
+  IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer r1, Integer r2) {
@@ -302,8 +302,8 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   public RoaringBitmap isEqualTo(LocalDate value) {
-      int packed = PackedLocalDate.pack(value);
-      return apply(IntColumnUtils.isEqualTo, packed);
+    int packed = PackedLocalDate.pack(value);
+    return apply(IntColumnUtils.isEqualTo, packed);
   }
 
   public RoaringBitmap isEqualTo(LocalDateColumn column) {
@@ -521,7 +521,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   public LocalDateColumn selectIf(LocalDatePredicate predicate) {
     LocalDateColumn column = emptyCopy();
     IntIterator iterator = iterator();
-    while(iterator.hasNext()) {
+    while (iterator.hasNext()) {
       int next = iterator.nextInt();
       if (predicate.test(PackedLocalDate.asLocalDate(next))) {
         column.add(next);
@@ -538,7 +538,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   public LocalDateColumn selectIf(IntPredicate predicate) {
     LocalDateColumn column = emptyCopy();
     IntIterator iterator = iterator();
-    while(iterator.hasNext()) {
+    while (iterator.hasNext()) {
       int next = iterator.nextInt();
       if (predicate.test(next)) {
         column.add(next);
@@ -548,13 +548,11 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   //TODO(lwhite): Implement
-  @Override
   public LocalDateColumn max(int n) {
     return null;
   }
 
   //TODO(lwhite): Implement
-  @Override
   public LocalDateColumn min(int n) {
     return null;
   }
@@ -565,7 +563,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   public RoaringBitmap apply(IntPredicate predicate) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next)) {
         bitmap.add(idx);
@@ -576,7 +574,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   public RoaringBitmap apply(IntBiPredicate predicate, int value) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next, value)) {
         bitmap.add(idx);

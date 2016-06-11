@@ -5,12 +5,12 @@ import it.unimi.dsi.fastutil.longs.LongComparator;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A comparator for long primatives for sorting in descending order
+ * A comparator for long primitives for sorting in descending order
  */
 @Immutable
 public final class ReverseLongComparator {
 
-  static final LongComparator reverseLongComparator =  new LongComparator() {
+  static final LongComparator reverseLongComparator = new LongComparator() {
 
     @Override
     public int compare(Long o2, Long o1) {

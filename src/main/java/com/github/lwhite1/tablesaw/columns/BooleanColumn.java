@@ -13,6 +13,7 @@ import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,7 +56,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     }
     BooleanArrayList data = BooleanArrayList.wrap(new boolean[columnSize]);
     IntIterator it = hits.getIntIterator();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       data.set(it.next(), true);
     }
     this.data = data;
@@ -97,18 +98,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
       count.add(next);
     }
     return count.size();
-  }
-
-  //TODO(lwhite): Implement
-  @Override
-  public BooleanArrayList max(int n) {
-    return null;
-  }
-
-  //TODO(lwhite): Implement
-  @Override
-  public BooleanArrayList min(int n) {
-    return null;
   }
 
   @Override
@@ -159,7 +148,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     BooleanArrays.mergeSort(data.elements(), reverseBooleanComparator);
   }
 
-  BooleanComparator reverseBooleanComparator =  new BooleanComparator() {
+  BooleanComparator reverseBooleanComparator = new BooleanComparator() {
 
     @Override
     public int compare(Boolean o1, Boolean o2) {

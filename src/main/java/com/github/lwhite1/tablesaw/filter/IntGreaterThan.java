@@ -21,10 +21,13 @@ public class IntGreaterThan extends ColumnFilter {
 
   public RoaringBitmap apply(Table relation) {
     Column column = relation.column(columnReference.getColumnName());
-    switch(column.type()) {
-      case INTEGER : return ((IntColumn) column).isGreaterThan(value);
-      case SHORT_INT : return ((ShortColumn) column).isGreaterThan((short) value);
-      case LONG_INT : return ((LongColumn) column).isGreaterThan(value);
+    switch (column.type()) {
+      case INTEGER:
+        return ((IntColumn) column).isGreaterThan(value);
+      case SHORT_INT:
+        return ((ShortColumn) column).isGreaterThan((short) value);
+      case LONG_INT:
+        return ((LongColumn) column).isGreaterThan(value);
     }
     IntColumn intColumn = (IntColumn) column;
     return intColumn.isGreaterThan(value);

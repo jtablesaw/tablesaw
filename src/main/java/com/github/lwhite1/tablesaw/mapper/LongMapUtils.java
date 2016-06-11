@@ -31,7 +31,7 @@ public interface LongMapUtils extends LongColumnUtils {
   default String names(LongColumn[] columns) {
     StringBuilder builder = new StringBuilder();
     int count = 0;
-    for (Column column: columns) {
+    for (Column column : columns) {
       builder.append(column.name());
       if (count < columns.length - 1) {
         builder.append(", ");

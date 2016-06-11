@@ -1,6 +1,7 @@
 package com.github.lwhite1.tablesaw.util;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.longs.LongComparator;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -8,25 +9,23 @@ import javax.annotation.concurrent.Immutable;
  * A Comparator for int primitives for sorting in reverse order, using the given comparator
  */
 @Immutable
-public final class ReverseIntComparator implements IntComparator {
+public final class ReverseIntComparator {
 
-  public static IntComparator reverse(IntComparator intComparator) {
-    return new ReverseIntComparator(intComparator);
+  static final IntComparator reverseIntComparator = new IntComparator() {
+
+    @Override
+    public int compare(int o2, int o1) {
+      return (o1 < o2 ? -1 : (o1 == o2) ? 0 : 1);
+    }
+
+    @Override
+    public int compare(Integer o2, Integer o1) {
+      return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
+    }
+  };
+
+  public static IntComparator instance() {
+    return reverseIntComparator;
   }
 
-  private final IntComparator intComparator;
-
-  private ReverseIntComparator(IntComparator intComparator) {
-    this.intComparator = intComparator;
-  }
-
-  @Override
-  public int compare(int i, int i1) {
-    return -intComparator.compare(i, i1);
-  }
-
-  @Override
-  public int compare(Integer o1, Integer o2) {
-    return -intComparator.compare(o1, o2);
-  }
 }

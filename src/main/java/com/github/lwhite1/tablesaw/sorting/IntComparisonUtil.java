@@ -11,7 +11,8 @@ public class IntComparisonUtil {
     return instance;
   }
 
-  private IntComparisonUtil() {}
+  private IntComparisonUtil() {
+  }
 
   public int compare(int a, int b) {
     return a - b;

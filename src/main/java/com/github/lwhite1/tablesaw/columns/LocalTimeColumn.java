@@ -29,7 +29,7 @@ import java.util.Arrays;
  */
 public class LocalTimeColumn extends AbstractColumn implements IntIterable {
 
-  public static final int MISSING_VALUE = (int) ColumnType.LOCAL_TIME.getMissingValue() ;
+  public static final int MISSING_VALUE = (int) ColumnType.LOCAL_TIME.getMissingValue();
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
@@ -102,7 +102,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
     IntArrays.parallelQuickSort(data.elements(), reverseIntComparator);
   }
 
-  IntComparator reverseIntComparator =  new IntComparator() {
+  IntComparator reverseIntComparator = new IntComparator() {
 
     @Override
     public int compare(Integer o2, Integer o1) {
@@ -248,7 +248,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
   public LocalTimeColumn selectIf(LocalTimePredicate predicate) {
     LocalTimeColumn column = emptyCopy();
     IntIterator iterator = iterator();
-    while(iterator.hasNext()) {
+    while (iterator.hasNext()) {
       int next = iterator.nextInt();
       if (predicate.test(PackedLocalTime.asLocalTime(next))) {
         column.add(next);
@@ -265,7 +265,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
   public LocalTimeColumn selectIf(IntPredicate predicate) {
     LocalTimeColumn column = emptyCopy();
     IntIterator iterator = iterator();
-    while(iterator.hasNext()) {
+    while (iterator.hasNext()) {
       int next = iterator.nextInt();
       if (predicate.test(next)) {
         column.add(next);
@@ -309,13 +309,11 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
 
 
   //TODO(lwhite): Implement
-  @Override
   public LocalTimeColumn max(int n) {
     return null;
   }
 
   //TODO(lwhite): Implement
-  @Override
   public LocalTimeColumn min(int n) {
     return null;
   }
@@ -326,7 +324,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
 
   public RoaringBitmap apply(IntPredicate predicate) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next)) {
         bitmap.add(idx);
@@ -337,7 +335,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
 
   public RoaringBitmap apply(IntBiPredicate predicate, int value) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next, value)) {
         bitmap.add(idx);

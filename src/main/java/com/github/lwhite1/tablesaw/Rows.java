@@ -11,7 +11,7 @@ import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
-import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
+import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
@@ -25,9 +25,10 @@ import javax.annotation.concurrent.Immutable;
 public class Rows {
 
   // Don't instantiate
-  private Rows() {}
+  private Rows() {
+  }
 
-  public static void copyRowsToTable(IntArrayList rows, Table oldTable, Table newTable) {
+  static void copyRowsToTable(IntArrayList rows, Table oldTable, Table newTable) {
 
     for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
       ColumnType columnType = oldTable.column(columnIndex).type();
@@ -54,7 +55,8 @@ public class Rows {
           copy(rows, (LocalDateColumn) oldTable.column(columnIndex), (LocalDateColumn) newTable.column(columnIndex));
           break;
         case LOCAL_DATE_TIME:
-          copy(rows, (LocalDateTimeColumn) oldTable.column(columnIndex), (LocalDateTimeColumn) newTable.column(columnIndex));
+          copy(rows, (LocalDateTimeColumn) oldTable.column(columnIndex), (LocalDateTimeColumn) newTable.column
+              (columnIndex));
           break;
         case LOCAL_TIME:
           copy(rows, (LocalTimeColumn) oldTable.column(columnIndex), (LocalTimeColumn) newTable.column(columnIndex));
@@ -79,7 +81,7 @@ public class Rows {
     copyRowsToTable(rows, oldTable, newTable);
   }
 
-    private static void copy(IntArrayList rows, FloatColumn oldColumn, FloatColumn newColumn) {
+  private static void copy(IntArrayList rows, FloatColumn oldColumn, FloatColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.get(index));
     }
@@ -141,7 +143,7 @@ public class Rows {
     IntComparator rowComparator = column.rowComparator();
 
     if (reverse) {
-      return ReverseIntComparator.reverse(rowComparator);
+      return ReversingIntComparator.reverse(rowComparator);
     } else {
       return rowComparator;
     }

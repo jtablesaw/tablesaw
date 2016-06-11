@@ -5,9 +5,11 @@ import com.github.lwhite1.tablesaw.api.ColumnType;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.util.List;
+
 /**
  * The general interface for columns.
- *
+ * <p>
  * Columns can either exist on their own or be a part of a table. All the data in a single column is of a particular
  * type.
  */
@@ -26,9 +28,6 @@ public interface Column {
   }
 
   int countUnique();
-
-  Object max(int n);
-  Object min(int n);
 
   /**
    * Returns a column of the same type as the receiver, containing only the unique values of the receiver

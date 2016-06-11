@@ -179,12 +179,14 @@ public class PackedLocalDateTime {
         month == Month.MAY ||
         month == Month.JUNE;
   }
+
   public static boolean isInQ3(long packedDateTime) {
     Month month = getMonth(packedDateTime);
     return month == Month.JULY ||
         month == Month.AUGUST ||
         month == Month.SEPTEMBER;
   }
+
   public static boolean isInQ4(long packedDateTime) {
     Month month = getMonth(packedDateTime);
     return month == Month.OCTOBER ||

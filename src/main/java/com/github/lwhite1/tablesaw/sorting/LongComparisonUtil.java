@@ -11,7 +11,8 @@ public class LongComparisonUtil {
     return instance;
   }
 
-  private LongComparisonUtil() {}
+  private LongComparisonUtil() {
+  }
 
   public int compare(long a, long b) {
     if (a > b)

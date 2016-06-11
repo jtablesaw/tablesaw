@@ -243,6 +243,7 @@ public interface Relation {
   default BooleanColumn booleanColumn(int columnIndex) {
     return (BooleanColumn) column(columnIndex);
   }
+
   default BooleanColumn booleanColumn(String columnName) {
     return (BooleanColumn) column(columnName);
   }
@@ -250,6 +251,7 @@ public interface Relation {
   default FloatColumn floatColumn(int columnIndex) {
     return (FloatColumn) column(columnIndex);
   }
+
   default FloatColumn floatColumn(String columnName) {
     return (FloatColumn) column(columnName);
   }
@@ -257,6 +259,7 @@ public interface Relation {
   default IntColumn intColumn(String columnName) {
     return (IntColumn) column(columnName);
   }
+
   default IntColumn intColumn(int columnIndex) {
     return (IntColumn) column(columnIndex);
   }
@@ -264,6 +267,7 @@ public interface Relation {
   default ShortColumn shortColumn(String columnName) {
     return (ShortColumn) column(columnName);
   }
+
   default ShortColumn shortColumn(int columnIndex) {
     return (ShortColumn) column(columnIndex);
   }
@@ -271,6 +275,7 @@ public interface Relation {
   default LongColumn longColumn(String columnName) {
     return (LongColumn) column(columnName);
   }
+
   default LongColumn longColumn(int columnIndex) {
     return (LongColumn) column(columnIndex);
   }
@@ -278,6 +283,7 @@ public interface Relation {
   default LocalDateColumn localDateColumn(int columnIndex) {
     return (LocalDateColumn) column(columnIndex);
   }
+
   default LocalDateColumn localDateColumn(String columnName) {
     return (LocalDateColumn) column(columnName);
   }
@@ -285,11 +291,15 @@ public interface Relation {
   default LocalTimeColumn localTimeColumn(String columnName) {
     return (LocalTimeColumn) column(columnName);
   }
-  default LocalTimeColumn localTimeColumn(int columnIndex) {return (LocalTimeColumn) column(columnIndex);}
+
+  default LocalTimeColumn localTimeColumn(int columnIndex) {
+    return (LocalTimeColumn) column(columnIndex);
+  }
 
   default LocalDateTimeColumn localDateTimeColumn(int columnIndex) {
     return (LocalDateTimeColumn) column(columnIndex);
   }
+
   default LocalDateTimeColumn localDateTimeColumn(String columnName) {
     return (LocalDateTimeColumn) column(columnName);
   }

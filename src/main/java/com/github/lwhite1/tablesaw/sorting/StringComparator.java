@@ -11,7 +11,8 @@ public class StringComparator {
     return instance;
   }
 
-  private StringComparator() {}
+  private StringComparator() {
+  }
 
   public int compare(String a, String b) {
     return a.compareTo(b);

@@ -125,7 +125,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     LongArrays.parallelQuickSort(data.elements(), reverseLongComparator);
   }
 
-  LongComparator reverseLongComparator =  new LongComparator() {
+  LongComparator reverseLongComparator = new LongComparator() {
 
     @Override
     public int compare(Long o2, Long o1) {
@@ -197,13 +197,13 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   };
 
   public CategoryColumn dayOfWeek() {
-    CategoryColumn newColumn = CategoryColumn.create(this.name() + " day of week" , this.size());
+    CategoryColumn newColumn = CategoryColumn.create(this.name() + " day of week", this.size());
     for (int r = 0; r < this.size(); r++) {
       long c1 = this.getLong(r);
       if (c1 == (LocalDateTimeColumn.MISSING_VALUE)) {
         newColumn.set(r, null);
       } else {
-          newColumn.add(PackedLocalDateTime.getDayOfWeek(c1).toString());
+        newColumn.add(PackedLocalDateTime.getDayOfWeek(c1).toString());
       }
     }
     return newColumn;
@@ -365,7 +365,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   public LocalDateTimeColumn selectIf(LocalDateTimePredicate predicate) {
     LocalDateTimeColumn column = emptyCopy();
     LongIterator iterator = iterator();
-    while(iterator.hasNext()) {
+    while (iterator.hasNext()) {
       long next = iterator.nextLong();
       if (predicate.test(PackedLocalDateTime.asLocalDateTime(next))) {
         column.add(next);
@@ -377,7 +377,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   public LocalDateTimeColumn selectIf(LongPredicate predicate) {
     LocalDateTimeColumn column = emptyCopy();
     LongIterator iterator = iterator();
-    while(iterator.hasNext()) {
+    while (iterator.hasNext()) {
       long next = iterator.nextLong();
       if (predicate.test(next)) {
         column.add(next);
@@ -488,7 +488,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
   public RoaringBitmap apply(LongPredicate predicate) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
       if (predicate.test(next)) {
         bitmap.add(idx);
@@ -499,7 +499,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
   public RoaringBitmap apply(LongBiPredicate predicate, long value) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
       if (predicate.test(next, value)) {
         bitmap.add(idx);
@@ -509,13 +509,11 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   }
 
   //TODO(lwhite): Implement
-  @Override
   public LocalDateTimeColumn max(int n) {
     return null;
   }
 
   //TODO(lwhite): Implement
-  @Override
   public LocalDateTimeColumn min(int n) {
     return null;
   }

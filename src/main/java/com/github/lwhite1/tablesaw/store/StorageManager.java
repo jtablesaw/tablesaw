@@ -40,8 +40,8 @@ public class StorageManager {
   /**
    * Reads a tablesaw table into memory
    *
-   * @param path  The location of the table. It is interpreted as relative to the working directory if not fully
-   *              specified. The path will typically end in ".saw", as in "mytables/nasdaq-2015.saw"
+   * @param path The location of the table. It is interpreted as relative to the working directory if not fully
+   *             specified. The path will typically end in ".saw", as in "mytables/nasdaq-2015.saw"
    * @throws IOException if the file cannot be read
    */
   public static Table readTable(String path) throws IOException {
@@ -195,7 +195,8 @@ public class StorageManager {
     return dates;
   }
 
-  public static LocalDateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata) throws IOException {
+  public static LocalDateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata) throws
+      IOException {
     LocalDateTimeColumn dates = new LocalDateTimeColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
@@ -275,8 +276,8 @@ public class StorageManager {
    * The storage format is the tablesaw compressed column-oriented format, which consists of a set of file in a folder.
    * The name of the folder is based on the name of the table.
    *
-   * @param folderName  The location of the table (for example: "mytables")
-   * @param table       The table to be saved
+   * @param folderName The location of the table (for example: "mytables")
+   * @param table      The table to be saved
    * @throws IOException
    */
   public static void saveTable(String folderName, Relation table) throws IOException {

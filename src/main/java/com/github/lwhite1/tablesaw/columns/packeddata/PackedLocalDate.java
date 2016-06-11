@@ -169,12 +169,14 @@ public class PackedLocalDate {
         month == Month.MAY ||
         month == Month.JUNE;
   }
+
   public static boolean isInQ3(int packedDate) {
     Month month = getMonth(packedDate);
     return month == Month.JULY ||
         month == Month.AUGUST ||
         month == Month.SEPTEMBER;
   }
+
   public static boolean isInQ4(int packedDate) {
     Month month = getMonth(packedDate);
     return month == Month.OCTOBER ||

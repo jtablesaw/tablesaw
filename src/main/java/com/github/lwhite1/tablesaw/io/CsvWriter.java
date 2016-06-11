@@ -10,7 +10,7 @@ import java.io.IOException;
 
 /**
  * Static utility class that writes tables and individual columns to CSV files
- *
+ * <p>
  * TODO(lwhite): Do something with the missing indicator param in write() method
  * TODO(lwhite): Add a missing indicator to the column write method, plus a method defining a default missing indicator
  */
@@ -20,10 +20,12 @@ final public class CsvWriter {
   /**
    * Private constructor to prevent instantiation
    */
-  private CsvWriter() {}
+  private CsvWriter() {
+  }
 
   /**
    * Writes the given table to a file with the given filename
+   *
    * @throws IOException
    */
   public static void write(String fileName, Table table) throws IOException {
@@ -32,6 +34,7 @@ final public class CsvWriter {
 
   /**
    * Writes the given table to a file with the given filename, using the given string to represent missing data
+   *
    * @throws IOException
    */
   public static void write(String fileName, Table table, String missing) throws IOException {
@@ -54,6 +57,7 @@ final public class CsvWriter {
 
   /**
    * Writes the given column to a file with the given fileName as a single column CSV file
+   *
    * @throws IOException
    */
   public static void write(String fileName, Column column) throws IOException {

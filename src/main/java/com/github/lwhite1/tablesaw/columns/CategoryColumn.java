@@ -32,7 +32,7 @@ import java.util.Map;
  * A column in a base table that contains float values
  */
 public class CategoryColumn extends AbstractColumn
-        implements CategoryFilters, CategoryReduceUtils, Iterable<String> {
+    implements CategoryFilters, CategoryReduceUtils, Iterable<String> {
 
   public static final String MISSING_VALUE = (String) ColumnType.CATEGORY.getMissingValue();
 
@@ -184,7 +184,8 @@ public class CategoryColumn extends AbstractColumn
     boolean b = lookupTable.contains(stringValue);
     int valueId;
     if (!b) {
-// TODO(lwhite): synchronize id() or column-level saveTable lock so we can increment id safely without atomic integer objects
+// TODO(lwhite): synchronize id() or column-level saveTable lock so we can increment id safely without atomic integer
+// objects
       valueId = id++;
       lookupTable.put(valueId, stringValue);
     } else {
@@ -199,13 +200,11 @@ public class CategoryColumn extends AbstractColumn
   }
 
   //TODO(lwhite): Implement
-  @Override
   public List<String> max(int n) {
     return null;
   }
 
   //TODO(lwhite): Implement
-  @Override
   public List<String> min(int n) {
     return null;
   }
@@ -288,7 +287,7 @@ public class CategoryColumn extends AbstractColumn
     List<BooleanColumn> results = new ArrayList<>();
 
     // create the necessary columns
-    for (Int2ObjectMap.Entry<String> entry: lookupTable.keyToValueMap().int2ObjectEntrySet()) {
+    for (Int2ObjectMap.Entry<String> entry : lookupTable.keyToValueMap().int2ObjectEntrySet()) {
       BooleanColumn column = BooleanColumn.create(entry.getValue());
       results.add(column);
     }
@@ -359,7 +358,7 @@ public class CategoryColumn extends AbstractColumn
       splitter = splitter.trimResults();
       splitter = splitter.omitEmptyStrings();
       List<String> tokens =
-              new ArrayList<>(splitter.splitToList(value));
+          new ArrayList<>(splitter.splitToList(value));
       Collections.sort(tokens);
       value = String.join(" ", tokens);
       newColumn.add(value);

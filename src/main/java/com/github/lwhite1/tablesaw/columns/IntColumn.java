@@ -8,10 +8,12 @@ import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapper.IntMapUtils;
 import com.github.lwhite1.tablesaw.sorting.IntComparisonUtil;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
 import com.github.lwhite1.tablesaw.util.StatUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.floats.FloatArrays;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -169,22 +171,8 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   @Override
   public void sortDescending() {
-    IntArrays.parallelQuickSort(data.elements(), reverseIntComparator);
+    IntArrays.parallelQuickSort(data.elements(), ReverseIntComparator.instance());
   }
-
-  IntComparator reverseIntComparator =  new IntComparator() {
-
-    @Override
-    public int compare(Integer o2, Integer o1) {
-      return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
-    }
-
-    @Override
-    public int compare(int o2, int o1) {
-      return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
-    }
-  };
-
 
   private IntColumn copy() {
     return create(name(), data);
@@ -296,7 +284,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   public String print() {
     StringBuilder builder = new StringBuilder();
     builder.append(title());
-    for (int i : data){
+    for (int i : data) {
       builder.append(String.valueOf(i));
       builder.append('\n');
     }
@@ -320,7 +308,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   public IntColumn selectIf(IntPredicate predicate) {
     IntColumn column = emptyCopy();
     IntIterator intIterator = iterator();
-    while(intIterator.hasNext()) {
+    while (intIterator.hasNext()) {
       int next = intIterator.nextInt();
       if (predicate.test(next)) {
         column.add(next);
@@ -332,16 +320,16 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   public IntColumn select(RoaringBitmap bitmap) {
     IntColumn column = emptyCopy();
     org.roaringbitmap.IntIterator intIterator = bitmap.getIntIterator();
-    while(intIterator.hasNext()) {
+    while (intIterator.hasNext()) {
       int next = intIterator.next();
-        column.add(data.getInt(next));
+      column.add(data.getInt(next));
     }
     return column;
   }
 
   public RoaringBitmap apply(IntPredicate predicate) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next)) {
         bitmap.add(idx);
@@ -352,7 +340,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   public RoaringBitmap apply(IntBiPredicate predicate, int value) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next, value)) {
         bitmap.add(idx);
@@ -364,7 +352,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   public long sumIf(IntPredicate predicate) {
     long sum = 0;
     IntIterator intIterator = iterator();
-    while(intIterator.hasNext()) {
+    while (intIterator.hasNext()) {
       int next = intIterator.nextInt();
       if (predicate.test(next)) {
         sum += next;
@@ -376,7 +364,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   public long countIf(IntPredicate predicate) {
     long count = 0;
     IntIterator intIterator = iterator();
-    while(intIterator.hasNext()) {
+    while (intIterator.hasNext()) {
       int next = intIterator.nextInt();
       if (predicate.test(next)) {
         count++;
@@ -385,16 +373,38 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return count;
   }
 
-  //TODO(lwhite): Implement
-  @Override
-  public IntColumn max(int n) {
-    return null;
+  /**
+   * Returns the largest ("top") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the largest observations
+   */
+  public IntArrayList max(int n) {
+    IntArrayList top = new IntArrayList();
+    int[] values = data.toIntArray();
+    IntArrays.parallelQuickSort(values, ReverseIntComparator.instance());
+    for (int i = 0; i < n && i < values.length; i++) {
+      top.add(values[i]);
+    }
+    return top;
   }
 
-  //TODO(lwhite): Implement
-  @Override
-  public IntColumn min(int n) {
-    return null;
+  /**
+   * Returns the smallest ("bottom") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the smallest n observations
+   */
+  public IntArrayList min(int n) {
+    IntArrayList bottom = new IntArrayList();
+    int[] values = data.toIntArray();
+    IntArrays.parallelQuickSort(values);
+    for (int i = 0; i < n && i < values.length; i++) {
+      bottom.add(values[i]);
+    }
+    return bottom;
   }
 
   @Override

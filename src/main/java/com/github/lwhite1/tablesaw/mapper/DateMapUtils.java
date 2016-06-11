@@ -166,7 +166,7 @@ public interface DateMapUtils extends DateColumnUtils {
   }
 
   static String dateColumnName(Column column1, int value, TemporalUnit unit) {
-    return column1.name() + " - " + value + " " + unit.toString() +"(s)";
+    return column1.name() + " - " + value + " " + unit.toString() + "(s)";
   }
 
   LocalDate get(int index);

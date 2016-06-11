@@ -40,7 +40,7 @@ class View implements Relation {
     rowMap.add(0, headRows);
     mask = rowMap.toArray();
   }
-  
+
   public View(View view, int headRows) {
     this.table = view;
 
@@ -160,6 +160,7 @@ class View implements Relation {
 
   /**
    * Adds the given index to the rowmap for this view.
+   *
    * @param index an index representing a row in the backing table
    */
   public void addIndex(int index) {

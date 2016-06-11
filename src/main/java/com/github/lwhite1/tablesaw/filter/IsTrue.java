@@ -23,6 +23,7 @@ public class IsTrue extends Filter {
 
   /**
    * Returns true if the element in the given row in my {@code column} is true
+   *
    * @param relation
    */
   @Override

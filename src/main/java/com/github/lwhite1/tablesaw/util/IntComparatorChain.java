@@ -97,7 +97,8 @@ public class IntComparatorChain implements IntComparator, Serializable {
 
   private void checkLocked() {
     if (this.isLocked) {
-      throw new UnsupportedOperationException("Comparator ordering cannot be changed after the first comparison is performed");
+      throw new UnsupportedOperationException("Comparator ordering cannot be changed after the first comparison is " +
+          "performed");
     }
   }
 

@@ -13,10 +13,12 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrays;
 import it.unimi.dsi.fastutil.floats.FloatComparator;
+import it.unimi.dsi.fastutil.floats.FloatHeapSemiIndirectPriorityQueue;
 import it.unimi.dsi.fastutil.floats.FloatIterable;
 import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -74,16 +76,38 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
     return floats.size();
   }
 
-  //TODO(lwhite): Implement
-  @Override
-  public FloatColumn max(int n) {
-    return null;
+  /**
+   * Returns the largest ("top") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the largest observations
+   */
+  public FloatArrayList max(int n) {
+    FloatArrayList top = new FloatArrayList();
+    float[] values = data.toFloatArray();
+    FloatArrays.parallelQuickSort(values, reverseFloatComparator);
+    for (int i = 0; i < n && i < values.length; i++) {
+      top.add(values[i]);
+    }
+    return top;
   }
 
-  //TODO(lwhite): Implement
-  @Override
-  public FloatColumn min(int n) {
-    return null;
+  /**
+   * Returns the smallest ("bottom") n values in the column
+   *
+   * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+   *          number of observations in the column
+   * @return A list, possibly empty, of the smallest n observations
+   */
+  public FloatArrayList min(int n) {
+    FloatArrayList bottom = new FloatArrayList();
+    float[] values = data.toFloatArray();
+    FloatArrays.parallelQuickSort(values);
+    for (int i = 0; i < n && i < values.length; i++) {
+      bottom.add(values[i]);
+    }
+    return bottom;
   }
 
   @Override
@@ -249,7 +273,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
   /**
    * Compares two floats, such that a sort based on this comparator would sort in descending order
    */
-  FloatComparator reverseFloatComparator =  new FloatComparator() {
+  FloatComparator reverseFloatComparator = new FloatComparator() {
 
     @Override
     public int compare(Float o2, Float o1) {
@@ -416,8 +440,8 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
    * For each item in the column, returns the same number with the sign changed.
    * For example:
    * -1.3   returns  1.3,
-   *  2.135 returns -2.135
-   *  0     returns  0
+   * 2.135 returns -2.135
+   * 0     returns  0
    */
   public FloatColumn neg() {
     FloatColumn newColumn = FloatColumn.create(name() + "[neg]");
@@ -475,7 +499,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
       }
       i++;
     }
-    
+
     return results;
   }
 
@@ -505,8 +529,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
 
   public double[] toDoubleArray() {
     double[] output = new double[data.size()];
-    for (int i = 0; i < data.size(); i++)
-    {
+    for (int i = 0; i < data.size(); i++) {
       output[i] = data.getFloat(i);
     }
     return output;
@@ -543,7 +566,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
 
   public RoaringBitmap apply(FloatPredicate predicate) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       float next = data.getFloat(idx);
       if (predicate.test(next)) {
         bitmap.add(idx);
@@ -554,7 +577,7 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
 
   public RoaringBitmap apply(FloatBiPredicate predicate, float value) {
     RoaringBitmap bitmap = new RoaringBitmap();
-    for(int idx = 0; idx < data.size(); idx++) {
+    for (int idx = 0; idx < data.size(); idx++) {
       float next = data.getFloat(idx);
       if (predicate.test(next, value)) {
         bitmap.add(idx);

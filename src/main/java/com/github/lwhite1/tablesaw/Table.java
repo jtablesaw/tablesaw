@@ -7,7 +7,7 @@ import com.github.lwhite1.tablesaw.filter.Filter;
 import com.github.lwhite1.tablesaw.sorting.Sort;
 import com.github.lwhite1.tablesaw.store.TableMetadata;
 import com.github.lwhite1.tablesaw.util.IntComparatorChain;
-import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
+import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -397,7 +397,7 @@ public class Table implements Relation {
     IntComparator rowComparator = column.rowComparator();
 
     if (reverse) {
-      return ReverseIntComparator.reverse(rowComparator);
+      return ReversingIntComparator.reverse(rowComparator);
     } else {
       return rowComparator;
     }

@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *  A composite filter that only returns {@code true} if all component filters return true
+ * A composite filter that only returns {@code true} if all component filters return true
  */
 public class AnyOf extends Filter {
 

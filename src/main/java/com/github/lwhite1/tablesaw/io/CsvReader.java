@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * Static utility class that Builds Tables from Comma Separated Value (CSV) files.
- *
+ * <p>
  * TODO(lwhite): Change header param from a boolean to an int, representing the number of lines for the header
  * TODO(lwhite): Add multi-file read methods that take header, separator, and maybe, wanted as params
  */
@@ -29,16 +29,18 @@ final public class CsvReader {
   /**
    * Private constructor to prevent instantiation
    */
-  private CsvReader() {}
+  private CsvReader() {
+  }
 
   /**
    * Constructs and returns a table from one or more CSV files, all containing the same column types
    * <p>
    * This constructor assumes the files have a one-line header, which is used to populate the column names,
    * and that they use a comma to separate between columns.
+   *
    * @throws IOException If there is an issue reading any of the files
    */
-  public static Table read(ColumnType types[], String ... fileNames) throws IOException {
+  public static Table read(ColumnType types[], String... fileNames) throws IOException {
     if (fileNames.length == 1) {
       return read(types, true, ',', fileNames[0]);
     } else {
@@ -76,10 +78,10 @@ final public class CsvReader {
   /**
    * Returns a Table constructed from a CSV File.
    *
-   * @param types    An array of the types of columns in the file, in the order they appear
-   * @param header   Is the first row in the file a header?
+   * @param types           An array of the types of columns in the file, in the order they appear
+   * @param header          Is the first row in the file a header?
    * @param columnSeparator The character used to separate the columns in the input file
-   * @param fileName The fully specified file name
+   * @param fileName        The fully specified file name
    * @return A Table containing the data in the csv file.
    * @throws IOException
    */

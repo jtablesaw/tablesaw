@@ -4,6 +4,8 @@ import com.github.lwhite1.tablesaw.Relation;
 import com.github.lwhite1.tablesaw.Table;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -184,5 +186,26 @@ public class FloatColumnTest {
     }
     System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
     System.out.println("Matches = " + count);
+  }
+
+  @Test
+  public void testMax() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    FloatArrayList floats1 = floats.max(5);
+    System.out.println(floats1);
+  }
+
+  @Test
+  public void testMin() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    FloatArrayList floats1 = floats.min(5);
+    System.out.println(floats1);
+
   }
 }
