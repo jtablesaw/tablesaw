@@ -47,7 +47,7 @@ In this introduction, we'll cover some of the basic features of Tablesaw using a
 * Adding and removing columns
 * Printing the first few rows for a peak at the data
 * Sorting a table by column name
-* Run descriptive statistics (mean, min, max, etc.) on a numeric column
+* Running descriptive statistics (mean, min, max, etc.) on a numeric column
 * Performing mapping operations over columns
 * Filtering rows 
 * Calculating totals and sub-totals
@@ -71,7 +71,6 @@ Often, the best way to start is to print the column names for reference:
 ```java
     
     out(tornadoes.columnNames());
-    out(tornadoes.shape());
 ```
 which produces: 
 
@@ -80,7 +79,7 @@ which produces:
 	[Date, Time, State, State No, Scale, Injuries, Fatalities, Start Lat, Start Lon, Length, Width]
 ```
 
-The _shape()_ method displays the row and column count: 
+The _shape()_ method displays the row and column counts: 
 
 ```java
     
@@ -113,8 +112,7 @@ The _structure()_ method shows the index, name and type of each column
 
         
 ```
-Note the print() method in _tornadoes.structure().print()_
-
+Note the print() method in _tornadoes.structure().print()_.
 Like many Tablesaw methods, _structure()_ returns a table object, and print() produces a 
 string representation of that object for display. Because structure returns a table, you can perform other operations on it, like:
 
@@ -186,6 +184,7 @@ Now that we've some some data, lets sort the table in reverse order by the id co
 
 ### Descriptive statistics
 
+Descriptive statistics are calculated using the _describe()_ method:
 ```java
 
     table.column("Fatalities").describe();
@@ -224,6 +223,11 @@ The last example above returns a table containing only the three columns named i
 
 ### Performing totals and sub-totals
 
+Column metrics can be calculated using methods like sum(), product(), mean(), max(), etc.
+
+It is also possible to apply those methods to a table to calculate results on a numeric column, 
+grouped by the values in another column.
+
 ```java
 
     IntColumn injuries = tornadoes.intColumn("Injuries");
@@ -251,7 +255,7 @@ This produces the following table, in which Group represents the Tornado Scale a
 ### Read and write data from the Tablesaw format
 
 Once you've imported data, especially large datasets, you can use Tablesaw's own format to save the table. 
-In Tablesaw format, reads and writes are hundreds of times fater than the equivalent CSV operations.
+In Tablesaw format, reads and writes are an order of magnitude faster than optimized CSV operations.
 
 ```java
 
