@@ -434,7 +434,7 @@ public class Table implements Relation {
   public Table structure() {
     Table t = new Table("Structure of " + name());
     IntColumn index = new IntColumn("Index", columnCount());
-    CategoryColumn columnName = new CategoryColumn("Column Names", columnCount());
+    CategoryColumn columnName = new CategoryColumn("Column Name", columnCount());
     CategoryColumn columnType = new CategoryColumn("Column Type", columnCount());
     t.addColumn(index);
     t.addColumn(columnName);

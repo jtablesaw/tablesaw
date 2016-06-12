@@ -1,7 +1,7 @@
 Tablesaw
 =======
    
-Tablesaw is a high-performance, in-memory data table with tools for data manipulation and a column-oriented storage format. In Java.
+Tablesaw is a high-performance, in-memory data table, plus tools for data manipulation and a column-oriented storage format. In Java.
 
 __With Tablesaw, you can import, sort, transform, filter, and summarize tables of up to one billion rows on a laptop.__ 
 Tablesaw uses tricks from high-frequency trading apps (e.g. primitive collections) and 
@@ -38,28 +38,101 @@ Then add a dependency to your pom file:
     
 Tablesaw requires Java 8 or newer.    
 
-## An introduction in 9 lines of code
+## An introduction to Tablesaw
 
-Here's an example. In 9 lines of trivial code, we will:
+In this introduction, we'll cover some of the basic features of Tablesaw using a tornado data set. Here's what we'll cover:
 
-* Read a CSV file
-* Print the first few rows for a peak at the data
-* Sort the table by column name
-* Run descriptive statistics (mean, min, max, etc.) on a column
-* Remove a column
-* Create a new column as the sum of the values in two existing columns
-* Filter some rows
-* Save the new version as a file
+* Read and writing data using CSV files
+* Viewing a table's metadata, including column names, shape (row and column counts), and structure
+* Adding and removing columns
+* Printing the first few rows for a peak at the data
+* Sorting a table by column name
+* Run descriptive statistics (mean, min, max, etc.) on a numeric column
+* Performing mapping operations over columns
+* Filtering rows 
+* Calculating totals and sub-totals
+* Reading and writing tables in Tablesaw's compressed columnar storage format
 
 ### Read a CSV file
-Here we read a csv file of bus stop data. First, we say what column types are present.
+Here we read a csv file of tornado data. First, we say what column types are present.
 
 ```java
 
-    ColumnType[] types = {INTEGER, TEXT, TEXT, FLOAT, FLOAT};
-    Table table = CsvReader.read("data/bus_stop_test.csv", types);
+    ColumnType[] CT = {LOCAL_DATE, LOCAL_TIME, CATEGORY, INTEGER, INTEGER, INTEGER, 
+                       INTEGER, CATEGORY, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT};
+    Table tornadoes = Table.fromCSV(CT, "data/1950-2014_torn.csv");
+```
+Specifying the column types is _the_ most tedious part of using Tablesaw. That requirement will be removed soon.
+
+### Viewing table metadata
+
+Often, the best way to start is to print the column names for reference:
+
+```java
+    
+    out(tornadoes.columnNames());
+    out(tornadoes.shape());
+```
+which produces: 
+
+```java
+
+	[Date, Time, State, State No, Scale, Injuries, Fatalities, Start Lat, Start Lon, Length, Width]
+```
+
+The _shape()_ method displays the row and column count: 
+
+```java
+    
+    out(tornadoes.shape());
+    
+    >> 59945 rows X 10 cols
 
 ```
+So, this table has nearly 60,000 rows and ten columns. 
+
+The _structure()_ method shows the index, name and type of each column
+
+```java
+
+    out(tornadoes.structure().print());
+    
+    >> Structure of data/tornadoes_1950-2014.csv
+	Index Column Names Column Type 
+	0     Date         LOCAL_DATE  
+	1     Time         LOCAL_TIME  
+	2     State        CATEGORY    
+	3     State No     INTEGER     
+	4     Scale        INTEGER     
+	5     Injuries     INTEGER     
+	6     Fatalities   INTEGER     
+	7     Start Lat    FLOAT       
+	8     Start Lon    FLOAT       
+	9     Length       FLOAT       
+	10    Width        FLOAT       
+
+        
+```
+Note the print() method in _tornadoes.structure().print()_
+
+Like many Tablesaw methods, _structure()_ returns a table object, and print() produces a 
+string representation of that object for display. Because structure returns a table, you can perform other operations on it, like:
+
+```java
+    
+    tornadoes.structure().selectWhere(column("Column Type").isEqualTo("INTEGER"));
+    
+    >> Structure of data/tornadoes_1950-2014.csv
+	Index Column Name Column Type 
+	3     State No    INTEGER     
+	4     Scale       INTEGER     
+	5     Injuries    INTEGER     
+	6     Fatalities  INTEGER     
+
+    
+```
+Of course that also returned a table, this one containing only records for columns of INTEGER type. 
+We'll cover filtering or selecting rows in more detail later.
 
 ### Viewing data
 The head(n) method returns the first n rows.
@@ -67,88 +140,129 @@ The head(n) method returns the first n rows.
 ```java
 
     table.head(3);
-    
+    >>
+    Date       Time     State Scale Injuries Fatalities Start Lat Start Lon Length Width 
+	1950-01-03 11:00:00 MO    3     3        0          38.77     -90.22    9.5    150.0 
+	1950-01-03 11:00:00 MO    3     3        0          38.77     -90.22    6.2    150.0 
+	1950-01-03 11:10:00 IL    3     0        0          38.82     -90.12    3.3    100.0 
+
 ```
 
-producing:
+### Mapping operations
 
-    data/bus_stop_test.csv
-    stop_id stop_name                stop_desc                                                stop_lat  stop_lon   
-    66      4925 CRAIGWOOD/FM 969    Southeast corner of CRAIGWOOD and FM 969 - Nearside      30.28417  -97.65985  
-    252     200 TRINITY/2ND          Northeast corner of TRINITY and 2ND - Mid-Block          30.263842 -97.740425 
-    462     851 RUTLAND/PARK VILLAGE Southeast corner of RUTLAND and PARK VILLAGE - Mid-Block 30.36547  -97.69752  
+Now let's add a column derived from the existing data. We can map arbitrary lambda expressions
+onto the data table, but many, many common operations are built in. You can, 
+for example, calculate the difference in days, weeks, or years between the values in two date columns.
+The method below extracts the Month name from the date column into a new column.
+
+```java
+
+    CategoryColumn month = tornadoes.localDateColumn("Date").month();
+    out(month.summary().print());
+```
+Mapping operations in Tablesaw take one or more columns as inputs and produce an output column. 
+
+Once you have a new column, you can add it to a table:
+
+```java
+
+    tornadoes.addColumn(2, month);
+```
+You can also remove columns from tables, if you need to save memory or reduce clutter. 
+
+```java
+
+    tornadoes.removeColumn("State No);
+```
+
 
 ### Sorting by column
 Now that we've some some data, lets sort the table in reverse order by the id column
 
 ```java
 
-    table.sortDescendingOn("stop_id");
+    tornadoes.sortDescendingOn("Fatalities");
 ```
 
-### Removing a column
-
-```java
-
-    table.removeColumn("stop_desc");
-```    
 ### Descriptive statistics
 
 ```java
 
-    table.column("stop_lon").describe();
+    table.column("Fatalities").describe();
 ```
 
 This outputs:
 
-    Descriptive Stats 
-    n: 2729
-    missing: 0
-    min: -97.9911
-    max: -97.37039
-    range: 0.62070465
-    mean: -97.73799133300781
-    std.dev: 0.049913406
-    variance: 0.0024913481902331114
+		Measure  Value     
+		n        1590.0    
+		Missing  0.0       
+		Mean     4.2779875 
+		Min      1.0       
+		Max      158.0     
+		Range    157.0     
+		Std. Dev 9.573451  
 
-### Create new columns from the data in existing columns
-
-Now let's add a column derived from the existing data. We can map arbitrary lambda expressions
-onto the data table, but many, many common operations (add, subtract, multiply, max, etc.) are built in. For example, 
-for a column-wise addition:
-
-```java
-
-    Column total = add(table.get("stop_lat", "stop_lon"));
-```
-
-(Yeah, I know that's a stupid example. Imagine it was two columns you'd actually want to add.)
+when applied to a table containing only fatal tornados. 
 
 ### Filtering Rows
 
-To filter records you can also be arbitrary lambda expressions, but it's often easier to use the built-in filter classes as shown below:
+To filter records you can use arbitrary predicates, but it's often easier to use the built-in filter classes as shown below:
 
 ```java
 
-Table f = table.selectIf(column("stop_id").isBetween(524, 624)));
+    tornadoes.selectWhere(column("Fatalities").isGreaterThan(0));
+    
+    tornadoes.selectWhere(column("Date").isInApril());
+    
+    tornadoes.selectWhere(either(column("Width").isGreaterThan(300)),   // 300 yards
+    							(column("Length").isGreaterThan(10);    // 10 miles
+    							
+    tornadoes.select("State", "Date", "Scale").where(column("Date").isInQ2());
+    
 ```
+The last example above returns a table containing only the three columns named in select() parameters.
+
+### Performing totals and sub-totals
+
+```java
+
+    IntColumn injuries = tornadoes.intColumn("Injuries");
+    Table sumInjuriesByScale = tornadoes.sum(injuries, "Scale");
+    sumInjuriesByScale.setName("Total injuries by Tornado Scale");
+```
+This produces the following table, in which Group represents the Tornado Scale and Sum the total number of injures for that group:
+
+		Total injuries by Tornado Scale
+		Group Sum   
+		-9    6     
+		0     790   
+		1     7010  
+		2     15887 
+		3     25896 
+		4     40481 
+		5     16009 
 
 ### Write the new CSV file to disk
 
 ```java
 
-CsvWriter.write("filtered_bus_stops.csv", f);
+    tornadoes.exportToCsv("data/rev_tornadoes_1950-2014.csv");
 ```
+### Read and write data from the Tablesaw format
 
-This is just the beginning of what Tablesaw can do. Other features include:
+Once you've imported data, especially large datasets, you can use Tablesaw's own format to save the table. 
+In Tablesaw format, reads and writes are hundreds of times fater than the equivalent CSV operations.
 
-* Powerful Group-by functionality (aka: Split, Aggregate, Combine) 
-* Map arbitrary lambda expressions over tables
+```java
 
-More advanced operations are described on the project web site:
+    String dbName = tornadoes.save("/tmp/tablesaw/testdata");
+
+    Table tornadoes = Table.readTable(dbName);
+```
+This is just the beginning of what Tablesaw can do. More information is available on the project web site:
  https://javadatascience.wordpress.com
  
 ## A work-in-progress
 __Tablesaw is in an experimental state__, with a production release planned for late 2016. 
-A great deal of additional functionality is planned, including window operations (like rolling averages), 
+A great deal of additional functionality will follow the initial release, including window operations (like rolling averages), 
  outlier detection, and integrated machine-learning.

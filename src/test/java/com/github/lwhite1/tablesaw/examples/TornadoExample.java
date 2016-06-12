@@ -21,7 +21,7 @@ public class TornadoExample {
     out(tornadoes.structure().print());
     out();
 
-    tornadoes.removeColumns("Year", "Month", "Day", "State FIPS", "NS", "SN", "SG", "FIPS 1", "FIPS 2", "FIPS 3", "FIPS 4");
+    tornadoes.removeColumns("Number", "Year", "Month", "Day", "Zone", "State FIPS", "Loss", "Crop Loss", "End Lat", "End Lon", "NS", "SN", "SG", "FIPS 1", "FIPS 2", "FIPS 3", "FIPS 4");
 
     tornadoes.exportToCsv("data/tornadoes_1950-2014.csv");
 
@@ -29,6 +29,7 @@ public class TornadoExample {
     assert(tornadoes != null);
 
     out(tornadoes.structure().print());
+    out(tornadoes.structure().selectWhere(column("Column Type").isEqualTo("INTEGER")).print());
 
     tornadoes.setName("tornadoes");
 
@@ -46,8 +47,8 @@ public class TornadoExample {
     out(tornadoes.shape());
 
     out();
-    out("Use head(5) to view the first five rows:");
-    out(tornadoes.head(5).print());
+    out("Use head(3) to view the first 3 rows:");
+    out(tornadoes.head(3).print());
 
     out();
     out("Extact month from the date and make it a separate column");
@@ -110,21 +111,15 @@ public class TornadoExample {
 
   // column types for the tornado table
   private static final ColumnType[] COLUMN_TYPES = {
-      INTEGER,     // number by year
       LOCAL_DATE,  // date
       LOCAL_TIME,  // time
-      CATEGORY,    // tz
       CATEGORY,    // state
       INTEGER,     // state torn number
       INTEGER,     // scale
       INTEGER,     // injuries
       INTEGER,     // fatalities
-      CATEGORY,    // loss
-      FLOAT,       // crop loss
       FLOAT,       // St. Lat
       FLOAT,       // St. Lon
-      FLOAT,       // End Lat
-      FLOAT,       // End Lon
       FLOAT,       // length
       FLOAT        // width
   };
@@ -144,7 +139,7 @@ public class TornadoExample {
       INTEGER,     // scale
       INTEGER,     // injuries
       INTEGER,     // fatalities
-      CATEGORY, // loss
+      FLOAT,       // loss
       FLOAT,   // crop loss
       FLOAT,   // St. Lat
       FLOAT,   // St. Lon
