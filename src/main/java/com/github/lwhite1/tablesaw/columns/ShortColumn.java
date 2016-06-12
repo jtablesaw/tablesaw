@@ -390,4 +390,12 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     }
     return bitmap;
   }
+
+  public double[] toDoubleArray() {
+    double[] output = new double[data.size()];
+    for (int i = 0; i < data.size(); i++) {
+      output[i] = data.getShort(i);
+    }
+    return output;
+  }
 }

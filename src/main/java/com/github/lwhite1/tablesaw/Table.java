@@ -636,7 +636,8 @@ public class Table implements Relation {
    */
   public double reduce(String numericColumnName, NumericReduceFunction function) {
     Column column = column(numericColumnName);
-    return function.reduce(column);
+
+    return function.reduce(column.toDoubleArray());
   }
 
   public static Table fromCSV(ColumnType[] types, String fileName) {

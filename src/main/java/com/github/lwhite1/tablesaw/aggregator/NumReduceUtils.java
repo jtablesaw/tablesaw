@@ -1,18 +1,19 @@
 package com.github.lwhite1.tablesaw.aggregator;
 
-import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
 import org.apache.commons.math3.stat.StatUtils;
 
 /**
  * Contains common utilities for double and long types
  */
-public interface NumReduceUtils extends Column {
+public class NumReduceUtils {
 
+  // TODO(lwhite): Reimplement these methods to work natively with float[], instead of converting to double[]
 
-  NumericReduceFunction mean = new NumericReduceFunction() {
+  /**
+   * A function that calculates the mean of the values in the column param
+   */
+  public static NumericReduceFunction mean = new NumericReduceFunction() {
 
     @Override
     public String functionName() {
@@ -20,80 +21,190 @@ public interface NumReduceUtils extends Column {
     }
 
     @Override
-    public double reduce(Column data) {
-      if (data.type() == ColumnType.FLOAT) {
-        return StatUtils.mean(((FloatColumn) data).toDoubleArray());
-      } else if (data.type() == ColumnType.INTEGER) {
-        return StatUtils.mean(((IntColumn) data).toDoubleArray());
-      }
-      throw new IllegalArgumentException("Attempted to reduce numeric function to non-numeric column");
+    public double reduce(double[] data) {
+      return StatUtils.mean(data);
     }
   };
 
+  public static NumericReduceFunction median = new NumericReduceFunction() {
 
+    @Override
+    public String functionName() {
+      return "Median";
+    }
 
-  // TODO(lwhite): Reimplement these methods to work natively with float[], instead of converting to double[]
+    @Override
+    public double reduce(double[] data) {
+      return percentile(data, 50.0);
+    }
+  };
 
-  default double range() {
-    double[] array = this.toDoubleArray();
-    return StatUtils.max(array) - StatUtils.min(array);
+  public static NumericReduceFunction quartile1 = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "First Quartile";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return percentile(data, 25.0);
+    }
+  };
+
+  public static NumericReduceFunction quartile3 = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Third Quartile";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return percentile(data, 75.0);
+    }
+  };
+
+  public static NumericReduceFunction percentile90 = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "90th Percentile";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return percentile(data, 90.0);
+    }
+  };
+
+  public static NumericReduceFunction percentile95 = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "95th Percentile";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return percentile(data, 95.0);
+    }
+  };
+
+  public static NumericReduceFunction percentile99 = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "99th Percentile";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return percentile(data, 99.0);
+    }
+  };
+
+  public static NumericReduceFunction range = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Range";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.max(data) - StatUtils.min(data);
+    }
+  };
+
+  public static NumericReduceFunction product = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Product";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.product(data);
+    }
+  };
+
+  public static NumericReduceFunction geometricMean = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Geometric Mean";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.geometricMean(data);
+    }
+  };
+
+  public static NumericReduceFunction sumOfSquares = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Sum of Squares";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.sumSq(data);
+    }
+  };
+
+  public static NumericReduceFunction sumOfLogs = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Sum of Logs";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.sumLog(data);
+    }
+  };
+
+  public static NumericReduceFunction variance = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Variance";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.variance(data);
+    }
+  };
+
+  public static NumericReduceFunction stdDev = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Std. Deviation";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return Math.sqrt(StatUtils.variance(data));
+    }
+  };
+
+  public static double percentile(double[] data, double percentile) {
+    return StatUtils.percentile(data, percentile);
   }
 
-  default double product() {
-    return StatUtils.product(toDoubleArray());
+  // TODO(lwhite): These are two column reductions. We need a class for that
+  public static double meanDifference(FloatColumn column1, FloatColumn column2) {
+    return StatUtils.meanDifference(column1.toDoubleArray(), column2.toDoubleArray());
   }
 
-  default double geometricMean() {
-    return StatUtils.geometricMean(toDoubleArray());
+  public static double sumDifference(FloatColumn column1, FloatColumn column2) {
+    return StatUtils.sumDifference(column1.toDoubleArray(), column2.toDoubleArray());
   }
-
-  default double sumOfSquares() {
-    return StatUtils.sumSq(toDoubleArray());
-  }
-
-  default double[] normalize() {
-    return StatUtils.normalize(toDoubleArray());
-  }
-
-  default double sumOfLogs() {
-    return StatUtils.sumLog(toDoubleArray());
-  }
-
-  default double percentile(double percentile) {
-    return StatUtils.percentile(toDoubleArray(), percentile);
-  }
-
-  default float quartile1() {
-    return (float) StatUtils.percentile(toDoubleArray(), 25.0);
-  }
-
-  default float median() {
-    return (float) StatUtils.percentile(toDoubleArray(), 50.0);
-  }
-
-  default float quartile3() {
-    return (float) StatUtils.percentile(toDoubleArray(), 75.0);
-  }
-
-  default double percentile99() {
-    return StatUtils.percentile(toDoubleArray(), 99.0);
-  }
-
-  default double variance() {
-    return StatUtils.variance(toDoubleArray());
-  }
-
-  default double stdDev() {
-    return Math.sqrt(StatUtils.variance(toDoubleArray()));
-  }
-
-  default double meanDifference(FloatColumn column2) {
-    return StatUtils.meanDifference(toDoubleArray(), column2.toDoubleArray());
-  }
-
-  default double sumDifference(FloatColumn column2) {
-    return StatUtils.sumDifference(toDoubleArray(), column2.toDoubleArray());
-  }
-
-  double[] toDoubleArray();
 }

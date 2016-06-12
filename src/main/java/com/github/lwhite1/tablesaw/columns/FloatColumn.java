@@ -1,7 +1,6 @@
 package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.Table;
-import com.github.lwhite1.tablesaw.aggregator.NumReduceUtils;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.filter.FloatPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
@@ -29,7 +28,7 @@ import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.*;
 /**
  * A column in a base table that contains float values
  */
-public class FloatColumn extends AbstractColumn implements NumReduceUtils, FloatIterable {
+public class FloatColumn extends AbstractColumn implements FloatIterable {
 
   public static final float MISSING_VALUE = (float) ColumnType.FLOAT.getMissingValue();
 

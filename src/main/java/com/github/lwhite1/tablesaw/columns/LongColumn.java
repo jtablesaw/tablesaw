@@ -378,4 +378,13 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     }
     return bitmap;
   }
+
+  @Override
+  public double[] toDoubleArray() {
+    double[] output = new double[data.size()];
+    for (int i = 0; i < data.size(); i++) {
+      output[i] = data.getLong(i);
+    }
+    return output;
+  }
 }
