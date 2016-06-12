@@ -540,7 +540,7 @@ public class Table implements Relation {
     return resultTable;
   }
 
-  public Table sum(IntColumn sumColumn, String[] byColumnNames) {
+  public Table sum(IntColumn sumColumn, String... byColumnNames) {
     TableGroup groupTable = new TableGroup(this, byColumnNames);
     Table resultTable = new Table(name + " summary");
 
@@ -556,9 +556,14 @@ public class Table implements Relation {
       groupColumn.add(groupName);
       sumColumn1.add((int) sum);
     }
-
     return resultTable;
   }
+
+/*
+  public Average average(String summarizedColumnName) {
+    return new Average(this, summarizedColumnName);
+  }
+*/
 
   public CategoryColumn categoryColumn(String columnName) {
     return (CategoryColumn) column(columnName);

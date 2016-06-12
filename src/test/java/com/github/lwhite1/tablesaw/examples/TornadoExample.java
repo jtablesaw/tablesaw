@@ -3,6 +3,7 @@ package com.github.lwhite1.tablesaw.examples;
 import com.github.lwhite1.tablesaw.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.io.CsvReader;
 import com.github.lwhite1.tablesaw.io.CsvWriter;
 import com.github.lwhite1.tablesaw.store.StorageManager;
@@ -77,6 +78,14 @@ public class TornadoExample {
     out("");
     out("Calculating basic descriptive statistics on Fatalities");
     out(fatal.intColumn("Fatalities").stats().asTable("").print());
+
+
+    //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
+    IntColumn injuries = tornadoes.intColumn("Injuries");
+    Table sumInjuriesByScale = tornadoes.sum(injuries, "Scale");
+    sumInjuriesByScale.setName("Total injuries by Tornado Scale");
+    out(sumInjuriesByScale.print());
+
 
     out();
     out("Writing the revised table to a new csv file");
