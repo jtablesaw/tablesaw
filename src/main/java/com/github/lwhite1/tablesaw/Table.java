@@ -73,6 +73,16 @@ public class Table implements Relation {
   }
 
   /**
+   * Adds the given column to this table at the given position in the column list
+   *
+   * @param index   Zero-based index into the column list
+   * @param column  Column to be added
+   */
+  public void addColumn(int index, Column column) {
+    columnList.add(index, column);
+  }
+
+  /**
    * Sets the name of the table
    */
   @Override

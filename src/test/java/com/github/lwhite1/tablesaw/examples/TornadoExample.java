@@ -2,7 +2,7 @@ package com.github.lwhite1.tablesaw.examples;
 
 import com.github.lwhite1.tablesaw.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
+import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.io.CsvReader;
 import com.github.lwhite1.tablesaw.io.CsvWriter;
 import com.github.lwhite1.tablesaw.store.StorageManager;
@@ -22,7 +22,7 @@ public class TornadoExample {
     out(tornadoes.structure().print());
     out();
 
-    tornadoes.removeColumns("Year", "Month", "Day", "NS", "SN", "SG", "FIPS 1", "FIPS 2", "FIPS 3", "FIPS 4");
+    tornadoes.removeColumns("Year", "Month", "Day", "State FIPS", "NS", "SN", "SG", "FIPS 1", "FIPS 2", "FIPS 3", "FIPS 4");
 
     CsvWriter.write("data/tornadoes_1950-2014.csv", tornadoes);
 
@@ -30,39 +30,53 @@ public class TornadoExample {
 
     out(tornadoes.structure().print());
 
+    tornadoes.setName("tornadoes");
+
     out();
     out("Column names");
     out(tornadoes.columnNames());
 
-    tornadoes.setName("tornadoes");
+    out();
+    out("Remove the 'State No' column");
+    tornadoes.removeColumns("State No");
+    out(tornadoes.columnNames());
 
     out();
     out("print the table's shape:");
     out(tornadoes.shape());
 
     out();
-    out("first five rows:");
+    out("Use head(5) to view the first five rows:");
     out(tornadoes.head(5).print());
 
     out();
-    out("remove a column");
-    tornadoes.removeColumns("State No");
-    out("Revised column names");
-    out(tornadoes.columnNames());
-
-    out();
     out("Extact month from the date and make it a separate column");
+    CategoryColumn month = tornadoes.localDateColumn("Date").month();
+    out(month.summary().print());
 
-    // TODO(lwhite): Add function to return month as string
-    IntColumn month = tornadoes.localDateColumn("Date").month();
-    tornadoes.addColumn(month);
+    out("Add the month column to the table");
+    tornadoes.addColumn(2, month);
     out(tornadoes.columnNames());
-    out(month.stats().asTable("").print());
 
     out();
-    out("Filtering");
+    out("Filtering: Tornadoes where there were fatalities");
     Table fatal = tornadoes.selectWhere(column("Fatalities").isGreaterThan(0));
     out(fatal.shape());
+
+    out();
+    out(fatal.head(5).print());
+
+    out();
+    out("Total fatalities: " + fatal.intColumn("Fatalities").sum());
+
+    out();
+    out("Sorting on Fatalities in descending order");
+    fatal = fatal.sortDescendingOn("Fatalities");
+    out(fatal.head(5).print());
+
+    out("");
+    out("Calculating basic descriptive statistics on Fatalities");
+    out(fatal.intColumn("Fatalities").stats().asTable("").print());
 
     out();
     out("Writing the revised table to a new csv file");
@@ -92,7 +106,6 @@ public class TornadoExample {
       LOCAL_TIME,  // time
       CATEGORY,    // tz
       CATEGORY,    // state
-      CATEGORY,    // state FIPS
       INTEGER,     // state torn number
       INTEGER,     // scale
       INTEGER,     // injuries

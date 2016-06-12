@@ -227,7 +227,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return newColumn;
   }
 
-  public IntColumn month() {
+  public IntColumn monthValue() {
     IntColumn newColumn = IntColumn.create(this.name() + " month");
 
     for (int r = 0; r < this.size(); r++) {
@@ -236,6 +236,20 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {
         newColumn.add(PackedLocalDate.getMonthValue(c1));
+      }
+    }
+    return newColumn;
+  }
+
+  public CategoryColumn month() {
+    CategoryColumn newColumn = CategoryColumn.create(this.name() + " month");
+
+    for (int r = 0; r < this.size(); r++) {
+      int c1 = this.getInt(r);
+      if (c1 == LocalDateColumn.MISSING_VALUE) {
+        newColumn.add(CategoryColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(PackedLocalDate.getMonth(c1).name());
       }
     }
     return newColumn;
