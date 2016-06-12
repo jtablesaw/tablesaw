@@ -283,6 +283,14 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return output;
   }
 
+  public double[] toDoubleArray() {
+    double[] output = new double[data.size()];
+    for (int i = 0; i < data.size(); i++) {
+      output[i] = data.getInt(i);
+    }
+    return output;
+  }
+
   public String print() {
     StringBuilder builder = new StringBuilder();
     builder.append(title());

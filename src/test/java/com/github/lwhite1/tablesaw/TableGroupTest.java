@@ -30,18 +30,15 @@ public class TableGroupTest {
 
   @Test
   public void testGetSubTables() {
-    TableGroup tableGroup = new TableGroup(table, table.column(2).name());
+    TableGroup tableGroup = new TableGroup(table, table.column("who"));
     List<SubTable> tables = tableGroup.getSubTables();
     System.out.println(tables.size());
   }
 
   @Test
   public void testWith2GroupingCols() {
-    CategoryColumn month = CategoryColumn.create("month");
-    LocalDateColumn dateColumn = table.localDateColumn(0);
-    for (int date : dateColumn.data()) {
-      month.add(String.valueOf(PackedLocalDate.getMonth(date)));
-    }
+    CategoryColumn month = table.localDateColumn(0).month();
+    month.setName("month");
     table.addColumn(month);
     String[] splitColumnNames = {table.column(2).name(), "month"};
     TableGroup tableGroup = new TableGroup(table, splitColumnNames);

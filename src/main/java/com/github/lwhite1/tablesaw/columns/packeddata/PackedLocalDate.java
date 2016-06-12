@@ -156,32 +156,43 @@ public class PackedLocalDate {
     return DayOfWeek.of(dow0 + 1);
   }
 
-  public static boolean isInQ1(int packedDate) {
+  public static int getQuarter(int packedDate) {
     Month month = getMonth(packedDate);
-    return month == Month.JANUARY ||
-        month == Month.FEBRUARY ||
-        month == Month.MARCH;
+    switch (month) {
+      case JANUARY:
+      case FEBRUARY:
+      case MARCH:
+        return 1;
+      case APRIL:
+      case MAY:
+      case JUNE:
+        return 2;
+      case JULY:
+      case AUGUST:
+      case SEPTEMBER:
+        return 3;
+      case OCTOBER:
+      case NOVEMBER:
+      case DECEMBER:
+        return 4;
+    }
+    throw new RuntimeException("Failed to extract quarter from packedDate");
+  }
+
+  public static boolean isInQ1(int packedDate) {
+    return getQuarter(packedDate) == 1;
   }
 
   public static boolean isInQ2(int packedDate) {
-    Month month = getMonth(packedDate);
-    return month == Month.APRIL ||
-        month == Month.MAY ||
-        month == Month.JUNE;
+    return getQuarter(packedDate) == 2;
   }
 
   public static boolean isInQ3(int packedDate) {
-    Month month = getMonth(packedDate);
-    return month == Month.JULY ||
-        month == Month.AUGUST ||
-        month == Month.SEPTEMBER;
+    return getQuarter(packedDate) == 3;
   }
 
   public static boolean isInQ4(int packedDate) {
-    Month month = getMonth(packedDate);
-    return month == Month.OCTOBER ||
-        month == Month.NOVEMBER ||
-        month == Month.DECEMBER;
+    return getQuarter(packedDate) == 4;
   }
 
   public static boolean isAfter(int packedDate, int value) {

@@ -1,13 +1,36 @@
 package com.github.lwhite1.tablesaw.aggregator;
 
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.columns.IntColumn;
 import org.apache.commons.math3.stat.StatUtils;
 
 /**
  * Contains common utilities for double and long types
  */
 public interface NumReduceUtils extends Column {
+
+
+  NumericReduceFunction mean = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Mean";
+    }
+
+    @Override
+    public double reduce(Column data) {
+      if (data.type() == ColumnType.FLOAT) {
+        return StatUtils.mean(((FloatColumn) data).toDoubleArray());
+      } else if (data.type() == ColumnType.INTEGER) {
+        return StatUtils.mean(((IntColumn) data).toDoubleArray());
+      }
+      throw new IllegalArgumentException("Attempted to reduce numeric function to non-numeric column");
+    }
+  };
+
+
 
   // TODO(lwhite): Reimplement these methods to work natively with float[], instead of converting to double[]
 

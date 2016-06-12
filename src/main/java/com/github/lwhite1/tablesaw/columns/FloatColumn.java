@@ -152,63 +152,23 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
   }
 
   public RoaringBitmap isLessThan(float f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (float f1 : data) {
-      if (f1 < f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isLessThan, f);
   }
 
   public RoaringBitmap isGreaterThan(float f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (float f1 : data) {
-      if (f1 > f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isGreaterThan, f);
   }
 
   public RoaringBitmap isGreaterThanOrEqualTo(float f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (float f1 : data) {
-      if (f1 >= f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isGreaterThanOrEqualTo, f);
   }
 
   public RoaringBitmap isLessThanOrEqualTo(float f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (float floats : data) {
-      if (floats <= f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isLessThanOrEqualTo, f);
   }
 
   public RoaringBitmap isEqualTo(float f) {
-    RoaringBitmap results = new RoaringBitmap();
-    int i = 0;
-    for (float floats : data) {
-      if (floats == f) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
+    return apply(isEqualTo, f);
   }
 
   public RoaringBitmap isEqualTo(FloatColumn f) {

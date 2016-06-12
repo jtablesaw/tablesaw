@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw;
 
+import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
@@ -622,6 +623,20 @@ public class Table implements Relation {
       return null;
     }
     return t;
+  }
+
+  /**
+   * Returns the result of applying the given function to the specified column
+   *
+   * @param numericColumnName   The name of a numeric (integer, float, etc.) column in this table
+   * @param function            A numeric reduce function
+   *
+   * @throws IllegalArgumentException if numericColumnName doesn't name a numeric column in this table
+   * @return  the function result
+   */
+  public double reduce(String numericColumnName, NumericReduceFunction function) {
+    Column column = column(numericColumnName);
+    return function.reduce(column);
   }
 
   public static Table fromCSV(ColumnType[] types, String fileName) {

@@ -1,10 +1,15 @@
 package com.github.lwhite1.tablesaw;
 
+import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
+import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.ToIntFunction;
 
 /**
  * A group of tables formed by performing splitting operations on an original table
@@ -121,5 +126,21 @@ public class TableGroup {
 
   public int size() {
     return subTables.size();
+  }
+
+  public Table reduce(String numericColumnName, NumericReduceFunction function) {
+    Preconditions.checkArgument(!subTables.isEmpty());
+    Table t = new Table(original.name() + " summary");
+    CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
+    FloatColumn resultColumn = new FloatColumn(function.functionName(), subTables.size());
+    t.addColumn(groupColumn);
+    t.addColumn(resultColumn);
+
+    for (SubTable subTable : subTables) {
+      double result = subTable.reduce(numericColumnName, function);
+      groupColumn.add(subTable.name());
+      resultColumn.add((float) result);
+    }
+    return t;
   }
 }

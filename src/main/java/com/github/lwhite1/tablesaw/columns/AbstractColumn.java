@@ -1,6 +1,5 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 
 import java.util.UUID;
@@ -15,8 +14,6 @@ abstract class AbstractColumn implements Column {
   private String name;
 
   private String comment;
-
-  private ColumnType columnType;
 
   public AbstractColumn(String name) {
     this.name = name;
@@ -50,15 +47,6 @@ abstract class AbstractColumn implements Column {
   @Override
   public String comment() {
     return comment;
-  }
-
-  @Override
-  public ColumnType type() {
-    return columnType;
-  }
-
-  protected void setColumnType(ColumnType columnType) {
-    this.columnType = columnType;
   }
 
   @Override

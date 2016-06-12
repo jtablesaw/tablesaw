@@ -30,7 +30,7 @@ class SubTable extends Table {
    *
    * @param original The table from which this one was derived
    */
-  public SubTable(Table original) {
+   SubTable(Table original) {
     super(original.name(),
         original.emptyCopy().columns().toArray(new Column[original.columnCount()]));
   }
@@ -43,7 +43,10 @@ class SubTable extends Table {
     this.values = values;
   }
 
-  public void addRow(int rowIndex, Table sourceTable) {
+  /**
+   * Adds a single row to this table from sourceTable, copying every column in sourceTable
+   */
+  void addRow(int rowIndex, Table sourceTable) {
     for (int i = 0; i < columnCount(); i++) {
       Column column = column(i);
       ColumnType type = column.type();
