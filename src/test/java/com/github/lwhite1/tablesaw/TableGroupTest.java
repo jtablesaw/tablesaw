@@ -15,13 +15,13 @@ import java.util.List;
  */
 public class TableGroupTest {
 
-  ColumnType[] types = {
+  private static ColumnType[] types = {
       ColumnType.LOCAL_DATE,     // date of poll
       ColumnType.INTEGER,        // approval rating (pct)
-      ColumnType.CATEGORY             // polling org
+      ColumnType.CATEGORY        // polling org
   };
 
-  Table table;
+  private Table table;
 
   @Before
   public void setUp() throws Exception {

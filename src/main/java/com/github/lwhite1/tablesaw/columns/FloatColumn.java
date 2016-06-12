@@ -13,12 +13,10 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrays;
 import it.unimi.dsi.fastutil.floats.FloatComparator;
-import it.unimi.dsi.fastutil.floats.FloatHeapSemiIndirectPriorityQueue;
 import it.unimi.dsi.fastutil.floats.FloatIterable;
 import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
-import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -585,5 +583,4 @@ public class FloatColumn extends AbstractColumn implements NumReduceUtils, Float
     }
     return bitmap;
   }
-
 }

@@ -54,7 +54,6 @@ public interface IntMapUtils extends IntColumnUtils {
       } else {
         pctColumn.add(FloatColumn.MISSING_VALUE);
       }
-
     }
     return pctColumn;
   }

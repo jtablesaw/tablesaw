@@ -8,17 +8,17 @@ import org.junit.Test;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
 
 /**
- *
+ * Tests for filtering on the Table class
  */
 public class TableFilteringTest {
 
-  ColumnType[] types = {
+  private final ColumnType[] types = {
       ColumnType.LOCAL_DATE,     // date of poll
       ColumnType.INTEGER,        // approval rating (pct)
       ColumnType.CATEGORY             // polling org
   };
 
-  Table table;
+  private Table table;
 
   @Before
   public void setUp() throws Exception {

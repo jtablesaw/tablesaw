@@ -105,20 +105,20 @@ public class StorageManagerTest {
       FLOAT,   // day
       LOCAL_DATE,  // date
       LOCAL_TIME,  // time
-      CATEGORY,  // tz
-      CATEGORY,  // st
+      CATEGORY, // tz
+      CATEGORY, // st
       CATEGORY, // state fips
-      FLOAT,   // state torn number
-      FLOAT,   // scale
-      FLOAT,   // injuries
+      FLOAT,    // state torn number
+      FLOAT,    // scale
+      FLOAT,    // injuries
       FLOAT,    // fatalities
-      CATEGORY,  // loss
-      FLOAT,  // crop loss
-      FLOAT,  // St. Lat
-      FLOAT,  // St. Lon
-      FLOAT,  // End Lat
-      FLOAT,  // End Lon
-      FLOAT, // length
+      CATEGORY, // loss
+      FLOAT,   // crop loss
+      FLOAT,   // St. Lat
+      FLOAT,   // St. Lon
+      FLOAT,   // End Lat
+      FLOAT,   // End Lon
+      FLOAT,   // length
       FLOAT,   // width
       FLOAT,   // NS
       FLOAT,   // SN

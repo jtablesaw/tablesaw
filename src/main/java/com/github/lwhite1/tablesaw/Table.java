@@ -416,6 +416,23 @@ public class Table implements Relation {
     return newTable;
   }
 
+  public Table structure() {
+    Table t = new Table("Structure of " + name());
+    IntColumn index = new IntColumn("Index", columnCount());
+    CategoryColumn columnName = new CategoryColumn("Column Names", columnCount());
+    CategoryColumn columnType = new CategoryColumn("Column Type", columnCount());
+    t.addColumn(index);
+    t.addColumn(columnName);
+    t.addColumn(columnType);
+    columnName.addAll(columnNames());
+    for (int i = 0; i < columnCount(); i++) {
+      Column column = columnList.get(i);
+      index.add(i);
+      columnType.add(column.type().name());
+    }
+    return t;
+  }
+
   public Projection select(String... columnName) {
     return new Projection(this, columnName);
   }

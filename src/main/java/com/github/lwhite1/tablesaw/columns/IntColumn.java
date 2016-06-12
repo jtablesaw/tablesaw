@@ -8,8 +8,10 @@ import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapper.IntMapUtils;
 import com.github.lwhite1.tablesaw.sorting.IntComparisonUtil;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.IntStats;
 import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
 import com.github.lwhite1.tablesaw.util.StatUtil;
+import com.github.lwhite1.tablesaw.util.Stats;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -410,5 +412,10 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   @Override
   public IntIterator iterator() {
     return data.iterator();
+  }
+
+  public Stats stats() {
+    FloatColumn values = FloatColumn.create(name(), toFloatArray());
+    return StatUtil.stats(values);
   }
 }

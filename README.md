@@ -1,8 +1,7 @@
 Tablesaw
 =======
    
-Tablesaw is a high-performance, in-memory data table, combined with tools for data manipulation, 
-and a column-oriented storage format. In Java.
+Tablesaw is a high-performance, in-memory data table with tools for data manipulation and a column-oriented storage format. In Java.
 
 __With Tablesaw, you can import, sort, transform, filter, and summarize tables of up to one billion rows on a laptop.__ 
 Tablesaw uses tricks from high-frequency trading apps (e.g. primitive collections) and 
@@ -36,6 +35,8 @@ Then add a dependency to your pom file:
         <artifactId>tablesaw</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
+    
+Tablesaw requires Java 8 or newer.    
 
 ## An introduction in 9 lines of code
 
