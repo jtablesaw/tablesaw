@@ -51,11 +51,11 @@ public class ObservationDataTest {
 
    // generateTestData(t, numberOfRecordsInTable, stopwatch);
 
-   // t = loadFromCsv(stopwatch);
+    t = loadFromCsv(stopwatch);
 
-    t = loadFromColumnStore(stopwatch);
+   // t = loadFromColumnStore(stopwatch);
 
-   // writeToColumnStore(t, stopwatch);
+    writeToColumnStore(t, stopwatch);
 
     String randomConcept = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
 
@@ -63,7 +63,12 @@ public class ObservationDataTest {
     Table result = t.selectWhere(
         QueryHelper.column("concept").isEqualTo(randomConcept));
     System.out.println("concept found in " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
+    System.out.println("results found: " + result.rowCount());
     System.out.println(result.print());
+
+    stopwatch.reset().start();
+    t.floatColumn("value").sum();
+    System.out.println("Time to sum floats: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms");
 
     System.exit(0);
   }
