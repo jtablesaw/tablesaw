@@ -4,9 +4,6 @@ import com.github.lwhite1.tablesaw.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.io.CsvReader;
-import com.github.lwhite1.tablesaw.io.CsvWriter;
-import com.github.lwhite1.tablesaw.store.StorageManager;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
@@ -18,16 +15,18 @@ public class TornadoExample {
 
   public static void main(String[] args) throws Exception {
 
-    Table tornadoes = CsvReader.read(COLUMN_TYPES_OLD, "data/1950-2014_torn.csv");
+    Table tornadoes = Table.fromCSV(COLUMN_TYPES_OLD, "data/1950-2014_torn.csv");
+    assert(tornadoes != null);
 
     out(tornadoes.structure().print());
     out();
 
     tornadoes.removeColumns("Year", "Month", "Day", "State FIPS", "NS", "SN", "SG", "FIPS 1", "FIPS 2", "FIPS 3", "FIPS 4");
 
-    CsvWriter.write("data/tornadoes_1950-2014.csv", tornadoes);
+    tornadoes.exportToCsv("data/tornadoes_1950-2014.csv");
 
-    tornadoes = CsvReader.read(COLUMN_TYPES, "data/tornadoes_1950-2014.csv");
+    tornadoes = Table.fromCSV(COLUMN_TYPES, "data/tornadoes_1950-2014.csv");
+    assert(tornadoes != null);
 
     out(tornadoes.structure().print());
 
@@ -89,16 +88,17 @@ public class TornadoExample {
 
     out();
     out("Writing the revised table to a new csv file");
-    CsvWriter.write("data/rev_tornadoes_1950-2014.csv", tornadoes);
+    tornadoes.exportToCsv("data/rev_tornadoes_1950-2014.csv");
 
     out();
     out("Saving to Tablesaw format");
-    StorageManager.saveTable("/tmp/tablesaw/testdata", tornadoes);
+    String dbName = tornadoes.save("/tmp/tablesaw/testdata");
+
+    // NOTE: dbName is equal to "/tmp/tablesaw/testdata/tornadoes.saw"
 
     out();
     out("Reading from Tablesaw format");
-    tornadoes = StorageManager.readTable("/tmp/tablesaw/testdata/tornadoes.saw");
-
+    tornadoes = Table.readTable(dbName);
   }
 
   private static void out(Object obj) {

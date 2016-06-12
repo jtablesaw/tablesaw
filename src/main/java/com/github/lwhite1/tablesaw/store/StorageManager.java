@@ -279,8 +279,9 @@ public class StorageManager {
    * @param folderName The location of the table (for example: "mytables")
    * @param table      The table to be saved
    * @throws IOException
+   * @return The path and name of the table
    */
-  public static void saveTable(String folderName, Relation table) throws IOException {
+  public static String saveTable(String folderName, Relation table) throws IOException {
 
     ExecutorService executorService = Executors.newFixedThreadPool(10);
     CompletionService writerCompletionService = new ExecutorCompletionService<>(executorService);
@@ -315,6 +316,7 @@ public class StorageManager {
       throw new RuntimeException(e);
     }
     executorService.shutdown();
+    return storageFolder;
   }
 
   private static void writeColumn(String fileName, Column column) {

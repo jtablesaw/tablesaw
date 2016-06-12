@@ -1,10 +1,14 @@
 package com.github.lwhite1.tablesaw;
 
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.filter.Filter;
+import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.io.CsvWriter;
 import com.github.lwhite1.tablesaw.sorting.Sort;
+import com.github.lwhite1.tablesaw.store.StorageManager;
 import com.github.lwhite1.tablesaw.store.TableMetadata;
 import com.github.lwhite1.tablesaw.util.IntComparatorChain;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
@@ -15,6 +19,7 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.io.IOException;
 import java.util.*;
 
 import static com.github.lwhite1.tablesaw.sorting.Sort.Order;
@@ -580,5 +585,54 @@ public class Table implements Relation {
         column.append(columnToAppend);
       }
     }
+  }
+
+  /**
+   * Exports this table as a CSV file with the name (and path) of the given file
+   * @param fileNameWithPath  The name of the file to save to. By default, it writes to the working directory,
+   *                  but you can specify a different folder by providing the path (e.g. mydata/myfile.csv)
+   */
+  public void exportToCsv(String fileNameWithPath) {
+    try {
+      CsvWriter.write(fileNameWithPath, this);
+    } catch (IOException e) {
+      System.err.println("Unable to export table as CSV file");
+      e.printStackTrace();
+    }
+  }
+
+  public String save(String folder) {
+    String storageFolder = "";
+    try {
+      storageFolder = StorageManager.saveTable(folder, this);
+    } catch (IOException e) {
+      System.err.println("Unable to save table in Tablesaw format");
+      e.printStackTrace();
+    }
+    return storageFolder;
+  }
+
+  public static Table readTable(String tableNameAndPath) {
+    Table t;
+    try {
+      t = StorageManager.readTable(tableNameAndPath);
+    } catch (IOException e) {
+      System.err.println("Unable to load table from Tablesaw table format");
+      e.printStackTrace();
+      return null;
+    }
+    return t;
+  }
+
+  public static Table fromCSV(ColumnType[] types, String fileName) {
+    Table t;
+    try {
+      t = CsvReader.read(types, fileName);
+    } catch (IOException e) {
+      System.err.println("Unable to load table from CSV file");
+      e.printStackTrace();
+      return null;
+    }
+    return t;
   }
 }
