@@ -131,7 +131,7 @@ string representation for display. Because structure returns a table, you can pe
 
     
 ```
-Of course that also returned a table, this one containing only records for columns of INTEGER type. 
+Of course, that _also_ returned a table, this one containing only records for columns of INTEGER type. 
 We'll cover filtering or selecting rows in more detail later.
 
 ### Viewing data
