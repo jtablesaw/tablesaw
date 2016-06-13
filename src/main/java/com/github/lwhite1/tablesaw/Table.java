@@ -640,6 +640,12 @@ public class Table implements Relation {
     return function.reduce(column.toDoubleArray());
   }
 
+  //TODO(lwhite): Reorder params so the grouping param can be an array
+  public Table reduce(String numericColumnName, String groupColumnName, NumericReduceFunction function) {
+    TableGroup tableGroup = new TableGroup(this, groupColumnName);
+    return tableGroup.reduce(numericColumnName, function);
+  }
+
   public static Table fromCSV(ColumnType[] types, String fileName) {
     Table t;
     try {

@@ -230,21 +230,21 @@ grouped by the values in another column.
 
 ```java
 
-    IntColumn injuries = tornadoes.intColumn("Injuries");
-    Table sumInjuriesByScale = tornadoes.sum(injuries, "Scale");
-    sumInjuriesByScale.setName("Total injuries by Tornado Scale");
+    Table injuriesByScale = tornadoes.reduce("Injuries", "Scale", NumReduceUtils.median);
+    injuriesByScale.setName("Median injuries by Tornado Scale");
+    out(injuriesByScale.print());
 ```
 This produces the following table, in which Group represents the Tornado Scale and Sum the total number of injures for that group:
 
-		Total injuries by Tornado Scale
-		Group Sum   
-		-9    6     
-		0     790   
-		1     7010  
-		2     15887 
-		3     25896 
-		4     40481 
-		5     16009 
+    Median injuries by Tornado Scale
+    Group Median 
+    -9    0.0    
+    0     0.0    
+    1     0.0    
+    2     0.0    
+    3     1.0    
+    4     12.0   
+    5     107.0  
 
 ### Write the new CSV file to disk
 
