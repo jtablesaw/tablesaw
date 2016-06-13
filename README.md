@@ -7,13 +7,13 @@ __With Tablesaw, you can import, sort, transform, filter, and summarize tables w
 Tablesaw uses tricks from high-frequency trading apps (e.g. primitive collections) and 
 data warehouses (e.g. compressed, column-oriented storage and data structures), to maximize what you can do in a single VM.
 
-The goal is to make all but the biggest data wrangling jobs approachable without the complexity of distributed computing (HDFS, Hadoop, etc.). 
+The goal is to make all but the biggest data wrangling jobs approachable without distributed computing (HDFS, Hadoop, etc.). 
 Analysis is more productive with less engineering overhead and shorter iteration cycles. A fluent API lets developers express operations in a concise and readable fashion. 
 
 Tablesaw provides general-purpose analytic support, with rich functionality for working with time-series, 
 including specialized column types for dates, times, and timestamps. 
 
-I'm aiming for usability at least as good as R dataframes or Pandas. And with Java 9, you'll be able to work interactively in the REPL. 
+It's designed for ease-of-use, and with Java 9, you'll be able to work interactively in the REPL. 
 
 For more information and examples see: https://javadatascience.wordpress.com
 
@@ -40,18 +40,20 @@ Tablesaw requires Java 8 or newer.
 
 ## An introduction to Tablesaw
 
-In this introduction, we'll cover some of the basic features of Tablesaw using a tornado data set. Here's what we'll cover:
+Lets explore a tornado data set using Tablesaw. Here's what we'll cover:
 
-* Read and writing data using CSV files
-* Viewing a table's metadata, including column names, shape (row and column counts), and structure
+* Read and writing CSV files
+* Viewing table metadata
 * Adding and removing columns
 * Printing the first few rows for a peak at the data
-* Sorting a table by column name
-* Running descriptive statistics (mean, min, max, etc.) on a numeric column
+* Sorting 
+* Running descriptive stats (mean, min, max, etc.)
 * Performing mapping operations over columns
 * Filtering rows 
-* Calculating totals and sub-totals
-* Reading and writing tables in Tablesaw's compressed columnar storage format
+* Using groups and reduce functions to compute stats for subsets
+* Storing tables in Tablesaw's compressed columnar storage format
+
+All the data is in the projects _data_ folder.
 
 ### Read a CSV file
 Here we read a csv file of tornado data. First, we say what column types are present.
@@ -113,8 +115,8 @@ The _structure()_ method shows the index, name and type of each column
         
 ```
 Note the print() method in _tornadoes.structure().print()_.
-Like many Tablesaw methods, _structure()_ returns a table object, and print() produces a 
-string representation of that object for display. Because structure returns a table, you can perform other operations on it, like:
+Like many Tablesaw methods, _structure()_ returns a table object; print() produces a 
+string representation for display. Because structure returns a table, you can perform other operations on it, like:
 
 ```java
     
@@ -175,7 +177,7 @@ You can also remove columns from tables, if you need to save memory or reduce cl
 
 
 ### Sorting by column
-Now that we've some some data, lets sort the table in reverse order by the id column
+Now lets sort the table in reverse order by the id column
 
 ```java
 
@@ -185,6 +187,7 @@ Now that we've some some data, lets sort the table in reverse order by the id co
 ### Descriptive statistics
 
 Descriptive statistics are calculated using the _describe()_ method:
+
 ```java
 
     table.column("Fatalities").describe();
@@ -201,11 +204,9 @@ This outputs:
 		Range    157.0     
 		Std. Dev 9.573451  
 
-when applied to a table containing only fatal tornados. 
-
 ### Filtering Rows
 
-To filter records you can use arbitrary predicates, but it's often easier to use the built-in filter classes as shown below:
+To filter rows you can use arbitrary logic, but it's easier to use the built-in filter classes as shown below:
 
 ```java
 
@@ -225,8 +226,8 @@ The last example above returns a table containing only the three columns named i
 
 Column metrics can be calculated using methods like sum(), product(), mean(), max(), etc.
 
-It is also possible to apply those methods to a table to calculate results on a numeric column, 
-grouped by the values in another column.
+You can also apply those methods to a table, calculating results on one column, 
+grouped by the values in another.
 
 ```java
 
@@ -254,7 +255,7 @@ This produces the following table, in which Group represents the Tornado Scale a
 ```
 ### Read and write data from the Tablesaw format
 
-Once you've imported data, especially large datasets, you can use Tablesaw's own format to save the table. 
+Once you've imported data you can use Tablesaw's own disk format to save it. 
 In Tablesaw format, reads and writes are an order of magnitude faster than optimized CSV operations.
 
 ```java
