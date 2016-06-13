@@ -72,7 +72,7 @@ Often, the best way to start is to print the column names for reference:
 
 ```java
     
-    out(tornadoes.columnNames());
+    tornadoes.columnNames();
 ```
 which produces: 
 
@@ -85,7 +85,7 @@ The _shape()_ method displays the row and column counts:
 
 ```java
     
-    out(tornadoes.shape());
+    tornadoes.shape();
     
     >> 59945 rows X 10 cols
 
@@ -96,7 +96,7 @@ The _structure()_ method shows the index, name and type of each column
 
 ```java
 
-    out(tornadoes.structure().print());
+    tornadoes.structure().print();
     
     >> Structure of data/tornadoes_1950-2014.csv
 	Index Column Names Column Type 
@@ -158,7 +158,7 @@ The method below extracts the Month name from the date column into a new column.
 ```java
 
     CategoryColumn month = tornadoes.localDateColumn("Date").month();
-    out(month.summary().print());
+    month.summary().print();
 ```
 Mapping operations in Tablesaw take one or more columns as inputs and produce an output column. 
 
@@ -233,7 +233,7 @@ grouped by the values in another.
 
     Table injuriesByScale = tornadoes.reduce("Injuries", "Scale", NumReduceUtils.median);
     injuriesByScale.setName("Median injuries by Tornado Scale");
-    out(injuriesByScale.print());
+    injuriesByScale.print();
 ```
 This produces the following table, in which Group represents the Tornado Scale and Sum the total number of injures for that group:
 
