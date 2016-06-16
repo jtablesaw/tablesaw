@@ -8,7 +8,10 @@ import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
 import org.roaringbitmap.RoaringBitmap;
 
+import static com.github.lwhite1.tablesaw.columns.IntColumnUtils.isGreaterThan;
+
 /**
+ *
  */
 public class IntGreaterThan extends ColumnFilter {
 
@@ -30,6 +33,6 @@ public class IntGreaterThan extends ColumnFilter {
         return ((LongColumn) column).isGreaterThan(value);
     }
     IntColumn intColumn = (IntColumn) column;
-    return intColumn.isGreaterThan(value);
+    return intColumn.apply(isGreaterThan, value);
   }
 }

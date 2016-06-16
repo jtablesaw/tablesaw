@@ -59,12 +59,29 @@ import com.github.lwhite1.tablesaw.filter.text.TextIsShorterThan;
 import com.github.lwhite1.tablesaw.filter.text.TextIsUpperCase;
 import com.github.lwhite1.tablesaw.filter.text.TextMatchesRegex;
 import com.github.lwhite1.tablesaw.filter.text.TextStartsWith;
+import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
+import it.unimi.dsi.fastutil.objects.ObjectSortedSet;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 /**
- * A reference to a column, that can be used in evaluating query predicates
+ * A reference to a column that can be used in evaluating query predicates. It is a key part of having a fluent API
+ * for querying tables.
+ * <p>
+ * Basically, it lets you write a query like this:
+ * <p>
+ * table.selectWhere(column("foo").isEqualTo("Bar"));
+ * <p>
+ * In that example, column() is a static method that returns a ColumnReference for a column named "foo".
+ * The method isEqualTo(), is implemented on ColumnReference in a way that it can be applied to potentially, multiple
+ * column types, although in this case, it only makes sense for CategoryColumns since the argument is a string.
+ * <p>
+ * When selectWhere() isExecuted, it supplies the table to the ColumnReference. The ColumnReference uses the table
+ * and columnName to get access to the right column, and then fulfils its role by ensuring that the filter
+ * "isEqualTo("Bar") is applied to all the cells in the column.
  */
 public class ColumnReference {
 

@@ -5,6 +5,8 @@ import com.github.lwhite1.tablesaw.columns.ColumnReference;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import org.roaringbitmap.RoaringBitmap;
 
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isGreaterThan;
+
 /**
  */
 public class FloatGreaterThan extends ColumnFilter {
@@ -18,6 +20,6 @@ public class FloatGreaterThan extends ColumnFilter {
 
   public RoaringBitmap apply(Table relation) {
     FloatColumn floatColumn = (FloatColumn) relation.column(columnReference.getColumnName());
-    return floatColumn.isGreaterThan(value);
+    return floatColumn.apply(isGreaterThan, value);
   }
 }

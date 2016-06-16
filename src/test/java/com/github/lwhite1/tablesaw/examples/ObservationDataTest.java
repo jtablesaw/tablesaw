@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 public class ObservationDataTest {
 
   private static final String CSV_FILE = "/Users/larrywhite/IdeaProjects/testdata/obs.csv";
-  private static final String DB = "/Users/larrywhite/IdeaProjects/testdata/obs.db";
+  private static final String DB = "/Users/larrywhite/IdeaProjects/testdata/obs.csv.saw";
 
   // pools to get random test data from
   private static List<String> concepts = new ArrayList<>(100_000);
@@ -51,11 +51,11 @@ public class ObservationDataTest {
 
    // generateTestData(t, numberOfRecordsInTable, stopwatch);
 
-    t = loadFromCsv(stopwatch);
+   // t = loadFromCsv(stopwatch);
 
-   // t = loadFromColumnStore(stopwatch);
+    t = loadFromColumnStore(stopwatch);
 
-    writeToColumnStore(t, stopwatch);
+   // writeToColumnStore(t, stopwatch);
 
     String randomConcept = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
 
@@ -75,7 +75,7 @@ public class ObservationDataTest {
 
   private static Table loadFromColumnStore(Stopwatch stopwatch) throws IOException {
     stopwatch.reset().start();
-    Table t = StorageManager.readTable(DB + File.separator + "2bc6dca1-af95-4840-b07e-0c3f7b146bac");
+    Table t = StorageManager.readTable(DB);
     System.out.println("Loaded from column store in " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
     return t;
   }

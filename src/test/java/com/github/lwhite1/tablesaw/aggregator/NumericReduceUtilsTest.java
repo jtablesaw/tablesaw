@@ -11,7 +11,7 @@ import org.junit.Test;
 /**
  *
  */
-public class NumReduceUtilsTest {
+public class NumericReduceUtilsTest {
 
   private static ColumnType[] types = {
       ColumnType.LOCAL_DATE,     // date of poll
@@ -28,7 +28,7 @@ public class NumReduceUtilsTest {
 
   @Test
   public void testMean() {
-    double result = table.reduce("approval", NumReduceUtils.mean);
+    double result = table.reduce("approval", NumericReduceUtils.mean);
     System.out.println(result);
   }
 
@@ -36,7 +36,7 @@ public class NumReduceUtilsTest {
   public void testGroupMean() {
     Column byColumn = table.column("who");
     TableGroup group = new TableGroup(table, byColumn);
-    Table result = group.reduce("approval", NumReduceUtils.mean);
+    Table result = group.reduce("approval", NumericReduceUtils.mean);
     System.out.println(result.print());
   }
 }

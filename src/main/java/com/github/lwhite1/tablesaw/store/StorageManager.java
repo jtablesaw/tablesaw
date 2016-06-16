@@ -37,6 +37,8 @@ public class StorageManager {
   private static final String FILE_EXTENSION = "saw";
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
 
+  private static final int READER_POOL_SIZE = 4;
+
   /**
    * Reads a tablesaw table into memory
    *
@@ -46,7 +48,7 @@ public class StorageManager {
    */
   public static Table readTable(String path) throws IOException {
 
-    ExecutorService executorService = Executors.newFixedThreadPool(10);
+    ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
     CompletionService readerCompletionService = new ExecutorCompletionService<>(executorService);
 
 
@@ -54,7 +56,8 @@ public class StorageManager {
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
     Table table = new Table(tableMetadata);
 
-    // NB: We do some extra work with the hashmap to ensure that the columns are added to the table in original order
+    // NB: We do some extra work with the hash map to ensure that the columns are added to the table in original order
+    // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all columns are read
     Map<String, Column> columns = new HashMap<>();
     try {
       for (ColumnMetadata column : columnMetadata) {

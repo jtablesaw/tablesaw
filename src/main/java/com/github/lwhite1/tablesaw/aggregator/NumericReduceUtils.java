@@ -6,7 +6,7 @@ import org.apache.commons.math3.stat.StatUtils;
 /**
  * Contains common utilities for double and long types
  */
-public class NumReduceUtils {
+public class NumericReduceUtils {
 
   // TODO(lwhite): Reimplement these methods to work natively with float[], instead of converting to double[]
 

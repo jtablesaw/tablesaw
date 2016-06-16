@@ -4,9 +4,14 @@ import com.github.lwhite1.tablesaw.api.QueryHelper;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.Table;
+import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
+import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
+
 /**
  *
  */
@@ -32,13 +37,14 @@ public class IoTest1 {
 
     print(table.floatColumn("stop_lon").describe());
 
-    Table v = table.selectWhere(QueryHelper.column("stop_lon").isGreaterThan(-0.1f));
+    Table v = table.selectWhere(column("stop_lon").isGreaterThan(-0.1f));
     print(v.print());
     print(v.rowCount());
   }
 
   @Test
   public void testWithBushData() throws Exception {
+
     // Read the CSV file
     ColumnType[] types = {LOCAL_DATE, INTEGER, CATEGORY};
     Table table = CsvReader.read(types, "data/BushApproval.csv");

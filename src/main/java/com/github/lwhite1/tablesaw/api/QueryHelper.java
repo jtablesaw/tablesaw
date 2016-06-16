@@ -12,7 +12,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A static utility class designed to take some of the work, and verbosity, out of making queries
+ * A static utility class designed to take some of the work, and verbosity, out of making queries.
+ *
+ * It is intended to be imported statically in any class that will run queries as it makes them easier to write - and read.
  */
 public class QueryHelper {
 
