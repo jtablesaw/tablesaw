@@ -158,7 +158,6 @@ The method below extracts the Month name from the date column into a new column.
 ```java
 
     CategoryColumn month = tornadoes.localDateColumn("Date").month();
-    month.summary().print();
 ```
 Mapping operations in Tablesaw take one or more columns as inputs and produce an output column. 
 
@@ -215,7 +214,7 @@ To filter rows you can use arbitrary logic, but it's easier to use the built-in 
     tornadoes.selectWhere(column("Date").isInApril());
     
     tornadoes.selectWhere(either(column("Width").isGreaterThan(300)),   // 300 yards
-    							(column("Length").isGreaterThan(10);    // 10 miles
+    			 	(column("Length").isGreaterThan(10)));    // 10 miles
     							
     tornadoes.select("State", "Date", "Scale").where(column("Date").isInQ2());
     
@@ -231,11 +230,10 @@ grouped by the values in another.
 
 ```java
 
-    Table injuriesByScale = tornadoes.reduce("Injuries", "Scale", NumReduceUtils.median);
+    Table injuriesByScale = tornadoes.reduce("Injuries", "Scale", median);
     injuriesByScale.setName("Median injuries by Tornado Scale");
-    injuriesByScale.print();
 ```
-This produces the following table, in which Group represents the Tornado Scale and Sum the total number of injures for that group:
+This produces the following table, in which Group represents the Tornado Scale and Median the median injures for that group:
 
     Median injuries by Tornado Scale
     Group Median 
@@ -268,6 +266,5 @@ This is just the beginning of what Tablesaw can do. More information is availabl
  https://javadatascience.wordpress.com
  
 ## A work-in-progress
-__Tablesaw is in an experimental state__, with a production release planned for late 2016. 
-A great deal of additional functionality will follow the initial release, including window operations (like rolling averages), 
- outlier detection, and integrated machine-learning.
+__Tablesaw is moving towards stability of the core functionality and APIs__. A production release planned for early Q3 2016. 
+A great deal of additional functionality will follow the initial release, including window operations (like rolling averages), outlier detection, database integration, and integrated machine-learning.
