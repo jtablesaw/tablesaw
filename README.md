@@ -266,5 +266,5 @@ This is just the beginning of what Tablesaw can do. More information is availabl
  https://javadatascience.wordpress.com
  
 ## A work-in-progress
-__Tablesaw is moving towards stability of the core functionality and APIs__. A production release planned for early Q3 2016. 
+__Tablesaw is moving towards stability of the core functionality and APIs__. A production release planned for Q3 2016. 
 A great deal of additional functionality will follow the initial release, including window operations (like rolling averages), outlier detection, database integration, and integrated machine-learning.
