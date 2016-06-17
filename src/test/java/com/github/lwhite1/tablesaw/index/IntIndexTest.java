@@ -2,11 +2,17 @@ package com.github.lwhite1.tablesaw.index;
 
 import com.github.lwhite1.tablesaw.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.columns.IntColumnUtils;
 import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.store.StorageManager;
+import com.google.common.base.Stopwatch;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.roaringbitmap.RoaringBitmap;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static java.lang.System.out;
@@ -24,12 +30,13 @@ public class IntIndexTest {
   };
 
   private IntIndex index;
-
   private Table table;
 
   @Before
   public void setUp() throws Exception {
+    Stopwatch stopwatch = Stopwatch.createStarted();
     table = CsvReader.read(types, "data/BushApproval.csv");
+    out.println("Loaded from column store in " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
     index = new IntIndex(table.intColumn("approval"));
   }
 

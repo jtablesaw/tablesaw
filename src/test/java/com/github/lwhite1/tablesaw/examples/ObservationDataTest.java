@@ -3,8 +3,8 @@ package com.github.lwhite1.tablesaw.examples;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.github.lwhite1.tablesaw.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.api.QueryHelper;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
+import com.github.lwhite1.tablesaw.index.IntIndex;
 import com.github.lwhite1.tablesaw.io.CsvReader;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
@@ -15,8 +15,8 @@ import com.google.common.base.Stopwatch;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.roaringbitmap.RoaringBitmap;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
+import static java.lang.System.out;
 
 /**
  * Tests manipulation of large (but not big) data sets
@@ -57,18 +60,51 @@ public class ObservationDataTest {
 
    // writeToColumnStore(t, stopwatch);
 
-    String randomConcept = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
+    String randomConcept1 = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
+    String randomConcept2 = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
+    int randomPatient1 = t.intColumn("patient").get(RandomUtils.nextInt(0, t.rowCount()));
+    int randomPatient2 = t.intColumn("patient").get(RandomUtils.nextInt(0, t.rowCount()));
 
     stopwatch.reset().start();
-    Table result = t.selectWhere(
-        QueryHelper.column("concept").isEqualTo(randomConcept));
-    System.out.println("concept found in " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
-    System.out.println("results found: " + result.rowCount());
-    System.out.println(result.print());
+    Table result = t.selectWhere(column("concept").isEqualTo(randomConcept1));
+    out.println("concept found in " + stopwatch.elapsed(TimeUnit.MICROSECONDS) + " micros");
+    out.println("results found: " + result.rowCount());
+    out.println();
+
+    stopwatch.reset().start();
+    result = t.selectWhere(
+        column("concept").isEqualTo(randomConcept2));
+    out.println("concept found in " + stopwatch.elapsed(TimeUnit.MICROSECONDS) + " micros");
+    out.println("results found: " + result.rowCount());
+    out.println();
+
+    stopwatch.reset().start();
+    IntColumn patients = t.intColumn("patient");
+    IntIndex patientIndex = new IntIndex(patients);
+    out.println("patient index built in " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    out.println();
+
+    stopwatch.reset().start();
+    RoaringBitmap roaringBitmap = patientIndex.get(randomPatient1);
+    out.println("patient found in " + stopwatch.elapsed(TimeUnit.MICROSECONDS) + " micros");
+    out.println("patient records found: " + roaringBitmap.getCardinality());
+    stopwatch.reset().start();
+    Table results = t.selectWhere(roaringBitmap);
+    out.println("records retrieved in " + stopwatch.elapsed(TimeUnit.MICROSECONDS) + " micros");
+    out.println();
+
+    stopwatch.reset().start();
+    roaringBitmap = patientIndex.get(randomPatient2);
+    out.println("patient found in " + stopwatch.elapsed(TimeUnit.MICROSECONDS) + " micros");
+    out.println("patients records found: " + roaringBitmap.getCardinality());
+    stopwatch.reset().start();
+    results = t.selectWhere(roaringBitmap);
+    out.println("records retrieved in " + stopwatch.elapsed(TimeUnit.MICROSECONDS) + " micros");
+    out.println();
 
     stopwatch.reset().start();
     t.floatColumn("value").sum();
-    System.out.println("Time to sum floats: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms");
+    out.println("Time to sum floats: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms");
 
     System.exit(0);
   }
@@ -76,7 +112,7 @@ public class ObservationDataTest {
   private static Table loadFromColumnStore(Stopwatch stopwatch) throws IOException {
     stopwatch.reset().start();
     Table t = StorageManager.readTable(DB);
-    System.out.println("Loaded from column store in " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    out.println("Loaded from column store in " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
     return t;
   }
 
@@ -97,15 +133,15 @@ public class ObservationDataTest {
 
   private static void generateTestData(Table t, int numberOfRecordsInTable, Stopwatch stopwatch) throws IOException {
     stopwatch.reset().start();
-    System.out.println("Generating test data");
+    out.println("Generating test data");
     generateData(numberOfRecordsInTable, t);
-    System.out.println("Time to generate " + numberOfRecordsInTable + " records: " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    out.println("Time to generate " + numberOfRecordsInTable + " records: " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
   }
 
   private static void writeToColumnStore(Table t, Stopwatch stopwatch) throws Exception {
     stopwatch = stopwatch.reset().start();
     StorageManager.saveTable(DB, t);
-    System.out.println("Time to write out in columnStore format " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    out.println("Time to write out in columnStore format " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
   }
 
   private static Table loadFromCsv(Stopwatch stopwatch) throws IOException {
@@ -113,7 +149,7 @@ public class ObservationDataTest {
     Table t;// ConceptId, Date, Value, PatientNo
     ColumnType[] columnTypes = {ColumnType.CATEGORY, ColumnType.LOCAL_DATE, ColumnType.FLOAT, ColumnType.INTEGER};
     t = CsvReader.read(columnTypes, CSV_FILE);
-    System.out.println("Time to read to CSV File " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    out.println("Time to read to CSV File " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
     return t;
   }
 
