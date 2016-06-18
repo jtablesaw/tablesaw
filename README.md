@@ -48,7 +48,7 @@ Lets explore a tornado data set using Tablesaw. Here's what we'll cover:
 * Using groups and reduce functions to compute stats for subsets
 * Storing tables in Tablesaw's compressed columnar storage format
 
-All the data is in the projects _data_ folder.
+All the data is in the projects _data_ folder. The code is taken from the TornadoExample test class.
 
 ### Read a CSV file
 Here we read a csv file of tornado data. First, we say what column types are present.
@@ -104,7 +104,6 @@ The _structure()_ method shows the index, name and type of each column
 	8     Start Lon    FLOAT       
 	9     Length       FLOAT       
 	10    Width        FLOAT       
-
         
 ```
 Like many Tablesaw methods, _structure()_ returns a table; You can then call print() to produce a string representation for display, or perform any other table operations on it, like:
@@ -120,18 +119,16 @@ Like many Tablesaw methods, _structure()_ returns a table; You can then call pri
 	4     Scale       INTEGER     
 	5     Injuries    INTEGER     
 	6     Fatalities  INTEGER     
-
     
 ```
-Of course, that _also_ returned a table, this one containing only records for columns of INTEGER type. 
-We'll cover filtering or selecting rows in more detail later.
+Of course, that _also_ returned a table. We'll cover selecting rows in more detail later.
 
 ### Viewing data
-The head(n) method returns the first n rows.
+The first(n) method returns the first n rows.
 
 ```java
 
-    table.head(3);
+    table.first(3);
     >>
     Date       Time     State Scale Injuries Fatalities Start Lat Start Lon Length Width 
 	1950-01-03 11:00:00 MO    3     3        0          38.77     -90.22    9.5    150.0 
@@ -142,16 +139,12 @@ The head(n) method returns the first n rows.
 
 ### Mapping operations
 
-Now let's add a column derived from the existing data. We can map arbitrary lambda expressions
-onto the data table, but many, many common operations are built in. You can, 
-for example, calculate the difference in days, weeks, or years between the values in two date columns.
-The method below extracts the Month name from the date column into a new column.
+Mapping operations in Tablesaw take one or more columns as inputs and produce a new column as output. We can map arbitrary expressions onto the table, but many common operations are built in. You can, for example, calculate the difference in days, weeks, or years between the values in two date columns. The method below extracts the Month name from the date column into a new column.
 
 ```java
 
     CategoryColumn month = tornadoes.localDateColumn("Date").month();
 ```
-Mapping operations in Tablesaw take one or more columns as inputs and produce an output column. 
 
 Once you have a new column, you can add it to a table:
 
@@ -159,7 +152,7 @@ Once you have a new column, you can add it to a table:
 
     tornadoes.addColumn(2, month);
 ```
-You can also remove columns from tables, if you need to save memory or reduce clutter. 
+You can also remove columns from tables to save memory or reduce clutter: 
 
 ```java
 
@@ -217,8 +210,7 @@ The last example above returns a table containing only the three columns named i
 
 Column metrics can be calculated using methods like sum(), product(), mean(), max(), etc.
 
-You can also apply those methods to a table, calculating results on one column, 
-grouped by the values in another.
+You can apply those methods to a table, calculating results on one column, grouped by the values in another.
 
 ```java
 
@@ -243,10 +235,9 @@ This produces the following table, in which Group represents the Tornado Scale a
 
     tornadoes.exportToCsv("data/rev_tornadoes_1950-2014.csv");
 ```
-### Read and write data from the Tablesaw format
+### Read and write data using Tablesaw's ".saw" format
 
-Once you've imported data you can use Tablesaw's own disk format to save it. 
-In Tablesaw format, reads and writes are an order of magnitude faster than optimized CSV operations.
+Once you've imported data you can use Tablesaw's own disk format to save it. In .saw format, reads and writes are an order of magnitude faster than optimized CSV operations.
 
 ```java
 
@@ -254,7 +245,7 @@ In Tablesaw format, reads and writes are an order of magnitude faster than optim
 
     Table tornadoes = Table.readTable(dbName);
 ```
-This is just the beginning of what Tablesaw can do. More information is available on the project web site:
+This is just a little of what Tablesaw can do. More information is available on the project web site:
  https://javadatascience.wordpress.com
  
 ## A work-in-progress
