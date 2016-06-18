@@ -20,10 +20,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
@@ -240,13 +241,18 @@ public class StorageManager {
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
-      boolean EOF = false;
-      while (!EOF) {
-        try {
-          stringColumn.add(dis.readUTF());
-        } catch (EOFException e) {
-          EOF = true;
-        }
+
+      int stringCount = dis.readInt();
+
+      int j = 0;
+      while (j < stringCount) {
+        stringColumn.dictionaryMap().put(j, dis.readUTF());
+        j++;
+      }
+
+      int size = metadata.getSize();
+      for (int i = 0; i < size; i++) {
+        stringColumn.data().add(dis.readInt());
       }
     }
     return stringColumn;
@@ -376,20 +382,36 @@ public class StorageManager {
     }
   }
 
-  //TODO(lwhite): saveTable the column using dictionary encoding (and integer compression)
+  /**
+   * Writes out the values of the category column encoded as ints to minimize the time required for subsequent reads
+   *
+   * The files are written Strings first, then the ints that encode them so they can be read in the opposite order
+   * @throws IOException
+   */
   public static void writeColumn(String fileName, CategoryColumn column) throws IOException {
+
+    int categoryCount = column.dictionaryMap().size();
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
+
+      dos.writeInt(categoryCount);
+      // write the strings
+      SortedSet<Integer> keys = new TreeSet<>(column.dictionaryMap().keyToValueMap().keySet());
+      for (int key : keys) {
+        dos.writeUTF(column.dictionaryMap().get(key));
+      }
+      dos.flush();
+
+      // write the integer values that represent the strings
       int i = 0;
-      for (String d : column) {
-        dos.writeUTF(d);
+      for (int d : column.data()) {
+        dos.writeInt(d);
         if (i % FLUSH_AFTER_ITERATIONS == 0) {
           dos.flush();
         }
         i++;
       }
-      dos.flush();
     }
   }
 

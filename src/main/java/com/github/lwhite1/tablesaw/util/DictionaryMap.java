@@ -57,6 +57,11 @@ public class DictionaryMap {
     return valueToKey.keySet();
   }
 
+  /**
+   * Returns the strings in the dictionary as an array in order of the numeric key
+   */
+  public String[] categoryArray() { return keyToValue.values().toArray(new String[size()]);}
+
   public IntCollection values() {
     return valueToKey.values();
   }

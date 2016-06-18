@@ -35,7 +35,7 @@ abstract class AbstractColumn implements Column {
 
   @Override
   public String metadata() {
-    return new ColumnMetadata(this).toJson();
+    return columnMetadata().toJson();
   }
 
   public void setName(String name) {
@@ -52,5 +52,10 @@ abstract class AbstractColumn implements Column {
   @Override
   public void setComment(String comment) {
     this.comment = comment;
+  }
+
+  @Override
+  public ColumnMetadata columnMetadata() {
+    return new ColumnMetadata(this);
   }
 }

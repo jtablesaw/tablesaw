@@ -257,7 +257,6 @@ public class CategoryColumn extends AbstractColumn
       String f2 = get(i1);
       return f1.compareTo(f2);
     }
-
     @Override
     public int compare(Integer i, Integer i1) {
       return compare((int) i, (int) i1);
@@ -343,6 +342,13 @@ public class CategoryColumn extends AbstractColumn
     List<String> strings = new ArrayList<>(lookupTable.categories());
     return CategoryColumn.create(name() + " Unique values", strings);
 
+  }
+
+  /**
+   * Returns the integers that back this column
+   */
+  public IntArrayList data() {
+    return values;
   }
 
   public DictionaryMap dictionaryMap() {

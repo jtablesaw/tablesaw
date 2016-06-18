@@ -18,17 +18,17 @@ import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
+import static java.lang.System.out;
 
 /**
  * Tests for StorageManager
  */
 public class StorageManagerTest {
 
-  private static final int COUNT = 100_000;
+  private static final int COUNT = 5;
 
   private Relation table = new Table("t");
   private FloatColumn floatColumn = FloatColumn.create("float");
-  private CategoryColumn textColumn = CategoryColumn.create("text");
   private CategoryColumn categoryColumn = CategoryColumn.create("cat");
   private LocalDateColumn localDateColumn = LocalDateColumn.create("date");
   private LongColumn longColumn = LongColumn.create("long");
@@ -39,20 +39,26 @@ public class StorageManagerTest {
     for (int i = 0; i < COUNT; i++) {
       floatColumn.add((float) i);
       localDateColumn.add(LocalDate.now());
-      textColumn.add("Testing");
-      categoryColumn.add("Category");
+      categoryColumn.add("Category " + i);
       longColumn.add(i);
     }
     table.addColumn(floatColumn);
     table.addColumn(localDateColumn);
-    table.addColumn(textColumn);
     table.addColumn(categoryColumn);
     table.addColumn(longColumn);
   }
 
   @Test
+  public void testCatStorage() throws Exception {
+    out(categoryColumn.first(5).print());
+    StorageManager.writeColumn("cat_dogs", categoryColumn);
+    CategoryColumn readCat = StorageManager.readCategoryColumn("cat_dogs", categoryColumn.columnMetadata());
+    out(readCat.first(5).print());
+  }
+
+  @Test
   public void testWriteTable() throws IOException {
-    System.out.println(table.head(5).print());
+    out.println(table.head(5).print());
     StorageManager.saveTable("/tmp/mytables", table);
 
     Table t = StorageManager.readTable("/tmp/mytables/t.saw");

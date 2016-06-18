@@ -58,7 +58,7 @@ public class ObservationDataTest {
 
     t = loadFromColumnStore(stopwatch);
 
-   // writeToColumnStore(t, stopwatch);
+    writeToColumnStore(t, stopwatch);
 
     String randomConcept1 = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
     String randomConcept2 = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
@@ -140,7 +140,8 @@ public class ObservationDataTest {
 
   private static void writeToColumnStore(Table t, Stopwatch stopwatch) throws Exception {
     stopwatch = stopwatch.reset().start();
-    StorageManager.saveTable(DB, t);
+    String tempDb = "/Users/larrywhite/IdeaProjects/testdata/nobs.csv.saw";
+    StorageManager.saveTable(tempDb, t);
     out.println("Time to write out in columnStore format " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
   }
 
