@@ -14,6 +14,8 @@ import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +46,7 @@ final public class CsvReader {
     if (fileNames.length == 1) {
       return read(types, true, ',', fileNames[0]);
     } else {
+      
       Table table = read(types, true, ',', fileNames[0]);
       for (int i = 1; i < fileNames.length; i++) {
         String fileName = fileNames[i];
@@ -109,12 +112,14 @@ final public class CsvReader {
   }
 
   /**
-   * Constructs a Table from a CSV File.
+   * Returns a Table constructed from a CSV File with the given file name
+   *
+   * The @code{fileName} is used as the initial table name for the new table
    *
    * @param types           An array of the types of columns in the file, in the order they appear
    * @param header          Is the first row in the file a header?
    * @param columnSeparator the delimiter
-   * @param fileName        The fully specified file name
+   * @param fileName        The fully specified file name. It is used to provide a default name for the table
    * @return A Table containing the data in the csv file.
    * @throws IOException
    */
@@ -137,7 +142,7 @@ final public class CsvReader {
       headerRow = Lists.newArrayList(columnNames);
     }
 
-    Table table = new Table(fileName);
+    Table table = new Table(nameMaker(fileName));
     for (int x = 0; x < types.length; x++) {
       if (types[x] != ColumnType.SKIP) {
         Column newColumn = TypeUtils.newColumn(headerRow.get(x), types[x]);
@@ -188,5 +193,10 @@ final public class CsvReader {
     }
     String[] result = new String[header.size()];
     return header.toArray(result);
+  }
+
+  private static String nameMaker(String path) {
+    Path p = Paths.get(path);
+    return p.getFileName().toString();
   }
 }

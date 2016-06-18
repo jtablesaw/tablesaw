@@ -37,6 +37,7 @@ public class StorageManager {
 
   private static final String FILE_EXTENSION = "saw";
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
+  private static final Pattern SEPARATOR_PATTERN = Pattern.compile(File.separator);
 
   private static final int READER_POOL_SIZE = 4;
 
@@ -295,8 +296,14 @@ public class StorageManager {
     ExecutorService executorService = Executors.newFixedThreadPool(10);
     CompletionService writerCompletionService = new ExecutorCompletionService<>(executorService);
 
-    String name = WHITE_SPACE_PATTERN.matcher(table.name()).replaceAll(""); // remove whitespace from the table name
+    String name = table.name();
+    name = WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from the table name
+    name = SEPARATOR_PATTERN.matcher(name).replaceAll("_"); // remove path separators from the table name
+
     String storageFolder = folderName + File.separator + name + '.' + FILE_EXTENSION;
+
+    System.out.println(storageFolder);
+
     Path path = Paths.get(storageFolder);
 
     if (!Files.exists(path)) {

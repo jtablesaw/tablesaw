@@ -58,6 +58,7 @@ public class ObservationDataTest {
 
     t = loadFromColumnStore(stopwatch);
 
+    t.setName("Observations");
     //writeToColumnStore(t, stopwatch);
 
     String randomConcept1 = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
@@ -135,13 +136,14 @@ public class ObservationDataTest {
     stopwatch.reset().start();
     out.println("Generating test data");
     generateData(numberOfRecordsInTable, t);
-    out.println("Time to generate " + numberOfRecordsInTable + " records: " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
+    out.println("Time to generate "
+        + numberOfRecordsInTable + " records: "
+        + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
   }
 
   private static void writeToColumnStore(Table t, Stopwatch stopwatch) throws Exception {
     stopwatch = stopwatch.reset().start();
-    String tempDb = "/Users/larrywhite/IdeaProjects/testdata/nobs.csv.saw";
-    StorageManager.saveTable(tempDb, t);
+    StorageManager.saveTable(DB, t);
     out.println("Time to write out in columnStore format " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
   }
 
