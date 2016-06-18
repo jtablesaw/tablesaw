@@ -60,6 +60,7 @@ public class StorageManager {
 
     // NB: We do some extra work with the hash map to ensure that the columns are added to the table in original order
     // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all columns are read
+    // TODO - continued : Problem seems to be mostly with category columns rebuilding the encoding dictionary
     List<Column> columnList = new ArrayList<>();
     Map<String, Column> columns = new HashMap<>();
     try {
