@@ -8,10 +8,7 @@ With Tablesaw, you can import, sort, transform, filter, and summarize tables wit
 The goal is to make large data wrangling jobs possible without distributed computing (HDFS, Hadoop, Spark, etc.). 
 Analysis is more productive with less engineering overhead and shorter iteration cycles. A fluent API lets you express operations in a concise and readable fashion. 
 
-Tablesaw provides general-purpose analytic support, with rich functionality for working with time-series, 
-including specialized column types for dates, times, and timestamps. 
-
-It's designed for ease-of-use, and with Java 9, you'll be able to work interactively in the REPL. 
+Tablesaw provides general-purpose analytic support, with rich functionality for working with time-series. It's designed for ease-of-use, and with Java 9, you'll be able to work interactively in the REPL. 
 
 For more information and examples see: https://javadatascience.wordpress.com
 
