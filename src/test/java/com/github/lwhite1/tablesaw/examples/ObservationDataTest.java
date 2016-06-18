@@ -34,7 +34,7 @@ import static java.lang.System.out;
 public class ObservationDataTest {
 
   private static final String CSV_FILE = "/Users/larrywhite/IdeaProjects/testdata/obs.csv";
-  private static final String DB = "/Users/larrywhite/IdeaProjects/testdata/obs.csv.saw";
+  private static final String DB = "/Users/larrywhite/IdeaProjects/testdata/nobs.csv.saw";
 
   // pools to get random test data from
   private static List<String> concepts = new ArrayList<>(100_000);
@@ -58,7 +58,7 @@ public class ObservationDataTest {
 
     t = loadFromColumnStore(stopwatch);
 
-    writeToColumnStore(t, stopwatch);
+    //writeToColumnStore(t, stopwatch);
 
     String randomConcept1 = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
     String randomConcept2 = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
