@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.aggregator;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.TableGroup;
+import com.github.lwhite1.tablesaw.table.TableGroup;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.io.CsvReader;

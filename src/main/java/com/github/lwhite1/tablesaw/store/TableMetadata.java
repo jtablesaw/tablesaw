@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.store;
 
-import com.github.lwhite1.tablesaw.Relation;
+import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.google.gson.Gson;
 

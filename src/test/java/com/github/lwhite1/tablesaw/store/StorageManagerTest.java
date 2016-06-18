@@ -4,7 +4,7 @@ import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
-import com.github.lwhite1.tablesaw.Relation;
+import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.io.CsvReader;

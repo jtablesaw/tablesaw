@@ -1,4 +1,4 @@
-package com.github.lwhite1.tablesaw;
+package com.github.lwhite1.tablesaw.table;
 
 import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.api.Table;

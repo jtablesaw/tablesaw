@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.Relation;
+import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;

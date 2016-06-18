@@ -1,10 +1,10 @@
 package com.github.lwhite1.tablesaw.api;
 
-import com.github.lwhite1.tablesaw.Projection;
-import com.github.lwhite1.tablesaw.Relation;
-import com.github.lwhite1.tablesaw.Rows;
-import com.github.lwhite1.tablesaw.SubTable;
-import com.github.lwhite1.tablesaw.TableGroup;
+import com.github.lwhite1.tablesaw.table.Projection;
+import com.github.lwhite1.tablesaw.table.Relation;
+import com.github.lwhite1.tablesaw.table.Rows;
+import com.github.lwhite1.tablesaw.table.SubTable;
+import com.github.lwhite1.tablesaw.table.TableGroup;
 import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
