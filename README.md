@@ -3,12 +3,10 @@ Tablesaw
    
 Tablesaw is a high-performance, in-memory data table, plus tools for data manipulation and a column-oriented storage format. In Java.
 
-__With Tablesaw, you can import, sort, transform, filter, and summarize tables with hundreds of millions of rows on a laptop.__ 
-Tablesaw uses tricks from high-frequency trading apps (e.g. primitive collections) and 
-data warehouses (e.g. compressed, column-oriented storage and data structures), to maximize what you can do in a single VM.
+With Tablesaw, you can import, sort, transform, filter, and summarize tables with hundreds of millions of rows on a laptop. It uses tricks from high-frequency trading apps (e.g. primitive collections) and data warehouses (e.g. compressed, column-oriented storage and data structures) to maximize what you can do in one VM.
 
-The goal is to make all but the biggest data wrangling jobs approachable without distributed computing (HDFS, Hadoop, etc.). 
-Analysis is more productive with less engineering overhead and shorter iteration cycles. A fluent API lets developers express operations in a concise and readable fashion. 
+The goal is to make large data wrangling jobs possible without distributed computing (HDFS, Hadoop, Spark, etc.). 
+Analysis is more productive with less engineering overhead and shorter iteration cycles. A fluent API lets you express operations in a concise and readable fashion. 
 
 Tablesaw provides general-purpose analytic support, with rich functionality for working with time-series, 
 including specialized column types for dates, times, and timestamps. 
@@ -38,7 +36,7 @@ Then add a dependency to your pom file:
     
 Tablesaw requires Java 8 or newer.    
 
-## An introduction to Tablesaw
+## A tutorial introduction to Tablesaw
 
 Lets explore a tornado data set using Tablesaw. Here's what we'll cover:
 
@@ -90,13 +88,11 @@ The _shape()_ method displays the row and column counts:
     >> 59945 rows X 10 cols
 
 ```
-So, this table has nearly 60,000 rows and ten columns. 
-
 The _structure()_ method shows the index, name and type of each column
 
 ```java
 
-    tornadoes.structure().print();
+    tornadoes.structure();
     
     >> Structure of data/tornadoes_1950-2014.csv
 	Index Column Names Column Type 
@@ -114,13 +110,12 @@ The _structure()_ method shows the index, name and type of each column
 
         
 ```
-Note the print() method in _tornadoes.structure().print()_.
-Like many Tablesaw methods, _structure()_ returns a table object; print() produces a 
-string representation for display. Because structure returns a table, you can perform other operations on it, like:
+Like many Tablesaw methods, _structure()_ returns a table; You can then call print() to produce a string representation for display, or perform any other table operations on it, like:
 
 ```java
     
-    tornadoes.structure().selectWhere(column("Column Type").isEqualTo("INTEGER"));
+    tornadoes.structure()
+    	.selectWhere(column("Column Type").isEqualTo("INTEGER"));
     
     >> Structure of data/tornadoes_1950-2014.csv
 	Index Column Name Column Type 
