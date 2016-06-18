@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.store;
 
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.testutil.DirectoryUtils;
 import com.github.lwhite1.tablesaw.testutil.NanoBench;

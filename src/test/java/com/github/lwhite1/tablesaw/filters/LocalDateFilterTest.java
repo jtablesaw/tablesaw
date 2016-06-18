@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.filters;
 
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
 import com.github.lwhite1.tablesaw.filter.LocalDatePredicate;
 import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsFirstDayOfTheMonth;

@@ -2,7 +2,7 @@ package com.github.lwhite1.tablesaw.io;
 
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 import org.junit.Test;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;

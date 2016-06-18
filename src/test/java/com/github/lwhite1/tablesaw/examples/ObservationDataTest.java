@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.examples;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.index.IntIndex;

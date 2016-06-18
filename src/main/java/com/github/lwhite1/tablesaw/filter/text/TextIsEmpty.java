@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.filter.text;
 
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.filter.ColumnFilter;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;

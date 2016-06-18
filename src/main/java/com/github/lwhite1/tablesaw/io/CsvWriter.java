@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.io;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 
 import javax.annotation.concurrent.Immutable;

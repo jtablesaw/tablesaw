@@ -1,15 +1,14 @@
 package com.github.lwhite1.tablesaw;
 
 import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.ToIntFunction;
 
 /**
  * A group of tables formed by performing splitting operations on an original table

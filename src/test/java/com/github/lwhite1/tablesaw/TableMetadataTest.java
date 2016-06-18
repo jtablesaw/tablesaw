@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw;
 
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.store.TableMetadata;

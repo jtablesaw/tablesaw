@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.io;
 
 import au.com.bytecode.opencsv.CSVReader;
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.fasterxml.jackson.databind.MappingIterator;
@@ -46,7 +46,7 @@ final public class CsvReader {
     if (fileNames.length == 1) {
       return read(types, true, ',', fileNames[0]);
     } else {
-      
+
       Table table = read(types, true, ',', fileNames[0]);
       for (int i = 1; i < fileNames.length; i++) {
         String fileName = fileNames[i];

@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.filter;
 
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
 import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
 import org.roaringbitmap.RoaringBitmap;

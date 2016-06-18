@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.mapper;
 
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 
 /**
  *

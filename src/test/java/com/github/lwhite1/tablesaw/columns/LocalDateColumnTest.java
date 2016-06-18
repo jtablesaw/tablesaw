@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 import org.junit.Before;
 import org.junit.Test;
 

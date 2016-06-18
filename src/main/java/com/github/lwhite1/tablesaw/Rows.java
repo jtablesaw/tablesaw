@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw;
 
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.BooleanColumn;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
@@ -28,7 +29,7 @@ public class Rows {
   private Rows() {
   }
 
-  static void copyRowsToTable(IntArrayList rows, Table oldTable, Table newTable) {
+  public static void copyRowsToTable(IntArrayList rows, Table oldTable, Table newTable) {
 
     for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
       ColumnType columnType = oldTable.column(columnIndex).type();

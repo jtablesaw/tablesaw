@@ -1,7 +1,11 @@
-package com.github.lwhite1.tablesaw;
+package com.github.lwhite1.tablesaw.api;
 
+import com.github.lwhite1.tablesaw.Projection;
+import com.github.lwhite1.tablesaw.Relation;
+import com.github.lwhite1.tablesaw.Rows;
+import com.github.lwhite1.tablesaw.SubTable;
+import com.github.lwhite1.tablesaw.TableGroup;
 import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
-import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
@@ -403,7 +407,7 @@ public class Table implements Relation {
    * Returns an array of ints of the same number of rows as the table
    */
   @VisibleForTesting
-  int[] rows() {
+  public int[] rows() {
     int[] rowIndexes = new int[rowCount()];
     for (int i = 0; i < rowCount(); i++) {
       rowIndexes[i] = i;

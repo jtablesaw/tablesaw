@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw;
 
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.BooleanColumn;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
@@ -18,7 +19,7 @@ import java.util.List;
  * A specialization of the standard Table used for tables formed by grouping operations on a
  * Table
  */
-class SubTable extends Table {
+public class SubTable extends Table {
 
   /**
    * The values that will be summarized on

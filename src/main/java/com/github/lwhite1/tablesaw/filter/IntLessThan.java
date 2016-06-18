@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.filter;
 
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.Table;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
 import org.roaringbitmap.RoaringBitmap;
 
