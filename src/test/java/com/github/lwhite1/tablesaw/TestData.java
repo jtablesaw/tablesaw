@@ -15,6 +15,14 @@ import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_TIME;
  */
 public enum TestData {
 
+    SIMPLE_UNSORTED_DATA(new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},"data/unsorted-simple-data.csv"),
+
+    SIMPLE_SORTED_DATA_BY_INTEGER_ASCENDING(new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},"data/simple-data-sort_by_int_ascending.csv"),
+    SIMPLE_SORTED_DATA_BY_INTEGER_DESCENDING(new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},"data/simple-data-sort_by_int_descending.csv"),
+
+    SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_ASCENDING(new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},"data/simple-data-sort_by_int_and_date_ascending.csv"),
+    SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_DESCENDING(new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},"data/simple-data-sort_by_int_and_date_descending.csv"),
+
     BUSH_APPROVAL(new ColumnType[]{LOCAL_DATE, INTEGER, CATEGORY}, "data/BushApproval.csv"),
 
     TORNADOES(new ColumnType[]{INTEGER, INTEGER, INTEGER, INTEGER, LOCAL_DATE, LOCAL_TIME, CATEGORY, CATEGORY, CATEGORY,
