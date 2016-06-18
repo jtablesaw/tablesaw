@@ -43,6 +43,11 @@ public interface Column {
 
   Column emptyCopy();
 
+  /**
+   * Returns an empty copy of the receiver, with its internal storage initialized to the given row size
+   */
+  Column emptyCopy(int rowSize);
+
   void clear();
 
   void sortAscending();

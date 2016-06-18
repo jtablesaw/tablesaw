@@ -28,6 +28,10 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return new BooleanColumn(name);
   }
 
+  public static BooleanColumn create(String name, int rowSize) {
+    return new BooleanColumn(name, rowSize);
+  }
+
   public BooleanColumn(ColumnMetadata metadata) {
     super(metadata);
     data = new BooleanArrayList(DEFAULT_ARRAY_SIZE);
@@ -126,6 +130,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   @Override
   public BooleanColumn emptyCopy() {
     return new BooleanColumn(name());
+  }
+
+  @Override
+  public BooleanColumn emptyCopy(int rowSize) {
+    return BooleanColumn.create(name(), rowSize);
   }
 
   @Override

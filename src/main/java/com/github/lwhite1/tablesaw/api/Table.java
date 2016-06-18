@@ -250,6 +250,17 @@ public class Table implements Relation {
   }
 
   /**
+   * Returns a table with the same columns as this table, but no data, initialized to the given row size
+   */
+  public Table emptyCopy(int rowSize) {
+    Table copy = new Table(name);
+    for (Column column : columnList) {
+      copy.addColumn(column.emptyCopy(rowSize));
+    }
+    return copy;
+  }
+
+  /**
    * Clears all the data from this table
    */
   @Override
@@ -264,7 +275,7 @@ public class Table implements Relation {
    */
   public Table first(int nRows) {
     nRows = Math.min(nRows, rowCount());
-    Table newTable = emptyCopy();
+    Table newTable = emptyCopy(nRows);
     Rows.head(nRows, this, newTable);
     return newTable;
   }
@@ -274,7 +285,7 @@ public class Table implements Relation {
    */
   public Table last(int nRows) {
     nRows = Math.min(nRows, rowCount());
-    Table newTable = emptyCopy();
+    Table newTable = emptyCopy(nRows);
     Rows.tail(nRows, this, newTable);
     return newTable;
   }
@@ -394,7 +405,7 @@ public class Table implements Relation {
    * Returns a copy of this table sorted using the given comparator
    */
   public Table sortOn(IntComparator rowComparator) {
-    Table newTable = (Table) emptyCopy();
+    Table newTable = emptyCopy(rowCount());
 
     int[] newRows = rows();
     IntArrays.parallelQuickSort(newRows, rowComparator);
@@ -434,14 +445,14 @@ public class Table implements Relation {
   }
 
   public Table selectWhere(RoaringBitmap map) {
-    Table newTable = this.emptyCopy();
+    Table newTable = this.emptyCopy(map.getCardinality());
     Rows.copyRowsToTable(map, this, newTable);
     return newTable;
   }
 
   public Table selectWhere(Filter filter) {
-    Table newTable = this.emptyCopy();
     RoaringBitmap map = filter.apply(this);
+    Table newTable = this.emptyCopy(map.getCardinality());
     Rows.copyRowsToTable(map, this, newTable);
     return newTable;
   }

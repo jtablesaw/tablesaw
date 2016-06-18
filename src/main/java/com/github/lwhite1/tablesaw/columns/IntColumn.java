@@ -159,6 +159,11 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   }
 
   @Override
+  public IntColumn emptyCopy(int rowSize) {
+    return new IntColumn(name(), rowSize);
+  }
+
+  @Override
   public void clear() {
     data.clear();
   }

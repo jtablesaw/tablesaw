@@ -157,6 +157,11 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   }
 
   @Override
+  public LongColumn emptyCopy(int rowSize) {
+    return new LongColumn(name(), rowSize);
+  }
+
+  @Override
   public void clear() {
     data.clear();
   }

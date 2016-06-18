@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static java.lang.System.out;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for StorageManager
@@ -60,9 +61,11 @@ public class StorageManagerTest {
   public void testWriteTable() throws IOException {
     out.println(table.first(5).print());
     StorageManager.saveTable("/tmp/mytables", table);
-
     Table t = StorageManager.readTable("/tmp/mytables/t.saw");
-    t.sortOn("cat");
+    assertEquals(table.columnCount(), t.columnCount());
+    int rowCount = t.rowCount();
+    assertEquals(table.rowCount(), rowCount);
+    t = t.sortOn("cat");
     System.out.print(t.first(5).print());
   }
 

@@ -194,6 +194,11 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
   }
 
   @Override
+  public FloatColumn emptyCopy(int rowSize) {
+    return new FloatColumn(name(), rowSize);
+  }
+
+  @Override
   public void clear() {
     data = new FloatArrayList(DEFAULT_ARRAY_SIZE);
   }

@@ -110,6 +110,11 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   }
 
   @Override
+  public LocalDateTimeColumn emptyCopy(int rowSize) {
+    return new LocalDateTimeColumn(name(), rowSize);
+  }
+
+  @Override
   public void clear() {
     data.clear();
   }

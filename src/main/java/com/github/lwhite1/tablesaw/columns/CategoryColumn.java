@@ -93,6 +93,11 @@ public class CategoryColumn extends AbstractColumn
   }
 
   @Override
+  public CategoryColumn emptyCopy(int rowSize) {
+    return CategoryColumn.create(name(), rowSize);
+  }
+
+  @Override
   public void sortAscending() {
     IntArrays.parallelQuickSort(values.elements(), dictionarySortComparator);
   }

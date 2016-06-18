@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,25 +54,27 @@ public class StorageManager {
     ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
     CompletionService readerCompletionService = new ExecutorCompletionService<>(executorService);
 
-
     TableMetadata tableMetadata = readTableMetadata(path + File.separator + "Metadata.json");
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
     Table table = new Table(tableMetadata);
 
     // NB: We do some extra work with the hash map to ensure that the columns are added to the table in original order
     // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all columns are read
+    List<Column> columnList = new ArrayList<>();
     Map<String, Column> columns = new HashMap<>();
     try {
       for (ColumnMetadata column : columnMetadata) {
         readerCompletionService.submit(() -> {
-          Column c = readColumn(path + File.separator + column.getId(), column);
-          columns.put(c.id(), c);
+          columnList.add(readColumn(path + File.separator + column.getId(), column));
           return null;
         });
       }
       for (int i = 0; i < columnMetadata.size(); i++) {
         Future future = readerCompletionService.take();
         future.get();
+      }
+      for (Column c : columnList) {
+        columns.put(c.id(), c);
       }
 
       for (ColumnMetadata metadata : columnMetadata) {

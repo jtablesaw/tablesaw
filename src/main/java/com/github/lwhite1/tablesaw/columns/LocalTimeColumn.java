@@ -87,6 +87,11 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
   }
 
   @Override
+  public LocalTimeColumn emptyCopy(int rowSize) {
+    return new LocalTimeColumn(name(), rowSize);
+  }
+
+  @Override
   public void clear() {
     data.clear();
   }

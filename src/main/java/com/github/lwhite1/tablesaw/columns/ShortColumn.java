@@ -164,6 +164,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   }
 
   @Override
+  public ShortColumn emptyCopy(int rowSize) {
+    return new ShortColumn(name(), rowSize);
+  }
+
+  @Override
   public void clear() {
     data.clear();
   }

@@ -92,6 +92,11 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   @Override
+  public LocalDateColumn emptyCopy(int rowSize) {
+    return new LocalDateColumn(name(), rowSize);
+  }
+
+  @Override
   public void clear() {
     data.clear();
   }
