@@ -2,9 +2,6 @@ package com.github.lwhite1.tablesaw;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.io.CsvReader;
-
-import java.io.IOException;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.CATEGORY;
 import static com.github.lwhite1.tablesaw.api.ColumnType.FLOAT;
@@ -20,10 +17,9 @@ public enum TestData {
 
     BUSH_APPROVAL(new ColumnType[]{LOCAL_DATE, INTEGER, CATEGORY}, "data/BushApproval.csv"),
 
-    TORNADOES(
-            new ColumnType[]{LOCAL_DATE, LOCAL_TIME, CATEGORY, INTEGER, INTEGER, INTEGER, INTEGER, FLOAT, FLOAT, FLOAT,
-                    FLOAT}, "data/1950-2014_torn.csv");
-
+    TORNADOES(new ColumnType[]{INTEGER, INTEGER, INTEGER, INTEGER, LOCAL_DATE, LOCAL_TIME, CATEGORY, CATEGORY, CATEGORY,
+            INTEGER, INTEGER, INTEGER, INTEGER, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT,
+            FLOAT, CATEGORY, CATEGORY, CATEGORY, CATEGORY}, "data/1950-2014_torn.csv");
 
     private Table table;
     private ColumnType[] columnTypes;
@@ -32,15 +28,11 @@ public enum TestData {
      * Creates a Table from the specified daa.
      *
      * @param columnTypes the data in each column of the specified CSV
-     * @param csvSource the CSV data
+     * @param csvSource   the CSV data
      */
     TestData(ColumnType[] columnTypes, String csvSource) {
-        try {
-            this.table = CsvReader.read(columnTypes, "data/BushApproval.csv");
-            this.columnTypes = columnTypes;
-        } catch (IOException e) {
-            throw new IllegalStateException("IO error creating tablesaw from: " + csvSource, e);
-        }
+        this.table = Table.fromCSV(columnTypes, csvSource);
+        this.columnTypes = columnTypes;
     }
 
     /**
@@ -51,7 +43,6 @@ public enum TestData {
     }
 
     /**
-     *
      * @return the column types for the data set.
      */
     public ColumnType[] getColumnTypes() {

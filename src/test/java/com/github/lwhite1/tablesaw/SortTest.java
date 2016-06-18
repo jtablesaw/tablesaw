@@ -8,11 +8,11 @@ import org.junit.Test;
  */
 public class SortTest {
 
-  @Test
-  public void sort() {
-    final Table table = TestData.TORNADOES.getTable();
+    @Test
+    public void sort() {
+        Table table = TestData.TORNADOES.getTable();
+        Table sortedTable = table.sortAscendingOn("Fatalities", "State");
 
-  }
-
+    }
 
 }
