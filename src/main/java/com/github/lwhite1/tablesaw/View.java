@@ -178,8 +178,8 @@ class View implements Relation {
     }
   }
 
-  public Table head(int nRows) {
-    return this.asTable().head(nRows);
+  public Table first(int nRows) {
+    return this.asTable().first(nRows);
   }
 
   @Override

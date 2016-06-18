@@ -370,7 +370,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     }
     table = table.sortDescendingOn("Count");
 
-    return table.head(5);
+    return table.first(5);
   }
 
   public LocalDateTimeColumn atTime(LocalTimeColumn c) {

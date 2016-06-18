@@ -258,10 +258,20 @@ public class Table implements Relation {
   /**
    * Returns a new table containing the first {@code nrows} of data in this table
    */
-  public Table head(int nRows) {
+  public Table first(int nRows) {
     nRows = Math.min(nRows, rowCount());
     Table newTable = emptyCopy();
     Rows.head(nRows, this, newTable);
+    return newTable;
+  }
+
+  /**
+   * Returns a new table containing the last {@code nrows} of data in this table
+   */
+  public Table last(int nRows) {
+    nRows = Math.min(nRows, rowCount());
+    Table newTable = emptyCopy();
+    Rows.tail(nRows, this, newTable);
     return newTable;
   }
 

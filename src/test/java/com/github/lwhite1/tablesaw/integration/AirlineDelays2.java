@@ -20,7 +20,7 @@ public class AirlineDelays2 {
     Stopwatch stopwatch = Stopwatch.createStarted();
     Table sorted = flights2015.sortAscendingOn("ORIGIN", "UNIQUE_CARRIER");
     System.out.println("Sorting " + stopwatch.elapsed(TimeUnit.SECONDS));
-    System.out.println(sorted.head(1000).print());
+    System.out.println(sorted.first(1000).print());
     System.exit(0);
   }
 
@@ -36,7 +36,7 @@ public class AirlineDelays2 {
 
     out(flights2015.shape());
     out(flights2015.columnNames().toString());
-    out(flights2015.head(10).print());
+    out(flights2015.first(10).print());
   }
 
   private static void out(Object obj) {

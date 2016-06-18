@@ -81,6 +81,17 @@ public class Rows {
     copyRowsToTable(rows, oldTable, newTable);
   }
 
+  public static void tail(int rowCount, Table oldTable, Table newTable) {
+    int oldTableSize = oldTable.rowCount();
+    int end = oldTableSize - 1;
+    int start = end - rowCount;
+    IntArrayList rows = new IntArrayList(rowCount);
+    for (int i = start; i < end; i++) {
+      rows.add(i);
+    }
+    copyRowsToTable(rows, oldTable, newTable);
+  }
+
   private static void copy(IntArrayList rows, FloatColumn oldColumn, FloatColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.get(index));

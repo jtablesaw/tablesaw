@@ -1,13 +1,9 @@
 package com.github.lwhite1.tablesaw.io;
 
-import com.github.lwhite1.tablesaw.api.QueryHelper;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.Table;
-import com.google.common.collect.ImmutableSet;
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
@@ -26,10 +22,10 @@ public class IoTest1 {
     // Look at the column names
     print(table.columnNames());
 
-    print(table.head(3).print());
+    print(table.first(3).print());
 
     table = table.sortDescendingOn("stop_id");
-    print(table.head(3).print());
+    print(table.first(3).print());
     table.removeColumns("stop_desc");
     print(table.columnNames());
 

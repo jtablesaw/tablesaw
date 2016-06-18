@@ -31,7 +31,7 @@ public class GettingStarted {
   public void printStructure() throws Exception {
     out(table.structure().print());
 
-    out(table.head(10).print());
+    out(table.first(10).print());
 
     out(table.summary());
 

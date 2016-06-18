@@ -47,8 +47,8 @@ public class TornadoExample {
     out(tornadoes.shape());
 
     out();
-    out("Use head(3) to view the first 3 rows:");
-    out(tornadoes.head(3).print());
+    out("Use first(3) to view the first 3 rows:");
+    out(tornadoes.first(3).print());
 
     out();
     out("Extact month from the date and make it a separate column");
@@ -65,7 +65,7 @@ public class TornadoExample {
     out(fatal.shape());
 
     out();
-    out(fatal.head(5).print());
+    out(fatal.first(5).print());
 
     out();
     out("Total fatalities: " + fatal.intColumn("Fatalities").sum());
@@ -73,7 +73,7 @@ public class TornadoExample {
     out();
     out("Sorting on Fatalities in descending order");
     fatal = fatal.sortDescendingOn("Fatalities");
-    out(fatal.head(5).print());
+    out(fatal.first(5).print());
 
     out("");
     out("Calculating basic descriptive statistics on Fatalities");

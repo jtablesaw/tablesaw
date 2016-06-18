@@ -58,12 +58,12 @@ public class StorageManagerTest {
 
   @Test
   public void testWriteTable() throws IOException {
-    out.println(table.head(5).print());
+    out.println(table.first(5).print());
     StorageManager.saveTable("/tmp/mytables", table);
 
     Table t = StorageManager.readTable("/tmp/mytables/t.saw");
     t.sortOn("cat");
-    System.out.print(t.head(5).print());
+    System.out.print(t.first(5).print());
   }
 
   @Ignore
@@ -77,7 +77,7 @@ public class StorageManagerTest {
     StorageManager.saveTable("/tmp/mytables", table);
     t = StorageManager.readTable("/tmp/mytables/t.saw");
 
-    System.out.println(t.head(3).print());
+    System.out.println(t.first(3).print());
   }
 
   public static void main(String[] args) throws Exception {
@@ -91,12 +91,12 @@ public class StorageManagerTest {
         stopwatch.elapsed(TimeUnit.SECONDS)));
     out(tornados.shape());
     out(tornados.columnNames().toString());
-    out(tornados.head(10).print());
+    out(tornados.first(10).print());
     stopwatch.reset().start();
     StorageManager.saveTable("/tmp/tablesaw/testdata", tornados);
     stopwatch.reset().start();
     tornados = StorageManager.readTable("/tmp/tablesaw/testdata/tornados.saw");
-    out(tornados.head(5).print());
+    out(tornados.first(5).print());
   }
 
   private static void out(Object obj) {

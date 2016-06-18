@@ -33,7 +33,7 @@ public class AirlineDelays {
         stopwatch.elapsed(TimeUnit.SECONDS)));
     out(flights2008.shape());
     out(flights2008.columnNames().toString());
-    flights2008.head(10).print();
+    flights2008.first(10).print();
     StorageManager.saveTable("bigdata", flights2008);
     stopwatch.reset().start();
   }

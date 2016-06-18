@@ -41,7 +41,7 @@ public class SfCrimeTest {
 
     out(table.columnNames().toString());
 
-    out(table.head(4).print());
+    out(table.first(4).print());
 
     out(table.columnCount());
     CategoryColumn district = table.categoryColumn("PdDistrict");
@@ -56,7 +56,7 @@ public class SfCrimeTest {
     IntColumn year = table.localDateTimeColumn("Dates").year();
     table.addColumn(year);
 
-    out(table.head(100).print());
+    out(table.first(100).print());
 
 /*
     // eliminate the duplicate rows so we can sum by state correctly;

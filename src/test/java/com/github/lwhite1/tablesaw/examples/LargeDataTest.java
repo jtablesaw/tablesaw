@@ -53,7 +53,7 @@ public class LargeDataTest {
     System.out.println();
 
     stopwatch.reset().start();
-    System.out.println(t.head(5).print());
+    System.out.println(t.first(5).print());
     System.out.println("Time to print first(5) " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
     System.out.println();
 

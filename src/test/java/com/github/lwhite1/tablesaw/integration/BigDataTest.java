@@ -54,7 +54,7 @@ public class BigDataTest {
     //stopwatch.start();
     Table table = StorageManager.readTable("bigdata/" + "3f07b9bf-053f-4f9b-9dff-9d354835b276");
     out(String.format("Table read from column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
-    out(table.head(3).print());
+    out(table.first(3).print());
 
     out(table.columnNames());
 
@@ -67,7 +67,7 @@ public class BigDataTest {
   public void readCsvTest() throws Exception {
     Stopwatch stopwatch = Stopwatch.createStarted();
     Table table = CsvReader.read(types, true, "data/BigData.csv");
-    table.head(3).print();
+    table.first(3).print();
     out(table.rowCount());
     out("Table read from csv file");
     out(stopwatch.elapsed(TimeUnit.SECONDS));

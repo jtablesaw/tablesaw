@@ -27,7 +27,7 @@ public class ExamplesTest  {
     out(table.columnNames());
 
     // Peak at the data
-    out(table.head(5).print());
+    out(table.first(5).print());
 
     // Remove the description column
     table.removeColumns("stop_desc");
@@ -37,7 +37,7 @@ public class ExamplesTest  {
 
     // Take a look at some data
     out("In 'examples. Printing first(5)");
-    out(table.head(5).print());
+    out(table.first(5).print());
 
     // Lets take a look at the latitude and longitude columns
     // out(table.realColumn("stop_lat").rowSummary().out());
@@ -50,7 +50,7 @@ public class ExamplesTest  {
     // Lets filter out some of the rows. We're only interested in records with IDs between 524-624
 
     Table filtered = table.selectWhere(QueryHelper.column("stop_id").isBetween(524, 624));
-    out(filtered.head(5).print());
+    out(filtered.first(5).print());
 
     // Write out the new CSV file
     CsvWriter.write("data/filtered_bus_stops.csv", filtered);
