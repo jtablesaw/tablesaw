@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringJoiner;
 
 import static com.github.lwhite1.tablesaw.sorting.Sort.Order;
 
@@ -693,19 +692,6 @@ public class Table implements Relation {
             throw new IllegalStateException("IO error creating tablesaw from: " + input, e);
         }
         return table;
-    }
-
-    /**
-     * Returns the entire row in a table as a CSV string
-     *
-     * @param index the specified row in the table
-     * @return a string which each column value is separated by a comma.
-     * @throws IndexOutOfBoundsException if the index is invalid
-     */
-    public String getRow(int index) {
-        StringJoiner stringJoiner = new StringJoiner(",");
-        columnList.forEach(column -> stringJoiner.add(column.getString(index)));
-        return stringJoiner.toString();
     }
 
 }
