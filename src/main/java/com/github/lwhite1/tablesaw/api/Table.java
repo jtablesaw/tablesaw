@@ -674,20 +674,59 @@ public class Table implements Relation {
     return tableGroup.reduce(numericColumnName, function);
   }
 
-  public static Table fromCSV(ColumnType[] types, String fileName) {
-    Table t;
-    try {
-      t = CsvReader.read(types, fileName);
-    } catch (IOException e) {
-      System.err.println("Unable to load table from CSV file");
-      e.printStackTrace();
-      return null;
-    }
-    return t;
+  /**
+   * Returns a new table constructed from a CSV file
+   *
+   * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
+   * which is used to populate the column names
+   * @param types         The column types
+   * @param csvFileName   The name of the file to import
+   * @throws IOException
+   */
+  public static Table create(ColumnType[] types, String csvFileName) throws IOException {
+    return CsvReader.read(types, csvFileName);
   }
 
   /**
-   * Returns a new Table with the given name, and containing the data in the given resultset
+   * Returns a new table constructed from a CSV file
+   *
+   * It is assumed that the file is truly comma-separated
+   *
+   * @param types         The column types
+   * @param header        True if the file has a single header row. False otherwise
+   * @param csvFileName   the name of the file to import
+   * @throws IOException
+   */
+  public static Table create(ColumnType[] types, boolean header, String csvFileName) throws IOException {
+    return CsvReader.read(types, header, csvFileName);
+  }
+
+  /**
+   * Returns a new table constructed from a CSV file
+   *
+   * @param types         The column types
+   * @param header        true if the file has a single header row. False otherwise
+   * @param delimiter     a char that divides the columns in the source file, often a comma or tab
+   * @param csvFileName   the name of the file to import
+   * @throws IOException
+   */
+  public static Table create(ColumnType[] types, boolean header, char delimiter, String csvFileName) throws IOException {
+    return CsvReader.read(types, header, delimiter, csvFileName);
+  }
+
+  /**
+   * Returns a new table constructed from a CSV (or other delimited text file)
+   * @param types         The column types
+   * @param delimiter     a char that divides the columns in the source file, often a comma or tab
+   * @param csvFileName   the name of the file to import
+   * @throws IOException
+   */
+  public static Table create(ColumnType[] types, char delimiter, String csvFileName) throws IOException {
+    return CsvReader.read(types, delimiter, csvFileName);
+  }
+
+  /**
+   * Returns a new Table with the given name, and containing the data in the given result set
    */
   public static Table create(ResultSet resultSet, String tableName) throws SQLException {
     return SqlResultSetReader.read(resultSet, tableName);
