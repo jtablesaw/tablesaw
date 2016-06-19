@@ -10,6 +10,9 @@ data/test.csv
 data/train.csv
 data/train_filter.csv
 
+derby.log
+CoffeeDB/
+
 testfolder/
 
 *.iml
