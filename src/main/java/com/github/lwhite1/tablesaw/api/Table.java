@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.api;
 
+import com.github.lwhite1.tablesaw.io.jdbc.SqlResultSetReader;
 import com.github.lwhite1.tablesaw.table.Projection;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.table.Rows;
@@ -25,6 +26,8 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 import static com.github.lwhite1.tablesaw.sorting.Sort.Order;
@@ -681,5 +684,12 @@ public class Table implements Relation {
       return null;
     }
     return t;
+  }
+
+  /**
+   * Returns a new Table with the given name, and containing the data in the given resultset
+   */
+  public static Table create(ResultSet resultSet, String tableName) throws SQLException {
+    return SqlResultSetReader.read(resultSet, tableName);
   }
 }
