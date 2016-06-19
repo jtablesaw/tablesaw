@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import static com.github.lwhite1.tablesaw.sorting.Sort.Order;
 
@@ -680,7 +681,7 @@ public class Table implements Relation {
      * Create a Table from the provided CSV.
      *
      * @param columnTypes the data types from the first row of the CSV
-     * @param input the path to the csv to read.
+     * @param input       the path to the csv to read.
      * @return a Table instance from the CSV data
      * @throws IllegalStateException if the CSV data can't be read for some reason.
      */
@@ -702,15 +703,9 @@ public class Table implements Relation {
      * @throws IndexOutOfBoundsException if the index is invalid
      */
     public String getRow(int index) {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (Column column : columnList) {
-            stringBuilder.append(column.getString(index));
-            stringBuilder.append(",");
-        }
-
-        stringBuilder.replace(stringBuilder.lastIndexOf(","),stringBuilder.length(),"");
-        return stringBuilder.toString();
+        StringJoiner stringJoiner = new StringJoiner(",");
+        columnList.forEach(column -> stringJoiner.add(column.getString(index)));
+        return stringJoiner.toString();
     }
 
 }
