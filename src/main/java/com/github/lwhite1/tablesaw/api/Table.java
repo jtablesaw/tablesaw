@@ -686,6 +686,9 @@ public class Table implements Relation {
     return t;
   }
 
+  /**
+   * Returns a new Table with the given name, and containing the data in the given resultset
+   */
   public static Table create(ResultSet resultSet, String tableName) throws SQLException {
     return SqlResultSetReader.read(resultSet, tableName);
   }
