@@ -16,7 +16,6 @@ public class ColumnMetadataTest {
   public void testToFromJson() {
     String meta = d.metadata();
     ColumnMetadata d2 = ColumnMetadata.fromJson(meta);
-    assertEquals(d2, ColumnMetadata.fromJson(d2.toJson()));
-    System.out.println(meta);
+    assertEquals(d2, ColumnMetadata.fromJson(meta));
   }
 }
