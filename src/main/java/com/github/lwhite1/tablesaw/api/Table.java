@@ -675,7 +675,7 @@ public class Table implements Relation {
   }
 
   /**
-   * Returns a new table constructed from a CSV file
+   * Returns a new table constructed from a character delimited (aka CSV) text file
    *
    * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
    * which is used to populate the column names
@@ -688,12 +688,13 @@ public class Table implements Relation {
   }
 
   /**
-   * Returns a new table constructed from a CSV file
+   * Returns a new table constructed from a character delimited (aka CSV) text file
    *
    * It is assumed that the file is truly comma-separated
    *
    * @param types         The column types
-   * @param header        True if the file has a single header row. False otherwise
+   * @param header        True if the file has a single header row. False if it has no header row.
+   *                      Multi-line headers are not supported
    * @param csvFileName   the name of the file to import
    * @throws IOException
    */
@@ -702,10 +703,11 @@ public class Table implements Relation {
   }
 
   /**
-   * Returns a new table constructed from a CSV file
+   * Returns a new table constructed from a character delimited (aka CSV) text file
    *
    * @param types         The column types
-   * @param header        true if the file has a single header row. False otherwise
+   * @param header        true if the file has a single header row. False if it has no header row.
+   *                      Multi-line headers are not supported
    * @param delimiter     a char that divides the columns in the source file, often a comma or tab
    * @param csvFileName   the name of the file to import
    * @throws IOException
@@ -715,7 +717,7 @@ public class Table implements Relation {
   }
 
   /**
-   * Returns a new table constructed from a CSV (or other delimited text file)
+   * Returns a new table constructed from a character delimited (aka CSV) text file
    * @param types         The column types
    * @param delimiter     a char that divides the columns in the source file, often a comma or tab
    * @param csvFileName   the name of the file to import
