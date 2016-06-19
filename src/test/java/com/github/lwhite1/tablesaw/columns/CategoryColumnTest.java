@@ -48,7 +48,7 @@ public class CategoryColumnTest {
 
   @Test
   public void testToString() {
-    System.out.println(column.toString());
+    assertEquals("Category column: testing", column.toString());
   }
 
   @Test

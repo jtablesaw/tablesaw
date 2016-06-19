@@ -11,16 +11,15 @@ import java.time.ZoneOffset;
 import static org.junit.Assert.assertEquals;
 
 /**
- *
+ *  Tests for LocalDate Column
  */
 public class LocalDateColumnTest {
 
-  Table table;
-  LocalDateColumn column1;
+  private LocalDateColumn column1;
 
   @Before
   public void setUp() throws Exception {
-    table = new Table("Test");
+    Table table = new Table("Test");
     table.addColumn(column1);
     column1 = LocalDateColumn.create("Game date");
   }
@@ -31,8 +30,10 @@ public class LocalDateColumnTest {
     column1.addCell("12/23/1924");
     column1.addCell("12-May-2015");
     column1.addCell("12-Jan-2015");
+    assertEquals(4, column1.size());
     LocalDate date = LocalDate.now();
     column1.add(date);
+    assertEquals(5, column1.size());
   }
 
   @Test
@@ -67,23 +68,10 @@ public class LocalDateColumnTest {
     column1.addCell("12/24/1924");
     column1.addCell("12-May-2015");
     column1.addCell("14-Jan-2015");
-    System.out.println(column1.summary().print());
-  }
-
-  @Test
-  public void testSize() throws Exception {
-    LocalDate date = LocalDate.now();
-    System.out.println(date.toEpochDay());
-
-    LocalDateTime time = LocalDateTime.now();
-    LocalDateTime time2 = time.plusYears(100);
-    long t1 = time.toEpochSecond(ZoneOffset.UTC);
-    long t2 = time2.toEpochSecond(ZoneOffset.UTC);
-    System.out.println(t1);
-    System.out.println(t2 - t1);
-  }
-
-  @Test
-  public void testGroupBy() throws Exception {
+    Table summary = column1.summary();
+    assertEquals(4, summary.rowCount());
+    assertEquals(2, summary.columnCount());
+    assertEquals("Date", summary.column(0).name());
+    assertEquals("Count", summary.column(1).name());
   }
 }

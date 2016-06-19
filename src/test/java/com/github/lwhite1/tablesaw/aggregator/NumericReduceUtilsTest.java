@@ -8,6 +8,8 @@ import com.github.lwhite1.tablesaw.io.CsvReader;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  *
  */
@@ -29,7 +31,7 @@ public class NumericReduceUtilsTest {
   @Test
   public void testMean() {
     double result = table.reduce("approval", NumericReduceUtils.mean);
-    System.out.println(result);
+    assertEquals(64.88235294117646, result, 0.01);
   }
 
   @Test
@@ -37,6 +39,9 @@ public class NumericReduceUtilsTest {
     Column byColumn = table.column("who");
     TableGroup group = new TableGroup(table, byColumn);
     Table result = group.reduce("approval", NumericReduceUtils.mean);
-    System.out.println(result.print());
+    assertEquals(2, result.columnCount());
+    assertEquals("Group", result.column(0).name());
+    assertEquals(6, result.rowCount());
+    assertEquals("65.671875", result.get(1, 0));
   }
 }

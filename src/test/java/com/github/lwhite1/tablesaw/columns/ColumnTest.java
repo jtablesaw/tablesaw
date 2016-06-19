@@ -50,9 +50,6 @@ public class ColumnTest {
     assertEquals("fox", first3.get(0));
     assertEquals("fox", first3.get(1));
     assertEquals("fox", first3.get(2));
-
-
-
   }
 
   @Test
@@ -75,19 +72,16 @@ public class ColumnTest {
     assertEquals("zogby", last3.get(0));
     assertEquals("zogby", last3.get(1));
     assertEquals("zogby", last3.get(2));
-
   }
 
   @Test
   public void testName() throws Exception {
-    System.out.println(table.columnNames());
     Column c = table.intColumn("approval");
     assertEquals("approval", c.name());
   }
 
   @Test
   public void testComment() throws Exception {
-    System.out.println(table.columnNames());
     Column c = table.intColumn("approval");
     c.setComment("Dumb comment");
     assertEquals("Dumb comment", c.comment());
@@ -95,7 +89,6 @@ public class ColumnTest {
 
   @Test
   public void testType() throws Exception {
-    System.out.println(table.columnNames());
     Column c = table.intColumn("approval");
     assertEquals(ColumnType.INTEGER, c.type());
   }

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 /**
- *
+ *  Tests for int columns
  */
 public class IntColumnTest {
 
@@ -103,7 +103,9 @@ public class IntColumnTest {
     IntPredicate predicate = value -> value < 10;
     IntColumn column1 = column.selectIf(predicate);
     assertEquals(10, column1.size());
-    System.out.println(column1.print());
+    for (int i = 0; i < 10; i++) {
+      assertTrue(column1.get(i) < 10);
+    }
   }
 
   @Test
@@ -119,7 +121,11 @@ public class IntColumnTest {
 
     IntColumn column2 = column.select(column.apply(predicate));
     assertEquals(10, column2.size());
-    System.out.println(column1.print());
-    System.out.println(column2.print());
+    for (int i = 0; i < 10; i++) {
+      assertTrue(column1.get(i) < 10);
+    }
+    for (int i = 0; i < 10; i++) {
+      assertTrue(column2.get(i) < 10);
+    }
   }
 }

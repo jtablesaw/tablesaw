@@ -57,7 +57,6 @@ public class FloatColumnTest {
     Stopwatch stopwatch = Stopwatch.createStarted();
     System.out.println(floatColumn.sum());
     System.out.println(stopwatch.elapsed(TimeUnit.MILLISECONDS));
-    //System.out.println(floatColumn.describe());
     stopwatch.reset().start();
     floatColumn.sortAscending();
     System.out.println("Sort time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
@@ -84,46 +83,45 @@ public class FloatColumnTest {
 
   @Test
   public void testIsLessThan() {
-
+    int size = 1_000_000;
     Relation table = new Table("t");
-    FloatColumn floatColumn = new FloatColumn("test", 1_000_000);
+    FloatColumn floatColumn = new FloatColumn("test", size);
     table.addColumn(floatColumn);
-    for (int i = 0; i < 1_000_000; i++) {
+    for (int i = 0; i < size; i++) {
       floatColumn.add((float) Math.random());
     }
-    Stopwatch stopwatch = Stopwatch.createStarted();
     RoaringBitmap results = floatColumn.isLessThan(.5f);
-    System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-
     int count = 0;
-    for (int i = 0; i < 1_000_000; i++) {
+    for (int i = 0; i < size; i++) {
       if (results.contains(i)) {
         count++;
       }
     }
-    System.out.println("Matches = " + count);
+    // Probabilistic answer.
+    assertTrue(count < 575_000);
+    assertTrue(count > 425_000);
   }
 
   @Test
   public void testIsGreaterThan() {
-
+    int size = 1_000_000;
     Relation table = new Table("t");
-    FloatColumn floatColumn = new FloatColumn("test", 1_000_000);
+    FloatColumn floatColumn = new FloatColumn("test", size);
     table.addColumn(floatColumn);
-    for (int i = 0; i < 1_000_000; i++) {
+    for (int i = 0; i < size; i++) {
       floatColumn.add((float) Math.random());
     }
-    Stopwatch stopwatch = Stopwatch.createStarted();
     RoaringBitmap results = floatColumn.isGreaterThan(.5f);
-    System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
     int count = 0;
-    for (int i = 0; i < 1_000_000; i++) {
+    for (int i = 0; i < size; i++) {
       if (results.contains(i)) {
         count++;
       }
     }
-    System.out.println("Matches = " + count);
+    // Probabilistic answer.
+    assertTrue(count < 575_000);
+    assertTrue(count > 425_000);
   }
 
   @Test
@@ -133,33 +131,29 @@ public class FloatColumnTest {
     for (int i = 0; i < records; i++) {
       floatColumn.add((float) Math.random());
     }
-    System.out.println("Data loaded, beginning first sort");
-    Stopwatch stopwatch = Stopwatch.createStarted();
     floatColumn.sortAscending();
     float last = Float.NEGATIVE_INFINITY;
     for (float n : floatColumn) {
       assertTrue(n >= last);
       last = n;
     }
-    System.out.println(String.format("Sorted %d records in %d seconds", records, stopwatch.elapsed(TimeUnit.SECONDS)));
-    System.out.println("Beginning second sort");
-    stopwatch.reset().start();
     floatColumn.sortDescending();
     last = Float.POSITIVE_INFINITY;
     for (float n : floatColumn) {
       assertTrue(n <= last);
       last = n;
     }
-    System.out.println(String.format("Sorted %d records in %d seconds", records, stopwatch.elapsed(TimeUnit.SECONDS)));
-
     records = 10;
     floatColumn = new FloatColumn("test", records);
     for (int i = 0; i < records; i++) {
       floatColumn.add((float) Math.random());
     }
     floatColumn.sortDescending();
-    System.out.println(floatColumn.print());
-
+    last = Float.POSITIVE_INFINITY;
+    for (float n : floatColumn) {
+      assertTrue(n <= last);
+      last = n;
+    }
   }
 
   @Test
