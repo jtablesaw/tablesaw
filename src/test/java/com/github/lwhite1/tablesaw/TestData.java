@@ -3,6 +3,9 @@ package com.github.lwhite1.tablesaw;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import static com.github.lwhite1.tablesaw.api.ColumnType.CATEGORY;
 import static com.github.lwhite1.tablesaw.api.ColumnType.FLOAT;
 import static com.github.lwhite1.tablesaw.api.ColumnType.INTEGER;
@@ -31,6 +34,7 @@ public enum TestData {
 
     private Table table;
     private ColumnType[] columnTypes;
+    private Path source;
 
     /**
      * Creates a Table from the specified daa.
@@ -41,6 +45,7 @@ public enum TestData {
     TestData(ColumnType[] columnTypes, String csvSource) {
         this.table = Table.fromCSV(columnTypes, csvSource);
         this.columnTypes = columnTypes;
+        this.source = Paths.get(csvSource);
     }
 
     /**
@@ -55,6 +60,13 @@ public enum TestData {
      */
     public ColumnType[] getColumnTypes() {
         return columnTypes;
+    }
+
+    /**
+     * The path to the raw data for this data set
+     */
+    public Path getSource() {
+        return source;
     }
 
 }

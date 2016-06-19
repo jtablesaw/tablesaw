@@ -694,4 +694,23 @@ public class Table implements Relation {
         return table;
     }
 
+    /**
+     * Returns the entire row in a table as a CSV string
+     *
+     * @param index the specified row in the table
+     * @return a string which each column value is separated by a comma.
+     * @throws IndexOutOfBoundsException if the index is invalid
+     */
+    public String getRow(int index) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Column column : columnList) {
+            stringBuilder.append(column.getString(index));
+            stringBuilder.append(",");
+        }
+
+        stringBuilder.replace(stringBuilder.lastIndexOf(","),stringBuilder.length(),"");
+        return stringBuilder.toString();
+    }
+
 }
