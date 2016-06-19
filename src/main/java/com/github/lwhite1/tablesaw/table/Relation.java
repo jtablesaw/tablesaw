@@ -186,7 +186,7 @@ public interface Relation {
 
     for (int r = 0; r < rowCount(); r++) {
       for (int c = 0; c < columnCount(); c++) {
-        String cell = StringUtils.rightPad(get(c, row(r)), colWidths[c]);
+        String cell = StringUtils.rightPad(get(c, r), colWidths[c]);
         buf.append(cell);
         buf.append(' ');
       }
@@ -194,8 +194,6 @@ public interface Relation {
     }
     return buf.toString();
   }
-
-  int row(int r);
 
   default Table structure() {
 

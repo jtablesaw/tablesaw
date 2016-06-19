@@ -6,13 +6,15 @@ import com.github.lwhite1.tablesaw.io.CsvReader;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
+
 import static com.github.lwhite1.tablesaw.api.ColumnType.CATEGORY;
 import static com.github.lwhite1.tablesaw.api.ColumnType.INTEGER;
 import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_DATE;
 import static org.junit.Assert.assertEquals;
 
 /**
- *
+ * Tests for Column functionality that is common across column types
  */
 public class ColumnTest {
 
@@ -30,17 +32,50 @@ public class ColumnTest {
   }
 
   @Test
-  public void testHead() throws Exception {
-    System.out.println(table.column(0).first(5).print());
-    System.out.println(table.column(1).first(5).print());
-    System.out.println(table.column(2).first(5).print());
+  public void testFirst() throws Exception {
+    // test with dates
+    LocalDateColumn first = (LocalDateColumn) table.localDateColumn("date").first(3);
+    assertEquals(LocalDate.parse("2004-02-04"), first.get(0));
+    assertEquals(LocalDate.parse("2004-01-21"), first.get(1));
+    assertEquals(LocalDate.parse("2004-01-07"), first.get(2));
+
+    // test with ints
+    IntColumn first2 = (IntColumn) table.intColumn("approval").first(3);
+    assertEquals(53, first2.get(0));
+    assertEquals(53, first2.get(1));
+    assertEquals(58, first2.get(2));
+
+    // test with categories
+    CategoryColumn first3 = (CategoryColumn) table.categoryColumn("who").first(3);
+    assertEquals("fox", first3.get(0));
+    assertEquals("fox", first3.get(1));
+    assertEquals("fox", first3.get(2));
+
+
+
   }
 
   @Test
-  public void testTail() throws Exception {
-    System.out.println(table.column(0).last(5).print());
-    System.out.println(table.column(1).last(5).print());
-    System.out.println(table.column(2).last(5).print());
+  public void testLast() throws Exception {
+
+    // test with dates
+    LocalDateColumn last = (LocalDateColumn) table.localDateColumn("date").last(3);
+    assertEquals(LocalDate.parse("2001-03-27"), last.get(0));
+    assertEquals(LocalDate.parse("2001-02-27"), last.get(1));
+    assertEquals(LocalDate.parse("2001-02-09"), last.get(2));
+
+    // test with ints
+    IntColumn last2 = (IntColumn) table.intColumn("approval").last(3);
+    assertEquals(52, last2.get(0));
+    assertEquals(53, last2.get(1));
+    assertEquals(57, last2.get(2));
+
+    // test with categories
+    CategoryColumn last3 = (CategoryColumn) table.categoryColumn("who").last(3);
+    assertEquals("zogby", last3.get(0));
+    assertEquals("zogby", last3.get(1));
+    assertEquals("zogby", last3.get(2));
+
   }
 
   @Test

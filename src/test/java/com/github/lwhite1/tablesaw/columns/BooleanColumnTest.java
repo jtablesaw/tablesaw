@@ -61,7 +61,12 @@ public class BooleanColumnTest {
   @Test
   public void testSummary() throws Exception {
     Table summary = column.summary();
-    System.out.println(summary.print());
+    assertEquals(2, summary.columnCount());
+    assertEquals(2, summary.rowCount());
+    assertEquals("true", summary.get(0, 1));
+    assertEquals("false", summary.get(0, 0));
+    assertEquals("5", summary.get(1, 0));
+    assertEquals("2", summary.get(1, 1));
   }
 
   @Test
@@ -70,10 +75,20 @@ public class BooleanColumnTest {
     assertEquals(2, result);
   }
 
+  /**
+   * Tests construction from a bitmap. The test uses the isFalse() method, which inverts the values in the column it's
+   * invoked on, so the true false counts are the opposite of those in the original
+   */
   @Test
   public void testRoaringBitmapConstructor() throws Exception {
     BooleanColumn bc = new BooleanColumn("Is false", column.isFalse(), column.size());
-    System.out.println(bc);
+    Table summary = bc.summary();
+    assertEquals(2, summary.columnCount());
+    assertEquals(2, summary.rowCount());
+    assertEquals("true", summary.get(0, 1));
+    assertEquals("false", summary.get(0, 0));
+    assertEquals("5", summary.get(1, 1));
+    assertEquals("2", summary.get(1, 0));
   }
 
   /**
