@@ -61,7 +61,7 @@ public class StorageManager {
     // NB: We do some extra work with the hash map to ensure that the columns are added to the table in original order
     // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all columns are read
     // TODO - continued : Problem seems to be mostly with category columns rebuilding the encoding dictionary
-    List<Column> columnList = new ArrayList<>();
+    ConcurrentLinkedQueue<Column> columnList = new ConcurrentLinkedQueue<>();
     Map<String, Column> columns = new HashMap<>();
     try {
       for (ColumnMetadata column : columnMetadata) {
@@ -306,8 +306,6 @@ public class StorageManager {
 
     String storageFolder = folderName + File.separator + name + '.' + FILE_EXTENSION;
 
-    System.out.println(storageFolder);
-
     Path path = Paths.get(storageFolder);
 
     if (!Files.exists(path)) {
@@ -550,9 +548,8 @@ public class StorageManager {
   public static void writeTableMetadata(String fileName, Relation table) throws IOException {
     File myFile = Paths.get(fileName).toFile();
     myFile.createNewFile();
-    try (
-        FileOutputStream fOut = new FileOutputStream(myFile);
-        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
+    try (FileOutputStream fOut = new FileOutputStream(myFile);
+         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
       myOutWriter.append(new TableMetadata(table).toJson());
     }
   }
