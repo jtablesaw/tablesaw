@@ -100,9 +100,7 @@ public class Rows {
   }
 
   private static void copy(IntArrayList rows, CategoryColumn oldColumn, CategoryColumn newColumn) {
-    for (int index : rows) {
-      newColumn.add(oldColumn.get(index));
-    }
+    newColumn.initializeWith(oldColumn.getValues(rows), oldColumn.dictionaryMap());
   }
 
   private static void copy(IntArrayList rows, BooleanColumn oldColumn, BooleanColumn newColumn) {

@@ -246,6 +246,25 @@ public class CategoryColumn extends AbstractColumn
   }
 
   /**
+   * Initializes this Column with the given values for performance
+   */
+  public void initializeWith(IntArrayList list, DictionaryMap map) {
+    values = list;
+    lookupTable = map;
+  }
+
+  /**
+   * Returns all the values associated with the given indexes
+   */
+  public IntArrayList getValues(IntArrayList indexes) {
+    IntArrayList newList = new IntArrayList(indexes.size());
+    for (int i : indexes) {
+      newList.add(values.getInt(i));
+    }
+    return newList;
+  }
+
+  /**
    * Add all the strings in the list to this column
    */
   public void addAll(List<String> stringValues) {
