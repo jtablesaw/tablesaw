@@ -153,8 +153,8 @@ class View implements Relation {
   }
 
   /**
+   *
    */
-  @Override
   public int row(int r) {
     return mask[r];
   }

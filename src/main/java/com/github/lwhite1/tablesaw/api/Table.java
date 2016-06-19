@@ -224,11 +224,6 @@ public class Table implements Relation {
     return names;
   }
 
-  @Override
-  public int row(int r) {
-    return r;
-  }
-
   /**
    * Returns a string representation of the value at the given row and column indexes
    *
