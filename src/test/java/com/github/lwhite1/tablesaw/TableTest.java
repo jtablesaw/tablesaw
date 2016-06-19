@@ -57,8 +57,8 @@ public class TableTest {
     @Test
     public void testGetRow() throws Exception {
 
-        Table table = TestData.SIMPLE_UNSORTED_DATA.getTable();
-        Path source = TestData.SIMPLE_UNSORTED_DATA.getSource();
+        Table table = TestData.SIMPLE_DATA_WITH_CANONICAL_DATE_FORMAT.getTable();
+        Path source = TestData.SIMPLE_DATA_WITH_CANONICAL_DATE_FORMAT.getSource();
         List<String[]> rawData;
         try (CSVReader csvReader = new CSVReader(Files.newBufferedReader(source, Charset.defaultCharset()))) {
             rawData = csvReader.readAll();

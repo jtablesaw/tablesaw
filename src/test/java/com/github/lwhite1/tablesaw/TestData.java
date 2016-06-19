@@ -18,6 +18,8 @@ import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_TIME;
  */
 public enum TestData {
 
+    SIMPLE_DATA_WITH_CANONICAL_DATE_FORMAT(new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},"data/simple-data-with-canonical-date-format.csv"),
+
     SIMPLE_UNSORTED_DATA(new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},"data/unsorted-simple-data.csv"),
 
     SIMPLE_SORTED_DATA_BY_INTEGER_ASCENDING(new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},"data/simple-data-sort_by_int_ascending.csv"),
