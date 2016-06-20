@@ -49,8 +49,9 @@ public class TableGroupTest {
     List<SubTable> tables = tableGroup.getSubTables();
     Table t = table.sum(table.intColumn(1), splitColumnNames);
 
-    System.out.println(t.print());
-    System.out.println(tables.size());
+    // compare the sum of the original column with the sum of the sums of the group table
+    assertEquals(table.intColumn(1).sum(), t.intColumn(1).sum());
+    assertEquals(65, tables.size());
   }
 
   @Test
@@ -64,8 +65,8 @@ public class TableGroupTest {
 
   @Test
   public void testSumGroup() {
-    System.out.println(table.columnNames());
     Table groups = table.sum(table.intColumn(1), table.categoryColumn(2));
-    System.out.println(groups.print());
+    // compare the sum of the original column with the sum of the sums of the group table
+    assertEquals(table.intColumn(1).sum(), groups.intColumn(1).sum());
   }
 }
