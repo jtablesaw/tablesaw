@@ -7,12 +7,14 @@ import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
+import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -126,7 +128,7 @@ public class FloatColumnTest {
 
   @Test
   public void testSort() {
-    int records = 100_000_000;
+    int records = 10_000_000;
     FloatColumn floatColumn = new FloatColumn("test", records);
     for (int i = 0; i < records; i++) {
       floatColumn.add((float) Math.random());
@@ -168,38 +170,32 @@ public class FloatColumnTest {
       floatColumn.add(f);
       floats[i] = f;
     }
-
-    Stopwatch stopwatch = Stopwatch.createStarted();
     RoaringBitmap results;
     RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
-    int count = 0;
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 100; i++) { // pick a hundred values at random and see if we can find them
       float f = floats[randomDataGenerator.nextInt(0, 999_999)];
       results = floatColumn.isEqualTo(f);
-      count = count + results.getCardinality();
+      assertEquals(f, floatColumn.get(results.getIntIterator().next()), .001);
     }
-    System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-    System.out.println("Matches = " + count);
   }
 
   @Test
-  public void testMax() {
+  public void testMaxAndMin() {
     FloatColumn floats = new FloatColumn("floats", 100);
     for (int i = 0; i < 100; i++) {
       floats.add(RandomUtils.nextFloat(0, 10_000));
     }
-    FloatArrayList floats1 = floats.max(5);
-    System.out.println(floats1);
-  }
-
-  @Test
-  public void testMin() {
-    FloatColumn floats = new FloatColumn("floats", 100);
-    for (int i = 0; i < 100; i++) {
-      floats.add(RandomUtils.nextFloat(0, 10_000));
+    FloatArrayList floats1 = floats.max(50);
+    FloatArrayList floats2 = floats.min(50);
+    double[] doubles1 = new double[50];
+    double[] doubles2 = new double[50];
+    for (int i = 0; i < floats1.size(); i++) {
+      doubles1[i] = floats1.getFloat(i);
     }
-    FloatArrayList floats1 = floats.min(5);
-    System.out.println(floats1);
-
+    for (int i = 0; i < floats2.size(); i++) {
+      doubles2[i] = floats2.getFloat(i);
+    }
+    // the smallest item in the max set is >= the largest in the min set
+    assertTrue(StatUtils.min(doubles1) >= StatUtils.max(doubles2));
   }
 }

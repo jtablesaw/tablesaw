@@ -51,15 +51,6 @@ public class PackedLocalTimeTest {
   }
 
   @Test
-  public void testAsLocalTime() {
-    LocalTime time = LocalTime.now();
-    int packed = PackedLocalTime.pack(time);
-    LocalTime upacked = PackedLocalTime.asLocalTime(packed);
-    System.out.println(time);
-    System.out.println(upacked);
-  }
-
-  @Test
   public void testPack() {
     LocalTime time = LocalTime.now();
     int packed = PackedLocalTime.pack(time);
@@ -70,7 +61,5 @@ public class PackedLocalTimeTest {
     assertEquals(time.getMinute(), t1.getMinute());
     assertEquals(time.getSecond(), t1.getSecond());
     assertEquals(time.get(ChronoField.MILLI_OF_SECOND), t1.get(ChronoField.MILLI_OF_SECOND));
-    System.out.println(time.toString());
-    System.out.println(t1.toString());
   }
 }
