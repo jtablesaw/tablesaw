@@ -23,6 +23,8 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterable;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.io.IOException;
@@ -36,7 +38,7 @@ import static com.github.lwhite1.tablesaw.sorting.Sort.Order;
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
  * All the data in a column has the same type: integer, float, category, etc.
  */
-public class Table implements Relation {
+public class Table implements Relation, IntIterable {
 
   /**
    * The name of the table
@@ -727,5 +729,34 @@ public class Table implements Relation {
    */
   public static Table create(ResultSet resultSet, String tableName) throws SQLException {
     return SqlResultSetReader.read(resultSet, tableName);
+  }
+
+  @Override
+  public IntIterator iterator() {
+
+    return new IntIterator() {
+
+      private int i = 0;
+
+      @Override
+      public int nextInt() {
+        return i++;
+      }
+
+      @Override
+      public int skip(int k) {
+        return i + k;
+      }
+
+      @Override
+      public boolean hasNext() {
+        return i < rowCount() - 1;
+      }
+
+      @Override
+      public Integer next() {
+        return i++;
+      }
+    };
   }
 }
