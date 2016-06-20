@@ -8,12 +8,13 @@ import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * A group of tables formed by performing splitting operations on an original table
  */
-public class TableGroup {
+public class TableGroup implements Iterable<SubTable> {
 
   private static final String SPLIT_STRING = "|||";
 
@@ -141,5 +142,15 @@ public class TableGroup {
       resultColumn.add((float) result);
     }
     return t;
+  }
+
+  /**
+   * Returns an iterator over elements of type {@code T}.
+   *
+   * @return an Iterator.
+   */
+  @Override
+  public Iterator<SubTable> iterator() {
+    return subTables.iterator();
   }
 }
