@@ -128,7 +128,7 @@ public class FloatColumnTest {
 
   @Test
   public void testSort() {
-    int records = 10_000_000;
+    int records = 1_000_000;
     FloatColumn floatColumn = new FloatColumn("test", records);
     for (int i = 0; i < records; i++) {
       floatColumn.add((float) Math.random());

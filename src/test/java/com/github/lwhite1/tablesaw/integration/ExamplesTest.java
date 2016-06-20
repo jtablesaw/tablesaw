@@ -5,7 +5,6 @@ import com.github.lwhite1.tablesaw.api.QueryHelper;
 import com.github.lwhite1.tablesaw.io.CsvWriter;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.io.CsvReader;
-import org.junit.Test;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 /**
@@ -13,8 +12,7 @@ import static com.github.lwhite1.tablesaw.api.ColumnType.*;
  */
 public class ExamplesTest  {
 
-  @Test
-  public void simpleExample() throws Exception {
+  public static void main(String[] args) throws Exception {
 
     out("");
     out("Some Examples: ");
@@ -56,7 +54,7 @@ public class ExamplesTest  {
     CsvWriter.write("data/filtered_bus_stops.csv", filtered);
   }
 
-  private void out(Object o) {
+  private static void out(Object o) {
     System.out.println(o);
   }
 }
