@@ -33,13 +33,7 @@ public class IntIndexTest {
   public void setUp() throws Exception {
     Stopwatch stopwatch = Stopwatch.createStarted();
     table = CsvReader.read(types, "data/BushApproval.csv");
-    out.println("Loaded from column store in " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
     index = new IntIndex(table.intColumn("approval"));
-  }
-
-  @Test
-  public void testConstructor() {
-    out.println("Done");
   }
 
   @Test
