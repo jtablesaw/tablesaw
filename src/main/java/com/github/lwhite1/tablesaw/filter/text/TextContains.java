@@ -26,6 +26,6 @@ public class TextContains extends ColumnFilter {
   public RoaringBitmap apply(Table relation) {
     Column column = relation.column(columnReference().getColumnName());
     CategoryColumn textColumn = (CategoryColumn) column;
-    return textColumn.contains(string);
+    return textColumn.stringContains(string);
   }
 }

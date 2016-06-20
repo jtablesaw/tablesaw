@@ -11,8 +11,11 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /**
- *
+ * Tests grouping and aggregation operations on tables
  */
 public class TableGroupTest {
 
@@ -33,7 +36,7 @@ public class TableGroupTest {
   public void testGetSubTables() {
     TableGroup tableGroup = new TableGroup(table, table.column("who"));
     List<SubTable> tables = tableGroup.getSubTables();
-    System.out.println(tables.size());
+    assertEquals(6, tables.size());
   }
 
   @Test
@@ -52,9 +55,11 @@ public class TableGroupTest {
 
   @Test
   public void testCountByGroup() {
-    System.out.println(table.columnNames());
     Table groups = table.countBy("who");
-    System.out.println(groups.print());
+    assertEquals(2, groups.columnCount());
+    assertEquals(6, groups.rowCount());
+    CategoryColumn group = groups.categoryColumn(0);
+    assertTrue(group.contains("fox"));
   }
 
   @Test

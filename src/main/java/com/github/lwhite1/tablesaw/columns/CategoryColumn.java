@@ -254,6 +254,13 @@ public class CategoryColumn extends AbstractColumn
   }
 
   /**
+   * Returns true if this column contains a cell with the given string, and false otherwise
+   */
+  public boolean contains(String aString) {
+    return values.indexOf(dictionaryMap().get(aString)) >= 0;
+  }
+
+  /**
    * Returns all the values associated with the given indexes
    */
   public IntArrayList getValues(IntArrayList indexes) {

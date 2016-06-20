@@ -48,7 +48,7 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap contains(String string) {
+  default RoaringBitmap stringContains(String string) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     for (String next : this) {
