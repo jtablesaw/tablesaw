@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Plotyly</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+</head>
+<h1></h1>plotly</h1>
+<div id="tester" style="width:600px;height:250px;"></div>
+
+<script>
+	TESTER = document.getElementById('tester');
+	Plotly.plot( TESTER, [{
+	type: 'scatter',
+	x: [1, 2, 3, 4, 5],
+	y: [1, 2, 4, 8, 16],
+	 marker: {
+            color: 'rgb(16, 32, 77)'
+        }
+	}], {
+	margin: { t: 0 } } );
+</script>
+</body>
+</html>
