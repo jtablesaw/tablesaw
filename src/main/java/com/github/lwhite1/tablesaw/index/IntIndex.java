@@ -1,133 +1,43 @@
 package com.github.lwhite1.tablesaw.index;
 
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.google.common.base.Stopwatch;
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.concurrent.TimeUnit;
 
 /**
- *
+ *  An index for four-byte integer and integer backed columns (date, category, time)
  */
 public class IntIndex {
 
-  private final Int2ObjectAVLTreeMap<IntArrayList> index = new Int2ObjectAVLTreeMap<>();
+  private final Int2ObjectAVLTreeMap<IntArrayList> index;
 
   public IntIndex(IntColumn column) {
+    int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
+    Int2ObjectOpenHashMap<IntArrayList> tempMap = new Int2ObjectOpenHashMap<>(sizeEstimate);
     for (int i = 0; i < column.size(); i++) {
       int value = column.get(i);
-      IntArrayList recordIds = index.get(value);
+      IntArrayList recordIds = tempMap.get(value);
       if (recordIds == null) {
         recordIds = new IntArrayList();
         recordIds.add(i);
-        index.put(value, recordIds);
+        tempMap.put(value, recordIds);
       } else {
         recordIds.add(i);
       }
     }
+    index = new Int2ObjectAVLTreeMap<>(tempMap);
   }
-
-/*
-  public IntIndex(IntColumn column, boolean ignore) {
-    Int2ObjectAVLTreeMap<RoaringBitmap> index = new Int2ObjectAVLTreeMap<>();
-    for (int i = 0; i < column.size(); i++) {
-      int value = column.get(i);
-      RoaringBitmap recordIds = index.get(value);
-      if (recordIds == null) {
-        recordIds = new RoaringBitmap();
-        recordIds.add(i);
-        index.put(value, recordIds);
-      } else {
-        recordIds.add(i);
-      }
-    }
-  }
-*/
-
-/*
-  public IntIndex(IntColumn column, int unused) {
-
-    int[][] sorted = new int[column.size()][2];
-    int[] data = column.data().toIntArray();
-
-    for (int i = 0; i < column.size(); i++) {
-      sorted[i][0] = i;
-      sorted[i][1] = data[i];
-    }
-    Arrays.parallelSort(sorted, intArrayComparator);
-
-    for (int i = 0; i < sorted.length; i++) {
-      int value = sorted[i][1];
-      int tableKey = sorted[i][0];
-      IntArrayList recordIds = index.get(value);
-      if (recordIds == null) {
-        recordIds = new IntArrayList();
-        recordIds.add(tableKey);
-        index.put(value, recordIds);
-      } else {
-        recordIds.add(tableKey);
-      }
-    }
-  }
-*/
-
-/*
-  public IntIndex(IntColumn column, char unused) {
-    System.out.println("starting to instantiate index");
-    Stopwatch stopwatch = Stopwatch.createStarted();
-
-    int[][] sorted = new int[column.size()][2];
-    int[] data = column.data().toIntArray();
-
-    for (int i = 0; i < column.size(); i++) {
-      sorted[i][0] = i;
-      sorted[i][1] = data[i];
-    }
-
-    System.out.println("Index prep " + stopwatch.elapsed(TimeUnit.SECONDS));
-    stopwatch.reset().start();
-
-    Arrays.sort(sorted, intArrayComparator);
-
-    System.out.println("Index Sort " + stopwatch.elapsed(TimeUnit.SECONDS));
-    stopwatch.reset().start();
-
-
-    int last = Integer.MIN_VALUE;
-    int value = Integer.MIN_VALUE;
-    IntArrayList recordIds = new IntArrayList();
-
-    for (int i = 0; i < sorted.length; i++) {
-      // get the current values
-      int tableKey = sorted[i][0];
-      value = sorted[i][1];
-
-      // if the value has changed, store the record, update LAST, and get a new collection
-      if (i != 0 && value != last) {
-        index.put(last, recordIds);
-        recordIds = new IntArrayList();
-        last = value;
-      }
-      recordIds.add(tableKey);
-    }
-    if (value != Integer.MIN_VALUE && !recordIds.isEmpty()) {
-      index.put(value, recordIds);
-    }
-    System.out.println("Index Build " + stopwatch.elapsed(TimeUnit.SECONDS));
-  }
-*/
 
   private final static Comparator<int[]> intArrayComparator = new Comparator<int[]>() {
     public int compare(int[] a, int[] b) {
       return Integer.compare(a[1], b[1]);
     }
   };
-
 
   /**
    * Returns a bitmap containing row numbers of all cells matching the given int
