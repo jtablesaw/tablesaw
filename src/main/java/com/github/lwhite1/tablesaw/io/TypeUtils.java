@@ -65,6 +65,9 @@ public final class TypeUtils {
   private static final DateTimeFormatter dtf18 = DateTimeFormatter.ofPattern("MMM dd, yyyy");
   private static final DateTimeFormatter dtf19 = DateTimeFormatter.ofPattern("MMM d, yyyy");
 
+  /**
+   * List of formatters for use in code that selects the correct one for a given Date string
+   */
   private static ImmutableList<DateTimeFormatter> dateFormatters = ImmutableList.of(
       dtf1,
       dtf2,
@@ -110,6 +113,21 @@ public final class TypeUtils {
         .toFormatter();
   }
 
+  /**
+   * List of formatters for use in code that selects the correct one for a given DateTime string
+   */
+  private static ImmutableList<DateTimeFormatter> dateTimeFormatters = ImmutableList.of(
+      dtTimef0,
+      dtTimef1,
+      dtTimef2,
+      dtTimef3,
+      dtTimef4,
+      dtTimef5,
+      dtTimef6
+  );
+
+
+
   private static final DateTimeFormatter timef1 = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
   private static final DateTimeFormatter timef2 = DateTimeFormatter.ofPattern("hh:mm:ss a");
   private static final DateTimeFormatter timef3 = DateTimeFormatter.ofPattern("h:mm:ss a");
@@ -118,6 +136,18 @@ public final class TypeUtils {
   private static final DateTimeFormatter timef6 = DateTimeFormatter.ofPattern("h:mm a");
   private static final DateTimeFormatter timef7 = DateTimeFormatter.ofPattern("HHmm");
 
+  /**
+   * List of formatters for use in code that selects the correct one for a given Time string
+   */
+  private static ImmutableList<DateTimeFormatter> timeFormatters = ImmutableList.of(
+      timef1,
+      timef2,
+      timef3,
+      timef4,
+      timef5,
+      timef6,
+      timef7
+  );
 
   // A formatter that handles all the date formats defined above
   public static final DateTimeFormatter DATE_FORMATTER =
@@ -219,11 +249,58 @@ public final class TypeUtils {
     }
   }
 
-  public static DateTimeFormatter getDateFormatter(String value) {
+  /**
+   * Returns the first DateTimeFormatter to parse the string, which represents a DATE
+   * <p>
+   * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
+   * called again. This is an optimization, because the older version, which will try multiple formatters was too
+   * slow for large data sets.
+   */
+  public static DateTimeFormatter getDateFormatter(String dateValue) {
 
     for (DateTimeFormatter formatter : dateFormatters) {
       try {
-        formatter.parse(value);
+        formatter.parse(dateValue);
+        return formatter;
+      } catch (DateTimeParseException e) {
+        // ignore;
+      }
+    }
+    return DATE_FORMATTER;
+  }
+
+  /**
+   * Returns the first DateTimeFormatter to parse the string, which represents a DATE_TIME
+   *
+   * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
+   * called again. This is an optimization, because the older version, which will try multiple formatters was too
+   * slow for large data sets.
+   */
+  public static DateTimeFormatter getDateTimeFormatter(String dateTimeValue) {
+
+    for (DateTimeFormatter formatter : dateTimeFormatters) {
+      try {
+        formatter.parse(dateTimeValue);
+        return formatter;
+      } catch (DateTimeParseException e) {
+        // ignore;
+      }
+    }
+    return DATE_FORMATTER;
+  }
+
+  /**
+   * Returns the first DateTimeFormatter to parse the string, which represents a TIME
+   *
+   * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
+   * called again. This is an optimization, because the older version, which will try multiple formatters was too
+   * slow for large data sets.
+   */
+  public static DateTimeFormatter getTimeFormatter(String timeValue) {
+
+    for (DateTimeFormatter formatter : timeFormatters) {
+      try {
+        formatter.parse(timeValue);
         return formatter;
       } catch (DateTimeParseException e) {
         // ignore;

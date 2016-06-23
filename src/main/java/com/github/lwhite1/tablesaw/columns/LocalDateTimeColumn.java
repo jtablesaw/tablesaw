@@ -1,6 +1,7 @@
 package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalTime;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
@@ -17,13 +18,16 @@ import it.unimi.dsi.fastutil.longs.*;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * A column in a base table that contains float values
+ * A column in a table that contains long-integer encoded (packed) date-time values
  */
 public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUtils {
 
@@ -33,18 +37,18 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
   private LongArrayList data;
 
+  /**
+   * The formatter chosen to parse date-time strings for this particular column
+   */
+  private DateTimeFormatter selectedFormatter;
+
   @Override
   public void addCell(String stringValue) {
-
     if (stringValue == null) {
       add(Long.MIN_VALUE);
     } else {
-      LocalDateTime dateTime = convert(stringValue);
-      if (dateTime != null) {
-        add(dateTime);
-      } else {
-        add(Long.MIN_VALUE);
-      }
+      long dateTime = convert(stringValue);
+      add(dateTime);
     }
   }
 
@@ -53,14 +57,29 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     add(dt);
   }
 
-  public static LocalDateTime convert(String value) {
+  /**
+   * Returns a PackedDateTime as converted from the given string
+   * @param value A string representation of a time
+   * @throws DateTimeParseException if no parser can be found for the time format used
+   */
+  public long convert(String value) {
     if (Strings.isNullOrEmpty(value)
         || TypeUtils.MISSING_INDICATORS.contains(value)
         || value.equals("-1")) {
-      return null;
+      return Long.MIN_VALUE;
     }
     value = Strings.padStart(value, 4, '0');
-    return LocalDateTime.parse(value, TypeUtils.DATE_TIME_FORMATTER);
+    if (selectedFormatter == null) {
+      selectedFormatter = TypeUtils.getDateTimeFormatter(value);
+    }
+    LocalDateTime time;
+    try {
+      time = LocalDateTime.parse(value, selectedFormatter);
+    } catch (DateTimeParseException e) {
+      selectedFormatter = TypeUtils.DATE_TIME_FORMATTER;
+      time = LocalDateTime.parse(value, selectedFormatter);
+    }
+    return PackedLocalDateTime.pack(time);
   }
 
   public static LocalDateTimeColumn create(String name) {

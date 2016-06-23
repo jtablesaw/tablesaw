@@ -23,6 +23,8 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +37,11 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_TIME.getMissingValue();
 
   private static int DEFAULT_ARRAY_SIZE = 128;
+
+  /**
+   * The formatter chosen to parse times for this particular column
+   */
+  private DateTimeFormatter selectedFormatter;
 
   private IntArrayList data;
 
@@ -172,14 +179,29 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
     return data.isEmpty();
   }
 
-  public static int convert(String value) {
+  /**
+   * Returns a PackedTime as converted from the given string
+   * @param value A string representation of a time
+   * @throws DateTimeParseException if no parser can be found for the time format used
+   */
+  public int convert(String value) {
     if (Strings.isNullOrEmpty(value)
         || TypeUtils.MISSING_INDICATORS.contains(value)
         || value.equals("-1")) {
       return (int) ColumnType.LOCAL_TIME.getMissingValue();
     }
     value = Strings.padStart(value, 4, '0');
-    return PackedLocalTime.pack(LocalTime.parse(value, TypeUtils.TIME_FORMATTER));
+    if (selectedFormatter == null) {
+      selectedFormatter = TypeUtils.getTimeFormatter(value);
+    }
+    LocalTime time;
+    try {
+      time = LocalTime.parse(value, selectedFormatter);
+    } catch (DateTimeParseException e) {
+      selectedFormatter = TypeUtils.TIME_FORMATTER;
+      time = LocalTime.parse(value, selectedFormatter);
+    }
+    return PackedLocalTime.pack(time);
   }
 
   @Override

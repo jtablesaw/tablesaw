@@ -43,6 +43,9 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   private IntArrayList data;
 
+  /**
+   * The formatter chosen to parse dates for this particular column
+   */
   private DateTimeFormatter selectedFormatter;
 
   private LocalDateColumn(String name) {
@@ -303,6 +306,11 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return column;
   }
 
+  /**
+   * Returns a PackedDate as converted from the given string
+   * @param value A string representation of a date
+   * @throws      DateTimeParseException if no parser can be found for the date format
+   */
   public int convert(String value) {
     if (Strings.isNullOrEmpty(value)
         || TypeUtils.MISSING_INDICATORS.contains(value)
