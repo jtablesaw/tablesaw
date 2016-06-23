@@ -20,6 +20,7 @@ import com.github.lwhite1.tablesaw.util.IntComparatorChain;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -485,6 +486,18 @@ public class Table implements Relation, IntIterable {
   public void removeColumns(Column... columns) {
     for (Column c : columns)
       columnList.remove(c);
+  }
+
+  /**
+   * Removes the given columns
+   */
+  public void retainColumns(Column... columns) {
+    List<Column> retained = Arrays.asList(columns);
+    columnList.retainAll(retained);
+  }
+
+  public void retainColumns(String... columnNames) {
+    columnList.retainAll(columns(columnNames));
   }
 
   public Table countBy(String byColumnName) {

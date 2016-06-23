@@ -12,9 +12,12 @@ import com.github.lwhite1.tablesaw.filter.IntBetween;
 import com.github.lwhite1.tablesaw.filter.IntEqualTo;
 import com.github.lwhite1.tablesaw.filter.IntGreaterThan;
 import com.github.lwhite1.tablesaw.filter.IntGreaterThanOrEqualTo;
+import com.github.lwhite1.tablesaw.filter.IntIsIn;
 import com.github.lwhite1.tablesaw.filter.IntLessThan;
 import com.github.lwhite1.tablesaw.filter.IntLessThanOrEqualTo;
+import com.github.lwhite1.tablesaw.filter.LocalDateBetween;
 import com.github.lwhite1.tablesaw.filter.StringEqualTo;
+import com.github.lwhite1.tablesaw.filter.StringNotEqualTo;
 import com.github.lwhite1.tablesaw.filter.TimeEqualTo;
 import com.github.lwhite1.tablesaw.filter.columnbased.ColumnEqualTo;
 import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsAfter;
@@ -103,6 +106,10 @@ public class ColumnReference {
     return new IntBetween(this, low, high);
   }
 
+  public Filter isBetween(LocalDate low, LocalDate high) {
+    return new LocalDateBetween(this, low, high);
+  }
+
   public Filter isEqualTo(float value) {
     return new FloatEqualTo(this, value);
   }
@@ -119,8 +126,16 @@ public class ColumnReference {
     return new StringEqualTo(this, value);
   }
 
+  public Filter isNotEqualTo(String value) {
+    return new StringNotEqualTo(this, value);
+  }
+
   public Filter isGreaterThan(int value) {
     return new IntGreaterThan(this, value);
+  }
+
+  public Filter isIn(IntColumn intColumn) {
+    return new IntIsIn(this, intColumn);
   }
 
   public Filter isLessThan(int value) {

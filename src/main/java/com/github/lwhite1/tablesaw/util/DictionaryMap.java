@@ -17,6 +17,11 @@ public class DictionaryMap {
 
   private final Object2IntMap<String> valueToKey = new Object2IntOpenHashMap<>();
 
+  public DictionaryMap() {
+    super();
+    valueToKey.defaultReturnValue(-1);
+  }
+
   public void put(int key, String value) {
     keyToValue.put(key, value);
     valueToKey.put(value, key);
@@ -27,7 +32,8 @@ public class DictionaryMap {
   }
 
   public int get(String value) {
-    return valueToKey.get(value);
+
+    return valueToKey.getInt(value);
   }
 
   public void remove(short key) {

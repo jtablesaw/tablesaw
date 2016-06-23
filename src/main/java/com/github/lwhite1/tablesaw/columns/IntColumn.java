@@ -17,6 +17,8 @@ import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
@@ -146,6 +148,10 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     RoaringBitmap roaringBitmap = new RoaringBitmap();
     data.forEach(roaringBitmap::add);
     return IntColumn.create(name() + " Unique values", IntArrayList.wrap(roaringBitmap.toArray()));
+  }
+
+  public IntSet asSet() {
+    return new IntOpenHashSet(data);
   }
 
   @Override
