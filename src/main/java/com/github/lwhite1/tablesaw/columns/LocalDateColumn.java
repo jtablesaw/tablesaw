@@ -26,6 +26,8 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +42,8 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   private static final int DEFAULT_ARRAY_SIZE = 128;
 
   private IntArrayList data;
+
+  private DateTimeFormatter selectedFormatter;
 
   private LocalDateColumn(String name) {
     super(name);
@@ -299,14 +303,25 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return column;
   }
 
-  public static int convert(String value) {
+  public int convert(String value) {
     if (Strings.isNullOrEmpty(value)
         || TypeUtils.MISSING_INDICATORS.contains(value)
         || value.equals("-1")) {
       return (int) ColumnType.LOCAL_DATE.getMissingValue();
     }
     value = Strings.padStart(value, 4, '0');
-    return PackedLocalDate.pack(LocalDate.parse(value, TypeUtils.DATE_FORMATTER));
+
+    if (selectedFormatter == null) {
+      selectedFormatter = TypeUtils.getDateFormatter(value);
+    }
+    LocalDate date;
+    try {
+      date = LocalDate.parse(value, selectedFormatter);
+    } catch (DateTimeParseException e) {
+      selectedFormatter = TypeUtils.DATE_FORMATTER;
+      date = LocalDate.parse(value, selectedFormatter);
+    }
+    return PackedLocalDate.pack(date);
   }
 
   public void addCell(String string) {

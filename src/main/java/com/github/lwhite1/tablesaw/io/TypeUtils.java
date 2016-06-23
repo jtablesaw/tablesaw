@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,6 +64,28 @@ public final class TypeUtils {
   private static final DateTimeFormatter dtf17 = DateTimeFormatter.ofPattern("MMM-dd-yy");
   private static final DateTimeFormatter dtf18 = DateTimeFormatter.ofPattern("MMM dd, yyyy");
   private static final DateTimeFormatter dtf19 = DateTimeFormatter.ofPattern("MMM d, yyyy");
+
+  private static ImmutableList<DateTimeFormatter> dateFormatters = ImmutableList.of(
+      dtf1,
+      dtf2,
+      dtf3,
+      dtf4,
+      dtf5,
+      dtf6,
+      dtf7,
+      dtf8,
+      dtf9,
+      dtf10,
+      dtf11,
+      dtf12,
+      dtf13,
+      dtf14,
+      dtf15,
+      dtf16,
+      dtf17,
+      dtf18,
+      dtf19
+  );
 
   private static final DateTimeFormatter dtTimef0 =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -194,5 +217,18 @@ public final class TypeUtils {
       default:
         throw new IllegalArgumentException("Unknown ColumnType: " + type);
     }
+  }
+
+  public static DateTimeFormatter getDateFormatter(String value) {
+
+    for (DateTimeFormatter formatter : dateFormatters) {
+      try {
+        formatter.parse(value);
+        return formatter;
+      } catch (DateTimeParseException e) {
+        // ignore;
+      }
+    }
+    return DATE_FORMATTER;
   }
 }
