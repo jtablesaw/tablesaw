@@ -435,6 +435,16 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return apply(PackedLocalDate::isBefore, packed);
   }
 
+  public RoaringBitmap isOnOrBefore(LocalDate value) {
+    int packed = PackedLocalDate.pack(value);
+    return apply(PackedLocalDate::isOnOrBefore, packed);
+  }
+
+  public RoaringBitmap isOnOrAfter(LocalDate value) {
+    int packed = PackedLocalDate.pack(value);
+    return apply(PackedLocalDate::isOnOrAfter, packed);
+  }
+
   public RoaringBitmap isMonday() {
     return apply(PackedLocalDate::isMonday);
   }

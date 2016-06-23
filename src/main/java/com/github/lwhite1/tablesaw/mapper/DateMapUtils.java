@@ -6,7 +6,6 @@ import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
 import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
-import it.unimi.dsi.fastutil.ints.IntIterable;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
@@ -167,7 +166,7 @@ public interface DateMapUtils extends DateColumnUtils {
   }
 
   static String dateColumnName(Column column1, int value, TemporalUnit unit) {
-    return column1.name() + " - " + value + " " + unit.toString() + "(s)";
+    return column1.name() + ": " + value + " " + unit.toString() + "(s)";
   }
 
   LocalDate get(int index);
