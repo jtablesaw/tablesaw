@@ -26,6 +26,11 @@ public class CategoryColumnTest {
   }
 
   @Test
+  public void testDefaultReturnValue() {
+    assertEquals(-1, column.dictionaryMap().get("test"));
+  }
+
+  @Test
   public void testType() {
     Assert.assertEquals(ColumnType.CATEGORY, column.type());
   }

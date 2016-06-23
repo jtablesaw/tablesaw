@@ -234,13 +234,10 @@ public class CategoryColumn extends AbstractColumn
   }
 
   public void add(String stringValue) {
-    boolean b = lookupTable.contains(stringValue);
-    int valueId;
-    if (!b) {
+    int valueId = lookupTable.get(stringValue);
+    if (valueId < 0) {
       valueId = id++;
       lookupTable.put(valueId, stringValue);
-    } else {
-      valueId = lookupTable.get(stringValue);
     }
     values.add(valueId);
   }
@@ -328,6 +325,21 @@ public class CategoryColumn extends AbstractColumn
       int i = 0;
       for (int next : values) {
         if (key == next) {
+          results.add(i);
+        }
+        i++;
+      }
+    }
+    return results;
+  }
+
+  public RoaringBitmap isNotEqualTo(String string) {
+    RoaringBitmap results = new RoaringBitmap();
+    int key = lookupTable.get(string);
+    if (key >= 0) {
+      int i = 0;
+      for (int next : values) {
+        if (key != next) {
           results.add(i);
         }
         i++;
