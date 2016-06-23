@@ -5,8 +5,8 @@ package com.github.lwhite1.tablesaw.util.collections;
 /**
  * A skeletal implementation of {@code IntRangeSet}.
  */
-abstract class AbstractRangeSet implements IntRangeSet {
-  AbstractRangeSet() {}
+abstract class AbstractIntRangeSet implements IntRangeSet {
+  AbstractIntRangeSet() {}
 
   @Override
   public boolean contains(int value) {

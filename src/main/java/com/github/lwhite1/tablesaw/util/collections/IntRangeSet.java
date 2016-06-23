@@ -12,7 +12,7 @@ package com.github.lwhite1.tablesaw.util.collections;
  * <p>Implementations that choose to support the {@link #add(IntRange)} operation are required to
  * ignore empty ranges and coalesce connected ranges.  For example:  <pre>   {@code
  *
- *   IntRangeSet rangeSet = TreeRangeSet.create();
+ *   IntRangeSet rangeSet = IntTreeRangeSet.create();
  *   rangeSet.add(IntRange.closed(1, 10)); // {[1, 10]}
  *   rangeSet.add(IntRange.closedOpen(11, 15)); // disconnected range; {[1, 10], [11, 15)}
  *   rangeSet.add(IntRange.closedOpen(15, 20)); // connected range; {[1, 10], [11, 20)}
@@ -87,16 +87,6 @@ public interface IntRangeSet {
    * (equivalently, of upper bound).
    */
   Set<IntRange> asRanges();
-
-  /**
-   * Returns a descending view of the {@linkplain IntRange#isConnected disconnected} ranges that
-   * make up this range set. The returned set may be empty. The iterators returned by its
-   * {@link Iterable#iterator} method return the ranges in decreasing order of lower bound
-   * (equivalently, of upper bound).
-   *
-   * @since 19.0
-   */
-  Set<IntRange> asDescendingSetOfRanges();
 
   /**
    * Returns a view of the complement of this {@code IntRangeSet}.

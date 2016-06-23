@@ -223,6 +223,14 @@ public final class IntRange {
     }
   }
 
+  public IntCut upperBound() {
+    return upperBound;
+  }
+
+  public IntCut lowerBound() {
+    return lowerBound;
+  }
+
   /**
    * Returns {@code true} if this range has a lower endpoint.
    */

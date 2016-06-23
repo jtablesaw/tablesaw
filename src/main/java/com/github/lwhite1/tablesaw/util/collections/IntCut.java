@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
  */
 abstract class IntCut implements Comparable<IntCut> {
 
-  final int endpoint;
+  protected final int endpoint;
 
   IntCut(int endpoint) {
     this.endpoint = endpoint;
