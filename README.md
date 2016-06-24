@@ -35,7 +35,7 @@ You can find an introductory tutorial here: https://javadatascience.wordpress.co
 * More specialized column types and operations: (lat/lon, time interval, money)
 
 ### Current performance:
-In it's current pre-release state, some areas of Tablesaw performa better than others, but to give you some idea of where we're going, you can now load a half billion rows (4 column) csv file (35GB on disk) entirely into about 10 GB of memory. If you do load it from Tablesaw's .saw format, you can load that dataset in about 22 seconds. Using the new indexing features you can then query the table in around 1-2 ms.
+In it's current pre-release state, some areas of Tablesaw perform better than others, but to give you an idea of where we're going, you can now load a half billion rows (4 column) csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load that dataset in about 22 seconds. Using the new indexing features you can then query the table in around 1-2 ms. 
 
 And that's on a laptop.
 
@@ -43,7 +43,7 @@ And that's on a laptop.
 To give you a sense of the API, here's an example:
 
 ```
-Check this spot in a day or two for a real-worldy example.
+Check this spot in a day or two for a real-world-y example.
 ```
 
 ### A work-in-progress
