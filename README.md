@@ -20,7 +20,7 @@ You can find an introductory tutorial here: https://javadatascience.wordpress.co
 * Group
 * Perform map and reduce operations
 * Run descriptive stats (mean, min, max, median, etc.)
-* Store tables in Tablesaw's compressed columnar storage format
+* Store tables in a compressed columnar storage format
 
 ### What Tablesaw will do in the future:
 * Load data remotely from HDFS, S3, and off the Web using HTTP
