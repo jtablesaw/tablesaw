@@ -16,7 +16,7 @@ For more information and examples see: https://javadatascience.wordpress.com
 
 You can find an introductory tutorial here: https://javadatascience.wordpress.com/2016/06/24/an-introduction-to-tablesaw/
 
-##What Tableswaw does today: 
+###What Tableswaw does today: 
 * Import data from RDBMS and CSV files 
 * Viewing table metadata
 * Adding and removing columns
@@ -28,23 +28,23 @@ You can find an introductory tutorial here: https://javadatascience.wordpress.co
 * Running descriptive stats (mean, min, max, etc.)
 * Storing tables in Tablesaw's compressed columnar storage format
 
-## What Tablesaw will do in the future:
+### What Tablesaw will do in the future:
 * Load data remotely from HDFS, S3, and off the Web using HTTP
 * Interactive graphics
 * Integrated machine learning
 * More specialized column types and operations: (lat/lon, time interval, money)
 
-## Current performance:
+### Current performance:
 In it's current pre-release state, some areas of Tablesaw performa better than others, but to give you some idea of where we're going, you can now load a half billion rows (4 column) csv file (35GB on disk) entirely into about 10 GB of memory. If you do load it from Tablesaw's .saw format, you can load that dataset in about 22 seconds. Using the new indexing features you can then query the table in around 1-2 ms.
 
 And that's on a laptop.
 
-## Easy to Use is Easy to Say
+### Easy to Use is Easy to Say
 To give you a sense of the API, here's an example:
 
 ```
 Check this spot in a day or two for a real-worldy example.
 ```
 
-## A work-in-progress
+### A work-in-progress
 __Tablesaw is moving quickly towards stability of the core functionality and APIs__. A production release planned for Q3 2016. A great deal of additional functionality will follow the initial release.
