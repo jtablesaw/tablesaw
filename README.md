@@ -41,7 +41,7 @@ To give you a sense of the API, here's an example. The goal in this analysis is 
     Table ops = Table.create("data/operations.csv");
     out(ops.structure().print());
     
-    // We need to combine the date and time fields so that we don't miscalculate on jobs that cross date bounderies
+    // Combine the date and time fields so that we don't miscalculate on jobs that cross date bounderies
     LocalDateTimeColumn start = ops.localDateColumn("Date").atTime(ops.localTimeColumn("Start-Time"));
     LocalDateTimeColumn end = ops.localDateColumn("Date").atTime(ops.localTimeColumn("End-Time"));
     start.setName("start");
