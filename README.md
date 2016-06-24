@@ -46,6 +46,8 @@ To give you a sense of the API, here's an example. The goal in this analysis is 
 
     // Calculate the durations from the start and end times
     LongColumn duration = start.differenceInSeconds(end);
+    
+    // give the new column a name and add it to the table
     duration.setName("Duration");
     ops.addColumn(duration);
     
@@ -56,7 +58,7 @@ To give you a sense of the API, here's an example. The goal in this analysis is 
               (column("SKU").startsWith("429")),
               (column("Operation").isEqualTo("Assembly"))));
    
-    // Now calulate the median peformance by facility and group.
+    // Calulate the median peformance by facility and group.
     Table durationByFacilityAndShift = q2_429_assembly.reduce("Duration", median, "Facility", "Shift");
     
     // Get the top "worst" peforming 
