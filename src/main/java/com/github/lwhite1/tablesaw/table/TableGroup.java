@@ -6,18 +6,20 @@ import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * A group of tables formed by performing splitting operations on an original table
  */
 public class TableGroup implements Iterable<SubTable> {
 
-  private static final String SPLIT_STRING = "|||";
-
+  private static final String SPLIT_STRING = "~~~";
+  private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
   private final Table original;
 
   private final List<SubTable> subTables;
@@ -109,9 +111,9 @@ public class TableGroup implements Iterable<SubTable> {
     }
     // iterate through the rows in the table and split each of the grouping columns into multiple columns
     for (int row = 0; row < subTable.rowCount(); row++) {
-      String[] strings = subTable.name().split(SPLIT_STRING);
+      List<String> strings = SPLITTER.splitToList(subTable.name());
       for (int col = 0; col < newColumns.size(); col++) {
-        newColumns.get(col).addCell(strings[col]);
+        newColumns.get(col).addCell(strings.get(col));
       }
     }
     for (Column c : newColumns) {
@@ -138,7 +140,7 @@ public class TableGroup implements Iterable<SubTable> {
 
     for (SubTable subTable : subTables) {
       double result = subTable.reduce(numericColumnName, function);
-      groupColumn.add(subTable.name());
+      groupColumn.add(subTable.name().replace(SPLIT_STRING, " * "));
       resultColumn.add((float) result);
     }
     return t;

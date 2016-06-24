@@ -156,7 +156,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
     table.addColumn(IntColumn.create("Count"));
 
     for (Int2IntMap.Entry entry : counts.int2IntEntrySet()) {
-      table.localTimeColumn(0).add(entry.getIntKey());
+      table.timeColumn(0).add(entry.getIntKey());
       table.intColumn(1).add(entry.getIntValue());
     }
     table = table.sortDescendingOn("Count");
@@ -346,7 +346,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
    *          number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
-  public List<LocalTime> max(int n) {
+  public List<LocalTime> top(int n) {
     List<LocalTime> top = new ArrayList<>();
     int[] values = data.toIntArray();
     IntArrays.parallelQuickSort(values, ReverseIntComparator.instance());
@@ -363,7 +363,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
    *          number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
-  public List<LocalTime> min(int n) {
+  public List<LocalTime> bottom(int n) {
     List<LocalTime> bottom = new ArrayList<>();
     int[] values = data.toIntArray();
     IntArrays.parallelQuickSort(values);

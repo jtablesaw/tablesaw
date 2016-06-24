@@ -395,7 +395,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     table.addColumn(IntColumn.create("Count"));
 
     for (Int2IntMap.Entry entry : counts.int2IntEntrySet()) {
-      table.localDateColumn(0).add(entry.getIntKey());
+      table.dateColumn(0).add(entry.getIntKey());
       table.intColumn(1).add(entry.getIntValue());
     }
     table = table.sortDescendingOn("Count");
@@ -611,7 +611,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
    *          number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
-  public List<LocalDate> max(int n) {
+  public List<LocalDate> top(int n) {
     List<LocalDate> top = new ArrayList<>();
     int[] values = data.toIntArray();
     IntArrays.parallelQuickSort(values, ReverseIntComparator.instance());
@@ -628,7 +628,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
    *          number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
-  public List<LocalDate> min(int n) {
+  public List<LocalDate> bottom(int n) {
     List<LocalDate> bottom = new ArrayList<>();
     int[] values = data.toIntArray();
     IntArrays.parallelQuickSort(values);
@@ -664,7 +664,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return bitmap;
   }
 
-  Set<LocalDate> asSet() {
+  public Set<LocalDate> asSet() {
     Set<LocalDate> dates = new HashSet<>();
     LocalDateColumn unique = unique();
     for (int i : unique) {
@@ -672,4 +672,18 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     }
     return dates;
   }
+
+  public LocalDateTimeColumn with(LocalTimeColumn timeColumn) {
+    String dateTimeColumnName = name() + " : " + timeColumn.name();
+    LocalDateTimeColumn dateTimeColumn = new LocalDateTimeColumn(dateTimeColumnName, size());
+    for (int row = 0; row < size(); row++) {
+      int date = getInt(row);
+      int time = timeColumn.getInt(row);
+      long packedLocalDateTime = PackedLocalDateTime.create(date, time);
+      dateTimeColumn.add(packedLocalDateTime);
+    }
+    return dateTimeColumn;
+  }
+
+
 }

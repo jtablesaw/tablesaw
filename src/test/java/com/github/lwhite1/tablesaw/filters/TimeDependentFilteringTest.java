@@ -7,7 +7,12 @@ import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
+import com.github.lwhite1.tablesaw.table.SubTable;
+import com.github.lwhite1.tablesaw.table.TableGroup;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeSet;
+import com.google.common.collect.TreeRangeSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
@@ -17,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.lwhite1.tablesaw.api.QueryHelper.both;
@@ -28,16 +34,18 @@ import static java.lang.System.out;
  */
 public class TimeDependentFilteringTest {
 
+  private static final int CONCEPT_COUNT = 10;
+  private static final int PATIENT_COUNT = 10_000;
+
   // pools to get random test data from
-  private static List<String> concepts = new ArrayList<>(100_000);
-  private static IntArrayList patientIds = new IntArrayList(1_000_000);
+  private static List<String> concepts = new ArrayList<>(CONCEPT_COUNT);
+  private static IntArrayList patientIds = new IntArrayList(PATIENT_COUNT);
   private static int size = 60 * 365;
   private static IntArrayList dates = new IntArrayList(size);
 
-
   public static void main(String[] args) throws Exception {
 
-    int numberOfRecordsInTable = 1_000;
+    int numberOfRecordsInTable = 100_000;
     Stopwatch stopwatch = Stopwatch.createStarted();
 
     Table t = defineSchema();
@@ -45,14 +53,22 @@ public class TimeDependentFilteringTest {
 
     t.setName("Observations");
 
+    // non temporal constraints
     String conceptA = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
     String conceptB = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
+
+    // independent temporal constraints
     String conceptZ = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
     String conceptD = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
+    DependencyFilter independentConstraintFilter = DependencyFilter.FIRST;
+
+    // dependent temporal constraints
     String conceptE = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
     String conceptF = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
+    DependencyFilter dependentConstraintFilter = DependencyFilter.ANY;
 
-    stopwatch.reset().start();
+    // temporal dependency range constraint
+    Range<Integer> daysConstraint = Range.closed(0,0);
 
     ColumnReference concept = column("concept");
 
@@ -61,18 +77,53 @@ public class TimeDependentFilteringTest {
         both(concept.isEqualTo(conceptA),
             (concept.isNotEqualTo(conceptB))));
 
-    //Independent temporal clause
-    Table tIndependentPatient1 = t.select("patient", "date").where(concept.isEqualTo(conceptZ));
-    Table tIndependentPatient2 = t.select("patient").where(concept.isNotEqualTo(conceptD));
+    IntColumn ntPatients = nt.intColumn("patient");
 
-    // combine the results from above
-    Table independent = tIndependentPatient1.selectWhere(
-        column("patient").isIn(tIndependentPatient2.intColumn("patient")));
+    TableGroup patients = new TableGroup(t, "patient");
+    CopyOnWriteArrayList<SubTable> patientTables = new CopyOnWriteArrayList<>(patients.getSubTables());
+    for (Table patientTable : patients) {
+      CategoryColumn concepts = patientTable.categoryColumn("concept");
+      int patientId = Integer.parseInt(patientTable.name());
+      if (! concepts.contains(conceptZ)
+          || concepts.contains(conceptD)) {
+        patientTables.remove(patientTable);
+      } else if (! ntPatients.contains(patientId)) {      // filter out the non-temporal now constraints for efficiency
+        patientTables.remove(patientTable);
+      }
+    }
 
-    //Dependent temporal query
-    // Here we select against the results of the independent clause
-    // We have one observation per
-    for (int i = 0; i < tIndependentPatient1.rowCount(); i++)
+    List<IndependentResult> independentResults = new ArrayList<>();
+
+    for (Table patientTable : patientTables) {
+      IndependentResult result = new IndependentResult(Integer.parseInt(patientTable.name()));
+      List<LocalDate> eventDates = new ArrayList<>();
+
+      for (int row : patientTable) {
+        CategoryColumn concepts = patientTable.categoryColumn("concept");
+        LocalDateColumn dates = patientTable.dateColumn("date");
+        if (concepts.get(row).equals(conceptZ)) {
+          eventDates.add(dates.get(row));
+        }
+      }
+      if (independentConstraintFilter == DependencyFilter.FIRST) {
+        if (eventDates.isEmpty()) {
+          // this is an error
+          System.out.println(patientTable.name());
+        } else {
+          LocalDate date = eventDates.get(0);
+          result.addRange(Range.closed(date.minusDays(daysConstraint.lowerEndpoint()),
+              date.plusDays(daysConstraint.upperEndpoint())));
+        } //TODO handle last and any cases
+      }
+      independentResults.add(result);
+    }
+
+    for (Table patientTable : patientTables) {
+      // for every date range in rangeSet
+      // .. find any rows containing events matching the rangeSet
+      // .. run dependent clause on those rows
+    }
+
 
     System.out.println("Done");
   }
@@ -104,11 +155,11 @@ public class TimeDependentFilteringTest {
   private static void generateData(int observationCount, Table table) throws IOException {
     // create pools of random values
 
-    while (concepts.size() <= 100_000) {
+    while (concepts.size() <= CONCEPT_COUNT) {
       concepts.add(RandomStringUtils.randomAscii(30));
     }
 
-    while (patientIds.size() <= 1_000_000) {
+    while (patientIds.size() <= PATIENT_COUNT) {
       patientIds.add(RandomUtils.nextInt(0, 2_000_000_000));
     }
 
@@ -116,7 +167,7 @@ public class TimeDependentFilteringTest {
       dates.add(PackedLocalDate.pack(randomDate()));
     }
 
-    LocalDateColumn dateColumn = table.localDateColumn("date");
+    LocalDateColumn dateColumn = table.dateColumn("date");
     CategoryColumn conceptColumn = table.categoryColumn("concept");
     FloatColumn valueColumn = table.floatColumn("value");
     IntColumn patientColumn = table.intColumn("patient");
@@ -127,15 +178,34 @@ public class TimeDependentFilteringTest {
       conceptColumn.add(concepts.get(RandomUtils.nextInt(0, concepts.size())));
       valueColumn.add(RandomUtils.nextFloat(0f, 100_000f));
       patientColumn.add(patientIds.getInt(RandomUtils.nextInt(0, patientIds.size())));
-
     }
   }
 
+  // TODO(lwhite): Put this in a Test utils class
   private static LocalDate randomDate() {
     Random random = new Random();
-    int minDay = (int) LocalDate.of(1920, 1, 1).toEpochDay();
+    int minDay = (int) LocalDate.of(2000, 1, 1).toEpochDay();
     int maxDay = (int) LocalDate.of(2016, 1, 1).toEpochDay();
     long randomDay = minDay + random.nextInt(maxDay - minDay);
     return LocalDate.ofEpochDay(randomDay);
+  }
+
+  private static class IndependentResult {
+    int patientId;
+    RangeSet<LocalDate> dateRanges = TreeRangeSet.create();
+
+    IndependentResult(int patientId) {
+      this.patientId = patientId;
+    }
+
+    void addRange(Range<LocalDate> dateRange) {
+      dateRanges.add(dateRange);
+    }
+  }
+
+  private static enum DependencyFilter {
+    FIRST,
+    LAST,
+    ANY
   }
 }

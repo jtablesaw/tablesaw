@@ -80,7 +80,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
    *          number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
-  public FloatArrayList max(int n) {
+  public FloatArrayList top(int n) {
     FloatArrayList top = new FloatArrayList();
     float[] values = data.toFloatArray();
     FloatArrays.parallelQuickSort(values, reverseFloatComparator);
@@ -97,7 +97,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
    *          number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
-  public FloatArrayList min(int n) {
+  public FloatArrayList bottom(int n) {
     FloatArrayList bottom = new FloatArrayList();
     float[] values = data.toFloatArray();
     FloatArrays.parallelQuickSort(values);

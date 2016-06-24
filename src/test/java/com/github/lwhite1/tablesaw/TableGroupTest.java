@@ -41,7 +41,7 @@ public class TableGroupTest {
 
   @Test
   public void testWith2GroupingCols() {
-    CategoryColumn month = table.localDateColumn(0).month();
+    CategoryColumn month = table.dateColumn(0).month();
     month.setName("month");
     table.addColumn(month);
     String[] splitColumnNames = {table.column(2).name(), "month"};

@@ -340,7 +340,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
    *          number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
-  public ShortArrayList max(int n) {
+  public ShortArrayList top(int n) {
     ShortArrayList top = new ShortArrayList();
     short[] values = data.toShortArray();
     ShortArrays.parallelQuickSort(values, ReverseShortComparator.instance());
@@ -357,7 +357,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
    *          number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
-  public ShortArrayList min(int n) {
+  public ShortArrayList bottom(int n) {
     ShortArrayList bottom = new ShortArrayList();
     short[] values = data.toShortArray();
     ShortArrays.parallelQuickSort(values);

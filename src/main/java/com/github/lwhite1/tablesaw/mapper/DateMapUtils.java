@@ -5,6 +5,7 @@ import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
 import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
+import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import org.roaringbitmap.RoaringBitmap;
 

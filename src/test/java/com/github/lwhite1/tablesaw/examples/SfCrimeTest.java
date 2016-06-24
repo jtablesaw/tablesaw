@@ -47,13 +47,13 @@ public class SfCrimeTest {
     CategoryColumn district = table.categoryColumn("PdDistrict");
     out(district.summary().print());
 
-    CategoryColumn dayOfWeek = table.localDateTimeColumn("Dates").dayOfWeek();
+    CategoryColumn dayOfWeek = table.dateTimeColumn("Dates").dayOfWeek();
     table.addColumn(dayOfWeek);
 
-    IntColumn dayOfYear = table.localDateTimeColumn("Dates").dayOfYear();
+    IntColumn dayOfYear = table.dateTimeColumn("Dates").dayOfYear();
     table.addColumn(dayOfYear);
 
-    IntColumn year = table.localDateTimeColumn("Dates").year();
+    IntColumn year = table.dateTimeColumn("Dates").year();
     table.addColumn(year);
 
     out(table.first(100).print());

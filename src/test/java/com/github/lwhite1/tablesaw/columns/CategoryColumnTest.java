@@ -60,13 +60,13 @@ public class CategoryColumnTest {
   public void testMax() {
     CategoryColumn categoryColumn = CategoryColumn.create("US States");
     categoryColumn.addAll(TestDataUtil.usStates());
-    assertTrue("Wyoming".equals(categoryColumn.max(5).get(0)));
+    assertTrue("Wyoming".equals(categoryColumn.top(5).get(0)));
   }
 
   @Test
   public void testMin() {
     CategoryColumn categoryColumn = CategoryColumn.create("US States");
     categoryColumn.addAll(TestDataUtil.usStates());
-    assertTrue("Alabama".equals(categoryColumn.min(5).get(0)));
+    assertTrue("Alabama".equals(categoryColumn.bottom(5).get(0)));
   }
 }

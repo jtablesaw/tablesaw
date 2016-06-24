@@ -398,7 +398,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
    *          number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
-  public IntArrayList max(int n) {
+  public IntArrayList top(int n) {
     IntArrayList top = new IntArrayList();
     int[] values = data.toIntArray();
     IntArrays.parallelQuickSort(values, ReverseIntComparator.instance());
@@ -415,7 +415,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
    *          number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
-  public IntArrayList min(int n) {
+  public IntArrayList bottom(int n) {
     IntArrayList bottom = new IntArrayList();
     int[] values = data.toIntArray();
     IntArrays.parallelQuickSort(values);
@@ -433,5 +433,9 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   public Stats stats() {
     FloatColumn values = FloatColumn.create(name(), toFloatArray());
     return StatUtil.stats(values);
+  }
+
+  public boolean contains(int i) {
+    return data.contains(i);
   }
 }

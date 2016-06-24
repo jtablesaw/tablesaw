@@ -34,7 +34,7 @@ public class ColumnTest {
   @Test
   public void testFirst() throws Exception {
     // test with dates
-    LocalDateColumn first = (LocalDateColumn) table.localDateColumn("date").first(3);
+    LocalDateColumn first = (LocalDateColumn) table.dateColumn("date").first(3);
     assertEquals(LocalDate.parse("2004-02-04"), first.get(0));
     assertEquals(LocalDate.parse("2004-01-21"), first.get(1));
     assertEquals(LocalDate.parse("2004-01-07"), first.get(2));
@@ -56,7 +56,7 @@ public class ColumnTest {
   public void testLast() throws Exception {
 
     // test with dates
-    LocalDateColumn last = (LocalDateColumn) table.localDateColumn("date").last(3);
+    LocalDateColumn last = (LocalDateColumn) table.dateColumn("date").last(3);
     assertEquals(LocalDate.parse("2001-03-27"), last.get(0));
     assertEquals(LocalDate.parse("2001-02-27"), last.get(1));
     assertEquals(LocalDate.parse("2001-02-09"), last.get(2));

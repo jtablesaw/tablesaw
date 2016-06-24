@@ -20,7 +20,6 @@ import com.github.lwhite1.tablesaw.util.IntComparatorChain;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -84,8 +83,10 @@ public class Table implements Relation, IntIterable {
    * Adds the given column to this table
    */
   @Override
-  public void addColumn(Column column) {
-    columnList.add(column);
+  public void addColumn(Column... cols) {
+    for (Column c : cols) {
+      columnList.add(c);
+    }
   }
 
   /**
@@ -678,8 +679,7 @@ public class Table implements Relation, IntIterable {
     return function.reduce(column.toDoubleArray());
   }
 
-  //TODO(lwhite): Reorder params so the grouping param can be an array
-  public Table reduce(String numericColumnName, String groupColumnName, NumericReduceFunction function) {
+  public Table reduce(String numericColumnName, NumericReduceFunction function, String ... groupColumnName) {
     TableGroup tableGroup = new TableGroup(this, groupColumnName);
     return tableGroup.reduce(numericColumnName, function);
   }
@@ -757,6 +757,11 @@ public class Table implements Relation, IntIterable {
   }
 
   @Override
+  public String toString() {
+    return "Table " + name + ": Size = " + rowCount() + " x " + columnCount();
+  }
+
+  @Override
   public IntIterator iterator() {
 
     return new IntIterator() {
@@ -783,5 +788,7 @@ public class Table implements Relation, IntIterable {
         return i++;
       }
     };
+
+
   }
 }

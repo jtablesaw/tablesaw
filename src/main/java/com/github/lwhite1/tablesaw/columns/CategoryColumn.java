@@ -207,7 +207,7 @@ public class CategoryColumn extends AbstractColumn
    *          number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
-  public List<String> max(int n) {
+  public List<String> top(int n) {
     List<String> top = new ArrayList<>();
     CategoryColumn copy = this.copy();
     copy.sortDescending();
@@ -224,7 +224,7 @@ public class CategoryColumn extends AbstractColumn
    *          number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
-  public List<String> min(int n) {
+  public List<String> bottom(int n) {
     List<String> bottom = new ArrayList<>();
     CategoryColumn copy = this.copy();
     copy.sortAscending();

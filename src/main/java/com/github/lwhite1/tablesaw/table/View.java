@@ -126,7 +126,7 @@ class View implements Relation {
   }
 
   @Override
-  public void addColumn(Column column) {
+  public void addColumn(Column ... column) {
   }
 
   @Override

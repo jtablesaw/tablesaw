@@ -171,7 +171,7 @@ public class ObservationDataTest {
       dates.add(PackedLocalDate.pack(randomDate()));
     }
 
-    LocalDateColumn dateColumn = table.localDateColumn("date");
+    LocalDateColumn dateColumn = table.dateColumn("date");
     CategoryColumn conceptColumn = table.categoryColumn("concept");
     FloatColumn valueColumn = table.floatColumn("value");
     IntColumn patientColumn = table.intColumn("patient");

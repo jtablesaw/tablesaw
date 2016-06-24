@@ -43,7 +43,7 @@ public class TableFilteringTest {
   @Test
   public void testFilter2() {
     Table result = table.selectWhere(column("date").isInApril());
-    LocalDateColumn d = result.localDateColumn("date");
+    LocalDateColumn d = result.dateColumn("date");
     for (int v : d) {
       assertTrue(PackedLocalDate.isInApril(v));
     }
@@ -55,7 +55,7 @@ public class TableFilteringTest {
         both(column("date").isInApril(),
              column("approval").isGreaterThan(70)));
 
-    LocalDateColumn dates = result.localDateColumn("date");
+    LocalDateColumn dates = result.dateColumn("date");
     IntColumn approval = result.intColumn("approval");
     for (int row : result) {
       assertTrue(PackedLocalDate.isInApril(dates.getInt(row)));

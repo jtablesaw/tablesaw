@@ -185,8 +185,8 @@ public class FloatColumnTest {
     for (int i = 0; i < 100; i++) {
       floats.add(RandomUtils.nextFloat(0, 10_000));
     }
-    FloatArrayList floats1 = floats.max(50);
-    FloatArrayList floats2 = floats.min(50);
+    FloatArrayList floats1 = floats.top(50);
+    FloatArrayList floats2 = floats.bottom(50);
     double[] doubles1 = new double[50];
     double[] doubles2 = new double[50];
     for (int i = 0; i < floats1.size(); i++) {

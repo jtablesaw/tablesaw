@@ -542,7 +542,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
    *          number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
-  public List<LocalDateTime> max(int n) {
+  public List<LocalDateTime> top(int n) {
     List<LocalDateTime> top = new ArrayList<>();
     long[] values = data.toLongArray();
     LongArrays.parallelQuickSort(values, ReverseLongComparator.instance());
@@ -559,7 +559,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
    *          number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
-  public List<LocalDateTime> min(int n) {
+  public List<LocalDateTime> bottom(int n) {
     List<LocalDateTime> bottom = new ArrayList<>();
     long[] values = data.toLongArray();
     LongArrays.parallelQuickSort(values);

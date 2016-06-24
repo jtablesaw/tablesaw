@@ -21,6 +21,8 @@ import java.util.List;
  */
 public interface Relation {
 
+  void addColumn(Column ... cols);
+
   void setName(String name);
 
   default boolean isEmpty() {
@@ -114,13 +116,6 @@ public interface Relation {
    * Returns a String representing the value found at column index c and row index r
    */
   String get(int c, int r);
-
-  /**
-   * Adds the given column to the end of this relation.
-   * <p>
-   * The index of the new column in the table will be one less than the number of columns
-   */
-  void addColumn(Column column);
 
   /**
    * Returns the name of this relation
@@ -279,27 +274,27 @@ public interface Relation {
     return (LongColumn) column(columnIndex);
   }
 
-  default LocalDateColumn localDateColumn(int columnIndex) {
+  default LocalDateColumn dateColumn(int columnIndex) {
     return (LocalDateColumn) column(columnIndex);
   }
 
-  default LocalDateColumn localDateColumn(String columnName) {
+  default LocalDateColumn dateColumn(String columnName) {
     return (LocalDateColumn) column(columnName);
   }
 
-  default LocalTimeColumn localTimeColumn(String columnName) {
+  default LocalTimeColumn timeColumn(String columnName) {
     return (LocalTimeColumn) column(columnName);
   }
 
-  default LocalTimeColumn localTimeColumn(int columnIndex) {
+  default LocalTimeColumn timeColumn(int columnIndex) {
     return (LocalTimeColumn) column(columnIndex);
   }
 
-  default LocalDateTimeColumn localDateTimeColumn(int columnIndex) {
+  default LocalDateTimeColumn dateTimeColumn(int columnIndex) {
     return (LocalDateTimeColumn) column(columnIndex);
   }
 
-  default LocalDateTimeColumn localDateTimeColumn(String columnName) {
+  default LocalDateTimeColumn dateTimeColumn(String columnName) {
     return (LocalDateTimeColumn) column(columnName);
   }
 }

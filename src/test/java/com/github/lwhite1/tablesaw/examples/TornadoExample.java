@@ -4,7 +4,6 @@ import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.aggregator.NumericReduceUtils;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.io.CsvReader;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
@@ -54,7 +53,7 @@ public class TornadoExample {
 
     out();
     out("Extact month from the date and make it a separate column");
-    CategoryColumn month = tornadoes.localDateColumn("Date").month();
+    CategoryColumn month = tornadoes.dateColumn("Date").month();
     out(month.summary().print());
 
     out("Add the month column to the table");
@@ -83,7 +82,7 @@ public class TornadoExample {
 
 
     //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
-    Table injuriesByScale = tornadoes.reduce("Injuries", "Scale", NumericReduceUtils.median);
+    Table injuriesByScale = tornadoes.reduce("Injuries", NumericReduceUtils.median, "Scale");
     injuriesByScale.setName("Median injuries by Tornado Scale");
     out(injuriesByScale.print());
 

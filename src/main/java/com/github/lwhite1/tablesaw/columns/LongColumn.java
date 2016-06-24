@@ -330,7 +330,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
    *          number of observations in the column
    * @return A list, possibly empty, of the largest observations
    */
-  public LongArrayList max(int n) {
+  public LongArrayList top(int n) {
     LongArrayList top = new LongArrayList();
     long[] values = data.toLongArray();
     LongArrays.parallelQuickSort(values, ReverseLongComparator.instance());
@@ -347,7 +347,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
    *          number of observations in the column
    * @return A list, possibly empty, of the smallest n observations
    */
-  public LongArrayList min(int n) {
+  public LongArrayList bottom(int n) {
     LongArrayList bottom = new LongArrayList();
     long[] values = data.toLongArray();
     LongArrays.parallelQuickSort(values);
