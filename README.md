@@ -13,6 +13,7 @@ First, almost no-one needs distributed analytics. On a single server, table saw 
 Second, it should be super easy to use: To that end, we strive for readable analysis code, and happily steal ideas not just from dataframes like Pandas, but from everything from spreadsheets to specialized column stores like KDB.
 
 For more information and examples see: https://javadatascience.wordpress.com
+
 You can find an introductory tutorial here: https://javadatascience.wordpress.com/2016/06/24/an-introduction-to-tablesaw/
 
 ##What Tableswaw does today: 
