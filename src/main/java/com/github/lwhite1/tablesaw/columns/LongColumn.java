@@ -392,4 +392,9 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     }
     return output;
   }
+
+  public LongSet asSet() {
+    return new LongOpenHashSet(data);
+  }
+
 }

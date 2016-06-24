@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A column in a base table that contains float values
@@ -384,7 +385,6 @@ public class CategoryColumn extends AbstractColumn
   public CategoryColumn unique() {
     List<String> strings = new ArrayList<>(lookupTable.categories());
     return CategoryColumn.create(name() + " Unique values", strings);
-
   }
 
   /**
@@ -532,5 +532,9 @@ public class CategoryColumn extends AbstractColumn
       }
     }
     return column;
+  }
+
+  public Set<String> asSet() {
+    return lookupTable.categories();
   }
 }

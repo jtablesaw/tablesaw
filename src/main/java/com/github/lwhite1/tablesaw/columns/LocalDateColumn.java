@@ -30,7 +30,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A column in a base table that contains float values
@@ -660,5 +662,14 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
       }
     }
     return bitmap;
+  }
+
+  Set<LocalDate> asSet() {
+    Set<LocalDate> dates = new HashSet<>();
+    LocalDateColumn unique = unique();
+    for (int i : unique) {
+      dates.add(PackedLocalDate.asLocalDate(i));
+    }
+    return dates;
   }
 }

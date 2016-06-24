@@ -1,7 +1,6 @@
 package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalTime;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
@@ -18,18 +17,19 @@ import it.unimi.dsi.fastutil.longs.*;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A column in a table that contains long-integer encoded (packed) date-time values
  */
-public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUtils {
+public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUtils, LongIterable {
 
   public static final long MISSING_VALUE = Long.MIN_VALUE;
 
@@ -571,5 +571,14 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
 
   public LongIterator iterator() {
     return data.iterator();
+  }
+
+  Set<LocalDateTime> asSet() {
+    Set<LocalDateTime> times = new HashSet<>();
+    LocalDateTimeColumn unique = unique();
+    for (long i : unique) {
+      times.add(PackedLocalDateTime.asLocalDateTime(i));
+    }
+    return times;
   }
 }

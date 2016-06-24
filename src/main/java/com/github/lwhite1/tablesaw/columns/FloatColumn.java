@@ -547,4 +547,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     }
     return bitmap;
   }
+
+  FloatSet asSet() {
+    return new FloatOpenHashSet(data);
+  }
 }

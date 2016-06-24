@@ -320,4 +320,9 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   public String toString() {
     return "Boolean column: " + name();
   }
+
+  public BooleanSet asSet() {
+    return new BooleanOpenHashSet(data);
+  }
+
 }

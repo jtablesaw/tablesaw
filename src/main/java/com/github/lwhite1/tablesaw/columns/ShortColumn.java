@@ -17,6 +17,8 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortIterator;
+import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
+import it.unimi.dsi.fastutil.shorts.ShortSet;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
@@ -399,4 +401,9 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     }
     return output;
   }
+
+  public ShortSet asSet() {
+    return new ShortOpenHashSet(data);
+  }
+
 }

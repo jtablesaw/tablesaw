@@ -27,7 +27,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A column in a base table that contains float values
@@ -395,5 +397,14 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
       }
     }
     return bitmap;
+  }
+
+  Set<LocalTime> asSet() {
+    Set<LocalTime> times = new HashSet<>();
+    LocalTimeColumn unique = unique();
+    for (int i : unique) {
+      times.add(PackedLocalTime.asLocalTime(i));
+    }
+    return times;
   }
 }
