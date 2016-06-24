@@ -5,37 +5,33 @@ import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
- *
+ * Tests for CSV Reading
  */
 public class IoTest1 {
+
+  private final ColumnType[] bus_types = {SHORT_INT, CATEGORY, CATEGORY, FLOAT, FLOAT};
 
   @Test
   public void testWithBusData() throws Exception {
     // Read the CSV file
-    ColumnType[] types = {INTEGER, CATEGORY, CATEGORY, FLOAT, FLOAT};
-    Table table = CsvReader.read(types, "data/bus_stop_test.csv");
+    Table table = CsvReader.read(bus_types, "data/bus_stop_test.csv");
 
     // Look at the column names
-    print(table.columnNames());
-
-    print(table.first(3).print());
+    assertEquals("[stop_id, stop_name, stop_desc, stop_lat, stop_lon]", table.columnNames().toString());
 
     table = table.sortDescendingOn("stop_id");
-    print(table.first(3).print());
     table.removeColumns("stop_desc");
-    print(table.columnNames());
 
     Column c = table.floatColumn("stop_lat");
-
-    print(table.floatColumn("stop_lon").describe());
-
     Table v = table.selectWhere(column("stop_lon").isGreaterThan(-0.1f));
-    print(v.print());
-    print(v.rowCount());
   }
 
   @Test
@@ -46,13 +42,20 @@ public class IoTest1 {
     Table table = CsvReader.read(types, "data/BushApproval.csv");
 
     // Look at the column names
-    print(table.columnNames());
-
-    print(table.print());
-    print(table.rowCount());
+    assertEquals("[date, approval, who]", table.columnNames().toString());
   }
 
-  private void print(Object o) {
-    System.out.println(o);
+  @Test
+  public void testDataTypeDetection() throws Exception {
+    ColumnType[] columnTypes = CsvReader.detectColumnTypes("data/bus_stop_test.csv", true, ',');
+    assertTrue(Arrays.equals(bus_types, columnTypes));
+  }
+
+  @Test
+  public void testDataTypeDetection2() throws Exception {
+    ColumnType[] columnTypes = CsvReader.detectColumnTypes("data/BushApproval.csv", true, ',');
+    assertEquals(ColumnType.LOCAL_DATE, columnTypes[0]);
+    assertEquals(ColumnType.SHORT_INT, columnTypes[1]);
+    assertEquals(ColumnType.CATEGORY, columnTypes[2]);
   }
 }

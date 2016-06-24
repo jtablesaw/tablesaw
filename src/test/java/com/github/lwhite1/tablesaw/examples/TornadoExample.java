@@ -4,6 +4,7 @@ import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.aggregator.NumericReduceUtils;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.io.CsvReader;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
@@ -16,6 +17,7 @@ public class TornadoExample {
   public static void main(String[] args) throws Exception {
 
     Table tornadoes = Table.create(COLUMN_TYPES_OLD, "data/1950-2014_torn.csv");
+    //Table tornadoes = CsvReader.read("data/1950-2014_torn.csv");
     assert(tornadoes != null);
 
     out(tornadoes.structure().print());

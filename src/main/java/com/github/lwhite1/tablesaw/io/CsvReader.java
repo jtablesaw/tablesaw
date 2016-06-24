@@ -1,23 +1,30 @@
 package com.github.lwhite1.tablesaw.io;
 
 import au.com.bytecode.opencsv.CSVReader;
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.columns.Column;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.Column;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Static utility class that Builds Tables from Comma Separated Value (CSV) files.
@@ -130,43 +137,45 @@ final public class CsvReader {
     CsvSchema schema = CsvSchema.builder().setColumnSeparator(columnSeparator).build();
     mapper.enable(CsvParser.Feature.WRAP_AS_ARRAY);
     File csvFile = new File(fileName);
-    MappingIterator<String[]> it = mapper.reader(String[].class).with(schema).readValues(csvFile);
+    Table table;
+    try (MappingIterator<String[]> it = mapper.reader(String[].class).with(schema).readValues(csvFile)) {
 
-    String[] columnNames;
-    List<String> headerRow;
-    if (header) {
-      headerRow = Lists.newArrayList(it.next());
-      columnNames = selectColumnNames(headerRow, types);
-    } else {
-      columnNames = makeColumnNames(types);
-      headerRow = Lists.newArrayList(columnNames);
-    }
+      String[] columnNames;
+      List<String> headerRow;
+      if (header) {
+        headerRow = Lists.newArrayList(it.next());
+        columnNames = selectColumnNames(headerRow, types);
+      } else {
+        columnNames = makeColumnNames(types);
+        headerRow = Lists.newArrayList(columnNames);
+      }
 
-    Table table = new Table(nameMaker(fileName));
-    for (int x = 0; x < types.length; x++) {
-      if (types[x] != ColumnType.SKIP) {
-        Column newColumn = TypeUtils.newColumn(headerRow.get(x), types[x]);
-        table.addColumn(newColumn);
+      table = new Table(nameMaker(fileName));
+      for (int x = 0; x < types.length; x++) {
+        if (types[x] != ColumnType.SKIP) {
+          Column newColumn = TypeUtils.newColumn(headerRow.get(x), types[x]);
+          table.addColumn(newColumn);
+        }
       }
-    }
-    int[] columnIndexes = new int[columnNames.length];
-    for (int i = 0; i < columnIndexes.length; i++) {
-      // get the index in the original table, which includes skipped fields
-      columnIndexes[i] = headerRow.indexOf(columnNames[i]);
-    }
-    // Add the rows
-    String[] nextLine;
-    while (it.hasNext()) {
-      nextLine = it.next();
-      // for each column that we're including (not skipping)
-      int cellIndex = 0;
-      for (int columnIndex : columnIndexes) {
-        Column column = table.column(cellIndex);
-        column.addCell(nextLine[columnIndex]);
-        cellIndex++;
+      int[] columnIndexes = new int[columnNames.length];
+      for (int i = 0; i < columnIndexes.length; i++) {
+        // get the index in the original table, which includes skipped fields
+        columnIndexes[i] = headerRow.indexOf(columnNames[i]);
       }
+      // Add the rows
+      String[] nextLine;
+      while (it.hasNext()) {
+        nextLine = it.next();
+        // for each column that we're including (not skipping)
+        int cellIndex = 0;
+        for (int columnIndex : columnIndexes) {
+          Column column = table.column(cellIndex);
+          column.addCell(nextLine[columnIndex]);
+          cellIndex++;
+        }
+      }
+      it.close();
     }
-    it.close();
     return table;
   }
 
@@ -199,4 +208,159 @@ final public class CsvReader {
     Path p = Paths.get(path);
     return p.getFileName().toString();
   }
+
+  public static Table read(String fileName) throws IOException {
+    ColumnType[] columnTypes = detectColumnTypes(fileName, true, ',');
+    return read(columnTypes, true, fileName);
+  }
+
+  @VisibleForTesting
+  static ColumnType[] detectColumnTypes(String file, boolean header, char delimiter)
+      throws IOException {
+
+    int linesToSkip = header ? 1 : 2;
+    final int maxRows = 100;
+    // Read the first 100 rows and guess
+    // TODO(lwhite): Could we read the last 100 rows to double check?
+
+    // to hold the results
+    List<ColumnType> columnTypes = new ArrayList<>();
+
+    // to hold the data read from the file
+    List<List<String>> columnData = new ArrayList<>();
+
+    int rowCount = 0; // make sure we don't go over maxRows
+    try (CSVReader reader = new CSVReader(new FileReader(file), delimiter, '"', linesToSkip)) {
+      String[] nextLine;
+      while ((nextLine = reader.readNext()) != null && rowCount < maxRows) {
+        int columnNumber = 0;
+        for (String field : nextLine) {
+          if (rowCount == 0) {
+            columnData.add(new ArrayList<>());
+            //continue; // TODO(lwhite): Better way to handle header
+          }
+          columnData.get(columnNumber).add(field);
+          columnNumber ++;
+        }
+        rowCount++;
+      }
+    }
+
+    // now detect
+    for (List<String> valuesList : columnData) {
+      ColumnType detectedType = detectType(valuesList);
+      columnTypes.add(detectedType);
+    }
+
+    return columnTypes.toArray(new ColumnType[columnTypes.size()]);
+  }
+
+  private static ColumnType detectType(List<String> valuesList) {
+
+    ColumnType[] types = ColumnType.values();
+    for (String s : valuesList) {
+      if (isLocalDateTime.test(s)) {
+        return ColumnType.LOCAL_DATE_TIME;
+      }
+      if (isLocalTime.test(s)) {
+        return ColumnType.LOCAL_TIME;
+      }
+      if (isLocalDate.test(s)) {
+        return ColumnType.LOCAL_DATE;
+      }
+      if (isBoolean.test(s)) {
+        return ColumnType.BOOLEAN;
+      }
+      if (isShort.test(s)){
+        return ColumnType.SHORT_INT;
+      }
+      if (isInteger.test(s)) {
+        return ColumnType.INTEGER;
+      }
+      if (isLong.test(s)) {
+        return ColumnType.LONG_INT;
+      }
+      if (isFloat.test(s)) {
+        return ColumnType.FLOAT;
+      }
+    }
+    return ColumnType.CATEGORY;
+  }
+
+  private static java.util.function.Predicate<String> isBoolean = s ->
+      TypeUtils.TRUE_STRINGS.contains(s) || TypeUtils.FALSE_STRINGS.contains(s);
+
+  private static Predicate<String> isLong = new Predicate<String>() {
+
+    @Override
+    public boolean test(@Nullable String s) {
+      try {
+        Long.parseLong(s);
+        return true;
+      } catch (NumberFormatException e) {
+        // it's all part of the plan
+        return false;
+      }
+    }
+  };
+
+  private static Predicate<String> isInteger = s -> {
+    try {
+      Integer.parseInt(s);
+      return true;
+    } catch (NumberFormatException e) {
+      // it's all part of the plan
+      return false;
+    }
+  };
+
+  private static Predicate<String> isFloat = s -> {
+    try {
+      Float.parseFloat(s);
+      return true;
+    } catch (NumberFormatException e) {
+      // it's all part of the plan
+      return false;
+    }
+  };
+
+  private static Predicate<String> isShort = s -> {
+    try {
+      Short.parseShort(s);
+      return true;
+    } catch (NumberFormatException e) {
+      // it's all part of the plan
+      return false;
+    }
+  };
+
+  private static Predicate<String> isLocalDate = s -> {
+    try {
+      LocalDate.parse(s, TypeUtils.DATE_FORMATTER);
+      return true;
+    } catch (DateTimeParseException e) {
+      // it's all part of the plan
+      return false;
+    }
+  };
+
+  private static Predicate<String> isLocalTime = s -> {
+    try {
+      LocalTime.parse(s, TypeUtils.TIME_FORMATTER);
+      return true;
+    } catch (DateTimeParseException e) {
+      // it's all part of the plan
+      return false;
+    }
+  };
+
+  private static Predicate<String> isLocalDateTime = s -> {
+    try {
+      LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER);
+      return true;
+    } catch (DateTimeParseException e) {
+      // it's all part of the plan
+      return false;
+    }
+  };
 }

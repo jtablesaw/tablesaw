@@ -700,6 +700,18 @@ public class Table implements Relation, IntIterable {
   /**
    * Returns a new table constructed from a character delimited (aka CSV) text file
    *
+   * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
+   * which is used to populate the column names
+   * @param csvFileName   The name of the file to import
+   * @throws IOException
+   */
+  public static Table create(String csvFileName) throws IOException {
+    return CsvReader.read(csvFileName);
+  }
+
+  /**
+   * Returns a new table constructed from a character delimited (aka CSV) text file
+   *
    * It is assumed that the file is truly comma-separated
    *
    * @param types         The column types
