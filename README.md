@@ -5,7 +5,7 @@ Tablesaw is a high-performance in-memory data table, plus tools for data crunchi
 
 With Tablesaw, analysis is more productive, and has less engineering overhead and faster iterations. 
 
-###What makes Tablesaw unique:
+###What makes it unique:
 Tablesaw's design is driven by two ideas: 
 First, almost no-one needs distributed analytics. On a single server, table saw will let you work _interactively_ with a 2,000,000,000 row table. (We plan to raise that ceiling, btw.)
 Second, it should be super easy to use: To that end we happily steal ideas from everything from spreadsheets to specialized column stores like KDB.
