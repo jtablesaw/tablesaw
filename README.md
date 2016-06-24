@@ -33,7 +33,7 @@ You can find an introductory tutorial here: https://javadatascience.wordpress.co
 * More specialized column types and operations: (lat/lon, time interval, money)
 
 ### Current performance:
-In it's current pre-release state, some areas of Tablesaw perform better than others, but to give you a sense of where we're going, you can now load a 500,000,000 row, 4 column csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load it in 22 seconds. Using the new indexing features you can then query the table in around 1-2 ms. That's fast enough that you could use tablesaw as a very flexible cache for a Web app.
+In its current pre-release state, some areas of Tablesaw perform better than others. To give you a sense of where we're going, you can now load a 500,000,000 row, 4 column csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load it in 22 seconds. Using the new indexing features you can then query the table in around 1-2 ms. That's fast enough that you could use tablesaw as a very flexible cache for a Web app.
 
 BTW, those numbers were achieved on a laptop.
 
