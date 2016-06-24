@@ -41,8 +41,8 @@ To give you a sense of the API, here's an example. The goal in this analysis is 
     Table ops = Table.create("data/operations.csv");
 
     // Combine the date and time fields so that we don't miscalculate on jobs that cross date bounderies
-    DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start-Time"));
-    DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End-Time"));
+    DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start"));
+    DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End"));
     
     // Hand the date cross-overs
     for (int row : ops) {
