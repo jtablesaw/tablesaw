@@ -22,8 +22,14 @@ public class ServiceExample {
 
     out(ops.print());
 
-    DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start-Time"));
-    DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End-Time"));
+    DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start"));
+    DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End"));
+
+    for (int row : ops) {
+      if (ops.timeColumn("End").get(row).isBefore(ops.timeColumn("Start").get(row))) {
+        end.get(row).plusDays(1);
+      }
+    }
 
     // Calc duration
     LongColumn duration = start.differenceInSeconds(end);
@@ -39,11 +45,12 @@ public class ServiceExample {
               (column("Operation").isEqualTo("Assembly"))));
 
     Table durationByFacilityAndShift = q2_429_assembly.reduce("Duration", median, "Facility", "Shift");
+    // TODO(lwhite): We need a top() method that can be used to return the top table rows
     FloatArrayList tops = durationByFacilityAndShift.floatColumn("Median").top(5);
 
     out(durationByFacilityAndShift.print());
 
-    durationByFacilityAndShift.exportToCsv("tmp/durationByFacilityAndShift.csv");
+    durationByFacilityAndShift.exportToCsv("/tmp/durationByFacilityAndShift.csv");
   }
 
   private static void out(Object obj) {

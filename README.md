@@ -43,6 +43,13 @@ To give you a sense of the API, here's an example. The goal in this analysis is 
     // Combine the date and time fields so that we don't miscalculate on jobs that cross date bounderies
     DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start-Time"));
     DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End-Time"));
+    
+    // Hand the date cross-overs
+    for (int row : ops) {
+      if (ops.timeColumn("End").get(row).isBefore(ops.timeColumn("Start").get(row))) {
+        end.get(row).plusDays(1);
+      }
+    }
 
     // Calculate the durations from the start and end times
     LongColumn duration = start.differenceInSeconds(end);

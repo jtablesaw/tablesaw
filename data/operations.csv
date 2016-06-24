@@ -1,4 +1,4 @@
-Date,Facility,SKU,Shift,Item,Operation,Start-Time,End-Time
+Date,Facility,SKU,Shift,Item,Operation,Start,End
 6/24/16,Utica,429-1234-D,2,12-42525252,Molding,13:55:53,14:01:53
 6/24/16,Utica,429-1234-D,2,35-35353335,Assembly,14:01:21,14:32:07
 6/24/16,Utica,429-1234-D,2,12-42525252,Molding,14:04:11,14:55:53
