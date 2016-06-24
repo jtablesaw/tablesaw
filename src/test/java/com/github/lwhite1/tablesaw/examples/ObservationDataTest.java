@@ -8,7 +8,7 @@ import com.github.lwhite1.tablesaw.index.IntIndex;
 import com.github.lwhite1.tablesaw.io.CsvReader;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.store.StorageManager;
 import com.google.common.base.Stopwatch;
@@ -121,7 +121,7 @@ public class ObservationDataTest {
     Table t;
     t = new Table("Observations");
     CategoryColumn conceptId = CategoryColumn.create("concept");
-    LocalDateColumn date = LocalDateColumn.create("date");
+    DateColumn date = DateColumn.create("date");
     FloatColumn value = FloatColumn.create("value");
     IntColumn patientId = IntColumn.create("patient");
 
@@ -171,7 +171,7 @@ public class ObservationDataTest {
       dates.add(PackedLocalDate.pack(randomDate()));
     }
 
-    LocalDateColumn dateColumn = table.dateColumn("date");
+    DateColumn dateColumn = table.dateColumn("date");
     CategoryColumn conceptColumn = table.categoryColumn("concept");
     FloatColumn valueColumn = table.floatColumn("value");
     IntColumn patientColumn = table.intColumn("patient");

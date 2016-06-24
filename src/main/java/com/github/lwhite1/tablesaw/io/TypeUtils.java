@@ -5,9 +5,9 @@ import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
+import com.github.lwhite1.tablesaw.columns.TimeColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
@@ -227,11 +227,11 @@ public final class TypeUtils {
 
     switch (type) {
       case LOCAL_DATE:
-        return LocalDateColumn.create(name);
+        return DateColumn.create(name);
       case LOCAL_TIME:
-        return LocalTimeColumn.create(name);
+        return TimeColumn.create(name);
       case LOCAL_DATE_TIME:
-        return LocalDateTimeColumn.create(name);
+        return DateTimeColumn.create(name);
       case INTEGER:
         return IntColumn.create(name);
       case FLOAT:

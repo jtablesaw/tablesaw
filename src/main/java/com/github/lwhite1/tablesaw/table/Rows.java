@@ -6,9 +6,9 @@ import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
+import com.github.lwhite1.tablesaw.columns.TimeColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
@@ -53,14 +53,14 @@ public class Rows {
           copy(rows, (BooleanColumn) oldTable.column(columnIndex), (BooleanColumn) newTable.column(columnIndex));
           break;
         case LOCAL_DATE:
-          copy(rows, (LocalDateColumn) oldTable.column(columnIndex), (LocalDateColumn) newTable.column(columnIndex));
+          copy(rows, (DateColumn) oldTable.column(columnIndex), (DateColumn) newTable.column(columnIndex));
           break;
         case LOCAL_DATE_TIME:
-          copy(rows, (LocalDateTimeColumn) oldTable.column(columnIndex), (LocalDateTimeColumn) newTable.column
+          copy(rows, (DateTimeColumn) oldTable.column(columnIndex), (DateTimeColumn) newTable.column
               (columnIndex));
           break;
         case LOCAL_TIME:
-          copy(rows, (LocalTimeColumn) oldTable.column(columnIndex), (LocalTimeColumn) newTable.column(columnIndex));
+          copy(rows, (TimeColumn) oldTable.column(columnIndex), (TimeColumn) newTable.column(columnIndex));
           break;
         default:
           throw new RuntimeException("Unhandled column type in case statement");
@@ -127,19 +127,19 @@ public class Rows {
     }
   }
 
-  private static void copy(IntArrayList rows, LocalDateTimeColumn oldColumn, LocalDateTimeColumn newColumn) {
+  private static void copy(IntArrayList rows, DateTimeColumn oldColumn, DateTimeColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.getLong(index));
     }
   }
 
-  private static void copy(IntArrayList rows, LocalDateColumn oldColumn, LocalDateColumn newColumn) {
+  private static void copy(IntArrayList rows, DateColumn oldColumn, DateColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.getInt(index));
     }
   }
 
-  private static void copy(IntArrayList rows, LocalTimeColumn oldColumn, LocalTimeColumn newColumn) {
+  private static void copy(IntArrayList rows, TimeColumn oldColumn, TimeColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.getInt(index));
     }

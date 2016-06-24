@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.filters;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.filter.LocalDatePredicate;
 import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsFirstDayOfTheMonth;
 import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInFebruary;
@@ -25,7 +25,7 @@ import static org.junit.Assert.assertFalse;
  */
 public class LocalDateFilterTest {
 
-  LocalDateColumn localDateColumn = LocalDateColumn.create("testing");
+  DateColumn localDateColumn = DateColumn.create("testing");
   Table table = new Table("test");
 
   @Before
@@ -122,7 +122,7 @@ public class LocalDateFilterTest {
       }
     };
 
-    LocalDateColumn filtered = localDateColumn.selectIf(after_2_28);
+    DateColumn filtered = localDateColumn.selectIf(after_2_28);
 
   }
 

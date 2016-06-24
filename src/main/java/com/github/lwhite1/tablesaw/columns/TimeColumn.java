@@ -7,6 +7,7 @@ import com.github.lwhite1.tablesaw.filter.IntBiPredicate;
 import com.github.lwhite1.tablesaw.filter.IntPredicate;
 import com.github.lwhite1.tablesaw.filter.LocalTimePredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
+import com.github.lwhite1.tablesaw.mapper.TimeMapUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
@@ -34,7 +35,7 @@ import java.util.Set;
 /**
  * A column in a base table that contains float values
  */
-public class LocalTimeColumn extends AbstractColumn implements IntIterable {
+public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_TIME.getMissingValue();
 
@@ -47,27 +48,27 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
 
   private IntArrayList data;
 
-  public static LocalTimeColumn create(String name) {
-    return new LocalTimeColumn(name);
+  public static TimeColumn create(String name) {
+    return new TimeColumn(name);
   }
 
-  public static LocalTimeColumn create(String fileName, IntArrayList times) {
-    LocalTimeColumn column = new LocalTimeColumn(fileName, times.size());
+  public static TimeColumn create(String fileName, IntArrayList times) {
+    TimeColumn column = new TimeColumn(fileName, times.size());
     column.data = times;
     return column;
   }
 
-  private LocalTimeColumn(String name) {
+  private TimeColumn(String name) {
     super(name);
     data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  public LocalTimeColumn(ColumnMetadata metadata) {
+  public TimeColumn(ColumnMetadata metadata) {
     super(metadata);
     data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  public LocalTimeColumn(String name, int initialSize) {
+  public TimeColumn(String name, int initialSize) {
     super(name);
     data = new IntArrayList(initialSize);
   }
@@ -91,13 +92,13 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
   }
 
   @Override
-  public LocalTimeColumn emptyCopy() {
-    return new LocalTimeColumn(name());
+  public TimeColumn emptyCopy() {
+    return new TimeColumn(name());
   }
 
   @Override
-  public LocalTimeColumn emptyCopy(int rowSize) {
-    return new LocalTimeColumn(name(), rowSize);
+  public TimeColumn emptyCopy(int rowSize) {
+    return new TimeColumn(name(), rowSize);
   }
 
   @Override
@@ -105,8 +106,8 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
     data.clear();
   }
 
-  private LocalTimeColumn copy() {
-    return LocalTimeColumn.create(name(), data);
+  private TimeColumn copy() {
+    return TimeColumn.create(name(), data);
   }
 
   @Override
@@ -141,7 +142,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
       int value;
       int next = getInt(i);
       if (next == Integer.MIN_VALUE) {
-        value = LocalTimeColumn.MISSING_VALUE;
+        value = TimeColumn.MISSING_VALUE;
       } else {
         value = next;
       }
@@ -152,7 +153,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
       }
     }
     Table table = new Table("Column: " + name());
-    table.addColumn(LocalTimeColumn.create("Time"));
+    table.addColumn(TimeColumn.create("Time"));
     table.addColumn(IntColumn.create("Count"));
 
     for (Int2IntMap.Entry entry : counts.int2IntEntrySet()) {
@@ -171,9 +172,9 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
   }
 
   @Override
-  public LocalTimeColumn unique() {
+  public TimeColumn unique() {
     IntSet ints = new IntOpenHashSet(data);
-    return LocalTimeColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
+    return TimeColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
   }
 
   @Override
@@ -277,8 +278,8 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
     return "LocalTime column: " + name();
   }
 
-  public LocalTimeColumn selectIf(LocalTimePredicate predicate) {
-    LocalTimeColumn column = emptyCopy();
+  public TimeColumn selectIf(LocalTimePredicate predicate) {
+    TimeColumn column = emptyCopy();
     IntIterator iterator = iterator();
     while (iterator.hasNext()) {
       int next = iterator.nextInt();
@@ -294,8 +295,8 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
    * This is much more efficient that using a LocalTimePredicate, but requires that the developer understand the
    * semantics of packedLocalTimes
    */
-  public LocalTimeColumn selectIf(IntPredicate predicate) {
-    LocalTimeColumn column = emptyCopy();
+  public TimeColumn selectIf(IntPredicate predicate) {
+    TimeColumn column = emptyCopy();
     IntIterator iterator = iterator();
     while (iterator.hasNext()) {
       int next = iterator.nextInt();
@@ -309,7 +310,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
   @Override
   public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
-    LocalTimeColumn intColumn = (LocalTimeColumn) column;
+    TimeColumn intColumn = (TimeColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.getInt(i));
     }
@@ -401,7 +402,7 @@ public class LocalTimeColumn extends AbstractColumn implements IntIterable {
 
   Set<LocalTime> asSet() {
     Set<LocalTime> times = new HashSet<>();
-    LocalTimeColumn unique = unique();
+    TimeColumn unique = unique();
     for (int i : unique) {
       times.add(PackedLocalTime.asLocalTime(i));
     }

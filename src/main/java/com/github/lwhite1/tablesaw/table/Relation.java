@@ -6,9 +6,9 @@ import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
+import com.github.lwhite1.tablesaw.columns.TimeColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
@@ -274,27 +274,27 @@ public interface Relation {
     return (LongColumn) column(columnIndex);
   }
 
-  default LocalDateColumn dateColumn(int columnIndex) {
-    return (LocalDateColumn) column(columnIndex);
+  default DateColumn dateColumn(int columnIndex) {
+    return (DateColumn) column(columnIndex);
   }
 
-  default LocalDateColumn dateColumn(String columnName) {
-    return (LocalDateColumn) column(columnName);
+  default DateColumn dateColumn(String columnName) {
+    return (DateColumn) column(columnName);
   }
 
-  default LocalTimeColumn timeColumn(String columnName) {
-    return (LocalTimeColumn) column(columnName);
+  default TimeColumn timeColumn(String columnName) {
+    return (TimeColumn) column(columnName);
   }
 
-  default LocalTimeColumn timeColumn(int columnIndex) {
-    return (LocalTimeColumn) column(columnIndex);
+  default TimeColumn timeColumn(int columnIndex) {
+    return (TimeColumn) column(columnIndex);
   }
 
-  default LocalDateTimeColumn dateTimeColumn(int columnIndex) {
-    return (LocalDateTimeColumn) column(columnIndex);
+  default DateTimeColumn dateTimeColumn(int columnIndex) {
+    return (DateTimeColumn) column(columnIndex);
   }
 
-  default LocalDateTimeColumn dateTimeColumn(String columnName) {
-    return (LocalDateTimeColumn) column(columnName);
+  default DateTimeColumn dateTimeColumn(String columnName) {
+    return (DateTimeColumn) column(columnName);
   }
 }

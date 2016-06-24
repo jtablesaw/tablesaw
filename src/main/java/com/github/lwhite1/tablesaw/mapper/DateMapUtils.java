@@ -3,9 +3,8 @@ package com.github.lwhite1.tablesaw.mapper;
 import com.github.lwhite1.tablesaw.columns.DateColumnUtils;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -19,27 +18,27 @@ import java.time.temporal.TemporalUnit;
  */
 public interface DateMapUtils extends DateColumnUtils {
 
-  default FloatColumn differenceInDays(LocalDateColumn column2) {
-    LocalDateColumn column1 = (LocalDateColumn) this;
+  default FloatColumn differenceInDays(DateColumn column2) {
+    DateColumn column1 = (DateColumn) this;
     return difference(column1, column2, ChronoUnit.DAYS);
   }
 
-  default FloatColumn differenceInWeeks(LocalDateColumn column2) {
-    LocalDateColumn column1 = (LocalDateColumn) this;
+  default FloatColumn differenceInWeeks(DateColumn column2) {
+    DateColumn column1 = (DateColumn) this;
     return difference(column1, column2, ChronoUnit.WEEKS);
   }
 
-  default FloatColumn differenceInMonths(LocalDateColumn column2) {
-    LocalDateColumn column1 = (LocalDateColumn) this;
+  default FloatColumn differenceInMonths(DateColumn column2) {
+    DateColumn column1 = (DateColumn) this;
     return difference(column1, column2, ChronoUnit.MONTHS);
   }
 
-  default FloatColumn differenceInYears(LocalDateColumn column2) {
-    LocalDateColumn column1 = (LocalDateColumn) this;
+  default FloatColumn differenceInYears(DateColumn column2) {
+    DateColumn column1 = (DateColumn) this;
     return difference(column1, column2, ChronoUnit.YEARS);
   }
 
-  default FloatColumn difference(LocalDateColumn column1, LocalDateColumn column2, ChronoUnit unit) {
+  default FloatColumn difference(DateColumn column1, DateColumn column2, ChronoUnit unit) {
 
     FloatColumn newColumn = FloatColumn.create(column1.name() + " - " + column2.name());
     for (int r = 0; r < column1.size(); r++) {
@@ -70,44 +69,44 @@ public interface DateMapUtils extends DateColumnUtils {
 
   // These functions fill some amount of time to a date, producing a new date column
 
-  default LocalDateColumn plusDays(int days) {
+  default DateColumn plusDays(int days) {
     return plus(days, ChronoUnit.DAYS);
   }
 
-  default LocalDateColumn plusWeeks(int weeks) {
+  default DateColumn plusWeeks(int weeks) {
     return plus(weeks, ChronoUnit.WEEKS);
   }
 
-  default LocalDateColumn plusYears(int years) {
+  default DateColumn plusYears(int years) {
     return plus(years, ChronoUnit.YEARS);
   }
 
-  default LocalDateColumn plusMonths(int months) {
+  default DateColumn plusMonths(int months) {
     return plus(months, ChronoUnit.MONTHS);
   }
 
   // These functions subtract some amount of time from a date, producing a new date column
 
-  default LocalDateColumn minusDays(int days) {
+  default DateColumn minusDays(int days) {
     return plus((-1 * days), ChronoUnit.DAYS);
   }
 
-  default LocalDateColumn minusWeeks(int weeks) {
+  default DateColumn minusWeeks(int weeks) {
     return minus((-1 * weeks), ChronoUnit.WEEKS);
   }
 
-  default LocalDateColumn minusYears(int years) {
+  default DateColumn minusYears(int years) {
     return minus((-1 * years), ChronoUnit.YEARS);
   }
 
-  default LocalDateColumn minusMonths(int months) {
+  default DateColumn minusMonths(int months) {
     return minus((-1 * months), ChronoUnit.MONTHS);
   }
 
-  default LocalDateColumn plus(int value, TemporalUnit unit) {
+  default DateColumn plus(int value, TemporalUnit unit) {
 
-    LocalDateColumn newColumn = LocalDateColumn.create(dateColumnName(this, value, unit));
-    LocalDateColumn column1 = (LocalDateColumn) this;
+    DateColumn newColumn = DateColumn.create(dateColumnName(this, value, unit));
+    DateColumn column1 = (DateColumn) this;
 
     for (int r = 0; r < column1.size(); r++) {
       Comparable c1 = column1.get(r);
@@ -121,9 +120,9 @@ public interface DateMapUtils extends DateColumnUtils {
     return newColumn;
   }
 
-  default LocalDateColumn minus(int value, TemporalUnit unit) {
-    LocalDateColumn column1 = (LocalDateColumn) this;
-    LocalDateColumn newColumn = LocalDateColumn.create(dateColumnName(column1, value, unit));
+  default DateColumn minus(int value, TemporalUnit unit) {
+    DateColumn column1 = (DateColumn) this;
+    DateColumn newColumn = DateColumn.create(dateColumnName(column1, value, unit));
     for (int r = 0; r < column1.size(); r++) {
       Comparable c1 = column1.get(r);
       if (c1 == null) {
@@ -138,8 +137,8 @@ public interface DateMapUtils extends DateColumnUtils {
 
   // misc functions
 
-  default LocalDateTimeColumn atStartOfDay() {
-    LocalDateTimeColumn newColumn = LocalDateTimeColumn.create(this.name() + " " + " start");
+  default DateTimeColumn atStartOfDay() {
+    DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + " start");
     for (int r = 0; r < this.size(); r++) {
       Comparable c1 = this.get(r);
       if (c1 == null) {
@@ -152,8 +151,8 @@ public interface DateMapUtils extends DateColumnUtils {
     return newColumn;
   }
 
-  default LocalDateTimeColumn atTime(LocalTime time) {
-    LocalDateTimeColumn newColumn = LocalDateTimeColumn.create(this.name() + " " + time.toString());
+  default DateTimeColumn atTime(LocalTime time) {
+    DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + time.toString());
     for (int r = 0; r < this.size(); r++) {
       Comparable c1 = this.get(r);
       if (c1 == null) {

@@ -2,7 +2,7 @@ package com.github.lwhite1.tablesaw.store;
 
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.api.Table;
@@ -10,7 +10,6 @@ import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.io.CsvReader;
 import com.google.common.base.Stopwatch;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -18,7 +17,6 @@ import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
-import static java.lang.System.out;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -31,7 +29,7 @@ public class StorageManagerTest {
   private Relation table = new Table("t");
   private FloatColumn floatColumn = FloatColumn.create("float");
   private CategoryColumn categoryColumn = CategoryColumn.create("cat");
-  private LocalDateColumn localDateColumn = LocalDateColumn.create("date");
+  private DateColumn localDateColumn = DateColumn.create("date");
   private LongColumn longColumn = LongColumn.create("long");
 
   @Before

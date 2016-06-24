@@ -37,7 +37,7 @@ import java.util.Set;
 /**
  * A column in a base table that contains float values
  */
-public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
+public class DateColumn extends AbstractColumn implements DateMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue();
 
@@ -50,17 +50,17 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
    */
   private DateTimeFormatter selectedFormatter;
 
-  private LocalDateColumn(String name) {
+  private DateColumn(String name) {
     super(name);
     data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  public LocalDateColumn(ColumnMetadata metadata) {
+  public DateColumn(ColumnMetadata metadata) {
     super(metadata);
     data = new IntArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  private LocalDateColumn(String name, int initialSize) {
+  private DateColumn(String name, int initialSize) {
     super(name);
     data = new IntArrayList(initialSize);
   }
@@ -96,13 +96,13 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   @Override
-  public LocalDateColumn emptyCopy() {
-    return new LocalDateColumn(name());
+  public DateColumn emptyCopy() {
+    return new DateColumn(name());
   }
 
   @Override
-  public LocalDateColumn emptyCopy(int rowSize) {
-    return new LocalDateColumn(name(), rowSize);
+  public DateColumn emptyCopy(int rowSize) {
+    return new DateColumn(name(), rowSize);
   }
 
   @Override
@@ -110,8 +110,8 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     data.clear();
   }
 
-  private LocalDateColumn copy() {
-    return LocalDateColumn.create(name(), data);
+  private DateColumn copy() {
+    return DateColumn.create(name(), data);
   }
 
   @Override
@@ -147,12 +147,12 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   @Override
-  public LocalDateColumn unique() {
+  public DateColumn unique() {
     IntSet ints = new IntOpenHashSet(data.size());
     for (int i = 0; i < size(); i++) {
       ints.add(data.getInt(i));
     }
-    return LocalDateColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
+    return DateColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
   }
 
   public LocalDate firstElement() {
@@ -206,7 +206,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     CategoryColumn newColumn = CategoryColumn.create(this.name() + " day of week");
     for (int r = 0; r < this.size(); r++) {
       int c1 = this.getInt(r);
-      if (c1 == LocalDateColumn.MISSING_VALUE) {
+      if (c1 == DateColumn.MISSING_VALUE) {
         newColumn.add(null);
       } else {
         newColumn.add(PackedLocalDate.getDayOfWeek(c1).toString());
@@ -219,7 +219,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     IntColumn newColumn = IntColumn.create(this.name() + " day of month");
     for (int r = 0; r < this.size(); r++) {
       int c1 = this.getInt(r);
-      if (c1 == LocalDateColumn.MISSING_VALUE) {
+      if (c1 == DateColumn.MISSING_VALUE) {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {
         newColumn.add(PackedLocalDate.getDayOfMonth(c1));
@@ -232,7 +232,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     IntColumn newColumn = IntColumn.create(this.name() + " day of month");
     for (int r = 0; r < this.size(); r++) {
       int c1 = this.getInt(r);
-      if (c1 == LocalDateColumn.MISSING_VALUE) {
+      if (c1 == DateColumn.MISSING_VALUE) {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {
         newColumn.add(PackedLocalDate.getDayOfYear(c1));
@@ -246,7 +246,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
     for (int r = 0; r < this.size(); r++) {
       int c1 = this.getInt(r);
-      if (c1 == LocalDateColumn.MISSING_VALUE) {
+      if (c1 == DateColumn.MISSING_VALUE) {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {
         newColumn.add(PackedLocalDate.getMonthValue(c1));
@@ -260,7 +260,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
     for (int r = 0; r < this.size(); r++) {
       int c1 = this.getInt(r);
-      if (c1 == LocalDateColumn.MISSING_VALUE) {
+      if (c1 == DateColumn.MISSING_VALUE) {
         newColumn.add(CategoryColumn.MISSING_VALUE);
       } else {
         newColumn.add(PackedLocalDate.getMonth(c1).name());
@@ -273,8 +273,8 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return PackedLocalDate.asLocalDate(getInt(index));
   }
 
-  public static LocalDateColumn create(String name) {
-    return new LocalDateColumn(name);
+  public static DateColumn create(String name) {
+    return new DateColumn(name);
   }
 
   @Override
@@ -302,8 +302,8 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     }
   };
 
-  public static LocalDateColumn create(String columnName, IntArrayList dates) {
-    LocalDateColumn column = new LocalDateColumn(columnName, dates.size());
+  public static DateColumn create(String columnName, IntArrayList dates) {
+    DateColumn column = new DateColumn(columnName, dates.size());
     column.data = dates;
     return column;
   }
@@ -353,7 +353,11 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return apply(IntColumnUtils.isEqualTo, packed);
   }
 
-  public RoaringBitmap isEqualTo(LocalDateColumn column) {
+  /**
+   * Returns a bitmap flagging the records for which the value in this column is equal to the value in the given column
+   * Columnwise isEqualTo.
+   */
+  public RoaringBitmap isEqualTo(DateColumn column) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
     IntIterator intIterator = column.iterator();
@@ -380,7 +384,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
       int value;
       int next = getInt(i);
       if (next == Integer.MIN_VALUE) {
-        value = LocalDateColumn.MISSING_VALUE;
+        value = DateColumn.MISSING_VALUE;
       } else {
         value = next;
       }
@@ -391,7 +395,7 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
       }
     }
     Table table = new Table("Column: " + name());
-    table.addColumn(LocalDateColumn.create("Date"));
+    table.addColumn(DateColumn.create("Date"));
     table.addColumn(IntColumn.create("Count"));
 
     for (Int2IntMap.Entry entry : counts.int2IntEntrySet()) {
@@ -403,13 +407,17 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return table.first(5);
   }
 
-  public LocalDateTimeColumn atTime(LocalTimeColumn c) {
-    LocalDateTimeColumn newColumn = LocalDateTimeColumn.create(this.name() + " " + c.name());
+  /**
+   * Returns a DateTime column where each value consists of the dates from this column combined with the corresponding
+   * times from the other column
+   */
+  public DateTimeColumn atTime(TimeColumn c) {
+    DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + c.name());
     for (int r = 0; r < this.size(); r++) {
       int c1 = this.getInt(r);
       int c2 = c.getInt(r);
-      if (c1 == MISSING_VALUE || c2 == LocalTimeColumn.MISSING_VALUE) {
-        newColumn.add(LocalDateTimeColumn.MISSING_VALUE);
+      if (c1 == MISSING_VALUE || c2 == TimeColumn.MISSING_VALUE) {
+        newColumn.add(DateTimeColumn.MISSING_VALUE);
       } else {
         LocalDate value1 = PackedLocalDate.asLocalDate(c1);
         LocalTime time = PackedLocalTime.asLocalTime(c2);
@@ -442,9 +450,17 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
     return apply(PackedLocalDate::isOnOrBefore, packed);
   }
 
+  public RoaringBitmap isOnOrBefore(int value) {
+    return apply(PackedLocalDate::isOnOrBefore, value);
+  }
+
   public RoaringBitmap isOnOrAfter(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
     return apply(PackedLocalDate::isOnOrAfter, packed);
+  }
+
+  public RoaringBitmap isOnOrAfter(int value) {
+    return apply(PackedLocalDate::isOnOrAfter, value);
   }
 
   public RoaringBitmap isMonday() {
@@ -569,14 +585,14 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
   @Override
   public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
-    LocalDateColumn intColumn = (LocalDateColumn) column;
+    DateColumn intColumn = (DateColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.getInt(i));
     }
   }
 
-  public LocalDateColumn selectIf(LocalDatePredicate predicate) {
-    LocalDateColumn column = emptyCopy();
+  public DateColumn selectIf(LocalDatePredicate predicate) {
+    DateColumn column = emptyCopy();
     IntIterator iterator = iterator();
     while (iterator.hasNext()) {
       int next = iterator.nextInt();
@@ -592,8 +608,8 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
    * This is much more efficient that using a LocalTimePredicate, but requires that the developer understand the
    * semantics of packedLocalTimes
    */
-  public LocalDateColumn selectIf(IntPredicate predicate) {
-    LocalDateColumn column = emptyCopy();
+  public DateColumn selectIf(IntPredicate predicate) {
+    DateColumn column = emptyCopy();
     IntIterator iterator = iterator();
     while (iterator.hasNext()) {
       int next = iterator.nextInt();
@@ -666,16 +682,16 @@ public class LocalDateColumn extends AbstractColumn implements DateMapUtils {
 
   public Set<LocalDate> asSet() {
     Set<LocalDate> dates = new HashSet<>();
-    LocalDateColumn unique = unique();
+    DateColumn unique = unique();
     for (int i : unique) {
       dates.add(PackedLocalDate.asLocalDate(i));
     }
     return dates;
   }
 
-  public LocalDateTimeColumn with(LocalTimeColumn timeColumn) {
+  public DateTimeColumn with(TimeColumn timeColumn) {
     String dateTimeColumnName = name() + " : " + timeColumn.name();
-    LocalDateTimeColumn dateTimeColumn = new LocalDateTimeColumn(dateTimeColumnName, size());
+    DateTimeColumn dateTimeColumn = new DateTimeColumn(dateTimeColumnName, size());
     for (int row = 0; row < size(); row++) {
       int date = getInt(row);
       int time = timeColumn.getInt(row);

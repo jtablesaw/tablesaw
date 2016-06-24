@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.examples;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 
@@ -22,8 +22,8 @@ public class ServiceExample {
 
     out(ops.print());
 
-    LocalDateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start-Time"));
-    LocalDateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End-Time"));
+    DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start-Time"));
+    DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End-Time"));
 
     // Calc duration
     LongColumn duration = start.differenceInSeconds(end);

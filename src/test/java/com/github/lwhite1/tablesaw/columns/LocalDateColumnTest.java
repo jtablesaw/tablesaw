@@ -5,8 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,13 +13,13 @@ import static org.junit.Assert.assertEquals;
  */
 public class LocalDateColumnTest {
 
-  private LocalDateColumn column1;
+  private DateColumn column1;
 
   @Before
   public void setUp() throws Exception {
     Table table = new Table("Test");
     table.addColumn(column1);
-    column1 = LocalDateColumn.create("Game date");
+    column1 = DateColumn.create("Game date");
   }
 
   @Test

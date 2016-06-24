@@ -2,7 +2,7 @@ package com.github.lwhite1.tablesaw.mapper;
 
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
@@ -12,37 +12,37 @@ import java.time.temporal.ChronoUnit;
 
 public interface DateTimeMapUtils extends Column {
 
-  default LongColumn differenceInMilliseconds(LocalDateTimeColumn column2) {
+  default LongColumn differenceInMilliseconds(DateTimeColumn column2) {
     return difference(column2, ChronoUnit.MILLIS);
   }
 
-  default LongColumn differenceInSeconds(LocalDateTimeColumn column2) {
+  default LongColumn differenceInSeconds(DateTimeColumn column2) {
     return difference(column2, ChronoUnit.SECONDS);
   }
 
-  default LongColumn differenceInMinutes(LocalDateTimeColumn column2) {
+  default LongColumn differenceInMinutes(DateTimeColumn column2) {
     return difference(column2, ChronoUnit.MINUTES);
   }
 
-  default LongColumn differenceInHours(LocalDateTimeColumn column2) {
+  default LongColumn differenceInHours(DateTimeColumn column2) {
     return difference(column2, ChronoUnit.HOURS);
   }
 
-  default LongColumn differenceInDays(LocalDateTimeColumn column2) {
+  default LongColumn differenceInDays(DateTimeColumn column2) {
     return difference(column2, ChronoUnit.DAYS);
   }
 
-  default LongColumn differenceInYears(LocalDateTimeColumn column2) {
+  default LongColumn differenceInYears(DateTimeColumn column2) {
     return difference(column2, ChronoUnit.YEARS);
   }
 
-  default LongColumn difference(LocalDateTimeColumn column2, ChronoUnit unit) {
+  default LongColumn difference(DateTimeColumn column2, ChronoUnit unit) {
     LongColumn newColumn = LongColumn.create(name() + " - " + column2.name());
 
     for (int r = 0; r < size(); r++) {
       long c1 = this.getLong(r);
       long c2 = column2.getLong(r);
-      if (c1 == LocalDateTimeColumn.MISSING_VALUE || c2 == LocalDateTimeColumn.MISSING_VALUE) {
+      if (c1 == DateTimeColumn.MISSING_VALUE || c2 == DateTimeColumn.MISSING_VALUE) {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {
         newColumn.add(difference(c1, c2, unit));
@@ -61,7 +61,7 @@ public interface DateTimeMapUtils extends Column {
     ShortColumn newColumn = ShortColumn.create(name() + "[" + "hour" + "]");
     for (int r = 0; r < size(); r++) {
       long c1 = getLong(r);
-      if (c1 != LocalDateTimeColumn.MISSING_VALUE) {
+      if (c1 != DateTimeColumn.MISSING_VALUE) {
         newColumn.add(PackedLocalDateTime.getHour(c1));
       } else {
         newColumn.add(ShortColumn.MISSING_VALUE);
@@ -74,7 +74,7 @@ public interface DateTimeMapUtils extends Column {
     IntColumn newColumn = IntColumn.create(name() + "[" + "minute-of-day" + "]");
     for (int r = 0; r < size(); r++) {
       long c1 = getLong(r);
-      if (c1 != LocalDateTimeColumn.MISSING_VALUE) {
+      if (c1 != DateTimeColumn.MISSING_VALUE) {
         newColumn.add(PackedLocalDateTime.getMinuteOfDay(c1));
       } else {
         newColumn.add(IntColumn.MISSING_VALUE);
@@ -87,7 +87,7 @@ public interface DateTimeMapUtils extends Column {
     IntColumn newColumn = IntColumn.create(name() + "[" + "second-of-day" + "]");
     for (int r = 0; r < size(); r++) {
       long c1 = getLong(r);
-      if (c1 != LocalDateTimeColumn.MISSING_VALUE) {
+      if (c1 != DateTimeColumn.MISSING_VALUE) {
         newColumn.add(PackedLocalDateTime.getSecondOfDay(c1));
       } else {
         newColumn.add(IntColumn.MISSING_VALUE);

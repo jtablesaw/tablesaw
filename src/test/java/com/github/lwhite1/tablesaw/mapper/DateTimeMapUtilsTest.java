@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.mapper;
 
 import com.github.lwhite1.tablesaw.columns.LongColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
 import org.junit.Test;
@@ -16,8 +16,8 @@ import static org.junit.Assert.assertEquals;
  */
 public class DateTimeMapUtilsTest {
 
-  LocalDateTimeColumn startCol = LocalDateTimeColumn.create("start");
-  LocalDateTimeColumn stopCol = LocalDateTimeColumn.create("stop");
+  DateTimeColumn startCol = DateTimeColumn.create("start");
+  DateTimeColumn stopCol = DateTimeColumn.create("stop");
   LocalDateTime start = LocalDateTime.now();
 
 

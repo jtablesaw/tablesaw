@@ -4,7 +4,7 @@ import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.TestDataUtil;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.io.CsvReader;
 import com.github.lwhite1.tablesaw.io.CsvWriter;
@@ -107,7 +107,7 @@ public class LargeDataTest {
     CategoryColumn city = CategoryColumn.create("city");
     CategoryColumn postalCode = CategoryColumn.create("postal code");
     CategoryColumn state = CategoryColumn.create("state");
-    LocalDateColumn birthDate = LocalDateColumn.create("birth date");
+    DateColumn birthDate = DateColumn.create("birth date");
     ShortColumn height = ShortColumn.create("height");
     ShortColumn weight = ShortColumn.create("weight");
     BooleanColumn female = BooleanColumn.create("female");

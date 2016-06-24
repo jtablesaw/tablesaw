@@ -1,19 +1,25 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
 import com.github.lwhite1.tablesaw.filter.LocalDateTimePredicate;
 import com.github.lwhite1.tablesaw.filter.LongBiPredicate;
 import com.github.lwhite1.tablesaw.filter.LongPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapper.DateTimeMapUtils;
+import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.ReverseLongComparator;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.*;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrays;
+import it.unimi.dsi.fastutil.longs.LongComparator;
+import it.unimi.dsi.fastutil.longs.LongIterable;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDateTime;
@@ -27,9 +33,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A column in a table that contains long-integer encoded (packed) date-time values
+ * A column in a table that contains long-integer encoded (packed) local date-time values
  */
-public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUtils, LongIterable {
+public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, LongIterable {
 
   public static final long MISSING_VALUE = Long.MIN_VALUE;
 
@@ -82,21 +88,21 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return PackedLocalDateTime.pack(time);
   }
 
-  public static LocalDateTimeColumn create(String name) {
-    return new LocalDateTimeColumn(name);
+  public static DateTimeColumn create(String name) {
+    return new DateTimeColumn(name);
   }
 
-  private LocalDateTimeColumn(String name) {
+  private DateTimeColumn(String name) {
     super(name);
     data = new LongArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  public LocalDateTimeColumn(ColumnMetadata metadata) {
+  public DateTimeColumn(ColumnMetadata metadata) {
     super(metadata);
     data = new LongArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  public LocalDateTimeColumn(String name, int initialSize) {
+  public DateTimeColumn(String name, int initialSize) {
     super(name);
     data = new LongArrayList(initialSize);
   }
@@ -124,13 +130,13 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   }
 
   @Override
-  public LocalDateTimeColumn emptyCopy() {
-    return new LocalDateTimeColumn(name());
+  public DateTimeColumn emptyCopy() {
+    return new DateTimeColumn(name());
   }
 
   @Override
-  public LocalDateTimeColumn emptyCopy(int rowSize) {
-    return new LocalDateTimeColumn(name(), rowSize);
+  public DateTimeColumn emptyCopy(int rowSize) {
+    return new DateTimeColumn(name(), rowSize);
   }
 
   @Override
@@ -138,8 +144,8 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     data.clear();
   }
 
-  private LocalDateTimeColumn copy() {
-    return LocalDateTimeColumn.create(name(), data);
+  private DateTimeColumn copy() {
+    return DateTimeColumn.create(name(), data);
   }
 
   @Override
@@ -181,12 +187,12 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   }
 
   @Override
-  public LocalDateTimeColumn unique() {
+  public DateTimeColumn unique() {
     LongSet ints = new LongOpenHashSet(data.size());
     for (long i : data) {
       ints.add(i);
     }
-    return LocalDateTimeColumn.create(name() + " Unique values",
+    return DateTimeColumn.create(name() + " Unique values",
         LongArrayList.wrap(ints.toLongArray()));
   }
 
@@ -227,7 +233,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     CategoryColumn newColumn = CategoryColumn.create(this.name() + " day of week", this.size());
     for (int r = 0; r < this.size(); r++) {
       long c1 = this.getLong(r);
-      if (c1 == (LocalDateTimeColumn.MISSING_VALUE)) {
+      if (c1 == (DateTimeColumn.MISSING_VALUE)) {
         newColumn.set(r, null);
       } else {
         newColumn.add(PackedLocalDateTime.getDayOfWeek(c1).toString());
@@ -240,7 +246,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     IntColumn newColumn = IntColumn.create(this.name() + " day of year", this.size());
     for (int r = 0; r < this.size(); r++) {
       long c1 = this.getLong(r);
-      if (c1 == (LocalDateTimeColumn.MISSING_VALUE)) {
+      if (c1 == (DateTimeColumn.MISSING_VALUE)) {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {
         newColumn.add(PackedLocalDateTime.getDayOfYear(c1));
@@ -306,8 +312,63 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return apply(LongColumnUtils.isEqualTo, packed);
   }
 
-  public static LocalDateTimeColumn create(String fileName, LongArrayList dateTimes) {
-    LocalDateTimeColumn column = new LocalDateTimeColumn(fileName, dateTimes.size());
+  public RoaringBitmap isEqualTo(DateTimeColumn column) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    LongIterator intIterator = column.iterator();
+    for (long next : data) {
+      if (next == intIterator.nextLong()) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
+  public RoaringBitmap isAfter(long value) {
+    return apply(LongColumnUtils.isGreaterThan, value);
+  }
+
+  public RoaringBitmap isOnOrAfter(long value) {
+    return apply(LongColumnUtils.isGreaterThanOrEqualTo, value);
+  }
+
+  public RoaringBitmap isBefore(long value) {
+    return apply(LongColumnUtils.isLessThan, value);
+  }
+
+  public RoaringBitmap isOnOrBefore(long value) {
+    return apply(LongColumnUtils.isLessThanOrEqualTo, value);
+  }
+
+  public RoaringBitmap isAfter(DateTimeColumn column) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    LongIterator intIterator = column.iterator();
+    for (long next : data) {
+      if (next > intIterator.nextLong()) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
+  public RoaringBitmap isBefore(DateTimeColumn column) {
+    RoaringBitmap results = new RoaringBitmap();
+    int i = 0;
+    LongIterator intIterator = column.iterator();
+    for (long next : data) {
+      if (next < intIterator.nextLong()) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
+
+  public static DateTimeColumn create(String fileName, LongArrayList dateTimes) {
+    DateTimeColumn column = new DateTimeColumn(fileName, dateTimes.size());
     column.data = dateTimes;
     return column;
   }
@@ -330,7 +391,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
   @Override
   public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
-    LocalDateTimeColumn intColumn = (LocalDateTimeColumn) column;
+    DateTimeColumn intColumn = (DateTimeColumn) column;
     for (int i = 0; i < intColumn.size(); i++) {
       add(intColumn.get(i));
     }
@@ -380,7 +441,7 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     IntColumn newColumn = IntColumn.create(this.name() + " minute of day");
     for (int r = 0; r < this.size(); r++) {
       long c1 = getLong(r);
-      if (c1 == LocalDateColumn.MISSING_VALUE) {
+      if (c1 == DateColumn.MISSING_VALUE) {
         newColumn.add(IntColumn.MISSING_VALUE);
       } else {
         newColumn.add(PackedLocalDateTime.getMinuteOfDay(c1));
@@ -389,8 +450,8 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return newColumn;
   }
 
-  public LocalDateTimeColumn selectIf(LocalDateTimePredicate predicate) {
-    LocalDateTimeColumn column = emptyCopy();
+  public DateTimeColumn selectIf(LocalDateTimePredicate predicate) {
+    DateTimeColumn column = emptyCopy();
     LongIterator iterator = iterator();
     while (iterator.hasNext()) {
       long next = iterator.nextLong();
@@ -401,8 +462,8 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return column;
   }
 
-  public LocalDateTimeColumn selectIf(LongPredicate predicate) {
-    LocalDateTimeColumn column = emptyCopy();
+  public DateTimeColumn selectIf(LongPredicate predicate) {
+    DateTimeColumn column = emptyCopy();
     LongIterator iterator = iterator();
     while (iterator.hasNext()) {
       long next = iterator.nextLong();
@@ -573,12 +634,16 @@ public class LocalDateTimeColumn extends AbstractColumn implements DateTimeMapUt
     return data.iterator();
   }
 
-  Set<LocalDateTime> asSet() {
+  public Set<LocalDateTime> asSet() {
     Set<LocalDateTime> times = new HashSet<>();
-    LocalDateTimeColumn unique = unique();
+    DateTimeColumn unique = unique();
     for (long i : unique) {
       times.add(PackedLocalDateTime.asLocalDateTime(i));
     }
     return times;
+  }
+
+  public RoaringBitmap isInYear(int year) {
+    return apply(i -> PackedLocalDateTime.isInYear(i, year));
   }
 }

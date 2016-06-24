@@ -7,9 +7,9 @@ import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
+import com.github.lwhite1.tablesaw.columns.TimeColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
 import org.iq80.snappy.SnappyFramedInputStream;
@@ -185,8 +185,8 @@ public class StorageManager {
     return ints;
   }
 
-  public static LocalDateColumn readLocalDateColumn(String fileName, ColumnMetadata metadata) throws IOException {
-    LocalDateColumn dates = new LocalDateColumn(metadata);
+  public static DateColumn readLocalDateColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    DateColumn dates = new DateColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -203,9 +203,9 @@ public class StorageManager {
     return dates;
   }
 
-  public static LocalDateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata) throws
+  public static DateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata) throws
       IOException {
-    LocalDateTimeColumn dates = new LocalDateTimeColumn(metadata);
+    DateTimeColumn dates = new DateTimeColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -222,8 +222,8 @@ public class StorageManager {
     return dates;
   }
 
-  public static LocalTimeColumn readLocalTimeColumn(String fileName, ColumnMetadata metadata) throws IOException {
-    LocalTimeColumn times = new LocalTimeColumn(metadata);
+  public static TimeColumn readLocalTimeColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    TimeColumn times = new TimeColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -349,13 +349,13 @@ public class StorageManager {
           writeColumn(fileName, (BooleanColumn) column);
           break;
         case LOCAL_DATE:
-          writeColumn(fileName, (LocalDateColumn) column);
+          writeColumn(fileName, (DateColumn) column);
           break;
         case LOCAL_TIME:
-          writeColumn(fileName, (LocalTimeColumn) column);
+          writeColumn(fileName, (TimeColumn) column);
           break;
         case LOCAL_DATE_TIME:
-          writeColumn(fileName, (LocalDateTimeColumn) column);
+          writeColumn(fileName, (DateTimeColumn) column);
           break;
         case CATEGORY:
           writeColumn(fileName, (CategoryColumn) column);
@@ -473,7 +473,7 @@ public class StorageManager {
   }
 
   //TODO(lwhite): saveTable the column using integer compression
-  public static void writeColumn(String fileName, LocalDateColumn column) throws IOException {
+  public static void writeColumn(String fileName, DateColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -489,7 +489,7 @@ public class StorageManager {
     }
   }
 
-  public static void writeColumn(String fileName, LocalDateTimeColumn column) throws IOException {
+  public static void writeColumn(String fileName, DateTimeColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -506,7 +506,7 @@ public class StorageManager {
   }
 
   //TODO(lwhite): saveTable the column using integer compression
-  public static void writeColumn(String fileName, LocalTimeColumn column) throws IOException {
+  public static void writeColumn(String fileName, TimeColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {

@@ -3,7 +3,7 @@ package com.github.lwhite1.tablesaw;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.io.CsvReader;
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class TableFilteringTest {
   @Test
   public void testFilter2() {
     Table result = table.selectWhere(column("date").isInApril());
-    LocalDateColumn d = result.dateColumn("date");
+    DateColumn d = result.dateColumn("date");
     for (int v : d) {
       assertTrue(PackedLocalDate.isInApril(v));
     }
@@ -55,7 +55,7 @@ public class TableFilteringTest {
         both(column("date").isInApril(),
              column("approval").isGreaterThan(70)));
 
-    LocalDateColumn dates = result.dateColumn("date");
+    DateColumn dates = result.dateColumn("date");
     IntColumn approval = result.intColumn("approval");
     for (int row : result) {
       assertTrue(PackedLocalDate.isInApril(dates.getInt(row)));
