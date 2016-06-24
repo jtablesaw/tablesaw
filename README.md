@@ -7,7 +7,7 @@ With Tablesaw, you can crunch tables with hundreds of millions of rows on a lapt
 
 Tablesaw provides general-purpose analytic support, with rich functionality for working with time-series. With Java 9, you'll be able to work interactively in the REPL. 
 
-##What makes Tablesaw unique:
+###What makes Tablesaw unique:
 Tablesaw's design is driven by two ideas: 
 First, almost no-one needs distributed analytics. On a single server, table saw will let you work _interactively_ with a 2,000,000,000 row table. 
 Second, it should be super easy to use: To that end, we strive for readable analysis code, and happily steal ideas not just from dataframes like Pandas, but from everything from spreadsheets to specialized column stores like KDB.
