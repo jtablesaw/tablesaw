@@ -41,8 +41,8 @@ To give you a sense of the API, here's an example. The goal in this analysis is 
     Table ops = Table.create("data/operations.csv");
 
     // Combine the date and time fields so that we don't miscalculate on jobs that cross date bounderies
-    LocalDateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start-Time"));
-    LocalDateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End-Time"));
+    DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start-Time"));
+    DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End-Time"));
 
     // Calculate the durations from the start and end times
     LongColumn duration = start.differenceInSeconds(end);
