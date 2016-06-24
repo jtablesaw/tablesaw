@@ -44,24 +44,16 @@ To give you a sense of the API, here's an example. The goal in this analysis is 
     // Combine the date and time fields so that we don't miscalculate on jobs that cross date bounderies
     LocalDateTimeColumn start = ops.localDateColumn("Date").atTime(ops.localTimeColumn("Start-Time"));
     LocalDateTimeColumn end = ops.localDateColumn("Date").atTime(ops.localTimeColumn("End-Time"));
-    start.setName("start");
-    end.setName("end");
-    
-    // remove the old columns, and and the new ones
-    ops.removeColumns("Date", "Start-Time", "End-Time");
-    ops.addColumn(start, end);
 
     // Calculate the durations from the start and end times
-    LongColumn duration =
-         ops.localDateTimeColumn("Start")
-            .differenceInSeconds(ops.localDateTimeColumn("End"));
+    LongColumn duration = start.differenceInSeconds(end);
     duration.setName("Duration");
     ops.addColumn(duration);
     
     // filter the table by quarter, model and operation
     Table q2_429_assembly = ops.selectWhere(
           allOf
-              (column("end").isInQ2(),
+              (column("date").isInQ2(),
               (column("SKU").startsWith("429")),
               (column("Operation").isEqualTo("Assembly"))));
    
