@@ -14,13 +14,11 @@ You can find an introductory tutorial here: https://javadatascience.wordpress.co
 
 ###What Tablesaw does today: 
 * Import data from RDBMS and CSV files 
-* View table metadata
 * Add and remove columns
 * Sort 
 * Filter
 * Group
 * Perform map and reduce operations
-* Display
 * Run descriptive stats (mean, min, max, median, etc.)
 * Store tables in Tablesaw's compressed columnar storage format
 
