@@ -34,10 +34,43 @@ In its current pre-release state, some areas of Tablesaw perform better than oth
 BTW, those numbers were achieved on a laptop.
 
 ### Easy to Use is Easy to Say
-To give you a sense of the API, here's an example:
+To give you a sense of the API, here's an example. The goal in this analysis is to identify the production shifts with the slowest performance. Our table has data from all facilities, operations, products, and shifts for the past year. We're only interested in assembly operations in the second quarter for model 429.
 
-```
-Check this spot in a day or two for a real-world-y example.
+```java
+   // Load the data and print the structure
+    Table ops = Table.create("data/operations.csv");
+    out(ops.structure().print());
+    
+    // We need to combine the date and time fields so that we don't miscalculate on jobs that cross date bounderies
+    LocalDateTimeColumn start = ops.localDateColumn("Date").atTime(ops.localTimeColumn("Start-Time"));
+    LocalDateTimeColumn end = ops.localDateColumn("Date").atTime(ops.localTimeColumn("End-Time"));
+    start.setName("start");
+    end.setName("end");
+    
+    // remove the old columns, and and the new ones
+    ops.removeColumns("Date", "Start-Time", "End-Time");
+    ops.addColumn(start, end);
+
+    // Calculate the durations from the start and end times
+    LongColumn duration =
+         ops.localDateTimeColumn("Start")
+            .differenceInSeconds(ops.localDateTimeColumn("End"));
+    duration.setName("Duration");
+    ops.addColumn(duration);
+    
+    // filter the table by quarter, model and operation
+    Table q2_429_assembly = ops.selectWhere(
+          allOf
+              (column("end").isInQ2(),
+              (column("SKU").startsWith("429")),
+              (column("Operation").isEqualTo("Assembly"))));
+   
+    // Now calulate the median peformance by facility and group.
+    Table durationByFacilityAndShift = q2_429_assembly.reduce("Duration", median, "Facility", "Shift");
+    
+    // Get the top "worst" peforming 
+    FloatArrayList tops = durationByFacilityAndShift.floatColumn("Median").top(5);
+
 ```
 
 ### A work-in-progress
