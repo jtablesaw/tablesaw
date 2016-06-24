@@ -43,7 +43,7 @@ And that's on a laptop.
 To give you a sense of the API, here's an example:
 
 ```
-
+Check this spot in a day or two for a real-worldy example.
 ```
 
 ## A work-in-progress
