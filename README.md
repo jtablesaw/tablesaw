@@ -37,13 +37,12 @@ BTW, those numbers were achieved on a laptop.
 To give you a sense of the API, here's an example. The goal in this analysis is to identify the production shifts with the slowest performance. Our table has data from all facilities, operations, products, and shifts for the past year. We're only interested in assembly operations in the second quarter for model 429.
 
 ```java
-   // Load the data and print the structure
+   // Load the data
     Table ops = Table.create("data/operations.csv");
-    out(ops.structure().print());
-    
+
     // Combine the date and time fields so that we don't miscalculate on jobs that cross date bounderies
-    LocalDateTimeColumn start = ops.localDateColumn("Date").atTime(ops.localTimeColumn("Start-Time"));
-    LocalDateTimeColumn end = ops.localDateColumn("Date").atTime(ops.localTimeColumn("End-Time"));
+    LocalDateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start-Time"));
+    LocalDateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End-Time"));
 
     // Calculate the durations from the start and end times
     LongColumn duration = start.differenceInSeconds(end);
@@ -64,6 +63,8 @@ To give you a sense of the API, here's an example. The goal in this analysis is 
     FloatArrayList tops = durationByFacilityAndShift.floatColumn("Median").top(5);
 
 ```
+
+I hope you can see how the code reflects the intent, and how column-wise operators like _isInQ2()_ and  _startsWith(aString)_ make data operations easy to express. 
 
 ### A work-in-progress
 __Tablesaw is moving quickly towards stability of the core functionality and APIs__. A production release planned for Q3 2016. A great deal of additional functionality will follow the initial release.
