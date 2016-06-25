@@ -1,7 +1,6 @@
 package com.github.lwhite1.tablesaw.store;
 
 import com.github.lwhite1.tablesaw.table.Relation;
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.BooleanColumn;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
@@ -48,14 +47,14 @@ public class StorageManager {
    *             specified. The path will typically end in ".saw", as in "mytables/nasdaq-2015.saw"
    * @throws IOException if the file cannot be read
    */
-  public static Table readTable(String path) throws IOException {
+  public static com.github.lwhite1.tablesaw.api.Table readTable(String path) throws IOException {
 
     ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
     CompletionService readerCompletionService = new ExecutorCompletionService<>(executorService);
 
     TableMetadata tableMetadata = readTableMetadata(path + File.separator + "Metadata.json");
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
-    Table table = new Table(tableMetadata);
+    com.github.lwhite1.tablesaw.api.Table table = new com.github.lwhite1.tablesaw.api.Table(tableMetadata);
 
     // NB: We do some extra work with the hash map to ensure that the columns are added to the table in original order
     // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all columns are read

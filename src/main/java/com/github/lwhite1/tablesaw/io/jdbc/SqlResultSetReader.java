@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 /**
- *  Creates a Table from the result of a SQL query, by passing the jdbc resultset to the constructor
+ *  Creates a Relation from the result of a SQL query, by passing the jdbc resultset to the constructor
  */
 public class SqlResultSetReader {
 

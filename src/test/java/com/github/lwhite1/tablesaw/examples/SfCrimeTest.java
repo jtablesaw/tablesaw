@@ -62,11 +62,11 @@ public class SfCrimeTest {
     // eliminate the duplicate rows so we can sum by state correctly;
     table = table.selectWhere(column("SN").isEqualTo(1));
 
-    Table xtab = table.xCount("State", "Year");
+    Relation xtab = table.xCount("State", "Year");
     out("Cross Tab: State by Year");
     out(xtab.print());
 
-    Table xtab2 = table.xCount("State", "Month");
+    Relation xtab2 = table.xCount("State", "Month");
     out(xtab2.print());
 
     out(xtab.column("total").copy(0, 48).summary().print());
@@ -83,7 +83,7 @@ public class SfCrimeTest {
 
     long maxFatalities = Math.round(table.realColumn("Fatalities").max());
 
-    Table max = table.selectWhere(column("Fatalities").isEqualTo(maxFatalities));
+    Relation max = table.selectWhere(column("Fatalities").isEqualTo(maxFatalities));
 */
 
    // out(max.print());

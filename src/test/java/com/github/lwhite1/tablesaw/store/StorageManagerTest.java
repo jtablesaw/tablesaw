@@ -5,7 +5,6 @@ import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.table.Relation;
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.io.CsvReader;
 import com.google.common.base.Stopwatch;
@@ -26,7 +25,7 @@ public class StorageManagerTest {
 
   private static final int COUNT = 5;
 
-  private Relation table = new Table("t");
+  private Relation table = new com.github.lwhite1.tablesaw.api.Table("t");
   private FloatColumn floatColumn = FloatColumn.create("float");
   private CategoryColumn categoryColumn = CategoryColumn.create("cat");
   private DateColumn localDateColumn = DateColumn.create("date");
@@ -59,7 +58,7 @@ public class StorageManagerTest {
   @Test
   public void testWriteTable() throws IOException {
     StorageManager.saveTable("/tmp/zeta", table);
-    Table t = StorageManager.readTable("/tmp/zeta/t.saw");
+    com.github.lwhite1.tablesaw.api.Table t = StorageManager.readTable("/tmp/zeta/t.saw");
     assertEquals(table.columnCount(), t.columnCount());
     assertEquals(table.rowCount(), t.rowCount());
     for (int i = 0; i < table.rowCount(); i++) {
@@ -72,7 +71,7 @@ public class StorageManagerTest {
   public void testWriteTableTwice() throws IOException {
 
     StorageManager.saveTable("/tmp/mytables2", table);
-    Table t = StorageManager.readTable("/tmp/mytables2/t.saw");
+    com.github.lwhite1.tablesaw.api.Table t = StorageManager.readTable("/tmp/mytables2/t.saw");
     t.floatColumn("float").setName("a float column");
 
     StorageManager.saveTable("/tmp/mytables2", table);
@@ -87,7 +86,7 @@ public class StorageManagerTest {
 
     Stopwatch stopwatch = Stopwatch.createStarted();
     System.out.println("loading");
-    Table tornados = CsvReader.read(COLUMN_TYPES, "data/1950-2014_torn.csv");
+    com.github.lwhite1.tablesaw.api.Table tornados = CsvReader.read(COLUMN_TYPES, "data/1950-2014_torn.csv");
     tornados.setName("tornados");
     System.out.println(String.format("loaded %d records in %d seconds",
         tornados.rowCount(),

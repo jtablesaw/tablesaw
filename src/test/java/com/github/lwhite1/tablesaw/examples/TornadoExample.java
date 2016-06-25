@@ -16,7 +16,7 @@ public class TornadoExample {
   public static void main(String[] args) throws Exception {
 
     Table tornadoes = Table.create(COLUMN_TYPES_OLD, "data/1950-2014_torn.csv");
-    //Table tornadoes = CsvReader.read("data/1950-2014_torn.csv");
+    //Relation tornadoes = CsvReader.read("data/1950-2014_torn.csv");
     assert(tornadoes != null);
 
     out(tornadoes.structure().print());

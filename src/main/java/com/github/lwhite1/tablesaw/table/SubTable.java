@@ -16,8 +16,7 @@ import com.github.lwhite1.tablesaw.columns.ShortColumn;
 import java.util.List;
 
 /**
- * A specialization of the standard Table used for tables formed by grouping operations on a
- * Table
+ * A specialization of the standard Relation used for tables formed by grouping operations on a Relation
  */
 public class SubTable extends Table {
 

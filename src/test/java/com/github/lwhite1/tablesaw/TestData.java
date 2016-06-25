@@ -13,7 +13,7 @@ import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_DATE;
 import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_TIME;
 
 /**
- * This class setup tablesaw Table from test data sources.
+ * This class setup tablesaw Relation from test data sources.
  * It purpose is to make easy for tests or example code get data to work with.
  */
 public enum TestData {
@@ -29,7 +29,7 @@ public enum TestData {
     private ColumnType[] columnTypes;
 
     /**
-     * Creates a Table from the specified daa.
+     * Creates a Relation from the specified daa.
      *
      * @param columnTypes the data in each column of the specified CSV
      * @param csvSource the CSV data

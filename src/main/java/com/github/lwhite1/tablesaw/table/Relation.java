@@ -1,17 +1,16 @@
 package com.github.lwhite1.tablesaw.table;
 
-import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.BooleanColumn;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.TimeColumn;
+import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
-import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
+import com.github.lwhite1.tablesaw.columns.TimeColumn;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -47,7 +46,7 @@ public interface Relation {
     removeColumns(cols);
   }
 
-  Table first(int nRows);
+  com.github.lwhite1.tablesaw.api.Table first(int nRows);
 
   /**
    * Returns the index of the column with the given columnName
@@ -190,10 +189,10 @@ public interface Relation {
     return buf.toString();
   }
 
-  default Table structure() {
+  default com.github.lwhite1.tablesaw.api.Table structure() {
 
     StringBuilder nameBuilder = new StringBuilder();
-    nameBuilder.append("Table: ")
+    nameBuilder.append("Relation: ")
         .append(name())
         .append(" - ")
         .append(rowCount())
@@ -201,7 +200,7 @@ public interface Relation {
         .append(columnCount())
         .append(" variables (cols)");
 
-    Table structure = new Table(nameBuilder.toString());
+    com.github.lwhite1.tablesaw.api.Table structure = new com.github.lwhite1.tablesaw.api.Table(nameBuilder.toString());
     structure.addColumn(IntColumn.create("Index"));
     structure.addColumn(CategoryColumn.create("Column Name"));
     structure.addColumn(CategoryColumn.create("Type"));
@@ -223,7 +222,7 @@ public interface Relation {
   default String summary() {
     StringBuilder builder = new StringBuilder();
     builder.append("\n")
-        .append("Table summary for: ")
+        .append("Relation summary for: ")
         .append(name())
         .append("\n");
     for (Column column : columns()) {
