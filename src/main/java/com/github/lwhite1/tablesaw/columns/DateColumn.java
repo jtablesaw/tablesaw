@@ -701,5 +701,8 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     return dateTimeColumn;
   }
 
-
+  public boolean contains(LocalDate localDate) {
+    int date = PackedLocalDate.pack(localDate);
+    return data().contains(date);
+  }
 }

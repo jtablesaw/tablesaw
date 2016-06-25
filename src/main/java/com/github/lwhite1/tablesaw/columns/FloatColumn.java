@@ -551,4 +551,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
   FloatSet asSet() {
     return new FloatOpenHashSet(data);
   }
+
+  public boolean contains(float value) {
+    return data.contains(value);
+  }
 }

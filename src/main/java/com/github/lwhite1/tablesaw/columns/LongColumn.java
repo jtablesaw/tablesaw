@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.filter.LongBiPredicate;
 import com.github.lwhite1.tablesaw.filter.LongPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
@@ -14,7 +14,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.*;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongArraySet;
+import it.unimi.dsi.fastutil.longs.LongArrays;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Arrays;
@@ -397,4 +402,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return new LongOpenHashSet(data);
   }
 
+  public boolean contains(long value) {
+    return data.contains(value);
+  }
 }

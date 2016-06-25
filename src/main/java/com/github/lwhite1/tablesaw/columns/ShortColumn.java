@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.filter.ShortBiPredicate;
 import com.github.lwhite1.tablesaw.filter.ShortPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
@@ -406,4 +406,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return new ShortOpenHashSet(data);
   }
 
+  public boolean contains(short value) {
+    return data.contains(value);
+  }
+
+  public ShortArrayList data() {
+    return data;
+  }
 }

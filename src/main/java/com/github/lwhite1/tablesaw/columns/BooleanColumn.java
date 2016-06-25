@@ -325,4 +325,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return new BooleanOpenHashSet(data);
   }
 
+  public boolean contains(boolean aBoolean) {
+    return data().contains(aBoolean);
+  }
 }

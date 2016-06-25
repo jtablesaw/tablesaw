@@ -646,4 +646,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   public RoaringBitmap isInYear(int year) {
     return apply(i -> PackedLocalDateTime.isInYear(i, year));
   }
+
+  public boolean contains(LocalDateTime dateTime) {
+    long dt = PackedLocalDateTime.pack(dateTime);
+    return data().contains(dt);
+  }
 }

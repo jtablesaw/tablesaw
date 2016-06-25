@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalTime;
 import com.github.lwhite1.tablesaw.filter.IntBiPredicate;
 import com.github.lwhite1.tablesaw.filter.IntPredicate;
@@ -407,5 +407,10 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
       times.add(PackedLocalTime.asLocalTime(i));
     }
     return times;
+  }
+
+  public boolean contains(LocalTime time) {
+    int t = PackedLocalTime.pack(time);
+    return data().contains(t);
   }
 }
