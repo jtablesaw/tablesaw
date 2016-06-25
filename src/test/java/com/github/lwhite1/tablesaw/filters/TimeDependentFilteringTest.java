@@ -5,7 +5,7 @@ import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.table.SubTable;
 import com.github.lwhite1.tablesaw.table.TableGroup;
@@ -100,7 +100,7 @@ public class TimeDependentFilteringTest {
 
       for (int row : patientTable) {
         CategoryColumn concepts = patientTable.categoryColumn("concept");
-        LocalDateColumn dates = patientTable.dateColumn("date");
+        DateColumn dates = patientTable.dateColumn("date");
         if (concepts.get(row).equals(conceptZ)) {
           eventDates.add(dates.get(row));
         }
@@ -132,7 +132,7 @@ public class TimeDependentFilteringTest {
     Table t;
     t = new Table("Observations");
     CategoryColumn conceptId = CategoryColumn.create("concept");
-    LocalDateColumn date = LocalDateColumn.create("date");
+    DateColumn date = DateColumn.create("date");
     FloatColumn value = FloatColumn.create("value");
     IntColumn patientId = IntColumn.create("patient");
 
@@ -167,7 +167,7 @@ public class TimeDependentFilteringTest {
       dates.add(PackedLocalDate.pack(randomDate()));
     }
 
-    LocalDateColumn dateColumn = table.dateColumn("date");
+    DateColumn dateColumn = table.dateColumn("date");
     CategoryColumn conceptColumn = table.categoryColumn("concept");
     FloatColumn valueColumn = table.floatColumn("value");
     IntColumn patientColumn = table.intColumn("patient");
