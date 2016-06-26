@@ -1,8 +1,12 @@
 package com.github.lwhite1.tablesaw.filter;
 
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
+import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
+import com.github.lwhite1.tablesaw.columns.IntColumn;
+import com.github.lwhite1.tablesaw.columns.LongColumn;
+import com.github.lwhite1.tablesaw.columns.ShortColumn;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
@@ -17,7 +21,23 @@ public class IntGreaterThanOrEqualTo extends ColumnFilter {
   }
 
   public RoaringBitmap apply(Table relation) {
-    IntColumn intColumn = (IntColumn) relation.column(columnReference.getColumnName());
-    return intColumn.isGreaterThanOrEqualTo(value);
+
+    String name = columnReference.getColumnName();
+    Column column = relation.column(name);
+    ColumnType type = column.type();
+    switch (type) {
+      case INTEGER:
+        IntColumn intColumn = relation.intColumn(name);
+        return intColumn.isGreaterThanOrEqualTo(value);
+      case LONG_INT:
+        LongColumn longColumn = relation.longColumn(name);
+        return longColumn.isGreaterThanOrEqualTo(value);
+      case SHORT_INT:
+        ShortColumn shortColumn = relation.shortColumn(name);
+        return shortColumn.isGreaterThanOrEqualTo(value);
+      default:
+        throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "
+          + "greaterThanOrEqualTo(anInt) ");
+    }
   }
 }

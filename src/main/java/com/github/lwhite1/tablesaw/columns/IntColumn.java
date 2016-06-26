@@ -117,6 +117,14 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return apply(isEqualTo, i);
   }
 
+  public RoaringBitmap isMissing() {
+    return apply(isMissing);
+  }
+
+  public RoaringBitmap isNotMissing() {
+    return apply(isNotMissing);
+  }
+
   public RoaringBitmap isEqualTo(IntColumn other) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
@@ -213,7 +221,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
    */
   public static int convert(String stringValue) {
     if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-      return (int) ColumnType.INTEGER.getMissingValue();
+      return MISSING_VALUE;
     }
     Matcher matcher = COMMA_PATTERN.matcher(stringValue);
     return Integer.parseInt(matcher.replaceAll(""));

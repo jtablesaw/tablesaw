@@ -167,8 +167,9 @@ final public class CsvReader {
         // get the index in the original table, which includes skipped fields
         columnIndexes[i] = headerRow.indexOf(columnNames[i]);
       }
+
       // Add the rows
-      String[] nextLine;
+      String[] nextLine = null;
       while (it.hasNext()) {
         nextLine = it.next();
         // for each column that we're including (not skipping)
@@ -179,7 +180,6 @@ final public class CsvReader {
           cellIndex++;
         }
       }
-      it.close();
     }
     return table;
   }
@@ -227,7 +227,6 @@ final public class CsvReader {
         // get the index in the original table, which includes skipped fields
         columnIndexes[i] = headerRow.indexOf(columnNames[i]);
       }
-      it.close();
     }
     return table;
   }

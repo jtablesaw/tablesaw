@@ -15,6 +15,8 @@ import com.github.lwhite1.tablesaw.filter.IntGreaterThanOrEqualTo;
 import com.github.lwhite1.tablesaw.filter.IntIsIn;
 import com.github.lwhite1.tablesaw.filter.IntLessThan;
 import com.github.lwhite1.tablesaw.filter.IntLessThanOrEqualTo;
+import com.github.lwhite1.tablesaw.filter.IsMissing;
+import com.github.lwhite1.tablesaw.filter.IsNotMissing;
 import com.github.lwhite1.tablesaw.filter.LocalDateBetween;
 import com.github.lwhite1.tablesaw.filter.StringEqualTo;
 import com.github.lwhite1.tablesaw.filter.StringNotEqualTo;
@@ -62,13 +64,9 @@ import com.github.lwhite1.tablesaw.filter.text.TextIsShorterThan;
 import com.github.lwhite1.tablesaw.filter.text.TextIsUpperCase;
 import com.github.lwhite1.tablesaw.filter.text.TextMatchesRegex;
 import com.github.lwhite1.tablesaw.filter.text.TextStartsWith;
-import com.google.common.collect.ImmutableSet;
-import it.unimi.dsi.fastutil.objects.ObjectAVLTreeSet;
-import it.unimi.dsi.fastutil.objects.ObjectSortedSet;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 
 /**
  * A reference to a column that can be used in evaluating query predicates. It is a key part of having a fluent API
@@ -93,6 +91,10 @@ public class ColumnReference {
   public ColumnReference(String column) {
     this.columnName = column;
   }
+
+  public Filter isNotMissing() {return new IsNotMissing(this);}
+
+  public Filter isMissing() {return new IsMissing(this);}
 
   public Filter isEqualTo(int value) {
     return new IntEqualTo(this, value);

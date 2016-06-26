@@ -200,7 +200,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return data.isEmpty();
   }
 
-  @Override
+  @Override  // TODO(lwhite): Move to AbstractColumn
   public void addCell(String object) {
     try {
       add(convert(object));
@@ -418,5 +418,15 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   public ShortArrayList data() {
     return data;
+  }
+
+  @Override
+  public RoaringBitmap isMissing() {
+    return apply(isMissing);
+  }
+
+  @Override
+  public RoaringBitmap isNotMissing() {
+    return apply(isNotMissing);
   }
 }

@@ -28,5 +28,6 @@ public interface FloatColumnUtils extends Column, IntIterable {
 
   FloatBiPredicate isEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
 
-
+  FloatPredicate isMissing = i -> i == FloatColumn.MISSING_VALUE;
+  FloatPredicate isNotMissing = i -> i != FloatColumn.MISSING_VALUE;
 }

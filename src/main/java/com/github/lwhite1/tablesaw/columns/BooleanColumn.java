@@ -30,6 +30,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   public static BooleanColumn create(String name, int size, RoaringBitmap values) {
     BooleanColumn booleanColumn = new BooleanColumn(name, size);
+    boolean[] falses = new boolean[size];
+    booleanColumn.data = new BooleanArrayList(falses);
     IntIterator intIterator = values.getIntIterator();
     while(intIterator.hasNext()){
       booleanColumn.set(intIterator.next(), true);
@@ -321,6 +323,16 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return builder.toString();
   }
 
+  @Override
+  public RoaringBitmap isMissing() {
+    throw new UnsupportedOperationException("Boolean column does not support missing values");
+  }
+
+  @Override
+  public RoaringBitmap isNotMissing() {
+    throw new UnsupportedOperationException("Boolean column does not support missing values");
+  }
+
   public BooleanIterator iterator() {
     return data.iterator();
   }
@@ -337,4 +349,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   public boolean contains(boolean aBoolean) {
     return data().contains(aBoolean);
   }
+
+
 }

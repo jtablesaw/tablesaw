@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 /**
  * Tests for CSV Reading
  */
-public class IoTest1 {
+public class CsvReaderTest {
 
   private final ColumnType[] bus_types = {SHORT_INT, CATEGORY, CATEGORY, FLOAT, FLOAT};
 
@@ -40,6 +40,8 @@ public class IoTest1 {
     ColumnType[] types = {LOCAL_DATE, INTEGER, CATEGORY};
     Table table = CsvReader.read(types, "data/BushApproval.csv");
 
+    assertEquals(323, table.rowCount());
+
     // Look at the column names
     assertEquals("[date, approval, who]", table.columnNames().toString());
   }
@@ -53,9 +55,11 @@ public class IoTest1 {
   @Test
   public void testPrintStructure() throws Exception {
     String output =
+        "ColumnType[] columnTypes = {\n" +
         "LOCAL_DATE, // 0     date        \n" +
         "SHORT_INT,  // 1     approval    \n" +
-        "CATEGORY,   // 2     who         \n";
+        "CATEGORY,   // 2     who         \n" +
+        "}\n";
     assertEquals(output, CsvReader.printColumnTypes("data/BushApproval.csv", true, ','));
   }
 

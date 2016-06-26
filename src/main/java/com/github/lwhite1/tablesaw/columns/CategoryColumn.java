@@ -1,13 +1,14 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.aggregator.CategoryReduceUtils;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.filter.StringBiPredicate;
 import com.github.lwhite1.tablesaw.filter.StringPredicate;
+import com.github.lwhite1.tablesaw.filter.text.CategoryFilters;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.DictionaryMap;
-import com.github.lwhite1.tablesaw.filter.text.CategoryFilters;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -487,6 +488,39 @@ public class CategoryColumn extends AbstractColumn
       builder.append('\n');
     }
     return builder.toString();
+  }
+
+  @Override
+  public RoaringBitmap isMissing() {
+    return apply(isMissing);
+  }
+
+  @Override
+  public RoaringBitmap isNotMissing() {
+    return apply(isNotMissing);
+  }
+
+
+  public RoaringBitmap apply(StringPredicate predicate) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for (int idx = 0; idx < data().size(); idx++) {
+      int next = data().getInt(idx);
+      if (predicate.test(get(next))) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
+  }
+
+  public RoaringBitmap apply(StringBiPredicate predicate, String value) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for (int idx = 0; idx < data().size(); idx++) {
+      int next = data().getInt(idx);
+      if (predicate.test(get(next), value)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
   }
 
   public CategoryColumn copy() {

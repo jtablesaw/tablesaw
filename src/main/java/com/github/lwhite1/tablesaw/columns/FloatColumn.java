@@ -154,6 +154,14 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return apply(isLessThan, f);
   }
 
+  public RoaringBitmap isMissing() {
+    return apply(isMissing);
+  }
+
+  public RoaringBitmap isNotMissing() {
+    return apply(isNotMissing);
+  }
+
   public RoaringBitmap isGreaterThan(float f) {
     return apply(isGreaterThan, f);
   }

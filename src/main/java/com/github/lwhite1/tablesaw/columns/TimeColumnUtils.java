@@ -7,11 +7,11 @@ import it.unimi.dsi.fastutil.ints.IntIterable;
 /**
  *
  */
-public interface DateColumnUtils extends Column, IntIterable {
+public interface TimeColumnUtils extends Column, IntIterable {
 
   IntArrayList data();
 
-  IntPredicate isMissing = i -> i == DateColumn.MISSING_VALUE;
+  IntPredicate isMissing = i -> i == TimeColumn.MISSING_VALUE;
 
-  IntPredicate isNotMissing = i -> i != DateColumn.MISSING_VALUE;
+  IntPredicate isNotMissing = i -> i != TimeColumn.MISSING_VALUE;
 }

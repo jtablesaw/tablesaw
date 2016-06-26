@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.api;
 
+import com.github.lwhite1.tablesaw.columns.BooleanColumn;
 import com.github.lwhite1.tablesaw.io.jdbc.SqlResultSetReader;
 import com.github.lwhite1.tablesaw.table.Projection;
 import com.github.lwhite1.tablesaw.table.Relation;
@@ -452,11 +453,19 @@ public class Table implements Relation, IntIterable {
     return newTable;
   }
 
+  public BooleanColumn selectIntoColumn(String newColumnName, RoaringBitmap map) {
+    return BooleanColumn.create(newColumnName, rowCount(), map);
+  }
+
   public Table selectWhere(Filter filter) {
     RoaringBitmap map = filter.apply(this);
     Table newTable = this.emptyCopy(map.getCardinality());
     Rows.copyRowsToTable(map, this, newTable);
     return newTable;
+  }
+
+  public BooleanColumn selectIntoColumn(String newColumnName, Filter filter) {
+    return BooleanColumn.create(newColumnName, rowCount(), filter.apply(this));
   }
 
   public Table structure() {
@@ -758,7 +767,7 @@ public class Table implements Relation, IntIterable {
 
   @Override
   public String toString() {
-    return "Relation " + name + ": Size = " + rowCount() + " x " + columnCount();
+    return "Table " + name + ": Size = " + rowCount() + " x " + columnCount();
   }
 
   @Override

@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
@@ -115,4 +115,7 @@ public interface Column {
   }
 
   int columnWidth();
+
+  RoaringBitmap isMissing();
+  RoaringBitmap isNotMissing();
 }

@@ -30,4 +30,8 @@ public interface LongColumnUtils extends Column, LongIterable {
   LongBiPredicate isLessThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
 
   LongBiPredicate isEqualTo = (long valueToTest, long valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
+
+  LongPredicate isMissing = i -> i == LongColumn.MISSING_VALUE;
+  LongPredicate isNotMissing = i -> i != LongColumn.MISSING_VALUE;
+
 }

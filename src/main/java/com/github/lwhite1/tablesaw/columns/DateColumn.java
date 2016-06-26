@@ -1,16 +1,15 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.filter.LocalDatePredicate;
-import com.github.lwhite1.tablesaw.io.TypeUtils;
-import com.github.lwhite1.tablesaw.mapper.DateMapUtils;
-import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalTime;
 import com.github.lwhite1.tablesaw.filter.IntBiPredicate;
 import com.github.lwhite1.tablesaw.filter.IntPredicate;
+import com.github.lwhite1.tablesaw.filter.LocalDatePredicate;
+import com.github.lwhite1.tablesaw.io.TypeUtils;
+import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -37,7 +36,7 @@ import java.util.Set;
 /**
  * A column in a base table that contains float values
  */
-public class DateColumn extends AbstractColumn implements DateMapUtils {
+public class DateColumn extends AbstractColumn implements DateColumnUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue();
 
@@ -578,6 +577,16 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
   }
 
   @Override
+  public RoaringBitmap isMissing() {
+    return apply(isMissing);
+  }
+
+  @Override
+  public RoaringBitmap isNotMissing() {
+    return apply(isNotMissing);
+  }
+
+  @Override
   public String toString() {
     return "LocalDate column: " + name();
   }
@@ -705,4 +714,6 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     int date = PackedLocalDate.pack(localDate);
     return data().contains(date);
   }
+
+
 }

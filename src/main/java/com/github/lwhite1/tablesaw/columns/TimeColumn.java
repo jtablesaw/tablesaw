@@ -413,4 +413,14 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     int t = PackedLocalTime.pack(time);
     return data().contains(t);
   }
+
+  @Override
+  public RoaringBitmap isMissing() {
+    return apply(isMissing);
+  }
+
+  @Override
+  public RoaringBitmap isNotMissing() {
+    return apply(isNotMissing);
+  }
 }

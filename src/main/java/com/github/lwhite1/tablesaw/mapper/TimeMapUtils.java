@@ -1,16 +1,16 @@
 package com.github.lwhite1.tablesaw.mapper;
 
-import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.TimeColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
+import com.github.lwhite1.tablesaw.columns.TimeColumn;
+import com.github.lwhite1.tablesaw.columns.TimeColumnUtils;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalTime;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-public interface TimeMapUtils extends Column {
+public interface TimeMapUtils extends TimeColumnUtils {
 
   default LongColumn differenceInMilliseconds(TimeColumn column2) {
     return difference(column2, ChronoUnit.MILLIS);

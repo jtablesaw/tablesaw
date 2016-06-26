@@ -1,15 +1,15 @@
 package com.github.lwhite1.tablesaw.integration;
 
-import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.*;
 import com.github.lwhite1.tablesaw.columns.BooleanColumn;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
+import static com.github.lwhite1.tablesaw.api.QueryHelper.both;
 import static java.lang.System.out;
 
 /**
@@ -32,7 +32,6 @@ public class AirlineDelays2 {
   private AirlineDelays2() throws Exception {
     Stopwatch stopwatch = Stopwatch.createStarted();
     out.println("loading");
-    out.println(CsvReader.printColumnTypes("/Users/larrywhite/Downloads/flight delays/2007.csv", true, ','));
     ColumnType[] columnTypes = {
         SHORT_INT,  // 0     Year
         SHORT_INT,  // 1     Month
@@ -67,23 +66,22 @@ public class AirlineDelays2 {
 
     flt2007 = Table.create(columnTypes, "/Users/larrywhite/Downloads/flight delays/2007.csv");
 
-    out.println(flt2007.first(5).print());
-
     out.println(String.format("loaded %d records in %d seconds",
         flt2007.rowCount(),
         (int) stopwatch.elapsed(TimeUnit.SECONDS)));
 
     out(flt2007.shape());
 
-    Table ord = flt2007.selectWhere(column("Origin").isEqualTo("ORD"));
+    Table ord = flt2007.selectWhere(
+        both(column("Origin").isEqualTo("ORD"),
+             column("DepDelay").isNotMissing()));
 
-    BooleanColumn delayed = new BooleanColumn("Delayed?", ord.shortColumn("DepDelay").isGreaterThan(15), ord.rowCount());
+    BooleanColumn delayed = ord.selectIntoColumn("Delayed?", column("DepDelay").isGreaterThanOrEqualTo(15));
     ord.addColumn(delayed);
 
     out("total flights: " + ord.rowCount());
-    out("delayed flights: " + delayed.countTrue());
+    out("total delays: " + delayed.countTrue());
 
-    out(flt2007.first(10).print());
   }
 
   private static void out(Object obj) {

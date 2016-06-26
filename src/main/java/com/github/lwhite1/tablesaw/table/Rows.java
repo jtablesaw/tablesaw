@@ -82,12 +82,11 @@ public class Rows {
     copyRowsToTable(rows, oldTable, newTable);
   }
 
-  public static void tail(int rowCount, Table oldTable, Table newTable) {
+  public static void tail(int rowsToInclude, Table oldTable, Table newTable) {
     int oldTableSize = oldTable.rowCount();
-    int end = oldTableSize - 1;
-    int start = end - rowCount;
-    IntArrayList rows = new IntArrayList(rowCount);
-    for (int i = start; i < end; i++) {
+    int start = oldTableSize - rowsToInclude;
+    IntArrayList rows = new IntArrayList(rowsToInclude);
+    for (int i = start; i < oldTableSize; i++) {
       rows.add(i);
     }
     copyRowsToTable(rows, oldTable, newTable);

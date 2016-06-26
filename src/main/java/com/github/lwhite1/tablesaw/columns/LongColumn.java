@@ -405,4 +405,14 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   public boolean contains(long value) {
     return data.contains(value);
   }
+
+  @Override
+  public RoaringBitmap isMissing() {
+    return apply(isMissing);
+  }
+
+  @Override
+  public RoaringBitmap isNotMissing() {
+    return apply(isNotMissing);
+  }
 }

@@ -32,6 +32,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.github.lwhite1.tablesaw.columns.DateTImeColumnUtils.isMissing;
+import static com.github.lwhite1.tablesaw.columns.DateTImeColumnUtils.isNotMissing;
+
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
@@ -381,6 +384,16 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
       builder.append('\n');
     }
     return builder.toString();
+  }
+
+  @Override
+  public RoaringBitmap isMissing() {
+    return apply(isMissing);
+  }
+
+  @Override
+  public RoaringBitmap isNotMissing() {
+    return apply(isNotMissing);
   }
 
   @Override
