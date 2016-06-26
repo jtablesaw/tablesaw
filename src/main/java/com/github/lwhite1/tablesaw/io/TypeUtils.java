@@ -1,16 +1,16 @@
 package com.github.lwhite1.tablesaw.io;
 
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.BooleanColumn;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.TimeColumn;
+import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.columns.IntColumn;
 import com.github.lwhite1.tablesaw.columns.LongColumn;
-import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.ShortColumn;
+import com.github.lwhite1.tablesaw.columns.TimeColumn;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -37,11 +37,11 @@ public final class TypeUtils {
 
   // These Strings will convert to true booleans
   public static final List<String> TRUE_STRINGS =
-      Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "1", "1.00");
+      Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "1");
 
   // These Strings will convert to true booleans
   public static final List<String> FALSE_STRINGS =
-      Arrays.asList("F", "f", "N", "n", "FALSE", "false", "0", "0.00");
+      Arrays.asList("F", "f", "N", "n", "FALSE", "false", "0");
 
   // Formats that we accept in parsing dates from strings
   // TODO: Add more types, especially dates with month names spelled-out fully.
@@ -134,7 +134,7 @@ public final class TypeUtils {
   private static final DateTimeFormatter timef4 = DateTimeFormatter.ISO_LOCAL_TIME;
   private static final DateTimeFormatter timef5 = DateTimeFormatter.ofPattern("hh:mm a");
   private static final DateTimeFormatter timef6 = DateTimeFormatter.ofPattern("h:mm a");
-  private static final DateTimeFormatter timef7 = DateTimeFormatter.ofPattern("HHmm");
+  //private static final DateTimeFormatter timef7 = DateTimeFormatter.ofPattern("HHmm");
 
   /**
    * List of formatters for use in code that selects the correct one for a given Time string
@@ -145,8 +145,8 @@ public final class TypeUtils {
       timef3,
       timef4,
       timef5,
-      timef6,
-      timef7
+      timef6
+      //, timef7
   );
 
   // A formatter that handles all the date formats defined above
@@ -195,7 +195,7 @@ public final class TypeUtils {
           .appendOptional(timef1)
           .appendOptional(timef4)
           .appendOptional(timef6)
-          .appendOptional(timef7)
+        //  .appendOptional(timef7)
           .toFormatter();
 
   /**
