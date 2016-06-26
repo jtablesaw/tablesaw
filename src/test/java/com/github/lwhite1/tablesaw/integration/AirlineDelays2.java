@@ -1,15 +1,15 @@
 package com.github.lwhite1.tablesaw.integration;
 
-import com.github.lwhite1.tablesaw.api.*;
+import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.BooleanColumn;
-
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.github.lwhite1.tablesaw.aggregator.NumericReduceUtils.mean;
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
-import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
-import static com.github.lwhite1.tablesaw.api.QueryHelper.both;
+import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
 import static java.lang.System.out;
 
 /**
@@ -22,10 +22,6 @@ public class AirlineDelays2 {
   public static void main(String[] args) throws Exception {
 
     new AirlineDelays2();
-    Stopwatch stopwatch = Stopwatch.createStarted();
-    Table sorted = flt2007.sortAscendingOn("ORIGIN", "UniqueCarrier");
-    System.out.println("Sorting " + stopwatch.elapsed(TimeUnit.SECONDS));
-    System.out.println(sorted.first(1000).print());
     System.exit(0);
   }
 
@@ -82,6 +78,26 @@ public class AirlineDelays2 {
     out("total flights: " + ord.rowCount());
     out("total delays: " + delayed.countTrue());
 
+    // Compute average number of delayed flights per month
+
+    Table monthGroup = ord.reduce("DepDelay", mean, "Month");
+    out(monthGroup.print());
+    //TODO Plot
+
+    Table dayOfWeekGroup = ord.reduce("DepDelay", mean, "DayOfWeek");
+    out(dayOfWeekGroup.print());
+    //TODO Plot
+
+    ord.addColumn(ord.timeColumn("CRSDepTime").hour());
+    System.out.println(ord.columnNames());
+    Table hourGroup = ord.reduce("DepDelay", mean, "CRSDepTime[hour]");
+    out(hourGroup.print());
+    //TODO Plot
+
+    // Compute average number of delayed flights per carrier
+    Table carrierGroup = ord.reduce("DepDelay", mean, "UniqueCarrier");
+    carrierGroup = carrierGroup.sortDescendingOn("Mean");
+    out(carrierGroup.print());
   }
 
   private static void out(Object obj) {
