@@ -95,7 +95,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     data.set(index, value);
   }
 
-  public RoaringBitmap isLessThan(short i) {
+  public RoaringBitmap isLessThan(int i) {
     return apply(ShortColumnUtils.isLessThan, i);
   }
 
