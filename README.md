@@ -37,7 +37,7 @@ BTW, those numbers were achieved on a laptop.
 To give you a sense of the API, here's an example. The goal in this analysis is to identify the production shifts with the slowest performance. Our table has data from all facilities, operations, products, and shifts for the past year. We're only interested in assembly operations in the second quarter for model 429.
 
 ```java
-   // Load the data
+   // Load the data, inferring the column types from the data read
     Table ops = Table.create("data/operations.csv");
 
     // Combine the date and time fields so that we don't miscalculate on jobs that cross date bounderies
