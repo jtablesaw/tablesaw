@@ -32,9 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.github.lwhite1.tablesaw.columns.DateTImeColumnUtils.isMissing;
-import static com.github.lwhite1.tablesaw.columns.DateTImeColumnUtils.isNotMissing;
-
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
@@ -328,16 +325,16 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return results;
   }
 
-  public RoaringBitmap isAfter(long value) {
-    return apply(LongColumnUtils.isGreaterThan, value);
+  public RoaringBitmap isAfter(LocalDateTime value) {
+    return apply(LongColumnUtils.isGreaterThan, PackedLocalDateTime.pack(value));
   }
 
   public RoaringBitmap isOnOrAfter(long value) {
     return apply(LongColumnUtils.isGreaterThanOrEqualTo, value);
   }
 
-  public RoaringBitmap isBefore(long value) {
-    return apply(LongColumnUtils.isLessThan, value);
+  public RoaringBitmap isBefore(LocalDateTime value) {
+    return apply(LongColumnUtils.isLessThan, PackedLocalDateTime.pack(value));
   }
 
   public RoaringBitmap isOnOrBefore(long value) {
@@ -585,6 +582,22 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
   public RoaringBitmap isInQ4() {
     return apply(PackedLocalDateTime::isInQ4);
+  }
+
+  public RoaringBitmap isNoon() {
+    return apply(PackedLocalDateTime::isNoon);
+  }
+
+  public RoaringBitmap isMidnight() {
+    return apply(PackedLocalDateTime::isMidnight);
+  }
+
+  public RoaringBitmap isBeforeNoon() {
+    return apply(PackedLocalDateTime::AM);
+  }
+
+  public RoaringBitmap isAfterNoon() {
+    return apply(PackedLocalDateTime::PM);
   }
 
   public RoaringBitmap apply(LongPredicate predicate) {

@@ -50,6 +50,7 @@ import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsSunday;
 import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsThursday;
 import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsTuesday;
 import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsWednesday;
+import com.github.lwhite1.tablesaw.filter.datetimes.DateTimeIsBefore;
 import com.github.lwhite1.tablesaw.filter.text.TextContains;
 import com.github.lwhite1.tablesaw.filter.text.TextEndsWith;
 import com.github.lwhite1.tablesaw.filter.text.TextEqualToIgnoringCase;
@@ -65,11 +66,14 @@ import com.github.lwhite1.tablesaw.filter.text.TextIsUpperCase;
 import com.github.lwhite1.tablesaw.filter.text.TextMatchesRegex;
 import com.github.lwhite1.tablesaw.filter.text.TextStartsWith;
 import com.github.lwhite1.tablesaw.filter.times.IsAfter;
+import com.github.lwhite1.tablesaw.filter.times.IsAfterNoon;
 import com.github.lwhite1.tablesaw.filter.times.IsBefore;
+import com.github.lwhite1.tablesaw.filter.times.IsBeforeNoon;
 import com.github.lwhite1.tablesaw.filter.times.IsMidnight;
 import com.github.lwhite1.tablesaw.filter.times.IsNoon;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -185,15 +189,19 @@ public class ColumnReference {
   }
 
   public Filter isBeforeNoon() {
-    return new IsNoon(this);
+    return new IsBeforeNoon(this);
   }
 
   public Filter isAfterNoon() {
-    return new IsNoon(this);
+    return new IsAfterNoon(this);
   }
 
   public Filter isBefore(LocalTime value) {
     return new IsBefore(this, value);
+  }
+
+  public Filter isBefore(LocalDateTime value) {
+    return new DateTimeIsBefore(this, value);
   }
 
   public Filter isAfter(LocalTime value) {

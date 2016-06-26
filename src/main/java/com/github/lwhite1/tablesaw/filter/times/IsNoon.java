@@ -1,7 +1,10 @@
 package com.github.lwhite1.tablesaw.filter.times;
 
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
 import com.github.lwhite1.tablesaw.columns.TimeColumn;
 import com.github.lwhite1.tablesaw.filter.ColumnFilter;
 import org.roaringbitmap.RoaringBitmap;
@@ -17,7 +20,20 @@ public class IsNoon extends ColumnFilter {
 
   @Override
   public RoaringBitmap apply(Table relation) {
-    TimeColumn timeColumn = (TimeColumn) relation.column(columnReference().getColumnName());
-    return timeColumn.isNoon();
+
+    String name = columnReference().getColumnName();
+    Column column = relation.column(name);
+    ColumnType type = column.type();
+    switch (type) {
+      case LOCAL_TIME:
+        TimeColumn timeColumn = relation.timeColumn(name);
+        return timeColumn.isNoon();
+      case LOCAL_DATE_TIME:
+        DateTimeColumn dateTimeColumn = relation.dateTimeColumn(name);
+        return dateTimeColumn.isNoon();
+      default:
+        throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "
+            + "isNoon() ");
+    }
   }
 }

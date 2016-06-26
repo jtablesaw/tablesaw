@@ -6,14 +6,16 @@ import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
 import com.github.lwhite1.tablesaw.filter.ColumnFilter;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.time.LocalDateTime;
+
 /**
  *
  */
 public class DateTimeIsBefore extends ColumnFilter {
 
-  int value;
+  private LocalDateTime value;
 
-  public DateTimeIsBefore(ColumnReference reference, int value) {
+  public DateTimeIsBefore(ColumnReference reference, LocalDateTime value) {
     super(reference);
     this.value = value;
   }

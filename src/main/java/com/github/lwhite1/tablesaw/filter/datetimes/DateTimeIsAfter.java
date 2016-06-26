@@ -8,6 +8,7 @@ import com.github.lwhite1.tablesaw.filter.ColumnFilter;
 import org.roaringbitmap.RoaringBitmap;
 
 import javax.annotation.concurrent.Immutable;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -15,9 +16,9 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class DateTimeIsAfter extends ColumnFilter {
 
-  private long value;
+  private LocalDateTime value;
 
-  public DateTimeIsAfter(ColumnReference reference, long value) {
+  public DateTimeIsAfter(ColumnReference reference, LocalDateTime value) {
     super(reference);
     this.value = value;
   }
