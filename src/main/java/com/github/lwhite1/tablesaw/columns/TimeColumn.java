@@ -317,27 +317,35 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
   }
 
   public RoaringBitmap isMidnight() {
-    return apply(PackedLocalTime::isMidnight);
+    return applyFilter(PackedLocalTime::isMidnight);
   }
 
   public RoaringBitmap isNoon() {
-    return apply(PackedLocalTime::isNoon);
+    return applyFilter(PackedLocalTime::isNoon);
+  }
+
+  public RoaringBitmap isBefore(LocalTime time) {
+    return applyFilter(PackedLocalTime::isBefore, PackedLocalTime.pack(time));
+  }
+
+  public RoaringBitmap isAfter(LocalTime time) {
+    return applyFilter(PackedLocalTime::isAfter, PackedLocalTime.pack(time));
   }
 
   /**
    * Applies a function to every value in this column that returns true if the time is in the AM or "before noon".
    * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
    */
-  public RoaringBitmap AM() {
-    return apply(PackedLocalTime::AM);
+  public RoaringBitmap isBeforeNoon() {
+    return applyFilter(PackedLocalTime::AM);
   }
 
   /**
    * Applies a function to every value in this column that returns true if the time is in the PM or "after noon".
    * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
    */
-  public RoaringBitmap PM() {
-    return apply(PackedLocalTime::PM);
+  public RoaringBitmap isAfterNoon() {
+    return applyFilter(PackedLocalTime::PM);
   }
 
   /**
@@ -378,7 +386,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     return data.iterator();
   }
 
-  public RoaringBitmap apply(IntPredicate predicate) {
+  public RoaringBitmap applyFilter(IntPredicate predicate) {
     RoaringBitmap bitmap = new RoaringBitmap();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
@@ -389,7 +397,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     return bitmap;
   }
 
-  public RoaringBitmap apply(IntBiPredicate predicate, int value) {
+  public RoaringBitmap applyFilter(IntBiPredicate predicate, int value) {
     RoaringBitmap bitmap = new RoaringBitmap();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
@@ -416,11 +424,11 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
 
   @Override
   public RoaringBitmap isMissing() {
-    return apply(isMissing);
+    return applyFilter(isMissing);
   }
 
   @Override
   public RoaringBitmap isNotMissing() {
-    return apply(isNotMissing);
+    return applyFilter(isNotMissing);
   }
 }

@@ -64,6 +64,10 @@ import com.github.lwhite1.tablesaw.filter.text.TextIsShorterThan;
 import com.github.lwhite1.tablesaw.filter.text.TextIsUpperCase;
 import com.github.lwhite1.tablesaw.filter.text.TextMatchesRegex;
 import com.github.lwhite1.tablesaw.filter.text.TextStartsWith;
+import com.github.lwhite1.tablesaw.filter.times.IsAfter;
+import com.github.lwhite1.tablesaw.filter.times.IsBefore;
+import com.github.lwhite1.tablesaw.filter.times.IsMidnight;
+import com.github.lwhite1.tablesaw.filter.times.IsNoon;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -170,6 +174,30 @@ public class ColumnReference {
 
   public String getColumnName() {
     return columnName;
+  }
+
+  public Filter isMidnight() {
+    return new IsMidnight(this);
+  }
+
+  public Filter isNoon() {
+    return new IsNoon(this);
+  }
+
+  public Filter isBeforeNoon() {
+    return new IsNoon(this);
+  }
+
+  public Filter isAfterNoon() {
+    return new IsNoon(this);
+  }
+
+  public Filter isBefore(LocalTime value) {
+    return new IsBefore(this, value);
+  }
+
+  public Filter isAfter(LocalTime value) {
+    return new IsAfter(this, value);
   }
 
   public Filter isSunday() {

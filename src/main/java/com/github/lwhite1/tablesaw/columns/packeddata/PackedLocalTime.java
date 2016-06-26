@@ -115,18 +115,6 @@ public class PackedLocalTime {
     return (int) (toNanoOfDay(packedLocalTime) / 1000_000);
   }
 
-/*
-  public static int pack(short yr, byte m, byte d) {
-    byte byte1= (byte) yr;
-    byte byte2= (byte) ((yr >> 8) & 0xff);
-    return Ints.fromBytes(
-        byte1,
-        byte2,
-        m,
-        d);
-  }
-*/
-
   public static String toShortTimeString(int time) {
     if (time == -1) {
       return "NA";
@@ -152,6 +140,18 @@ public class PackedLocalTime {
 
   public static boolean isNoon(int packedTime) {
     return packedTime == NOON;
+  }
+
+  public static boolean isAfter(int packedTime, int value) {
+    return packedTime > value;
+  }
+
+  public static boolean isBefore(int packedTime, int value) {
+    return packedTime < value;
+  }
+
+  public static boolean isEqualTo(int packedTime, int value) {
+    return packedTime == value;
   }
 
   /**
