@@ -1,24 +1,23 @@
 package com.github.lwhite1.tablesaw.filters;
 
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.ColumnReference;
 import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.filter.LocalDatePredicate;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsFirstDayOfTheMonth;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInFebruary;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInMarch;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInYear;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsMonday;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsSunday;
-import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsLastDayOfTheMonth;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsFirstDayOfTheMonth;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInFebruary;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInMarch;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInYear;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsLastDayOfTheMonth;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsMonday;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsSunday;
 import org.junit.Before;
 import org.junit.Test;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -39,7 +38,7 @@ public class LocalDateFilterTest {
   @Test
   public void testIsSunday() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsSunday isSunday = new LocalDateIsSunday(reference);
+    IsSunday isSunday = new IsSunday(reference);
     RoaringBitmap bitmap = isSunday.apply(table);
     assertTrue(bitmap.contains(0));
     assertFalse(bitmap.contains(1));
@@ -49,7 +48,7 @@ public class LocalDateFilterTest {
   @Test
   public void testIsMonday() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsMonday isSunday = new LocalDateIsMonday(reference);
+    IsMonday isSunday = new IsMonday(reference);
     RoaringBitmap bitmap = isSunday.apply(table);
     assertFalse(bitmap.contains(0));
     assertTrue(bitmap.contains(1));
@@ -59,7 +58,7 @@ public class LocalDateFilterTest {
   @Test
   public void testIsFebruary() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsInFebruary isFebruary = new LocalDateIsInFebruary(reference);
+    IsInFebruary isFebruary = new IsInFebruary(reference);
     RoaringBitmap bitmap = isFebruary.apply(table);
     assertTrue(bitmap.contains(0));
     assertTrue(bitmap.contains(1));
@@ -69,7 +68,7 @@ public class LocalDateFilterTest {
   @Test
   public void testIsMarch() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsInMarch result = new LocalDateIsInMarch(reference);
+    IsInMarch result = new IsInMarch(reference);
     RoaringBitmap bitmap = result.apply(table);
     assertFalse(bitmap.contains(0));
     assertFalse(bitmap.contains(1));
@@ -79,7 +78,7 @@ public class LocalDateFilterTest {
   @Test
   public void testIsFirstDayOfTheMonth() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsFirstDayOfTheMonth result = new LocalDateIsFirstDayOfTheMonth(reference);
+    IsFirstDayOfTheMonth result = new IsFirstDayOfTheMonth(reference);
     RoaringBitmap bitmap = result.apply(table);
     assertFalse(bitmap.contains(0));
     assertFalse(bitmap.contains(1));
@@ -89,7 +88,7 @@ public class LocalDateFilterTest {
   @Test
   public void testIsLastDayOfTheMonth() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsLastDayOfTheMonth result = new LocalDateIsLastDayOfTheMonth(reference);
+    IsLastDayOfTheMonth result = new IsLastDayOfTheMonth(reference);
     RoaringBitmap bitmap = result.apply(table);
     assertFalse(bitmap.contains(0));
     assertTrue(bitmap.contains(1));
@@ -99,12 +98,12 @@ public class LocalDateFilterTest {
   @Test
   public void testIsInYear() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsInYear result = new LocalDateIsInYear(reference, 2016);
+    IsInYear result = new IsInYear(reference, 2016);
     RoaringBitmap bitmap = result.apply(table);
     assertTrue(bitmap.contains(0));
     assertTrue(bitmap.contains(1));
     assertTrue(bitmap.contains(2));
-    result = new LocalDateIsInYear(reference, 2015);
+    result = new IsInYear(reference, 2015);
     bitmap = result.apply(table);
     assertFalse(bitmap.contains(0));
     assertFalse(bitmap.contains(1));

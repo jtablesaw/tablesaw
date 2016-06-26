@@ -24,33 +24,33 @@ import com.github.lwhite1.tablesaw.filter.TimeEqualTo;
 import com.github.lwhite1.tablesaw.filter.columnbased.ColumnEqualTo;
 import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsAfter;
 import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsBefore;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsFirstDayOfTheMonth;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsFriday;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInApril;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInAugust;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInDecember;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInFebruary;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInJanuary;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInJuly;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInJune;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInMarch;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInMay;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInNovember;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInOctober;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInQ1;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInQ2;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInQ3;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInQ4;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInSeptember;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInYear;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsLastDayOfTheMonth;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsMonday;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsSaturday;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsSunday;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsThursday;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsTuesday;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsWednesday;
 import com.github.lwhite1.tablesaw.filter.datetimes.DateTimeIsBefore;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsFirstDayOfTheMonth;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsFriday;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInApril;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInAugust;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInDecember;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInFebruary;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInJanuary;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInJuly;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInJune;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInMarch;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInMay;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInNovember;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInOctober;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInQ1;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInQ2;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInQ3;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInQ4;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInSeptember;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsInYear;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsLastDayOfTheMonth;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsMonday;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsSaturday;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsSunday;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsThursday;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsTuesday;
+import com.github.lwhite1.tablesaw.filter.datetimes.IsWednesday;
 import com.github.lwhite1.tablesaw.filter.text.TextContains;
 import com.github.lwhite1.tablesaw.filter.text.TextEndsWith;
 import com.github.lwhite1.tablesaw.filter.text.TextEqualToIgnoringCase;
@@ -209,107 +209,107 @@ public class ColumnReference {
   }
 
   public Filter isSunday() {
-    return new LocalDateIsSunday(this);
+    return new IsSunday(this);
   }
 
   public Filter isMonday() {
-    return new LocalDateIsMonday(this);
+    return new IsMonday(this);
   }
 
   public Filter isTuesday() {
-    return new LocalDateIsTuesday(this);
+    return new IsTuesday(this);
   }
 
   public Filter isWednesday() {
-    return new LocalDateIsWednesday(this);
+    return new IsWednesday(this);
   }
 
   public Filter isThursday() {
-    return new LocalDateIsThursday(this);
+    return new IsThursday(this);
   }
 
   public Filter isFriday() {
-    return new LocalDateIsFriday(this);
+    return new IsFriday(this);
   }
 
   public Filter isSaturday() {
-    return new LocalDateIsSaturday(this);
+    return new IsSaturday(this);
   }
 
   public Filter isInJanuary() {
-    return new LocalDateIsInJanuary(this);
+    return new IsInJanuary(this);
   }
 
   public Filter isInFebruary() {
-    return new LocalDateIsInFebruary(this);
+    return new IsInFebruary(this);
   }
 
   public Filter isInMarch() {
-    return new LocalDateIsInMarch(this);
+    return new IsInMarch(this);
   }
 
   public Filter isInApril() {
-    return new LocalDateIsInApril(this);
+    return new IsInApril(this);
   }
 
   public Filter isInMay() {
-    return new LocalDateIsInMay(this);
+    return new IsInMay(this);
   }
 
   public Filter isInJune() {
-    return new LocalDateIsInJune(this);
+    return new IsInJune(this);
   }
 
   public Filter isInJuly() {
-    return new LocalDateIsInJuly(this);
+    return new IsInJuly(this);
   }
 
   public Filter isInAugust() {
-    return new LocalDateIsInAugust(this);
+    return new IsInAugust(this);
   }
 
   public Filter isInSeptember() {
-    return new LocalDateIsInSeptember(this);
+    return new IsInSeptember(this);
   }
 
   public Filter isInOctober() {
-    return new LocalDateIsInOctober(this);
+    return new IsInOctober(this);
   }
 
   public Filter isInNovember() {
-    return new LocalDateIsInNovember(this);
+    return new IsInNovember(this);
   }
 
   public Filter isInDecember() {
-    return new LocalDateIsInDecember(this);
+    return new IsInDecember(this);
   }
 
   public Filter isInQ1() {
-    return new LocalDateIsInQ1(this);
+    return new IsInQ1(this);
   }
 
   public Filter isInQ2() {
-    return new LocalDateIsInQ2(this);
+    return new IsInQ2(this);
   }
 
   public Filter isInQ3() {
-    return new LocalDateIsInQ3(this);
+    return new IsInQ3(this);
   }
 
   public Filter isInQ4() {
-    return new LocalDateIsInQ4(this);
+    return new IsInQ4(this);
   }
 
   public Filter isFirstDayOfMonth() {
-    return new LocalDateIsFirstDayOfTheMonth(this);
+    return new IsFirstDayOfTheMonth(this);
   }
 
   public Filter isLastDayOfMonth() {
-    return new LocalDateIsLastDayOfTheMonth(this);
+    return new IsLastDayOfTheMonth(this);
   }
 
   public Filter isInYear(int year) {
-    return new LocalDateIsInYear(this, year);
+    return new IsInYear(this, year);
   }
 
   public Filter isBefore(LocalDate date) {
