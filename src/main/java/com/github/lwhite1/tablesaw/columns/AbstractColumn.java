@@ -1,6 +1,7 @@
 package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
@@ -57,5 +58,18 @@ abstract class AbstractColumn implements Column {
   @Override
   public ColumnMetadata columnMetadata() {
     return new ColumnMetadata(this);
+  }
+
+  /**
+   * Returns the width of the column in characters, for printing
+   */
+  @Override
+  public int columnWidth() {
+
+    int width = name().length();
+    for (int rowNum = 0; rowNum < size(); rowNum++) {
+      width = Math.max(width, StringUtils.length(getString(rowNum)));
+    }
+    return width;
   }
 }

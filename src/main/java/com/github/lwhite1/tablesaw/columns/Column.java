@@ -113,4 +113,6 @@ public interface Column {
   default double[] toDoubleArray() {
     throw new UnsupportedOperationException("Method toDoubleArray() is not supported on non-numeric columns");
   }
+
+  int columnWidth();
 }

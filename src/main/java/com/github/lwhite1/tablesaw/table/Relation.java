@@ -148,17 +148,8 @@ public interface Relation {
     int cols = columnCount();
     int[] widths = new int[cols];
 
-    List<String> columnNames = columnNames();
     for (int i = 0; i < columnCount(); i++) {
-      widths[i] = columnNames.get(i).length();
-    }
-
-    // for (Row row : this) {
-    for (int rowNum = 0; rowNum < rowCount(); rowNum++) {
-      for (int colNum = 0; colNum < cols; colNum++) {
-        widths[colNum]
-            = Math.max(widths[colNum], StringUtils.length(get(colNum, rowNum)));
-      }
+      widths[i] = columns().get(i).columnWidth();
     }
     return widths;
   }
