@@ -99,19 +99,19 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return apply(ShortColumnUtils.isLessThan, i);
   }
 
-  public RoaringBitmap isGreaterThan(short i) {
+  public RoaringBitmap isGreaterThan(int i) {
     return apply(ShortColumnUtils.isGreaterThan, i);
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(short i) {
+  public RoaringBitmap isGreaterThanOrEqualTo(int i) {
     return apply(ShortColumnUtils.isGreaterThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isLessThanOrEqualTo(short i) {
+  public RoaringBitmap isLessThanOrEqualTo(int i) {
     return apply(ShortColumnUtils.isLessThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isEqualTo(short i) {
+  public RoaringBitmap isEqualTo(int i) {
     return apply(ShortColumnUtils.isEqualTo, i);
   }
 
@@ -384,7 +384,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return bitmap;
   }
 
-  public RoaringBitmap apply(ShortBiPredicate predicate, short valueToCompareAgainst) {
+  public RoaringBitmap apply(ShortBiPredicate predicate, int valueToCompareAgainst) {
     RoaringBitmap bitmap = new RoaringBitmap();
     for (int idx = 0; idx < data.size(); idx++) {
       short next = data.getShort(idx);

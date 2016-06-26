@@ -301,6 +301,8 @@ final public class CsvReader {
     Table structure = detectedColumnTypes(csvFileName, header, delimiter);
 
     StringBuilder buf = new StringBuilder();
+    buf.append("ColumnType[] columnTypes = {");
+    buf.append('\n');
 
     //buf.append(structure.name()).append('\n');
     Column typeCol = structure.column("Column Type");
@@ -340,6 +342,8 @@ final public class CsvReader {
 
       buf.append('\n');
     }
+    buf.append("}");
+    buf.append('\n');
     return buf.toString();
   }
 
@@ -400,12 +404,10 @@ final public class CsvReader {
         int columnNumber = 0;
         if (rowCount >= linesToSkip) {
           if (rowCount == nextRow) {
-           // System.out.println(nextRow);
             for (String field : nextLine) {
               columnData.get(columnNumber).add(field);
               columnNumber++;
             }
-           // System.out.println(columnData.get(0).size());
           }
         }
         if (rowCount == nextRow) {
@@ -413,7 +415,6 @@ final public class CsvReader {
         }
         rowCount++;
       }
-      // System.out.println(columnData.get(0).size());
     }
 
     // now detect
@@ -579,7 +580,7 @@ final public class CsvReader {
 
   private static Predicate<String> isLocalTime = s -> {
     try {
-      LocalTime.parse(s, TypeUtils.TIME_FORMATTER);
+      LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER);
       return true;
     } catch (DateTimeParseException e) {
       // it's all part of the plan

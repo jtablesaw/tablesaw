@@ -21,7 +21,14 @@ public interface ShortColumnUtils extends Column, ShortIterable {
 
   ShortPredicate isOdd = i -> (i & 1) != 0;
 
-  ShortBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
+  ShortBiPredicate isGreaterThan = new ShortBiPredicate() {
+    @Override
+    public boolean test(short valueToTest, int valueToCompareAgainst) {
+      return valueToTest > valueToCompareAgainst;
+    }
+  };
+
+  //ShortBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
 
   ShortBiPredicate isGreaterThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest >=
       valueToCompareAgainst;

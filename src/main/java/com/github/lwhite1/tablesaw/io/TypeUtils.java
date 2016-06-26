@@ -39,15 +39,16 @@ public final class TypeUtils {
   public static final List<String> TRUE_STRINGS =
       Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "1");
 
-  public static final List<String> TRUE_STRINGS_FOR_DETECTION =
+  // A more restricted set of 'true' strings that is used for column type detection
+  static final List<String> TRUE_STRINGS_FOR_DETECTION =
       Arrays.asList("T", "t", "Y", "y", "TRUE", "true");
 
-  // These Strings will convert to true booleans
+  // These Strings will convert to false booleans
   public static final List<String> FALSE_STRINGS =
       Arrays.asList("F", "f", "N", "n", "FALSE", "false", "0");
 
-  // These Strings will convert to true booleans
-  public static final List<String> FALSE_STRINGS_FOR_DETECTION =
+  // A more restricted set of 'false' strings that is used for column type detection
+  static final List<String> FALSE_STRINGS_FOR_DETECTION =
       Arrays.asList("F", "f", "N", "n", "FALSE", "false");
 
   // Formats that we accept in parsing dates from strings
@@ -141,7 +142,7 @@ public final class TypeUtils {
   private static final DateTimeFormatter timef4 = DateTimeFormatter.ISO_LOCAL_TIME;
   private static final DateTimeFormatter timef5 = DateTimeFormatter.ofPattern("hh:mm a");
   private static final DateTimeFormatter timef6 = DateTimeFormatter.ofPattern("h:mm a");
-  //private static final DateTimeFormatter timef7 = DateTimeFormatter.ofPattern("HHmm");
+  private static final DateTimeFormatter timef7 = DateTimeFormatter.ofPattern("HHmm");
 
   /**
    * List of formatters for use in code that selects the correct one for a given Time string
@@ -195,6 +196,19 @@ public final class TypeUtils {
 
   // A formatter that handles time formats defined above
   public static final DateTimeFormatter TIME_FORMATTER =
+      new DateTimeFormatterBuilder()
+          .appendOptional(timef5)
+          .appendOptional(timef2)
+          .appendOptional(timef3)
+          .appendOptional(timef1)
+          .appendOptional(timef4)
+          .appendOptional(timef6)
+          .appendOptional(timef7)
+          .toFormatter();
+
+  // A formatter that handles time formats defined above used for type detection.
+  // It is more conservative than the converter
+  public static final DateTimeFormatter TIME_DETECTION_FORMATTER =
       new DateTimeFormatterBuilder()
           .appendOptional(timef5)
           .appendOptional(timef2)

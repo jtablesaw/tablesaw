@@ -8,6 +8,7 @@ import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
 import static java.lang.System.out;
 
@@ -32,7 +33,39 @@ public class AirlineDelays2 {
     Stopwatch stopwatch = Stopwatch.createStarted();
     out.println("loading");
     out.println(CsvReader.printColumnTypes("/Users/larrywhite/Downloads/flight delays/2007.csv", true, ','));
-    flt2007 = Table.create("/Users/larrywhite/Downloads/flight delays/2007.csv");
+    ColumnType[] columnTypes = {
+        SHORT_INT,  // 0     Year
+        SHORT_INT,  // 1     Month
+        SHORT_INT,  // 2     DayofMonth
+        SHORT_INT,  // 3     DayOfWeek
+        LOCAL_TIME,  // 4     DepTime
+        LOCAL_TIME,  // 5     CRSDepTime
+        LOCAL_TIME,  // 6     ArrTime
+        LOCAL_TIME,  // 7     CRSArrTime
+        CATEGORY,   // 8     UniqueCarrier
+        SHORT_INT,  // 9     FlightNum
+        CATEGORY,   // 10    TailNum
+        SHORT_INT,  // 11    ActualElapsedTime
+        SHORT_INT,  // 12    CRSElapsedTime
+        SHORT_INT,  // 13    AirTime
+        SHORT_INT,  // 14    ArrDelay
+        SHORT_INT,  // 15    DepDelay
+        CATEGORY,   // 16    Origin
+        CATEGORY,   // 17    Dest
+        SHORT_INT,  // 18    Distance
+        SHORT_INT,  // 19    TaxiIn
+        SHORT_INT,  // 20    TaxiOut
+        SHORT_INT,  // 21    Cancelled
+        CATEGORY,   // 22    CancellationCode
+        SHORT_INT,  // 23    Diverted
+        SHORT_INT,  // 24    CarrierDelay
+        SHORT_INT,  // 25    WeatherDelay
+        SHORT_INT,  // 26    NASDelay
+        SHORT_INT,  // 27    SecurityDelay
+        SHORT_INT,  // 28    LateAircraftDelay
+    };
+
+    flt2007 = Table.create(columnTypes, "/Users/larrywhite/Downloads/flight delays/2007.csv");
 
     out.println(flt2007.first(5).print());
 
@@ -44,13 +77,12 @@ public class AirlineDelays2 {
 
     Table ord = flt2007.selectWhere(column("Origin").isEqualTo("ORD"));
 
-    BooleanColumn delayed = new BooleanColumn("Delayed?", ord.floatColumn("DepDelay").isGreaterThan(15), ord.rowCount());
+    BooleanColumn delayed = new BooleanColumn("Delayed?", ord.shortColumn("DepDelay").isGreaterThan(15), ord.rowCount());
     ord.addColumn(delayed);
 
     out("total flights: " + ord.rowCount());
     out("delayed flights: " + delayed.countTrue());
 
-    out(flt2007.columnNames().toString());
     out(flt2007.first(10).print());
   }
 
@@ -58,71 +90,4 @@ public class AirlineDelays2 {
     System.out.println(String.valueOf(obj));
   }
 
-  // A reduced set of available columns
-  static ColumnType[] reduced_set = {
-      ColumnType.LOCAL_DATE, // flight date
-      ColumnType.CATEGORY,  // unique carrier
-      ColumnType.SKIP,  // airline id
-      ColumnType.SKIP,  // carrier
-      ColumnType.SKIP,  // TailNum
-      ColumnType.SKIP,  // FlightNum
-      ColumnType.SKIP, // Origin airport id
-      ColumnType.CATEGORY,  // Origin
-      ColumnType.SKIP, // Dest airport id
-      ColumnType.CATEGORY,  // Dest
-      ColumnType.LOCAL_TIME, // CRSDepTime
-      ColumnType.LOCAL_TIME, // DepTime
-      ColumnType.FLOAT, // DepDelay
-      ColumnType.FLOAT, // TaxiOut
-      ColumnType.FLOAT, // TaxiIn
-      ColumnType.SKIP, // CRSArrTime
-      ColumnType.SKIP, // ArrTime
-      ColumnType.FLOAT,   // ArrDelay
-      ColumnType.BOOLEAN, // Cancelled
-      ColumnType.SKIP,     // CancellationCode
-      ColumnType.SKIP, // Diverted
-      ColumnType.SKIP, // CRSElapsedTime
-      ColumnType.SKIP, // ActualElapsedTime
-      ColumnType.FLOAT, // AirTime
-      ColumnType.FLOAT, // Distance
-      ColumnType.SKIP, // CarrierDelay
-      ColumnType.SKIP, // WeatherDelay
-      ColumnType.SKIP, // NASDelay
-      ColumnType.SKIP, // SecurityDelay
-      ColumnType.SKIP  // LateAircraftDelay
-  };
-
-  // The full set of available columns in the dataset
-  static ColumnType[] heading = {
-      ColumnType.LOCAL_DATE, // flight date
-      ColumnType.CATEGORY,  // unique carrier
-      ColumnType.CATEGORY,  // airline id
-      ColumnType.CATEGORY,  // carrier
-      ColumnType.CATEGORY,  // TailNum
-      ColumnType.CATEGORY,  // FlightNum
-      ColumnType.CATEGORY,  // Origin airport id
-      ColumnType.CATEGORY,  // Origin
-      ColumnType.CATEGORY,  // Dest airport id
-      ColumnType.CATEGORY,  // Dest
-      ColumnType.LOCAL_TIME, // CRSDepTime
-      ColumnType.LOCAL_TIME, // DepTime
-      ColumnType.FLOAT, // DepDelay
-      ColumnType.FLOAT, // TaxiOut
-      ColumnType.FLOAT, // TaxiIn
-      ColumnType.LOCAL_TIME, // CRSArrTime
-      ColumnType.LOCAL_TIME, // ArrTime
-      ColumnType.FLOAT,   // ArrDelay
-      ColumnType.BOOLEAN, // Cancelled
-      ColumnType.CATEGORY,     // CancellationCode
-      ColumnType.BOOLEAN, // Diverted
-      ColumnType.FLOAT, // CRSElapsedTime
-      ColumnType.FLOAT, // ActualElapsedTime
-      ColumnType.FLOAT, // AirTime
-      ColumnType.FLOAT, // Distance
-      ColumnType.FLOAT, // CarrierDelay
-      ColumnType.FLOAT, // WeatherDelay
-      ColumnType.FLOAT, // NASDelay
-      ColumnType.FLOAT, // SecurityDelay
-      ColumnType.FLOAT  // LateAircraftDelay
-  };
 }

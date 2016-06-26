@@ -14,5 +14,5 @@ public interface ShortBiPredicate {
    * @param valueToTest           the value you're checking. Often this is the value of a cell in a short column
    * @param valueToCompareAgainst the value to compare against. Often this is a single value for all comparisions
    */
-  boolean test(short valueToTest, short valueToCompareAgainst);
+  boolean test(short valueToTest, int valueToCompareAgainst);
 }
