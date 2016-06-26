@@ -10,6 +10,7 @@ import com.github.lwhite1.tablesaw.sorting.IntComparisonUtil;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.ReverseShortComparator;
 import com.github.lwhite1.tablesaw.util.StatUtil;
+import com.github.lwhite1.tablesaw.util.Stats;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -408,6 +409,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   public boolean contains(short value) {
     return data.contains(value);
+  }
+
+  public Stats stats() {
+    FloatColumn values = FloatColumn.create(name(), toFloatArray());
+    return StatUtil.stats(values);
   }
 
   public ShortArrayList data() {
