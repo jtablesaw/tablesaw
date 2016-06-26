@@ -296,9 +296,8 @@ final public class CsvReader {
      * @throws IOException
      */
   public static String printColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
-    Table t = CsvReader.headerOnly(
-        CsvReader.detectColumnTypes(csvFileName, header, delimiter), header, delimiter, csvFileName);
-    Table structure = t.structure();
+
+    Table structure = detectedColumnTypes(csvFileName, header, delimiter);
 
     StringBuilder buf = new StringBuilder();
 
@@ -343,6 +342,12 @@ final public class CsvReader {
     return buf.toString();
   }
 
+  /**
+   * Retuns the given file after autodetecting the column types, or trying to
+   * @param fileName  The name of the file to load
+   * @return          A table containing the data from the file
+   * @throws IOException
+   */
   public static Table read(String fileName) throws IOException {
     ColumnType[] columnTypes = detectColumnTypes(fileName, true, ',');
     return read(columnTypes, true, fileName);
@@ -359,6 +364,15 @@ final public class CsvReader {
   }
 
   @VisibleForTesting
+  /**
+   * Estimates and returns the type for each column in the delimited text file {@code file}
+   *
+   * The type is determined by checking a sample of the data in the file. Because only a sample of the data is checked,
+   * the types may be incorrect. If that is the case a Parse Exception will be thrown.
+   *
+   * The method {@code printColumnTypes()} can be used to print a list of the detected columns that can be corrected and
+   * used to explicitely specify the correct column types.
+   */
   static ColumnType[] detectColumnTypes(String file, boolean header, char delimiter)
       throws IOException {
 
