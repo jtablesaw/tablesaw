@@ -268,7 +268,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
    */
   public static float convert(String stringValue) {
     if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-      return Float.NaN;
+      return MISSING_VALUE;
     }
     Matcher matcher = COMMA_PATTERN.matcher(stringValue);
     return Float.parseFloat(matcher.replaceAll(""));

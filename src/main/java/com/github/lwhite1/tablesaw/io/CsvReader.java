@@ -9,6 +9,7 @@ import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 
@@ -457,7 +458,11 @@ final public class CsvReader {
 
     CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
+
     for (String s : valuesList) {
+      if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {
+        continue;
+      }
       if (typeCandidates.contains(LOCAL_DATE_TIME)) {
         if (!isLocalDateTime.test(s)) {
           typeCandidates.remove(LOCAL_DATE_TIME);
@@ -516,7 +521,7 @@ final public class CsvReader {
   }
 
   private static java.util.function.Predicate<String> isBoolean = s ->
-      TypeUtils.TRUE_STRINGS.contains(s) || TypeUtils.FALSE_STRINGS.contains(s);
+      TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
 
   private static Predicate<String> isLong = new Predicate<String>() {
 

@@ -28,6 +28,15 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return new BooleanColumn(name);
   }
 
+  public static BooleanColumn create(String name, int size, RoaringBitmap values) {
+    BooleanColumn booleanColumn = new BooleanColumn(name, size);
+    IntIterator intIterator = values.getIntIterator();
+    while(intIterator.hasNext()){
+      booleanColumn.set(intIterator.next(), true);
+    }
+    return booleanColumn;
+  }
+
   public static BooleanColumn create(String name, int rowSize) {
     return new BooleanColumn(name, rowSize);
   }

@@ -1,24 +1,28 @@
 package com.github.lwhite1.tablesaw.integration;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.store.StorageManager;
+import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.BooleanColumn;
+import com.github.lwhite1.tablesaw.io.CsvReader;
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
+
+import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
+import static java.lang.System.out;
 
 /**
  *
  */
 public class AirlineDelays2 {
 
-  private static Table flights2015;
+  private static Table flt2007;
 
   public static void main(String[] args) throws Exception {
 
     new AirlineDelays2();
     Stopwatch stopwatch = Stopwatch.createStarted();
-    Table sorted = flights2015.sortAscendingOn("ORIGIN", "UNIQUE_CARRIER");
+    Table sorted = flt2007.sortAscendingOn("ORIGIN", "UniqueCarrier");
     System.out.println("Sorting " + stopwatch.elapsed(TimeUnit.SECONDS));
     System.out.println(sorted.first(1000).print());
     System.exit(0);
@@ -26,17 +30,28 @@ public class AirlineDelays2 {
 
   private AirlineDelays2() throws Exception {
     Stopwatch stopwatch = Stopwatch.createStarted();
-    System.out.println("loading");
+    out.println("loading");
+    out.println(CsvReader.printColumnTypes("/Users/larrywhite/Downloads/flight delays/2007.csv", true, ','));
+    flt2007 = Table.create("/Users/larrywhite/Downloads/flight delays/2007.csv");
 
-    flights2015 = StorageManager.readTable("bigdata/3f07b9bf-053f-4f9b-9dff-9d354835b276");
+    out.println(flt2007.first(5).print());
 
-    System.out.println(String.format("loaded %d records in %d seconds",
-        flights2015.rowCount(),
+    out.println(String.format("loaded %d records in %d seconds",
+        flt2007.rowCount(),
         (int) stopwatch.elapsed(TimeUnit.SECONDS)));
 
-    out(flights2015.shape());
-    out(flights2015.columnNames().toString());
-    out(flights2015.first(10).print());
+    out(flt2007.shape());
+
+    Table ord = flt2007.selectWhere(column("Origin").isEqualTo("ORD"));
+
+    BooleanColumn delayed = new BooleanColumn("Delayed?", ord.floatColumn("DepDelay").isGreaterThan(15), ord.rowCount());
+    ord.addColumn(delayed);
+
+    out("total flights: " + ord.rowCount());
+    out("delayed flights: " + delayed.countTrue());
+
+    out(flt2007.columnNames().toString());
+    out(flt2007.first(10).print());
   }
 
   private static void out(Object obj) {
