@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,6 +36,8 @@ import java.util.Set;
  */
 public class CategoryColumn extends AbstractColumn
     implements CategoryFilters, CategoryReduceUtils, Iterable<String> {
+
+  private static final int BYTE_SIZE = 4;
 
   public static final String MISSING_VALUE = (String) ColumnType.CATEGORY.getMissingValue();
 
@@ -570,5 +573,18 @@ public class CategoryColumn extends AbstractColumn
 
   public Set<String> asSet() {
     return lookupTable.categories();
+  }
+
+  @Override
+  public int byteSize() {
+    return BYTE_SIZE;
+  }
+
+  /**
+   * Returns the contents of the cell at rowNumber as a byte[]
+   */
+  @Override
+  public byte[] asBytes(int rowNumber) {
+    return ByteBuffer.allocate(4).putInt(getInt(rowNumber)).array();
   }
 }

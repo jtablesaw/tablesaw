@@ -789,7 +789,7 @@ public class Table implements Relation, IntIterable {
 
       @Override
       public boolean hasNext() {
-        return i < rowCount() - 1;
+        return i < rowCount();
       }
 
       @Override
@@ -797,7 +797,5 @@ public class Table implements Relation, IntIterable {
         return i++;
       }
     };
-
-
   }
 }

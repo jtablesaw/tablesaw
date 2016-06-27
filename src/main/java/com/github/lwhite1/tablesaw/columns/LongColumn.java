@@ -22,18 +22,20 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A column that contains signed 4 byte integer values
+ * A column that contains signed 8 byte integer values
  */
 public class LongColumn extends AbstractColumn implements LongMapUtils {
 
   public static final long MISSING_VALUE = (long) ColumnType.LONG_INT.getMissingValue();
 
   private static final int DEFAULT_ARRAY_SIZE = 128;
+  private static final int BYTE_SIZE = 8;
 
   private LongArrayList data;
 
@@ -414,5 +416,18 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   @Override
   public RoaringBitmap isNotMissing() {
     return apply(isNotMissing);
+  }
+
+  @Override
+  public int byteSize() {
+    return BYTE_SIZE;
+  }
+
+  /**
+   * Returns the contents of the cell at rowNumber as a byte[]
+   */
+  @Override
+  public byte[] asBytes(int rowNumber) {
+    return ByteBuffer.allocate(8).putLong(get(rowNumber)).array();
   }
 }

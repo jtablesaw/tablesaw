@@ -21,6 +21,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +33,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.INTEGER.getMissingValue();
   private static final int DEFAULT_ARRAY_SIZE = 128;
+  private static final int BYTE_SIZE = 4;
 
   private IntArrayList data;
 
@@ -445,5 +447,18 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   public boolean contains(int i) {
     return data.contains(i);
+  }
+
+  @Override
+  public int byteSize() {
+    return BYTE_SIZE;
+  }
+
+  /**
+   * Returns the contents of the cell at rowNumber as a byte[]
+   */
+  @Override
+  public byte[] asBytes(int rowNumber) {
+    return ByteBuffer.allocate(4).putInt(get(rowNumber)).array();
   }
 }

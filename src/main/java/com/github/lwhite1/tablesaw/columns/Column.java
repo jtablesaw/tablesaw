@@ -118,4 +118,14 @@ public interface Column {
 
   RoaringBitmap isMissing();
   RoaringBitmap isNotMissing();
+
+  /**
+   * Returns the width of a cell in this column, in bytes
+   */
+  int byteSize();
+
+  /**
+   * Returns the contents of the cell at rowNumber as a byte[]
+   */
+  byte[] asBytes(int rowNumber);
 }

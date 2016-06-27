@@ -19,6 +19,7 @@ import it.unimi.dsi.fastutil.floats.FloatSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +32,7 @@ import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.*;
 public class FloatColumn extends AbstractColumn implements FloatIterable {
 
   public static final float MISSING_VALUE = (float) ColumnType.FLOAT.getMissingValue();
+  private static final int BYTE_SIZE = 4;
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
@@ -562,5 +564,18 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
 
   public boolean contains(float value) {
     return data.contains(value);
+  }
+
+  @Override
+  public int byteSize() {
+    return BYTE_SIZE;
+  }
+
+  /**
+   * Returns the contents of the cell at rowNumber as a byte[]
+   */
+  @Override
+  public byte[] asBytes(int rowNumber) {
+    return ByteBuffer.allocate(4).putFloat(get(rowNumber)).array();
   }
 }

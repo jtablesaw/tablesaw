@@ -22,18 +22,20 @@ import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A column that contains signed 4 byte integer values
+ * A column that contains signed 2 byte integer values
  */
 public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   public static final short MISSING_VALUE = (short) ColumnType.SHORT_INT.getMissingValue();
 
   private static final int DEFAULT_ARRAY_SIZE = 128;
+  private static final int BYTE_SIZE = 2;
 
   private ShortArrayList data;
 
@@ -428,5 +430,18 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   @Override
   public RoaringBitmap isNotMissing() {
     return apply(isNotMissing);
+  }
+
+  @Override
+  public int byteSize() {
+    return BYTE_SIZE;
+  }
+
+  /**
+   * Returns the contents of the cell at rowNumber as a byte[]
+   */
+  @Override
+  public byte[] asBytes(int rowNumber) {
+    return ByteBuffer.allocate(2).putShort(get(rowNumber)).array();
   }
 }

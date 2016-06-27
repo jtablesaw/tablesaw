@@ -20,6 +20,8 @@ import java.util.Map;
  */
 public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
+  private static final int BYTE_SIZE = 1;
+
   private static int DEFAULT_ARRAY_SIZE = 128;
 
   private BooleanArrayList data;
@@ -350,5 +352,15 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return data().contains(aBoolean);
   }
 
+  @Override
+  public int byteSize() {
+    return BYTE_SIZE;
+  }
 
+  @Override
+  public byte[] asBytes(int row) {
+    byte[] result = new byte[1];
+    result[0] = (byte) (get(row) ? 1 : 0);
+    return result;
+  }
 }

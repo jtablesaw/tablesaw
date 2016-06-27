@@ -23,6 +23,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.nio.ByteBuffer;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -38,6 +39,7 @@ import java.util.Set;
 public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_TIME.getMissingValue();
+  private static final int BYTE_SIZE = 4;
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
@@ -430,5 +432,18 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
   @Override
   public RoaringBitmap isNotMissing() {
     return applyFilter(isNotMissing);
+  }
+
+  @Override
+  public int byteSize() {
+    return BYTE_SIZE;
+  }
+
+  /**
+   * Returns the contents of the cell at rowNumber as a byte[]
+   */
+  @Override
+  public byte[] asBytes(int rowNumber) {
+    return ByteBuffer.allocate(4).putInt(getInt(rowNumber)).array();
   }
 }

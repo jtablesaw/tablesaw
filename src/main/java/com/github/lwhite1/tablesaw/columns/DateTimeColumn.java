@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +39,8 @@ import java.util.Set;
 public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, LongIterable {
 
   public static final long MISSING_VALUE = Long.MIN_VALUE;
+
+  private static final int BYTE_SIZE = 8;
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
@@ -676,5 +679,17 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   public boolean contains(LocalDateTime dateTime) {
     long dt = PackedLocalDateTime.pack(dateTime);
     return data().contains(dt);
+  }
+
+  public int byteSize() {
+    return BYTE_SIZE;
+  }
+
+  /**
+   * Returns the contents of the cell at rowNumber as a byte[]
+   */
+  @Override
+  public byte[] asBytes(int rowNumber) {
+    return ByteBuffer.allocate(8).putLong(getLong(rowNumber)).array();
   }
 }

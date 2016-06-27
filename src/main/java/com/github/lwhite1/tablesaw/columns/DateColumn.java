@@ -23,6 +23,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.roaringbitmap.RoaringBitmap;
 
+import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -41,6 +42,8 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue();
 
   private static final int DEFAULT_ARRAY_SIZE = 128;
+
+  private static final int BYTE_SIZE = 4;
 
   private IntArrayList data;
 
@@ -715,5 +718,16 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
     return data().contains(date);
   }
 
+  @Override
+  public int byteSize() {
+    return BYTE_SIZE;
+  }
 
+  /**
+   * Returns the contents of the cell at rowNumber as a byte[]
+   */
+  @Override
+  public byte[] asBytes(int rowNumber) {
+    return ByteBuffer.allocate(4).putInt(getInt(rowNumber)).array();
+  }
 }
