@@ -41,4 +41,19 @@ public class ViewGroupTest {
     }
     assertEquals(table.rowCount(), count);
   }
+
+  @Test
+  public void testViewTwoColumn() {
+
+    ViewGroup group = new ViewGroup(table, table.column("who"), table.column("approval"));
+    List<TemporaryView> viewList = group.getSubTables();
+
+    int count = 0;
+    for (TemporaryView view : viewList) {
+      count += view.rowCount();
+      System.out.println(view.print());
+      System.out.println();
+    }
+    assertEquals(table.rowCount(), count);
+  }
 }
