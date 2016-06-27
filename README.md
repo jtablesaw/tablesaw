@@ -1,7 +1,7 @@
 Tablesaw
 =======
    
-Tablesaw is a high-performance in-memory data table, plus tools for data crunching and a column-oriented storage format. In Java. 
+Tablesaw is a high-performance in-memory data table, tools for data crunching and a column-oriented storage format. In Java. 
 
 ###What makes it unique:
 Tablesaw's design is driven by two ideas: 
