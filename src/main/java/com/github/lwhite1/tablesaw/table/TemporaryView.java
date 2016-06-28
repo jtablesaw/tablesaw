@@ -45,9 +45,13 @@ public class TemporaryView implements Relation, IntIterable {
     this.table = table;
   }
 
-  public TemporaryView where(RoaringBitmap bitmap) {
-    rowMap.and(bitmap);
-    return this;
+  /**
+   * Returns a new View constructed from the given table, containing only the rows represented by the bitmpa
+   */
+  public TemporaryView(Table table, RoaringBitmap rowSelection, String[] columnNames) {
+    this.name = table.name();  //TODO(lwhite): Is this really needed, or can we reference the table name?
+    this.rowMap = rowSelection;
+    this.table = table;
   }
 
   @Override

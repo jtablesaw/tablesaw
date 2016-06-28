@@ -86,6 +86,13 @@ public class TornadoExample {
     injuriesByScale.setName("Median injuries by Tornado Scale");
     out(injuriesByScale.print());
 
+
+    //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
+    Table injuriesByScaleState = tornadoes.reduce("Injuries", NumericReduceUtils.median, "Scale", "State");
+    injuriesByScaleState.setName("Median injuries by Tornado Scale and State");
+    out(injuriesByScaleState.print());
+
+
     out();
     out("Writing the revised table to a new csv file");
     tornadoes.exportToCsv("data/rev_tornadoes_1950-2014.csv");

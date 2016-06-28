@@ -41,7 +41,19 @@ public class NumericReduceUtilsTest {
     Table result = group.reduce("approval", NumericReduceUtils.mean);
     System.out.println(result.print());
     assertEquals(2, result.columnCount());
-    assertEquals("Group", result.column(0).name());
+    assertEquals("who", result.column(0).name());
+    assertEquals(6, result.rowCount());
+    assertEquals("65.671875", result.get(1, 0));
+  }
+
+  @Test
+  public void test2ColumnGroupMean() {
+    Column byColumn1 = table.column("who");
+    ViewGroup group = new ViewGroup(table, byColumn1);
+    Table result = group.reduce("approval", NumericReduceUtils.mean);
+    System.out.println(result.print());
+    assertEquals(2, result.columnCount());
+    assertEquals("who", result.column(0).name());
     assertEquals(6, result.rowCount());
     assertEquals("65.671875", result.get(1, 0));
   }

@@ -52,12 +52,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
   private void splitOn(String... columnNames) {
 
     List<Column> columns = sortedOriginal.columns(columnNames);
-    int byteSize = 0;
-    {
-      for (Column c : columns) {
-        byteSize += c.byteSize();
-      }
-    }
+    int byteSize = getByteSize(columns);
 
     byte[] currentKey = null;
     String currentStringKey = null;
@@ -71,8 +66,9 @@ public class ViewGroup implements Iterable<TemporaryView> {
       String newStringKey = "";
 
       for (int col = 0; col < columnNames.length; col++) {
-        if (col > 0)
+        if (col > 0) {
           newStringKey = newStringKey + SPLIT_STRING;
+        }
 
         Column c = sortedOriginal.column(columnNames[col]);
         String groupKey = sortedOriginal.get(sortedOriginal.columnIndex(c), row);
@@ -89,7 +85,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
         view = new TemporaryView(sortedOriginal, bitmap);
         view.setName(currentStringKey);
         currentStringKey = newStringKey;
-        subTables.add(view);
+        addViewToSubTables(view);
         bitmap = new RoaringBitmap();
         bitmap.add(row);
       } else {
@@ -99,8 +95,22 @@ public class ViewGroup implements Iterable<TemporaryView> {
     if (!bitmap.isEmpty()) {
       view = new TemporaryView(sortedOriginal, bitmap);
       view.setName(currentStringKey);
-      subTables.add(view);
+      addViewToSubTables(view);
     }
+  }
+
+  private int getByteSize(List<Column> columns) {
+    int byteSize = 0;
+    {
+      for (Column c : columns) {
+        byteSize += c.byteSize();
+      }
+    }
+    return byteSize;
+  }
+
+  private void addViewToSubTables(TemporaryView view) {
+      subTables.add(view);
   }
 
   public List<TemporaryView> getSubTables() {
@@ -116,51 +126,56 @@ public class ViewGroup implements Iterable<TemporaryView> {
     return subTables.size();
   }
 
+
   /**
-   private SubTable splitGroupingColumn(SubTable subTable, List<Column> columnNames) {
-
-   List<Column> newColumns = new ArrayList<>();
-
-   for (Column column : columnNames) {
-   Column newColumn = column.emptyCopy();
-   newColumns.add(newColumn);
-   }
-   // iterate through the rows in the table and split each of the grouping columns into multiple columns
-   for (int row = 0; row < subTable.rowCount(); row++) {
-   List<String> strings = SPLITTER.splitToList(subTable.name());
-   for (int col = 0; col < newColumns.size(); col++) {
-   newColumns.get(col).addCell(strings.get(col));
-   }
-   }
-   for (Column c : newColumns) {
-   subTable.addColumn(c);
-   }
-   return subTable;
-   }
+   * For a subtable that is grouped by the values in more than one column, split the grouping column into separate cols and return the revised view
    */
+  private Table splitGroupingColumn(Table groupTable) {
 
-  public Table reduce(String numericColumnName, NumericReduceFunction function) {
-    Preconditions.checkArgument(!subTables.isEmpty());
-    Table t = new Table(sortedOriginal.name() + " summary");
-    CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
-    FloatColumn resultColumn = new FloatColumn(function.functionName(), subTables.size());
-    t.addColumn(groupColumn);
-    t.addColumn(resultColumn);
+    List<Column> newColumns = new ArrayList<>();
 
-    for (TemporaryView subTable : subTables) {
-      double result = subTable.reduce(numericColumnName, function);
-      groupColumn.add(subTable.name().replace(SPLIT_STRING, " * "));
-      resultColumn.add((float) result);
+    List<Column> columns = sortedOriginal.columns(splitColumnNames);
+    for (Column column : columns) {
+      Column newColumn = column.emptyCopy();
+      newColumns.add(newColumn);
     }
-    return t;
+    // iterate through the rows in the table and split each of the grouping columns into multiple columns
+    for (int row = 0; row < groupTable.rowCount(); row++) {
+      List<String> strings = SPLITTER.splitToList(groupTable.categoryColumn("Group").get(row));
+      for (int col = 0; col < newColumns.size(); col++) {
+        newColumns.get(col).addCell(strings.get(col));
+      }
+    }
+    for (int col = 0; col < newColumns.size(); col++) {
+      Column c = newColumns.get(col);
+      groupTable.addColumn(col, c);
+    }
+    groupTable.removeColumns("Group");
+    return groupTable;
   }
 
 
+  public Table reduce(String numericColumnName, NumericReduceFunction function) {
+    Preconditions.checkArgument(!subTables.isEmpty());
+    Table groupTable = new Table(sortedOriginal.name() + " summary");
+    CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
+    FloatColumn resultColumn = new FloatColumn(function.functionName(), subTables.size());
+    groupTable.addColumn(groupColumn);
+    groupTable.addColumn(resultColumn);
+
+    for (TemporaryView subTable : subTables) {
+      double result = subTable.reduce(numericColumnName, function);
+      groupColumn.add(subTable.name());
+      resultColumn.add((float) result);
+    }
+    return splitGroupingColumn(groupTable);
+  }
+
   /**
- * Returns an iterator over elements of type {@code T}.
- *
- * @return an Iterator.
- */
+   * Returns an iterator over elements of type {@code T}.
+   *
+   * @return an Iterator.
+   */
   @Override
   public Iterator<TemporaryView> iterator() {
     return subTables.iterator();
