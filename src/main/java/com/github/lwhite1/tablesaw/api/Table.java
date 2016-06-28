@@ -44,7 +44,10 @@ import static com.github.lwhite1.tablesaw.sorting.Sort.Order;
 
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
- * All the data in a column has the same type: integer, float, category, etc.
+ * All the data in a column has the same type: integer, float, category, etc., but a table may contain an arbitrary
+ * number of columns of any type.
+ *
+ * Tables are the main data-type and primary focus of Tablesaw.
  */
 public class Table implements Relation, IntIterable {
 

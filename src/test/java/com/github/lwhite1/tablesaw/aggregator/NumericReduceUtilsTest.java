@@ -39,7 +39,6 @@ public class NumericReduceUtilsTest {
     Column byColumn = table.column("who");
     ViewGroup group = new ViewGroup(table, byColumn);
     Table result = group.reduce("approval", NumericReduceUtils.mean);
-    System.out.println(result.print());
     assertEquals(2, result.columnCount());
     assertEquals("who", result.column(0).name());
     assertEquals(6, result.rowCount());
@@ -51,7 +50,6 @@ public class NumericReduceUtilsTest {
     Column byColumn1 = table.column("who");
     ViewGroup group = new ViewGroup(table, byColumn1);
     Table result = group.reduce("approval", NumericReduceUtils.mean);
-    System.out.println(result.print());
     assertEquals(2, result.columnCount());
     assertEquals("who", result.column(0).name());
     assertEquals(6, result.rowCount());

@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.Set;
 
 /**
- * A map that supports reversible key value pairs of short->String
+ * A map that supports reversible key value pairs of short-String
  */
 public class DictionaryMap {
 
