@@ -1,10 +1,10 @@
 package com.github.lwhite1.tablesaw.aggregator;
 
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.table.TableGroup;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.table.ViewGroup;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,8 +37,9 @@ public class NumericReduceUtilsTest {
   @Test
   public void testGroupMean() {
     Column byColumn = table.column("who");
-    TableGroup group = new TableGroup(table, byColumn);
+    ViewGroup group = new ViewGroup(table, byColumn);
     Table result = group.reduce("approval", NumericReduceUtils.mean);
+    System.out.println(result.print());
     assertEquals(2, result.columnCount());
     assertEquals("Group", result.column(0).name());
     assertEquals(6, result.rowCount());

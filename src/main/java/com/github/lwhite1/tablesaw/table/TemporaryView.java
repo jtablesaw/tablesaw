@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.table;
 
+import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import org.apache.commons.lang3.StringUtils;
@@ -25,54 +26,37 @@ class TemporaryView implements Relation {
   private Table table;
   private final RoaringBitmap rowMap;
 
-  // True, if the underlying table has changed in ways that invalidate this view
-  private boolean stale = false;
-
   /**
    * Returns a new View constructed from the given table, containing only the rows represented by the bitmpa
    */
   public TemporaryView(Table table, RoaringBitmap rowSelection) {
+    this.name = table.name();  //TODO(lwhite): Is this really needed, or can we reference the table name?
     this.rowMap = rowSelection;
     this.table = table;
   }
 
   public TemporaryView where(RoaringBitmap bitmap) {
-    if (stale) {
-      throw new StaleViewException();
-    }
     rowMap.and(bitmap);
     return this;
   }
 
   @Override
   public Column column(int columnIndex) {
-    if (stale) {
-      throw new StaleViewException();
-    }
     return table.column(columnIndex);
   }
 
   @Override
   public int columnCount() {
-    if (stale) {
-      throw new StaleViewException();
-    }
     return table.columnCount();
   }
 
   @Override
   public int rowCount() {
-    if (stale) {
-      throw new StaleViewException();
-    }
     return rowMap.getCardinality();
   }
 
   @Override
   public List<Column> columns() {
-    if (stale) {
-      throw new StaleViewException();
-    }
     List<Column> columns = new ArrayList<>();
     for (int i = 0; i < columnCount(); i++) {
       columns.add(column(i));
@@ -82,18 +66,11 @@ class TemporaryView implements Relation {
 
   @Override
   public int columnIndex(Column column) {
-    if (stale) {
-      throw new StaleViewException();
-    }
-
     return table.columnIndex(column);
   }
 
   @Override
   public String get(int c, int r) {
-    if (stale) {
-      throw new StaleViewException();
-    }
     return table.get(c, r);
   }
 
@@ -117,9 +94,6 @@ class TemporaryView implements Relation {
 
   @Override
   public List<String> columnNames() {
-    if (stale) {
-      throw new StaleViewException();
-    }
     return table.columnNames();
   }
   
@@ -130,9 +104,6 @@ class TemporaryView implements Relation {
 
   @Override
   public Table first(int nRows) {
-    if (stale) {
-      throw new StaleViewException();
-    }
     RoaringBitmap newMap = new RoaringBitmap();
     int count = 0;
     IntIterator it = intIterator();
@@ -152,10 +123,6 @@ class TemporaryView implements Relation {
 
   @Override
   public String print() {
-    if (stale) {
-      throw new StaleViewException();
-    }
-
     StringBuilder buf = new StringBuilder();
 
     int[] colWidths = colWidths();
@@ -187,9 +154,6 @@ class TemporaryView implements Relation {
    */
   @Override
   public int[] colWidths() {
-    if (stale) {
-      throw new StaleViewException();
-    }
 
     int cols = columnCount();
     int[] widths = new int[cols];
@@ -210,9 +174,6 @@ class TemporaryView implements Relation {
   }
 
   public Table asTable() {
-    if (stale) {
-      throw new StaleViewException();
-    }
     Table table = new Table(this.name());
     for (Column column : columns()) {
       table.addColumn(column.subset(rowMap));
@@ -220,22 +181,25 @@ class TemporaryView implements Relation {
     return table;
   }
 
-  public void markStale() {
-    this.stale = true;
-  }
-
-  /**
-   * Returns true if the underlying table has changed in a way that invalidates this TemporaryView
-   */
-  public boolean isStale() {
-    return stale;
-  }
-
-  public IntIterator intIterator() {
+  IntIterator intIterator() {
     return rowMap.getIntIterator();
   }
 
-  static class StaleViewException extends RuntimeException {
+  /**
+   * Returns the result of applying the given function to the specified column
+   *
+   * @param numericColumnName   The name of a numeric (integer, float, etc.) column in this table
+   * @param function            A numeric reduce function
+   *
+   * @throws IllegalArgumentException if numericColumnName doesn't name a numeric column in this table
+   * @return  the function result
+   */
+  public double reduce(String numericColumnName, NumericReduceFunction function) {
+    Column column = column(numericColumnName);
+    return function.reduce(column.subset(rowMap).toDoubleArray());
+  }
 
+  public String toString() {
+    return "View " + name() + ": Size = " + rowCount() + " x " + columns().size();
   }
 }

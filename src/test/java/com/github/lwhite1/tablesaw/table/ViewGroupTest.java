@@ -51,8 +51,6 @@ public class ViewGroupTest {
     int count = 0;
     for (TemporaryView view : viewList) {
       count += view.rowCount();
-      System.out.println(view.print());
-      System.out.println();
     }
     assertEquals(table.rowCount(), count);
   }

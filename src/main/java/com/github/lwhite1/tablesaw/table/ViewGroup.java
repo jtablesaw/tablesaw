@@ -1,8 +1,13 @@
 package com.github.lwhite1.tablesaw.table;
 
+import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.nio.ByteBuffer;
@@ -15,6 +20,10 @@ import java.util.List;
  * A group of tables formed by performing splitting operations on an original table
  */
 public class ViewGroup implements Iterable<TemporaryView> {
+
+  private static final String SPLIT_STRING = "~~~";
+  private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
+
 
   private final Table sortedOriginal;
 
@@ -46,26 +55,35 @@ public class ViewGroup implements Iterable<TemporaryView> {
     }
 
     byte[] currentKey = null;
+    String currentStringKey = null;
     TemporaryView view;
 
     RoaringBitmap bitmap = new RoaringBitmap();
-    //IntIterator intIterator = sortedOriginal.iterator();
+
     for (int row = 0; row < sortedOriginal.rowCount(); row++) {
+
       ByteBuffer byteBuffer = ByteBuffer.allocate(byteSize);
-      for (Column c : columns) {
-        //System.out.println(c.getString(row));
-        //System.out.println(sortedOriginal.get(sortedOriginal.columnIndex(c), row));
+      String newStringKey = "";
+
+      for (int col = 0; col < columnNames.length; col++) {
+        if (col > 0)
+          newStringKey = newStringKey + SPLIT_STRING;
+
+        Column c = sortedOriginal.column(columnNames[col]);
+        String groupKey = sortedOriginal.get(sortedOriginal.columnIndex(c), row);
+        newStringKey = newStringKey + groupKey;
         byteBuffer.put(c.asBytes(row));
       }
-      byteBuffer.flip();  //TODO(lwhite): Is this needed?
       byte[] newKey = byteBuffer.array();
-      //System.out.println(Arrays.toString(newKey));
       if (row == 0) {
         currentKey = newKey;
+        currentStringKey = newStringKey;
       }
       if (!Arrays.equals(newKey, currentKey)) {
         currentKey = newKey;
         view = new TemporaryView(sortedOriginal, bitmap);
+        view.setName(currentStringKey);
+        currentStringKey = newStringKey;
         subTables.add(view);
         bitmap = new RoaringBitmap();
         bitmap.add(row);
@@ -75,6 +93,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
     }
     if (!bitmap.isEmpty()) {
       view = new TemporaryView(sortedOriginal, bitmap);
+      view.setName(currentStringKey);
       subTables.add(view);
     }
   }
@@ -113,9 +132,26 @@ public class ViewGroup implements Iterable<TemporaryView> {
    }
    return subTable;
    }
-
    */
-/**
+
+  public Table reduce(String numericColumnName, NumericReduceFunction function) {
+    Preconditions.checkArgument(!subTables.isEmpty());
+    Table t = new Table(sortedOriginal.name() + " summary");
+    CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
+    FloatColumn resultColumn = new FloatColumn(function.functionName(), subTables.size());
+    t.addColumn(groupColumn);
+    t.addColumn(resultColumn);
+
+    for (TemporaryView subTable : subTables) {
+      double result = subTable.reduce(numericColumnName, function);
+      groupColumn.add(subTable.name().replace(SPLIT_STRING, " * "));
+      resultColumn.add((float) result);
+    }
+    return t;
+  }
+
+
+  /**
  * Returns an iterator over elements of type {@code T}.
  *
  * @return an Iterator.
@@ -124,14 +160,4 @@ public class ViewGroup implements Iterable<TemporaryView> {
   public Iterator<TemporaryView> iterator() {
     return subTables.iterator();
   }
-
-  /**
-   * Returns the integer as a byte[]
-   */
-  private byte[] asBytes(int value) {
-    ByteBuffer byteBuffer = ByteBuffer.allocate(4).putInt(value);
-    byte[] bytes = byteBuffer.array();
-    return bytes;
-  }
-
 }
