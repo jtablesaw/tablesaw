@@ -23,7 +23,11 @@
             <email>ljw1001@gmail.com</email>
         </developer>
     </developers>
+    <properties>
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+    </properties>
     <build>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -45,6 +49,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                </configuration>
             </plugin>
         </plugins>
     </build>
