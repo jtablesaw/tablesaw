@@ -1,7 +1,8 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.filter.FloatPredicate;
-import com.github.lwhite1.tablesaw.filter.FloatBiPredicate;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.filtering.FloatPredicate;
+import com.github.lwhite1.tablesaw.filtering.FloatBiPredicate;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 
 /**

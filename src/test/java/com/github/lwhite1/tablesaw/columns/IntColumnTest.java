@@ -1,6 +1,8 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.filter.IntPredicate;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.filtering.IntPredicate;
 import org.junit.Before;
 import org.junit.Test;
 

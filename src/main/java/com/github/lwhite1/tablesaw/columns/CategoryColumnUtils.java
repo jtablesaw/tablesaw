@@ -1,6 +1,7 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.filter.StringPredicate;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.filtering.StringPredicate;
 
 /**
  *

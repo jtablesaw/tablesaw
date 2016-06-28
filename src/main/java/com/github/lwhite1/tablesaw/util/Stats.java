@@ -1,8 +1,8 @@
 package com.github.lwhite1.tablesaw.util;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import org.apache.commons.math3.util.FastMath;
 
 /**

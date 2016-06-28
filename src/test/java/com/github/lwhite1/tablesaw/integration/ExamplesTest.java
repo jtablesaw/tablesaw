@@ -2,9 +2,9 @@ package com.github.lwhite1.tablesaw.integration;
 
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.QueryHelper;
-import com.github.lwhite1.tablesaw.io.CsvWriter;
+import com.github.lwhite1.tablesaw.io.csv.CsvWriter;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 /**
@@ -45,7 +45,7 @@ public class ExamplesTest  {
 
     // Apply the map function and fill the resulting column to the original table
 
-    // Lets filter out some of the rows. We're only interested in records with IDs between 524-624
+    // Lets filtering out some of the rows. We're only interested in records with IDs between 524-624
 
     Table filtered = table.selectWhere(QueryHelper.column("stop_id").isBetween(524, 624));
     out(filtered.first(5).print());

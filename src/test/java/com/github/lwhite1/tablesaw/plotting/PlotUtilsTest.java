@@ -2,11 +2,10 @@ package com.github.lwhite1.tablesaw.plotting;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import org.junit.*;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
-import static org.junit.Assert.*;
 
 /**
  *  Interactive tests for plotting

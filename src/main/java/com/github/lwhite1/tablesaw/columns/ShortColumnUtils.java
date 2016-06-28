@@ -1,7 +1,8 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.filter.ShortBiPredicate;
-import com.github.lwhite1.tablesaw.filter.ShortPredicate;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.filtering.ShortBiPredicate;
+import com.github.lwhite1.tablesaw.filtering.ShortPredicate;
 import it.unimi.dsi.fastutil.shorts.ShortIterable;
 
 /**

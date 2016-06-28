@@ -1,9 +1,9 @@
 package com.github.lwhite1.tablesaw.util;
 
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LongColumn;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.ShortColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.LongColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.exception.NotPositiveException;
 import org.apache.commons.math3.exception.NullArgumentException;

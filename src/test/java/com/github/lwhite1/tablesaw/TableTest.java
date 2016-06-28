@@ -2,7 +2,7 @@ package com.github.lwhite1.tablesaw;
 
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import org.junit.Before;
 import org.junit.Test;
 

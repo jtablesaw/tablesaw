@@ -1,6 +1,7 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.filter.IntPredicate;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
+import com.github.lwhite1.tablesaw.filtering.IntPredicate;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 

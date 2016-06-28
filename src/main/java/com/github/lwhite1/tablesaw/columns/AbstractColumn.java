@@ -6,9 +6,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.UUID;
 
 /**
- *
+ *  Partial implementation of the {@link Column} interface
  */
-abstract class AbstractColumn implements Column {
+public abstract class AbstractColumn implements Column {
 
   private String id;
 

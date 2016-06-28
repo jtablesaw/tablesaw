@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.util;
 
-import com.github.lwhite1.tablesaw.io.CsvCombiner;
+import com.github.lwhite1.tablesaw.io.csv.CsvCombiner;
 
 /**
  *

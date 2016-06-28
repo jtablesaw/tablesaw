@@ -1,10 +1,10 @@
 package com.github.lwhite1.tablesaw.table;
 
-import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;

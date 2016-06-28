@@ -1,11 +1,11 @@
 package com.github.lwhite1.tablesaw.filters;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import com.github.lwhite1.tablesaw.columns.DateColumn;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.table.TemporaryView;
 import com.github.lwhite1.tablesaw.table.ViewGroup;
@@ -84,14 +84,14 @@ public class TimeDependentFilteringTest {
     // Create a list of patient sub-tables to work with TODO(lwhite): Build the copy-on-write to ViewGroups to avoid
     CopyOnWriteArrayList<TemporaryView> patientTables = new CopyOnWriteArrayList<>(patients.getSubTables());
 
-    // Apply the independent temporal event filter to the patient subtables and remove any that don't pass
+    // Apply the independent temporal event filtering to the patient subtables and remove any that don't pass
     for (TemporaryView patientTable : patients) {
       CategoryColumn concepts = patientTable.categoryColumn("concept");
       int patientId = Integer.parseInt(patientTable.name());
       if (! concepts.contains(conceptZ)
           || concepts.contains(conceptD)) {
         patientTables.remove(patientTable);
-      } else if (! ntPatients.contains(patientId)) {      // filter out the non-temporal now constraints for efficiency
+      } else if (! ntPatients.contains(patientId)) {      // filtering out the non-temporal now constraints for efficiency
         patientTables.remove(patientTable);
       }
     }

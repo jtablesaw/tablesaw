@@ -1,13 +1,10 @@
 package com.github.lwhite1.tablesaw.api;
 
-import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
-import com.github.lwhite1.tablesaw.columns.BooleanColumn;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.filter.Filter;
-import com.github.lwhite1.tablesaw.io.CsvReader;
-import com.github.lwhite1.tablesaw.io.CsvWriter;
+import com.github.lwhite1.tablesaw.filtering.Filter;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
+import com.github.lwhite1.tablesaw.io.csv.CsvWriter;
 import com.github.lwhite1.tablesaw.io.jdbc.SqlResultSetReader;
 import com.github.lwhite1.tablesaw.sorting.Sort;
 import com.github.lwhite1.tablesaw.store.StorageManager;

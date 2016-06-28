@@ -1,6 +1,8 @@
 package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.TestDataUtil;
+import com.github.lwhite1.tablesaw.api.BooleanColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import org.junit.Assert;
 import org.junit.Before;

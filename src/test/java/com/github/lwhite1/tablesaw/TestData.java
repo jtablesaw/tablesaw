@@ -2,7 +2,7 @@ package com.github.lwhite1.tablesaw;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 
 import java.io.IOException;
 

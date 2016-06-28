@@ -1,17 +1,17 @@
 package com.github.lwhite1.tablesaw.table;
 
-import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.BooleanColumn;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.BooleanColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.DateColumn;
-import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LongColumn;
-import com.github.lwhite1.tablesaw.columns.ShortColumn;
-import com.github.lwhite1.tablesaw.columns.TimeColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.DateTimeColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.LongColumn;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import org.apache.commons.lang3.StringUtils;
 import org.roaringbitmap.IntIterator;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A TemporaryView is a facade around a Relation that acts as a filter.
+ * A TemporaryView is a facade around a Relation that acts as a filtering.
  * Requests for data are forwarded to the underlying table.
  *
  * The view is only good until the structure of the underlying table changes, after which it is marked 'stale'.

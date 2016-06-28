@@ -1,13 +1,12 @@
 package com.github.lwhite1.tablesaw.integration;
 
-import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.BooleanColumn;
+import com.github.lwhite1.tablesaw.api.*;
+
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.github.lwhite1.tablesaw.aggregator.NumericReduceUtils.mean;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
 import static java.lang.System.out;

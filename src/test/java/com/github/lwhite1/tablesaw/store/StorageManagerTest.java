@@ -1,12 +1,12 @@
 package com.github.lwhite1.tablesaw.store;
 
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.DateColumn;
-import com.github.lwhite1.tablesaw.columns.LongColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.google.common.base.Stopwatch;
 import org.junit.Before;
 import org.junit.Test;

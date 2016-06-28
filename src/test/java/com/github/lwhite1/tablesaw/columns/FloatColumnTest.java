@@ -1,5 +1,7 @@
 package com.github.lwhite1.tablesaw.columns;
 
+import com.github.lwhite1.tablesaw.api.BooleanColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;

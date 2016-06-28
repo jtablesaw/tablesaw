@@ -2,8 +2,8 @@ package com.github.lwhite1.tablesaw.table;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import org.junit.Before;
 import org.junit.Test;
 

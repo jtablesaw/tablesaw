@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.plotting;
 
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
 
 import java.io.File;
 import java.net.MalformedURLException;

@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.index;
 
-import com.github.lwhite1.tablesaw.columns.IntColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;

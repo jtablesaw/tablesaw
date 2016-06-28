@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.util;
 
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import org.junit.Test;
 
 import java.util.Random;

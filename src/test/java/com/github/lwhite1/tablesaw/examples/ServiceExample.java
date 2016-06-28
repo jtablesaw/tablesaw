@@ -1,11 +1,11 @@
 package com.github.lwhite1.tablesaw.examples;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LongColumn;
+import com.github.lwhite1.tablesaw.api.DateTimeColumn;
+import com.github.lwhite1.tablesaw.api.LongColumn;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 
-import static com.github.lwhite1.tablesaw.aggregator.NumericReduceUtils.median;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.median;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.allOf;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
 

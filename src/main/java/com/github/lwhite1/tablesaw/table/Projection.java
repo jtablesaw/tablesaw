@@ -2,7 +2,7 @@ package com.github.lwhite1.tablesaw.table;
 
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.filter.Filter;
+import com.github.lwhite1.tablesaw.filtering.Filter;
 import org.roaringbitmap.RoaringBitmap;
 
 /**

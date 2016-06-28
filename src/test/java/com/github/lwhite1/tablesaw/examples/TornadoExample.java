@@ -1,9 +1,7 @@
 package com.github.lwhite1.tablesaw.examples;
 
-import com.github.lwhite1.tablesaw.aggregator.NumericReduceUtils;
-import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceUtils;
+import com.github.lwhite1.tablesaw.api.*;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;

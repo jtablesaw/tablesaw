@@ -2,10 +2,10 @@ package com.github.lwhite1.tablesaw;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.DateColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import org.junit.Before;
 import org.junit.Test;
 

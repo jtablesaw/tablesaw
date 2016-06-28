@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.columns;
 
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import org.junit.Test;
 

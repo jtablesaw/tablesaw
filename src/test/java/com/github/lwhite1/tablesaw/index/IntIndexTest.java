@@ -3,16 +3,13 @@ package com.github.lwhite1.tablesaw.index;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.columns.IntColumnUtils;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.google.common.base.Stopwatch;
 import org.junit.Before;
 import org.junit.Test;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.concurrent.TimeUnit;
-
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
-import static java.lang.System.out;
 import static org.junit.Assert.*;
 
 /**
