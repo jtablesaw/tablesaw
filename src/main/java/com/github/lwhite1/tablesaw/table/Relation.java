@@ -71,7 +71,6 @@ public interface Relation {
   default Column column(String columnName) {
     Column result = null;
     for (Column column : columns()) {
-      // TODO(lwhite): Consider caching the uppercase name and doing equals() instead of equalsIgnoreCase()
       if (column.name().equalsIgnoreCase(columnName)) {
         result = column;
         break;
@@ -279,6 +278,16 @@ public interface Relation {
   default TimeColumn timeColumn(int columnIndex) {
     return (TimeColumn) column(columnIndex);
   }
+
+  default CategoryColumn categoryColumn(String columnName) {
+    return (CategoryColumn) column(columnName);
+  }
+
+  default CategoryColumn categoryColumn(int columnIndex) {
+    return (CategoryColumn) column(columnIndex);
+  }
+
+
 
   default DateTimeColumn dateTimeColumn(int columnIndex) {
     return (DateTimeColumn) column(columnIndex);

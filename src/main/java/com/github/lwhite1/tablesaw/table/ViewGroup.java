@@ -41,6 +41,11 @@ public class ViewGroup implements Iterable<TemporaryView> {
     splitOn(splitColumnNames);
   }
 
+  public static ViewGroup create(Table original, String... columnsNames) {
+    List<Column> columns = original.columns(columnsNames);
+    return new ViewGroup(original, columns.toArray(new Column[columns.size()]));
+  }
+
   /**
    * Splits the sortedOriginal table into sub-tables, grouping on the columns whose names are given in splitColumnNames
    */

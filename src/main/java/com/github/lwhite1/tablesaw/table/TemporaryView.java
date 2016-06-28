@@ -2,7 +2,17 @@ package com.github.lwhite1.tablesaw.table;
 
 import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.BooleanColumn;
+import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumn;
+import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.columns.IntColumn;
+import com.github.lwhite1.tablesaw.columns.LongColumn;
+import com.github.lwhite1.tablesaw.columns.ShortColumn;
+import com.github.lwhite1.tablesaw.columns.TimeColumn;
+import it.unimi.dsi.fastutil.ints.IntIterable;
 import org.apache.commons.lang3.StringUtils;
 import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
@@ -20,7 +30,7 @@ import java.util.List;
  * View is something of a misnomer, as it is not like a database view, which is merely a query masquerading as a table, 
  * nor is it like a materialized database view, which is like a real table. 
  */
-class TemporaryView implements Relation {
+public class TemporaryView implements Relation, IntIterable {
 
   private String name;
   private Table table;
@@ -202,4 +212,132 @@ class TemporaryView implements Relation {
   public String toString() {
     return "View " + name() + ": Size = " + rowCount() + " x " + columns().size();
   }
+
+  public BooleanColumn booleanColumn(int columnIndex) {
+    return (BooleanColumn) column(columnIndex).subset(rowMap);
+  }
+
+  public BooleanColumn booleanColumn(String columnName) {
+    return (BooleanColumn) column(columnName).subset(rowMap);
+  }
+
+  public FloatColumn floatColumn(int columnIndex) {
+    return (FloatColumn) column(columnIndex).subset(rowMap);
+  }
+
+  public FloatColumn floatColumn(String columnName) {
+    return (FloatColumn) column(columnName).subset(rowMap);
+  }
+
+  public IntColumn intColumn(String columnName) {
+    return (IntColumn) column(columnName).subset(rowMap);
+  }
+
+  public IntColumn intColumn(int columnIndex) {
+    return (IntColumn) column(columnIndex).subset(rowMap);
+  }
+
+  public ShortColumn shortColumn(String columnName) {
+    return (ShortColumn) column(columnName).subset(rowMap);
+  }
+
+  public ShortColumn shortColumn(int columnIndex) {
+    return (ShortColumn) column(columnIndex).subset(rowMap);
+  }
+
+  public LongColumn longColumn(String columnName) {
+    return (LongColumn) column(columnName).subset(rowMap);
+  }
+
+  public LongColumn longColumn(int columnIndex) {
+    return (LongColumn) column(columnIndex).subset(rowMap);
+  }
+
+  public DateColumn dateColumn(int columnIndex) {
+    return (DateColumn) column(columnIndex).subset(rowMap);
+  }
+
+  public DateColumn dateColumn(String columnName) {
+    return (DateColumn) column(columnName).subset(rowMap);
+  }
+
+  public TimeColumn timeColumn(String columnName) {
+    return (TimeColumn) column(columnName).subset(rowMap);
+  }
+
+  public TimeColumn timeColumn(int columnIndex) {
+    return (TimeColumn) column(columnIndex).subset(rowMap);
+  }
+
+  public DateTimeColumn dateTimeColumn(int columnIndex) {
+    return (DateTimeColumn) column(columnIndex).subset(rowMap);
+  }
+
+  public DateTimeColumn dateTimeColumn(String columnName) {
+    return (DateTimeColumn) column(columnName).subset(rowMap);
+  }
+
+  public CategoryColumn categoryColumn(String columnName) {
+    return (CategoryColumn) column(columnName).subset(rowMap);
+  }
+
+  public CategoryColumn categoryColumn(int columnIndex) {
+    return (CategoryColumn) column(columnIndex).subset(rowMap);
+  }
+
+  @Override
+  public it.unimi.dsi.fastutil.ints.IntIterator iterator() {
+
+    return new it.unimi.dsi.fastutil.ints.IntIterator() {
+
+      private int i = 0;
+
+      @Override
+      public int nextInt() {
+        return i++;
+      }
+
+      @Override
+      public int skip(int k) {
+        return i + k;
+      }
+
+      @Override
+      public boolean hasNext() {
+        return i < rowCount();
+      }
+
+      @Override
+      public Integer next() {
+        return i++;
+      }
+    };
+  }
+
+  /*  @Override
+  public it.unimi.dsi.fastutil.ints.IntIterator iterator() {
+
+    return new it.unimi.dsi.fastutil.ints.IntIterator() {
+
+      @Override
+      public int nextInt() {
+        return intIterator().next();
+      }
+
+      @Override
+      public int skip(int k) {
+        throw new UnsupportedOperationException("Views do not support skipping in the iterator");
+      }
+
+      @Override
+      public boolean hasNext() {
+        return intIterator().hasNext();
+      }
+
+      @Override
+      public Integer next() {
+        return intIterator().next();
+      }
+    };
+  }*/
 }

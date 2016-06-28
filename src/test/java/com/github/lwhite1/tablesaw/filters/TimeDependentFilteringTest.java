@@ -3,12 +3,12 @@ package com.github.lwhite1.tablesaw.filters;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
+import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.columns.FloatColumn;
 import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.DateColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
-import com.github.lwhite1.tablesaw.table.SubTable;
-import com.github.lwhite1.tablesaw.table.TableGroup;
+import com.github.lwhite1.tablesaw.table.TemporaryView;
+import com.github.lwhite1.tablesaw.table.ViewGroup;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
@@ -25,8 +25,7 @@ import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.lwhite1.tablesaw.api.QueryHelper.both;
-import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
+import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
 import static java.lang.System.out;
 
 /**
@@ -79,9 +78,14 @@ public class TimeDependentFilteringTest {
 
     IntColumn ntPatients = nt.intColumn("patient");
 
-    TableGroup patients = new TableGroup(t, "patient");
-    CopyOnWriteArrayList<SubTable> patientTables = new CopyOnWriteArrayList<>(patients.getSubTables());
-    for (Table patientTable : patients) {
+    // Group the original table by patient id
+    ViewGroup patients = ViewGroup.create(t, "patient");
+
+    // Create a list of patient sub-tables to work with TODO(lwhite): Build the copy-on-write to ViewGroups to avoid
+    CopyOnWriteArrayList<TemporaryView> patientTables = new CopyOnWriteArrayList<>(patients.getSubTables());
+
+    // Apply the independent temporal event filter to the patient subtables and remove any that don't pass
+    for (TemporaryView patientTable : patients) {
       CategoryColumn concepts = patientTable.categoryColumn("concept");
       int patientId = Integer.parseInt(patientTable.name());
       if (! concepts.contains(conceptZ)
@@ -94,10 +98,12 @@ public class TimeDependentFilteringTest {
 
     List<IndependentResult> independentResults = new ArrayList<>();
 
-    for (Table patientTable : patientTables) {
+    // Working with the filtered patient tables, calculate the event dates for the independent events
+    for (TemporaryView patientTable : patientTables) {
       IndependentResult result = new IndependentResult(Integer.parseInt(patientTable.name()));
       List<LocalDate> eventDates = new ArrayList<>();
 
+      // iterate an individual table and find the rows where concept matches the target concept
       for (int row : patientTable) {
         CategoryColumn concepts = patientTable.categoryColumn("concept");
         DateColumn dates = patientTable.dateColumn("date");
@@ -105,11 +111,13 @@ public class TimeDependentFilteringTest {
           eventDates.add(dates.get(row));
         }
       }
+
+
       if (independentConstraintFilter == DependencyFilter.FIRST) {
         if (eventDates.isEmpty()) {
           // this is an error
           System.out.println(patientTable.name());
-        } else {
+        } else {  //Get the first event for the current patient and create a date range around it
           LocalDate date = eventDates.get(0);
           result.addRange(Range.closed(date.minusDays(daysConstraint.lowerEndpoint()),
               date.plusDays(daysConstraint.upperEndpoint())));
@@ -118,7 +126,7 @@ public class TimeDependentFilteringTest {
       independentResults.add(result);
     }
 
-    for (Table patientTable : patientTables) {
+    for (TemporaryView patientTable : patientTables) {
       // for every date range in rangeSet
       // .. find any rows containing events matching the rangeSet
       // .. run dependent clause on those rows

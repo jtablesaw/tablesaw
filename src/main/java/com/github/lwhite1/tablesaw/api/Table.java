@@ -1,22 +1,23 @@
 package com.github.lwhite1.tablesaw.api;
 
+import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.columns.BooleanColumn;
+import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.columns.IntColumn;
+import com.github.lwhite1.tablesaw.filter.Filter;
+import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.io.CsvWriter;
 import com.github.lwhite1.tablesaw.io.jdbc.SqlResultSetReader;
+import com.github.lwhite1.tablesaw.sorting.Sort;
+import com.github.lwhite1.tablesaw.store.StorageManager;
+import com.github.lwhite1.tablesaw.store.TableMetadata;
 import com.github.lwhite1.tablesaw.table.Projection;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.table.Rows;
 import com.github.lwhite1.tablesaw.table.SubTable;
-import com.github.lwhite1.tablesaw.table.TableGroup;
-import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.filter.Filter;
-import com.github.lwhite1.tablesaw.io.CsvReader;
-import com.github.lwhite1.tablesaw.io.CsvWriter;
-import com.github.lwhite1.tablesaw.sorting.Sort;
-import com.github.lwhite1.tablesaw.store.StorageManager;
-import com.github.lwhite1.tablesaw.store.TableMetadata;
+import com.github.lwhite1.tablesaw.table.TemporaryView;
+import com.github.lwhite1.tablesaw.table.ViewGroup;
 import com.github.lwhite1.tablesaw.util.IntComparatorChain;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
 import com.google.common.annotations.VisibleForTesting;
@@ -31,7 +32,13 @@ import org.roaringbitmap.RoaringBitmap;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.github.lwhite1.tablesaw.sorting.Sort.Order;
 
@@ -85,9 +92,7 @@ public class Table implements Relation, IntIterable {
    */
   @Override
   public void addColumn(Column... cols) {
-    for (Column c : cols) {
-      columnList.add(c);
-    }
+    Collections.addAll(columnList, cols);
   }
 
   /**
@@ -211,21 +216,7 @@ public class Table implements Relation, IntIterable {
    */
   public List<String> columnNames() {
     List<String> names = new ArrayList<>(columnList.size());
-    for (Column column : columnList) {
-      names.add(column.name());
-    }
-    return names;
-  }
-
-  /**
-   * Returns a List of the names of all the columns in this table
-   */
-  public String[] columnNameArray() {
-    String[] names = new String[columnList.size()];
-    for (int i = 0; i < columnList.size(); i++) {
-      Column column = columnList.get(i);
-      names[i] = column.name();
-    }
+    names.addAll(columnList.stream().map(Column::name).collect(Collectors.toList()));
     return names;
   }
 
@@ -268,9 +259,7 @@ public class Table implements Relation, IntIterable {
    */
   @Override
   public void clear() {
-    for (Column column : columnList) {
-      column.clear();
-    }
+    columnList.forEach(Column::clear);
   }
 
   /**
@@ -511,14 +500,14 @@ public class Table implements Relation, IntIterable {
   }
 
   public Table countBy(String byColumnName) {
-    TableGroup group = new TableGroup(this, byColumnName);
+    ViewGroup group = ViewGroup.create(this, byColumnName);
     Table resultTable = new Table(name + " summary");
     CategoryColumn groupColumn = CategoryColumn.create("Group", group.size());
     IntColumn countColumn = IntColumn.create("Count", group.size());
     resultTable.addColumn(groupColumn);
     resultTable.addColumn(countColumn);
 
-    for (SubTable subTable : group.getSubTables()) {
+    for (TemporaryView subTable : group.getSubTables()) {
       int count = subTable.rowCount();
       String groupName = subTable.name();
       groupColumn.add(groupName);
@@ -557,8 +546,8 @@ public class Table implements Relation, IntIterable {
   }
 
   public Table sum(IntColumn sumColumn, Column byColumn) {
-    TableGroup groupTable = new TableGroup(this, byColumn);
-    Table resultTable = new Table(name + " summary");
+    ViewGroup groupTable = new ViewGroup(this, byColumn);
+    Table resultTable = new Table(name + " Summary");
 
     CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
     IntColumn sumColumn1 = IntColumn.create("Sum", groupTable.size());
@@ -566,7 +555,7 @@ public class Table implements Relation, IntIterable {
     resultTable.addColumn(groupColumn);
     resultTable.addColumn(sumColumn1);
 
-    for (SubTable subTable : groupTable.getSubTables()) {
+    for (TemporaryView subTable : groupTable.getSubTables()) {
       long sum = subTable.intColumn(sumColumn.name()).sum();
       String groupName = subTable.name();
       groupColumn.add(groupName);
@@ -575,27 +564,8 @@ public class Table implements Relation, IntIterable {
     return resultTable;
   }
 
-  public Table appendText(CategoryColumn sumColumn, CategoryColumn byColumn) {
-    TableGroup groupTable = new TableGroup(this, byColumn);
-    Table resultTable = new Table(name + " summary");
-
-    CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
-    CategoryColumn sumColumn1 = CategoryColumn.create("Appended", groupTable.size());
-
-    resultTable.addColumn(groupColumn);
-    resultTable.addColumn(sumColumn1);
-
-    for (SubTable subTable : groupTable.getSubTables()) {
-      String sum = subTable.categoryColumn(sumColumn.name()).appendAll();
-      String groupName = subTable.name();
-      groupColumn.add(groupName);
-      sumColumn1.add(sum);
-    }
-    return resultTable;
-  }
-
   public Table sum(IntColumn sumColumn, String... byColumnNames) {
-    TableGroup groupTable = new TableGroup(this, byColumnNames);
+    ViewGroup groupTable = ViewGroup.create(this, byColumnNames);
     Table resultTable = new Table(name + " summary");
 
     CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
@@ -604,7 +574,7 @@ public class Table implements Relation, IntIterable {
     resultTable.addColumn(groupColumn);
     resultTable.addColumn(sumColumn1);
 
-    for (SubTable subTable : groupTable.getSubTables()) {
+    for (TemporaryView subTable : groupTable.getSubTables()) {
       long sum = subTable.intColumn(sumColumn.name()).sum();
       String groupName = subTable.name();
       groupColumn.add(groupName);
@@ -618,14 +588,6 @@ public class Table implements Relation, IntIterable {
     return new Average(this, summarizedColumnName);
   }
 */
-
-  public CategoryColumn categoryColumn(String columnName) {
-    return (CategoryColumn) column(columnName);
-  }
-
-  public CategoryColumn categoryColumn(int columnIndex) {
-    return (CategoryColumn) column(columnIndex);
-  }
 
   public void append(Table tableToAppend) {
     for (Column column : columnList) {
@@ -689,7 +651,7 @@ public class Table implements Relation, IntIterable {
   }
 
   public Table reduce(String numericColumnName, NumericReduceFunction function, String ... groupColumnName) {
-    TableGroup tableGroup = new TableGroup(this, groupColumnName);
+    ViewGroup tableGroup = ViewGroup.create(this, groupColumnName);
     return tableGroup.reduce(numericColumnName, function);
   }
 
