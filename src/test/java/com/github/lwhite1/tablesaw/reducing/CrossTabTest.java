@@ -5,7 +5,7 @@ import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import org.junit.Test;
 
 /**
- *
+ * Tests for Cross Tabs
  */
 public class CrossTabTest {
 
@@ -15,10 +15,12 @@ public class CrossTabTest {
     Table t = CsvReader.read("data/tornadoes_1950-2014.csv");
 
     Table xtab = CrossTab.xCount(t, t.categoryColumn("State"), t.shortColumn("Scale"));
-  //  System.out.println(xtab.print());
+    System.out.println(xtab.print());
 
-  //  System.out.println(CrossTab.tablePercents(xtab).print());
+    Table rPct = CrossTab.rowPercents(xtab);
+    System.out.println(rPct.print());
 
-  //  System.out.println(CrossTab.rowPercents(xtab).print());
+    Table tPct = CrossTab.tablePercents(xtab);
+    System.out.println(tPct.print());
   }
 }
