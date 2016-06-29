@@ -8,7 +8,9 @@ Tablesaw's design is driven by two ideas:
 First, almost no-one needs distributed analytics. On a single server, table saw will let you work _interactively_ with a 2,000,000,000 row table. (We plan to raise that ceiling, btw.)
 Second, it should be super easy to use: To that end we happily steal ideas from everything from spreadsheets to specialized column stores like KDB.
 
-You can find an introductory tutorial here: https://jtablesaw.wordpress.com/2016/06/24/an-introduction-to-tablesaw/
+You can find an introductory tutorial here: https://jtablesaw.wordpress.com/an-introduction/
+
+The JavaDoc can be found here: http://lwhite1.github.io/tablesaw/apidocs/
 
 ###What Tablesaw does today: 
 * Import data from RDBMS and CSV files 
