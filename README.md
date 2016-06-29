@@ -72,7 +72,6 @@ To give you a sense of the API, here's an example. The goal in this analysis is 
     FloatArrayList tops = durationByFacilityAndShift.floatColumn("Median").top(5);
 
 ```
-
 I hope you can see how the code reflects the intent, and how column-wise operators like _differenceInSeconds(dateTimeColumn)_, _isInQ2()_ and  _startsWith(aString)_ make data operations easy to express. If you see something that can be improved, let us know.
 
 ### A work-in-progress
