@@ -100,7 +100,7 @@ public class LargeDataTest {
     Stopwatch stopwatch = Stopwatch.createStarted();
 
     Fairy fairy = Fairy.create();
-    Table t = new Table("People");
+    Table t = Table.create("People");
     CategoryColumn fName = CategoryColumn.create("first name");
     CategoryColumn lName = CategoryColumn.create("last name");
     CategoryColumn company = CategoryColumn.create("company");

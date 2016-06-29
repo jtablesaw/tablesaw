@@ -131,7 +131,7 @@ public class TableGroup implements Iterable<SubTable> {
 
   public Table reduce(String numericColumnName, NumericReduceFunction function) {
     Preconditions.checkArgument(!subTables.isEmpty());
-    Table t = new Table(original.name() + " summary");
+    Table t = Table.create(original.name() + " summary");
     CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
     FloatColumn resultColumn = new FloatColumn(function.functionName(), subTables.size());
     t.addColumn(groupColumn);

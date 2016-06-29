@@ -15,12 +15,14 @@ public class CrossTabTest {
     Table t = CsvReader.read("data/tornadoes_1950-2014.csv");
 
     Table xtab = CrossTab.xCount(t, t.categoryColumn("State"), t.shortColumn("Scale"));
-    System.out.println(xtab.print());
+    //System.out.println(xtab.print());
 
     Table rPct = CrossTab.rowPercents(xtab);
-    System.out.println(rPct.print());
+    //System.out.println(rPct.print());
 
     Table tPct = CrossTab.tablePercents(xtab);
-    System.out.println(tPct.print());
+   // System.out.println(tPct.print());
+
+    //TODO(lwhite): Real tests go here
   }
 }

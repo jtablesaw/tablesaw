@@ -13,7 +13,7 @@ public class TornadoExample {
 
   public static void main(String[] args) throws Exception {
 
-    Table tornadoes = Table.create(COLUMN_TYPES_OLD, "data/1950-2014_torn.csv");
+    Table tornadoes = Table.createFromCsv(COLUMN_TYPES_OLD, "data/1950-2014_torn.csv");
     assert(tornadoes != null);
 
     out(tornadoes.structure().print());
@@ -23,7 +23,7 @@ public class TornadoExample {
 
     tornadoes.exportToCsv("data/tornadoes_1950-2014.csv");
 
-    //tornadoes = Table.create(COLUMN_TYPES, "data/tornadoes_1950-2014.csv");
+    //tornadoes = Table.createFromCsv(COLUMN_TYPES, "data/tornadoes_1950-2014.csv");
     tornadoes = Table.create("data/tornadoes_1950-2014.csv");
     assert(tornadoes != null);
 

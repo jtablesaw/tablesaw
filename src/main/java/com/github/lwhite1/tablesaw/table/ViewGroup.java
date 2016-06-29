@@ -157,7 +157,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
 
   public Table reduce(String numericColumnName, NumericReduceFunction function) {
     Preconditions.checkArgument(!subTables.isEmpty());
-    Table groupTable = new Table(sortedOriginal.name() + " summary");
+    Table groupTable = Table.create(sortedOriginal.name() + " summary");
     CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
     FloatColumn resultColumn = new FloatColumn(function.functionName(), subTables.size());
     groupTable.addColumn(groupColumn);

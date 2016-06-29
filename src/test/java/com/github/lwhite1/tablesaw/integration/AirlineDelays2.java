@@ -59,7 +59,7 @@ public class AirlineDelays2 {
         SHORT_INT,  // 28    LateAircraftDelay
     };
 
-    flt2007 = Table.create(columnTypes, "/Users/larrywhite/Downloads/flight delays/2007.csv");
+    flt2007 = Table.createFromCsv(columnTypes, "/Users/larrywhite/Downloads/flight delays/2007.csv");
 
     out.println(String.format("loaded %d records in %d seconds",
         flt2007.rowCount(),

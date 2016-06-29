@@ -61,7 +61,7 @@ public class Table implements Relation, IntIterable {
   /**
    * Returns a new table initialized with the given name
    */
-  public Table(String name) {
+  private Table(String name) {
     this.name = name;
   }
 
@@ -70,7 +70,7 @@ public class Table implements Relation, IntIterable {
    * <p>
    * The metadata is used by the storage module to save tables and read their data from disk
    */
-  public Table(TableMetadata metadata) {
+  private Table(TableMetadata metadata) {
     this.name = metadata.getName();
   }
 
@@ -80,11 +80,34 @@ public class Table implements Relation, IntIterable {
    * @param name    The name of the table
    * @param columns One or more columns, all of which must have either the same length or size 0
    */
-  public Table(String name, Column... columns) {
+  protected Table(String name, Column... columns) {
     this(name);
     for (Column column : columns) {
       this.addColumn(column);
     }
+  }
+
+  /**
+   * Returns a new, empty table (without rows or columns) with the given name
+   */
+  public static Table create(String tableName) {
+      return new Table(tableName);
+  }
+
+
+  /**
+   * Returns a new, empty table constructed according to the given metadata
+   */
+  public static Table create(TableMetadata metadata) {
+      return new Table(metadata);
+  }
+
+  /**
+   * Returns a new table with the given columns and given name
+   * @param columns   One or more columns, all of the same @code{column.size()}
+   */
+  public static Table create(String tableName, Column... columns) {
+      return new Table(tableName, columns);
   }
 
   /**
@@ -664,7 +687,7 @@ public class Table implements Relation, IntIterable {
    * @param csvFileName   The name of the file to import
    * @throws IOException
    */
-  public static Table create(ColumnType[] types, String csvFileName) throws IOException {
+  public static Table createFromCsv(ColumnType[] types, String csvFileName) throws IOException {
     return CsvReader.read(types, csvFileName);
   }
 
@@ -676,7 +699,7 @@ public class Table implements Relation, IntIterable {
    * @param csvFileName   The name of the file to import
    * @throws IOException
    */
-  public static Table create(String csvFileName) throws IOException {
+  public static Table createFromCsv(String csvFileName) throws IOException {
     return CsvReader.read(csvFileName);
   }
 
@@ -691,7 +714,7 @@ public class Table implements Relation, IntIterable {
    * @param csvFileName   the name of the file to import
    * @throws IOException
    */
-  public static Table create(ColumnType[] types, boolean header, String csvFileName) throws IOException {
+  public static Table createFromCsv(ColumnType[] types, boolean header, String csvFileName) throws IOException {
     return CsvReader.read(types, header, csvFileName);
   }
 
@@ -705,7 +728,7 @@ public class Table implements Relation, IntIterable {
    * @param csvFileName   the name of the file to import
    * @throws IOException
    */
-  public static Table create(ColumnType[] types, boolean header, char delimiter, String csvFileName) throws IOException {
+  public static Table createFromCsv(ColumnType[] types, boolean header, char delimiter, String csvFileName) throws IOException {
     return CsvReader.read(types, header, delimiter, csvFileName);
   }
 
@@ -716,7 +739,7 @@ public class Table implements Relation, IntIterable {
    * @param csvFileName   the name of the file to import
    * @throws IOException
    */
-  public static Table create(ColumnType[] types, char delimiter, String csvFileName) throws IOException {
+  public static Table createFromCsv(ColumnType[] types, char delimiter, String csvFileName) throws IOException {
     return CsvReader.read(types, delimiter, csvFileName);
   }
 

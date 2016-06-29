@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.store;
 
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.api.BooleanColumn;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
@@ -54,7 +55,7 @@ public class StorageManager {
 
     TableMetadata tableMetadata = readTableMetadata(path + File.separator + "Metadata.json");
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
-    com.github.lwhite1.tablesaw.api.Table table = new com.github.lwhite1.tablesaw.api.Table(tableMetadata);
+    Table table = Table.create(tableMetadata);
 
     // NB: We do some extra work with the hash map to ensure that the columns are added to the table in original order
     // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all columns are read

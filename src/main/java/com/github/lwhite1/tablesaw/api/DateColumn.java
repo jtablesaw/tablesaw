@@ -398,7 +398,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
         counts.put(value, 1);
       }
     }
-    Table table = new Table("Column: " + name());
+    Table table = Table.create("Column: " + name());
     table.addColumn(DateColumn.create("Date"));
     table.addColumn(IntColumn.create("Count"));
 

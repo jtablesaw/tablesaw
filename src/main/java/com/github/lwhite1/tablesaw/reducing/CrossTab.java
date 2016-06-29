@@ -96,7 +96,7 @@ public final class CrossTab {
    */
   public static Table xTabCount(Table table, Column column1, Column column2) {
 
-    Table t = new Table("Crosstab Counts: " + column1.name() + " x " + column2.name());
+    Table t = Table.create("Crosstab Counts: " + column1.name() + " x " + column2.name());
     t.addColumn(CategoryColumn.create(""));
 
     Table temp = table.sortOn(column1.name(), column2.name());
@@ -158,7 +158,7 @@ public final class CrossTab {
 
   public static Table xTabCount(Table table, DateColumn column1, Column column2) {
 
-    Table t = new Table("CrossTab Counts");
+    Table t = Table.create("CrossTab Counts");
     t.addColumn(CategoryColumn.create("value"));
     Table temp = table.sortOn(column1.name(), column2.name());
 
@@ -237,7 +237,7 @@ public final class CrossTab {
   public static Table tablePercents(Table xTabCounts) {
 
     Table pctTable = new Table("Proportions");
-    CategoryColumn labels = CategoryColumn.create("labels");
+    CategoryColumn labels = CategoryColumn.createFromCsv("labels");
 
     pctTable.addColumn(labels);
 
@@ -247,7 +247,7 @@ public final class CrossTab {
 
     for (int i = 1; i < xTabCounts.columnCount(); i++) {
       Column column = xTabCounts.column(i);
-      pctTable.addColumn(FloatColumn.create(column.name()));
+      pctTable.addColumn(FloatColumn.createFromCsv(column.name()));
     }
 
     long tableTotal
@@ -267,7 +267,7 @@ public final class CrossTab {
 
   public static Table rowPercents(Table xTabCounts) {
 
-    Table pctTable = new Table("Crosstab Row Proportions: ");
+    Table pctTable = Table.create("Crosstab Row Proportions: ");
     CategoryColumn labels = CategoryColumn.create("");
 
     pctTable.addColumn(labels);
@@ -297,7 +297,7 @@ public final class CrossTab {
 
   public static Table tablePercents(Table xTabCounts) {
 
-    Table pctTable = new Table("Crosstab Table Proportions: ");
+    Table pctTable = Table.create("Crosstab Table Proportions: ");
     CategoryColumn labels = CategoryColumn.create("");
 
     pctTable.addColumn(labels);

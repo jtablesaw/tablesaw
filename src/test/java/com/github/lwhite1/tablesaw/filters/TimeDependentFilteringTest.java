@@ -117,7 +117,7 @@ public class TimeDependentFilteringTest {
         if (eventDates.isEmpty()) {
           // this is an error
           System.out.println(patientTable.name());
-        } else {  //Get the first event for the current patient and create a date range around it
+        } else {  //Get the first event for the current patient and createFromCsv a date range around it
           LocalDate date = eventDates.get(0);
           result.addRange(Range.closed(date.minusDays(daysConstraint.lowerEndpoint()),
               date.plusDays(daysConstraint.upperEndpoint())));
@@ -138,7 +138,7 @@ public class TimeDependentFilteringTest {
 
   private static Table defineSchema() {
     Table t;
-    t = new Table("Observations");
+    t = Table.create("Observations");
     CategoryColumn conceptId = CategoryColumn.create("concept");
     DateColumn date = DateColumn.create("date");
     FloatColumn value = FloatColumn.create("value");
@@ -161,7 +161,7 @@ public class TimeDependentFilteringTest {
   }
 
   private static void generateData(int observationCount, Table table) throws IOException {
-    // create pools of random values
+    // createFromCsv pools of random values
 
     while (concepts.size() <= CONCEPT_COUNT) {
       concepts.add(RandomStringUtils.randomAscii(30));

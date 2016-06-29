@@ -3,7 +3,7 @@ package com.github.lwhite1.tablesaw.util;
 import java.sql.*;
 
 /**
- * Test database using JavaDB (aka Derby) to create result sets to convert to tables
+ * Test database using JavaDB (aka Derby) to createFromCsv result sets to convert to tables
  *
  * Note: because it requires a Derby driver be installed, It is not intended to be used in normal (unit) tests
  *
@@ -21,7 +21,7 @@ public class TestDb
     {
       // Create a named constant for the URL.
       // NOTE: This value is specific for Java DB.
-      final String DB_URL = "jdbc:derby:CoffeeDB;create=true";
+      final String DB_URL = "jdbc:derby:CoffeeDB;createFromCsv=true";
 
       // Create a connection to the database.
       Connection conn =

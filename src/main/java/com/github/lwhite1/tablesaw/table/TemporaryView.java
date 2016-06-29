@@ -188,7 +188,7 @@ public class TemporaryView implements Relation, IntIterable {
   }
 
   public Table asTable() {
-    Table table = new Table(this.name());
+    Table table = Table.create(this.name());
     for (Column column : columns()) {
       table.addColumn(column.subset(rowMap));
     }

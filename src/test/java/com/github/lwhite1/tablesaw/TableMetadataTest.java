@@ -20,7 +20,7 @@ public class TableMetadataTest {
 
   @Before
   public void setUp() throws Exception {
-    table = new Table("t");
+    table = Table.create("t");
     table.addColumn(column1);
     table.addColumn(column2);
   }

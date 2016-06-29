@@ -361,7 +361,7 @@ public class CategoryColumn extends AbstractColumn
   public List<BooleanColumn> getDummies() {
     List<BooleanColumn> results = new ArrayList<>();
 
-    // create the necessary columns
+    // createFromCsv the necessary columns
     for (Int2ObjectMap.Entry<String> entry : lookupTable.keyToValueMap().int2ObjectEntrySet()) {
       BooleanColumn column = BooleanColumn.create(entry.getValue());
       results.add(column);

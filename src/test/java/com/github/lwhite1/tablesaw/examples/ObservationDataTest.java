@@ -119,7 +119,7 @@ public class ObservationDataTest {
 
   private static Table defineSchema() {
     Table t;
-    t = new Table("Observations");
+    t = Table.create("Observations");
     CategoryColumn conceptId = CategoryColumn.create("concept");
     DateColumn date = DateColumn.create("date");
     FloatColumn value = FloatColumn.create("value");
@@ -157,7 +157,7 @@ public class ObservationDataTest {
   }
 
   private static void generateData(int observationCount, Table table) throws IOException {
-    // create pools of random values
+    // createFromCsv pools of random values
 
     while (concepts.size() <= 100_000) {
       concepts.add(RandomStringUtils.randomAscii(30));

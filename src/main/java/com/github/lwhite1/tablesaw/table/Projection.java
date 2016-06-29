@@ -23,7 +23,7 @@ public class Projection {
   }
 
   public Table where(Filter filter) {
-    Table projectedTable = new Table(table.name(), columns);
+    Table projectedTable = Table.create(table.name(), columns);
     Table newTable = projectedTable.emptyCopy();
     RoaringBitmap map = filter.apply(table);
     Rows.copyRowsToTable(map, projectedTable, newTable);

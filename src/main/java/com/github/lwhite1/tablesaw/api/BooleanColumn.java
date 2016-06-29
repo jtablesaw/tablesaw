@@ -93,7 +93,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
       counts.put(next, counts.get(next) + 1);
     }
 
-    Table table = new Table(name());
+    Table table = Table.create(name());
 
     BooleanColumn booleanColumn = BooleanColumn.create("Value");
     IntColumn countColumn = IntColumn.create("Count");

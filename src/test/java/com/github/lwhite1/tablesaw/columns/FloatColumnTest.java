@@ -2,6 +2,7 @@ package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.api.BooleanColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
@@ -30,7 +31,7 @@ public class FloatColumnTest {
     Fairy fairy = Fairy.create();
     fairy.baseProducer().trueOrFalse();
 
-    com.github.lwhite1.tablesaw.api.Table table = new com.github.lwhite1.tablesaw.api.Table("t");
+    com.github.lwhite1.tablesaw.api.Table table = Table.create("t");
     FloatColumn floatColumn = new FloatColumn("test", 1_000_000_000);
     BooleanColumn booleanColumn = new BooleanColumn("bools", 1_000_000_000);
     table.addColumn(floatColumn);
@@ -87,7 +88,7 @@ public class FloatColumnTest {
   @Test
   public void testIsLessThan() {
     int size = 1_000_000;
-    Relation table = new com.github.lwhite1.tablesaw.api.Table("t");
+    Relation table = Table.create("t");
     FloatColumn floatColumn = new FloatColumn("test", size);
     table.addColumn(floatColumn);
     for (int i = 0; i < size; i++) {
@@ -108,7 +109,7 @@ public class FloatColumnTest {
   @Test
   public void testIsGreaterThan() {
     int size = 1_000_000;
-    Relation table = new com.github.lwhite1.tablesaw.api.Table("t");
+    Relation table = Table.create("t");
     FloatColumn floatColumn = new FloatColumn("test", size);
     table.addColumn(floatColumn);
     for (int i = 0; i < size; i++) {
@@ -162,7 +163,7 @@ public class FloatColumnTest {
   @Test
   public void testIsEqualTo() {
 
-    Relation table = new com.github.lwhite1.tablesaw.api.Table("t");
+    Relation table = Table.create("t");
     FloatColumn floatColumn = new FloatColumn("test", 1_000_000);
     float[] floats = new float[1_000_000];
     table.addColumn(floatColumn);

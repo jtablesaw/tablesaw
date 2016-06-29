@@ -12,7 +12,7 @@ package com.github.lwhite1.tablesaw.util.collections;
  * <p>Implementations that choose to support the {@link #add(IntRange)} operation are required to
  * ignore empty ranges and coalesce connected ranges.  For example:  <pre>   {@code
  *
- *   IntRangeSet rangeSet = IntTreeRangeSet.create();
+ *   IntRangeSet rangeSet = IntTreeRangeSet.createFromCsv();
  *   rangeSet.add(IntRange.closed(1, 10)); // {[1, 10]}
  *   rangeSet.add(IntRange.closedOpen(11, 15)); // disconnected range; {[1, 10], [11, 15)}
  *   rangeSet.add(IntRange.closedOpen(15, 20)); // connected range; {[1, 10], [11, 20)}

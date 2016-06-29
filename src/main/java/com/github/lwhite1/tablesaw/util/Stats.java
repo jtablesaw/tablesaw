@@ -110,7 +110,7 @@ public class Stats {
   }
 
   public Table asTable(String name) {
-    Table t = new Table(name);
+    Table t = Table.create(name);
     CategoryColumn measure = CategoryColumn.create("Measure");
     FloatColumn value = FloatColumn.create("Value");
     t.addColumn(measure);

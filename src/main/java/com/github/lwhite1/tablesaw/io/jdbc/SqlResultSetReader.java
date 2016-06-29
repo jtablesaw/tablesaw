@@ -54,7 +54,7 @@ public class SqlResultSetReader {
   public static Table read(ResultSet resultSet, String tableName) throws SQLException {
 
     ResultSetMetaData metaData = resultSet.getMetaData();
-    Table table = new Table(tableName);
+    Table table = Table.create(tableName);
 
     // Setup the columns and add to the table
     for (int i = 1; i <= metaData.getColumnCount(); i++) {

@@ -451,10 +451,10 @@ public final class IntRange {
    *
    * <ul>
    * <li>equivalence: {@code a.canonical().contains(v) == a.contains(v)} for all {@code v} (in other
-   *     words, {@code ContiguousSet.create(a.canonical(domain), domain).equals(
-   *     ContiguousSet.create(a, domain))}
+   *     words, {@code ContiguousSet.createFromCsv(a.canonical(domain), domain).equals(
+   *     ContiguousSet.createFromCsv(a, domain))}
    * <li>uniqueness: unless {@code a.isEmpty()},
-   *     {@code ContiguousSet.create(a, domain).equals(ContiguousSet.create(b, domain))} implies
+   *     {@code ContiguousSet.createFromCsv(a, domain).equals(ContiguousSet.createFromCsv(b, domain))} implies
    *     {@code a.canonical(domain).equals(b.canonical(domain))}
    * <li>idempotence: {@code a.canonical(domain).canonical(domain).equals(a.canonical(domain))}
    * </ul>

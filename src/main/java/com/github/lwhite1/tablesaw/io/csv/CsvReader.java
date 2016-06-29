@@ -156,7 +156,7 @@ final public class CsvReader {
         headerRow = Lists.newArrayList(columnNames);
       }
 
-      table = new Table(nameMaker(fileName));
+      table = Table.create(nameMaker(fileName));
       for (int x = 0; x < types.length; x++) {
         if (types[x] != ColumnType.SKIP) {
           Column newColumn = TypeUtils.newColumn(headerRow.get(x), types[x]);
@@ -216,7 +216,7 @@ final public class CsvReader {
         headerRow = Lists.newArrayList(columnNames);
       }
 
-      table = new Table(nameMaker(fileName));
+      table = Table.create(nameMaker(fileName));
       for (int x = 0; x < types.length; x++) {
         if (types[x] != ColumnType.SKIP) {
           Column newColumn = TypeUtils.newColumn(headerRow.get(x), types[x]);

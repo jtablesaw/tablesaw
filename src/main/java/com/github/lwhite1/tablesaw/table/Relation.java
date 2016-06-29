@@ -1,16 +1,17 @@
 package com.github.lwhite1.tablesaw.table;
 
-import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.BooleanColumn;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.DateTimeColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.TimeColumn;
+import com.github.lwhite1.tablesaw.columns.Column;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -190,7 +191,7 @@ public interface Relation {
         .append(columnCount())
         .append(" variables (cols)");
 
-    com.github.lwhite1.tablesaw.api.Table structure = new com.github.lwhite1.tablesaw.api.Table(nameBuilder.toString());
+    Table structure = Table.create(nameBuilder.toString());
     structure.addColumn(IntColumn.create("Index"));
     structure.addColumn(CategoryColumn.create("Column Name"));
     structure.addColumn(CategoryColumn.create("Type"));
@@ -286,8 +287,6 @@ public interface Relation {
   default CategoryColumn categoryColumn(int columnIndex) {
     return (CategoryColumn) column(columnIndex);
   }
-
-
 
   default DateTimeColumn dateTimeColumn(int columnIndex) {
     return (DateTimeColumn) column(columnIndex);

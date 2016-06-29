@@ -23,7 +23,7 @@ public class PlotController extends Application{
    * @param primaryStage the primary stage for this application, onto which
    *                     the application scene can be set. The primary stage will be embedded in
    *                     the browser if the application was launched as an applet.
-   *                     Applications may create other stages, if needed, but they will not be
+   *                     Applications may createFromCsv other stages, if needed, but they will not be
    *                     primary stages and will not be embedded in the browser.
    */
   @Override

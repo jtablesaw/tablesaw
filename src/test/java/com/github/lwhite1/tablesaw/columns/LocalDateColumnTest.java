@@ -19,7 +19,7 @@ public class LocalDateColumnTest {
 
   @Before
   public void setUp() throws Exception {
-    Table table = new Table("Test");
+    Table table = Table.create("Test");
     table.addColumn(column1);
     column1 = DateColumn.create("Game date");
   }

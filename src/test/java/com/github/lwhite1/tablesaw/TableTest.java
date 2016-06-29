@@ -19,7 +19,7 @@ public class TableTest {
 
   @Before
   public void setUp() throws Exception {
-    table = new Table("t");
+    table = Table.create("t");
     table.addColumn(column);
   }
 
@@ -31,7 +31,7 @@ public class TableTest {
 
   @Test
   public void testColumnCount() throws Exception {
-    assertEquals(0, new Table("t").columnCount());
+    assertEquals(0, Table.create("t").columnCount());
     assertEquals(1, table.columnCount());
   }
 

@@ -19,7 +19,7 @@ public class SqlResultSetReaderTest {
 
     // Create a named constant for the URL.
     // NOTE: This value is specific for Java DB.
-    final String DB_URL = "jdbc:derby:CoffeeDB;create=true";
+    final String DB_URL = "jdbc:derby:CoffeeDB;createFromCsv=true";
 
     // Create a connection to the database.
     Connection conn = DriverManager.getConnection(DB_URL);
