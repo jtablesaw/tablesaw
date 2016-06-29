@@ -24,7 +24,7 @@ public final class IntRange {
    * lower} and strictly less than {@code upper}.
    *
    * @throws IllegalArgumentException if {@code lower} is greater than <i>or
-   *     equal to</i> {@code upper}
+   *                                  equal to</i> {@code upper}
    * @since 14.0
    */
   public static IntRange open(int lower, int upper) {
@@ -36,7 +36,7 @@ public final class IntRange {
    * {@code lower} and less than or equal to {@code upper}.
    *
    * @throws IllegalArgumentException if {@code lower} is greater than {@code
-   *     upper}
+   *                                  upper}
    * @since 14.0
    */
   public static IntRange closed(int lower, int upper) {
@@ -48,7 +48,7 @@ public final class IntRange {
    * {@code lower} and strictly less than {@code upper}.
    *
    * @throws IllegalArgumentException if {@code lower} is greater than {@code
-   *     upper}
+   *                                  upper}
    * @since 14.0
    */
   public static IntRange closedOpen(int lower, int upper) {
@@ -60,7 +60,7 @@ public final class IntRange {
    * lower} and less than or equal to {@code upper}.
    *
    * @throws IllegalArgumentException if {@code lower} is greater than {@code
-   *     upper}
+   *                                  upper}
    * @since 14.0
    */
   public static IntRange openClosed(int lower, int upper) {
@@ -73,7 +73,7 @@ public final class IntRange {
    * (open).
    *
    * @throws IllegalArgumentException if {@code lower} is greater than {@code
-   *     upper}
+   *                                  upper}
    */
   public static IntRange range(
       int lower, BoundType lowerType, int upper, BoundType upperType) {
@@ -187,10 +187,10 @@ public final class IntRange {
    * {@linkplain IntRange#contains(int) contains} all of the given values.
    * The returned range is {@linkplain BoundType#CLOSED closed} on both ends.
    *
-   * @throws ClassCastException if the parameters are not <i>mutually
-   *     comparable</i>
+   * @throws ClassCastException     if the parameters are not <i>mutually
+   *                                comparable</i>
    * @throws NoSuchElementException if {@code values} is empty
-   * @throws NullPointerException if any of {@code values} is null
+   * @throws NullPointerException   if any of {@code values} is null
    * @since 14.0
    */
   public static IntRange encloseAll(IntCollection values) {
@@ -242,7 +242,7 @@ public final class IntRange {
    * Returns the lower endpoint of this range.
    *
    * @throws IllegalStateException if this range is unbounded below (that is, {@link
-   *     #hasLowerBound()} returns {@code false})
+   *                               #hasLowerBound()} returns {@code false})
    */
   public int lowerEndpoint() {
     return lowerBound.endpoint();
@@ -253,7 +253,7 @@ public final class IntRange {
    * its lower endpoint, {@link BoundType#OPEN} if it does not.
    *
    * @throws IllegalStateException if this range is unbounded below (that is, {@link
-   *     #hasLowerBound()} returns {@code false})
+   *                               #hasLowerBound()} returns {@code false})
    */
   public BoundType lowerBoundType() {
     return lowerBound.typeAsLowerBound();
@@ -270,7 +270,7 @@ public final class IntRange {
    * Returns the upper endpoint of this range.
    *
    * @throws IllegalStateException if this range is unbounded above (that is, {@link
-   *     #hasUpperBound()} returns {@code false})
+   *                               #hasUpperBound()} returns {@code false})
    */
   public int upperEndpoint() {
     return upperBound.endpoint();
@@ -281,7 +281,7 @@ public final class IntRange {
    * its upper endpoint, {@link BoundType#OPEN} if it does not.
    *
    * @throws IllegalStateException if this range is unbounded above (that is, {@link
-   *     #hasUpperBound()} returns {@code false})
+   *                               #hasUpperBound()} returns {@code false})
    */
   public BoundType upperBoundType() {
     return upperBound.typeAsUpperBound();
@@ -291,7 +291,7 @@ public final class IntRange {
    * Returns {@code true} if this range is of the form {@code [v..v)} or {@code (v..v]}. (This does
    * not encompass ranges of the form {@code (v..v)}, because such ranges are <i>invalid</i> and
    * can't be constructed at all.)
-   *
+   * <p>
    * <p>Note that certain discrete ranges such as the integer range {@code (3..4)} are <b>not</b>
    * considered empty, even though they contain no actual values.  In these cases, it may be
    * helpful to preprocess ranges with {@link #canonical(IntegerDomain)}.
@@ -335,22 +335,22 @@ public final class IntRange {
   /**
    * Returns {@code true} if the bounds of {@code other} do not extend outside the bounds of this
    * range. Examples:
-   *
+   * <p>
    * <ul>
    * <li>{@code [3..6]} encloses {@code [4..5]}
    * <li>{@code (3..6)} encloses {@code (3..6)}
    * <li>{@code [3..6]} encloses {@code [4..4)} (even though the latter is empty)
    * <li>{@code (3..6]} does not enclose {@code [3..6]}
    * <li>{@code [4..5]} does not enclose {@code (3..6)} (even though it contains every value
-   *     contained by the latter range)
+   * contained by the latter range)
    * <li>{@code [3..6]} does not enclose {@code (1..1]} (even though it contains every value
-   *     contained by the latter range)
+   * contained by the latter range)
    * </ul>
-   *
+   * <p>
    * <p>Note that if {@code a.encloses(b)}, then {@code b.contains(v)} implies
    * {@code a.contains(v)}, but as the last two examples illustrate, the converse is not always
    * true.
-   *
+   * <p>
    * <p>Being reflexive, antisymmetric and transitive, the {@code encloses} relation defines a
    * <i>partial order</i> over ranges. There exists a unique {@linkplain IntRange#all maximal} range
    * according to this relation, and also numerous {@linkplain #isEmpty minimal} ranges. Enclosure
@@ -364,22 +364,22 @@ public final class IntRange {
   /**
    * Returns {@code true} if there exists a (possibly empty) range which is {@linkplain #encloses
    * enclosed} by both this range and {@code other}.
-   *
+   * <p>
    * <p>For example,
    * <ul>
    * <li>{@code [2, 4)} and {@code [5, 7)} are not connected
    * <li>{@code [2, 4)} and {@code [3, 5)} are connected, because both enclose {@code [3, 4)}
    * <li>{@code [2, 4)} and {@code [4, 6)} are connected, because both enclose the empty range
-   *     {@code [4, 4)}
+   * {@code [4, 4)}
    * </ul>
-   *
+   * <p>
    * <p>Note that this range and {@code other} have a well-defined {@linkplain #span union} and
    * {@linkplain #intersection intersection} (as a single, possibly-empty range) if and only if this
    * method returns {@code true}.
-   *
+   * <p>
    * <p>The connectedness relation is both reflexive and symmetric, but does not form an {@linkplain
    * Equivalence equivalence relation} as it is not transitive.
-   *
+   * <p>
    * <p>Note that certain discrete ranges are not considered connected, even though there are no
    * elements "between them."  For example, {@code [3, 5]} is not considered connected to {@code
    * [6, 10]}.  In these cases, it may be desirable for both input ranges to be preprocessed with
@@ -393,14 +393,14 @@ public final class IntRange {
   /**
    * Returns the maximal range {@linkplain #encloses enclosed} by both this range and {@code
    * connectedRange}, if such a range exists.
-   *
+   * <p>
    * <p>For example, the intersection of {@code [1..5]} and {@code (3..7)} is {@code (3..5]}. The
    * resulting range may be empty; for example, {@code [1..5)} intersected with {@code [5..7)}
    * yields the empty range {@code [5..5)}.
-   *
+   * <p>
    * <p>The intersection exists if and only if the two ranges are {@linkplain #isConnected
    * connected}.
-   *
+   * <p>
    * <p>The intersection operation is commutative, associative and idempotent, and its identity
    * element is {@link IntRange#all}).
    *
@@ -423,11 +423,11 @@ public final class IntRange {
   /**
    * Returns the minimal range that {@linkplain #encloses encloses} both this range and {@code
    * other}. For example, the span of {@code [1..3]} and {@code (5..7)} is {@code [1..7)}.
-   *
+   * <p>
    * <p><i>If</i> the input ranges are {@linkplain #isConnected connected}, the returned range can
    * also be called their <i>union</i>. If they are not, note that the span might contain values
    * that are not contained in either input range.
-   *
+   * <p>
    * <p>Like {@link #intersection(IntRange) intersection}, this operation is commutative, associative
    * and idempotent. Unlike it, it is always well-defined for any two input ranges.
    */
@@ -448,20 +448,20 @@ public final class IntRange {
   /**
    * Returns the canonical form of this range in the given domain. The canonical form has the
    * following properties:
-   *
+   * <p>
    * <ul>
    * <li>equivalence: {@code a.canonical().contains(v) == a.contains(v)} for all {@code v} (in other
-   *     words, {@code ContiguousSet.createFromCsv(a.canonical(domain), domain).equals(
-   *     ContiguousSet.createFromCsv(a, domain))}
+   * words, {@code ContiguousSet.createFromCsv(a.canonical(domain), domain).equals(
+   * ContiguousSet.createFromCsv(a, domain))}
    * <li>uniqueness: unless {@code a.isEmpty()},
-   *     {@code ContiguousSet.createFromCsv(a, domain).equals(ContiguousSet.createFromCsv(b, domain))} implies
-   *     {@code a.canonical(domain).equals(b.canonical(domain))}
+   * {@code ContiguousSet.createFromCsv(a, domain).equals(ContiguousSet.createFromCsv(b, domain))} implies
+   * {@code a.canonical(domain).equals(b.canonical(domain))}
    * <li>idempotence: {@code a.canonical(domain).canonical(domain).equals(a.canonical(domain))}
    * </ul>
-   *
+   * <p>
    * <p>Furthermore, this method guarantees that the range returned will be one of the following
    * canonical forms:
-   *
+   * <p>
    * <ul>
    * <li>[start..end)
    * <li>[start..+∞)
@@ -492,7 +492,9 @@ public final class IntRange {
     return false;
   }
 
-  /** Returns a hash code for this range. */
+  /**
+   * Returns a hash code for this range.
+   */
   @Override
   public int hashCode() {
     return lowerBound.hashCode() * 31 + upperBound.hashCode();

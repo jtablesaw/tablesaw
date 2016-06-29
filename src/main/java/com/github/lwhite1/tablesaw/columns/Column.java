@@ -117,6 +117,7 @@ public interface Column {
   int columnWidth();
 
   RoaringBitmap isMissing();
+
   RoaringBitmap isNotMissing();
 
   /**

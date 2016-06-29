@@ -314,8 +314,9 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
 
   /**
    * Returns a PackedDate as converted from the given string
+   *
    * @param value A string representation of a date
-   * @throws      DateTimeParseException if no parser can be found for the date format
+   * @throws DateTimeParseException if no parser can be found for the date format
    */
   public int convert(String value) {
     if (Strings.isNullOrEmpty(value)

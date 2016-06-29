@@ -291,8 +291,8 @@ public class StorageManager {
    *
    * @param folderName The location of the table (for example: "mytables")
    * @param table      The table to be saved
-   * @throws IOException
    * @return The path and name of the table
+   * @throws IOException
    */
   public static String saveTable(String folderName, Relation table) throws IOException {
 
@@ -392,8 +392,9 @@ public class StorageManager {
 
   /**
    * Writes out the values of the category column encoded as ints to minimize the time required for subsequent reads
-   *
+   * <p>
    * The files are written Strings first, then the ints that encode them so they can be read in the opposite order
+   *
    * @throws IOException
    */
   public static void writeColumn(String fileName, CategoryColumn column) throws IOException {

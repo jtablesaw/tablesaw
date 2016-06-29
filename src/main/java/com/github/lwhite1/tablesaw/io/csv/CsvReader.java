@@ -184,7 +184,8 @@ final public class CsvReader {
     }
     return table;
   }
-/**
+
+  /**
    * Returns a Relation constructed from a CSV File with the given file name
    * <p>
    * The @code{fileName} is used as the initial table name for the new table
@@ -264,6 +265,7 @@ final public class CsvReader {
 
   /**
    * Returns the structure of the table given by {@code csvFileName} as detected by analysis of a sample of the data
+   *
    * @throws IOException
    */
   public static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
@@ -273,29 +275,31 @@ final public class CsvReader {
   }
 
 
-    /**
-     * Returns a string representation of the file types in file {@code csvFilename},
-     * as determined by the type-detection algorithm
-     *
-     * This method is intended to help analysts quickly fix any erroneous types, by printing out the types in a format
-     * such that they can be edited to correct any mistakes, and used in an array literal
-     *
-     * For example:
-     *
-     * LOCAL_DATE, // 0     date
-     * SHORT_INT,  // 1     approval
-     * CATEGORY,   // 2     who
-     *
-     * Note that the types are array separated, and that the index position and the column name are printed such that they
-     * would be interpreted as comments if you paste the output into an array:
-     *
-     * ColumnType[] types = {
-     *   LOCAL_DATE, // 0     date
-     *   SHORT_INT,  // 1     approval
-     *   CATEGORY,   // 2     who
-     * }
-     * @throws IOException
-     */
+  /**
+   * Returns a string representation of the file types in file {@code csvFilename},
+   * as determined by the type-detection algorithm
+   * <p>
+   * This method is intended to help analysts quickly fix any erroneous types, by printing out the types in a format
+   * such that they can be edited to correct any mistakes, and used in an array literal
+   * <p>
+   * For example:
+   * <p>
+   * LOCAL_DATE, // 0     date
+   * SHORT_INT,  // 1     approval
+   * CATEGORY,   // 2     who
+   * <p>
+   * Note that the types are array separated, and that the index position and the column name are printed such that
+   * they
+   * would be interpreted as comments if you paste the output into an array:
+   * <p>
+   * ColumnType[] types = {
+   * LOCAL_DATE, // 0     date
+   * SHORT_INT,  // 1     approval
+   * CATEGORY,   // 2     who
+   * }
+   *
+   * @throws IOException
+   */
   public static String printColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
 
     Table structure = detectedColumnTypes(csvFileName, header, delimiter);
@@ -349,8 +353,9 @@ final public class CsvReader {
 
   /**
    * Retuns the given file after autodetecting the column types, or trying to
-   * @param fileName  The name of the file to load
-   * @return          A table containing the data from the file
+   *
+   * @param fileName The name of the file to load
+   * @return A table containing the data from the file
    * @throws IOException
    */
   public static Table read(String fileName) throws IOException {
@@ -510,13 +515,13 @@ final public class CsvReader {
 
   /**
    * Returns the selected candidate for a column of data, by picking the first value in the given list
-   * @param   typeCandidates a possibly empty list of candidates. This list should be sorted in order of preference
+   *
+   * @param typeCandidates a possibly empty list of candidates. This list should be sorted in order of preference
    */
   private static ColumnType selectType(List<ColumnType> typeCandidates) {
     if (typeCandidates.isEmpty()) {
       return CATEGORY;
-    }
-    else {
+    } else {
       return typeCandidates.get(0);
     }
   }

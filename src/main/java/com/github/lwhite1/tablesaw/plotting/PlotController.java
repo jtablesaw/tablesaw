@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 /**
  *
  */
-public class PlotController extends Application{
+public class PlotController extends Application {
 
   /**
    * The main entry point for all JavaFX applications.
@@ -40,8 +40,8 @@ public class PlotController extends Application{
     String exceptionMessage = "";
 
     final WebEngine engine = webView.getEngine();
-    if (engine.getLoadWorker().getException() != null){
-      exceptionMessage = ", "+ engine.getLoadWorker().getException().toString();
+    if (engine.getLoadWorker().getException() != null) {
+      exceptionMessage = ", " + engine.getLoadWorker().getException().toString();
     }
     System.out.println(exceptionMessage);
 

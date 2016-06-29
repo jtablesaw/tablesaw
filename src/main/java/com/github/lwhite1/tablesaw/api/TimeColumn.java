@@ -186,6 +186,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
 
   /**
    * Returns a PackedTime as converted from the given string
+   *
    * @param value A string representation of a time
    * @throws DateTimeParseException if no parser can be found for the time format used
    */

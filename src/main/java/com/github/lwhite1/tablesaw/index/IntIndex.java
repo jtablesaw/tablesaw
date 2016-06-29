@@ -10,7 +10,7 @@ import org.roaringbitmap.RoaringBitmap;
 import java.util.Comparator;
 
 /**
- *  An index for four-byte integer and integer backed columns (date, category, time)
+ * An index for four-byte integer and integer backed columns (date, category, time)
  */
 public class IntIndex {
 
@@ -41,6 +41,7 @@ public class IntIndex {
 
   /**
    * Returns a bitmap containing row numbers of all cells matching the given int
+   *
    * @param value This is a 'key' from the index perspective, meaning it is a value from the standpoint of the column
    */
   public RoaringBitmap get(int value) {

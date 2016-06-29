@@ -30,7 +30,7 @@ public class SubTable extends Table {
    *
    * @param original The table from which this one was derived
    */
-   SubTable(Table original) {
+  SubTable(Table original) {
     super(original.name(),
         original.emptyCopy().columns().toArray(new Column[original.columnCount()]));
   }

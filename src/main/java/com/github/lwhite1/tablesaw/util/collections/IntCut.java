@@ -284,7 +284,7 @@ abstract class IntCut implements Comparable<IntCut> {
     }
 
     public int compareTo(IntCut o) {
-      return o == this? 0 : 1;
+      return o == this ? 0 : 1;
     }
 
     public String toString() {
@@ -358,7 +358,7 @@ abstract class IntCut implements Comparable<IntCut> {
     }
 
     public int compareTo(IntCut o) {
-      return o == this? 0: -1;
+      return o == this ? 0 : -1;
     }
 
     public String toString() {

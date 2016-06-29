@@ -1,27 +1,27 @@
 package com.github.lwhite1.tablesaw.util.collections;
 
-    import java.util.NoSuchElementException;
-    import java.util.Set;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
-    import javax.annotation.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * A set comprising zero or more {@linkplain IntRange#isEmpty nonempty},
  * {@linkplain IntRange#isConnected(IntRange) disconnected} ranges of type {@code C}.
- *
+ * <p>
  * <p>Implementations that choose to support the {@link #add(IntRange)} operation are required to
  * ignore empty ranges and coalesce connected ranges.  For example:  <pre>   {@code
- *
+ * <p>
  *   IntRangeSet rangeSet = IntTreeRangeSet.createFromCsv();
  *   rangeSet.add(IntRange.closed(1, 10)); // {[1, 10]}
  *   rangeSet.add(IntRange.closedOpen(11, 15)); // disconnected range; {[1, 10], [11, 15)}
  *   rangeSet.add(IntRange.closedOpen(15, 20)); // connected range; {[1, 10], [11, 20)}
  *   rangeSet.add(IntRange.openClosed(0, 0)); // empty range; {[1, 10], [11, 20)}
  *   rangeSet.remove(IntRange.open(5, 10)); // splits [1, 10]; {[1, 5], [10, 10], [11, 20)}}</pre>
- *
+ * <p>
  * <p>Note that the behavior of {@link IntRange#isEmpty()} and {@link IntRange#isConnected(IntRange)} may
  * not be as expected on discrete ranges.  See the Javadoc of those methods for details.
- *
+ * <p>
  * <p>For a {@link Set} whose contents are specified by a {@link IntRange}.
  */
 public interface IntRangeSet {
@@ -59,7 +59,7 @@ public interface IntRangeSet {
    * this range set which {@linkplain IntRange#encloses encloses} it. It follows that
    * {@code this.contains(value)} whenever {@code other.contains(value)}. Returns {@code true} if
    * {@code other} is empty.
-   *
+   * <p>
    * <p>This is equivalent to checking if this range set {@link #encloses} each of the ranges in
    * {@code other}.
    */
@@ -90,7 +90,7 @@ public interface IntRangeSet {
 
   /**
    * Returns a view of the complement of this {@code IntRangeSet}.
-   *
+   * <p>
    * <p>The returned view supports the {@link #add} operation if this {@code IntRangeSet} supports
    * {@link #remove}, and vice versa.
    */
@@ -98,7 +98,7 @@ public interface IntRangeSet {
 
   /**
    * Returns a view of the intersection of this {@code IntRangeSet} with the specified range.
-   *
+   * <p>
    * <p>The returned view supports all optional operations supported by this {@code IntRangeSet}, with
    * the caveat that an {@link IllegalArgumentException} is thrown on an attempt to
    * {@linkplain #add(IntRange) add} any range not {@linkplain IntRange#encloses(IntRange) enclosed} by
@@ -112,35 +112,35 @@ public interface IntRangeSet {
    * Adds the specified range to this {@code IntRangeSet} (optional operation). That is, for equal
    * range sets a and b, the result of {@code a.add(range)} is that {@code a} will be the minimal
    * range set for which both {@code a.enclosesAll(b)} and {@code a.encloses(range)}.
-   *
+   * <p>
    * <p>Note that {@code range} will be {@linkplain IntRange#span(IntRange) coalesced} with any ranges in
    * the range set that are {@linkplain IntRange#isConnected(IntRange) connected} with it.  Moreover,
    * if {@code range} is empty, this is a no-op.
    *
    * @throws UnsupportedOperationException if this range set does not support the {@code add}
-   *         operation
+   *                                       operation
    */
   void add(IntRange range);
 
   /**
    * Removes the specified range from this {@code IntRangeSet} (optional operation). After this
    * operation, if {@code range.contains(c)}, {@code this.contains(c)} will return {@code false}.
-   *
+   * <p>
    * <p>If {@code range} is empty, this is a no-op.
    *
    * @throws UnsupportedOperationException if this range set does not support the {@code remove}
-   *         operation
+   *                                       operation
    */
   void remove(IntRange range);
 
   /**
    * Removes all ranges from this {@code IntRangeSet} (optional operation).  After this operation,
    * {@code this.contains(c)} will return false for all {@code c}.
-   *
+   * <p>
    * <p>This is equivalent to {@code remove(IntRange.all())}.
    *
    * @throws UnsupportedOperationException if this range set does not support the {@code clear}
-   *         operation
+   *                                       operation
    */
   void clear();
 
@@ -148,11 +148,11 @@ public interface IntRangeSet {
    * Adds all of the ranges from the specified range set to this range set (optional operation).
    * After this operation, this range set is the minimal range set that
    * {@linkplain #enclosesAll(IntRangeSet) encloses} both the original range set and {@code other}.
-   *
+   * <p>
    * <p>This is equivalent to calling {@link #add} on each of the ranges in {@code other} in turn.
    *
    * @throws UnsupportedOperationException if this range set does not support the {@code addAll}
-   *         operation
+   *                                       operation
    */
   void addAll(IntRangeSet other);
 
@@ -160,12 +160,12 @@ public interface IntRangeSet {
    * Removes all of the ranges from the specified range set from this range set (optional
    * operation). After this operation, if {@code other.contains(c)}, {@code this.contains(c)} will
    * return {@code false}.
-   *
+   * <p>
    * <p>This is equivalent to calling {@link #remove} on each of the ranges in {@code other} in
    * turn.
    *
    * @throws UnsupportedOperationException if this range set does not support the {@code removeAll}
-   *         operation
+   *                                       operation
    */
   void removeAll(IntRangeSet other);
 

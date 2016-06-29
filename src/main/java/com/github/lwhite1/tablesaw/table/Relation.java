@@ -21,7 +21,7 @@ import java.util.List;
  */
 public interface Relation {
 
-  void addColumn(Column ... cols);
+  void addColumn(Column... cols);
 
   void setName(String name);
 
@@ -86,7 +86,7 @@ public interface Relation {
   /**
    * Returns the column at columnIndex (0-based)
    *
-   * @param columnIndex an integer >= 0 and < number of columns in the relation
+   * @param columnIndex an integer at least 0 and less than number of columns in the relation
    * @return the column at the given index
    */
   Column column(int columnIndex);

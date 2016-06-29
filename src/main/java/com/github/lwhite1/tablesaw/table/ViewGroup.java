@@ -110,7 +110,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
   }
 
   private void addViewToSubTables(TemporaryView view) {
-      subTables.add(view);
+    subTables.add(view);
   }
 
   public List<TemporaryView> getSubTables() {
@@ -128,7 +128,8 @@ public class ViewGroup implements Iterable<TemporaryView> {
 
 
   /**
-   * For a subtable that is grouped by the values in more than one column, split the grouping column into separate cols and return the revised view
+   * For a subtable that is grouped by the values in more than one column, split the grouping column into separate
+   * cols and return the revised view
    */
   private Table splitGroupingColumn(Table groupTable) {
 

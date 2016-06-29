@@ -101,9 +101,13 @@ public class ColumnReference {
     this.columnName = column;
   }
 
-  public Filter isNotMissing() {return new IsNotMissing(this);}
+  public Filter isNotMissing() {
+    return new IsNotMissing(this);
+  }
 
-  public Filter isMissing() {return new IsMissing(this);}
+  public Filter isMissing() {
+    return new IsMissing(this);
+  }
 
   public Filter isEqualTo(int value) {
     return new IntEqualTo(this, value);

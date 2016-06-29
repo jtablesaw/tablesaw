@@ -25,6 +25,7 @@ public class StandardColors {
 
   /**
    * Loads the standard colors from a file
+   *
    * @return
    */
   static Multimap<Hue, StandardColor> loadColors() {
@@ -130,6 +131,7 @@ public class StandardColors {
     colors.add(Color.BLACK);
     return colors.toArray(new Color[size]);
   }
+
   static Color[] ggPlotGreys6() {
     int size = 6;
     List<Color> colors = new ArrayList<>(size);

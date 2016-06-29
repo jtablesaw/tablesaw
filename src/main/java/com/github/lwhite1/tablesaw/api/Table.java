@@ -43,7 +43,7 @@ import static com.github.lwhite1.tablesaw.sorting.Sort.Order;
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
  * All the data in a column has the same type: integer, float, category, etc., but a table may contain an arbitrary
  * number of columns of any type.
- *
+ * <p>
  * Tables are the main data-type and primary focus of Tablesaw.
  */
 public class Table implements Relation, IntIterable {
@@ -91,7 +91,7 @@ public class Table implements Relation, IntIterable {
    * Returns a new, empty table (without rows or columns) with the given name
    */
   public static Table create(String tableName) {
-      return new Table(tableName);
+    return new Table(tableName);
   }
 
 
@@ -99,15 +99,16 @@ public class Table implements Relation, IntIterable {
    * Returns a new, empty table constructed according to the given metadata
    */
   public static Table create(TableMetadata metadata) {
-      return new Table(metadata);
+    return new Table(metadata);
   }
 
   /**
    * Returns a new table with the given columns and given name
-   * @param columns   One or more columns, all of the same @code{column.size()}
+   *
+   * @param columns One or more columns, all of the same @code{column.size()}
    */
   public static Table create(String tableName, Column... columns) {
-      return new Table(tableName, columns);
+    return new Table(tableName, columns);
   }
 
   /**
@@ -121,8 +122,8 @@ public class Table implements Relation, IntIterable {
   /**
    * Adds the given column to this table at the given position in the column list
    *
-   * @param index   Zero-based index into the column list
-   * @param column  Column to be added
+   * @param index  Zero-based index into the column list
+   * @param column Column to be added
    */
   public void addColumn(int index, Column column) {
     columnList.add(index, column);
@@ -139,7 +140,7 @@ public class Table implements Relation, IntIterable {
   /**
    * Returns the column at the given index in the column list
    *
-   * @param columnIndex an integer >= 0 and < number of columns in the relation
+   * @param columnIndex an integer at least 0 and less than number of columns in the relation
    */
   @Override
   public Column column(int columnIndex) {
@@ -623,8 +624,9 @@ public class Table implements Relation, IntIterable {
 
   /**
    * Exports this table as a CSV file with the name (and path) of the given file
-   * @param fileNameWithPath  The name of the file to save to. By default, it writes to the working directory,
-   *                  but you can specify a different folder by providing the path (e.g. mydata/myfile.csv)
+   *
+   * @param fileNameWithPath The name of the file to save to. By default, it writes to the working directory,
+   *                         but you can specify a different folder by providing the path (e.g. mydata/myfile.csv)
    */
   public void exportToCsv(String fileNameWithPath) {
     try {
@@ -661,11 +663,10 @@ public class Table implements Relation, IntIterable {
   /**
    * Returns the result of applying the given function to the specified column
    *
-   * @param numericColumnName   The name of a numeric (integer, float, etc.) column in this table
-   * @param function            A numeric reduce function
-   *
+   * @param numericColumnName The name of a numeric (integer, float, etc.) column in this table
+   * @param function          A numeric reduce function
+   * @return the function result
    * @throws IllegalArgumentException if numericColumnName doesn't name a numeric column in this table
-   * @return  the function result
    */
   public double reduce(String numericColumnName, NumericReduceFunction function) {
     Column column = column(numericColumnName);
@@ -673,18 +674,19 @@ public class Table implements Relation, IntIterable {
     return function.reduce(column.toDoubleArray());
   }
 
-  public Table reduce(String numericColumnName, NumericReduceFunction function, String ... groupColumnName) {
+  public Table reduce(String numericColumnName, NumericReduceFunction function, String... groupColumnName) {
     ViewGroup tableGroup = ViewGroup.create(this, groupColumnName);
     return tableGroup.reduce(numericColumnName, function);
   }
 
   /**
    * Returns a new table constructed from a character delimited (aka CSV) text file
-   *
+   * <p>
    * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
    * which is used to populate the column names
-   * @param types         The column types
-   * @param csvFileName   The name of the file to import
+   *
+   * @param types       The column types
+   * @param csvFileName The name of the file to import
    * @throws IOException
    */
   public static Table createFromCsv(ColumnType[] types, String csvFileName) throws IOException {
@@ -693,10 +695,11 @@ public class Table implements Relation, IntIterable {
 
   /**
    * Returns a new table constructed from a character delimited (aka CSV) text file
-   *
+   * <p>
    * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
    * which is used to populate the column names
-   * @param csvFileName   The name of the file to import
+   *
+   * @param csvFileName The name of the file to import
    * @throws IOException
    */
   public static Table createFromCsv(String csvFileName) throws IOException {
@@ -705,13 +708,13 @@ public class Table implements Relation, IntIterable {
 
   /**
    * Returns a new table constructed from a character delimited (aka CSV) text file
-   *
+   * <p>
    * It is assumed that the file is truly comma-separated
    *
-   * @param types         The column types
-   * @param header        True if the file has a single header row. False if it has no header row.
-   *                      Multi-line headers are not supported
-   * @param csvFileName   the name of the file to import
+   * @param types       The column types
+   * @param header      True if the file has a single header row. False if it has no header row.
+   *                    Multi-line headers are not supported
+   * @param csvFileName the name of the file to import
    * @throws IOException
    */
   public static Table createFromCsv(ColumnType[] types, boolean header, String csvFileName) throws IOException {
@@ -721,22 +724,24 @@ public class Table implements Relation, IntIterable {
   /**
    * Returns a new table constructed from a character delimited (aka CSV) text file
    *
-   * @param types         The column types
-   * @param header        true if the file has a single header row. False if it has no header row.
-   *                      Multi-line headers are not supported
-   * @param delimiter     a char that divides the columns in the source file, often a comma or tab
-   * @param csvFileName   the name of the file to import
+   * @param types       The column types
+   * @param header      true if the file has a single header row. False if it has no header row.
+   *                    Multi-line headers are not supported
+   * @param delimiter   a char that divides the columns in the source file, often a comma or tab
+   * @param csvFileName the name of the file to import
    * @throws IOException
    */
-  public static Table createFromCsv(ColumnType[] types, boolean header, char delimiter, String csvFileName) throws IOException {
+  public static Table createFromCsv(ColumnType[] types, boolean header, char delimiter, String csvFileName) throws
+      IOException {
     return CsvReader.read(types, header, delimiter, csvFileName);
   }
 
   /**
    * Returns a new table constructed from a character delimited (aka CSV) text file
-   * @param types         The column types
-   * @param delimiter     a char that divides the columns in the source file, often a comma or tab
-   * @param csvFileName   the name of the file to import
+   *
+   * @param types       The column types
+   * @param delimiter   a char that divides the columns in the source file, often a comma or tab
+   * @param csvFileName the name of the file to import
    * @throws IOException
    */
   public static Table createFromCsv(ColumnType[] types, char delimiter, String csvFileName) throws IOException {

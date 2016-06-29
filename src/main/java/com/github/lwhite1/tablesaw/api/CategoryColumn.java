@@ -290,6 +290,7 @@ public class CategoryColumn extends AbstractColumn
       String f2 = get(i1);
       return f1.compareTo(f2);
     }
+
     @Override
     public int compare(Integer i, Integer i1) {
       return compare((int) i, (int) i1);
@@ -355,7 +356,8 @@ public class CategoryColumn extends AbstractColumn
 
   /**
    * Returns a list of boolean columns suitable for use as dummy variables in, for example, regression analysis,
-   * selectWhere a column of categorical data must be encoded as a list of columns, such that each column represents a single
+   * selectWhere a column of categorical data must be encoded as a list of columns, such that each column represents
+   * a single
    * category and indicates whether it is present (1) or not present (0)
    */
   public List<BooleanColumn> getDummies() {

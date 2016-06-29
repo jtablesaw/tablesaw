@@ -89,10 +89,11 @@ public final class CrossTab {
    * Returns a table containing two-dimensional cross-tabulated counts for each combination of values in
    * {@code column1} and {@code column2}
    * <p>
-   * @param table     The table we're deriving the counts from
-   * @param column1   A column in {@code table}
-   * @param column2   Another column in {@code table}
-   * @return          A table containing the cross-tabs
+   *
+   * @param table   The table we're deriving the counts from
+   * @param column1 A column in {@code table}
+   * @param column2 Another column in {@code table}
+   * @return A table containing the cross-tabs
    */
   public static Table xTabCount(Table table, Column column1, Column column2) {
 
@@ -314,7 +315,7 @@ public final class CrossTab {
     }
 
     for (int i = 0; i < xTabCounts.rowCount(); i++) {
-     // float rowTotal = (float) xTabCounts.intColumn(xTabCounts.columnCount() - 1).get(i);
+      // float rowTotal = (float) xTabCounts.intColumn(xTabCounts.columnCount() - 1).get(i);
 
       for (int c = 1; c < xTabCounts.columnCount(); c++) {
         if (grandTotal == 0) {

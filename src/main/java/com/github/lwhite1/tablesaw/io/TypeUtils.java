@@ -135,7 +135,6 @@ public final class TypeUtils {
   );
 
 
-
   private static final DateTimeFormatter timef1 = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
   private static final DateTimeFormatter timef2 = DateTimeFormatter.ofPattern("hh:mm:ss a");
   private static final DateTimeFormatter timef3 = DateTimeFormatter.ofPattern("h:mm:ss a");
@@ -216,7 +215,7 @@ public final class TypeUtils {
           .appendOptional(timef1)
           .appendOptional(timef4)
           .appendOptional(timef6)
-        //  .appendOptional(timef7)
+          //  .appendOptional(timef7)
           .toFormatter();
 
   /**
@@ -292,7 +291,7 @@ public final class TypeUtils {
 
   /**
    * Returns the first DateTimeFormatter to parse the string, which represents a DATE_TIME
-   *
+   * <p>
    * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
    * called again. This is an optimization, because the older version, which will try multiple formatters was too
    * slow for large data sets.
@@ -312,7 +311,7 @@ public final class TypeUtils {
 
   /**
    * Returns the first DateTimeFormatter to parse the string, which represents a TIME
-   *
+   * <p>
    * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
    * called again. This is an optimization, because the older version, which will try multiple formatters was too
    * slow for large data sets.

@@ -1,12 +1,13 @@
 package com.github.lwhite1.tablesaw.util.collections;
 
-    import javax.annotation.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * A skeletal implementation of {@code IntRangeSet}.
  */
 abstract class AbstractIntRangeSet implements IntRangeSet {
-  AbstractIntRangeSet() {}
+  AbstractIntRangeSet() {
+  }
 
   @Override
   public boolean contains(int value) {

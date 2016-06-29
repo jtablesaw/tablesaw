@@ -1,30 +1,30 @@
 package com.github.lwhite1.tablesaw.util.collections;
 
-    import static com.google.common.base.Preconditions.checkArgument;
-    import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    import com.google.common.base.MoreObjects;
-    import com.google.common.base.Objects;
-    import com.google.common.collect.AbstractIterator;
-    import com.google.common.collect.BoundType;
-    import com.google.common.collect.ForwardingCollection;
-    import com.google.common.collect.ImmutableSortedMap;
-    import com.google.common.collect.Iterators;
-    import com.google.common.collect.Maps;
-    import com.google.common.collect.Ordering;
-    import com.google.common.collect.PeekingIterator;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
+import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.BoundType;
+import com.google.common.collect.ForwardingCollection;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.PeekingIterator;
 
-    import java.util.Collection;
-    import java.util.Comparator;
-    import java.util.Iterator;
-    import java.util.Map;
-    import java.util.Map.Entry;
-    import java.util.NavigableMap;
-    import java.util.NoSuchElementException;
-    import java.util.Set;
-    import java.util.TreeMap;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.TreeMap;
 
-    import javax.annotation.Nullable;
+import javax.annotation.Nullable;
 
 /**
  * An implementation of {@link IntRangeSet} backed by a {@link TreeMap}.
@@ -214,7 +214,7 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
 
   static final class RangesByUpperBound
       extends TreeMap<IntCut, IntRange> {
-    
+
     private final NavigableMap<IntCut, IntRange> rangesByLowerBound;
 
     /**
@@ -405,9 +405,9 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
     public NavigableMap<IntCut, IntRange> subMap(
         IntCut fromKey, boolean fromInclusive, IntCut toKey, boolean toInclusive) {
       return subMap(
-        IntRange.range(
-          fromKey.endpoint(), boundTypeForBoolean(fromInclusive),
-          toKey.endpoint(), boundTypeForBoolean(toInclusive)));
+          IntRange.range(
+              fromKey.endpoint(), boundTypeForBoolean(fromInclusive),
+              toKey.endpoint(), boundTypeForBoolean(toInclusive)));
     }
 
     @Override
@@ -446,10 +446,10 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
         positiveRanges = positiveRangesByUpperBound.values();
       }
       final PeekingIterator<IntRange> positiveItr =
-      Iterators.peekingIterator(positiveRanges.iterator());
+          Iterators.peekingIterator(positiveRanges.iterator());
       final IntCut firstComplementRangeLowerBound;
       if (complementLowerBoundWindow.contains(IntCut.belowAll().endpoint())
-            && (!positiveItr.hasNext() || positiveItr.peek().lowerBound != IntCut.belowAll())) {
+          && (!positiveItr.hasNext() || positiveItr.peek().lowerBound != IntCut.belowAll())) {
         firstComplementRangeLowerBound = IntCut.belowAll();
       } else if (positiveItr.hasNext()) {
         firstComplementRangeLowerBound = positiveItr.next().upperBound;
@@ -496,14 +496,14 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
           && complementLowerBoundWindow.upperBoundType() == BoundType.CLOSED;
       final PeekingIterator<IntRange> positiveItr =
           Iterators.peekingIterator(
-            positiveRangesByUpperBound
-                .headMap(startingPoint, inclusive)
-                .descendingMap()
-                .values()
-                .iterator());
+              positiveRangesByUpperBound
+                  .headMap(startingPoint, inclusive)
+                  .descendingMap()
+                  .values()
+                  .iterator());
       IntCut cut;
       if (positiveItr.hasNext()) {
-         cut =
+        cut =
             (positiveItr.peek().upperBound == IntCut.aboveAll())
                 ? positiveItr.next().lowerBound
                 : positiveRangesByLowerBound.higherKey(positiveItr.peek().upperBound);
@@ -514,7 +514,7 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
         cut = positiveRangesByLowerBound.higherKey(IntCut.belowAll());
       }
       final IntCut firstComplementRangeUpperBound =
-            MoreObjects.firstNonNull(cut, IntCut.aboveAll());
+          MoreObjects.firstNonNull(cut, IntCut.aboveAll());
       return new AbstractIterator<Entry<IntCut, IntRange>>() {
         IntCut nextComplementRangeUpperBound = firstComplementRangeUpperBound;
 
@@ -669,7 +669,7 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
             return null;
           } else if (cut.equals(restriction.lowerBound)) {
             // it might be present, truncated on the left
-            Map.Entry<IntCut, IntRange>  entry = rangesByLowerBound.floorEntry(cut);
+            Map.Entry<IntCut, IntRange> entry = rangesByLowerBound.floorEntry(cut);
             IntRange candidate = valueOrNull(entry);
             if (candidate != null && candidate.upperBound.compareTo(restriction.lowerBound) > 0) {
               return candidate.intersection(restriction);
@@ -828,11 +828,11 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
   }
 
   private static BoundType boundTypeForBoolean(boolean inclusive) {
-    return inclusive? BoundType.CLOSED : BoundType.OPEN;
+    return inclusive ? BoundType.CLOSED : BoundType.OPEN;
   }
 
   private static IntRange valueOrNull(@Nullable Map.Entry<IntCut, IntRange> entry) {
-    return entry == null ? null:entry.getValue();
+    return entry == null ? null : entry.getValue();
   }
 
 }

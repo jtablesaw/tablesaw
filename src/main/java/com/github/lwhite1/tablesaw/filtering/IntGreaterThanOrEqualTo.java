@@ -37,7 +37,7 @@ public class IntGreaterThanOrEqualTo extends ColumnFilter {
         return shortColumn.isGreaterThanOrEqualTo(value);
       default:
         throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "
-          + "greaterThanOrEqualTo(anInt) ");
+            + "greaterThanOrEqualTo(anInt) ");
     }
   }
 }

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 /**
- *  Creates a Relation from the result of a SQL query, by passing the jdbc resultset to the constructor
+ * Creates a Relation from the result of a SQL query, by passing the jdbc resultset to the constructor
  */
 public class SqlResultSetReader {
 
@@ -49,6 +49,7 @@ public class SqlResultSetReader {
 
   /**
    * Returns a new table with the given tableName, constructed from the given result set
+   *
    * @throws SQLException
    */
   public static Table read(ResultSet resultSet, String tableName) throws SQLException {
@@ -71,7 +72,7 @@ public class SqlResultSetReader {
     // Add the rows
     while (resultSet.next()) {
       for (int i = 1; i <= metaData.getColumnCount(); i++) {
-        Column column = table.column(i -1); // subtract 1 because results sets originate at 1 not 0
+        Column column = table.column(i - 1); // subtract 1 because results sets originate at 1 not 0
         column.addCell(resultSet.getString(i));
       }
     }

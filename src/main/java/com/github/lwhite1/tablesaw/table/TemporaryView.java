@@ -23,12 +23,12 @@ import java.util.List;
 /**
  * A TemporaryView is a facade around a Relation that acts as a filtering.
  * Requests for data are forwarded to the underlying table.
- *
+ * <p>
  * The view is only good until the structure of the underlying table changes, after which it is marked 'stale'.
  * At that point, it's operations will return an error.
- *
- * View is something of a misnomer, as it is not like a database view, which is merely a query masquerading as a table, 
- * nor is it like a materialized database view, which is like a real table. 
+ * <p>
+ * View is something of a misnomer, as it is not like a database view, which is merely a query masquerading as a table,
+ * nor is it like a materialized database view, which is like a real table.
  */
 public class TemporaryView implements Relation, IntIterable {
 
@@ -89,7 +89,7 @@ public class TemporaryView implements Relation, IntIterable {
   }
 
   @Override
-  public void addColumn(Column ... column) {
+  public void addColumn(Column... column) {
     throw new UnsupportedOperationException("TemporaryView does not support the addColumn operation");
   }
 
@@ -110,7 +110,7 @@ public class TemporaryView implements Relation, IntIterable {
   public List<String> columnNames() {
     return table.columnNames();
   }
-  
+
   @Override
   public void removeColumns(Column... columns) {
     throw new UnsupportedOperationException("TemporaryView does not support the removeColumns operation");
@@ -121,7 +121,7 @@ public class TemporaryView implements Relation, IntIterable {
     RoaringBitmap newMap = new RoaringBitmap();
     int count = 0;
     IntIterator it = intIterator();
-    while(it.hasNext() && count < nRows) {
+    while (it.hasNext() && count < nRows) {
       int row = it.next();
       newMap.add(row);
       count++;
@@ -202,11 +202,10 @@ public class TemporaryView implements Relation, IntIterable {
   /**
    * Returns the result of applying the given function to the specified column
    *
-   * @param numericColumnName   The name of a numeric (integer, float, etc.) column in this table
-   * @param function            A numeric reduce function
-   *
+   * @param numericColumnName The name of a numeric (integer, float, etc.) column in this table
+   * @param function          A numeric reduce function
+   * @return the function result
    * @throws IllegalArgumentException if numericColumnName doesn't name a numeric column in this table
-   * @return  the function result
    */
   public double reduce(String numericColumnName, NumericReduceFunction function) {
     Column column = column(numericColumnName);

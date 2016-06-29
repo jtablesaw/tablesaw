@@ -35,7 +35,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     boolean[] falses = new boolean[size];
     booleanColumn.data = new BooleanArrayList(falses);
     IntIterator intIterator = values.getIntIterator();
-    while(intIterator.hasNext()){
+    while (intIterator.hasNext()) {
       booleanColumn.set(intIterator.next(), true);
     }
     return booleanColumn;
