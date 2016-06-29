@@ -282,9 +282,9 @@ public class StorageManager {
   /**
    * Saves the data from the given table in the location specified by folderName. Within that folder each table has
    * its own sub-folder, whose name is based on the name of the table.
-   * <p/>
+   * <p>
    * NOTE: If you store a table with the same name in the same folder. The data in that folder will be over-written.
-   * <p/>
+   * <p>
    * The storage format is the tablesaw compressed column-oriented format, which consists of a set of file in a folder.
    * The name of the folder is based on the name of the table.
    *

@@ -15,7 +15,7 @@ public class CrossTabTest {
     Table t = CsvReader.read("data/tornadoes_1950-2014.csv");
 
     Table xtab = CrossTab.xCount(t, t.categoryColumn("State"), t.shortColumn("Scale"));
-    System.out.println(xtab.print());
+  //  System.out.println(xtab.print());
 
   //  System.out.println(CrossTab.tablePercents(xtab).print());
 

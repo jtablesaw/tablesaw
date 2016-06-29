@@ -67,7 +67,7 @@ public class Table implements Relation, IntIterable {
 
   /**
    * Returns a new table initialized with data from the given TableMetadata object
-   * <p/>
+   * <p>
    * The metadata is used by the storage module to save tables and read their data from disk
    */
   public Table(TableMetadata metadata) {
@@ -185,7 +185,7 @@ public class Table implements Relation, IntIterable {
 
   /**
    * Returns the index of the given column (its position in the list of columns)
-   * <p/>
+   * <p>
    *
    * @throws IllegalArgumentException if the column is not present in this table
    */
