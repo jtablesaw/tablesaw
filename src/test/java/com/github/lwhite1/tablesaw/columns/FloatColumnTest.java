@@ -181,16 +181,6 @@ public class FloatColumnTest {
   }
 
   @Test
-  public void testRound() {
-    FloatColumn floats = new FloatColumn("floats", 100);
-    for (int i = 0; i < 100; i++) {
-      floats.add(RandomUtils.nextFloat(0, 10_000));
-    }
-    Column newFloats = floats.round();
-    assertFalse(newFloats.isEmpty());
-  }
-
-  @Test
   public void testMaxAndMin() {
     FloatColumn floats = new FloatColumn("floats", 100);
     for (int i = 0; i < 100; i++) {
@@ -209,4 +199,118 @@ public class FloatColumnTest {
     // the smallest item in the max set is >= the largest in the min set
     assertTrue(StatUtils.min(doubles1) >= StatUtils.max(doubles2));
   }
+
+  @Test
+  public void testRound() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    Column newFloats = floats.round();
+    assertFalse(newFloats.isEmpty());
+  }
+
+  @Test
+  public void testLogN() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    Column newFloats = floats.logN();
+    assertFalse(newFloats.isEmpty());
+  }
+
+  @Test
+  public void testLog10() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    Column newFloats = floats.log10();
+    assertFalse(newFloats.isEmpty());
+  }
+
+  @Test
+  public void testLog1p() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    Column newFloats = floats.log1p();
+    assertFalse(newFloats.isEmpty());
+  }
+
+  @Test
+  public void testAbs() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    Column newFloats = floats.abs();
+    assertFalse(newFloats.isEmpty());
+  }
+
+  @Test
+  public void testNeg() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    Column newFloats = floats.neg();
+    assertFalse(newFloats.isEmpty());
+  }
+
+  @Test
+  public void tesMod() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    FloatColumn otherFloats = new FloatColumn("otherFloats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+      otherFloats.add(floats.get(i) - 1.0f);
+    }
+    Column newFloats = floats.mod(otherFloats);
+    assertFalse(newFloats.isEmpty());
+  }
+
+  @Test
+  public void testSquareAndSqrt() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+
+    FloatColumn newFloats = floats.square();
+    FloatColumn revert = newFloats.sqrt();
+    for (int i = 0; i < floats.size(); i++) {
+      assertEquals(floats.get(i), revert.get(i), 0.01);
+    }
+  }
+
+  @Test
+  public void testCubeAndCbrt() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    FloatColumn newFloats = floats.cube();
+    FloatColumn revert = newFloats.cubeRoot();
+    for (int i = 0; i < floats.size(); i++) {
+      assertEquals(floats.get(i), revert.get(i), 0.01);
+    }
+  }
+
+  @Test
+  public void testDifference() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    FloatColumn otherFloats = new FloatColumn("otherFloats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+      otherFloats.add(floats.get(i) - 1.0f);
+    }
+    FloatColumn diff = floats.difference(otherFloats);
+    for (int i = 0; i < floats.size(); i++) {
+      assertEquals(floats.get(i), otherFloats.get(i) + 1.0, 0.01);
+    }
+  }
+
 }
