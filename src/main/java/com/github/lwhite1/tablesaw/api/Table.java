@@ -180,7 +180,7 @@ public class Table implements Relation, IntIterable {
   /**
    * Returns only the columns whose names are given in the input array
    */
-  public List<Column> columns(String[] columnNames) {
+  public List<Column> columns(String... columnNames) {
     List<Column> columns = new ArrayList<>();
     for (String columnName : columnNames) {
       columns.add(column(columnName));

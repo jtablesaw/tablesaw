@@ -37,6 +37,9 @@ public interface Relation {
     removeColumns(column(columnIndex));
   }
 
+  /**
+   * Removes the given columns from the receiver
+   */
   void removeColumns(Column... columns);
 
   default void removeColumns(String... columnName) {
@@ -47,7 +50,7 @@ public interface Relation {
     removeColumns(cols);
   }
 
-  com.github.lwhite1.tablesaw.api.Table first(int nRows);
+  Table first(int nRows);
 
   /**
    * Returns the index of the column with the given columnName
