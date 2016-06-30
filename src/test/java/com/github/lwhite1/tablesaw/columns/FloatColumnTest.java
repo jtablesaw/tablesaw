@@ -30,7 +30,7 @@ public class FloatColumnTest {
     Fairy fairy = Fairy.create();
     fairy.baseProducer().trueOrFalse();
 
-    com.github.lwhite1.tablesaw.api.Table table = Table.create("t");
+    Table table = Table.create("t");
     FloatColumn floatColumn = new FloatColumn("test", 1_000_000_000);
     BooleanColumn booleanColumn = new BooleanColumn("bools", 1_000_000_000);
     table.addColumn(floatColumn);
