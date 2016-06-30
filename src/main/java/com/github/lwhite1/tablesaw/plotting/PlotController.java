@@ -44,9 +44,9 @@ public class PlotController extends Application {
       exceptionMessage = ", " + engine.getLoadWorker().getException().toString();
     }
     System.out.println(exceptionMessage);
-
-    engine.load(page);
-    Scene scene = new Scene(webView, 400, 600);
+    System.out.println(page);
+    engine.loadContent(page);
+    Scene scene = new Scene(webView, 600, 400);
     primaryStage.setTitle(pageTitle);
     primaryStage.setScene(scene);
     primaryStage.show();

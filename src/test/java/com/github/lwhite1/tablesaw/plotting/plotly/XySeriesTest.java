@@ -1,18 +1,16 @@
-package com.github.lwhite1.tablesaw.plotting;
+package com.github.lwhite1.tablesaw.plotting.plotly;
 
-import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- *  Interactive tests for plotting
+ *
  */
-public class PlotUtilsTest {
-
+public class XySeriesTest {
 
   private Table table;
 
@@ -21,11 +19,11 @@ public class PlotUtilsTest {
     table = CsvReader.read("data/BushApproval.csv");
   }
 
-  @Ignore
   @Test
-  public void testPlot() {
+  public void testAsString() {
+    XySeries<DateColumn, ShortColumn> series = new XySeries<>(table.dateColumn("date"), table.shortColumn("approval"));
 
-    PlotUtils.xyPlot(table.dateColumn("date"), table.shortColumn("approval"));
+    System.out.println(series.asString(1));
   }
 
 }
