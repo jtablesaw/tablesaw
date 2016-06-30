@@ -23,7 +23,7 @@ public class XySeriesTest {
   public void testAsString() {
     XySeries<DateColumn, ShortColumn> series = new XySeries<>(table.dateColumn("date"), table.shortColumn("approval"));
 
-    System.out.println(series.asString(1));
+    //System.out.println(series.asString(1));
   }
 
 }
