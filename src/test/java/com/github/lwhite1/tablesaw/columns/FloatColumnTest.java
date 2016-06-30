@@ -16,8 +16,7 @@ import org.roaringbitmap.RoaringBitmap;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -179,6 +178,16 @@ public class FloatColumnTest {
       results = floatColumn.isEqualTo(f);
       assertEquals(f, floatColumn.get(results.getIntIterator().next()), .001);
     }
+  }
+
+  @Test
+  public void testRound() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    Column newFloats = floats.round();
+    assertFalse(newFloats.isEmpty());
   }
 
   @Test
