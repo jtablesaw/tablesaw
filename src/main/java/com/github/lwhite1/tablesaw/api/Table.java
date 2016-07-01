@@ -1,11 +1,11 @@
 package com.github.lwhite1.tablesaw.api;
 
-import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.filtering.Filter;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.github.lwhite1.tablesaw.io.csv.CsvWriter;
 import com.github.lwhite1.tablesaw.io.jdbc.SqlResultSetReader;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.sorting.Sort;
 import com.github.lwhite1.tablesaw.store.StorageManager;
 import com.github.lwhite1.tablesaw.store.TableMetadata;
@@ -31,7 +31,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -116,7 +115,25 @@ public class Table implements Relation, IntIterable {
    */
   @Override
   public void addColumn(Column... cols) {
-    Collections.addAll(columnList, cols);
+    for (Column c: cols) {
+      validateColumn(c);
+      columnList.add(c);
+    }
+  }
+
+  /**
+   * Throws a runtime exception if a column with the given name is already in the table
+   */
+  private void validateColumn(Column newColumn) {
+    Preconditions.checkNotNull(newColumn, "Attempted to add a null to the columns in table " + name);
+    List<String> stringList = new ArrayList<>();
+    for (String name: columnNames()) {
+      stringList.add(name.toLowerCase());
+    }
+    if (stringList.contains(newColumn.name().toLowerCase())) {
+      String message = String.format("Cannot add column with duplicate name %s to table %s", newColumn, name);
+      throw new RuntimeException(message);
+    }
   }
 
   /**
@@ -126,6 +143,7 @@ public class Table implements Relation, IntIterable {
    * @param column Column to be added
    */
   public void addColumn(int index, Column column) {
+    validateColumn(column);
     columnList.add(index, column);
   }
 
@@ -600,6 +618,25 @@ public class Table implements Relation, IntIterable {
 
     for (TemporaryView subTable : groupTable.getSubTables()) {
       long sum = subTable.intColumn(sumColumn.name()).sum();
+      String groupName = subTable.name();
+      groupColumn.add(groupName);
+      sumColumn1.add((int) sum);
+    }
+    return resultTable;
+  }
+
+  public Table sum(FloatColumn sumColumn, String... byColumnNames) {
+    ViewGroup groupTable = ViewGroup.create(this, byColumnNames);
+    Table resultTable = new Table(name + " summary");
+
+    CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
+    IntColumn sumColumn1 = IntColumn.create("Sum", groupTable.size());
+
+    resultTable.addColumn(groupColumn);
+    resultTable.addColumn(sumColumn1);
+
+    for (TemporaryView subTable : groupTable.getSubTables()) {
+      double sum = subTable.floatColumn(sumColumn.name()).sum();
       String groupName = subTable.name();
       groupColumn.add(groupName);
       sumColumn1.add((int) sum);

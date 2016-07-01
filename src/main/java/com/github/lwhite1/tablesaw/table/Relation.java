@@ -70,7 +70,7 @@ public interface Relation {
   }
 
   /**
-   * Returns the column with the given columnName
+   * Returns the column with the given columnName, ignoring case
    */
   default Column column(String columnName) {
     Column result = null;

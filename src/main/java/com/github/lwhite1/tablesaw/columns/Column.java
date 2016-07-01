@@ -35,6 +35,11 @@ public interface Column {
 
   String name();
 
+  /**
+   * Sets the columns name to the given string
+   *
+   * @param name  The new name MUST be unique for any table containing this column
+   */
   void setName(String name);
 
   ColumnType type();

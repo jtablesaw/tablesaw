@@ -94,17 +94,17 @@ public class TableGroup implements Iterable<SubTable> {
       if (columnCount == 1) {
         tables.add(newView);
       } else {
-        tables.add(splitGroupingColumn(newView, columns));
+        tables.add(newView);
       }
     }
     return tables;
   }
 
-  private SubTable splitGroupingColumn(SubTable subTable, List<Column> columnNames) {
+  private SubTable splitGroupingColumn(SubTable subTable, List<Column> columns) {
 
     List<Column> newColumns = new ArrayList<>();
 
-    for (Column column : columnNames) {
+    for (Column column : columns) {
       Column newColumn = column.emptyCopy();
       newColumns.add(newColumn);
     }

@@ -20,8 +20,8 @@ public class LocalDateColumnTest {
   @Before
   public void setUp() throws Exception {
     Table table = Table.create("Test");
-    table.addColumn(column1);
     column1 = DateColumn.create("Game date");
+    table.addColumn(column1);
   }
 
   @Test

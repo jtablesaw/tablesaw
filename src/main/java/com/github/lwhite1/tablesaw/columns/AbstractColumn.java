@@ -39,6 +39,11 @@ public abstract class AbstractColumn implements Column {
     return columnMetadata().toJson();
   }
 
+  /**
+   * Sets the columns name to the given string
+   *
+   * @param name  The new name MUST be unique for any table containing this column
+   */
   public void setName(String name) {
     this.name = name;
   }
