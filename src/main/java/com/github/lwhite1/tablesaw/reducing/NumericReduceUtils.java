@@ -26,6 +26,22 @@ public class NumericReduceUtils {
     }
   };
 
+  /**
+   * A function that calculates the sum of the values in the column param
+   */
+  public static NumericReduceFunction sum = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Sum";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.sum(data);
+    }
+  };
+
   public static NumericReduceFunction median = new NumericReduceFunction() {
 
     @Override
