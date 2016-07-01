@@ -58,7 +58,7 @@ public interface Relation {
   default int columnIndex(String columnName) {
     int columnIndex = -1;
     for (int i = 0; i < columnCount(); i++) {
-      if (columnNames().get(i).equalsIgnoreCase(columnName)) {
+      if (columnNames().get(i).equals(columnName)) {
         columnIndex = i;
         break;
       }
@@ -75,7 +75,7 @@ public interface Relation {
   default Column column(String columnName) {
     Column result = null;
     for (Column column : columns()) {
-      if (column.name().equalsIgnoreCase(columnName)) {
+      if (column.name().equals(columnName)) {
         result = column;
         break;
       }
