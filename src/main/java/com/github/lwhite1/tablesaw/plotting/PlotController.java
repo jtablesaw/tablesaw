@@ -31,7 +31,7 @@ public class PlotController extends Application {
 
     Parameters parameters = getParameters();
 
-    System.out.println(parameters);
+  //  System.out.println(parameters);
 
     String pageTitle = parameters.getRaw().get(0);
     String page = parameters.getRaw().get(1);

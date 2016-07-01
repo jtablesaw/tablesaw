@@ -48,7 +48,7 @@ public class XySeries<X extends Column, Y extends Column> {
         .append("\n")
 
         .append("  mode: '")
-        .append("markers")  //TODO
+        .append("line")  //TODO
         .append("',")
         .append("\n")
 

@@ -31,6 +31,7 @@ public class PlotUtils {
     Map<String, Object> attributeMap = new HashMap<>();
 
     XySeries<DateColumn, ShortColumn> series = new XySeries<>(x, y);
+
     XyPlot plot = new XyPlot.Builder().plotTitle("Hola!!").addSeries(series).build();
 
     String seriesString = series.asString(1);
@@ -43,7 +44,6 @@ public class PlotUtils {
       page = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "src/main/web/plotly.html")));
 
       page = templateEngine.render(page, attributeMap);
-      System.out.println(page);
 
     } catch (MalformedURLException e) {
       throw new RuntimeException("Couldn't find the html file template", e);
