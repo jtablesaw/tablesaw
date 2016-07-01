@@ -22,6 +22,16 @@ public class DictionaryMap {
     valueToKey.defaultReturnValue(-1);
   }
 
+  /**
+   * Returns a new DictionaryMap that is a deep copy of the original
+   */
+  public DictionaryMap(DictionaryMap original) {
+    for (Int2ObjectMap.Entry<String> entry: original.keyToValue.int2ObjectEntrySet()) {
+      keyToValue.put(entry.getIntKey(), entry.getValue());
+      valueToKey.put(entry.getValue(), entry.getIntKey());
+    }
+  }
+
   public void put(int key, String value) {
     keyToValue.put(key, value);
     valueToKey.put(value, key);
