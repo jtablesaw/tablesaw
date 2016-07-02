@@ -5,6 +5,8 @@ import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import org.junit.Test;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
@@ -21,7 +23,7 @@ public class CsvReaderTest {
   @Test
   public void testWithBusData() throws Exception {
     // Read the CSV file
-    Table table = CsvReader.read("data/bus_stop_test.csv");
+    Table table = CsvReader.read(bus_types, true, ',', "data/bus_stop_test.csv");
 
     // Look at the column names
     assertEquals("[stop_id, stop_name, stop_desc, stop_lat, stop_lon]", table.columnNames().toString());
@@ -69,5 +71,16 @@ public class CsvReaderTest {
     assertEquals(ColumnType.LOCAL_DATE, columnTypes[0]);
     assertEquals(ColumnType.SHORT_INT, columnTypes[1]);
     assertEquals(ColumnType.CATEGORY, columnTypes[2]);
+  }
+
+  @Test
+  public void testLoadFromUrl() throws Exception {
+    ColumnType[] types = {SHORT_INT, FLOAT, SHORT_INT};
+    String location = "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/AirPassengers.csv";
+    Table table;
+    try (InputStream input = new URL(location).openStream()) {
+      table = CsvReader.read("air passengers", types, true, ',', input);
+    }
+    assertNotNull(table);
   }
 }

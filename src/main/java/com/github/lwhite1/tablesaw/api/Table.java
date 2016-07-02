@@ -782,7 +782,7 @@ public class Table implements Relation, IntIterable {
    * @throws IOException
    */
   public static Table createFromCsv(ColumnType[] types, char delimiter, String csvFileName) throws IOException {
-    return CsvReader.read(types, delimiter, csvFileName);
+    return CsvReader.read(types, true, delimiter, csvFileName);
   }
 
   /**
