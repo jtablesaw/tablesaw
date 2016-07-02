@@ -401,6 +401,46 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return count;
   }
 
+  public IntColumn remainder(IntColumn column2) {
+    IntColumn result = IntColumn.create(name() + " % " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) % column2.get(r));
+    }
+    return result;
+  }
+
+  public IntColumn add(IntColumn column2) {
+    IntColumn result = IntColumn.create(name() + " + " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) - column2.get(r));
+    }
+    return result;
+  }
+
+  public IntColumn subtract(IntColumn column2) {
+    IntColumn result = IntColumn.create(name() + " - " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) + column2.get(r));
+    }
+    return result;
+  }
+
+  public IntColumn multiply(IntColumn column2) {
+    IntColumn result = IntColumn.create(name() + " * " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) * column2.get(r));
+    }
+    return result;
+  }
+
+  public IntColumn divide(IntColumn column2) {
+    IntColumn result = IntColumn.create(name() + " / " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) / column2.get(r));
+    }
+    return result;
+  }
+
   /**
    * Returns the largest ("top") n values in the column
    *

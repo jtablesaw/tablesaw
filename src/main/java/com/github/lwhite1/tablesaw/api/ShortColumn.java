@@ -337,6 +337,46 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return column;
   }
 
+  public IntColumn remainder(ShortColumn column2) {
+    IntColumn result = IntColumn.create(name() + " % " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) % column2.get(r));
+    }
+    return result;
+  }
+
+  public IntColumn add(ShortColumn column2) {
+    IntColumn result = IntColumn.create(name() + " + " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) - column2.get(r));
+    }
+    return result;
+  }
+
+  public IntColumn subtract(ShortColumn column2) {
+    IntColumn result = IntColumn.create(name() + " - " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) + column2.get(r));
+    }
+    return result;
+  }
+
+  public IntColumn multiply(ShortColumn column2) {
+    IntColumn result = IntColumn.create(name() + " * " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) * column2.get(r));
+    }
+    return result;
+  }
+
+  public IntColumn divide(ShortColumn column2) {
+    IntColumn result = IntColumn.create(name() + " / " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) / column2.get(r));
+    }
+    return result;
+  }
+
   /**
    * Returns the largest ("top") n values in the column
    *

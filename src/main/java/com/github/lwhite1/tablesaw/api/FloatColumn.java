@@ -383,7 +383,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
   }
 
   public FloatColumn add(FloatColumn column2) {
-    FloatColumn result = FloatColumn.create(name() + " - " + column2.name(), size());
+    FloatColumn result = FloatColumn.create(name() + " + " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
       result.add(get(r) - column2.get(r));
     }
@@ -399,7 +399,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
   }
 
   public FloatColumn multiply(FloatColumn column2) {
-    FloatColumn result = FloatColumn.create(name() + " - " + column2.name(), size());
+    FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
       result.add(get(r) * column2.get(r));
     }
@@ -407,7 +407,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
   }
 
   public FloatColumn divide(FloatColumn column2) {
-    FloatColumn result = FloatColumn.create(name() + " - " + column2.name(), size());
+    FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
       result.add(get(r) / column2.get(r));
     }

@@ -153,6 +153,46 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return LongColumn.create(name() + " Unique values", new LongArrayList(longSet));
   }
 
+  public LongColumn remainder(LongColumn column2) {
+    LongColumn result = LongColumn.create(name() + " % " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) % column2.get(r));
+    }
+    return result;
+  }
+
+  public LongColumn add(LongColumn column2) {
+    LongColumn result = LongColumn.create(name() + " + " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) - column2.get(r));
+    }
+    return result;
+  }
+
+  public LongColumn subtract(LongColumn column2) {
+    LongColumn result = LongColumn.create(name() + " - " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) + column2.get(r));
+    }
+    return result;
+  }
+
+  public LongColumn multiply(LongColumn column2) {
+    LongColumn result = LongColumn.create(name() + " * " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) * column2.get(r));
+    }
+    return result;
+  }
+
+  public LongColumn divide(LongColumn column2) {
+    LongColumn result = LongColumn.create(name() + " / " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) / column2.get(r));
+    }
+    return result;
+  }
+
   @Override
   public String getString(int row) {
     return String.valueOf(data.getLong(row));
