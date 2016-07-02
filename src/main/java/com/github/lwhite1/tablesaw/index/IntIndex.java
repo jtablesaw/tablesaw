@@ -25,6 +25,7 @@ public class IntIndex {
       if (recordIds == null) {
         recordIds = new IntArrayList();
         recordIds.add(i);
+        tempMap.trim();
         tempMap.put(value, recordIds);
       } else {
         recordIds.add(i);
