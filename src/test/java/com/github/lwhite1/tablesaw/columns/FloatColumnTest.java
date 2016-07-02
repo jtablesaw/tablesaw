@@ -268,7 +268,7 @@ public class FloatColumnTest {
       floats.add(RandomUtils.nextFloat(0, 10_000));
       otherFloats.add(floats.get(i) - 1.0f);
     }
-    Column newFloats = floats.mod(otherFloats);
+    Column newFloats = floats.remainder(otherFloats);
     assertFalse(newFloats.isEmpty());
   }
 
@@ -307,7 +307,7 @@ public class FloatColumnTest {
       floats.add(RandomUtils.nextFloat(0, 10_000));
       otherFloats.add(floats.get(i) - 1.0f);
     }
-    FloatColumn diff = floats.difference(otherFloats);
+    FloatColumn diff = floats.subtract(otherFloats);
     for (int i = 0; i < floats.size(); i++) {
       assertEquals(floats.get(i), otherFloats.get(i) + 1.0, 0.01);
     }
