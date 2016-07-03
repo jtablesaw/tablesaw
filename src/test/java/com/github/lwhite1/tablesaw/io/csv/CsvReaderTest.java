@@ -75,11 +75,11 @@ public class CsvReaderTest {
 
   @Test
   public void testLoadFromUrl() throws Exception {
-    ColumnType[] types = {SHORT_INT, FLOAT, SHORT_INT};
-    String location = "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/AirPassengers.csv";
+    ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};
+    String location = "https://raw.githubusercontent.com/lwhite1/tablesaw/master/data/BushApproval.csv";
     Table table;
     try (InputStream input = new URL(location).openStream()) {
-      table = CsvReader.read("air passengers", types, true, ',', input);
+      table = CsvReader.read("bush", types, true, ',', input);
     }
     assertNotNull(table);
   }

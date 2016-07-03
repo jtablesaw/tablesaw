@@ -27,6 +27,7 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -722,12 +723,11 @@ public class Table implements Relation, IntIterable {
    * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
    * which is used to populate the column names
    *
-   * @param types       The column types
    * @param csvFileName The name of the file to import
    * @throws IOException
    */
-  public static Table createFromCsv(ColumnType[] types, String csvFileName) throws IOException {
-    return CsvReader.read(types, csvFileName);
+  public static Table createFromCsv(String csvFileName) throws IOException {
+    return CsvReader.read(csvFileName, true, ',');
   }
 
   /**
@@ -737,10 +737,42 @@ public class Table implements Relation, IntIterable {
    * which is used to populate the column names
    *
    * @param csvFileName The name of the file to import
+   * @param header      True if the file has a single header row. False if it has no header row.
+   *                    Multi-line headers are not supported
    * @throws IOException
    */
-  public static Table createFromCsv(String csvFileName) throws IOException {
-    return CsvReader.read(csvFileName);
+  public static Table createFromCsv(String csvFileName, boolean header) throws IOException {
+    return CsvReader.read(csvFileName, header, ',');
+  }
+
+  /**
+   * Returns a new table constructed from a character delimited (aka CSV) text file
+   * <p>
+   * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
+   * which is used to populate the column names
+   *
+   * @param csvFileName The name of the file to import
+   * @param header      True if the file has a single header row. False if it has no header row.
+   *                    Multi-line headers are not supported
+   * @param delimiter   a char that divides the columns in the source file, often a comma or tab
+   * @throws IOException
+   */
+  public static Table createFromCsv(String csvFileName, boolean header, char delimiter) throws IOException {
+    return CsvReader.read(csvFileName, header, delimiter);
+  }
+
+  /**
+   * Returns a new table constructed from a character delimited (aka CSV) text file
+   * <p>
+   * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
+   * which is used to populate the column names
+   *
+   * @param types       The column types
+   * @param csvFileName The name of the file to import
+   * @throws IOException
+   */
+  public static Table createFromCsv(ColumnType[] types, String csvFileName) throws IOException {
+    return CsvReader.read(types, true, ',', csvFileName);
   }
 
   /**
@@ -754,8 +786,8 @@ public class Table implements Relation, IntIterable {
    * @param csvFileName the name of the file to import
    * @throws IOException
    */
-  public static Table createFromCsv(ColumnType[] types, boolean header, String csvFileName) throws IOException {
-    return CsvReader.read(types, header, csvFileName);
+  public static Table createFromCsv(ColumnType[] types, String csvFileName, boolean header) throws IOException {
+    return CsvReader.read(types, header, ',', csvFileName);
   }
 
   /**
@@ -768,8 +800,8 @@ public class Table implements Relation, IntIterable {
    * @param csvFileName the name of the file to import
    * @throws IOException
    */
-  public static Table createFromCsv(ColumnType[] types, boolean header, char delimiter, String csvFileName) throws
-      IOException {
+  public static Table createFromCsv(ColumnType[] types, String csvFileName, boolean header, char delimiter)
+      throws IOException {
     return CsvReader.read(types, header, delimiter, csvFileName);
   }
 
@@ -777,12 +809,20 @@ public class Table implements Relation, IntIterable {
    * Returns a new table constructed from a character delimited (aka CSV) text file
    *
    * @param types       The column types
+   * @param header      true if the file has a single header row. False if it has no header row.
+   *                    Multi-line headers are not supported
    * @param delimiter   a char that divides the columns in the source file, often a comma or tab
-   * @param csvFileName the name of the file to import
+   * @param stream      an InputStream from a file, URL, etc.
+   * @param tableName   the name of the resulting table
    * @throws IOException
    */
-  public static Table createFromCsv(ColumnType[] types, char delimiter, String csvFileName) throws IOException {
-    return CsvReader.read(types, true, delimiter, csvFileName);
+  public static Table createFromStream(ColumnType[] types,
+                                       boolean header,
+                                       char delimiter,
+                                       InputStream stream,
+                                       String tableName)
+      throws IOException {
+    return CsvReader.read(tableName, types, header, delimiter, stream);
   }
 
   /**
@@ -791,6 +831,7 @@ public class Table implements Relation, IntIterable {
   public static Table create(ResultSet resultSet, String tableName) throws SQLException {
     return SqlResultSetReader.read(resultSet, tableName);
   }
+
 
   @Override
   public String toString() {

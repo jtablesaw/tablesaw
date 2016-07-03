@@ -80,39 +80,19 @@ public class CsvReader {
    * Retuns the given file after autodetecting the column types, or trying to
    *
    * @param fileName The name of the file to load
+   * @param header      True if the file has a single header row. False if it has no header row.
+   *                    Multi-line headers are not supported
+   * @param delimiter   a char that divides the columns in the source file, often a comma or tab
    * @return A table containing the data from the file
    * @throws IOException
    */
-  public static Table read(String fileName) throws IOException {
-    ColumnType[] columnTypes = detectColumnTypes(fileName, true, ',');
-    return read(columnTypes, true, fileName);
-  }
-
-  public static Table read(String fileName, boolean header) throws IOException {
-    ColumnType[] columnTypes = detectColumnTypes(fileName, header, ',');
-    return read(columnTypes, true, fileName);
-  }
-
   public static Table read(String fileName, boolean header, char delimiter) throws IOException {
     ColumnType[] columnTypes = detectColumnTypes(fileName, header, delimiter);
-    return read(columnTypes, true, fileName);
+    return read(columnTypes, true, ',', fileName);
   }
 
-  /**
-   * Returns a Relation constructed from a CSV File.
-   *
-   * @param types    An array of the types of columns in the file, in the order they appear
-   * @param header   Is the first row in the file a header?
-   * @param fileName The fully specified file name
-   * @return A Relation containing the data in the csv file.
-   * @throws IOException
-   */
-  public static Table read(ColumnType types[], boolean header, String fileName)
-      throws IOException {
-    return read(types, header, ',', fileName);
-  }
 
-  public static Table read(String name, ColumnType types[], boolean header, char columnSeparator, InputStream stream)
+  public static Table read(String tableName, ColumnType types[], boolean header, char columnSeparator, InputStream stream)
       throws IOException {
 
     BufferedReader streamReader = new BufferedReader(new InputStreamReader(stream));
@@ -132,7 +112,7 @@ public class CsvReader {
         headerRow = Lists.newArrayList(columnNames);
       }
 
-      table = Table.create(nameMaker(name));
+      table = Table.create(nameMaker(tableName));
       for (int x = 0; x < types.length; x++) {
         if (types[x] != ColumnType.SKIP) {
           String columnName = headerRow.get(x);

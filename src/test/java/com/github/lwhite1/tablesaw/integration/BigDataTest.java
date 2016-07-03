@@ -2,14 +2,13 @@ package com.github.lwhite1.tablesaw.integration;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.github.lwhite1.tablesaw.store.StorageManager;
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.System.exit;
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
+import static java.lang.System.exit;
 
 /**
  *
@@ -66,7 +65,7 @@ public class BigDataTest {
   //@Test
   public void readCsvTest() throws Exception {
     Stopwatch stopwatch = Stopwatch.createStarted();
-    Table table = CsvReader.read(types, true, "data/BigData.csv");
+    Table table = Table.createFromCsv(types, "data/BigData.csv", true);
     table.first(3).print();
     out(table.rowCount());
     out("Relation read from csv file");
