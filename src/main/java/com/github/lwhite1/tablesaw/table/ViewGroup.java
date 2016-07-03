@@ -160,7 +160,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
     Preconditions.checkArgument(!subTables.isEmpty());
     Table groupTable = Table.create(sortedOriginal.name() + " summary");
     CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
-    FloatColumn resultColumn = new FloatColumn(function.functionName(), subTables.size());
+    FloatColumn resultColumn = new FloatColumn(reduceColumnName(numericColumnName, function.functionName()), subTables.size());
     groupTable.addColumn(groupColumn);
     groupTable.addColumn(resultColumn);
 
@@ -180,5 +180,9 @@ public class ViewGroup implements Iterable<TemporaryView> {
   @Override
   public Iterator<TemporaryView> iterator() {
     return subTables.iterator();
+  }
+
+  private String reduceColumnName(String columnName, String functionName) {
+    return String.format("%s [%s]", functionName, columnName);
   }
 }
