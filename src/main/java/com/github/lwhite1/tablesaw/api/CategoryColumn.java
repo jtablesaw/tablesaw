@@ -530,9 +530,8 @@ public class CategoryColumn extends AbstractColumn
 
   public CategoryColumn copy() {
     CategoryColumn newCol = CategoryColumn.create(name(), size());
-    for (int next : values) {
-      newCol.add(get(next));
-    }
+    newCol.lookupTable = new DictionaryMap(lookupTable);
+    newCol.values.addAll(values);
     return newCol;
   }
 
