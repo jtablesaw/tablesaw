@@ -146,6 +146,20 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return StatUtil.stats(this).asTable("Column: " + name());
   }
 
+  /**
+   * Returns the count of missing values in this column
+   */
+  @Override
+  public int countEmpty() {
+    int count = 0;
+    for (int i = 0; i < size(); i++) {
+      if (get(i) == MISSING_VALUE) {
+        count++;
+      }
+    }
+    return count;
+  }
+
   @Override
   public int countUnique() {
     RoaringBitmap roaringBitmap = new RoaringBitmap();

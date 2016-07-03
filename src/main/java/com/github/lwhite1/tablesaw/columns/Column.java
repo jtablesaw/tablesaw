@@ -26,6 +26,14 @@ public interface Column {
     return c;
   }
 
+  /**
+   * Returns the count of missing values in this column
+   */
+  int countEmpty();
+
+  /**
+   * Returns the count of unique values in this column
+   */
   int countUnique();
 
   /**
@@ -33,6 +41,9 @@ public interface Column {
    */
   Column unique();
 
+  /**
+   * Returns the column's name
+   */
   String name();
 
   /**
@@ -42,10 +53,19 @@ public interface Column {
    */
   void setName(String name);
 
+  /**
+   * Returns this column's ColumnType
+   */
   ColumnType type();
 
+  /**
+   * Returns a string representation of the value at the given row
+   */
   String getString(int row);
 
+  /**
+   * Returns a copy of the receiver with no data. The column name and type are the same
+   */
   Column emptyCopy();
 
   /**
@@ -64,6 +84,9 @@ public interface Column {
 
   void sortDescending();
 
+  /**
+   * Returns true if the column has no data
+   */
   boolean isEmpty();
 
   void addCell(String stringValue);

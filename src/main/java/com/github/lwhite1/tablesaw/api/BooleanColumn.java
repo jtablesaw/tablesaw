@@ -119,6 +119,20 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return table;
   }
 
+  /**
+   * Returns the count of missing values in this column
+   */
+  @Override
+  public int countEmpty() {
+    int count = 0;
+    for (int i = 0; i < size(); i++) {
+      if (getByte(i) == MISSING_VALUE) {
+        count++;
+      }
+    }
+    return count;
+  }
+
   @Override
   public int countUnique() {
     ByteSet count = new ByteOpenHashSet(3);
@@ -240,6 +254,14 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
       return Boolean.FALSE;
     }
     return null;
+  }
+
+  /**
+   * Returns the value in row i as a byte (0, 1, or Byte.MIN_VALUE representing missing data)
+   * @param i the row number
+   */
+  public byte getByte(int i) {
+    return data.getByte(i);
   }
 
   @Override

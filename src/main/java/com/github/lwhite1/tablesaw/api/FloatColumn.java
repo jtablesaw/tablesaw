@@ -268,6 +268,20 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     }
   };
 
+  /**
+   * Returns the count of missing values in this column
+   */
+  @Override
+  public int countEmpty() {
+    int count = 0;
+    for (int i = 0; i < size(); i++) {
+      if (get(i) == MISSING_VALUE) {
+        count++;
+      }
+    }
+    return count;
+  }
+
   @Override
   public void addCell(String object) {
     try {

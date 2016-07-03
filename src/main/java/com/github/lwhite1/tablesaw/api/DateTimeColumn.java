@@ -379,6 +379,21 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return column;
   }
 
+  /**
+   * Returns the count of missing values in this column
+   */
+  @Override
+  public int countEmpty() {
+    int count = 0;
+    for (int i = 0; i < size(); i++) {
+      if (getLong(i) == MISSING_VALUE) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+
   public String print() {
     StringBuilder builder = new StringBuilder();
     builder.append(title());
