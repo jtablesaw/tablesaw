@@ -114,7 +114,8 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
     data.clear();
   }
 
-  private DateColumn copy() {
+  @Override
+  public DateColumn copy() {
     return DateColumn.create(name(), data);
   }
 
@@ -308,7 +309,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
 
   public static DateColumn create(String columnName, IntArrayList dates) {
     DateColumn column = new DateColumn(columnName, dates.size());
-    column.data = dates;
+    column.data.addAll(dates);
     return column;
   }
 

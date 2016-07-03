@@ -56,7 +56,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
 
   public static TimeColumn create(String fileName, IntArrayList times) {
     TimeColumn column = new TimeColumn(fileName, times.size());
-    column.data = times;
+    column.data.addAll(times);
     return column;
   }
 
@@ -108,7 +108,8 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     data.clear();
   }
 
-  private TimeColumn copy() {
+  @Override
+  public TimeColumn copy() {
     return TimeColumn.create(name(), data);
   }
 

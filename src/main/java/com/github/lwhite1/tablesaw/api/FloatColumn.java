@@ -217,7 +217,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     data = new FloatArrayList(DEFAULT_ARRAY_SIZE);
   }
 
-  private FloatColumn copy() {
+  @Override
+  public FloatColumn copy() {
     return FloatColumn.create(name(), data);
   }
 
@@ -244,9 +245,10 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return new FloatColumn(name, initialSize);
   }
 
-  public static FloatColumn create(String fileName, FloatArrayList floats) {
-    FloatColumn column = new FloatColumn(fileName, floats.size());
-    column.data = floats;
+  public static FloatColumn create(String name, FloatArrayList floats) {
+    FloatColumn column = new FloatColumn(name, floats.size());
+    column.data = new FloatArrayList(floats.size());
+    column.data.addAll(floats);
     return column;
   }
 

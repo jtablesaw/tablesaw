@@ -155,7 +155,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     data.clear();
   }
 
-  private BooleanColumn copy() {
+  @Override
+  public BooleanColumn copy() {
     return BooleanColumn.create(name(), data);
   }
 
@@ -216,7 +217,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   public static BooleanColumn create(String fileName, BooleanArrayList bools) {
     BooleanColumn booleanColumn = new BooleanColumn(fileName, bools.size());
-    booleanColumn.data = bools;
+    booleanColumn.data = new BooleanArrayList(bools.size());
+    booleanColumn.data.addAll(bools);
     return booleanColumn;
   }
 

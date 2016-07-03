@@ -149,7 +149,8 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     data.clear();
   }
 
-  private DateTimeColumn copy() {
+  @Override
+  public DateTimeColumn copy() {
     return DateTimeColumn.create(name(), data);
   }
 
@@ -374,7 +375,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
   public static DateTimeColumn create(String fileName, LongArrayList dateTimes) {
     DateTimeColumn column = new DateTimeColumn(fileName, dateTimes.size());
-    column.data = dateTimes;
+    column.data.addAll(dateTimes);
     return column;
   }
 

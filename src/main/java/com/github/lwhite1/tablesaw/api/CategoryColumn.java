@@ -529,7 +529,7 @@ public class CategoryColumn extends AbstractColumn
   }
 
   public CategoryColumn copy() {
-    CategoryColumn newCol = CategoryColumn.create(name() + "1", size());
+    CategoryColumn newCol = CategoryColumn.create(name(), size());
     for (int next : values) {
       newCol.add(get(next));
     }

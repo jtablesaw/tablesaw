@@ -147,9 +147,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   @Override
   public LongColumn unique() {
     LongSet longSet = new LongArraySet();
-    for (long i : data) {
-      longSet.add(i);
-    }
+    longSet.addAll(data);
     return LongColumn.create(name() + " Unique values", new LongArrayList(longSet));
   }
 
@@ -223,11 +221,10 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     LongArrays.parallelQuickSort(data.elements(), ReverseLongComparator.instance());
   }
 
-  private LongColumn copy() {
-    LongColumn copy = emptyCopy();
-    for (long i : data) {
-      copy.add(i);
-    }
+  @Override
+  public LongColumn copy() {
+    LongColumn copy = emptyCopy(size());
+    copy.data.addAll(data);
     return copy;
   }
 

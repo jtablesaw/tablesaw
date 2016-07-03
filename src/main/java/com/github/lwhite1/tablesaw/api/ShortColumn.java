@@ -189,12 +189,10 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     ShortArrays.parallelQuickSort(data.elements(), ReverseShortComparator.instance());
   }
 
-
-  private ShortColumn copy() {
-    ShortColumn copy = emptyCopy();
-    for (short i : data) {
-      copy.add(i);
-    }
+  @Override
+  public ShortColumn copy() {
+    ShortColumn copy = emptyCopy(size());
+    copy.data.addAll(data);
     return copy;
   }
 

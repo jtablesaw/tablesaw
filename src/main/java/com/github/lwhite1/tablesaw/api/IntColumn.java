@@ -51,7 +51,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   public static IntColumn create(String name, IntArrayList ints) {
     IntColumn column = new IntColumn(name, ints.size());
-    column.data = ints;
+    column.data.addAll(ints);
     return column;
   }
 
@@ -194,7 +194,8 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     IntArrays.parallelQuickSort(data.elements(), ReverseIntComparator.instance());
   }
 
-  private IntColumn copy() {
+  @Override
+  public IntColumn copy() {
     return create(name(), data);
   }
 

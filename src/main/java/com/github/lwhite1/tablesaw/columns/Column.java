@@ -49,6 +49,11 @@ public interface Column {
   Column emptyCopy();
 
   /**
+   * Returns a deep copy of the receiver
+   */
+  Column copy();
+
+  /**
    * Returns an empty copy of the receiver, with its internal storage initialized to the given row size
    */
   Column emptyCopy(int rowSize);
