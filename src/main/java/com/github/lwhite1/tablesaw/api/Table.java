@@ -4,6 +4,7 @@ import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.filtering.Filter;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.github.lwhite1.tablesaw.io.csv.CsvWriter;
+import com.github.lwhite1.tablesaw.io.html.HtmlTableWriter;
 import com.github.lwhite1.tablesaw.io.jdbc.SqlResultSetReader;
 import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.sorting.Sort;
@@ -498,6 +499,10 @@ public class Table implements Relation, IntIterable {
 
   public BooleanColumn selectIntoColumn(String newColumnName, Filter filter) {
     return BooleanColumn.create(newColumnName, filter.apply(this), rowCount());
+  }
+
+  public String printHtml() {
+    return HtmlTableWriter.write(this, "");
   }
 
   public Table structure() {
