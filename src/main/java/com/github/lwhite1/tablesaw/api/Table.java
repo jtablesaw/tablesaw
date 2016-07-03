@@ -486,7 +486,7 @@ public class Table implements Relation, IntIterable {
   }
 
   public BooleanColumn selectIntoColumn(String newColumnName, RoaringBitmap map) {
-    return BooleanColumn.create(newColumnName, rowCount(), map);
+    return BooleanColumn.create(newColumnName, map, rowCount());
   }
 
   public Table selectWhere(Filter filter) {
@@ -497,7 +497,7 @@ public class Table implements Relation, IntIterable {
   }
 
   public BooleanColumn selectIntoColumn(String newColumnName, Filter filter) {
-    return BooleanColumn.create(newColumnName, rowCount(), filter.apply(this));
+    return BooleanColumn.create(newColumnName, filter.apply(this), rowCount());
   }
 
   public Table structure() {

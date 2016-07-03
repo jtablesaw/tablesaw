@@ -2,65 +2,72 @@ package com.github.lwhite1.tablesaw.api;
 
 import com.github.lwhite1.tablesaw.columns.AbstractColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.filtering.BooleanPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapping.BooleanMapUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.booleans.*;
+import it.unimi.dsi.fastutil.booleans.BooleanOpenHashSet;
+import it.unimi.dsi.fastutil.booleans.BooleanSet;
+import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
+import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
+import it.unimi.dsi.fastutil.bytes.ByteArrayList;
+import it.unimi.dsi.fastutil.bytes.ByteArrays;
+import it.unimi.dsi.fastutil.bytes.ByteComparator;
+import it.unimi.dsi.fastutil.bytes.ByteIterator;
+import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
+import it.unimi.dsi.fastutil.bytes.ByteSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.roaringbitmap.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
+import static com.github.lwhite1.tablesaw.columns.BooleanColumnUtils.*;
 
 /**
  * A column in a base table that contains float values
  */
 public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
+  public static final byte MISSING_VALUE = Byte.MIN_VALUE;
+
   private static final int BYTE_SIZE = 1;
 
   private static int DEFAULT_ARRAY_SIZE = 128;
 
-  private BooleanArrayList data;
+  private ByteArrayList data;
 
   public static BooleanColumn create(String name) {
     return new BooleanColumn(name);
-  }
-
-  public static BooleanColumn create(String name, int size, RoaringBitmap values) {
-    BooleanColumn booleanColumn = new BooleanColumn(name, size);
-    boolean[] falses = new boolean[size];
-    booleanColumn.data = new BooleanArrayList(falses);
-    IntIterator intIterator = values.getIntIterator();
-    while (intIterator.hasNext()) {
-      booleanColumn.set(intIterator.next(), true);
-    }
-    return booleanColumn;
   }
 
   public static BooleanColumn create(String name, int rowSize) {
     return new BooleanColumn(name, rowSize);
   }
 
+  public static BooleanColumn create(String name, RoaringBitmap map, int rowSize) {
+    return new BooleanColumn(name, map, rowSize);
+  }
+
   public BooleanColumn(ColumnMetadata metadata) {
     super(metadata);
-    data = new BooleanArrayList(DEFAULT_ARRAY_SIZE);
+    data = new ByteArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   private BooleanColumn(String name) {
     super(name);
-    data = new BooleanArrayList(DEFAULT_ARRAY_SIZE);
+    data = new ByteArrayList(DEFAULT_ARRAY_SIZE);
   }
 
   public BooleanColumn(String name, int initialSize) {
     super(name);
-    data = new BooleanArrayList(initialSize);
+    data = new ByteArrayList(initialSize);
   }
 
-  private BooleanColumn(String name, BooleanArrayList values) {
+  private BooleanColumn(String name, ByteArrayList values) {
     super(name);
     data = values;
   }
@@ -70,10 +77,15 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     if (columnSize == 0) {
       return;
     }
-    BooleanArrayList data = BooleanArrayList.wrap(new boolean[columnSize]);
+    ByteArrayList data = new ByteArrayList(columnSize);
+
+    for (int i = 0; i < columnSize; i++) {
+      data.add((byte) 0);
+    }
+
     IntIterator it = hits.getIntIterator();
     while (it.hasNext()) {
-      data.set(it.next(), true);
+      data.set(it.next(), (byte) 1);
     }
     this.data = data;
   }
@@ -85,11 +97,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   @Override
   public Table summary() {
 
-    Map<Boolean, Integer> counts = new HashMap<>(3);
-    counts.put(Boolean.TRUE, 0);
-    counts.put(Boolean.FALSE, 0);
+    Byte2IntMap counts = new Byte2IntOpenHashMap(3);
+    counts.put((byte) 0, 0);
+    counts.put((byte) 1, 0);
 
-    for (boolean next : data) {
+    for (byte next : data) {
       counts.put(next, counts.get(next) + 1);
     }
 
@@ -100,7 +112,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     table.addColumn(booleanColumn);
     table.addColumn(countColumn);
 
-    for (Map.Entry<Boolean, Integer> entry : counts.entrySet()) {
+    for (Map.Entry<Byte, Integer> entry : counts.entrySet()) {
       booleanColumn.add(entry.getKey());
       countColumn.add(entry.getValue());
     }
@@ -109,8 +121,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   @Override
   public int countUnique() {
-    BooleanSet count = new BooleanOpenHashSet(3);
-    for (boolean next : data) {
+    ByteSet count = new ByteOpenHashSet(3);
+    for (byte next : data) {
       count.add(next);
     }
     return count.size();
@@ -118,11 +130,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   @Override
   public BooleanColumn unique() {
-    BooleanSet count = new BooleanOpenHashSet(3);
-    for (boolean next : data) {
+    ByteSet count = new ByteOpenHashSet(3);
+    for (byte next : data) {
       count.add(next);
     }
-    BooleanArrayList list = new BooleanArrayList(count);
+    ByteArrayList list = new ByteArrayList(count);
     return new BooleanColumn(name() + " Unique values", list);
   }
 
@@ -131,8 +143,16 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return ColumnType.BOOLEAN;
   }
 
-  public void add(boolean f) {
-    data.add(f);
+  public void add(boolean b) {
+    if (b) {
+      data.add((byte) 1);
+    } else {
+      data.add((byte) 0);
+    }
+  }
+
+  public void add(byte b) {
+    data.add(b);
   }
 
   @Override
@@ -162,24 +182,24 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   @Override
   public void sortAscending() {
-    BooleanArrays.mergeSort(data.elements());
+    ByteArrays.mergeSort(data.elements());
   }
 
   @Override
   public void sortDescending() {
-    BooleanArrays.mergeSort(data.elements(), reverseBooleanComparator);
+    ByteArrays.mergeSort(data.elements(), reverseByteComparator);
   }
 
-  BooleanComparator reverseBooleanComparator = new BooleanComparator() {
+  ByteComparator reverseByteComparator = new ByteComparator() {
 
     @Override
-    public int compare(Boolean o1, Boolean o2) {
-      return Boolean.compare(o2, o1);
+    public int compare(Byte o1, Byte o2) {
+      return Byte.compare(o2, o1);
     }
 
     @Override
-    public int compare(boolean o1, boolean o2) {
-      return Boolean.compare(o2, o1);
+    public int compare(byte o1, byte o2) {
+      return Byte.compare(o2, o1);
     }
   };
 
@@ -206,8 +226,20 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     }
   }
 
-  public boolean get(int i) {
-    return data.getBoolean(i);
+  /**
+   * Returns the value in row i as a Boolean
+   * @param i the row number
+   * @return  A Boolean object (may be null)
+   */
+  public Boolean get(int i) {
+    byte b = data.getByte(i);
+    if (b == 1) {
+      return Boolean.TRUE;
+    }
+    if (b == 0) {
+      return Boolean.FALSE;
+    }
+    return null;
   }
 
   @Override
@@ -215,17 +247,16 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return data.isEmpty();
   }
 
-  public static BooleanColumn create(String fileName, BooleanArrayList bools) {
+  public static BooleanColumn create(String fileName, ByteArrayList bools) {
     BooleanColumn booleanColumn = new BooleanColumn(fileName, bools.size());
-    booleanColumn.data = new BooleanArrayList(bools.size());
     booleanColumn.data.addAll(bools);
     return booleanColumn;
   }
 
   public int countTrue() {
     int count = 0;
-    for (boolean b : data) {
-      if (b) {
+    for (byte b : data) {
+      if (b == 1) {
         count++;
       }
     }
@@ -234,8 +265,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   public int countFalse() {
     int count = 0;
-    for (boolean b : data) {
-      if (!b) {
+    for (byte b : data) {
+      if (b == 0) {
         count++;
       }
     }
@@ -245,8 +276,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   public RoaringBitmap isFalse() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (boolean next : data) {
-      if (!next) {
+    for (byte next : data) {
+      if (next == 0) {
         results.add(i);
       }
       i++;
@@ -257,8 +288,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   public RoaringBitmap isTrue() {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    for (boolean next : data) {
-      if (next) {
+    for (byte next : data) {
+      if (next == 1) {
         results.add(i);
       }
       i++;
@@ -269,9 +300,9 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   public RoaringBitmap isEqualTo(BooleanColumn other) {
     RoaringBitmap results = new RoaringBitmap();
     int i = 0;
-    BooleanIterator booleanIterator = other.iterator();
-    for (boolean next : data) {
-      if (next == booleanIterator.nextBoolean()) {
+    ByteIterator booleanIterator = other.byteIterator();
+    for (byte next : data) {
+      if (next == booleanIterator.nextByte()) {
         results.add(i);
       }
       i++;
@@ -279,12 +310,15 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return results;
   }
 
-  public BooleanArrayList data() {
+  /**
+   * Returns a ByteArrayList containing 0 (false), 1 (true) or Byte.MIN_VALUE (missing)
+   */
+  public ByteArrayList data() {
     return data;
   }
 
   public void set(int i, boolean b) {
-    data.set(i, b);
+    data.set(i, b ? (byte) 1 : (byte) 0);
   }
 
   @Override
@@ -320,24 +354,34 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   public String print() {
     StringBuilder builder = new StringBuilder();
     builder.append(title());
-    for (boolean next : data) {
-      builder.append(String.valueOf(next));
+    for (byte next : data) {
+      if (next == (byte) 0) {
+        builder.append(String.valueOf(false));
+      } else if (next == (byte) 1) {
+        builder.append(String.valueOf(true));
+      } else {
+        builder.append(String.valueOf("NA"));
+      }
       builder.append('\n');
     }
     return builder.toString();
   }
 
   @Override
-  public RoaringBitmap isMissing() {
-    throw new UnsupportedOperationException("Boolean column does not support missing values");
+  public RoaringBitmap isMissing() {  //TODO
+    return apply(isMissing);
   }
 
   @Override
-  public RoaringBitmap isNotMissing() {
-    throw new UnsupportedOperationException("Boolean column does not support missing values");
+  public RoaringBitmap isNotMissing() { //TODO
+    return apply(isNotMissing);
   }
 
-  public BooleanIterator iterator() {
+  public Iterator<Boolean> iterator() {
+    return new BooleanColumnIterator(this.byteIterator());
+  }
+
+  public ByteIterator byteIterator() {
     return data.iterator();
   }
 
@@ -347,7 +391,12 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   }
 
   public BooleanSet asSet() {
-    return new BooleanOpenHashSet(data);
+    BooleanSet set = new BooleanOpenHashSet(3);
+    BooleanColumn unique = unique();
+    for (int i = 0; i < unique.size(); i++) {
+      set.add(unique.get(i));
+    }
+    return set;
   }
 
   public boolean contains(boolean aBoolean) {
@@ -364,5 +413,55 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     byte[] result = new byte[1];
     result[0] = (byte) (get(row) ? 1 : 0);
     return result;
+  }
+
+  public RoaringBitmap apply(BooleanPredicate predicate) {
+    RoaringBitmap bitmap = new RoaringBitmap();
+    for (int idx = 0; idx < data.size(); idx++) {
+      byte next = data.getByte(idx);
+      if (predicate.test(next)) {
+        bitmap.add(idx);
+      }
+    }
+    return bitmap;
+  }
+
+  static class BooleanColumnIterator implements Iterator<Boolean> {
+
+    final ByteIterator iterator;
+
+    public BooleanColumnIterator(ByteIterator iterator) {
+      this.iterator = iterator;
+    }
+
+    /**
+     * Returns {@code true} if the iteration has more elements.
+     * (In other words, returns {@code true} if {@link #next} would
+     * return an element rather than throwing an exception.)
+     *
+     * @return {@code true} if the iteration has more elements
+     */
+    @Override
+    public boolean hasNext() {
+      return iterator.hasNext();
+    }
+
+    /**
+     * Returns the next element in the iteration.
+     *
+     * @return the next element in the iteration
+     * @throws java.util.NoSuchElementException if the iteration has no more elements
+     */
+    @Override
+    public Boolean next() {
+      byte b = iterator.next();
+      if (b == (byte) 0) {
+        return false;
+      }
+      if (b == (byte) 1) {
+        return true;
+      }
+      return null;
+    }
   }
 }
