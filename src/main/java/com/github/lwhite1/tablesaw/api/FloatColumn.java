@@ -5,7 +5,6 @@ import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.filtering.FloatBiPredicate;
 import com.github.lwhite1.tablesaw.filtering.FloatPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
-import com.github.lwhite1.tablesaw.reducing.FloatReduceFunction;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.StatUtil;
 import com.google.common.base.Preconditions;
@@ -586,20 +585,4 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
   public byte[] asBytes(int rowNumber) {
     return ByteBuffer.allocate(4).putFloat(get(rowNumber)).array();
   }
-
-  /**
-   * A function that calculates the sum of the values in the column param
-   */
-  public static FloatReduceFunction sum = new FloatReduceFunction() {
-
-    @Override
-    public String functionName() {
-      return "Sum";
-    }
-
-    @Override
-    public float reduce(FloatColumn data) {
-      return (float) data.sum();
-    }
-  };
 }
