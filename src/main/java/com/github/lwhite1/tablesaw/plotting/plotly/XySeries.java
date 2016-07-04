@@ -101,9 +101,10 @@ public class XySeries<X extends Column, Y extends Column> {
     StringBuilder xValuesBuilder = new StringBuilder();
     for (int i = 0; i < dateColumn.size(); i++) {
       String xVal = dateColumn.getString(i);
+      xValuesBuilder.append("'");
       xValuesBuilder.append(xVal);
       if (i < dateColumn.size() -1) {
-        xValuesBuilder.append(", ");
+        xValuesBuilder.append("', ");
       }
     }
     return xValuesBuilder.toString();
