@@ -183,6 +183,22 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return result;
   }
 
+  public FloatColumn multiply(FloatColumn column2) {
+    FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) * column2.get(r));
+    }
+    return result;
+  }
+
+  public FloatColumn divide(FloatColumn column2) {
+    FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
+    for (int r = 0; r < size(); r++) {
+      result.add(get(r) / column2.get(r));
+    }
+    return result;
+  }
+
   public LongColumn divide(LongColumn column2) {
     LongColumn result = LongColumn.create(name() + " / " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
