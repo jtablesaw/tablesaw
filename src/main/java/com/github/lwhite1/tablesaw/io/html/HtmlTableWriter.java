@@ -21,7 +21,8 @@ final public class HtmlTableWriter {
 
     StringBuilder builder = new StringBuilder();
     builder.append(header(table.columnNames()));
-    builder.append("<tbody>");
+    builder.append("<tbody>")
+        .append('\n');
     for (int row : table.rows()) {
       builder.append(row(row, table, missing));
     }
@@ -35,15 +36,13 @@ final public class HtmlTableWriter {
   @VisibleForTesting
   static String row(int row, Table table, String missing) {
     StringBuilder builder = new StringBuilder()
-        .append("<tr>")
-        .append('\n');
+        .append("<tr>");
 
     for (Column col : table.columns()) {
       builder
           .append("<td>")
           .append(String.valueOf(col.getString(row)))
-            .append("</td>")
-            .append('\n');
+          .append("</td>");
       }
     builder
         .append("</tr>")
@@ -56,14 +55,12 @@ final public class HtmlTableWriter {
     StringBuilder builder = new StringBuilder()
         .append("<thead>")
         .append('\n')
-        .append("<tr>")
-        .append('\n');
+        .append("<tr>");
     for (String name : columnNames) {
       builder
           .append("<th>")
           .append(splitCamelCase(splitOnUnderscore(name)))
-          .append("</th>")
-          .append('\n');
+          .append("</th>");
     }
     builder
         .append("</tr>")
