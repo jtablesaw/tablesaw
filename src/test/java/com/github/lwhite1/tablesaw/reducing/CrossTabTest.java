@@ -20,7 +20,10 @@ public class CrossTabTest {
     //System.out.println(rPct.print());
 
     Table tPct = CrossTab.tablePercents(xtab);
-   // System.out.println(tPct.print());
+    //System.out.println(tPct.print());
+
+    Table cPct = CrossTab.columnPercents(xtab);
+    //System.out.println(cPct.print());
 
     //TODO(lwhite): Real tests go here
   }

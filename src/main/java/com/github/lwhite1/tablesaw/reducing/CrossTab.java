@@ -315,13 +315,51 @@ public final class CrossTab {
     }
 
     for (int i = 0; i < xTabCounts.rowCount(); i++) {
-      // float rowTotal = (float) xTabCounts.intColumn(xTabCounts.columnCount() - 1).get(i);
-
       for (int c = 1; c < xTabCounts.columnCount(); c++) {
         if (grandTotal == 0) {
           pctTable.floatColumn(c).add(Float.NaN);
         } else {
           pctTable.floatColumn(c).add((float) xTabCounts.intColumn(c).get(i) / grandTotal);
+        }
+      }
+    }
+    return pctTable;
+  }
+
+  public static Table columnPercents(Table xTabCounts) {
+
+    Table pctTable = Table.create("Crosstab Column Proportions: ");
+    CategoryColumn labels = CategoryColumn.create("");
+
+    pctTable.addColumn(labels);
+
+    int grandTotal = xTabCounts.intColumn(xTabCounts.columnCount() - 1).get(xTabCounts.rowCount() - 1);
+
+    // setup the labels
+    for (int i = 0; i < xTabCounts.rowCount(); i++) {
+      labels.add(xTabCounts.column(0).getString(i));
+    }
+
+    // create the new cols
+    for (int i = 1; i < xTabCounts.columnCount(); i++) {
+      Column column = xTabCounts.column(i);
+      pctTable.addColumn(FloatColumn.create(column.name()));
+    }
+
+    // get the column totals
+    int[] columnTotals = new int[xTabCounts.columnCount() -1];
+    int totalRow = xTabCounts.rowCount() - 1;
+    for (int i = 1; i < xTabCounts.columnCount(); i++) {
+      columnTotals[i-1] = xTabCounts.intColumn(i).get(totalRow);
+    }
+
+    // calculate the column pcts and update the new table
+    for (int i = 0; i < xTabCounts.rowCount(); i++) {
+      for (int c = 1; c < xTabCounts.columnCount(); c++) {
+        if (columnTotals[c-1] == 0) {
+          pctTable.floatColumn(c).add(Float.NaN);
+        } else {
+          pctTable.floatColumn(c).add((float) xTabCounts.intColumn(c).get(i) / columnTotals[c-1]);
         }
       }
     }
