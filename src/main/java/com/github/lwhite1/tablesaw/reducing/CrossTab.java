@@ -1,11 +1,10 @@
 package com.github.lwhite1.tablesaw.reducing;
 
-import com.github.lwhite1.tablesaw.api.BooleanColumn;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
-import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.google.common.collect.TreeBasedTable;
@@ -17,71 +16,10 @@ import java.time.LocalDate;
  */
 public final class CrossTab {
 
-  public static Table xCount(Table table, CategoryColumn column1, CategoryColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, CategoryColumn column1, IntColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, CategoryColumn column1, ShortColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, BooleanColumn column1, BooleanColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, BooleanColumn column1, CategoryColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, BooleanColumn column1, FloatColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, CategoryColumn column1, BooleanColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, FloatColumn column1, FloatColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, DateColumn column1, DateColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, DateColumn column1, BooleanColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, BooleanColumn column1, DateColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, CategoryColumn column1, DateColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, DateColumn column1, CategoryColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, DateColumn column1, FloatColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, CategoryColumn column1, FloatColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, FloatColumn column1, DateColumn column2) {
-    return xTabCount(table, column1, column2);
-  }
-
-  public static Table xCount(Table table, FloatColumn column1, CategoryColumn column2) {
+  public static Table xCount(Table table, Column column1, Column column2) {
+    if (column1.type() == ColumnType.FLOAT || column2.type() == ColumnType.FLOAT) {
+      throw new UnsupportedOperationException("X-tabs on FLOAT columns are not supported");
+    }
     return xTabCount(table, column1, column2);
   }
 
@@ -116,6 +54,8 @@ public final class CrossTab {
       Integer value = 0;
       if (cellValue != null) {
         value = cellValue + 1;
+      } else {
+        value = 1;
       }
       gTable.put(a, b, value);
     }
