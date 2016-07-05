@@ -172,7 +172,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
    * Returns the count of missing values in this column
    */
   @Override
-  public int countEmpty() {
+  public int countMissing() {
     int count = 0;
     for (int i = 0; i < size(); i++) {
       if (getInt(i) == MISSING_VALUE) {

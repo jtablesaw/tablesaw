@@ -29,7 +29,7 @@ public interface Column {
   /**
    * Returns the count of missing values in this column
    */
-  int countEmpty();
+  int countMissing();
 
   /**
    * Returns the count of unique values in this column

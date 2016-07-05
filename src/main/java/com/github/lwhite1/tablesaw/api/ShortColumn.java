@@ -140,7 +140,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
    * Returns the count of missing values in this column
    */
   @Override
-  public int countEmpty() {
+  public int countMissing() {
     int count = 0;
     for (int i = 0; i < size(); i++) {
       if (get(i) == MISSING_VALUE) {
