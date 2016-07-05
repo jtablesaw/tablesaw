@@ -11,7 +11,7 @@ import org.roaringbitmap.RoaringBitmap;
  */
 public class LocalDateIsBefore extends ColumnFilter {
 
-  int value;
+  private int value;
 
   public LocalDateIsBefore(ColumnReference reference, int value) {
     super(reference);
