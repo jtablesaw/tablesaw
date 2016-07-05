@@ -6,7 +6,7 @@ import com.github.lwhite1.tablesaw.filtering.Filter;
 import org.roaringbitmap.RoaringBitmap;
 
 /**
- *
+ * A table projection, i.e. the subset of columns in a table that should be returned in a query
  */
 public class Projection {
 
