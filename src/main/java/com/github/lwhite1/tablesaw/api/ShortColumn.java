@@ -100,23 +100,23 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   }
 
   public Selection isLessThan(int i) {
-    return apply(ShortColumnUtils.isLessThan, i);
+    return select(ShortColumnUtils.isLessThan, i);
   }
 
   public Selection isGreaterThan(int i) {
-    return apply(ShortColumnUtils.isGreaterThan, i);
+    return select(ShortColumnUtils.isGreaterThan, i);
   }
 
   public Selection isGreaterThanOrEqualTo(int i) {
-    return apply(ShortColumnUtils.isGreaterThanOrEqualTo, i);
+    return select(ShortColumnUtils.isGreaterThanOrEqualTo, i);
   }
 
   public Selection isLessThanOrEqualTo(int i) {
-    return apply(ShortColumnUtils.isLessThanOrEqualTo, i);
+    return select(ShortColumnUtils.isLessThanOrEqualTo, i);
   }
 
   public Selection isEqualTo(int i) {
-    return apply(ShortColumnUtils.isEqualTo, i);
+    return select(ShortColumnUtils.isEqualTo, i);
   }
 
   public Selection isEqualTo(ShortColumn f) {
@@ -283,27 +283,27 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   }
 
   public Selection isPositive() {
-    return apply(ShortColumnUtils.isPositive);
+    return select(ShortColumnUtils.isPositive);
   }
 
   public Selection isNegative() {
-    return apply(ShortColumnUtils.isNegative);
+    return select(ShortColumnUtils.isNegative);
   }
 
   public Selection isNonNegative() {
-    return apply(ShortColumnUtils.isNonNegative);
+    return select(ShortColumnUtils.isNonNegative);
   }
 
   public Selection isZero() {
-    return apply(ShortColumnUtils.isZero);
+    return select(ShortColumnUtils.isZero);
   }
 
   public Selection isEven() {
-    return apply(ShortColumnUtils.isEven);
+    return select(ShortColumnUtils.isEven);
   }
 
   public Selection isOdd() {
-    return apply(ShortColumnUtils.isOdd);
+    return select(ShortColumnUtils.isOdd);
   }
 
   public FloatArrayList toFloatArray() {
@@ -445,7 +445,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return data.iterator();
   }
 
-  public Selection apply(ShortPredicate predicate) {
+  public Selection select(ShortPredicate predicate) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       short next = data.getShort(idx);
@@ -456,7 +456,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return bitmap;
   }
 
-  public Selection apply(ShortBiPredicate predicate, int valueToCompareAgainst) {
+  public Selection select(ShortBiPredicate predicate, int valueToCompareAgainst) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       short next = data.getShort(idx);
@@ -494,12 +494,12 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   @Override
   public Selection isMissing() {
-    return apply(isMissing);
+    return select(isMissing);
   }
 
   @Override
   public Selection isNotMissing() {
-    return apply(isNotMissing);
+    return select(isNotMissing);
   }
 
   @Override

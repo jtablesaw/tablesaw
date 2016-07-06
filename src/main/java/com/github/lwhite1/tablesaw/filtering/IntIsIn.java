@@ -21,6 +21,6 @@ public class IntIsIn extends ColumnFilter {
     IntColumn intColumn = (IntColumn) relation.column(columnReference.getColumnName());
     IntSet firstSet = intColumn.asSet();
     firstSet.retainAll(filterColumn.data());
-    return intColumn.apply(firstSet::contains);
+    return intColumn.select(firstSet::contains);
   }
 }

@@ -316,7 +316,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
   public Selection isEqualTo(LocalDateTime value) {
     long packed = PackedLocalDateTime.pack(value);
-    return apply(LongColumnUtils.isEqualTo, packed);
+    return select(LongColumnUtils.isEqualTo, packed);
   }
 
   public Selection isEqualTo(DateTimeColumn column) {
@@ -333,19 +333,19 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   }
 
   public Selection isAfter(LocalDateTime value) {
-    return apply(LongColumnUtils.isGreaterThan, PackedLocalDateTime.pack(value));
+    return select(LongColumnUtils.isGreaterThan, PackedLocalDateTime.pack(value));
   }
 
   public Selection isOnOrAfter(long value) {
-    return apply(LongColumnUtils.isGreaterThanOrEqualTo, value);
+    return select(LongColumnUtils.isGreaterThanOrEqualTo, value);
   }
 
   public Selection isBefore(LocalDateTime value) {
-    return apply(LongColumnUtils.isLessThan, PackedLocalDateTime.pack(value));
+    return select(LongColumnUtils.isLessThan, PackedLocalDateTime.pack(value));
   }
 
   public Selection isOnOrBefore(long value) {
-    return apply(LongColumnUtils.isLessThanOrEqualTo, value);
+    return select(LongColumnUtils.isLessThanOrEqualTo, value);
   }
 
   public Selection isAfter(DateTimeColumn column) {
@@ -407,12 +407,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
   @Override
   public Selection isMissing() {
-    return apply(isMissing);
+    return select(isMissing);
   }
 
   @Override
   public Selection isNotMissing() {
-    return apply(isNotMissing);
+    return select(isNotMissing);
   }
 
   @Override
@@ -507,122 +507,122 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   }
 
   public Selection isMonday() {
-    return apply(PackedLocalDateTime::isMonday);
+    return select(PackedLocalDateTime::isMonday);
   }
 
   public Selection isTuesday() {
-    return apply(PackedLocalDateTime::isTuesday);
+    return select(PackedLocalDateTime::isTuesday);
   }
 
   public Selection isWednesday() {
-    return apply(PackedLocalDateTime::isWednesday);
+    return select(PackedLocalDateTime::isWednesday);
   }
 
   public Selection isThursday() {
-    return apply(PackedLocalDateTime::isThursday);
+    return select(PackedLocalDateTime::isThursday);
   }
 
   public Selection isFriday() {
-    return apply(PackedLocalDateTime::isFriday);
+    return select(PackedLocalDateTime::isFriday);
   }
 
   public Selection isSaturday() {
-    return apply(PackedLocalDateTime::isSaturday);
+    return select(PackedLocalDateTime::isSaturday);
   }
 
   public Selection isSunday() {
-    return apply(PackedLocalDateTime::isSunday);
+    return select(PackedLocalDateTime::isSunday);
   }
 
   public Selection isInJanuary() {
-    return apply(PackedLocalDateTime::isInJanuary);
+    return select(PackedLocalDateTime::isInJanuary);
   }
 
   public Selection isInFebruary() {
-    return apply(PackedLocalDateTime::isInFebruary);
+    return select(PackedLocalDateTime::isInFebruary);
   }
 
   public Selection isInMarch() {
-    return apply(PackedLocalDateTime::isInMarch);
+    return select(PackedLocalDateTime::isInMarch);
   }
 
   public Selection isInApril() {
-    return apply(PackedLocalDateTime::isInApril);
+    return select(PackedLocalDateTime::isInApril);
   }
 
   public Selection isInMay() {
-    return apply(PackedLocalDateTime::isInMay);
+    return select(PackedLocalDateTime::isInMay);
   }
 
   public Selection isInJune() {
-    return apply(PackedLocalDateTime::isInJune);
+    return select(PackedLocalDateTime::isInJune);
   }
 
   public Selection isInJuly() {
-    return apply(PackedLocalDateTime::isInJuly);
+    return select(PackedLocalDateTime::isInJuly);
   }
 
   public Selection isInAugust() {
-    return apply(PackedLocalDateTime::isInAugust);
+    return select(PackedLocalDateTime::isInAugust);
   }
 
   public Selection isInSeptember() {
-    return apply(PackedLocalDateTime::isInSeptember);
+    return select(PackedLocalDateTime::isInSeptember);
   }
 
   public Selection isInOctober() {
-    return apply(PackedLocalDateTime::isInOctober);
+    return select(PackedLocalDateTime::isInOctober);
   }
 
   public Selection isInNovember() {
-    return apply(PackedLocalDateTime::isInNovember);
+    return select(PackedLocalDateTime::isInNovember);
   }
 
   public Selection isInDecember() {
-    return apply(PackedLocalDateTime::isInDecember);
+    return select(PackedLocalDateTime::isInDecember);
   }
 
   public Selection isFirstDayOfMonth() {
-    return apply(PackedLocalDateTime::isFirstDayOfMonth);
+    return select(PackedLocalDateTime::isFirstDayOfMonth);
   }
 
   public Selection isLastDayOfMonth() {
-    return apply(PackedLocalDateTime::isLastDayOfMonth);
+    return select(PackedLocalDateTime::isLastDayOfMonth);
   }
 
   public Selection isInQ1() {
-    return apply(PackedLocalDateTime::isInQ1);
+    return select(PackedLocalDateTime::isInQ1);
   }
 
   public Selection isInQ2() {
-    return apply(PackedLocalDateTime::isInQ2);
+    return select(PackedLocalDateTime::isInQ2);
   }
 
   public Selection isInQ3() {
-    return apply(PackedLocalDateTime::isInQ3);
+    return select(PackedLocalDateTime::isInQ3);
   }
 
   public Selection isInQ4() {
-    return apply(PackedLocalDateTime::isInQ4);
+    return select(PackedLocalDateTime::isInQ4);
   }
 
   public Selection isNoon() {
-    return apply(PackedLocalDateTime::isNoon);
+    return select(PackedLocalDateTime::isNoon);
   }
 
   public Selection isMidnight() {
-    return apply(PackedLocalDateTime::isMidnight);
+    return select(PackedLocalDateTime::isMidnight);
   }
 
   public Selection isBeforeNoon() {
-    return apply(PackedLocalDateTime::AM);
+    return select(PackedLocalDateTime::AM);
   }
 
   public Selection isAfterNoon() {
-    return apply(PackedLocalDateTime::PM);
+    return select(PackedLocalDateTime::PM);
   }
 
-  public Selection apply(LongPredicate predicate) {
+  public Selection select(LongPredicate predicate) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
@@ -633,7 +633,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return bitmap;
   }
 
-  public Selection apply(LongBiPredicate predicate, long value) {
+  public Selection select(LongBiPredicate predicate, long value) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
@@ -692,7 +692,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   }
 
   public Selection isInYear(int year) {
-    return apply(i -> PackedLocalDateTime.isInYear(i, year));
+    return select(i -> PackedLocalDateTime.isInYear(i, year));
   }
 
   public boolean contains(LocalDateTime dateTime) {

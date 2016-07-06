@@ -357,7 +357,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
 
   public Selection isEqualTo(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
-    return apply(IntColumnUtils.isEqualTo, packed);
+    return select(IntColumnUtils.isEqualTo, packed);
   }
 
   /**
@@ -435,143 +435,143 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
   }
 
   public Selection isAfter(int value) {
-    return apply(PackedLocalDate::isAfter, value);
+    return select(PackedLocalDate::isAfter, value);
   }
 
   public Selection isAfter(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
-    return apply(PackedLocalDate::isAfter, packed);
+    return select(PackedLocalDate::isAfter, packed);
   }
 
   public Selection isBefore(int value) {
-    return apply(PackedLocalDate::isBefore, value);
+    return select(PackedLocalDate::isBefore, value);
   }
 
   public Selection isBefore(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
-    return apply(PackedLocalDate::isBefore, packed);
+    return select(PackedLocalDate::isBefore, packed);
   }
 
   public Selection isOnOrBefore(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
-    return apply(PackedLocalDate::isOnOrBefore, packed);
+    return select(PackedLocalDate::isOnOrBefore, packed);
   }
 
   public Selection isOnOrBefore(int value) {
-    return apply(PackedLocalDate::isOnOrBefore, value);
+    return select(PackedLocalDate::isOnOrBefore, value);
   }
 
   public Selection isOnOrAfter(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
-    return apply(PackedLocalDate::isOnOrAfter, packed);
+    return select(PackedLocalDate::isOnOrAfter, packed);
   }
 
   public Selection isOnOrAfter(int value) {
-    return apply(PackedLocalDate::isOnOrAfter, value);
+    return select(PackedLocalDate::isOnOrAfter, value);
   }
 
   public Selection isMonday() {
-    return apply(PackedLocalDate::isMonday);
+    return select(PackedLocalDate::isMonday);
   }
 
   public Selection isTuesday() {
-    return apply(PackedLocalDate::isTuesday);
+    return select(PackedLocalDate::isTuesday);
   }
 
   public Selection isWednesday() {
-    return apply(PackedLocalDate::isWednesday);
+    return select(PackedLocalDate::isWednesday);
   }
 
   public Selection isThursday() {
-    return apply(PackedLocalDate::isThursday);
+    return select(PackedLocalDate::isThursday);
   }
 
   public Selection isFriday() {
-    return apply(PackedLocalDate::isFriday);
+    return select(PackedLocalDate::isFriday);
   }
 
   public Selection isSaturday() {
-    return apply(PackedLocalDate::isSaturday);
+    return select(PackedLocalDate::isSaturday);
   }
 
   public Selection isSunday() {
-    return apply(PackedLocalDate::isSunday);
+    return select(PackedLocalDate::isSunday);
   }
 
   public Selection isInJanuary() {
-    return apply(PackedLocalDate::isInJanuary);
+    return select(PackedLocalDate::isInJanuary);
   }
 
   public Selection isInFebruary() {
-    return apply(PackedLocalDate::isInFebruary);
+    return select(PackedLocalDate::isInFebruary);
   }
 
   public Selection isInMarch() {
-    return apply(PackedLocalDate::isInMarch);
+    return select(PackedLocalDate::isInMarch);
   }
 
   public Selection isInApril() {
-    return apply(PackedLocalDate::isInApril);
+    return select(PackedLocalDate::isInApril);
   }
 
   public Selection isInMay() {
-    return apply(PackedLocalDate::isInMay);
+    return select(PackedLocalDate::isInMay);
   }
 
   public Selection isInJune() {
-    return apply(PackedLocalDate::isInJune);
+    return select(PackedLocalDate::isInJune);
   }
 
   public Selection isInJuly() {
-    return apply(PackedLocalDate::isInJuly);
+    return select(PackedLocalDate::isInJuly);
   }
 
   public Selection isInAugust() {
-    return apply(PackedLocalDate::isInAugust);
+    return select(PackedLocalDate::isInAugust);
   }
 
   public Selection isInSeptember() {
-    return apply(PackedLocalDate::isInSeptember);
+    return select(PackedLocalDate::isInSeptember);
   }
 
   public Selection isInOctober() {
-    return apply(PackedLocalDate::isInOctober);
+    return select(PackedLocalDate::isInOctober);
   }
 
   public Selection isInNovember() {
-    return apply(PackedLocalDate::isInNovember);
+    return select(PackedLocalDate::isInNovember);
   }
 
   public Selection isInDecember() {
-    return apply(PackedLocalDate::isInDecember);
+    return select(PackedLocalDate::isInDecember);
   }
 
   public Selection isFirstDayOfMonth() {
-    return apply(PackedLocalDate::isFirstDayOfMonth);
+    return select(PackedLocalDate::isFirstDayOfMonth);
   }
 
   public Selection isLastDayOfMonth() {
-    return apply(PackedLocalDate::isLastDayOfMonth);
+    return select(PackedLocalDate::isLastDayOfMonth);
   }
 
   public Selection isInQ1() {
-    return apply(PackedLocalDate::isInQ1);
+    return select(PackedLocalDate::isInQ1);
   }
 
   public Selection isInQ2() {
-    return apply(PackedLocalDate::isInQ2);
+    return select(PackedLocalDate::isInQ2);
   }
 
   public Selection isInQ3() {
-    return apply(PackedLocalDate::isInQ3);
+    return select(PackedLocalDate::isInQ3);
   }
 
   public Selection isInQ4() {
-    return apply(PackedLocalDate::isInQ4);
+    return select(PackedLocalDate::isInQ4);
   }
 
   public Selection isInYear(int year) {
-    return apply(PackedLocalDate::isInYear, year);
+    return select(PackedLocalDate::isInYear, year);
   }
 
   public String print() {
@@ -586,7 +586,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
 
   @Override
   public Selection isMissing() {
-    return apply(isMissing);
+    return select(isMissing);
   }
 
   /**
@@ -605,7 +605,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
 
   @Override
   public Selection isNotMissing() {
-    return apply(isNotMissing);
+    return select(isNotMissing);
   }
 
   @Override
@@ -689,7 +689,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
     return data.iterator();
   }
 
-  public Selection apply(IntPredicate predicate) {
+  public Selection select(IntPredicate predicate) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
@@ -700,7 +700,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
     return selection;
   }
 
-  public Selection apply(IntBiPredicate predicate, int value) {
+  public Selection select(IntBiPredicate predicate, int value) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);

@@ -394,12 +394,12 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   @Override
   public Selection isMissing() {  //TODO
-    return apply(isMissing);
+    return select(isMissing);
   }
 
   @Override
   public Selection isNotMissing() { //TODO
-    return apply(isNotMissing);
+    return select(isNotMissing);
   }
 
   public Iterator<Boolean> iterator() {
@@ -440,7 +440,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return result;
   }
 
-  public Selection apply(BooleanPredicate predicate) {
+  public Selection select(BooleanPredicate predicate) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       byte next = data.getByte(idx);

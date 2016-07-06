@@ -158,31 +158,31 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
   }
 
   public Selection isLessThan(float f) {
-    return apply(isLessThan, f);
+    return select(isLessThan, f);
   }
 
   public Selection isMissing() {
-    return apply(isMissing);
+    return select(isMissing);
   }
 
   public Selection isNotMissing() {
-    return apply(isNotMissing);
+    return select(isNotMissing);
   }
 
   public Selection isGreaterThan(float f) {
-    return apply(isGreaterThan, f);
+    return select(isGreaterThan, f);
   }
 
   public Selection isGreaterThanOrEqualTo(float f) {
-    return apply(isGreaterThanOrEqualTo, f);
+    return select(isGreaterThanOrEqualTo, f);
   }
 
   public Selection isLessThanOrEqualTo(float f) {
-    return apply(isLessThanOrEqualTo, f);
+    return select(isLessThanOrEqualTo, f);
   }
 
   public Selection isEqualTo(float f) {
-    return apply(isEqualTo, f);
+    return select(isEqualTo, f);
   }
 
   public Selection isEqualTo(FloatColumn f) {
@@ -560,15 +560,15 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
   }
 
   Selection isPositive() {
-    return apply(isPositive);
+    return select(isPositive);
   }
 
   Selection isNegative() {
-    return apply(isNegative);
+    return select(isNegative);
   }
 
   Selection isNonNegative() {
-    return apply(isNonNegative);
+    return select(isNonNegative);
   }
 
   public double[] toDoubleArray() {
@@ -608,7 +608,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return data.iterator();
   }
 
-  public Selection apply(FloatPredicate predicate) {
+  public Selection select(FloatPredicate predicate) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       float next = data.getFloat(idx);
@@ -619,7 +619,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return bitmap;
   }
 
-  public Selection apply(FloatBiPredicate predicate, float value) {
+  public Selection select(FloatBiPredicate predicate, float value) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       float next = data.getFloat(idx);

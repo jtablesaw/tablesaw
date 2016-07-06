@@ -498,16 +498,16 @@ public class CategoryColumn extends AbstractColumn
 
   @Override
   public Selection isMissing() {
-    return apply(isMissing);
+    return select(isMissing);
   }
 
   @Override
   public Selection isNotMissing() {
-    return apply(isNotMissing);
+    return select(isNotMissing);
   }
 
 
-  public Selection apply(StringPredicate predicate) {
+  public Selection select(StringPredicate predicate) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data().size(); idx++) {
       int next = data().getInt(idx);
@@ -518,7 +518,7 @@ public class CategoryColumn extends AbstractColumn
     return selection;
   }
 
-  public Selection apply(StringBiPredicate predicate, String value) {
+  public Selection select(StringBiPredicate predicate, String value) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data().size(); idx++) {
       int next = data().getInt(idx);

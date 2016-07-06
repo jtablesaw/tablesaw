@@ -101,31 +101,31 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   }
 
   public Selection isLessThan(int i) {
-    return apply(isLessThan, i);
+    return select(isLessThan, i);
   }
 
   public Selection isGreaterThan(int i) {
-    return apply(isGreaterThan, i);
+    return select(isGreaterThan, i);
   }
 
   public Selection isGreaterThanOrEqualTo(int i) {
-    return apply(isGreaterThanOrEqualTo, i);
+    return select(isGreaterThanOrEqualTo, i);
   }
 
   public Selection isLessThanOrEqualTo(int i) {
-    return apply(isLessThanOrEqualTo, i);
+    return select(isLessThanOrEqualTo, i);
   }
 
   public Selection isEqualTo(int i) {
-    return apply(isEqualTo, i);
+    return select(isEqualTo, i);
   }
 
   public Selection isMissing() {
-    return apply(isMissing);
+    return select(isMissing);
   }
 
   public Selection isNotMissing() {
-    return apply(isNotMissing);
+    return select(isNotMissing);
   }
 
   public Selection isEqualTo(IntColumn other) {
@@ -286,27 +286,27 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
   }
 
   public Selection isPositive() {
-    return apply(isPositive);
+    return select(isPositive);
   }
 
   public Selection isNegative() {
-    return apply(isNegative);
+    return select(isNegative);
   }
 
   public Selection isNonNegative() {
-    return apply(isNonNegative);
+    return select(isNonNegative);
   }
 
   public Selection isZero() {
-    return apply(isZero);
+    return select(isZero);
   }
 
   public Selection isEven() {
-    return apply(isEven);
+    return select(isEven);
   }
 
   public Selection isOdd() {
-    return apply(isOdd);
+    return select(isOdd);
   }
 
   public FloatArrayList toFloatArray() {
@@ -369,7 +369,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return column;
   }
 
-  public Selection apply(IntPredicate predicate) {
+  public Selection select(IntPredicate predicate) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
@@ -380,7 +380,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return bitmap;
   }
 
-  public Selection apply(IntBiPredicate predicate, int value) {
+  public Selection select(IntBiPredicate predicate, int value) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);

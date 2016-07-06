@@ -99,23 +99,23 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   }
 
   public Selection isLessThan(long i) {
-    return apply(isLessThan, i);
+    return select(isLessThan, i);
   }
 
   public Selection isGreaterThan(int i) {
-    return apply(isGreaterThan, i);
+    return select(isGreaterThan, i);
   }
 
   public Selection isGreaterThanOrEqualTo(int i) {
-    return apply(isGreaterThanOrEqualTo, i);
+    return select(isGreaterThanOrEqualTo, i);
   }
 
   public Selection isLessThanOrEqualTo(int f) {
-    return apply(isLessThanOrEqualTo, f);
+    return select(isLessThanOrEqualTo, f);
   }
 
   public Selection isEqualTo(long i) {
-    return apply(isEqualTo, i);
+    return select(isEqualTo, i);
   }
 
   public Selection isEqualTo(LongColumn f) {
@@ -331,27 +331,27 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   }
 
   public Selection isPositive() {
-    return apply(isPositive);
+    return select(isPositive);
   }
 
   public Selection isNegative() {
-    return apply(isNegative);
+    return select(isNegative);
   }
 
   public Selection isNonNegative() {
-    return apply(isNonNegative);
+    return select(isNonNegative);
   }
 
   public Selection isZero() {
-    return apply(isZero);
+    return select(isZero);
   }
 
   public Selection isEven() {
-    return apply(isEven);
+    return select(isEven);
   }
 
   public Selection isOdd() {
-    return apply(isOdd);
+    return select(isOdd);
   }
 
   public FloatArrayList toFloatArray() {
@@ -437,7 +437,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return data.iterator();
   }
 
-  public Selection apply(LongPredicate predicate) {
+  public Selection select(LongPredicate predicate) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
@@ -448,7 +448,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return bitmap;
   }
 
-  public Selection apply(LongBiPredicate predicate, long valueToCompareAgainst) {
+  public Selection select(LongBiPredicate predicate, long valueToCompareAgainst) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
@@ -478,12 +478,12 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
 
   @Override
   public Selection isMissing() {
-    return apply(isMissing);
+    return select(isMissing);
   }
 
   @Override
   public Selection isNotMissing() {
-    return apply(isNotMissing);
+    return select(isNotMissing);
   }
 
   @Override

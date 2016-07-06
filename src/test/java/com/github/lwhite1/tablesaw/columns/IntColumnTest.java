@@ -120,7 +120,7 @@ public class IntColumnTest {
     IntColumn column1 = column.selectIf(predicate);
     assertEquals(10, column1.size());
 
-    IntColumn column2 = column.select(column.apply(predicate));
+    IntColumn column2 = column.select(column.select(predicate));
     assertEquals(10, column2.size());
     for (int i = 0; i < 10; i++) {
       assertTrue(column1.get(i) < 10);

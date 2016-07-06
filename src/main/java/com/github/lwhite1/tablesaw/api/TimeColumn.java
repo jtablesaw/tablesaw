@@ -336,19 +336,19 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
   }
 
   public Selection isMidnight() {
-    return applyFilter(PackedLocalTime::isMidnight);
+    return select(PackedLocalTime::isMidnight);
   }
 
   public Selection isNoon() {
-    return applyFilter(PackedLocalTime::isNoon);
+    return select(PackedLocalTime::isNoon);
   }
 
   public Selection isBefore(LocalTime time) {
-    return applyFilter(PackedLocalTime::isBefore, PackedLocalTime.pack(time));
+    return select(PackedLocalTime::isBefore, PackedLocalTime.pack(time));
   }
 
   public Selection isAfter(LocalTime time) {
-    return applyFilter(PackedLocalTime::isAfter, PackedLocalTime.pack(time));
+    return select(PackedLocalTime::isAfter, PackedLocalTime.pack(time));
   }
 
   /**
@@ -356,7 +356,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
    * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
    */
   public Selection isBeforeNoon() {
-    return applyFilter(PackedLocalTime::AM);
+    return select(PackedLocalTime::AM);
   }
 
   /**
@@ -364,7 +364,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
    * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
    */
   public Selection isAfterNoon() {
-    return applyFilter(PackedLocalTime::PM);
+    return select(PackedLocalTime::PM);
   }
 
   /**
@@ -405,7 +405,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     return data.iterator();
   }
 
-  public Selection applyFilter(IntPredicate predicate) {
+  public Selection select(IntPredicate predicate) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
@@ -416,7 +416,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     return selection;
   }
 
-  public Selection applyFilter(IntBiPredicate predicate, int value) {
+  public Selection select(IntBiPredicate predicate, int value) {
     Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
@@ -443,12 +443,12 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
 
   @Override
   public Selection isMissing() {
-    return applyFilter(isMissing);
+    return select(isMissing);
   }
 
   @Override
   public Selection isNotMissing() {
-    return applyFilter(isNotMissing);
+    return select(isNotMissing);
   }
 
   @Override

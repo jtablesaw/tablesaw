@@ -20,6 +20,6 @@ public class FloatGreaterThan extends ColumnFilter {
 
   public Selection apply(Table relation) {
     FloatColumn floatColumn = (FloatColumn) relation.column(columnReference.getColumnName());
-    return floatColumn.apply(isGreaterThan, value);
+    return floatColumn.select(isGreaterThan, value);
   }
 }
