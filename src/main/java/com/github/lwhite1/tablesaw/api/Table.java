@@ -659,9 +659,7 @@ public class Table implements Relation, IntIterable {
   public void append(Table tableToAppend) {
     for (Column column : columnList) {
       Column columnToAppend = tableToAppend.column(column.name());
-      for (int i = 0; i < columnToAppend.size(); i++) {
-        column.append(columnToAppend);
-      }
+      column.append(columnToAppend);
     }
   }
 
