@@ -6,6 +6,8 @@ import com.github.lwhite1.tablesaw.filtering.FloatBiPredicate;
 import com.github.lwhite1.tablesaw.filtering.FloatPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.github.lwhite1.tablesaw.util.StatUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -17,7 +19,6 @@ import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -156,36 +157,36 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     data.add(f);
   }
 
-  public RoaringBitmap isLessThan(float f) {
+  public Selection isLessThan(float f) {
     return apply(isLessThan, f);
   }
 
-  public RoaringBitmap isMissing() {
+  public Selection isMissing() {
     return apply(isMissing);
   }
 
-  public RoaringBitmap isNotMissing() {
+  public Selection isNotMissing() {
     return apply(isNotMissing);
   }
 
-  public RoaringBitmap isGreaterThan(float f) {
+  public Selection isGreaterThan(float f) {
     return apply(isGreaterThan, f);
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(float f) {
+  public Selection isGreaterThanOrEqualTo(float f) {
     return apply(isGreaterThanOrEqualTo, f);
   }
 
-  public RoaringBitmap isLessThanOrEqualTo(float f) {
+  public Selection isLessThanOrEqualTo(float f) {
     return apply(isLessThanOrEqualTo, f);
   }
 
-  public RoaringBitmap isEqualTo(float f) {
+  public Selection isEqualTo(float f) {
     return apply(isEqualTo, f);
   }
 
-  public RoaringBitmap isEqualTo(FloatColumn f) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isEqualTo(FloatColumn f) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     FloatIterator floatIterator = f.iterator();
     for (float floats : data) {
@@ -533,8 +534,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
 
   // TODO(lwhite): Reconsider the implementation of this functionality to allow user to provide a specific max error.
   // TODO(lwhite): continued: Also see section in Effective Java on floating point comparisons.
-  RoaringBitmap isCloseTo(float target) {
-    RoaringBitmap results = new RoaringBitmap();
+  Selection isCloseTo(float target) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (float f : data) {
       if (Float.compare(f, target) == 0) {
@@ -546,8 +547,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return results;
   }
 
-  RoaringBitmap isCloseTo(double target) {
-    RoaringBitmap results = new RoaringBitmap();
+  Selection isCloseTo(double target) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (float f : data) {
       if (Double.compare(f, 0.0) == 0) {
@@ -558,15 +559,15 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return results;
   }
 
-  RoaringBitmap isPositive() {
+  Selection isPositive() {
     return apply(isPositive);
   }
 
-  RoaringBitmap isNegative() {
+  Selection isNegative() {
     return apply(isNegative);
   }
 
-  RoaringBitmap isNonNegative() {
+  Selection isNonNegative() {
     return apply(isNonNegative);
   }
 
@@ -607,8 +608,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return data.iterator();
   }
 
-  public RoaringBitmap apply(FloatPredicate predicate) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(FloatPredicate predicate) {
+    Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       float next = data.getFloat(idx);
       if (predicate.test(next)) {
@@ -618,8 +619,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return bitmap;
   }
 
-  public RoaringBitmap apply(FloatBiPredicate predicate, float value) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(FloatBiPredicate predicate, float value) {
+    Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       float next = data.getFloat(idx);
       if (predicate.test(next, value)) {

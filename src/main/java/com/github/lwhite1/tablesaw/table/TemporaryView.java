@@ -12,10 +12,11 @@ import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.TimeColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
+import com.github.lwhite1.tablesaw.util.Selection;
 import it.unimi.dsi.fastutil.ints.IntIterable;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.apache.commons.lang3.StringUtils;
-import org.roaringbitmap.IntIterator;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +35,12 @@ public class TemporaryView implements Relation, IntIterable {
 
   private String name;
   private Table table;
-  private final RoaringBitmap rowMap;
+  private final Selection rowMap;
 
   /**
    * Returns a new View constructed from the given table, containing only the rows represented by the bitmpa
    */
-  public TemporaryView(Table table, RoaringBitmap rowSelection) {
+  public TemporaryView(Table table, Selection rowSelection) {
     this.name = table.name();  //TODO(lwhite): Is this really needed, or can we reference the table name?
     this.rowMap = rowSelection;
     this.table = table;
@@ -48,7 +49,7 @@ public class TemporaryView implements Relation, IntIterable {
   /**
    * Returns a new View constructed from the given table, containing only the rows represented by the bitmpa
    */
-  public TemporaryView(Table table, RoaringBitmap rowSelection, String[] columnNames) {
+  public TemporaryView(Table table, Selection rowSelection, String[] columnNames) {
     this.name = table.name();  //TODO(lwhite): Is this really needed, or can we reference the table name?
     this.rowMap = rowSelection;
     this.table = table;
@@ -66,7 +67,7 @@ public class TemporaryView implements Relation, IntIterable {
 
   @Override
   public int rowCount() {
-    return rowMap.getCardinality();
+    return rowMap.size();
   }
 
   @Override
@@ -118,7 +119,7 @@ public class TemporaryView implements Relation, IntIterable {
 
   @Override
   public Table first(int nRows) {
-    RoaringBitmap newMap = new RoaringBitmap();
+    Selection newMap = new BitmapBackedSelection();
     int count = 0;
     IntIterator it = intIterator();
     while (it.hasNext() && count < nRows) {
@@ -196,7 +197,7 @@ public class TemporaryView implements Relation, IntIterable {
   }
 
   IntIterator intIterator() {
-    return rowMap.getIntIterator();
+    return rowMap.iterator();
   }
 
   /**

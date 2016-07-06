@@ -5,10 +5,11 @@ import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
     String currentStringKey = null;
     TemporaryView view;
 
-    RoaringBitmap bitmap = new RoaringBitmap();
+    Selection selection = new BitmapBackedSelection();
 
     for (int row = 0; row < sortedOriginal.rowCount(); row++) {
 
@@ -82,18 +83,18 @@ public class ViewGroup implements Iterable<TemporaryView> {
       }
       if (!Arrays.equals(newKey, currentKey)) {
         currentKey = newKey;
-        view = new TemporaryView(sortedOriginal, bitmap);
+        view = new TemporaryView(sortedOriginal, selection);
         view.setName(currentStringKey);
         currentStringKey = newStringKey;
         addViewToSubTables(view);
-        bitmap = new RoaringBitmap();
-        bitmap.add(row);
+        selection = new BitmapBackedSelection();
+        selection.add(row);
       } else {
-        bitmap.add(row);
+        selection.add(row);
       }
     }
-    if (!bitmap.isEmpty()) {
-      view = new TemporaryView(sortedOriginal, bitmap);
+    if (!selection.isEmpty()) {
+      view = new TemporaryView(sortedOriginal, selection);
       view.setName(currentStringKey);
       addViewToSubTables(view);
     }

@@ -12,7 +12,9 @@ import com.github.lwhite1.tablesaw.filtering.IntPredicate;
 import com.github.lwhite1.tablesaw.filtering.LocalDatePredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
@@ -23,7 +25,6 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
@@ -354,7 +355,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
     return data.getInt(index);
   }
 
-  public RoaringBitmap isEqualTo(LocalDate value) {
+  public Selection isEqualTo(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
     return apply(IntColumnUtils.isEqualTo, packed);
   }
@@ -363,8 +364,8 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
    * Returns a bitmap flagging the records for which the value in this column is equal to the value in the given column
    * Columnwise isEqualTo.
    */
-  public RoaringBitmap isEqualTo(DateColumn column) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isEqualTo(DateColumn column) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     IntIterator intIterator = column.iterator();
     for (int next : data) {
@@ -433,143 +434,143 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
     return newColumn;
   }
 
-  public RoaringBitmap isAfter(int value) {
+  public Selection isAfter(int value) {
     return apply(PackedLocalDate::isAfter, value);
   }
 
-  public RoaringBitmap isAfter(LocalDate value) {
+  public Selection isAfter(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
     return apply(PackedLocalDate::isAfter, packed);
   }
 
-  public RoaringBitmap isBefore(int value) {
+  public Selection isBefore(int value) {
     return apply(PackedLocalDate::isBefore, value);
   }
 
-  public RoaringBitmap isBefore(LocalDate value) {
+  public Selection isBefore(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
     return apply(PackedLocalDate::isBefore, packed);
   }
 
-  public RoaringBitmap isOnOrBefore(LocalDate value) {
+  public Selection isOnOrBefore(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
     return apply(PackedLocalDate::isOnOrBefore, packed);
   }
 
-  public RoaringBitmap isOnOrBefore(int value) {
+  public Selection isOnOrBefore(int value) {
     return apply(PackedLocalDate::isOnOrBefore, value);
   }
 
-  public RoaringBitmap isOnOrAfter(LocalDate value) {
+  public Selection isOnOrAfter(LocalDate value) {
     int packed = PackedLocalDate.pack(value);
     return apply(PackedLocalDate::isOnOrAfter, packed);
   }
 
-  public RoaringBitmap isOnOrAfter(int value) {
+  public Selection isOnOrAfter(int value) {
     return apply(PackedLocalDate::isOnOrAfter, value);
   }
 
-  public RoaringBitmap isMonday() {
+  public Selection isMonday() {
     return apply(PackedLocalDate::isMonday);
   }
 
-  public RoaringBitmap isTuesday() {
+  public Selection isTuesday() {
     return apply(PackedLocalDate::isTuesday);
   }
 
-  public RoaringBitmap isWednesday() {
+  public Selection isWednesday() {
     return apply(PackedLocalDate::isWednesday);
   }
 
-  public RoaringBitmap isThursday() {
+  public Selection isThursday() {
     return apply(PackedLocalDate::isThursday);
   }
 
-  public RoaringBitmap isFriday() {
+  public Selection isFriday() {
     return apply(PackedLocalDate::isFriday);
   }
 
-  public RoaringBitmap isSaturday() {
+  public Selection isSaturday() {
     return apply(PackedLocalDate::isSaturday);
   }
 
-  public RoaringBitmap isSunday() {
+  public Selection isSunday() {
     return apply(PackedLocalDate::isSunday);
   }
 
-  public RoaringBitmap isInJanuary() {
+  public Selection isInJanuary() {
     return apply(PackedLocalDate::isInJanuary);
   }
 
-  public RoaringBitmap isInFebruary() {
+  public Selection isInFebruary() {
     return apply(PackedLocalDate::isInFebruary);
   }
 
-  public RoaringBitmap isInMarch() {
+  public Selection isInMarch() {
     return apply(PackedLocalDate::isInMarch);
   }
 
-  public RoaringBitmap isInApril() {
+  public Selection isInApril() {
     return apply(PackedLocalDate::isInApril);
   }
 
-  public RoaringBitmap isInMay() {
+  public Selection isInMay() {
     return apply(PackedLocalDate::isInMay);
   }
 
-  public RoaringBitmap isInJune() {
+  public Selection isInJune() {
     return apply(PackedLocalDate::isInJune);
   }
 
-  public RoaringBitmap isInJuly() {
+  public Selection isInJuly() {
     return apply(PackedLocalDate::isInJuly);
   }
 
-  public RoaringBitmap isInAugust() {
+  public Selection isInAugust() {
     return apply(PackedLocalDate::isInAugust);
   }
 
-  public RoaringBitmap isInSeptember() {
+  public Selection isInSeptember() {
     return apply(PackedLocalDate::isInSeptember);
   }
 
-  public RoaringBitmap isInOctober() {
+  public Selection isInOctober() {
     return apply(PackedLocalDate::isInOctober);
   }
 
-  public RoaringBitmap isInNovember() {
+  public Selection isInNovember() {
     return apply(PackedLocalDate::isInNovember);
   }
 
-  public RoaringBitmap isInDecember() {
+  public Selection isInDecember() {
     return apply(PackedLocalDate::isInDecember);
   }
 
-  public RoaringBitmap isFirstDayOfMonth() {
+  public Selection isFirstDayOfMonth() {
     return apply(PackedLocalDate::isFirstDayOfMonth);
   }
 
-  public RoaringBitmap isLastDayOfMonth() {
+  public Selection isLastDayOfMonth() {
     return apply(PackedLocalDate::isLastDayOfMonth);
   }
 
-  public RoaringBitmap isInQ1() {
+  public Selection isInQ1() {
     return apply(PackedLocalDate::isInQ1);
   }
 
-  public RoaringBitmap isInQ2() {
+  public Selection isInQ2() {
     return apply(PackedLocalDate::isInQ2);
   }
 
-  public RoaringBitmap isInQ3() {
+  public Selection isInQ3() {
     return apply(PackedLocalDate::isInQ3);
   }
 
-  public RoaringBitmap isInQ4() {
+  public Selection isInQ4() {
     return apply(PackedLocalDate::isInQ4);
   }
 
-  public RoaringBitmap isInYear(int year) {
+  public Selection isInYear(int year) {
     return apply(PackedLocalDate::isInYear, year);
   }
 
@@ -584,7 +585,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
   }
 
   @Override
-  public RoaringBitmap isMissing() {
+  public Selection isMissing() {
     return apply(isMissing);
   }
 
@@ -603,7 +604,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
   }
 
   @Override
-  public RoaringBitmap isNotMissing() {
+  public Selection isNotMissing() {
     return apply(isNotMissing);
   }
 
@@ -688,26 +689,26 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
     return data.iterator();
   }
 
-  public RoaringBitmap apply(IntPredicate predicate) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(IntPredicate predicate) {
+    Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next)) {
-        bitmap.add(idx);
+        selection.add(idx);
       }
     }
-    return bitmap;
+    return selection;
   }
 
-  public RoaringBitmap apply(IntBiPredicate predicate, int value) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(IntBiPredicate predicate, int value) {
+    Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next, value)) {
-        bitmap.add(idx);
+        selection.add(idx);
       }
     }
-    return bitmap;
+    return selection;
   }
 
   public Set<LocalDate> asSet() {

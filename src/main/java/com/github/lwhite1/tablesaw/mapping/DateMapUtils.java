@@ -6,7 +6,8 @@ import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.DateTimeColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -55,8 +56,8 @@ public interface DateMapUtils extends DateColumnUtils {
     return newColumn;
   }
 
-  default RoaringBitmap isLessThan(LocalDate d) {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection isLessThan(LocalDate d) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (int next : data()) {
       if (next < PackedLocalDate.pack(d)) {

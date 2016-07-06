@@ -9,7 +9,9 @@ import com.github.lwhite1.tablesaw.filtering.LocalTimePredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapping.TimeMapUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
@@ -21,7 +23,6 @@ import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.nio.ByteBuffer;
 import java.time.LocalTime;
@@ -264,8 +265,8 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     }
   };
 
-  public RoaringBitmap isEqualTo(LocalTime value) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isEqualTo(LocalTime value) {
+    Selection results = new BitmapBackedSelection();
     int packedLocalTime = PackedLocalTime.pack(value);
     int i = 0;
     for (int next : data) {
@@ -334,19 +335,19 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     }
   }
 
-  public RoaringBitmap isMidnight() {
+  public Selection isMidnight() {
     return applyFilter(PackedLocalTime::isMidnight);
   }
 
-  public RoaringBitmap isNoon() {
+  public Selection isNoon() {
     return applyFilter(PackedLocalTime::isNoon);
   }
 
-  public RoaringBitmap isBefore(LocalTime time) {
+  public Selection isBefore(LocalTime time) {
     return applyFilter(PackedLocalTime::isBefore, PackedLocalTime.pack(time));
   }
 
-  public RoaringBitmap isAfter(LocalTime time) {
+  public Selection isAfter(LocalTime time) {
     return applyFilter(PackedLocalTime::isAfter, PackedLocalTime.pack(time));
   }
 
@@ -354,7 +355,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
    * Applies a function to every value in this column that returns true if the time is in the AM or "before noon".
    * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
    */
-  public RoaringBitmap isBeforeNoon() {
+  public Selection isBeforeNoon() {
     return applyFilter(PackedLocalTime::AM);
   }
 
@@ -362,7 +363,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
    * Applies a function to every value in this column that returns true if the time is in the PM or "after noon".
    * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
    */
-  public RoaringBitmap isAfterNoon() {
+  public Selection isAfterNoon() {
     return applyFilter(PackedLocalTime::PM);
   }
 
@@ -404,26 +405,26 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     return data.iterator();
   }
 
-  public RoaringBitmap applyFilter(IntPredicate predicate) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection applyFilter(IntPredicate predicate) {
+    Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next)) {
-        bitmap.add(idx);
+        selection.add(idx);
       }
     }
-    return bitmap;
+    return selection;
   }
 
-  public RoaringBitmap applyFilter(IntBiPredicate predicate, int value) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection applyFilter(IntBiPredicate predicate, int value) {
+    Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next, value)) {
-        bitmap.add(idx);
+        selection.add(idx);
       }
     }
-    return bitmap;
+    return selection;
   }
 
   Set<LocalTime> asSet() {
@@ -441,12 +442,12 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
   }
 
   @Override
-  public RoaringBitmap isMissing() {
+  public Selection isMissing() {
     return applyFilter(isMissing);
   }
 
   @Override
-  public RoaringBitmap isNotMissing() {
+  public Selection isNotMissing() {
     return applyFilter(isNotMissing);
   }
 

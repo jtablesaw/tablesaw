@@ -8,7 +8,9 @@ import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapping.IntMapUtils;
 import com.github.lwhite1.tablesaw.sorting.IntComparisonUtil;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.github.lwhite1.tablesaw.util.StatUtil;
 import com.github.lwhite1.tablesaw.util.Stats;
 import com.google.common.base.Preconditions;
@@ -19,7 +21,6 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -99,36 +100,36 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     data.set(index, value);
   }
 
-  public RoaringBitmap isLessThan(int i) {
+  public Selection isLessThan(int i) {
     return apply(isLessThan, i);
   }
 
-  public RoaringBitmap isGreaterThan(int i) {
+  public Selection isGreaterThan(int i) {
     return apply(isGreaterThan, i);
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(int i) {
+  public Selection isGreaterThanOrEqualTo(int i) {
     return apply(isGreaterThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isLessThanOrEqualTo(int i) {
+  public Selection isLessThanOrEqualTo(int i) {
     return apply(isLessThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isEqualTo(int i) {
+  public Selection isEqualTo(int i) {
     return apply(isEqualTo, i);
   }
 
-  public RoaringBitmap isMissing() {
+  public Selection isMissing() {
     return apply(isMissing);
   }
 
-  public RoaringBitmap isNotMissing() {
+  public Selection isNotMissing() {
     return apply(isNotMissing);
   }
 
-  public RoaringBitmap isEqualTo(IntColumn other) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isEqualTo(IntColumn other) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     IntIterator otherIterator = other.iterator();
     for (int next : data) {
@@ -162,16 +163,16 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   @Override
   public int countUnique() {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
-    data.forEach(roaringBitmap::add);
-    return roaringBitmap.getCardinality();
+    Selection selection = new BitmapBackedSelection();
+    data.forEach(selection::add);
+    return selection.size();
   }
 
   @Override
   public IntColumn unique() {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
-    data.forEach(roaringBitmap::add);
-    return IntColumn.create(name() + " Unique values", IntArrayList.wrap(roaringBitmap.toArray()));
+    Selection selection = new BitmapBackedSelection();
+    data.forEach(selection::add);
+    return IntColumn.create(name() + " Unique values", IntArrayList.wrap(selection.toArray()));
   }
 
   public IntSet asSet() {
@@ -284,27 +285,27 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return MISSING_VALUE;
   }
 
-  public RoaringBitmap isPositive() {
+  public Selection isPositive() {
     return apply(isPositive);
   }
 
-  public RoaringBitmap isNegative() {
+  public Selection isNegative() {
     return apply(isNegative);
   }
 
-  public RoaringBitmap isNonNegative() {
+  public Selection isNonNegative() {
     return apply(isNonNegative);
   }
 
-  public RoaringBitmap isZero() {
+  public Selection isZero() {
     return apply(isZero);
   }
 
-  public RoaringBitmap isEven() {
+  public Selection isEven() {
     return apply(isEven);
   }
 
-  public RoaringBitmap isOdd() {
+  public Selection isOdd() {
     return apply(isOdd);
   }
 
@@ -360,18 +361,16 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return column;
   }
 
-  public IntColumn select(RoaringBitmap bitmap) {
+  public IntColumn select(Selection selection) {
     IntColumn column = emptyCopy();
-    org.roaringbitmap.IntIterator intIterator = bitmap.getIntIterator();
-    while (intIterator.hasNext()) {
-      int next = intIterator.next();
+    for (Integer next : selection) {
       column.add(data.getInt(next));
     }
     return column;
   }
 
-  public RoaringBitmap apply(IntPredicate predicate) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(IntPredicate predicate) {
+    Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next)) {
@@ -381,8 +380,8 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     return bitmap;
   }
 
-  public RoaringBitmap apply(IntBiPredicate predicate, int value) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(IntBiPredicate predicate, int value) {
+    Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       int next = data.getInt(idx);
       if (predicate.test(next, value)) {

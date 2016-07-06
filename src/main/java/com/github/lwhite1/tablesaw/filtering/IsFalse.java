@@ -1,7 +1,8 @@
 package com.github.lwhite1.tablesaw.filtering;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -23,14 +24,12 @@ public class IsFalse extends CompositeFilter {
 
   /**
    * Returns true if the element in the given row in my {@code column} is true
-   *
-   * @param relation
    */
   @Override
-  public RoaringBitmap apply(Table relation) {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
-    roaringBitmap.add(0, relation.rowCount());
-    roaringBitmap.andNot(filter.apply(relation));
-    return roaringBitmap;
+  public Selection apply(Table relation) {
+    Selection selection = new BitmapBackedSelection();
+    selection.addRange(0, relation.rowCount());
+    selection.andNot(filter.apply(relation));
+    return selection;
   }
 }

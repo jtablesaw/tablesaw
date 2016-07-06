@@ -18,6 +18,7 @@ import com.github.lwhite1.tablesaw.table.TemporaryView;
 import com.github.lwhite1.tablesaw.table.ViewGroup;
 import com.github.lwhite1.tablesaw.util.IntComparatorChain;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -25,7 +26,6 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -480,19 +480,19 @@ public class Table implements Relation, IntIterable {
     }
   }
 
-  public Table selectWhere(RoaringBitmap map) {
-    Table newTable = this.emptyCopy(map.getCardinality());
-    Rows.copyRowsToTable(map, this, newTable);
+  public Table selectWhere(Selection selection) {
+    Table newTable = this.emptyCopy(selection.size());
+    Rows.copyRowsToTable(selection, this, newTable);
     return newTable;
   }
 
-  public BooleanColumn selectIntoColumn(String newColumnName, RoaringBitmap map) {
-    return BooleanColumn.create(newColumnName, map, rowCount());
+  public BooleanColumn selectIntoColumn(String newColumnName, Selection selection) {
+    return BooleanColumn.create(newColumnName, selection, rowCount());
   }
 
   public Table selectWhere(Filter filter) {
-    RoaringBitmap map = filter.apply(this);
-    Table newTable = this.emptyCopy(map.getCardinality());
+    Selection map = filter.apply(this);
+    Table newTable = this.emptyCopy(map.size());
     Rows.copyRowsToTable(map, this, newTable);
     return newTable;
   }

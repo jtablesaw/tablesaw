@@ -1,8 +1,9 @@
 package com.github.lwhite1.tablesaw.filtering.text;
 
 import com.github.lwhite1.tablesaw.columns.CategoryColumnUtils;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
+import com.github.lwhite1.tablesaw.util.Selection;
 import org.apache.commons.lang3.StringUtils;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,8 +13,8 @@ import java.util.regex.Pattern;
  */
 public interface CategoryFilters extends CategoryColumnUtils {
 
-  default RoaringBitmap equalToIgnoringCase(String string) {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection equalToIgnoringCase(String string) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (next.endsWith(string)) {
@@ -24,8 +25,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap startsWith(String string) {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection startsWith(String string) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (next.startsWith(string)) {
@@ -36,8 +37,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap endsWith(String string) {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection endsWith(String string) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (next.endsWith(string)) {
@@ -48,8 +49,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap stringContains(String string) {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection stringContains(String string) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (next.contains(string)) {
@@ -60,9 +61,9 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap matchesRegex(String string) {
+  default Selection matchesRegex(String string) {
     Pattern p = Pattern.compile(string);
-    RoaringBitmap results = new RoaringBitmap();
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       Matcher m = p.matcher(next);
@@ -74,8 +75,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap empty() {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection empty() {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (next.isEmpty()) {
@@ -86,8 +87,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap isAlpha() {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection isAlpha() {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (StringUtils.isAlpha(next)) {
@@ -98,8 +99,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap isNumeric() {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection isNumeric() {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (StringUtils.isNumeric(next)) {
@@ -110,8 +111,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap isAlphaNumeric() {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection isAlphaNumeric() {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (StringUtils.isAlphanumeric(next)) {
@@ -122,8 +123,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap isUpperCase() {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection isUpperCase() {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (StringUtils.isAllUpperCase(next)) {
@@ -134,8 +135,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap isLowerCase() {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection isLowerCase() {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (StringUtils.isAllLowerCase(next)) {
@@ -146,8 +147,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap hasLengthEqualTo(int lengthChars) {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection hasLengthEqualTo(int lengthChars) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (next.length() == lengthChars) {
@@ -158,8 +159,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap isShorterThan(int lengthChars) {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection isShorterThan(int lengthChars) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (next.length() < lengthChars) {
@@ -170,8 +171,8 @@ public interface CategoryFilters extends CategoryColumnUtils {
     return results;
   }
 
-  default RoaringBitmap isLongerThan(int lengthChars) {
-    RoaringBitmap results = new RoaringBitmap();
+  default Selection isLongerThan(int lengthChars) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (String next : this) {
       if (next.length() > lengthChars) {

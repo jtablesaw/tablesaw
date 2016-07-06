@@ -1,9 +1,9 @@
 package com.github.lwhite1.tablesaw.filtering;
 
+import com.github.lwhite1.tablesaw.api.DateTimeColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import com.github.lwhite1.tablesaw.api.DateTimeColumn;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +18,7 @@ public class DateTimeEqualTo extends ColumnFilter {
     this.value = value;
   }
 
-  public RoaringBitmap apply(Table relation) {
+  public Selection apply(Table relation) {
     DateTimeColumn dateColumn = (DateTimeColumn) relation.column(columnReference.getColumnName());
     return dateColumn.isEqualTo(value);
   }

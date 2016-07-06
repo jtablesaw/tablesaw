@@ -81,7 +81,7 @@ public class BooleanColumnTest {
    * invoked on, so the true false counts are the opposite of those in the original
    */
   @Test
-  public void testRoaringBitmapConstructor() throws Exception {
+  public void testBitmapConstructor() throws Exception {
     BooleanColumn bc = new BooleanColumn("Is false", column.isFalse(), column.size());
     Table summary = bc.summary();
     assertEquals(2, summary.columnCount());

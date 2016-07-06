@@ -3,7 +3,7 @@ package com.github.lwhite1.tablesaw.table;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.filtering.Filter;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 /**
  * A table projection, i.e. the subset of columns in a table that should be returned in a query
@@ -25,7 +25,7 @@ public class Projection {
   public Table where(Filter filter) {
     Table projectedTable = Table.create(table.name(), columns);
     Table newTable = projectedTable.emptyCopy();
-    RoaringBitmap map = filter.apply(table);
+    Selection map = filter.apply(table);
     Rows.copyRowsToTable(map, projectedTable, newTable);
     return newTable;
   }

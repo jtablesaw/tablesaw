@@ -8,7 +8,9 @@ import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapping.LongMapUtils;
 import com.github.lwhite1.tablesaw.sorting.LongComparisonUtil;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.ReverseLongComparator;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.github.lwhite1.tablesaw.util.StatUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -20,7 +22,6 @@ import it.unimi.dsi.fastutil.longs.LongArrays;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -97,28 +98,28 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     data.set(index, value);
   }
 
-  public RoaringBitmap isLessThan(long i) {
+  public Selection isLessThan(long i) {
     return apply(isLessThan, i);
   }
 
-  public RoaringBitmap isGreaterThan(int i) {
+  public Selection isGreaterThan(int i) {
     return apply(isGreaterThan, i);
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(int i) {
+  public Selection isGreaterThanOrEqualTo(int i) {
     return apply(isGreaterThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isLessThanOrEqualTo(int f) {
+  public Selection isLessThanOrEqualTo(int f) {
     return apply(isLessThanOrEqualTo, f);
   }
 
-  public RoaringBitmap isEqualTo(long i) {
+  public Selection isEqualTo(long i) {
     return apply(isEqualTo, i);
   }
 
-  public RoaringBitmap isEqualTo(LongColumn f) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isEqualTo(LongColumn f) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     LongIterator longIterator = f.iterator();
     for (long next : data) {
@@ -329,27 +330,27 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return MISSING_VALUE;
   }
 
-  public RoaringBitmap isPositive() {
+  public Selection isPositive() {
     return apply(isPositive);
   }
 
-  public RoaringBitmap isNegative() {
+  public Selection isNegative() {
     return apply(isNegative);
   }
 
-  public RoaringBitmap isNonNegative() {
+  public Selection isNonNegative() {
     return apply(isNonNegative);
   }
 
-  public RoaringBitmap isZero() {
+  public Selection isZero() {
     return apply(isZero);
   }
 
-  public RoaringBitmap isEven() {
+  public Selection isEven() {
     return apply(isEven);
   }
 
-  public RoaringBitmap isOdd() {
+  public Selection isOdd() {
     return apply(isOdd);
   }
 
@@ -436,8 +437,8 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return data.iterator();
   }
 
-  public RoaringBitmap apply(LongPredicate predicate) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(LongPredicate predicate) {
+    Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
       if (predicate.test(next)) {
@@ -447,8 +448,8 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     return bitmap;
   }
 
-  public RoaringBitmap apply(LongBiPredicate predicate, long valueToCompareAgainst) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(LongBiPredicate predicate, long valueToCompareAgainst) {
+    Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
       if (predicate.test(next, valueToCompareAgainst)) {
@@ -476,12 +477,12 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   }
 
   @Override
-  public RoaringBitmap isMissing() {
+  public Selection isMissing() {
     return apply(isMissing);
   }
 
   @Override
-  public RoaringBitmap isNotMissing() {
+  public Selection isNotMissing() {
     return apply(isNotMissing);
   }
 

@@ -8,7 +8,9 @@ import com.github.lwhite1.tablesaw.filtering.StringPredicate;
 import com.github.lwhite1.tablesaw.filtering.text.CategoryFilters;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.DictionaryMap;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
@@ -20,7 +22,6 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -324,8 +325,8 @@ public class CategoryColumn extends AbstractColumn
     return values.isEmpty();
   }
 
-  public RoaringBitmap isEqualTo(String string) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isEqualTo(String string) {
+    Selection results = new BitmapBackedSelection();
     int key = lookupTable.get(string);
     if (key >= 0) {
       int i = 0;
@@ -339,8 +340,8 @@ public class CategoryColumn extends AbstractColumn
     return results;
   }
 
-  public RoaringBitmap isNotEqualTo(String string) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isNotEqualTo(String string) {
+    Selection results = new BitmapBackedSelection();
     int key = lookupTable.get(string);
     if (key >= 0) {
       int i = 0;
@@ -496,36 +497,36 @@ public class CategoryColumn extends AbstractColumn
   }
 
   @Override
-  public RoaringBitmap isMissing() {
+  public Selection isMissing() {
     return apply(isMissing);
   }
 
   @Override
-  public RoaringBitmap isNotMissing() {
+  public Selection isNotMissing() {
     return apply(isNotMissing);
   }
 
 
-  public RoaringBitmap apply(StringPredicate predicate) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(StringPredicate predicate) {
+    Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data().size(); idx++) {
       int next = data().getInt(idx);
       if (predicate.test(get(next))) {
-        bitmap.add(idx);
+        selection.add(idx);
       }
     }
-    return bitmap;
+    return selection;
   }
 
-  public RoaringBitmap apply(StringBiPredicate predicate, String value) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(StringBiPredicate predicate, String value) {
+    Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data().size(); idx++) {
       int next = data().getInt(idx);
       if (predicate.test(get(next), value)) {
-        bitmap.add(idx);
+        selection.add(idx);
       }
     }
-    return bitmap;
+    return selection;
   }
 
   public CategoryColumn copy() {

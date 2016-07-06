@@ -9,7 +9,9 @@ import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapping.ShortMapUtils;
 import com.github.lwhite1.tablesaw.sorting.IntComparisonUtil;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.ReverseShortComparator;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.github.lwhite1.tablesaw.util.StatUtil;
 import com.github.lwhite1.tablesaw.util.Stats;
 import com.google.common.base.Preconditions;
@@ -21,7 +23,6 @@ import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -98,28 +99,28 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     data.set(index, value);
   }
 
-  public RoaringBitmap isLessThan(int i) {
+  public Selection isLessThan(int i) {
     return apply(ShortColumnUtils.isLessThan, i);
   }
 
-  public RoaringBitmap isGreaterThan(int i) {
+  public Selection isGreaterThan(int i) {
     return apply(ShortColumnUtils.isGreaterThan, i);
   }
 
-  public RoaringBitmap isGreaterThanOrEqualTo(int i) {
+  public Selection isGreaterThanOrEqualTo(int i) {
     return apply(ShortColumnUtils.isGreaterThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isLessThanOrEqualTo(int i) {
+  public Selection isLessThanOrEqualTo(int i) {
     return apply(ShortColumnUtils.isLessThanOrEqualTo, i);
   }
 
-  public RoaringBitmap isEqualTo(int i) {
+  public Selection isEqualTo(int i) {
     return apply(ShortColumnUtils.isEqualTo, i);
   }
 
-  public RoaringBitmap isEqualTo(ShortColumn f) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isEqualTo(ShortColumn f) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     ShortIterator shortIterator = f.iterator();
     for (int next : data) {
@@ -152,20 +153,20 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   @Override
   public int countUnique() {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
+    Selection selection = new BitmapBackedSelection();
     for (int i : data) {
-      roaringBitmap.add(i);
+      selection.add(i);
     }
-    return roaringBitmap.getCardinality();
+    return selection.size();
   }
 
   @Override
   public ShortColumn unique() {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
+    Selection selection = new BitmapBackedSelection();
     for (short i : data) {
-      roaringBitmap.add(i);
+      selection.add(i);
     }
-    int[] ints = roaringBitmap.toArray();
+    int[] ints = selection.toArray();
     short[] shorts = new short[ints.length];
     for (int i = 0; i < ints.length; i++) {
       shorts[i] = (short) ints[i];
@@ -281,27 +282,27 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return MISSING_VALUE;
   }
 
-  public RoaringBitmap isPositive() {
+  public Selection isPositive() {
     return apply(ShortColumnUtils.isPositive);
   }
 
-  public RoaringBitmap isNegative() {
+  public Selection isNegative() {
     return apply(ShortColumnUtils.isNegative);
   }
 
-  public RoaringBitmap isNonNegative() {
+  public Selection isNonNegative() {
     return apply(ShortColumnUtils.isNonNegative);
   }
 
-  public RoaringBitmap isZero() {
+  public Selection isZero() {
     return apply(ShortColumnUtils.isZero);
   }
 
-  public RoaringBitmap isEven() {
+  public Selection isEven() {
     return apply(ShortColumnUtils.isEven);
   }
 
-  public RoaringBitmap isOdd() {
+  public Selection isOdd() {
     return apply(ShortColumnUtils.isOdd);
   }
 
@@ -444,8 +445,8 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return data.iterator();
   }
 
-  public RoaringBitmap apply(ShortPredicate predicate) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(ShortPredicate predicate) {
+    Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       short next = data.getShort(idx);
       if (predicate.test(next)) {
@@ -455,8 +456,8 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
     return bitmap;
   }
 
-  public RoaringBitmap apply(ShortBiPredicate predicate, int valueToCompareAgainst) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(ShortBiPredicate predicate, int valueToCompareAgainst) {
+    Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       short next = data.getShort(idx);
       if (predicate.test(next, valueToCompareAgainst)) {
@@ -492,12 +493,12 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   }
 
   @Override
-  public RoaringBitmap isMissing() {
+  public Selection isMissing() {
     return apply(isMissing);
   }
 
   @Override
-  public RoaringBitmap isNotMissing() {
+  public Selection isNotMissing() {
     return apply(isNotMissing);
   }
 

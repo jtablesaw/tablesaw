@@ -6,7 +6,6 @@ import com.github.lwhite1.tablesaw.filtering.IntPredicate;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import static org.junit.Assert.*;
 /**
  *  Tests for int columns
@@ -49,7 +48,7 @@ public class IntColumnTest {
     for (int i = 0; i < 100; i++) {
       column.add(i);
     }
-    assertEquals(50, column.isLessThan(50).getCardinality());
+    assertEquals(50, column.isLessThan(50).size());
   }
 
   @Test
@@ -57,7 +56,7 @@ public class IntColumnTest {
     for (int i = 0; i < 100; i++) {
       column.add(i);
     }
-    assertEquals(49, column.isGreaterThan(50).getCardinality());
+    assertEquals(49, column.isGreaterThan(50).size());
   }
 
   @Test
@@ -65,8 +64,8 @@ public class IntColumnTest {
     for (int i = 0; i < 100; i++) {
       column.add(i);
     }
-    assertEquals(50, column.isGreaterThanOrEqualTo(50).getCardinality());
-    assertEquals(50, column.isGreaterThanOrEqualTo(50).select(0));
+    assertEquals(50, column.isGreaterThanOrEqualTo(50).size());
+    assertEquals(50, column.isGreaterThanOrEqualTo(50).get(0));
   }
 
   @Test
@@ -74,8 +73,8 @@ public class IntColumnTest {
     for (int i = 0; i < 100; i++) {
       column.add(i);
     }
-    assertEquals(51, column.isLessThanOrEqualTo(50).getCardinality());
-    assertEquals(49, column.isLessThanOrEqualTo(50).select(49));
+    assertEquals(51, column.isLessThanOrEqualTo(50).size());
+    assertEquals(49, column.isLessThanOrEqualTo(50).get(49));
   }
 
   @Test
@@ -83,7 +82,7 @@ public class IntColumnTest {
     for (int i = 0; i < 100; i++) {
       column.add(i);
     }
-    assertEquals(1, column.isEqualTo(10).getCardinality());
+    assertEquals(1, column.isEqualTo(10).size());
   }
 
   @Test

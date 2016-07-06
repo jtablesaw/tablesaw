@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.filtering;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,15 +29,15 @@ public class AllOf extends CompositeFilter {
     return new AllOf(filters);
   }
 
-  public RoaringBitmap apply(Table relation) {
-    RoaringBitmap roaringBitmap = null;
+  public Selection apply(Table relation) {
+    Selection selection = null;
     for (Filter filter : filterList) {
-      if (roaringBitmap == null) {
-        roaringBitmap = filter.apply(relation);
+      if (selection == null) {
+        selection = filter.apply(relation);
       } else {
-        roaringBitmap.and(filter.apply(relation));
+        selection.and(filter.apply(relation));
       }
     }
-    return roaringBitmap;
+    return selection;
   }
 }

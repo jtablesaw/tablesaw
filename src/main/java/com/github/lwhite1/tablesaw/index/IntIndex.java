@@ -1,11 +1,12 @@
 package com.github.lwhite1.tablesaw.index;
 
 import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
+import com.github.lwhite1.tablesaw.util.Selection;
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.util.Comparator;
 
@@ -45,52 +46,52 @@ public class IntIndex {
    *
    * @param value This is a 'key' from the index perspective, meaning it is a value from the standpoint of the column
    */
-  public RoaringBitmap get(int value) {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
+  public Selection get(int value) {
+    Selection selection = new BitmapBackedSelection();
     IntArrayList list = index.get(value);
-    addAllToBitmap(list, roaringBitmap);
-    return roaringBitmap;
+    addAllToSelection(list, selection);
+    return selection;
   }
 
-  public RoaringBitmap atLeast(int value) {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
+  public Selection atLeast(int value) {
+    Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
     for (IntArrayList keys : tail.values()) {
-      addAllToBitmap(keys, roaringBitmap);
+      addAllToSelection(keys, selection);
     }
-    return roaringBitmap;
+    return selection;
   }
 
-  public RoaringBitmap greaterThan(int value) {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
+  public Selection greaterThan(int value) {
+    Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 1);
     for (IntArrayList keys : tail.values()) {
-      addAllToBitmap(keys, roaringBitmap);
+      addAllToSelection(keys, selection);
     }
-    return roaringBitmap;
+    return selection;
   }
 
-  public RoaringBitmap atMost(int value) {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
+  public Selection atMost(int value) {
+    Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> head = index.headMap(value + 1);  // we add 1 to get values equal to the arg
     for (IntArrayList keys : head.values()) {
-      addAllToBitmap(keys, roaringBitmap);
+      addAllToSelection(keys, selection);
     }
-    return roaringBitmap;
+    return selection;
   }
 
-  public RoaringBitmap lessThan(int value) {
-    RoaringBitmap roaringBitmap = new RoaringBitmap();
+  public Selection lessThan(int value) {
+    Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> head = index.headMap(value);  // we add 1 to get values equal to the arg
     for (IntArrayList keys : head.values()) {
-      addAllToBitmap(keys, roaringBitmap);
+      addAllToSelection(keys, selection);
     }
-    return roaringBitmap;
+    return selection;
   }
 
-  private static void addAllToBitmap(IntArrayList tableKeys, RoaringBitmap bitmap) {
+  private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
     for (int i : tableKeys) {
-      bitmap.add(i);
+      selection.add(i);
     }
   }
 }

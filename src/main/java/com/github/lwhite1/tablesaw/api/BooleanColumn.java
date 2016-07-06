@@ -6,6 +6,8 @@ import com.github.lwhite1.tablesaw.filtering.BooleanPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapping.BooleanMapUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanOpenHashSet;
@@ -19,8 +21,7 @@ import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
 import it.unimi.dsi.fastutil.bytes.ByteSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import org.roaringbitmap.IntIterator;
-import org.roaringbitmap.RoaringBitmap;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -48,8 +49,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return new BooleanColumn(name, rowSize);
   }
 
-  public static BooleanColumn create(String name, RoaringBitmap map, int rowSize) {
-    return new BooleanColumn(name, map, rowSize);
+  public static BooleanColumn create(String name, Selection selection, int rowSize) {
+    return new BooleanColumn(name, selection, rowSize);
   }
 
   public BooleanColumn(ColumnMetadata metadata) {
@@ -72,7 +73,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     data = values;
   }
 
-  public BooleanColumn(String name, RoaringBitmap hits, int columnSize) {
+  public BooleanColumn(String name, Selection hits, int columnSize) {
     super(name);
     if (columnSize == 0) {
       return;
@@ -83,9 +84,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
       data.add((byte) 0);
     }
 
-    IntIterator it = hits.getIntIterator();
-    while (it.hasNext()) {
-      data.set(it.next(), (byte) 1);
+    IntIterator intIterator = hits.iterator();
+    while (intIterator.hasNext()) {
+      byte b = (byte) 1;
+      int i = intIterator.next();
+      data.set(i, b);
     }
     this.data = data;
   }
@@ -295,8 +298,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return count;
   }
 
-  public RoaringBitmap isFalse() {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isFalse() {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (byte next : data) {
       if (next == 0) {
@@ -307,8 +310,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return results;
   }
 
-  public RoaringBitmap isTrue() {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isTrue() {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     for (byte next : data) {
       if (next == 1) {
@@ -319,8 +322,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return results;
   }
 
-  public RoaringBitmap isEqualTo(BooleanColumn other) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isEqualTo(BooleanColumn other) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     ByteIterator booleanIterator = other.byteIterator();
     for (byte next : data) {
@@ -390,12 +393,12 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
   }
 
   @Override
-  public RoaringBitmap isMissing() {  //TODO
+  public Selection isMissing() {  //TODO
     return apply(isMissing);
   }
 
   @Override
-  public RoaringBitmap isNotMissing() { //TODO
+  public Selection isNotMissing() { //TODO
     return apply(isNotMissing);
   }
 
@@ -437,15 +440,15 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return result;
   }
 
-  public RoaringBitmap apply(BooleanPredicate predicate) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(BooleanPredicate predicate) {
+    Selection selection = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       byte next = data.getByte(idx);
       if (predicate.test(next)) {
-        bitmap.add(idx);
+        selection.add(idx);
       }
     }
-    return bitmap;
+    return selection;
   }
 
   static class BooleanColumnIterator implements Iterator<Boolean> {

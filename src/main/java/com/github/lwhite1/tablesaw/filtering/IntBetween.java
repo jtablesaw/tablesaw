@@ -1,9 +1,9 @@
 package com.github.lwhite1.tablesaw.filtering;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 /**
  */
@@ -17,10 +17,10 @@ public class IntBetween extends ColumnFilter {
     this.high = highValue;
   }
 
-  public RoaringBitmap apply(Table relation) {
+  public Selection apply(Table relation) {
     IntColumn intColumn = (IntColumn) relation.column(columnReference.getColumnName());
-    RoaringBitmap matches = intColumn.isGreaterThan(low);
-    matches.and(intColumn.isLessThan(high));
+    Selection matches = intColumn.isGreaterThan(low);
+    matches.toBitmap().and(intColumn.isLessThan(high).toBitmap());
     return matches;
   }
 }

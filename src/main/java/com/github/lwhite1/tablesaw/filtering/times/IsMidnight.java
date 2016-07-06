@@ -1,13 +1,13 @@
 package com.github.lwhite1.tablesaw.filtering.times;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.DateTimeColumn;
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import com.github.lwhite1.tablesaw.api.DateTimeColumn;
-import com.github.lwhite1.tablesaw.api.TimeColumn;
 import com.github.lwhite1.tablesaw.filtering.ColumnFilter;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 /**
  *
@@ -19,7 +19,7 @@ public class IsMidnight extends ColumnFilter {
   }
 
   @Override
-  public RoaringBitmap apply(Table relation) {
+  public Selection apply(Table relation) {
 
     String name = columnReference().getColumnName();
     Column column = relation.column(name);

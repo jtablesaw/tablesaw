@@ -1,10 +1,10 @@
 package com.github.lwhite1.tablesaw.filtering;
 
+import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.util.Selection;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import org.roaringbitmap.RoaringBitmap;
 
 /**
  */
@@ -17,7 +17,7 @@ public class IntIsIn extends ColumnFilter {
     this.filterColumn = filterColumn;
   }
 
-  public RoaringBitmap apply(Table relation) {
+  public Selection apply(Table relation) {
     IntColumn intColumn = (IntColumn) relation.column(columnReference.getColumnName());
     IntSet firstSet = intColumn.asSet();
     firstSet.retainAll(filterColumn.data());

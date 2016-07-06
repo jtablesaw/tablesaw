@@ -1,11 +1,11 @@
 package com.github.lwhite1.tablesaw.filtering;
 
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 /**
  * Implements EqualTo testing for Category and Text Columns
@@ -19,7 +19,7 @@ public class StringEqualTo extends ColumnFilter {
     this.value = value;
   }
 
-  public RoaringBitmap apply(Table relation) {
+  public Selection apply(Table relation) {
     Column column = relation.column(columnReference.getColumnName());
     ColumnType type = column.type();
     switch (type) {

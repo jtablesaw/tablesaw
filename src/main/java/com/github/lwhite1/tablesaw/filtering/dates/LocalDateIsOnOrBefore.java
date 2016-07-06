@@ -1,11 +1,11 @@
 package com.github.lwhite1.tablesaw.filtering.dates;
 
 
+import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.filtering.ColumnFilter;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -23,7 +23,7 @@ public class LocalDateIsOnOrBefore extends ColumnFilter {
   }
 
   @Override
-  public RoaringBitmap apply(Table relation) {
+  public Selection apply(Table relation) {
 
     DateColumn dateColumn = (DateColumn) relation.column(columnReference().getColumnName());
     return dateColumn.isOnOrBefore(value);

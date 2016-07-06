@@ -4,6 +4,7 @@ import com.github.lwhite1.tablesaw.api.BooleanColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.table.Relation;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -12,7 +13,6 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.util.concurrent.TimeUnit;
 
@@ -93,7 +93,7 @@ public class FloatColumnTest {
     for (int i = 0; i < size; i++) {
       floatColumn.add((float) Math.random());
     }
-    RoaringBitmap results = floatColumn.isLessThan(.5f);
+    Selection results = floatColumn.isLessThan(.5f);
     int count = 0;
     for (int i = 0; i < size; i++) {
       if (results.contains(i)) {
@@ -114,7 +114,7 @@ public class FloatColumnTest {
     for (int i = 0; i < size; i++) {
       floatColumn.add((float) Math.random());
     }
-    RoaringBitmap results = floatColumn.isGreaterThan(.5f);
+    Selection results = floatColumn.isGreaterThan(.5f);
 
     int count = 0;
     for (int i = 0; i < size; i++) {
@@ -171,12 +171,12 @@ public class FloatColumnTest {
       floatColumn.add(f);
       floats[i] = f;
     }
-    RoaringBitmap results;
+    Selection results;
     RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
     for (int i = 0; i < 100; i++) { // pick a hundred values at random and see if we can find them
       float f = floats[randomDataGenerator.nextInt(0, 999_999)];
       results = floatColumn.isEqualTo(f);
-      assertEquals(f, floatColumn.get(results.getIntIterator().next()), .001);
+      assertEquals(f, floatColumn.get(results.iterator().next()), .001);
     }
   }
 
@@ -312,5 +312,4 @@ public class FloatColumnTest {
       assertEquals(floats.get(i), otherFloats.get(i) + 1.0, 0.01);
     }
   }
-
 }

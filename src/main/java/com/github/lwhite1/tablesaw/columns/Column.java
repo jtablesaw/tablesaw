@@ -3,8 +3,8 @@ package com.github.lwhite1.tablesaw.columns;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.Selection;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import org.roaringbitmap.RoaringBitmap;
 
 /**
  * The general interface for columns.
@@ -18,9 +18,9 @@ public interface Column {
 
   Table summary();
 
-  default Column subset(RoaringBitmap rows) {
+  default Column subset(Selection rows) {
     Column c = this.emptyCopy();
-    for (Integer row : rows) {
+    for (int row : rows) {
       c.addCell(getString(row));
     }
     return c;
@@ -149,9 +149,9 @@ public interface Column {
 
   int columnWidth();
 
-  RoaringBitmap isMissing();
+  Selection isMissing();
 
-  RoaringBitmap isNotMissing();
+  Selection isNotMissing();
 
   /**
    * Returns the width of a cell in this column, in bytes

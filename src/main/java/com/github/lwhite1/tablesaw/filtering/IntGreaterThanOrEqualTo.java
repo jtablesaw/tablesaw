@@ -1,13 +1,13 @@
 package com.github.lwhite1.tablesaw.filtering;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.ColumnReference;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.columns.ColumnReference;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 /**
  */
@@ -20,7 +20,7 @@ public class IntGreaterThanOrEqualTo extends ColumnFilter {
     this.value = value;
   }
 
-  public RoaringBitmap apply(Table relation) {
+  public Selection apply(Table relation) {
 
     String name = columnReference.getColumnName();
     Column column = relation.column(name);

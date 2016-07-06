@@ -1,21 +1,21 @@
 package com.github.lwhite1.tablesaw.table;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.BooleanColumn;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.api.FloatColumn;
-import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.DateTimeColumn;
-import com.github.lwhite1.tablesaw.api.TimeColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
-import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
+import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
+import com.github.lwhite1.tablesaw.util.Selection;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import org.roaringbitmap.RoaringBitmap;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -68,7 +68,7 @@ public class Rows {
     }
   }
 
-  public static void copyRowsToTable(RoaringBitmap rows, Table oldTable, Table newTable) {
+  public static void copyRowsToTable(Selection rows, Table oldTable, Table newTable) {
     int[] r = rows.toArray();
     IntArrayList rowArray = new IntArrayList(r);
     copyRowsToTable(rowArray, oldTable, newTable);

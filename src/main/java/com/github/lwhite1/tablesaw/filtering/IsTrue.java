@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.filtering;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -27,7 +27,7 @@ public class IsTrue extends CompositeFilter {
    * @param relation
    */
   @Override
-  public RoaringBitmap apply(Table relation) {
+  public Selection apply(Table relation) {
     return filter.apply(relation);
   }
 }

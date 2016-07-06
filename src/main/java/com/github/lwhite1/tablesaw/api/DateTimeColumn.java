@@ -10,7 +10,9 @@ import com.github.lwhite1.tablesaw.filtering.LongPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapping.DateTimeMapUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.ReverseLongComparator;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -21,7 +23,6 @@ import it.unimi.dsi.fastutil.longs.LongIterable;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
@@ -313,13 +314,13 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return newColumn;
   }
 
-  public RoaringBitmap isEqualTo(LocalDateTime value) {
+  public Selection isEqualTo(LocalDateTime value) {
     long packed = PackedLocalDateTime.pack(value);
     return apply(LongColumnUtils.isEqualTo, packed);
   }
 
-  public RoaringBitmap isEqualTo(DateTimeColumn column) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isEqualTo(DateTimeColumn column) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     LongIterator intIterator = column.iterator();
     for (long next : data) {
@@ -331,24 +332,24 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return results;
   }
 
-  public RoaringBitmap isAfter(LocalDateTime value) {
+  public Selection isAfter(LocalDateTime value) {
     return apply(LongColumnUtils.isGreaterThan, PackedLocalDateTime.pack(value));
   }
 
-  public RoaringBitmap isOnOrAfter(long value) {
+  public Selection isOnOrAfter(long value) {
     return apply(LongColumnUtils.isGreaterThanOrEqualTo, value);
   }
 
-  public RoaringBitmap isBefore(LocalDateTime value) {
+  public Selection isBefore(LocalDateTime value) {
     return apply(LongColumnUtils.isLessThan, PackedLocalDateTime.pack(value));
   }
 
-  public RoaringBitmap isOnOrBefore(long value) {
+  public Selection isOnOrBefore(long value) {
     return apply(LongColumnUtils.isLessThanOrEqualTo, value);
   }
 
-  public RoaringBitmap isAfter(DateTimeColumn column) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isAfter(DateTimeColumn column) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     LongIterator intIterator = column.iterator();
     for (long next : data) {
@@ -360,8 +361,8 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return results;
   }
 
-  public RoaringBitmap isBefore(DateTimeColumn column) {
-    RoaringBitmap results = new RoaringBitmap();
+  public Selection isBefore(DateTimeColumn column) {
+    Selection results = new BitmapBackedSelection();
     int i = 0;
     LongIterator intIterator = column.iterator();
     for (long next : data) {
@@ -405,12 +406,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   }
 
   @Override
-  public RoaringBitmap isMissing() {
+  public Selection isMissing() {
     return apply(isMissing);
   }
 
   @Override
-  public RoaringBitmap isNotMissing() {
+  public Selection isNotMissing() {
     return apply(isNotMissing);
   }
 
@@ -505,124 +506,124 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return column;
   }
 
-  public RoaringBitmap isMonday() {
+  public Selection isMonday() {
     return apply(PackedLocalDateTime::isMonday);
   }
 
-  public RoaringBitmap isTuesday() {
+  public Selection isTuesday() {
     return apply(PackedLocalDateTime::isTuesday);
   }
 
-  public RoaringBitmap isWednesday() {
+  public Selection isWednesday() {
     return apply(PackedLocalDateTime::isWednesday);
   }
 
-  public RoaringBitmap isThursday() {
+  public Selection isThursday() {
     return apply(PackedLocalDateTime::isThursday);
   }
 
-  public RoaringBitmap isFriday() {
+  public Selection isFriday() {
     return apply(PackedLocalDateTime::isFriday);
   }
 
-  public RoaringBitmap isSaturday() {
+  public Selection isSaturday() {
     return apply(PackedLocalDateTime::isSaturday);
   }
 
-  public RoaringBitmap isSunday() {
+  public Selection isSunday() {
     return apply(PackedLocalDateTime::isSunday);
   }
 
-  public RoaringBitmap isInJanuary() {
+  public Selection isInJanuary() {
     return apply(PackedLocalDateTime::isInJanuary);
   }
 
-  public RoaringBitmap isInFebruary() {
+  public Selection isInFebruary() {
     return apply(PackedLocalDateTime::isInFebruary);
   }
 
-  public RoaringBitmap isInMarch() {
+  public Selection isInMarch() {
     return apply(PackedLocalDateTime::isInMarch);
   }
 
-  public RoaringBitmap isInApril() {
+  public Selection isInApril() {
     return apply(PackedLocalDateTime::isInApril);
   }
 
-  public RoaringBitmap isInMay() {
+  public Selection isInMay() {
     return apply(PackedLocalDateTime::isInMay);
   }
 
-  public RoaringBitmap isInJune() {
+  public Selection isInJune() {
     return apply(PackedLocalDateTime::isInJune);
   }
 
-  public RoaringBitmap isInJuly() {
+  public Selection isInJuly() {
     return apply(PackedLocalDateTime::isInJuly);
   }
 
-  public RoaringBitmap isInAugust() {
+  public Selection isInAugust() {
     return apply(PackedLocalDateTime::isInAugust);
   }
 
-  public RoaringBitmap isInSeptember() {
+  public Selection isInSeptember() {
     return apply(PackedLocalDateTime::isInSeptember);
   }
 
-  public RoaringBitmap isInOctober() {
+  public Selection isInOctober() {
     return apply(PackedLocalDateTime::isInOctober);
   }
 
-  public RoaringBitmap isInNovember() {
+  public Selection isInNovember() {
     return apply(PackedLocalDateTime::isInNovember);
   }
 
-  public RoaringBitmap isInDecember() {
+  public Selection isInDecember() {
     return apply(PackedLocalDateTime::isInDecember);
   }
 
-  public RoaringBitmap isFirstDayOfMonth() {
+  public Selection isFirstDayOfMonth() {
     return apply(PackedLocalDateTime::isFirstDayOfMonth);
   }
 
-  public RoaringBitmap isLastDayOfMonth() {
+  public Selection isLastDayOfMonth() {
     return apply(PackedLocalDateTime::isLastDayOfMonth);
   }
 
-  public RoaringBitmap isInQ1() {
+  public Selection isInQ1() {
     return apply(PackedLocalDateTime::isInQ1);
   }
 
-  public RoaringBitmap isInQ2() {
+  public Selection isInQ2() {
     return apply(PackedLocalDateTime::isInQ2);
   }
 
-  public RoaringBitmap isInQ3() {
+  public Selection isInQ3() {
     return apply(PackedLocalDateTime::isInQ3);
   }
 
-  public RoaringBitmap isInQ4() {
+  public Selection isInQ4() {
     return apply(PackedLocalDateTime::isInQ4);
   }
 
-  public RoaringBitmap isNoon() {
+  public Selection isNoon() {
     return apply(PackedLocalDateTime::isNoon);
   }
 
-  public RoaringBitmap isMidnight() {
+  public Selection isMidnight() {
     return apply(PackedLocalDateTime::isMidnight);
   }
 
-  public RoaringBitmap isBeforeNoon() {
+  public Selection isBeforeNoon() {
     return apply(PackedLocalDateTime::AM);
   }
 
-  public RoaringBitmap isAfterNoon() {
+  public Selection isAfterNoon() {
     return apply(PackedLocalDateTime::PM);
   }
 
-  public RoaringBitmap apply(LongPredicate predicate) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(LongPredicate predicate) {
+    Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
       if (predicate.test(next)) {
@@ -632,8 +633,8 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return bitmap;
   }
 
-  public RoaringBitmap apply(LongBiPredicate predicate, long value) {
-    RoaringBitmap bitmap = new RoaringBitmap();
+  public Selection apply(LongBiPredicate predicate, long value) {
+    Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       long next = data.getLong(idx);
       if (predicate.test(next, value)) {
@@ -690,7 +691,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return times;
   }
 
-  public RoaringBitmap isInYear(int year) {
+  public Selection isInYear(int year) {
     return apply(i -> PackedLocalDateTime.isInYear(i, year));
   }
 

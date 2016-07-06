@@ -1,11 +1,11 @@
 package com.github.lwhite1.tablesaw.filtering.text;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
 import com.github.lwhite1.tablesaw.filtering.ColumnFilter;
-import org.roaringbitmap.RoaringBitmap;
+import com.github.lwhite1.tablesaw.util.Selection;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -20,7 +20,7 @@ public class TextIsUpperCase extends ColumnFilter {
   }
 
   @Override
-  public RoaringBitmap apply(Table relation) {
+  public Selection apply(Table relation) {
     Column column = relation.column(columnReference().getColumnName());
     CategoryColumn textColumn = (CategoryColumn) column;
     return textColumn.isUpperCase();
