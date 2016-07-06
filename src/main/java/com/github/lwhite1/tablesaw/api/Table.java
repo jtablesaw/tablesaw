@@ -304,23 +304,40 @@ public class Table implements Relation {
     }
 
     /**
-     * Returns a copy of this table sorted on the given column names, applied in order, ascending
+     * Returns a copy of this table sorted on the given column names, applied in order,
+     * <p>
+     * if column name starts with - then sort that column descending otherwise sort ascending
      */
     public Table sortOn(String... columnNames) {
         Sort key = null;
-        for (String s : columnNames) {
-            if (key == null) {
-                key = first(s, Order.ASCEND);
+        Order order = null;
+        for (String columnName : columnNames) {
+              order = getOrder(columnName);
+            if (key == null) { // first time through
+                order = getOrder(columnName);
+                key = first(columnName, order);
             } else {
-                key.next(s, Order.ASCEND);
+                key.next(columnName, order);
             }
+
         }
         return sortOn(key);
+    }
+
+    private Order getOrder(String columnName) {
+        Order order;
+        if (columnName.startsWith("-")) {
+            order = Order.DESCEND;
+        } else {
+            order = Order.ASCEND;
+        }
+        return order;
     }
 
     /**
      * Returns a copy of this table sorted in the order of the given column names, in ascending order
      */
+
     public Table sortAscendingOn(String... columnNames) {
         return this.sortOn(columnNames);
     }

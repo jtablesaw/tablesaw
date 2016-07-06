@@ -49,6 +49,21 @@ public class SortTest {
         compareTables(sortedTable, compareWith);
     }
 
+    @Test
+    public void testMultipleSortOrders() {
+        Table unsortedTable = TestData.SIMPLE_UNSORTED_DATA.getTable();
+        // Name,IQ,City,DOB
+        String[] columnNames = TestData.SIMPLE_UNSORTED_DATA.getColumnNames();
+        int iqIndex = 1;
+        int dobIndex = 3;
+
+        Table sortedTable = unsortedTable.sortOn(columnNames[iqIndex], "-" + columnNames[dobIndex]);
+
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_DESCENDING.getTable();
+
+        assertEquals("Data sorted correctly", expectedResults, sortedTable);
+    }
+
 
     /**
      * Make sure each row in each table match
