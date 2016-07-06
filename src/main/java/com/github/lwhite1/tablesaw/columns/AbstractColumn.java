@@ -18,11 +18,13 @@ public abstract class AbstractColumn implements Column {
 
   public AbstractColumn(String name) {
     this.name = name;
+    this.comment = "";
     this.id = UUID.randomUUID().toString();
   }
 
   public AbstractColumn(ColumnMetadata metadata) {
     this.name = metadata.getName();
+    this.comment = "";
     this.id = metadata.getId();
   }
 

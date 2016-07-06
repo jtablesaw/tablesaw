@@ -271,12 +271,15 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
 
   /**
    * Returns the count of missing values in this column
+   *
+   * Implementation note: We use NaN for missing, so we can't compare against the MISSING_VALUE and use val != val instead
    */
   @Override
   public int countMissing() {
     int count = 0;
     for (int i = 0; i < size(); i++) {
-      if (get(i) == MISSING_VALUE) {
+      float f = get(i);
+      if (f != f) {
         count++;
       }
     }

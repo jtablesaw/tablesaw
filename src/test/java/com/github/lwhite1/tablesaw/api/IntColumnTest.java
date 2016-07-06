@@ -1,4 +1,4 @@
-package com.github.lwhite1.tablesaw.columns;
+package com.github.lwhite1.tablesaw.api;
 
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;

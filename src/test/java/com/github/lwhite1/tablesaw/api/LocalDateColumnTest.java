@@ -1,4 +1,4 @@
-package com.github.lwhite1.tablesaw.columns;
+package com.github.lwhite1.tablesaw.api;
 
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;

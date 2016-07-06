@@ -1,8 +1,6 @@
-package com.github.lwhite1.tablesaw.columns;
+package com.github.lwhite1.tablesaw.api;
 
-import com.github.lwhite1.tablesaw.api.BooleanColumn;
-import com.github.lwhite1.tablesaw.api.FloatColumn;
-import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Stopwatch;
@@ -251,6 +249,112 @@ public class FloatColumnTest {
   }
 
   @Test
+  public void testClear() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    assertFalse(floats.isEmpty());
+    floats.clear();
+    assertTrue(floats.isEmpty());
+  }
+
+  @Test
+  public void testCountMissing() {
+    FloatColumn floats = new FloatColumn("floats", 10);
+    for (int i = 0; i < 10; i++) {
+      floats.add(RandomUtils.nextFloat(0, 1_000));
+    }
+    assertEquals(0, floats.countMissing());
+    floats.clear();
+    for (int i = 0; i < 10; i++) {
+      floats.add(FloatColumn.MISSING_VALUE);
+    }
+    assertEquals(10, floats.countMissing());
+  }
+
+  @Test
+  public void testCountUnique() {
+    FloatColumn floats = new FloatColumn("floats", 10);
+    float[] uniques = {0.0f, 0.00000001f, -0.000001f, 92923.29340f, 24252,23442f, 2252,2342f};
+    for (float unique : uniques) {
+      floats.add(unique);
+    }
+    assertEquals(uniques.length, floats.countUnique());
+
+    floats.clear();
+    float[] notUniques = {0.0f, 0.00000001f, -0.000001f, 92923.29340f, 24252,23442f, 2252,2342f, 0f};
+
+    for (float notUnique : notUniques) {
+      floats.add(notUnique);
+    }
+    assertEquals(notUniques.length -1, floats.countUnique());
+  }
+
+  @Test
+  public void testUnique() {
+    FloatColumn floats = new FloatColumn("floats", 10);
+    float[] uniques = {0.0f, 0.00000001f, -0.000001f, 92923.29340f, 24252,23442f, 2252,2342f};
+    for (float unique : uniques) {
+      floats.add(unique);
+    }
+    assertEquals(uniques.length, floats.unique().size());
+
+    floats.clear();
+    float[] notUniques = {0.0f, 0.00000001f, -0.000001f, 92923.29340f, 24252,23442f, 2252,2342f, 0f};
+
+    for (float notUnique : notUniques) {
+      floats.add(notUnique);
+    }
+    assertEquals(notUniques.length -1, floats.unique().size());
+  }
+
+  @Test
+  public void testIsMissingAndIsNotMissing() {
+    FloatColumn floats = new FloatColumn("floats", 10);
+    for (int i = 0; i < 10; i++) {
+      floats.add(RandomUtils.nextFloat(0, 1_000));
+    }
+    assertEquals(0, floats.isMissing().size());
+    assertEquals(10, floats.isNotMissing().size());
+    floats.clear();
+    for (int i = 0; i < 10; i++) {
+      floats.add(FloatColumn.MISSING_VALUE);
+    }
+    assertEquals(10, floats.isMissing().size());
+    assertEquals(0, floats.isNotMissing().size());
+  }
+
+  @Test
+  public void testEmptyCopy() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    String comment = "This is a comment";
+    floats.setComment(comment);
+    for (int i = 0; i < 100; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    FloatColumn empty = floats.emptyCopy();
+    assertTrue(empty.isEmpty());
+    assertEquals(floats.name(), empty.name());
+
+    //TODO(lwhite): Decide what gets copied in an empty copy
+    //assertEquals(floats.comment(), empty.comment());
+  }
+
+  @Test
+  public void testSize() {
+    int size = 100;
+    FloatColumn floats = new FloatColumn("floats", size);
+    assertEquals(0, floats.size());
+    for (int i = 0; i < size; i++) {
+      floats.add(RandomUtils.nextFloat(0, 10_000));
+    }
+    assertEquals(size, floats.size());
+    floats.clear();
+    assertEquals(0, floats.size());
+  }
+
+  @Test
   public void testNeg() {
     FloatColumn floats = new FloatColumn("floats", 100);
     for (int i = 0; i < 100; i++) {
@@ -284,6 +388,12 @@ public class FloatColumnTest {
     for (int i = 0; i < floats.size(); i++) {
       assertEquals(floats.get(i), revert.get(i), 0.01);
     }
+  }
+
+  @Test
+  public void testType() {
+    FloatColumn floats = new FloatColumn("floats", 100);
+    assertEquals(ColumnType.FLOAT, floats.type());
   }
 
   @Test
