@@ -1,29 +1,32 @@
 Tablesaw
 =======
    
-Tablesaw is a high-performance in-memory data table, tools for data crunching, and a column-oriented storage format. In Java. 
+Tablesaw is a high-performance in-memory data table in Java. 
 
 ###What makes it unique:
 Tablesaw's design is driven by two ideas: 
-First, almost no-one needs distributed analytics. On a single server, table saw will let you work _interactively_ with a 2,000,000,000 row table. (We plan to raise that ceiling, btw.)
+First, few people need distributed analytics. On a single server, Tablesaw lets you work _interactively_ with a 2,000,000,000 row table. (We plan to raise that ceiling, btw.)
 Second, it should be super easy to use: To that end we happily steal ideas from everything from spreadsheets to specialized column stores like KDB.
 
-You can find an introductory tutorial here: https://jtablesaw.wordpress.com/an-introduction/
+You can find an introductory __tutorial__ here: https://jtablesaw.wordpress.com/an-introduction/
 
-The JavaDoc can be found here: http://lwhite1.github.io/tablesaw/apidocs/
+The __JavaDoc__ can be found here: http://lwhite1.github.io/tablesaw/apidocs/
+
+If you have __questions of any kind__: Ask them in the Issues section of this Repo.
+ 
+A reasonably stable version will be on __Maven Central__ at the end of July, with the 1.0 release in September.  
 
 ###What Tablesaw does today: 
-* Import data from RDBMS and CSV files 
+* Import data from RDBMS and CSV files, local or remote (http, S3, etc.)
 * Add and remove columns
 * Sort 
 * Filter
 * Group
 * Perform map and reduce operations
 * Run descriptive stats (mean, min, max, median, etc.)
-* Store tables in a compressed columnar storage format
+* Store tables in a very-fast, compressed columnar storage format
 
 ### What Tablesaw will do in the future:
-* Load data remotely from HDFS, S3, and off the Web using HTTP
 * Interactive graphics
 * Integrated machine learning
 * More specialized column types and operations: (lat/lon, time interval, money)
@@ -74,5 +77,3 @@ To give you a sense of the API, here's an example. The goal in this analysis is 
 ```
 I hope you can see how the code reflects the intent, and how column-wise operators like _differenceInSeconds(dateTimeColumn)_, _isInQ2()_ and  _startsWith(aString)_ make data operations easy to express. If you see something that can be improved, let us know.
 
-### A work-in-progress
-__Tablesaw is moving quickly towards stability of the core functionality and APIs__. A production release planned for Q3 2016. A great deal of additional functionality will follow the initial release.
