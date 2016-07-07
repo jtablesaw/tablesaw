@@ -24,6 +24,7 @@
     <url>https://github.com/lwhite1/tablesaw</url>
   </scm>
   <build>
+    <directory>/Users/larrywhite/IdeaProjects/tablesaw_target</directory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

@@ -38,6 +38,7 @@
         </snapshotRepository>
     </distributionManagement>
     <build>
+        <directory>/Users/larrywhite/IdeaProjects/tablesaw_target</directory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
