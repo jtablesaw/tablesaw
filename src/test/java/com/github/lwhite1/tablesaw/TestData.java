@@ -36,7 +36,9 @@ public enum TestData {
 
     SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_ASCENDING(new String[]{"Name", "IQ", "City", "DOB"},
             new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},
-            "data/simple-data-sort_by_int_and_date_ascending.csv"), SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_DESCENDING(
+            "data/simple-data-sort_by_int_and_date_ascending.csv"),
+
+    SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_DESCENDING(
             new String[]{"Name", "IQ", "City", "DOB"}, new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},
             "data/simple-data-sort_by_int_and_date_descending.csv"),
 

@@ -1,6 +1,7 @@
 package com.github.lwhite1.tablesaw;
 
 import com.github.lwhite1.tablesaw.api.Table;
+import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 
@@ -11,19 +12,25 @@ import static org.junit.Assert.assertEquals;
  */
 public class SortTest {
 
+    private Table unsortedTable;
+
+    private final static int IQ_INDEX = 1;
+    private final static int DOB_INDEX = 3;
+
+    // Name,IQ,City,DOB
+    private final static String[] columnNames = TestData.SIMPLE_UNSORTED_DATA.getColumnNames();
+
+    @Before
+    public void setup() {
+        unsortedTable = TestData.SIMPLE_UNSORTED_DATA.getTable();
+    }
+
     @Test
     public void sortAscending() {
-
-        // start with unsorted data
-        Table table = TestData.SIMPLE_UNSORTED_DATA.getTable();
-
         // sort ascending by date and then an integer
-        Table sortedTable = table.sortAscendingOn("DOB", "IQ");
-
-        // get the data that has been presorted correctly - i.e. known good results
-        Table compareWith = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_ASCENDING.getTable();
-
-        compareTables(sortedTable, compareWith);
+        Table sortedTable = unsortedTable.sortAscendingOn("IQ", "DOB");
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_ASCENDING.getTable();
+        compareTables(sortedTable, expectedResults);
     }
 
     /**
@@ -31,10 +38,10 @@ public class SortTest {
      */
     @Test
     public void sortDescending() {
-        Table table = TestData.SIMPLE_UNSORTED_DATA.getTable();
-        Table sortedTable = table.sortDescendingOn("DOB", "IQ");
-        Table compareWith = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_DESCENDING.getTable();
-        compareTables(sortedTable, compareWith);
+        unsortedTable = TestData.SIMPLE_UNSORTED_DATA.getTable();
+        Table sortedTable = unsortedTable.sortDescendingOn("IQ", "DOB");
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_DESCENDING.getTable();
+        compareTables(sortedTable, expectedResults);
     }
 
     /**
@@ -43,30 +50,42 @@ public class SortTest {
      */
     @Test(expected = ComparisonFailure.class)
     public void sortDescendingNegative() {
-        Table table = TestData.SIMPLE_UNSORTED_DATA.getTable();
-        Table sortedTable = table.sortDescendingOn("DOB", "IQ");
-        Table compareWith = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_ASCENDING.getTable();
-        compareTables(sortedTable, compareWith);
+        Table sortedTable = unsortedTable.sortDescendingOn("IQ", "DOB");
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_ASCENDING.getTable();
+        compareTables(sortedTable, expectedResults);
     }
 
     @Test
-    public void testMultipleSortOrders() {
-
-        Table unsortedTable = TestData.SIMPLE_UNSORTED_DATA.getTable();
-
-        // Name,IQ,City,DOB
-        String[] columnNames = TestData.SIMPLE_UNSORTED_DATA.getColumnNames();
-
-        int iqIndex = 1;
-        int dobIndex = 3;
-
-        Table sortedTable = unsortedTable.sortOn(columnNames[iqIndex], "-" + columnNames[dobIndex]);
-
+    public void testMultipleSortOrdersVerifyMinus() {
+        Table sortedTable = unsortedTable.sortOn("-" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
         Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_DESCENDING.getTable();
-
-        compareTables(expectedResults,sortedTable);
+        compareTables(expectedResults, sortedTable);
     }
 
+    @Test
+    public void testMultipleSortOrdersVerifyPlus() {
+        Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "+" + columnNames[DOB_INDEX]);
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_ASCENDING.getTable();
+        compareTables(expectedResults, sortedTable);
+
+        sortedTable = unsortedTable.sortOn(columnNames[IQ_INDEX], columnNames[DOB_INDEX]);
+        expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_ASCENDING.getTable();
+        compareTables(expectedResults, sortedTable);
+    }
+
+    @Test
+    public void testAscendingWithPlusSign() {
+        Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX]);
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_ASCENDING.getTable();
+        compareTables(expectedResults, sortedTable);
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void testAscendingWithPlusSignNegative() {
+        Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
+        Table expectedResults = TestData.SIMPLE_DATA_WITH_CANONICAL_DATE_FORMAT.getTable();
+        compareTables(expectedResults, sortedTable);
+    }
 
     /**
      * Make sure each row in each table match
