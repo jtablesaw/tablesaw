@@ -1,16 +1,15 @@
 package com.github.lwhite1.tablesaw.store;
 
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LongColumn;
-import com.github.lwhite1.tablesaw.table.Relation;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.google.common.base.Stopwatch;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -18,7 +17,6 @@ import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
-import static java.lang.System.out;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -28,10 +26,10 @@ public class StorageManagerTest {
 
   private static final int COUNT = 5;
 
-  private Relation table = new Table("t");
+  private Relation table = Table.create("t");
   private FloatColumn floatColumn = FloatColumn.create("float");
   private CategoryColumn categoryColumn = CategoryColumn.create("cat");
-  private LocalDateColumn localDateColumn = LocalDateColumn.create("date");
+  private DateColumn localDateColumn = DateColumn.create("date");
   private LongColumn longColumn = LongColumn.create("long");
 
   @Before
@@ -51,59 +49,57 @@ public class StorageManagerTest {
 
   @Test
   public void testCatStorage() throws Exception {
-    out(categoryColumn.first(5).print());
-    StorageManager.writeColumn("cat_dogs", categoryColumn);
-    CategoryColumn readCat = StorageManager.readCategoryColumn("cat_dogs", categoryColumn.columnMetadata());
-    out(readCat.first(5).print());
+    StorageManager.writeColumn("/tmp/cat_dogs", categoryColumn);
+    CategoryColumn readCat = StorageManager.readCategoryColumn("/tmp/cat_dogs", categoryColumn.columnMetadata());
+    for (int i = 0; i < categoryColumn.size(); i++) {
+      assertEquals(categoryColumn.get(i), readCat.get(i));
+    }
   }
 
   @Test
   public void testWriteTable() throws IOException {
-    out.println(table.first(5).print());
-    StorageManager.saveTable("/tmp/mytables", table);
-    Table t = StorageManager.readTable("/tmp/mytables/t.saw");
+    StorageManager.saveTable("/tmp/zeta", table);
+    com.github.lwhite1.tablesaw.api.Table t = StorageManager.readTable("/tmp/zeta/t.saw");
     assertEquals(table.columnCount(), t.columnCount());
-    int rowCount = t.rowCount();
-    assertEquals(table.rowCount(), rowCount);
-    t = t.sortOn("cat");
-    System.out.print(t.first(5).print());
+    assertEquals(table.rowCount(), t.rowCount());
+    for (int i = 0; i < table.rowCount(); i++) {
+      assertEquals(categoryColumn.get(i), t.categoryColumn("cat").get(i));
+    }
+    t.sortOn("cat"); // exercise the column a bit
   }
 
-  @Ignore
   @Test
   public void testWriteTableTwice() throws IOException {
 
-    StorageManager.saveTable("/tmp/mytables", table);
-    Table t = StorageManager.readTable("/tmp/mytables/t.saw");
+    StorageManager.saveTable("/tmp/mytables2", table);
+    com.github.lwhite1.tablesaw.api.Table t = StorageManager.readTable("/tmp/mytables2/t.saw");
     t.floatColumn("float").setName("a float column");
 
-    StorageManager.saveTable("/tmp/mytables", table);
-    t = StorageManager.readTable("/tmp/mytables/t.saw");
+    StorageManager.saveTable("/tmp/mytables2", table);
+    t = StorageManager.readTable("/tmp/mytables2/t.saw");
 
-    System.out.println(t.first(3).print());
+    assertEquals(table.name(), t.name());
+    assertEquals(table.rowCount(), t.rowCount());
+    assertEquals(table.columnCount(), t.columnCount());
   }
 
   public static void main(String[] args) throws Exception {
 
     Stopwatch stopwatch = Stopwatch.createStarted();
     System.out.println("loading");
-    Table tornados = CsvReader.read(COLUMN_TYPES, "data/1950-2014_torn.csv");
+    com.github.lwhite1.tablesaw.api.Table tornados = CsvReader.read(COLUMN_TYPES, "data/1950-2014_torn.csv");
     tornados.setName("tornados");
     System.out.println(String.format("loaded %d records in %d seconds",
         tornados.rowCount(),
         stopwatch.elapsed(TimeUnit.SECONDS)));
-    out(tornados.shape());
-    out(tornados.columnNames().toString());
-    out(tornados.first(10).print());
+    System.out.println(tornados.shape());
+    System.out.println(tornados.columnNames().toString());
+    System.out.println(tornados.first(10).print());
     stopwatch.reset().start();
     StorageManager.saveTable("/tmp/tablesaw/testdata", tornados);
     stopwatch.reset().start();
     tornados = StorageManager.readTable("/tmp/tablesaw/testdata/tornados.saw");
-    out(tornados.first(5).print());
-  }
-
-  private static void out(Object obj) {
-    System.out.println(String.valueOf(obj));
+    System.out.println(tornados.first(5).print());
   }
 
   // column types for the tornado table

@@ -1,10 +1,10 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.util.Selection;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import org.roaringbitmap.RoaringBitmap;
 
 /**
  * The general interface for columns.
@@ -18,14 +18,22 @@ public interface Column {
 
   Table summary();
 
-  default Column subset(RoaringBitmap rows) {
+  default Column subset(Selection rows) {
     Column c = this.emptyCopy();
-    for (Integer row : rows) {
+    for (int row : rows) {
       c.addCell(getString(row));
     }
     return c;
   }
 
+  /**
+   * Returns the count of missing values in this column
+   */
+  int countMissing();
+
+  /**
+   * Returns the count of unique values in this column
+   */
   int countUnique();
 
   /**
@@ -33,15 +41,37 @@ public interface Column {
    */
   Column unique();
 
+  /**
+   * Returns the column's name
+   */
   String name();
 
+  /**
+   * Sets the columns name to the given string
+   *
+   * @param name  The new name MUST be unique for any table containing this column
+   */
   void setName(String name);
 
+  /**
+   * Returns this column's ColumnType
+   */
   ColumnType type();
 
+  /**
+   * Returns a string representation of the value at the given row
+   */
   String getString(int row);
 
+  /**
+   * Returns a copy of the receiver with no data. The column name and type are the same
+   */
   Column emptyCopy();
+
+  /**
+   * Returns a deep copy of the receiver
+   */
+  Column copy();
 
   /**
    * Returns an empty copy of the receiver, with its internal storage initialized to the given row size
@@ -54,6 +84,9 @@ public interface Column {
 
   void sortDescending();
 
+  /**
+   * Returns true if the column has no data
+   */
   boolean isEmpty();
 
   void addCell(String stringValue);
@@ -113,4 +146,20 @@ public interface Column {
   default double[] toDoubleArray() {
     throw new UnsupportedOperationException("Method toDoubleArray() is not supported on non-numeric columns");
   }
+
+  int columnWidth();
+
+  Selection isMissing();
+
+  Selection isNotMissing();
+
+  /**
+   * Returns the width of a cell in this column, in bytes
+   */
+  int byteSize();
+
+  /**
+   * Returns the contents of the cell at rowNumber as a byte[]
+   */
+  byte[] asBytes(int rowNumber);
 }

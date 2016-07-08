@@ -1,17 +1,17 @@
 package com.github.lwhite1.tablesaw.table;
 
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.BooleanColumn;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LongColumn;
+import com.github.lwhite1.tablesaw.api.BooleanColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.columns.ShortColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.DateTimeColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.LongColumn;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
+import com.github.lwhite1.tablesaw.columns.Column;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -20,6 +20,8 @@ import java.util.List;
  * A tabular data structure like a table in a relational database, but not formally implementing the relational algebra
  */
 public interface Relation {
+
+  void addColumn(Column... cols);
 
   void setName(String name);
 
@@ -35,6 +37,9 @@ public interface Relation {
     removeColumns(column(columnIndex));
   }
 
+  /**
+   * Removes the given columns from the receiver
+   */
   void removeColumns(Column... columns);
 
   default void removeColumns(String... columnName) {
@@ -65,12 +70,11 @@ public interface Relation {
   }
 
   /**
-   * Returns the column with the given columnName
+   * Returns the column with the given columnName, ignoring case
    */
   default Column column(String columnName) {
     Column result = null;
     for (Column column : columns()) {
-      // TODO(lwhite): Consider caching the uppercase name and doing equals() instead of equalsIgnoreCase()
       if (column.name().equalsIgnoreCase(columnName)) {
         result = column;
         break;
@@ -85,7 +89,7 @@ public interface Relation {
   /**
    * Returns the column at columnIndex (0-based)
    *
-   * @param columnIndex an integer >= 0 and < number of columns in the relation
+   * @param columnIndex an integer at least 0 and less than number of columns in the relation
    * @return the column at the given index
    */
   Column column(int columnIndex);
@@ -114,13 +118,6 @@ public interface Relation {
    * Returns a String representing the value found at column index c and row index r
    */
   String get(int c, int r);
-
-  /**
-   * Adds the given column to the end of this relation.
-   * <p>
-   * The index of the new column in the table will be one less than the number of columns
-   */
-  void addColumn(Column column);
 
   /**
    * Returns the name of this relation
@@ -154,17 +151,8 @@ public interface Relation {
     int cols = columnCount();
     int[] widths = new int[cols];
 
-    List<String> columnNames = columnNames();
     for (int i = 0; i < columnCount(); i++) {
-      widths[i] = columnNames.get(i).length();
-    }
-
-    // for (Row row : this) {
-    for (int rowNum = 0; rowNum < rowCount(); rowNum++) {
-      for (int colNum = 0; colNum < cols; colNum++) {
-        widths[colNum]
-            = Math.max(widths[colNum], StringUtils.length(get(colNum, rowNum)));
-      }
+      widths[i] = columns().get(i).columnWidth();
     }
     return widths;
   }
@@ -186,7 +174,7 @@ public interface Relation {
 
     for (int r = 0; r < rowCount(); r++) {
       for (int c = 0; c < columnCount(); c++) {
-        String cell = StringUtils.rightPad(get(c, row(r)), colWidths[c]);
+        String cell = StringUtils.rightPad(get(c, r), colWidths[c]);
         buf.append(cell);
         buf.append(' ');
       }
@@ -195,12 +183,10 @@ public interface Relation {
     return buf.toString();
   }
 
-  int row(int r);
-
-  default Table structure() {
+  default com.github.lwhite1.tablesaw.api.Table structure() {
 
     StringBuilder nameBuilder = new StringBuilder();
-    nameBuilder.append("Table: ")
+    nameBuilder.append("Relation: ")
         .append(name())
         .append(" - ")
         .append(rowCount())
@@ -208,7 +194,7 @@ public interface Relation {
         .append(columnCount())
         .append(" variables (cols)");
 
-    Table structure = new Table(nameBuilder.toString());
+    Table structure = Table.create(nameBuilder.toString());
     structure.addColumn(IntColumn.create("Index"));
     structure.addColumn(CategoryColumn.create("Column Name"));
     structure.addColumn(CategoryColumn.create("Type"));
@@ -230,7 +216,7 @@ public interface Relation {
   default String summary() {
     StringBuilder builder = new StringBuilder();
     builder.append("\n")
-        .append("Table summary for: ")
+        .append("Relation summary for: ")
         .append(name())
         .append("\n");
     for (Column column : columns()) {
@@ -281,27 +267,35 @@ public interface Relation {
     return (LongColumn) column(columnIndex);
   }
 
-  default LocalDateColumn localDateColumn(int columnIndex) {
-    return (LocalDateColumn) column(columnIndex);
+  default DateColumn dateColumn(int columnIndex) {
+    return (DateColumn) column(columnIndex);
   }
 
-  default LocalDateColumn localDateColumn(String columnName) {
-    return (LocalDateColumn) column(columnName);
+  default DateColumn dateColumn(String columnName) {
+    return (DateColumn) column(columnName);
   }
 
-  default LocalTimeColumn localTimeColumn(String columnName) {
-    return (LocalTimeColumn) column(columnName);
+  default TimeColumn timeColumn(String columnName) {
+    return (TimeColumn) column(columnName);
   }
 
-  default LocalTimeColumn localTimeColumn(int columnIndex) {
-    return (LocalTimeColumn) column(columnIndex);
+  default TimeColumn timeColumn(int columnIndex) {
+    return (TimeColumn) column(columnIndex);
   }
 
-  default LocalDateTimeColumn localDateTimeColumn(int columnIndex) {
-    return (LocalDateTimeColumn) column(columnIndex);
+  default CategoryColumn categoryColumn(String columnName) {
+    return (CategoryColumn) column(columnName);
   }
 
-  default LocalDateTimeColumn localDateTimeColumn(String columnName) {
-    return (LocalDateTimeColumn) column(columnName);
+  default CategoryColumn categoryColumn(int columnIndex) {
+    return (CategoryColumn) column(columnIndex);
+  }
+
+  default DateTimeColumn dateTimeColumn(int columnIndex) {
+    return (DateTimeColumn) column(columnIndex);
+  }
+
+  default DateTimeColumn dateTimeColumn(String columnName) {
+    return (DateTimeColumn) column(columnName);
   }
 }

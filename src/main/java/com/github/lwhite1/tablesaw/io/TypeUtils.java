@@ -1,16 +1,16 @@
 package com.github.lwhite1.tablesaw.io;
 
-import com.github.lwhite1.tablesaw.columns.BooleanColumn;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LongColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.columns.ShortColumn;
+import com.github.lwhite1.tablesaw.api.BooleanColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.DateTimeColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.LongColumn;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,11 +37,19 @@ public final class TypeUtils {
 
   // These Strings will convert to true booleans
   public static final List<String> TRUE_STRINGS =
-      Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "1", "1.00");
+      Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "1");
 
-  // These Strings will convert to true booleans
+  // A more restricted set of 'true' strings that is used for column type detection
+  public static final List<String> TRUE_STRINGS_FOR_DETECTION =
+      Arrays.asList("T", "t", "Y", "y", "TRUE", "true");
+
+  // These Strings will convert to false booleans
   public static final List<String> FALSE_STRINGS =
-      Arrays.asList("F", "f", "N", "n", "FALSE", "false", "0", "0.00");
+      Arrays.asList("F", "f", "N", "n", "FALSE", "false", "0");
+
+  // A more restricted set of 'false' strings that is used for column type detection
+  public static final List<String> FALSE_STRINGS_FOR_DETECTION =
+      Arrays.asList("F", "f", "N", "n", "FALSE", "false");
 
   // Formats that we accept in parsing dates from strings
   // TODO: Add more types, especially dates with month names spelled-out fully.
@@ -63,6 +72,31 @@ public final class TypeUtils {
   private static final DateTimeFormatter dtf17 = DateTimeFormatter.ofPattern("MMM-dd-yy");
   private static final DateTimeFormatter dtf18 = DateTimeFormatter.ofPattern("MMM dd, yyyy");
   private static final DateTimeFormatter dtf19 = DateTimeFormatter.ofPattern("MMM d, yyyy");
+
+  /**
+   * List of formatters for use in code that selects the correct one for a given Date string
+   */
+  private static ImmutableList<DateTimeFormatter> dateFormatters = ImmutableList.of(
+      dtf1,
+      dtf2,
+      dtf3,
+      dtf4,
+      dtf5,
+      dtf6,
+      dtf7,
+      dtf8,
+      dtf9,
+      dtf10,
+      dtf11,
+      dtf12,
+      dtf13,
+      dtf14,
+      dtf15,
+      dtf16,
+      dtf17,
+      dtf18,
+      dtf19
+  );
 
   private static final DateTimeFormatter dtTimef0 =
       DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -87,6 +121,20 @@ public final class TypeUtils {
         .toFormatter();
   }
 
+  /**
+   * List of formatters for use in code that selects the correct one for a given DateTime string
+   */
+  private static ImmutableList<DateTimeFormatter> dateTimeFormatters = ImmutableList.of(
+      dtTimef0,
+      dtTimef1,
+      dtTimef2,
+      dtTimef3,
+      dtTimef4,
+      dtTimef5,
+      dtTimef6
+  );
+
+
   private static final DateTimeFormatter timef1 = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
   private static final DateTimeFormatter timef2 = DateTimeFormatter.ofPattern("hh:mm:ss a");
   private static final DateTimeFormatter timef3 = DateTimeFormatter.ofPattern("h:mm:ss a");
@@ -95,6 +143,18 @@ public final class TypeUtils {
   private static final DateTimeFormatter timef6 = DateTimeFormatter.ofPattern("h:mm a");
   private static final DateTimeFormatter timef7 = DateTimeFormatter.ofPattern("HHmm");
 
+  /**
+   * List of formatters for use in code that selects the correct one for a given Time string
+   */
+  private static ImmutableList<DateTimeFormatter> timeFormatters = ImmutableList.of(
+      timef1,
+      timef2,
+      timef3,
+      timef4,
+      timef5,
+      timef6
+      //, timef7
+  );
 
   // A formatter that handles all the date formats defined above
   public static final DateTimeFormatter DATE_FORMATTER =
@@ -145,6 +205,19 @@ public final class TypeUtils {
           .appendOptional(timef7)
           .toFormatter();
 
+  // A formatter that handles time formats defined above used for type detection.
+  // It is more conservative than the converter
+  public static final DateTimeFormatter TIME_DETECTION_FORMATTER =
+      new DateTimeFormatterBuilder()
+          .appendOptional(timef5)
+          .appendOptional(timef2)
+          .appendOptional(timef3)
+          .appendOptional(timef1)
+          .appendOptional(timef4)
+          .appendOptional(timef6)
+          //  .appendOptional(timef7)
+          .toFormatter();
+
   /**
    * Strings representing missing values in, for example, a CSV file that is being imported
    */
@@ -174,11 +247,11 @@ public final class TypeUtils {
 
     switch (type) {
       case LOCAL_DATE:
-        return LocalDateColumn.create(name);
+        return DateColumn.create(name);
       case LOCAL_TIME:
-        return LocalTimeColumn.create(name);
+        return TimeColumn.create(name);
       case LOCAL_DATE_TIME:
-        return LocalDateTimeColumn.create(name);
+        return DateTimeColumn.create(name);
       case INTEGER:
         return IntColumn.create(name);
       case FLOAT:
@@ -194,5 +267,65 @@ public final class TypeUtils {
       default:
         throw new IllegalArgumentException("Unknown ColumnType: " + type);
     }
+  }
+
+  /**
+   * Returns the first DateTimeFormatter to parse the string, which represents a DATE
+   * <p>
+   * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
+   * called again. This is an optimization, because the older version, which will try multiple formatters was too
+   * slow for large data sets.
+   */
+  public static DateTimeFormatter getDateFormatter(String dateValue) {
+
+    for (DateTimeFormatter formatter : dateFormatters) {
+      try {
+        formatter.parse(dateValue);
+        return formatter;
+      } catch (DateTimeParseException e) {
+        // ignore;
+      }
+    }
+    return DATE_FORMATTER;
+  }
+
+  /**
+   * Returns the first DateTimeFormatter to parse the string, which represents a DATE_TIME
+   * <p>
+   * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
+   * called again. This is an optimization, because the older version, which will try multiple formatters was too
+   * slow for large data sets.
+   */
+  public static DateTimeFormatter getDateTimeFormatter(String dateTimeValue) {
+
+    for (DateTimeFormatter formatter : dateTimeFormatters) {
+      try {
+        formatter.parse(dateTimeValue);
+        return formatter;
+      } catch (DateTimeParseException e) {
+        // ignore;
+      }
+    }
+    return DATE_FORMATTER;
+  }
+
+  /**
+   * Returns the first DateTimeFormatter to parse the string, which represents a TIME
+   * <p>
+   * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
+   * called again. This is an optimization, because the older version, which will try multiple formatters was too
+   * slow for large data sets.
+   */
+  public static DateTimeFormatter getTimeFormatter(String timeValue) {
+
+    for (DateTimeFormatter formatter : timeFormatters) {
+      try {
+        formatter.parse(timeValue);
+        return formatter;
+      } catch (DateTimeParseException e) {
+        // ignore;
+      }
+    }
+    return DATE_FORMATTER;
   }
 }

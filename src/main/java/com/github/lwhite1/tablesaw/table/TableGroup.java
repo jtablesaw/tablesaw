@@ -1,22 +1,24 @@
 package com.github.lwhite1.tablesaw.table;
 
-import com.github.lwhite1.tablesaw.aggregator.NumericReduceFunction;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * A group of tables formed by performing splitting operations on an original table
  */
-public class TableGroup {
+public class TableGroup implements Iterable<SubTable> {
 
-  private static final String SPLIT_STRING = "|||";
-
+  private static final String SPLIT_STRING = "~~~";
+  private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
   private final Table original;
 
   private final List<SubTable> subTables;
@@ -92,25 +94,25 @@ public class TableGroup {
       if (columnCount == 1) {
         tables.add(newView);
       } else {
-        tables.add(splitGroupingColumn(newView, columns));
+        tables.add(newView);
       }
     }
     return tables;
   }
 
-  private SubTable splitGroupingColumn(SubTable subTable, List<Column> columnNames) {
+  private SubTable splitGroupingColumn(SubTable subTable, List<Column> columns) {
 
     List<Column> newColumns = new ArrayList<>();
 
-    for (Column column : columnNames) {
+    for (Column column : columns) {
       Column newColumn = column.emptyCopy();
       newColumns.add(newColumn);
     }
     // iterate through the rows in the table and split each of the grouping columns into multiple columns
     for (int row = 0; row < subTable.rowCount(); row++) {
-      String[] strings = subTable.name().split(SPLIT_STRING);
+      List<String> strings = SPLITTER.splitToList(subTable.name());
       for (int col = 0; col < newColumns.size(); col++) {
-        newColumns.get(col).addCell(strings[col]);
+        newColumns.get(col).addCell(strings.get(col));
       }
     }
     for (Column c : newColumns) {
@@ -129,7 +131,7 @@ public class TableGroup {
 
   public Table reduce(String numericColumnName, NumericReduceFunction function) {
     Preconditions.checkArgument(!subTables.isEmpty());
-    Table t = new Table(original.name() + " summary");
+    Table t = Table.create(original.name() + " summary");
     CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
     FloatColumn resultColumn = new FloatColumn(function.functionName(), subTables.size());
     t.addColumn(groupColumn);
@@ -137,9 +139,19 @@ public class TableGroup {
 
     for (SubTable subTable : subTables) {
       double result = subTable.reduce(numericColumnName, function);
-      groupColumn.add(subTable.name());
+      groupColumn.add(subTable.name().replace(SPLIT_STRING, " * "));
       resultColumn.add((float) result);
     }
     return t;
+  }
+
+  /**
+   * Returns an iterator over elements of type {@code T}.
+   *
+   * @return an Iterator.
+   */
+  @Override
+  public Iterator<SubTable> iterator() {
+    return subTables.iterator();
   }
 }

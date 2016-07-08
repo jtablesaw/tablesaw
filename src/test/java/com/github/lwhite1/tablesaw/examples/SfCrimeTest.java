@@ -1,10 +1,10 @@
 package com.github.lwhite1.tablesaw.examples;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,13 +47,13 @@ public class SfCrimeTest {
     CategoryColumn district = table.categoryColumn("PdDistrict");
     out(district.summary().print());
 
-    CategoryColumn dayOfWeek = table.localDateTimeColumn("Dates").dayOfWeek();
+    CategoryColumn dayOfWeek = table.dateTimeColumn("Dates").dayOfWeek();
     table.addColumn(dayOfWeek);
 
-    IntColumn dayOfYear = table.localDateTimeColumn("Dates").dayOfYear();
+    IntColumn dayOfYear = table.dateTimeColumn("Dates").dayOfYear();
     table.addColumn(dayOfYear);
 
-    IntColumn year = table.localDateTimeColumn("Dates").year();
+    IntColumn year = table.dateTimeColumn("Dates").year();
     table.addColumn(year);
 
     out(table.first(100).print());
@@ -62,11 +62,11 @@ public class SfCrimeTest {
     // eliminate the duplicate rows so we can sum by state correctly;
     table = table.selectWhere(column("SN").isEqualTo(1));
 
-    Table xtab = table.xCount("State", "Year");
+    Relation xtab = table.xCount("State", "Year");
     out("Cross Tab: State by Year");
     out(xtab.print());
 
-    Table xtab2 = table.xCount("State", "Month");
+    Relation xtab2 = table.xCount("State", "Month");
     out(xtab2.print());
 
     out(xtab.column("total").copy(0, 48).summary().print());
@@ -83,7 +83,7 @@ public class SfCrimeTest {
 
     long maxFatalities = Math.round(table.realColumn("Fatalities").max());
 
-    Table max = table.selectWhere(column("Fatalities").isEqualTo(maxFatalities));
+    Relation max = table.selectWhere(column("Fatalities").isEqualTo(maxFatalities));
 */
 
    // out(max.print());

@@ -1,7 +1,8 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.filter.LongBiPredicate;
-import com.github.lwhite1.tablesaw.filter.LongPredicate;
+import com.github.lwhite1.tablesaw.api.LongColumn;
+import com.github.lwhite1.tablesaw.filtering.LongBiPredicate;
+import com.github.lwhite1.tablesaw.filtering.LongPredicate;
 import it.unimi.dsi.fastutil.longs.LongIterable;
 
 /**
@@ -30,4 +31,8 @@ public interface LongColumnUtils extends Column, LongIterable {
   LongBiPredicate isLessThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
 
   LongBiPredicate isEqualTo = (long valueToTest, long valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
+
+  LongPredicate isMissing = i -> i == LongColumn.MISSING_VALUE;
+  LongPredicate isNotMissing = i -> i != LongColumn.MISSING_VALUE;
+
 }

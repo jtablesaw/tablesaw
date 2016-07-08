@@ -1,32 +1,31 @@
 package com.github.lwhite1.tablesaw.filters;
 
+import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.filter.LocalDatePredicate;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsFirstDayOfTheMonth;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInFebruary;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInMarch;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsInYear;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsMonday;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsSunday;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import com.github.lwhite1.tablesaw.filter.dates.LocalDateIsLastDayOfTheMonth;
+import com.github.lwhite1.tablesaw.filtering.LocalDatePredicate;
+import com.github.lwhite1.tablesaw.filtering.datetimes.IsFirstDayOfTheMonth;
+import com.github.lwhite1.tablesaw.filtering.datetimes.IsInFebruary;
+import com.github.lwhite1.tablesaw.filtering.datetimes.IsInMarch;
+import com.github.lwhite1.tablesaw.filtering.datetimes.IsInYear;
+import com.github.lwhite1.tablesaw.filtering.datetimes.IsLastDayOfTheMonth;
+import com.github.lwhite1.tablesaw.filtering.datetimes.IsMonday;
+import com.github.lwhite1.tablesaw.filtering.datetimes.IsSunday;
+import com.github.lwhite1.tablesaw.util.Selection;
 import org.junit.Before;
 import org.junit.Test;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 /**
  *
  */
 public class LocalDateFilterTest {
 
-  LocalDateColumn localDateColumn = LocalDateColumn.create("testing");
-  Table table = new Table("test");
+  DateColumn localDateColumn = DateColumn.create("testing");
+  Table table = Table.create("test");
 
   @Before
   public void setUp() throws Exception {
@@ -39,76 +38,76 @@ public class LocalDateFilterTest {
   @Test
   public void testIsSunday() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsSunday isSunday = new LocalDateIsSunday(reference);
-    RoaringBitmap bitmap = isSunday.apply(table);
-    assertTrue(bitmap.contains(0));
-    assertFalse(bitmap.contains(1));
-    assertFalse(bitmap.contains(2));
+    IsSunday isSunday = new IsSunday(reference);
+    Selection selection = isSunday.apply(table);
+    assertTrue(selection.contains(0));
+    assertFalse(selection.contains(1));
+    assertFalse(selection.contains(2));
   }
 
   @Test
   public void testIsMonday() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsMonday isSunday = new LocalDateIsMonday(reference);
-    RoaringBitmap bitmap = isSunday.apply(table);
-    assertFalse(bitmap.contains(0));
-    assertTrue(bitmap.contains(1));
-    assertFalse(bitmap.contains(2));
+    IsMonday isSunday = new IsMonday(reference);
+    Selection selection = isSunday.apply(table);
+    assertFalse(selection.contains(0));
+    assertTrue(selection.contains(1));
+    assertFalse(selection.contains(2));
   }
 
   @Test
   public void testIsFebruary() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsInFebruary isFebruary = new LocalDateIsInFebruary(reference);
-    RoaringBitmap bitmap = isFebruary.apply(table);
-    assertTrue(bitmap.contains(0));
-    assertTrue(bitmap.contains(1));
-    assertFalse(bitmap.contains(2));
+    IsInFebruary isFebruary = new IsInFebruary(reference);
+    Selection selection = isFebruary.apply(table);
+    assertTrue(selection.contains(0));
+    assertTrue(selection.contains(1));
+    assertFalse(selection.contains(2));
   }
 
   @Test
   public void testIsMarch() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsInMarch result = new LocalDateIsInMarch(reference);
-    RoaringBitmap bitmap = result.apply(table);
-    assertFalse(bitmap.contains(0));
-    assertFalse(bitmap.contains(1));
-    assertTrue(bitmap.contains(2));
+    IsInMarch result = new IsInMarch(reference);
+    Selection selection = result.apply(table);
+    assertFalse(selection.contains(0));
+    assertFalse(selection.contains(1));
+    assertTrue(selection.contains(2));
   }
 
   @Test
   public void testIsFirstDayOfTheMonth() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsFirstDayOfTheMonth result = new LocalDateIsFirstDayOfTheMonth(reference);
-    RoaringBitmap bitmap = result.apply(table);
-    assertFalse(bitmap.contains(0));
-    assertFalse(bitmap.contains(1));
-    assertTrue(bitmap.contains(2));
+    IsFirstDayOfTheMonth result = new IsFirstDayOfTheMonth(reference);
+    Selection selection = result.apply(table);
+    assertFalse(selection.contains(0));
+    assertFalse(selection.contains(1));
+    assertTrue(selection.contains(2));
   }
 
   @Test
   public void testIsLastDayOfTheMonth() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsLastDayOfTheMonth result = new LocalDateIsLastDayOfTheMonth(reference);
-    RoaringBitmap bitmap = result.apply(table);
-    assertFalse(bitmap.contains(0));
-    assertTrue(bitmap.contains(1));
-    assertFalse(bitmap.contains(2));
+    IsLastDayOfTheMonth result = new IsLastDayOfTheMonth(reference);
+    Selection selection = result.apply(table);
+    assertFalse(selection.contains(0));
+    assertTrue(selection.contains(1));
+    assertFalse(selection.contains(2));
   }
 
   @Test
   public void testIsInYear() {
     ColumnReference reference = new ColumnReference("testing");
-    LocalDateIsInYear result = new LocalDateIsInYear(reference, 2016);
-    RoaringBitmap bitmap = result.apply(table);
-    assertTrue(bitmap.contains(0));
-    assertTrue(bitmap.contains(1));
-    assertTrue(bitmap.contains(2));
-    result = new LocalDateIsInYear(reference, 2015);
-    bitmap = result.apply(table);
-    assertFalse(bitmap.contains(0));
-    assertFalse(bitmap.contains(1));
-    assertFalse(bitmap.contains(2));
+    IsInYear result = new IsInYear(reference, 2016);
+    Selection selection = result.apply(table);
+    assertTrue(selection.contains(0));
+    assertTrue(selection.contains(1));
+    assertTrue(selection.contains(2));
+    result = new IsInYear(reference, 2015);
+    selection = result.apply(table);
+    assertFalse(selection.contains(0));
+    assertFalse(selection.contains(1));
+    assertFalse(selection.contains(2));
   }
 
   @Test
@@ -122,7 +121,7 @@ public class LocalDateFilterTest {
       }
     };
 
-    LocalDateColumn filtered = localDateColumn.selectIf(after_2_28);
+    DateColumn filtered = localDateColumn.selectIf(after_2_28);
 
   }
 

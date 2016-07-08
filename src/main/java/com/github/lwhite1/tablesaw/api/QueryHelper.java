@@ -1,11 +1,11 @@
 package com.github.lwhite1.tablesaw.api;
 
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
-import com.github.lwhite1.tablesaw.filter.AllOf;
-import com.github.lwhite1.tablesaw.filter.AnyOf;
-import com.github.lwhite1.tablesaw.filter.Filter;
-import com.github.lwhite1.tablesaw.filter.IsFalse;
-import com.github.lwhite1.tablesaw.filter.IsTrue;
+import com.github.lwhite1.tablesaw.filtering.AllOf;
+import com.github.lwhite1.tablesaw.filtering.AnyOf;
+import com.github.lwhite1.tablesaw.filtering.Filter;
+import com.github.lwhite1.tablesaw.filtering.IsFalse;
+import com.github.lwhite1.tablesaw.filtering.IsTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,8 +13,9 @@ import java.util.List;
 
 /**
  * A static utility class designed to take some of the work, and verbosity, out of making queries.
- *
- * It is intended to be imported statically in any class that will run queries as it makes them easier to write - and read.
+ * <p>
+ * It is intended to be imported statically in any class that will run queries as it makes them easier to write - and
+ * read.
  */
 public class QueryHelper {
 

@@ -1,253 +1,79 @@
 Tablesaw
 =======
    
-Tablesaw is a high-performance, in-memory data table, plus tools for data manipulation and a column-oriented storage format. In Java.
+Tablesaw is a high-performance in-memory data table in Java. 
 
-With Tablesaw, you can import, sort, transform, filter, and summarize tables with hundreds of millions of rows on a laptop. It uses tricks like primitive collections and compressed, column-oriented data structures to maximize what you can do in one VM.
+###What makes it unique:
+Tablesaw's design is driven by two ideas: 
+First, few people need distributed analytics. On a single server, Tablesaw lets you work _interactively_ with a 2,000,000,000 row table. (We plan to raise that ceiling, btw.)
+Second, it should be super easy to use: To that end we happily steal ideas from everything from spreadsheets to specialized column stores like KDB.
 
-The goal is to make large data wrangling jobs possible without distributed computing (HDFS, Hadoop, Spark, etc.). 
-Analysis is more productive with less engineering overhead and shorter iteration cycles. A fluent API lets you express operations in a concise and readable fashion. 
+You can find an introductory __tutorial__ here: https://jtablesaw.wordpress.com/an-introduction/
 
-Tablesaw provides general-purpose analytic support, with rich functionality for working with time-series. It's designed for ease-of-use, and with Java 9, you'll be able to work interactively in the REPL. 
+The __JavaDoc__ can be found here: http://lwhite1.github.io/tablesaw/apidocs/
 
-For more information and examples see: https://javadatascience.wordpress.com
-
-## Getting started
-Tablesaw uses maven, but we're not on Maven Central yet.
-        
-Download the latest release from:
-
-    https://github.com/lwhite1/tablesaw/releases
-
-Build and install: 
-
-    mvn clean install
-    
-Then add a dependency to your pom file:
-    
-    <dependency>
-        <groupId>com.github.lwhite1</groupId>
-        <artifactId>tablesaw</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </dependency>
-    
-Tablesaw requires Java 8 or newer.    
-
-## A tutorial introduction to Tablesaw
-
-Lets explore a tornado data set using Tablesaw. Here's what we'll cover:
-
-* Read and writing CSV files
-* Viewing table metadata
-* Adding and removing columns
-* Printing the first few rows for a peak at the data
-* Sorting 
-* Running descriptive stats (mean, min, max, etc.)
-* Performing mapping operations over columns
-* Filtering rows 
-* Using groups and reduce functions to compute stats for subsets
-* Storing tables in Tablesaw's compressed columnar storage format
-
-All the data is in the projects _data_ folder. The code is taken from the TornadoExample test class.
-
-### Read a CSV file
-Here we read a csv file of tornado data. First, we say what column types are present.
-
-```java
-
-    ColumnType[] CT = {LOCAL_DATE, LOCAL_TIME, CATEGORY, INTEGER, INTEGER, INTEGER, 
-                       INTEGER, CATEGORY, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT};
-    Table tornadoes = Table.fromCSV(CT, "data/1950-2014_torn.csv");
-```
-Specifying the column types is _the_ most tedious part of using Tablesaw. That requirement will be removed soon.
-
-### Viewing table metadata
-
-Often, the best way to start is to print the column names for reference:
-
-```java
-    
-    tornadoes.columnNames();
-```
-which produces: 
-
-```java
-
-	[Date, Time, State, State No, Scale, Injuries, Fatalities, Start Lat, Start Lon, Length, Width]
-```
-
-The _shape()_ method displays the row and column counts: 
-
-```java
-    
-    tornadoes.shape();
-    
-    >> 59945 rows X 10 cols
-
-```
-The _structure()_ method shows the index, name and type of each column
-
-```java
-
-    tornadoes.structure();
-    
-    >> Structure of data/tornadoes_1950-2014.csv
-	Index Column Names Column Type 
-	0     Date         LOCAL_DATE  
-	1     Time         LOCAL_TIME  
-	2     State        CATEGORY    
-	3     State No     INTEGER     
-	4     Scale        INTEGER     
-	5     Injuries     INTEGER     
-	6     Fatalities   INTEGER     
-	7     Start Lat    FLOAT       
-	8     Start Lon    FLOAT       
-	9     Length       FLOAT       
-	10    Width        FLOAT       
-        
-```
-Like many Tablesaw methods, _structure()_ returns a table; You can then call print() to produce a string representation for display, or perform any other table operations on it, like:
-
-```java
-    
-    tornadoes.structure()
-    	.selectWhere(column("Column Type").isEqualTo("INTEGER"));
-    
-    >> Structure of data/tornadoes_1950-2014.csv
-	Index Column Name Column Type 
-	3     State No    INTEGER     
-	4     Scale       INTEGER     
-	5     Injuries    INTEGER     
-	6     Fatalities  INTEGER     
-    
-```
-Of course, that _also_ returned a table. We'll cover selecting rows in more detail later.
-
-### Viewing data
-The first(n) method returns the first n rows.
-
-```java
-
-    table.first(3);
-    >>
-    Date       Time     State Scale Injuries Fatalities Start Lat Start Lon Length Width 
-	1950-01-03 11:00:00 MO    3     3        0          38.77     -90.22    9.5    150.0 
-	1950-01-03 11:00:00 MO    3     3        0          38.77     -90.22    6.2    150.0 
-	1950-01-03 11:10:00 IL    3     0        0          38.82     -90.12    3.3    100.0 
-
-```
-
-### Mapping operations
-
-Mapping operations in Tablesaw take one or more columns as inputs and produce a new column as output. We can map arbitrary expressions onto the table, but many common operations are built in. You can, for example, calculate the difference in days, weeks, or years between the values in two date columns. The method below extracts the Month name from the date column into a new column.
-
-```java
-
-    CategoryColumn month = tornadoes.localDateColumn("Date").month();
-```
-
-Once you have a new column, you can add it to a table:
-
-```java
-
-    tornadoes.addColumn(2, month);
-```
-You can also remove columns from tables to save memory or reduce clutter: 
-
-```java
-
-    tornadoes.removeColumn("State No);
-```
-
-
-### Sorting by column
-Now lets sort the table in reverse order by the id column
-
-```java
-
-    tornadoes.sortDescendingOn("Fatalities");
-```
-
-### Descriptive statistics
-
-Descriptive statistics are calculated using the _describe()_ method:
-
-```java
-
-    table.column("Fatalities").describe();
-```
-
-This outputs:
-
-		Measure  Value     
-		n        1590.0    
-		Missing  0.0       
-		Mean     4.2779875 
-		Min      1.0       
-		Max      158.0     
-		Range    157.0     
-		Std. Dev 9.573451  
-
-### Filtering Rows
-
-To filter rows you can use arbitrary logic, but it's easier to use the built-in filter classes as shown below:
-
-```java
-
-    tornadoes.selectWhere(column("Fatalities").isGreaterThan(0));
-    
-    tornadoes.selectWhere(column("Date").isInApril());
-    
-    tornadoes.selectWhere(either(column("Width").isGreaterThan(300)),   // 300 yards
-    			 	(column("Length").isGreaterThan(10)));    // 10 miles
-    							
-    tornadoes.select("State", "Date", "Scale").where(column("Date").isInQ2());
-    
-```
-The last example above returns a table containing only the three columns named in select() parameters.
-
-### Performing totals and sub-totals
-
-Column metrics can be calculated using methods like sum(), product(), mean(), max(), etc.
-
-You can apply those methods to a table, calculating results on one column, grouped by the values in another.
-
-```java
-
-    Table injuriesByScale = tornadoes.reduce("Injuries", "Scale", median);
-    injuriesByScale.setName("Median injuries by Tornado Scale");
-```
-This produces the following table, in which Group represents the Tornado Scale and Median the median injures for that group:
-
-    Median injuries by Tornado Scale
-    Group Median 
-    -9    0.0    
-    0     0.0    
-    1     0.0    
-    2     0.0    
-    3     1.0    
-    4     12.0   
-    5     107.0  
-
-### Write the new CSV file to disk
-
-```java
-
-    tornadoes.exportToCsv("data/rev_tornadoes_1950-2014.csv");
-```
-### Read and write data using Tablesaw's ".saw" format
-
-Once you've imported data you can use Tablesaw's own disk format to save it. In .saw format, reads and writes are an order of magnitude faster than optimized CSV operations.
-
-```java
-
-    String dbName = tornadoes.save("/tmp/tablesaw/testdata");
-
-    Table tornadoes = Table.readTable(dbName);
-```
-This is just a little of what Tablesaw can do. More information is available on the project web site:
- https://javadatascience.wordpress.com
+If you have __questions of any kind__: Ask them in the Issues section of this Repo.
  
-## A work-in-progress
-__Tablesaw is moving towards stability of the core functionality and APIs__. A production release planned for Q3 2016. 
-A great deal of additional functionality will follow the initial release, including window operations (like rolling averages), outlier detection, database integration, and integrated machine-learning.
+A reasonably stable version will be on __Maven Central__ at the end of July, with the 1.0 release in September.  
+
+###What Tablesaw does today: 
+* Import data from RDBMS and CSV files, local or remote (http, S3, etc.)
+* Add and remove columns
+* Sort 
+* Filter
+* Group
+* Perform map and reduce operations
+* Run descriptive stats (mean, min, max, median, etc.)
+* Store tables in a very-fast, compressed columnar storage format
+
+### What Tablesaw will do in the future:
+* Interactive graphics
+* Integrated machine learning
+* More specialized column types and operations: (lat/lon, time interval, money)
+
+### Current performance:
+In its current pre-release state, some areas of Tablesaw perform better than others. To give you a sense of where we're going, you can now load a 500,000,000 row, 4 column csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load it in 22 seconds. You can query that table in 1-2 ms: fast enough to use as a cache for a Web app.
+
+BTW, those numbers were achieved on a laptop.
+
+### Easy to Use is Easy to Say
+To give you a sense of the API, here's an example. The goal in this analysis is to identify the production shifts with the slowest performance. Our table has data from all facilities, operations, products, and shifts for the past year. We're only interested in assembly operations in the second quarter for model 429.
+
+```java
+   // Load the data, inferring the column types from the data read
+    Table ops = Table.create("data/operations.csv");
+
+    // Combine the date and time fields so that we don't miscalculate on jobs that cross date bounderies
+    DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start"));
+    DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End"));
+    
+    // Hand the date cross-overs
+    for (int row : ops) {
+      if (ops.timeColumn("End").get(row).isBefore(ops.timeColumn("Start").get(row))) {
+        end.get(row).plusDays(1);
+      }
+    }
+
+    // Calculate the durations from the start and end times
+    LongColumn duration = start.differenceInSeconds(end);
+    
+    // give the new column a name and add it to the table
+    duration.setName("Duration");
+    ops.addColumn(duration);
+    
+    // filter the table by quarter, model and operation
+    Table q2_429_assembly = ops.selectWhere(
+          allOf
+              (column("date").isInQ2(),
+              (column("SKU").startsWith("429")),
+              (column("Operation").isEqualTo("Assembly"))));
+   
+    // Calulate the median peformance by facility and group.
+    Table durationByFacilityAndShift = q2_429_assembly.reduce("Duration", median, "Facility", "Shift");
+    
+    // Get the top "worst" peforming 
+    FloatArrayList tops = durationByFacilityAndShift.floatColumn("Median").top(5);
+
+```
+I hope you can see how the code reflects the intent, and how column-wise operators like _differenceInSeconds(dateTimeColumn)_, _isInQ2()_ and  _startsWith(aString)_ make data operations easy to express. If you see something that can be improved, let us know.
+

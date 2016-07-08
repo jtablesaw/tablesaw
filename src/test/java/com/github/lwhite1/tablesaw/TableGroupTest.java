@@ -2,8 +2,8 @@ package com.github.lwhite1.tablesaw;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.io.CsvReader;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.github.lwhite1.tablesaw.table.SubTable;
 import com.github.lwhite1.tablesaw.table.TableGroup;
 import org.junit.Before;
@@ -11,8 +11,11 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 /**
- *
+ * Tests grouping and aggregation operations on tables
  */
 public class TableGroupTest {
 
@@ -33,12 +36,12 @@ public class TableGroupTest {
   public void testGetSubTables() {
     TableGroup tableGroup = new TableGroup(table, table.column("who"));
     List<SubTable> tables = tableGroup.getSubTables();
-    System.out.println(tables.size());
+    assertEquals(6, tables.size());
   }
 
   @Test
   public void testWith2GroupingCols() {
-    CategoryColumn month = table.localDateColumn(0).month();
+    CategoryColumn month = table.dateColumn(0).month();
     month.setName("month");
     table.addColumn(month);
     String[] splitColumnNames = {table.column(2).name(), "month"};
@@ -46,21 +49,24 @@ public class TableGroupTest {
     List<SubTable> tables = tableGroup.getSubTables();
     Table t = table.sum(table.intColumn(1), splitColumnNames);
 
-    System.out.println(t.print());
-    System.out.println(tables.size());
+    // compare the sum of the original column with the sum of the sums of the group table
+    assertEquals(table.intColumn(1).sum(), t.intColumn(1).sum());
+    assertEquals(65, tables.size());
   }
 
   @Test
   public void testCountByGroup() {
-    System.out.println(table.columnNames());
     Table groups = table.countBy("who");
-    System.out.println(groups.print());
+    assertEquals(2, groups.columnCount());
+    assertEquals(6, groups.rowCount());
+    CategoryColumn group = groups.categoryColumn(0);
+    assertTrue(group.contains("fox"));
   }
 
   @Test
   public void testSumGroup() {
-    System.out.println(table.columnNames());
     Table groups = table.sum(table.intColumn(1), table.categoryColumn(2));
-    System.out.println(groups.print());
+    // compare the sum of the original column with the sum of the sums of the group table
+    assertEquals(table.intColumn(1).sum(), groups.intColumn(1).sum());
   }
 }

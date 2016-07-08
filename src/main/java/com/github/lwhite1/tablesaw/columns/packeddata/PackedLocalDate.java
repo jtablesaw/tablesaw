@@ -203,6 +203,14 @@ public class PackedLocalDate {
     return packedDate < value;
   }
 
+  public static boolean isOnOrBefore(int packedDate, int value) {
+    return packedDate <= value;
+  }
+
+  public static boolean isOnOrAfter(int packedDate, int value) {
+    return packedDate >= value;
+  }
+
   public static boolean isSunday(int packedDate) {
     DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
     return dayOfWeek == DayOfWeek.SUNDAY;

@@ -361,4 +361,8 @@ public class PackedLocalDateTime {
     return total;
   }
 
+  public static long create(int date, int time) {
+    return (((long) date) << 32) | (time & 0xffffffffL);
+
+  }
 }

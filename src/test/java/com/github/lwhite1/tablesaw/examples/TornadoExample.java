@@ -1,12 +1,10 @@
 package com.github.lwhite1.tablesaw.examples;
 
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.aggregator.NumericReduceUtils;
-import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceUtils;
+import com.github.lwhite1.tablesaw.api.*;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
-import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
+import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
 
 /**
  * Usage example using a Tornado dataset
@@ -15,7 +13,7 @@ public class TornadoExample {
 
   public static void main(String[] args) throws Exception {
 
-    Table tornadoes = Table.fromCSV(COLUMN_TYPES_OLD, "data/1950-2014_torn.csv");
+    Table tornadoes = Table.createFromCsv(COLUMN_TYPES_OLD, "data/1950-2014_torn.csv");
     assert(tornadoes != null);
 
     out(tornadoes.structure().print());
@@ -25,7 +23,8 @@ public class TornadoExample {
 
     tornadoes.exportToCsv("data/tornadoes_1950-2014.csv");
 
-    tornadoes = Table.fromCSV(COLUMN_TYPES, "data/tornadoes_1950-2014.csv");
+    //tornadoes = Table.createFromCsv(COLUMN_TYPES, "data/tornadoes_1950-2014.csv");
+    tornadoes = Table.create("data/tornadoes_1950-2014.csv");
     assert(tornadoes != null);
 
     out(tornadoes.structure().print());
@@ -52,7 +51,7 @@ public class TornadoExample {
 
     out();
     out("Extact month from the date and make it a separate column");
-    CategoryColumn month = tornadoes.localDateColumn("Date").month();
+    CategoryColumn month = tornadoes.dateColumn("Date").month();
     out(month.summary().print());
 
     out("Add the month column to the table");
@@ -68,7 +67,7 @@ public class TornadoExample {
     out(fatal.first(5).print());
 
     out();
-    out("Total fatalities: " + fatal.intColumn("Fatalities").sum());
+    out("Total fatalities: " + fatal.shortColumn("Fatalities").sum());
 
     out();
     out("Sorting on Fatalities in descending order");
@@ -77,13 +76,20 @@ public class TornadoExample {
 
     out("");
     out("Calculating basic descriptive statistics on Fatalities");
-    out(fatal.intColumn("Fatalities").stats().asTable("").print());
+    out(fatal.shortColumn("Fatalities").stats().asTable("").print());
 
 
     //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
-    Table injuriesByScale = tornadoes.reduce("Injuries", "Scale", NumericReduceUtils.median);
+    Table injuriesByScale = tornadoes.reduce("Injuries", NumericReduceUtils.median, "Scale");
     injuriesByScale.setName("Median injuries by Tornado Scale");
     out(injuriesByScale.print());
+
+
+    //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
+    Table injuriesByScaleState = tornadoes.reduce("Injuries", NumericReduceUtils.median, "Scale", "State");
+    injuriesByScaleState.setName("Median injuries by Tornado Scale and State");
+    out(injuriesByScaleState.print());
+
 
     out();
     out("Writing the revised table to a new csv file");
@@ -106,21 +112,6 @@ public class TornadoExample {
   private static void out() {
     System.out.println("");
   }
-
-  // column types for the tornado table
-  private static final ColumnType[] COLUMN_TYPES = {
-      LOCAL_DATE,  // date
-      LOCAL_TIME,  // time
-      CATEGORY,    // state
-      INTEGER,     // state torn number
-      INTEGER,     // scale
-      INTEGER,     // injuries
-      INTEGER,     // fatalities
-      FLOAT,       // St. Lat
-      FLOAT,       // St. Lon
-      FLOAT,       // length
-      FLOAT        // width
-  };
 
   // column types for the tornado table
   private static final ColumnType[] COLUMN_TYPES_OLD = {

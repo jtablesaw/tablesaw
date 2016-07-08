@@ -8,7 +8,7 @@ import com.github.lwhite1.tablesaw.columns.Column;
  */
 public enum ColumnType {
 
-  BOOLEAN(false),
+  BOOLEAN(Byte.MIN_VALUE),
   CATEGORY(""),
   FLOAT(Float.NaN),
   SHORT_INT(Short.MIN_VALUE),

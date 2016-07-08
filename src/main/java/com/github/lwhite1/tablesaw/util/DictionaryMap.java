@@ -9,13 +9,28 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.Set;
 
 /**
- * A map that supports reversible key value pairs of short->String
+ * A map that supports reversible key value pairs of short-String
  */
 public class DictionaryMap {
 
   private final Int2ObjectMap<String> keyToValue = new Int2ObjectOpenHashMap<>();
 
   private final Object2IntMap<String> valueToKey = new Object2IntOpenHashMap<>();
+
+  public DictionaryMap() {
+    super();
+    valueToKey.defaultReturnValue(-1);
+  }
+
+  /**
+   * Returns a new DictionaryMap that is a deep copy of the original
+   */
+  public DictionaryMap(DictionaryMap original) {
+    for (Int2ObjectMap.Entry<String> entry: original.keyToValue.int2ObjectEntrySet()) {
+      keyToValue.put(entry.getIntKey(), entry.getValue());
+      valueToKey.put(entry.getValue(), entry.getIntKey());
+    }
+  }
 
   public void put(int key, String value) {
     keyToValue.put(key, value);
@@ -27,7 +42,8 @@ public class DictionaryMap {
   }
 
   public int get(String value) {
-    return valueToKey.get(value);
+
+    return valueToKey.getInt(value);
   }
 
   public void remove(short key) {
@@ -60,7 +76,9 @@ public class DictionaryMap {
   /**
    * Returns the strings in the dictionary as an array in order of the numeric key
    */
-  public String[] categoryArray() { return keyToValue.values().toArray(new String[size()]);}
+  public String[] categoryArray() {
+    return keyToValue.values().toArray(new String[size()]);
+  }
 
   public IntCollection values() {
     return valueToKey.values();

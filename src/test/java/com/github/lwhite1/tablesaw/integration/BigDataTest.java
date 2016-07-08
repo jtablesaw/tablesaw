@@ -2,14 +2,13 @@ package com.github.lwhite1.tablesaw.integration;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.io.CsvReader;
 import com.github.lwhite1.tablesaw.store.StorageManager;
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.System.exit;
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
+import static java.lang.System.exit;
 
 /**
  *
@@ -34,7 +33,7 @@ public class BigDataTest {
 
     Stopwatch stopwatch = Stopwatch.createStarted();
 /*
-    Table table = CsvReader.read(file, types, wanted, ',', true);
+    Relation table = CsvReader.read(file, types, wanted, ',', true);
     out(String.format("Loaded %d rows in %d seconds", table.rowCount(), stopwatch.elapsed(TimeUnit.SECONDS)));
 
     table.first(3).print();
@@ -42,18 +41,18 @@ public class BigDataTest {
 
     stopwatch.start();
     CsvWriter.saveTable("testfolder/BigData.csv", table);
-    out(String.format("Table written as csv file in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
+    out(String.format("Relation written as csv file in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
     stopwatch.reset();
 
     stopwatch.start();
     StorageManager.saveTable("bigdata", table);
-    out(String.format("Table written to column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
+    out(String.format("Relation written to column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
     stopwatch.reset();
 */
 
     //stopwatch.start();
     Table table = StorageManager.readTable("bigdata/" + "3f07b9bf-053f-4f9b-9dff-9d354835b276");
-    out(String.format("Table read from column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
+    out(String.format("Relation read from column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
     out(table.first(3).print());
 
     out(table.columnNames());
@@ -66,10 +65,10 @@ public class BigDataTest {
   //@Test
   public void readCsvTest() throws Exception {
     Stopwatch stopwatch = Stopwatch.createStarted();
-    Table table = CsvReader.read(types, true, "data/BigData.csv");
+    Table table = Table.createFromCsv(types, "data/BigData.csv", true);
     table.first(3).print();
     out(table.rowCount());
-    out("Table read from csv file");
+    out("Relation read from csv file");
     out(stopwatch.elapsed(TimeUnit.SECONDS));
   }
 

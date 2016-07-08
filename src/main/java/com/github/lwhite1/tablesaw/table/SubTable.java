@@ -1,23 +1,22 @@
 package com.github.lwhite1.tablesaw.table;
 
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.BooleanColumn;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.BooleanColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LongColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.DateTimeColumn;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
+import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.columns.ShortColumn;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
 
 import java.util.List;
 
 /**
- * A specialization of the standard Table used for tables formed by grouping operations on a
- * Table
+ * A specialization of the standard Relation used for tables formed by grouping operations on a Relation
  */
 public class SubTable extends Table {
 
@@ -31,7 +30,7 @@ public class SubTable extends Table {
    *
    * @param original The table from which this one was derived
    */
-   SubTable(Table original) {
+  SubTable(Table original) {
     super(original.name(),
         original.emptyCopy().columns().toArray(new Column[original.columnCount()]));
   }
@@ -73,16 +72,16 @@ public class SubTable extends Table {
           booleanColumn.add(sourceTable.booleanColumn(i).get(rowIndex));
           break;
         case LOCAL_DATE:
-          LocalDateColumn localDateColumn = (LocalDateColumn) column;
-          localDateColumn.add(sourceTable.localDateColumn(i).getInt(rowIndex));
+          DateColumn localDateColumn = (DateColumn) column;
+          localDateColumn.add(sourceTable.dateColumn(i).getInt(rowIndex));
           break;
         case LOCAL_TIME:
-          LocalTimeColumn localTimeColumn = (LocalTimeColumn) column;
-          localTimeColumn.add(sourceTable.localTimeColumn(i).getInt(rowIndex));
+          TimeColumn timeColumn = (TimeColumn) column;
+          timeColumn.add(sourceTable.timeColumn(i).getInt(rowIndex));
           break;
         case LOCAL_DATE_TIME:
-          LocalDateTimeColumn localDateTimeColumn = (LocalDateTimeColumn) column;
-          localDateTimeColumn.add(sourceTable.localDateTimeColumn(i).getLong(rowIndex));
+          DateTimeColumn localDateTimeColumn = (DateTimeColumn) column;
+          localDateTimeColumn.add(sourceTable.dateTimeColumn(i).getLong(rowIndex));
           break;
         case CATEGORY:
           CategoryColumn categoryColumn = (CategoryColumn) column;

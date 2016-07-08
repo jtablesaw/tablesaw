@@ -1,13 +1,14 @@
 package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
 /**
- *
+ * Partial implementation of the {@link Column} interface
  */
-abstract class AbstractColumn implements Column {
+public abstract class AbstractColumn implements Column {
 
   private String id;
 
@@ -17,11 +18,13 @@ abstract class AbstractColumn implements Column {
 
   public AbstractColumn(String name) {
     this.name = name;
+    this.comment = "";
     this.id = UUID.randomUUID().toString();
   }
 
   public AbstractColumn(ColumnMetadata metadata) {
     this.name = metadata.getName();
+    this.comment = "";
     this.id = metadata.getId();
   }
 
@@ -38,6 +41,11 @@ abstract class AbstractColumn implements Column {
     return columnMetadata().toJson();
   }
 
+  /**
+   * Sets the columns name to the given string
+   *
+   * @param name  The new name MUST be unique for any table containing this column
+   */
   public void setName(String name) {
     this.name = name;
   }
@@ -57,5 +65,18 @@ abstract class AbstractColumn implements Column {
   @Override
   public ColumnMetadata columnMetadata() {
     return new ColumnMetadata(this);
+  }
+
+  /**
+   * Returns the width of the column in characters, for printing
+   */
+  @Override
+  public int columnWidth() {
+
+    int width = name().length();
+    for (int rowNum = 0; rowNum < size(); rowNum++) {
+      width = Math.max(width, StringUtils.length(getString(rowNum)));
+    }
+    return width;
   }
 }

@@ -2,7 +2,7 @@ package com.github.lwhite1.tablesaw;
 
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.store.TableMetadata;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class TableMetadataTest {
 
   @Before
   public void setUp() throws Exception {
-    table = new Table("t");
+    table = Table.create("t");
     table.addColumn(column1);
     table.addColumn(column2);
   }

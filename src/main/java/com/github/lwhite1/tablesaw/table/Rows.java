@@ -1,21 +1,21 @@
 package com.github.lwhite1.tablesaw.table;
 
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.BooleanColumn;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LongColumn;
+import com.github.lwhite1.tablesaw.api.BooleanColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.columns.ShortColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.DateTimeColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.LongColumn;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
+import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
+import com.github.lwhite1.tablesaw.util.Selection;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import org.roaringbitmap.RoaringBitmap;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -53,14 +53,14 @@ public class Rows {
           copy(rows, (BooleanColumn) oldTable.column(columnIndex), (BooleanColumn) newTable.column(columnIndex));
           break;
         case LOCAL_DATE:
-          copy(rows, (LocalDateColumn) oldTable.column(columnIndex), (LocalDateColumn) newTable.column(columnIndex));
+          copy(rows, (DateColumn) oldTable.column(columnIndex), (DateColumn) newTable.column(columnIndex));
           break;
         case LOCAL_DATE_TIME:
-          copy(rows, (LocalDateTimeColumn) oldTable.column(columnIndex), (LocalDateTimeColumn) newTable.column
+          copy(rows, (DateTimeColumn) oldTable.column(columnIndex), (DateTimeColumn) newTable.column
               (columnIndex));
           break;
         case LOCAL_TIME:
-          copy(rows, (LocalTimeColumn) oldTable.column(columnIndex), (LocalTimeColumn) newTable.column(columnIndex));
+          copy(rows, (TimeColumn) oldTable.column(columnIndex), (TimeColumn) newTable.column(columnIndex));
           break;
         default:
           throw new RuntimeException("Unhandled column type in case statement");
@@ -68,7 +68,7 @@ public class Rows {
     }
   }
 
-  public static void copyRowsToTable(RoaringBitmap rows, Table oldTable, Table newTable) {
+  public static void copyRowsToTable(Selection rows, Table oldTable, Table newTable) {
     int[] r = rows.toArray();
     IntArrayList rowArray = new IntArrayList(r);
     copyRowsToTable(rowArray, oldTable, newTable);
@@ -82,12 +82,11 @@ public class Rows {
     copyRowsToTable(rows, oldTable, newTable);
   }
 
-  public static void tail(int rowCount, Table oldTable, Table newTable) {
+  public static void tail(int rowsToInclude, Table oldTable, Table newTable) {
     int oldTableSize = oldTable.rowCount();
-    int end = oldTableSize - 1;
-    int start = end - rowCount;
-    IntArrayList rows = new IntArrayList(rowCount);
-    for (int i = start; i < end; i++) {
+    int start = oldTableSize - rowsToInclude;
+    IntArrayList rows = new IntArrayList(rowsToInclude);
+    for (int i = start; i < oldTableSize; i++) {
       rows.add(i);
     }
     copyRowsToTable(rows, oldTable, newTable);
@@ -100,9 +99,7 @@ public class Rows {
   }
 
   private static void copy(IntArrayList rows, CategoryColumn oldColumn, CategoryColumn newColumn) {
-    for (int index : rows) {
-      newColumn.add(oldColumn.get(index));
-    }
+    newColumn.initializeWith(oldColumn.getValues(rows), oldColumn.dictionaryMap());
   }
 
   private static void copy(IntArrayList rows, BooleanColumn oldColumn, BooleanColumn newColumn) {
@@ -129,19 +126,19 @@ public class Rows {
     }
   }
 
-  private static void copy(IntArrayList rows, LocalDateTimeColumn oldColumn, LocalDateTimeColumn newColumn) {
+  private static void copy(IntArrayList rows, DateTimeColumn oldColumn, DateTimeColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.getLong(index));
     }
   }
 
-  private static void copy(IntArrayList rows, LocalDateColumn oldColumn, LocalDateColumn newColumn) {
+  private static void copy(IntArrayList rows, DateColumn oldColumn, DateColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.getInt(index));
     }
   }
 
-  private static void copy(IntArrayList rows, LocalTimeColumn oldColumn, LocalTimeColumn newColumn) {
+  private static void copy(IntArrayList rows, TimeColumn oldColumn, TimeColumn newColumn) {
     for (int index : rows) {
       newColumn.add(oldColumn.getInt(index));
     }

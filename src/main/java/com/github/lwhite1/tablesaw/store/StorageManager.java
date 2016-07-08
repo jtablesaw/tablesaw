@@ -1,17 +1,17 @@
 package com.github.lwhite1.tablesaw.store;
 
-import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.columns.BooleanColumn;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
+import com.github.lwhite1.tablesaw.table.Relation;
+import com.github.lwhite1.tablesaw.api.BooleanColumn;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LocalTimeColumn;
-import com.github.lwhite1.tablesaw.columns.LongColumn;
-import com.github.lwhite1.tablesaw.columns.ShortColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.DateTimeColumn;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
+import com.github.lwhite1.tablesaw.api.LongColumn;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
 import org.iq80.snappy.SnappyFramedInputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 
@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,19 +48,19 @@ public class StorageManager {
    *             specified. The path will typically end in ".saw", as in "mytables/nasdaq-2015.saw"
    * @throws IOException if the file cannot be read
    */
-  public static Table readTable(String path) throws IOException {
+  public static com.github.lwhite1.tablesaw.api.Table readTable(String path) throws IOException {
 
     ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
     CompletionService readerCompletionService = new ExecutorCompletionService<>(executorService);
 
     TableMetadata tableMetadata = readTableMetadata(path + File.separator + "Metadata.json");
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
-    Table table = new Table(tableMetadata);
+    Table table = Table.create(tableMetadata);
 
     // NB: We do some extra work with the hash map to ensure that the columns are added to the table in original order
     // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all columns are read
     // TODO - continued : Problem seems to be mostly with category columns rebuilding the encoding dictionary
-    List<Column> columnList = new ArrayList<>();
+    ConcurrentLinkedQueue<Column> columnList = new ConcurrentLinkedQueue<>();
     Map<String, Column> columns = new HashMap<>();
     try {
       for (ColumnMetadata column : columnMetadata) {
@@ -186,8 +185,8 @@ public class StorageManager {
     return ints;
   }
 
-  public static LocalDateColumn readLocalDateColumn(String fileName, ColumnMetadata metadata) throws IOException {
-    LocalDateColumn dates = new LocalDateColumn(metadata);
+  public static DateColumn readLocalDateColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    DateColumn dates = new DateColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -204,9 +203,9 @@ public class StorageManager {
     return dates;
   }
 
-  public static LocalDateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata) throws
+  public static DateTimeColumn readLocalDateTimeColumn(String fileName, ColumnMetadata metadata) throws
       IOException {
-    LocalDateTimeColumn dates = new LocalDateTimeColumn(metadata);
+    DateTimeColumn dates = new DateTimeColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -223,8 +222,8 @@ public class StorageManager {
     return dates;
   }
 
-  public static LocalTimeColumn readLocalTimeColumn(String fileName, ColumnMetadata metadata) throws IOException {
-    LocalTimeColumn times = new LocalTimeColumn(metadata);
+  public static TimeColumn readLocalTimeColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    TimeColumn times = new TimeColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
@@ -284,16 +283,16 @@ public class StorageManager {
   /**
    * Saves the data from the given table in the location specified by folderName. Within that folder each table has
    * its own sub-folder, whose name is based on the name of the table.
-   * <p/>
+   * <p>
    * NOTE: If you store a table with the same name in the same folder. The data in that folder will be over-written.
-   * <p/>
+   * <p>
    * The storage format is the tablesaw compressed column-oriented format, which consists of a set of file in a folder.
    * The name of the folder is based on the name of the table.
    *
    * @param folderName The location of the table (for example: "mytables")
    * @param table      The table to be saved
-   * @throws IOException
    * @return The path and name of the table
+   * @throws IOException
    */
   public static String saveTable(String folderName, Relation table) throws IOException {
 
@@ -305,8 +304,6 @@ public class StorageManager {
     name = SEPARATOR_PATTERN.matcher(name).replaceAll("_"); // remove path separators from the table name
 
     String storageFolder = folderName + File.separator + name + '.' + FILE_EXTENSION;
-
-    System.out.println(storageFolder);
 
     Path path = Paths.get(storageFolder);
 
@@ -352,13 +349,13 @@ public class StorageManager {
           writeColumn(fileName, (BooleanColumn) column);
           break;
         case LOCAL_DATE:
-          writeColumn(fileName, (LocalDateColumn) column);
+          writeColumn(fileName, (DateColumn) column);
           break;
         case LOCAL_TIME:
-          writeColumn(fileName, (LocalTimeColumn) column);
+          writeColumn(fileName, (TimeColumn) column);
           break;
         case LOCAL_DATE_TIME:
-          writeColumn(fileName, (LocalDateTimeColumn) column);
+          writeColumn(fileName, (DateTimeColumn) column);
           break;
         case CATEGORY:
           writeColumn(fileName, (CategoryColumn) column);
@@ -395,8 +392,9 @@ public class StorageManager {
 
   /**
    * Writes out the values of the category column encoded as ints to minimize the time required for subsequent reads
-   *
+   * <p>
    * The files are written Strings first, then the ints that encode them so they can be read in the opposite order
+   *
    * @throws IOException
    */
   public static void writeColumn(String fileName, CategoryColumn column) throws IOException {
@@ -476,7 +474,7 @@ public class StorageManager {
   }
 
   //TODO(lwhite): saveTable the column using integer compression
-  public static void writeColumn(String fileName, LocalDateColumn column) throws IOException {
+  public static void writeColumn(String fileName, DateColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -492,7 +490,7 @@ public class StorageManager {
     }
   }
 
-  public static void writeColumn(String fileName, LocalDateTimeColumn column) throws IOException {
+  public static void writeColumn(String fileName, DateTimeColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -509,7 +507,7 @@ public class StorageManager {
   }
 
   //TODO(lwhite): saveTable the column using integer compression
-  public static void writeColumn(String fileName, LocalTimeColumn column) throws IOException {
+  public static void writeColumn(String fileName, TimeColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -550,9 +548,8 @@ public class StorageManager {
   public static void writeTableMetadata(String fileName, Relation table) throws IOException {
     File myFile = Paths.get(fileName).toFile();
     myFile.createNewFile();
-    try (
-        FileOutputStream fOut = new FileOutputStream(myFile);
-        OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
+    try (FileOutputStream fOut = new FileOutputStream(myFile);
+         OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
       myOutWriter.append(new TableMetadata(table).toJson());
     }
   }

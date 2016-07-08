@@ -1,7 +1,8 @@
 package com.github.lwhite1.tablesaw.columns;
 
-import com.github.lwhite1.tablesaw.filter.IntBiPredicate;
-import com.github.lwhite1.tablesaw.filter.IntPredicate;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.filtering.IntBiPredicate;
+import com.github.lwhite1.tablesaw.filtering.IntPredicate;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 
 /**
@@ -28,4 +29,8 @@ public interface IntColumnUtils extends Column, IntIterable {
   IntBiPredicate isLessThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
 
   IntBiPredicate isEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
+
+  IntPredicate isMissing = i -> i == IntColumn.MISSING_VALUE;
+
+  IntPredicate isNotMissing = i -> i != IntColumn.MISSING_VALUE;
 }

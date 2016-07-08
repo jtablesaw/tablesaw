@@ -35,8 +35,10 @@ public class PackedLocalDateTimeTest {
     LocalDateTime dateTime = LocalDateTime.now();
     long packed = PackedLocalDateTime.pack(dateTime.toLocalDate(), dateTime.toLocalTime());
     LocalDateTime upacked = PackedLocalDateTime.asLocalDateTime(packed);
-    System.out.println(dateTime);
-    System.out.println(upacked);
+    assertEquals(dateTime.getDayOfYear(), upacked.getDayOfYear());
+    assertEquals(dateTime.getHour(), upacked.getHour());
+    assertEquals(dateTime.getMinute(), upacked.getMinute());
+    assertEquals(dateTime.getSecond(), upacked.getSecond());
   }
 
   @Test
@@ -56,10 +58,7 @@ public class PackedLocalDateTimeTest {
     LocalTime t1 = PackedLocalTime.asLocalTime(PackedLocalDateTime.time(packed));
     assertNotNull(d1);
     assertNotNull(t1);
-    assertEquals(date, d1);
-    System.out.println(d1.toString());
-    System.out.println(time.toString());
-    System.out.println(t1.toString());
+    assertEquals(date.toString(), d1.toString());
   }
 
   @Test

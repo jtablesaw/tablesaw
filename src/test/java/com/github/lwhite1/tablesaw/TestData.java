@@ -2,9 +2,9 @@ package com.github.lwhite1.tablesaw;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.io.CsvReader;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.CATEGORY;
 import static com.github.lwhite1.tablesaw.api.ColumnType.FLOAT;
@@ -13,11 +13,10 @@ import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_DATE;
 import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_TIME;
 
 /**
- * This class setup tablesaw Table from test data sources.
+ * This class setup tablesaw Relation from test data sources.
  * It purpose is to make easy for tests or example code get data to work with.
  */
 public enum TestData {
-
     SIMPLE_DATA_WITH_CANONICAL_DATE_FORMAT(new String[]{"Name", "IQ", "City", "DOB"},
             new ColumnType[]{CATEGORY, INTEGER, CATEGORY, LOCAL_DATE},
             "data/simple-data-with-canonical-date-format.csv"),
@@ -52,13 +51,16 @@ public enum TestData {
                     INTEGER, INTEGER, INTEGER, INTEGER, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT, FLOAT,
                     FLOAT, FLOAT, CATEGORY, CATEGORY, CATEGORY, CATEGORY}, "data/1950-2014_torn.csv");
 
+
+
+
     private Table table;
     private ColumnType[] columnTypes;
     private Path source;
     private String[] columnNames;
 
     /**
-     * Creates a Table from the specified daa.
+     * Creates a Relation from the specified daa.
      *
      * @param columnNames the first row of data which should be tge column labels
      * @param columnTypes the data type for each column
@@ -79,6 +81,7 @@ public enum TestData {
     }
 
     /**
+     *
      * @return the column types for the data set.
      */
     public ColumnType[] getColumnTypes() {

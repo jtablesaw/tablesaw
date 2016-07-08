@@ -1,21 +1,21 @@
 package com.github.lwhite1.tablesaw.examples;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.columns.IntColumn;
-import com.github.lwhite1.tablesaw.index.IntIndex;
-import com.github.lwhite1.tablesaw.io.CsvReader;
-import com.github.lwhite1.tablesaw.columns.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.FloatColumn;
-import com.github.lwhite1.tablesaw.columns.LocalDateColumn;
+import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
+import com.github.lwhite1.tablesaw.index.IntIndex;
+import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.github.lwhite1.tablesaw.store.StorageManager;
+import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Stopwatch;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
-import org.roaringbitmap.RoaringBitmap;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -86,20 +86,20 @@ public class ObservationDataTest {
     out.println();
 
     stopwatch.reset().start();
-    RoaringBitmap roaringBitmap = patientIndex.get(randomPatient1);
+    Selection selection = patientIndex.get(randomPatient1);
     out.println("patient found in " + stopwatch.elapsed(TimeUnit.MICROSECONDS) + " micros");
-    out.println("patient records found: " + roaringBitmap.getCardinality());
+    out.println("patient records found: " + selection.size());
     stopwatch.reset().start();
-    Table results = t.selectWhere(roaringBitmap);
+    Table results = t.selectWhere(selection);
     out.println("records retrieved in " + stopwatch.elapsed(TimeUnit.MICROSECONDS) + " micros");
     out.println();
 
     stopwatch.reset().start();
-    roaringBitmap = patientIndex.get(randomPatient2);
+    selection = patientIndex.get(randomPatient2);
     out.println("patient found in " + stopwatch.elapsed(TimeUnit.MICROSECONDS) + " micros");
-    out.println("patients records found: " + roaringBitmap.getCardinality());
+    out.println("patients records found: " + selection.size());
     stopwatch.reset().start();
-    results = t.selectWhere(roaringBitmap);
+    results = t.selectWhere(selection);
     out.println("records retrieved in " + stopwatch.elapsed(TimeUnit.MICROSECONDS) + " micros");
     out.println();
 
@@ -119,9 +119,9 @@ public class ObservationDataTest {
 
   private static Table defineSchema() {
     Table t;
-    t = new Table("Observations");
+    t = Table.create("Observations");
     CategoryColumn conceptId = CategoryColumn.create("concept");
-    LocalDateColumn date = LocalDateColumn.create("date");
+    DateColumn date = DateColumn.create("date");
     FloatColumn value = FloatColumn.create("value");
     IntColumn patientId = IntColumn.create("patient");
 
@@ -157,7 +157,7 @@ public class ObservationDataTest {
   }
 
   private static void generateData(int observationCount, Table table) throws IOException {
-    // create pools of random values
+    // createFromCsv pools of random values
 
     while (concepts.size() <= 100_000) {
       concepts.add(RandomStringUtils.randomAscii(30));
@@ -171,7 +171,7 @@ public class ObservationDataTest {
       dates.add(PackedLocalDate.pack(randomDate()));
     }
 
-    LocalDateColumn dateColumn = table.localDateColumn("date");
+    DateColumn dateColumn = table.dateColumn("date");
     CategoryColumn conceptColumn = table.categoryColumn("concept");
     FloatColumn valueColumn = table.floatColumn("value");
     IntColumn patientColumn = table.intColumn("patient");
