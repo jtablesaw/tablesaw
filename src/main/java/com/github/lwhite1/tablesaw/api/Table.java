@@ -309,29 +309,50 @@ public class Table implements Relation {
      * if column name starts with - then sort that column descending otherwise sort ascending
      */
     public Table sortOn(String... columnNames) {
+
         Sort key = null;
-        Order order = null;
+
+        Order order;
+
+        List<String> names = columnNames();
+
         for (String columnName : columnNames) {
-              order = getOrder(columnName);
-            if (key == null) { // first time through
-                order = getOrder(columnName);
+
+            if (names.contains(columnName)) {
+
+                // the column name has not been annotated with a prefix.
+                order = Order.ASCEND;
+
+            } else {
+
+                // get the prefix which could be - or +
+                String prefix = columnName.substring(0, 1);
+
+                // remove - prefix so provided name matches actual column name
+                columnName = columnName.substring(1, columnName.length());
+
+                switch (prefix) {
+
+                case "+":
+                    order = Order.ASCEND;
+                    break;
+                case "-":
+                    order = Order.DESCEND;
+                    break;
+                default:
+                    throw new IllegalStateException("Column prefix: " + prefix + " is unknown.");
+                }
+
+            }
+
+            if (key == null) { // key will be null the first time through
                 key = first(columnName, order);
             } else {
                 key.next(columnName, order);
             }
-
         }
+
         return sortOn(key);
-    }
-
-    private Order getOrder(String columnName) {
-        Order order;
-        if (columnName.startsWith("-")) {
-            order = Order.DESCEND;
-        } else {
-            order = Order.ASCEND;
-        }
-        return order;
     }
 
     /**

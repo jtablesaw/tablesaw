@@ -51,17 +51,20 @@ public class SortTest {
 
     @Test
     public void testMultipleSortOrders() {
+
         Table unsortedTable = TestData.SIMPLE_UNSORTED_DATA.getTable();
+
         // Name,IQ,City,DOB
         String[] columnNames = TestData.SIMPLE_UNSORTED_DATA.getColumnNames();
+
         int iqIndex = 1;
         int dobIndex = 3;
 
         Table sortedTable = unsortedTable.sortOn(columnNames[iqIndex], "-" + columnNames[dobIndex]);
 
-        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_DESCENDING.getTable();
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_DESCENDING.getTable();
 
-        assertEquals("Data sorted correctly", expectedResults, sortedTable);
+        compareTables(expectedResults,sortedTable);
     }
 
 
