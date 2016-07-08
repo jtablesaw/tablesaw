@@ -81,7 +81,7 @@ public interface Relation {
       }
     }
     if (result == null) {
-      throw new RuntimeException(String.format("Column %s does not exist in table %s", columnName, name()));
+      throw new IllegalStateException(String.format("Column %s does not exist in table %s", columnName, name()));
     }
     return result;
   }
