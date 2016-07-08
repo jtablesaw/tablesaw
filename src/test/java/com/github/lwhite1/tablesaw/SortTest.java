@@ -63,6 +63,13 @@ public class SortTest {
     }
 
     @Test
+    public void testAscendingAndDescending() {
+        Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
+        Table expectedResults =  TestData.SIMPLE_SORTED_DATA_BY_INT_ASCENDING_AND_THEN_DATE_DESCENDING.getTable();
+        compareTables(expectedResults, sortedTable);
+    }
+
+    @Test
     public void testMultipleSortOrdersVerifyPlus() {
         Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "+" + columnNames[DOB_INDEX]);
         Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_INTEGER_AND_DATE_ASCENDING.getTable();
