@@ -9,8 +9,7 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class NumericReduceUtils {
 
-  // TODO(lwhite): Reimplement these methods to work natively with float[], instead of converting to double[]
-
+  // TODO(lwhite): Re-implement these methods to work natively with float[], instead of converting to double[]
   /**
    * A function that calculates the mean of the values in the column param
    */

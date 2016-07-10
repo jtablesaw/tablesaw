@@ -5,6 +5,7 @@ import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.filtering.FloatBiPredicate;
 import com.github.lwhite1.tablesaw.filtering.FloatPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.Selection;
@@ -147,6 +148,26 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return mean.reduce(this);
   }
 
+  public double median() {
+    return median.reduce(this);
+  }
+
+  public double quartile1() {
+    return quartile1.reduce(this);
+  }
+
+  public double quartile3() {
+    return quartile3.reduce(this);
+  }
+
+  public double percentile(double percentile) {
+    return NumericReduceUtils.percentile(this.toDoubleArray(), percentile);
+  }
+
+  public double range() {
+    return range.reduce(this);
+  }
+
   public float[] mode() {
     return StatUtil.mode(data.elements());
   }
@@ -167,9 +188,26 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return stdDev.reduce(this);
   }
 
+  public double sumOfLogs() {
+    return sumOfLogs.reduce(this);
+  }
+
+  public double sumOfSquares() {
+    return sumOfSquares.reduce(this);
+  }
+
+  public double geometricMean() {
+    return geometricMean.reduce(this);
+  }
+
+  /**
+   * Adds the given float to this column
+   */
   public void add(float f) {
     data.add(f);
   }
+
+  // Predicate  functions
 
   public Selection isLessThan(float f) {
     return select(isLessThan, f);
