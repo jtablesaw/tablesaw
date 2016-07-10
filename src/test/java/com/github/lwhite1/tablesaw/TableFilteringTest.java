@@ -9,12 +9,14 @@ import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDate;
+
 import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests for filtering on the Table class
+ * Tests for filtering on the T class
  */
 public class TableFilteringTest {
 
@@ -44,8 +46,8 @@ public class TableFilteringTest {
   public void testFilter2() {
     Table result = table.selectWhere(column("date").isInApril());
     DateColumn d = result.dateColumn("date");
-    for (int v : d) {
-      assertTrue(PackedLocalDate.isInApril(v));
+    for (LocalDate v : d) {
+      assertTrue(PackedLocalDate.isInApril(PackedLocalDate.pack(v)));
     }
   }
 

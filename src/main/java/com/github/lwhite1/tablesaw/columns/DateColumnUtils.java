@@ -3,12 +3,13 @@ package com.github.lwhite1.tablesaw.columns;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.filtering.IntPredicate;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntIterable;
+
+import java.time.LocalDate;
 
 /**
  *
  */
-public interface DateColumnUtils extends Column, IntIterable {
+public interface DateColumnUtils extends Column, Iterable<LocalDate> {
 
   IntArrayList data();
 

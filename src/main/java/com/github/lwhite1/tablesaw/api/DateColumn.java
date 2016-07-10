@@ -32,6 +32,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -365,7 +366,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
   public Selection isEqualTo(DateColumn column) {
     Selection results = new BitmapBackedSelection();
     int i = 0;
-    IntIterator intIterator = column.iterator();
+    IntIterator intIterator = column.intIterator();
     for (int next : data) {
       if (next == intIterator.nextInt()) {
         results.add(i);
@@ -612,7 +613,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
 
   public DateColumn selectIf(LocalDatePredicate predicate) {
     DateColumn column = emptyCopy();
-    IntIterator iterator = iterator();
+    IntIterator iterator = intIterator();
     while (iterator.hasNext()) {
       int next = iterator.nextInt();
       if (predicate.test(PackedLocalDate.asLocalDate(next))) {
@@ -629,7 +630,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
    */
   public DateColumn selectIf(IntPredicate predicate) {
     DateColumn column = emptyCopy();
-    IntIterator iterator = iterator();
+    IntIterator iterator = intIterator();
     while (iterator.hasNext()) {
       int next = iterator.nextInt();
       if (predicate.test(next)) {
@@ -673,7 +674,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
     return bottom;
   }
 
-  public IntIterator iterator() {
+  public IntIterator intIterator() {
     return data.iterator();
   }
 
@@ -702,8 +703,8 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
   public Set<LocalDate> asSet() {
     Set<LocalDate> dates = new HashSet<>();
     DateColumn unique = unique();
-    for (int i : unique) {
-      dates.add(PackedLocalDate.asLocalDate(i));
+    for (LocalDate d : unique) {
+      dates.add(d);
     }
     return dates;
   }
@@ -736,5 +737,29 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
   @Override
   public byte[] asBytes(int rowNumber) {
     return ByteBuffer.allocate(4).putInt(getInt(rowNumber)).array();
+  }
+
+  /**
+   * Returns an iterator over elements of type {@code T}.
+   *
+   * @return an Iterator.
+   */
+  @Override
+  public Iterator<LocalDate> iterator() {
+
+    return new Iterator<LocalDate>() {
+
+      IntIterator intIterator = intIterator();
+
+      @Override
+      public boolean hasNext() {
+        return intIterator.hasNext();
+      }
+
+      @Override
+      public LocalDate next() {
+        return PackedLocalDate.asLocalDate(intIterator.next());
+      }
+    };
   }
 }
