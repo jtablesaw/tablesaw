@@ -24,7 +24,7 @@ public class PlotUtils {
     PlotController.launch(args);
   }
 
-  public static void xyPlot(DateColumn x, ShortColumn y) {
+  public static String xyPlot(DateColumn x, ShortColumn y) {
 
     StringTemplateEngine templateEngine = StringTemplateEngine.INSTANCE;
 
@@ -42,16 +42,38 @@ public class PlotUtils {
     String page = null;
     try {
       page = new String(Files.readAllBytes(Paths.get(System.getProperty("user.dir"), "src/main/web/plotly.html")));
-
+      //page = html;
       page = templateEngine.render(page, attributeMap);
+
 
     } catch (MalformedURLException e) {
       throw new RuntimeException("Couldn't find the html file template", e);
     } catch (IOException e) {
       e.printStackTrace();
     }
+
     args[0] = name;
     args[1] = page;
     PlotController.doIt(args);
+    return page;
   }
+
+  private static final String html =
+      "<div id=\"testDiv\"></div>\n" +
+      "\n" +
+      "<script>\n" +
+      "\n" +
+      "$series$\n" +
+      "\n" +
+      "var data = [ series1 ];\n" +
+      "\n" +
+      "var layout = {\n" +
+      "  title:'Line and Scatter Plot',\n" +
+      "  height: 400,\n" +
+      "  width: 480\n" +
+      "};\n" +
+      "\n" +
+      "Plotly.newPlot('testDiv', data, layout);\n" +
+      "\n" +
+      "</script>\n";
 }
