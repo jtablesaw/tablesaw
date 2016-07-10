@@ -19,7 +19,6 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
 import it.unimi.dsi.fastutil.longs.LongComparator;
-import it.unimi.dsi.fastutil.longs.LongIterable;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
@@ -32,13 +31,14 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
-public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, LongIterable {
+public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, Iterable<LocalDateTime> {
 
   public static final long MISSING_VALUE = Long.MIN_VALUE;
 
@@ -339,7 +339,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   public Selection isEqualTo(DateTimeColumn column) {
     Selection results = new BitmapBackedSelection();
     int i = 0;
-    LongIterator intIterator = column.iterator();
+    LongIterator intIterator = column.longIterator();
     for (long next : data) {
       if (next == intIterator.nextLong()) {
         results.add(i);
@@ -368,7 +368,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   public Selection isAfter(DateTimeColumn column) {
     Selection results = new BitmapBackedSelection();
     int i = 0;
-    LongIterator intIterator = column.iterator();
+    LongIterator intIterator = column.longIterator();
     for (long next : data) {
       if (next > intIterator.nextLong()) {
         results.add(i);
@@ -381,7 +381,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   public Selection isBefore(DateTimeColumn column) {
     Selection results = new BitmapBackedSelection();
     int i = 0;
-    LongIterator intIterator = column.iterator();
+    LongIterator intIterator = column.longIterator();
     for (long next : data) {
       if (next < intIterator.nextLong()) {
         results.add(i);
@@ -501,7 +501,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
   public DateTimeColumn selectIf(LocalDateTimePredicate predicate) {
     DateTimeColumn column = emptyCopy();
-    LongIterator iterator = iterator();
+    LongIterator iterator = longIterator();
     while (iterator.hasNext()) {
       long next = iterator.nextLong();
       if (predicate.test(PackedLocalDateTime.asLocalDateTime(next))) {
@@ -513,7 +513,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
   public DateTimeColumn selectIf(LongPredicate predicate) {
     DateTimeColumn column = emptyCopy();
-    LongIterator iterator = iterator();
+    LongIterator iterator = longIterator();
     while (iterator.hasNext()) {
       long next = iterator.nextLong();
       if (predicate.test(next)) {
@@ -695,15 +695,15 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return bottom;
   }
 
-  public LongIterator iterator() {
+  public LongIterator longIterator() {
     return data.iterator();
   }
 
   public Set<LocalDateTime> asSet() {
     Set<LocalDateTime> times = new HashSet<>();
     DateTimeColumn unique = unique();
-    for (long i : unique) {
-      times.add(PackedLocalDateTime.asLocalDateTime(i));
+    for (LocalDateTime localDateTime : unique) {
+      times.add(localDateTime);
     }
     return times;
   }
@@ -727,5 +727,29 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   @Override
   public byte[] asBytes(int rowNumber) {
     return ByteBuffer.allocate(8).putLong(getLong(rowNumber)).array();
+  }
+
+  /**
+   * Returns an iterator over elements of type {@code T}.
+   *
+   * @return an Iterator.
+   */
+  @Override
+  public Iterator<LocalDateTime> iterator() {
+
+    return new Iterator<LocalDateTime>() {
+
+      LongIterator longIterator = longIterator();
+
+      @Override
+      public boolean hasNext() {
+        return longIterator.hasNext();
+      }
+
+      @Override
+      public LocalDateTime next() {
+        return PackedLocalDateTime.asLocalDateTime(longIterator.next());
+      }
+    };
   }
 }
