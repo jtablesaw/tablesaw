@@ -54,7 +54,6 @@ public class Taxi {
     out(sum_total_fare.print());
 
     sum_total_fare = trips.sum(trips.floatColumn("total_amount"), "passenger_count");
-
   }
 
   private static void out(Object obj) {

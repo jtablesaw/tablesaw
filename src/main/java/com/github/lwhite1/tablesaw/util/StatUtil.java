@@ -1,51 +1,25 @@
 package com.github.lwhite1.tablesaw.util;
 
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
-import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.exception.NotPositiveException;
 import org.apache.commons.math3.exception.NullArgumentException;
 import org.apache.commons.math3.exception.util.LocalizedFormats;
 import org.apache.commons.math3.stat.Frequency;
-import org.apache.commons.math3.util.FastMath;
 
 import java.util.List;
+
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.variance;
 
 /**
  *
  */
 public class StatUtil {
 
-  private StatUtil() {
-  }
-
-  public static float sum(final FloatColumn values) {
-    float sum;
-    sum = 0.0f;
-    for (float value : values) {
-      if (value != Float.NaN) {
-        sum += value;
-      }
-    }
-    return sum;
-  }
-
-  public static float product(final float[] values) {
-    float product = 1.0f;
-    boolean empty = true;
-    for (float value : values) {
-      if (value != Float.NaN) {
-        empty = false;
-        product *= value;
-      }
-    }
-    if (empty) {
-      return Float.NaN;
-    }
-    return product;
-  }
+  private StatUtil() { }
 
   public static float min(final FloatColumn values) {
     if (values.size() == 0) {
@@ -54,6 +28,19 @@ public class StatUtil {
     float min = values.firstElement();
     for (float value : values) {
       if (!Float.isNaN(value)) {
+        min = (min < value) ? min : value;
+      }
+    }
+    return min;
+  }
+
+  public static long min(LongColumn values) {
+    if (values.size() == 0) {
+      return LongColumn.MISSING_VALUE;
+    }
+    long min = values.firstElement();
+    for (long value : values) {
+      if (value != LongColumn.MISSING_VALUE) {
         min = (min < value) ? min : value;
       }
     }
@@ -103,47 +90,6 @@ public class StatUtil {
     return max;
   }
 
-  /**
-   * Returns the (sample) variance of the available values.
-   * <p>
-   * <p>This method returns the bias-corrected sample variance (using {@code n - 1} in
-   * the denominator).
-   *
-   * @return The variance, Double.NaN if no values have been added
-   * or 0.0 for a single value set.
-   */
-  public static float variance(FloatColumn column) {
-    float avg = mean(column);
-    float sumSquaredDiffs = 0.0f;
-    for (float value : column) {
-      float diff = value - avg;
-      float sqrdDiff = diff * diff;
-      sumSquaredDiffs += sqrdDiff;
-    }
-    //float sumMinusAverage = sum(column) - mean(column) * column.size();
-    return sumSquaredDiffs / (column.size() - 1);
-    //return (sumMinusAverage * sumMinusAverage) / (column.size() - 1);
-  }
-
-  /**
-   * Returns the standard deviation of the available values.
-   *
-   * @return The standard deviation, Double.NaN if no values have been added
-   * or 0.0 for a single value set.
-   */
-  public static float standardDeviation(FloatColumn values) {
-    float stdDev = Float.NaN;
-    int N = values.size();
-    if (N > 0) {
-      if (N > 1) {
-        stdDev = (float) FastMath.sqrt(variance(values));
-      } else {
-        stdDev = 0.0f;
-      }
-    }
-    return stdDev;
-  }
-
   public static float mean(FloatColumn values) {
     return (float) (values.sum()) / (float) values.size();
   }
@@ -154,7 +100,7 @@ public class StatUtil {
     stats.max = max(values);
     stats.n = values.size();
     stats.sum = values.sum();
-    stats.variance = variance(values);
+    stats.variance = variance.reduce(values);
     return stats;
   }
 
@@ -165,7 +111,7 @@ public class StatUtil {
     stats.max = max(ints);
     stats.n = values.size();
     stats.sum = ints.sum();
-    stats.variance = variance(values);
+    stats.variance = variance.reduce(values);
     return stats;
   }
 
@@ -176,10 +122,9 @@ public class StatUtil {
     stats.max = max(ints);
     stats.n = values.size();
     stats.sum = ints.sum();
-    stats.variance = variance(values);
+    stats.variance = variance.reduce(values);
     return stats;
   }
-
 
   public static IntStats stats(final LongColumn ints) {
     FloatColumn values = FloatColumn.create(ints.name(), ints.toFloatArray());
@@ -188,7 +133,7 @@ public class StatUtil {
     stats.max = max(ints);
     stats.n = values.size();
     stats.sum = ints.sum();
-    stats.variance = variance(values);
+    stats.variance = variance.reduce(values);
     return stats;
   }
 
@@ -325,16 +270,4 @@ public class StatUtil {
     return min;
   }
 
-  public static long min(LongColumn values) {
-    if (values.size() == 0) {
-      return LongColumn.MISSING_VALUE;
-    }
-    long min = values.firstElement();
-    for (long value : values) {
-      if (value != LongColumn.MISSING_VALUE) {
-        min = (min < value) ? min : value;
-      }
-    }
-    return min;
-  }
 }

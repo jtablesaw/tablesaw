@@ -2,6 +2,7 @@ package com.github.lwhite1.tablesaw.reducing;
 
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  * Contains common utilities for double and long types
@@ -39,6 +40,18 @@ public class NumericReduceUtils {
     @Override
     public double reduce(double[] data) {
       return StatUtils.sum(data);
+    }
+
+    @Override
+    public double reduce(FloatColumn floatColumn) {
+      float sum;
+      sum = 0.0f;
+      for (float value : floatColumn) {
+        if (value != Float.NaN) {
+          sum += value;
+        }
+      }
+      return sum;
     }
   };
 
@@ -133,6 +146,33 @@ public class NumericReduceUtils {
     }
   };
 
+  public static NumericReduceFunction min = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Min";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.min(data);
+    }
+
+    @Override
+    public double reduce(FloatColumn data) {
+      if (data.size() == 0) {
+        return Float.NaN;
+      }
+      float min = data.firstElement();
+      for (float value : data) {
+        if (!Float.isNaN(value)) {
+          min = (min < value) ? min : value;
+        }
+      }
+      return min;
+    }
+  };
+
   public static NumericReduceFunction product = new NumericReduceFunction() {
 
     @Override
@@ -143,6 +183,22 @@ public class NumericReduceUtils {
     @Override
     public double reduce(double[] data) {
       return StatUtils.product(data);
+    }
+
+    @Override
+    public double reduce(FloatColumn data) {
+      float product = 1.0f;
+      boolean empty = true;
+      for (float value : data) {
+        if (value != Float.NaN) {
+          empty = false;
+          product *= value;
+        }
+      }
+      if (empty) {
+        return Float.NaN;
+      }
+      return product;
     }
   };
 
@@ -196,6 +252,27 @@ public class NumericReduceUtils {
     public double reduce(double[] data) {
       return StatUtils.variance(data);
     }
+
+    /**
+     * Returns the (sample) variance of the available values.
+     * <p>
+     * <p>This method returns the bias-corrected sample variance (using {@code n - 1} in
+     * the denominator).
+     *
+     * @return The variance, Double.NaN if no values have been added
+     * or 0.0 for a single value set.
+     */
+    @Override
+    public double reduce(FloatColumn column) {
+      double avg = mean.reduce(column);
+      double sumSquaredDiffs = 0.0f;
+      for (float value : column) {
+        double diff = value - avg;
+        double sqrdDiff = diff * diff;
+        sumSquaredDiffs += sqrdDiff;
+      }
+      return sumSquaredDiffs / (column.size() - 1);
+    }
   };
 
   public static NumericReduceFunction stdDev = new NumericReduceFunction() {
@@ -209,6 +286,26 @@ public class NumericReduceUtils {
     public double reduce(double[] data) {
       return Math.sqrt(StatUtils.variance(data));
     }
+
+    /**
+     * Returns the standard deviation of the available values.
+     *
+     * @return The standard deviation, Double.NaN if no values have been added
+     * or 0.0 for a single value set.
+     */
+    public double stdDev(FloatColumn values) {
+      float stdDev = Float.NaN;
+      int N = values.size();
+      if (N > 0) {
+        if (N > 1) {
+          stdDev = (float) FastMath.sqrt(variance.reduce(values));
+        } else {
+          stdDev = 0.0f;
+        }
+      }
+      return stdDev;
+    }
+
   };
 
   public static double percentile(double[] data, double percentile) {

@@ -26,6 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.*;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
 
 /**
  * A column in a base table that contains float values
@@ -126,18 +127,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return ColumnType.FLOAT;
   }
 
-  public double sum() {
-    float result = 0;
-    for (float f : data) {
-      result += f;
-    }
-    return result;
-  }
-
-  public float mean() {
-    return StatUtil.mean(this);
-  }
-
   public float firstElement() {
     if (size() > 0) {
       return data.getFloat(0);
@@ -145,12 +134,37 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return MISSING_VALUE;
   }
 
-  public float max() {
+  // Reduce functions applied to the whole column
+  public double sum() {
+    return sum.reduce(this);
+  }
+
+  public double product() {
+    return product.reduce(this);
+  }
+
+  public double mean() {
+    return mean.reduce(this);
+  }
+
+  public float[] mode() {
+    return StatUtil.mode(data.elements());
+  }
+
+  public double max() {
     return StatUtil.max(this);
   }
 
-  public float min() {
+  public double min() {
     return StatUtil.min(this);
+  }
+
+  public double variance() { 
+    return variance.reduce(this);
+  }
+
+  public double standardDeviation() {
+    return stdDev.reduce(this);
   }
 
   public void add(float f) {
@@ -479,10 +493,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
       result.add(get(r) / column2.get(r));
     }
     return result;
-  }
-
-  public float[] mode() {
-    return StatUtil.mode(data.elements());
   }
 
   /**
