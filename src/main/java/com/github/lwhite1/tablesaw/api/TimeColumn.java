@@ -17,7 +17,6 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -29,13 +28,14 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 /**
  * A column in a base table that contains float values
  */
-public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUtils {
+public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, TimeMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_TIME.getMissingValue();
   private static final int BYTE_SIZE = 4;
@@ -330,7 +330,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
 
   public TimeColumn selectIf(LocalTimePredicate predicate) {
     TimeColumn column = emptyCopy();
-    IntIterator iterator = iterator();
+    IntIterator iterator = intIterator();
     while (iterator.hasNext()) {
       int next = iterator.nextInt();
       if (predicate.test(PackedLocalTime.asLocalTime(next))) {
@@ -347,7 +347,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
    */
   public TimeColumn selectIf(IntPredicate predicate) {
     TimeColumn column = emptyCopy();
-    IntIterator iterator = iterator();
+    IntIterator iterator = intIterator();
     while (iterator.hasNext()) {
       int next = iterator.nextInt();
       if (predicate.test(next)) {
@@ -432,7 +432,7 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     return bottom;
   }
 
-  public IntIterator iterator() {
+  public IntIterator intIterator() {
     return data.iterator();
   }
 
@@ -461,8 +461,8 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
   Set<LocalTime> asSet() {
     Set<LocalTime> times = new HashSet<>();
     TimeColumn unique = unique();
-    for (int i : unique) {
-      times.add(PackedLocalTime.asLocalTime(i));
+    for (LocalTime t : unique) {
+      times.add(t);
     }
     return times;
   }
@@ -493,5 +493,29 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
   @Override
   public byte[] asBytes(int rowNumber) {
     return ByteBuffer.allocate(4).putInt(getInt(rowNumber)).array();
+  }
+
+  /**
+   * Returns an iterator over elements of type {@code T}.
+   *
+   * @return an Iterator.
+   */
+  @Override
+  public Iterator<LocalTime> iterator() {
+
+    return new Iterator<LocalTime>() {
+
+      IntIterator intIterator = intIterator();
+
+      @Override
+      public boolean hasNext() {
+        return intIterator.hasNext();
+      }
+
+      @Override
+      public LocalTime next() {
+        return PackedLocalTime.asLocalTime(intIterator.next());
+      }
+    };
   }
 }
