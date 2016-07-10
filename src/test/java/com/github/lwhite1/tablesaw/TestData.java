@@ -2,15 +2,12 @@ package com.github.lwhite1.tablesaw;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.io.CsvReader;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import static com.github.lwhite1.tablesaw.api.ColumnType.CATEGORY;
-import static com.github.lwhite1.tablesaw.api.ColumnType.FLOAT;
-import static com.github.lwhite1.tablesaw.api.ColumnType.INTEGER;
-import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_DATE;
-import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_TIME;
+import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 
 /**
  * This class setup tablesaw Relation from test data sources.
@@ -68,8 +65,13 @@ public enum TestData {
      */
     TestData(String[] columnNames, ColumnType[] columnTypes, String csvSource) {
         this.columnNames = columnNames;
-        this.table = Table.fromCSV(columnTypes, csvSource);
-        this.columnTypes = columnTypes;
+      try {
+        this.table = Table.createFromCsv(columnTypes, csvSource);
+      } catch (IOException e) {
+        e.printStackTrace();
+        throw new RuntimeException("Unable to read from CSV file");
+      }
+      this.columnTypes = columnTypes;
         this.source = Paths.get(csvSource);
     }
 
