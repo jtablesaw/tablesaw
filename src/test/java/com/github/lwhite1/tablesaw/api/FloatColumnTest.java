@@ -41,7 +41,7 @@ public class FloatColumnTest {
     table.sortOn("test");
     System.out.println("Sort time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
     stopwatch.reset().start();
-    System.out.println(floatColumn.describe());
+    System.out.println(floatColumn.summary().print());
     stopwatch.reset().start();
     floatColumn.isLessThan(.5f);
     System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));

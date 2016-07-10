@@ -12,7 +12,6 @@ import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
 import com.github.lwhite1.tablesaw.util.Selection;
-import com.github.lwhite1.tablesaw.util.StatUtil;
 import com.github.lwhite1.tablesaw.util.Stats;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -139,7 +138,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   @Override
   public Table summary() {
-    return StatUtil.stats(this).asTable("Column: " + name());
+    return Stats.create(this).asTable();
   }
 
   /**
@@ -581,7 +580,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
   public Stats stats() {
     FloatColumn values = FloatColumn.create(name(), toFloatArray());
-    return StatUtil.stats(values);
+    return Stats.create(values);
   }
 
   public boolean contains(int i) {

@@ -76,7 +76,7 @@ public class TornadoExample {
 
     out("");
     out("Calculating basic descriptive statistics on Fatalities");
-    out(fatal.shortColumn("Fatalities").stats().asTable("").print());
+    out(fatal.shortColumn("Fatalities").summary().print());
 
 
     //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).

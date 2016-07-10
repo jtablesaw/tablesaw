@@ -39,7 +39,7 @@ public class ExamplesTest  {
 
     // Lets take a look at the latitude and longitude columns
     // out(table.realColumn("stop_lat").rowSummary().out());
-    out(table.floatColumn("stop_lat").describe());
+    out(table.floatColumn("stop_lat").summary().print());
 
     // Now lets fill a column based on data in the existing columns
 

@@ -13,7 +13,6 @@ import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.ReverseShortComparator;
 import com.github.lwhite1.tablesaw.util.Selection;
-import com.github.lwhite1.tablesaw.util.StatUtil;
 import com.github.lwhite1.tablesaw.util.Stats;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -130,7 +129,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   @Override
   public Table summary() {
-    return StatUtil.stats(this).asTable("Column: " + name());
+    return stats().asTable();
   }
 
   /**
@@ -553,7 +552,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
 
   public Stats stats() {
     FloatColumn values = FloatColumn.create(name(), toFloatArray());
-    return StatUtil.stats(values);
+    return Stats.create(values);
   }
 
   public ShortArrayList data() {

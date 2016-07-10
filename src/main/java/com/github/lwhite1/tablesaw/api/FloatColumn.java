@@ -9,7 +9,7 @@ import com.github.lwhite1.tablesaw.reducing.NumericReduceUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.Selection;
-import com.github.lwhite1.tablesaw.util.StatUtil;
+import com.github.lwhite1.tablesaw.util.Stats;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -62,11 +62,11 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
 
   @Override
   public Table summary() {
-    return StatUtil.stats(this).asTable("Column: " + name());
+    return stats().asTable();
   }
 
-  public String describe() {
-    return StatUtil.stats(this).printString();
+  public Stats stats() {
+    return Stats.create(this);
   }
 
   @Override

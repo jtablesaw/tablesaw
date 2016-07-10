@@ -12,7 +12,7 @@ import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.ReverseLongComparator;
 import com.github.lwhite1.tablesaw.util.Selection;
-import com.github.lwhite1.tablesaw.util.StatUtil;
+import com.github.lwhite1.tablesaw.util.Stats;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -128,7 +128,12 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
 
   @Override
   public Table summary() {
-    return StatUtil.stats(this).asTable(name());
+    return stats().asTable();
+  }
+
+  public Stats stats() {
+    FloatColumn values = FloatColumn.create(name(), toFloatArray());
+    return Stats.create(values);
   }
 
   @Override
