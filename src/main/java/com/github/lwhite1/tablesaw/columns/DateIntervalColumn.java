@@ -4,13 +4,15 @@ import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.DateInterval;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.util.Selection;
+import com.google.common.annotations.Beta;
 
 import java.util.List;
 
 
 /**
- *
+ * EXPERIMENTAL
  */
+@Beta
 public abstract class DateIntervalColumn {
 
   /*-------------------------------------------------------*/
