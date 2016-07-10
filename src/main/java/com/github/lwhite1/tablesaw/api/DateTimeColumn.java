@@ -178,10 +178,27 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
   };
 
-  // TODO(lwhite): Implement column summary()
   @Override
   public Table summary() {
-    return new Table("Column: " + "Unimplemented");
+    Table table = Table.create("Column: " + name());
+    CategoryColumn measure = CategoryColumn.create("Measure");
+    CategoryColumn value = CategoryColumn.create("Value");
+    table.addColumn(measure);
+    table.addColumn(value);
+
+    measure.add("Count");
+    value.add(String.valueOf(size()));
+
+    measure.add("Missing");
+    value.add(String.valueOf(countMissing()));
+
+    measure.add("Earliest");
+    value.add(String.valueOf(min()));
+
+    measure.add("Latest");
+    value.add(String.valueOf(max()));
+
+    return table;
   }
 
   @Override

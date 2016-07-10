@@ -76,7 +76,7 @@ public class Table implements Relation, IntIterable {
     }
 
     /**
-     * Returns a new Relation initialized with the given names and columns
+     * Returns a new Table initialized with the given names and columns
      *
      * @param name    The name of the table
      * @param columns One or more columns, all of which must have either the same length or size 0
@@ -160,7 +160,7 @@ public class Table implements Relation, IntIterable {
     /**
      * Returns the column at the given index in the column list
      *
-     * @param columnIndex an integer at least 0 and less than number of columns in the relation
+     * @param columnIndex an integer at least 0 and less than number of columns in the table
      */
     @Override
     public Column column(int columnIndex) {
@@ -862,7 +862,7 @@ public class Table implements Relation, IntIterable {
     }
 
     /**
-     * Returns a new Relation with the given name, and containing the data in the given result set
+     * Returns a new Table with the given name, and containing the data in the given result set
      */
     public static Table create(ResultSet resultSet, String tableName) throws SQLException {
         return SqlResultSetReader.read(resultSet, tableName);

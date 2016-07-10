@@ -17,8 +17,6 @@ import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
 import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -383,35 +381,25 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
   @Override
   public Table summary() {
 
-    // TODO(lwhite): This is not a very useful summary. Fix it
-
-    Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
-
-    for (int i = 0; i < size(); i++) {
-      int value;
-      int next = getInt(i);
-      if (next == Integer.MIN_VALUE) {
-        value = DateColumn.MISSING_VALUE;
-      } else {
-        value = next;
-      }
-      if (counts.containsKey(value)) {
-        counts.addTo(value, 1);
-      } else {
-        counts.put(value, 1);
-      }
-    }
     Table table = Table.create("Column: " + name());
-    table.addColumn(DateColumn.create("Date"));
-    table.addColumn(IntColumn.create("Count"));
+    CategoryColumn measure = CategoryColumn.create("Measure");
+    CategoryColumn value = CategoryColumn.create("Value");
+    table.addColumn(measure);
+    table.addColumn(value);
 
-    for (Int2IntMap.Entry entry : counts.int2IntEntrySet()) {
-      table.dateColumn(0).add(entry.getIntKey());
-      table.intColumn(1).add(entry.getIntValue());
-    }
-    table = table.sortDescendingOn("Count");
+    measure.add("Count");
+    value.add(String.valueOf(size()));
 
-    return table.first(5);
+    measure.add("Missing");
+    value.add(String.valueOf(countMissing()));
+
+    measure.add("Earliest");
+    value.add(String.valueOf(min()));
+
+    measure.add("Latest");
+    value.add(String.valueOf(max()));
+
+    return table;
   }
 
   /**

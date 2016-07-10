@@ -1,8 +1,5 @@
 package com.github.lwhite1.tablesaw.api;
 
-import com.github.lwhite1.tablesaw.api.DateColumn;
-import com.github.lwhite1.tablesaw.api.IntColumn;
-import com.github.lwhite1.tablesaw.api.Table;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -71,7 +68,7 @@ public class LocalDateColumnTest {
     Table summary = column1.summary();
     assertEquals(4, summary.rowCount());
     assertEquals(2, summary.columnCount());
-    assertEquals("Date", summary.column(0).name());
-    assertEquals("Count", summary.column(1).name());
+    assertEquals("Measure", summary.column(0).name());
+    assertEquals("Value", summary.column(1).name());
   }
 }

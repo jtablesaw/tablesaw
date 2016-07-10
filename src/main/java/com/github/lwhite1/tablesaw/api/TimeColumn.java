@@ -14,8 +14,6 @@ import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
 import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -137,36 +135,69 @@ public class TimeColumn extends AbstractColumn implements IntIterable, TimeMapUt
     }
   };
 
+  public LocalTime max() {
+    int max;
+    int missing = Integer.MIN_VALUE;
+    if (!isEmpty()) {
+      max = getInt(0);
+    } else {
+      return null;
+    }
+    for (int aData : data) {
+      if (missing != aData) {
+        max = (max > aData) ? max : aData;
+      }
+    }
+
+    if (missing == max) {
+      return null;
+    }
+    return PackedLocalTime.asLocalTime(max);
+  }
+
+  public LocalTime min() {
+    int min;
+    int missing = Integer.MIN_VALUE;
+
+    if (!isEmpty()) {
+      min = getInt(0);
+    } else {
+      return null;
+    }
+    for (int aData : data) {
+      if (missing != aData) {
+        min = (min < aData) ? min : aData;
+      }
+    }
+    if (Integer.MIN_VALUE == min) {
+      return null;
+    }
+    return PackedLocalTime.asLocalTime(min);
+  }
+
+
   @Override
   public Table summary() {
 
-    Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
+    Table table = Table.create("Column: " + name());
+    CategoryColumn measure = CategoryColumn.create("Measure");
+    CategoryColumn value = CategoryColumn.create("Value");
+    table.addColumn(measure);
+    table.addColumn(value);
 
-    for (int i = 0; i < size(); i++) {
-      int value;
-      int next = getInt(i);
-      if (next == Integer.MIN_VALUE) {
-        value = TimeColumn.MISSING_VALUE;
-      } else {
-        value = next;
-      }
-      if (counts.containsKey(value)) {
-        counts.addTo(value, 1);
-      } else {
-        counts.put(value, 1);
-      }
-    }
-    Table table = new Table("Column: " + name());
-    table.addColumn(TimeColumn.create("Time"));
-    table.addColumn(IntColumn.create("Count"));
+    measure.add("Count");
+    value.add(String.valueOf(size()));
 
-    for (Int2IntMap.Entry entry : counts.int2IntEntrySet()) {
-      table.timeColumn(0).add(entry.getIntKey());
-      table.intColumn(1).add(entry.getIntValue());
-    }
-    table = table.sortDescendingOn("Count");
+    measure.add("Missing");
+    value.add(String.valueOf(countMissing()));
 
-    return table.first(5);
+    measure.add("Earliest");
+    value.add(String.valueOf(min()));
+
+    measure.add("Latest");
+    value.add(String.valueOf(max()));
+
+    return table;
   }
 
   /**

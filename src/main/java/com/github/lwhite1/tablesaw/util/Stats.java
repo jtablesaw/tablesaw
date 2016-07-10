@@ -173,7 +173,7 @@ public class Stats {
   }
 
   private static Stats getStats(FloatColumn values, SummaryStatistics summaryStatistics) {
-    Stats stats = new Stats(values.name());
+    Stats stats = new Stats("Column: " + values.name());
     stats.min = (float) summaryStatistics.getMin();
     stats.max = (float) summaryStatistics.getMax();
     stats.n = summaryStatistics.getN();

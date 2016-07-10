@@ -60,7 +60,7 @@ public class CsvReader {
   }
 
   /**
-   * Returns a Relation constructed from a CSV File with the given file name
+   * Returns a Table constructed from a CSV File with the given file name
    * <p>
    * The @code{fileName} is used as the initial table name for the new table
    *
@@ -68,7 +68,7 @@ public class CsvReader {
    * @param header          Is the first row in the file a header?
    * @param columnSeparator the delimiter
    * @param fileName        The fully specified file name. It is used to provide a default name for the table
-   * @return A Relation containing the data in the csv file.
+   * @return A Table containing the data in the csv file.
    * @throws IOException
    */
   public static Table read(ColumnType types[], boolean header, char columnSeparator, String fileName) throws IOException {
@@ -143,7 +143,7 @@ public class CsvReader {
   }
 
   /**
-   * Returns a Relation constructed from a CSV File with the given file name
+   * Returns a Table constructed from a CSV File with the given file name
    * <p>
    * The @code{fileName} is used as the initial table name for the new table
    *
@@ -201,7 +201,7 @@ public class CsvReader {
   }
 
   /**
-   * Returns a Relation constructed from a CSV File with the given file name
+   * Returns a Table constructed from a CSV File with the given file name
    * <p>
    * The @code{fileName} is used as the initial table name for the new table
    *

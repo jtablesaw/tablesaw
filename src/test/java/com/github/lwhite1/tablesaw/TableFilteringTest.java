@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Tests for filtering on the Relation class
+ * Tests for filtering on the Table class
  */
 public class TableFilteringTest {
 

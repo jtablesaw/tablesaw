@@ -183,10 +183,10 @@ public interface Relation {
     return buf.toString();
   }
 
-  default com.github.lwhite1.tablesaw.api.Table structure() {
+  default Table structure() {
 
     StringBuilder nameBuilder = new StringBuilder();
-    nameBuilder.append("Relation: ")
+    nameBuilder.append("Table: ")
         .append(name())
         .append(" - ")
         .append(rowCount())
@@ -216,7 +216,7 @@ public interface Relation {
   default String summary() {
     StringBuilder builder = new StringBuilder();
     builder.append("\n")
-        .append("Relation summary for: ")
+        .append("Table summary for: ")
         .append(name())
         .append("\n");
     for (Column column : columns()) {

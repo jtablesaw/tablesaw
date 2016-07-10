@@ -44,7 +44,7 @@ public class GettingStarted {
     out(who.summary().print());
 
     Column date = table.column("date");
-    out(date.summary().sortOn("date").print());
+    out(date.summary().print());
   }
 
   private synchronized void out(Object obj) {

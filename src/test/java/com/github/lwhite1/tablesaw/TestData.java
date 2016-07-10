@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 
 /**
- * This class setup tablesaw Relation from test data sources.
+ * This class setup tablesaw Table from test data sources.
  * It purpose is to make easy for tests or example code get data to work with.
  */
 public enum TestData {
@@ -57,7 +57,7 @@ public enum TestData {
     private String[] columnNames;
 
     /**
-     * Creates a Relation from the specified daa.
+     * Creates a Table from the specified daa.
      *
      * @param columnNames the first row of data which should be tge column labels
      * @param columnTypes the data type for each column

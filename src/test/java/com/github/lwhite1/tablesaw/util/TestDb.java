@@ -43,7 +43,7 @@ public class TestDb
       conn.close();
     } catch (Exception e)
     {
-      System.out.println("Error Creating the Coffee Relation");
+      System.out.println("Error Creating the Coffee Table");
       System.out.println(e.getMessage());
     }
 

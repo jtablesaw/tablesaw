@@ -52,7 +52,7 @@ public class BigDataTest {
 
     //stopwatch.start();
     Table table = StorageManager.readTable("bigdata/" + "3f07b9bf-053f-4f9b-9dff-9d354835b276");
-    out(String.format("Relation read from column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
+    out(String.format("Table read from column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
     out(table.first(3).print());
 
     out(table.columnNames());
@@ -68,7 +68,7 @@ public class BigDataTest {
     Table table = Table.createFromCsv(types, "data/BigData.csv", true);
     table.first(3).print();
     out(table.rowCount());
-    out("Relation read from csv file");
+    out("Table read from csv file");
     out(stopwatch.elapsed(TimeUnit.SECONDS));
   }
 
