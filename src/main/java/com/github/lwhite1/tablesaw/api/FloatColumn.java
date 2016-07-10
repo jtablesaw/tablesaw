@@ -184,6 +184,10 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return variance.reduce(this);
   }
 
+  public double populationVariance() {
+    return populationVariance.reduce(this);
+  }
+
   public double standardDeviation() {
     return stdDev.reduce(this);
   }
@@ -198,6 +202,21 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
 
   public double geometricMean() {
     return geometricMean.reduce(this);
+  }
+
+  /**
+   * Returns the quadraticMean, aka the root-mean-square, for all values in this column
+   */
+  public double quadraticMean() {
+    return quadraticMean.reduce(this);
+  }
+
+  public double kurtosis() {
+    return kurtosis.reduce(this);
+  }
+
+  public double skewness() {
+    return skewness.reduce(this);
   }
 
   /**

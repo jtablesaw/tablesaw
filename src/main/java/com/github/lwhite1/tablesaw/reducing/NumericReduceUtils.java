@@ -2,6 +2,9 @@ package com.github.lwhite1.tablesaw.reducing;
 
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
+import org.apache.commons.math3.stat.descriptive.moment.Skewness;
 import org.apache.commons.math3.util.FastMath;
 
 /**
@@ -211,6 +214,61 @@ public class NumericReduceUtils {
     @Override
     public double reduce(double[] data) {
       return StatUtils.geometricMean(data);
+    }
+  };
+
+  public static NumericReduceFunction populationVariance = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Population Variance";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.populationVariance(data);
+    }
+  };
+
+  /**
+   * Returns the quadratic mean, aka, the root-mean-square
+   */
+  public static NumericReduceFunction quadraticMean = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Quadratic Mean";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return new DescriptiveStatistics(data).getQuadraticMean();
+    }
+  };
+
+  public static NumericReduceFunction kurtosis = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Kurtosis";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return new Kurtosis().evaluate(data, 0, data.length);
+    }
+  };
+
+  public static NumericReduceFunction skewness = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Skewness";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return new Skewness().evaluate(data, 0, data.length);
     }
   };
 
