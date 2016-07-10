@@ -168,16 +168,12 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return range.reduce(this);
   }
 
-  public float[] mode() {
-    return StatUtil.mode(data.elements());
-  }
-
   public double max() {
-    return StatUtil.max(this);
+    return max.reduce(this);
   }
 
   public double min() {
-    return StatUtil.min(this);
+    return min.reduce(this);
   }
 
   public double variance() { 

@@ -6,6 +6,7 @@ import com.github.lwhite1.tablesaw.filtering.LongBiPredicate;
 import com.github.lwhite1.tablesaw.filtering.LongPredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.mapping.LongMapUtils;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceUtils;
 import com.github.lwhite1.tablesaw.sorting.LongComparisonUtil;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
@@ -27,6 +28,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
 
 /**
  * A column that contains signed 8 byte integer values
@@ -80,14 +83,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   @Override
   public ColumnType type() {
     return ColumnType.LONG_INT;
-  }
-
-  public long sum() {
-    long sum = 0;
-    for (long i : data) {
-      sum += i;
-    }
-    return sum;
   }
 
   public void add(long i) {
@@ -315,12 +310,84 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
     }
   };
 
+  // Reduce functions applied to the whole column
+  public long sum() {
+    return Math.round(sum.reduce(toDoubleArray()));
+  }
+
+  public double product() {
+    return product.reduce(this);
+  }
+
+  public double mean() {
+    return mean.reduce(this);
+  }
+
+  public double median() {
+    return median.reduce(this);
+  }
+
+  public double quartile1() {
+    return quartile1.reduce(this);
+  }
+
+  public double quartile3() {
+    return quartile3.reduce(this);
+  }
+
+  public double percentile(double percentile) {
+    return NumericReduceUtils.percentile(this.toDoubleArray(), percentile);
+  }
+
+  public double range() {
+    return range.reduce(this);
+  }
+
   public long max() {
-    return StatUtil.max(this);
+    return Math.round(max.reduce(this));
   }
 
   public long min() {
-    return StatUtil.min(this);
+    return Math.round(min.reduce(this));
+  }
+
+  public double variance() {
+    return variance.reduce(this);
+  }
+
+  public double populationVariance() {
+    return populationVariance.reduce(this);
+  }
+
+  public double standardDeviation() {
+    return stdDev.reduce(this);
+  }
+
+  public double sumOfLogs() {
+    return sumOfLogs.reduce(this);
+  }
+
+  public double sumOfSquares() {
+    return sumOfSquares.reduce(this);
+  }
+
+  public double geometricMean() {
+    return geometricMean.reduce(this);
+  }
+
+  /**
+   * Returns the quadraticMean, aka the root-mean-square, for all values in this column
+   */
+  public double quadraticMean() {
+    return quadraticMean.reduce(this);
+  }
+
+  public double kurtosis() {
+    return kurtosis.reduce(this);
+  }
+
+  public double skewness() {
+    return skewness.reduce(this);
   }
 
   public long firstElement() {

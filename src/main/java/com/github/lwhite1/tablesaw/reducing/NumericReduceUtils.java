@@ -175,6 +175,19 @@ public class NumericReduceUtils {
     }
   };
 
+  public static NumericReduceFunction max = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "Max";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.max(data);
+    }
+  };
+
   public static NumericReduceFunction product = new NumericReduceFunction() {
 
     @Override
