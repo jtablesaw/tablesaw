@@ -21,7 +21,6 @@ import com.github.lwhite1.tablesaw.store.TableMetadata;
 import com.github.lwhite1.tablesaw.table.Projection;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.table.Rows;
-import com.github.lwhite1.tablesaw.table.SubTable;
 import com.github.lwhite1.tablesaw.table.ViewGroup;
 import com.github.lwhite1.tablesaw.util.IntComparatorChain;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
@@ -591,65 +590,36 @@ public class Table implements Relation, IntIterable {
         columnList.retainAll(columns(columnNames));
     }
 
-    private SubTable splitGroupingColumn(SubTable subTable, List<Column> columnNames) {
-        ArrayList newColumns = new ArrayList();
-        Iterator row = columnNames.iterator();
-
-        Column c;
-        while (row.hasNext()) {
-            c = (Column) row.next();
-            Column col = c.emptyCopy();
-            newColumns.add(col);
-        }
-
-        for (int var7 = 0; var7 < subTable.rowCount(); ++var7) {
-            String[] var8 = subTable.name().split("|||");
-
-            for (int var9 = 0; var9 < newColumns.size(); ++var9) {
-                ((Column) newColumns.get(var9)).addCell(var8[var9]);
-            }
-        }
-
-        row = newColumns.iterator();
-
-        while (row.hasNext()) {
-            c = (Column) row.next();
-            subTable.addColumn(c);
-        }
-
-        return subTable;
+    public Sum sum(String numericColumnName) {
+        return new Sum(this, numericColumnName);
     }
 
-    public Sum sum(String sumColumnName) {
-        return new Sum(this, sumColumnName);
+    public Average mean(String numericColumnName) {
+      return new Average(this, numericColumnName);
     }
 
-    public Average mean(String summarizedColumnName) {
-      return new Average(this, summarizedColumnName);
+    public Median median(String numericColumnName) {
+      return new Median(this, numericColumnName);
     }
 
-    public Median median(String summarizedColumnName) {
-      return new Median(this, summarizedColumnName);
+    public Variance variance(String numericColumnName) {
+      return new Variance(this, numericColumnName);
     }
 
-    public Variance variance(String summarizedColumnName) {
-      return new Variance(this, summarizedColumnName);
+    public StandardDeviation stdDev(String numericColumnName) {
+      return new StandardDeviation(this, numericColumnName);
     }
 
-    public StandardDeviation stdDev(String summarizedColumnName) {
-      return new StandardDeviation(this, summarizedColumnName);
+    public Count count(String numericColumnName) {
+      return new Count(this, numericColumnName);
     }
 
-    public Count count(String summarizedColumnName) {
-      return new Count(this, summarizedColumnName);
+    public Maximum max(String numericColumnName) {
+      return new Maximum(this, numericColumnName);
     }
 
-    public Maximum max(String summarizedColumnName) {
-      return new Maximum(this, summarizedColumnName);
-    }
-
-    public Minimum minimum(String summarizedColumnName) {
-      return new Minimum(this, summarizedColumnName);
+    public Minimum minimum(String numericColumnName) {
+      return new Minimum(this, numericColumnName);
     }
 
     public void append(Table tableToAppend) {
