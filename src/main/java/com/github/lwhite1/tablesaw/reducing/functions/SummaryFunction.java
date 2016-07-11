@@ -40,8 +40,4 @@ public abstract class SummaryFunction {
   public abstract String summaryFunctionName();
 
   public abstract NumericReduceFunction function();
-
-  public String resultColumnName() {
-    return summaryFunctionName() + " " + summarizedColumnName();
-  }
 }
