@@ -1,12 +1,12 @@
 package com.github.lwhite1.tablesaw.integration;
 
-import com.github.lwhite1.tablesaw.api.*;
-
+import com.github.lwhite1.tablesaw.api.BooleanColumn;
+import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
 import static java.lang.System.out;
@@ -79,22 +79,22 @@ public class AirlineDelays2 {
 
     // Compute average number of delayed flights per month
 
-    Table monthGroup = ord.reduce("DepDelay", mean, "Month");
+    Table monthGroup = ord.mean("DepDelay").by("Month");
     out(monthGroup.print());
     //TODO Plot
 
-    Table dayOfWeekGroup = ord.reduce("DepDelay", mean, "DayOfWeek");
+    Table dayOfWeekGroup = ord.mean("DepDelay").by("DayOfWeek");
     out(dayOfWeekGroup.print());
     //TODO Plot
 
     ord.addColumn(ord.timeColumn("CRSDepTime").hour());
     System.out.println(ord.columnNames());
-    Table hourGroup = ord.reduce("DepDelay", mean, "CRSDepTime[hour]");
+    Table hourGroup = ord.mean("DepDelay").by("CRSDepTime[hour]");
     out(hourGroup.print());
     //TODO Plot
 
     // Compute average number of delayed flights per carrier
-    Table carrierGroup = ord.reduce("DepDelay", mean, "UniqueCarrier");
+    Table carrierGroup = ord.mean("DepDelay").by("UniqueCarrier");
     carrierGroup = carrierGroup.sortDescendingOn("Mean");
     out(carrierGroup.print());
   }

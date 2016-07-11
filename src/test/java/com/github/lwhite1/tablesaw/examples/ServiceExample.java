@@ -1,13 +1,11 @@
 package com.github.lwhite1.tablesaw.examples;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.DateTimeColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
+import com.github.lwhite1.tablesaw.api.Table;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.median;
-import static com.github.lwhite1.tablesaw.api.QueryHelper.allOf;
-import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
+import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
 
 /**
  * Usage example using a Tornado dataset
@@ -44,7 +42,7 @@ public class ServiceExample {
               (column("SKU").startsWith("429")),
               (column("Operation").isEqualTo("Assembly"))));
 
-    Table durationByFacilityAndShift = q2_429_assembly.reduce("Duration", median, "Facility", "Shift");
+    Table durationByFacilityAndShift = q2_429_assembly.median("Duration").by("Facility", "Shift");
     // TODO(lwhite): We need a top() method that can be used to return the top table rows
     FloatArrayList tops = durationByFacilityAndShift.floatColumn("Median").top(5);
 

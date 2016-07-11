@@ -21,7 +21,6 @@ import com.github.lwhite1.tablesaw.store.TableMetadata;
 import com.github.lwhite1.tablesaw.table.Projection;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.table.Rows;
-import com.github.lwhite1.tablesaw.table.ViewGroup;
 import com.github.lwhite1.tablesaw.util.IntComparatorChain;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
 import com.github.lwhite1.tablesaw.util.Selection;
@@ -677,13 +676,7 @@ public class Table implements Relation, IntIterable {
      */
     public double reduce(String numericColumnName, NumericReduceFunction function) {
         Column column = column(numericColumnName);
-
         return function.reduce(column.toDoubleArray());
-    }
-
-    public Table reduce(String numericColumnName, NumericReduceFunction function, String... groupColumnName) {
-        ViewGroup tableGroup = ViewGroup.create(this, groupColumnName);
-        return tableGroup.reduce(numericColumnName, function);
     }
 
     /**

@@ -31,7 +31,7 @@ public abstract class SummaryFunction {
   }
 
   /**
-   * Returns the result of applying to the function once to all the values in the original column
+   * Returns the result of applying to the function to all the values in the appropriate column
    */
   public double get() {
     return original.reduce(summarizedColumnName, function());

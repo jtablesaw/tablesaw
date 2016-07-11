@@ -1,7 +1,8 @@
 package com.github.lwhite1.tablesaw.examples;
 
-import com.github.lwhite1.tablesaw.reducing.NumericReduceUtils;
-import com.github.lwhite1.tablesaw.api.*;
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
@@ -80,13 +81,13 @@ public class TornadoExample {
 
 
     //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
-    Table injuriesByScale = tornadoes.reduce("Injuries", NumericReduceUtils.median, "Scale");
+    Table injuriesByScale = tornadoes.median("Injuries").by("Scale");
     injuriesByScale.setName("Median injuries by Tornado Scale");
     out(injuriesByScale.print());
 
 
     //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
-    Table injuriesByScaleState = tornadoes.reduce("Injuries", NumericReduceUtils.median, "Scale", "State");
+    Table injuriesByScaleState = tornadoes.median("Injuries").by("Scale", "State");
     injuriesByScaleState.setName("Median injuries by Tornado Scale and State");
     out(injuriesByScaleState.print());
 
