@@ -53,7 +53,7 @@ public class Taxi {
         stopwatch.elapsed(TimeUnit.MILLISECONDS)));
     out(sum_total_fare.print());
 
-    sum_total_fare = trips.sum(trips.floatColumn("total_amount"), "passenger_count");
+    sum_total_fare = trips.sum("total_amount").by("passenger_count");
   }
 
   private static void out(Object obj) {

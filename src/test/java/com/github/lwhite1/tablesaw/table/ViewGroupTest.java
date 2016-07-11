@@ -65,16 +65,16 @@ public class ViewGroupTest {
     String[] splitColumnNames = {table.column(2).name(), "month"};
     ViewGroup tableGroup = ViewGroup.create(table, splitColumnNames);
     List<TemporaryView> tables = tableGroup.getSubTables();
-    Table t = table.sum(table.intColumn(1), splitColumnNames);
+    Table t = table.sum("approval").by(splitColumnNames);
 
     // compare the sum of the original column with the sum of the sums of the group table
-    assertEquals(table.intColumn(1).sum(), t.intColumn(1).sum());
+    assertEquals(table.intColumn(1).sum(), Math.round(t.floatColumn(2).sum()));
     assertEquals(65, tables.size());
   }
 
   @Test
   public void testCountByGroup() {
-    Table groups = table.countBy("who");
+    Table groups = table.count("approval").by("who");
     assertEquals(2, groups.columnCount());
     assertEquals(6, groups.rowCount());
     CategoryColumn group = groups.categoryColumn(0);
@@ -83,8 +83,8 @@ public class ViewGroupTest {
 
   @Test
   public void testSumGroup() {
-    Table groups = table.sum(table.intColumn(1), table.categoryColumn(2));
+    Table groups = table.sum("approval").by("who");
     // compare the sum of the original column with the sum of the sums of the group table
-    assertEquals(table.intColumn(1).sum(), groups.intColumn(1).sum());
+    assertEquals(table.intColumn(1).sum(), Math.round(groups.floatColumn(1).sum()));
   }
 }

@@ -7,6 +7,14 @@ import com.github.lwhite1.tablesaw.io.csv.CsvWriter;
 import com.github.lwhite1.tablesaw.io.html.HtmlTableWriter;
 import com.github.lwhite1.tablesaw.io.jdbc.SqlResultSetReader;
 import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
+import com.github.lwhite1.tablesaw.reducing.functions.Average;
+import com.github.lwhite1.tablesaw.reducing.functions.Count;
+import com.github.lwhite1.tablesaw.reducing.functions.Maximum;
+import com.github.lwhite1.tablesaw.reducing.functions.Median;
+import com.github.lwhite1.tablesaw.reducing.functions.Minimum;
+import com.github.lwhite1.tablesaw.reducing.functions.StandardDeviation;
+import com.github.lwhite1.tablesaw.reducing.functions.Sum;
+import com.github.lwhite1.tablesaw.reducing.functions.Variance;
 import com.github.lwhite1.tablesaw.sorting.Sort;
 import com.github.lwhite1.tablesaw.store.StorageManager;
 import com.github.lwhite1.tablesaw.store.TableMetadata;
@@ -14,7 +22,6 @@ import com.github.lwhite1.tablesaw.table.Projection;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.table.Rows;
 import com.github.lwhite1.tablesaw.table.SubTable;
-import com.github.lwhite1.tablesaw.table.TemporaryView;
 import com.github.lwhite1.tablesaw.table.ViewGroup;
 import com.github.lwhite1.tablesaw.util.IntComparatorChain;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
@@ -584,23 +591,6 @@ public class Table implements Relation, IntIterable {
         columnList.retainAll(columns(columnNames));
     }
 
-    public Table countBy(String byColumnName) {
-        ViewGroup group = ViewGroup.create(this, byColumnName);
-        Table resultTable = new Table(name + " summary");
-        CategoryColumn groupColumn = CategoryColumn.create("Group", group.size());
-        IntColumn countColumn = IntColumn.create("Count", group.size());
-        resultTable.addColumn(groupColumn);
-        resultTable.addColumn(countColumn);
-
-        for (TemporaryView subTable : group.getSubTables()) {
-            int count = subTable.rowCount();
-            String groupName = subTable.name();
-            groupColumn.add(groupName);
-            countColumn.add(count);
-        }
-        return resultTable;
-    }
-
     private SubTable splitGroupingColumn(SubTable subTable, List<Column> columnNames) {
         ArrayList newColumns = new ArrayList();
         Iterator row = columnNames.iterator();
@@ -630,68 +620,37 @@ public class Table implements Relation, IntIterable {
         return subTable;
     }
 
-    public Table sum(IntColumn sumColumn, Column byColumn) {
-        ViewGroup groupTable = new ViewGroup(this, byColumn);
-        Table resultTable = new Table(name + " Summary");
-
-        CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
-        IntColumn sumColumn1 = IntColumn.create("Sum", groupTable.size());
-
-        resultTable.addColumn(groupColumn);
-        resultTable.addColumn(sumColumn1);
-
-        for (TemporaryView subTable : groupTable.getSubTables()) {
-            long sum = subTable.intColumn(sumColumn.name()).sum();
-            String groupName = subTable.name();
-            groupColumn.add(groupName);
-            sumColumn1.add((int) sum);
-        }
-        return resultTable;
+    public Sum sum(String sumColumnName) {
+        return new Sum(this, sumColumnName);
     }
 
-    public Table sum(IntColumn sumColumn, String... byColumnNames) {
-        ViewGroup groupTable = ViewGroup.create(this, byColumnNames);
-        Table resultTable = new Table(name + " summary");
-
-        CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
-        IntColumn sumColumn1 = IntColumn.create("Sum", groupTable.size());
-
-        resultTable.addColumn(groupColumn);
-        resultTable.addColumn(sumColumn1);
-
-        for (TemporaryView subTable : groupTable.getSubTables()) {
-            long sum = subTable.intColumn(sumColumn.name()).sum();
-            String groupName = subTable.name();
-            groupColumn.add(groupName);
-            sumColumn1.add((int) sum);
-        }
-        return resultTable;
+    public Average mean(String summarizedColumnName) {
+      return new Average(this, summarizedColumnName);
     }
 
-    public Table sum(FloatColumn sumColumn, String... byColumnNames) {
-        ViewGroup groupTable = ViewGroup.create(this, byColumnNames);
-        Table resultTable = new Table(name + " summary");
-
-        CategoryColumn groupColumn = CategoryColumn.create("Group", groupTable.size());
-        IntColumn sumColumn1 = IntColumn.create("Sum", groupTable.size());
-
-        resultTable.addColumn(groupColumn);
-        resultTable.addColumn(sumColumn1);
-
-        for (TemporaryView subTable : groupTable.getSubTables()) {
-            double sum = subTable.floatColumn(sumColumn.name()).sum();
-            String groupName = subTable.name();
-            groupColumn.add(groupName);
-            sumColumn1.add((int) sum);
-        }
-        return resultTable;
+    public Median median(String summarizedColumnName) {
+      return new Median(this, summarizedColumnName);
     }
 
-/*
-  public Average average(String summarizedColumnName) {
-    return new Average(this, summarizedColumnName);
-  }
-*/
+    public Variance variance(String summarizedColumnName) {
+      return new Variance(this, summarizedColumnName);
+    }
+
+    public StandardDeviation stdDev(String summarizedColumnName) {
+      return new StandardDeviation(this, summarizedColumnName);
+    }
+
+    public Count count(String summarizedColumnName) {
+      return new Count(this, summarizedColumnName);
+    }
+
+    public Maximum max(String summarizedColumnName) {
+      return new Maximum(this, summarizedColumnName);
+    }
+
+    public Minimum minimum(String summarizedColumnName) {
+      return new Minimum(this, summarizedColumnName);
+    }
 
     public void append(Table tableToAppend) {
         for (Column column : columnList) {

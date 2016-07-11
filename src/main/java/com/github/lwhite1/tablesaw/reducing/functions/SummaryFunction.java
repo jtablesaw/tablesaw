@@ -25,16 +25,23 @@ public abstract class SummaryFunction {
     return original;
   }
 
-  public String resultColumnName() {
-    return summaryFunctionName() + " " + summarizedColumnName();
-  }
-
   public Table by(String... columnNames) {
     ViewGroup group = ViewGroup.create(original(), columnNames);
     return group.reduce(summarizedColumnName(), function());
   }
 
+  /**
+   * Returns the result of applying to the function once to all the values in the original column
+   */
+  public double get() {
+    return original.reduce(summarizedColumnName, function());
+  }
+
   public abstract String summaryFunctionName();
 
   public abstract NumericReduceFunction function();
+
+  public String resultColumnName() {
+    return summaryFunctionName() + " " + summarizedColumnName();
+  }
 }
