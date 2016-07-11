@@ -39,7 +39,7 @@ public class CsvReaderTest {
   public void testWithBushData() throws Exception {
 
     // Read the CSV file
-    ColumnType[] types = {LOCAL_DATE, INTEGER, CATEGORY};
+    ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};
     Table table = CsvReader.read(types, "data/BushApproval.csv");
 
     assertEquals(323, table.rowCount());

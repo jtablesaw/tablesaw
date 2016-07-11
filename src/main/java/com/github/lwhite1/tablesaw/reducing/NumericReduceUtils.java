@@ -70,6 +70,20 @@ public class NumericReduceUtils {
     }
   };
 
+  public static NumericReduceFunction n = new NumericReduceFunction() {
+
+    @Override
+    public String functionName() {
+      return "N";
+    }
+
+    //TODO: Consider whether we should provide a count without missing values
+    @Override
+    public double reduce(double[] data) {
+      return data.length;
+    }
+  };
+
   public static NumericReduceFunction quartile1 = new NumericReduceFunction() {
 
     @Override
