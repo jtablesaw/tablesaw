@@ -25,7 +25,7 @@ public class TornadoExample {
     tornadoes.exportToCsv("data/tornadoes_1950-2014.csv");
 
     //tornadoes = Table.createFromCsv(COLUMN_TYPES, "data/tornadoes_1950-2014.csv");
-    tornadoes = Table.create("data/tornadoes_1950-2014.csv");
+    tornadoes = Table.createFromCsv("data/tornadoes_1950-2014.csv");
     assert(tornadoes != null);
 
     out(tornadoes.structure().print());
