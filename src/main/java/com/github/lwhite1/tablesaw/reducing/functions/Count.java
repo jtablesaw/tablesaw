@@ -15,11 +15,6 @@ public class Count extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "Count";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return n;
   }

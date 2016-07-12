@@ -15,11 +15,6 @@ public class Minimum extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "Minimum";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return min;
   }

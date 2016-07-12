@@ -15,11 +15,6 @@ public class GeometricMean extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "Geometric Mean";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return geometricMean;
   }

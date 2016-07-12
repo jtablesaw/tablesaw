@@ -16,11 +16,6 @@ public class StandardDeviation extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "Std. Dev.";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return stdDev;
   }

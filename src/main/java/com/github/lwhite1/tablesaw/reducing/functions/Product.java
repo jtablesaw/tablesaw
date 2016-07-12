@@ -15,11 +15,6 @@ public class Product extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "Product";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return product;
   }

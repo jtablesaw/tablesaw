@@ -15,11 +15,6 @@ public class FirstQuartile extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "1st Quartile";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return quartile1;
   }

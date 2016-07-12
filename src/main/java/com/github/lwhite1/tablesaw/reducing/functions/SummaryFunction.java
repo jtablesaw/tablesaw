@@ -37,7 +37,5 @@ public abstract class SummaryFunction {
     return original.reduce(summarizedColumnName, function());
   }
 
-  public abstract String summaryFunctionName();
-
   public abstract NumericReduceFunction function();
 }

@@ -16,11 +16,6 @@ public class SumOfSquares extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "Sum of Squares";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return sumOfSquares;
   }

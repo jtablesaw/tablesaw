@@ -15,11 +15,6 @@ public class Median extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "Median";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return median;
   }

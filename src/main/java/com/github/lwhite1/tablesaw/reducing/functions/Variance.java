@@ -15,11 +15,6 @@ public class Variance extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "Variance";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return variance;
   }

@@ -15,11 +15,6 @@ public class Maximum extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "Maximum";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return max;
   }

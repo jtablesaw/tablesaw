@@ -15,11 +15,6 @@ public class Sum extends SummaryFunction {
   }
 
   @Override
-  public String summaryFunctionName() {
-    return "Sum";
-  }
-
-  @Override
   public NumericReduceFunction function() {
     return sum;
   }

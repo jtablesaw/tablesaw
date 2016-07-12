@@ -8,15 +8,10 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
 /**
  *
  */
-public class Average extends SummaryFunction {
+public class Mean extends SummaryFunction {
 
-  public Average(Table original, String summarizedColumnName) {
+  public Mean(Table original, String summarizedColumnName) {
     super(original, summarizedColumnName);
-  }
-
-  @Override
-  public String summaryFunctionName() {
-    return "Mean";
   }
 
   @Override

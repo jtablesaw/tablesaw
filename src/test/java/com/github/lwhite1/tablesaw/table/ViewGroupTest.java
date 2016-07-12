@@ -1,16 +1,17 @@
 package com.github.lwhite1.tablesaw.table;
 
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
+import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -82,9 +83,28 @@ public class ViewGroupTest {
   }
 
   @Test
+  public void testCustomFunction() {
+    Table exaggeration = table.summarize("approval", exaggerate).by("who");
+    CategoryColumn group = exaggeration.categoryColumn(0);
+    assertTrue(group.contains("fox"));
+  }
+
+  @Test
   public void testSumGroup() {
     Table groups = table.sum("approval").by("who");
     // compare the sum of the original column with the sum of the sums of the group table
     assertEquals(table.intColumn(1).sum(), Math.round(groups.floatColumn(1).sum()));
   }
+
+  static NumericReduceFunction exaggerate = new NumericReduceFunction() {
+    @Override
+    public String functionName() {
+      return "exaggeration";
+    }
+
+    @Override
+    public double reduce(double[] data) {
+      return StatUtils.max(data) + 1000;
+    }
+  };
 }

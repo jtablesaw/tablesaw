@@ -7,13 +7,14 @@ import com.github.lwhite1.tablesaw.io.csv.CsvWriter;
 import com.github.lwhite1.tablesaw.io.html.HtmlTableWriter;
 import com.github.lwhite1.tablesaw.io.jdbc.SqlResultSetReader;
 import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
-import com.github.lwhite1.tablesaw.reducing.functions.Average;
+import com.github.lwhite1.tablesaw.reducing.functions.Mean;
 import com.github.lwhite1.tablesaw.reducing.functions.Count;
 import com.github.lwhite1.tablesaw.reducing.functions.Maximum;
 import com.github.lwhite1.tablesaw.reducing.functions.Median;
 import com.github.lwhite1.tablesaw.reducing.functions.Minimum;
 import com.github.lwhite1.tablesaw.reducing.functions.StandardDeviation;
 import com.github.lwhite1.tablesaw.reducing.functions.Sum;
+import com.github.lwhite1.tablesaw.reducing.functions.SummaryFunction;
 import com.github.lwhite1.tablesaw.reducing.functions.Variance;
 import com.github.lwhite1.tablesaw.sorting.Sort;
 import com.github.lwhite1.tablesaw.store.StorageManager;
@@ -593,8 +594,8 @@ public class Table implements Relation, IntIterable {
         return new Sum(this, numericColumnName);
     }
 
-    public Average mean(String numericColumnName) {
-      return new Average(this, numericColumnName);
+    public Mean mean(String numericColumnName) {
+      return new Mean(this, numericColumnName);
     }
 
     public Median median(String numericColumnName) {
@@ -677,6 +678,15 @@ public class Table implements Relation, IntIterable {
     public double reduce(String numericColumnName, NumericReduceFunction function) {
         Column column = column(numericColumnName);
         return function.reduce(column.toDoubleArray());
+    }
+
+    public SummaryFunction summarize(String numericColumnName, NumericReduceFunction function) {
+        return new SummaryFunction(this, numericColumnName) {
+          @Override
+          public NumericReduceFunction function() {
+            return function;
+          }
+        };
     }
 
     /**
