@@ -716,4 +716,17 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
   public byte[] asBytes(int rowNumber) {
     return ByteBuffer.allocate(4).putFloat(get(rowNumber)).array();
   }
+
+  /**
+   * Returns a new column of the same type as the receiver, such that the values in the new column
+   * contain the difference between each cell in the original and it's predecessor.
+   * The Missing Value Indicator is used for the first cell in the new column.
+   * (e.g. IntColumn.MISSING_VALUE)
+   */
+  @Override
+  public Column difference() {
+    return null;
+  }
+
+
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * Partial implementation of the {@link Column} interface
  */
-public abstract class AbstractColumn implements Column {
+public abstract class AbstractColumn<E extends Column> implements Column {
 
   private String id;
 
@@ -79,4 +79,10 @@ public abstract class AbstractColumn implements Column {
     }
     return width;
   }
+
+  @Override
+  public E difference() {
+    return null;
+  }
+
 }
