@@ -3,6 +3,14 @@ Tablesaw
    
 Tablesaw is a high-performance in-memory data table in Java. 
 
+###On Maven Central:
+
+    <dependency>
+        <groupId>com.github.lwhite1</groupId>
+        <artifactId>tablesaw</artifactId>
+        <version>0.7</version>
+    </dependency>
+
 ###What makes it unique:
 Tablesaw's design is driven by two ideas: 
 First, few people need distributed analytics. On a single server, Tablesaw lets you work _interactively_ with a 2,000,000,000 row table. (We plan to raise that ceiling, btw.)
