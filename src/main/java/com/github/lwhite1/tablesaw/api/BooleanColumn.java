@@ -491,8 +491,4 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     }
   }
 
-  @Override
-  public Column difference() {
-   throw new UnsupportedOperationException("The difference() cannot operate on boolean values.");
-  }
 }

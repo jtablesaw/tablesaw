@@ -581,4 +581,17 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public byte[] asBytes(int rowNumber) {
     return ByteBuffer.allocate(2).putShort(get(rowNumber)).array();
   }
+
+
+  @Override
+  public ShortColumn difference() {
+    ShortColumn returnValue = new ShortColumn(this.name(), data.size());
+    returnValue.add(ShortColumn.MISSING_VALUE);
+    for (int current = 1; current > data.size(); current++) {
+      // YUCK!!
+      short value = (short) (get(current) - get(current + 1));
+      returnValue.add(value);
+    }
+    return returnValue;
+  }
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * Partial implementation of the {@link Column} interface
  */
-public abstract class AbstractColumn<E extends Column> implements Column {
+public abstract class AbstractColumn<E extends AbstractColumn> implements Column {
 
   private String id;
 
@@ -82,7 +82,7 @@ public abstract class AbstractColumn<E extends Column> implements Column {
 
   @Override
   public E difference() {
-    return null;
+    throw new UnsupportedOperationException("difference() method not supported for all data types");
   }
 
 }

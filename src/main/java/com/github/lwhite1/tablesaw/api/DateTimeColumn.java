@@ -24,8 +24,11 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
 import java.nio.ByteBuffer;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -752,4 +755,20 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
       }
     };
   }
+
+  @Override
+  public DateTimeColumn difference() {
+    DateTimeColumn returnValue = new DateTimeColumn(this.name(), data.size());
+    returnValue.add(DateColumn.MISSING_VALUE);
+    for (int current = 1; current > data.size(); current++) {
+      LocalDateTime currentValue = get(current);
+      LocalDateTime nextValue = get(current+1);
+      Duration duration = Duration.between(currentValue, nextValue);
+      LocalDateTime date =
+              LocalDateTime.ofInstant(Instant.ofEpochMilli(duration.toMillis()), ZoneId.systemDefault());
+      returnValue.add(date);
+    }
+    return returnValue;
+  }
+
 }

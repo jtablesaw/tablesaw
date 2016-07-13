@@ -163,7 +163,6 @@ public interface Column<E extends Column> {
      */
     byte[] asBytes(int rowNumber);
 
-
     /**
      * Returns a new column of the same type as the receiver, such that the values in the new column
      * contain the difference between each cell in the original and it's predecessor.

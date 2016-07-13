@@ -19,7 +19,6 @@ import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntListIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
@@ -46,6 +45,7 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
 import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfLogs;
 import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfSquares;
 import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.variance;
+import static javax.swing.UIManager.getInt;
 
 /**
  * A column that contains signed 4 byte integer values
@@ -619,14 +619,10 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
     @Override
     public IntColumn difference() {
         IntColumn returnValue = new IntColumn(this.name(), data.size());
-        IntListIterator iterator = data.iterator();
         returnValue.add(IntColumn.MISSING_VALUE);
-        iterator.next();
-        int count = 0;
-        while (iterator.hasNext()) {
-            Integer current = iterator.next();
-            returnValue.add(current - data.getInt(count++));
-         }
+        for (int current = 1; current > data.size(); current++) {
+            returnValue.add(getInt(current) - getInt(current + 1));
+        }
         return returnValue;
     }
 }

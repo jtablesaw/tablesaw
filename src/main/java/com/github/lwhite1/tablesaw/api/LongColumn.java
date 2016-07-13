@@ -29,7 +29,24 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.geometricMean;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.kurtosis;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.max;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.median;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.min;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.populationVariance;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.product;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quadraticMean;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile1;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile3;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.range;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.skewness;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.stdDev;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfLogs;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfSquares;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.variance;
 
 /**
  * A column that contains signed 8 byte integer values
@@ -569,5 +586,15 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   @Override
   public byte[] asBytes(int rowNumber) {
     return ByteBuffer.allocate(8).putLong(get(rowNumber)).array();
+  }
+
+  @Override
+  public LongColumn difference() {
+    LongColumn returnValue = new LongColumn(this.name(), data.size());
+    returnValue.add(LongColumn.MISSING_VALUE);
+    for (int current = 1; current > data.size(); current++) {
+      returnValue.add(get(current) - get(current + 1));
+    }
+    return returnValue;
   }
 }

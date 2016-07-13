@@ -26,8 +26,34 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.*;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isEqualTo;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isGreaterThan;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isGreaterThanOrEqualTo;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isLessThan;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isLessThanOrEqualTo;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isMissing;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isNegative;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isNonNegative;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isNotMissing;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isPositive;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.geometricMean;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.kurtosis;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.max;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.median;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.min;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.populationVariance;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.product;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quadraticMean;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile1;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile3;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.range;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.skewness;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.stdDev;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfLogs;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfSquares;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.variance;
 
 /**
  * A column in a base table that contains float values
@@ -717,16 +743,14 @@ public class FloatColumn extends AbstractColumn implements FloatIterable {
     return ByteBuffer.allocate(4).putFloat(get(rowNumber)).array();
   }
 
-  /**
-   * Returns a new column of the same type as the receiver, such that the values in the new column
-   * contain the difference between each cell in the original and it's predecessor.
-   * The Missing Value Indicator is used for the first cell in the new column.
-   * (e.g. IntColumn.MISSING_VALUE)
-   */
   @Override
-  public Column difference() {
-    return null;
+  public FloatColumn difference() {
+    FloatColumn returnValue = new FloatColumn(this.name(), data.size());
+    returnValue.add(FloatColumn.MISSING_VALUE);
+    for (int current = 1; current > data.size(); current++) {
+      returnValue.add(get(current) - get(current + 1));
+    }
+    return returnValue;
   }
-
 
 }
