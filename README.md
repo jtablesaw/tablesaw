@@ -43,7 +43,7 @@ In its current state, some areas of Tablesaw perform better than others. To give
 BTW, those numbers were achieved on a laptop.
 
 ### Easy to Use is Easy to Say
-The goal in this example is to identify the production shifts with the worst performance. These few lines demonstrate (__data import__), column-wise operations (__differenceInSeconds()__), filters (__isInQ2()__) grouping and aggegating (__median()__) and (__.by()__), and (__top(n)__) calculations. 
+The goal in this example is to identify the production shifts with the worst performance. These few lines demonstrate __data import__, column-wise operations (__differenceInSeconds()__), filters (__isInQ2()__) grouping and aggegating (__median()__ and __.by()__), and (__top(n)__) calculations. 
 
 ```java
     Table ops = Table.create("data/operations.csv");                             // load data
