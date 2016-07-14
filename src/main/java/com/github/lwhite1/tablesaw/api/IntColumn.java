@@ -45,7 +45,6 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
 import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfLogs;
 import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfSquares;
 import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.variance;
-import static javax.swing.UIManager.getInt;
 
 /**
  * A column that contains signed 4 byte integer values
@@ -618,10 +617,18 @@ public class IntColumn extends AbstractColumn implements IntMapUtils {
 
     @Override
     public IntColumn difference() {
-        IntColumn returnValue = new IntColumn(this.name(), data.size());
+        IntColumn returnValue = new IntColumn(this.name(), this.size());
         returnValue.add(IntColumn.MISSING_VALUE);
-        for (int current = 1; current > data.size(); current++) {
-            returnValue.add(getInt(current) - getInt(current + 1));
+        for (int current = 0; current < this.size(); current++) {
+            if (current + 1 < this.size()) {
+                int currentValue = this.get(current);
+                int nextValue = this.get(current + 1);
+                if (current == IntColumn.MISSING_VALUE || nextValue == IntColumn.MISSING_VALUE) {
+                    returnValue.add(IntColumn.MISSING_VALUE);
+                } else {
+                    returnValue.add(nextValue - currentValue);
+                }
+            }
         }
         return returnValue;
     }

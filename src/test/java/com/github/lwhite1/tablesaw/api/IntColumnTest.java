@@ -139,9 +139,10 @@ public class IntColumnTest {
       initial.add(value);
     }
     IntColumn difference =  initial.difference();
-    for (int index =0; index < difference.size(); index++ ) {
-      assertEquals("difference operation is correct", expectedValues[index], difference.get(index));
+    assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
+    for (int index = 0; index < difference.size(); index++ ) {
+      int actual = difference.get(index);
+      assertEquals("difference operation at index:" + index + " failed",  expectedValues[index], actual);
     }
-
   }
 }
