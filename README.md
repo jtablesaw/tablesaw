@@ -43,7 +43,7 @@ In its current state, some areas of Tablesaw perform better than others. To give
 BTW, those numbers were achieved on a laptop.
 
 ### Easy to Use is Easy to Say
-The goal in the example below is to identify the production shifts with the slowest performance. Our table has data from all facilities, operations, products, and shifts for the past year. We're only interested in assembly operations in the second quarter for model 429.
+The goal in the example below is to identify the production shifts with the slowest performance. These few lines demonstrate import, column-wise operation (__differenceInSeconds()__) filters (__like _isInQ2()__) grouping and aggegating (__median()__) and (__.by()__), etc.. 
 
 ```java
     Table ops = Table.create("data/operations.csv");                             // load data
@@ -62,5 +62,5 @@ The goal in the example below is to identify the production shifts with the slow
     FloatArrayList tops = summary.floatColumn("Median").top(5);                  // get "slowest"
 
 ```
-I hope you can see how the code reflects the intent, and how column-wise operators like _differenceInSeconds(dateTimeColumn)_, _isInQ2()_ and  _startsWith(aString)_ make data operations easy to express. If you see something that can be improved, let us know.
+If you see something that can be improved, let us know.
 
