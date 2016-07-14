@@ -46,20 +46,20 @@ BTW, those numbers were achieved on a laptop.
 The goal in the example below is to identify the production shifts with the slowest performance. Our table has data from all facilities, operations, products, and shifts for the past year. We're only interested in assembly operations in the second quarter for model 429.
 
 ```java
-    Table ops = Table.create("data/operations.csv");
-    LongColumn duration = start.differenceInSeconds(end);
+    Table ops = Table.create("data/operations.csv");                             // load data
     
+    LongColumn duration = start.differenceInSeconds(end);                        // calc duration
     duration.setName("Duration");
     ops.addColumn(duration);
     
-    Table filtered = ops.selectWhere(
+    Table filtered = ops.selectWhere(                                            // filter
           allOf
               (column("date").isInQ2(),
               (column("SKU").startsWith("429")),
               (column("Operation").isEqualTo("Assembly"))));
    
-    Table byFacilityAndShift = filtered.median("Duration").by("Facility", "Shift");
-    FloatArrayList tops = byFacilityAndShift.floatColumn("Median").top(5);
+    Table summary = filtered.median("Duration").by("Facility", "Shift");         // group medians
+    FloatArrayList tops = summary.floatColumn("Median").top(5);                  // get "slowest"
 
 ```
 I hope you can see how the code reflects the intent, and how column-wise operators like _differenceInSeconds(dateTimeColumn)_, _isInQ2()_ and  _startsWith(aString)_ make data operations easy to express. If you see something that can be improved, let us know.
