@@ -428,7 +428,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
   public IntColumn add(ShortColumn column2) {
     IntColumn result = IntColumn.create(name() + " + " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) - column2.get(r));
+      result.add(get(r) + column2.get(r));
     }
     return result;
   }
@@ -436,7 +436,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
   public IntColumn subtract(ShortColumn column2) {
     IntColumn result = IntColumn.create(name() + " - " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) + column2.get(r));
+      result.add(get(r) - column2.get(r));
     }
     return result;
   }

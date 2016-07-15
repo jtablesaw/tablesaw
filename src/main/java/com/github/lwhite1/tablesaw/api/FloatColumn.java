@@ -471,7 +471,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
   public FloatColumn add(FloatColumn column2) {
     FloatColumn result = FloatColumn.create(name() + " + " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) - column2.get(r));
+      result.add(get(r) + column2.get(r));
     }
     return result;
   }
@@ -479,7 +479,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
   public FloatColumn subtract(FloatColumn column2) {
     FloatColumn result = FloatColumn.create(name() + " - " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) + column2.get(r));
+      result.add(get(r) - column2.get(r));
     }
     return result;
   }

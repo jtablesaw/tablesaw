@@ -163,7 +163,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
   public LongColumn add(LongColumn column2) {
     LongColumn result = LongColumn.create(name() + " + " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) - column2.get(r));
+      result.add(get(r) + column2.get(r));
     }
     return result;
   }
@@ -171,7 +171,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
   public LongColumn subtract(LongColumn column2) {
     LongColumn result = LongColumn.create(name() + " - " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) + column2.get(r));
+      result.add(get(r) - column2.get(r));
     }
     return result;
   }

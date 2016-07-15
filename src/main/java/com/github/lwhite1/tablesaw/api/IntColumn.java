@@ -494,7 +494,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
   public IntColumn add(IntColumn column2) {
     IntColumn result = IntColumn.create(name() + " + " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) - column2.get(r));
+      result.add(get(r) + column2.get(r));
     }
     return result;
   }
@@ -502,7 +502,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
   public IntColumn subtract(IntColumn column2) {
     IntColumn result = IntColumn.create(name() + " - " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) + column2.get(r));
+      result.add(get(r) - column2.get(r));
     }
     return result;
   }
