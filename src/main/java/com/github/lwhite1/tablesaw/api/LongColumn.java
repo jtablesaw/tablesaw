@@ -297,6 +297,11 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
   }
 
   @Override
+  public float getFloat(int index) {
+    return (float) data.getLong(index);
+  }
+
+  @Override
   public IntComparator rowComparator() {
     return comparator;
   }

@@ -9,5 +9,6 @@ public interface NumericColumn extends Column {
 
   double[] toDoubleArray();
 
+  float getFloat(int index);
 
 }

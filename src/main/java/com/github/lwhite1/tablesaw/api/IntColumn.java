@@ -246,6 +246,11 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
   }
 
   @Override
+  public float getFloat(int index) {
+    return (float) data.getInt(index);
+  }
+
+  @Override
   public it.unimi.dsi.fastutil.ints.IntComparator rowComparator() {
     return comparator;
   }

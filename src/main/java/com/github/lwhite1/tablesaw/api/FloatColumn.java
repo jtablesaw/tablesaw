@@ -594,6 +594,11 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     return data.getFloat(index);
   }
 
+  @Override
+  public float getFloat(int index) {
+    return data.getFloat(index);
+  }
+
   public void set(int r, float value) {
     data.set(r, value);
   }

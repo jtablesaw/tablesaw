@@ -244,6 +244,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
   }
 
   @Override
+  public float getFloat(int index) {
+    return (float) data.getShort(index);
+  }
+
+  @Override
   public IntComparator rowComparator() {
     return comparator;
   }
