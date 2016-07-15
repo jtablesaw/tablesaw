@@ -8,7 +8,7 @@ Tablesaw is a high-performance in-memory data table in Java.
     <dependency>
         <groupId>com.github.lwhite1</groupId>
         <artifactId>tablesaw</artifactId>
-        <version>0.7</version>
+        <version>0.7.1</version>
     </dependency>
 
 ###What makes it unique:
