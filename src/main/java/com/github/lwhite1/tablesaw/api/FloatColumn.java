@@ -32,7 +32,7 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
 /**
  * A column in a base table that contains float values
  */
-public class FloatColumn extends AbstractColumn implements FloatIterable {
+public class FloatColumn extends AbstractColumn implements FloatIterable, NumericColumn {
 
   public static final float MISSING_VALUE = (float) ColumnType.FLOAT.getMissingValue();
   private static final int BYTE_SIZE = 4;

@@ -35,7 +35,7 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.skewness;
 /**
  * A column that contains signed 2 byte integer values
  */
-public class ShortColumn extends AbstractColumn implements ShortMapUtils {
+public class ShortColumn extends AbstractColumn implements ShortMapUtils, NumericColumn {
 
   public static final short MISSING_VALUE = (short) ColumnType.SHORT_INT.getMissingValue();
 

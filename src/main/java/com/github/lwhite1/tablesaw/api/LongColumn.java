@@ -34,7 +34,7 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
 /**
  * A column that contains signed 8 byte integer values
  */
-public class LongColumn extends AbstractColumn implements LongMapUtils {
+public class LongColumn extends AbstractColumn implements LongMapUtils, NumericColumn {
 
   public static final long MISSING_VALUE = (long) ColumnType.LONG_INT.getMissingValue();
 

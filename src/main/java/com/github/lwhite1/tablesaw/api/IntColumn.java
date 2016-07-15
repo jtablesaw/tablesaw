@@ -32,7 +32,7 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
 /**
  * A column that contains signed 4 byte integer values
  */
-public class IntColumn extends AbstractColumn implements IntMapUtils {
+public class IntColumn extends AbstractColumn implements IntMapUtils, NumericColumn {
 
   public static final int MISSING_VALUE = (int) ColumnType.INTEGER.getMissingValue();
   private static final int DEFAULT_ARRAY_SIZE = 128;
