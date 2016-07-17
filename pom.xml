@@ -219,5 +219,11 @@
             <artifactId>smile-plot</artifactId>
             <version>1.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.knowm.xchart</groupId>
+            <artifactId>xchart</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
     </dependencies>
 </project>
