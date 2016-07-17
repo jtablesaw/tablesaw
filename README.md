@@ -1,7 +1,12 @@
 Tablesaw
 =======
    
-Tablesaw is a high-performance in-memory data table in Java. 
+Tablesaw is a high-performance, in-memory data table in Java. 
+
+Its design is driven by two ideas: First, few people need distributed analytics. 
+On a single server, Tablesaw lets you work _interactively_ with a 2,000,000,000 row table. 
+(I plan to raise that ceiling, btw.) Second, it should be super easy to use: To that end I happily 
+steal ideas from everything from spreadsheets to specialized column stores like KDB.
 
 ###On Maven Central:
 
@@ -11,10 +16,7 @@ Tablesaw is a high-performance in-memory data table in Java.
         <version>0.7.1</version>
     </dependency>
 
-###What makes it unique:
-Tablesaw's design is driven by two ideas: 
-First, few people need distributed analytics. On a single server, Tablesaw lets you work _interactively_ with a 2,000,000,000 row table. (I plan to raise that ceiling, btw.)
-Second, it should be super easy to use: To that end I happily steal ideas from everything from spreadsheets to specialized column stores like KDB.
+###Getting started?:
 
 * You can find an introductory __tutorial__ here: https://jtablesaw.wordpress.com/an-introduction/ The early drafts of a __User Guide__ are also available on that site
 * The __JavaDoc__ can be found here: http://lwhite1.github.io/tablesaw/apidocs/
