@@ -8,6 +8,7 @@ import com.github.lwhite1.tablesaw.api.DateTimeColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
+import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.TimeColumn;
@@ -233,6 +234,14 @@ public interface Relation {
 
   default BooleanColumn booleanColumn(String columnName) {
     return (BooleanColumn) column(columnName);
+  }
+
+  default NumericColumn numericColumn(int columnIndex) {
+    return (NumericColumn) column(columnIndex);
+  }
+
+  default NumericColumn numericColumn(String columnName) {
+    return (NumericColumn) column(columnName);
   }
 
   default FloatColumn floatColumn(int columnIndex) {

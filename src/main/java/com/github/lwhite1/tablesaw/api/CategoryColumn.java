@@ -155,6 +155,10 @@ public class CategoryColumn extends AbstractColumn
     return lookupTable.get(k);
   }
 
+  public String[] toStringArray() {
+    return dictionaryMap().categoryArray();
+  }
+
   @Override
   public Table summary() {
     Table t = new Table("Column: " + name());
