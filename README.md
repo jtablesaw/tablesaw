@@ -35,9 +35,14 @@ A 1.0 release is planned for early September.
 * Store tables in a very-fast, compressed columnar storage format
 
 ### What Tablesaw will do:
-* Interactive graphics
 * Integrated machine learning
 * More specialized column types and operations: (lat/lon, time interval, money)
+
+### Plotting
+I'm in the process of adding plot support to Tablesaw, because you can't understand a dataset unless you can _see_ it. We're just getting started, and will be gradually increasing both the number of plot types and the supported options. In the meantime, here's an example in which each dot shots the starting location of a single tornado: 
+![Alt text](https://jtablesaw.files.wordpress.com/2016/07/tornados.png?w=809)
+
+The goal with these charts is to support data exploration by seamlessly integrating Tablesaw's facilities for transforming data with plotting libraries so you can visualize data with as little effort as possible. We'll take the same approach when it comes to integrating machine learning tools. 
 
 ### Current performance:
 In its current state, some areas of Tablesaw perform better than others. To give you a sense of where we're going, you can now load a 500,000,000 row, 4 column csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load it in 22 seconds. You can query that table in 1-2 ms: fast enough to use as a cache for a Web app.
