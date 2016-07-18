@@ -2,10 +2,14 @@ package com.github.lwhite1.tablesaw.api.plot;
 
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.plot.swing.TablesawTheme;
+import com.github.lwhite1.tablesaw.table.TemporaryView;
+import com.github.lwhite1.tablesaw.table.ViewGroup;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.markers.SeriesMarkers;
+
+import java.util.Arrays;
 
 /**
  * Render scatter plots using Swing
@@ -14,6 +18,25 @@ public class Scatter {
 
   public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn) {
     show(chartTitle, xColumn, yColumn, 600, 400);
+  }
+
+  public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, ViewGroup group) {
+    XYChart chart = new XYChart(600, 400);
+    chart.setTitle(chartTitle);
+    chart.setXAxisTitle(xColumn.name());
+    chart.setYAxisTitle(yColumn.name());
+    chart.getStyler().setTheme(new TablesawTheme());
+
+    chart.getStyler().setMarkerSize(5);
+
+    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+
+    for (TemporaryView view : group) {
+      double[] xData = view.numericColumn(xColumn.name()).toDoubleArray();
+      double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
+      chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
+    }
+    new SwingWrapper<>(chart).displayChart();
   }
 
   public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, int width, int height) {
