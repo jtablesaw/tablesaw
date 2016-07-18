@@ -7,6 +7,7 @@ import com.github.lwhite1.tablesaw.api.DateTimeColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
+import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.TimeColumn;
@@ -287,6 +288,14 @@ public class TemporaryView implements Relation, IntIterable {
 
   public CategoryColumn categoryColumn(int columnIndex) {
     return (CategoryColumn) column(columnIndex).subset(rowMap);
+  }
+
+  public NumericColumn numericColumn(int columnIndex) {
+    return (NumericColumn) column(columnIndex).subset(rowMap);
+  }
+
+  public NumericColumn numericColumn(String columnName) {
+    return (NumericColumn) column(columnName).subset(rowMap);
   }
 
   @Override
