@@ -25,12 +25,8 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
 import java.nio.ByteBuffer;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -765,6 +761,8 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
 
     @Override
     public DateColumn difference() {
+        throw new UnsupportedOperationException("DateTimeColumn.difference() currently not supported");
+/*
         DateColumn returnValue = new DateColumn(this.name(), data.size());
         returnValue.add(DateColumn.MISSING_VALUE);
         for (int current = 1; current > data.size(); current++) {
@@ -776,6 +774,7 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
             returnValue.add(date.toLocalDate());
         }
         return returnValue;
+  */
     }
 
 }

@@ -23,7 +23,6 @@ public class LocalDateColumnTest {
 
   @Test
   public void testAddCell() throws Exception {
-    column1.addCell("2013-10-23");
     column1.addCell("12/23/1924");
     column1.addCell("12-May-2015");
     column1.addCell("12-Jan-2015");
@@ -71,4 +70,6 @@ public class LocalDateColumnTest {
     assertEquals("Measure", summary.column(0).name());
     assertEquals("Value", summary.column(1).name());
   }
+
+
 }
