@@ -40,7 +40,7 @@ A 1.0 release is planned for early September.
 
 ### Plotting
 I'm starting to add plot support to Tablesaw, because you can't understand a dataset unless you can _see_ it. We will gradually increase both the number of plot types and the supported options. Meanwhile, here's an example where each dot shows the starting location of a single tornado: 
-![Alt text](https://jtablesaw.files.wordpress.com/2016/07/tornados.png?w=809)
+![Alt text](https://jtablesaw.files.wordpress.com/2016/07/tornados2.png?w=809)
 
 The goal is to support discovery by seamlessly integrating Tablesaw's data manipulation facilities with plotting libraries to make visualization as easy as possible. We'll take the same approach when it comes to integrating machine learning tools. 
 
