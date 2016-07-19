@@ -17,7 +17,7 @@ public abstract class SummaryFunction {
     this.summarizedColumnName = summarizedColumnName;
   }
 
-  String summarizedColumnName() {
+  public String summarizedColumnName() {
     return summarizedColumnName;
   }
 

@@ -694,6 +694,10 @@ public class Table implements Relation, IntIterable {
         };
     }
 
+    public Table countBy(CategoryColumn column) {
+      return column.countByCategory();
+    }
+
     /**
      * Returns a new table constructed from a character delimited (aka CSV) text file
      * <p>

@@ -123,6 +123,10 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     return column;
   }
 
+  public FloatArrayList data() {
+    return data;
+  }
+
   @Override
   public ColumnType type() {
     return ColumnType.FLOAT;
