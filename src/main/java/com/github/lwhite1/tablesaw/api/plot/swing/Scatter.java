@@ -1,9 +1,9 @@
-package com.github.lwhite1.tablesaw.api.plot;
+package com.github.lwhite1.tablesaw.api.plot.swing;
 
 import com.github.lwhite1.tablesaw.api.NumericColumn;
-import com.github.lwhite1.tablesaw.api.plot.swing.TablesawTheme;
 import com.github.lwhite1.tablesaw.table.TemporaryView;
 import com.github.lwhite1.tablesaw.table.ViewGroup;
+import com.github.lwhite1.tablesaw.util.DoubleArrays;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYSeries;
@@ -15,6 +15,11 @@ import java.util.Arrays;
  * Render scatter plots using Swing
  */
 public class Scatter {
+
+  public static void show(String chartTitle, NumericColumn yColumn) {
+    double[] x = DoubleArrays.toN(yColumn.size());
+    show(chartTitle, x, yColumn, 600, 400);
+  }
 
   public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn) {
     show(chartTitle, xColumn, yColumn, 600, 400);
@@ -49,12 +54,27 @@ public class Scatter {
     chart.setXAxisTitle(xColumn.name());
     chart.setYAxisTitle(yColumn.name());
     chart.getStyler().setTheme(new TablesawTheme());
-    chart.getStyler().setMarkerSize(2);
+    chart.getStyler().setMarkerSize(1);
     chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
 
     XYSeries series = chart.addSeries(yColumn.name() + " by " + xColumn.name(), xData, yData);
     series.setMarker(SeriesMarkers.CIRCLE);
     new SwingWrapper<>(chart).displayChart();
+  }
 
+  public static void show(String chartTitle, double[] xData, NumericColumn yColumn, int width, int height) {
+    double[] yData = yColumn.toDoubleArray();
+
+    // Create Chart
+    XYChart chart = new XYChart(width, height);
+    chart.setTitle(chartTitle);
+    chart.setYAxisTitle(yColumn.name());
+    chart.getStyler().setTheme(new TablesawTheme());
+    chart.getStyler().setMarkerSize(2);
+    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+
+    XYSeries series = chart.addSeries("Ranked: " + yColumn.name(), xData, yData);
+    series.setMarker(SeriesMarkers.CIRCLE);
+    new SwingWrapper<>(chart).displayChart();
   }
 }

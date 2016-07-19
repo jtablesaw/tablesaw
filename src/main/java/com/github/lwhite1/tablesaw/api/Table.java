@@ -7,9 +7,9 @@ import com.github.lwhite1.tablesaw.io.csv.CsvWriter;
 import com.github.lwhite1.tablesaw.io.html.HtmlTableWriter;
 import com.github.lwhite1.tablesaw.io.jdbc.SqlResultSetReader;
 import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
-import com.github.lwhite1.tablesaw.reducing.functions.Mean;
 import com.github.lwhite1.tablesaw.reducing.functions.Count;
 import com.github.lwhite1.tablesaw.reducing.functions.Maximum;
+import com.github.lwhite1.tablesaw.reducing.functions.Mean;
 import com.github.lwhite1.tablesaw.reducing.functions.Median;
 import com.github.lwhite1.tablesaw.reducing.functions.Minimum;
 import com.github.lwhite1.tablesaw.reducing.functions.StandardDeviation;
@@ -22,6 +22,7 @@ import com.github.lwhite1.tablesaw.store.TableMetadata;
 import com.github.lwhite1.tablesaw.table.Projection;
 import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.table.Rows;
+import com.github.lwhite1.tablesaw.table.ViewGroup;
 import com.github.lwhite1.tablesaw.util.IntComparatorChain;
 import com.github.lwhite1.tablesaw.util.ReversingIntComparator;
 import com.github.lwhite1.tablesaw.util.Selection;
@@ -541,6 +542,10 @@ public class Table implements Relation, IntIterable {
 
     public BooleanColumn selectIntoColumn(String newColumnName, Filter filter) {
         return BooleanColumn.create(newColumnName, filter.apply(this), rowCount());
+    }
+
+    public ViewGroup splitOn(Column ... columns) {
+      return new ViewGroup(this, columns);
     }
 
     public String printHtml() {
