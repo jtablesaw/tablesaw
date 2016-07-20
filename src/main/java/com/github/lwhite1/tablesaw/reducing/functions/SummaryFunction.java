@@ -2,6 +2,7 @@ package com.github.lwhite1.tablesaw.reducing.functions;
 
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
+import com.github.lwhite1.tablesaw.reducing.NumericSummaryTable;
 import com.github.lwhite1.tablesaw.table.ViewGroup;
 
 /**
@@ -25,7 +26,7 @@ public abstract class SummaryFunction {
     return original;
   }
 
-  public Table by(String... columnNames) {
+  public NumericSummaryTable by(String... columnNames) {
     ViewGroup group = ViewGroup.create(original(), columnNames);
     return group.reduce(summarizedColumnName(), function());
   }

@@ -2,6 +2,7 @@ package com.github.lwhite1.tablesaw.api.plot.swing;
 
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.reducing.NumericSummaryTable;
 import com.github.lwhite1.tablesaw.reducing.functions.SummaryFunction;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
@@ -21,6 +22,10 @@ public class Bar {
 
   public static void show(SummaryFunction summary, String ... columnNames) {
     show(summary.by(columnNames), summary, 600, 800);
+  }
+
+  public static void show(NumericSummaryTable summary) {
+    show(summary, 600, 800);
   }
 
   /**
@@ -59,6 +64,25 @@ public class Bar {
 
     chart.getStyler().setTheme(new TablesawTheme());
     chart.addSeries(summaryFunction.function().functionName(),
+        table.categoryColumn(0).toList(),
+        table.floatColumn(1).data());
+
+    new SwingWrapper<>(chart).displayChart();
+  }
+
+  public static void show(NumericSummaryTable table, int width, int height) {
+
+    CategoryChart chart =
+        new CategoryChartBuilder()
+            .width(width)
+            .height(height)
+            .title(table.name())
+            .xAxisTitle("Categories")
+            .yAxisTitle(table.column(1).name())
+            .build();
+
+    chart.getStyler().setTheme(new TablesawTheme());
+    chart.addSeries(table.name(),
         table.categoryColumn(0).toList(),
         table.floatColumn(1).data());
 

@@ -36,6 +36,13 @@ public class TableTest {
   }
 
   @Test
+  public void testSampleSplit() throws Exception {
+    Table t = Table.createFromCsv("data/BushApproval.csv");
+    Table[] results = t.sampleSplit(.75);
+    assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
+  }
+
+  @Test
   public void testRowCount() throws Exception {
     assertEquals(0, table.rowCount());
     FloatColumn floatColumn = column;

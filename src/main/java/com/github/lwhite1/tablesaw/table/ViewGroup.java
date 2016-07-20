@@ -1,10 +1,11 @@
 package com.github.lwhite1.tablesaw.table;
 
-import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.reducing.NumericReduceFunction;
+import com.github.lwhite1.tablesaw.reducing.NumericSummaryTable;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.annotations.VisibleForTesting;
@@ -132,7 +133,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
    * For a subtable that is grouped by the values in more than one column, split the grouping column into separate
    * cols and return the revised view
    */
-  private Table splitGroupingColumn(Table groupTable) {
+  private NumericSummaryTable splitGroupingColumn(NumericSummaryTable groupTable) {
 
     List<Column> newColumns = new ArrayList<>();
 
@@ -157,9 +158,9 @@ public class ViewGroup implements Iterable<TemporaryView> {
   }
 
 
-  public Table reduce(String numericColumnName, NumericReduceFunction function) {
+  public NumericSummaryTable reduce(String numericColumnName, NumericReduceFunction function) {
     Preconditions.checkArgument(!subTables.isEmpty());
-    Table groupTable = Table.create(sortedOriginal.name() + " summary");
+    NumericSummaryTable groupTable = NumericSummaryTable.create(sortedOriginal.name() + " summary");
     CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
     FloatColumn resultColumn = new FloatColumn(reduceColumnName(numericColumnName, function.functionName()), subTables.size());
     groupTable.addColumn(groupColumn);

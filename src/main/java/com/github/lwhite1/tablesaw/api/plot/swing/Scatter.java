@@ -21,8 +21,13 @@ public class Scatter {
     show(chartTitle, x, yColumn, 600, 400);
   }
 
+  public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, int markerSize) {
+    show(chartTitle, xColumn, yColumn, 600, 400, markerSize);
+  }
+
   public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn) {
-    show(chartTitle, xColumn, yColumn, 600, 400);
+    int markerSize = 2;
+    show(chartTitle, xColumn, yColumn, 600, 400, markerSize);
   }
 
   public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, ViewGroup group) {
@@ -44,7 +49,35 @@ public class Scatter {
     new SwingWrapper<>(chart).displayChart();
   }
 
-  public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, int width, int height) {
+  public static void show(String chartTitle,
+                          NumericColumn xColumn,
+                          NumericColumn yColumn,
+                          ViewGroup group,
+                          int markerSize) {
+    XYChart chart = new XYChart(600, 400);
+    chart.setTitle(chartTitle);
+    chart.setXAxisTitle(xColumn.name());
+    chart.setYAxisTitle(yColumn.name());
+    chart.getStyler().setTheme(new TablesawTheme());
+
+    chart.getStyler().setMarkerSize(markerSize);
+
+    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+
+    for (TemporaryView view : group) {
+      double[] xData = view.numericColumn(xColumn.name()).toDoubleArray();
+      double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
+      chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
+    }
+    new SwingWrapper<>(chart).displayChart();
+  }
+
+  public static void show(String chartTitle,
+                          NumericColumn xColumn,
+                          NumericColumn yColumn,
+                          int width,
+                          int height,
+                          int markerSize) {
     double[] xData = xColumn.toDoubleArray();
     double[] yData = yColumn.toDoubleArray();
 
@@ -54,7 +87,7 @@ public class Scatter {
     chart.setXAxisTitle(xColumn.name());
     chart.setYAxisTitle(yColumn.name());
     chart.getStyler().setTheme(new TablesawTheme());
-    chart.getStyler().setMarkerSize(1);
+    chart.getStyler().setMarkerSize(markerSize);
     chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
 
     XYSeries series = chart.addSeries(yColumn.name() + " by " + xColumn.name(), xData, yData);
