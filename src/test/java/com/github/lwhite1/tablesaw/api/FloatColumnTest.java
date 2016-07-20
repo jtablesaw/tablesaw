@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Unit tests for the FloatColumn class
  */
 public class FloatColumnTest {
 
