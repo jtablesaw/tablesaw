@@ -35,7 +35,7 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.skewness;
 /**
  * A column that contains signed 2 byte integer values
  */
-public class ShortColumn extends AbstractColumn implements ShortMapUtils {
+public class ShortColumn extends AbstractColumn implements ShortMapUtils, NumericColumn {
 
   public static final short MISSING_VALUE = (short) ColumnType.SHORT_INT.getMissingValue();
 
@@ -244,6 +244,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   }
 
   @Override
+  public float getFloat(int index) {
+    return (float) data.getShort(index);
+  }
+
+  @Override
   public IntComparator rowComparator() {
     return comparator;
   }
@@ -428,7 +433,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public IntColumn add(ShortColumn column2) {
     IntColumn result = IntColumn.create(name() + " + " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) - column2.get(r));
+      result.add(get(r) + column2.get(r));
     }
     return result;
   }
@@ -436,7 +441,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils {
   public IntColumn subtract(ShortColumn column2) {
     IntColumn result = IntColumn.create(name() + " - " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) + column2.get(r));
+      result.add(get(r) - column2.get(r));
     }
     return result;
   }

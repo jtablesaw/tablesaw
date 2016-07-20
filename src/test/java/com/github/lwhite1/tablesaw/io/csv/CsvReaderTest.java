@@ -3,6 +3,7 @@ package com.github.lwhite1.tablesaw.io.csv;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -73,6 +74,7 @@ public class CsvReaderTest {
     assertEquals(ColumnType.CATEGORY, columnTypes[2]);
   }
 
+  @Ignore
   @Test
   public void testLoadFromUrl() throws Exception {
     ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};

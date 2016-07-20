@@ -51,7 +51,7 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.variance;
 /**
  * A column that contains signed 8 byte integer values
  */
-public class LongColumn extends AbstractColumn implements LongMapUtils {
+public class LongColumn extends AbstractColumn implements LongMapUtils, NumericColumn {
 
   public static final long MISSING_VALUE = (long) ColumnType.LONG_INT.getMissingValue();
 
@@ -180,7 +180,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   public LongColumn add(LongColumn column2) {
     LongColumn result = LongColumn.create(name() + " + " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) - column2.get(r));
+      result.add(get(r) + column2.get(r));
     }
     return result;
   }
@@ -188,7 +188,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
   public LongColumn subtract(LongColumn column2) {
     LongColumn result = LongColumn.create(name() + " - " + column2.name(), size());
     for (int r = 0; r < size(); r++) {
-      result.add(get(r) + column2.get(r));
+      result.add(get(r) - column2.get(r));
     }
     return result;
   }
@@ -311,6 +311,11 @@ public class LongColumn extends AbstractColumn implements LongMapUtils {
 
   public long get(int index) {
     return data.getLong(index);
+  }
+
+  @Override
+  public float getFloat(int index) {
+    return (float) data.getLong(index);
   }
 
   @Override
