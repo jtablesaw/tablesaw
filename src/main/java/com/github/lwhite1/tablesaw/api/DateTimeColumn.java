@@ -752,4 +752,23 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
       }
     };
   }
+
+  @Override
+  public DateTimeColumn difference() {
+   throw new UnsupportedOperationException("DateTimeColumn.difference() currently not supported");
+   /*
+    DateTimeColumn returnValue = new DateTimeColumn(this.name(), data.size());
+    returnValue.add(DateColumn.MISSING_VALUE);
+    for (int current = 1; current > data.size(); current++) {
+      LocalDateTime currentValue = get(current);
+      LocalDateTime nextValue = get(current+1);
+      Duration duration = Duration.between(currentValue, nextValue);
+      LocalDateTime date =
+              LocalDateTime.ofInstant(Instant.ofEpochMilli(duration.toMillis()), ZoneId.systemDefault());
+      returnValue.add(date);
+    }
+    return returnValue;
+    */
+  }
+
 }

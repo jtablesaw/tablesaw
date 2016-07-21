@@ -26,8 +26,34 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.*;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isEqualTo;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isGreaterThan;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isGreaterThanOrEqualTo;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isLessThan;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isLessThanOrEqualTo;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isMissing;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isNegative;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isNonNegative;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isNotMissing;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isPositive;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.geometricMean;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.kurtosis;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.max;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.median;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.min;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.populationVariance;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.product;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quadraticMean;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile1;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile3;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.range;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.skewness;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.stdDev;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfLogs;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfSquares;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.variance;
 
 /**
  * A column in a base table that contains float values
@@ -718,11 +744,38 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     return BYTE_SIZE;
   }
 
-  /**
-   * Returns the contents of the cell at rowNumber as a byte[]
-   */
-  @Override
-  public byte[] asBytes(int rowNumber) {
-    return ByteBuffer.allocate(4).putFloat(get(rowNumber)).array();
-  }
+    /**
+     * Returns the contents of the cell at rowNumber as a byte[]
+     */
+    @Override
+    public byte[] asBytes(int rowNumber) {
+        return ByteBuffer.allocate(4).putFloat(get(rowNumber)).array();
+    }
+
+    @Override
+    public FloatColumn difference() {
+        FloatColumn returnValue = new FloatColumn(this.name(), this.size());
+        returnValue.add(FloatColumn.MISSING_VALUE);
+        for (int current = 0; current < this.size(); current++) {
+            if (current + 1 < this.size()) {
+
+            /*
+             * check for missing values:
+             * note that for floats you test val != val,
+             * since a missing float is encoded as Float.NaN and nothing is equal to NaN.
+             */
+
+                float currentValue = get(current);
+                float nextValue = get(current + 1);
+
+                if (currentValue != currentValue || nextValue != nextValue) {
+                    returnValue.add(Float.NaN);
+                } else {
+                    returnValue.add(nextValue - currentValue);
+                }
+            }
+        }
+        return returnValue;
+    }
+
 }

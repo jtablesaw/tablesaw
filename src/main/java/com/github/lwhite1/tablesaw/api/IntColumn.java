@@ -604,4 +604,22 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
   public byte[] asBytes(int rowNumber) {
     return ByteBuffer.allocate(4).putInt(get(rowNumber)).array();
   }
+
+    @Override
+    public IntColumn difference() {
+        IntColumn returnValue = new IntColumn(this.name(), this.size());
+        returnValue.add(IntColumn.MISSING_VALUE);
+        for (int current = 0; current < this.size(); current++) {
+            if (current + 1 < this.size()) {
+                int currentValue = this.get(current);
+                int nextValue = this.get(current + 1);
+                if (current == IntColumn.MISSING_VALUE || nextValue == IntColumn.MISSING_VALUE) {
+                    returnValue.add(IntColumn.MISSING_VALUE);
+                } else {
+                    returnValue.add(nextValue - currentValue);
+                }
+            }
+        }
+        return returnValue;
+    }
 }
