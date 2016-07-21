@@ -244,6 +244,15 @@ public interface Relation {
     return (NumericColumn) column(columnName);
   }
 
+  /**
+   * Returns the column with the given name cast to a NumericColumn
+   *
+   * Shorthand for numericColumn()
+   */
+  default NumericColumn nCol(String columnName) {
+    return (NumericColumn) column(columnName);
+  }
+
   default FloatColumn floatColumn(int columnIndex) {
     return (FloatColumn) column(columnIndex);
   }

@@ -15,6 +15,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -155,18 +156,21 @@ public class CategoryColumn extends AbstractColumn
     return lookupTable.get(k);
   }
 
-  public String[] toStringArray() {
-    return dictionaryMap().categoryArray();
+  public List<String> toList() {
+    return Lists.newArrayList(dictionaryMap().categoryArray());
   }
 
   @Override
   public Table summary() {
+    return countByCategory();
+  }
+
+  public Table countByCategory() {
     Table t = new Table("Column: " + name());
     CategoryColumn categories = CategoryColumn.create("Category");
     IntColumn counts = IntColumn.create("Count");
 
     Int2IntMap valueToCount = new Int2IntOpenHashMap();
-
     for (int next : values) {
       if (valueToCount.containsKey(next)) {
         valueToCount.put(next, valueToCount.get(next) + 1);

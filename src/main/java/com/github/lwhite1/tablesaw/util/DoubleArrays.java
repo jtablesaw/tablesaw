@@ -1,4 +1,4 @@
-package com.github.lwhite1.tablesaw.smile.plot;
+package com.github.lwhite1.tablesaw.util;
 
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.google.common.base.Preconditions;
@@ -7,6 +7,14 @@ import com.google.common.base.Preconditions;
  *  Utility functions for creating 2D double arrays from columns and other arrays
  */
 public class DoubleArrays {
+
+  public static double[] toN(int n) {
+    double[] result = new double[n];
+    for (int i = 0; i < n; i++) {
+      result[i] = i;
+    }
+    return result;
+  }
 
   public static double[][] to2dArray(NumericColumn... columns) {
     Preconditions.checkArgument(columns.length >= 1);
