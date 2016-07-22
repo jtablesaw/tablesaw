@@ -1,12 +1,11 @@
 package com.github.lwhite1.tablesaw.api;
 
-import com.github.lwhite1.tablesaw.api.FloatColumn;
-import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.filtering.IntPredicate;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 /**
  *  Tests for int columns
  */
@@ -127,6 +126,23 @@ public class IntColumnTest {
     }
     for (int i = 0; i < 10; i++) {
       assertTrue(column2.get(i) < 10);
+    }
+  }
+
+  @Test
+  public void testDifference() {
+    int[] originalValues = new int[] {32,42,40,57,52};
+    int[] expectedValues = new int[] {IntColumn.MISSING_VALUE,10,-2,17,-5};
+
+    IntColumn initial = new IntColumn("Test",originalValues.length);
+    for (int value : originalValues) {
+      initial.add(value);
+    }
+    IntColumn difference =  initial.difference();
+    assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
+    for (int index = 0; index < difference.size(); index++ ) {
+      int actual = difference.get(index);
+      assertEquals("difference operation at index:" + index + " failed",  expectedValues[index], actual);
     }
   }
 }

@@ -26,7 +26,8 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.github.lwhite1.tablesaw.columns.BooleanColumnUtils.*;
+import static com.github.lwhite1.tablesaw.columns.BooleanColumnUtils.isMissing;
+import static com.github.lwhite1.tablesaw.columns.BooleanColumnUtils.isNotMissing;
 
 /**
  * A column in a base table that contains float values
@@ -489,4 +490,5 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
       return null;
     }
   }
+
 }
