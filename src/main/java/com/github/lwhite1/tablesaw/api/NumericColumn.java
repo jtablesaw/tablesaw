@@ -11,4 +11,21 @@ public interface NumericColumn extends Column {
 
   float getFloat(int index);
 
+  double max();
+  double min();
+
+  double product();
+
+  double mean();
+
+  double median();
+
+  double quartile1();
+
+  double quartile3();
+
+  double percentile(double percentile);
+
+  double range();
+
 }

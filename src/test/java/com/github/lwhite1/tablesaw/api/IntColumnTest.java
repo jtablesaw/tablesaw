@@ -31,7 +31,7 @@ public class IntColumnTest {
     for (int i = 0; i < 100; i++) {
       column.add(i);
     }
-    assertEquals(0, column.min());
+    assertEquals(0.0, column.min(), .001);
   }
 
   @Test
@@ -39,7 +39,7 @@ public class IntColumnTest {
     for (int i = 0; i < 100; i++) {
       column.add(i);
     }
-    assertEquals(99, column.max());
+    assertEquals(99, column.max(), .001);
   }
 
   @Test
