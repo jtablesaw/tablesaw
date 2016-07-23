@@ -3,7 +3,7 @@ package com.github.lwhite1.tablesaw.api;
 import com.github.lwhite1.tablesaw.columns.Column;
 
 /**
- *
+ * Functionality common to all numeric column types
  */
 public interface NumericColumn extends Column {
 
@@ -12,6 +12,7 @@ public interface NumericColumn extends Column {
   float getFloat(int index);
 
   double max();
+  
   double min();
 
   double product();
@@ -28,4 +29,24 @@ public interface NumericColumn extends Column {
 
   double range();
 
+  double variance();
+
+  double populationVariance();
+
+  double standardDeviation();
+
+  double sumOfLogs();
+
+  double sumOfSquares();
+
+  double geometricMean();
+
+  /**
+   * Returns the quadraticMean, aka the root-mean-square, for all values in this column
+   */
+  double quadraticMean();
+
+  double kurtosis();
+
+  double skewness() ;
 }
