@@ -88,7 +88,7 @@ public class CsvReader {
    */
   public static Table read(String fileName, boolean header, char delimiter) throws IOException {
     ColumnType[] columnTypes = detectColumnTypes(fileName, header, delimiter);
-    return read(columnTypes, true, ',', fileName);
+    return read(columnTypes, true, delimiter, fileName);
   }
 
 
