@@ -195,9 +195,9 @@
             <version>3.3.2</version>
         </dependency>
         <dependency>
-            <groupId>net.sf.opencsv</groupId>
+            <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-            <version>2.3</version>
+            <version>3.8</version>
         </dependency>
         <dependency>
             <groupId>org.iq80.snappy</groupId>
@@ -228,6 +228,12 @@
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>
             <version>1.1.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.metsci.glimpse/glimpse-core -->
+        <dependency>
+            <groupId>com.metsci.glimpse</groupId>
+            <artifactId>glimpse-core</artifactId>
+            <version>2.5.0</version>
         </dependency>
     </dependencies>
 </project>
