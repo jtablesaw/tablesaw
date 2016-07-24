@@ -309,11 +309,11 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     return range.reduce(this);
   }
 
-  public int max() {
+  public double max() {
     return (int) Math.round(max.reduce(this));
   }
 
-  public int min() {
+  public double min() {
     return (int) Math.round(min.reduce(this));
   }
 

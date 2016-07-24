@@ -370,11 +370,11 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     return range.reduce(this);
   }
 
-  public long max() {
+  public double max() {
     return Math.round(max.reduce(this));
   }
 
-  public long min() {
+  public double min() {
     return Math.round(min.reduce(this));
   }
 

@@ -300,11 +300,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     return range.reduce(this);
   }
 
-  public short max() {
+  public double max() {
     return (short) Math.round(max.reduce(this));
   }
 
-  public short min() {
+  public double min() {
     return (short) Math.round(min.reduce(this));
   }
 
