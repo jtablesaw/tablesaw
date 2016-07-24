@@ -1,6 +1,5 @@
 package com.github.lwhite1.tablesaw.io.csv;
 
-import au.com.bytecode.opencsv.CSVReader;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
@@ -8,6 +7,7 @@ import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.opencsv.CSVReader;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;

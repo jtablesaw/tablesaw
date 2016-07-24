@@ -1,6 +1,5 @@
 package com.github.lwhite1.tablesaw.examples;
 
-import au.com.bytecode.opencsv.CSVWriter;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.DateColumn;
@@ -13,6 +12,7 @@ import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.github.lwhite1.tablesaw.store.StorageManager;
 import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Stopwatch;
+import com.opencsv.CSVWriter;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
