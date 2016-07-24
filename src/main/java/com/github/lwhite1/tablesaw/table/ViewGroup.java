@@ -119,6 +119,10 @@ public class ViewGroup implements Iterable<TemporaryView> {
     return subTables;
   }
 
+  public TemporaryView get(int i) {
+    return subTables.get(i);
+  }
+
   @VisibleForTesting
   public Table getSortedOriginal() {
     return sortedOriginal;
