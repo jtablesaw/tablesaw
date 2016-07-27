@@ -9,7 +9,7 @@ public class AddCellToColumnException extends RuntimeException {
     private final long rowNumber;
     private final String columnName;
     public AddCellToColumnException(Exception e, String columnName, int columnIndex, long rowNumber) {
-        super("Error while addding cell at from row "+rowNumber+" and column "+columnName+ "(position:"+columnIndex+"): "+e.getMessage(), e);
+        super("Error while addding cell from row "+rowNumber+" and column "+columnName+ "(position:"+columnIndex+"): "+e.getMessage(), e);
         this.columnIndex = columnIndex;
         this.rowNumber = rowNumber;
         this.columnName = columnName;
