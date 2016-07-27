@@ -129,7 +129,7 @@ public class CsvReader {
         columnIndexes[i] = headerRow.indexOf(columnNames[i]);
       }
       // Add the rows
-      long rowNumber = 0;
+      long rowNumber = header ? 1L : 0L;
       while ((nextLine = reader.readNext()) != null) {
         // for each column that we're including (not skipping)
         int cellIndex = 0;
