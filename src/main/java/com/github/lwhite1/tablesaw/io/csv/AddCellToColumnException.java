@@ -8,7 +8,7 @@ public class AddCellToColumnException extends RuntimeException {
     private final int columnIndex;
     private final long rowNumber;
     public AddCellToColumnException(Exception e, int columnIndex, long rowNumber) {
-        super(e);
+        super("Error while addding cell at from row "+rowNumber+" and column "+columnIndex+": "+e.getMessage(), e);
         this.columnIndex = columnIndex;
         this.rowNumber = rowNumber;
     }
