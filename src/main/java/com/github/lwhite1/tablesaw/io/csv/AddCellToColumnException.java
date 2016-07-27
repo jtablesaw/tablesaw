@@ -7,10 +7,12 @@ public class AddCellToColumnException extends RuntimeException {
 
     private final int columnIndex;
     private final long rowNumber;
-    public AddCellToColumnException(Exception e, int columnIndex, long rowNumber) {
-        super("Error while addding cell at from row "+rowNumber+" and column "+columnIndex+": "+e.getMessage(), e);
+    private final String columnName;
+    public AddCellToColumnException(Exception e, String columnName, int columnIndex, long rowNumber) {
+        super("Error while addding cell at from row "+rowNumber+" and column "+columnName+ "(position:"+columnIndex+"): "+e.getMessage(), e);
         this.columnIndex = columnIndex;
         this.rowNumber = rowNumber;
+        this.columnName = columnName;
     }
 
     public int getColumnIndex() {
@@ -19,5 +21,9 @@ public class AddCellToColumnException extends RuntimeException {
 
     public long getRowNumber() {
         return rowNumber;
+    }
+
+    public String getColumnName() {
+        return columnName;
     }
 }
