@@ -138,7 +138,7 @@ public class CsvReader {
           try {
             column.addCell(nextLine[columnIndex]);
           } catch (Exception e) {
-            throw new AddCellToColumnException(e, columnNames[columnIndex], columnIndex, rowNumber);
+            throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
           }
           cellIndex++;
         }
