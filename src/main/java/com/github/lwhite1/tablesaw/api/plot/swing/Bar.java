@@ -11,6 +11,7 @@ import org.knowm.xchart.SwingWrapper;
 /**
  *
  */
+@Deprecated
 public class Bar {
 
   /**

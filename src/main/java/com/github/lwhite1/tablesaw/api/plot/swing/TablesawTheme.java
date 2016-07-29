@@ -11,6 +11,7 @@ import java.awt.*;
 /**
  *
  */
+@Deprecated
 public class TablesawTheme implements Theme {
 
   GGPlot2Theme ggPlot2Theme = new GGPlot2Theme();

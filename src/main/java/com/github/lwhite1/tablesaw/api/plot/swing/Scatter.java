@@ -14,6 +14,7 @@ import java.util.Arrays;
 /**
  * Render scatter plots using Swing
  */
+@Deprecated
 public class Scatter {
 
   public static void show(String chartTitle, NumericColumn yColumn) {

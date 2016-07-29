@@ -9,6 +9,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 /**
  *
  */
+@Deprecated
 public class Quantile {
 
   public static void show(String chartTitle, NumericColumn yColumn) {
