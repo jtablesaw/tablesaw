@@ -36,7 +36,7 @@ public class AnyOf extends CompositeFilter {
       if (selection == null) {
         selection = filter.apply(relation);
       } else {
-        selection.toBitmap().or(filter.apply(relation).toBitmap());
+        selection.or(filter.apply(relation));
       }
     }
     return selection;
