@@ -1,6 +1,8 @@
 package com.github.lwhite1.tablesaw.util;
 
 import com.github.lwhite1.tablesaw.api.NumericColumn;
+import com.github.lwhite1.tablesaw.table.TemporaryView;
+import com.github.lwhite1.tablesaw.table.ViewGroup;
 import com.google.common.base.Preconditions;
 
 /**
@@ -25,6 +27,22 @@ public class DoubleArrays {
       for (int c = 0; c < columns.length; c++) {
         allVals[r][c] = columns[c].getFloat(r);
         allVals[r][c] = columns[c].getFloat(r);
+      }
+    }
+    return allVals;
+  }
+
+  public static double[][] to2dArray(ViewGroup views, int columnNumber) {
+
+    int viewCount = views.size();
+
+    double[][] allVals = new double[viewCount][];
+    for(int viewNumber = 0; viewNumber < viewCount; viewNumber++ ) {
+      TemporaryView view = views.get(viewNumber);
+      allVals[viewNumber] = new double[view.rowCount()];
+      NumericColumn numericColumn = view.numericColumn(columnNumber);
+      for (int r = 0; r < view.rowCount(); r++) {
+        allVals[viewNumber][r] = numericColumn.getFloat(r);
       }
     }
     return allVals;

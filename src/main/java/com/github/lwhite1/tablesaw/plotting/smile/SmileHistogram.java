@@ -6,12 +6,13 @@ import smile.plot.PlotCanvas;
 import javax.swing.*;
 import java.awt.*;
 
+import static com.github.lwhite1.tablesaw.plotting.smile.SmilePlotUtils.getjFrame;
+
 /**
  * Simple API for producing basic histogram plots directly from Tablesaw tables and columns
  */
-public class SmileHist {
+public class SmileHistogram {
 
-  private static final String WINDOW_TITLE = "Tablesaw";
 
   public static PlotCanvas create(String plotTitle, String xTitle, String yTitle, NumericColumn column) {
     PlotCanvas canvas = smile.plot.Histogram.plot(column.toDoubleArray());
@@ -35,13 +36,4 @@ public class SmileHist {
     frame.add(canvas);
     frame.setVisible(true);
   }
-
-  private static JFrame getjFrame(int width, int height) {
-    JFrame frame = new JFrame(WINDOW_TITLE);
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    frame.setLocationRelativeTo(null);
-    frame.setSize(width, height);
-    return frame;
-  }
-
 }

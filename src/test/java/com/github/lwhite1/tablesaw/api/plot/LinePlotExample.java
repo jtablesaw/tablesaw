@@ -13,6 +13,5 @@ public class LinePlotExample {
     NumericColumn x = baseball.nCol("Record");
     NumericColumn y = baseball.nCol("Robberies");
     Line.show("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975", x, y);
-
   }
 }
