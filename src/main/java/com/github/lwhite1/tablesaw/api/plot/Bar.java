@@ -4,7 +4,8 @@ import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
-import com.github.lwhite1.tablesaw.plotting.fx.BarBuilder;
+import com.github.lwhite1.tablesaw.plotting.fx.FxBar;
+import com.github.lwhite1.tablesaw.plotting.fx.FxPlot;
 import com.github.lwhite1.tablesaw.reducing.NumericSummaryTable;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -15,6 +16,7 @@ import javax.swing.*;
 
 public class Bar extends FxPlot {
 
+  private static final String WINDOW_TITLE = "Tablesaw";
 
   public static void show(String title, CategoryColumn categoryColumn, NumericColumn numericColumn) throws Exception {
 
@@ -74,8 +76,8 @@ public class Bar extends FxPlot {
                                      int width,
                                      int height) throws Exception {
 
-    final JFXPanel fxPanel = getJfxPanel(title, width, height);
-    BarChart<String, Number> chart = BarBuilder.chart(title, categoryColumn, numericColumn);
+    final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
+    BarChart<String, Number> chart = FxBar.chart(title, categoryColumn, numericColumn);
     Platform.runLater(() -> initFX(fxPanel, chart));
   }
 
@@ -85,8 +87,8 @@ public class Bar extends FxPlot {
                                      int width,
                                      int height) throws Exception {
 
-    final JFXPanel fxPanel = getJfxPanel(title, width, height);
-    BarChart<String, Number> chart = BarBuilder.chart(title, categoryColumn, numericColumn);
+    final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
+    BarChart<String, Number> chart = FxBar.chart(title, categoryColumn, numericColumn);
     Platform.runLater(() -> initFX(fxPanel, chart));
   }
 
@@ -96,8 +98,8 @@ public class Bar extends FxPlot {
                                      int width,
                                      int height) throws Exception {
 
-    final JFXPanel fxPanel = getJfxPanel(title, width, height);
-    BarChart<String, Number> chart = BarBuilder.chart(title, categoryColumn, numericColumn);
+    final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
+    BarChart<String, Number> chart = FxBar.chart(title, categoryColumn, numericColumn);
     Platform.runLater(() -> initFX(fxPanel, chart));
   }
 

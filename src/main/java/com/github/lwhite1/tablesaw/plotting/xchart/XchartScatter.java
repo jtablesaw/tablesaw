@@ -1,4 +1,4 @@
-package com.github.lwhite1.tablesaw.api.plot.swing;
+package com.github.lwhite1.tablesaw.plotting.xchart;
 
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.table.TemporaryView;
@@ -14,8 +14,9 @@ import java.util.Arrays;
 /**
  * Render scatter plots using Swing
  */
-@Deprecated
-public class Scatter {
+public class XchartScatter {
+
+  private static final String WINDOW_TITLE = "Tablesaw";
 
   public static void show(String chartTitle, NumericColumn yColumn) {
     double[] x = DoubleArrays.toN(yColumn.size());
@@ -47,7 +48,7 @@ public class Scatter {
       double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
       chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
     }
-    new SwingWrapper<>(chart).displayChart();
+    new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
   }
 
   public static void show(String chartTitle,
@@ -70,7 +71,7 @@ public class Scatter {
       double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
       chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
     }
-    new SwingWrapper<>(chart).displayChart();
+    new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
   }
 
   public static void show(String chartTitle,
@@ -93,7 +94,7 @@ public class Scatter {
 
     XYSeries series = chart.addSeries(yColumn.name() + " by " + xColumn.name(), xData, yData);
     series.setMarker(SeriesMarkers.CIRCLE);
-    new SwingWrapper<>(chart).displayChart();
+    new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
   }
 
   public static void show(String chartTitle, double[] xData, NumericColumn yColumn, int width, int height) {
@@ -109,6 +110,6 @@ public class Scatter {
 
     XYSeries series = chart.addSeries("Ranked: " + yColumn.name(), xData, yData);
     series.setMarker(SeriesMarkers.CIRCLE);
-    new SwingWrapper<>(chart).displayChart();
+    new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
   }
 }

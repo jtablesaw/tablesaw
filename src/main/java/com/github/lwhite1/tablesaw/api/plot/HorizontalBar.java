@@ -4,7 +4,8 @@ import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
-import com.github.lwhite1.tablesaw.plotting.fx.HorizontalBarBuilder;
+import com.github.lwhite1.tablesaw.plotting.fx.FxPlot;
+import com.github.lwhite1.tablesaw.plotting.fx.FxHorizontalBar;
 import com.github.lwhite1.tablesaw.reducing.NumericSummaryTable;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -14,6 +15,8 @@ import javafx.scene.chart.BarChart;
 import javax.swing.*;
 
 public class HorizontalBar extends FxPlot {
+
+  private static final String WINDOW_TITLE = "Tablesaw";
 
   public static void show(String title, CategoryColumn categoryColumn, NumericColumn numericColumn) throws Exception {
 
@@ -73,8 +76,8 @@ public class HorizontalBar extends FxPlot {
                                      int width,
                                      int height) throws Exception {
     // This method is invoked on the EDT thread
-    final JFXPanel fxPanel = getJfxPanel(title, width, height);
-    BarChart<Number, String> chart = HorizontalBarBuilder.chart("", categoryColumn, numericColumn);
+    final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
+    BarChart<Number, String> chart = FxHorizontalBar.chart("", categoryColumn, numericColumn);
     Platform.runLater(() -> initFX(fxPanel, chart));
   }
 
@@ -84,8 +87,8 @@ public class HorizontalBar extends FxPlot {
                                      int width,
                                      int height) throws Exception {
     // This method is invoked on the EDT thread
-    final JFXPanel fxPanel = getJfxPanel(title, width, height);
-    BarChart<Number, String> chart = HorizontalBarBuilder.chart("", categoryColumn, numericColumn);
+    final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
+    BarChart<Number, String> chart = FxHorizontalBar.chart("", categoryColumn, numericColumn);
     Platform.runLater(() -> initFX(fxPanel, chart));
   }
 
@@ -95,8 +98,8 @@ public class HorizontalBar extends FxPlot {
                                      int width,
                                      int height) throws Exception {
     // This method is invoked on the EDT thread
-    final JFXPanel fxPanel = getJfxPanel(title, width, height);
-    BarChart<Number, String> chart = HorizontalBarBuilder.chart("", categoryColumn, numericColumn);
+    final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
+    BarChart<Number, String> chart = FxHorizontalBar.chart("", categoryColumn, numericColumn);
     Platform.runLater(() -> initFX(fxPanel, chart));
   }
 

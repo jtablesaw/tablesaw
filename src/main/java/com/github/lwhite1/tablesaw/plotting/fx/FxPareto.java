@@ -19,7 +19,7 @@ import java.util.List;
 /**
  *
  */
-public class ParetoBuilder extends FxBuilder {
+public class FxPareto extends FxBuilder {
 
   public static BarChart<String, Number> chart(
       String title,

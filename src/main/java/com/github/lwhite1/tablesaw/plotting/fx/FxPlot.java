@@ -1,4 +1,4 @@
-package com.github.lwhite1.tablesaw.api.plot;
+package com.github.lwhite1.tablesaw.plotting.fx;
 
 import javafx.embed.swing.JFXPanel;
 
@@ -7,9 +7,9 @@ import javax.swing.*;
 /**
  *
  */
-abstract class FxPlot {
+public abstract class FxPlot {
 
-  static JFXPanel getJfxPanel(String title, int width, int height) {
+  public static JFXPanel getJfxPanel(String title, int width, int height) {
     JFrame frame = new JFrame(title);
     final JFXPanel fxPanel = new JFXPanel();
     frame.add(fxPanel);

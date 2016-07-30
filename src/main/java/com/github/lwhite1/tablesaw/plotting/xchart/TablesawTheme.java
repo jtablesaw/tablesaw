@@ -1,4 +1,4 @@
-package com.github.lwhite1.tablesaw.api.plot.swing;
+package com.github.lwhite1.tablesaw.plotting.xchart;
 
 import org.knowm.xchart.style.GGPlot2Theme;
 import org.knowm.xchart.style.PieStyler;
@@ -11,7 +11,6 @@ import java.awt.*;
 /**
  *
  */
-@Deprecated
 public class TablesawTheme implements Theme {
 
   GGPlot2Theme ggPlot2Theme = new GGPlot2Theme();

@@ -17,7 +17,7 @@ import java.util.List;
 /**
  *
  */
-public class BarBuilder extends FxBuilder{
+public class FxBar extends FxBuilder{
 
   public static BarChart<String, Number> chart(String title, Table table, String categoryColumnName, String numericColumnName) {
 

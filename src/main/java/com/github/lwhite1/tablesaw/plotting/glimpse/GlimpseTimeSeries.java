@@ -1,8 +1,7 @@
-package com.github.lwhite1.tablesaw.api.plot;
+package com.github.lwhite1.tablesaw.plotting.glimpse;
 
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.NumericColumn;
-import com.github.lwhite1.tablesaw.plotting.glimpse.Display;
 import com.metsci.glimpse.axis.Axis1D;
 import com.metsci.glimpse.axis.listener.AxisListener1D;
 import com.metsci.glimpse.canvas.GlimpseCanvas;
@@ -23,7 +22,7 @@ import java.util.Date;
  * Demonstrates use of StackedTimePlot2D to create a horizontal timeline axis
  * with lineplots stacked vertically on top, each with an independent y axis.<p>
  */
-public class TimeSeries implements GlimpseLayoutProvider {
+public class GlimpseTimeSeries implements GlimpseLayoutProvider {
 
   private String plotTitle;
   private String xAxisName;
@@ -35,7 +34,7 @@ public class TimeSeries implements GlimpseLayoutProvider {
   public static void show(String plotTitle, DateColumn x, NumericColumn y) {
     Display display;
     try {
-       display = Display.showWithSwing(new TimeSeries(plotTitle, x, y));
+       display = Display.showWithSwing(new GlimpseTimeSeries(plotTitle, x, y));
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
@@ -43,7 +42,7 @@ public class TimeSeries implements GlimpseLayoutProvider {
     attachRepaintListener(display);
   }
 
-  public TimeSeries(String plotTitle, DateColumn x, NumericColumn ... seriesYvalues) throws IOException {
+  public GlimpseTimeSeries(String plotTitle, DateColumn x, NumericColumn ... seriesYvalues) throws IOException {
     this.plotTitle = plotTitle;
     this.x = x;
     this.xAxisName = x.name();

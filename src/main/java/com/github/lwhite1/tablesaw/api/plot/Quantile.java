@@ -1,8 +1,7 @@
 package com.github.lwhite1.tablesaw.api.plot;
 
 import com.github.lwhite1.tablesaw.api.NumericColumn;
-import com.github.lwhite1.tablesaw.api.plot.Scatter;
-import com.github.lwhite1.tablesaw.plotting.glimpse.Display;
+import com.github.lwhite1.tablesaw.plotting.xchart.XchartQuantile;
 
 /**
  *
@@ -22,15 +21,19 @@ public class Quantile {
   }
 
   public static void show(String chartTitle, double[] xData, NumericColumn yColumn) {
-    double[] yData = yColumn.toDoubleArray();
 
     // Create Chart
-    Scatter.SimpleScatter scatter = new Scatter.SimpleScatter(chartTitle, xData, yData);
+    XchartQuantile.show(chartTitle, xData, yColumn, 600, 400);
+/*
+    THIS CODE IS FOR A GLIMPSE-BACKED CHART
+    double[] yData = yColumn.toDoubleArray();
+    XchartScatter.SimpleScatter scatter = new XchartScatter.SimpleScatter(chartTitle, xData, yData);
     try {
       Display.showWithSwing(scatter);
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
     }
+*/
   }
 }

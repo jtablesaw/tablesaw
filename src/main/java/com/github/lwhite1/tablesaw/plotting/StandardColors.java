@@ -8,10 +8,12 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Range;
 import com.opencsv.CSVReader;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -199,5 +201,48 @@ public class StandardColors {
       colors.add(randomColor.asColor());
     }
     return colors;
+  }
+
+
+  public static List<Color> standardColors() {
+
+    List<Color> colors = new ArrayList<>();
+    colors.add(color(Hue.Red_5, 14, 4));
+    colors.add(color(Hue.Yellow_2_5, 12, 8));
+    colors.add(color(Hue.Purple_7_5, 10, 4));
+    colors.add(color(Hue.YellowRed_5, 12, 7));
+    colors.add(color(Hue.PurpleBlue_2_5, 6, 8));
+
+    colors.add(color(Hue.Yellow_5, 4, 7));
+    colors.add(color(Hue.GreenYellow_5, 2, 5));
+    colors.add(color(Hue.Green_2_5, 10, 6));
+    colors.add(color(Hue.RedPurple_5, 10, 7));
+    colors.add(color(Hue.PurpleBlue_2_5, 8, 4));
+
+    colors.add(color(Hue.Red_7_5, 8, 7));
+    colors.add(color(Hue.PurpleBlue_2_5, 10, 4));
+    colors.add(color(Hue.YellowRed_7_5, 12, 7));
+    colors.add(color(Hue.RedPurple_7_5, 12, 4));
+    colors.add(color(Hue.Yellow_10, 10, 8));
+
+    colors.add(color(Hue.YellowRed_2_5, 8, 3));
+    colors.add(color(Hue.GreenYellow_5, 10, 7));
+    colors.add(color(Hue.Red_10, 14, 5));
+    colors.add(color(Hue.GreenYellow_5, 4, 2));
+    colors.add(allGreys()[2]);
+
+    return colors;
+  }
+
+  @Nullable
+  static Color color(Hue hue, int chroma, int value) {
+    Collection<StandardColor> options = colorMap.get(hue);
+    for (StandardColor standardColor : options) {
+      if (standardColor.chroma() == chroma &&
+          standardColor.value() == value) {
+        return standardColor.asColor();
+      }
+    }
+    return null;
   }
 }

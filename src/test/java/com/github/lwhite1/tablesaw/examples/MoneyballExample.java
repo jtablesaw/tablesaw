@@ -3,7 +3,7 @@ package com.github.lwhite1.tablesaw.examples;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.api.plot.swing.Scatter;
+import com.github.lwhite1.tablesaw.plotting.xchart.XchartScatter;
 import com.github.lwhite1.tablesaw.smile.regression.LeastSquares;
 
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
@@ -23,7 +23,7 @@ public class MoneyballExample {
     Table moneyball = baseball.selectWhere(column("year").isLessThan(2002));
 
     // plot regular season wins against year, segregating on whether the team made the plays
-    Scatter.show("Regular season wins by year",
+    XchartScatter.show("Regular season wins by year",
         baseball.numericColumn("W"),
         baseball.numericColumn("Year"),
         baseball.splitOn(baseball.column("Playoffs")));
@@ -34,7 +34,7 @@ public class MoneyballExample {
     runDifference.setName("RD");
 
     // Plot RD vs Wins to see if the relationship looks linear
-    Scatter.show("RD x Wins", moneyball.numericColumn("RD"), moneyball.numericColumn("W"), 3);
+    XchartScatter.show("RD x Wins", moneyball.numericColumn("RD"), moneyball.numericColumn("W"), 3);
 
     // Create the regression model
     ShortColumn wins = moneyball.shortColumn("W");

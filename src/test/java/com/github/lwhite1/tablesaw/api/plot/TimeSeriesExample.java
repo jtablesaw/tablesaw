@@ -3,12 +3,12 @@ package com.github.lwhite1.tablesaw.api.plot;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.api.plot.TimeSeries;
+import com.github.lwhite1.tablesaw.plotting.glimpse.GlimpseTimeSeries;
 
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
 
 /**
- *
+ * NOTE: Times series plotting is not yet a supported feature, and may be removed at any time
  */
 public class TimeSeriesExample {
 
@@ -18,7 +18,7 @@ public class TimeSeriesExample {
     System.out.println(air.shape());
     DateColumn dates = air.dateColumn("date");
     NumericColumn approval = air.nCol("approval");
-    TimeSeries.show("Fox news poll: George W Bush", dates, approval);
+    GlimpseTimeSeries.show("Fox news poll: George W Bush", dates, approval);
   }
 
 }

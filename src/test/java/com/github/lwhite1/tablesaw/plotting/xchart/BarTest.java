@@ -1,4 +1,4 @@
-package com.github.lwhite1.tablesaw.api.plot.swing;
+package com.github.lwhite1.tablesaw.plotting.xchart;
 
 import com.github.lwhite1.tablesaw.api.Table;
 

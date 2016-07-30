@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * A JavaFx-based Horizontal bar chart
  */
-public class HorizontalBarBuilder extends FxBuilder {
+public class FxHorizontalBar extends FxBuilder {
 
   public static BarChart<Number, String> chart(
       String title,

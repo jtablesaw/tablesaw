@@ -5,7 +5,7 @@ import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.plotting.fx.FxBuilder;
-import com.github.lwhite1.tablesaw.plotting.fx.ParetoBuilder;
+import com.github.lwhite1.tablesaw.plotting.fx.FxPareto;
 import com.github.lwhite1.tablesaw.reducing.NumericSummaryTable;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -14,9 +14,11 @@ import javafx.scene.chart.BarChart;
 
 import javax.swing.*;
 
-import static com.github.lwhite1.tablesaw.api.plot.FxPlot.getJfxPanel;
+import static com.github.lwhite1.tablesaw.plotting.fx.FxPlot.getJfxPanel;
 
 public class Pareto extends FxBuilder {
+
+  private static final String WINDOW_TITLE = "Tablesaw";
 
   public static void show(String title, NumericSummaryTable table) throws Exception {
 
@@ -76,8 +78,8 @@ public class Pareto extends FxBuilder {
                                      int width,
                                      int height) throws Exception {
 
-    final JFXPanel fxPanel = getJfxPanel(title, width, height);
-    BarChart<String, Number> chart = ParetoBuilder.chart("", categoryColumn, numericColumn);
+    final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
+    BarChart<String, Number> chart = FxPareto.chart(title, categoryColumn, numericColumn);
     Platform.runLater(() -> initFX(fxPanel, chart));
   }
 
@@ -87,8 +89,8 @@ public class Pareto extends FxBuilder {
                                      int width,
                                      int height) throws Exception {
 
-    final JFXPanel fxPanel = getJfxPanel(title, width, height);
-    BarChart<String, Number> chart = ParetoBuilder.chart("", categoryColumn, numericColumn);
+    final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
+    BarChart<String, Number> chart = FxPareto.chart(title, categoryColumn, numericColumn);
     Platform.runLater(() -> initFX(fxPanel, chart));
   }
 
@@ -98,8 +100,8 @@ public class Pareto extends FxBuilder {
                                      int width,
                                      int height) throws Exception {
 
-    final JFXPanel fxPanel = getJfxPanel(title, width, height);
-    BarChart<String, Number> chart = ParetoBuilder.chart("", categoryColumn, numericColumn);
+    final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
+    BarChart<String, Number> chart = FxPareto.chart(title, categoryColumn, numericColumn);
     Platform.runLater(() -> initFX(fxPanel, chart));
   }
 

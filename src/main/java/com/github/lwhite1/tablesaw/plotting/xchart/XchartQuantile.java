@@ -1,4 +1,4 @@
-package com.github.lwhite1.tablesaw.api.plot.swing;
+package com.github.lwhite1.tablesaw.plotting.xchart;
 
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import org.knowm.xchart.SwingWrapper;
@@ -9,8 +9,9 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 /**
  *
  */
-@Deprecated
-public class Quantile {
+public class XchartQuantile {
+
+  private static final String WINDOW_TITLE = "Tablesaw";
 
   public static void show(String chartTitle, NumericColumn yColumn) {
     double[] x = new double[yColumn.size()];
@@ -37,6 +38,6 @@ public class Quantile {
 
     XYSeries series = chart.addSeries("Ranked: " + yColumn.name(), xData, yData);
     series.setMarker(SeriesMarkers.CIRCLE);
-    new SwingWrapper<>(chart).displayChart();
+    new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
   }
 }
