@@ -46,6 +46,7 @@ You can't understand a dataset unless you can _see_ it. Tablesaw currently suppo
 * Vertical Bar
 * Horizontal Bar
 * Histogram 
+* Box plots
 * Quantile Plots
 * Pareto Charts
 
