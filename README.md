@@ -53,7 +53,7 @@ You can't understand a dataset unless you can _see_ it. Tablesaw currently suppo
 We'll continue to increase both the number of plot types and the supported options. Meanwhile, here's an example where we use [XChart](https://github.com/timmolter/XChart) to map the locations of tornadoes: 
 ![Alt text](https://jtablesaw.files.wordpress.com/2016/07/tornados2.png?w=809)
 
-The goal is to seamlessly integrate Tablesaw's data manipulation facilities with plotting libraries to make visualization as easy as possible. We'll take the same approach when it comes to integrating machine learning tools. 
+The goal is to seamlessly integrate Tablesaw's data manipulation facilities with plotting libraries to make visualization as easy as possible. We'll take the same approach when it comes to integrating machine learning tools. You can see examples and read more about plotting in Tablesaw here: https://jtablesaw.wordpress.com/2016/07/30/new-plot-types-in-tablesaw/.
 
 ### Current performance:
 In its current state, some areas of Tablesaw perform better than others. To give you a sense of where we're going, you can now load a 500,000,000 row, 4 column csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load it in 22 seconds. You can query that table in 1-2 ms: fast enough to use as a cache for a Web app.
