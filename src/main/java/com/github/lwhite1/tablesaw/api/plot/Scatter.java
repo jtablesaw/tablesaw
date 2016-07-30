@@ -17,4 +17,8 @@ public class Scatter {
   public static void show(String title, NumericColumn x, NumericColumn y, ViewGroup groups) {
     XchartScatter.show(title, x, y, groups);
   }
+
+  public static void show(String title, NumericColumn x, NumericColumn y) {
+    XchartScatter.show(title, x, y);
+  }
 }

@@ -3,6 +3,7 @@ package com.github.lwhite1.tablesaw.examples;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.plot.Scatter;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
@@ -49,6 +50,9 @@ public class TornadoExample {
     out();
     out("Use first(3) to view the first 3 rows:");
     out(tornadoes.first(3).print());
+
+    tornadoes = tornadoes.selectWhere(column("Start Lat").isGreaterThan(20f));
+    Scatter.show("US Tornadoes 1950-2014", tornadoes.nCol("Start Lon"), tornadoes.nCol("Start Lat"));
 
     out();
     out("Extact month from the date and make it a separate column");
