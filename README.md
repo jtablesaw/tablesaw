@@ -80,26 +80,4 @@ The goal in this example is to identify the production shifts with the worst per
     FloatArrayList tops = summary.floatColumn("Median").top(5);                  // get "slowest"
 
 ```
-
-
-
-```
-	Linear Model:
-
-	Residuals:
-			   Min			1Q		Median			3Q		   Max
-		  -70.8379	  -17.1810	   -1.0917	   16.7812	   90.0358
-
-	Coefficients:
-				Estimate		Std. Error		  t value		 Pr(>|t|)
-	(Intercept)	 -804.6271			 18.9208	   -42.5261			 0.0000 ***
-	OBP			 2737.7682			 90.6846		30.1900			 0.0000 ***
-	SLG			 1584.9085			 42.1556		37.5966			 0.0000 ***
-	---------------------------------------------------------------------
-	Significance codes:	 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-	Residual standard error: 24.7900 on 899 degrees of freedom
-	Multiple R-squared: 0.9296,	   Adjusted R-squared: 0.9294
-	F-statistic: 5933.7256 on 2 and 899 DF,	 p-value: 0.000
-```
 If you see something that can be improved, let us know.
