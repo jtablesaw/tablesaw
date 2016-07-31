@@ -9,7 +9,7 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
 /**
  *  Basic sample vertical bar chart
  */
-public class BarFxTest {
+public class BarExample {
 
 
   public static void main(String[] args) throws Exception {

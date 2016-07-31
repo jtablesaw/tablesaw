@@ -11,30 +11,38 @@ import smile.regression.OLS;
 public class LeastSquares {
 
   private final OLS model;
-  private final NumericColumn[] explanatoryVars;
-  // these are the values in the model dataset
-  //private final DoubleSet modelValues;
+  private final double[][] explanatoryVariables;
+  private final int explanatoryVariableCount;
+  private final double[] responseVarArray;
+  private final String[] explanatoryVariableNames;
+
 
   public static LeastSquares train(NumericColumn responseVar, NumericColumn... explanatoryVars) {
-
-    double[] predicted = responseVar.toDoubleArray();
-    OLS model = new OLS(DoubleArrays.to2dArray(explanatoryVars), predicted);
-    return new LeastSquares(model, explanatoryVars);
+    return new LeastSquares(responseVar, explanatoryVars);
   }
 
-  public LeastSquares(OLS model, NumericColumn ... explanatoryVars) {
-    this.model = model;
-    this.explanatoryVars = explanatoryVars;
+  public LeastSquares(NumericColumn responseVariable, NumericColumn ... explanatoryVars) {
+    this.explanatoryVariables = DoubleArrays.to2dArray(explanatoryVars);
+
+    this.responseVarArray = responseVariable.toDoubleArray();
+    this.model = new OLS(explanatoryVariables, responseVarArray);
+    this.explanatoryVariableCount = explanatoryVars.length;
+    this.explanatoryVariableNames = new String[explanatoryVariableCount];
+
+    for (int i = 0; i < explanatoryVariableCount; i++) {
+      explanatoryVariableNames[i] = explanatoryVars[i].name();
+    }
   }
 
   @Override
   public String toString() {
     String result = model.toString();
     result = result.replace("Intercept", "(Intercept)");
+
     // TODO(lwhite): This hack needed because Smile doesn't name the vars in it's output; we do, by string replacement.
     int maxNameLength = "(intercept)".length() - 1;
-    for (int i = 0; i < explanatoryVars.length; i++) {
-      String replacement = explanatoryVars[i].name();
+    for (int i = 0; i < explanatoryVariableCount; i++) {
+      String replacement = explanatoryVariableNames[i];
       if (replacement.length() >= maxNameLength) {
         replacement = replacement.substring(0, maxNameLength);
       } else {
@@ -50,7 +58,12 @@ public class LeastSquares {
   }
 
   public double[] fitted() {
-    return model.residuals();
+    double[] fitted = new double[explanatoryVariables.length];
+    for(int i = 0; i < explanatoryVariables.length; i++) {
+      double[] input = explanatoryVariables[i];
+      fitted[i] = predict(input);
+    }
+    return fitted;
   }
 
   public double adjustedRSquared() {
@@ -95,5 +108,9 @@ public class LeastSquares {
 
   public double[] coefficients() {
     return model.coefficients();
+  }
+
+  public double[] actuals() {
+    return responseVarArray;
   }
 }

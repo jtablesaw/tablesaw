@@ -23,6 +23,20 @@ public class SmileHistogram {
     return canvas;
   }
 
+  public static PlotCanvas create(double[] x, String yTitle) {
+    PlotCanvas canvas = smile.plot.Histogram.plot(x);
+    return canvas;
+  }
+
+  public static void show(double[] x) {
+    JFrame frame = getjFrame(600, 400);
+    String yTitle = "proportion";
+    PlotCanvas canvas = create(x, yTitle);
+    canvas.setAxisLabel(1, yTitle);
+    frame.add(canvas);
+    frame.setVisible(true);
+  }
+
   public static void show(String plotTitle, NumericColumn column) {
     JFrame frame = getjFrame(600, 400);
     PlotCanvas canvas = create(plotTitle, column.name(), "proportion", column);
