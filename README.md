@@ -65,7 +65,8 @@ The goal in this example is to identify the production shifts with the worst per
 
 ```java
     Table ops = Table.create("data/operations.csv");                             // load data
-    
+    DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start"));
+    DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End");
     LongColumn duration = start.differenceInSeconds(end);                        // calc duration
     duration.setName("Duration");
     ops.addColumn(duration);
