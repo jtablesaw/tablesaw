@@ -229,11 +229,5 @@
             <artifactId>smile-core</artifactId>
             <version>1.1.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.metsci.glimpse/glimpse-core -->
-        <dependency>
-            <groupId>com.metsci.glimpse</groupId>
-            <artifactId>glimpse-core</artifactId>
-            <version>2.5.0</version>
-        </dependency>
     </dependencies>
 </project>

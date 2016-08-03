@@ -3,7 +3,7 @@ Tablesaw
    
 Tablesaw is a high-performance, in-memory data table in Java. 
 
-Its design is driven by two ideas: First, few people need distributed analytics. 
+Tablesaw's design is driven by two ideas: First, few people need distributed analytics. 
 On a single server, Tablesaw lets you work _interactively_ with a 2,000,000,000 row table. 
 (I plan to raise that ceiling, btw.) Second, it should be super easy to use: To that end I happily 
 steal ideas from everything from spreadsheets to specialized column stores like KDB.
@@ -32,6 +32,7 @@ A 1.0 release is planned for early September.
 * Group
 * Map and reduce operations
 * Descriptive stats (mean, min, max, median, etc.)
+* Plotting for exploratory data analysis and model checking
 * Store tables in a very-fast, compressed columnar storage format
 
 ### What Tablesaw will do:
@@ -39,10 +40,20 @@ A 1.0 release is planned for early September.
 * More specialized column types and operations: (lat/lon, time interval, money)
 
 ### Plotting
-I'm starting to add plot support to Tablesaw, because you can't understand a dataset unless you can _see_ it. We will gradually increase both the number of plot types and the supported options. Meanwhile, here's an example where each dot shows the starting location of a single tornado: 
+You can't understand a dataset unless you can _see_ it. Tablesaw currently supports a variety of plot types:
+* Scatter
+* Line
+* Vertical Bar
+* Horizontal Bar
+* Histogram 
+* Box plots
+* Quantile Plots
+* Pareto Charts
+
+We'll continue to increase both the number of plot types and the supported options. Meanwhile, here's an example where we use [XChart](https://github.com/timmolter/XChart) to map the locations of tornadoes: 
 ![Alt text](https://jtablesaw.files.wordpress.com/2016/07/tornados2.png?w=809)
 
-The goal is to support discovery by seamlessly integrating Tablesaw's data manipulation facilities with plotting libraries to make visualization as easy as possible. We'll take the same approach when it comes to integrating machine learning tools. 
+The goal is to seamlessly integrate Tablesaw's data manipulation facilities with plotting libraries to make visualization as easy as possible. We'll take the same approach when it comes to integrating machine learning tools. You can see examples and read more about plotting in Tablesaw here: https://jtablesaw.wordpress.com/2016/07/30/new-plot-types-in-tablesaw/.
 
 ### Current performance:
 In its current state, some areas of Tablesaw perform better than others. To give you a sense of where we're going, you can now load a 500,000,000 row, 4 column csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load it in 22 seconds. You can query that table in 1-2 ms: fast enough to use as a cache for a Web app.
@@ -54,7 +65,8 @@ The goal in this example is to identify the production shifts with the worst per
 
 ```java
     Table ops = Table.create("data/operations.csv");                             // load data
-    
+    DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start"));
+    DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End");
     LongColumn duration = start.differenceInSeconds(end);                        // calc duration
     duration.setName("Duration");
     ops.addColumn(duration);
