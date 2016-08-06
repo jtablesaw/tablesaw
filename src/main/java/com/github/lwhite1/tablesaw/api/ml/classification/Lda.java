@@ -39,6 +39,46 @@ public class Lda {
     return new Lda(classifierModel);
   }
 
+  public static Lda learn(ShortColumn labels, double[] priors, NumericColumn ... predictors) {
+    LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray(), priors);
+    return new Lda(classifierModel);
+  }
+
+  public static Lda learn(IntColumn labels, double[] priors, NumericColumn ... predictors) {
+    LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), priors);
+    return new Lda(classifierModel);
+  }
+
+  public static Lda learn(BooleanColumn labels, double[] priors, NumericColumn ... predictors) {
+    LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray(), priors);
+    return new Lda(classifierModel);
+  }
+
+  public static Lda learn(CategoryColumn labels, double[] priors, NumericColumn ... predictors) {
+    LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), priors);
+    return new Lda(classifierModel);
+  }
+
+  public static Lda learn(ShortColumn labels, double[] priors, double tolerance, NumericColumn ... predictors) {
+    LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray(), priors, tolerance);
+    return new Lda(classifierModel);
+  }
+
+  public static Lda learn(IntColumn labels, double[] priors, double tolerance, NumericColumn ... predictors) {
+    LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), priors, tolerance);
+    return new Lda(classifierModel);
+  }
+
+  public static Lda learn(BooleanColumn labels, double[] priors, double tolerance, NumericColumn ... predictors) {
+    LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray(), priors, tolerance);
+    return new Lda(classifierModel);
+  }
+
+  public static Lda learn(CategoryColumn labels, double[] priors, double tolerance, NumericColumn ... predictors) {
+    LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), priors, tolerance);
+    return new Lda(classifierModel);
+  }
+
   private Lda(LDA classifierModel) {
     this.classifierModel = classifierModel;
   }
