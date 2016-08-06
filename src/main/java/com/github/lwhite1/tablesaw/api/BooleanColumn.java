@@ -452,6 +452,14 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     return selection;
   }
 
+  public int[] toIntArray() {
+    int[] output = new int[data.size()];
+    for (int i = 0; i < data.size(); i++) {
+      output[i] = data.getByte(i);
+    }
+    return output;
+  }
+
   static class BooleanColumnIterator implements Iterator<Boolean> {
 
     final ByteIterator iterator;

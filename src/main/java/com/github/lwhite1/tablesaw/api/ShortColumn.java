@@ -599,4 +599,12 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
     return returnValue;
   }
+
+  public int[] toIntArray() {
+    int[] output = new int[data.size()];
+    for (int i = 0; i < data.size(); i++) {
+      output[i] = data.getShort(i);
+    }
+    return output;
+  }
 }

@@ -1,30 +1,35 @@
-package com.github.lwhite1.tablesaw.integration;
+package com.github.lwhite1.tablesaw.api.ml;
 
 import com.github.lwhite1.tablesaw.api.BooleanColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.ml.classification.LogisticRegression;
+import com.github.lwhite1.tablesaw.api.plot.Bar;
+import com.github.lwhite1.tablesaw.api.plot.Pareto;
+import com.github.lwhite1.tablesaw.reducing.NumericSummaryTable;
+import com.github.lwhite1.tablesaw.store.StorageManager;
 import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static com.github.lwhite1.tablesaw.api.QueryHelper.*;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
 import static java.lang.System.out;
 
 /**
  *
  */
-public class AirlineDelays2 {
+public class AirlineDelays {
 
   private static Table flt2007;
 
   public static void main(String[] args) throws Exception {
 
-    new AirlineDelays2();
-    System.exit(0);
+    new AirlineDelays();
   }
 
-  private AirlineDelays2() throws Exception {
+  private AirlineDelays() throws Exception {
     Stopwatch stopwatch = Stopwatch.createStarted();
     out.println("loading");
     ColumnType[] columnTypes = {
@@ -59,13 +64,19 @@ public class AirlineDelays2 {
         SHORT_INT,  // 28    LateAircraftDelay
     };
 
-    flt2007 = Table.createFromCsv(columnTypes, "/Users/larrywhite/Downloads/flight delays/2007.csv");
+  //  flt2007 = Table.createFromCsv(columnTypes, "/Users/larrywhite/Downloads/flight delays/2007.csv");
 
+
+    //String tableName = StorageManager.saveTable("bigdata", flt2007);
+    //out("Wrote to saw store " + tableName);
+
+    flt2007 = StorageManager.readTable("bigdata/2007.csv.saw");
     out.println(String.format("loaded %d records in %d seconds",
         flt2007.rowCount(),
         (int) stopwatch.elapsed(TimeUnit.SECONDS)));
 
     out(flt2007.shape());
+
 
     Table ord = flt2007.selectWhere(
         both(column("Origin").isEqualTo("ORD"),
@@ -79,28 +90,34 @@ public class AirlineDelays2 {
 
     // Compute average number of delayed flights per month
 
-    Table monthGroup = ord.mean("DepDelay").by("Month");
-    out(monthGroup.print());
-    //TODO Plot
+    NumericSummaryTable monthGroup = ord.summarize("DepDelay", mean).by("Month");
+    Bar.show("Departure delay by month", monthGroup);
 
-    Table dayOfWeekGroup = ord.mean("DepDelay").by("DayOfWeek");
-    out(dayOfWeekGroup.print());
-    //TODO Plot
+    NumericSummaryTable dayOfWeekGroup = ord.summarize("DepDelay", mean).by("DayOfWeek");
+    Bar.show("Departure delay by day-of-week", dayOfWeekGroup);
 
     ord.addColumn(ord.timeColumn("CRSDepTime").hour());
-    System.out.println(ord.columnNames());
-    Table hourGroup = ord.mean("DepDelay").by("CRSDepTime[hour]");
-    out(hourGroup.print());
-    //TODO Plot
+    NumericSummaryTable hourGroup = ord.summarize("DepDelay", mean).by("CRSDepTime[hour]");
+    Bar.show("Departure delay by hour-of-day", hourGroup);
 
     // Compute average number of delayed flights per carrier
-    Table carrierGroup = ord.mean("DepDelay").by("UniqueCarrier");
-    carrierGroup = carrierGroup.sortDescendingOn("Mean");
-    out(carrierGroup.print());
+    NumericSummaryTable carrierGroup = ord.mean("DepDelay").by("UniqueCarrier");
+    Pareto.show("Departure delay by Carrier", carrierGroup);
+
+    // we have no cancelled flights because we removed them earlier by filtering where delay is missing;
+    out(ord.shape());
+
+    double lambda = 0.1;
+    smile.classification.LogisticRegression logit = LogisticRegression.train(
+        ord.booleanColumn("Delayed?"),
+        ord.nCol("dayOfWeek"),
+        ord.nCol("CRSDepTime[hour]"));
+
+
+    out(logit.toString());
   }
 
   private static void out(Object obj) {
     System.out.println(String.valueOf(obj));
   }
-
 }

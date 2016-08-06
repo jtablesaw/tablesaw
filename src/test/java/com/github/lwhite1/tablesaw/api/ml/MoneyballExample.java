@@ -3,10 +3,10 @@ package com.github.lwhite1.tablesaw.api.ml;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.ml.regression.LeastSquares;
 import com.github.lwhite1.tablesaw.api.plot.Histogram;
 import com.github.lwhite1.tablesaw.api.plot.Scatter;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.smile.regression.LeastSquares;
 
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
 

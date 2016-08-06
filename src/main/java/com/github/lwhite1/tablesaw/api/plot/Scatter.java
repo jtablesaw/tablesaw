@@ -1,8 +1,8 @@
 package com.github.lwhite1.tablesaw.api.plot;
 
 import com.github.lwhite1.tablesaw.api.NumericColumn;
+import com.github.lwhite1.tablesaw.api.ml.regression.LeastSquares;
 import com.github.lwhite1.tablesaw.plotting.xchart.XchartScatter;
-import com.github.lwhite1.tablesaw.smile.regression.LeastSquares;
 import com.github.lwhite1.tablesaw.table.ViewGroup;
 
 /**

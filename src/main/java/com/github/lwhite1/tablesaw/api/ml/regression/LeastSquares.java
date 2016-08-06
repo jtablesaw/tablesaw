@@ -1,4 +1,4 @@
-package com.github.lwhite1.tablesaw.smile.regression;
+package com.github.lwhite1.tablesaw.api.ml.regression;
 
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.util.DoubleArrays;
