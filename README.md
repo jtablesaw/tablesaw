@@ -33,11 +33,8 @@ A 1.0 release is planned for early September.
 * Map and reduce operations
 * Descriptive stats (mean, min, max, median, etc.)
 * Plotting for exploratory data analysis and model checking
+* Integrated machine learning (currently: Regression plus Logistic Regressin, LDA, and KNN classifiers)
 * Store tables in a very-fast, compressed columnar storage format
-
-### What Tablesaw will do:
-* Integrated machine learning
-* More specialized column types and operations: (lat/lon, time interval, money)
 
 ### Plotting
 You can't understand a dataset unless you can _see_ it. Tablesaw currently supports a variety of plot types:
