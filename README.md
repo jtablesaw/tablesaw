@@ -83,6 +83,6 @@ The goal in this example is to identify the production shifts with the worst per
 ```
 If you see something that can be improved, let us know.
 
-n = 50      Actual 0 Actual 1 
-Predicted 0 30       4        
-Predicted 1 1        15       
+   n = 50      Actual 0 Actual 1 
+   Predicted 0 30       4        
+   Predicted 1 1        15       
