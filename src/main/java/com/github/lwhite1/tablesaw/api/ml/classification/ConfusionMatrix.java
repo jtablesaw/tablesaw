@@ -8,6 +8,9 @@ import com.google.common.collect.TreeBasedTable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 /**
@@ -18,6 +21,17 @@ import java.util.TreeSet;
 public class ConfusionMatrix {
 
   private final Table<Integer, Integer, Integer> table = TreeBasedTable.create();
+
+  private SortedMap<Integer, Object> labels = new TreeMap();
+
+  public ConfusionMatrix(SortedSet<Object> labels) {
+
+    int i = 0;
+    for (Object object : labels) {
+      this.labels.put(i, object);
+      i++;
+    }
+  }
 
   public void increment(Integer predicted, Integer actual) {
     Integer v = table.get(predicted, actual);
@@ -38,13 +52,13 @@ public class ConfusionMatrix {
     t.addColumn(CategoryColumn.create(""));
 
     // make a set of all the values needed, from the prediction set or the actual set
-    TreeSet<Comparable> allValues = new TreeSet<>();
+    TreeSet<Integer> allValues = new TreeSet<>();
     allValues.addAll(table.columnKeySet());
     allValues.addAll(table.rowKeySet());
 
-    for (Comparable comparable : allValues) {
-      t.addColumn(IntColumn.create(String.valueOf(comparable)));
-      t.column(0).addCell("Predicted "  + String.valueOf(comparable));
+    for (Integer comparable : allValues) {
+      t.addColumn(IntColumn.create(String.valueOf(labels.get(comparable))));
+      t.column(0).addCell("Predicted "  + labels.get(comparable));
     }
 
     // put them in a list so they can be accessed by index number
@@ -63,7 +77,7 @@ public class ConfusionMatrix {
     }
     t.column(0).setName("n = " + n);
     for (int c = 1; c <= valuesList.size(); c++) {
-      t.column(c).setName("Actual " + t.column(c).name());
+      t.column(c).setName("Actual " + labels.get(c - 1));
     }
     return t;
   }

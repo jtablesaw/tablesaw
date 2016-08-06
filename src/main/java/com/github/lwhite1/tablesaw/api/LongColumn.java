@@ -97,6 +97,10 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     return data.size();
   }
 
+  public LongArrayList data() {
+    return data;
+  }
+
   @Override
   public ColumnType type() {
     return ColumnType.LONG_INT;

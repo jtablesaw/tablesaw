@@ -13,12 +13,11 @@ public class KnnExample {
   public static void main(String[] args) throws Exception {
 
     Table example = Table.createFromCsv("data/KNN_Example_1.csv");
-    out(example.structure().print());
+    out(example.structure().printHtml());
 
     // show all the label values
     out(example.shortColumn("Label").asSet());
 
-    out(example.shortColumn(2).summary().print());
     Scatter.show("Example data", example.nCol(0), example.nCol(1), example.splitOn(example.shortColumn(2)));
 
     // two fold validation
@@ -26,18 +25,12 @@ public class KnnExample {
     Table train = splits[0];
     Table test = splits[1];
 
-/*
-    KNN<double[]> knn = KNN.learn(
-          DoubleArrays.to2dArray(train.nCol("X"), train.nCol("Y")),
-          train.shortColumn(2).toIntArray(), 2);
-*/
-
     Knn knn = Knn.learn(2, train.shortColumn(2), train.nCol("X"), train.nCol("Y"));
 
     ConfusionMatrix matrix = knn.predictMatrix(test.shortColumn(2), test.nCol("X"), test.nCol("Y"));
 
     // Prediction
-    out(matrix);
+    out(matrix.toTable().printHtml());
     out(String.valueOf(matrix.accuracy()));
   }
 

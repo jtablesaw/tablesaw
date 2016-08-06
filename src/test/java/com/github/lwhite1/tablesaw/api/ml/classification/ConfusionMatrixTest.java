@@ -5,6 +5,9 @@ import com.github.lwhite1.tablesaw.util.DoubleArrays;
 import org.junit.Test;
 import smile.classification.KNN;
 
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 /**
  *
  */
@@ -23,7 +26,8 @@ public class ConfusionMatrixTest {
         train.shortColumn(2).toIntArray(), 2);
 
     int[] predicted = new int[test.rowCount()];
-    ConfusionMatrix confusion = new ConfusionMatrix();
+    SortedSet<Object> lableSet = new TreeSet<>(train.shortColumn(2).asSet());
+    ConfusionMatrix confusion = new ConfusionMatrix(lableSet);
     for (int row : test) {
       double[] data = new double[2];
       data[0] = test.floatColumn(0).getFloat(row);
@@ -32,12 +36,14 @@ public class ConfusionMatrixTest {
       confusion.increment((int) test.shortColumn(2).get(row), predicted[row]);
     }
 
-    out(confusion);
-    out(confusion.toTable().toString());
-    out(confusion.toTable().print());
+    //out(confusion);
+    //out(confusion.toTable().toString());
+    //out(confusion.toTable().print());
   }
 
+/*
   private static void out(Object obj) {
     System.out.println(String.valueOf(obj));
   }
+*/
 }
