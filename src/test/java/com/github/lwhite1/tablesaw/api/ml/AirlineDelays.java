@@ -108,11 +108,10 @@ public class AirlineDelays {
     out(ord.shape());
 
     double lambda = 0.1;
-    smile.classification.LogisticRegression logit = LogisticRegression.train(
+    LogisticRegression logit = LogisticRegression.learn(
         ord.booleanColumn("Delayed?"),
         ord.nCol("dayOfWeek"),
         ord.nCol("CRSDepTime[hour]"));
-
 
     out(logit.toString());
   }
