@@ -1,10 +1,12 @@
-package com.github.lwhite1.tablesaw.examples;
+package com.github.lwhite1.tablesaw.api.ml;
 
 import com.github.lwhite1.tablesaw.api.IntColumn;
-import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.plotting.xchart.XchartScatter;
-import com.github.lwhite1.tablesaw.smile.regression.LeastSquares;
+import com.github.lwhite1.tablesaw.api.ml.regression.LeastSquares;
+import com.github.lwhite1.tablesaw.api.plot.Histogram;
+import com.github.lwhite1.tablesaw.api.plot.Scatter;
+import com.github.lwhite1.tablesaw.columns.Column;
 
 import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
 
@@ -23,10 +25,10 @@ public class MoneyballExample {
     Table moneyball = baseball.selectWhere(column("year").isLessThan(2002));
 
     // plot regular season wins against year, segregating on whether the team made the plays
-    XchartScatter.show("Regular season wins by year",
-        baseball.numericColumn("W"),
-        baseball.numericColumn("Year"),
-        baseball.splitOn(baseball.column("Playoffs")));
+    NumericColumn wins = moneyball.numericColumn("W");
+    NumericColumn year = moneyball.numericColumn("Year");
+    Column playoffs = moneyball.column("Playoffs");
+    Scatter.show("Regular season wins by year", wins, year, moneyball.splitOn(playoffs));
 
     // Calculate the run difference for use in the regression model
     IntColumn runDifference = moneyball.shortColumn("RS").subtract(moneyball.shortColumn("RA"));
@@ -34,10 +36,10 @@ public class MoneyballExample {
     runDifference.setName("RD");
 
     // Plot RD vs Wins to see if the relationship looks linear
-    XchartScatter.show("RD x Wins", moneyball.numericColumn("RD"), moneyball.numericColumn("W"), 3);
+    Scatter.show("RD x Wins", moneyball.numericColumn("RD"), moneyball.numericColumn("W"));
 
     // Create the regression model
-    ShortColumn wins = moneyball.shortColumn("W");
+    //ShortColumn wins = moneyball.shortColumn("W");
     LeastSquares winsModel = LeastSquares.train(wins, runDifference);
     out(winsModel);
 
@@ -56,6 +58,11 @@ public class MoneyballExample {
     LeastSquares runsScored2 = LeastSquares.train(moneyball.nCol("RS"),
         moneyball.nCol("OBP"), moneyball.nCol("SLG"));
     out(runsScored2);
+
+    Histogram.show(runsScored2.residuals());
+
+    Scatter.fittedVsResidual(runsScored2);
+    Scatter.actualVsFitted(runsScored2);
 
     // We use opponent OBP and opponent SLG to model the efficacy of our pitching and defence
 

@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.plotting.xchart;
 
+import com.github.lwhite1.tablesaw.plotting.StandardColors;
 import org.knowm.xchart.style.GGPlot2Theme;
 import org.knowm.xchart.style.PieStyler;
 import org.knowm.xchart.style.Styler;
@@ -306,7 +307,7 @@ public class TablesawTheme implements Theme {
 
   @Override
   public Color[] getSeriesColors() {
-    return ggPlot2Theme.getSeriesColors();
+    return StandardColors.standardColorArray();
   }
 
   @Override

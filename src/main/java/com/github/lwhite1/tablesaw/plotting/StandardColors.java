@@ -203,6 +203,10 @@ public class StandardColors {
     return colors;
   }
 
+  public static Color[] standardColorArray() {
+    List<Color> standardColors = standardColors();
+    return standardColors().toArray(new Color[standardColors.size()]);
+  }
 
   public static List<Color> standardColors() {
 

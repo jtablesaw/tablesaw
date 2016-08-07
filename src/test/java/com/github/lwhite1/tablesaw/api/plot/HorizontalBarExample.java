@@ -9,7 +9,7 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
 /**
  *
  */
-public class HorizontalBarFxTest {
+public class HorizontalBarExample {
 
   public static void main(String[] args) throws Exception {
     Table table = Table.createFromCsv("data/tornadoes_1950-2014.csv");

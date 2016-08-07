@@ -16,24 +16,27 @@ import java.util.Arrays;
  */
 public class XchartScatter {
 
+  private static final int DEFAULT_WIDTH = 600;
+  private static final int DEFAULT_HEIGHT = 400;
+
   private static final String WINDOW_TITLE = "Tablesaw";
 
   public static void show(String chartTitle, NumericColumn yColumn) {
     double[] x = DoubleArrays.toN(yColumn.size());
-    show(chartTitle, x, yColumn, 600, 400);
+    show(chartTitle, x, yColumn, DEFAULT_WIDTH, DEFAULT_HEIGHT);
   }
 
   public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, int markerSize) {
-    show(chartTitle, xColumn, yColumn, 600, 400, markerSize);
+    show(chartTitle, xColumn, yColumn, DEFAULT_WIDTH, DEFAULT_HEIGHT, markerSize);
   }
 
   public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn) {
-    int markerSize = 2;
-    show(chartTitle, xColumn, yColumn, 600, 400, markerSize);
+    int markerSize = 3;
+    show(chartTitle, xColumn, yColumn, DEFAULT_WIDTH, DEFAULT_HEIGHT, markerSize);
   }
 
   public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, ViewGroup group) {
-    XYChart chart = new XYChart(600, 400);
+    XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     chart.setTitle(chartTitle);
     chart.setXAxisTitle(xColumn.name());
     chart.setYAxisTitle(yColumn.name());
@@ -46,6 +49,7 @@ public class XchartScatter {
     for (TemporaryView view : group) {
       double[] xData = view.numericColumn(xColumn.name()).toDoubleArray();
       double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
+
       chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
     }
     new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
@@ -56,7 +60,7 @@ public class XchartScatter {
                           NumericColumn yColumn,
                           ViewGroup group,
                           int markerSize) {
-    XYChart chart = new XYChart(600, 400);
+    XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     chart.setTitle(chartTitle);
     chart.setXAxisTitle(xColumn.name());
     chart.setYAxisTitle(yColumn.name());
@@ -110,6 +114,24 @@ public class XchartScatter {
 
     XYSeries series = chart.addSeries("Ranked: " + yColumn.name(), xData, yData);
     series.setMarker(SeriesMarkers.CIRCLE);
-    new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
+    new SwingWrapper<>(chart)
+        .displayChart(WINDOW_TITLE);
+  }
+
+  public static void show(String chartTitle, String xTitle, double[] x, String yTitle, double[] y) {
+
+    XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    chart.setTitle(chartTitle);
+    chart.setXAxisTitle(xTitle);
+    chart.setYAxisTitle(yTitle);
+    chart.getStyler().setTheme(new TablesawTheme());
+    chart.getStyler().setMarkerSize(4);
+    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+
+    XYSeries series = chart.addSeries(chartTitle, x, y);
+    series.setMarker(SeriesMarkers.CIRCLE);
+    new SwingWrapper<>(chart)
+        .displayChart(WINDOW_TITLE);
+
   }
 }

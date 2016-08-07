@@ -59,7 +59,7 @@ public class StorageManagerTest {
   @Test
   public void testWriteTable() throws IOException {
     StorageManager.saveTable("/tmp/zeta", table);
-    com.github.lwhite1.tablesaw.api.Table t = StorageManager.readTable("/tmp/zeta/t.saw");
+    Table t = StorageManager.readTable("/tmp/zeta/t.saw");
     assertEquals(table.columnCount(), t.columnCount());
     assertEquals(table.rowCount(), t.rowCount());
     for (int i = 0; i < table.rowCount(); i++) {

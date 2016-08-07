@@ -129,14 +129,20 @@ public class CsvReader {
         columnIndexes[i] = headerRow.indexOf(columnNames[i]);
       }
       // Add the rows
+      long rowNumber = header ? 1L : 0L;
       while ((nextLine = reader.readNext()) != null) {
         // for each column that we're including (not skipping)
         int cellIndex = 0;
         for (int columnIndex : columnIndexes) {
           Column column = table.column(cellIndex);
-          column.addCell(nextLine[columnIndex]);
+          try {
+            column.addCell(nextLine[columnIndex]);
+          } catch (Exception e) {
+            throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
+          }
           cellIndex++;
         }
+        rowNumber++;
       }
     }
     return table;
