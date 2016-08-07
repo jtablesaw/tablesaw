@@ -49,6 +49,7 @@ public class XchartScatter {
     for (TemporaryView view : group) {
       double[] xData = view.numericColumn(xColumn.name()).toDoubleArray();
       double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
+
       chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
     }
     new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
