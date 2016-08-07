@@ -64,8 +64,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   }
 
   public void add(LocalDateTime dateTime) {
-    long dt = PackedLocalDateTime.pack(dateTime);
-    add(dt);
+    if (dateTime != null) {
+      final long dt = PackedLocalDateTime.pack(dateTime);
+      add(dt);
+    } else {
+      add(Long.MIN_VALUE);
+    }
   }
 
   /**
