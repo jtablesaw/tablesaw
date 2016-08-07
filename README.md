@@ -1,14 +1,11 @@
 Tablesaw
 =======
    
-Tablesaw is a high-performance, in-memory data table in Java. 
+Tablesaw is an easy-to-use platform for data science in Java. It includes a data-frame, an embedded column-store, and has hundreds of methods to transform, summarize, or filter data. If you work with data in Java, it will probably save you time and effort.
 
-Tablesaw's design is driven by two ideas: First, few people need distributed analytics. 
-On a single server, Tablesaw lets you work _interactively_ with a 2,000,000,000 row table. 
-(I plan to raise that ceiling, btw.) Second, it should be super easy to use: To that end I happily 
-steal ideas from everything from spreadsheets to specialized column stores like KDB.
+It also includes support for descriptive statistics, data visualization, and preliminary support for machine learning, with a lot more coming soon. There are other, more elaborate platforms for data science. They were designed for analysis with a vast amounts of data, and that requires a big stack: Spark, Hadoop, HDFS, Yarn, maybe.  
 
-###On Maven Central:
+With Tablesaw, you can manipulate half a billion rows on a laptop and over 2 billion records on a server. All it takes to get started is one maven dependency:  
 
     <dependency>
         <groupId>com.github.lwhite1</groupId>
@@ -16,7 +13,7 @@ steal ideas from everything from spreadsheets to specialized column stores like 
         <version>0.7.1</version>
     </dependency>
 
-###Getting started?:
+###Documentation and support:
 
 * You can find an introductory __tutorial__ here: https://jtablesaw.wordpress.com/an-introduction/ The early drafts of a __User Guide__ are also available on that site
 * The __JavaDoc__ can be found here: http://lwhite1.github.io/tablesaw/apidocs/
