@@ -13,7 +13,7 @@ With Tablesaw, you can manipulate half a billion rows on a laptop and over 2 bil
         <version>0.7.1</version>
     </dependency>
 
-###Documentation and support:
+### Documentation and support:
 
 * You can find an introductory __tutorial__ here: https://jtablesaw.wordpress.com/an-introduction/ The early drafts of a __User Guide__ are also available on that site
 * The __JavaDoc__ can be found here: http://lwhite1.github.io/tablesaw/apidocs/
@@ -21,7 +21,7 @@ With Tablesaw, you can manipulate half a billion rows on a laptop and over 2 bil
  
 A 1.0 release is planned for early September.  
 
-### What Tablesaw does today: 
+### Tablesaw features: 
 * Import data from RDBMS and CSV files, local or remote (http, S3, etc.)
 * Add and remove columns
 * Sort, Group, Filter, & Map/Reduce
