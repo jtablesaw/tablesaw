@@ -22,16 +22,22 @@ With Tablesaw, you can manipulate half a billion rows on a laptop and over 2 bil
 A 1.0 release is planned for early September.  
 
 ### Tablesaw features: 
+
+#### Data processing & transformation
 * Import data from RDBMS and CSV files, local or remote (http, S3, etc.)
+* Combine files
 * Add and remove columns
-* Sort, Group, Filter, & Map/Reduce
-* Descriptive stats (mean, min, max, median, etc.)
-* Visualization for exploratory data analysis and model checking
-* Machine learning (currently: Linear Regression plus Logistic Regressin, LDA, and KNN classifiers)
+* Sort, Group, Filter 
+* Map/Reduce operations
 * Store tables in a fast, compressed columnar storage format
 
-### Visualization
-Tablesaw currently supports a variety of plot types:
+#### Statistics and Machine Learning
+* Descriptive stats (mean, min, max, median, standard deviation, percentiles, etc.)
+* Regression (Least Squares)
+* Classification: (Logistic Regression, Linear Discriminant Analysis, and k-Nearest Neighbors)
+* Clustering: (k-Means)
+
+#### Visualization
 * Scatter
 * Line
 * Vertical Bar
@@ -41,13 +47,13 @@ Tablesaw currently supports a variety of plot types:
 * Quantile Plots
 * Pareto Charts
 
-We'll continue to increase both the number of plot types and the supported options. Meanwhile, here's an example where we use [XChart](https://github.com/timmolter/XChart) to map the locations of tornadoes: 
+Here's an example where we use [XChart](https://github.com/timmolter/XChart) to map the locations of tornadoes: 
 ![Alt text](https://jtablesaw.files.wordpress.com/2016/07/tornados2.png?w=809)
 
-The goal is to seamlessly integrate Tablesaw's data manipulation facilities with plotting and machine learning libraries to make data science in Java as easy as possible. We'll take the same approach when it comes to integrating machine learning tools. You can see examples and read more about plotting in Tablesaw here: https://jtablesaw.wordpress.com/2016/07/30/new-plot-types-in-tablesaw/.
+You can see examples and read more about plotting in Tablesaw here: https://jtablesaw.wordpress.com/2016/07/30/new-plot-types-in-tablesaw/.
 
 ### Current performance:
-In its current state, some areas of Tablesaw perform better than others. To give you a sense of where we're going, you can now load a 500,000,000 row, 4 column csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load it in 22 seconds. You can query that table in 1-2 ms: fast enough to use as a cache for a Web app.
+Some areas of Tablesaw perform better than others. To give you a sense of where we're going, you can now load a 500,000,000 row, 4 column csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load it in 22 seconds. You can query that table in 1-2 ms: fast enough to use as a cache for a Web app.
 
 BTW, those numbers were achieved on a laptop.
 
@@ -72,4 +78,4 @@ The goal in this example is to identify the production shifts with the worst per
     FloatArrayList tops = summary.floatColumn("Median").top(5);                  // get "slowest"
 
 ```
-If you see something that can be improved, let us know.
+If you see something that can be improved, please let me know.
