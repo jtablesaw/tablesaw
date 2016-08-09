@@ -56,7 +56,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   @Override
   public void addCell(String stringValue) {
     if (stringValue == null) {
-      add(Long.MIN_VALUE);
+      add(MISSING_VALUE);
     } else {
       long dateTime = convert(stringValue);
       add(dateTime);
@@ -64,8 +64,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
   }
 
   public void add(LocalDateTime dateTime) {
-    long dt = PackedLocalDateTime.pack(dateTime);
-    add(dt);
+    if (dateTime != null) {
+      final long dt = PackedLocalDateTime.pack(dateTime);
+      add(dt);
+    } else {
+      add(MISSING_VALUE);
+    }
   }
 
   /**
@@ -78,7 +82,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     if (Strings.isNullOrEmpty(value)
         || TypeUtils.MISSING_INDICATORS.contains(value)
         || value.equals("-1")) {
-      return Long.MIN_VALUE;
+      return MISSING_VALUE;
     }
     value = Strings.padStart(value, 4, '0');
     if (selectedFormatter == null) {
@@ -448,19 +452,18 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
   public LocalDateTime max() {
     long max;
-    long missing = Long.MIN_VALUE;
     if (!isEmpty()) {
       max = getLong(0);
     } else {
       return null;
     }
     for (long aData : data) {
-      if (missing != aData) {
+      if (MISSING_VALUE != aData) {
         max = (max > aData) ? max : aData;
       }
     }
 
-    if (missing == max) {
+    if (MISSING_VALUE == max) {
       return null;
     }
     return PackedLocalDateTime.asLocalDateTime(max);
@@ -468,7 +471,6 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
   public LocalDateTime min() {
     long min;
-    long missing = Long.MIN_VALUE;
 
     if (!isEmpty()) {
       min = getLong(0);
@@ -476,7 +478,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
       return null;
     }
     for (long aData : data) {
-      if (missing != aData) {
+      if (MISSING_VALUE != aData) {
         min = (min < aData) ? min : aData;
       }
     }

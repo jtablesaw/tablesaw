@@ -1,14 +1,14 @@
-package com.github.lwhite1.tablesaw.api.ml;
+package com.github.lwhite1.tablesaw.api.ml.classification;
 
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ml.classification.ConfusionMatrix;
-import com.github.lwhite1.tablesaw.api.ml.classification.Knn;
+import com.github.lwhite1.tablesaw.api.ml.classification.Lda;
 import com.github.lwhite1.tablesaw.api.plot.Scatter;
 
 /**
  *
  */
-public class KnnExample {
+public class LdaExample {
 
   public static void main(String[] args) throws Exception {
 
@@ -25,9 +25,9 @@ public class KnnExample {
     Table train = splits[0];
     Table test = splits[1];
 
-    Knn knn = Knn.learn(2, train.shortColumn(2), train.nCol("X"), train.nCol("Y"));
+    Lda model = Lda.learn(train.shortColumn(2), train.nCol("X"), train.nCol("Y"));
 
-    ConfusionMatrix matrix = knn.predictMatrix(test.shortColumn(2), test.nCol("X"), test.nCol("Y"));
+    ConfusionMatrix matrix = model.predictMatrix(test.shortColumn(2), test.nCol("X"), test.nCol("Y"));
 
     // Prediction
     out(matrix.toTable().printHtml());

@@ -15,6 +15,16 @@ public class Scatter {
     XchartScatter.show("Scatterplot", x, y);
   }
 
+  public static void show(double[] x, double[] y) {
+
+    XchartScatter.show("", x, "", y, "", 640, 480);
+  }
+
+  public static void show(double[] x, String xLabel, double[] y, String yLabel) {
+
+    XchartScatter.show("", x, xLabel, y, yLabel, 640, 480);
+  }
+
   public static void show(String title, NumericColumn x, NumericColumn y, ViewGroup groups) {
     XchartScatter.show(title, x, y, groups);
   }

@@ -118,6 +118,23 @@ public class XchartScatter {
         .displayChart(WINDOW_TITLE);
   }
 
+  public static void show(String chartTitle, double[] xData, String xLabel, double[] yData, String yLabel, int width, int height) {
+
+    // Create Chart
+    XYChart chart = new XYChart(width, height);
+    chart.setTitle(chartTitle);
+    chart.setXAxisTitle(xLabel);
+    chart.setYAxisTitle(yLabel);
+    chart.getStyler().setTheme(new TablesawTheme());
+    chart.getStyler().setMarkerSize(5);
+    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+
+    XYSeries series = chart.addSeries("series 1", xData, yData);
+    series.setMarker(SeriesMarkers.CIRCLE);
+    new SwingWrapper<>(chart)
+        .displayChart(WINDOW_TITLE);
+  }
+
   public static void show(String chartTitle, String xTitle, double[] x, String yTitle, double[] y) {
 
     XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
