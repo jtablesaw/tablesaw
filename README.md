@@ -3,7 +3,7 @@ Tablesaw
    
 Tablesaw is an easy-to-use platform for data science in Java. It includes a data-frame, an embedded column-store, and has hundreds of methods to transform, summarize, or filter data. If you work with data in Java, it will probably save you time and effort.
 
-It also includes support for descriptive statistics, data visualization, and preliminary support for machine learning, with a lot more coming soon. There are other, more elaborate platforms for data science. They were designed for analysis with a vast amounts of data, and that requires a big stack: Spark, Hadoop, HDFS, Pig, Yarn, maybe.  
+It also includes support for descriptive statistics, data visualization, and preliminary support for machine learning, with more coming soon. There are other, more elaborate platforms for data science in Java. They were designed to work with vast amounts of data, and that requires a big stack: Spark, Hadoop, HDFS, Pig, Yarn, maybe.  
 
 With Tablesaw, you can manipulate half a billion rows on a laptop and over 2 billion records on a server. All it takes to get started is one maven dependency:  
 
