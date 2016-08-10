@@ -10,8 +10,8 @@ import com.opencsv.CSVReader;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,10 +36,10 @@ public class StandardColors {
 
     Multimap<Hue, StandardColor> standards = LinkedListMultimap.create();
 
-    String fileName = "colors.txt";
+    InputStream resourceAsStream = StandardColors.class.getResourceAsStream("/colors.txt");
 
     String[] nextLine;
-    try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
+    try (CSVReader reader = new CSVReader(new InputStreamReader(resourceAsStream))) {
       // Add the rows
       while ((nextLine = reader.readNext()) != null) {
         for (String colorData : nextLine) {
@@ -67,10 +67,10 @@ public class StandardColors {
 
     ArrayList<StandardColor> neutrals = new ArrayList<>();
 
-    String fileName = "colors.txt";
+    InputStream resourceAsStream = StandardColors.class.getResourceAsStream("/colors.txt");
 
     String[] nextLine;
-    try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
+    try (CSVReader reader = new CSVReader(new InputStreamReader(resourceAsStream))) {
       // Add the rows
       while ((nextLine = reader.readNext()) != null) {
         for (String colorData : nextLine) {
