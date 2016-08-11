@@ -15,7 +15,6 @@ public class KmeansExample {
     Table t = Table.createFromCsv("data/whiskey.csv");
     //out(t.structure().printHtml());
 
-
     Kmeans model = new Kmeans(
         5,
         t.nCol(2),
