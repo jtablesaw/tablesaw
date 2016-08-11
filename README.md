@@ -34,7 +34,7 @@ A 1.0 release is planned for early September.
 #### Statistics and Machine Learning
 * Descriptive stats: mean, min, max, median, sum, product, standard deviation, variance, percentiles, geometric mean, skewness, kurtosis, etc.
 * Regression: Least Squares
-* Classification: Logistic Regression, Linear Discriminant Analysis, Decision Trees, k-Nearest Neighbors
+* Classification: Logistic Regression, Linear Discriminant Analysis, Decision Trees, k-Nearest Neighbors, Random Forests
 * Clustering: k-Means, x-Means, g-Means
 * Association: Frequent Item Sets, Association Rule Mining
 
