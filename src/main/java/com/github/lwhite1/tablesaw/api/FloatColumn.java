@@ -252,6 +252,13 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     data.add(f);
   }
 
+  /**
+   * Adds the given double to this column, after casting it to a float
+   */
+  public void add(double d) {
+    data.add((float) d);
+  }
+
   // Predicate  functions
 
   public Selection isLessThan(float f) {

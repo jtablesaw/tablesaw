@@ -1,9 +1,8 @@
-package com.github.lwhite1.tablesaw.api.ml;
+package com.github.lwhite1.tablesaw.api.ml.regression;
 
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.api.ml.regression.LeastSquares;
 import com.github.lwhite1.tablesaw.api.plot.Histogram;
 import com.github.lwhite1.tablesaw.api.plot.Scatter;
 import com.github.lwhite1.tablesaw.columns.Column;
