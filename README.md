@@ -32,7 +32,7 @@ A 1.0 release is planned for early September.
 * Store tables in a fast, compressed columnar storage format
 
 #### Statistics and Machine Learning
-* Descriptive stats: mean, min, max, median, standard deviation, percentiles, etc.
+* Descriptive stats: mean, min, max, median, sum, product, standard deviation, variance, percentiles, geometric mean, skewness, kurtosis, etc.
 * Regression: Least Squares
 * Classification: Logistic Regression, Linear Discriminant Analysis, Decision Tree, k-Nearest Neighbors
 * Clustering: k-Means, x-Means, g-Means
