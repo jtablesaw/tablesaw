@@ -1,9 +1,9 @@
 Tablesaw
 =======
    
-Tablesaw is an easy-to-use platform for data science in Java. It includes a data-frame, an embedded column-store, and has hundreds of methods to transform, summarize, or filter data. If you work with data in Java, it will probably save you time and effort.
+Tablesaw is an easy-to-use platform for data science in Java. It includes a data-frame, an embedded column-store, and  hundreds of methods to transform, summarize, or filter data. If you work with data in Java, it will probably save you time and effort.
 
-It also includes support for descriptive statistics, data visualization, and preliminary support for machine learning, with more coming soon. There are other, more elaborate platforms for data science in Java. They were designed to work with vast amounts of data, and that requires a big stack: Spark, Hadoop, HDFS, Pig, Yarn, maybe.  
+It also includes support for descriptive statistics, data visualization, and machine learning. There are other, more elaborate platforms for data science in Java. They were designed to work with vast amounts of data, and that requires a big stack: Spark, Hadoop, HDFS, Pig, Yarn, maybe.  
 
 With Tablesaw, you can manipulate half a billion rows on a laptop and over 2 billion records on a server. All it takes to get started is one maven dependency:  
 
@@ -34,16 +34,15 @@ A 1.0 release is planned for early September.
 #### Statistics and Machine Learning
 * Descriptive stats: mean, min, max, median, sum, product, standard deviation, variance, percentiles, geometric mean, skewness, kurtosis, etc.
 * Regression: Least Squares
-* Classification: Logistic Regression, Linear Discriminant Analysis, Decision Tree, k-Nearest Neighbors
+* Classification: Logistic Regression, Linear Discriminant Analysis, Decision Trees, k-Nearest Neighbors
 * Clustering: k-Means, x-Means, g-Means
 * Association: Frequent Item Sets, Association Rule Mining
 
 #### Visualization
-* Scatter
-* Line
-* Vertical Bar
-* Horizontal Bar
-* Histogram 
+* Scatter plots
+* Line plots
+* Vertical and Horizontal Bar charts
+* Histograms 
 * Box plots
 * Quantile Plots
 * Pareto Charts
@@ -54,7 +53,7 @@ Here's an example where we use [XChart](https://github.com/timmolter/XChart) to 
 You can see examples and read more about plotting in Tablesaw here: https://jtablesaw.wordpress.com/2016/07/30/new-plot-types-in-tablesaw/.
 
 ### Current performance:
-Some areas of Tablesaw perform better than others. To give you a sense of where we're going, you can now load a 500,000,000 row, 4 column csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load it in 22 seconds. You can query that table in 1-2 ms: fast enough to use as a cache for a Web app.
+You can load a 500,000,000 row, 4 column csv file (35GB on disk) entirely into about 10 GB of memory. If it's in Tablesaw's .saw format, you can load it in 22 seconds. You can query that table in 1-2 ms: fast enough to use as a cache for a Web app.
 
 BTW, those numbers were achieved on a laptop.
 
