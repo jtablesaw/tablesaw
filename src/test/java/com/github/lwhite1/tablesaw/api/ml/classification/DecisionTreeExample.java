@@ -7,7 +7,7 @@ import com.github.lwhite1.tablesaw.util.Example;
 /**
  *
  */
-public class LogisticRegressionExample extends Example {
+public class DecisionTreeExample extends Example {
 
   public static void main(String[] args) throws Exception {
 
@@ -24,7 +24,7 @@ public class LogisticRegressionExample extends Example {
     Table train = splits[0];
     Table test = splits[1];
 
-    LogisticRegression model = LogisticRegression.learn(train.shortColumn(2), train.nCol("X"), train.nCol("Y"));
+    DecisionTree model = DecisionTree.learn(10, train.shortColumn(2), train.nCol("X"), train.nCol("Y"));
 
     ConfusionMatrix matrix = model.predictMatrix(test.shortColumn(2), test.nCol("X"), test.nCol("Y"));
 

@@ -15,7 +15,7 @@ import java.util.TreeSet;
 /**
  *
  */
-public class Lda {
+public class Lda extends AbstractClassifier {
 
   private final LDA classifierModel;
 
@@ -127,17 +127,6 @@ public class Lda {
     return confusion;
   }
 
-  private void populateMatrix(int[] labels, ConfusionMatrix confusion, NumericColumn[] predictors) {
-    for (int row = 0; row < predictors[0].size(); row++) {
-      double[] data = new double[predictors.length];
-      for (int col = 0; col < predictors.length; col++) {
-        data[col] = predictors[col].getFloat(row);
-      }
-      int prediction = classifierModel.predict(data);
-      confusion.increment(prediction, labels[row]);
-    }
-  }
-
   public int[] predict(NumericColumn ... predictors) {
     Preconditions.checkArgument(predictors.length > 0);
     int[] predictedLabels = new int[predictors[0].size()];
@@ -149,5 +138,10 @@ public class Lda {
       predictedLabels[row] = classifierModel.predict(data);
     }
     return predictedLabels;
+  }
+
+  @Override
+  int predictFromModel(double[] data) {
+    return classifierModel.predict(data);
   }
 }

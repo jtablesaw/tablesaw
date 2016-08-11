@@ -14,7 +14,7 @@ import java.util.TreeSet;
 /**
  *
  */
-public class LogisticRegression {
+public class LogisticRegression extends AbstractClassifier {
 
 /*
   public static smile.classification.LogisticRegression train(IntColumn labels, NumericColumn... trainingData) {
@@ -119,14 +119,8 @@ public class LogisticRegression {
     return predictedLabels;
   }
 
-  private void populateMatrix(int[] labels, ConfusionMatrix confusion, NumericColumn[] predictors) {
-    for (int row = 0; row < predictors[0].size(); row++) {
-      double[] data = new double[predictors.length];
-      for (int col = 0; col < predictors.length; col++) {
-        data[col] = predictors[col].getFloat(row);
-      }
-      int prediction = classifierModel.predict(data);
-      confusion.increment(prediction, labels[row]);
-    }
+  @Override
+  int predictFromModel(double[] data) {
+    return classifierModel.predict(data);
   }
 }
