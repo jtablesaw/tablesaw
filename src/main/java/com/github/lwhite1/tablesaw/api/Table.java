@@ -841,6 +841,46 @@ public class Table implements Relation, IntIterable {
     return SqlResultSetReader.read(resultSet, tableName);
   }
 
+/*
+  */
+/**
+   * Joins together this table and another table on the given column names. All the records of this table are included
+   * @return   A new table derived from combining this table with {@code other} table
+   *//*
+
+  public Table innerJoin(Table other, String columnName, String otherColumnName) {
+    // create a new table like this one
+    Table table = new Table(this.name());
+    // add the columns from this table
+    for (Column column : columns()) {
+      table.addColumn(column);
+    }
+    // add the columns from the other table, but leave the data out for now
+    for (Column column : other.columns()) {
+      if (!column.name().equals(otherColumnName)) {
+        table.addColumn(column.emptyCopy());
+      }
+    }
+
+    // iterate over the rows in the new table, fetching rows from the other table that match on
+    Column joinColumn = column(columnName);
+    Column otherJoinColumn = other.column(otherColumnName);
+    for (int row : table) {
+       joinColumn.getString(row))
+
+     // Row otherRow = other.getFirst(otherColumnName, comparable);
+      if (otherRow != null) {
+        // fill in the values of other tables columns for that row.
+        for (Column c : other.columns()) {
+          if (!c.name().equals(otherColumnName)) {
+            row.set(c.name(), otherRow.get(c.name()));
+          }
+        }
+      }
+    }
+    return table;
+  }
+*/
 
   @Override
   public String toString() {
