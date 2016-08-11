@@ -32,10 +32,11 @@ A 1.0 release is planned for early September.
 * Store tables in a fast, compressed columnar storage format
 
 #### Statistics and Machine Learning
-* Descriptive stats (mean, min, max, median, standard deviation, percentiles, etc.)
-* Regression (Least Squares)
-* Classification: (Logistic Regression, Linear Discriminant Analysis, and k-Nearest Neighbors)
-* Clustering: (k-Means)
+* Descriptive stats: mean, min, max, median, standard deviation, percentiles, etc.
+* Regression: Least Squares
+* Classification: Logistic Regression, Linear Discriminant Analysis, and k-Nearest Neighbors
+* Clustering: k-Means, x-Means, g-Means
+* Association: Frequent Item Sets, Association Rule Mining
 
 #### Visualization
 * Scatter
