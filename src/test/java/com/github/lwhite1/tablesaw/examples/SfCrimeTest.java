@@ -1,14 +1,9 @@
 package com.github.lwhite1.tablesaw.examples;
 
-import com.github.lwhite1.tablesaw.api.ShortColumn;
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.api.IntColumn;
-import com.github.lwhite1.tablesaw.io.csv.CsvReader;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.api.Table;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 
@@ -29,16 +24,10 @@ public class SfCrimeTest {
       FLOAT, // lat
  };
 
-  private Table table;
 
-  @Before
-  public void setUp() throws Exception {
-    table = CsvReader.read(heading, "bigdata/train.csv");
-  }
+  public static void main(String[] args) throws Exception {
 
-  @Test
-  @Ignore  // uses a lot of memory
-  public void test() {
+    Table table = Table.createFromCsv("/Users/larrywhite/IdeaProjects/testdata/bigdata/train.csv");
 
     out(table.columnNames().toString());
 
@@ -48,13 +37,13 @@ public class SfCrimeTest {
     CategoryColumn district = table.categoryColumn("PdDistrict");
     out(district.summary().print());
 
-    CategoryColumn dayOfWeek = table.dateTimeColumn("Dates").dayOfWeek();
-    table.addColumn(dayOfWeek);
+    ShortColumn dayOfWeekValue = table.dateTimeColumn("Dates").dayOfWeekValue();
+    table.addColumn(dayOfWeekValue);
 
     ShortColumn dayOfYear = table.dateTimeColumn("Dates").dayOfYear();
     table.addColumn(dayOfYear);
 
-    IntColumn year = table.dateTimeColumn("Dates").year();
+    ShortColumn year = table.dateTimeColumn("Dates").year();
     table.addColumn(year);
 
     out(table.first(100).print());

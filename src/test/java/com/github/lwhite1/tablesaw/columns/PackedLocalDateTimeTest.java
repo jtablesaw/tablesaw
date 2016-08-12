@@ -2,7 +2,6 @@ package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalTime;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -98,7 +97,6 @@ public class PackedLocalDateTimeTest {
     assertEquals(now.get(ChronoField.MILLI_OF_DAY), getMillisecondOfDay(pack(now)));
   }
 
-  @Ignore
   @Test
   public void testGetDayOfWeek() {
     LocalDateTime now = LocalDateTime.now();

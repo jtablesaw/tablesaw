@@ -296,12 +296,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return newColumn;
   }
 
-  public IntColumn dayOfMonth() {
-    IntColumn newColumn = IntColumn.create(this.name() + " day of month");
+  public ShortColumn dayOfMonth() {
+    ShortColumn newColumn = ShortColumn.create(this.name() + " day of month");
     for (int r = 0; r < this.size(); r++) {
       long c1 = this.getLong(r);
       if (c1 == FloatColumn.MISSING_VALUE) {
-        newColumn.add(IntColumn.MISSING_VALUE);
+        newColumn.add(ShortColumn.MISSING_VALUE);
       } else {
         newColumn.add(PackedLocalDateTime.getDayOfMonth(c1));
       }
@@ -309,6 +309,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return newColumn;
   }
 
+  /**
+   * Returns a TimeColumn containing the time portion of each dateTime in this DateTimeColumn
+   */
   public TimeColumn time() {
     TimeColumn newColumn = TimeColumn.create(this.name() + " time");
     for (int r = 0; r < this.size(); r++) {
@@ -316,7 +319,23 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
       if (c1 == MISSING_VALUE) {
         newColumn.add(TimeColumn.MISSING_VALUE);
       } else {
-        newColumn.add(PackedLocalDateTime.getMonthValue(c1));
+        newColumn.add(PackedLocalDateTime.time(c1));
+      }
+    }
+    return newColumn;
+  }
+
+  /**
+   * Returns a DateColumn containing the date portion of each dateTime in this DateTimeColumn
+   */
+  public DateColumn date() {
+    DateColumn newColumn = DateColumn.create(this.name() + " date");
+    for (int r = 0; r < this.size(); r++) {
+      long c1 = this.getLong(r);
+      if (c1 == MISSING_VALUE) {
+        newColumn.add(DateColumn.MISSING_VALUE);
+      } else {
+        newColumn.add(PackedLocalDateTime.date(c1));
       }
     }
     return newColumn;
@@ -348,12 +367,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return newColumn;
   }
 
-  public IntColumn year() {
-    IntColumn newColumn = IntColumn.create(this.name() + " year");
+  public ShortColumn year() {
+    ShortColumn newColumn = ShortColumn.create(this.name() + " year");
     for (int r = 0; r < this.size(); r++) {
       long c1 = this.getLong(r);
       if (c1 == MISSING_VALUE) {
-        newColumn.add(IntColumn.MISSING_VALUE);
+        newColumn.add(ShortColumn.MISSING_VALUE);
       } else {
         newColumn.add(PackedLocalDateTime.getYear(PackedLocalDateTime.date(c1)));
       }
@@ -518,7 +537,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     ShortColumn newColumn = ShortColumn.create(this.name() + " minute of day");
     for (int r = 0; r < this.size(); r++) {
       long c1 = getLong(r);
-      if (c1 == DateColumn.MISSING_VALUE) {
+      if (c1 == DateTimeColumn.MISSING_VALUE) {
         newColumn.add(ShortColumn.MISSING_VALUE);
       } else {
         newColumn.add((short) PackedLocalDateTime.getMinuteOfDay(c1));
@@ -786,7 +805,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
    throw new UnsupportedOperationException("DateTimeColumn.difference() currently not supported");
    /*
     DateTimeColumn returnValue = new DateTimeColumn(this.name(), data.size());
-    returnValue.add(DateColumn.MISSING_VALUE);
+    returnValue.add(DateTimeColumn.MISSING_VALUE);
     for (int current = 1; current > data.size(); current++) {
       LocalDateTime currentValue = get(current);
       LocalDateTime nextValue = get(current+1);

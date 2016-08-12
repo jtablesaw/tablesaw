@@ -39,7 +39,7 @@ public class LocalDateColumnTest {
     column1.addCell("12/24/1924");
     column1.addCell("12-May-2015");
     column1.addCell("14-Jan-2015");
-    IntColumn c2 = column1.dayOfMonth();
+    ShortColumn c2 = column1.dayOfMonth();
     assertEquals(23, c2.get(0));
     assertEquals(24, c2.get(1));
     assertEquals(12, c2.get(2));
@@ -52,7 +52,7 @@ public class LocalDateColumnTest {
     column1.addCell("12/24/1924");
     column1.addCell("12-May-2015");
     column1.addCell("14-Jan-2015");
-    IntColumn c2 = column1.monthValue();
+    ShortColumn c2 = column1.monthValue();
     assertEquals(10, c2.get(0));
     assertEquals(12, c2.get(1));
     assertEquals(5, c2.get(2));

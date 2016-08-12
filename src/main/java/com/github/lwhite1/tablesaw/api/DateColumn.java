@@ -234,12 +234,12 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
   }
 
 
-  public IntColumn dayOfMonth() {
-        IntColumn newColumn = IntColumn.create(this.name() + " day of month");
+  public ShortColumn dayOfMonth() {
+        ShortColumn newColumn = ShortColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             if (c1 == DateColumn.MISSING_VALUE) {
-                newColumn.add(IntColumn.MISSING_VALUE);
+                newColumn.add(ShortColumn.MISSING_VALUE);
             } else {
                 newColumn.add(PackedLocalDate.getDayOfMonth(c1));
             }
@@ -247,26 +247,26 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
         return newColumn;
     }
 
-    public IntColumn dayOfYear() {
-        IntColumn newColumn = IntColumn.create(this.name() + " day of month");
+    public ShortColumn dayOfYear() {
+        ShortColumn newColumn = ShortColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             if (c1 == DateColumn.MISSING_VALUE) {
-                newColumn.add(IntColumn.MISSING_VALUE);
+                newColumn.add(ShortColumn.MISSING_VALUE);
             } else {
-                newColumn.add(PackedLocalDate.getDayOfYear(c1));
+                newColumn.add((short) PackedLocalDate.getDayOfYear(c1));
             }
         }
         return newColumn;
     }
 
-    public IntColumn monthValue() {
-        IntColumn newColumn = IntColumn.create(this.name() + " month");
+    public ShortColumn monthValue() {
+        ShortColumn newColumn = ShortColumn.create(this.name() + " month");
 
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             if (c1 == DateColumn.MISSING_VALUE) {
-                newColumn.add(IntColumn.MISSING_VALUE);
+                newColumn.add(ShortColumn.MISSING_VALUE);
             } else {
                 newColumn.add(PackedLocalDate.getMonthValue(c1));
             }
