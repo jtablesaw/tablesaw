@@ -152,6 +152,7 @@ public class PackedLocalDate {
   }
 
   public static DayOfWeek getDayOfWeek(int packedDate) {
+    //TODO(lwhite): This is throwing an exception java.lang.NoSuchMethodError even tho the jdk version seems correct
     int dow0 = (int) Math.floorMod(toEpochDay(packedDate) + 3, 7);
     return DayOfWeek.of(dow0 + 1);
   }

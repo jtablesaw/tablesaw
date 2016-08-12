@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.examples;
 
+import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
@@ -50,7 +51,7 @@ public class SfCrimeTest {
     CategoryColumn dayOfWeek = table.dateTimeColumn("Dates").dayOfWeek();
     table.addColumn(dayOfWeek);
 
-    IntColumn dayOfYear = table.dateTimeColumn("Dates").dayOfYear();
+    ShortColumn dayOfYear = table.dateTimeColumn("Dates").dayOfYear();
     table.addColumn(dayOfYear);
 
     IntColumn year = table.dateTimeColumn("Dates").year();

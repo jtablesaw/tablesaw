@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.api.ml.classification;
 
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
@@ -17,19 +18,24 @@ public class RandomForest extends AbstractClassifier {
   private final smile.classification.RandomForest classifierModel;
 
 
-  public static RandomForest learn(int maxNodes, IntColumn classes, NumericColumn ... columns) {
+  public static RandomForest learn(int nTrees, IntColumn classes, NumericColumn ... columns) {
     int[] classArray = classes.data().toIntArray();
-    return new RandomForest(maxNodes, classArray, columns);
+    return new RandomForest(nTrees, classArray, columns);
   }
 
-  public static RandomForest learn(int maxNodes, ShortColumn classes, NumericColumn ... columns) {
+  public static RandomForest learn(int nTrees, ShortColumn classes, NumericColumn ... columns) {
     int[] classArray = classes.toIntArray();
-    return new RandomForest(maxNodes, classArray, columns);
+    return new RandomForest(nTrees, classArray, columns);
   }
 
-  private RandomForest(int maxNodes, int[] classArray, NumericColumn ... columns) {
+  public static RandomForest learn(int nTrees, CategoryColumn classes, NumericColumn ... columns) {
+    int[] classArray = classes.data().toIntArray();
+    return new RandomForest(nTrees, classArray, columns);
+  }
+
+  private RandomForest(int nTrees, int[] classArray, NumericColumn ... columns) {
     double[][] data = DoubleArrays.to2dArray(columns);
-    this.classifierModel = new smile.classification.RandomForest(data, classArray, maxNodes);
+    this.classifierModel = new smile.classification.RandomForest(data, classArray, nTrees);
   }
 
   public int predict(double[] data) {
@@ -43,6 +49,16 @@ public class RandomForest extends AbstractClassifier {
     ConfusionMatrix confusion = new ConfusionMatrix(labelSet);
 
     populateMatrix(labels.toIntArray(), confusion, predictors);
+    return confusion;
+  }
+
+  public ConfusionMatrix predictMatrix(CategoryColumn labels, NumericColumn ... predictors) {
+    Preconditions.checkArgument(predictors.length > 0);
+
+    SortedSet<Object> labelSet = new TreeSet<>(labels.asSet());
+    ConfusionMatrix confusion = new ConfusionMatrix(labelSet);
+
+    populateMatrix(labels.data().toIntArray(), confusion, predictors);
     return confusion;
   }
 

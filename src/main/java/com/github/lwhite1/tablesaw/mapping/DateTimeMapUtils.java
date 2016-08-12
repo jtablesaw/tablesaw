@@ -70,14 +70,14 @@ public interface DateTimeMapUtils extends DateTImeColumnUtils {
     return newColumn;
   }
 
-  default IntColumn minuteOfDay() {
-    IntColumn newColumn = IntColumn.create(name() + "[" + "minute-of-day" + "]");
+  default ShortColumn minuteOfDay() {
+    ShortColumn newColumn = ShortColumn.create(name() + "[" + "minute-of-day" + "]");
     for (int r = 0; r < size(); r++) {
       long c1 = getLong(r);
       if (c1 != DateTimeColumn.MISSING_VALUE) {
-        newColumn.add(PackedLocalDateTime.getMinuteOfDay(c1));
+        newColumn.add((short) PackedLocalDateTime.getMinuteOfDay(c1));
       } else {
-        newColumn.add(IntColumn.MISSING_VALUE);
+        newColumn.add(ShortColumn.MISSING_VALUE);
       }
     }
     return newColumn;

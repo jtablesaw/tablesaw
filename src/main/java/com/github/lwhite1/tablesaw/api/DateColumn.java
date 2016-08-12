@@ -220,7 +220,21 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
         return newColumn;
     }
 
-    public IntColumn dayOfMonth() {
+  public ShortColumn dayOfWeekValue() {
+    ShortColumn newColumn = ShortColumn.create(this.name() + " day of week", this.size());
+    for (int r = 0; r < this.size(); r++) {
+      int c1 = this.getInt(r);
+      if (c1 == (DateColumn.MISSING_VALUE)) {
+        newColumn.set(r, ShortColumn.MISSING_VALUE);
+      } else {
+        newColumn.add((short) PackedLocalDate.getDayOfWeek(c1).getValue());
+      }
+    }
+    return newColumn;
+  }
+
+
+  public IntColumn dayOfMonth() {
         IntColumn newColumn = IntColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);

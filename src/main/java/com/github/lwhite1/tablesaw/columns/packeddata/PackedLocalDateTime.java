@@ -158,8 +158,8 @@ public class PackedLocalDateTime {
   }
 
   public static DayOfWeek getDayOfWeek(long packedDateTime) {
-    int dow0 = (int) Math.floorMod(toEpochDay(packedDateTime) + 3, 7);
-    return DayOfWeek.of(dow0 + 1);
+    int date = PackedLocalDateTime.date(packedDateTime);
+    return PackedLocalDate.getDayOfWeek(date);
   }
 
   private static long toEpochDay(long packedDateTime) {
