@@ -73,8 +73,10 @@ public class LogisticRegression extends AbstractClassifier {
   }
 
   public static LogisticRegression learn(CategoryColumn labels, double lambda, NumericColumn ... predictors) {
+
     smile.classification.LogisticRegression classifierModel =
         new smile.classification.LogisticRegression(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), lambda);
+
     return new LogisticRegression(classifierModel);
   }
 
@@ -90,7 +92,7 @@ public class LogisticRegression extends AbstractClassifier {
     Preconditions.checkArgument(predictors.length > 0);
 
     SortedSet<Object> labelSet = new TreeSet<>(labels.asSet());
-    ConfusionMatrix confusion = new ConfusionMatrix(labelSet);
+    ConfusionMatrix confusion = new StandardConfusionMatrix(labelSet);
 
     populateMatrix(labels.toIntArray(), confusion, predictors);
     return confusion;
@@ -100,7 +102,7 @@ public class LogisticRegression extends AbstractClassifier {
     Preconditions.checkArgument(predictors.length > 0);
 
     SortedSet<Object> labelSet = new TreeSet<>(labels.asSet());
-    ConfusionMatrix confusion = new ConfusionMatrix(labelSet);
+    ConfusionMatrix confusion = new StandardConfusionMatrix(labelSet);
 
     populateMatrix(labels.toIntArray(), confusion, predictors);
     return confusion;

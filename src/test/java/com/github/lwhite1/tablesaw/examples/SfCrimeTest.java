@@ -38,9 +38,11 @@ public class SfCrimeTest {
     dayOfYear.setName("DayOfYear");
     crime.addColumn(dayOfYear);
 
+/*
     ShortColumn dayOfWeekValue = crime.dateTimeColumn("Dates").dayOfWeekValue();
     dayOfWeekValue.setName("DayOfWeek");
     crime.addColumn(dayOfWeekValue);
+*/
 
     Table[] subTables = crime.sampleSplit(.5);
     Table train = subTables[0];
@@ -52,7 +54,7 @@ public class SfCrimeTest {
         train.nCol("Y"),
         train.nCol("MinuteOfDay"),
         train.nCol("DayOfYear"),
-        train.nCol("DayOfWeek"),
+      //  train.nCol("DayOfWeek"),
         train.nCol("Year"));
 
     out("Model trained");
@@ -62,7 +64,7 @@ public class SfCrimeTest {
         test.nCol("Y"),
         test.nCol("MinuteOfDay"),
         test.nCol("DayOfYear"),
-        test.nCol("DayOfWeek"),
+     //   test.nCol("DayOfWeek"),
         test.nCol("Year"));
 
     out(matrix.accuracy());

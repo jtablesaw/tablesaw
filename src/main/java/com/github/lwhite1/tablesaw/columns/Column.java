@@ -170,5 +170,4 @@ public interface Column<E extends Column> {
      * (e.g. IntColumn.MISSING_VALUE)
      */
     E difference();
-
 }

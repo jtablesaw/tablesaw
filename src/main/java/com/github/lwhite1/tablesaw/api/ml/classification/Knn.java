@@ -9,6 +9,7 @@ import com.github.lwhite1.tablesaw.util.DoubleArrays;
 import com.google.common.base.Preconditions;
 import smile.classification.KNN;
 
+import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -51,7 +52,7 @@ public class Knn extends AbstractClassifier {
     Preconditions.checkArgument(predictors.length > 0);
 
     SortedSet<Object> labelSet = new TreeSet<>(labels.asSet());
-    ConfusionMatrix confusion = new ConfusionMatrix(labelSet);
+    ConfusionMatrix confusion = new StandardConfusionMatrix(labelSet);
 
     populateMatrix(labels.toIntArray(), confusion, predictors);
     return confusion;
@@ -61,7 +62,7 @@ public class Knn extends AbstractClassifier {
     Preconditions.checkArgument(predictors.length > 0);
 
     SortedSet<Object> labelSet = new TreeSet<>(labels.asSet());
-    ConfusionMatrix confusion = new ConfusionMatrix(labelSet);
+    ConfusionMatrix confusion = new StandardConfusionMatrix(labelSet);
 
     populateMatrix(labels.data().toIntArray(), confusion, predictors);
     return confusion;
@@ -71,7 +72,7 @@ public class Knn extends AbstractClassifier {
     Preconditions.checkArgument(predictors.length > 0);
 
     SortedSet<Object> labelSet = new TreeSet<>(labels.asSet());
-    ConfusionMatrix confusion = new ConfusionMatrix(labelSet);
+    ConfusionMatrix confusion = new StandardConfusionMatrix(labelSet);
 
     populateMatrix(labels.toIntArray(), confusion, predictors);
     return confusion;
@@ -80,8 +81,8 @@ public class Knn extends AbstractClassifier {
   public ConfusionMatrix predictMatrix(CategoryColumn labels, NumericColumn ... predictors) {
     Preconditions.checkArgument(predictors.length > 0);
 
-    SortedSet<Object> labelSet = new TreeSet<>(labels.asSet());
-    ConfusionMatrix confusion = new ConfusionMatrix(labelSet);
+    SortedSet<String> labelSet = new TreeSet<>(labels.asSet());
+    ConfusionMatrix confusion = new CategoryConfusionMatrix(labels, labelSet);
 
     populateMatrix(labels.data().toIntArray(), confusion, predictors);
     return confusion;
@@ -102,6 +103,8 @@ public class Knn extends AbstractClassifier {
 
   @Override
   int predictFromModel(double[] data) {
+    if (data[0] == 5.0)
+      System.out.println(Arrays.toString(data));
     return classifierModel.predict(data);
   }
 }
