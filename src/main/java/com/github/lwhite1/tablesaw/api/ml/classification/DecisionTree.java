@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.api.ml.classification;
 
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.NumericColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
@@ -27,6 +28,11 @@ public class DecisionTree extends AbstractClassifier {
     return new DecisionTree(maxNodes, classArray, columns);
   }
 
+  public static DecisionTree learn(int nTrees, CategoryColumn classes, NumericColumn ... columns) {
+    int[] classArray = classes.data().toIntArray();
+    return new DecisionTree(nTrees, classArray, columns);
+  }
+
   private DecisionTree(int maxNodes, int[] classArray, NumericColumn ... columns) {
     double[][] data = DoubleArrays.to2dArray(columns);
     this.classifierModel = new smile.classification.DecisionTree(data, classArray, maxNodes);
@@ -43,6 +49,16 @@ public class DecisionTree extends AbstractClassifier {
     ConfusionMatrix confusion = new ConfusionMatrix(labelSet);
 
     populateMatrix(labels.toIntArray(), confusion, predictors);
+    return confusion;
+  }
+
+  public ConfusionMatrix predictMatrix(CategoryColumn labels, NumericColumn ... predictors) {
+    Preconditions.checkArgument(predictors.length > 0);
+
+    SortedSet<Object> labelSet = new TreeSet<>(labels.asSet());
+    ConfusionMatrix confusion = new ConfusionMatrix(labelSet);
+
+    populateMatrix(labels.data().toIntArray(), confusion, predictors);
     return confusion;
   }
 
