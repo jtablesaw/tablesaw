@@ -85,4 +85,16 @@ public class CsvReaderTest {
     }
     assertNotNull(table);
   }
+
+  @Test
+  public void testBoundary1() throws Exception {
+    Table table1 = Table.createFromCsv("data/boundaryTest1.csv");
+    table1.structure();  // just make sure the import completed
+  }
+
+  @Test
+  public void testBoundary2() throws Exception {
+    Table table1 = Table.createFromCsv("data/boundaryTest2.csv");
+    table1.structure(); // just make sure the import completed
+  }
 }

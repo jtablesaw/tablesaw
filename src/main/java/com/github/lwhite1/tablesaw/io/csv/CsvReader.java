@@ -361,17 +361,15 @@ public class CsvReader {
 
         // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
         if (rowCount == 0) {
-          for (int i = 0; i < nextLine.length; i++) {
+          for (String aNextLine : nextLine) {
             columnData.add(new ArrayList<>());
           }
         }
         int columnNumber = 0;
-        if (rowCount >= linesToSkip) {
-          if (rowCount == nextRow) {
-            for (String field : nextLine) {
-              columnData.get(columnNumber).add(field);
-              columnNumber++;
-            }
+        if (rowCount == nextRow) {
+          for (String field : nextLine) {
+            columnData.get(columnNumber).add(field);
+            columnNumber++;
           }
         }
         if (rowCount == nextRow) {
