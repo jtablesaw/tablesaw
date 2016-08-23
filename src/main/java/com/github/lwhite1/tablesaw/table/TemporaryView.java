@@ -39,19 +39,10 @@ public class TemporaryView implements Relation, IntIterable {
   private final Selection rowMap;
 
   /**
-   * Returns a new View constructed from the given table, containing only the rows represented by the bitmpa
+   * Returns a new View constructed from the given table, containing only the rows represented by the bitmap
    */
   public TemporaryView(Table table, Selection rowSelection) {
-    this.name = table.name();  //TODO(lwhite): Is this really needed, or can we reference the table name?
-    this.rowMap = rowSelection;
-    this.table = table;
-  }
-
-  /**
-   * Returns a new View constructed from the given table, containing only the rows represented by the bitmpa
-   */
-  public TemporaryView(Table table, Selection rowSelection, String[] columnNames) {
-    this.name = table.name();  //TODO(lwhite): Is this really needed, or can we reference the table name?
+    this.name = table.name();
     this.rowMap = rowSelection;
     this.table = table;
   }
@@ -326,31 +317,4 @@ public class TemporaryView implements Relation, IntIterable {
       }
     };
   }
-
-  /*  @Override
-  public it.unimi.dsi.fastutil.ints.IntIterator iterator() {
-
-    return new it.unimi.dsi.fastutil.ints.IntIterator() {
-
-      @Override
-      public int nextInt() {
-        return intIterator().next();
-      }
-
-      @Override
-      public int skip(int k) {
-        throw new UnsupportedOperationException("Views do not support skipping in the iterator");
-      }
-
-      @Override
-      public boolean hasNext() {
-        return intIterator().hasNext();
-      }
-
-      @Override
-      public Integer next() {
-        return intIterator().next();
-      }
-    };
-  }*/
 }
