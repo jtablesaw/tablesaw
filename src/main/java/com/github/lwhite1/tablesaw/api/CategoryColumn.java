@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.api;
 
-import com.github.lwhite1.tablesaw.reducing.CategoryReduceUtils;
 import com.github.lwhite1.tablesaw.columns.AbstractColumn;
+import com.github.lwhite1.tablesaw.columns.CategoryColumnUtils;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.filtering.StringBiPredicate;
 import com.github.lwhite1.tablesaw.filtering.StringPredicate;
@@ -37,7 +37,7 @@ import java.util.Set;
  * A column in a base table that contains float values
  */
 public class CategoryColumn extends AbstractColumn
-    implements CategoryFilters, CategoryReduceUtils, Iterable<String> {
+    implements CategoryFilters, CategoryColumnUtils, Iterable<String> {
 
   private static final int BYTE_SIZE = 4;
 
@@ -407,6 +407,15 @@ public class CategoryColumn extends AbstractColumn
    */
   public IntArrayList data() {
     return values;
+  }
+
+  public IntColumn toIntColumn() {
+    IntColumn intColumn = IntColumn.create(this.name() + ": codes", size());
+    IntArrayList data = data();
+    for (int i = 0; i < size(); i++) {
+      intColumn.add(data.getInt(i));
+    }
+    return intColumn;
   }
 
   public DictionaryMap dictionaryMap() {

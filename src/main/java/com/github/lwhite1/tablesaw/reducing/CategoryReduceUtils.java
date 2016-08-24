@@ -1,11 +1,11 @@
 package com.github.lwhite1.tablesaw.reducing;
 
-import com.github.lwhite1.tablesaw.columns.CategoryColumnUtils;
+import com.github.lwhite1.tablesaw.columns.Column;
 
 /**
  *
  */
-public interface CategoryReduceUtils extends CategoryColumnUtils {
+public interface CategoryReduceUtils extends Column, Iterable<String> {
 
   int size();
 
