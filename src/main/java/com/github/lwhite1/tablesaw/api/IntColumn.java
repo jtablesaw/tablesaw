@@ -390,6 +390,14 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     return output;
   }
 
+  public int[] toIntArray() {
+    int[] output = new int[data.size()];
+    for (int i = 0; i < data.size(); i++) {
+      output[i] = data.getInt(i);
+    }
+    return output;
+  }
+
   public double[] toDoubleArray() {
     double[] output = new double[data.size()];
     for (int i = 0; i < data.size(); i++) {
