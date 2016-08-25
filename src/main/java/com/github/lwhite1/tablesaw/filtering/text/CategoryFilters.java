@@ -4,7 +4,6 @@ import com.github.lwhite1.tablesaw.columns.CategoryColumnUtils;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.DictionaryMap;
 import com.github.lwhite1.tablesaw.util.Selection;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.StringUtils;
@@ -31,16 +30,17 @@ public interface CategoryFilters extends CategoryColumnUtils {
 
   default Selection startsWith(String string) {
     Selection results = new BitmapBackedSelection();
-    IntArrayList encodedStrings = new IntArrayList();
+
+    IntRBTreeSet sorted = new IntRBTreeSet();
     DictionaryMap dictionaryMap = this.dictionaryMap();
+
     for (Object2IntMap.Entry<String> entry : dictionaryMap.valueToKeyMap().object2IntEntrySet()) {
       String key = entry.getKey();
       if (key.startsWith(string)) {
-        encodedStrings.add(entry.getIntValue());
+        sorted.add(entry.getIntValue());
       }
     }
-    IntRBTreeSet sorted = new IntRBTreeSet(encodedStrings);
-
+    
     int i = 0;
     for (int next : values()) {
       if (sorted.contains(next)) {

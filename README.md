@@ -10,7 +10,7 @@ With Tablesaw, you can manipulate half a billion rows on a laptop and over 2 bil
     <dependency>
         <groupId>com.github.lwhite1</groupId>
         <artifactId>tablesaw</artifactId>
-        <version>0.7.4</version>
+        <version>0.7.5.1</version>
     </dependency>
 
 ### Documentation and support:

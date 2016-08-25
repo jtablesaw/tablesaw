@@ -384,15 +384,15 @@ public class Table implements Relation, IntIterable {
 
     Sort key = null;
     Order order;
-    List<String> names = columnNames();
+    List<String> names = new ArrayList<>();
+    for (String name : columnNames()) {
+      names.add(name.toUpperCase());
+    }
 
     for (String columnName : columnNames) {
-
-      if (names.contains(columnName)) {
-
+      if (names.contains(columnName.toUpperCase())) {
         // the column name has not been annotated with a prefix.
         order = Order.ASCEND;
-
       } else {
 
         // get the prefix which could be - or +
@@ -402,7 +402,6 @@ public class Table implements Relation, IntIterable {
         columnName = columnName.substring(1, columnName.length());
 
         switch (prefix) {
-
           case "+":
             order = Order.ASCEND;
             break;
@@ -412,7 +411,6 @@ public class Table implements Relation, IntIterable {
           default:
             throw new IllegalStateException("Column prefix: " + prefix + " is unknown.");
         }
-
       }
 
       if (key == null) { // key will be null the first time through
@@ -421,7 +419,6 @@ public class Table implements Relation, IntIterable {
         key.next(columnName, order);
       }
     }
-
     return sortOn(key);
   }
 
@@ -457,9 +454,6 @@ public class Table implements Relation, IntIterable {
   }
 
   /**
-   * Returns a copy of this table sorted on the given columns
-   * <p>
-   * The columns are sorted in reverse order if they value matching the name is {@code true}
    */
   public Table sortOn(Sort key) {
     Preconditions.checkArgument(!key.isEmpty());
