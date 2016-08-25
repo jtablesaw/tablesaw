@@ -84,4 +84,5 @@ public class QueryHelper {
   public static Filter or(Collection<Filter> filters) {
     return AnyOf.anyOf(filters);
   }
+
 }

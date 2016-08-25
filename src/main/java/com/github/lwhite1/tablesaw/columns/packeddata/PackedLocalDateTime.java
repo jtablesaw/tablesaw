@@ -82,7 +82,7 @@ public class PackedLocalDateTime {
   public static long pack(Date date) {
     return pack(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
   }
-  
+
   public static long pack(short yr, byte m, byte d, byte hr, byte min, byte s, byte n) {
     byte byte1 = (byte) yr;
     byte byte2 = (byte) ((yr >> 8) & 0xff);

@@ -608,6 +608,14 @@ public class CategoryColumn extends AbstractColumn
     return lookupTable.categories();
   }
 
+  /**
+   * Returns the integer encoded value of each cell in this column. It can be used to lookup the mapped string in
+   * the lookupTable
+   */
+  public IntArrayList values() {
+    return values;
+  }
+
   @Override
   public int byteSize() {
     return BYTE_SIZE;
