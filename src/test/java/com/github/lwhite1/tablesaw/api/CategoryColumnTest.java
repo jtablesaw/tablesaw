@@ -1,9 +1,7 @@
 package com.github.lwhite1.tablesaw.api;
 
 import com.github.lwhite1.tablesaw.TestDataUtil;
-import com.github.lwhite1.tablesaw.api.BooleanColumn;
-import com.github.lwhite1.tablesaw.api.CategoryColumn;
-import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.util.Selection;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,5 +68,21 @@ public class CategoryColumnTest {
     CategoryColumn categoryColumn = CategoryColumn.create("US States");
     categoryColumn.addAll(TestDataUtil.usStates());
     assertTrue("Alabama".equals(categoryColumn.bottom(5).get(0)));
+  }
+
+  @Test
+  public void testStartsWith() {
+    CategoryColumn categoryColumn = CategoryColumn.create("US States");
+    categoryColumn.addAll(TestDataUtil.usStates());
+    Selection selection = categoryColumn.startsWith("A");
+    assertEquals("Alabama", categoryColumn.get(selection.get(0)));
+    assertEquals("Alaska", categoryColumn.get(selection.get(1)));
+    assertEquals("Arizona", categoryColumn.get(selection.get(2)));
+    assertEquals("Arkansas", categoryColumn.get(selection.get(3)));
+
+    selection = categoryColumn.startsWith("T");
+    assertEquals("Tennessee", categoryColumn.get(selection.get(0)));
+    assertEquals("Texas", categoryColumn.get(selection.get(1)));
+
   }
 }
