@@ -14,7 +14,7 @@ public class AssociationRuleMiningExample {
     Table table = Table.createFromCsv("data/movielens.data", true, '\t');
 
     double supportThreshold = .25;
-    double confidenceThreshould = .5;
+    double confidenceThreshold = .5;
     double interestThreshold = .5;
 
     AssociationRuleMining model = new AssociationRuleMining(table.shortColumn("user"), table.shortColumn("movie"), supportThreshold);
@@ -23,7 +23,7 @@ public class AssociationRuleMiningExample {
     Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap = frequentItemsetModel.confidenceMap();
 
     Table interestingRuleTable =
-        model.interest(confidenceThreshould, interestThreshold, confidenceMap);
+        model.interest(confidenceThreshold, interestThreshold, confidenceMap);
 
     interestingRuleTable = interestingRuleTable.sortDescendingOn("Interest", "Antecedent");
     out(interestingRuleTable.print());

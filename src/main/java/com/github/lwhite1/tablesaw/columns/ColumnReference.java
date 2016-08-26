@@ -59,6 +59,7 @@ import com.github.lwhite1.tablesaw.filtering.text.TextHasLengthEqualTo;
 import com.github.lwhite1.tablesaw.filtering.text.TextIsAlpha;
 import com.github.lwhite1.tablesaw.filtering.text.TextIsAlphaNumeric;
 import com.github.lwhite1.tablesaw.filtering.text.TextIsEmpty;
+import com.github.lwhite1.tablesaw.filtering.text.TextIsIn;
 import com.github.lwhite1.tablesaw.filtering.text.TextIsLongerThan;
 import com.github.lwhite1.tablesaw.filtering.text.TextIsLowerCase;
 import com.github.lwhite1.tablesaw.filtering.text.TextIsNumeric;
@@ -151,6 +152,10 @@ public class ColumnReference {
 
   public Filter isIn(IntColumn intColumn) {
     return new IntIsIn(this, intColumn);
+  }
+
+  public Filter isIn(String ... strings) {
+    return new TextIsIn(this, strings);
   }
 
   public Filter isLessThan(int value) {

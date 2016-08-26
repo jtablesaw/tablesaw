@@ -337,6 +337,23 @@ public class Table implements Relation, IntIterable {
     return tables;
   }
 
+  /**
+   * Returns a table consisting of randomly selected records from this table. The sample size is based on the
+   * given proportion
+   *
+   * @param proportion The proportion to go in the sample
+   */
+  public Table sample(double proportion) {
+
+    int tableCount = (int) Math.round(rowCount() * proportion);
+
+    Selection table1Selection = new BitmapBackedSelection();
+    int[] selectedRecords = generateUniformBitmap(tableCount, rowCount());
+    for (int selectedRecord : selectedRecords) {
+      table1Selection.add(selectedRecord);
+    }
+    return selectWhere(table1Selection);
+  }
 
   /**
    * Clears all the data from this table
@@ -593,6 +610,25 @@ public class Table implements Relation, IntIterable {
       columnType.add(column.type().name());
     }
     return t;
+  }
+
+  /**
+   * Returns the unique records in this table
+   * Note: Uses a lot of memory for a sort
+   */
+  public Table uniqueRecords() {
+
+    IntArrayList uniqueRows = new IntArrayList();
+    Table sorted = this.sortOn(columnNames().toArray(new String[columns().size()]));
+    Table temp = emptyCopy();
+
+    for (int row = 0; row < rowCount(); row++) {
+      if (temp.isEmpty() || !Rows.compareRows(row, sorted, temp)) {
+        uniqueRows.add(row);
+        Rows.appendRowToTable(row, sorted, temp);
+      }
+    }
+    return temp;
   }
 
   public Projection select(String... columnName) {
@@ -910,7 +946,9 @@ public class Table implements Relation, IntIterable {
     };
   }
 
-
+  /**
+   * Returns an randomly generated array of ints of size N where Max is the largest possible value
+   */
   static int[] generateUniformBitmap(int N, int Max) {
 
     if (N > Max) throw new RuntimeException("not possible");
