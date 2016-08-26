@@ -83,6 +83,15 @@ public class CategoryColumnTest {
     selection = categoryColumn.startsWith("T");
     assertEquals("Tennessee", categoryColumn.get(selection.get(0)));
     assertEquals("Texas", categoryColumn.get(selection.get(1)));
+  }
 
+  @Test
+  public void testIsIn() {
+    CategoryColumn categoryColumn = CategoryColumn.create("US States");
+    categoryColumn.addAll(TestDataUtil.usStates());
+    Selection selection = categoryColumn.isIn("Alabama", "Texas");
+    assertEquals("Alabama", categoryColumn.get(selection.get(0)));
+    assertEquals("Texas", categoryColumn.get(selection.get(1)));
+    assertEquals(2, selection.size());
   }
 }

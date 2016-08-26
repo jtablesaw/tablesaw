@@ -628,4 +628,24 @@ public class CategoryColumn extends AbstractColumn
   public byte[] asBytes(int rowNumber) {
     return ByteBuffer.allocate(4).putInt(getInt(rowNumber)).array();
   }
+
+  public Selection isIn(String ... strings) {
+    IntArrayList keys = new IntArrayList();
+    for (String string : strings) {
+      int key = lookupTable.get(string);
+      if (key >= 0) {
+        keys.add(key);
+      }
+    }
+
+    int i = 0;
+    Selection results = new BitmapBackedSelection();
+    for (int next : values) {
+      if (keys.contains(next)) {
+        results.add(i);
+      }
+      i++;
+    }
+    return results;
+  }
 }
