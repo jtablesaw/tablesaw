@@ -22,8 +22,7 @@ public class AssociationRuleMiningExample {
     FrequentItemset frequentItemsetModel = new FrequentItemset(table.shortColumn("user"), table.shortColumn("movie"), supportThreshold);
     Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap = frequentItemsetModel.confidenceMap();
 
-    Table interestingRuleTable =
-        model.interest(confidenceThreshold, interestThreshold, confidenceMap);
+    Table interestingRuleTable = model.interest(confidenceThreshold, interestThreshold, confidenceMap);
 
     interestingRuleTable = interestingRuleTable.sortDescendingOn("Interest", "Antecedent");
     out(interestingRuleTable.print());

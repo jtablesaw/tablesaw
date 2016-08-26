@@ -2,6 +2,7 @@ package com.github.lwhite1.tablesaw.api.ml.association;
 
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.table.TemporaryView;
@@ -36,6 +37,29 @@ public class AssociationRuleMining {
       int itemIndex = 0;
       itemsets[basketIndex] = new int[set.size()];
       for (short item : set) {
+        itemsets[basketIndex][itemIndex] = item;
+        itemIndex++;
+      }
+      basketIndex++;
+    }
+
+    this.model = new ARM(itemsets, support);
+  }
+
+  public AssociationRuleMining(IntColumn sets, CategoryColumn items, double support) {
+    Table temp = Table.create("temp");
+    temp.addColumn(sets.copy());
+    temp.addColumn(items.toIntColumn());
+    temp.sortAscendingOn(sets.name(), items.name());
+
+    ViewGroup baskets = temp.splitOn(temp.column(0));
+    int[][] itemsets = new int[baskets.size()][];
+    int basketIndex = 0;
+    for (TemporaryView basket : baskets) {
+      IntRBTreeSet set = new IntRBTreeSet(basket.intColumn(1).data());
+      int itemIndex = 0;
+      itemsets[basketIndex] = new int[set.size()];
+      for (int item : set) {
         itemsets[basketIndex][itemIndex] = item;
         itemIndex++;
       }

@@ -19,13 +19,20 @@ public class FrequentItemsetExample {
     out(table.structure().print());
     FrequentItemset model = new FrequentItemset(table.shortColumn("user"), table.shortColumn("movie"), .24);
     List<ItemSet> itemSetList = model.learn();
+
+    out("Frequent Itemsets");
     for (ItemSet itemSet : itemSetList) {
       if(itemSet.items.length == 2)
         out(itemSet);
     }
 
+    out(model.supportMap(250));
+
     Object2DoubleOpenHashMap<int[]> confidenceMap = model.confidenceMap(.20);
     Object2DoubleMap.FastEntrySet<int[]> entrySet = confidenceMap.object2DoubleEntrySet();
+
+    out("");
+    out("Confidence Map");
     for (Object2DoubleMap.Entry<int[]> entry : entrySet) {
       out(Arrays.toString(entry.getKey()) + " : " + entry.getDoubleValue());
     }
