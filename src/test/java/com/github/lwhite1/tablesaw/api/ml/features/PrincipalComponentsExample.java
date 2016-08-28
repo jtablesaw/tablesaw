@@ -3,7 +3,7 @@ package com.github.lwhite1.tablesaw.api.ml.features;
 /**
  *
  */
-public class PrincipalComponentsTest {
+public class PrincipalComponentsExample {
 
 
 

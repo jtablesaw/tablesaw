@@ -27,6 +27,78 @@ public interface IntMapUtils extends IntColumnUtils {
     return newColumn;
   }
 
+  default IntColumn plus(int value) {
+
+    // TODO(lwhite): Assert all columns are the same size.
+    String name = name() + " + " + value;
+    IntColumn newColumn = IntColumn.create(name);
+
+    for (int r = 0; r < size(); r++) {
+      newColumn.add(get(r) + value);
+    }
+    return newColumn;
+  }
+
+  default IntColumn multiply(int value) {
+
+    // TODO(lwhite): Assert all columns are the same size.
+    String name = name() + " * " + value;
+    IntColumn newColumn = IntColumn.create(name);
+
+    for (int r = 0; r < size(); r++) {
+      newColumn.add(get(r) * value);
+    }
+    return newColumn;
+  }
+
+  default FloatColumn multiply(double value) {
+
+    // TODO(lwhite): Assert all columns are the same size.
+    String name = name() + " * " + value;
+    FloatColumn newColumn = FloatColumn.create(name);
+
+    for (int r = 0; r < size(); r++) {
+      newColumn.add(get(r) * (float) value);
+    }
+    return newColumn;
+  }
+
+  default FloatColumn divide(int value) {
+
+    // TODO(lwhite): Assert all columns are the same size.
+    String name = name() + " / " + value;
+    FloatColumn newColumn = FloatColumn.create(name);
+
+    for (int r = 0; r < size(); r++) {
+      newColumn.add(get(r) / (value * 1.0f));
+    }
+    return newColumn;
+  }
+
+  default FloatColumn divide(double value) {
+
+    // TODO(lwhite): Assert all columns are the same size.
+    String name = name() + " / " + value;
+    FloatColumn newColumn = FloatColumn.create(name);
+
+    for (int r = 0; r < size(); r++) {
+      newColumn.add(get(r) / value);
+    }
+    return newColumn;
+  }
+
+  default FloatColumn divide(IntColumn divisor) {
+
+    // TODO(lwhite): Assert all columns are the same size.
+    String name = name() + " / " + divisor.name();
+    FloatColumn newColumn = FloatColumn.create(name);
+
+    for (int r = 0; r < size(); r++) {
+      newColumn.add(get(r) / (divisor.get(r) * 1.0f));
+    }
+    return newColumn;
+  }
+
   // TODO(lwhite): make this a shared utility
   default String names(IntColumn[] columns) {
     StringBuilder builder = new StringBuilder();
@@ -83,6 +155,14 @@ public interface IntMapUtils extends IntColumnUtils {
     IntColumn result = IntColumn.create(name() + " - " + column2.name());
     for (int r = 0; r < size(); r++) {
       result.set(r, get(r) - column2.get(r));
+    }
+    return result;
+  }
+
+  default IntColumn difference(int value) {
+    IntColumn result = IntColumn.create(name() + " - " + value);
+    for (int r = 0; r < size(); r++) {
+      result.set(r, get(r) - value);
     }
     return result;
   }

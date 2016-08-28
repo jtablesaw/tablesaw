@@ -6,6 +6,7 @@ import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.table.TemporaryView;
 import com.github.lwhite1.tablesaw.table.ViewGroup;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -16,12 +17,21 @@ import smile.association.ItemSet;
 import java.util.List;
 
 /**
+ * An unsupervised data mining technique for finding things that 'are found together' frequently.
+ * We call the things 'items', and the groups they form baskets, transactions, or just 'sets'
  *
+ * Each basket consists of a set of items (an itemset). A set (or subset) of items that appears in many baskets
+ * is considered 'frequent'.
  */
 public class FrequentItemset {
 
   private final FPGrowth model;
+
+  // the number of sets (baskets) in the input data
   private final int setCount;
+
+  // Used to maintain a map of item labels so we can get them back later
+  private Int2ObjectMap<String> labelMap;
 
   /**
    * Constructs and returns a frequent itemset model
@@ -58,9 +68,12 @@ public class FrequentItemset {
 
   public FrequentItemset(IntColumn sets, CategoryColumn items, double support) {
 
+    labelMap = items.dictionaryMap().keyToValueMap();
     Table temp = Table.create("temp");
     temp.addColumn(sets.copy());
-    temp.addColumn(items.toIntColumn());
+    IntColumn encodedItems = items.toIntColumn();
+    encodedItems.setName(items.name());   // Needs the original column name for sorting
+    temp.addColumn(encodedItems);
     temp.sortAscendingOn(sets.name(), items.name());
 
     ViewGroup baskets = temp.splitOn(temp.column(0));
@@ -140,19 +153,20 @@ public class FrequentItemset {
    */
   public Object2DoubleOpenHashMap<int[]> supportMap(int supportThreshold) {
     List<ItemSet> itemSets = learn();
-    Object2DoubleOpenHashMap<int[]> confidenceMap = new Object2DoubleOpenHashMap<>(itemSets.size());
+    Object2DoubleOpenHashMap<int[]> supportMap = new Object2DoubleOpenHashMap<>(itemSets.size());
 
     for (ItemSet itemSet : itemSets) {
       if (itemSet.support >= supportThreshold) {
-        confidenceMap.put(itemSet.items, itemSet.support);
+        supportMap.put(itemSet.items, itemSet.support);
       }
     }
-    return confidenceMap;
+    return supportMap;
   }
 
   /**
-   * Returns a map of associations and their confidence, where confidence is the P(B | A)
-   * @return
+   * Returns a map of associations and their confidence, where confidence is support for the itemset (that is, the
+   * number of times it appears in the input data) divided by the total number of sets (i.e., the percentage of input
+   * sets where it appears.
    */
   public Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap() {
 
@@ -166,6 +180,13 @@ public class FrequentItemset {
     return confidenceMap;
   }
 
+  /**
+   * Returns a map of associations and their confidence, where confidence is support for the itemset (that is, the
+   * number of times it appears in the input data) divided by the total number of sets (i.e., the percentage of input
+   * sets where it appears.
+   *
+   * The map returned includes only those itemsets for which the confidence is above the given threshold
+   */
   public Object2DoubleOpenHashMap<int[]> confidenceMap(double supportThreshold) {
 
     List<ItemSet> itemSets = learn();

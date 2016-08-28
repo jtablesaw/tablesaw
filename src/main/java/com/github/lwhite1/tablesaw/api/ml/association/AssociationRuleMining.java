@@ -17,7 +17,14 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Association Rule Mining is an unsupervised mining technique related to frequent itemsets
  *
+ * Where frequent itemset analysis is concerned only with identifying items that are found together in many baskets,
+ * and labeling them with how often they are found. This can be confusing in that there may be some items that are
+ * individually very common, and so they appear in the same basket frequently just by chance.
+ *
+ * Association Rule Mining attempts to identify frequent itemsets that are surprising: That is to say, where the items
+ * appear together much more frequently (or less frequently) than one would expect by chance alone
  */
 public class AssociationRuleMining {
 
