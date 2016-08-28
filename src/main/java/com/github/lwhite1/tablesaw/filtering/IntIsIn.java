@@ -4,6 +4,7 @@ import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.ColumnReference;
 import com.github.lwhite1.tablesaw.util.Selection;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
 /**
@@ -15,6 +16,11 @@ public class IntIsIn extends ColumnFilter {
   public IntIsIn(ColumnReference reference, IntColumn filterColumn) {
     super(reference);
     this.filterColumn = filterColumn;
+  }
+
+  public IntIsIn(ColumnReference reference, int ... ints) {
+    super(reference);
+    this.filterColumn = IntColumn.create("temp", new IntArrayList(ints));
   }
 
   public Selection apply(Table relation) {

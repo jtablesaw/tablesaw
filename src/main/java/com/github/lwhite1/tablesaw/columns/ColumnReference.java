@@ -2,6 +2,8 @@ package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
+import com.github.lwhite1.tablesaw.filtering.BooleanIsFalse;
+import com.github.lwhite1.tablesaw.filtering.BooleanIsTrue;
 import com.github.lwhite1.tablesaw.filtering.DateEqualTo;
 import com.github.lwhite1.tablesaw.filtering.Filter;
 import com.github.lwhite1.tablesaw.filtering.FloatEqualTo;
@@ -156,6 +158,10 @@ public class ColumnReference {
 
   public Filter isIn(String ... strings) {
     return new TextIsIn(this, strings);
+  }
+
+  public Filter isIn(int ... ints) {
+    return new IntIsIn(this, ints);
   }
 
   public Filter isLessThan(int value) {
@@ -384,5 +390,13 @@ public class ColumnReference {
 
   public Filter matchesRegex(String string) {
     return new TextMatchesRegex(this, string);
+  }
+
+  public Filter isTrue() {
+    return new BooleanIsTrue(this);
+  }
+
+  public Filter isFalse() {
+    return new BooleanIsFalse(this);
   }
 }
