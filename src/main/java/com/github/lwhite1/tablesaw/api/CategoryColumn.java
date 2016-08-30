@@ -260,8 +260,9 @@ public class CategoryColumn extends AbstractColumn
    * Initializes this Column with the given values for performance
    */
   public void initializeWith(IntArrayList list, DictionaryMap map) {
-    values = list;
-    lookupTable = map;
+    for (int key : list) {
+      add(map.get(key));
+    }
   }
 
   /**
