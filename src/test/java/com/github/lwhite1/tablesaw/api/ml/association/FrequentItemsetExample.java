@@ -1,11 +1,11 @@
 package com.github.lwhite1.tablesaw.api.ml.association;
 
 import com.github.lwhite1.tablesaw.api.Table;
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import smile.association.ItemSet;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,13 +28,22 @@ public class FrequentItemsetExample {
 
     out(model.supportMap(250));
 
-    Object2DoubleOpenHashMap<int[]> confidenceMap = model.confidenceMap(.20);
-    Object2DoubleMap.FastEntrySet<int[]> entrySet = confidenceMap.object2DoubleEntrySet();
+    Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap = model.confidenceMap(.90);
+    Object2DoubleMap.FastEntrySet<IntRBTreeSet> entrySet = confidenceMap.object2DoubleEntrySet();
 
     out("");
     out("Confidence Map");
-    for (Object2DoubleMap.Entry<int[]> entry : entrySet) {
-      out(Arrays.toString(entry.getKey()) + " : " + entry.getDoubleValue());
+    for (Object2DoubleMap.Entry<IntRBTreeSet> entry : entrySet) {
+      out(entry.getKey() + " : " + entry.getDoubleValue());
+    }
+
+    Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap2 = model.confidenceMap();
+    Object2DoubleMap.FastEntrySet<IntRBTreeSet> entrySet2 = confidenceMap2.object2DoubleEntrySet();
+
+    out("");
+    out("Confidence Map2");
+    for (Object2DoubleMap.Entry<IntRBTreeSet> entry2 : entrySet2) {
+      out(entry2.getKey() + " : " + entry2.getDoubleValue());
     }
   }
 

@@ -72,7 +72,7 @@ public class FrequentItemset {
     Table temp = Table.create("temp");
     temp.addColumn(sets.copy());
     IntColumn encodedItems = items.toIntColumn();
-    encodedItems.setName(items.name());   // Needs the original column name for sorting
+    encodedItems.setName(items.name());   // Needs t
     temp.addColumn(encodedItems);
     temp.sortAscendingOn(sets.name(), items.name());
 
@@ -187,14 +187,16 @@ public class FrequentItemset {
    *
    * The map returned includes only those itemsets for which the confidence is above the given threshold
    */
-  public Object2DoubleOpenHashMap<int[]> confidenceMap(double supportThreshold) {
+  public Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap(double supportThreshold) {
 
     List<ItemSet> itemSets = learn();
-    Object2DoubleOpenHashMap<int[]> confidenceMap = new Object2DoubleOpenHashMap<>(itemSets.size());
+    Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap = new Object2DoubleOpenHashMap<>(itemSets.size());
 
+    long intSupportThreshold = Math.round(itemSets.size() * supportThreshold);
     for (ItemSet itemSet : itemSets) {
-      if (itemSet.support >= supportThreshold) {
-        confidenceMap.put(itemSet.items, itemSet.support / (double) setCount);
+      if (itemSet.support >= intSupportThreshold) {
+        IntRBTreeSet itemSetCopy = new IntRBTreeSet(itemSet.items);
+        confidenceMap.put(itemSetCopy, itemSet.support / (double) setCount);
       }
     }
     return confidenceMap;
