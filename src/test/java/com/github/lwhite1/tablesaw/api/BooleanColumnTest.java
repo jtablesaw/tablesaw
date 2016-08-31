@@ -1,7 +1,5 @@
 package com.github.lwhite1.tablesaw.api;
 
-import com.github.lwhite1.tablesaw.api.BooleanColumn;
-import com.github.lwhite1.tablesaw.api.Table;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -90,6 +88,18 @@ public class BooleanColumnTest {
     assertEquals("false", summary.get(0, 0));
     assertEquals("5", summary.get(1, 1));
     assertEquals("2", summary.get(1, 0));
+  }
+
+  @Test
+  public void testConversionToInt() {
+    int[] array = column.toIntArray();
+    assertTrue(array[0] == 0);
+    assertTrue(array[1] == 0);
+    assertTrue(array[2] == 0);
+    assertTrue(array[3] == 0);
+    assertTrue(array[4] == 1);
+    assertTrue(array[5] == 1);
+    assertTrue(array[6] == 0);
   }
 
   /**
