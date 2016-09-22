@@ -1,6 +1,5 @@
 package com.github.lwhite1.tablesaw.fix;
 
-import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.store.CSVParserConfig;
 import com.github.lwhite1.tablesaw.store.WideCsvIndexer;
@@ -17,6 +16,8 @@ import static org.junit.Assert.assertNotNull;
 public class MiscTests {
   @Test
   public void checkColumnType() throws IOException {
+    // TODO : push this file to repo
+
     String src = "/Users/apple/Downloads/scienaptic.datasets/cisco/Feb_01_Apr_30Cleaned.csv";
     Stopwatch stopwatch = Stopwatch.createStarted();
     Table table = Table.createFromCsv(src, true, ',');
@@ -44,6 +45,8 @@ public class MiscTests {
 
   @Test
   public void testTimeParsing1() throws IOException {
+    // TODO : push this file to repo
+
     Table table = Table.createFromCsv("/Users/apple/Downloads/scienaptic.datasets/Delay.csv");
     assertNotNull(table);
     System.out.println(table.shape());
@@ -52,10 +55,10 @@ public class MiscTests {
 
   @Test
   public void testLargeData() throws IOException {
+    // Note: these are very large files [3, 6+, 9+ gb]
+    // not pushing them to repo
     String src = "/home/mishtu/depot/dataset/part1";
     int expectedRowCount = 8_000_000 - 1;
-//        int expectedRowCount = 18_000_000 - 1;
-//        int expectedRowCount = 25238391;
 
     Stopwatch stopwatch = Stopwatch.createStarted();
     Table table = Table.createFromCsv(src, true, '|');
@@ -84,35 +87,14 @@ public class MiscTests {
   }
 
   @Test
-  public void summary() {
-    String src = "/home/mishtu/depot/dataset/part1.saw";
-    Stopwatch stopwatch = Stopwatch.createStarted();
-    Table table = Table.readTable(src);
-    stopwatch.stop();
-    assertNotNull(table);
-    assertEquals("row count", 8_000_000 - 1, table.rowCount());
-    assertEquals("column count", 76, table.columnCount());
-
-    System.out.println("Time taken to read dataset: " + stopwatch.toString());
-    table.columns().forEach(c -> {
-      if (c.type() == ColumnType.CATEGORY && c.countUnique() > 20) {
-        System.out.printf("Column: %s, type: %s, uniqueCount: %d%n",
-            c.name(), ColumnType.CATEGORY, c.countUnique());
-      } else {
-        System.out.println(c.summary().print());
-      }
-    });
-  }
-
-  @Test
-  public void blah() throws IOException {
+  public void checkBatch() throws IOException {
     String csvFile = "data/cities-states-zipcode.csv";
     CSVParserConfig params = new CSVParserConfig.Builder(csvFile).build();
     testBatchIndexing(params, 81831, 20);
   }
 
   @Test
-  public void blah2() throws IOException {
+  public void checkBatch2() throws IOException {
     // Note: these are very large files [3, 6+, 9+ gb]
     // not pushing them to repo
     String csvFile = "/home/mishtu/depot/dataset/part1";
@@ -121,13 +103,13 @@ public class MiscTests {
   }
 
   @Test
-  public void blah3() throws IOException {
+  public void checkBatch3() throws IOException {
     // Note: these are very large files [3, 6+, 9+ gb]
     // not pushing them to repo
     String csvFile = "/home/mishtu/depot/dataset/part2";
     CSVParserConfig params = new CSVParserConfig.Builder(csvFile)
         .fieldDelimiter('|')
-        .columnBatchSize(10)
+        .columnBatchSize(13)
         .build();
     testBatchIndexing(params, 18_000_000 - 1, 76);
   }
