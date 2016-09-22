@@ -35,11 +35,7 @@ public class IntIndex {
     index = new Int2ObjectAVLTreeMap<>(tempMap);
   }
 
-  private final static Comparator<int[]> intArrayComparator = new Comparator<int[]>() {
-    public int compare(int[] a, int[] b) {
-      return Integer.compare(a[1], b[1]);
-    }
-  };
+  private final static Comparator<int[]> intArrayComparator = (a, b) -> Integer.compare(a[1], b[1]);
 
   /**
    * Returns a bitmap containing row numbers of all cells matching the given int

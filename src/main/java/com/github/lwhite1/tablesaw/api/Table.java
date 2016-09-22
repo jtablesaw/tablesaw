@@ -270,9 +270,9 @@ public class Table implements Relation, IntIterable {
    * Returns a List of the names of all the columns in this table
    */
   public List<String> columnNames() {
-    List<String> names = new ArrayList<>(columnList.size());
-    names.addAll(columnList.stream().map(Column::name).collect(Collectors.toList()));
-    return names;
+    return columnList.stream()
+            .map(Column::name)
+            .collect(Collectors.toList());
   }
 
   /**
@@ -328,8 +328,8 @@ public class Table implements Relation, IntIterable {
     Selection table1Selection = new BitmapBackedSelection();
 
     int[] table1Records = generateUniformBitmap(table1Count, rowCount());
-    for (int i = 0; i < table1Records.length; i++) {
-      table1Selection.add(table1Records[i]);
+    for (int table1Record : table1Records) {
+      table1Selection.add(table1Record);
     }
     table2Selection.andNot(table1Selection);
     tables[0] = selectWhere(table1Selection);

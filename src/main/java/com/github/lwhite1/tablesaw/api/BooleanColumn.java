@@ -208,7 +208,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     ByteArrays.mergeSort(data.elements(), reverseByteComparator);
   }
 
-  ByteComparator reverseByteComparator = new ByteComparator() {
+  private ByteComparator reverseByteComparator = new ByteComparator() {
 
     @Override
     public int compare(Byte o1, Byte o2) {
@@ -221,10 +221,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     }
   };
 
-  public static boolean convert(String stringValue) {
-    if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-      return (boolean) ColumnType.BOOLEAN.getMissingValue();
-    } else if (TypeUtils.TRUE_STRINGS.contains(stringValue)) {
+  private static boolean convert(String stringValue) {
+    if (TypeUtils.TRUE_STRINGS.contains(stringValue)) {
       return true;
     } else if (TypeUtils.FALSE_STRINGS.contains(stringValue)) {
       return false;
@@ -236,7 +234,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   public void addCell(String object) {
     try {
-      add(convert(object));
+      if (Strings.isNullOrEmpty(object) || TypeUtils.MISSING_INDICATORS.contains(object)) {
+        add(MISSING_VALUE);
+      } else {
+        add(convert(object));
+      }
     } catch (NullPointerException e) {
       throw new RuntimeException(name() + ": "
           + String.valueOf(object) + ": "
@@ -361,7 +363,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     }
   }
 
-  IntComparator comparator = new IntComparator() {
+  private IntComparator comparator = new IntComparator() {
 
     @Override
     public int compare(Integer r1, Integer r2) {

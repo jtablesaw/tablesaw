@@ -12,13 +12,11 @@ import java.util.Objects;
  * Data about a specific physical table used in it's persistence
  */
 public class TableMetadata {
-
   private static final Gson GSON = new Gson();
+  public static final String fileName = "Metadata.json";
 
   private final String name;
-
   private final int rowCount;
-
   private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
 
   public TableMetadata(Relation table) {
@@ -27,6 +25,13 @@ public class TableMetadata {
     for (Column column : table.columns()) {
       columnMetadataList.add(new ColumnMetadata(column));
     }
+  }
+
+  public TableMetadata(String name, int rowCount, List<ColumnMetadata> cMetas) {
+    this.name = name;
+    this.rowCount = rowCount;
+    if (cMetas != null)
+      for (ColumnMetadata cMeta : cMetas) columnMetadataList.add(cMeta);
   }
 
   public String toJson() {
