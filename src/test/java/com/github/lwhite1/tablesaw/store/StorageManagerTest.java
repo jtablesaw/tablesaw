@@ -49,8 +49,8 @@ public class StorageManagerTest {
 
   @Test
   public void testCatStorage() throws Exception {
-    StorageManager.writeColumn("/tmp/cat_dogs", categoryColumn);
-    CategoryColumn readCat = StorageManager.readCategoryColumn("/tmp/cat_dogs", categoryColumn.columnMetadata());
+    SawWriter.writeColumn("/tmp/cat_dogs", categoryColumn);
+    CategoryColumn readCat = SawReader.readCategoryColumn("/tmp/cat_dogs", categoryColumn.columnMetadata());
     for (int i = 0; i < categoryColumn.size(); i++) {
       assertEquals(categoryColumn.get(i), readCat.get(i));
     }

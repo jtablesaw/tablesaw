@@ -165,7 +165,7 @@ public class CategoryColumn extends AbstractColumn
     return countByCategory();
   }
 
-  public Table countByCategory() {
+  Table countByCategory() {
     Table t = new Table("Column: " + name());
     CategoryColumn categories = CategoryColumn.create("Category");
     IntColumn counts = IntColumn.create("Count");

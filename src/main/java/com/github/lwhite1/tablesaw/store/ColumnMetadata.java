@@ -8,8 +8,7 @@ import com.google.gson.Gson;
  * Data about a specific column used in it's persistence
  */
 public class ColumnMetadata {
-
-  static final Gson GSON = new Gson();
+  private static final Gson GSON = new Gson();
 
   private final String id;
 
@@ -24,6 +23,13 @@ public class ColumnMetadata {
     this.name = column.name();
     this.type = column.type();
     this.size = column.size();
+  }
+
+  public ColumnMetadata(String id, String name, ColumnType type, int size) {
+    this.id = id;
+    this.name = name;
+    this.type = type;
+    this.size = size;
   }
 
   public String toJson() {

@@ -23,7 +23,10 @@ public class DirectoryUtils {
 
   public static long folderSize(File directory) {
     long length = 0;
-    for (File file : directory.listFiles()) {
+    File[] files = directory.listFiles();
+    if (files == null || files.length == 0) { return 0;}
+
+    for (File file : files) {
       if (file.isFile()) {
         length += file.length();
       } else {

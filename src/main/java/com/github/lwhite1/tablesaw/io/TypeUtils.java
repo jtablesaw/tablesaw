@@ -1,16 +1,7 @@
 package com.github.lwhite1.tablesaw.io;
 
-import com.github.lwhite1.tablesaw.api.ColumnType;
-import com.github.lwhite1.tablesaw.api.BooleanColumn;
-import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.*;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.api.DateColumn;
-import com.github.lwhite1.tablesaw.api.DateTimeColumn;
-import com.github.lwhite1.tablesaw.api.FloatColumn;
-import com.github.lwhite1.tablesaw.api.IntColumn;
-import com.github.lwhite1.tablesaw.api.LongColumn;
-import com.github.lwhite1.tablesaw.api.ShortColumn;
-import com.github.lwhite1.tablesaw.api.TimeColumn;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -20,8 +11,6 @@ import javax.annotation.concurrent.Immutable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Utilities for working with {@link ColumnType}s
@@ -36,20 +25,20 @@ public final class TypeUtils {
   }
 
   // These Strings will convert to true booleans
-  public static final List<String> TRUE_STRINGS =
-      Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "1");
+  public static final ImmutableList<String> TRUE_STRINGS =
+      ImmutableList.of("T", "t", "Y", "y", "TRUE", "true", "1");
 
   // A more restricted set of 'true' strings that is used for column type detection
-  public static final List<String> TRUE_STRINGS_FOR_DETECTION =
-      Arrays.asList("T", "t", "Y", "y", "TRUE", "true");
+  public static final ImmutableList<String> TRUE_STRINGS_FOR_DETECTION =
+      ImmutableList.of("T", "t", "Y", "y", "TRUE", "true");
 
   // These Strings will convert to false booleans
-  public static final List<String> FALSE_STRINGS =
-      Arrays.asList("F", "f", "N", "n", "FALSE", "false", "0");
+  public static final ImmutableList<String> FALSE_STRINGS =
+          ImmutableList.of("F", "f", "N", "n", "FALSE", "false", "0");
 
   // A more restricted set of 'false' strings that is used for column type detection
-  public static final List<String> FALSE_STRINGS_FOR_DETECTION =
-      Arrays.asList("F", "f", "N", "n", "FALSE", "false");
+  public static final ImmutableList<String> FALSE_STRINGS_FOR_DETECTION =
+      ImmutableList.of("F", "f", "N", "n", "FALSE", "false");
 
   // Formats that we accept in parsing dates from strings
   // TODO: Add more types, especially dates with month names spelled-out fully.
@@ -109,6 +98,7 @@ public final class TypeUtils {
   private static final DateTimeFormatter dtTimef4 =
       DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm");
   private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+  private static final DateTimeFormatter dtTimef7 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
   private static final DateTimeFormatter dtTimef6;
 
@@ -131,7 +121,8 @@ public final class TypeUtils {
       dtTimef3,
       dtTimef4,
       dtTimef5,
-      dtTimef6
+      dtTimef6,
+      dtTimef7
   );
 
 

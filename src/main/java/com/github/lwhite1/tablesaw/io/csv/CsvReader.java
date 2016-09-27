@@ -10,14 +10,8 @@ import com.google.common.collect.Lists;
 import com.opencsv.CSVReader;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -26,7 +20,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
@@ -342,7 +335,7 @@ public class CsvReader {
    * The method {@code printColumnTypes()} can be used to print a list of the detected columns that can be corrected and
    * used to explicitely specify the correct column types.
    */
-  static ColumnType[] detectColumnTypes(String file, boolean header, char delimiter)
+  public static ColumnType[] detectColumnTypes(String file, boolean header, char delimiter)
       throws IOException {
 
     int linesToSkip = header ? 1 : 0;
@@ -353,6 +346,7 @@ public class CsvReader {
     // to hold the data read from the file
     List<List<String>> columnData = new ArrayList<>();
 
+    int addCount = 0;
     int rowCount = 0; // make sure we don't go over maxRows
     try (CSVReader reader = new CSVReader(new FileReader(file), delimiter, '"', linesToSkip)) {
       String[] nextLine;
@@ -370,6 +364,7 @@ public class CsvReader {
           for (String field : nextLine) {
             columnData.get(columnNumber).add(field);
             columnNumber++;
+            addCount++;
           }
         }
         if (rowCount == nextRow) {
@@ -378,6 +373,8 @@ public class CsvReader {
         rowCount++;
       }
     }
+
+    System.out.printf("Number of rows read: %d, values added: %d%n", rowCount, addCount);
 
     // now detect
     for (List<String> valuesList : columnData) {
@@ -414,60 +411,37 @@ public class CsvReader {
   }
 
   private static ColumnType detectType(List<String> valuesList) {
-
     // Types to choose from. When more than one would work, we pick the first of the options
     ColumnType[] typeArray =  // we leave out category, as that is the default type
-        {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, SHORT_INT, INTEGER, LONG_INT, FLOAT};
+            {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, SHORT_INT, INTEGER, LONG_INT, FLOAT};
 
-    CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
+    List<Predicate<String>> typePredicates =
+            Lists.newArrayList(isLocalDateTime, isLocalTime, isLocalDate, isBoolean, isShort, isInteger, isLong, isFloat);
 
+    List<ColumnType> typeCandidates = Lists.newArrayList(typeArray);
+
+    boolean allValuesEmpty = true;
 
     for (String s : valuesList) {
       if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {
         continue;
       }
-      if (typeCandidates.contains(LOCAL_DATE_TIME)) {
-        if (!isLocalDateTime.test(s)) {
-          typeCandidates.remove(LOCAL_DATE_TIME);
+
+      if (allValuesEmpty) allValuesEmpty = false;
+
+      for (int i = 0; i < typeArray.length; i++) {
+        ColumnType typeCandidate = typeArray[i];
+        if (typeCandidates.contains(typeCandidate)) {
+          Predicate<String> typePredicate = typePredicates.get(i);
+          if (!typePredicate.test(s)) {
+            typeCandidates.remove(typeCandidate);
+          }
         }
       }
-      if (typeCandidates.contains(LOCAL_TIME)) {
-        if (!isLocalTime.test(s)) {
-          typeCandidates.remove(LOCAL_TIME);
-        }
-      }
-      if (typeCandidates.contains(LOCAL_DATE)) {
-        if (!isLocalDate.test(s)) {
-          typeCandidates.remove(LOCAL_DATE);
-        }
-      }
-      if (typeCandidates.contains(BOOLEAN)) {
-        if (!isBoolean.test(s)) {
-          typeCandidates.remove(BOOLEAN);
-        }
-      }
-      if (typeCandidates.contains(SHORT_INT)) {
-        if (!isShort.test(s)) {
-          typeCandidates.remove(SHORT_INT);
-        }
-      }
-      if (typeCandidates.contains(INTEGER)) {
-        if (!isInteger.test(s)) {
-          typeCandidates.remove(INTEGER);
-        }
-      }
-      if (typeCandidates.contains(LONG_INT)) {
-        if (!isLong.test(s)) {
-          typeCandidates.remove(LONG_INT);
-        }
-      }
-      if (typeCandidates.contains(FLOAT)) {
-        if (!isFloat.test(s)) {
-          typeCandidates.remove(FLOAT);
-        }
-      }
+
     }
-    return selectType(typeCandidates);
+
+    return allValuesEmpty ? CATEGORY : selectType(typeCandidates);
   }
 
   /**
@@ -486,17 +460,13 @@ public class CsvReader {
   private static java.util.function.Predicate<String> isBoolean = s ->
       TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
 
-  private static Predicate<String> isLong = new Predicate<String>() {
-
-    @Override
-    public boolean test(@Nullable String s) {
-      try {
-        Long.parseLong(s);
-        return true;
-      } catch (NumberFormatException e) {
-        // it's all part of the plan
-        return false;
-      }
+  private static Predicate<String> isLong = s -> {
+    try {
+      Long.parseLong(s);
+      return true;
+    } catch (NumberFormatException e) {
+      // it's all part of the plan
+      return false;
     }
   };
 
