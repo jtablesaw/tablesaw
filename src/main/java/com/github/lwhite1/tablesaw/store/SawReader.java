@@ -8,10 +8,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 final class SawReader {
   private static final int READER_POOL_SIZE = 4;
@@ -20,41 +20,55 @@ final class SawReader {
 
   public static Table readTable(String path) throws IOException {
     ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
-    CompletionService readerCompletionService = new ExecutorCompletionService<>(executorService);
 
     TableMetadata tableMetadata = readTableMetadata(path + File.separator + TableMetadata.fileName);
-    List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
     Table table = Table.create(tableMetadata);
 
     // NB: We do some extra work with the hash map to ensure that the columns are added to the table in original order
     // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all columns are read
     // TODO - continued : Problem seems to be mostly with category columns rebuilding the encoding dictionary
-    ConcurrentLinkedQueue<Column> columnList = new ConcurrentLinkedQueue<>();
-    Map<String, Column> columns = new HashMap<>();
+
+    AtomicReference<Throwable> atomicThrow = new AtomicReference<>();
+    List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
+    CountDownLatch latch = new CountDownLatch(columnMetadata.size());
+    Map<String, Column> columns = new ConcurrentHashMap<>();
+
     try {
-      for (ColumnMetadata column : columnMetadata) {
-        readerCompletionService.submit(() -> {
-          columnList.add(readColumn(path + File.separator + column.getId(), column));
-          return null;
-        });
-      }
-      for (int i = 0; i < columnMetadata.size(); i++) {
-        Future future = readerCompletionService.take();
-        future.get();
-      }
-      for (Column c : columnList) {
-        columns.put(c.id(), c);
-      }
+      tableMetadata.getColumnMetadataList()
+          .stream()
+          .map(cMeta -> {
+            String fileName = path + File.separator + cMeta.getId();
+            return (Runnable) () -> {
+              try {
+                Column column = readColumn(fileName, cMeta);
+                columns.put(cMeta.getId(), column);
+                latch.countDown();
+              } catch (Throwable e) {
+                e.printStackTrace();
 
-      for (ColumnMetadata metadata : columnMetadata) {
-        String id = metadata.getId();
-        table.addColumn(columns.get(id));
-      }
+                // capture the first error and fail ASAP
+                if (atomicThrow.get() == null) {
+                  atomicThrow.set(e);
+                  // clear latch and fail fast
+                  while (latch.getCount() > 0) latch.countDown();
+                }
+              }
+            };
+          }).forEach(executorService::submit);
 
-    } catch (InterruptedException | ExecutionException e) {
-      throw new RuntimeException(e);
+      latch.await();
+
+      if (atomicThrow.get() != null) throw new RuntimeException(atomicThrow.get());
+
+      for (ColumnMetadata metadata : columnMetadata)
+        table.addColumn(columns.get(metadata.getId()));
+
+    } catch (InterruptedException t) {
+      throw new RuntimeException(t);
+    } finally {
+      executorService.shutdownNow();
     }
-    executorService.shutdown();
+
     return table;
   }
 

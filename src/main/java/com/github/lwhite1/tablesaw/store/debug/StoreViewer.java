@@ -34,7 +34,7 @@ public final class StoreViewer {
     return new StoreDetail(xs.size(), metadata.getRowCount(), xs, totalSize);
   }
 
-  public void display(String pathToMetadataDir) throws IOException {
+  public static void display(String pathToMetadataDir) throws IOException {
     StoreDetail detail = read(pathToMetadataDir);
     System.out.printf("Number of columns: %d, rows: %d%n", detail.columnCount(), detail.rowCount());
     System.out.println();
