@@ -96,6 +96,36 @@ public class FrequentItemset {
     this.model = new FPGrowth(itemsets, support);
   }
 
+  public FrequentItemset(ShortColumn sets, CategoryColumn items, double support) {
+
+    labelMap = items.dictionaryMap().keyToValueMap();
+    Table temp = Table.create("temp");
+    temp.addColumn(sets.copy());
+    IntColumn encodedItems = items.toIntColumn();
+    encodedItems.setName(items.name());   // Needs t
+    temp.addColumn(encodedItems);
+    temp.sortAscendingOn(sets.name(), items.name());
+
+    ViewGroup baskets = temp.splitOn(temp.column(0));
+
+    this.setCount = baskets.size();
+
+    int[][] itemsets = new int[setCount][];
+    int basketIndex = 0;
+    for (TemporaryView basket : baskets) {
+      IntRBTreeSet set = new IntRBTreeSet(basket.intColumn(1).data());
+      int itemIndex = 0;
+      itemsets[basketIndex] = new int[set.size()];
+      for (int item : set) {
+        itemsets[basketIndex][itemIndex] = item;
+        itemIndex++;
+      }
+      basketIndex++;
+    }
+
+    this.model = new FPGrowth(itemsets, support);
+  }
+
   public FrequentItemset(ShortColumn sets, ShortColumn items, double support) {
 
     Table temp = Table.create("temp");

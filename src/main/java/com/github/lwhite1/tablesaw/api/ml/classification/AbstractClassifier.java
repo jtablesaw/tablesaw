@@ -9,6 +9,7 @@ public abstract class AbstractClassifier {
 
   abstract int predictFromModel(double[] data);
 
+
   void populateMatrix(int[] labels, ConfusionMatrix confusion, NumericColumn[] predictors) {
     double[] data = new double[predictors.length];
     for (int row = 0; row < predictors[0].size(); row++) {

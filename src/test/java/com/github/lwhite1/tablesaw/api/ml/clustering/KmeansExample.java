@@ -13,7 +13,6 @@ public class KmeansExample {
 
   public static void main(String[] args) throws IOException {
     Table t = Table.createFromCsv("data/whiskey.csv");
-    //out(t.structure().printHtml());
 
     Kmeans model = new Kmeans(
         5,
@@ -38,7 +37,7 @@ public class KmeansExample {
 
     //out(model.clustered(t.column(1)).printHtml());
 
-    out(model.labeledCentroids().printHtml());
+    out(model.labeledCentroids().print());
 
     int n = t.rowCount();
     double[] kValues = new double[n - 2];

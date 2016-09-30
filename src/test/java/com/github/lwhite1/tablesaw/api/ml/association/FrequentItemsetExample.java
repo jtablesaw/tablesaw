@@ -1,5 +1,7 @@
 package com.github.lwhite1.tablesaw.api.ml.association;
 
+import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
@@ -17,7 +19,18 @@ public class FrequentItemsetExample {
 
     Table table = Table.createFromCsv("data/movielens.data", true, '\t');
     out(table.structure().print());
-    FrequentItemset model = new FrequentItemset(table.shortColumn("user"), table.shortColumn("movie"), .24);
+    out(table.shape());
+    ShortColumn movie = table.shortColumn("movie");
+    CategoryColumn moviecat = CategoryColumn.create("MovieCat");
+    for (int i = 0; i < movie.size(); i++) {
+      moviecat.addCell(movie.getString(i));
+    }
+    table.addColumn(moviecat);
+
+    out(table.shortColumn("user").unique().size());
+    out(table.shortColumn("movie").unique().size());
+
+    FrequentItemset model = new FrequentItemset(table.shortColumn("user"), table.categoryColumn("MovieCat"), .24);
     List<ItemSet> itemSetList = model.learn();
 
     out("Frequent Itemsets");

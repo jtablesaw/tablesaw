@@ -273,6 +273,7 @@ public class FloatColumnTest {
     assertEquals(10, floats.countMissing());
   }
 
+
   @Test
   public void testCountUnique() {
     FloatColumn floats = new FloatColumn("floats", 10);

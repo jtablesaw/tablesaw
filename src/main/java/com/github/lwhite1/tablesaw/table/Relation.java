@@ -241,6 +241,9 @@ public interface Relation {
     if (c.type() == ColumnType.CATEGORY) {
       CategoryColumn categoryColumn = (CategoryColumn) c;
       return categoryColumn.toIntColumn();
+    }  else if (c.type() == ColumnType.BOOLEAN) {
+      BooleanColumn booleanColumn = (BooleanColumn) c;
+      return booleanColumn.toIntColumn();
     }
     return (NumericColumn) column(columnIndex);
   }
@@ -250,6 +253,9 @@ public interface Relation {
     if (c.type() == ColumnType.CATEGORY) {
       CategoryColumn categoryColumn = (CategoryColumn) c;
       return categoryColumn.toIntColumn();
+    } else if (c.type() == ColumnType.BOOLEAN) {
+      BooleanColumn booleanColumn = (BooleanColumn) c;
+      return booleanColumn.toIntColumn();
     }
     return (NumericColumn) column(columnName);
   }
