@@ -30,6 +30,7 @@ public class DictionaryMap {
       keyToValue.put(entry.getIntKey(), entry.getValue());
       valueToKey.put(entry.getValue(), entry.getIntKey());
     }
+    valueToKey.defaultReturnValue(-1);
   }
 
   public void put(int key, String value) {
