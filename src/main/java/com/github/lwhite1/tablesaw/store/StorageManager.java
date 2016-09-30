@@ -1,22 +1,31 @@
 package com.github.lwhite1.tablesaw.store;
 
-import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.api.BooleanColumn;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.api.FloatColumn;
-import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.DateTimeColumn;
-import com.github.lwhite1.tablesaw.api.TimeColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
+import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.table.Relation;
 import org.iq80.snappy.SnappyFramedInputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +34,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 
 /**
@@ -37,9 +52,19 @@ public class StorageManager {
 
   private static final String FILE_EXTENSION = "saw";
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
-  private static final Pattern SEPARATOR_PATTERN = Pattern.compile(File.separator);
+  private static final Pattern SEPARATOR_PATTERN = Pattern.compile(separator());
 
   private static final int READER_POOL_SIZE = 4;
+
+  private static String separator() {
+    String separator = File.separator;
+    try (FileSystem fileSystem = FileSystems.getDefault()) {
+      separator = fileSystem.getSeparator();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return separator;
+  }
 
   /**
    * Reads a tablesaw table into memory
@@ -53,7 +78,7 @@ public class StorageManager {
     ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
     CompletionService readerCompletionService = new ExecutorCompletionService<>(executorService);
 
-    TableMetadata tableMetadata = readTableMetadata(path + File.separator + "Metadata.json");
+    TableMetadata tableMetadata = readTableMetadata(path + separator() + "Metadata.json");
     List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
     Table table = Table.create(tableMetadata);
 
@@ -65,7 +90,7 @@ public class StorageManager {
     try {
       for (ColumnMetadata column : columnMetadata) {
         readerCompletionService.submit(() -> {
-          columnList.add(readColumn(path + File.separator + column.getId(), column));
+          columnList.add(readColumn(path + separator() + column.getId(), column));
           return null;
         });
       }
@@ -303,7 +328,7 @@ public class StorageManager {
     name = WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from the table name
     name = SEPARATOR_PATTERN.matcher(name).replaceAll("_"); // remove path separators from the table name
 
-    String storageFolder = folderName + File.separator + name + '.' + FILE_EXTENSION;
+    String storageFolder = folderName + separator() + name + '.' + FILE_EXTENSION;
 
     Path path = Paths.get(storageFolder);
 
@@ -315,7 +340,7 @@ public class StorageManager {
       }
     }
 
-    writeTableMetadata(path.toString() + File.separator + "Metadata.json", table);
+    writeTableMetadata(path.toString() + separator() + "Metadata.json", table);
 
     try {
       for (Column column : table.columns()) {
