@@ -263,6 +263,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
   public LongColumn copy() {
     LongColumn copy = emptyCopy(size());
     copy.data.addAll(data);
+    copy.setComment(comment());
     return copy;
   }
 

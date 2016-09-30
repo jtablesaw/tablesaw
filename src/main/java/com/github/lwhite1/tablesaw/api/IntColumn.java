@@ -205,7 +205,9 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
   @Override
   public IntColumn copy() {
-    return create(name(), data);
+    IntColumn column = create(name(), data);
+    column.setComment(comment());
+    return column;
   }
 
   @Override

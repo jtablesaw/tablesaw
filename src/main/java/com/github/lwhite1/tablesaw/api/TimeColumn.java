@@ -109,7 +109,9 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
 
   @Override
   public TimeColumn copy() {
-    return TimeColumn.create(name(), data);
+    TimeColumn column = TimeColumn.create(name(), data);
+    column.setComment(comment());
+    return column;
   }
 
   @Override

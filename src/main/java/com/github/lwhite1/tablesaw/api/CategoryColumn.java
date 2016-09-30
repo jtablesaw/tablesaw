@@ -551,6 +551,7 @@ public class CategoryColumn extends AbstractColumn
     CategoryColumn newCol = CategoryColumn.create(name(), size());
     newCol.lookupTable = new DictionaryMap(lookupTable);
     newCol.values.addAll(values);
+    newCol.setComment(comment());
     return newCol;
   }
 

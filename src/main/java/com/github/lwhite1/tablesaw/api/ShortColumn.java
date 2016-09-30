@@ -203,6 +203,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
   public ShortColumn copy() {
     ShortColumn copy = emptyCopy(size());
     copy.data.addAll(data);
+    copy.setComment(comment());
     return copy;
   }
 

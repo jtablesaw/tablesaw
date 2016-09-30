@@ -324,7 +324,9 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
 
   @Override
   public FloatColumn copy() {
-    return FloatColumn.create(name(), data);
+    FloatColumn column = FloatColumn.create(name(), data);
+    column.setComment(comment());
+    return column;
   }
 
   @Override

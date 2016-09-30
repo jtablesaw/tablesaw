@@ -194,7 +194,9 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   @Override
   public BooleanColumn copy() {
-    return BooleanColumn.create(name(), data);
+    BooleanColumn column = BooleanColumn.create(name(), data);
+    column.setComment(comment());
+    return column;
   }
 
   @Override

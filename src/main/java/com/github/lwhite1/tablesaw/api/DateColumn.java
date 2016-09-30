@@ -116,7 +116,9 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
 
   @Override
   public DateColumn copy() {
-    return DateColumn.create(name(), data);
+    DateColumn column = DateColumn.create(name(), data);
+    column.setComment(comment());
+    return column;
   }
 
   @Override
