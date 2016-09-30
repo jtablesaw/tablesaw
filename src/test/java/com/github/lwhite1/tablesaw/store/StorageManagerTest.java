@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests for StorageManager
@@ -81,6 +82,11 @@ public class StorageManagerTest {
     assertEquals(table.name(), t.name());
     assertEquals(table.rowCount(), t.rowCount());
     assertEquals(table.columnCount(), t.columnCount());
+  }
+
+  @Test
+  public void testSeparator() {
+    assertNotNull(StorageManager.separator());
   }
 
   public static void main(String[] args) throws Exception {

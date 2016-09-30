@@ -56,14 +56,9 @@ public class StorageManager {
 
   private static final int READER_POOL_SIZE = 4;
 
-  private static String separator() {
-    String separator = File.separator;
-    try (FileSystem fileSystem = FileSystems.getDefault()) {
-      separator = fileSystem.getSeparator();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return separator;
+  static String separator() {
+    FileSystem fileSystem = FileSystems.getDefault();
+    return fileSystem.getSeparator();
   }
 
   /**
