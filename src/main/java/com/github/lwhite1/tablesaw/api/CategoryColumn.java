@@ -96,12 +96,16 @@ public class CategoryColumn extends AbstractColumn
 
   @Override
   public CategoryColumn emptyCopy() {
-    return new CategoryColumn(name());
+    CategoryColumn copy = new CategoryColumn(name());
+    copy.setComment(comment());
+    return copy;
   }
 
   @Override
   public CategoryColumn emptyCopy(int rowSize) {
-    return CategoryColumn.create(name(), rowSize);
+    CategoryColumn copy = new CategoryColumn(name(), rowSize);
+    copy.setComment(comment());
+    return copy;
   }
 
   @Override

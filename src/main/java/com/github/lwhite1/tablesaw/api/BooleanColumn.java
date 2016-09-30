@@ -179,12 +179,16 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
   @Override
   public BooleanColumn emptyCopy() {
-    return new BooleanColumn(name());
+    BooleanColumn column = BooleanColumn.create(name());
+    column.setComment(comment());
+    return column;
   }
 
   @Override
   public BooleanColumn emptyCopy(int rowSize) {
-    return BooleanColumn.create(name(), rowSize);
+    BooleanColumn column = BooleanColumn.create(name(), rowSize);
+    column.setComment(comment());
+    return column;
   }
 
   @Override

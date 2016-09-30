@@ -141,12 +141,16 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
   @Override
   public DateTimeColumn emptyCopy() {
-    return new DateTimeColumn(name());
+    DateTimeColumn column = new DateTimeColumn(name());
+    column.setComment(comment());
+    return column;
   }
 
   @Override
   public DateTimeColumn emptyCopy(int rowSize) {
-    return new DateTimeColumn(name(), rowSize);
+    DateTimeColumn column = new DateTimeColumn(name(), rowSize);
+    column.setComment(comment());
+    return column;
   }
 
   @Override

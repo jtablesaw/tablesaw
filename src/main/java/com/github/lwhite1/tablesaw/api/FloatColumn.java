@@ -309,12 +309,16 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
 
   @Override
   public FloatColumn emptyCopy() {
-    return new FloatColumn(name());
+    FloatColumn column = new FloatColumn(name());
+    column.setComment(comment());
+    return column;
   }
 
   @Override
   public FloatColumn emptyCopy(int rowSize) {
-    return new FloatColumn(name(), rowSize);
+    FloatColumn column = new FloatColumn(name(), rowSize);
+    column.setComment(comment());
+    return column;
   }
 
   @Override

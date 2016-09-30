@@ -30,7 +30,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.skewness;
 
 /**
  * A column that contains signed 2 byte integer values
@@ -176,12 +175,16 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
 
   @Override
   public ShortColumn emptyCopy() {
-    return new ShortColumn(name(), DEFAULT_ARRAY_SIZE);
+    ShortColumn column = new ShortColumn(name(), DEFAULT_ARRAY_SIZE);
+    column.setComment(comment());
+    return column;
   }
 
   @Override
   public ShortColumn emptyCopy(int rowSize) {
-    return new ShortColumn(name(), rowSize);
+    ShortColumn column = new ShortColumn(name(), rowSize);
+    column.setComment(comment());
+    return column;
   }
 
   @Override

@@ -180,12 +180,16 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
   @Override
   public IntColumn emptyCopy() {
-    return new IntColumn(name(), DEFAULT_ARRAY_SIZE);
+    IntColumn column = new IntColumn(name(), DEFAULT_ARRAY_SIZE);
+    column.setComment(comment());
+    return column;
   }
 
   @Override
   public IntColumn emptyCopy(int rowSize) {
-    return new IntColumn(name(), rowSize);
+    IntColumn column = new IntColumn(name(), rowSize);
+    column.setComment(comment());
+    return column;
   }
 
   @Override

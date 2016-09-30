@@ -236,12 +236,16 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
 
   @Override
   public LongColumn emptyCopy() {
-    return new LongColumn(name(), DEFAULT_ARRAY_SIZE);
+    LongColumn column = new LongColumn(name(), DEFAULT_ARRAY_SIZE);
+    column.setComment(comment());
+    return column;
   }
 
   @Override
   public LongColumn emptyCopy(int rowSize) {
-    return new LongColumn(name(), rowSize);
+    LongColumn column = new LongColumn(name(), rowSize);
+    column.setComment(comment());
+    return column;
   }
 
   @Override

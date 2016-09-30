@@ -101,12 +101,16 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
 
   @Override
   public DateColumn emptyCopy() {
-    return new DateColumn(name());
+    DateColumn column = DateColumn.create(name());
+    column.setComment(comment());
+    return column;
   }
 
   @Override
   public DateColumn emptyCopy(int rowSize) {
-    return new DateColumn(name(), rowSize);
+    DateColumn column = new DateColumn(name(), rowSize);
+    column.setComment(comment());
+    return column;
   }
 
   @Override
