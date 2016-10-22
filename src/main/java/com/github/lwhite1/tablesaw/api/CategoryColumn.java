@@ -385,7 +385,7 @@ public class CategoryColumn extends AbstractColumn
 
     // iterate over the values, updating the dummy variable columns as appropriate
     for (int next : values) {
-      String category = get(next);
+      String category = lookupTable.get(next);
       for (BooleanColumn column : results) {
         if (category.equals(column.name())) {
           //TODO(lwhite): update the correct row more efficiently, by using set rather than add & only updating true
