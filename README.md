@@ -1,5 +1,7 @@
 Tablesaw
 =======
+  
+__HELP A GUY OUT:__ If you use tablesaw, please shoot me an email and tell me what you're up to: <ljw1001@gmail.com>  I'm thinking about next steps and would love your input. Or, if you decide not to use tablesaw, please me know why. Thanks!
    
 Tablesaw is the easiest way to do data science in Java. It includes a data-frame, an embedded column-store, and  hundreds of methods to transform, summarize, or filter data. If you work with data in Java, it will probably save you time and effort.
 
