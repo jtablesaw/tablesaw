@@ -1,15 +1,13 @@
 Tablesaw
 =======
   
-__HELP A GUY OUT:__ If you use tablesaw, please shoot me an email and tell me what you're up to: <ljw1001@gmail.com>  I'm thinking about next steps and would love your input. Or, if you decide not to use tablesaw, please me know why. Thanks!
+__HELP A GUY OUT:__ If you use tablesaw, please shoot me an email and tell me what you're up to: <ljw1001@gmail.com>. I'm thinking about next steps and would love your input. Or, if you decide not to use tablesaw, please let me know why. Thanks!
    
-__Tablesaw__ is the easiest way to do data science in Java. It includes a data-frame, an embedded column-store, and  hundreds of methods to transform, summarize, or filter data. If you work with data in Java, it will probably save you time and effort.
+__Tablesaw__ is the shortest path to data science in Java. It includes a data-frame, an embedded column-store, and  hundreds of methods to transform, summarize, or filter data. If you work with data in Java, it will probably save you time and effort.
 
-Tablesaw also supports descriptive statistics, data visualization, and machine learning. And it scales: With Tablesaw, you can munge a 1/2 billion rows on a laptop and over 2 billion records on a server. 
+Tablesaw also supports descriptive statistics, data visualization, and machine learning. And it scales: You can munge a 1/2 billion rows on a laptop and over 2 billion records on a server. 
 
-There are other, more elaborate platforms for data science in Java. They were designed to work with vast amounts of data, and  require a vast stack and a lot of effort.  
-
-All it takes to get started with Tablesaw is one maven dependency:  
+There are other, more elaborate platforms for data science in Java. They're designed to work with vast amounts of data, and  require a huge stack and a vast amount of effort. All it takes to get started with Tablesaw is one maven dependency:  
 
     <dependency>
         <groupId>com.github.lwhite1</groupId>
@@ -23,7 +21,7 @@ All it takes to get started with Tablesaw is one maven dependency:
 * The __JavaDoc__ can be found here: http://lwhite1.github.io/tablesaw/apidocs/
 * If you have __questions of any kind__: Ask them in the Issues section of this Repo.
  
-A 1.0 release is planned for early September.  
+A 1.0 release is planned for year end.  
 
 ### Tablesaw features: 
 
