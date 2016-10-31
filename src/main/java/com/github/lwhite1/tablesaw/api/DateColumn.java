@@ -2,7 +2,6 @@ package com.github.lwhite1.tablesaw.api;
 
 import com.github.lwhite1.tablesaw.columns.AbstractColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.columns.DateColumnUtils;
 import com.github.lwhite1.tablesaw.columns.IntColumnUtils;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
@@ -11,6 +10,7 @@ import com.github.lwhite1.tablesaw.filtering.IntBiPredicate;
 import com.github.lwhite1.tablesaw.filtering.IntPredicate;
 import com.github.lwhite1.tablesaw.filtering.LocalDatePredicate;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
+import com.github.lwhite1.tablesaw.mapping.DateMapUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
@@ -39,7 +39,7 @@ import java.util.Set;
 /**
  * A column in a base table that contains float values
  */
-public class DateColumn extends AbstractColumn implements DateColumnUtils {
+public class DateColumn extends AbstractColumn implements DateMapUtils {
 
   public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue();
 

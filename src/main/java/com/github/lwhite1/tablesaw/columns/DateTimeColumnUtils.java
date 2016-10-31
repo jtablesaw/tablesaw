@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 /**
  *
  */
-public interface DateTImeColumnUtils extends Column {
+public interface DateTimeColumnUtils extends Column {
 
   LongArrayList data();
 

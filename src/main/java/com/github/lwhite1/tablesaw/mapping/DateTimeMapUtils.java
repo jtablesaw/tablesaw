@@ -1,6 +1,6 @@
 package com.github.lwhite1.tablesaw.mapping;
 
-import com.github.lwhite1.tablesaw.columns.DateTImeColumnUtils;
+import com.github.lwhite1.tablesaw.columns.DateTimeColumnUtils;
 import com.github.lwhite1.tablesaw.api.DateTimeColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
@@ -10,7 +10,7 @@ import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-public interface DateTimeMapUtils extends DateTImeColumnUtils {
+public interface DateTimeMapUtils extends DateTimeColumnUtils {
 
   default LongColumn differenceInMilliseconds(DateTimeColumn column2) {
     return difference(column2, ChronoUnit.MILLIS);
