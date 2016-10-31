@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.index;
 
+import com.github.lwhite1.tablesaw.api.DateTimeColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.Selection;
@@ -34,6 +35,24 @@ public class LongIndex {
     index = new Long2ObjectAVLTreeMap<>(tempMap);
   }
 
+  public LongIndex(DateTimeColumn column) {
+    int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
+    Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
+    for (int i = 0; i < column.size(); i++) {
+      long value = column.getLong(i);
+      IntArrayList recordIds = tempMap.get(value);
+      if (recordIds == null) {
+        recordIds = new IntArrayList();
+        recordIds.add(i);
+        tempMap.trim();
+        tempMap.put(value, recordIds);
+      } else {
+        recordIds.add(i);
+      }
+    }
+    index = new Long2ObjectAVLTreeMap<>(tempMap);
+  }
+
   /**
    * Returns a bitmap containing row numbers of all cells matching the given long
    *
@@ -46,7 +65,7 @@ public class LongIndex {
     return selection;
   }
 
-  public Selection atLeast(int value) {
+  public Selection atLeast(long value) {
     Selection selection = new BitmapBackedSelection();
     Long2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
     for (IntArrayList keys : tail.values()) {
@@ -55,7 +74,7 @@ public class LongIndex {
     return selection;
   }
 
-  public Selection greaterThan(int value) {
+  public Selection greaterThan(long value) {
     Selection selection = new BitmapBackedSelection();
     Long2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 1);
     for (IntArrayList keys : tail.values()) {
@@ -64,7 +83,7 @@ public class LongIndex {
     return selection;
   }
 
-  public Selection atMost(int value) {
+  public Selection atMost(long value) {
     Selection selection = new BitmapBackedSelection();
     Long2ObjectSortedMap<IntArrayList> head = index.headMap(value + 1);  // we add 1 to get values equal to the arg
     for (IntArrayList keys : head.values()) {
@@ -73,7 +92,7 @@ public class LongIndex {
     return selection;
   }
 
-  public Selection lessThan(int value) {
+  public Selection lessThan(long value) {
     Selection selection = new BitmapBackedSelection();
     Long2ObjectSortedMap<IntArrayList> head = index.headMap(value);  // we add 1 to get values equal to the arg
     for (IntArrayList keys : head.values()) {

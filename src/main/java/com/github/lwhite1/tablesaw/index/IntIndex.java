@@ -1,6 +1,8 @@
 package com.github.lwhite1.tablesaw.index;
 
+import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.TimeColumn;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.Selection;
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
@@ -22,6 +24,42 @@ public class IntIndex {
     Int2ObjectOpenHashMap<IntArrayList> tempMap = new Int2ObjectOpenHashMap<>(sizeEstimate);
     for (int i = 0; i < column.size(); i++) {
       int value = column.get(i);
+      IntArrayList recordIds = tempMap.get(value);
+      if (recordIds == null) {
+        recordIds = new IntArrayList();
+        recordIds.add(i);
+        tempMap.trim();
+        tempMap.put(value, recordIds);
+      } else {
+        recordIds.add(i);
+      }
+    }
+    index = new Int2ObjectAVLTreeMap<>(tempMap);
+  }
+
+  public IntIndex(DateColumn column) {
+    int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
+    Int2ObjectOpenHashMap<IntArrayList> tempMap = new Int2ObjectOpenHashMap<>(sizeEstimate);
+    for (int i = 0; i < column.size(); i++) {
+      int value = column.getInt(i);
+      IntArrayList recordIds = tempMap.get(value);
+      if (recordIds == null) {
+        recordIds = new IntArrayList();
+        recordIds.add(i);
+        tempMap.trim();
+        tempMap.put(value, recordIds);
+      } else {
+        recordIds.add(i);
+      }
+    }
+    index = new Int2ObjectAVLTreeMap<>(tempMap);
+  }
+
+  public IntIndex(TimeColumn column) {
+    int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
+    Int2ObjectOpenHashMap<IntArrayList> tempMap = new Int2ObjectOpenHashMap<>(sizeEstimate);
+    for (int i = 0; i < column.size(); i++) {
+      int value = column.getInt(i);
       IntArrayList recordIds = tempMap.get(value);
       if (recordIds == null) {
         recordIds = new IntArrayList();
