@@ -6,7 +6,6 @@ import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.table.TemporaryView;
 import com.github.lwhite1.tablesaw.table.ViewGroup;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -15,6 +14,7 @@ import smile.association.FPGrowth;
 import smile.association.ItemSet;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * An unsupervised data mining technique for finding things that 'are found together' frequently.
@@ -29,9 +29,6 @@ public class FrequentItemset {
 
   // the number of sets (baskets) in the input data
   private final int setCount;
-
-  // Used to maintain a map of item labels so we can get them back later
-  private Int2ObjectMap<String> labelMap;
 
   /**
    * Constructs and returns a frequent itemset model
@@ -68,7 +65,7 @@ public class FrequentItemset {
 
   public FrequentItemset(IntColumn sets, CategoryColumn items, double support) {
 
-    labelMap = items.dictionaryMap().keyToValueMap();
+    Map<Integer, String> labelMap = items.dictionaryMap().keyToValueMap();
     Table temp = Table.create("temp");
     temp.addColumn(sets.copy());
     IntColumn encodedItems = items.toIntColumn();

@@ -340,6 +340,10 @@ public class DateColumn extends AbstractColumn implements DateColumnUtils {
     return column;
   }
 
+  public static DateColumn create(String columnName, int size) {
+    return new DateColumn(columnName, size);
+  }
+
   /**
    * Returns a PackedDate as converted from the given string
    *

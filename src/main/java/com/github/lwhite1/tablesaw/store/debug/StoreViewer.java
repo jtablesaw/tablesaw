@@ -38,12 +38,12 @@ public final class StoreViewer {
     StoreDetail detail = read(pathToMetadataDir);
     System.out.printf("Number of columns: %d, rows: %d%n", detail.columnCount(), detail.rowCount());
     System.out.println();
-    detail.columnDetails().forEach(c -> System.out.println(c.name() + "[ "+c.columnType()+" ] --> " + toUnit(c.sizeInBytes())));
+    detail.columnDetails().forEach(c -> System.out.printf("%s[ %s ] --> %s%n", c.name(), c.columnType(), toUnit(c.sizeInBytes())));
     System.out.println();
     System.out.println(toUnit(detail.totalSizeInBytes()));
   }
 
-  private static String toUnit(long n) {
+  public static String toUnit(long n) {
     SizeUnit unit = chooseUnit(n);
     double value = (double) n / unit.factor;
     return String.format("%.4g %s", value, unit.symbol);

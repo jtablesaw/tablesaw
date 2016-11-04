@@ -30,7 +30,7 @@ import static com.github.lwhite1.tablesaw.columns.BooleanColumnUtils.isMissing;
 import static com.github.lwhite1.tablesaw.columns.BooleanColumnUtils.isNotMissing;
 
 /**
- * A column in a base table that contains float values
+ * A column in a base table that contains Boolean values
  */
 public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 

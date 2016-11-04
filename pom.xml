@@ -126,6 +126,15 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+                <configuration>
+                    <argLine>-Xms6G</argLine>
+                    <argLine>-Xmx6G</argLine>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -228,6 +237,11 @@
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>
             <version>1.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapdb</groupId>
+            <artifactId>mapdb</artifactId>
+            <version>3.0.2</version>
         </dependency>
     </dependencies>
 </project>

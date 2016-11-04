@@ -45,7 +45,7 @@ public class IntIndex {
   public Selection get(int value) {
     Selection selection = new BitmapBackedSelection();
     IntArrayList list = index.get(value);
-    addAllToSelection(list, selection);
+    list.forEach(selection::add);
     return selection;
   }
 
@@ -53,7 +53,7 @@ public class IntIndex {
     Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
     for (IntArrayList keys : tail.values()) {
-      addAllToSelection(keys, selection);
+      keys.forEach(selection::add);
     }
     return selection;
   }
@@ -62,7 +62,7 @@ public class IntIndex {
     Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> tail = index.tailMap(value + 1);
     for (IntArrayList keys : tail.values()) {
-      addAllToSelection(keys, selection);
+      keys.forEach(selection::add);
     }
     return selection;
   }
@@ -71,7 +71,7 @@ public class IntIndex {
     Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> head = index.headMap(value + 1);  // we add 1 to get values equal to the arg
     for (IntArrayList keys : head.values()) {
-      addAllToSelection(keys, selection);
+      keys.forEach(selection::add);
     }
     return selection;
   }
@@ -80,14 +80,9 @@ public class IntIndex {
     Selection selection = new BitmapBackedSelection();
     Int2ObjectSortedMap<IntArrayList> head = index.headMap(value);  // we add 1 to get values equal to the arg
     for (IntArrayList keys : head.values()) {
-      addAllToSelection(keys, selection);
+      keys.forEach(selection::add);
     }
     return selection;
   }
 
-  private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-    for (int i : tableKeys) {
-      selection.add(i);
-    }
-  }
 }

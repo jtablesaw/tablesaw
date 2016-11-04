@@ -33,7 +33,7 @@ public final class WideCsvIndexer {
   public void saveInSawFormat() throws IOException {
     stopwatch.start();
     ColumnType[] columnTypes =
-        CsvReader.detectColumnTypes(params.csvFile(), params.hasHeader(), params.fieldDelimiter());
+        CsvReader.detectColumnTypes(params.csvFile(), params.hasHeader(), params.columnSeparator());
     stopwatch.stop();
     System.out.println("Time taken to infer column types: " + stopwatch.toString());
 
@@ -70,7 +70,7 @@ public final class WideCsvIndexer {
       System.arraycopy(columnTypes, i, dummy, i, len);
 
       stopwatch.reset().start();
-      Table singleColTable = CsvReader.read(dummy, params.hasHeader(), params.fieldDelimiter(), params.csvFile());
+      Table singleColTable = CsvReader.read(dummy, params.hasHeader(), params.columnSeparator(), params.csvFile());
       stopwatch.stop();
       List<Column> columns = singleColTable.columns();
       List<String> colNames = columns.stream().map(Column::name).collect(Collectors.toList());

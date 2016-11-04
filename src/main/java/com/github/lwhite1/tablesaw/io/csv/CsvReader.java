@@ -4,6 +4,9 @@ import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
+import com.github.lwhite1.tablesaw.store.CSVParserConfig;
+import com.github.lwhite1.tablesaw.store.ColumnMetadata;
+import com.github.lwhite1.tablesaw.store.TableMetadata;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -14,11 +17,13 @@ import javax.annotation.concurrent.Immutable;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -81,6 +86,7 @@ public class CsvReader {
    */
   public static Table read(String fileName, boolean header, char delimiter) throws IOException {
     ColumnType[] columnTypes = detectColumnTypes(fileName, header, delimiter);
+    System.out.println("Column types detected: " + Arrays.toString(columnTypes));
     return read(columnTypes, true, delimiter, fileName);
   }
 
@@ -136,10 +142,60 @@ public class CsvReader {
           cellIndex++;
         }
         rowNumber++;
+        if (rowNumber % 100_000 == 0)
+          System.out.printf("[%s] Number of rows read: %s%n", Instant.now().toString(), (rowNumber / 1000) + "k");
       }
+
+      System.out.printf("[%s] Number of rows read: %d%n", Instant.now().toString(), rowNumber);
     }
     return table;
   }
+
+  public static Table createFromCSV(CSVParserConfig config, TableMetadata tableMetadata) throws IOException {
+    Table table = Table.create(tableMetadata);
+    int linesToSkip = config.hasHeader() ? 1 : 0;
+
+    try (
+        FileInputStream fis = new FileInputStream(config.csvFile());
+        InputStreamReader is = new InputStreamReader(fis);
+        BufferedReader bReader = new BufferedReader(is);
+        CSVReader reader = new CSVReader(bReader, config.columnSeparator(), config.columnDelimiter(), linesToSkip)
+    ) {
+      String[] nextLine;
+      int rowNumber = 0;
+      try {
+        while ((nextLine = reader.readNext()) != null) {
+          for (int i = 0; i < nextLine.length; i++) {
+            Column column = table.column(i);
+            try {
+              column.addCell(nextLine[i]);
+            } catch (Exception e) {
+              String[] columnNames = tableMetadata.getColumnMetadataList()
+                  .stream()
+                  .map(ColumnMetadata::getName)
+                  .toArray(String[]::new);
+              System.out.printf("[%s] Number of rows read: %d%n", Instant.now().toString(), rowNumber);
+              throw new AddCellToColumnException(e, i, rowNumber, columnNames, nextLine);
+            }
+          }
+          rowNumber++;
+          if (rowNumber % 100_000 == 0)
+            System.out.printf("[%s] Number of rows read: %d%n", Instant.now().toString(), rowNumber);
+        }
+      } catch (Throwable e) {
+        System.out.printf("[%s] read till row number: %d%n", Instant.now().toString(), rowNumber + linesToSkip);
+        throw new RuntimeException(e);
+      }
+      System.out.printf("[%s] Number of rows read: %d%n", Instant.now().toString(), rowNumber);
+    }
+
+    return table;
+  }
+
+
+
+
+
 
   /**
    * Returns a Table constructed from a CSV File with the given file name

@@ -2,6 +2,7 @@ package com.github.lwhite1.tablesaw.api;
 
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.filtering.Filter;
+import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.github.lwhite1.tablesaw.io.csv.CsvWriter;
 import com.github.lwhite1.tablesaw.io.html.HtmlTableWriter;
@@ -83,6 +84,10 @@ public class Table implements Relation, IntIterable {
    */
   private Table(TableMetadata metadata) {
     this.name = metadata.getName();
+    metadata.getColumnMetadataList()
+        .stream()
+        .map(TypeUtils::newColumn)
+        .forEachOrdered(this::addColumn);
   }
 
   /**
@@ -138,10 +143,10 @@ public class Table implements Relation, IntIterable {
    */
   private void validateColumn(Column newColumn) {
     Preconditions.checkNotNull(newColumn, "Attempted to add a null to the columns in table " + name);
-    List<String> stringList = new ArrayList<>();
-    for (String name : columnNames()) {
-      stringList.add(name.toLowerCase());
-    }
+    List<String> stringList = columnNames().stream()
+        .map(String::toLowerCase)
+        .collect(Collectors.toList());
+
     if (stringList.contains(newColumn.name().toLowerCase())) {
       String message = String.format("Cannot add column with duplicate name %s to table %s", newColumn, name);
       throw new RuntimeException(message);

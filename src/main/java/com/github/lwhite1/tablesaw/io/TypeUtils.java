@@ -2,6 +2,7 @@ package com.github.lwhite1.tablesaw.io;
 
 import com.github.lwhite1.tablesaw.api.*;
 import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -255,6 +256,40 @@ public final class TypeUtils {
         return ShortColumn.create(name);
       case LONG_INT:
         return LongColumn.create(name);
+      default:
+        throw new IllegalArgumentException("Unknown ColumnType: " + type);
+    }
+  }
+
+  public static Column newColumn(ColumnMetadata columnMetadata) {
+    String name = columnMetadata.getName();
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(name),
+        "There must be a valid name for a new column");
+
+    ColumnType type = columnMetadata.getType();
+    Preconditions.checkArgument(type != ColumnType.SKIP,
+        "SKIP-ped columns should be handled outside of this method.");
+
+    int rowCount = columnMetadata.getSize();
+    switch (type) {
+      case LOCAL_DATE:
+        return DateColumn.create(name, rowCount);
+      case LOCAL_TIME:
+        return TimeColumn.create(name, rowCount);
+      case LOCAL_DATE_TIME:
+        return DateTimeColumn.create(name, rowCount);
+      case INTEGER:
+        return IntColumn.create(name, rowCount);
+      case FLOAT:
+        return FloatColumn.create(name, rowCount);
+      case BOOLEAN:
+        return BooleanColumn.create(name, rowCount);
+      case CATEGORY:
+        return CategoryColumn.create(name, rowCount);
+      case SHORT_INT:
+        return ShortColumn.create(name, rowCount);
+      case LONG_INT:
+        return LongColumn.create(name, rowCount);
       default:
         throw new IllegalArgumentException("Unknown ColumnType: " + type);
     }

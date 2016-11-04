@@ -9,32 +9,24 @@ import com.github.lwhite1.tablesaw.filtering.text.CategoryFilters;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
 import com.github.lwhite1.tablesaw.store.ColumnMetadata;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
-import com.github.lwhite1.tablesaw.util.DictionaryMap;
+import com.github.lwhite1.tablesaw.util.Dictionary;
+import com.github.lwhite1.tablesaw.util.OffHeapDictionaryMap;
 import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntListIterator;
+import it.unimi.dsi.fastutil.ints.*;
+import org.mapdb.DBMaker;
+import org.mapdb.IndexTreeList;
+import org.mapdb.Serializer;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
- * A column in a base table that contains float values
+ * A column in a base table that contains String values
  */
 public class CategoryColumn extends AbstractColumn
     implements CategoryFilters, CategoryColumnUtils, Iterable<String> {
@@ -48,10 +40,13 @@ public class CategoryColumn extends AbstractColumn
   private int id = 0;
 
   // holds a key for each row in the table. the key can be used to lookup the backing string value
-  private IntArrayList values;
+//  private IntArrayList values;
+
+  private IndexTreeList<Integer> values;
 
   // a bidirectional map of keys to backing string values.
-  private DictionaryMap lookupTable = new DictionaryMap();
+//  private DictionaryMap lookupTable = new DictionaryMap();
+  private OffHeapDictionaryMap lookupTable;
 
   public static CategoryColumn create(String name) {
     return create(name, DEFAULT_ARRAY_SIZE);
@@ -63,25 +58,51 @@ public class CategoryColumn extends AbstractColumn
 
   public static CategoryColumn create(String name, List<String> categories) {
     CategoryColumn column = new CategoryColumn(name, categories.size());
-    for (String string : categories) {
-      column.add(string);
-    }
+    categories.forEach(column::add);
     return column;
   }
 
   private CategoryColumn(String name) {
     super(name);
-    values = new IntArrayList(DEFAULT_ARRAY_SIZE);
+//    values = new IntArrayList(DEFAULT_ARRAY_SIZE);
+    values = DBMaker.tempFileDB()
+        .fileMmapEnableIfSupported()
+        .closeOnJvmShutdown()
+        .concurrencyScale(16)
+        .make()
+        .indexTreeList("values", Serializer.INTEGER_PACKED)
+        .create();
+
+    String id = id();
+    lookupTable = new OffHeapDictionaryMap(id);
   }
 
   public CategoryColumn(ColumnMetadata metadata) {
     super(metadata);
-    values = new IntArrayList(DEFAULT_ARRAY_SIZE);
+//    values = new IntArrayList(metadata.getSize());
+    values = DBMaker.tempFileDB()
+        .fileMmapEnableIfSupported()
+        .closeOnJvmShutdown()
+        .concurrencyScale(16)
+        .make()
+        .indexTreeList("values", Serializer.INTEGER_PACKED)
+        .create();
+    String id = id();
+    lookupTable = new OffHeapDictionaryMap(id);
   }
 
   public CategoryColumn(String name, int size) {
     super(name);
-    values = new IntArrayList(size);
+//    values = new IntArrayList(size);
+    values = DBMaker.tempFileDB()
+        .fileMmapEnableIfSupported()
+        .closeOnJvmShutdown()
+        .concurrencyScale(16)
+        .make()
+        .indexTreeList("values", Serializer.INTEGER_PACKED)
+        .create();
+    String id = id();
+    lookupTable = new OffHeapDictionaryMap(id);
   }
 
   @Override
@@ -106,7 +127,14 @@ public class CategoryColumn extends AbstractColumn
 
   @Override
   public void sortAscending() {
-    IntArrays.parallelQuickSort(values.elements(), dictionarySortComparator);
+    sort(dictionarySortComparator);
+  }
+
+  private void sort(IntComparator cmp) {
+    IntArrayList data = data();
+    IntArrays.parallelQuickSort(data.elements(), cmp);
+    values.clear();
+    values.addAll(data);
   }
 
   private IntComparator dictionarySortComparator = new IntComparator() {
@@ -135,7 +163,7 @@ public class CategoryColumn extends AbstractColumn
 
   @Override
   public void sortDescending() {
-    IntArrays.parallelQuickSort(values.elements(), reverseDictionarySortComparator);
+    sort(reverseDictionarySortComparator);
   }
 
   /**
@@ -152,12 +180,13 @@ public class CategoryColumn extends AbstractColumn
    * @throws IndexOutOfBoundsException if the given rowIndex is not in the column
    */
   public String get(int rowIndex) {
-    int k = values.getInt(rowIndex);
+//    int k = values.getInt(rowIndex);
+    int k = values.get(rowIndex);
     return lookupTable.get(k);
   }
 
   public List<String> toList() {
-    return Lists.newArrayList(dictionaryMap().categoryArray());
+    return Lists.newArrayList(lookupTable.categoryArray());
   }
 
   @Override
@@ -259,16 +288,19 @@ public class CategoryColumn extends AbstractColumn
   /**
    * Initializes this Column with the given values for performance
    */
-  public void initializeWith(IntArrayList list, DictionaryMap map) {
-    values = list;
-    lookupTable = map;
+  public void initializeWith(IntArrayList list, Dictionary map) {
+//    values = list;
+//    lookupTable = map;
+    list.forEach(values::add);
+    map.keyToValueMap().forEach(lookupTable::put);
   }
 
   /**
    * Returns true if this column contains a cell with the given string, and false otherwise
    */
   public boolean contains(String aString) {
-    return values.indexOf(dictionaryMap().get(aString)) >= 0;
+    int k = lookupTable.get(aString);
+    return values.indexOf(k) >= 0;
   }
 
   /**
@@ -277,7 +309,8 @@ public class CategoryColumn extends AbstractColumn
   public IntArrayList getValues(IntArrayList indexes) {
     IntArrayList newList = new IntArrayList(indexes.size());
     for (int i : indexes) {
-      newList.add(values.getInt(i));
+//      newList.add(values.getInt(i));
+      newList.add(values.get(i));
     }
     return newList;
   }
@@ -373,8 +406,13 @@ public class CategoryColumn extends AbstractColumn
     List<BooleanColumn> results = new ArrayList<>();
 
     // createFromCsv the necessary columns
-    for (Int2ObjectMap.Entry<String> entry : lookupTable.keyToValueMap().int2ObjectEntrySet()) {
-      BooleanColumn column = BooleanColumn.create(entry.getValue());
+//    for (Int2ObjectMap.Entry<String> entry : lookupTable.keyToValueMap().int2ObjectEntrySet()) {
+//      BooleanColumn column = BooleanColumn.create(entry.getValue());
+//      results.add(column);
+//    }
+
+    for (String s : lookupTable.categories()) {
+      BooleanColumn column = BooleanColumn.create(s);
       results.add(column);
     }
 
@@ -394,7 +432,8 @@ public class CategoryColumn extends AbstractColumn
   }
 
   public int getInt(int rowNumber) {
-    return values.getInt(rowNumber);
+//    return values.getInt(rowNumber);
+    return values.get(rowNumber);
   }
 
   public CategoryColumn unique() {
@@ -406,7 +445,10 @@ public class CategoryColumn extends AbstractColumn
    * Returns the integers that back this column
    */
   public IntArrayList data() {
-    return values;
+//    return values;
+    IntArrayList result = new IntArrayList(values.size());
+    values.forEach(result::add);
+    return result;
   }
 
   public IntColumn toIntColumn() {
@@ -418,7 +460,10 @@ public class CategoryColumn extends AbstractColumn
     return intColumn;
   }
 
-  public DictionaryMap dictionaryMap() {
+  public com.github.lwhite1.tablesaw.util.Dictionary dictionaryMap() {
+//    DictionaryMap dictionaryMap = new DictionaryMap();
+//    lookupTable.keyToValueMap().forEach(dictionaryMap::put);
+//    return dictionaryMap;
     return lookupTable;
   }
 
@@ -548,7 +593,8 @@ public class CategoryColumn extends AbstractColumn
 
   public CategoryColumn copy() {
     CategoryColumn newCol = CategoryColumn.create(name(), size());
-    newCol.lookupTable = new DictionaryMap(lookupTable);
+//    newCol.lookupTable = new DictionaryMap(lookupTable);
+    lookupTable.keyToValueMap().forEach((key, value) -> newCol.lookupTable.put(key, value));
     newCol.values.addAll(values);
     return newCol;
   }
@@ -580,7 +626,8 @@ public class CategoryColumn extends AbstractColumn
   public Iterator<String> iterator() {
     return new Iterator<String>() {
 
-      private IntListIterator valuesIt = values.iterator();
+//      private IntListIterator valuesIt = values.iterator();
+      private Iterator<Integer> valuesIt = values.iterator();
 
       @Override
       public boolean hasNext() {
@@ -613,7 +660,8 @@ public class CategoryColumn extends AbstractColumn
    * the lookupTable
    */
   public IntArrayList values() {
-    return values;
+//    return values;
+    return data();
   }
 
   @Override

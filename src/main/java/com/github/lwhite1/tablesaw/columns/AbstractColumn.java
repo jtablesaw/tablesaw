@@ -50,8 +50,6 @@ public abstract class AbstractColumn<E extends AbstractColumn> implements Column
     this.name = name;
   }
 
-  public abstract void addCell(String stringvalue);
-
   @Override
   public String comment() {
     return comment;

@@ -4,15 +4,8 @@ import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * A confusion matrix is used to measure the accuracy of a classifier by counting the number of correct and
@@ -85,7 +78,7 @@ public class CategoryConfusionMatrix implements ConfusionMatrix {
   }
 
   private Table<String, String, Integer> sortedTable() {
-    Int2ObjectMap<String> labelKeys = labelColumn.dictionaryMap().keyToValueMap();
+    Map<Integer, String> labelKeys = labelColumn.dictionaryMap().keyToValueMap();
     Table<String, String, Integer> sortedTable = TreeBasedTable.create();
     // make a set of all the values needed, from the prediction set or the actual set
     TreeSet<Integer> allValues = new TreeSet<>();

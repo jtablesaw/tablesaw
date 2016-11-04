@@ -14,23 +14,13 @@ import com.github.lwhite1.tablesaw.util.ReverseIntComparator;
 import com.github.lwhite1.tablesaw.util.Selection;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.*;
 
 import java.nio.ByteBuffer;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A column in a base table that contains float values
@@ -57,6 +47,10 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     TimeColumn column = new TimeColumn(fileName, times.size());
     column.data.addAll(times);
     return column;
+  }
+
+  public static TimeColumn create(String fileName, int size) {
+    return new TimeColumn(fileName, size);
   }
 
   private TimeColumn(String name) {

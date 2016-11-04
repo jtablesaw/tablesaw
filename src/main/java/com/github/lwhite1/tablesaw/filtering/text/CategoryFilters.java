@@ -2,12 +2,12 @@ package com.github.lwhite1.tablesaw.filtering.text;
 
 import com.github.lwhite1.tablesaw.columns.CategoryColumnUtils;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
-import com.github.lwhite1.tablesaw.util.DictionaryMap;
+import com.github.lwhite1.tablesaw.util.Dictionary;
 import com.github.lwhite1.tablesaw.util.Selection;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,12 +32,12 @@ public interface CategoryFilters extends CategoryColumnUtils {
     Selection results = new BitmapBackedSelection();
 
     IntRBTreeSet sorted = new IntRBTreeSet();
-    DictionaryMap dictionaryMap = this.dictionaryMap();
+    Dictionary dictionaryMap = this.dictionaryMap();
 
-    for (Object2IntMap.Entry<String> entry : dictionaryMap.valueToKeyMap().object2IntEntrySet()) {
+    for (Map.Entry<String, Integer> entry : dictionaryMap.valueToKeyMap().entrySet()) {
       String key = entry.getKey();
       if (key.startsWith(string)) {
-        sorted.add(entry.getIntValue());
+        sorted.add(entry.getValue());
       }
     }
     

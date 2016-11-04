@@ -446,6 +446,10 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     return column;
   }
 
+  public static DateTimeColumn create(String fileName, int size) {
+    return new DateTimeColumn(fileName, size);
+  }
+
   /**
    * Returns the count of missing values in this column
    */

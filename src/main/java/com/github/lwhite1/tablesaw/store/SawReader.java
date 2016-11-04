@@ -2,6 +2,7 @@ package com.github.lwhite1.tablesaw.store;
 
 import com.github.lwhite1.tablesaw.api.*;
 import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.store.debug.StoreViewer;
 import org.iq80.snappy.SnappyFramedInputStream;
 
 import java.io.*;
@@ -22,7 +23,7 @@ final class SawReader {
     ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
 
     TableMetadata tableMetadata = readTableMetadata(path + File.separator + TableMetadata.fileName);
-    Table table = Table.create(tableMetadata);
+    Table table = Table.create(tableMetadata.getName());
 
     // NB: We do some extra work with the hash map to ensure that the columns are added to the table in original order
     // TODO(lwhite): Not using CPU efficiently. Need to prevent waiting for other threads until all columns are read
@@ -33,6 +34,9 @@ final class SawReader {
     CountDownLatch latch = new CountDownLatch(columnMetadata.size());
     Map<String, Column> columns = new ConcurrentHashMap<>();
 
+    // TODO: check parallel streams
+    // TODO - continued: http://blog.takipi.com/forkjoin-framework-vs-parallel-streams-vs-executorservice-the-ultimate-benchmark/
+    // TODO - continued: http://gee.cs.oswego.edu/dl/html/StreamParallelGuidance.html
     try {
       tableMetadata.getColumnMetadataList()
           .stream()
@@ -44,6 +48,7 @@ final class SawReader {
                 columns.put(cMeta.getId(), column);
                 latch.countDown();
               } catch (Throwable e) {
+                System.out.println("Error reading column: " + cMeta.getName());
                 e.printStackTrace();
 
                 // capture the first error and fail ASAP
@@ -58,10 +63,11 @@ final class SawReader {
 
       latch.await();
 
-      if (atomicThrow.get() != null) throw new RuntimeException(atomicThrow.get());
+      Throwable throwable = atomicThrow.get();
+      if (throwable != null) throw new RuntimeException(throwable);
 
-      for (ColumnMetadata metadata : columnMetadata)
-        table.addColumn(columns.get(metadata.getId()));
+      for (ColumnMetadata cMeta : columnMetadata)
+        table.addColumn(columns.get(cMeta.getId()));
 
     } catch (InterruptedException t) {
       throw new RuntimeException(t);
@@ -242,10 +248,13 @@ final class SawReader {
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
          DataInputStream dis = new DataInputStream(sis)) {
 
-      int stringCount = dis.readInt();
+      int uniques = dis.readInt();
+      long sizeInBytes = Paths.get(fileName).toFile().length();
+      System.out.printf("[%s] uniques: %d, size: %s%n",
+          metadata.getName(), uniques, StoreViewer.toUnit(sizeInBytes));
 
       int j = 0;
-      while (j < stringCount) {
+      while (j < uniques) {
         stringColumn.dictionaryMap().put(j, dis.readUTF());
         j++;
       }

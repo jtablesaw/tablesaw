@@ -10,6 +10,7 @@ public enum ColumnType {
 
   BOOLEAN(Byte.MIN_VALUE),
   CATEGORY(""),
+  TEXT(""),
   FLOAT(Float.NaN),
   SHORT_INT(Short.MIN_VALUE),
   INTEGER(Integer.MIN_VALUE),
@@ -21,8 +22,7 @@ public enum ColumnType {
 
   private final Comparable missingValue;
 
-  ColumnType(
-      Comparable missingValue) {
+  ColumnType(Comparable missingValue) {
     this.missingValue = missingValue;
   }
 

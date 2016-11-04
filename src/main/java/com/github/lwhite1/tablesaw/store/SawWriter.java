@@ -133,7 +133,7 @@ public final class SawWriter {
    * @throws IOException
    */
   static void writeColumn(String fileName, CategoryColumn column) throws IOException {
-    int categoryCount = column.dictionaryMap().size();
+    int categoryCount = column.countUnique();
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {

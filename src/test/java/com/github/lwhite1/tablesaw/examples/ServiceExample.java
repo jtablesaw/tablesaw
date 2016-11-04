@@ -14,7 +14,8 @@ public class ServiceExample {
 
   public static void main(String[] args) throws Exception {
 
-    Table ops = Table.create("data/operations.csv");
+//    Table ops = Table.create("data/operations.csv");
+    Table ops = Table.createFromCsv("data/operations.csv");
 
     out(ops.structure().print());
 
@@ -41,12 +42,13 @@ public class ServiceExample {
               (column("date").isInQ2(),
               (column("SKU").startsWith("429")),
               (column("Operation").isEqualTo("Assembly"))));
+    out(q2_429_assembly.print());
 
     Table durationByFacilityAndShift = q2_429_assembly.median("Duration").by("Facility", "Shift");
+    out(durationByFacilityAndShift.print());
+
     // TODO(lwhite): We need a top() method that can be used to return the top table rows
     FloatArrayList tops = durationByFacilityAndShift.floatColumn("Median").top(5);
-
-    out(durationByFacilityAndShift.print());
 
     durationByFacilityAndShift.exportToCsv("/tmp/durationByFacilityAndShift.csv");
   }

@@ -9,9 +9,10 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.Set;
 
 /**
- * A map that supports reversible key value pairs of int-String
+ * A map that supports reversible key value pairs of int-String.
+ * A bi-directional map of [int -> String].
  */
-public class DictionaryMap {
+public class DictionaryMap implements Dictionary {
 
   private final Int2ObjectMap<String> keyToValue = new Int2ObjectOpenHashMap<>();
 
@@ -46,7 +47,7 @@ public class DictionaryMap {
     return valueToKey.getInt(value);
   }
 
-  public void remove(short key) {
+  public void remove(int key) {
     String value = keyToValue.remove(key);
     valueToKey.remove(value);
   }
