@@ -52,7 +52,7 @@ public class StorageManager {
 
   private static final String FILE_EXTENSION = "saw";
   private static final Pattern WHITE_SPACE_PATTERN = Pattern.compile("\\s+");
-  private static final Pattern SEPARATOR_PATTERN = Pattern.compile(separator());
+  private static final Pattern SEPARATOR_PATTERN = Pattern.compile(Pattern.quote(separator()));
 
   private static final int READER_POOL_SIZE = 4;
 
