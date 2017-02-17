@@ -46,11 +46,11 @@ public interface DateMapUtils extends DateColumnUtils {
       int c1 = column1.getInt(r);
       int c2 = column2.getInt(r);
       if (c1 == FloatColumn.MISSING_VALUE || c2 == FloatColumn.MISSING_VALUE) {
-        newColumn.set(r, FloatColumn.MISSING_VALUE);
+        newColumn.add(FloatColumn.MISSING_VALUE);
       } else {
         LocalDate value1 = PackedLocalDate.asLocalDate(c1);
         LocalDate value2 = PackedLocalDate.asLocalDate(c2);
-        newColumn.set(r, unit.between(value1, value2));
+        newColumn.add(unit.between(value1, value2));
       }
     }
     return newColumn;

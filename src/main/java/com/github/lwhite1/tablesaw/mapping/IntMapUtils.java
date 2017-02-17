@@ -154,7 +154,7 @@ public interface IntMapUtils extends IntColumnUtils {
   default IntColumn difference(IntColumn column2) {
     IntColumn result = IntColumn.create(name() + " - " + column2.name());
     for (int r = 0; r < size(); r++) {
-      result.set(r, get(r) - column2.get(r));
+      result.add(get(r) - column2.get(r));
     }
     return result;
   }
@@ -162,7 +162,7 @@ public interface IntMapUtils extends IntColumnUtils {
   default IntColumn difference(int value) {
     IntColumn result = IntColumn.create(name() + " - " + value);
     for (int r = 0; r < size(); r++) {
-      result.set(r, get(r) - value);
+      result.add(get(r) - value);
     }
     return result;
   }
