@@ -916,7 +916,7 @@ public class Table implements Relation, IntIterable {
    * null if there are no matches
    * TODO(lwhite) This is a toy implementation badly in need of rewrite for performance.
    */
-  private int getFirst(Column column, String value) {
+  public int getFirst(Column column, String value) {
     int row = -1;
     for (int r : this) {
       if (column.getString(r).equals(value)) {
