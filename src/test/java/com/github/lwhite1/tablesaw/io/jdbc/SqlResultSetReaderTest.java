@@ -1,25 +1,30 @@
 package com.github.lwhite1.tablesaw.io.jdbc;
 
 import com.github.lwhite1.tablesaw.api.Table;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import static com.github.lwhite1.tablesaw.util.TestDb.*;
+import static com.github.lwhite1.tablesaw.util.TestDb.buildCoffeeTable;
+import static com.github.lwhite1.tablesaw.util.TestDb.buildCustomerTable;
+import static com.github.lwhite1.tablesaw.util.TestDb.buildUnpaidOrderTable;
+import static com.github.lwhite1.tablesaw.util.TestDb.dropTables;
 
 /**
  *  Tests for creating Tables from JDBC result sets using SqlResutSetReader
  */
 public class SqlResultSetReaderTest {
 
-
-  public static void main(String[] args) throws Exception {
+  @Test
+  public void testSqlResultSetReader() throws Exception {
 
     // Create a named constant for the URL.
-    // NOTE: This value is specific for Java DB.
-    final String DB_URL = "jdbc:derby:CoffeeDB;createFromCsv=true";
+    // NOTE: This value is specific for H2 in-memory DB.
+    final String DB_URL = "jdbc:h2:mem:CoffeeDB";
 
     // Create a connection to the database.
     Connection conn = DriverManager.getConnection(DB_URL);
@@ -43,6 +48,8 @@ public class SqlResultSetReaderTest {
         Table coffee = SqlResultSetReader.read(rs, "Coffee");
         System.out.println(coffee.structure().print());
         System.out.println(coffee.print());
+        Assert.assertEquals(4, coffee.columnCount());
+        Assert.assertEquals(18, coffee.rowCount());
       }
 
       sql = "SELECT * FROM Customer";
@@ -50,6 +57,8 @@ public class SqlResultSetReaderTest {
         Table customer = SqlResultSetReader.read(rs, "Customer");
         System.out.println(customer.structure().print());
         System.out.println(customer.print());
+        Assert.assertEquals(6, customer.columnCount());
+        Assert.assertEquals(3, customer.rowCount());
       }
 
       sql = "SELECT * FROM UnpaidOrder";
@@ -57,6 +66,8 @@ public class SqlResultSetReaderTest {
         Table unpaidInvoice = SqlResultSetReader.read(rs, "Unpaid Invoice");
         System.out.println(unpaidInvoice.structure().print());
         System.out.println(unpaidInvoice.print());
+        Assert.assertEquals(5, unpaidInvoice.columnCount());
+        Assert.assertEquals(0, unpaidInvoice.rowCount());
       }
     }
   }
