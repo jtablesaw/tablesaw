@@ -4,7 +4,7 @@
   <groupId>com.github.lwhite1</groupId>
   <artifactId>tablesaw</artifactId>
   <name>Tablesaw</name>
-  <version>0.7.6.7</version>
+  <version>0.7.6.8</version>
   <description>High-performance Java Dataframe with integrated columnar storage</description>
   <url>https://jtablesaw.wordpress.com</url>
   <developers>
