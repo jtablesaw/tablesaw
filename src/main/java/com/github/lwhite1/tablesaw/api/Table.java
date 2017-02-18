@@ -923,7 +923,7 @@ public class Table implements Relation, IntIterable {
         // fill in the values of other tables columns for that row.
         for (Column c : other.columns()) {
           if (!c.name().equals(otherColumnName)) {
-            column(c.name()).addCell(c.getString(otherRowIndex));
+            table.column(c.name()).addCell(c.getString(otherRowIndex));
           }
         }
       }
