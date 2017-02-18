@@ -22,6 +22,7 @@ public class SqlResultSetReader {
       new ImmutableMap.Builder<Integer, ColumnType>()
           .put(Types.BINARY, ColumnType.BOOLEAN)
           .put(Types.BOOLEAN, ColumnType.BOOLEAN)
+          .put(Types.BIT, ColumnType.BOOLEAN)
 
           .put(Types.DATE, ColumnType.LOCAL_DATE)
           .put(Types.TIME, ColumnType.LOCAL_TIME)
@@ -37,7 +38,6 @@ public class SqlResultSetReader {
           .put(Types.SMALLINT, ColumnType.SHORT_INT)
           .put(Types.TINYINT, ColumnType.SHORT_INT)
           .put(Types.BIGINT, ColumnType.LONG_INT)
-          .put(Types.BIT, ColumnType.SHORT_INT)
 
           .put(Types.CHAR, ColumnType.CATEGORY)
           .put(Types.LONGVARCHAR, ColumnType.CATEGORY)
