@@ -646,6 +646,27 @@ public class Table implements Relation, IntIterable {
   }
 
   /**
+   * Removes the given column from this table and returns it
+   *
+   * @throws IllegalStateException if the given columnName does not match the name of a column in the table
+   */
+  public Column getAndRemoveColumn(String columnName) {
+    Column c = column(columnName);
+    removeColumns(c);
+    return c;
+  }
+  /**
+   * Removes the given column from this table and returns it
+   *
+   * @throws IndexOutOfBoundsException if the given columnIndex does not match any column in the table
+   */
+  public Column getAndRemoveColumn(int columnIndex) {
+    Column c = column(columnIndex);
+    removeColumns(c);
+    return c;
+  }
+
+  /**
    * Removes the given columns
    */
   public void retainColumns(Column... columns) {
