@@ -342,7 +342,7 @@ public class CsvReader {
    * The method {@code printColumnTypes()} can be used to print a list of the detected columns that can be corrected and
    * used to explicitely specify the correct column types.
    */
-  static ColumnType[] detectColumnTypes(String file, boolean header, char delimiter)
+  public static ColumnType[] detectColumnTypes(String file, boolean header, char delimiter)
       throws IOException {
 
     int linesToSkip = header ? 1 : 0;
