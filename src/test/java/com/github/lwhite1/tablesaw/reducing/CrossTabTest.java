@@ -25,6 +25,9 @@ public class CrossTabTest {
     Table cPct = CrossTab.columnPercents(xtab);
     //System.out.println(cPct.print());
 
+    cPct.retainColumns("", "total");
+    //System.out.println(cPct.print());
+
     //TODO(lwhite): Real tests go here
   }
 }
