@@ -3,7 +3,7 @@ package com.github.lwhite1.tablesaw.filtering;
 /**
  *
  */
-public interface FloatBiPredicate {
+public interface DoubleBiPredicate {
 
   /**
    * Returns true if valueToTest meets the criteria of this predicate when valueToCompareAgainst is considered
@@ -11,8 +11,8 @@ public interface FloatBiPredicate {
    * Example (to compare all the values v in a column such that v is greater than 4.0, v is the value to test and 4.0
    * is the value to compare against
    *
-   * @param valueToTest           the value you're checking. Often this is the value of a cell in a float column
+   * @param valueToTest           the value you're checking. Often this is the value of a cell in a double column
    * @param valueToCompareAgainst the value to compare against. Often this is a single value for all comparisons
    */
-  boolean test(float valueToTest, float valueToCompareAgainst);
+  boolean test(double valueToTest, double valueToCompareAgainst);
 }

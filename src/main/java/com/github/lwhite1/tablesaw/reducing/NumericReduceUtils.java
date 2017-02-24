@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.reducing;
 
+import com.github.lwhite1.tablesaw.api.DoubleColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -49,6 +50,18 @@ public class NumericReduceUtils {
       float sum;
       sum = 0.0f;
       for (float value : floatColumn) {
+        if (value != Float.NaN) {
+          sum += value;
+        }
+      }
+      return sum;
+    }
+
+    @Override
+    public double reduce(DoubleColumn floatColumn) {
+      float sum;
+      sum = 0.0f;
+      for (double value : floatColumn) {
         if (value != Float.NaN) {
           sum += value;
         }

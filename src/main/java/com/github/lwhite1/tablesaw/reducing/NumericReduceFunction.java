@@ -1,5 +1,6 @@
 package com.github.lwhite1.tablesaw.reducing;
 
+import com.github.lwhite1.tablesaw.api.DoubleColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
@@ -16,6 +17,10 @@ public interface NumericReduceFunction {
 
   default double reduce(FloatColumn data) {
     return this.reduce(data.toDoubleArray());
+  }
+
+  default double reduce(DoubleColumn doubles) {
+    return this.reduce(doubles.toDoubleArray());
   }
 
   default double reduce(IntColumn data) {

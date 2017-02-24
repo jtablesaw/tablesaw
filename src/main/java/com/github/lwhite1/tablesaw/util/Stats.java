@@ -1,6 +1,7 @@
 package com.github.lwhite1.tablesaw.util;
 
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.DoubleColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
@@ -36,6 +37,15 @@ public class Stats {
     }
     return getStats(values, summaryStatistics);
   }
+
+  public static Stats create(final DoubleColumn values) {
+    SummaryStatistics summaryStatistics = new SummaryStatistics();
+    for (double f : values) {
+      summaryStatistics.addValue(f);
+    }
+    return getStats(values, summaryStatistics);
+  }
+
   public static Stats create(final IntColumn ints) {
     FloatColumn values = FloatColumn.create(ints.name(), ints.toFloatArray());
     return create(values);
@@ -176,6 +186,24 @@ public class Stats {
     Stats stats = new Stats("Column: " + values.name());
     stats.min = (float) summaryStatistics.getMin();
     stats.max = (float) summaryStatistics.getMax();
+    stats.n = summaryStatistics.getN();
+    stats.sum = summaryStatistics.getSum();
+    stats.variance = summaryStatistics.getVariance();
+    stats.populationVariance = summaryStatistics.getPopulationVariance();
+    stats.quadraticMean = summaryStatistics.getQuadraticMean();
+    stats.geometricMean = summaryStatistics.getGeometricMean();
+    stats.mean = summaryStatistics.getMean();
+    stats.standardDeviation = summaryStatistics.getStandardDeviation();
+    stats.sumOfLogs = summaryStatistics.getSumOfLogs();
+    stats.sumOfSquares = summaryStatistics.getSumsq();
+    stats.secondMoment = summaryStatistics.getSecondMoment();
+    return stats;
+  }
+
+  private static Stats getStats(DoubleColumn values, SummaryStatistics summaryStatistics) {
+    Stats stats = new Stats("Column: " + values.name());
+    stats.min = summaryStatistics.getMin();
+    stats.max = summaryStatistics.getMax();
     stats.n = summaryStatistics.getN();
     stats.sum = summaryStatistics.getSum();
     stats.variance = summaryStatistics.getVariance();
