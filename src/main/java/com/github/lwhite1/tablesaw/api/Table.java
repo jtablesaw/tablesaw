@@ -831,7 +831,28 @@ public class Table implements Relation, IntIterable {
    * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
    * which is used to populate the column names
    *
-   * @param types       The column types
+   * @param csvFileName The name of the file to import
+   * @param header      True if the file has a single header row. False if it has no header row.
+   *                    Multi-line headers are not supported
+   * @param delimiter   a char that divides the columns in the source file, often a comma or tab
+   * @param skipSampling  This applies only to column type detection. Column type detection uses sampling to pick a
+   *                      column type. This may cause the algorithm to skip a row that has information the algorithm
+   *                      needs. Setting this to true will cause the algorithm to check jjjjbhball the data in the table,
+   *                      which may take a long time (a couple minutes?) on large tables (over 100,000,000 rows).
+   * @throws IOException
+   */
+  public static Table createFromCsv(String csvFileName, boolean header, char delimiter, boolean skipSampling)
+      throws IOException {
+    return CsvReader.read(csvFileName, header, delimiter, skipSampling);
+  }
+
+  /**
+   * Returns a new table constructed from a character delimited (aka CSV) text file
+   * <p>
+   * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
+   * which is used to populate the column names
+   *
+   * @param types       The column types, (see io.csv.CsvReader to run the heading to create an array you can edit)
    * @param csvFileName The name of the file to import
    * @throws IOException
    */
@@ -878,7 +899,6 @@ public class Table implements Relation, IntIterable {
    * @param delimiter a char that divides the columns in the source file, often a comma or tab
    * @param stream    an InputStream from a file, URL, etc.
    * @param tableName the name of the resulting table
-   * @throws IOException
    */
   public static Table createFromStream(ColumnType[] types, boolean header, char delimiter, InputStream stream,
                                        String tableName) throws IOException {

@@ -50,8 +50,23 @@ public class CsvReaderTest {
   }
 
   @Test
+  public void testBushDataWithoutSamplingForTypeDetection() throws Exception {
+
+    // Read the CSV file
+    Table table = CsvReader.read("data/BushApproval.csv", true, ',', true);
+
+    assertEquals(323, table.rowCount());
+
+    // Look at the column names
+    assertEquals("[date, approval, who]", table.columnNames().toString());
+  }
+
+
+
+
+  @Test
   public void testDataTypeDetection() throws Exception {
-    ColumnType[] columnTypes = CsvReader.detectColumnTypes("data/bus_stop_test.csv", true, ',');
+    ColumnType[] columnTypes = CsvReader.detectColumnTypes("data/bus_stop_test.csv", true, ',', false);
     assertTrue(Arrays.equals(bus_types, columnTypes));
   }
 
@@ -68,7 +83,7 @@ public class CsvReaderTest {
 
   @Test
   public void testDataTypeDetection2() throws Exception {
-    ColumnType[] columnTypes = CsvReader.detectColumnTypes("data/BushApproval.csv", true, ',');
+    ColumnType[] columnTypes = CsvReader.detectColumnTypes("data/BushApproval.csv", true, ',', false);
     assertEquals(ColumnType.LOCAL_DATE, columnTypes[0]);
     assertEquals(ColumnType.SHORT_INT, columnTypes[1]);
     assertEquals(ColumnType.CATEGORY, columnTypes[2]);

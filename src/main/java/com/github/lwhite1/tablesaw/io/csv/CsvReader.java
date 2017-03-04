@@ -87,12 +87,20 @@ public class CsvReader {
    * @throws IOException
    */
   public static Table read(String fileName, boolean header, char delimiter) throws IOException {
-    ColumnType[] columnTypes = detectColumnTypes(fileName, header, delimiter);
+    ColumnType[] columnTypes = detectColumnTypes(fileName, header, delimiter, false);
     return read(columnTypes, true, delimiter, fileName);
   }
 
+  public static Table read(String fileName, boolean header, char delimiter, boolean skipSampling) throws IOException {
+    ColumnType[] columnTypes = detectColumnTypes(fileName, header, delimiter, skipSampling);
+    return read(columnTypes, true, delimiter, fileName);
+  }
 
-  public static Table read(String tableName, ColumnType types[], boolean header, char columnSeparator, InputStream stream)
+  public static Table read(String tableName,
+                           ColumnType types[],
+                           boolean header,
+                           char columnSeparator,
+                           InputStream stream)
       throws IOException {
 
     BufferedReader streamReader = new BufferedReader(new InputStreamReader(stream));
@@ -231,7 +239,7 @@ public class CsvReader {
    * @throws IOException
    */
   public static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
-    ColumnType[] types = detectColumnTypes(csvFileName, header, delimiter);
+    ColumnType[] types = detectColumnTypes(csvFileName, header, delimiter, false);
     Table t = headerOnly(types, header, delimiter, csvFileName);
     return t.structure();
   }
@@ -342,7 +350,7 @@ public class CsvReader {
    * The method {@code printColumnTypes()} can be used to print a list of the detected columns that can be corrected and
    * used to explicitely specify the correct column types.
    */
-  public static ColumnType[] detectColumnTypes(String file, boolean header, char delimiter)
+  public static ColumnType[] detectColumnTypes(String file, boolean header, char delimiter, boolean skipSampling)
       throws IOException {
 
     int linesToSkip = header ? 1 : 0;
@@ -373,6 +381,9 @@ public class CsvReader {
           }
         }
         if (rowCount == nextRow) {
+          if (skipSampling) {
+            nextRow = nextRowWithoutSampling(nextRow);
+          }
           nextRow = nextRow(nextRow);
         }
         rowCount++;
@@ -384,8 +395,11 @@ public class CsvReader {
       ColumnType detectedType = detectType(valuesList);
       columnTypes.add(detectedType);
     }
-
     return columnTypes.toArray(new ColumnType[columnTypes.size()]);
+  }
+
+  private static int nextRowWithoutSampling(int nextRow) {
+    return nextRow + 1;
   }
 
   private static int nextRow(int nextRow) {
