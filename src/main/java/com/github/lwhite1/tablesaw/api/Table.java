@@ -896,7 +896,8 @@ public class Table implements Relation, IntIterable {
 /**
    * Joins together this table and another table on the given column names. All the records of this table are included
    * @return   A new table derived from combining this table with {@code other} table
-   */
+   *//*
+
 
   public Table innerJoin(Table other, String columnName, String otherColumnName) {
     // create a new table like this one
@@ -931,6 +932,7 @@ public class Table implements Relation, IntIterable {
     return table;
   }
 
+*/
 
   /**
    * Returns the first row for which the column {@code columnName} contains {@code value}, or
