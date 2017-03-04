@@ -9,7 +9,7 @@ There are other, more elaborate platforms for data science in Java. They're desi
     <dependency>
         <groupId>com.github.lwhite1</groupId>
         <artifactId>tablesaw</artifactId>
-        <version>0.7.6.8</version>
+        <version>0.7.6.9</version>
     </dependency>
 
 ### Documentation and support:
