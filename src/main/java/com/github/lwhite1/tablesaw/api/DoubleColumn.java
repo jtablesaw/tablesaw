@@ -71,11 +71,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
   @Override
   public int countUnique() {
-    DoubleSet floats = new DoubleOpenHashSet();
+    DoubleSet doubles = new DoubleOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      floats.add(data.getDouble(i));
+      doubles.add(data.getDouble(i));
     }
-    return floats.size();
+    return doubles.size();
   }
 
   /**
@@ -88,7 +88,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
   public DoubleArrayList top(int n) {
     DoubleArrayList top = new DoubleArrayList();
     double[] values = data.toDoubleArray();
-    DoubleArrays.parallelQuickSort(values, reverseFloatComparator);
+    DoubleArrays.parallelQuickSort(values, reverseDoubleComparator);
     for (int i = 0; i < n && i < values.length; i++) {
       top.add(values[i]);
     }
@@ -114,12 +114,12 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
   @Override
   public DoubleColumn unique() {
-    DoubleSet floats = new DoubleOpenHashSet();
+    DoubleSet doubles = new DoubleOpenHashSet();
     for (int i = 0; i < size(); i++) {
-      floats.add(data.getDouble(i));
+      doubles.add(data.getDouble(i));
     }
-    DoubleColumn column = new DoubleColumn(name() + " Unique values", floats.size());
-    floats.forEach(column::add);
+    DoubleColumn column = new DoubleColumn(name() + " Unique values", doubles.size());
+    doubles.forEach(column::add);
     return column;
   }
 
@@ -129,7 +129,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
   @Override
   public ColumnType type() {
-    return ColumnType.FLOAT;
+    return ColumnType.DOUBLE;
   }
 
   public double firstElement() {
@@ -227,15 +227,15 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
   }
 
   /**
-   * Adds the given double to this column, after casting it to a float
+   * Adds the given double to this column
    */
   public void add(double d) {
-    data.add((float) d);
+    data.add(d);
   }
 
   // Predicate  functions
 
-  public Selection isLessThan(float f) {
+  public Selection isLessThan(double f) {
     return select(isLessThan, f);
   }
 
@@ -247,28 +247,28 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     return select(isNotMissing);
   }
 
-  public Selection isGreaterThan(float f) {
+  public Selection isGreaterThan(double f) {
     return select(isGreaterThan, f);
   }
 
-  public Selection isGreaterThanOrEqualTo(float f) {
+  public Selection isGreaterThanOrEqualTo(double f) {
     return select(isGreaterThanOrEqualTo, f);
   }
 
-  public Selection isLessThanOrEqualTo(float f) {
+  public Selection isLessThanOrEqualTo(double f) {
     return select(isLessThanOrEqualTo, f);
   }
 
-  public Selection isEqualTo(float f) {
-    return select(isEqualTo, f);
+  public Selection isEqualTo(double d) {
+    return select(isEqualTo, d);
   }
 
-  public Selection isEqualTo(DoubleColumn f) {
+  public Selection isEqualTo(DoubleColumn d) {
     Selection results = new BitmapBackedSelection();
     int i = 0;
-    DoubleIterator floatIterator = f.iterator();
-    for (double floats : data) {
-      if (floats == floatIterator.nextDouble()) {
+    DoubleIterator doubleIterator = d.iterator();
+    for (double doubles : data) {
+      if (doubles == doubleIterator.nextDouble()) {
         results.add(i);
       }
       i++;
@@ -314,7 +314,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
   @Override
   public void sortDescending() {
-    DoubleArrays.parallelQuickSort(data.elements(), reverseFloatComparator);
+    DoubleArrays.parallelQuickSort(data.elements(), reverseDoubleComparator);
   }
 
   @Override
@@ -330,17 +330,17 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     return new DoubleColumn(name, initialSize);
   }
 
-  public static DoubleColumn create(String name, DoubleArrayList floats) {
-    DoubleColumn column = new DoubleColumn(name, floats.size());
-    column.data = new DoubleArrayList(floats.size());
-    column.data.addAll(floats);
+  public static DoubleColumn create(String name, DoubleArrayList doubles) {
+    DoubleColumn column = new DoubleColumn(name, doubles.size());
+    column.data = new DoubleArrayList(doubles.size());
+    column.data.addAll(doubles);
     return column;
   }
 
   /**
-   * Compares two floats, such that a sort based on this comparator would sort in descending order
+   * Compares two doubles, such that a sort based on this comparator would sort in descending order
    */
-  DoubleComparator reverseFloatComparator = new DoubleComparator() {
+  DoubleComparator reverseDoubleComparator = new DoubleComparator() {
 
     @Override
     public int compare(Double o2, Double o1) {
@@ -384,7 +384,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
   }
 
   /**
-   * Returns a float that is parsed from the given String
+   * Returns a double that is parsed from the given String
    * <p>
    * We remove any commas before parsing
    */
@@ -403,7 +403,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     DoubleColumn newColumn = DoubleColumn.create(name() + "[logN]", size());
 
     for (double value : this) {
-      newColumn.add((float) Math.log(value));
+      newColumn.add(Math.log(value));
     }
     return newColumn;
   }
@@ -416,7 +416,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     DoubleColumn newColumn = DoubleColumn.create(name() + "[log10]", size());
 
     for (double value : this) {
-      newColumn.add((float) Math.log10(value));
+      newColumn.add( Math.log10(value));
     }
     return newColumn;
   }
@@ -428,7 +428,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
   public DoubleColumn log1p() {
     DoubleColumn newColumn = DoubleColumn.create(name() + "[1og1p]", size());
     for (double value : this) {
-      newColumn.add((float) Math.log1p(value));
+      newColumn.add(Math.log1p(value));
     }
     return newColumn;
   }
@@ -466,7 +466,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
   public DoubleColumn sqrt() {
     DoubleColumn newColumn = DoubleColumn.create(name() + "[sqrt]", size());
     for (double value : this) {
-      newColumn.add((float) Math.sqrt(value));
+      newColumn.add(Math.sqrt(value));
     }
     return newColumn;
   }
@@ -474,7 +474,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
   public DoubleColumn cubeRoot() {
     DoubleColumn newColumn = DoubleColumn.create(name() + "[cbrt]", size());
     for (double value : this) {
-      newColumn.add((float) Math.cbrt(value));
+      newColumn.add(Math.cbrt(value));
     }
     return newColumn;
   }
@@ -593,8 +593,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
   private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
   /**
-   * Compares the given ints, which refer to the indexes of the floats in this column, according to the values of the
-   * floats themselves
+   * Compares the given ints, which refer to the indexes of the doubles in this column, according to the values of the
+   * doubles themselves
    */
   @Override
   public IntComparator rowComparator() {
@@ -635,7 +635,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
   }
 
   // TODO(lwhite): Reconsider the implementation of this functionality to allow user to provide a specific max error.
-  // TODO(lwhite): continued: Also see section in Effective Java on floating point comparisons.
+  // TODO(lwhite): continued: Also see section in Effective Java on doubleing point comparisons.
   Selection isCloseTo(float target) {
     Selection results = new BitmapBackedSelection();
     int i = 0;
@@ -645,7 +645,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
       }
       i++;
     }
-
     return results;
   }
 
@@ -693,15 +692,15 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
   @Override
   public String toString() {
-    return "Float column: " + name();
+    return "Double column: " + name();
   }
 
   @Override
   public void append(Column column) {
     Preconditions.checkArgument(column.type() == this.type());
-    DoubleColumn floatColumn = (DoubleColumn) column;
-    for (int i = 0; i < floatColumn.size(); i++) {
-      add(floatColumn.get(i));
+    DoubleColumn doubleColumn = (DoubleColumn) column;
+    for (int i = 0; i < doubleColumn.size(); i++) {
+      add(doubleColumn.get(i));
     }
   }
 
@@ -721,7 +720,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     return bitmap;
   }
 
-  public Selection select(DoubleBiPredicate predicate, float value) {
+  public Selection select(DoubleBiPredicate predicate, double value) {
     Selection bitmap = new BitmapBackedSelection();
     for (int idx = 0; idx < data.size(); idx++) {
       double next = data.getDouble(idx);
@@ -736,7 +735,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     return new DoubleOpenHashSet(data);
   }
 
-  public boolean contains(float value) {
+  public boolean contains(double value) {
     return data.contains(value);
   }
 
@@ -762,8 +761,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
             /*
              * check for missing values:
-             * note that for floats you test val != val,
-             * since a missing float is encoded as Float.NaN and nothing is equal to NaN.
+             * note that for doubles you test val != val,
+             * since a missing double is encoded as Double.NaN and nothing is equal to NaN.
              */
 
                 double currentValue = get(current);
