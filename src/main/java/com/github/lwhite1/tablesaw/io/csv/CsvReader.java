@@ -245,7 +245,7 @@ public class CsvReader {
   }
 
   /**
-   * Returns a string representation of the file types in file {@code csvFilename},
+   * Returns a string representation of the column types in file {@code csvFilename},
    * as determined by the type-detection algorithm
    * <p>
    * This method is intended to help analysts quickly fix any erroneous types, by printing out the types in a format
@@ -258,8 +258,7 @@ public class CsvReader {
    * CATEGORY,   // 2     who
    * <p>
    * Note that the types are array separated, and that the index position and the column name are printed such that
-   * they
-   * would be interpreted as comments if you paste the output into an array:
+   * they would be interpreted as comments if you paste the output into an array:
    * <p>
    * ColumnType[] types = {
    * LOCAL_DATE, // 0     date

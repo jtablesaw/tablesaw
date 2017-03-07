@@ -5,6 +5,7 @@ import com.github.lwhite1.tablesaw.api.CategoryColumn;
 import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.DateTimeColumn;
+import com.github.lwhite1.tablesaw.api.DoubleColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
@@ -284,6 +285,14 @@ public interface Relation {
 
   default FloatColumn floatColumn(String columnName) {
     return (FloatColumn) column(columnName);
+  }
+
+  default DoubleColumn doubleColumn(int columnIndex) {
+    return (DoubleColumn) column(columnIndex);
+  }
+
+  default DoubleColumn doubleColumn(String columnName) {
+    return (DoubleColumn) column(columnName);
   }
 
   default IntColumn intColumn(String columnName) {
