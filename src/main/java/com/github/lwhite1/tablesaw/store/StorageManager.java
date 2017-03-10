@@ -13,6 +13,7 @@ import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.TimeColumn;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.table.Relation;
+import com.google.common.annotations.VisibleForTesting;
 import org.iq80.snappy.SnappyFramedInputStream;
 import org.iq80.snappy.SnappyFramedOutputStream;
 
@@ -58,14 +59,8 @@ public class StorageManager {
   private static final int READER_POOL_SIZE = 4;
 
   static String separator() {
-      String separator = File.separator;
-      try (FileSystem fileSystem = FileSystems.getDefault()) {
-          separator = fileSystem.getSeparator();
-          fileSystem.close();
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-      return separator;
+    FileSystem fileSystem = FileSystems.getDefault();
+    return fileSystem.getSeparator();
   }
 
   /**
@@ -267,7 +262,7 @@ public class StorageManager {
     return times;
   }
 
-  private static CategoryColumn readCategoryColumn(String fileName, ColumnMetadata metadata) throws IOException {
+  public static CategoryColumn readCategoryColumn(String fileName, ColumnMetadata metadata) throws IOException {
     CategoryColumn stringColumn = new CategoryColumn(metadata);
     try (FileInputStream fis = new FileInputStream(fileName);
          SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
@@ -404,7 +399,8 @@ public class StorageManager {
     }
   }
 
-  private static void writeColumn(String fileName, FloatColumn column) throws IOException {
+  @VisibleForTesting
+  public static void writeColumn(String fileName, FloatColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -420,7 +416,7 @@ public class StorageManager {
     }
   }
 
-  private static void writeColumn(String fileName, DoubleColumn column) throws IOException {
+  public static void writeColumn(String fileName, DoubleColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -443,7 +439,7 @@ public class StorageManager {
    *
    * @throws IOException IOException if the file can not be read
    */
-  private static void writeColumn(String fileName, CategoryColumn column) throws IOException {
+  public static void writeColumn(String fileName, CategoryColumn column) throws IOException {
 
     int categoryCount = column.dictionaryMap().size();
     try (FileOutputStream fos = new FileOutputStream(fileName);
@@ -471,7 +467,7 @@ public class StorageManager {
   }
 
   //TODO(lwhite): saveTable the column using integer compression
-  private static void writeColumn(String fileName, IntColumn column) throws IOException {
+  public static void writeColumn(String fileName, IntColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -487,7 +483,7 @@ public class StorageManager {
     }
   }
 
-  private static void writeColumn(String fileName, ShortColumn column) throws IOException {
+  public static void writeColumn(String fileName, ShortColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -503,7 +499,7 @@ public class StorageManager {
     }
   }
 
-  private static void writeColumn(String fileName, LongColumn column) throws IOException {
+  public static void writeColumn(String fileName, LongColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -520,7 +516,7 @@ public class StorageManager {
   }
 
   //TODO(lwhite): saveTable the column using integer compression
-  private static void writeColumn(String fileName, DateColumn column) throws IOException {
+  public static void writeColumn(String fileName, DateColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -536,7 +532,7 @@ public class StorageManager {
     }
   }
 
-  private static void writeColumn(String fileName, DateTimeColumn column) throws IOException {
+  public static void writeColumn(String fileName, DateTimeColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -553,7 +549,7 @@ public class StorageManager {
   }
 
   //TODO(lwhite): saveTable the column using integer compression
-  private static void writeColumn(String fileName, TimeColumn column) throws IOException {
+  public static void writeColumn(String fileName, TimeColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
@@ -570,7 +566,7 @@ public class StorageManager {
   }
 
   //TODO(lwhite): saveTable the column using compressed bitmap
-  private static void writeColumn(String fileName, BooleanColumn column) throws IOException {
+  public static void writeColumn(String fileName, BooleanColumn column) throws IOException {
     try (FileOutputStream fos = new FileOutputStream(fileName);
          SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
          DataOutputStream dos = new DataOutputStream(sos)) {
