@@ -4,7 +4,6 @@ import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.io.TypeUtils;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.opencsv.CSVReader;
@@ -69,7 +68,7 @@ public class CsvReader {
    * @param columnSeparator the delimiter
    * @param fileName        The fully specified file name. It is used to provide a default name for the table
    * @return A Table containing the data in the csv file.
-   * @throws IOException
+   * @throws IOException if file cannot be read
    */
   public static Table read(ColumnType types[], boolean header, char columnSeparator, String fileName) throws IOException {
     InputStream stream = new FileInputStream(fileName);
@@ -84,7 +83,7 @@ public class CsvReader {
    *                    Multi-line headers are not supported
    * @param delimiter   a char that divides the columns in the source file, often a comma or tab
    * @return A table containing the data from the file
-   * @throws IOException
+   * @throws IOException if file cannot be read
    */
   public static Table read(String fileName, boolean header, char delimiter) throws IOException {
     ColumnType[] columnTypes = detectColumnTypes(fileName, header, delimiter, false);
@@ -166,7 +165,7 @@ public class CsvReader {
    * @param columnSeparator the delimiter
    * @param name            The fully specified file name. It is used to provide a default name for the table
    * @return A Table containing the data in the csv file.
-   * @throws IOException
+   * @throws IOException if file cannot be read
    */
   public static Table headerOnly(String name, ColumnType types[], boolean header, char columnSeparator, InputStream stream)
       throws IOException {
@@ -224,7 +223,7 @@ public class CsvReader {
    * @param columnSeparator the delimiter
    * @param fileName        The fully specified file name. It is used to provide a default name for the table
    * @return A Relation containing the data in the csv file.
-   * @throws IOException
+   * @throws IOException if file cannot be read
    */
   public static Table headerOnly(ColumnType types[], boolean header, char columnSeparator, String fileName)
       throws IOException {
@@ -236,7 +235,7 @@ public class CsvReader {
   /**
    * Returns the structure of the table given by {@code csvFileName} as detected by analysis of a sample of the data
    *
-   * @throws IOException
+   * @throws IOException if file cannot be read
    */
   public static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
     ColumnType[] types = detectColumnTypes(csvFileName, header, delimiter, false);
@@ -266,7 +265,7 @@ public class CsvReader {
    * CATEGORY,   // 2     who
    * }
    *
-   * @throws IOException
+   * @throws IOException if file cannot be read
    */
   public static String printColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
 
@@ -339,7 +338,6 @@ public class CsvReader {
     return header;
   }
 
-  @VisibleForTesting
   /**
    * Estimates and returns the type for each column in the delimited text file {@code file}
    *
@@ -382,8 +380,9 @@ public class CsvReader {
         if (rowCount == nextRow) {
           if (skipSampling) {
             nextRow = nextRowWithoutSampling(nextRow);
+          } else {
+              nextRow = nextRow(nextRow);
           }
-          nextRow = nextRow(nextRow);
         }
         rowCount++;
       }
@@ -430,7 +429,7 @@ public class CsvReader {
 
     // Types to choose from. When more than one would work, we pick the first of the options
     ColumnType[] typeArray =  // we leave out category, as that is the default type
-        {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, SHORT_INT, INTEGER, LONG_INT, FLOAT};
+        {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, SHORT_INT, INTEGER, LONG_INT, FLOAT, DOUBLE};
 
     CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
@@ -477,6 +476,11 @@ public class CsvReader {
       if (typeCandidates.contains(FLOAT)) {
         if (!isFloat.test(s)) {
           typeCandidates.remove(FLOAT);
+        }
+      }
+      if (typeCandidates.contains(DOUBLE)) {
+        if (!isDouble.test(s)) {
+          typeCandidates.remove(DOUBLE);
         }
       }
     }
@@ -526,6 +530,16 @@ public class CsvReader {
   private static Predicate<String> isFloat = s -> {
     try {
       Float.parseFloat(s);
+      return true;
+    } catch (NumberFormatException e) {
+      // it's all part of the plan
+      return false;
+    }
+  };
+
+  private static Predicate<String> isDouble = s -> {
+    try {
+      Double.parseDouble(s);
       return true;
     } catch (NumberFormatException e) {
       // it's all part of the plan

@@ -667,7 +667,7 @@ public class Table implements Relation, IntIterable {
   }
 
   /**
-   * Removes the given columns
+   * Removes the given columns from this table
    */
   public void retainColumns(Column... columns) {
     List<Column> retained = Arrays.asList(columns);
@@ -788,7 +788,7 @@ public class Table implements Relation, IntIterable {
    * which is used to populate the column names
    *
    * @param csvFileName The name of the file to import
-   * @throws IOException
+   * @throws IOException if the file can't be read
    */
   public static Table createFromCsv(String csvFileName) throws IOException {
     return CsvReader.read(csvFileName, true, ',');
@@ -803,7 +803,7 @@ public class Table implements Relation, IntIterable {
    * @param csvFileName The name of the file to import
    * @param header      True if the file has a single header row. False if it has no header row.
    *                    Multi-line headers are not supported
-   * @throws IOException
+   * @throws IOException if the file can't be read
    */
   public static Table createFromCsv(String csvFileName, boolean header) throws IOException {
     return CsvReader.read(csvFileName, header, ',');
@@ -819,7 +819,7 @@ public class Table implements Relation, IntIterable {
    * @param header      True if the file has a single header row. False if it has no header row.
    *                    Multi-line headers are not supported
    * @param delimiter   a char that divides the columns in the source file, often a comma or tab
-   * @throws IOException
+   * @throws IOException if the file can't be read
    */
   public static Table createFromCsv(String csvFileName, boolean header, char delimiter) throws IOException {
     return CsvReader.read(csvFileName, header, delimiter);
@@ -839,7 +839,7 @@ public class Table implements Relation, IntIterable {
    *                      column type. This may cause the algorithm to skip a row that has information the algorithm
    *                      needs. Setting this to true will cause the algorithm to check jjjjbhball the data in the table,
    *                      which may take a long time (a couple minutes?) on large tables (over 100,000,000 rows).
-   * @throws IOException
+   * @throws IOException if the file can't be read
    */
   public static Table createFromCsv(String csvFileName, boolean header, char delimiter, boolean skipSampling)
       throws IOException {
@@ -854,7 +854,7 @@ public class Table implements Relation, IntIterable {
    *
    * @param types       The column types, (see io.csv.CsvReader to run the heading to create an array you can edit)
    * @param csvFileName The name of the file to import
-   * @throws IOException
+   * @throws IOException if the file can't be read
    */
   public static Table createFromCsv(ColumnType[] types, String csvFileName) throws IOException {
     return CsvReader.read(types, true, ',', csvFileName);
@@ -869,7 +869,7 @@ public class Table implements Relation, IntIterable {
    * @param header      True if the file has a single header row. False if it has no header row.
    *                    Multi-line headers are not supported
    * @param csvFileName the name of the file to import
-   * @throws IOException
+   * @throws IOException if the file can't be read
    */
   public static Table createFromCsv(ColumnType[] types, String csvFileName, boolean header) throws IOException {
     return CsvReader.read(types, header, ',', csvFileName);
@@ -883,7 +883,7 @@ public class Table implements Relation, IntIterable {
    *                    Multi-line headers are not supported
    * @param delimiter   a char that divides the columns in the source file, often a comma or tab
    * @param csvFileName the name of the file to import
-   * @throws IOException
+   * @throws IOException if the file can't be read
    */
   public static Table createFromCsv(ColumnType[] types, String csvFileName, boolean header, char delimiter)
       throws IOException {
@@ -911,48 +911,6 @@ public class Table implements Relation, IntIterable {
   public static Table create(ResultSet resultSet, String tableName) throws SQLException {
     return SqlResultSetReader.read(resultSet, tableName);
   }
-
-
-/**
-   * Joins together this table and another table on the given column names. All the records of this table are included
-   * @return   A new table derived from combining this table with {@code other} table
-   *//*
-
-
-  public Table innerJoin(Table other, String columnName, String otherColumnName) {
-    // create a new table like this one
-    Table table = new Table(this.name());
-    // add the columns from this table
-    for (Column column : columns()) {
-      table.addColumn(column);
-    }
-    // add the columns from the other table, but leave the data out for now
-    for (Column column : other.columns()) {
-      if (!column.name().equals(otherColumnName)) {  // skip the join column so it's not duplicated
-        table.addColumn(column.emptyCopy());
-      }
-    }
-
-    // iterate over the rows in the new table, fetching rows from the other table that match on
-    Column joinColumn = column(columnName);
-    Column otherJoinColumn = other.column(otherColumnName);
-    int otherRowIndex = -1;
-    for (int row : table) {
-      String key = joinColumn.getString(row);
-      otherRowIndex = other.getFirst(otherJoinColumn, key);
-      if (otherRowIndex != -1) {
-        // fill in the values of other tables columns for that row.
-        for (Column c : other.columns()) {
-          if (!c.name().equals(otherColumnName)) {
-            table.column(c.name()).addCell(c.getString(otherRowIndex));
-          }
-        }
-      }
-    }
-    return table;
-  }
-
-*/
 
   /**
    * Returns the first row for which the column {@code columnName} contains {@code value}, or
