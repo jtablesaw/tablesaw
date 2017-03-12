@@ -1,13 +1,11 @@
 package com.github.lwhite1.tablesaw.mapping;
 
-import com.github.lwhite1.tablesaw.columns.DateColumnUtils;
-import com.github.lwhite1.tablesaw.columns.Column;
-import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.DateTimeColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.columns.DateColumnUtils;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
-import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
-import com.github.lwhite1.tablesaw.util.Selection;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -56,20 +54,7 @@ public interface DateMapUtils extends DateColumnUtils {
     return newColumn;
   }
 
-  default Selection isLessThan(LocalDate d) {
-    Selection results = new BitmapBackedSelection();
-    int i = 0;
-    for (int next : data()) {
-      if (next < PackedLocalDate.pack(d)) {
-        results.add(i);
-      }
-      i++;
-    }
-    return results;
-  }
-
   // These functions fill some amount of time to a date, producing a new date column
-
   default DateColumn plusDays(int days) {
     return plus(days, ChronoUnit.DAYS);
   }
@@ -89,19 +74,19 @@ public interface DateMapUtils extends DateColumnUtils {
   // These functions subtract some amount of time from a date, producing a new date column
 
   default DateColumn minusDays(int days) {
-    return plus((-1 * days), ChronoUnit.DAYS);
+    return plusDays(-days);
   }
 
   default DateColumn minusWeeks(int weeks) {
-    return minus((-1 * weeks), ChronoUnit.WEEKS);
+    return plusWeeks(-weeks);
   }
 
   default DateColumn minusYears(int years) {
-    return minus((-1 * years), ChronoUnit.YEARS);
+    return plusYears(-years);
   }
 
   default DateColumn minusMonths(int months) {
-    return minus((-1 * months), ChronoUnit.MONTHS);
+    return plusMonths(-months);
   }
 
   default DateColumn plus(int value, TemporalUnit unit) {
@@ -152,7 +137,11 @@ public interface DateMapUtils extends DateColumnUtils {
     return newColumn;
   }
 
-  default DateTimeColumn atTime(LocalTime time) {
+    /**
+     * Returns a DateTime column where each value consists of the dates from this column combined with the corresponding
+     * times from the other column
+     */
+    default DateTimeColumn atTime(LocalTime time) {
     DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + time.toString());
     for (int r = 0; r < this.size(); r++) {
       Comparable c1 = this.get(r);

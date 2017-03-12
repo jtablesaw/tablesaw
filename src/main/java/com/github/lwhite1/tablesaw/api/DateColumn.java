@@ -5,7 +5,6 @@ import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.columns.IntColumnUtils;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
-import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalTime;
 import com.github.lwhite1.tablesaw.filtering.IntBiPredicate;
 import com.github.lwhite1.tablesaw.filtering.IntPredicate;
 import com.github.lwhite1.tablesaw.filtering.LocalDatePredicate;
@@ -26,7 +25,6 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -437,6 +435,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
    * Returns a DateTime column where each value consists of the dates from this column combined with the corresponding
    * times from the other column
    */
+/*
   public DateTimeColumn atTime(TimeColumn c) {
     DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + c.name());
     for (int r = 0; r < this.size(); r++) {
@@ -452,6 +451,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
     return newColumn;
   }
+*/
 
   public Selection isAfter(int value) {
     return select(PackedLocalDate::isAfter, value);
@@ -739,6 +739,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     return dates;
   }
 
+  // TODO(lwhite): Is this duplicating the functionality of at()?
   public DateTimeColumn with(TimeColumn timeColumn) {
     String dateTimeColumnName = name() + " : " + timeColumn.name();
     DateTimeColumn dateTimeColumn = new DateTimeColumn(dateTimeColumnName, size());
