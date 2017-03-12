@@ -16,100 +16,100 @@ import java.util.Arrays;
  */
 public class XchartLine {
 
-  private static final String WINDOW_TITLE = "Tablesaw";
+    private static final String WINDOW_TITLE = "Tablesaw";
 
-  public static void show(String chartTitle, NumericColumn yColumn) {
-    double[] x = DoubleArrays.toN(yColumn.size());
-    show(chartTitle, x, yColumn, 600, 400);
-  }
-
-  public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, int markerSize) {
-    show(chartTitle, xColumn, yColumn, 600, 400, markerSize);
-  }
-
-  public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn) {
-    int markerSize = 2;
-    show(chartTitle, xColumn, yColumn, 600, 400, markerSize);
-  }
-
-  public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, ViewGroup group) {
-    XYChart chart = new XYChart(600, 400);
-    chart.setTitle(chartTitle);
-    chart.setXAxisTitle(xColumn.name());
-    chart.setYAxisTitle(yColumn.name());
-    chart.getStyler().setTheme(new TablesawTheme());
-
-    chart.getStyler().setMarkerSize(5);
-
-    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
-
-    for (TemporaryView view : group) {
-      double[] xData = view.numericColumn(xColumn.name()).toDoubleArray();
-      double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
-      chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
+    public static void show(String chartTitle, NumericColumn yColumn) {
+        double[] x = DoubleArrays.toN(yColumn.size());
+        show(chartTitle, x, yColumn, 600, 400);
     }
-    new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
-  }
 
-  public static void show(String chartTitle,
-                          NumericColumn xColumn,
-                          NumericColumn yColumn,
-                          ViewGroup group,
-                          int markerSize) {
-    XYChart chart = new XYChart(600, 400);
-    chart.setTitle(chartTitle);
-    chart.setXAxisTitle(xColumn.name());
-    chart.setYAxisTitle(yColumn.name());
-    chart.getStyler().setTheme(new TablesawTheme());
-
-    chart.getStyler().setMarkerSize(markerSize);
-
-    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
-
-    for (TemporaryView view : group) {
-      double[] xData = view.numericColumn(xColumn.name()).toDoubleArray();
-      double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
-      chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
+    public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, int markerSize) {
+        show(chartTitle, xColumn, yColumn, 600, 400, markerSize);
     }
-    new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
-  }
 
-  public static void show(String chartTitle,
-                          NumericColumn xColumn,
-                          NumericColumn yColumn,
-                          int width,
-                          int height,
-                          int markerSize) {
-    double[] xData = xColumn.toDoubleArray();
-    double[] yData = yColumn.toDoubleArray();
+    public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn) {
+        int markerSize = 2;
+        show(chartTitle, xColumn, yColumn, 600, 400, markerSize);
+    }
 
-    // Create Chart
-    XYChart chart = new XYChart(width, height);
-    chart.setTitle(chartTitle);
-    chart.setXAxisTitle(xColumn.name());
-    chart.setYAxisTitle(yColumn.name());
-    chart.getStyler().setTheme(new TablesawTheme());
-    chart.getStyler().setMarkerSize(markerSize);
-  //  chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+    public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, ViewGroup group) {
+        XYChart chart = new XYChart(600, 400);
+        chart.setTitle(chartTitle);
+        chart.setXAxisTitle(xColumn.name());
+        chart.setYAxisTitle(yColumn.name());
+        chart.getStyler().setTheme(new TablesawTheme());
 
-    XYSeries series = chart.addSeries(yColumn.name() + " by " + xColumn.name(), xData, yData);
-    series.setMarker(SeriesMarkers.CIRCLE);
-    new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
-  }
+        chart.getStyler().setMarkerSize(5);
 
-  public static void show(String chartTitle, double[] xData, NumericColumn yColumn, int width, int height) {
-    double[] yData = yColumn.toDoubleArray();
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
 
-    // Create Chart
-    XYChart chart = new XYChart(width, height);
-    chart.setTitle(chartTitle);
-    chart.setYAxisTitle(yColumn.name());
-    chart.getStyler().setTheme(new TablesawTheme());
-    chart.getStyler().setMarkerSize(2);
-    chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+        for (TemporaryView view : group) {
+            double[] xData = view.numericColumn(xColumn.name()).toDoubleArray();
+            double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
+            chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
+        }
+        new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
+    }
 
-    XYSeries series = chart.addSeries("Ranked: " + yColumn.name(), xData, yData);
-    series.setMarker(SeriesMarkers.CIRCLE);
-    new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
-  }
+    public static void show(String chartTitle,
+                            NumericColumn xColumn,
+                            NumericColumn yColumn,
+                            ViewGroup group,
+                            int markerSize) {
+        XYChart chart = new XYChart(600, 400);
+        chart.setTitle(chartTitle);
+        chart.setXAxisTitle(xColumn.name());
+        chart.setYAxisTitle(yColumn.name());
+        chart.getStyler().setTheme(new TablesawTheme());
+
+        chart.getStyler().setMarkerSize(markerSize);
+
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+
+        for (TemporaryView view : group) {
+            double[] xData = view.numericColumn(xColumn.name()).toDoubleArray();
+            double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
+            chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
+        }
+        new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
+    }
+
+    public static void show(String chartTitle,
+                            NumericColumn xColumn,
+                            NumericColumn yColumn,
+                            int width,
+                            int height,
+                            int markerSize) {
+        double[] xData = xColumn.toDoubleArray();
+        double[] yData = yColumn.toDoubleArray();
+
+        // Create Chart
+        XYChart chart = new XYChart(width, height);
+        chart.setTitle(chartTitle);
+        chart.setXAxisTitle(xColumn.name());
+        chart.setYAxisTitle(yColumn.name());
+        chart.getStyler().setTheme(new TablesawTheme());
+        chart.getStyler().setMarkerSize(markerSize);
+        //  chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+
+        XYSeries series = chart.addSeries(yColumn.name() + " by " + xColumn.name(), xData, yData);
+        series.setMarker(SeriesMarkers.CIRCLE);
+        new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
+    }
+
+    public static void show(String chartTitle, double[] xData, NumericColumn yColumn, int width, int height) {
+        double[] yData = yColumn.toDoubleArray();
+
+        // Create Chart
+        XYChart chart = new XYChart(width, height);
+        chart.setTitle(chartTitle);
+        chart.setYAxisTitle(yColumn.name());
+        chart.getStyler().setTheme(new TablesawTheme());
+        chart.getStyler().setMarkerSize(2);
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
+
+        XYSeries series = chart.addSeries("Ranked: " + yColumn.name(), xData, yData);
+        series.setMarker(SeriesMarkers.CIRCLE);
+        new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
+    }
 }

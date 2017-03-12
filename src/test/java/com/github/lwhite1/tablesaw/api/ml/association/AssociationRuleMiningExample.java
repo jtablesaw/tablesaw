@@ -9,26 +9,28 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
  */
 public class AssociationRuleMiningExample {
 
-  public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
-    Table table = Table.createFromCsv("data/movielens.data", true, '\t');
+        Table table = Table.createFromCsv("data/movielens.data", true, '\t');
 
-    double supportThreshold = .25;
-    double confidenceThreshold = .5;
-    double interestThreshold = .5;
+        double supportThreshold = .25;
+        double confidenceThreshold = .5;
+        double interestThreshold = .5;
 
-    AssociationRuleMining model = new AssociationRuleMining(table.shortColumn("user"), table.shortColumn("movie"), supportThreshold);
+        AssociationRuleMining model = new AssociationRuleMining(table.shortColumn("user"), table.shortColumn("movie")
+                , supportThreshold);
 
-    FrequentItemset frequentItemsetModel = new FrequentItemset(table.shortColumn("user"), table.shortColumn("movie"), supportThreshold);
-    Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap = frequentItemsetModel.confidenceMap();
+        FrequentItemset frequentItemsetModel = new FrequentItemset(table.shortColumn("user"), table.shortColumn
+                ("movie"), supportThreshold);
+        Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap = frequentItemsetModel.confidenceMap();
 
-    Table interestingRuleTable = model.interest(confidenceThreshold, interestThreshold, confidenceMap);
+        Table interestingRuleTable = model.interest(confidenceThreshold, interestThreshold, confidenceMap);
 
-    interestingRuleTable = interestingRuleTable.sortDescendingOn("Interest", "Antecedent");
-    out(interestingRuleTable.print());
-  }
+        interestingRuleTable = interestingRuleTable.sortDescendingOn("Interest", "Antecedent");
+        out(interestingRuleTable.print());
+    }
 
-  private static void out(Object o) {
-    System.out.println(String.valueOf(o));
-  }
+    private static void out(Object o) {
+        System.out.println(String.valueOf(o));
+    }
 }

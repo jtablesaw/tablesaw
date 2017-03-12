@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.skewness;
  */
 public class Skewness extends SummaryFunction {
 
-  public Skewness(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public Skewness(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return skewness;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return skewness;
+    }
 }

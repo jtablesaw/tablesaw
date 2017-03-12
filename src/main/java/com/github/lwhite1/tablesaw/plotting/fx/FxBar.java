@@ -17,62 +17,65 @@ import java.util.List;
 /**
  *
  */
-public class FxBar extends FxBuilder{
+public class FxBar extends FxBuilder {
 
-  public static BarChart<String, Number> chart(String title, Table table, String categoryColumnName, String numericColumnName) {
+    public static BarChart<String, Number> chart(String title, Table table, String categoryColumnName, String
+            numericColumnName) {
 
-    CategoryColumn categoryColumn = table.categoryColumn(categoryColumnName);
-    NumericColumn numericColumn = table.nCol(numericColumnName);
+        CategoryColumn categoryColumn = table.categoryColumn(categoryColumnName);
+        NumericColumn numericColumn = table.nCol(numericColumnName);
 
-    return chart(title, categoryColumn, numericColumn);
-  }
-
-  public static BarChart<String, Number> chart(String title, CategoryColumn categoryColumn, NumericColumn numericColumn) {
-
-    final CategoryAxis categoryAxis = getCategoryAxis(categoryColumn);
-    final NumberAxis numberAxis = getNumberAxis(numericColumn);
-
-    final BarChart<String, Number> barChart = getBarChart(title, categoryAxis, numberAxis);
-    List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
-
-    for (int i = 0; i < categoryColumn.size(); i++) {
-      data.add(new XYChart.Data<>(categoryColumn.get(i), numericColumn.getFloat(i)));
+        return chart(title, categoryColumn, numericColumn);
     }
 
-    barChart.getData().addAll(getSeries(numericColumn, data));
-    return barChart;
-  }
+    public static BarChart<String, Number> chart(String title, CategoryColumn categoryColumn, NumericColumn
+            numericColumn) {
 
-  public static BarChart<String, Number> chart(String title, ShortColumn categoryColumn, NumericColumn numericColumn) {
+        final CategoryAxis categoryAxis = getCategoryAxis(categoryColumn);
+        final NumberAxis numberAxis = getNumberAxis(numericColumn);
 
-    final CategoryAxis categoryAxis = getCategoryAxis(categoryColumn);
-    final NumberAxis numberAxis = getNumberAxis(numericColumn);
+        final BarChart<String, Number> barChart = getBarChart(title, categoryAxis, numberAxis);
+        List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
 
-    final BarChart<String, Number> barChart = getBarChart(title, categoryAxis, numberAxis);
-    List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
+        for (int i = 0; i < categoryColumn.size(); i++) {
+            data.add(new XYChart.Data<>(categoryColumn.get(i), numericColumn.getFloat(i)));
+        }
 
-    for (int i = 0; i < categoryColumn.size(); i++) {
-      data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
+        barChart.getData().addAll(getSeries(numericColumn, data));
+        return barChart;
     }
 
-    barChart.getData().addAll(getSeries(numericColumn, data));
-    return barChart;
-  }
+    public static BarChart<String, Number> chart(String title, ShortColumn categoryColumn, NumericColumn
+            numericColumn) {
 
-  public static BarChart<String, Number> chart(String title, IntColumn categoryColumn, NumericColumn numericColumn) {
+        final CategoryAxis categoryAxis = getCategoryAxis(categoryColumn);
+        final NumberAxis numberAxis = getNumberAxis(numericColumn);
 
-    final CategoryAxis categoryAxis = getCategoryAxis(categoryColumn);
-    final NumberAxis numberAxis = getNumberAxis(numericColumn);
+        final BarChart<String, Number> barChart = getBarChart(title, categoryAxis, numberAxis);
+        List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
 
-    final BarChart<String, Number> barChart = getBarChart(title, categoryAxis, numberAxis);
-    List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
+        for (int i = 0; i < categoryColumn.size(); i++) {
+            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
+        }
 
-    for (int i = 0; i < categoryColumn.size(); i++) {
-      data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
+        barChart.getData().addAll(getSeries(numericColumn, data));
+        return barChart;
     }
 
-    barChart.getData().addAll(getSeries(numericColumn, data));
-    return barChart;
-  }
+    public static BarChart<String, Number> chart(String title, IntColumn categoryColumn, NumericColumn numericColumn) {
+
+        final CategoryAxis categoryAxis = getCategoryAxis(categoryColumn);
+        final NumberAxis numberAxis = getNumberAxis(numericColumn);
+
+        final BarChart<String, Number> barChart = getBarChart(title, categoryAxis, numberAxis);
+        List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
+
+        for (int i = 0; i < categoryColumn.size(); i++) {
+            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
+        }
+
+        barChart.getData().addAll(getSeries(numericColumn, data));
+        return barChart;
+    }
 }
 

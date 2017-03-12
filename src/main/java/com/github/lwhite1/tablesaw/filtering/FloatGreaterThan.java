@@ -11,15 +11,15 @@ import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isGreaterThan
  */
 public class FloatGreaterThan extends ColumnFilter {
 
-  private float value;
+    private float value;
 
-  public FloatGreaterThan(ColumnReference reference, float value) {
-    super(reference);
-    this.value = value;
-  }
+    public FloatGreaterThan(ColumnReference reference, float value) {
+        super(reference);
+        this.value = value;
+    }
 
-  public Selection apply(Table relation) {
-    FloatColumn floatColumn = (FloatColumn) relation.column(columnReference.getColumnName());
-    return floatColumn.select(isGreaterThan, value);
-  }
+    public Selection apply(Table relation) {
+        FloatColumn floatColumn = (FloatColumn) relation.column(columnReference.getColumnName());
+        return floatColumn.select(isGreaterThan, value);
+    }
 }
