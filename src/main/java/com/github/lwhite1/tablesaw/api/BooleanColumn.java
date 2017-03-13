@@ -474,11 +474,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         return intColumn;
     }
 
-    static class BooleanColumnIterator implements Iterator<Boolean> {
+    private static class BooleanColumnIterator implements Iterator<Boolean> {
 
         final ByteIterator iterator;
 
-        public BooleanColumnIterator(ByteIterator iterator) {
+        BooleanColumnIterator(ByteIterator iterator) {
             this.iterator = iterator;
         }
 

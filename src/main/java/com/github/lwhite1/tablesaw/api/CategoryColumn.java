@@ -34,7 +34,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A column in a base table that contains float values
+ * A column that contains String values. They are assumed to be 'categorical' rather than free-form text, so are
+ * stored in an encoding that takes advantage of the expected repetition of string values.
+ *
+ * Because the MISSING_VALUE for this column type is an empty string, there is little or no need for special handling
+ * of missing values in this class's methods.
  */
 public class CategoryColumn extends AbstractColumn
         implements CategoryFilters, CategoryColumnUtils, Iterable<String> {
@@ -169,6 +173,8 @@ public class CategoryColumn extends AbstractColumn
         return countByCategory();
     }
 
+    /**
+     */
     public Table countByCategory() {
         Table t = new Table("Column: " + name());
         CategoryColumn categories = CategoryColumn.create("Category");
@@ -402,6 +408,9 @@ public class CategoryColumn extends AbstractColumn
         return values.getInt(rowNumber);
     }
 
+    /**
+     * Returns a new Column containing all the unique values in this column
+     */
     public CategoryColumn unique() {
         List<String> strings = new ArrayList<>(lookupTable.categories());
         return CategoryColumn.create(name() + " Unique values", strings);
@@ -413,6 +422,7 @@ public class CategoryColumn extends AbstractColumn
     public IntArrayList data() {
         return values;
     }
+
 
     public IntColumn toIntColumn() {
         IntColumn intColumn = IntColumn.create(this.name() + ": codes", size());
@@ -440,6 +450,10 @@ public class CategoryColumn extends AbstractColumn
         return rowIndexes;
     }
 
+    /**
+     *  Creates a new column, replacing each string in this column with a new string formed by
+     *  replacing any substring that matches the regex
+     */
     public CategoryColumn replaceAll(String[] regexArray, String replacement) {
 
         CategoryColumn newColumn = CategoryColumn.create(name() + "[repl]", this.size());
