@@ -27,10 +27,10 @@ public class LocalDateColumnTest {
     column1.addCell("12/23/1924");
     column1.addCell("12-May-2015");
     column1.addCell("12-Jan-2015");
-    assertEquals(4, column1.size());
+    assertEquals(3, column1.size());
     LocalDate date = LocalDate.now();
     column1.add(date);
-    assertEquals(5, column1.size());
+    assertEquals(4, column1.size());
   }
 
   @Test
