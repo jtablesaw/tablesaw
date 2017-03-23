@@ -299,7 +299,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
             if (c1 == MISSING_VALUE) {
                 newColumn.add(ShortColumn.MISSING_VALUE);
             } else {
-                newColumn.add(PackedLocalDateTime.getYear(PackedLocalDateTime.date(c1)));
+                newColumn.add(PackedLocalDate.getYear(c1));
             }
         }
         return newColumn;

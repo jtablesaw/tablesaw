@@ -60,6 +60,17 @@ public class LocalDateColumnTest {
     }
 
     @Test
+    public void testYear() throws Exception {
+        column1.addCell("2013-10-23");
+        column1.addCell("12/24/1924");
+        column1.addCell("12-May-2015");
+        ShortColumn c2 = column1.year();
+        assertEquals(2013, c2.get(0));
+        assertEquals(1924, c2.get(1));
+        assertEquals(2015, c2.get(2));
+    }
+
+    @Test
     public void testSummary() throws Exception {
         column1.addCell("2013-10-23");
         column1.addCell("12/24/1924");
