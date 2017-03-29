@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.product;
  */
 public class Product extends SummaryFunction {
 
-  public Product(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public Product(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return product;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return product;
+    }
 }

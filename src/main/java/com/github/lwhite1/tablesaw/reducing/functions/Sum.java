@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
  */
 public class Sum extends SummaryFunction {
 
-  public Sum(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public Sum(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return sum;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return sum;
+    }
 }

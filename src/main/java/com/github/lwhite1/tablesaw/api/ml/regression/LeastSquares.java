@@ -10,107 +10,108 @@ import smile.regression.OLS;
  */
 public class LeastSquares {
 
-  private final OLS model;
-  private final double[][] explanatoryVariables;
-  private final int explanatoryVariableCount;
-  private final double[] responseVarArray;
-  private final String[] explanatoryVariableNames;
+    private final OLS model;
+    private final double[][] explanatoryVariables;
+    private final int explanatoryVariableCount;
+    private final double[] responseVarArray;
+    private final String[] explanatoryVariableNames;
 
 
-  public static LeastSquares train(NumericColumn responseVar, NumericColumn... explanatoryVars) {
-    return new LeastSquares(responseVar, explanatoryVars);
-  }
-
-  public LeastSquares(NumericColumn responseVariable, NumericColumn ... explanatoryVars) {
-    this.explanatoryVariables = DoubleArrays.to2dArray(explanatoryVars);
-
-    this.responseVarArray = responseVariable.toDoubleArray();
-    this.model = new OLS(explanatoryVariables, responseVarArray);
-    this.explanatoryVariableCount = explanatoryVars.length;
-    this.explanatoryVariableNames = new String[explanatoryVariableCount];
-
-    for (int i = 0; i < explanatoryVariableCount; i++) {
-      explanatoryVariableNames[i] = explanatoryVars[i].name();
+    public static LeastSquares train(NumericColumn responseVar, NumericColumn... explanatoryVars) {
+        return new LeastSquares(responseVar, explanatoryVars);
     }
-  }
 
-  @Override
-  public String toString() {
-    String result = model.toString();
-    result = result.replace("Intercept", "(Intercept)");
+    public LeastSquares(NumericColumn responseVariable, NumericColumn... explanatoryVars) {
+        this.explanatoryVariables = DoubleArrays.to2dArray(explanatoryVars);
 
-    // TODO(lwhite): This hack needed because Smile doesn't name the vars in it's output; we do, by string replacement.
-    int maxNameLength = "(intercept)".length() - 1;
-    for (int i = 0; i < explanatoryVariableCount; i++) {
-      String replacement = explanatoryVariableNames[i];
-      if (replacement.length() >= maxNameLength) {
-        replacement = replacement.substring(0, maxNameLength);
-      } else {
-        replacement = Strings.padEnd(replacement, maxNameLength, ' ');
-      }
-      result = result.replaceFirst("Var " + (i + 1) + '\t', replacement);
+        this.responseVarArray = responseVariable.toDoubleArray();
+        this.model = new OLS(explanatoryVariables, responseVarArray);
+        this.explanatoryVariableCount = explanatoryVars.length;
+        this.explanatoryVariableNames = new String[explanatoryVariableCount];
+
+        for (int i = 0; i < explanatoryVariableCount; i++) {
+            explanatoryVariableNames[i] = explanatoryVars[i].name();
+        }
     }
-    return result;
-  }
 
-  public double[] residuals() {
-    return model.residuals();
-  }
+    @Override
+    public String toString() {
+        String result = model.toString();
+        result = result.replace("Intercept", "(Intercept)");
 
-  public double[] fitted() {
-    double[] fitted = new double[explanatoryVariables.length];
-    for(int i = 0; i < explanatoryVariables.length; i++) {
-      double[] input = explanatoryVariables[i];
-      fitted[i] = predict(input);
+        // TODO(lwhite): This hack needed because Smile doesn't name the vars in it's output; we do, by string
+        // replacement.
+        int maxNameLength = "(intercept)".length() - 1;
+        for (int i = 0; i < explanatoryVariableCount; i++) {
+            String replacement = explanatoryVariableNames[i];
+            if (replacement.length() >= maxNameLength) {
+                replacement = replacement.substring(0, maxNameLength);
+            } else {
+                replacement = Strings.padEnd(replacement, maxNameLength, ' ');
+            }
+            result = result.replaceFirst("Var " + (i + 1) + '\t', replacement);
+        }
+        return result;
     }
-    return fitted;
-  }
 
-  public double adjustedRSquared() {
-    return model.adjustedRSquared();
-  }
+    public double[] residuals() {
+        return model.residuals();
+    }
 
-  public double df() {
-    return model.df();
-  }
+    public double[] fitted() {
+        double[] fitted = new double[explanatoryVariables.length];
+        for (int i = 0; i < explanatoryVariables.length; i++) {
+            double[] input = explanatoryVariables[i];
+            fitted[i] = predict(input);
+        }
+        return fitted;
+    }
 
-  public double error() {
-    return model.error();
-  }
+    public double adjustedRSquared() {
+        return model.adjustedRSquared();
+    }
 
-  public double ftest() {
-    return model.ftest();
-  }
+    public double df() {
+        return model.df();
+    }
 
-  public double pValue() {
-    return model.pvalue();
-  }
+    public double error() {
+        return model.error();
+    }
 
-  public double intercept() {
-    return model.intercept();
-  }
+    public double ftest() {
+        return model.ftest();
+    }
 
-  public double RSquared() {
-    return model.RSquared();
-  }
+    public double pValue() {
+        return model.pvalue();
+    }
 
-  public double RSS() {
-    return model.RSS();
-  }
+    public double intercept() {
+        return model.intercept();
+    }
 
-  public double[][] ttest() {
-    return model.ttest();
-  }
+    public double RSquared() {
+        return model.RSquared();
+    }
 
-  public double predict(double[] x) {
-    return model.predict(x);
-  }
+    public double RSS() {
+        return model.RSS();
+    }
 
-  public double[] coefficients() {
-    return model.coefficients();
-  }
+    public double[][] ttest() {
+        return model.ttest();
+    }
 
-  public double[] actuals() {
-    return responseVarArray;
-  }
+    public double predict(double[] x) {
+        return model.predict(x);
+    }
+
+    public double[] coefficients() {
+        return model.coefficients();
+    }
+
+    public double[] actuals() {
+        return responseVarArray;
+    }
 }

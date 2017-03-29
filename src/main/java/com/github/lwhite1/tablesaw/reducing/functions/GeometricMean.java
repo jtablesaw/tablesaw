@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.geometricM
  */
 public class GeometricMean extends SummaryFunction {
 
-  public GeometricMean(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public GeometricMean(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return geometricMean;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return geometricMean;
+    }
 }

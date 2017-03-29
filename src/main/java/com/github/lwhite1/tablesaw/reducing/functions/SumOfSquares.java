@@ -11,12 +11,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfSquar
  */
 public class SumOfSquares extends SummaryFunction {
 
-  public SumOfSquares(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public SumOfSquares(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return sumOfSquares;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return sumOfSquares;
+    }
 }

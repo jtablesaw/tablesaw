@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quadraticM
  */
 public class QuadraticMean extends SummaryFunction {
 
-  public QuadraticMean(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public QuadraticMean(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return quadraticMean;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return quadraticMean;
+    }
 }

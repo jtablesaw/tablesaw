@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.max;
  */
 public class Maximum extends SummaryFunction {
 
-  public Maximum(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public Maximum(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return max;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return max;
+    }
 }

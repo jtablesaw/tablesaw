@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.kurtosis;
  */
 public class Kurtosis extends SummaryFunction {
 
-  public Kurtosis(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public Kurtosis(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return kurtosis;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return kurtosis;
+    }
 }

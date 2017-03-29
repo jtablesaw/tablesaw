@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.median;
  */
 public class Median extends SummaryFunction {
 
-  public Median(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public Median(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return median;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return median;
+    }
 }

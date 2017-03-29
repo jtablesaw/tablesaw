@@ -11,12 +11,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile3;
  */
 public class ThirdQuartile extends SummaryFunction {
 
-  public ThirdQuartile(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public ThirdQuartile(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return quartile3;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return quartile3;
+    }
 }

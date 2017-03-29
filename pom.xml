@@ -6,7 +6,7 @@
 
     <groupId>com.github.lwhite1</groupId>
     <artifactId>tablesaw</artifactId>
-    <version>0.7.6.8</version>
+    <version>0.7.7.2</version>
     <name>Tablesaw</name>
     <description>High-performance Java Dataframe with integrated columnar storage</description>
     <url>https://jtablesaw.wordpress.com</url>
@@ -217,7 +217,7 @@
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-plot</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.knowm.xchart</groupId>
@@ -227,7 +227,7 @@
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-core</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.2</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>

@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.n;
  */
 public class Count extends SummaryFunction {
 
-  public Count(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public Count(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return n;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return n;
+    }
 }

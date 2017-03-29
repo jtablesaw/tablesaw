@@ -7,35 +7,35 @@ import java.awt.*;
  */
 public class StandardColor {
 
-  private final Hue hue;
-  private final int chroma;
-  private final int value;
-  private final String hexColor;
+    private final Hue hue;
+    private final int chroma;
+    private final int value;
+    private final String hexColor;
 
-  public StandardColor(String hue, int chroma, int value, String hexColor) {
-    this.hue = Hue.from(hue);
-    this.chroma = chroma;
-    this.value = value;
-    this.hexColor = hexColor;
-  }
+    public StandardColor(String hue, int chroma, int value, String hexColor) {
+        this.hue = Hue.from(hue);
+        this.chroma = chroma;
+        this.value = value;
+        this.hexColor = hexColor;
+    }
 
-  public String hexColor() {
-    return hexColor;
-  }
+    public String hexColor() {
+        return hexColor;
+    }
 
-  public int value() {
-    return value;
-  }
+    public int value() {
+        return value;
+    }
 
-  public int chroma() {
-    return chroma;
-  }
+    public int chroma() {
+        return chroma;
+    }
 
-  public Hue hue() {
-    return hue;
-  }
+    public Hue hue() {
+        return hue;
+    }
 
-  public Color asColor() {
-    return Color.decode(hexColor);
-  }
+    public Color asColor() {
+        return Color.decode(hexColor);
+    }
 }

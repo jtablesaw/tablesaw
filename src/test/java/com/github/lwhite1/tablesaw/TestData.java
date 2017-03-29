@@ -49,8 +49,6 @@ public enum TestData {
                     FLOAT, FLOAT, CATEGORY, CATEGORY, CATEGORY, CATEGORY}, "data/1950-2014_torn.csv");
 
 
-
-
     private Table table;
     private ColumnType[] columnTypes;
     private Path source;
@@ -65,13 +63,13 @@ public enum TestData {
      */
     TestData(String[] columnNames, ColumnType[] columnTypes, String csvSource) {
         this.columnNames = columnNames;
-      try {
-        this.table = Table.createFromCsv(columnTypes, csvSource);
-      } catch (IOException e) {
-        e.printStackTrace();
-        throw new RuntimeException("Unable to read from CSV file");
-      }
-      this.columnTypes = columnTypes;
+        try {
+            this.table = Table.createFromCsv(columnTypes, csvSource);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Unable to read from CSV file");
+        }
+        this.columnTypes = columnTypes;
         this.source = Paths.get(csvSource);
     }
 
@@ -83,7 +81,6 @@ public enum TestData {
     }
 
     /**
-     *
      * @return the column types for the data set.
      */
     public ColumnType[] getColumnTypes() {

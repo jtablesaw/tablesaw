@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
  */
 public class Mean extends SummaryFunction {
 
-  public Mean(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public Mean(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return mean;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return mean;
+    }
 }

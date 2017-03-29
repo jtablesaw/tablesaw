@@ -9,7 +9,7 @@ There are other, more elaborate platforms for data science in Java. They're desi
     <dependency>
         <groupId>com.github.lwhite1</groupId>
         <artifactId>tablesaw</artifactId>
-        <version>0.7.6.8</version>
+        <version>0.7.7.2</version>
     </dependency>
 
 ### Documentation and support:
@@ -18,8 +18,6 @@ There are other, more elaborate platforms for data science in Java. They're desi
 * The __JavaDoc__ can be found here: http://lwhite1.github.io/tablesaw/apidocs/
 * If you have __questions of any kind__: Ask them in the Issues section of this Repo.
  
-A 1.0 release is planned for year end.  
-
 ### Tablesaw features: 
 
 #### Data processing & transformation

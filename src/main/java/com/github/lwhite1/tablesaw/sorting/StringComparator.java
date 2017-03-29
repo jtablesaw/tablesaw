@@ -5,16 +5,16 @@ package com.github.lwhite1.tablesaw.sorting;
  */
 public class StringComparator {
 
-  private static StringComparator instance = new StringComparator();
+    private static StringComparator instance = new StringComparator();
 
-  public static StringComparator getInstance() {
-    return instance;
-  }
+    public static StringComparator getInstance() {
+        return instance;
+    }
 
-  private StringComparator() {
-  }
+    private StringComparator() {
+    }
 
-  public int compare(String a, String b) {
-    return a.compareTo(b);
-  }
+    public int compare(String a, String b) {
+        return a.compareTo(b);
+    }
 }

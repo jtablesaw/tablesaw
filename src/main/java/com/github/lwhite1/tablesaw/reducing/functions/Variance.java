@@ -10,12 +10,12 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.variance;
  */
 public class Variance extends SummaryFunction {
 
-  public Variance(Table original, String summarizedColumnName) {
-    super(original, summarizedColumnName);
-  }
+    public Variance(Table original, String summarizedColumnName) {
+        super(original, summarizedColumnName);
+    }
 
-  @Override
-  public NumericReduceFunction function() {
-    return variance;
-  }
+    @Override
+    public NumericReduceFunction function() {
+        return variance;
+    }
 }

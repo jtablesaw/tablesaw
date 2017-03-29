@@ -10,15 +10,15 @@ import com.github.lwhite1.tablesaw.util.Selection;
  */
 public class FloatEqualTo extends ColumnFilter {
 
-  private float value;
+    private float value;
 
-  public FloatEqualTo(ColumnReference reference, float value) {
-    super(reference);
-    this.value = value;
-  }
+    public FloatEqualTo(ColumnReference reference, float value) {
+        super(reference);
+        this.value = value;
+    }
 
-  public Selection apply(Table relation) {
-    FloatColumn floatColumn = (FloatColumn) relation.column(columnReference.getColumnName());
-    return floatColumn.isEqualTo(value);
-  }
+    public Selection apply(Table relation) {
+        FloatColumn floatColumn = (FloatColumn) relation.column(columnReference.getColumnName());
+        return floatColumn.isEqualTo(value);
+    }
 }
