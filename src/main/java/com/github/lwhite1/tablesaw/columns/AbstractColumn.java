@@ -10,6 +10,9 @@ import java.util.UUID;
  */
 public abstract class AbstractColumn<E extends AbstractColumn> implements Column {
 
+    // this character is sometimes inserted into windows files and needs to be removed
+    private static final String UTF8_BOM = "\uFEFF";
+
     private String id;
 
     private String name;
@@ -17,13 +20,13 @@ public abstract class AbstractColumn<E extends AbstractColumn> implements Column
     private String comment;
 
     public AbstractColumn(String name) {
-        this.name = name;
+        setName(name);
         this.comment = "";
         this.id = UUID.randomUUID().toString();
     }
 
     public AbstractColumn(ColumnMetadata metadata) {
-        this.name = metadata.getName();
+        setName(metadata.getName());
         this.comment = "";
         this.id = metadata.getId();
     }
@@ -47,7 +50,8 @@ public abstract class AbstractColumn<E extends AbstractColumn> implements Column
      * @param name The new name MUST be unique for any table containing this column
      */
     public void setName(String name) {
-        this.name = name;
+        name = removeUtf8Bom(name);
+        this.name = name.trim();
     }
 
     public abstract void addCell(String stringvalue);
@@ -85,4 +89,10 @@ public abstract class AbstractColumn<E extends AbstractColumn> implements Column
         throw new UnsupportedOperationException("difference() method not supported for all data types");
     }
 
+    private static String removeUtf8Bom(String s) {
+        if (s.startsWith(UTF8_BOM)) {
+            s = s.substring(1);
+        }
+        return s;
+    }
 }
