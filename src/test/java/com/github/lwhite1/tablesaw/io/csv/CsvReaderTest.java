@@ -1,6 +1,7 @@
 package com.github.lwhite1.tablesaw.io.csv;
 
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.Column;
 import org.junit.Ignore;
@@ -109,5 +110,21 @@ public class CsvReaderTest {
     public void testBoundary2() throws Exception {
         Table table1 = Table.createFromCsv("data/boundaryTest2.csv");
         table1.structure(); // just make sure the import completed
+    }
+
+    @Test
+    public void testReadFailure() throws Exception {
+        Table table1 = Table.createFromCsv("data/read_failure_test.csv");
+        table1.structure(); // just make sure the import completed
+        ShortColumn test = table1.shortColumn("Test");
+        System.out.println(test.summary().print());
+    }
+
+    @Test
+    public void testReadFailure2() throws Exception {
+        Table table1 = Table.createFromCsv("data/read_failure_test2.csv");
+        table1.structure(); // just make sure the import completed
+        ShortColumn test = table1.shortColumn("Test");
+        System.out.println(test.summary().print());
     }
 }

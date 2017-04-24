@@ -78,7 +78,8 @@ public interface Relation {
     default Column column(String columnName) {
         Column result = null;
         for (Column column : columns()) {
-            if (column.name().equalsIgnoreCase(columnName)) {
+            String name = column.name().trim();
+            if (name.equalsIgnoreCase(columnName)) {
                 result = column;
                 break;
             }

@@ -317,7 +317,7 @@ public class CsvReader {
         List<String> header = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
             if (types[i] != ColumnType.SKIP) {
-                header.add(names.get(i));
+                header.add(names.get(i).trim());
             }
         }
         String[] result = new String[header.size()];
