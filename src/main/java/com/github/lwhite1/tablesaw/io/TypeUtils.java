@@ -111,6 +111,9 @@ public final class TypeUtils {
     private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private static final DateTimeFormatter dtTimef6;
+    
+    private static final DateTimeFormatter dtTimef7 =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
 
     static {
         dtTimef6 = new DateTimeFormatterBuilder()
@@ -131,7 +134,8 @@ public final class TypeUtils {
             dtTimef3,
             dtTimef4,
             dtTimef5,
-            dtTimef6
+            dtTimef6,
+            dtTimef7
     );
 
 
