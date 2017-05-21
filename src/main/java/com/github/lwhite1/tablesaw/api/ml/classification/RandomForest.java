@@ -18,6 +18,11 @@ public class RandomForest extends AbstractClassifier {
     private final smile.classification.RandomForest classifierModel;
 
 
+    private RandomForest(int nTrees, int[] classArray, NumericColumn... columns) {
+        double[][] data = DoubleArrays.to2dArray(columns);
+        this.classifierModel = new smile.classification.RandomForest(data, classArray, nTrees);
+    }
+
     public static RandomForest learn(int nTrees, IntColumn classes, NumericColumn... columns) {
         int[] classArray = classes.data().toIntArray();
         return new RandomForest(nTrees, classArray, columns);
@@ -31,11 +36,6 @@ public class RandomForest extends AbstractClassifier {
     public static RandomForest learn(int nTrees, CategoryColumn classes, NumericColumn... columns) {
         int[] classArray = classes.data().toIntArray();
         return new RandomForest(nTrees, classArray, columns);
-    }
-
-    private RandomForest(int nTrees, int[] classArray, NumericColumn... columns) {
-        double[][] data = DoubleArrays.to2dArray(columns);
-        this.classifierModel = new smile.classification.RandomForest(data, classArray, nTrees);
     }
 
     public int predict(double[] data) {

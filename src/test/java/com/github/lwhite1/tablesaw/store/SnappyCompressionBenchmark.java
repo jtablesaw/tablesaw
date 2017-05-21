@@ -1,10 +1,10 @@
 package com.github.lwhite1.tablesaw.store;
 
-import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.testutil.DirectoryUtils;
 import com.github.lwhite1.tablesaw.testutil.NanoBench;
-import com.github.lwhite1.tablesaw.api.FloatColumn;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.junit.Test;
 

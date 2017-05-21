@@ -37,20 +37,33 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     private static final int BYTE_SIZE = 1;
 
     private static int DEFAULT_ARRAY_SIZE = 128;
+    ByteComparator reverseByteComparator = new ByteComparator() {
 
+        @Override
+        public int compare(Byte o1, Byte o2) {
+            return Byte.compare(o2, o1);
+        }
+
+        @Override
+        public int compare(byte o1, byte o2) {
+            return Byte.compare(o2, o1);
+        }
+    };
     private ByteArrayList data;
+    IntComparator comparator = new IntComparator() {
 
-    public static BooleanColumn create(String name) {
-        return new BooleanColumn(name);
-    }
+        @Override
+        public int compare(Integer r1, Integer r2) {
+            return compare((int) r1, (int) r2);
+        }
 
-    public static BooleanColumn create(String name, int rowSize) {
-        return new BooleanColumn(name, rowSize);
-    }
-
-    public static BooleanColumn create(String name, Selection selection, int rowSize) {
-        return new BooleanColumn(name, selection, rowSize);
-    }
+        @Override
+        public int compare(int r1, int r2) {
+            boolean f1 = get(r1);
+            boolean f2 = get(r2);
+            return Boolean.compare(f1, f2);
+        }
+    };
 
     public BooleanColumn(ColumnMetadata metadata) {
         super(metadata);
@@ -89,6 +102,37 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
             data.set(i, b);
         }
         this.data = data;
+    }
+
+    public static BooleanColumn create(String name) {
+        return new BooleanColumn(name);
+    }
+
+    public static BooleanColumn create(String name, int rowSize) {
+        return new BooleanColumn(name, rowSize);
+    }
+
+    public static BooleanColumn create(String name, Selection selection, int rowSize) {
+        return new BooleanColumn(name, selection, rowSize);
+    }
+
+    public static boolean convert(String stringValue) {
+        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
+            return (boolean) ColumnType.BOOLEAN.getMissingValue();
+        } else if (TypeUtils.TRUE_STRINGS.contains(stringValue)) {
+            return true;
+        } else if (TypeUtils.FALSE_STRINGS.contains(stringValue)) {
+            return false;
+        } else {
+            throw new IllegalArgumentException("Attempting to convert non-boolean value " +
+                    stringValue + " to Boolean");
+        }
+    }
+
+    public static BooleanColumn create(String fileName, ByteArrayList bools) {
+        BooleanColumn booleanColumn = new BooleanColumn(fileName, bools.size());
+        booleanColumn.data.addAll(bools);
+        return booleanColumn;
     }
 
     public int size() {
@@ -211,32 +255,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         ByteArrays.mergeSort(data.elements(), reverseByteComparator);
     }
 
-    ByteComparator reverseByteComparator = new ByteComparator() {
-
-        @Override
-        public int compare(Byte o1, Byte o2) {
-            return Byte.compare(o2, o1);
-        }
-
-        @Override
-        public int compare(byte o1, byte o2) {
-            return Byte.compare(o2, o1);
-        }
-    };
-
-    public static boolean convert(String stringValue) {
-        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return (boolean) ColumnType.BOOLEAN.getMissingValue();
-        } else if (TypeUtils.TRUE_STRINGS.contains(stringValue)) {
-            return true;
-        } else if (TypeUtils.FALSE_STRINGS.contains(stringValue)) {
-            return false;
-        } else {
-            throw new IllegalArgumentException("Attempting to convert non-boolean value " +
-                    stringValue + " to Boolean");
-        }
-    }
-
     public void addCell(String object) {
         try {
             add(convert(object));
@@ -276,12 +294,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     @Override
     public boolean isEmpty() {
         return data.isEmpty();
-    }
-
-    public static BooleanColumn create(String fileName, ByteArrayList bools) {
-        BooleanColumn booleanColumn = new BooleanColumn(fileName, bools.size());
-        booleanColumn.data.addAll(bools);
-        return booleanColumn;
     }
 
     public int countTrue() {
@@ -365,21 +377,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
             add(booleanColumn.get(i));
         }
     }
-
-    IntComparator comparator = new IntComparator() {
-
-        @Override
-        public int compare(Integer r1, Integer r2) {
-            return compare((int) r1, (int) r2);
-        }
-
-        @Override
-        public int compare(int r1, int r2) {
-            boolean f1 = get(r1);
-            boolean f2 = get(r2);
-            return Boolean.compare(f1, f2);
-        }
-    };
 
     // TODO(lwhite): this won't scale
     public String print() {

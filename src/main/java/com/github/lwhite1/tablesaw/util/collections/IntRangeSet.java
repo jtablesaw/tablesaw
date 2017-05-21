@@ -1,9 +1,8 @@
 package com.github.lwhite1.tablesaw.util.collections;
 
+import javax.annotation.Nullable;
 import java.util.NoSuchElementException;
 import java.util.Set;
-
-import javax.annotation.Nullable;
 
 /**
  * A set comprising zero or more {@linkplain IntRange#isEmpty nonempty},

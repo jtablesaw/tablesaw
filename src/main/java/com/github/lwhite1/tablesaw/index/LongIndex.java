@@ -4,7 +4,6 @@ import com.github.lwhite1.tablesaw.api.DateTimeColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.util.BitmapBackedSelection;
 import com.github.lwhite1.tablesaw.util.Selection;
-
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -53,6 +52,12 @@ public class LongIndex {
         index = new Long2ObjectAVLTreeMap<>(tempMap);
     }
 
+    private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
+        for (int i : tableKeys) {
+            selection.add(i);
+        }
+    }
+
     /**
      * Returns a bitmap containing row numbers of all cells matching the given long
      *
@@ -99,11 +104,5 @@ public class LongIndex {
             addAllToSelection(keys, selection);
         }
         return selection;
-    }
-
-    private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-        for (int i : tableKeys) {
-            selection.add(i);
-        }
     }
 }

@@ -8,8 +8,7 @@ import com.google.common.base.Stopwatch;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
 
 /**
  *

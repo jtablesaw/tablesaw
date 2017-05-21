@@ -7,11 +7,11 @@ public class IntComparisonUtil {
 
     private static IntComparisonUtil instance = new IntComparisonUtil();
 
-    public static IntComparisonUtil getInstance() {
-        return instance;
+    private IntComparisonUtil() {
     }
 
-    private IntComparisonUtil() {
+    public static IntComparisonUtil getInstance() {
+        return instance;
     }
 
     public int compare(int a, int b) {

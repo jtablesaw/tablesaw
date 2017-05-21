@@ -129,10 +129,6 @@ public class PackedLocalDate {
         }
     }
 
-    public int lengthOfYear(int packedDate) {
-        return (isLeapYear(packedDate) ? 366 : 365);
-    }
-
     /**
      * Returns the epoch day in a form consistent with the java standard
      */
@@ -311,5 +307,9 @@ public class PackedLocalDate {
 
     public static boolean isInYear(int next, int year) {
         return getYear(next) == year;
+    }
+
+    public int lengthOfYear(int packedDate) {
+        return (isLeapYear(packedDate) ? 366 : 365);
     }
 }

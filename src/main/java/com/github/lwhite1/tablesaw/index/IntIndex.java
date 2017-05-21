@@ -17,6 +17,11 @@ import java.util.Comparator;
  */
 public class IntIndex {
 
+    private final static Comparator<int[]> intArrayComparator = new Comparator<int[]>() {
+        public int compare(int[] a, int[] b) {
+            return Integer.compare(a[1], b[1]);
+        }
+    };
     private final Int2ObjectAVLTreeMap<IntArrayList> index;
 
     public IntIndex(IntColumn column) {
@@ -73,11 +78,11 @@ public class IntIndex {
         index = new Int2ObjectAVLTreeMap<>(tempMap);
     }
 
-    private final static Comparator<int[]> intArrayComparator = new Comparator<int[]>() {
-        public int compare(int[] a, int[] b) {
-            return Integer.compare(a[1], b[1]);
+    private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
+        for (int i : tableKeys) {
+            selection.add(i);
         }
-    };
+    }
 
     /**
      * Returns a bitmap containing row numbers of all cells matching the given int
@@ -125,11 +130,5 @@ public class IntIndex {
             addAllToSelection(keys, selection);
         }
         return selection;
-    }
-
-    private static void addAllToSelection(IntArrayList tableKeys, Selection selection) {
-        for (int i : tableKeys) {
-            selection.add(i);
-        }
     }
 }

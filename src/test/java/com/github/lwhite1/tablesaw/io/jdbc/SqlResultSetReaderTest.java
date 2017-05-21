@@ -9,10 +9,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import static com.github.lwhite1.tablesaw.util.TestDb.buildCoffeeTable;
-import static com.github.lwhite1.tablesaw.util.TestDb.buildCustomerTable;
-import static com.github.lwhite1.tablesaw.util.TestDb.buildUnpaidOrderTable;
-import static com.github.lwhite1.tablesaw.util.TestDb.dropTables;
+import static com.github.lwhite1.tablesaw.util.TestDb.*;
 
 /**
  * Tests for creating Tables from JDBC result sets using SqlResutSetReader

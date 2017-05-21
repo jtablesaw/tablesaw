@@ -1,10 +1,6 @@
 package com.github.lwhite1.tablesaw.util.collections;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.BoundType;
 import com.google.common.collect.ForwardingCollection;
@@ -14,6 +10,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.PeekingIterator;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -24,7 +21,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * An implementation of {@link IntRangeSet} backed by a {@link TreeMap}.
@@ -32,6 +29,12 @@ import javax.annotation.Nullable;
 public class IntTreeRangeSet extends AbstractIntRangeSet {
 
     final NavigableMap<IntCut, IntRange> rangesByLowerBound;
+    private transient Set<IntRange> asRanges;
+    private transient IntRangeSet complement;
+
+    private IntTreeRangeSet(NavigableMap<IntCut, IntRange> rangesByLowerCut) {
+        this.rangesByLowerBound = rangesByLowerCut;
+    }
 
     /**
      * Creates an empty {@code IntTreeRangeSet} instance.
@@ -49,23 +52,18 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
         return result;
     }
 
-    private IntTreeRangeSet(NavigableMap<IntCut, IntRange> rangesByLowerCut) {
-        this.rangesByLowerBound = rangesByLowerCut;
+    private static BoundType boundTypeForBoolean(boolean inclusive) {
+        return inclusive ? BoundType.CLOSED : BoundType.OPEN;
     }
 
-    private transient Set<IntRange> asRanges;
+    private static IntRange valueOrNull(@Nullable Map.Entry<IntCut, IntRange> entry) {
+        return entry == null ? null : entry.getValue();
+    }
 
     @Override
     public Set<IntRange> asRanges() {
         Set<IntRange> result = asRanges;
         return (result == null) ? asRanges = new AsRanges() : result;
-    }
-
-    final class AsRanges extends ForwardingCollection<IntRange> implements Set<IntRange> {
-        @Override
-        protected Collection<IntRange> delegate() {
-            return rangesByLowerBound.values();
-        }
     }
 
     @Override
@@ -204,12 +202,15 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
         }
     }
 
-    private transient IntRangeSet complement;
-
     @Override
     public IntRangeSet complement() {
         IntRangeSet result = complement;
         return (result == null) ? complement = new Complement() : result;
+    }
+
+    @Override
+    public IntRangeSet subRangeSet(IntRange view) {
+        return view.equals(IntRange.all()) ? this : new SubRangeSetInt(view);
     }
 
     static final class RangesByUpperBound
@@ -570,32 +571,6 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
         }
     }
 
-    private final class Complement extends IntTreeRangeSet {
-        Complement() {
-            super(new ComplementRangesByLowerBound(IntTreeRangeSet.this.rangesByLowerBound));
-        }
-
-        @Override
-        public void add(IntRange rangeToAdd) {
-            IntTreeRangeSet.this.remove(rangeToAdd);
-        }
-
-        @Override
-        public void remove(IntRange rangeToRemove) {
-            IntTreeRangeSet.this.add(rangeToRemove);
-        }
-
-        @Override
-        public boolean contains(int value) {
-            return !IntTreeRangeSet.this.contains(value);
-        }
-
-        @Override
-        public IntRangeSet complement() {
-            return IntTreeRangeSet.this;
-        }
-    }
-
     private static final class SubRangeSetRangesByLowerBound
             extends TreeMap<IntCut, IntRange> {
         /**
@@ -759,9 +734,37 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
         }
     }
 
-    @Override
-    public IntRangeSet subRangeSet(IntRange view) {
-        return view.equals(IntRange.all()) ? this : new SubRangeSetInt(view);
+    final class AsRanges extends ForwardingCollection<IntRange> implements Set<IntRange> {
+        @Override
+        protected Collection<IntRange> delegate() {
+            return rangesByLowerBound.values();
+        }
+    }
+
+    private final class Complement extends IntTreeRangeSet {
+        Complement() {
+            super(new ComplementRangesByLowerBound(IntTreeRangeSet.this.rangesByLowerBound));
+        }
+
+        @Override
+        public void add(IntRange rangeToAdd) {
+            IntTreeRangeSet.this.remove(rangeToAdd);
+        }
+
+        @Override
+        public void remove(IntRange rangeToRemove) {
+            IntTreeRangeSet.this.add(rangeToRemove);
+        }
+
+        @Override
+        public boolean contains(int value) {
+            return !IntTreeRangeSet.this.contains(value);
+        }
+
+        @Override
+        public IntRangeSet complement() {
+            return IntTreeRangeSet.this;
+        }
     }
 
     private final class SubRangeSetInt extends IntTreeRangeSet {
@@ -826,14 +829,6 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
                 return new IntTreeRangeSet(new TreeMap<>());
             }
         }
-    }
-
-    private static BoundType boundTypeForBoolean(boolean inclusive) {
-        return inclusive ? BoundType.CLOSED : BoundType.OPEN;
-    }
-
-    private static IntRange valueOrNull(@Nullable Map.Entry<IntCut, IntRange> entry) {
-        return entry == null ? null : entry.getValue();
     }
 
 }

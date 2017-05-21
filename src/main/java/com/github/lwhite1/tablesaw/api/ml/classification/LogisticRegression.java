@@ -18,6 +18,10 @@ public class LogisticRegression extends AbstractClassifier {
 
     private final smile.classification.LogisticRegression classifierModel;
 
+    private LogisticRegression(smile.classification.LogisticRegression classifierModel) {
+        this.classifierModel = classifierModel;
+    }
+
     public static LogisticRegression learn(ShortColumn labels, NumericColumn... predictors) {
         smile.classification.LogisticRegression classifierModel =
                 new smile.classification.LogisticRegression(DoubleArrays.to2dArray(predictors), labels.toIntArray());
@@ -121,7 +125,6 @@ public class LogisticRegression extends AbstractClassifier {
         return new LogisticRegression(classifierModel);
     }
 
-
     public static LogisticRegression learn(CategoryColumn labels,
                                            double lambda,
                                            double tolerance,
@@ -138,10 +141,6 @@ public class LogisticRegression extends AbstractClassifier {
                 );
 
         return new LogisticRegression(classifierModel);
-    }
-
-    private LogisticRegression(smile.classification.LogisticRegression classifierModel) {
-        this.classifierModel = classifierModel;
     }
 
     public int predict(double[] data) {

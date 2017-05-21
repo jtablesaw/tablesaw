@@ -1,16 +1,16 @@
 package com.github.lwhite1.tablesaw.examples;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.TestDataUtil;
-import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.BooleanColumn;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.github.lwhite1.tablesaw.io.csv.CsvWriter;
 import com.github.lwhite1.tablesaw.store.StorageManager;
-import com.github.lwhite1.tablesaw.api.BooleanColumn;
-import com.github.lwhite1.tablesaw.api.ShortColumn;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import io.codearte.jfairy.producer.person.Person;

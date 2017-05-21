@@ -13,6 +13,37 @@ import static com.github.lwhite1.tablesaw.api.QueryHelper.column;
  */
 public class TornadoExample {
 
+    // column types for the tornado table
+    private static final ColumnType[] COLUMN_TYPES_OLD = {
+            INTEGER,     // number by year
+            INTEGER,     // year
+            INTEGER,     // month
+            INTEGER,     // day
+            LOCAL_DATE,  // date
+            LOCAL_TIME,  // time
+            CATEGORY,    // tz
+            CATEGORY,    // st
+            CATEGORY,    // state fips
+            INTEGER,     // state torn number
+            INTEGER,     // scale
+            INTEGER,     // injuries
+            INTEGER,     // fatalities
+            FLOAT,       // loss
+            FLOAT,   // crop loss
+            FLOAT,   // St. Lat
+            FLOAT,   // St. Lon
+            FLOAT,   // End Lat
+            FLOAT,   // End Lon
+            FLOAT,   // length
+            FLOAT,   // width
+            FLOAT,   // NS
+            FLOAT,   // SN
+            FLOAT,   // SG
+            CATEGORY,  // Count FIPS 1-4
+            CATEGORY,
+            CATEGORY,
+            CATEGORY};
+
     public static void main(String[] args) throws Exception {
 
         Table tornadoes = Table.createFromCsv(COLUMN_TYPES_OLD, "data/1950-2014_torn.csv");
@@ -121,35 +152,4 @@ public class TornadoExample {
     private static void out() {
         System.out.println("");
     }
-
-    // column types for the tornado table
-    private static final ColumnType[] COLUMN_TYPES_OLD = {
-            INTEGER,     // number by year
-            INTEGER,     // year
-            INTEGER,     // month
-            INTEGER,     // day
-            LOCAL_DATE,  // date
-            LOCAL_TIME,  // time
-            CATEGORY,    // tz
-            CATEGORY,    // st
-            CATEGORY,    // state fips
-            INTEGER,     // state torn number
-            INTEGER,     // scale
-            INTEGER,     // injuries
-            INTEGER,     // fatalities
-            FLOAT,       // loss
-            FLOAT,   // crop loss
-            FLOAT,   // St. Lat
-            FLOAT,   // St. Lon
-            FLOAT,   // End Lat
-            FLOAT,   // End Lon
-            FLOAT,   // length
-            FLOAT,   // width
-            FLOAT,   // NS
-            FLOAT,   // SN
-            FLOAT,   // SG
-            CATEGORY,  // Count FIPS 1-4
-            CATEGORY,
-            CATEGORY,
-            CATEGORY};
 }

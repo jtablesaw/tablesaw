@@ -31,6 +31,13 @@ public abstract class AbstractColumn<E extends AbstractColumn> implements Column
         this.id = metadata.getId();
     }
 
+    private static String removeUtf8Bom(String s) {
+        if (s.startsWith(UTF8_BOM)) {
+            s = s.substring(1);
+        }
+        return s;
+    }
+
     public String name() {
         return name;
     }
@@ -87,12 +94,5 @@ public abstract class AbstractColumn<E extends AbstractColumn> implements Column
     @Override
     public E difference() {
         throw new UnsupportedOperationException("difference() method not supported for all data types");
-    }
-
-    private static String removeUtf8Bom(String s) {
-        if (s.startsWith(UTF8_BOM)) {
-            s = s.substring(1);
-        }
-        return s;
     }
 }

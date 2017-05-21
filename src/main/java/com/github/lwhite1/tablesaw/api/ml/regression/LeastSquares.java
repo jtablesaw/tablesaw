@@ -17,10 +17,6 @@ public class LeastSquares {
     private final String[] explanatoryVariableNames;
 
 
-    public static LeastSquares train(NumericColumn responseVar, NumericColumn... explanatoryVars) {
-        return new LeastSquares(responseVar, explanatoryVars);
-    }
-
     public LeastSquares(NumericColumn responseVariable, NumericColumn... explanatoryVars) {
         this.explanatoryVariables = DoubleArrays.to2dArray(explanatoryVars);
 
@@ -32,6 +28,10 @@ public class LeastSquares {
         for (int i = 0; i < explanatoryVariableCount; i++) {
             explanatoryVariableNames[i] = explanatoryVars[i].name();
         }
+    }
+
+    public static LeastSquares train(NumericColumn responseVar, NumericColumn... explanatoryVars) {
+        return new LeastSquares(responseVar, explanatoryVars);
     }
 
     @Override

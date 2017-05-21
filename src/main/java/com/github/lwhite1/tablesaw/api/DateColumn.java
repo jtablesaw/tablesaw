@@ -44,9 +44,33 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     private static final int DEFAULT_ARRAY_SIZE = 128;
 
     private static final int BYTE_SIZE = 4;
+    IntComparator reverseIntComparator = new IntComparator() {
 
+        @Override
+        public int compare(Integer o2, Integer o1) {
+            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
+        }
+
+        @Override
+        public int compare(int o2, int o1) {
+            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
+        }
+    };
     private IntArrayList data;
+    IntComparator comparator = new IntComparator() {
 
+        @Override
+        public int compare(Integer r1, Integer r2) {
+            return compare((int) r1, (int) r2);
+        }
+
+        @Override
+        public int compare(int r1, int r2) {
+            int f1 = getInt(r1);
+            int f2 = getInt(r2);
+            return Integer.compare(f1, f2);
+        }
+    };
     /**
      * The formatter chosen to parse dates for this particular column
      */
@@ -65,6 +89,16 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     private DateColumn(String name, int initialSize) {
         super(name);
         data = new IntArrayList(initialSize);
+    }
+
+    public static DateColumn create(String name) {
+        return new DateColumn(name);
+    }
+
+    public static DateColumn create(String columnName, IntArrayList dates) {
+        DateColumn column = new DateColumn(columnName, dates.size());
+        column.data.addAll(dates);
+        return column;
     }
 
     public int size() {
@@ -132,19 +166,6 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     public void sortDescending() {
         IntArrays.parallelQuickSort(data.elements(), reverseIntComparator);
     }
-
-    IntComparator reverseIntComparator = new IntComparator() {
-
-        @Override
-        public int compare(Integer o2, Integer o1) {
-            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
-        }
-
-        @Override
-        public int compare(int o2, int o1) {
-            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
-        }
-    };
 
     @Override
     public int countUnique() {
@@ -237,7 +258,6 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         return newColumn;
     }
 
-
     public ShortColumn dayOfMonth() {
         ShortColumn newColumn = ShortColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
@@ -309,10 +329,6 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         return PackedLocalDate.asLocalDate(getInt(index));
     }
 
-    public static DateColumn create(String name) {
-        return new DateColumn(name);
-    }
-
     @Override
     public boolean isEmpty() {
         return data.isEmpty();
@@ -321,27 +337,6 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     @Override
     public IntComparator rowComparator() {
         return comparator;
-    }
-
-    IntComparator comparator = new IntComparator() {
-
-        @Override
-        public int compare(Integer r1, Integer r2) {
-            return compare((int) r1, (int) r2);
-        }
-
-        @Override
-        public int compare(int r1, int r2) {
-            int f1 = getInt(r1);
-            int f2 = getInt(r2);
-            return Integer.compare(f1, f2);
-        }
-    };
-
-    public static DateColumn create(String columnName, IntArrayList dates) {
-        DateColumn column = new DateColumn(columnName, dates.size());
-        column.data.addAll(dates);
-        return column;
     }
 
     /**

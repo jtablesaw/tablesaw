@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.store;
 
-import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.columns.Column;
 import com.google.gson.Gson;
 
 /**
@@ -26,12 +26,12 @@ public class ColumnMetadata {
         this.size = column.size();
     }
 
-    public String toJson() {
-        return GSON.toJson(this);
-    }
-
     public static ColumnMetadata fromJson(String jsonString) {
         return GSON.fromJson(jsonString, ColumnMetadata.class);
+    }
+
+    public String toJson() {
+        return GSON.toJson(this);
     }
 
     @Override

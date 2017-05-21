@@ -1,9 +1,9 @@
 package com.github.lwhite1.tablesaw.mapping;
 
-import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.api.DateTimeColumn;
-import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
+import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDateTime;
 import org.junit.Test;
 
 import java.time.LocalDateTime;

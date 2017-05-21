@@ -12,13 +12,11 @@ import static org.junit.Assert.assertEquals;
  */
 public class SortTest {
 
-    private Table unsortedTable;
-
     private final static int IQ_INDEX = 1;
     private final static int DOB_INDEX = 3;
-
     // Name,IQ,City,DOB
     private final static String[] columnNames = TestData.SIMPLE_UNSORTED_DATA.getColumnNames();
+    private Table unsortedTable;
 
     @Before
     public void setup() {

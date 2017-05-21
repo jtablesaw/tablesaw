@@ -18,12 +18,22 @@ import static org.junit.Assert.*;
  */
 public class ViewGroupTest {
 
+    static NumericReduceFunction exaggerate = new NumericReduceFunction() {
+        @Override
+        public String functionName() {
+            return "exaggeration";
+        }
+
+        @Override
+        public double reduce(double[] data) {
+            return StatUtils.max(data) + 1000;
+        }
+    };
     private final ColumnType[] types = {
             ColumnType.LOCAL_DATE,     // date of poll
             ColumnType.INTEGER,        // approval rating (pct)
             ColumnType.CATEGORY        // polling org
     };
-
     private Table table;
 
     @Before
@@ -95,16 +105,4 @@ public class ViewGroupTest {
         // compare the sum of the original column with the sum of the sums of the group table
         assertEquals(table.intColumn(1).sum(), Math.round(groups.floatColumn(1).sum()));
     }
-
-    static NumericReduceFunction exaggerate = new NumericReduceFunction() {
-        @Override
-        public String functionName() {
-            return "exaggeration";
-        }
-
-        @Override
-        public double reduce(double[] data) {
-            return StatUtils.max(data) + 1000;
-        }
-    };
 }

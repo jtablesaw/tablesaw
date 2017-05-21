@@ -6,8 +6,6 @@ import com.github.lwhite1.tablesaw.util.Selection;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  *
  */

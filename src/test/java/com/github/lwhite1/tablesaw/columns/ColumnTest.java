@@ -1,19 +1,17 @@
 package com.github.lwhite1.tablesaw.columns;
 
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
 
-import static com.github.lwhite1.tablesaw.api.ColumnType.CATEGORY;
-import static com.github.lwhite1.tablesaw.api.ColumnType.INTEGER;
-import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_DATE;
+import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 import static org.junit.Assert.assertEquals;
 
 /**

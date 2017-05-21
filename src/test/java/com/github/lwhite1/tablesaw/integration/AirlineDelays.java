@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.integration;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.ColumnType;
+import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.github.lwhite1.tablesaw.store.StorageManager;
 import com.google.common.base.Stopwatch;
@@ -12,35 +12,6 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class AirlineDelays {
-
-    private static Table flights2008;
-
-    public static void main(String[] args) throws Exception {
-
-        new AirlineDelays();
-
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        flights2008.sortAscendingOn("Origin", "UniqueCarrier");
-        System.out.println("Sorting " + stopwatch.elapsed(TimeUnit.SECONDS));
-    }
-
-    private AirlineDelays() throws Exception {
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        System.out.println("loading");
-        flights2008 = CsvReader.read(reduced_set, "bigdata/2015.csv");
-        System.out.println(String.format("loaded %d records in %d seconds",
-                flights2008.rowCount(),
-                stopwatch.elapsed(TimeUnit.SECONDS)));
-        out(flights2008.shape());
-        out(flights2008.columnNames().toString());
-        flights2008.first(10).print();
-        StorageManager.saveTable("bigdata", flights2008);
-        stopwatch.reset().start();
-    }
-
-    private static void out(Object obj) {
-        System.out.println(String.valueOf(obj));
-    }
 
     // The full set of all available columns in tbe dataset
     static ColumnType[] heading = {
@@ -74,7 +45,7 @@ public class AirlineDelays {
             ColumnType.FLOAT, // SecurityDelay
             ColumnType.FLOAT  // LateAircraftDelay
     };
-
+    private static Table flights2008;
     // A filtered set of columns
     private static ColumnType[] reduced_set = {
             ColumnType.SKIP, // year
@@ -107,4 +78,31 @@ public class AirlineDelays {
             ColumnType.SKIP, // SecurityDelay
             ColumnType.SKIP  // LateAircraftDelay
     };
+
+    private AirlineDelays() throws Exception {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        System.out.println("loading");
+        flights2008 = CsvReader.read(reduced_set, "bigdata/2015.csv");
+        System.out.println(String.format("loaded %d records in %d seconds",
+                flights2008.rowCount(),
+                stopwatch.elapsed(TimeUnit.SECONDS)));
+        out(flights2008.shape());
+        out(flights2008.columnNames().toString());
+        flights2008.first(10).print();
+        StorageManager.saveTable("bigdata", flights2008);
+        stopwatch.reset().start();
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        new AirlineDelays();
+
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        flights2008.sortAscendingOn("Origin", "UniqueCarrier");
+        System.out.println("Sorting " + stopwatch.elapsed(TimeUnit.SECONDS));
+    }
+
+    private static void out(Object obj) {
+        System.out.println(String.valueOf(obj));
+    }
 }

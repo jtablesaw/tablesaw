@@ -26,34 +26,8 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isEqualTo;
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isGreaterThan;
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isGreaterThanOrEqualTo;
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isLessThan;
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isLessThanOrEqualTo;
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isMissing;
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isNegative;
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isNonNegative;
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isNotMissing;
-import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.isPositive;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.geometricMean;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.kurtosis;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.max;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.median;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.min;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.populationVariance;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.product;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quadraticMean;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile1;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile3;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.range;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.skewness;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.stdDev;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfLogs;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfSquares;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.variance;
+import static com.github.lwhite1.tablesaw.columns.FloatColumnUtils.*;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
 
 /**
  * A column in a base table that contains float values
@@ -62,10 +36,39 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
 
     public static final float MISSING_VALUE = (float) ColumnType.FLOAT.getMissingValue();
     private static final int BYTE_SIZE = 4;
-
+    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private static int DEFAULT_ARRAY_SIZE = 128;
+    /**
+     * Compares two floats, such that a sort based on this comparator would sort in descending order
+     */
+    FloatComparator reverseFloatComparator = new FloatComparator() {
 
+        @Override
+        public int compare(Float o2, Float o1) {
+            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
+        }
+
+        @Override
+        public int compare(float o2, float o1) {
+            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
+        }
+    };
     private FloatArrayList data;
+    private final IntComparator comparator = new IntComparator() {
+
+        @Override
+        public int compare(Integer r1, Integer r2) {
+            float f1 = data.getFloat(r1);
+            float f2 = data.getFloat(r2);
+            return Float.compare(f1, f2);
+        }
+
+        public int compare(int r1, int r2) {
+            float f1 = data.getFloat(r1);
+            float f2 = data.getFloat(r2);
+            return Float.compare(f1, f2);
+        }
+    };
 
     public FloatColumn(String name) {
         super(name);
@@ -80,6 +83,34 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     public FloatColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new FloatArrayList(metadata.getSize());
+    }
+
+    public static FloatColumn create(String name) {
+        return new FloatColumn(name);
+    }
+
+    public static FloatColumn create(String name, int initialSize) {
+        return new FloatColumn(name, initialSize);
+    }
+
+    public static FloatColumn create(String name, FloatArrayList floats) {
+        FloatColumn column = new FloatColumn(name, floats.size());
+        column.data = new FloatArrayList(floats.size());
+        column.data.addAll(floats);
+        return column;
+    }
+
+    /**
+     * Returns a float that is parsed from the given String
+     * <p>
+     * We remove any commas before parsing
+     */
+    public static float convert(String stringValue) {
+        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
+            return MISSING_VALUE;
+        }
+        Matcher matcher = COMMA_PATTERN.matcher(stringValue);
+        return Float.parseFloat(matcher.replaceAll(""));
     }
 
     public int size() {
@@ -222,6 +253,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return sumOfLogs.reduce(this);
     }
 
+    // Predicate  functions
+
     public double sumOfSquares() {
         return sumOfSquares.reduce(this);
     }
@@ -258,8 +291,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     public void add(double d) {
         data.add((float) d);
     }
-
-    // Predicate  functions
 
     public Selection isLessThan(float f) {
         return select(isLessThan, f);
@@ -348,37 +379,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return data.isEmpty();
     }
 
-    public static FloatColumn create(String name) {
-        return new FloatColumn(name);
-    }
-
-    public static FloatColumn create(String name, int initialSize) {
-        return new FloatColumn(name, initialSize);
-    }
-
-    public static FloatColumn create(String name, FloatArrayList floats) {
-        FloatColumn column = new FloatColumn(name, floats.size());
-        column.data = new FloatArrayList(floats.size());
-        column.data.addAll(floats);
-        return column;
-    }
-
-    /**
-     * Compares two floats, such that a sort based on this comparator would sort in descending order
-     */
-    FloatComparator reverseFloatComparator = new FloatComparator() {
-
-        @Override
-        public int compare(Float o2, Float o1) {
-            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
-        }
-
-        @Override
-        public int compare(float o2, float o1) {
-            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
-        }
-    };
-
     /**
      * Returns the count of missing values in this column
      * <p>
@@ -408,19 +408,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
                     + String.valueOf(object) + ": "
                     + e.getMessage());
         }
-    }
-
-    /**
-     * Returns a float that is parsed from the given String
-     * <p>
-     * We remove any commas before parsing
-     */
-    public static float convert(String stringValue) {
-        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return MISSING_VALUE;
-        }
-        Matcher matcher = COMMA_PATTERN.matcher(stringValue);
-        return Float.parseFloat(matcher.replaceAll(""));
     }
 
     /**
@@ -607,8 +594,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return newColumn;
     }
 
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
-
     /**
      * Compares the given ints, which refer to the indexes of the floats in this column, according to the values of the
      * floats themselves
@@ -617,22 +602,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     public IntComparator rowComparator() {
         return comparator;
     }
-
-    private final IntComparator comparator = new IntComparator() {
-
-        @Override
-        public int compare(Integer r1, Integer r2) {
-            float f1 = data.getFloat(r1);
-            float f2 = data.getFloat(r2);
-            return Float.compare(f1, f2);
-        }
-
-        public int compare(int r1, int r2) {
-            float f1 = data.getFloat(r1);
-            float f2 = data.getFloat(r2);
-            return Float.compare(f1, f2);
-        }
-    };
 
     public float get(int index) {
         return data.getFloat(index);

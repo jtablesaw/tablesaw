@@ -36,10 +36,39 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     public static final double MISSING_VALUE = (double) ColumnType.DOUBLE.getMissingValue();
     private static final int BYTE_SIZE = 8;
-
+    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private static int DEFAULT_ARRAY_SIZE = 128;
+    /**
+     * Compares two doubles, such that a sort based on this comparator would sort in descending order
+     */
+    DoubleComparator reverseDoubleComparator = new DoubleComparator() {
 
+        @Override
+        public int compare(Double o2, Double o1) {
+            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
+        }
+
+        @Override
+        public int compare(double o2, double o1) {
+            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
+        }
+    };
     private DoubleArrayList data;
+    private final IntComparator comparator = new IntComparator() {
+
+        @Override
+        public int compare(Integer r1, Integer r2) {
+            double f1 = data.getDouble(r1);
+            double f2 = data.getDouble(r2);
+            return Double.compare(f1, f2);
+        }
+
+        public int compare(int r1, int r2) {
+            double f1 = data.getDouble(r1);
+            double f2 = data.getDouble(r2);
+            return Double.compare(f1, f2);
+        }
+    };
 
     public DoubleColumn(String name) {
         super(name);
@@ -54,6 +83,34 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new DoubleArrayList(metadata.getSize());
+    }
+
+    public static DoubleColumn create(String name) {
+        return new DoubleColumn(name);
+    }
+
+    public static DoubleColumn create(String name, int initialSize) {
+        return new DoubleColumn(name, initialSize);
+    }
+
+    public static DoubleColumn create(String name, DoubleArrayList doubles) {
+        DoubleColumn column = new DoubleColumn(name, doubles.size());
+        column.data = new DoubleArrayList(doubles.size());
+        column.data.addAll(doubles);
+        return column;
+    }
+
+    /**
+     * Returns a double that is parsed from the given String
+     * <p>
+     * We remove any commas before parsing
+     */
+    public static double convert(String stringValue) {
+        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
+            return MISSING_VALUE;
+        }
+        Matcher matcher = COMMA_PATTERN.matcher(stringValue);
+        return Double.parseDouble(matcher.replaceAll(""));
     }
 
     public int size() {
@@ -196,6 +253,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return sumOfLogs.reduce(this);
     }
 
+    // Predicate  functions
+
     public double sumOfSquares() {
         return sumOfSquares.reduce(this);
     }
@@ -232,8 +291,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public void add(double d) {
         data.add(d);
     }
-
-    // Predicate  functions
 
     public Selection isLessThan(double f) {
         return select(isLessThan, f);
@@ -322,37 +379,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return data.isEmpty();
     }
 
-    public static DoubleColumn create(String name) {
-        return new DoubleColumn(name);
-    }
-
-    public static DoubleColumn create(String name, int initialSize) {
-        return new DoubleColumn(name, initialSize);
-    }
-
-    public static DoubleColumn create(String name, DoubleArrayList doubles) {
-        DoubleColumn column = new DoubleColumn(name, doubles.size());
-        column.data = new DoubleArrayList(doubles.size());
-        column.data.addAll(doubles);
-        return column;
-    }
-
-    /**
-     * Compares two doubles, such that a sort based on this comparator would sort in descending order
-     */
-    DoubleComparator reverseDoubleComparator = new DoubleComparator() {
-
-        @Override
-        public int compare(Double o2, Double o1) {
-            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
-        }
-
-        @Override
-        public int compare(double o2, double o1) {
-            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
-        }
-    };
-
     /**
      * Returns the count of missing values in this column
      * <p>
@@ -382,19 +408,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
                     + String.valueOf(object) + ": "
                     + e.getMessage());
         }
-    }
-
-    /**
-     * Returns a double that is parsed from the given String
-     * <p>
-     * We remove any commas before parsing
-     */
-    public static double convert(String stringValue) {
-        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return MISSING_VALUE;
-        }
-        Matcher matcher = COMMA_PATTERN.matcher(stringValue);
-        return Double.parseDouble(matcher.replaceAll(""));
     }
 
     /**
@@ -592,8 +605,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return newColumn;
     }
 
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
-
     /**
      * Compares the given ints, which refer to the indexes of the doubles in this column, according to the values of the
      * doubles themselves
@@ -602,22 +613,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public IntComparator rowComparator() {
         return comparator;
     }
-
-    private final IntComparator comparator = new IntComparator() {
-
-        @Override
-        public int compare(Integer r1, Integer r2) {
-            double f1 = data.getDouble(r1);
-            double f2 = data.getDouble(r2);
-            return Double.compare(f1, f2);
-        }
-
-        public int compare(int r1, int r2) {
-            double f1 = data.getDouble(r1);
-            double f2 = data.getDouble(r2);
-            return Double.compare(f1, f2);
-        }
-    };
 
     public double get(int index) {
         return data.getDouble(index);

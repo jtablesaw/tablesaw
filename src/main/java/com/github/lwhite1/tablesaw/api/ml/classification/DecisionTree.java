@@ -18,6 +18,11 @@ public class DecisionTree extends AbstractClassifier {
     private final smile.classification.DecisionTree classifierModel;
 
 
+    private DecisionTree(int maxNodes, int[] classArray, NumericColumn... columns) {
+        double[][] data = DoubleArrays.to2dArray(columns);
+        this.classifierModel = new smile.classification.DecisionTree(data, classArray, maxNodes);
+    }
+
     public static DecisionTree learn(int maxNodes, IntColumn classes, NumericColumn... columns) {
         int[] classArray = classes.data().toIntArray();
         return new DecisionTree(maxNodes, classArray, columns);
@@ -31,11 +36,6 @@ public class DecisionTree extends AbstractClassifier {
     public static DecisionTree learn(int nTrees, CategoryColumn classes, NumericColumn... columns) {
         int[] classArray = classes.data().toIntArray();
         return new DecisionTree(nTrees, classArray, columns);
-    }
-
-    private DecisionTree(int maxNodes, int[] classArray, NumericColumn... columns) {
-        double[][] data = DoubleArrays.to2dArray(columns);
-        this.classifierModel = new smile.classification.DecisionTree(data, classArray, maxNodes);
     }
 
     public int predict(double[] data) {

@@ -34,9 +34,9 @@ import java.util.List;
  */
 public class TemporaryView implements Relation, IntIterable {
 
+    private final Selection rowMap;
     private String name;
     private Table table;
-    private final Selection rowMap;
 
     /**
      * Returns a new View constructed from the given table, containing only the rows represented by the bitmap

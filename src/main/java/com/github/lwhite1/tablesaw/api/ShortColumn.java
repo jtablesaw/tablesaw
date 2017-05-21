@@ -40,8 +40,36 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
 
     private static final int DEFAULT_ARRAY_SIZE = 128;
     private static final int BYTE_SIZE = 2;
-
+    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private ShortArrayList data;
+    final IntComparator comparator = new IntComparator() {
+
+        @Override
+        public int compare(Integer i1, Integer i2) {
+            return compare((int) i1, (int) i2);
+        }
+
+        public int compare(int i1, int i2) {
+            int prim1 = get(i1);
+            int prim2 = get(i2);
+            return IntComparisonUtil.getInstance().compare(prim1, prim2);
+        }
+    };
+
+    public ShortColumn(String name, int initialSize) {
+        super(name);
+        data = new ShortArrayList(initialSize);
+    }
+
+    public ShortColumn(ColumnMetadata metadata) {
+        super(metadata);
+        data = new ShortArrayList(metadata.getSize());
+    }
+
+    public ShortColumn(String name) {
+        super(name);
+        data = new ShortArrayList(DEFAULT_ARRAY_SIZE);
+    }
 
     public static ShortColumn create(String name) {
         return new ShortColumn(name, DEFAULT_ARRAY_SIZE);
@@ -61,19 +89,17 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return column;
     }
 
-    public ShortColumn(String name, int initialSize) {
-        super(name);
-        data = new ShortArrayList(initialSize);
-    }
-
-    public ShortColumn(ColumnMetadata metadata) {
-        super(metadata);
-        data = new ShortArrayList(metadata.getSize());
-    }
-
-    public ShortColumn(String name) {
-        super(name);
-        data = new ShortArrayList(DEFAULT_ARRAY_SIZE);
+    /**
+     * Returns a float that is parsed from the given String
+     * <p>
+     * We remove any commas before parsing
+     */
+    public static short convert(String stringValue) {
+        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
+            return (short) ColumnType.SHORT_INT.getMissingValue();
+        }
+        Matcher matcher = COMMA_PATTERN.matcher(stringValue);
+        return Short.parseShort(matcher.replaceAll(""));
     }
 
     public int size() {
@@ -228,21 +254,6 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         }
     }
 
-    /**
-     * Returns a float that is parsed from the given String
-     * <p>
-     * We remove any commas before parsing
-     */
-    public static short convert(String stringValue) {
-        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return (short) ColumnType.SHORT_INT.getMissingValue();
-        }
-        Matcher matcher = COMMA_PATTERN.matcher(stringValue);
-        return Short.parseShort(matcher.replaceAll(""));
-    }
-
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
-
     public short get(int index) {
         return data.getShort(index);
     }
@@ -256,20 +267,6 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     public IntComparator rowComparator() {
         return comparator;
     }
-
-    final IntComparator comparator = new IntComparator() {
-
-        @Override
-        public int compare(Integer i1, Integer i2) {
-            return compare((int) i1, (int) i2);
-        }
-
-        public int compare(int i1, int i2) {
-            int prim1 = get(i1);
-            int prim2 = get(i2);
-            return IntComparisonUtil.getInstance().compare(prim1, prim2);
-        }
-    };
 
     // Reduce functions applied to the whole column
     public long sum() {

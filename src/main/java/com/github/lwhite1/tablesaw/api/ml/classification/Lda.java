@@ -19,6 +19,10 @@ public class Lda extends AbstractClassifier {
 
     private final LDA classifierModel;
 
+    private Lda(LDA classifierModel) {
+        this.classifierModel = classifierModel;
+    }
+
     public static Lda learn(ShortColumn labels, NumericColumn... predictors) {
         LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray());
         return new Lda(classifierModel);
@@ -79,10 +83,6 @@ public class Lda extends AbstractClassifier {
         LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), priors,
                 tolerance);
         return new Lda(classifierModel);
-    }
-
-    private Lda(LDA classifierModel) {
-        this.classifierModel = classifierModel;
     }
 
     public int predict(double[] data) {

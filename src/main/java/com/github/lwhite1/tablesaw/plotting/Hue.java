@@ -60,6 +60,14 @@ public enum Hue {
 
     Neutral("N");
 
+    static final Map<String, Hue> STRING_HUE_HASH_MAP = new HashMap<>();
+
+    static {
+        for (Hue hue : Hue.values()) {
+            STRING_HUE_HASH_MAP.put(hue.colorString, hue);
+        }
+    }
+
     private String colorString;
 
     Hue(String colorString) {
@@ -68,13 +76,5 @@ public enum Hue {
 
     static Hue from(String hueString) {
         return STRING_HUE_HASH_MAP.get(hueString);
-    }
-
-    static final Map<String, Hue> STRING_HUE_HASH_MAP = new HashMap<>();
-
-    static {
-        for (Hue hue : Hue.values()) {
-            STRING_HUE_HASH_MAP.put(hue.colorString, hue);
-        }
     }
 }

@@ -10,8 +10,7 @@ import com.github.lwhite1.tablesaw.api.ml.classification.ConfusionMatrix;
 import com.github.lwhite1.tablesaw.api.ml.classification.LogisticRegression;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 
-import static com.github.lwhite1.tablesaw.api.ColumnType.FLOAT;
-import static com.github.lwhite1.tablesaw.api.ColumnType.INTEGER;
+import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 
 /**
  *

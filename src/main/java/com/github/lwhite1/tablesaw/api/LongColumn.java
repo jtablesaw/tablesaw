@@ -29,24 +29,7 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.geometricMean;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.kurtosis;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.max;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.mean;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.median;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.min;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.populationVariance;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.product;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quadraticMean;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile1;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.quartile3;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.range;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.skewness;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.stdDev;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sum;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfLogs;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.sumOfSquares;
-import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.variance;
+import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
 
 /**
  * A column that contains signed 8 byte integer values
@@ -57,8 +40,36 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
 
     private static final int DEFAULT_ARRAY_SIZE = 128;
     private static final int BYTE_SIZE = 8;
-
+    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private LongArrayList data;
+    private final IntComparator comparator = new IntComparator() {
+
+        @Override
+        public int compare(Integer i1, Integer i2) {
+            return compare((int) i1, (int) i2);
+        }
+
+        public int compare(int i1, int i2) {
+            long prim1 = get(i1);
+            long prim2 = get(i2);
+            return LongComparisonUtil.getInstance().compare(prim1, prim2);
+        }
+    };
+
+    public LongColumn(String name, int initialSize) {
+        super(name);
+        data = new LongArrayList(initialSize);
+    }
+
+    public LongColumn(ColumnMetadata metadata) {
+        super(metadata);
+        data = new LongArrayList(metadata.getSize());
+    }
+
+    public LongColumn(String name) {
+        super(name);
+        data = new LongArrayList(DEFAULT_ARRAY_SIZE);
+    }
 
     public static LongColumn create(String name) {
         return new LongColumn(name, DEFAULT_ARRAY_SIZE);
@@ -78,19 +89,17 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return column;
     }
 
-    public LongColumn(String name, int initialSize) {
-        super(name);
-        data = new LongArrayList(initialSize);
-    }
-
-    public LongColumn(ColumnMetadata metadata) {
-        super(metadata);
-        data = new LongArrayList(metadata.getSize());
-    }
-
-    public LongColumn(String name) {
-        super(name);
-        data = new LongArrayList(DEFAULT_ARRAY_SIZE);
+    /**
+     * Returns a float that is parsed from the given String
+     * <p>
+     * We remove any commas before parsing
+     */
+    public static long convert(String stringValue) {
+        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
+            return (long) ColumnType.LONG_INT.getMissingValue();
+        }
+        Matcher matcher = COMMA_PATTERN.matcher(stringValue);
+        return Long.parseLong(matcher.replaceAll(""));
     }
 
     public int size() {
@@ -303,21 +312,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         }
     }
 
-    /**
-     * Returns a float that is parsed from the given String
-     * <p>
-     * We remove any commas before parsing
-     */
-    public static long convert(String stringValue) {
-        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return (long) ColumnType.LONG_INT.getMissingValue();
-        }
-        Matcher matcher = COMMA_PATTERN.matcher(stringValue);
-        return Long.parseLong(matcher.replaceAll(""));
-    }
-
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
-
     public long get(int index) {
         return data.getLong(index);
     }
@@ -331,20 +325,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public IntComparator rowComparator() {
         return comparator;
     }
-
-    private final IntComparator comparator = new IntComparator() {
-
-        @Override
-        public int compare(Integer i1, Integer i2) {
-            return compare((int) i1, (int) i2);
-        }
-
-        public int compare(int i1, int i2) {
-            long prim1 = get(i1);
-            long prim2 = get(i2);
-            return LongComparisonUtil.getInstance().compare(prim1, prim2);
-        }
-    };
 
     // Reduce functions applied to the whole column
     public long sum() {

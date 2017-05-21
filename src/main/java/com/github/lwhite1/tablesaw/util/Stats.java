@@ -14,8 +14,6 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
  */
 public class Stats {
 
-    private String name;
-
     long n;
     double sum;
     double mean;
@@ -29,6 +27,11 @@ public class Stats {
     double populationVariance;
     double sumOfLogs;
     double sumOfSquares;
+    private String name;
+
+    public Stats(String name) {
+        this.name = name;
+    }
 
     public static Stats create(final FloatColumn values) {
         SummaryStatistics summaryStatistics = new SummaryStatistics();
@@ -61,8 +64,40 @@ public class Stats {
         return create(values);
     }
 
-    public Stats(String name) {
-        this.name = name;
+    private static Stats getStats(FloatColumn values, SummaryStatistics summaryStatistics) {
+        Stats stats = new Stats("Column: " + values.name());
+        stats.min = (float) summaryStatistics.getMin();
+        stats.max = (float) summaryStatistics.getMax();
+        stats.n = summaryStatistics.getN();
+        stats.sum = summaryStatistics.getSum();
+        stats.variance = summaryStatistics.getVariance();
+        stats.populationVariance = summaryStatistics.getPopulationVariance();
+        stats.quadraticMean = summaryStatistics.getQuadraticMean();
+        stats.geometricMean = summaryStatistics.getGeometricMean();
+        stats.mean = summaryStatistics.getMean();
+        stats.standardDeviation = summaryStatistics.getStandardDeviation();
+        stats.sumOfLogs = summaryStatistics.getSumOfLogs();
+        stats.sumOfSquares = summaryStatistics.getSumsq();
+        stats.secondMoment = summaryStatistics.getSecondMoment();
+        return stats;
+    }
+
+    private static Stats getStats(DoubleColumn values, SummaryStatistics summaryStatistics) {
+        Stats stats = new Stats("Column: " + values.name());
+        stats.min = summaryStatistics.getMin();
+        stats.max = summaryStatistics.getMax();
+        stats.n = summaryStatistics.getN();
+        stats.sum = summaryStatistics.getSum();
+        stats.variance = summaryStatistics.getVariance();
+        stats.populationVariance = summaryStatistics.getPopulationVariance();
+        stats.quadraticMean = summaryStatistics.getQuadraticMean();
+        stats.geometricMean = summaryStatistics.getGeometricMean();
+        stats.mean = summaryStatistics.getMean();
+        stats.standardDeviation = summaryStatistics.getStandardDeviation();
+        stats.sumOfLogs = summaryStatistics.getSumOfLogs();
+        stats.sumOfSquares = summaryStatistics.getSumsq();
+        stats.secondMoment = summaryStatistics.getSecondMoment();
+        return stats;
     }
 
     public float range() {
@@ -180,41 +215,5 @@ public class Stats {
         value.add(secondMoment());
 
         return t;
-    }
-
-    private static Stats getStats(FloatColumn values, SummaryStatistics summaryStatistics) {
-        Stats stats = new Stats("Column: " + values.name());
-        stats.min = (float) summaryStatistics.getMin();
-        stats.max = (float) summaryStatistics.getMax();
-        stats.n = summaryStatistics.getN();
-        stats.sum = summaryStatistics.getSum();
-        stats.variance = summaryStatistics.getVariance();
-        stats.populationVariance = summaryStatistics.getPopulationVariance();
-        stats.quadraticMean = summaryStatistics.getQuadraticMean();
-        stats.geometricMean = summaryStatistics.getGeometricMean();
-        stats.mean = summaryStatistics.getMean();
-        stats.standardDeviation = summaryStatistics.getStandardDeviation();
-        stats.sumOfLogs = summaryStatistics.getSumOfLogs();
-        stats.sumOfSquares = summaryStatistics.getSumsq();
-        stats.secondMoment = summaryStatistics.getSecondMoment();
-        return stats;
-    }
-
-    private static Stats getStats(DoubleColumn values, SummaryStatistics summaryStatistics) {
-        Stats stats = new Stats("Column: " + values.name());
-        stats.min = summaryStatistics.getMin();
-        stats.max = summaryStatistics.getMax();
-        stats.n = summaryStatistics.getN();
-        stats.sum = summaryStatistics.getSum();
-        stats.variance = summaryStatistics.getVariance();
-        stats.populationVariance = summaryStatistics.getPopulationVariance();
-        stats.quadraticMean = summaryStatistics.getQuadraticMean();
-        stats.geometricMean = summaryStatistics.getGeometricMean();
-        stats.mean = summaryStatistics.getMean();
-        stats.standardDeviation = summaryStatistics.getStandardDeviation();
-        stats.sumOfLogs = summaryStatistics.getSumOfLogs();
-        stats.sumOfSquares = summaryStatistics.getSumsq();
-        stats.secondMoment = summaryStatistics.getSecondMoment();
-        return stats;
     }
 }

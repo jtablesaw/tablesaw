@@ -1,19 +1,33 @@
 package com.github.lwhite1.tablesaw.util.collections;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.base.Equivalence;
 import com.google.common.collect.BoundType;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 
+import javax.annotation.Nullable;
 import java.util.NoSuchElementException;
 import java.util.SortedSet;
 
-import javax.annotation.Nullable;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class IntRange {
+
+    private static final IntRange ALL =
+            new IntRange(IntCut.belowAll(), IntCut.aboveAll());
+    final IntCut lowerBound;
+    final IntCut upperBound;
+
+    private IntRange(IntCut lowerBound, IntCut upperBound) {
+        this.lowerBound = checkNotNull(lowerBound);
+        this.upperBound = checkNotNull(upperBound);
+        if (lowerBound.compareTo(upperBound) > 0
+                || lowerBound == IntCut.aboveAll()
+                || upperBound == IntCut.belowAll()) {
+            throw new IllegalArgumentException("Invalid range: " + toString(lowerBound, upperBound));
+        }
+    }
 
     static IntRange create(IntCut lowerBound, IntCut upperBound) {
         return new IntRange(lowerBound, upperBound);
@@ -161,9 +175,6 @@ public final class IntRange {
         }
     }
 
-    private static final IntRange ALL =
-            new IntRange(IntCut.belowAll(), IntCut.aboveAll());
-
     /**
      * Returns a range that contains every value of type {@code int}.
      */
@@ -210,17 +221,19 @@ public final class IntRange {
         return closed(min, max);
     }
 
-    final IntCut lowerBound;
-    final IntCut upperBound;
+    private static String toString(IntCut lowerBound, IntCut upperBound) {
+        StringBuilder sb = new StringBuilder(16);
+        lowerBound.describeAsLowerBound(sb);
+        sb.append("..");
+        upperBound.describeAsUpperBound(sb);
+        return sb.toString();
+    }
 
-    private IntRange(IntCut lowerBound, IntCut upperBound) {
-        this.lowerBound = checkNotNull(lowerBound);
-        this.upperBound = checkNotNull(upperBound);
-        if (lowerBound.compareTo(upperBound) > 0
-                || lowerBound == IntCut.aboveAll()
-                || upperBound == IntCut.belowAll()) {
-            throw new IllegalArgumentException("Invalid range: " + toString(lowerBound, upperBound));
-        }
+    /**
+     * Used to avoid http://bugs.sun.com/view_bug.do?bug_id=6558557
+     */
+    private static <T> SortedSet<T> cast(Iterable<T> iterable) {
+        return (SortedSet<T>) iterable;
     }
 
     public IntCut upperBound() {
@@ -507,21 +520,6 @@ public final class IntRange {
     @Override
     public String toString() {
         return toString(lowerBound, upperBound);
-    }
-
-    private static String toString(IntCut lowerBound, IntCut upperBound) {
-        StringBuilder sb = new StringBuilder(16);
-        lowerBound.describeAsLowerBound(sb);
-        sb.append("..");
-        upperBound.describeAsUpperBound(sb);
-        return sb.toString();
-    }
-
-    /**
-     * Used to avoid http://bugs.sun.com/view_bug.do?bug_id=6558557
-     */
-    private static <T> SortedSet<T> cast(Iterable<T> iterable) {
-        return (SortedSet<T>) iterable;
     }
 
     Object readResolve() {

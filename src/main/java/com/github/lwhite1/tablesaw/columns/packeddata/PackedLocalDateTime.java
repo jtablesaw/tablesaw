@@ -159,10 +159,6 @@ public class PackedLocalDateTime {
         }
     }
 
-    public int lengthOfYear(long packedDateTime) {
-        return (isLeapYear(packedDateTime) ? 366 : 365);
-    }
-
     public static DayOfWeek getDayOfWeek(long packedDateTime) {
         int date = PackedLocalDateTime.date(packedDateTime);
         return PackedLocalDate.getDayOfWeek(date);
@@ -370,5 +366,9 @@ public class PackedLocalDateTime {
     public static long create(int date, int time) {
         return (((long) date) << 32) | (time & 0xffffffffL);
 
+    }
+
+    public int lengthOfYear(long packedDateTime) {
+        return (isLeapYear(packedDateTime) ? 366 : 365);
     }
 }

@@ -1,7 +1,7 @@
 package com.github.lwhite1.tablesaw.store;
 
-import com.github.lwhite1.tablesaw.table.Relation;
 import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.table.Relation;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -29,12 +29,12 @@ public class TableMetadata {
         }
     }
 
-    public String toJson() {
-        return GSON.toJson(this);
-    }
-
     public static TableMetadata fromJson(String jsonString) {
         return GSON.fromJson(jsonString, TableMetadata.class);
+    }
+
+    public String toJson() {
+        return GSON.toJson(this);
     }
 
     @Override

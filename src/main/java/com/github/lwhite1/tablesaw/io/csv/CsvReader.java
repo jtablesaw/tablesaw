@@ -36,6 +36,91 @@ import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 @Immutable
 public class CsvReader {
 
+    private static java.util.function.Predicate<String> isBoolean = s ->
+            TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
+    private static Predicate<String> isLong = new Predicate<String>() {
+
+        @Override
+        public boolean test(@Nullable String s) {
+            try {
+                Long.parseLong(s);
+                return true;
+            } catch (NumberFormatException e) {
+                // it's all part of the plan
+                return false;
+            }
+        }
+    };
+    private static Predicate<String> isInteger = s -> {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
+            // it's all part of the plan
+            return false;
+        }
+    };
+    private static Predicate<String> isFloat = s -> {
+        try {
+            Float.parseFloat(s);
+            return true;
+        } catch (NumberFormatException e) {
+            // it's all part of the plan
+            return false;
+        }
+    };
+    private static Predicate<String> isDouble = s -> {
+        try {
+            Double.parseDouble(s);
+            return true;
+        } catch (NumberFormatException e) {
+            // it's all part of the plan
+            return false;
+        }
+    };
+    private static Predicate<String> isShort = s -> {
+        try {
+            Short.parseShort(s);
+            return true;
+        } catch (NumberFormatException e) {
+            // it's all part of the plan
+            return false;
+        }
+    };
+    private static Predicate<String> isLocalDate = s -> {
+        try {
+            LocalDate.parse(s, TypeUtils.DATE_FORMATTER);
+            return true;
+        } catch (DateTimeParseException e) {
+            // it's all part of the plan
+            return false;
+        }
+    };
+    private static Predicate<String> isLocalTime = s -> {
+        try {
+            LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER);
+            return true;
+        } catch (DateTimeParseException e) {
+            // it's all part of the plan
+            return false;
+        }
+    };
+    private static Predicate<String> isLocalDateTime = s -> {
+        try {
+            LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER);
+            return true;
+        } catch (DateTimeParseException e) {
+            // it's all part of the plan
+            return false;
+        }
+    };
+
+    /**
+     * Private constructor to prevent instantiation
+     */
+    private CsvReader() {
+    }
+
     /**
      * Constructs and returns a table from one or more CSV files, all containing the same column types
      * <p>
@@ -502,98 +587,5 @@ public class CsvReader {
         } else {
             return typeCandidates.get(0);
         }
-    }
-
-    private static java.util.function.Predicate<String> isBoolean = s ->
-            TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
-
-    private static Predicate<String> isLong = new Predicate<String>() {
-
-        @Override
-        public boolean test(@Nullable String s) {
-            try {
-                Long.parseLong(s);
-                return true;
-            } catch (NumberFormatException e) {
-                // it's all part of the plan
-                return false;
-            }
-        }
-    };
-
-    private static Predicate<String> isInteger = s -> {
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static Predicate<String> isFloat = s -> {
-        try {
-            Float.parseFloat(s);
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static Predicate<String> isDouble = s -> {
-        try {
-            Double.parseDouble(s);
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static Predicate<String> isShort = s -> {
-        try {
-            Short.parseShort(s);
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static Predicate<String> isLocalDate = s -> {
-        try {
-            LocalDate.parse(s, TypeUtils.DATE_FORMATTER);
-            return true;
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static Predicate<String> isLocalTime = s -> {
-        try {
-            LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER);
-            return true;
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static Predicate<String> isLocalDateTime = s -> {
-        try {
-            LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER);
-            return true;
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    /**
-     * Private constructor to prevent instantiation
-     */
-    private CsvReader() {
     }
 }

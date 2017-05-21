@@ -24,11 +24,6 @@ public class AirlineDelays {
 
     private static Table flt2007;
 
-    public static void main(String[] args) throws Exception {
-
-        new AirlineDelays();
-    }
-
     private AirlineDelays() throws Exception {
         Stopwatch stopwatch = Stopwatch.createStarted();
         out.println("loading");
@@ -114,6 +109,11 @@ public class AirlineDelays {
                 ord.nCol("CRSDepTime[hour]"));
 
         out(logit.toString());
+    }
+
+    public static void main(String[] args) throws Exception {
+
+        new AirlineDelays();
     }
 
     private static void out(Object obj) {

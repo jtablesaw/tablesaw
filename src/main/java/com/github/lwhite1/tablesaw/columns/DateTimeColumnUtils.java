@@ -9,9 +9,8 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
  */
 public interface DateTimeColumnUtils extends Column {
 
-    LongArrayList data();
-
     LongPredicate isMissing = i -> i == DateTimeColumn.MISSING_VALUE;
-
     LongPredicate isNotMissing = i -> i != DateTimeColumn.MISSING_VALUE;
+
+    LongArrayList data();
 }

@@ -11,14 +11,14 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class ReversingIntComparator implements IntComparator {
 
-    public static IntComparator reverse(IntComparator intComparator) {
-        return new ReversingIntComparator(intComparator);
-    }
-
     private final IntComparator intComparator;
 
     private ReversingIntComparator(IntComparator intComparator) {
         this.intComparator = intComparator;
+    }
+
+    public static IntComparator reverse(IntComparator intComparator) {
+        return new ReversingIntComparator(intComparator);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.github.lwhite1.tablesaw.util;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.LongComparator;
 
 import javax.annotation.concurrent.Immutable;
 

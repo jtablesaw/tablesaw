@@ -7,11 +7,11 @@ public class StringComparator {
 
     private static StringComparator instance = new StringComparator();
 
-    public static StringComparator getInstance() {
-        return instance;
+    private StringComparator() {
     }
 
-    private StringComparator() {
+    public static StringComparator getInstance() {
+        return instance;
     }
 
     public int compare(String a, String b) {

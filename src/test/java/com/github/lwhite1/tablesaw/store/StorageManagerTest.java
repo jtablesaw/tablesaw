@@ -1,13 +1,13 @@
 package com.github.lwhite1.tablesaw.store;
 
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
-import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.api.DateColumn;
+import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.LongColumn;
 import com.github.lwhite1.tablesaw.api.Table;
-import com.github.lwhite1.tablesaw.table.Relation;
-import com.github.lwhite1.tablesaw.api.ColumnType;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
+import com.github.lwhite1.tablesaw.table.Relation;
 import com.google.common.base.Stopwatch;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,8 +17,7 @@ import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Tests for StorageManager
@@ -26,12 +25,60 @@ import static org.junit.Assert.assertNotNull;
 public class StorageManagerTest {
 
     private static final int COUNT = 5;
-
+    // column types for the tornado table
+    private static final ColumnType[] COLUMN_TYPES = {
+            FLOAT,   // number by year
+            FLOAT,   // year
+            FLOAT,   // month
+            FLOAT,   // day
+            LOCAL_DATE,  // date
+            LOCAL_TIME,  // time
+            CATEGORY, // tz
+            CATEGORY, // st
+            CATEGORY, // state fips
+            FLOAT,    // state torn number
+            FLOAT,    // scale
+            FLOAT,    // injuries
+            FLOAT,    // fatalities
+            CATEGORY, // loss
+            FLOAT,   // crop loss
+            FLOAT,   // St. Lat
+            FLOAT,   // St. Lon
+            FLOAT,   // End Lat
+            FLOAT,   // End Lon
+            FLOAT,   // length
+            FLOAT,   // width
+            FLOAT,   // NS
+            FLOAT,   // SN
+            FLOAT,   // SG
+            CATEGORY,  // Count FIPS 1-4
+            CATEGORY,
+            CATEGORY,
+            CATEGORY};
     private Relation table = Table.create("t");
     private FloatColumn floatColumn = FloatColumn.create("float");
     private CategoryColumn categoryColumn = CategoryColumn.create("cat");
     private DateColumn localDateColumn = DateColumn.create("date");
     private LongColumn longColumn = LongColumn.create("long");
+
+    public static void main(String[] args) throws Exception {
+
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        System.out.println("loading");
+        com.github.lwhite1.tablesaw.api.Table tornados = CsvReader.read(COLUMN_TYPES, "data/1950-2014_torn.csv");
+        tornados.setName("tornados");
+        System.out.println(String.format("loaded %d records in %d seconds",
+                tornados.rowCount(),
+                stopwatch.elapsed(TimeUnit.SECONDS)));
+        System.out.println(tornados.shape());
+        System.out.println(tornados.columnNames().toString());
+        System.out.println(tornados.first(10).print());
+        stopwatch.reset().start();
+        StorageManager.saveTable("/tmp/tablesaw/testdata", tornados);
+        stopwatch.reset().start();
+        tornados = StorageManager.readTable("/tmp/tablesaw/testdata/tornados.saw");
+        System.out.println(tornados.first(5).print());
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -88,54 +135,4 @@ public class StorageManagerTest {
     public void testSeparator() {
         assertNotNull(StorageManager.separator());
     }
-
-    public static void main(String[] args) throws Exception {
-
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        System.out.println("loading");
-        com.github.lwhite1.tablesaw.api.Table tornados = CsvReader.read(COLUMN_TYPES, "data/1950-2014_torn.csv");
-        tornados.setName("tornados");
-        System.out.println(String.format("loaded %d records in %d seconds",
-                tornados.rowCount(),
-                stopwatch.elapsed(TimeUnit.SECONDS)));
-        System.out.println(tornados.shape());
-        System.out.println(tornados.columnNames().toString());
-        System.out.println(tornados.first(10).print());
-        stopwatch.reset().start();
-        StorageManager.saveTable("/tmp/tablesaw/testdata", tornados);
-        stopwatch.reset().start();
-        tornados = StorageManager.readTable("/tmp/tablesaw/testdata/tornados.saw");
-        System.out.println(tornados.first(5).print());
-    }
-
-    // column types for the tornado table
-    private static final ColumnType[] COLUMN_TYPES = {
-            FLOAT,   // number by year
-            FLOAT,   // year
-            FLOAT,   // month
-            FLOAT,   // day
-            LOCAL_DATE,  // date
-            LOCAL_TIME,  // time
-            CATEGORY, // tz
-            CATEGORY, // st
-            CATEGORY, // state fips
-            FLOAT,    // state torn number
-            FLOAT,    // scale
-            FLOAT,    // injuries
-            FLOAT,    // fatalities
-            CATEGORY, // loss
-            FLOAT,   // crop loss
-            FLOAT,   // St. Lat
-            FLOAT,   // St. Lon
-            FLOAT,   // End Lat
-            FLOAT,   // End Lon
-            FLOAT,   // length
-            FLOAT,   // width
-            FLOAT,   // NS
-            FLOAT,   // SN
-            FLOAT,   // SG
-            CATEGORY,  // Count FIPS 1-4
-            CATEGORY,
-            CATEGORY,
-            CATEGORY};
 }

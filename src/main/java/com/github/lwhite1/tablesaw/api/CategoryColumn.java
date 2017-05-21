@@ -36,17 +36,15 @@ import java.util.Set;
 /**
  * A column that contains String values. They are assumed to be 'categorical' rather than free-form text, so are
  * stored in an encoding that takes advantage of the expected repetition of string values.
- *
+ * <p>
  * Because the MISSING_VALUE for this column type is an empty string, there is little or no need for special handling
  * of missing values in this class's methods.
  */
 public class CategoryColumn extends AbstractColumn
         implements CategoryFilters, CategoryColumnUtils, Iterable<String> {
 
-    private static final int BYTE_SIZE = 4;
-
     public static final String MISSING_VALUE = (String) ColumnType.CATEGORY.getMissingValue();
-
+    private static final int BYTE_SIZE = 4;
     private static int DEFAULT_ARRAY_SIZE = 128;
 
     private int id = 0;
@@ -56,6 +54,57 @@ public class CategoryColumn extends AbstractColumn
 
     // a bidirectional map of keys to backing string values.
     private DictionaryMap lookupTable = new DictionaryMap();
+    public final IntComparator rowComparator = new IntComparator() {
+
+        @Override
+        public int compare(int i, int i1) {
+            String f1 = get(i);
+            String f2 = get(i1);
+            return f1.compareTo(f2);
+        }
+
+        @Override
+        public int compare(Integer i, Integer i1) {
+            return compare((int) i, (int) i1);
+        }
+    };
+    private IntComparator dictionarySortComparator = new IntComparator() {
+        @Override
+        public int compare(int i, int i1) {
+            return lookupTable.get(i).compareTo(lookupTable.get(i1));
+        }
+
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            return compare((int) o1, (int) o2);
+        }
+    };
+    private IntComparator reverseDictionarySortComparator = new IntComparator() {
+        @Override
+        public int compare(int i, int i1) {
+            return -lookupTable.get(i).compareTo(lookupTable.get(i1));
+        }
+
+        @Override
+        public int compare(Integer o1, Integer o2) {
+            return compare((int) o1, (int) o2);
+        }
+    };
+
+    private CategoryColumn(String name) {
+        super(name);
+        values = new IntArrayList(DEFAULT_ARRAY_SIZE);
+    }
+
+    public CategoryColumn(ColumnMetadata metadata) {
+        super(metadata);
+        values = new IntArrayList(DEFAULT_ARRAY_SIZE);
+    }
+
+    public CategoryColumn(String name, int size) {
+        super(name);
+        values = new IntArrayList(size);
+    }
 
     public static CategoryColumn create(String name) {
         return create(name, DEFAULT_ARRAY_SIZE);
@@ -73,19 +122,11 @@ public class CategoryColumn extends AbstractColumn
         return column;
     }
 
-    private CategoryColumn(String name) {
-        super(name);
-        values = new IntArrayList(DEFAULT_ARRAY_SIZE);
-    }
-
-    public CategoryColumn(ColumnMetadata metadata) {
-        super(metadata);
-        values = new IntArrayList(DEFAULT_ARRAY_SIZE);
-    }
-
-    public CategoryColumn(String name, int size) {
-        super(name);
-        values = new IntArrayList(size);
+    public static String convert(String stringValue) {
+        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
+            return MISSING_VALUE;
+        }
+        return stringValue;
     }
 
     @Override
@@ -116,30 +157,6 @@ public class CategoryColumn extends AbstractColumn
     public void sortAscending() {
         IntArrays.parallelQuickSort(values.elements(), dictionarySortComparator);
     }
-
-    private IntComparator dictionarySortComparator = new IntComparator() {
-        @Override
-        public int compare(int i, int i1) {
-            return lookupTable.get(i).compareTo(lookupTable.get(i1));
-        }
-
-        @Override
-        public int compare(Integer o1, Integer o2) {
-            return compare((int) o1, (int) o2);
-        }
-    };
-
-    private IntComparator reverseDictionarySortComparator = new IntComparator() {
-        @Override
-        public int compare(int i, int i1) {
-            return -lookupTable.get(i).compareTo(lookupTable.get(i1));
-        }
-
-        @Override
-        public int compare(Integer o1, Integer o2) {
-            return compare((int) o1, (int) o2);
-        }
-    };
 
     @Override
     public void sortDescending() {
@@ -302,28 +319,6 @@ public class CategoryColumn extends AbstractColumn
         }
     }
 
-    public final IntComparator rowComparator = new IntComparator() {
-
-        @Override
-        public int compare(int i, int i1) {
-            String f1 = get(i);
-            String f2 = get(i1);
-            return f1.compareTo(f2);
-        }
-
-        @Override
-        public int compare(Integer i, Integer i1) {
-            return compare((int) i, (int) i1);
-        }
-    };
-
-    public static String convert(String stringValue) {
-        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return MISSING_VALUE;
-        }
-        return stringValue;
-    }
-
     public void addCell(String object) {
         try {
             add(convert(object));
@@ -451,8 +446,8 @@ public class CategoryColumn extends AbstractColumn
     }
 
     /**
-     *  Creates a new column, replacing each string in this column with a new string formed by
-     *  replacing any substring that matches the regex
+     * Creates a new column, replacing each string in this column with a new string formed by
+     * replacing any substring that matches the regex
      */
     public CategoryColumn replaceAll(String[] regexArray, String replacement) {
 

@@ -23,6 +23,18 @@ public class ColumnEqualTo extends ColumnFilter {
         otherColumn = b;
     }
 
+    private static Selection apply(IntColumn column1, IntColumn column2) {
+        return column1.isEqualTo(column2);
+    }
+
+    private static Selection apply(ShortColumn column1, ShortColumn column2) {
+        return column1.isEqualTo(column2);
+    }
+
+    private static Selection apply(LongColumn column1, LongColumn column2) {
+        return column1.isEqualTo(column2);
+    }
+
     public Selection apply(Table relation) {
 
         Column column = relation.column(columnReference().getColumnName());
@@ -40,17 +52,5 @@ public class ColumnEqualTo extends ColumnFilter {
             return apply((ShortColumn) column, (ShortColumn) other);
 
         throw new UnsupportedOperationException("Not yet implemented for this column type");
-    }
-
-    private static Selection apply(IntColumn column1, IntColumn column2) {
-        return column1.isEqualTo(column2);
-    }
-
-    private static Selection apply(ShortColumn column1, ShortColumn column2) {
-        return column1.isEqualTo(column2);
-    }
-
-    private static Selection apply(LongColumn column1, LongColumn column2) {
-        return column1.isEqualTo(column2);
     }
 }

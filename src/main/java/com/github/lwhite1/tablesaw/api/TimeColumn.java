@@ -41,23 +41,37 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     private static final int BYTE_SIZE = 4;
 
     private static int DEFAULT_ARRAY_SIZE = 128;
+    IntComparator reverseIntComparator = new IntComparator() {
 
+        @Override
+        public int compare(Integer o2, Integer o1) {
+            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
+        }
+
+        @Override
+        public int compare(int o2, int o1) {
+            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
+        }
+    };
     /**
      * The formatter chosen to parse times for this particular column
      */
     private DateTimeFormatter selectedFormatter;
-
     private IntArrayList data;
+    IntComparator comparator = new IntComparator() {
 
-    public static TimeColumn create(String name) {
-        return new TimeColumn(name);
-    }
+        @Override
+        public int compare(Integer r1, Integer r2) {
+            return compare((int) r1, (int) r2);
+        }
 
-    public static TimeColumn create(String fileName, IntArrayList times) {
-        TimeColumn column = new TimeColumn(fileName, times.size());
-        column.data.addAll(times);
-        return column;
-    }
+        @Override
+        public int compare(int r1, int r2) {
+            int f1 = getInt(r1);
+            int f2 = getInt(r2);
+            return Integer.compare(f1, f2);
+        }
+    };
 
     private TimeColumn(String name) {
         super(name);
@@ -72,6 +86,16 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     public TimeColumn(String name, int initialSize) {
         super(name);
         data = new IntArrayList(initialSize);
+    }
+
+    public static TimeColumn create(String name) {
+        return new TimeColumn(name);
+    }
+
+    public static TimeColumn create(String fileName, IntArrayList times) {
+        TimeColumn column = new TimeColumn(fileName, times.size());
+        column.data.addAll(times);
+        return column;
     }
 
     public int size() {
@@ -128,19 +152,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         IntArrays.parallelQuickSort(data.elements(), reverseIntComparator);
     }
 
-    IntComparator reverseIntComparator = new IntComparator() {
-
-        @Override
-        public int compare(Integer o2, Integer o1) {
-            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
-        }
-
-        @Override
-        public int compare(int o2, int o1) {
-            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
-        }
-    };
-
     public LocalTime max() {
         int max;
         int missing = Integer.MIN_VALUE;
@@ -180,7 +191,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         }
         return PackedLocalTime.asLocalTime(min);
     }
-
 
     @Override
     public Table summary() {
@@ -286,21 +296,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     public IntComparator rowComparator() {
         return comparator;
     }
-
-    IntComparator comparator = new IntComparator() {
-
-        @Override
-        public int compare(Integer r1, Integer r2) {
-            return compare((int) r1, (int) r2);
-        }
-
-        @Override
-        public int compare(int r1, int r2) {
-            int f1 = getInt(r1);
-            int f2 = getInt(r2);
-            return Integer.compare(f1, f2);
-        }
-    };
 
     public Selection isEqualTo(LocalTime value) {
         Selection results = new BitmapBackedSelection();

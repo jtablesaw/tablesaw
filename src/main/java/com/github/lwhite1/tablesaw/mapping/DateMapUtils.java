@@ -23,6 +23,10 @@ import static com.github.lwhite1.tablesaw.api.DateColumn.MISSING_VALUE;
  */
 public interface DateMapUtils extends DateColumnUtils {
 
+    static String dateColumnName(Column column1, int value, TemporalUnit unit) {
+        return column1.name() + ": " + value + " " + unit.toString() + "(s)";
+    }
+
     default FloatColumn differenceInDays(DateColumn column2) {
         DateColumn column1 = (DateColumn) this;
         return difference(column1, column2, ChronoUnit.DAYS);
@@ -79,11 +83,11 @@ public interface DateMapUtils extends DateColumnUtils {
         return plus(years, ChronoUnit.YEARS);
     }
 
+    // These functions subtract some amount of time from a date, producing a new date column
+
     default DateColumn plusMonths(int months) {
         return plus(months, ChronoUnit.MONTHS);
     }
-
-    // These functions subtract some amount of time from a date, producing a new date column
 
     default DateColumn minusDays(int days) {
         return plusDays(-days);
@@ -118,6 +122,8 @@ public interface DateMapUtils extends DateColumnUtils {
         return newColumn;
     }
 
+    // misc functions
+
     default DateColumn minus(int value, TemporalUnit unit) {
         DateColumn column1 = (DateColumn) this;
         DateColumn newColumn = DateColumn.create(dateColumnName(column1, value, unit));
@@ -132,8 +138,6 @@ public interface DateMapUtils extends DateColumnUtils {
         }
         return newColumn;
     }
-
-    // misc functions
 
     default DateTimeColumn atStartOfDay() {
         DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + " start");
@@ -185,11 +189,6 @@ public interface DateMapUtils extends DateColumnUtils {
             }
         }
         return newColumn;
-    }
-
-
-    static String dateColumnName(Column column1, int value, TemporalUnit unit) {
-        return column1.name() + ": " + value + " " + unit.toString() + "(s)";
     }
 
     int getInt(int r);

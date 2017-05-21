@@ -5,14 +5,10 @@ import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.columns.LongColumnUtils;
 import com.github.lwhite1.tablesaw.io.csv.CsvReader;
 import com.github.lwhite1.tablesaw.util.Selection;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.github.lwhite1.tablesaw.api.ColumnType.CATEGORY;
-import static com.github.lwhite1.tablesaw.api.ColumnType.LOCAL_DATE;
-import static com.github.lwhite1.tablesaw.api.ColumnType.LONG_INT;
-import static org.junit.Assert.assertEquals;
+import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 
 /**
  *

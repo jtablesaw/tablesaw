@@ -37,8 +37,36 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public static final int MISSING_VALUE = (int) ColumnType.INTEGER.getMissingValue();
     private static final int DEFAULT_ARRAY_SIZE = 128;
     private static final int BYTE_SIZE = 4;
-
+    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private IntArrayList data;
+    final it.unimi.dsi.fastutil.ints.IntComparator comparator = new it.unimi.dsi.fastutil.ints.IntComparator() {
+
+        @Override
+        public int compare(Integer i1, Integer i2) {
+            return compare((int) i1, (int) i2);
+        }
+
+        public int compare(int i1, int i2) {
+            int prim1 = get(i1);
+            int prim2 = get(i2);
+            return IntComparisonUtil.getInstance().compare(prim1, prim2);
+        }
+    };
+
+    public IntColumn(String name, int initialSize) {
+        super(name);
+        data = new IntArrayList(initialSize);
+    }
+
+    public IntColumn(ColumnMetadata metadata) {
+        super(metadata);
+        data = new IntArrayList(metadata.getSize());
+    }
+
+    public IntColumn(String name) {
+        super(name);
+        data = new IntArrayList(DEFAULT_ARRAY_SIZE);
+    }
 
     public static IntColumn create(String name) {
         return new IntColumn(name, DEFAULT_ARRAY_SIZE);
@@ -58,23 +86,21 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return column;
     }
 
-    public IntColumn(String name, int initialSize) {
-        super(name);
-        data = new IntArrayList(initialSize);
-    }
-
-    public IntColumn(ColumnMetadata metadata) {
-        super(metadata);
-        data = new IntArrayList(metadata.getSize());
+    /**
+     * Returns a float that is parsed from the given String
+     * <p>
+     * We remove any commas before parsing
+     */
+    public static int convert(String stringValue) {
+        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
+            return MISSING_VALUE;
+        }
+        Matcher matcher = COMMA_PATTERN.matcher(stringValue);
+        return Integer.parseInt(matcher.replaceAll(""));
     }
 
     public IntArrayList data() {
         return data;
-    }
-
-    public IntColumn(String name) {
-        super(name);
-        data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
 
     public int size() {
@@ -232,21 +258,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         }
     }
 
-    /**
-     * Returns a float that is parsed from the given String
-     * <p>
-     * We remove any commas before parsing
-     */
-    public static int convert(String stringValue) {
-        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return MISSING_VALUE;
-        }
-        Matcher matcher = COMMA_PATTERN.matcher(stringValue);
-        return Integer.parseInt(matcher.replaceAll(""));
-    }
-
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
-
     public int get(int index) {
         return data.getInt(index);
     }
@@ -260,20 +271,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public it.unimi.dsi.fastutil.ints.IntComparator rowComparator() {
         return comparator;
     }
-
-    final it.unimi.dsi.fastutil.ints.IntComparator comparator = new it.unimi.dsi.fastutil.ints.IntComparator() {
-
-        @Override
-        public int compare(Integer i1, Integer i2) {
-            return compare((int) i1, (int) i2);
-        }
-
-        public int compare(int i1, int i2) {
-            int prim1 = get(i1);
-            int prim2 = get(i2);
-            return IntComparisonUtil.getInstance().compare(prim1, prim2);
-        }
-    };
 
     public int firstElement() {
         if (size() > 0) {

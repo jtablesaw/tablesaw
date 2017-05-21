@@ -2,8 +2,8 @@ package com.github.lwhite1.tablesaw.plotting;
 
 import org.junit.Test;
 
-import java.util.List;
 import java.awt.*;
+import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 

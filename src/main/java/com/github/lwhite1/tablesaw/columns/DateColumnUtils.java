@@ -12,19 +12,15 @@ import java.time.LocalDate;
  */
 public interface DateColumnUtils extends Column, Iterable<LocalDate> {
 
-    IntArrayList data();
-
     IntPredicate isMissing = i -> i == DateColumn.MISSING_VALUE;
-
     IntPredicate isNotMissing = i -> i != DateColumn.MISSING_VALUE;
-
     IntBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
     IntBiPredicate isGreaterThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest >=
             valueToCompareAgainst;
-
     IntBiPredicate isLessThan = (valueToTest, valueToCompareAgainst) -> valueToTest < valueToCompareAgainst;
     IntBiPredicate isLessThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest <= valueToCompareAgainst;
-
     IntBiPredicate isEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
+
+    IntArrayList data();
 
 }

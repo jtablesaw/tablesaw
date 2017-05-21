@@ -20,6 +20,10 @@ public class Knn extends AbstractClassifier {
 
     private final KNN<double[]> classifierModel;
 
+    private Knn(KNN<double[]> classifierModel) {
+        this.classifierModel = classifierModel;
+    }
+
     public static Knn learn(int k, ShortColumn labels, NumericColumn... predictors) {
         KNN<double[]> classifierModel = KNN.learn(DoubleArrays.to2dArray(predictors), labels.toIntArray(), k);
         return new Knn(classifierModel);
@@ -38,10 +42,6 @@ public class Knn extends AbstractClassifier {
     public static Knn learn(int k, CategoryColumn labels, NumericColumn... predictors) {
         KNN<double[]> classifierModel = KNN.learn(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), k);
         return new Knn(classifierModel);
-    }
-
-    private Knn(KNN<double[]> classifierModel) {
-        this.classifierModel = classifierModel;
     }
 
     public int predict(double[] data) {

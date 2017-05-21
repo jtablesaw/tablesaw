@@ -20,16 +20,14 @@ import java.util.Map;
  */
 public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
 
-    public enum Order {ASCEND, DESCEND}
-
     private final LinkedHashMap<String, Order> sortOrder = new LinkedHashMap<>();
-
-    public static Sort on(String columnName, Order order) {
-        return new Sort(columnName, order);
-    }
 
     public Sort(String columnName, Order order) {
         next(columnName, order);
+    }
+
+    public static Sort on(String columnName, Order order) {
+        return new Sort(columnName, order);
     }
 
     public Sort next(String columnName, Order order) {
@@ -61,4 +59,6 @@ public class Sort implements Iterable<Map.Entry<String, Sort.Order>> {
                 .add("order", sortOrder)
                 .toString();
     }
+
+    public enum Order {ASCEND, DESCEND}
 }

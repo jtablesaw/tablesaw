@@ -11,13 +11,13 @@ public class PrincipalComponents {
 
     private final PCA pca;
 
+    private PrincipalComponents(double[][] data, boolean useCorrelationMatrix) {
+        this.pca = new PCA(data, useCorrelationMatrix);
+    }
+
     public static PrincipalComponents create(boolean useCorrelationMatrix, NumericColumn... columns) {
         double[][] data = DoubleArrays.to2dArray(columns);
         return new PrincipalComponents(data, useCorrelationMatrix);
-    }
-
-    private PrincipalComponents(double[][] data, boolean useCorrelationMatrix) {
-        this.pca = new PCA(data, useCorrelationMatrix);
     }
 
     public double[] getCenter() {

@@ -11,7 +11,6 @@ import com.opencsv.CSVReader;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,9 +22,8 @@ import java.util.Set;
  */
 public class StandardColors {
 
-    static ImmutableList<StandardColor> neutralColors = ImmutableList.copyOf(loadNeutrals());
-
     static final ImmutableMultimap<Hue, StandardColor> colorMap = ImmutableMultimap.copyOf(loadColors());
+    static ImmutableList<StandardColor> neutralColors = ImmutableList.copyOf(loadNeutrals());
 
     /**
      * Loads the standard colors from a file

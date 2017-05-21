@@ -62,6 +62,10 @@ public class BigDataTest {
 
     }
 
+    private static void out(Object str) {
+        System.out.println(String.valueOf(str));
+    }
+
     //@Test
     public void readCsvTest() throws Exception {
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -70,9 +74,5 @@ public class BigDataTest {
         out(table.rowCount());
         out("Table read from csv file");
         out(stopwatch.elapsed(TimeUnit.SECONDS));
-    }
-
-    private static void out(Object str) {
-        System.out.println(String.valueOf(str));
     }
 }

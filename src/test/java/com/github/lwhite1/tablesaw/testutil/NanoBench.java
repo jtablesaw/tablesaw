@@ -16,11 +16,8 @@ import java.util.logging.Logger;
  */
 public class NanoBench {
 
-    public static NanoBench create() {
-        return new NanoBench();
-    }
-
     private static final Logger logger = Logger.getLogger(NanoBench.class.getSimpleName());
+    static int[] arrayStress = new int[10000];
     private int numberOfMeasurement = 50;
     private int numberOfWarmUp = 20;
     private List<MeasureListener> listeners;
@@ -29,6 +26,14 @@ public class NanoBench {
         listeners = new ArrayList<>(2);
         listeners.add(new CPUMeasure(logger));
         listeners.add(new MemoryUsage(logger));
+    }
+
+    public static NanoBench create() {
+        return new NanoBench();
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 
     public NanoBench measurements(int numberOfMeasurement) {
@@ -56,10 +61,6 @@ public class NanoBench {
 
     public MeasureListener getCPUListener() {
         return listeners.get(0);
-    }
-
-    public static Logger getLogger() {
-        return logger;
     }
 
     public NanoBench cpuOnly() {
@@ -135,8 +136,6 @@ public class NanoBench {
         }
     }
 
-    static int[] arrayStress = new int[10000];
-
     private void stress() {
         int m = 0;
         for (int j = 0; j < 100; j++) {
@@ -163,6 +162,15 @@ public class NanoBench {
                     new TimeMeasureProxy(new MeasureState("_warmup_", i, this.numberOfWarmUp), task, listeners);
             tmp.run();
         }
+    }
+
+    /**
+     * Interface for measure listeners. Measure listeners are called when a
+     * measurement is finished.
+     */
+    private interface MeasureListener {
+
+        void onMeasure(MeasureState state);
     }
 
     /**
@@ -199,15 +207,6 @@ public class NanoBench {
                 listener.onMeasure(times);
             }
         }
-    }
-
-    /**
-     * Interface for measure listeners. Measure listeners are called when a
-     * measurement is finished.
-     */
-    private interface MeasureListener {
-
-        void onMeasure(MeasureState state);
     }
 
     public static abstract class BytesRunnable implements Runnable {
@@ -303,9 +302,9 @@ public class NanoBench {
     public static class CPUMeasure implements MeasureListener {
 
         private static final double BY_SECONDS = 1000000000.0;
-        private final Logger log;
         private static final DecimalFormat decimalFormat = new DecimalFormat("#,##0.0000");
         private static final DecimalFormat integerFormat = new DecimalFormat("#,##0.0");
+        private final Logger log;
         private int count = 0;
         private long timeUsed = 0;
         // Final
@@ -366,8 +365,8 @@ public class NanoBench {
 
     private static class BytesMeasure implements MeasureListener {
 
-        private final Logger log;
         private static final DecimalFormat integerFormat = new DecimalFormat("#,##0.0");
+        private final Logger log;
         private int count = 0;
         private long bytesUsed = 0;
 
@@ -414,8 +413,8 @@ public class NanoBench {
      */
     private static class MemoryUsage implements MeasureListener {
 
-        private final Logger log;
         private static final DecimalFormat integerFormat = new DecimalFormat("#,##0.000");
+        private final Logger log;
         private int count = 0;
         private long memoryUsed = 0;
         // Final

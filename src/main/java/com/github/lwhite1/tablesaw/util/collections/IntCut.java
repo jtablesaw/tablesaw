@@ -16,6 +16,22 @@ abstract class IntCut implements Comparable<IntCut> {
         this.endpoint = endpoint;
     }
 
+    static IntCut belowAll() {
+        return IntCut.BelowAll.INSTANCE;
+    }
+
+    static IntCut aboveAll() {
+        return IntCut.AboveAll.INSTANCE;
+    }
+
+    static IntCut belowValue(int endpoint) {
+        return new IntCut.BelowValue(endpoint);
+    }
+
+    static IntCut aboveValue(int endpoint) {
+        return new IntCut.AboveValue(endpoint);
+    }
+
     abstract boolean isLessThan(int value);
 
     abstract BoundType typeAsLowerBound();
@@ -41,7 +57,6 @@ abstract class IntCut implements Comparable<IntCut> {
     IntCut canonical(IntegerDomain domain) {
         return this;
     }
-
 
     @Override
     public int compareTo(IntCut that) {
@@ -72,23 +87,6 @@ abstract class IntCut implements Comparable<IntCut> {
         }
         return false;
     }
-
-    static IntCut belowAll() {
-        return IntCut.BelowAll.INSTANCE;
-    }
-
-    static IntCut aboveAll() {
-        return IntCut.AboveAll.INSTANCE;
-    }
-
-    static IntCut belowValue(int endpoint) {
-        return new IntCut.BelowValue(endpoint);
-    }
-
-    static IntCut aboveValue(int endpoint) {
-        return new IntCut.AboveValue(endpoint);
-    }
-
 
     private static final class AboveValue extends IntCut {
 
@@ -169,6 +167,10 @@ abstract class IntCut implements Comparable<IntCut> {
             super(endpoint);
         }
 
+        static IntCut aboveValue(int endpoint) {
+            return new AboveValue(endpoint);
+        }
+
         boolean isLessThan(int value) {
             return Integer.compare(this.endpoint, value) <= 0;
         }
@@ -228,10 +230,6 @@ abstract class IntCut implements Comparable<IntCut> {
         public String toString() {
             return "\\" + this.endpoint + "/";
         }
-
-        static IntCut aboveValue(int endpoint) {
-            return new AboveValue(endpoint);
-        }
     }
 
 
@@ -241,6 +239,10 @@ abstract class IntCut implements Comparable<IntCut> {
 
         private AboveAll() {
             super(Integer.MAX_VALUE);
+        }
+
+        static IntCut belowValue(int endpoint) {
+            return new BelowValue(endpoint);
         }
 
         int endpoint() {
@@ -289,10 +291,6 @@ abstract class IntCut implements Comparable<IntCut> {
 
         public String toString() {
             return "+∞";
-        }
-
-        static IntCut belowValue(int endpoint) {
-            return new BelowValue(endpoint);
         }
 
         private Object readResolve() {

@@ -1,10 +1,10 @@
 package com.github.lwhite1.tablesaw.mapping;
 
-import com.github.lwhite1.tablesaw.api.IntColumn;
-import com.github.lwhite1.tablesaw.columns.ShortColumnUtils;
-import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
+import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.api.ShortColumn;
+import com.github.lwhite1.tablesaw.columns.Column;
+import com.github.lwhite1.tablesaw.columns.ShortColumnUtils;
 
 /**
  *

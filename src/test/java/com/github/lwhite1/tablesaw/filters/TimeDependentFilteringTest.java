@@ -1,11 +1,11 @@
 package com.github.lwhite1.tablesaw.filters;
 
-import com.github.lwhite1.tablesaw.api.Table;
 import com.github.lwhite1.tablesaw.api.CategoryColumn;
-import com.github.lwhite1.tablesaw.columns.ColumnReference;
 import com.github.lwhite1.tablesaw.api.DateColumn;
 import com.github.lwhite1.tablesaw.api.FloatColumn;
 import com.github.lwhite1.tablesaw.api.IntColumn;
+import com.github.lwhite1.tablesaw.api.Table;
+import com.github.lwhite1.tablesaw.columns.ColumnReference;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.table.TemporaryView;
 import com.github.lwhite1.tablesaw.table.ViewGroup;
@@ -199,6 +199,12 @@ public class TimeDependentFilteringTest {
         return LocalDate.ofEpochDay(randomDay);
     }
 
+    private static enum DependencyFilter {
+        FIRST,
+        LAST,
+        ANY
+    }
+
     private static class IndependentResult {
         int patientId;
         RangeSet<LocalDate> dateRanges = TreeRangeSet.create();
@@ -210,11 +216,5 @@ public class TimeDependentFilteringTest {
         void addRange(Range<LocalDate> dateRange) {
             dateRanges.add(dateRange);
         }
-    }
-
-    private static enum DependencyFilter {
-        FIRST,
-        LAST,
-        ANY
     }
 }

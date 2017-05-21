@@ -7,11 +7,11 @@ public class LongComparisonUtil {
 
     private static LongComparisonUtil instance = new LongComparisonUtil();
 
-    public static LongComparisonUtil getInstance() {
-        return instance;
+    private LongComparisonUtil() {
     }
 
-    private LongComparisonUtil() {
+    public static LongComparisonUtil getInstance() {
+        return instance;
     }
 
     public int compare(long a, long b) {
