@@ -73,7 +73,7 @@ public class SqlResultSetReader {
         while (resultSet.next()) {
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 Column column = table.column(i - 1); // subtract 1 because results sets originate at 1 not 0
-                column.addCell(resultSet.getString(i));
+                column.appendCell(resultSet.getString(i));
             }
         }
         return table;

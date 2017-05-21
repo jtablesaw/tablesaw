@@ -112,7 +112,7 @@ public class TableGroup implements Iterable<SubTable> {
         for (int row = 0; row < subTable.rowCount(); row++) {
             List<String> strings = SPLITTER.splitToList(subTable.name());
             for (int col = 0; col < newColumns.size(); col++) {
-                newColumns.get(col).addCell(strings.get(col));
+                newColumns.get(col).appendCell(strings.get(col));
             }
         }
         for (Column c : newColumns) {
@@ -140,7 +140,7 @@ public class TableGroup implements Iterable<SubTable> {
         for (SubTable subTable : subTables) {
             double result = subTable.reduce(numericColumnName, function);
             groupColumn.add(subTable.name().replace(SPLIT_STRING, " * "));
-            resultColumn.add((float) result);
+            resultColumn.append((float) result);
         }
         return t;
     }

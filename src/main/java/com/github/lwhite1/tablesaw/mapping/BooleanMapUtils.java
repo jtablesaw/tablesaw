@@ -17,17 +17,17 @@ public interface BooleanMapUtils extends Column {
         for (int i = 0; i < this.size(); i++) {
             boolean booleanValue = thisColumn.get(i);
             if (!booleanValue) {
-                newColumn.add(false);
+                newColumn.append(false);
             } else {
                 boolean result = true;
                 for (BooleanColumn booleanColumn : columns) {
                     result = booleanColumn.get(i);
                     if (!result) {
-                        newColumn.add(false);
+                        newColumn.append(false);
                         break;
                     }
                 }
-                newColumn.add(result);
+                newColumn.append(result);
             }
         }
         return newColumn;
@@ -40,17 +40,17 @@ public interface BooleanMapUtils extends Column {
         for (int i = 0; i < this.size(); i++) {
             boolean booleanValue = thisColumn.get(i);
             if (booleanValue) {
-                newColumn.add(true);
+                newColumn.append(true);
             } else {
                 boolean result = false;
                 for (BooleanColumn booleanColumn : columns) {
                     result = booleanColumn.get(i);
                     if (result) {
-                        newColumn.add(true);
+                        newColumn.append(true);
                         break;
                     }
                 }
-                newColumn.add(result);
+                newColumn.append(result);
             }
         }
         return newColumn;

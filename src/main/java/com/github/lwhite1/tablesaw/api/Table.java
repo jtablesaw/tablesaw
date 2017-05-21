@@ -778,7 +778,7 @@ public class Table implements Relation, IntIterable {
         columnName.addAll(columnNames());
         for (int i = 0; i < columnCount(); i++) {
             Column column = columnList.get(i);
-            index.add(i);
+            index.append(i);
             columnType.add(column.type().name());
         }
         return t;

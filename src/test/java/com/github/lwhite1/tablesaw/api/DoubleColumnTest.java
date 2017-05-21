@@ -35,7 +35,7 @@ public class DoubleColumnTest {
         table.addColumn(booleanColumn);
         for (int i = 0; i < 1_000_000_000; i++) {
             doubleColumn.add((double) Math.random());
-            booleanColumn.add(fairy.baseProducer().trueOrFalse());
+            booleanColumn.append(fairy.baseProducer().trueOrFalse());
         }
         Stopwatch stopwatch = Stopwatch.createStarted();
         table.sortOn("test");

@@ -24,7 +24,7 @@ public class IntColumnTest {
     @Test
     public void testSum() {
         for (int i = 0; i < 100; i++) {
-            intColumn.add(1);
+            intColumn.append(1);
         }
         assertEquals(100, intColumn.sum());
     }
@@ -32,7 +32,7 @@ public class IntColumnTest {
     @Test
     public void testMin() {
         for (int i = 0; i < 100; i++) {
-            intColumn.add(i);
+            intColumn.append(i);
         }
         assertEquals(0.0, intColumn.min(), .001);
     }
@@ -40,7 +40,7 @@ public class IntColumnTest {
     @Test
     public void testMax() {
         for (int i = 0; i < 100; i++) {
-            intColumn.add(i);
+            intColumn.append(i);
         }
         assertEquals(99, intColumn.max(), .001);
     }
@@ -48,7 +48,7 @@ public class IntColumnTest {
     @Test
     public void testIsLessThan() {
         for (int i = 0; i < 100; i++) {
-            intColumn.add(i);
+            intColumn.append(i);
         }
         assertEquals(50, intColumn.isLessThan(50).size());
     }
@@ -56,7 +56,7 @@ public class IntColumnTest {
     @Test
     public void testIsGreaterThan() {
         for (int i = 0; i < 100; i++) {
-            intColumn.add(i);
+            intColumn.append(i);
         }
         assertEquals(49, intColumn.isGreaterThan(50).size());
     }
@@ -64,7 +64,7 @@ public class IntColumnTest {
     @Test
     public void testIsGreaterThanOrEqualTo() {
         for (int i = 0; i < 100; i++) {
-            intColumn.add(i);
+            intColumn.append(i);
         }
         assertEquals(50, intColumn.isGreaterThanOrEqualTo(50).size());
         assertEquals(50, intColumn.isGreaterThanOrEqualTo(50).get(0));
@@ -73,7 +73,7 @@ public class IntColumnTest {
     @Test
     public void testIsLessThanOrEqualTo() {
         for (int i = 0; i < 100; i++) {
-            intColumn.add(i);
+            intColumn.append(i);
         }
         assertEquals(51, intColumn.isLessThanOrEqualTo(50).size());
         assertEquals(49, intColumn.isLessThanOrEqualTo(50).get(49));
@@ -82,7 +82,7 @@ public class IntColumnTest {
     @Test
     public void testIsEqualTo() {
         for (int i = 0; i < 100; i++) {
-            intColumn.add(i);
+            intColumn.append(i);
         }
         assertEquals(1, intColumn.isEqualTo(10).size());
     }
@@ -90,7 +90,7 @@ public class IntColumnTest {
     @Test
     public void testPercents() {
         for (int i = 0; i < 100; i++) {
-            intColumn.add(i);
+            intColumn.append(i);
         }
         FloatColumn floatColumn = intColumn.asRatio();
         assertEquals(1.0, floatColumn.sum(), 0.1);
@@ -100,7 +100,7 @@ public class IntColumnTest {
     public void testSelectIf() {
 
         for (int i = 0; i < 100; i++) {
-            intColumn.add(i);
+            intColumn.append(i);
         }
 
         IntPredicate predicate = value -> value < 10;
@@ -115,7 +115,7 @@ public class IntColumnTest {
     public void testSelect() {
 
         for (int i = 0; i < 100; i++) {
-            intColumn.add(i);
+            intColumn.append(i);
         }
 
         IntPredicate predicate = value -> value < 10;
@@ -139,7 +139,7 @@ public class IntColumnTest {
 
         IntColumn initial = new IntColumn("Test", originalValues.length);
         for (int value : originalValues) {
-            initial.add(value);
+            initial.append(value);
         }
         IntColumn difference = initial.difference();
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
@@ -159,7 +159,7 @@ public class IntColumnTest {
         Table t = Table.create("t", initial);
 
         for (int value : originalValues) {
-            initial.add(value);
+            initial.append(value);
         }
 
         Filter filter = column("Test").isIn(inColumn);

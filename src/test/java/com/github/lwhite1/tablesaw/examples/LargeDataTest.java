@@ -136,13 +136,13 @@ public class LargeDataTest {
             fName.add(person.firstName());
             lName.add(person.lastName());
             company.add(person.getCompany().name());
-            birthDate.add(PackedLocalDate.pack(LocalDate.parse(person.dateOfBirth().toLocalDate().toString())));
+            birthDate.append(PackedLocalDate.pack(LocalDate.parse(person.dateOfBirth().toLocalDate().toString())));
             city.add(person.getAddress().getCity());
             postalCode.add(person.getAddress().getPostalCode());
             state.add(TestDataUtil.randomUsState());
             weight.add((short) fairy.baseProducer().randomBetween(65, 280));
             height.add((short) fairy.baseProducer().randomBetween(64, 78));
-            female.add(person.isFemale());
+            female.append(person.isFemale());
         }
         System.out.println("Time to generate " + stopwatch.elapsed(TimeUnit.SECONDS));
         return t;

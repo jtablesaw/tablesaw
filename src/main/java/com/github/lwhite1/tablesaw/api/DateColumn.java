@@ -110,7 +110,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         return ColumnType.LOCAL_DATE;
     }
 
-    public void add(int f) {
+    public void append(int f) {
         data.add(f);
     }
 
@@ -122,8 +122,8 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         data.set(index, value);
     }
 
-    public void add(LocalDate f) {
-        add(PackedLocalDate.pack(f));
+    public void append(LocalDate f) {
+        append(PackedLocalDate.pack(f));
     }
 
     @Override
@@ -364,9 +364,9 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         return PackedLocalDate.pack(date);
     }
 
-    public void addCell(String string) {
+    public void appendCell(String string) {
         try {
-            add(convert(string));
+            append(convert(string));
         } catch (NullPointerException e) {
             throw new RuntimeException(name() + ": " + string + ": " + e.getMessage());
         }
@@ -631,7 +631,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         Preconditions.checkArgument(column.type() == this.type());
         DateColumn intColumn = (DateColumn) column;
         for (int i = 0; i < intColumn.size(); i++) {
-            add(intColumn.getInt(i));
+            append(intColumn.getInt(i));
         }
     }
 
@@ -641,7 +641,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
             if (predicate.test(PackedLocalDate.asLocalDate(next))) {
-                column.add(next);
+                column.append(next);
             }
         }
         return column;
@@ -658,7 +658,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
             if (predicate.test(next)) {
-                column.add(next);
+                column.append(next);
             }
         }
         return column;

@@ -229,7 +229,7 @@ public class CsvReader {
                 for (int columnIndex : columnIndexes) {
                     Column column = table.column(cellIndex);
                     try {
-                        column.addCell(nextLine[columnIndex]);
+                        column.appendCell(nextLine[columnIndex]);
                     } catch (Exception e) {
                         throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
                     }
@@ -292,7 +292,7 @@ public class CsvReader {
                 int cellIndex = 0;
                 for (int columnIndex : columnIndexes) {
                     Column column = table.column(cellIndex);
-                    column.addCell(nextLine[columnIndex]);
+                    column.appendCell(nextLine[columnIndex]);
                     cellIndex++;
                 }
             }

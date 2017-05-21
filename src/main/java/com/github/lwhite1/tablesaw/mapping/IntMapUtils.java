@@ -22,7 +22,7 @@ public interface IntMapUtils extends IntColumnUtils {
             for (IntColumn column : columns) {
                 result = result + column.get(r);
             }
-            newColumn.add(result);
+            newColumn.append(result);
         }
         return newColumn;
     }
@@ -34,7 +34,7 @@ public interface IntMapUtils extends IntColumnUtils {
         IntColumn newColumn = IntColumn.create(name);
 
         for (int r = 0; r < size(); r++) {
-            newColumn.add(get(r) + value);
+            newColumn.append(get(r) + value);
         }
         return newColumn;
     }
@@ -47,7 +47,7 @@ public interface IntMapUtils extends IntColumnUtils {
 
         for (int r = 0; r < size(); r++) {
             int result = (get(r) == IntColumn.MISSING_VALUE) ? IntColumn.MISSING_VALUE : get(r) * value;
-            newColumn.add(result);
+            newColumn.append(result);
         }
         return newColumn;
     }
@@ -59,7 +59,7 @@ public interface IntMapUtils extends IntColumnUtils {
         FloatColumn newColumn = FloatColumn.create(name);
 
         for (int r = 0; r < size(); r++) {
-            newColumn.add(get(r) * (float) value);
+            newColumn.append(get(r) * (float) value);
         }
         return newColumn;
     }
@@ -71,7 +71,7 @@ public interface IntMapUtils extends IntColumnUtils {
         FloatColumn newColumn = FloatColumn.create(name);
 
         for (int r = 0; r < size(); r++) {
-            newColumn.add(get(r) / (value * 1.0f));
+            newColumn.append(get(r) / (value * 1.0f));
         }
         return newColumn;
     }
@@ -83,7 +83,7 @@ public interface IntMapUtils extends IntColumnUtils {
         FloatColumn newColumn = FloatColumn.create(name);
 
         for (int r = 0; r < size(); r++) {
-            newColumn.add(get(r) / value);
+            newColumn.append(get(r) / value);
         }
         return newColumn;
     }
@@ -95,7 +95,7 @@ public interface IntMapUtils extends IntColumnUtils {
         FloatColumn newColumn = FloatColumn.create(name);
 
         for (int r = 0; r < size(); r++) {
-            newColumn.add(get(r) / (divisor.get(r) * 1.0f));
+            newColumn.append(get(r) / (divisor.get(r) * 1.0f));
         }
         return newColumn;
     }
@@ -123,9 +123,9 @@ public interface IntMapUtils extends IntColumnUtils {
         float total = sum();
         for (int next : this) {
             if (total != 0) {
-                pctColumn.add((float) next / total);
+                pctColumn.append((float) next / total);
             } else {
-                pctColumn.add(FloatColumn.MISSING_VALUE);
+                pctColumn.append(FloatColumn.MISSING_VALUE);
             }
         }
         return pctColumn;
@@ -140,9 +140,9 @@ public interface IntMapUtils extends IntColumnUtils {
         float total = sum();
         for (int next : this) {
             if (total != 0) {
-                pctColumn.add(((float) next / total) * 100);
+                pctColumn.append(((float) next / total) * 100);
             } else {
-                pctColumn.add(FloatColumn.MISSING_VALUE);
+                pctColumn.append(FloatColumn.MISSING_VALUE);
             }
         }
         return pctColumn;
@@ -155,7 +155,7 @@ public interface IntMapUtils extends IntColumnUtils {
     default IntColumn difference(IntColumn column2) {
         IntColumn result = IntColumn.create(name() + " - " + column2.name());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) - column2.get(r));
+            result.append(get(r) - column2.get(r));
         }
         return result;
     }
@@ -163,7 +163,7 @@ public interface IntMapUtils extends IntColumnUtils {
     default IntColumn difference(int value) {
         IntColumn result = IntColumn.create(name() + " - " + value);
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) - value);
+            result.append(get(r) - value);
         }
         return result;
     }

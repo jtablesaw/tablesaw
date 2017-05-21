@@ -61,10 +61,10 @@ public class Gmeans {
         double[][] centroids = model.centroids();
 
         for (int i = 0; i < centroids.length; i++) {
-            labelColumn.addCell(String.valueOf(i));
+            labelColumn.appendCell(String.valueOf(i));
             double[] values = centroids[i];
             for (int k = 0; k < values.length; k++) {
-                table.floatColumn(k + 1).add((float) values[k]);
+                table.floatColumn(k + 1).append((float) values[k]);
             }
         }
         return table;

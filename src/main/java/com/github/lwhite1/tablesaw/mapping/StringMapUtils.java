@@ -163,7 +163,7 @@ public interface StringMapUtils extends Column {
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
             String value2 = column2.getString(r);
-            newColumn.add(StringUtils.getLevenshteinDistance(value1, value2));
+            newColumn.append(StringUtils.getLevenshteinDistance(value1, value2));
         }
         return newColumn;
     }

@@ -158,8 +158,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         table.addColumn(countColumn);
 
         for (Map.Entry<Byte, Integer> entry : counts.entrySet()) {
-            booleanColumn.add(entry.getKey());
-            countColumn.add(entry.getValue());
+            booleanColumn.append(entry.getKey());
+            countColumn.append(entry.getValue());
         }
         return table;
     }
@@ -202,7 +202,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         return ColumnType.BOOLEAN;
     }
 
-    public void add(boolean b) {
+    public void append(boolean b) {
         if (b) {
             data.add((byte) 1);
         } else {
@@ -210,7 +210,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         }
     }
 
-    public void add(byte b) {
+    public void append(byte b) {
         data.add(b);
     }
 
@@ -255,9 +255,9 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         ByteArrays.mergeSort(data.elements(), reverseByteComparator);
     }
 
-    public void addCell(String object) {
+    public void appendCell(String object) {
         try {
-            add(convert(object));
+            append(convert(object));
         } catch (NullPointerException e) {
             throw new RuntimeException(name() + ": "
                     + String.valueOf(object) + ": "
@@ -374,7 +374,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         Preconditions.checkArgument(column.type() == this.type());
         BooleanColumn booleanColumn = (BooleanColumn) column;
         for (int i = 0; i < booleanColumn.size(); i++) {
-            add(booleanColumn.get(i));
+            append(booleanColumn.get(i));
         }
     }
 
@@ -466,7 +466,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         IntColumn intColumn = IntColumn.create(this.name() + ": ints", size());
         ByteArrayList data = data();
         for (int i = 0; i < size(); i++) {
-            intColumn.add(data.getByte(i));
+            intColumn.append(data.getByte(i));
         }
         return intColumn;
     }

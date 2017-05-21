@@ -61,8 +61,8 @@ public class Kmeans {
         table.addColumn(clusterColumn);
         int[] clusters = kMeans.getClusterLabel();
         for (int i = 0; i < clusters.length; i++) {
-            labelColumn.addCell(labels.getString(i));
-            clusterColumn.add(clusters[i]);
+            labelColumn.appendCell(labels.getString(i));
+            clusterColumn.append(clusters[i]);
         }
         table = table.sortAscendingOn("Cluster", "Label");
         return table;
@@ -81,10 +81,10 @@ public class Kmeans {
         double[][] centroids = kMeans.centroids();
 
         for (int i = 0; i < centroids.length; i++) {
-            labelColumn.addCell(String.valueOf(i));
+            labelColumn.appendCell(String.valueOf(i));
             double[] values = centroids[i];
             for (int k = 0; k < values.length; k++) {
-                table.floatColumn(k + 1).add((float) values[k]);
+                table.floatColumn(k + 1).append((float) values[k]);
             }
         }
         return table;

@@ -148,7 +148,7 @@ public class StorageManager {
             while (!EOF) {
                 try {
                     float cell = dis.readFloat();
-                    floats.add(cell);
+                    floats.append(cell);
                 } catch (EOFException e) {
                     EOF = true;
                 }
@@ -165,7 +165,7 @@ public class StorageManager {
             boolean EOF = false;
             while (!EOF) {
                 try {
-                    ints.add(dis.readInt());
+                    ints.append(dis.readInt());
                 } catch (EOFException e) {
                     EOF = true;
                 }
@@ -217,7 +217,7 @@ public class StorageManager {
             while (!EOF) {
                 try {
                     int cell = dis.readInt();
-                    dates.add(cell);
+                    dates.append(cell);
                 } catch (EOFException e) {
                     EOF = true;
                 }
@@ -294,7 +294,7 @@ public class StorageManager {
             while (!EOF) {
                 try {
                     boolean cell = dis.readBoolean();
-                    bools.add(cell);
+                    bools.append(cell);
                 } catch (EOFException e) {
                     EOF = true;
                 }

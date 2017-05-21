@@ -58,7 +58,7 @@ public class StandardConfusionMatrix implements ConfusionMatrix {
 
         for (Integer comparable : allValues) {
             t.addColumn(IntColumn.create(String.valueOf(labels.get(comparable))));
-            t.column(0).addCell("Predicted " + labels.get(comparable));
+            t.column(0).appendCell("Predicted " + labels.get(comparable));
         }
 
         // put them in a list so they can be accessed by index number
@@ -68,9 +68,9 @@ public class StandardConfusionMatrix implements ConfusionMatrix {
             for (int c = 0; c < valuesList.size(); c++) {
                 Integer value = table.get(valuesList.get(r), valuesList.get(c));
                 if (value == null) {
-                    t.intColumn(c + 1).add(0);
+                    t.intColumn(c + 1).append(0);
                 } else {
-                    t.intColumn(c + 1).add(value);
+                    t.intColumn(c + 1).append(value);
                     n = n + value;
                 }
             }

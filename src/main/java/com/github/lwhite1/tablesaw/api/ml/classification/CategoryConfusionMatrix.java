@@ -60,7 +60,7 @@ public class CategoryConfusionMatrix implements ConfusionMatrix {
 
         for (String label : sortedTable.rowKeySet()) {
             t.addColumn(IntColumn.create(label));
-            t.column(0).addCell("Predicted " + label);
+            t.column(0).appendCell("Predicted " + label);
         }
 
         int n = 0;
@@ -69,9 +69,9 @@ public class CategoryConfusionMatrix implements ConfusionMatrix {
             for (String colLabel : sortedTable.columnKeySet()) {
                 Integer value = sortedTable.get(rowLabel, colLabel);
                 if (value == null) {
-                    t.intColumn(c).add(0);
+                    t.intColumn(c).append(0);
                 } else {
-                    t.intColumn(c).add(value);
+                    t.intColumn(c).append(value);
                     n = n + value;
                 }
                 c++;

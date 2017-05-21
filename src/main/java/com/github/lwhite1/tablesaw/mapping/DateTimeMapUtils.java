@@ -88,9 +88,9 @@ public interface DateTimeMapUtils extends DateTimeColumnUtils {
         for (int r = 0; r < size(); r++) {
             long c1 = getLong(r);
             if (c1 != DateTimeColumn.MISSING_VALUE) {
-                newColumn.add(PackedLocalDateTime.getSecondOfDay(c1));
+                newColumn.append(PackedLocalDateTime.getSecondOfDay(c1));
             } else {
-                newColumn.add(IntColumn.MISSING_VALUE);
+                newColumn.append(IntColumn.MISSING_VALUE);
             }
         }
         return newColumn;

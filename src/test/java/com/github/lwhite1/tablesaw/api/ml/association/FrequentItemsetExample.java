@@ -23,7 +23,7 @@ public class FrequentItemsetExample {
         ShortColumn movie = table.shortColumn("movie");
         CategoryColumn moviecat = CategoryColumn.create("MovieCat");
         for (int i = 0; i < movie.size(); i++) {
-            moviecat.addCell(movie.getString(i));
+            moviecat.appendCell(movie.getString(i));
         }
         table.addColumn(moviecat);
 

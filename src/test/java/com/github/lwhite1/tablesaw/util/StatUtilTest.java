@@ -19,7 +19,7 @@ public class StatUtilTest {
         FloatColumn column = FloatColumn.create("c1");
         for (int i = 0; i < 100; i++) {
             float f = random.nextFloat();
-            column.add(f);
+            column.append(f);
             sum += f;
         }
         assertEquals(sum, column.sum(), 0.01f);
@@ -32,7 +32,7 @@ public class StatUtilTest {
         FloatColumn column = FloatColumn.create("c1");
         for (int i = 0; i < 100; i++) {
             float f = random.nextFloat();
-            column.add(f);
+            column.append(f);
             if (min > f) {
                 min = f;
             }
@@ -47,7 +47,7 @@ public class StatUtilTest {
         FloatColumn column = FloatColumn.create("c1");
         for (int i = 0; i < 100; i++) {
             float f = random.nextFloat();
-            column.add(f);
+            column.append(f);
             if (max < f) {
                 max = f;
             }

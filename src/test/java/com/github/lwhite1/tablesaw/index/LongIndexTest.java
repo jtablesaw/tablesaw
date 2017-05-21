@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import static com.github.lwhite1.tablesaw.api.ColumnType.*;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  *
  */

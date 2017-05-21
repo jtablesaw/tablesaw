@@ -67,9 +67,9 @@ public interface TimeMapUtils extends TimeColumnUtils {
         for (int r = 0; r < size(); r++) {
             int c1 = getInt(r);
             if (c1 != TimeColumn.MISSING_VALUE) {
-                newColumn.add(PackedLocalTime.getMinuteOfDay(c1));
+                newColumn.append(PackedLocalTime.getMinuteOfDay(c1));
             } else {
-                newColumn.add(IntColumn.MISSING_VALUE);
+                newColumn.append(IntColumn.MISSING_VALUE);
             }
         }
         return newColumn;
@@ -80,9 +80,9 @@ public interface TimeMapUtils extends TimeColumnUtils {
         for (int r = 0; r < size(); r++) {
             int c1 = getInt(r);
             if (c1 != TimeColumn.MISSING_VALUE) {
-                newColumn.add(PackedLocalTime.getSecondOfDay(c1));
+                newColumn.append(PackedLocalTime.getSecondOfDay(c1));
             } else {
-                newColumn.add(IntColumn.MISSING_VALUE);
+                newColumn.append(IntColumn.MISSING_VALUE);
             }
         }
         return newColumn;

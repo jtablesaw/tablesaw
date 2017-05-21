@@ -60,11 +60,11 @@ public interface DateMapUtils extends DateColumnUtils {
             int c1 = column1.getInt(r);
             int c2 = column2.getInt(r);
             if (c1 == FloatColumn.MISSING_VALUE || c2 == FloatColumn.MISSING_VALUE) {
-                newColumn.add(FloatColumn.MISSING_VALUE);
+                newColumn.append(FloatColumn.MISSING_VALUE);
             } else {
                 LocalDate value1 = PackedLocalDate.asLocalDate(c1);
                 LocalDate value2 = PackedLocalDate.asLocalDate(c2);
-                newColumn.add(unit.between(value1, value2));
+                newColumn.append(unit.between(value1, value2));
             }
         }
         return newColumn;
@@ -111,12 +111,11 @@ public interface DateMapUtils extends DateColumnUtils {
         DateColumn column1 = (DateColumn) this;
 
         for (int r = 0; r < column1.size(); r++) {
-            Comparable c1 = column1.get(r);
+            LocalDate c1 = column1.get(r);
             if (c1 == null) {
-                newColumn.add(null);
+                newColumn.append(c1);
             } else {
-                LocalDate value1 = (LocalDate) c1;
-                newColumn.add(value1.plus(value, unit));
+                newColumn.append(c1.plus(value, unit));
             }
         }
         return newColumn;
@@ -128,12 +127,11 @@ public interface DateMapUtils extends DateColumnUtils {
         DateColumn column1 = (DateColumn) this;
         DateColumn newColumn = DateColumn.create(dateColumnName(column1, value, unit));
         for (int r = 0; r < column1.size(); r++) {
-            Comparable c1 = column1.get(r);
+            LocalDate c1 = column1.get(r);
             if (c1 == null) {
-                newColumn.add(null);
+                newColumn.append(c1);
             } else {
-                LocalDate value1 = (LocalDate) c1;
-                newColumn.add(value1.minus(value, unit));
+                newColumn.append(c1.minus(value, unit));
             }
         }
         return newColumn;
@@ -142,12 +140,11 @@ public interface DateMapUtils extends DateColumnUtils {
     default DateTimeColumn atStartOfDay() {
         DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + " start");
         for (int r = 0; r < this.size(); r++) {
-            Comparable c1 = this.get(r);
+            LocalDate c1 = this.get(r);
             if (c1 == null) {
                 newColumn.add(null);
             } else {
-                LocalDate value1 = (LocalDate) c1;
-                newColumn.add(value1.atStartOfDay());
+                newColumn.add(c1.atStartOfDay());
             }
         }
         return newColumn;

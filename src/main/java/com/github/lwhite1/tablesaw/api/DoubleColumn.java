@@ -398,7 +398,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     @Override
-    public void addCell(String object) {
+    public void appendCell(String object) {
         try {
             add(convert(object));
         } catch (NumberFormatException nfe) {

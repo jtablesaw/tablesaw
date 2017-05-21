@@ -164,28 +164,28 @@ public class Stats {
         t.addColumn(value);
 
         measure.add("n");
-        value.add(n);
+        value.append(n);
 
         measure.add("sum");
-        value.add(sum());
+        value.append(sum());
 
         measure.add("Mean");
-        value.add(mean());
+        value.append(mean());
 
         measure.add("Min");
-        value.add(min());
+        value.append(min());
 
         measure.add("Max");
-        value.add(max());
+        value.append(max());
 
         measure.add("Range");
-        value.add(range());
+        value.append(range());
 
         measure.add("Variance");
-        value.add(variance());
+        value.append(variance());
 
         measure.add("Std. Dev");
-        value.add(standardDeviation());
+        value.append(standardDeviation());
 
         return t;
     }
@@ -197,22 +197,22 @@ public class Stats {
         FloatColumn value = t.floatColumn("Value");
 
         measure.add("Sum of Squares");
-        value.add(sumOfSquares());
+        value.append(sumOfSquares());
 
         measure.add("Sum of Logs");
-        value.add(sumOfLogs());
+        value.append(sumOfLogs());
 
         measure.add("Population Variance");
-        value.add(populationVariance());
+        value.append(populationVariance());
 
         measure.add("Geometric Mean");
-        value.add(geometricMean());
+        value.append(geometricMean());
 
         measure.add("Quadratic Mean");
-        value.add(quadraticMean());
+        value.append(quadraticMean());
 
         measure.add("Second Moment");
-        value.add(secondMoment());
+        value.append(secondMoment());
 
         return t;
     }

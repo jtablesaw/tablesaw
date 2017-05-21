@@ -61,7 +61,7 @@ public abstract class AbstractColumn<E extends AbstractColumn> implements Column
         this.name = name.trim();
     }
 
-    public abstract void addCell(String stringvalue);
+    public abstract void appendCell(String stringvalue);
 
     @Override
     public String comment() {

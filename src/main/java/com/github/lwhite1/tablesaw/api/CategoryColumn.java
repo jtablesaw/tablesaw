@@ -208,7 +208,7 @@ public class CategoryColumn extends AbstractColumn
 
         for (Map.Entry<Integer, Integer> entry : valueToCount.entrySet()) {
             categories.add(lookupTable.get(entry.getKey()));
-            counts.add(entry.getValue());
+            counts.append(entry.getValue());
         }
         t.addColumn(categories);
         t.addColumn(counts);
@@ -319,7 +319,7 @@ public class CategoryColumn extends AbstractColumn
         }
     }
 
-    public void addCell(String object) {
+    public void appendCell(String object) {
         try {
             add(convert(object));
         } catch (NullPointerException e) {
@@ -390,9 +390,9 @@ public class CategoryColumn extends AbstractColumn
                 if (category.equals(column.name())) {
                     //TODO(lwhite): update the correct row more efficiently, by using set rather than add & only
                     // updating true
-                    column.add(true);
+                    column.append(true);
                 } else {
-                    column.add(false);
+                    column.append(false);
                 }
             }
         }
@@ -423,7 +423,7 @@ public class CategoryColumn extends AbstractColumn
         IntColumn intColumn = IntColumn.create(this.name() + ": codes", size());
         IntArrayList data = data();
         for (int i = 0; i < size(); i++) {
-            intColumn.add(data.getInt(i));
+            intColumn.append(data.getInt(i));
         }
         return intColumn;
     }

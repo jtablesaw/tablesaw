@@ -6,6 +6,7 @@ import com.github.lwhite1.tablesaw.columns.Column;
 import com.github.lwhite1.tablesaw.store.TableMetadata;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 /**
  *

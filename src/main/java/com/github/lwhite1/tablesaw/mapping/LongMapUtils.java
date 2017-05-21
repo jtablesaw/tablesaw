@@ -50,9 +50,9 @@ public interface LongMapUtils extends LongColumnUtils {
         float total = sum();
         for (long next : this) {
             if (total != 0) {
-                pctColumn.add((float) next / total);
+                pctColumn.append((float) next / total);
             } else {
-                pctColumn.add(FloatColumn.MISSING_VALUE);
+                pctColumn.append(FloatColumn.MISSING_VALUE);
             }
         }
         return pctColumn;
@@ -67,9 +67,9 @@ public interface LongMapUtils extends LongColumnUtils {
         float total = sum();
         for (long next : this) {
             if (total != 0) {
-                pctColumn.add(((float) next / total) * 100);
+                pctColumn.append(((float) next / total) * 100);
             } else {
-                pctColumn.add(FloatColumn.MISSING_VALUE);
+                pctColumn.append(FloatColumn.MISSING_VALUE);
             }
         }
         return pctColumn;

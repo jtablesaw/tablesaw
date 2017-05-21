@@ -23,22 +23,22 @@ public class LocalDateColumnTest {
 
     @Test
     public void testAddCell() throws Exception {
-        column1.addCell("2013-10-23");
-        column1.addCell("12/23/1924");
-        column1.addCell("12-May-2015");
-        column1.addCell("12-Jan-2015");
+        column1.appendCell("2013-10-23");
+        column1.appendCell("12/23/1924");
+        column1.appendCell("12-May-2015");
+        column1.appendCell("12-Jan-2015");
         assertEquals(4, column1.size());
         LocalDate date = LocalDate.now();
-        column1.add(date);
+        column1.append(date);
         assertEquals(5, column1.size());
     }
 
     @Test
     public void testDayOfMonth() throws Exception {
-        column1.addCell("2013-10-23");
-        column1.addCell("12/24/1924");
-        column1.addCell("12-May-2015");
-        column1.addCell("14-Jan-2015");
+        column1.appendCell("2013-10-23");
+        column1.appendCell("12/24/1924");
+        column1.appendCell("12-May-2015");
+        column1.appendCell("14-Jan-2015");
         ShortColumn c2 = column1.dayOfMonth();
         assertEquals(23, c2.get(0));
         assertEquals(24, c2.get(1));
@@ -48,10 +48,10 @@ public class LocalDateColumnTest {
 
     @Test
     public void testMonth() throws Exception {
-        column1.addCell("2013-10-23");
-        column1.addCell("12/24/1924");
-        column1.addCell("12-May-2015");
-        column1.addCell("14-Jan-2015");
+        column1.appendCell("2013-10-23");
+        column1.appendCell("12/24/1924");
+        column1.appendCell("12-May-2015");
+        column1.appendCell("14-Jan-2015");
         ShortColumn c2 = column1.monthValue();
         assertEquals(10, c2.get(0));
         assertEquals(12, c2.get(1));
@@ -61,9 +61,9 @@ public class LocalDateColumnTest {
 
     @Test
     public void testYear() throws Exception {
-        column1.addCell("2013-10-23");
-        column1.addCell("12/24/1924");
-        column1.addCell("12-May-2015");
+        column1.appendCell("2013-10-23");
+        column1.appendCell("12/24/1924");
+        column1.appendCell("12-May-2015");
         ShortColumn c2 = column1.year();
         assertEquals(2013, c2.get(0));
         assertEquals(1924, c2.get(1));
@@ -72,10 +72,10 @@ public class LocalDateColumnTest {
 
     @Test
     public void testSummary() throws Exception {
-        column1.addCell("2013-10-23");
-        column1.addCell("12/24/1924");
-        column1.addCell("12-May-2015");
-        column1.addCell("14-Jan-2015");
+        column1.appendCell("2013-10-23");
+        column1.appendCell("12/24/1924");
+        column1.appendCell("12-May-2015");
+        column1.appendCell("14-Jan-2015");
         Table summary = column1.summary();
         assertEquals(4, summary.rowCount());
         assertEquals(2, summary.columnCount());

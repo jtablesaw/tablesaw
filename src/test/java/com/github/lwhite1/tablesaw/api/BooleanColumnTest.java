@@ -14,13 +14,13 @@ public class BooleanColumnTest {
 
     @Before
     public void setup() {
-        column.add(false);
-        column.add(false);
-        column.add(false);
-        column.add(false);
-        column.add(true);
-        column.add(true);
-        column.add(false);
+        column.append(false);
+        column.append(false);
+        column.append(false);
+        column.append(false);
+        column.append(true);
+        column.append(true);
+        column.append(false);
     }
 
     @Test
@@ -37,25 +37,25 @@ public class BooleanColumnTest {
 
     @Test
     public void testAddCell() throws Exception {
-        column.add(true);
+        column.append(true);
         assertEquals(8, column.size());
 
         // Add some other types and ensure that they're correctly truthy
-        column.addCell("true");
+        column.appendCell("true");
         assertTrue(lastEntry());
-        column.addCell("false");
+        column.appendCell("false");
         assertFalse(lastEntry());
-        column.addCell("TRUE");
+        column.appendCell("TRUE");
         assertTrue(lastEntry());
-        column.addCell("FALSE");
+        column.appendCell("FALSE");
         assertFalse(lastEntry());
-        column.addCell("T");
+        column.appendCell("T");
         assertTrue(lastEntry());
-        column.addCell("F");
+        column.appendCell("F");
         assertFalse(lastEntry());
-        column.addCell("Y");
+        column.appendCell("Y");
         assertTrue(lastEntry());
-        column.addCell("N");
+        column.appendCell("N");
         assertFalse(lastEntry());
     }
 

@@ -34,8 +34,8 @@ public class FloatColumnTest {
         table.addColumn(floatColumn);
         table.addColumn(booleanColumn);
         for (int i = 0; i < 1_000_000_000; i++) {
-            floatColumn.add((float) Math.random());
-            booleanColumn.add(fairy.baseProducer().trueOrFalse());
+            floatColumn.append((float) Math.random());
+            booleanColumn.append(fairy.baseProducer().trueOrFalse());
         }
         Stopwatch stopwatch = Stopwatch.createStarted();
         table.sortOn("test");
@@ -53,7 +53,7 @@ public class FloatColumnTest {
 
         FloatColumn floatColumn = new FloatColumn("test", 1_000_000_000);
         for (int i = 0; i < 1_000_000_000; i++) {
-            floatColumn.add((float) Math.random());
+            floatColumn.append((float) Math.random());
         }
         Stopwatch stopwatch = Stopwatch.createStarted();
         System.out.println(floatColumn.sum());
@@ -73,7 +73,7 @@ public class FloatColumnTest {
         FloatColumn floatColumn = new FloatColumn("test", 1_000_000_000);
         System.out.println("Adding floats to column");
         for (int i = 0; i < 1_000_000_000; i++) {
-            floatColumn.add((float) Math.random());
+            floatColumn.append((float) Math.random());
         }
         System.out.println("Sorting");
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -89,7 +89,7 @@ public class FloatColumnTest {
         FloatColumn floatColumn = new FloatColumn("test", size);
         table.addColumn(floatColumn);
         for (int i = 0; i < size; i++) {
-            floatColumn.add((float) Math.random());
+            floatColumn.append((float) Math.random());
         }
         Selection results = floatColumn.isLessThan(.5f);
         int count = 0;
@@ -110,7 +110,7 @@ public class FloatColumnTest {
         FloatColumn floatColumn = new FloatColumn("test", size);
         table.addColumn(floatColumn);
         for (int i = 0; i < size; i++) {
-            floatColumn.add((float) Math.random());
+            floatColumn.append((float) Math.random());
         }
         Selection results = floatColumn.isGreaterThan(.5f);
 
@@ -130,7 +130,7 @@ public class FloatColumnTest {
         int records = 1_000_000;
         FloatColumn floatColumn = new FloatColumn("test", records);
         for (int i = 0; i < records; i++) {
-            floatColumn.add((float) Math.random());
+            floatColumn.append((float) Math.random());
         }
         floatColumn.sortAscending();
         float last = Float.NEGATIVE_INFINITY;
@@ -147,7 +147,7 @@ public class FloatColumnTest {
         records = 10;
         floatColumn = new FloatColumn("test", records);
         for (int i = 0; i < records; i++) {
-            floatColumn.add((float) Math.random());
+            floatColumn.append((float) Math.random());
         }
         floatColumn.sortDescending();
         last = Float.POSITIVE_INFINITY;
@@ -166,7 +166,7 @@ public class FloatColumnTest {
         table.addColumn(floatColumn);
         for (int i = 0; i < 1_000_000; i++) {
             float f = (float) Math.random();
-            floatColumn.add(f);
+            floatColumn.append(f);
             floats[i] = f;
         }
         Selection results;
@@ -182,7 +182,7 @@ public class FloatColumnTest {
     public void testMaxAndMin() {
         FloatColumn floats = new FloatColumn("floats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         FloatArrayList floats1 = floats.top(50);
         FloatArrayList floats2 = floats.bottom(50);
@@ -202,7 +202,7 @@ public class FloatColumnTest {
     public void testRound() {
         FloatColumn floats = new FloatColumn("floats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         Column newFloats = floats.round();
         assertFalse(newFloats.isEmpty());
@@ -212,7 +212,7 @@ public class FloatColumnTest {
     public void testLogN() {
         FloatColumn floats = new FloatColumn("floats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         Column newFloats = floats.logN();
         assertFalse(newFloats.isEmpty());
@@ -222,7 +222,7 @@ public class FloatColumnTest {
     public void testLog10() {
         FloatColumn floats = new FloatColumn("floats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         Column newFloats = floats.log10();
         assertFalse(newFloats.isEmpty());
@@ -232,7 +232,7 @@ public class FloatColumnTest {
     public void testLog1p() {
         FloatColumn floats = new FloatColumn("floats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         Column newFloats = floats.log1p();
         assertFalse(newFloats.isEmpty());
@@ -242,7 +242,7 @@ public class FloatColumnTest {
     public void testAbs() {
         FloatColumn floats = new FloatColumn("floats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         Column newFloats = floats.abs();
         assertFalse(newFloats.isEmpty());
@@ -252,7 +252,7 @@ public class FloatColumnTest {
     public void testClear() {
         FloatColumn floats = new FloatColumn("floats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         assertFalse(floats.isEmpty());
         floats.clear();
@@ -263,12 +263,12 @@ public class FloatColumnTest {
     public void testCountMissing() {
         FloatColumn floats = new FloatColumn("floats", 10);
         for (int i = 0; i < 10; i++) {
-            floats.add(RandomUtils.nextFloat(0, 1_000));
+            floats.append(RandomUtils.nextFloat(0, 1_000));
         }
         assertEquals(0, floats.countMissing());
         floats.clear();
         for (int i = 0; i < 10; i++) {
-            floats.add(FloatColumn.MISSING_VALUE);
+            floats.append(FloatColumn.MISSING_VALUE);
         }
         assertEquals(10, floats.countMissing());
     }
@@ -279,7 +279,7 @@ public class FloatColumnTest {
         FloatColumn floats = new FloatColumn("floats", 10);
         float[] uniques = {0.0f, 0.00000001f, -0.000001f, 92923.29340f, 24252, 23442f, 2252, 2342f};
         for (float unique : uniques) {
-            floats.add(unique);
+            floats.append(unique);
         }
         assertEquals(uniques.length, floats.countUnique());
 
@@ -287,7 +287,7 @@ public class FloatColumnTest {
         float[] notUniques = {0.0f, 0.00000001f, -0.000001f, 92923.29340f, 24252, 23442f, 2252, 2342f, 0f};
 
         for (float notUnique : notUniques) {
-            floats.add(notUnique);
+            floats.append(notUnique);
         }
         assertEquals(notUniques.length - 1, floats.countUnique());
     }
@@ -297,7 +297,7 @@ public class FloatColumnTest {
         FloatColumn floats = new FloatColumn("floats", 10);
         float[] uniques = {0.0f, 0.00000001f, -0.000001f, 92923.29340f, 24252, 23442f, 2252, 2342f};
         for (float unique : uniques) {
-            floats.add(unique);
+            floats.append(unique);
         }
         assertEquals(uniques.length, floats.unique().size());
 
@@ -305,7 +305,7 @@ public class FloatColumnTest {
         float[] notUniques = {0.0f, 0.00000001f, -0.000001f, 92923.29340f, 24252, 23442f, 2252, 2342f, 0f};
 
         for (float notUnique : notUniques) {
-            floats.add(notUnique);
+            floats.append(notUnique);
         }
         assertEquals(notUniques.length - 1, floats.unique().size());
     }
@@ -314,13 +314,13 @@ public class FloatColumnTest {
     public void testIsMissingAndIsNotMissing() {
         FloatColumn floats = new FloatColumn("floats", 10);
         for (int i = 0; i < 10; i++) {
-            floats.add(RandomUtils.nextFloat(0, 1_000));
+            floats.append(RandomUtils.nextFloat(0, 1_000));
         }
         assertEquals(0, floats.isMissing().size());
         assertEquals(10, floats.isNotMissing().size());
         floats.clear();
         for (int i = 0; i < 10; i++) {
-            floats.add(FloatColumn.MISSING_VALUE);
+            floats.append(FloatColumn.MISSING_VALUE);
         }
         assertEquals(10, floats.isMissing().size());
         assertEquals(0, floats.isNotMissing().size());
@@ -332,7 +332,7 @@ public class FloatColumnTest {
         String comment = "This is a comment";
         floats.setComment(comment);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         FloatColumn empty = floats.emptyCopy();
         assertTrue(empty.isEmpty());
@@ -348,7 +348,7 @@ public class FloatColumnTest {
         FloatColumn floats = new FloatColumn("floats", size);
         assertEquals(0, floats.size());
         for (int i = 0; i < size; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         assertEquals(size, floats.size());
         floats.clear();
@@ -359,7 +359,7 @@ public class FloatColumnTest {
     public void testNeg() {
         FloatColumn floats = new FloatColumn("floats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         Column newFloats = floats.neg();
         assertFalse(newFloats.isEmpty());
@@ -370,8 +370,8 @@ public class FloatColumnTest {
         FloatColumn floats = new FloatColumn("floats", 100);
         FloatColumn otherFloats = new FloatColumn("otherFloats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
-            otherFloats.add(floats.get(i) - 1.0f);
+            floats.append(RandomUtils.nextFloat(0, 10_000));
+            otherFloats.append(floats.get(i) - 1.0f);
         }
         Column newFloats = floats.remainder(otherFloats);
         assertFalse(newFloats.isEmpty());
@@ -381,7 +381,7 @@ public class FloatColumnTest {
     public void testSquareAndSqrt() {
         FloatColumn floats = new FloatColumn("floats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
 
         FloatColumn newFloats = floats.square();
@@ -401,7 +401,7 @@ public class FloatColumnTest {
     public void testCubeAndCbrt() {
         FloatColumn floats = new FloatColumn("floats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
+            floats.append(RandomUtils.nextFloat(0, 10_000));
         }
         FloatColumn newFloats = floats.cube();
         FloatColumn revert = newFloats.cubeRoot();
@@ -416,8 +416,8 @@ public class FloatColumnTest {
         FloatColumn floats = new FloatColumn("floats", 100);
         FloatColumn otherFloats = new FloatColumn("otherFloats", 100);
         for (int i = 0; i < 100; i++) {
-            floats.add(RandomUtils.nextFloat(0, 10_000));
-            otherFloats.add(floats.get(i) - 1.0f);
+            floats.append(RandomUtils.nextFloat(0, 10_000));
+            otherFloats.append(floats.get(i) - 1.0f);
         }
         FloatColumn diff = floats.subtract(otherFloats);
         for (int i = 0; i < floats.size(); i++) {
@@ -432,7 +432,7 @@ public class FloatColumnTest {
 
         FloatColumn initial = new FloatColumn("Test", originalValues.length);
         for (float value : originalValues) {
-            initial.add(value);
+            initial.append(value);
         }
         FloatColumn difference = initial.difference();
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
@@ -453,7 +453,7 @@ public class FloatColumnTest {
 
         FloatColumn initial = new FloatColumn("Test", originalValues.length);
         for (float value : originalValues) {
-            initial.add(value);
+            initial.append(value);
         }
         FloatColumn difference = initial.difference();
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());

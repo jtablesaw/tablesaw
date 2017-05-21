@@ -217,7 +217,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public FloatColumn multiply(FloatColumn column2) {
         FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) * column2.get(r));
+            result.append(get(r) * column2.get(r));
         }
         return result;
     }
@@ -225,7 +225,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public FloatColumn divide(FloatColumn column2) {
         FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) / column2.get(r));
+            result.append(get(r) / column2.get(r));
         }
         return result;
     }
@@ -300,7 +300,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     @Override
-    public void addCell(String object) {
+    public void appendCell(String object) {
         try {
             add(convert(object));
         } catch (NumberFormatException nfe) {

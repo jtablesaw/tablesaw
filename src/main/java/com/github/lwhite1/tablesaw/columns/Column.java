@@ -21,7 +21,7 @@ public interface Column<E extends Column> {
     default Column subset(Selection rows) {
         Column c = this.emptyCopy();
         for (int row : rows) {
-            c.addCell(getString(row));
+            c.appendCell(getString(row));
         }
         return c;
     }
@@ -89,7 +89,7 @@ public interface Column<E extends Column> {
      */
     boolean isEmpty();
 
-    void addCell(String stringValue);
+    void appendCell(String stringValue);
 
     /**
      * Returns a unique string that identifies this column
@@ -119,7 +119,7 @@ public interface Column<E extends Column> {
         Column col = emptyCopy();
         int rows = Math.min(numRows, size());
         for (int i = 0; i < rows; i++) {
-            col.addCell(getString(i));
+            col.appendCell(getString(i));
         }
         return col;
     }
@@ -128,7 +128,7 @@ public interface Column<E extends Column> {
         Column col = emptyCopy();
         int rows = Math.min(numRows, size());
         for (int i = size() - rows; i < size(); i++) {
-            col.addCell(getString(i));
+            col.appendCell(getString(i));
         }
         return col;
     }

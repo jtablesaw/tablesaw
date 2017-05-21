@@ -207,10 +207,10 @@ public interface Relation {
         structure.addColumn(CategoryColumn.create("Last"));
 
         for (Column column : columns()) {
-            structure.intColumn("Index").add(columnIndex(column));
+            structure.intColumn("Index").append(columnIndex(column));
             structure.categoryColumn("Column Name").add(column.name());
             structure.categoryColumn("Type").add(column.type().name());
-            structure.intColumn("Unique Values").add(column.countUnique());
+            structure.intColumn("Unique Values").append(column.countUnique());
             structure.categoryColumn("First").add(column.first());
             structure.categoryColumn("Last").add(column.getString(column.size() - 1));
         }

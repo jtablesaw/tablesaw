@@ -6,6 +6,7 @@ import com.google.common.collect.TreeRangeSet;
 import org.junit.Test;
 
 import java.util.Set;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for primitive int rangesets

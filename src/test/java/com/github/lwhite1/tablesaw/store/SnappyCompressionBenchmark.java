@@ -36,7 +36,7 @@ public class SnappyCompressionBenchmark {
             }
         }
         for (int i = 0; i < 1_000_000; i++) {
-            c.add((float) Math.random());
+            c.append((float) Math.random());
         }
 
         NanoBench nanoBench = NanoBench.create();
@@ -61,7 +61,7 @@ public class SnappyCompressionBenchmark {
         RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
 
         for (int i = 0; i < 10_000_000; i++) {
-            c.add(randomDataGenerator.nextInt(0, 1_000_000));
+            c.append(randomDataGenerator.nextInt(0, 1_000_000));
         }
 
         Path path = Paths.get("testfolder");

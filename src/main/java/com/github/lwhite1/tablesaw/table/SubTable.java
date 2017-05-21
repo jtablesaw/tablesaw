@@ -53,11 +53,11 @@ public class SubTable extends Table {
             switch (type) {
                 case FLOAT:
                     FloatColumn floatColumn = (FloatColumn) column;
-                    floatColumn.add(sourceTable.floatColumn(i).get(rowIndex));
+                    floatColumn.append(sourceTable.floatColumn(i).get(rowIndex));
                     break;
                 case INTEGER:
                     IntColumn intColumn = (IntColumn) column;
-                    intColumn.add(sourceTable.intColumn(i).get(rowIndex));
+                    intColumn.append(sourceTable.intColumn(i).get(rowIndex));
                     break;
                 case SHORT_INT:
                     ShortColumn shortColumn = (ShortColumn) column;
@@ -69,11 +69,11 @@ public class SubTable extends Table {
                     break;
                 case BOOLEAN:
                     BooleanColumn booleanColumn = (BooleanColumn) column;
-                    booleanColumn.add(sourceTable.booleanColumn(i).get(rowIndex));
+                    booleanColumn.append(sourceTable.booleanColumn(i).get(rowIndex));
                     break;
                 case LOCAL_DATE:
                     DateColumn localDateColumn = (DateColumn) column;
-                    localDateColumn.add(sourceTable.dateColumn(i).getInt(rowIndex));
+                    localDateColumn.append(sourceTable.dateColumn(i).getInt(rowIndex));
                     break;
                 case LOCAL_TIME:
                     TimeColumn timeColumn = (TimeColumn) column;

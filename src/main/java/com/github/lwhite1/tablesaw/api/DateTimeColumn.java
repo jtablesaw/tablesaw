@@ -103,7 +103,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     @Override
-    public void addCell(String stringValue) {
+    public void appendCell(String stringValue) {
         if (stringValue == null) {
             add(MISSING_VALUE);
         } else {
@@ -341,9 +341,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == MISSING_VALUE) {
-                newColumn.add(DateColumn.MISSING_VALUE);
+                newColumn.append(DateColumn.MISSING_VALUE);
             } else {
-                newColumn.add(PackedLocalDateTime.date(c1));
+                newColumn.append(PackedLocalDateTime.date(c1));
             }
         }
         return newColumn;

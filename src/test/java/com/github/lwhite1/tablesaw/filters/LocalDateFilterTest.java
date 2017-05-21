@@ -29,9 +29,9 @@ public class LocalDateFilterTest {
 
     @Before
     public void setUp() throws Exception {
-        localDateColumn.add(LocalDate.of(2016, 2, 28));
-        localDateColumn.add(LocalDate.of(2016, 2, 29));
-        localDateColumn.add(LocalDate.of(2016, 3, 1));
+        localDateColumn.append(LocalDate.of(2016, 2, 28));
+        localDateColumn.append(LocalDate.of(2016, 2, 29));
+        localDateColumn.append(LocalDate.of(2016, 3, 1));
         table.addColumn(localDateColumn);
     }
 

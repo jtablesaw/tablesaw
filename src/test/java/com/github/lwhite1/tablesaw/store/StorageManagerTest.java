@@ -84,8 +84,8 @@ public class StorageManagerTest {
     public void setUp() throws Exception {
 
         for (int i = 0; i < COUNT; i++) {
-            floatColumn.add((float) i);
-            localDateColumn.add(LocalDate.now());
+            floatColumn.append((float) i);
+            localDateColumn.append(LocalDate.now());
             categoryColumn.add("Category " + i);
             longColumn.add(i);
         }

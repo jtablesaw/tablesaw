@@ -112,7 +112,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return ColumnType.INTEGER;
     }
 
-    public void add(int i) {
+    public void append(int i) {
         data.add(i);
     }
 
@@ -246,9 +246,9 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     @Override
-    public void addCell(String object) {
+    public void appendCell(String object) {
         try {
-            add(convert(object));
+            append(convert(object));
         } catch (NumberFormatException nfe) {
             throw new NumberFormatException(name() + ": " + nfe.getMessage());
         } catch (NullPointerException e) {
@@ -429,7 +429,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         Preconditions.checkArgument(column.type() == this.type());
         IntColumn intColumn = (IntColumn) column;
         for (int i = 0; i < intColumn.size(); i++) {
-            add(intColumn.get(i));
+            append(intColumn.get(i));
         }
     }
 
@@ -439,7 +439,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         while (intIterator.hasNext()) {
             int next = intIterator.nextInt();
             if (predicate.test(next)) {
-                column.add(next);
+                column.append(next);
             }
         }
         return column;
@@ -448,7 +448,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public IntColumn select(Selection selection) {
         IntColumn column = emptyCopy();
         for (Integer next : selection) {
-            column.add(data.getInt(next));
+            column.append(data.getInt(next));
         }
         return column;
     }
@@ -502,15 +502,15 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public IntColumn remainder(IntColumn column2) {
         IntColumn result = IntColumn.create(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) % column2.get(r));
+            result.append(get(r) % column2.get(r));
         }
         return result;
     }
 
-    public IntColumn add(IntColumn column2) {
+    public IntColumn append(IntColumn column2) {
         IntColumn result = IntColumn.create(name() + " + " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) + column2.get(r));
+            result.append(get(r) + column2.get(r));
         }
         return result;
     }
@@ -518,7 +518,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public IntColumn subtract(IntColumn column2) {
         IntColumn result = IntColumn.create(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) - column2.get(r));
+            result.append(get(r) - column2.get(r));
         }
         return result;
     }
@@ -526,7 +526,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public IntColumn multiply(IntColumn column2) {
         IntColumn result = IntColumn.create(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) * column2.get(r));
+            result.append(get(r) * column2.get(r));
         }
         return result;
     }
@@ -534,7 +534,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public FloatColumn multiply(FloatColumn column2) {
         FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) * column2.get(r));
+            result.append(get(r) * column2.get(r));
         }
         return result;
     }
@@ -542,7 +542,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public FloatColumn divide(FloatColumn column2) {
         FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) / column2.get(r));
+            result.append(get(r) / column2.get(r));
         }
         return result;
     }
@@ -611,15 +611,15 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     @Override
     public IntColumn difference() {
         IntColumn returnValue = new IntColumn(this.name(), this.size());
-        returnValue.add(IntColumn.MISSING_VALUE);
+        returnValue.append(IntColumn.MISSING_VALUE);
         for (int current = 0; current < this.size(); current++) {
             if (current + 1 < this.size()) {
                 int currentValue = this.get(current);
                 int nextValue = this.get(current + 1);
                 if (current == IntColumn.MISSING_VALUE || nextValue == IntColumn.MISSING_VALUE) {
-                    returnValue.add(IntColumn.MISSING_VALUE);
+                    returnValue.append(IntColumn.MISSING_VALUE);
                 } else {
-                    returnValue.add(nextValue - currentValue);
+                    returnValue.append(nextValue - currentValue);
                 }
             }
         }

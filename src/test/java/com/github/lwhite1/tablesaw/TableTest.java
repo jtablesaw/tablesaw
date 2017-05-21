@@ -45,10 +45,10 @@ public class TableTest {
     public void testRowCount() throws Exception {
         assertEquals(0, table.rowCount());
         FloatColumn floatColumn = column;
-        floatColumn.add(2f);
+        floatColumn.append(2f);
         assertEquals(1, table.rowCount());
 
-        floatColumn.add(2.2342f);
+        floatColumn.append(2.2342f);
         assertEquals(2, table.rowCount());
     }
 }

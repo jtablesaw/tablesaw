@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoField;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for PackedLocalTime

@@ -151,7 +151,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
         for (int row = 0; row < groupTable.rowCount(); row++) {
             List<String> strings = SPLITTER.splitToList(groupTable.categoryColumn("Group").get(row));
             for (int col = 0; col < newColumns.size(); col++) {
-                newColumns.get(col).addCell(strings.get(col));
+                newColumns.get(col).appendCell(strings.get(col));
             }
         }
         for (int col = 0; col < newColumns.size(); col++) {
@@ -175,7 +175,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
         for (TemporaryView subTable : subTables) {
             double result = subTable.reduce(numericColumnName, function);
             groupColumn.add(subTable.name());
-            resultColumn.add((float) result);
+            resultColumn.append((float) result);
         }
         return splitGroupingColumn(groupTable);
     }

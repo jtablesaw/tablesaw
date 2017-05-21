@@ -108,10 +108,10 @@ public class AssociationRuleMining {
         for (AssociationRule rule : rules) {
             double interest = rule.confidence - confidenceMap.getDouble(new IntRBTreeSet(rule.consequent));
             if (Math.abs(interest) > interestThreshold) {
-                interestTable.categoryColumn(0).addCell(Arrays.toString(rule.antecedent));
-                interestTable.categoryColumn(1).addCell(Arrays.toString(rule.consequent));
-                interestTable.floatColumn(2).add(rule.confidence);
-                interestTable.floatColumn(3).add(interest);
+                interestTable.categoryColumn(0).appendCell(Arrays.toString(rule.antecedent));
+                interestTable.categoryColumn(1).appendCell(Arrays.toString(rule.consequent));
+                interestTable.floatColumn(2).append(rule.confidence);
+                interestTable.floatColumn(3).append(interest);
             }
         }
         return interestTable;
