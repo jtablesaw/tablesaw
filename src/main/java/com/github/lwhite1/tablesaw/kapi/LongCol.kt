@@ -1,40 +1,44 @@
 package com.github.lwhite1.tablesaw.kapi
 
 import com.github.lwhite1.tablesaw.api.ColumnType
-import com.github.lwhite1.tablesaw.api.IntColumn
+import com.github.lwhite1.tablesaw.api.LongColumn
 
 /**
  *
  */
-class IntCol(val target: IntColumn) : AbstractColumn() {
+class LongCol(val target: LongColumn) : AbstractColumn() {
 
-    operator fun plus(c: IntCol): IntCol = IntCol(target.add(c.target))
+    operator fun plus(c: LongCol): LongCol = LongCol(target.add(c.target))
 
-    operator fun plus(value: Int): IntCol = IntCol(target.addToEach(value))
+    operator fun minus(c: LongCol): LongCol = LongCol(target.subtract(c.target))
 
-    operator fun minus(c: IntCol): IntCol = IntCol(target.subtract(c.target))
+/*
+    operator fun plus(value: Long): LongCol = LongCol(target.addToEach(value))
 
-    operator fun minus(value: Int): IntCol = IntCol(target.addToEach(-value))
+    operator fun minus(value: Long): LongCol = LongCol(target.addToEach(-value))
 
     operator fun div(value: Int): FloatCol = FloatCol(target.divide(value))
 
-    operator fun div(c: IntCol): FloatCol = FloatCol(target.divide(c.target))
+    operator fun div(c: LongCol): FloatCol = FloatCol(target.divide(c.target))
+*/
 
     operator fun div(c: FloatCol): FloatCol = FloatCol(target.divide(c.target))
 
-    operator fun times(c: IntCol): IntCol = IntCol(target.multiply(c.target))
+    operator fun times(c: LongCol): LongCol = LongCol(target.multiply(c.target))
 
     operator fun times(c: FloatCol): FloatCol = FloatCol(target.multiply(c.target))
 
-    operator fun rem(c: IntCol): IntCol = IntCol(target.remainder(c.target))
+    operator fun rem(c: LongCol): LongCol = LongCol(target.remainder(c.target))
 
-    operator fun get(index: Int): Int = target.get(index)
+    operator fun get(index: Int): Long = target.get(index)
 
-    operator fun contains(i: Int) = target.contains(i)
+    operator fun contains(i: Long): Boolean = target.contains(i)
 
-    fun isMissing(): IntCol = IntCol(target.select(target.isMissing()))
+/*
+    fun isMissing(): LongCol = LongCol(target.select(target.isMissing()))
 
-    fun isNotMissing(): IntCol = IntCol(target.select(target.isNotMissing()))
+    fun isNotMissing(): LongCol = LongCol(target.select(target.isNotMissing()))
+*/
 
     override fun size(): Int = target.size()
 
@@ -42,7 +46,7 @@ class IntCol(val target: IntColumn) : AbstractColumn() {
 
     override fun countUnique(): Int = target.countUnique()
 
-    override fun unique(): IntCol = IntCol(target.unique())
+    override fun unique(): LongCol = LongCol(target.unique())
 
     override fun type(): ColumnType = target.type()
 
@@ -62,11 +66,12 @@ class IntCol(val target: IntColumn) : AbstractColumn() {
 
     override fun byteSize(): Int = target.byteSize()
 
-    override fun emptyCopy(): IntCol = IntCol(target.emptyCopy())
+    override fun emptyCopy(): LongCol = LongCol(target.emptyCopy())
 
-    override fun copy(): Column = IntCol(target.copy())
+    override fun copy(): Column = LongCol(target.copy())
 
-    override fun emptyCopy(rowSize: Int): Column = IntCol(target.emptyCopy())
+    override fun emptyCopy(rowSize: Int): Column = LongCol(target.emptyCopy())
+
 
     override fun clear() = target.clear()
 
@@ -76,7 +81,7 @@ class IntCol(val target: IntColumn) : AbstractColumn() {
 
     override fun appendCell(stringValue: String) = target.appendCell(stringValue)
 
-    //override fun append(column: IntColumn) = target.append(column)
+    //override fun append(column: LongColumn) = target.append(column)
 
     // math functions
     fun sum(): Long = target.sum()              // TODO(should this return double for consistency)
