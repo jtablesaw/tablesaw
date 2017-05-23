@@ -7,13 +7,13 @@ import com.github.lwhite1.tablesaw.util.Selection
 /**
  *
  */
-interface Column {
+interface Col {
 
     fun size(): Int
 
     fun summary(): Dataframe
 
-    fun subset(rows: Selection): Column {
+    fun subset(rows: Selection): Col {
         val c = this.emptyCopy()
         for (row in rows) {
             c.appendCell(getString(row))
@@ -34,7 +34,7 @@ interface Column {
     /**
      * Returns a column of the same type as the receiver, containing only the unique values of the receiver
      */
-    fun unique(): Column
+    fun unique(): Col
 
     /**
      * Returns this column's ColumnType
@@ -51,12 +51,12 @@ interface Column {
     /**
      * Returns a deep copy of the receiver
      */
-    fun copy(): Column
+    fun copy(): Col
 
     /**
      * Returns an empty copy of the receiver, with its internal storage initialized to the given row size
      */
-    fun emptyCopy(rowSize: Int = 0): Column
+    fun emptyCopy(rowSize: Int = 0): Col
 
     fun clear()
 
@@ -95,7 +95,7 @@ interface Column {
 
     // fun append(column: Column)
 
-    fun first(numRows: Int): Column {
+    fun first(numRows: Int): Col {
         val col = emptyCopy()
         val rows = Math.min(numRows, size())
         for (i in 0..rows - 1) {
@@ -104,7 +104,7 @@ interface Column {
         return col
     }
 
-    fun last(numRows: Int): Column {
+    fun last(numRows: Int): Col {
         val col = emptyCopy()
         val rows = Math.min(numRows, size())
         for (i in size() - rows..size() - 1) {
@@ -117,7 +117,7 @@ interface Column {
 
 
     fun title(): String {
-        return "Column: " + name() + '\n'
+        return "Col: " + name() + '\n'
     }
 
     fun toDoubleArray(): DoubleArray {

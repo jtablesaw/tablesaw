@@ -2,6 +2,7 @@ package com.github.lwhite1.tablesaw.kapi
 
 import com.github.lwhite1.tablesaw.api.ColumnType
 import com.github.lwhite1.tablesaw.api.IntColumn
+import com.github.lwhite1.tablesaw.api.NumericColumn
 import com.github.lwhite1.tablesaw.filtering.IntBiPredicate
 import com.github.lwhite1.tablesaw.filtering.IntPredicate
 import com.github.lwhite1.tablesaw.store.ColumnMetadata
@@ -13,7 +14,9 @@ import it.unimi.dsi.fastutil.ints.IntSet
 /**
  *
  */
-class IntCol(val target: IntColumn) : AbstractColumn() {
+class IntCol(val target: IntColumn) : NumericCol {
+
+    override fun target(): NumericColumn = target
 
     companion object Factory {
         fun create(name: String, arraySize: Int = IntColumn.DEFAULT_ARRAY_SIZE): IntCol
@@ -53,7 +56,7 @@ class IntCol(val target: IntColumn) : AbstractColumn() {
     operator fun get(index: Int): Int = target.get(index)
     override fun getString(row: Int): String = target.getString(row)
 
-    fun getFloat(row: Int): Float = target.getFloat(row)
+    override fun getFloat(row: Int): Float = target.getFloat(row)
 
     operator fun contains(i: Int) = target.contains(i)
 
@@ -75,8 +78,8 @@ class IntCol(val target: IntColumn) : AbstractColumn() {
     override fun summary(): Dataframe = Dataframe(target.summary())
 
     // copying
-    override fun copy(): Column = IntCol(target.copy())
-    override fun emptyCopy(rowSize: Int): Column = IntCol(target.emptyCopy())
+    override fun copy(): Col = IntCol(target.copy())
+    override fun emptyCopy(rowSize: Int): Col = IntCol(target.emptyCopy())
 
     override fun clear() = target.clear()
 
@@ -96,28 +99,28 @@ class IntCol(val target: IntColumn) : AbstractColumn() {
 
     // summary and descriptive statistics
     fun sum(): Long = target.sum()              // TODO(should this return double for consistency)
-    fun product(): Double = target.product()
-    fun sumOfLogs(): Double = target.sumOfLogs()
-    fun sumOfSquares(): Double = target.sumOfSquares()
+    override fun product(): Double = target.product()
+    override fun sumOfLogs(): Double = target.sumOfLogs()
+    override fun sumOfSquares(): Double = target.sumOfSquares()
 
-    fun mean(): Double = target.mean()
-    fun geometricMean(): Double = target.geometricMean()
-    fun quadraticMean(): Double = target.quadraticMean()
-    fun median(): Double = target.median()
-    fun quartile1(): Double = target.quartile1()
-    fun quartile3(): Double = target.quartile3()
-    fun percentile(percentile : Double): Double = target.percentile(percentile)
+    override fun mean(): Double = target.mean()
+    override fun geometricMean(): Double = target.geometricMean()
+    override fun quadraticMean(): Double = target.quadraticMean()
+    override fun median(): Double = target.median()
+    override fun quartile1(): Double = target.quartile1()
+    override fun quartile3(): Double = target.quartile3()
+    override fun percentile(percentile : Double): Double = target.percentile(percentile)
 
-    fun max(): Double = target.max()
-    fun min(): Double = target.min()
+    override fun max(): Double = target.max()
+    override fun min(): Double = target.min()
 
-    fun range(): Double = target.range()
-    fun variance(): Double = target.variance()
-    fun populationVariance(): Double = target.populationVariance()
-    fun standardDeviation(): Double = target.standardDeviation()
+    override fun range(): Double = target.range()
+    override fun variance(): Double = target.variance()
+    override fun populationVariance(): Double = target.populationVariance()
+    override fun standardDeviation(): Double = target.standardDeviation()
 
-    fun skewness(): Double = target.skewness()
-    fun kurtosis(): Double = target.kurtosis()
+    override fun skewness(): Double = target.skewness()
+    override fun kurtosis(): Double = target.kurtosis()
 
     // TODO(lwhite) Review this and see if it does what it should
     fun stats(): Stats = target.stats()

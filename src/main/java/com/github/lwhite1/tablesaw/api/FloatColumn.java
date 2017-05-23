@@ -20,6 +20,7 @@ import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -763,4 +764,30 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return returnValue;
     }
 
+    @NotNull
+    public FloatColumn add(@NotNull FloatColumn column2) {
+        FloatColumn result = FloatColumn.create(name() + " - " + column2.name(), size());
+        for (int r = 0; r < size(); r++) {
+            result.append(get(r) + column2.get(r));
+        }
+        return result;
+    }
+
+    @NotNull
+    public FloatColumn addToEach(float value) {
+        FloatColumn result = FloatColumn.create(name() + " + " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(get(r) + value);
+        }
+        return result;
+    }
+
+    @NotNull
+    public FloatColumn addToEach(int value) {
+        FloatColumn result = FloatColumn.create(name() + " + " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(get(r) + value);
+        }
+        return result;
+    }
 }

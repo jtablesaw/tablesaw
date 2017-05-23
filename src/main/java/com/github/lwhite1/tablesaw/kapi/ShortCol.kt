@@ -1,13 +1,20 @@
 package com.github.lwhite1.tablesaw.kapi
 
 import com.github.lwhite1.tablesaw.api.ColumnType
+import com.github.lwhite1.tablesaw.api.NumericColumn
 import com.github.lwhite1.tablesaw.api.ShortColumn
 import com.github.lwhite1.tablesaw.store.ColumnMetadata
 
 /**
  *
  */
-class ShortCol(val target: ShortColumn) : AbstractColumn() {
+class ShortCol(val target: ShortColumn) : NumericCol {
+
+    override fun target(): NumericColumn = target
+
+    override fun toDoubleArray(): DoubleArray = target.toDoubleArray()
+
+    override fun getFloat(index: Int): Float = target.getFloat(index)
 
     override fun columnMetadata(): ColumnMetadata = target.columnMetadata()
 
@@ -69,9 +76,9 @@ class ShortCol(val target: ShortColumn) : AbstractColumn() {
 
     override fun toString(): String = target.toString()
 
-    override fun copy(): Column = ShortCol(target.copy())
+    override fun copy(): Col = ShortCol(target.copy())
 
-    override fun emptyCopy(rowSize: Int): Column = ShortCol(target.emptyCopy())
+    override fun emptyCopy(rowSize: Int): Col = ShortCol(target.emptyCopy())
 
 
     override fun clear() = target.clear()
@@ -86,28 +93,28 @@ class ShortCol(val target: ShortColumn) : AbstractColumn() {
 
     // math functions
     fun sum(): Long = target.sum()              // TODO(should this return double for consistency)
-    fun product(): Double = target.product()
-    fun sumOfLogs(): Double = target.sumOfLogs()
-    fun sumOfSquares(): Double = target.sumOfSquares()
+    override fun product(): Double = target.product()
+    override fun sumOfLogs(): Double = target.sumOfLogs()
+    override fun sumOfSquares(): Double = target.sumOfSquares()
 
-    fun mean(): Double = target.mean()
-    fun geometricMean(): Double = target.geometricMean()
-    fun quadraticMean(): Double = target.quadraticMean()
-    fun median(): Double = target.median()
-    fun quartile1(): Double = target.quartile1()
-    fun quartile3(): Double = target.quartile3()
-    fun percentile(percentile : Double): Double = target.percentile(percentile)
+    override fun mean(): Double = target.mean()
+    override fun geometricMean(): Double = target.geometricMean()
+    override fun quadraticMean(): Double = target.quadraticMean()
+    override fun median(): Double = target.median()
+    override fun quartile1(): Double = target.quartile1()
+    override fun quartile3(): Double = target.quartile3()
+    override fun percentile(percentile : Double): Double = target.percentile(percentile)
 
-    fun max(): Double = target.max()
-    fun min(): Double = target.min()
+    override fun max(): Double = target.max()
+    override fun min(): Double = target.min()
 
-    fun range(): Double = target.range()
-    fun variance(): Double = target.variance()
-    fun populationVariance(): Double = target.populationVariance()
-    fun standardDeviation(): Double = target.standardDeviation()
+    override fun range(): Double = target.range()
+    override fun variance(): Double = target.variance()
+    override fun populationVariance(): Double = target.populationVariance()
+    override fun standardDeviation(): Double = target.standardDeviation()
 
-    fun skewness(): Double = target.skewness()
-    fun kurtosis(): Double = target.kurtosis()
+    override fun skewness(): Double = target.skewness()
+    override fun kurtosis(): Double = target.kurtosis()
 
     // comparisons
     fun isLessThan(i: Int): ShortCol = ShortCol(target.select(target.isLessThan(i)))

@@ -657,15 +657,19 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return results;
     }
 
-    Selection isPositive() {
+    public Selection isPositive() {
         return select(isPositive);
     }
 
-    Selection isNegative() {
+    public Selection isZero() {
+        return select(isZero);
+    }
+
+    public Selection isNegative() {
         return select(isNegative);
     }
 
-    Selection isNonNegative() {
+    public Selection isNonNegative() {
         return select(isNonNegative);
     }
 

@@ -28,6 +28,7 @@ class IntColTest {
         println(result)
         println(result2)
         println("Name: ${result.name()}")
+        println("Name: ${result3.name()}")
         println("Name: ${result5.name()}")
         println("Id: ${result.id()}")
 
@@ -71,6 +72,7 @@ class IntColTest {
         println(col.skewness())
         println(col.kurtosis())
 
+
         val subset = col.isEven()
         println(subset.print())
     }
@@ -105,5 +107,8 @@ class IntColTest {
 
         val fromCsv = Dataframe.createFromCsv("data/BushApproval.csv")
         println(fromCsv.summary())
+
+        println(frame[0].print())
+        println(frame["approval"].summary().print())
     }
 }
