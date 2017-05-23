@@ -2,13 +2,20 @@ package com.github.lwhite1.tablesaw.kapi
 
 import com.github.lwhite1.tablesaw.api.ColumnType
 import com.github.lwhite1.tablesaw.api.LongColumn
+import com.github.lwhite1.tablesaw.store.ColumnMetadata
 
 /**
  *
  */
 class LongCol(val target: LongColumn) : AbstractColumn() {
 
-    operator fun plus(c: LongCol): LongCol = LongCol(target.add(c.target))
+    override fun columnMetadata(): ColumnMetadata = target.columnMetadata()
+
+    override fun name(): String = target.name()
+
+    override fun summary(): Dataframe = Dataframe(target.summary())
+
+    operator fun plus(c: LongCol): LongCol = LongCol(target.append(c.target))
 
     operator fun minus(c: LongCol): LongCol = LongCol(target.subtract(c.target))
 
@@ -56,17 +63,11 @@ class LongCol(val target: LongColumn) : AbstractColumn() {
 
     override fun id(): String = target.id()
 
-    override fun metadata(): String = target.metadata()
+    override fun metadataString(): String = target.metadata()
 
     override fun print(): String = target.print()
 
     override fun toString(): String = target.toString()
-
-    override fun columnWidth(): Int = target.columnWidth()
-
-    override fun byteSize(): Int = target.byteSize()
-
-    override fun emptyCopy(): LongCol = LongCol(target.emptyCopy())
 
     override fun copy(): Column = LongCol(target.copy())
 
@@ -108,5 +109,19 @@ class LongCol(val target: LongColumn) : AbstractColumn() {
     fun skewness(): Double = target.skewness()
     fun kurtosis(): Double = target.kurtosis()
 
+    // comparisons
+    fun isLessThan(i: Long): LongCol = LongCol(target.select(target.isLessThan(i)))
+    fun isGreaterThan(i: Int): LongCol = LongCol(target.select(target.isGreaterThan(i)))
+    fun isGreaterThanOrEqualTo(i: Int): LongCol = LongCol(target.select(target.isGreaterThanOrEqualTo(i)))
+    fun isLessThanOrEqualTo(i: Int): LongCol = LongCol(target.select(target.isLessThanOrEqualTo(i)))
+    fun isEqualTo(i: Long): LongCol = LongCol(target.select(target.isEqualTo(i)))
+
+    // other boolean tests
+    fun isPositive(): LongCol = LongCol(target.select(target.isPositive))
+    fun isNegative(): LongCol = LongCol(target.select(target.isNegative))
+    fun isNonNegative(): LongCol = LongCol(target.select(target.isNonNegative))
+    fun isZero(): LongCol = LongCol(target.select(target.isZero))
+    fun isEven(): LongCol = LongCol(target.select(target.isEven))
+    fun isOdd(): LongCol = LongCol(target.select(target.isOdd))
 
 }

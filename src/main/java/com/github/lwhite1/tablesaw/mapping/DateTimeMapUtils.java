@@ -43,9 +43,9 @@ public interface DateTimeMapUtils extends DateTimeColumnUtils {
             long c1 = this.getLong(r);
             long c2 = column2.getLong(r);
             if (c1 == DateTimeColumn.MISSING_VALUE || c2 == DateTimeColumn.MISSING_VALUE) {
-                newColumn.add(IntColumn.MISSING_VALUE);
+                newColumn.append(IntColumn.MISSING_VALUE);
             } else {
-                newColumn.add(difference(c1, c2, unit));
+                newColumn.append(difference(c1, c2, unit));
             }
         }
         return newColumn;
@@ -62,9 +62,9 @@ public interface DateTimeMapUtils extends DateTimeColumnUtils {
         for (int r = 0; r < size(); r++) {
             long c1 = getLong(r);
             if (c1 != DateTimeColumn.MISSING_VALUE) {
-                newColumn.add(PackedLocalDateTime.getHour(c1));
+                newColumn.append(PackedLocalDateTime.getHour(c1));
             } else {
-                newColumn.add(ShortColumn.MISSING_VALUE);
+                newColumn.append(ShortColumn.MISSING_VALUE);
             }
         }
         return newColumn;
@@ -75,9 +75,9 @@ public interface DateTimeMapUtils extends DateTimeColumnUtils {
         for (int r = 0; r < size(); r++) {
             long c1 = getLong(r);
             if (c1 != DateTimeColumn.MISSING_VALUE) {
-                newColumn.add((short) PackedLocalDateTime.getMinuteOfDay(c1));
+                newColumn.append((short) PackedLocalDateTime.getMinuteOfDay(c1));
             } else {
-                newColumn.add(ShortColumn.MISSING_VALUE);
+                newColumn.append(ShortColumn.MISSING_VALUE);
             }
         }
         return newColumn;

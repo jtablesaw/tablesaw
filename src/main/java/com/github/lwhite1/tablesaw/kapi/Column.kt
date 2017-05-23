@@ -1,16 +1,17 @@
 package com.github.lwhite1.tablesaw.kapi
 
 import com.github.lwhite1.tablesaw.api.ColumnType
+import com.github.lwhite1.tablesaw.store.ColumnMetadata
 import com.github.lwhite1.tablesaw.util.Selection
 
 /**
  *
  */
-public interface Column {
+interface Column {
 
-    abstract fun size(): Int
+    fun size(): Int
 
-//    abstract fun summary(): Table
+    fun summary(): Dataframe
 
     fun subset(rows: Selection): Column {
         val c = this.emptyCopy()
@@ -23,69 +24,66 @@ public interface Column {
     /**
      * Returns the count of missing values in this column
      */
-    abstract fun countMissing(): Int
+    fun countMissing(): Int
 
     /**
      * Returns the count of unique values in this column
      */
-    abstract fun countUnique(): Int
+    fun countUnique(): Int
 
     /**
      * Returns a column of the same type as the receiver, containing only the unique values of the receiver
      */
-    abstract fun unique(): Column
+    fun unique(): Column
 
     /**
      * Returns this column's ColumnType
      */
-    abstract fun type(): ColumnType
+    fun type(): ColumnType
+
+    fun name(): String
 
     /**
      * Returns a string representation of the value at the given row
      */
-    abstract fun getString(row: Int): String
-
-    /**
-     * Returns a copy of the receiver with no data. The column name and type are the same
-     */
-    abstract fun emptyCopy(): Column
+    fun getString(row: Int): String
 
     /**
      * Returns a deep copy of the receiver
      */
-    abstract fun copy(): Column
+    fun copy(): Column
 
     /**
      * Returns an empty copy of the receiver, with its internal storage initialized to the given row size
      */
-    abstract fun emptyCopy(rowSize: Int): Column
+    fun emptyCopy(rowSize: Int = 0): Column
 
-    abstract fun clear()
+    fun clear()
 
-    abstract fun sortAscending()
+    fun sortAscending()
 
-    abstract fun sortDescending()
+    fun sortDescending()
 
     /**
      * Returns true if the column has no data
      */
-    abstract fun isEmpty(): Boolean
+    fun isEmpty(): Boolean
 
-    abstract fun appendCell(stringValue: String)
+    fun appendCell(stringValue: String)
 
     /**
      * Returns a unique string that identifies this column
      */
-    abstract fun id(): String
+    fun id(): String
 
     /**
      * Returns a String containing the column's metadata in json format
      */
-    abstract fun metadata(): String
+    fun metadataString(): String
 
-//    abstract fun columnMetadata(): ColumnMetadata
+    fun columnMetadata(): ColumnMetadata
 
-//    abstract fun rowComparator(): IntComparator
+//    fun rowComparator(): IntComparator
 
     fun first(): String {
         return getString(0)
@@ -95,7 +93,7 @@ public interface Column {
         return getString(size() - 1)
     }
 
-    // abstract fun append(column: Column)
+    // fun append(column: Column)
 
     fun first(numRows: Int): Column {
         val col = emptyCopy()
@@ -115,33 +113,21 @@ public interface Column {
         return col
     }
 
-    abstract fun print(): String
+    fun print(): String
 
-/*
+
     fun title(): String {
         return "Column: " + name() + '\n'
     }
-*/
 
     fun toDoubleArray(): DoubleArray {
         throw UnsupportedOperationException("Method toDoubleArray() is not supported on non-numeric columns")
     }
 
-    abstract fun columnWidth(): Int
+//    fun isMissing(): Selection
 
-//    abstract fun isMissing(): Selection
+//    fun isNotMissing(): Selection
 
-//    abstract fun isNotMissing(): Selection
-
-    /**
-     * Returns the width of a cell in this column, in bytes
-     */
-    abstract fun byteSize(): Int
-
-    /**
-     * Returns the contents of the cell at rowNumber as a byte[]
-     */
-    //  abstract fun asBytes(rowNumber: Int): ByteArray
 }
 
 /*
@@ -154,5 +140,5 @@ public interface Column {
  */
 /*
 
-    abstract fun difference(): E
+    fun difference(): E
 */

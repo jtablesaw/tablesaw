@@ -3,7 +3,7 @@ Tablesaw
 
 # Please Note
 
-__I am not currently maintaining, supporting, or extending this software due to a lack of time. I may fix a few bugs, but cannot commit to doing so in a timely manner.__
+__Unfortunately, I have limited time to support this software, and so I cannot currently commit to addressing issues in a timely manner.__
 
 ### Overview
 

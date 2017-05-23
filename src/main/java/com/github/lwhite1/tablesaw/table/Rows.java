@@ -238,7 +238,7 @@ public class Rows {
 
     private static void copy(IntArrayList rows, ShortColumn oldColumn, ShortColumn newColumn) {
         for (int index : rows) {
-            newColumn.add(oldColumn.get(index));
+            newColumn.append(oldColumn.get(index));
         }
     }
 
@@ -250,7 +250,7 @@ public class Rows {
 
     private static void copy(IntArrayList rows, LongColumn oldColumn, LongColumn newColumn) {
         for (int index : rows) {
-            newColumn.add(oldColumn.get(index));
+            newColumn.append(oldColumn.get(index));
         }
     }
 
@@ -260,7 +260,7 @@ public class Rows {
 
     private static void copy(IntArrayList rows, DateTimeColumn oldColumn, DateTimeColumn newColumn) {
         for (int index : rows) {
-            newColumn.add(oldColumn.getLong(index));
+            newColumn.append(oldColumn.getLong(index));
         }
     }
 
@@ -280,7 +280,7 @@ public class Rows {
 
     private static void copy(IntArrayList rows, TimeColumn oldColumn, TimeColumn newColumn) {
         for (int index : rows) {
-            newColumn.add(oldColumn.getInt(index));
+            newColumn.append(oldColumn.getInt(index));
         }
     }
 

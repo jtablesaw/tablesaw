@@ -87,7 +87,7 @@ public class StorageManagerTest {
             floatColumn.append((float) i);
             localDateColumn.append(LocalDate.now());
             categoryColumn.add("Category " + i);
-            longColumn.add(i);
+            longColumn.append(i);
         }
         table.addColumn(floatColumn);
         table.addColumn(localDateColumn);

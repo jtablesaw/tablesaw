@@ -22,7 +22,7 @@ public interface LongMapUtils extends LongColumnUtils {
             for (LongColumn column : columns) {
                 result = result + column.get(r);
             }
-            newColumn.add(result);
+            newColumn.append(result);
         }
         return newColumn;
     }
@@ -82,7 +82,7 @@ public interface LongMapUtils extends LongColumnUtils {
     default LongColumn difference(LongColumn column2) {
         LongColumn result = LongColumn.create(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) - column2.get(r));
+            result.append(get(r) - column2.get(r));
         }
         return result;
     }

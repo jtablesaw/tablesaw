@@ -152,15 +152,7 @@ public interface IntMapUtils extends IntColumnUtils {
 
     int get(int index);
 
-    default IntColumn difference(IntColumn column2) {
-        IntColumn result = IntColumn.create(name() + " - " + column2.name());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) - column2.get(r));
-        }
-        return result;
-    }
-
-    default IntColumn difference(int value) {
+    default IntColumn subtract(int value) {
         IntColumn result = IntColumn.create(name() + " - " + value);
         for (int r = 0; r < size(); r++) {
             result.append(get(r) - value);

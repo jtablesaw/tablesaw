@@ -18,7 +18,7 @@ public class IntColumnTest {
 
     @Before
     public void setUp() throws Exception {
-        intColumn = new IntColumn("t1");
+        intColumn = IntColumn.create("t1");
     }
 
     @Test
@@ -137,7 +137,7 @@ public class IntColumnTest {
         int[] originalValues = new int[]{32, 42, 40, 57, 52};
         int[] expectedValues = new int[]{IntColumn.MISSING_VALUE, 10, -2, 17, -5};
 
-        IntColumn initial = new IntColumn("Test", originalValues.length);
+        IntColumn initial = IntColumn.create("Test", originalValues.length);
         for (int value : originalValues) {
             initial.append(value);
         }
@@ -155,7 +155,7 @@ public class IntColumnTest {
         int[] inValues = new int[]{10, -2, 57, -5};
         IntColumn inColumn = IntColumn.create("In", new IntArrayList(inValues));
 
-        IntColumn initial = new IntColumn("Test", originalValues.length);
+        IntColumn initial = IntColumn.create("Test", originalValues.length);
         Table t = Table.create("t", initial);
 
         for (int value : originalValues) {

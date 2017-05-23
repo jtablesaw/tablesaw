@@ -61,11 +61,11 @@ public class SubTable extends Table {
                     break;
                 case SHORT_INT:
                     ShortColumn shortColumn = (ShortColumn) column;
-                    shortColumn.add(sourceTable.shortColumn(i).get(rowIndex));
+                    shortColumn.append(sourceTable.shortColumn(i).get(rowIndex));
                     break;
                 case LONG_INT:
                     LongColumn longColumn = (LongColumn) column;
-                    longColumn.add(sourceTable.longColumn(i).get(rowIndex));
+                    longColumn.append(sourceTable.longColumn(i).get(rowIndex));
                     break;
                 case BOOLEAN:
                     BooleanColumn booleanColumn = (BooleanColumn) column;
@@ -77,11 +77,11 @@ public class SubTable extends Table {
                     break;
                 case LOCAL_TIME:
                     TimeColumn timeColumn = (TimeColumn) column;
-                    timeColumn.add(sourceTable.timeColumn(i).getInt(rowIndex));
+                    timeColumn.append(sourceTable.timeColumn(i).getInt(rowIndex));
                     break;
                 case LOCAL_DATE_TIME:
                     DateTimeColumn localDateTimeColumn = (DateTimeColumn) column;
-                    localDateTimeColumn.add(sourceTable.dateTimeColumn(i).getLong(rowIndex));
+                    localDateTimeColumn.append(sourceTable.dateTimeColumn(i).getLong(rowIndex));
                     break;
                 case CATEGORY:
                     CategoryColumn categoryColumn = (CategoryColumn) column;

@@ -140,8 +140,8 @@ public class LargeDataTest {
             city.add(person.getAddress().getCity());
             postalCode.add(person.getAddress().getPostalCode());
             state.add(TestDataUtil.randomUsState());
-            weight.add((short) fairy.baseProducer().randomBetween(65, 280));
-            height.add((short) fairy.baseProducer().randomBetween(64, 78));
+            weight.append((short) fairy.baseProducer().randomBetween(65, 280));
+            height.append((short) fairy.baseProducer().randomBetween(64, 78));
             female.append(person.isFemale());
         }
         System.out.println("Time to generate " + stopwatch.elapsed(TimeUnit.SECONDS));

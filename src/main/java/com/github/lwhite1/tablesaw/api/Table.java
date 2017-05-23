@@ -769,7 +769,7 @@ public class Table implements Relation, IntIterable {
 
     public Table structure() {
         Table t = new Table("Structure of " + name());
-        IntColumn index = new IntColumn("Index", columnCount());
+        IntColumn index = IntColumn.create("Index", columnCount());
         CategoryColumn columnName = new CategoryColumn("Column Name", columnCount());
         CategoryColumn columnType = new CategoryColumn("Column Type", columnCount());
         t.addColumn(index);
@@ -790,13 +790,11 @@ public class Table implements Relation, IntIterable {
      */
     public Table uniqueRecords() {
 
-        IntArrayList uniqueRows = new IntArrayList();
         Table sorted = this.sortOn(columnNames().toArray(new String[columns().size()]));
         Table temp = emptyCopy();
 
         for (int row = 0; row < rowCount(); row++) {
             if (temp.isEmpty() || !Rows.compareRows(row, sorted, temp)) {
-                uniqueRows.add(row);
                 Rows.appendRowToTable(row, sorted, temp);
             }
         }
@@ -812,9 +810,7 @@ public class Table implements Relation, IntIterable {
      */
     @Override
     public void removeColumns(Column... columns) {
-        for (Column c : columns) {
-            columnList.remove(c);
-        }
+        columnList.removeAll(Arrays.asList(columns));
     }
 
     /**

@@ -146,8 +146,16 @@ public class PackedLocalTime {
         return packedTime > value;
     }
 
+    public static boolean isOnOrAfter(int packedTime, int value) {
+        return packedTime >= value;
+    }
+
     public static boolean isBefore(int packedTime, int value) {
         return packedTime < value;
+    }
+
+    public static boolean isOnOrBefore(int packedTime, int value) {
+        return packedTime <= value;
     }
 
     public static boolean isEqualTo(int packedTime, int value) {

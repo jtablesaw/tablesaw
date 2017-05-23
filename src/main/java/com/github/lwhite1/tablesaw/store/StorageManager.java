@@ -158,7 +158,7 @@ public class StorageManager {
     }
 
     private static IntColumn readIntColumn(String fileName, ColumnMetadata metadata) throws IOException {
-        IntColumn ints = new IntColumn(metadata);
+        IntColumn ints = IntColumn.create(metadata);
         try (FileInputStream fis = new FileInputStream(fileName);
              SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
              DataInputStream dis = new DataInputStream(sis)) {
@@ -182,7 +182,7 @@ public class StorageManager {
             boolean EOF = false;
             while (!EOF) {
                 try {
-                    ints.add(dis.readShort());
+                    ints.append(dis.readShort());
                 } catch (EOFException e) {
                     EOF = true;
                 }
@@ -199,7 +199,7 @@ public class StorageManager {
             boolean EOF = false;
             while (!EOF) {
                 try {
-                    ints.add(dis.readLong());
+                    ints.append(dis.readLong());
                 } catch (EOFException e) {
                     EOF = true;
                 }
@@ -236,7 +236,7 @@ public class StorageManager {
             while (!EOF) {
                 try {
                     long cell = dis.readLong();
-                    dates.add(cell);
+                    dates.append(cell);
                 } catch (EOFException e) {
                     EOF = true;
                 }
@@ -254,7 +254,7 @@ public class StorageManager {
             while (!EOF) {
                 try {
                     int cell = dis.readInt();
-                    times.add(cell);
+                    times.append(cell);
                 } catch (EOFException e) {
                     EOF = true;
                 }

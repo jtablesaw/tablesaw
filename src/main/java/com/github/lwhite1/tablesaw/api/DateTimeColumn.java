@@ -105,19 +105,19 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     @Override
     public void appendCell(String stringValue) {
         if (stringValue == null) {
-            add(MISSING_VALUE);
+            append(MISSING_VALUE);
         } else {
             long dateTime = convert(stringValue);
-            add(dateTime);
+            append(dateTime);
         }
     }
 
     public void add(LocalDateTime dateTime) {
         if (dateTime != null) {
             final long dt = PackedLocalDateTime.pack(dateTime);
-            add(dt);
+            append(dt);
         } else {
-            add(MISSING_VALUE);
+            append(MISSING_VALUE);
         }
     }
 
@@ -160,8 +160,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return ColumnType.LOCAL_DATE_TIME;
     }
 
-    public void add(long dateTime) {
+    public void append(long dateTime) {
         data.add(dateTime);
+    }
+
+    public void append(LocalDateTime dateTime) {
+        data.add(PackedLocalDateTime.pack(dateTime));
     }
 
     @Override
@@ -285,7 +289,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
                 newColumn.set(r, ShortColumn.MISSING_VALUE);
             } else {
-                newColumn.add((short) PackedLocalDateTime.getDayOfWeek(c1).getValue());
+                newColumn.append((short) PackedLocalDateTime.getDayOfWeek(c1).getValue());
             }
         }
         return newColumn;
@@ -296,9 +300,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
-                newColumn.add(ShortColumn.MISSING_VALUE);
+                newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
-                newColumn.add((short) PackedLocalDateTime.getDayOfYear(c1));
+                newColumn.append((short) PackedLocalDateTime.getDayOfYear(c1));
             }
         }
         return newColumn;
@@ -309,9 +313,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == FloatColumn.MISSING_VALUE) {
-                newColumn.add(ShortColumn.MISSING_VALUE);
+                newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
-                newColumn.add(PackedLocalDateTime.getDayOfMonth(c1));
+                newColumn.append(PackedLocalDateTime.getDayOfMonth(c1));
             }
         }
         return newColumn;
@@ -325,9 +329,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == MISSING_VALUE) {
-                newColumn.add(TimeColumn.MISSING_VALUE);
+                newColumn.append(TimeColumn.MISSING_VALUE);
             } else {
-                newColumn.add(PackedLocalDateTime.time(c1));
+                newColumn.append(PackedLocalDateTime.time(c1));
             }
         }
         return newColumn;
@@ -354,9 +358,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == MISSING_VALUE) {
-                newColumn.add(ShortColumn.MISSING_VALUE);
+                newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
-                newColumn.add((short) PackedLocalDateTime.getMonthValue(c1));
+                newColumn.append((short) PackedLocalDateTime.getMonthValue(c1));
             }
         }
         return newColumn;
@@ -380,9 +384,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == MISSING_VALUE) {
-                newColumn.add(ShortColumn.MISSING_VALUE);
+                newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
-                newColumn.add(PackedLocalDateTime.getYear(PackedLocalDateTime.date(c1)));
+                newColumn.append(PackedLocalDateTime.getYear(PackedLocalDateTime.date(c1)));
             }
         }
         return newColumn;
@@ -410,16 +414,32 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return select(LongColumnUtils.isGreaterThan, PackedLocalDateTime.pack(value));
     }
 
+    public Selection isAfter(Long packedDateTime) {
+        return select(LongColumnUtils.isGreaterThan, packedDateTime);
+    }
+
     public Selection isOnOrAfter(long value) {
         return select(LongColumnUtils.isGreaterThanOrEqualTo, value);
+    }
+
+    public Selection isOnOrAfter(LocalDateTime value) {
+        return select(LongColumnUtils.isGreaterThanOrEqualTo, PackedLocalDateTime.pack(value));
     }
 
     public Selection isBefore(LocalDateTime value) {
         return select(LongColumnUtils.isLessThan, PackedLocalDateTime.pack(value));
     }
 
+    public Selection isBefore(Long packedDateTime) {
+        return select(LongColumnUtils.isLessThan, packedDateTime);
+    }
+
     public Selection isOnOrBefore(long value) {
         return select(LongColumnUtils.isLessThanOrEqualTo, value);
+    }
+
+    public Selection isOnOrBefore(LocalDateTime value) {
+        return select(LongColumnUtils.isLessThanOrEqualTo, PackedLocalDateTime.pack(value));
     }
 
     public Selection isAfter(DateTimeColumn column) {
@@ -540,9 +560,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (int r = 0; r < this.size(); r++) {
             long c1 = getLong(r);
             if (c1 == DateTimeColumn.MISSING_VALUE) {
-                newColumn.add(ShortColumn.MISSING_VALUE);
+                newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
-                newColumn.add((short) PackedLocalDateTime.getMinuteOfDay(c1));
+                newColumn.append((short) PackedLocalDateTime.getMinuteOfDay(c1));
             }
         }
         return newColumn;
@@ -554,7 +574,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         while (iterator.hasNext()) {
             long next = iterator.nextLong();
             if (predicate.test(PackedLocalDateTime.asLocalDateTime(next))) {
-                column.add(next);
+                column.append(next);
             }
         }
         return column;
@@ -566,7 +586,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         while (iterator.hasNext()) {
             long next = iterator.nextLong();
             if (predicate.test(next)) {
-                column.add(next);
+                column.append(next);
             }
         }
         return column;

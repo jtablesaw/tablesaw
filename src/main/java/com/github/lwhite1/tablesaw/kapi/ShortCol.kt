@@ -2,15 +2,22 @@ package com.github.lwhite1.tablesaw.kapi
 
 import com.github.lwhite1.tablesaw.api.ColumnType
 import com.github.lwhite1.tablesaw.api.ShortColumn
+import com.github.lwhite1.tablesaw.store.ColumnMetadata
 
 /**
  *
  */
 class ShortCol(val target: ShortColumn) : AbstractColumn() {
 
-    operator fun plus(c: ShortCol): IntCol = IntCol(target.add(c.target))
+    override fun columnMetadata(): ColumnMetadata = target.columnMetadata()
+
+    override fun summary(): Dataframe = Dataframe(target.summary())
+
+    operator fun plus(c: ShortCol): IntCol = IntCol(target.append(c.target))
 
     operator fun minus(c: ShortCol): IntCol = IntCol(target.subtract(c.target))
+
+    override fun name(): String = target.name()
 
 /*
     operator fun plus(value: Int): ShortCol = ShortCol(target.addToEach(value))
@@ -56,17 +63,11 @@ class ShortCol(val target: ShortColumn) : AbstractColumn() {
 
     override fun id(): String = target.id()
 
-    override fun metadata(): String = target.metadata()
+    override fun metadataString(): String = target.metadata()
 
     override fun print(): String = target.print()
 
     override fun toString(): String = target.toString()
-
-    override fun columnWidth(): Int = target.columnWidth()
-
-    override fun byteSize(): Int = target.byteSize()
-
-    override fun emptyCopy(): ShortCol = ShortCol(target.emptyCopy())
 
     override fun copy(): Column = ShortCol(target.copy())
 
@@ -108,5 +109,19 @@ class ShortCol(val target: ShortColumn) : AbstractColumn() {
     fun skewness(): Double = target.skewness()
     fun kurtosis(): Double = target.kurtosis()
 
+    // comparisons
+    fun isLessThan(i: Int): ShortCol = ShortCol(target.select(target.isLessThan(i)))
 
+    fun isGreaterThan(i: Int): ShortCol = ShortCol(target.select(target.isGreaterThan(i)))
+    fun isGreaterThanOrEqualTo(i: Int): ShortCol = ShortCol(target.select(target.isGreaterThanOrEqualTo(i)))
+    fun isLessThanOrEqualTo(i: Int): ShortCol = ShortCol(target.select(target.isLessThanOrEqualTo(i)))
+    fun isEqualTo(i: Int): ShortCol = ShortCol(target.select(target.isEqualTo(i)))
+
+    // other boolean tests
+    fun isPositive(): ShortCol = ShortCol(target.select(target.isPositive))
+    fun isNegative(): ShortCol = ShortCol(target.select(target.isNegative))
+    fun isNonNegative(): ShortCol = ShortCol(target.select(target.isNonNegative))
+    fun isZero(): ShortCol = ShortCol(target.select(target.isZero))
+    fun isEven(): ShortCol = ShortCol(target.select(target.isEven))
+    fun isOdd(): ShortCol = ShortCol(target.select(target.isOdd))
 }

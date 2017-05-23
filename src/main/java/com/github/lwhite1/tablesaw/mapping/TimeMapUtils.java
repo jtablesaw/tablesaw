@@ -35,9 +35,9 @@ public interface TimeMapUtils extends TimeColumnUtils {
             int c1 = this.getInt(r);
             int c2 = column2.getInt(r);
             if (c1 == TimeColumn.MISSING_VALUE || c2 == TimeColumn.MISSING_VALUE) {
-                newColumn.add(IntColumn.MISSING_VALUE);
+                newColumn.append(IntColumn.MISSING_VALUE);
             } else {
-                newColumn.add(difference(c1, c2, unit));
+                newColumn.append(difference(c1, c2, unit));
             }
         }
         return newColumn;
@@ -54,9 +54,9 @@ public interface TimeMapUtils extends TimeColumnUtils {
         for (int r = 0; r < size(); r++) {
             int c1 = getInt(r);
             if (c1 != TimeColumn.MISSING_VALUE) {
-                newColumn.add(PackedLocalTime.getHour(c1));
+                newColumn.append(PackedLocalTime.getHour(c1));
             } else {
-                newColumn.add(ShortColumn.MISSING_VALUE);
+                newColumn.append(ShortColumn.MISSING_VALUE);
             }
         }
         return newColumn;

@@ -111,7 +111,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return ColumnType.SHORT_INT;
     }
 
-    public void add(short i) {
+    public void append(short i) {
         data.add(i);
     }
 
@@ -150,6 +150,14 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
             i++;
         }
         return results;
+    }
+
+    public ShortColumn select(Selection selection) {
+        ShortColumn column = emptyCopy();
+        for (int next : selection) {
+            column.append(data.getShort(next));
+        }
+        return column;
     }
 
     @Override
@@ -244,7 +252,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     @Override  // TODO(lwhite): Move to AbstractColumn
     public void appendCell(String object) {
         try {
-            add(convert(object));
+            append(convert(object));
         } catch (NumberFormatException nfe) {
             throw new NumberFormatException(name() + ": " + nfe.getMessage());
         } catch (NullPointerException e) {
@@ -407,7 +415,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         Preconditions.checkArgument(column.type() == this.type());
         ShortColumn shortColumn = (ShortColumn) column;
         for (int i = 0; i < shortColumn.size(); i++) {
-            add(shortColumn.get(i));
+            append(shortColumn.get(i));
         }
     }
 
@@ -417,7 +425,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         while (intIterator.hasNext()) {
             short next = intIterator.nextShort();
             if (predicate.test(next)) {
-                column.add(next);
+                column.append(next);
             }
         }
         return column;
@@ -431,7 +439,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return result;
     }
 
-    public IntColumn add(ShortColumn column2) {
+    public IntColumn append(ShortColumn column2) {
         IntColumn result = IntColumn.create(name() + " + " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) + column2.get(r));
@@ -592,11 +600,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     @Override
     public ShortColumn difference() {
         ShortColumn returnValue = new ShortColumn(this.name(), data.size());
-        returnValue.add(ShortColumn.MISSING_VALUE);
+        returnValue.append(ShortColumn.MISSING_VALUE);
         for (int current = 1; current > data.size(); current++) {
             // YUCK!!
             short value = (short) (get(current) - get(current + 1));
-            returnValue.add(value);
+            returnValue.append(value);
         }
         return returnValue;
     }

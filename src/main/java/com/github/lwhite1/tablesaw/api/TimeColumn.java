@@ -102,8 +102,12 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return data.size();
     }
 
-    public void add(int f) {
+    public void append(int f) {
         data.add(f);
+    }
+
+    public void append(LocalTime f) {
+        data.add(PackedLocalTime.pack(f));
     }
 
     @Override
@@ -276,7 +280,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     @Override
     public void appendCell(String object) {
         try {
-            add(convert(object));
+            append(convert(object));
         } catch (NullPointerException e) {
             throw new RuntimeException(name() + ": "
                     + String.valueOf(object) + ": "
@@ -335,7 +339,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
             if (predicate.test(PackedLocalTime.asLocalTime(next))) {
-                column.add(next);
+                column.append(next);
             }
         }
         return column;
@@ -352,7 +356,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
             if (predicate.test(next)) {
-                column.add(next);
+                column.append(next);
             }
         }
         return column;
@@ -363,7 +367,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         Preconditions.checkArgument(column.type() == this.type());
         TimeColumn intColumn = (TimeColumn) column;
         for (int i = 0; i < intColumn.size(); i++) {
-            add(intColumn.getInt(i));
+            append(intColumn.getInt(i));
         }
     }
 
@@ -379,8 +383,34 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return select(PackedLocalTime::isBefore, PackedLocalTime.pack(time));
     }
 
+    public Selection isBefore(int packedTime) {
+        return select(PackedLocalTime::isBefore, packedTime);
+    }
+
     public Selection isAfter(LocalTime time) {
         return select(PackedLocalTime::isAfter, PackedLocalTime.pack(time));
+    }
+
+    public Selection isAfter(int packedTime) {
+        return select(PackedLocalTime::isAfter, packedTime);
+    }
+
+    public Selection isOnOrAfter(LocalTime time) {
+        int packed = PackedLocalTime.pack(time);
+        return select(PackedLocalTime::isOnOrBefore, packed);
+    }
+
+    public Selection isOnOrAfter(int packed) {
+        return select(PackedLocalTime::isOnOrBefore, packed);
+    }
+
+    public Selection isOnOrBefore(LocalTime value) {
+        int packed = PackedLocalTime.pack(value);
+        return select(PackedLocalTime::isOnOrBefore, packed);
+    }
+
+    public Selection isOnOrBefore(int packed) {
+        return select(PackedLocalTime::isOnOrBefore, packed);
     }
 
     /**

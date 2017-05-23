@@ -115,7 +115,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return ColumnType.LONG_INT;
     }
 
-    public void add(long i) {
+    public void append(long i) {
         data.add(i);
     }
 
@@ -185,15 +185,15 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public LongColumn remainder(LongColumn column2) {
         LongColumn result = LongColumn.create(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) % column2.get(r));
+            result.append(get(r) % column2.get(r));
         }
         return result;
     }
 
-    public LongColumn add(LongColumn column2) {
+    public LongColumn append(LongColumn column2) {
         LongColumn result = LongColumn.create(name() + " + " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) + column2.get(r));
+            result.append(get(r) + column2.get(r));
         }
         return result;
     }
@@ -201,7 +201,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public LongColumn subtract(LongColumn column2) {
         LongColumn result = LongColumn.create(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) - column2.get(r));
+            result.append(get(r) - column2.get(r));
         }
         return result;
     }
@@ -209,7 +209,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public LongColumn multiply(LongColumn column2) {
         LongColumn result = LongColumn.create(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) * column2.get(r));
+            result.append(get(r) * column2.get(r));
         }
         return result;
     }
@@ -233,7 +233,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public LongColumn divide(LongColumn column2) {
         LongColumn result = LongColumn.create(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.add(get(r) / column2.get(r));
+            result.append(get(r) / column2.get(r));
         }
         return result;
     }
@@ -302,7 +302,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     @Override
     public void appendCell(String object) {
         try {
-            add(convert(object));
+            append(convert(object));
         } catch (NumberFormatException nfe) {
             throw new NumberFormatException(name() + ": " + nfe.getMessage());
         } catch (NullPointerException e) {
@@ -465,8 +465,16 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         Preconditions.checkArgument(column.type() == this.type());
         LongColumn longColumn = (LongColumn) column;
         for (int i = 0; i < longColumn.size(); i++) {
-            add(longColumn.get(i));
+            append(longColumn.get(i));
         }
+    }
+
+    public LongColumn select(Selection selection) {
+        LongColumn column = emptyCopy();
+        for (int next : selection) {
+            column.append(data.getLong(next));
+        }
+        return column;
     }
 
     public LongColumn selectIf(LongPredicate predicate) {
@@ -475,7 +483,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         while (intIterator.hasNext()) {
             long next = intIterator.nextLong();
             if (predicate.test(next)) {
-                column.add(next);
+                column.append(next);
             }
         }
         return column;
@@ -585,9 +593,9 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     @Override
     public LongColumn difference() {
         LongColumn returnValue = new LongColumn(this.name(), data.size());
-        returnValue.add(LongColumn.MISSING_VALUE);
+        returnValue.append(LongColumn.MISSING_VALUE);
         for (int current = 1; current > data.size(); current++) {
-            returnValue.add(get(current) - get(current + 1));
+            returnValue.append(get(current) - get(current + 1));
         }
         return returnValue;
     }

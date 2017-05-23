@@ -21,16 +21,22 @@ class IntColTest {
         val result2 = col + col
         val result3 = col / 2
         val result4 = col + 200
+        val result5 = col.emptyCopy()
+        val result6 = col * 2
+        val result7 = col - col
 
         println(result)
         println(result2)
+        println("Name: ${result.name()}")
+        println("Name: ${result5.name()}")
+        println("Id: ${result.id()}")
 
         println(result4[2])
         println(col[2])
         println("remainder: " + (result4 % col)[2])
 
-        //  println(result.firstElement())
-        //  println(result2.firstElement())
+        println(result.firstElement())
+        println(result2.firstElement())
 
         println(result.sum())
         println(result2.sum())
@@ -65,6 +71,8 @@ class IntColTest {
         println(col.skewness())
         println(col.kurtosis())
 
+        val subset = col.isEven()
+        println(subset.print())
     }
 
     @Test

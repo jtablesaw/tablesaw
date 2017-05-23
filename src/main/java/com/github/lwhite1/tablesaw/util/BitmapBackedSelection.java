@@ -43,7 +43,6 @@ public class BitmapBackedSelection implements Selection {
         return new IntArrayList(bitmap.toArray());
     }
 
-
     /**
      * Intersects the receiver and {@code otherSelection}, updating the receiver
      */

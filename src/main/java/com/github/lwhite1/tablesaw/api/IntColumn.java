@@ -21,9 +21,11 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +37,7 @@ import static com.github.lwhite1.tablesaw.reducing.NumericReduceUtils.*;
 public class IntColumn extends AbstractColumn implements IntMapUtils, NumericColumn {
 
     public static final int MISSING_VALUE = (int) ColumnType.INTEGER.getMissingValue();
-    private static final int DEFAULT_ARRAY_SIZE = 128;
+    public static final int DEFAULT_ARRAY_SIZE = 128;
     private static final int BYTE_SIZE = 4;
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private IntArrayList data;
@@ -53,17 +55,17 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         }
     };
 
-    public IntColumn(String name, int initialSize) {
+    private IntColumn(String name, int initialSize) {
         super(name);
         data = new IntArrayList(initialSize);
     }
 
-    public IntColumn(ColumnMetadata metadata) {
+    private IntColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new IntArrayList(metadata.getSize());
     }
 
-    public IntColumn(String name) {
+    private IntColumn(String name) {
         super(name);
         data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
@@ -91,7 +93,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
      * <p>
      * We remove any commas before parsing
      */
-    public static int convert(String stringValue) {
+    private static int convert(String stringValue) {
         if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
             return MISSING_VALUE;
         }
@@ -146,6 +148,20 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
     public Selection isNotMissing() {
         return select(isNotMissing);
+    }
+
+    public Selection isIn(int ... values) {
+        Selection bitmap = new BitmapBackedSelection();
+        for (int idx = 0; idx < data.size(); idx++) {
+            int next = data.getInt(idx);
+            for (int v : values) {
+                if (v == next) {
+                    bitmap.add(idx);
+                    break;
+                }
+            }
+        }
+        return bitmap;
     }
 
     public Selection isEqualTo(IntColumn other) {
@@ -589,6 +605,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return bottom;
     }
 
+    @NotNull
     @Override
     public IntIterator iterator() {
         return data.iterator();
