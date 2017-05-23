@@ -3,6 +3,7 @@ package com.github.lwhite1.tablesaw.kapi
 import com.github.lwhite1.tablesaw.api.BooleanColumn
 import com.github.lwhite1.tablesaw.api.ColumnType
 import com.github.lwhite1.tablesaw.store.ColumnMetadata
+import com.github.lwhite1.tablesaw.util.Selection
 
 /**
  *
@@ -46,5 +47,13 @@ class BooleanCol(val target: BooleanColumn): Col {
     override fun columnMetadata(): ColumnMetadata = target.columnMetadata()
 
     override fun print(): String = target.print()
+
+    fun countTrue(): Int = target.countTrue()
+
+    fun countFalse(): Int = target.countFalse()
+
+    fun isFalse(): Selection = target.isFalse
+
+    fun isTrue(): Selection = target.isTrue
 
 }
