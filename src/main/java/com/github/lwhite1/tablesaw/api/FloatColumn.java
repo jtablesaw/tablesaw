@@ -296,6 +296,20 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return select(isLessThan, f);
     }
 
+    public Selection isZero() {
+        return select(isZero);
+    }
+
+    public Selection isNegative() {
+        return select(isNegative);
+    }
+    public Selection isPositive() {
+        return select(isZero);
+    }
+    public Selection isNonNegative() {
+        return select(isZero);
+    }
+
     public Selection isMissing() {
         return select(isMissing);
     }
@@ -641,18 +655,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
             i++;
         }
         return results;
-    }
-
-    Selection isPositive() {
-        return select(isPositive);
-    }
-
-    Selection isNegative() {
-        return select(isNegative);
-    }
-
-    Selection isNonNegative() {
-        return select(isNonNegative);
     }
 
     public double[] toDoubleArray() {

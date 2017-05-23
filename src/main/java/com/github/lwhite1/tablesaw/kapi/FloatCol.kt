@@ -1,6 +1,7 @@
 package com.github.lwhite1.tablesaw.kapi
 
 import com.github.lwhite1.tablesaw.api.FloatColumn
+import com.github.lwhite1.tablesaw.util.Selection
 
 /**
  *
@@ -34,8 +35,10 @@ class FloatCol(val target: FloatColumn) {
 
     operator fun times(c: FloatCol): FloatColumn = target.multiply(c.target);
 
+    operator fun rem(c: FloatCol): FloatColumn = target.remainder(c.target);
 
-    // math functions
+
+    // descriptive statistics
     fun sum(): Double = target.sum()
     fun product(): Double = target.product()
     fun sumOfLogs(): Double = target.sumOfLogs()
@@ -60,5 +63,35 @@ class FloatCol(val target: FloatColumn) {
     fun skewness(): Double = target.skewness()
     fun kurtosis(): Double = target.kurtosis()
 
+
+    // math functions
+    fun cube(): FloatCol = FloatCol(target.cube())
+    fun cubeRoot(): FloatCol = FloatCol(target.cubeRoot())
+
+    fun square(): FloatCol = FloatCol(target.square())
+    fun sqrt(): FloatCol = FloatCol(target.sqrt())
+
+    fun abs(): FloatCol = FloatCol(target.abs())
+    fun round(): FloatCol = FloatCol(target.round())
+    
+    fun log1p(): FloatCol = FloatCol(target.log1p())
+    fun log10(): FloatCol = FloatCol(target.log10())
+    fun logN(): FloatCol = FloatCol(target.logN())
+
+    // comparisons
+
+    fun isGreaterThan(value: Float): Selection = target.isGreaterThan(value);
+    fun isGreaterThanOrEqualTo(value: Float): Selection = target.isGreaterThanOrEqualTo(value);
+    fun isLessThanOrEqualTo(value: Float): Selection = target.isLessThanOrEqualTo(value);
+    fun isLessThan(value: Float): Selection = target.isLessThan(value);
+    fun isEqualTo(value: Float): Selection = target.isEqualTo(value);
+
+    // other boolean expressions
+    fun isZero(): Selection = target.isZero();
+    fun isMissing(): Selection = target.isMissing();
+    fun isNotMissing(): Selection = target.isNotMissing();
+    fun isNegative(): Selection = target.isNegative();
+    fun isPositive(): Selection = target.isPositive();
+    fun isNonNegative(): Selection = target.isNonNegative();
 
 }
