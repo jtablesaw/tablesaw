@@ -5,7 +5,7 @@ Tablesaw
 
 To make this project maintainable, I'm reducing the current 5 supported numeric types to a single type of Double. Double columns can represent large integers without loss of precision. The downside (aside from upgrade issues) is that doubles are not small, so there is some impact on the amount of data workable for any given amount of memory. 
 
-Supporting 5 numeric types is unmanageable for one person. To maintain consistency while working with primitive data, each type needs its own version of every method, and all the classes that use numeric types have to  generally have separate code for each. Multiply the extra work by the overhead of testing, bugfixing, and documentation and I am over my head. 
+Supporting 5 numeric types is unmanageable for one person. To maintain consistency while working with primitive data, each type needs its own version of every method, and the classes that use numeric types require separate code for each. Multiply the extra work by the overhead of testing, bugfixing, and documentation and I am over my head. 
 
 The future version is in development on the lwhite1/hacksaw project. It will be available soon, and will support a Kotlin API so that it easy to use interactively.
 
