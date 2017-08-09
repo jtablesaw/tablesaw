@@ -45,11 +45,11 @@ public class PrincipalComponents {
     }
 
     public double[][] getLoadings() {
-        return pca.getLoadings();
+        return pca.getLoadings().array();
     }
 
     public double[][] getProjection() {
-        return pca.getProjection();
+        return pca.getProjection().array();
     }
 
     public PCA setProjection(int p) {
