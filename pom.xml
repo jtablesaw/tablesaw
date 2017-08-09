@@ -260,7 +260,7 @@
         <dependency>
             <groupId>org.knowm.xchart</groupId>
             <artifactId>xchart</artifactId>
-            <version>3.2.0</version>
+            <version>3.5.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.haifengl</groupId>
