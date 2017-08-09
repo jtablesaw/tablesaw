@@ -1,5 +1,4 @@
 target/
-.idea/
 
 databases/
 
@@ -14,7 +13,14 @@ derby.log
 CoffeeDB/
 
 testfolder/
-
-*.iml
 test_col_test
 
+# IntelliJ
+*.iml
+.idea/
+
+# Eclipse
+.project
+.settings
+.classpath
+bin/

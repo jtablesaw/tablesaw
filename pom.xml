@@ -30,7 +30,7 @@
     <properties>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.version>1.1.2-4</kotlin.version>
+        <kotlin.version>1.1.3-2</kotlin.version>
     </properties>
     <distributionManagement>
         <snapshotRepository>
@@ -41,18 +41,6 @@
     <build>
         <!-- <directory>/Users/larrywhite/IdeaProjects/tablesaw_target</directory> -->
         <plugins>
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-maven-plugin</artifactId>
-                <version>4.5</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>antlr4</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -125,34 +113,54 @@
                 <executions>
                     <execution>
                         <id>compile</id>
-                        <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                            </sourceDirs>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>test-compile</id>
-                        <phase>test-compile</phase>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/test/java</sourceDir>
+                            </sourceDirs>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.5.1</version>
                 <executions>
+                    <!-- Replacing default-compile as it is treated specially by maven -->
                     <execution>
-                        <id>compile</id>
+                        <id>default-compile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <!-- Replacing default-testCompile as it is treated specially by maven -->
+                    <execution>
+                        <id>default-testCompile</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>java-compile</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>testCompile</id>
+                        <id>java-test-compile</id>
                         <phase>test-compile</phase>
                         <goals>
                             <goal>testCompile</goal>
@@ -167,24 +175,6 @@
         </plugins>
     </build>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.github.jbellis/jamm -->
-        <dependency>
-            <groupId>com.github.jbellis</groupId>
-            <artifactId>jamm</artifactId>
-            <version>0.3.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.codearte.jfairy</groupId>
-            <artifactId>jfairy</artifactId>
-            <version>0.5.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>ST4</artifactId>
-            <version>4.0.7</version>
-        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -193,34 +183,12 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.5</version>
+            <version>2.8.1</version>
         </dependency>
-        <dependency>
-            <groupId>me.lemire.integercompression</groupId>
-            <artifactId>JavaFastPFOR</artifactId>
-            <version>[0.1,)</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-csv</artifactId>
-            <version>2.7.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-            <version>3.0.1</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.0</version>
+        <dependency>       
+            <groupId>me.lemire.integercompression</groupId>       
+            <artifactId>JavaFastPFOR</artifactId>     
+            <version>[0.1,)</version>     
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -230,12 +198,12 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.3.2</version>
+            <version>3.6</version>
         </dependency>
         <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
-            <version>3.8</version>
+            <version>3.10</version>
         </dependency>
         <dependency>
             <groupId>org.iq80.snappy</groupId>
@@ -245,12 +213,12 @@
         <dependency>
             <groupId>org.roaringbitmap</groupId>
             <artifactId>RoaringBitmap</artifactId>
-            <version>0.6.5</version>
+            <version>0.6.47</version>
         </dependency>
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
-            <version>7.0.10</version>
+            <version>7.2.1</version>
         </dependency>
         <dependency>
             <groupId>com.github.haifengl</groupId>
@@ -268,14 +236,40 @@
             <version>1.2.2</version>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.193</version>
-        </dependency>
-        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jre8</artifactId>
             <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.2</version>
+            <optional>true</optional>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.jbellis/jamm -->
+        <dependency>
+            <groupId>com.github.jbellis</groupId>
+            <artifactId>jamm</artifactId>
+            <version>0.3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.codearte.jfairy</groupId>
+            <artifactId>jfairy</artifactId>
+            <version>0.5.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.193</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
