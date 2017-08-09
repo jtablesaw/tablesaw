@@ -12,6 +12,7 @@ import com.google.common.collect.PeekingIterator;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
@@ -455,7 +456,7 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
             } else if (positiveItr.hasNext()) {
                 firstComplementRangeLowerBound = positiveItr.next().upperBound;
             } else {
-                return Iterators.emptyIterator();
+                return Collections.emptyIterator();
             }
             return new AbstractIterator<Entry<IntCut, IntRange>>() {
                 IntCut nextComplementRangeLowerBound = firstComplementRangeLowerBound;
@@ -510,7 +511,7 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
                                 : positiveRangesByLowerBound.higherKey(positiveItr.peek().upperBound);
             } else if (!complementLowerBoundWindow.contains(IntCut.belowAll().endpoint())
                     || positiveRangesByLowerBound.containsKey(IntCut.belowAll())) {
-                return Iterators.emptyIterator();
+                return Collections.emptyIterator();
             } else {
                 cut = positiveRangesByLowerBound.higherKey(IntCut.belowAll());
             }
@@ -665,11 +666,11 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
 
         Iterator<Entry<IntCut, IntRange>> entryIterator() {
             if (restriction.isEmpty()) {
-                return Iterators.emptyIterator();
+                return Collections.emptyIterator();
             }
             final Iterator<IntRange> completeRangeItr;
             if (lowerBoundWindow.upperBound.isLessThan(restriction.lowerEndpoint())) {
-                return Iterators.emptyIterator();
+                return Collections.emptyIterator();
             } else if (lowerBoundWindow.lowerBound.isLessThan(restriction.lowerEndpoint())) {
                 // starts at the first range with upper bound strictly greater than restriction.lowerBound
                 completeRangeItr =
@@ -700,7 +701,7 @@ public class IntTreeRangeSet extends AbstractIntRangeSet {
 
         Iterator<Entry<IntCut, IntRange>> descendingEntryIterator() {
             if (restriction.isEmpty()) {
-                return Iterators.emptyIterator();
+                return Collections.emptyIterator();
             }
             IntCut upperBoundOnLowerBounds = Ordering.natural()
                     .min(lowerBoundWindow.upperBound, IntCut.belowValue(restriction.upperEndpoint()));
