@@ -4,6 +4,7 @@ import com.github.lwhite1.tablesaw.plotting.StandardColors;
 import org.knowm.xchart.style.GGPlot2Theme;
 import org.knowm.xchart.style.PieStyler;
 import org.knowm.xchart.style.Styler;
+import org.knowm.xchart.style.Styler.ToolTipType;
 import org.knowm.xchart.style.Theme;
 import org.knowm.xchart.style.markers.Marker;
 
@@ -286,11 +287,6 @@ public class TablesawTheme implements Theme {
     }
 
     @Override
-    public boolean showMarkers() {
-        return ggPlot2Theme.showMarkers();
-    }
-
-    @Override
     public Color getErrorBarsColor() {
         return ggPlot2Theme.getErrorBarsColor();
     }
@@ -318,5 +314,50 @@ public class TablesawTheme implements Theme {
     @Override
     public Marker[] getSeriesMarkers() {
         return ggPlot2Theme.getSeriesMarkers();
+    }
+
+    @Override
+    public Font getBaseFont() {
+        return ggPlot2Theme.getBaseFont();
+    }
+
+    @Override
+    public boolean isToolTipsEnabled() {
+        return ggPlot2Theme.isToolTipsEnabled();
+    }
+
+    @Override
+    public ToolTipType getToolTipType() {
+        return ggPlot2Theme.getToolTipType();
+    }
+
+    @Override
+    public Font getToolTipFont() {
+        return ggPlot2Theme.getToolTipFont();
+    }
+
+    @Override
+    public Color getToolTipBackgroundColor() {
+        return ggPlot2Theme.getToolTipBackgroundColor();
+    }
+
+    @Override
+    public Color getToolTipBorderColor() {
+        return ggPlot2Theme.getToolTipBorderColor();
+    }
+
+    @Override
+    public Color getToolTipHighlightColor() {
+        return ggPlot2Theme.getToolTipHighlightColor();
+    }
+
+    @Override
+    public boolean isSumVisible() {
+        return ggPlot2Theme.isSumVisible();
+    }
+
+    @Override
+    public Font getSumFont() {
+        return ggPlot2Theme.getSumFont();
     }
 }
