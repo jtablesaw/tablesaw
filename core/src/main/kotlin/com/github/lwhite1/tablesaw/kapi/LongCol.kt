@@ -118,9 +118,9 @@ class LongCol(val target: LongColumn) : NumericCol {
 
     // comparisons
     fun isLessThan(i: Long): LongCol = LongCol(target.select(target.isLessThan(i)))
-    fun isGreaterThan(i: Int): LongCol = LongCol(target.select(target.isGreaterThan(i)))
-    fun isGreaterThanOrEqualTo(i: Int): LongCol = LongCol(target.select(target.isGreaterThanOrEqualTo(i)))
-    fun isLessThanOrEqualTo(i: Int): LongCol = LongCol(target.select(target.isLessThanOrEqualTo(i)))
+    fun isGreaterThan(i: Long): LongCol = LongCol(target.select(target.isGreaterThan(i)))
+    fun isGreaterThanOrEqualTo(i: Long): LongCol = LongCol(target.select(target.isGreaterThanOrEqualTo(i)))
+    fun isLessThanOrEqualTo(i: Long): LongCol = LongCol(target.select(target.isLessThanOrEqualTo(i)))
     fun isEqualTo(i: Long): LongCol = LongCol(target.select(target.isEqualTo(i)))
 
     // other boolean tests
