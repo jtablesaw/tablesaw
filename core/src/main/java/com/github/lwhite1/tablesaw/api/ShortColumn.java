@@ -135,6 +135,10 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return select(ShortColumnUtils.isLessThanOrEqualTo, i);
     }
 
+    public Selection isNotEqualTo(int i) {
+      return select(ShortColumnUtils.isNotEqualTo, i);
+    }
+ 
     public Selection isEqualTo(int i) {
         return select(ShortColumnUtils.isEqualTo, i);
     }

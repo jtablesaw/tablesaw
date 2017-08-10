@@ -127,15 +127,15 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return select(isLessThan, i);
     }
 
-    public Selection isGreaterThan(int i) {
+    public Selection isGreaterThan(long i) {
         return select(isGreaterThan, i);
     }
 
-    public Selection isGreaterThanOrEqualTo(int i) {
+    public Selection isGreaterThanOrEqualTo(long i) {
         return select(isGreaterThanOrEqualTo, i);
     }
 
-    public Selection isLessThanOrEqualTo(int f) {
+    public Selection isLessThanOrEqualTo(long f) {
         return select(isLessThanOrEqualTo, f);
     }
 
@@ -143,6 +143,10 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return select(isEqualTo, i);
     }
 
+    public Selection isNotEqualTo(long i) {
+      return select(isNotEqualTo, i);
+    }
+ 
     public Selection isEqualTo(LongColumn f) {
         Selection results = new BitmapBackedSelection();
         int i = 0;

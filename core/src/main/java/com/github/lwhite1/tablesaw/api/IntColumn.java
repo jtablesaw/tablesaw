@@ -25,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -136,6 +135,10 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
     public Selection isLessThanOrEqualTo(int i) {
         return select(isLessThanOrEqualTo, i);
+    }
+
+    public Selection isNotEqualTo(int i) {
+      return select(isNotEqualTo, i);
     }
 
     public Selection isEqualTo(int i) {

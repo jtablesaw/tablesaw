@@ -316,6 +316,10 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return select(isLessThanOrEqualTo, f);
     }
 
+    public Selection isNotEqualTo(double d) {
+      return select(isNotEqualTo, d);
+    }
+
     public Selection isEqualTo(double d) {
         return select(isEqualTo, d);
     }

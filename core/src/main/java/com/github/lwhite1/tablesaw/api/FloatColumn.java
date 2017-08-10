@@ -331,6 +331,10 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return select(isLessThanOrEqualTo, f);
     }
 
+    public Selection isNotEqualTo(float f) {
+      return select(isNotEqualTo, f);
+    }    
+
     public Selection isEqualTo(float f) {
         return select(isEqualTo, f);
     }

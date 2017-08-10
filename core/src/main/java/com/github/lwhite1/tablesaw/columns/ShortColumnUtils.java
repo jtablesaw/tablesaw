@@ -40,6 +40,8 @@ public interface ShortColumnUtils extends Column, ShortIterable {
 
     ShortBiPredicate isEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
 
+    ShortBiPredicate isNotEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest != valueToCompareAgainst;
+
     ShortPredicate isMissing = i -> i == ShortColumn.MISSING_VALUE;
     ShortPredicate isNotMissing = i -> i != ShortColumn.MISSING_VALUE;
 }
