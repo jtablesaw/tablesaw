@@ -76,7 +76,7 @@ public class LargeDataTest {
 /*    try (CSVWriter writer = new CSVWriter(new FileWriter("people.csv"))) {
       String[] header = {"first name", "last name", "company",
           "city", "postal code", "state", "birthdate", "height", "weight", "female"};
-      writer.writeNext(header);
+      writer.writeNext(header, false);
 
       for (int r = 0; r < 300_000_000; r++) {
         if (r % 1_000_000 == 0) {
@@ -94,7 +94,7 @@ public class LargeDataTest {
         entries[7] = String.column(fairy.baseProducer().randomBetween(65, 280));
         entries[8] = String.column(fairy.baseProducer().randomBetween(64, 78));
         entries[9] = String.column(person.isFemale());
-        writer.writeNext(entries);
+        writer.writeNext(entries, false);
       }
     }*/
     }

@@ -48,7 +48,7 @@ public class CsvCombiner {
             }
             String[] nextLine;
             while ((nextLine = reader.readNext()) != null) {
-                writer.writeNext(nextLine);
+                writer.writeNext(nextLine, false);
             }
         } catch (IOException e) {
             e.printStackTrace();

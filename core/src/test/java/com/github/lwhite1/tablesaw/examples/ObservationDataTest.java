@@ -180,14 +180,14 @@ public class ObservationDataTest {
         String[] line = new String[4];
         String[] header = {"concept", "date", "value", "patient"};
 
-        writer.writeNext(header);
+        writer.writeNext(header, false);
         // sample from the pools to write the data
         for (int i = 0; i < observationCount; i++) {
             line[0] = concepts.get(RandomUtils.nextInt(0, concepts.size()));
             line[1] = PackedLocalDate.toDateString(dates.getInt(RandomUtils.nextInt(0, dates.size())));
             line[2] = Float.toString(RandomUtils.nextFloat(0f, 100_000f));
             line[3] = Integer.toString(patientIds.getInt(RandomUtils.nextInt(0, patientIds.size())));
-            writer.writeNext(line);
+            writer.writeNext(line, false);
 /*
       dateColumn.add(dates.getInt(RandomUtils.nextInt(0, dates.size())));
       conceptColumn.add(concepts.get(RandomUtils.nextInt(0, concepts.size())));

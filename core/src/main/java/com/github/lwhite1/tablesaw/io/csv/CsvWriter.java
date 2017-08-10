@@ -43,14 +43,14 @@ final public class CsvWriter {
             for (int c = 0; c < table.columnCount(); c++) {
                 header[c] = table.column(c).name();
             }
-            writer.writeNext(header);
+            writer.writeNext(header, false);
             for (int r = 0; r < table.rowCount(); r++) {
                 String[] entries = new String[table.columnCount()];
                 for (int c = 0; c < table.columnCount(); c++) {
                     table.get(c, r);
                     entries[c] = table.get(c, r);
                 }
-                writer.writeNext(entries);
+                writer.writeNext(entries, false);
             }
         }
     }
@@ -63,11 +63,11 @@ final public class CsvWriter {
     public static void write(String fileName, Column column) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(fileName))) {
             String[] header = {column.name()};
-            writer.writeNext(header);
+            writer.writeNext(header, false);
 
             for (int r = 0; r < column.size(); r++) {
                 String[] entries = {column.getString(r)};
-                writer.writeNext(entries);
+                writer.writeNext(entries, false);
             }
         }
     }
