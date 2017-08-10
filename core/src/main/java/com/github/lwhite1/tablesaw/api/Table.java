@@ -485,6 +485,23 @@ public class Table implements Relation, IntIterable {
     }
 
     /**
+     * Returns a table with the same columns as this table
+     */
+    public Table fullCopy() {
+      Table copy = new Table(name);
+      for (Column column : columnList) {
+        copy.addColumn(column.emptyCopy());
+      }
+
+      IntArrayList integers = new IntArrayList();
+      for(int i = 0; i < rowCount(); i++)
+        integers.add(i);
+      Rows.copyRowsToTable(integers,this,copy);
+
+      return copy;
+    }
+
+    /**
      * Returns a table with the same columns as this table, but no data
      */
     public Table emptyCopy() {
