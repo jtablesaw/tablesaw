@@ -785,6 +785,35 @@ public class Table implements Relation, IntIterable {
     }
 
     /**
+     * Returns a table with the given rows dropped
+     * @param rows the rows to drop
+     * @return the table with the dropped rows
+     */
+    public Table dropRows(IntArrayList rows) {
+      Table newTable = emptyCopy();
+      IntArrayList rows2 = new IntArrayList(rows);
+      IntArrayList allRows = new IntArrayList();
+      for (int i = 0; i < rowCount(); i++) {
+        allRows.add(i);
+      }
+      //rows to keep
+      allRows.removeAll(rows2);
+      Rows.copyRowsToTable(allRows, this, newTable);
+      return newTable;
+
+    }
+
+    /**
+     * Returns a table with the given rows dropped
+     * @param rows the rows to drop
+     * @return the table with the dropped rows
+     */
+    public Table dropRows(int... rows) {
+      IntArrayList rows2 = new IntArrayList(rows);
+      return dropRows(rows2);
+    }
+
+    /**
      * Returns the unique records in this table
      * Note: Uses a lot of memory for a sort
      */
