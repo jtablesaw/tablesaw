@@ -438,6 +438,9 @@ public class CategoryColumn extends AbstractColumn
         return "Category column: " + name();
     }
 
+    /**
+     * Returns the raw indexes that this column contains.
+     */
     public int[] indexes() {
         int[] rowIndexes = new int[size()];
         for (int i = 0; i < size(); i++) {
@@ -447,8 +450,37 @@ public class CategoryColumn extends AbstractColumn
     }
 
     /**
+     * Return a copy of this column with the given string appended
+     * @param append the column to append
+     * @return the new column
+     */
+    public CategoryColumn appendString(CategoryColumn append) {
+      CategoryColumn newColumn = CategoryColumn.create(name() + "[column appended]", this.size());
+      for (int r = 0; r < size(); r++) {
+        newColumn.add(get(r) + append.get(r));
+      }
+      return newColumn;
+    }
+
+    /**
+     * Return a copy of this column with the given string appended
+     * @param append the string to append
+     * @return the new column
+     */
+    public CategoryColumn appendString(String append) {
+      CategoryColumn newColumn = CategoryColumn.create(name() + "[append]", this.size());
+      for (int r = 0; r < size(); r++) {
+        newColumn.add(get(r) + append);
+      }
+      return newColumn;
+    }
+
+    /**
      * Creates a new column, replacing each string in this column with a new string formed by
      * replacing any substring that matches the regex
+     * @param regexArray the regex array to replace
+     * @param replacement the replacement array
+     * @return the new column
      */
     public CategoryColumn replaceAll(String[] regexArray, String replacement) {
 
