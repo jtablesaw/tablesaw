@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.ints.IntListIterator;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -489,7 +490,7 @@ public class CategoryColumn extends AbstractColumn
 
         for (int r = 0; r < size(); r++) {
             String value = get(r);
-            Splitter splitter = Splitter.on(CharMatcher.WHITESPACE);
+            Splitter splitter = Splitter.on(CharMatcher.whitespace());
             splitter = splitter.trimResults();
             splitter = splitter.omitEmptyStrings();
             List<String> tokens = new ArrayList<>(splitter.splitToList(value));
@@ -506,7 +507,7 @@ public class CategoryColumn extends AbstractColumn
         for (int r = 0; r < size(); r++) {
             String value = get(r);
 
-            Splitter splitter = Splitter.on(CharMatcher.WHITESPACE);
+            Splitter splitter = Splitter.on(CharMatcher.whitespace());
             splitter = splitter.trimResults();
             splitter = splitter.omitEmptyStrings();
             List<String> tokens = new ArrayList<>(splitter.splitToList(value));
@@ -645,22 +646,47 @@ public class CategoryColumn extends AbstractColumn
     }
 
     public Selection isIn(String... strings) {
-        IntArrayList keys = new IntArrayList();
-        for (String string : strings) {
-            int key = lookupTable.get(string);
-            if (key >= 0) {
-                keys.add(key);
-            }
-        }
-
-        int i = 0;
-        Selection results = new BitmapBackedSelection();
-        for (int next : values) {
-            if (keys.contains(next)) {
-                results.add(i);
+      Selection results = new BitmapBackedSelection();
+      for (String string : strings) {
+        int key = lookupTable.get(string);
+        if (key >= 0) {
+          int i = 0;
+          for (int next : values) {
+            if (key == next) {
+              results.add(i);
             }
             i++;
+          }
         }
-        return results;
+      }
+
+      return results;
+    }
+
+    public Selection isIn(Collection<String> strings) {
+      return isIn(strings.toArray(new String[strings.size()]));
+    }
+
+
+    public Selection isNotIn(String... strings) {
+      Selection results = new BitmapBackedSelection();
+      for (String string : strings) {
+        int key = lookupTable.get(string);
+        if (key >= 0) {
+          int i = 0;
+          for (int next : values) {
+            if (key != next) {
+              results.add(i);
+            }
+            i++;
+          }
+        }
+      }
+
+      return results;
+    }
+
+    public Selection isNotIn(Collection<String> strings) {
+      return isNotIn(strings.toArray(new String[strings.size()]));
     }
 }

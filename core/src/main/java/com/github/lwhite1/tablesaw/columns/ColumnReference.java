@@ -1,5 +1,9 @@
 package com.github.lwhite1.tablesaw.columns;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import com.github.lwhite1.tablesaw.api.IntColumn;
 import com.github.lwhite1.tablesaw.columns.packeddata.PackedLocalDate;
 import com.github.lwhite1.tablesaw.filtering.BooleanIsFalse;
@@ -24,6 +28,7 @@ import com.github.lwhite1.tablesaw.filtering.LocalDateBetween;
 import com.github.lwhite1.tablesaw.filtering.StringEqualTo;
 import com.github.lwhite1.tablesaw.filtering.StringNotEqualTo;
 import com.github.lwhite1.tablesaw.filtering.TimeEqualTo;
+import com.github.lwhite1.tablesaw.filtering.TimeNotEqualTo;
 import com.github.lwhite1.tablesaw.filtering.columnbased.ColumnEqualTo;
 import com.github.lwhite1.tablesaw.filtering.dates.LocalDateIsAfter;
 import com.github.lwhite1.tablesaw.filtering.dates.LocalDateIsBefore;
@@ -75,10 +80,6 @@ import com.github.lwhite1.tablesaw.filtering.times.IsBefore;
 import com.github.lwhite1.tablesaw.filtering.times.IsBeforeNoon;
 import com.github.lwhite1.tablesaw.filtering.times.IsMidnight;
 import com.github.lwhite1.tablesaw.filtering.times.IsNoon;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 /**
  * A reference to a column that can be used in evaluating query predicates. It is a key part of having a fluent API
@@ -135,6 +136,10 @@ public class ColumnReference {
     public Filter isEqualTo(LocalTime value) {
         return new TimeEqualTo(this, value);
     }
+
+    public Filter isNotEqualTo(LocalTime value) {
+      return new TimeNotEqualTo(this, value);
+    }    
 
     public Filter isEqualTo(LocalDate value) {
         return new DateEqualTo(this, value);
