@@ -1,6 +1,8 @@
 Tablesaw
 =======   
 
+https://travis-ci.org/jtablesaw/tablesaw.svg?branch=master
+
 ### Overview
 
 __Tablesaw__ is the shortest path to data science in Java. It includes a data-frame, an embedded column-store, and  hundreds of methods to transform, summarize, or filter data. If you work with data in Java, it will probably save you time and effort.
