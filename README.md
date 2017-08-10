@@ -18,7 +18,7 @@ There are other, more elaborate platforms for data science in Java. They're desi
 ### Documentation and support:
 
 * You can find an introductory __tutorial__ here: https://jtablesaw.wordpress.com/an-introduction/ The early drafts of a __User Guide__ are also available on that site
-* The __JavaDoc__ can be found here: http://lwhite1.github.io/tablesaw/apidocs/
+* The __JavaDoc__ can be found here: http://jtablesaw.github.io/tablesaw/apidocs/
 * If you have __questions of any kind__: Ask them in the Issues section of this Repo.
  
 ### Tablesaw features: 
