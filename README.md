@@ -5,7 +5,7 @@ Tablesaw
 
 ### Overview
 
-__Tablesaw__ is the shortest path to data science in Java. It includes a data-frame, an embedded column-store, and  hundreds of methods to transform, summarize, or filter data. If you work with data in Java, it will probably save you time and effort.
+__Tablesaw__ is the shortest path to data science in Java. It includes a dataframe, an embedded column-store, and hundreds of methods to transform, summarize, or filter data similar to the Pandas dataframe and R data frame. If you work with data in Java, it will probably save you time and effort.
 
 Tablesaw also supports descriptive statistics, data visualization, and machine learning. And it scales: You can munge a 1/2 billion rows on a laptop and over 2 billion records on a server. 
 
