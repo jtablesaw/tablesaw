@@ -9,7 +9,17 @@ __Tablesaw__ is the shortest path to data science in Java. It includes a datafra
 
 Tablesaw also supports descriptive statistics, data visualization, and machine learning. And it scales: You can munge a 1/2 billion rows on a laptop and over 2 billion records on a server. 
 
-There are other, more elaborate platforms for data science in Java. They're designed to work with vast amounts of data, and  require a huge stack and a vast amount of effort. All it takes to get started with Tablesaw is one maven dependency:  
+There are other, more elaborate platforms for data science in Java. They're designed to work with vast amounts of data, and  require a huge stack and a vast amount of effort.
+
+Tablesaw 0.8.x and later will have new Maven coordinates:  
+
+    <dependency>
+        <groupId>tech.tablesaw</groupId>
+        <artifactId>tablesaw</artifactId>
+        <version>0.8-SNAPSHOT</version>
+    </dependency>
+
+To include Tablesaw 0.7.x or earlier in your project use:  
 
     <dependency>
         <groupId>com.github.lwhite1</groupId>
