@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.lwhite1</groupId>
+    <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
     <version>0.8-SNAPSHOT</version>
     <name>Tablesaw</name>
     <description>High-performance Java Dataframe with integrated columnar storage</description>
     <url>https://jtablesaw.wordpress.com</url>
     <scm>
-        <url>https://github.com/lwhite1/tablesaw</url>
+        <url>https://github.com/jtablesaw/tablesaw</url>
     </scm>
     <licenses>
         <license>

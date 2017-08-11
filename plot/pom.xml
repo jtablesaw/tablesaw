@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.github.lwhite1</groupId>
+        <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-parent</artifactId>
         <version>0.8-SNAPSHOT</version>
     </parent>
 
-    <groupId>com.github.lwhite1</groupId>
+    <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-plot</artifactId>
     <version>0.8-SNAPSHOT</version>
 
@@ -46,7 +46,7 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>com.github.lwhite1</groupId>
+            <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-core</artifactId>
             <version>0.8-SNAPSHOT</version>
         </dependency>
@@ -60,7 +60,7 @@
             <version>3.5.0</version>
         </dependency>
         <dependency>
-            <groupId>com.github.lwhite1</groupId>
+            <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-core</artifactId>
             <type>test-jar</type>
             <version>0.8-SNAPSHOT</version>
