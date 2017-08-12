@@ -41,7 +41,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
      */
-    DoubleComparator reverseDoubleComparator = new DoubleComparator() {
+    private DoubleComparator reverseDoubleComparator = new DoubleComparator() {
 
         @Override
         public int compare(Double o2, Double o1) {
@@ -50,7 +50,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
         @Override
         public int compare(double o2, double o1) {
-            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
+            return (Double.compare(o1, o2));
         }
     };
     private DoubleArrayList data;
@@ -631,7 +631,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return data.getDouble(index);
     }
 
-    public void set(int r, float value) {
+    public void set(int r, double value) {
         data.set(r, value);
     }
 
