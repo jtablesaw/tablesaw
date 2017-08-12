@@ -37,7 +37,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     private static final int BYTE_SIZE = 1;
 
     private static int DEFAULT_ARRAY_SIZE = 128;
-    ByteComparator reverseByteComparator = new ByteComparator() {
+
+    private ByteComparator reverseByteComparator = new ByteComparator() {
 
         @Override
         public int compare(Byte o1, Byte o2) {
@@ -49,7 +50,9 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
             return Byte.compare(o2, o1);
         }
     };
+
     private ByteArrayList data;
+
     IntComparator comparator = new IntComparator() {
 
         @Override
@@ -376,6 +379,14 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         for (int i = 0; i < booleanColumn.size(); i++) {
             append(booleanColumn.get(i));
         }
+    }
+
+    public double[] toDoubleArray() {
+        double[] output = new double[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            output[i] = data.getByte(i);
+        }
+        return output;
     }
 
     // TODO(lwhite): this won't scale

@@ -84,6 +84,18 @@ public class BooleanColumnTest {
         assertEquals(2, result);
     }
 
+    @Test
+    public void testToDoubleArray() throws Exception {
+        double[] result = column.toDoubleArray();
+        assertEquals(0.0, result[0], 0.01);
+        assertEquals(0.0, result[1], 0.01);
+        assertEquals(0.0, result[2], 0.01);
+        assertEquals(0.0, result[3], 0.01);
+        assertEquals(1.0, result[4], 0.01);
+        assertEquals(1.0, result[5], 0.01);
+        assertEquals(0.0, result[6], 0.01);
+    }
+
     /**
      * Tests construction from a bitmap. The test uses the isFalse() method, which inverts the values in the column it's
      * invoked on, so the true false counts are the opposite of those in the original
