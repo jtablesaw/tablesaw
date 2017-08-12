@@ -3,10 +3,6 @@ package tech.tablesaw.api;
 import org.junit.Before;
 import org.junit.Test;
 
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
-
 import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;

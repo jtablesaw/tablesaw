@@ -32,6 +32,7 @@ import tech.tablesaw.filtering.TimeNotEqualTo;
 import tech.tablesaw.filtering.columnbased.ColumnEqualTo;
 import tech.tablesaw.filtering.dates.LocalDateIsAfter;
 import tech.tablesaw.filtering.dates.LocalDateIsBefore;
+import tech.tablesaw.filtering.datetimes.DateTimeIsAfter;
 import tech.tablesaw.filtering.datetimes.DateTimeIsBefore;
 import tech.tablesaw.filtering.datetimes.IsFirstDayOfTheMonth;
 import tech.tablesaw.filtering.datetimes.IsFriday;
@@ -223,6 +224,10 @@ public class ColumnReference {
 
     public Filter isBefore(LocalDateTime value) {
         return new DateTimeIsBefore(this, value);
+    }
+
+    public Filter isAfter(LocalDateTime value) {
+        return new DateTimeIsAfter(this, value);
     }
 
     public Filter isAfter(LocalTime value) {
