@@ -105,7 +105,7 @@ public class CsvReaderTest {
     @Test
     public void testLoadFromUrl() throws Exception {
         ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};
-        String location = "https://raw.githubusercontent.com/lwhite1/tablesaw/master/data/BushApproval.csv";
+        String location = "https://raw.githubusercontent.com/jtablesaw/tablesaw/master/data/BushApproval.csv";
         Table table;
         try (Reader input = new InputStreamReader(new URL(location).openStream())) {
             table = Table.createFromReader(input, "Bush approval ratings", types, true, ',');
