@@ -1,7 +1,24 @@
 package tech.tablesaw.api;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.RandomUtils;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -24,6 +41,7 @@ import tech.tablesaw.reducing.functions.Sum;
 import tech.tablesaw.reducing.functions.SummaryFunction;
 import tech.tablesaw.reducing.functions.Variance;
 import tech.tablesaw.sorting.Sort;
+import tech.tablesaw.sorting.Sort.Order;
 import tech.tablesaw.store.StorageManager;
 import tech.tablesaw.store.TableMetadata;
 import tech.tablesaw.table.Projection;
@@ -34,22 +52,6 @@ import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.IntComparatorChain;
 import tech.tablesaw.util.ReversingIntComparator;
 import tech.tablesaw.util.Selection;
-
-import org.apache.commons.lang3.RandomUtils;
-
-import static tech.tablesaw.sorting.Sort.Order;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
@@ -169,7 +171,21 @@ public class Table implements Relation, IntIterable {
      * @throws IOException if the file can't be read
      */
     public static Table createFromCsv(String csvFileName) throws IOException {
-        return CsvReader.read(csvFileName, true, ',');
+        return createFromCsv(csvFileName, true, ',');
+    }
+
+    /**
+     * Returns a new table constructed from a character delimited (aka CSV) text file
+     * <p>
+     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
+     * which is used to populate the column names
+     *
+     * @param csvReader The source of the CSV
+     * @param tableName The name to give the table
+     * @throws IOException if the file can't be read
+     */
+    public static Table createFromReader(Reader csvReader, String tableName) throws IOException {
+        return createFromReader(csvReader, tableName, true, ',');
     }
 
     /**
@@ -184,9 +200,25 @@ public class Table implements Relation, IntIterable {
      * @throws IOException if the file can't be read
      */
     public static Table createFromCsv(String csvFileName, boolean header) throws IOException {
-        return CsvReader.read(csvFileName, header, ',');
+        return CsvReader.read(new File(csvFileName), header, ',');
     }
 
+    /**
+     * Returns a new table constructed from a character delimited (aka CSV) text file
+     * <p>
+     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
+     * which is used to populate the column names
+     *
+     * @param csvReader   The source of the CSV
+     * @param tableName   The name to give the table
+     * @param header      True if the file has a single header row. False if it has no header row.
+     *                    Multi-line headers are not supported
+     * @throws IOException if the file can't be read
+     */
+    public static Table createFromReader(Reader csvReader, String tableName, boolean header) throws IOException {
+        return createFromReader(csvReader, tableName, header, ',');
+    }
+    
     /**
      * Returns a new table constructed from a character delimited (aka CSV) text file
      * <p>
@@ -200,7 +232,24 @@ public class Table implements Relation, IntIterable {
      * @throws IOException if the file can't be read
      */
     public static Table createFromCsv(String csvFileName, boolean header, char delimiter) throws IOException {
-        return CsvReader.read(csvFileName, header, delimiter);
+        return CsvReader.read(new File(csvFileName), header, delimiter);
+    }
+
+    /**
+     * Returns a new table constructed from a character delimited (aka CSV) text file
+     * <p>
+     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
+     * which is used to populate the column names
+     *
+     * @param reader      The source of the CSV
+     * @param tableName   The name to give the table
+     * @param header      True if the file has a single header row. False if it has no header row.
+     *                    Multi-line headers are not supported
+     * @param delimiter   a char that divides the columns in the source file, often a comma or tab
+     * @throws IOException if the file can't be read
+     */
+    public static Table createFromReader(Reader reader, String tableName, boolean header, char delimiter) throws IOException {
+        return CsvReader.read(reader, tableName, header, delimiter);
     }
 
     /**
@@ -215,15 +264,37 @@ public class Table implements Relation, IntIterable {
      * @param delimiter    a char that divides the columns in the source file, often a comma or tab
      * @param skipSampling This applies only to column type detection. Column type detection uses sampling to pick a
      *                     column type. This may cause the algorithm to skip a row that has information the algorithm
-     *                     needs. Setting this to true will cause the algorithm to check jjjjbhball the data in the
-     *                     table,
+     *                     needs. Setting this to true will cause the algorithm to check all the data in the table,
      *                     which may take a long time (a couple minutes?) on large tables (over 100,000,000 rows).
      * @throws IOException if the file can't be read
      */
     public static Table createFromCsv(String csvFileName, boolean header, char delimiter, boolean skipSampling)
             throws IOException {
-        return CsvReader.read(csvFileName, header, delimiter, skipSampling);
+        Reader reader = new FileReader(new File(csvFileName));
+        return CsvReader.read(reader, csvFileName, header, delimiter, skipSampling);
     }
+
+    /**
+     * Returns a new table constructed from a character delimited (aka CSV) text file
+     * <p>
+     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
+     * which is used to populate the column names
+     *
+     * @param csvReader    The source of the CSV
+     * @param tableName    The name to give the table
+     * @param header       True if the file has a single header row. False if it has no header row.
+     *                     Multi-line headers are not supported
+     * @param delimiter    a char that divides the columns in the source file, often a comma or tab
+     * @param skipSampling This applies only to column type detection. Column type detection uses sampling to pick a
+     *                     column type. This may cause the algorithm to skip a row that has information the algorithm
+     *                     needs. Setting this to true will cause the algorithm to check all the data in the table,
+     *                     which may take a long time (a couple minutes?) on large tables (over 100,000,000 rows).
+     * @throws IOException if the file can't be read
+     */
+    public static Table createFromReader(Reader csvReader, String tableName, boolean header, char delimiter, boolean skipSampling)
+            throws IOException {
+        return CsvReader.read(csvReader, tableName, header, delimiter, skipSampling);
+    }    
 
     /**
      * Returns a new table constructed from a character delimited (aka CSV) text file
@@ -256,6 +327,22 @@ public class Table implements Relation, IntIterable {
 
     /**
      * Returns a new table constructed from a character delimited (aka CSV) text file
+     * <p>
+     * It is assumed that the file is truly comma-separated
+     *
+     * @param reader      the CSV source
+     * @param tableName   the name to give the table
+     * @param types       The column types
+     * @param header      True if the file has a single header row. False if it has no header row.
+     *                    Multi-line headers are not supported
+     * @throws IOException if the file can't be read
+     */
+    public static Table createFromCsv(Reader reader, String tableName, ColumnType[] types, boolean header) throws IOException {
+        return createFromReader(reader, tableName, types, header, ',');
+    }
+
+    /**
+     * Returns a new table constructed from a character delimited (aka CSV) text file
      *
      * @param types       The column types
      * @param header      true if the file has a single header row. False if it has no header row.
@@ -272,16 +359,17 @@ public class Table implements Relation, IntIterable {
     /**
      * Returns a new table constructed from a character delimited (aka CSV) text file
      *
+     * @param reader    a Reader from a file, URL, etc.
+     * @param tableName name to give the table
      * @param types     The column types
      * @param header    true if the file has a single header row. False if it has no header row.
      *                  Multi-line headers are not supported
      * @param delimiter a char that divides the columns in the source file, often a comma or tab
-     * @param stream    an InputStream from a file, URL, etc.
      * @param tableName the name of the resulting table
      */
-    public static Table createFromStream(ColumnType[] types, boolean header, char delimiter, InputStream stream,
-                                         String tableName) throws IOException {
-        return CsvReader.read(tableName, types, header, delimiter, stream);
+    public static Table createFromReader(Reader reader, String tableName, ColumnType[] types, boolean header,
+                                         char delimiter) throws IOException {
+        return CsvReader.read(reader, tableName, types, header, delimiter);
     }
 
     /**
