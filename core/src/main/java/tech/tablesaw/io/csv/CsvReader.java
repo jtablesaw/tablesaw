@@ -1,29 +1,12 @@
 package tech.tablesaw.io.csv;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.opencsv.CSVReader;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.TypeUtils;
-
-import org.apache.commons.lang3.StringUtils;
-
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
-
 import static tech.tablesaw.api.ColumnType.*;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.Reader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -32,6 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.opencsv.CSVReader;
+
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.TypeUtils;
 
 /**
  *
@@ -160,86 +157,103 @@ public class CsvReader {
      */
     public static Table read(ColumnType types[], boolean header, char columnSeparator, String fileName) throws
             IOException {
-        InputStream stream = new FileInputStream(fileName);
-        return read(fileName, types, header, columnSeparator, stream);
+        Reader reader = new FileReader(new File(fileName));
+        return read(reader, fileName, types, header, columnSeparator);
     }
 
     /**
-     * Retuns the given file after autodetecting the column types, or trying to
+     * Returns the given file after auto-detecting the column types, or trying to
      *
-     * @param fileName  The name of the file to load
+     * @param file      The file to load
      * @param header    True if the file has a single header row. False if it has no header row.
      *                  Multi-line headers are not supported
      * @param delimiter a char that divides the columns in the source file, often a comma or tab
      * @return A table containing the data from the file
      * @throws IOException if file cannot be read
      */
-    public static Table read(String fileName, boolean header, char delimiter) throws IOException {
-        ColumnType[] columnTypes = detectColumnTypes(fileName, header, delimiter, false);
-        return read(columnTypes, true, delimiter, fileName);
+    public static Table read(File file, boolean header, char delimiter) throws IOException {
+        Reader reader = new FileReader(file);
+        return read(reader, file.getName(), true, delimiter);
+    }
+    
+    /**
+     * Returns the given file after auto-detecting the column types, or trying to
+     *
+     * @param reader    The CSV
+     * @param tableName Name to give the table
+     * @param header    True if the file has a single header row. False if it has no header row.
+     *                  Multi-line headers are not supported
+     * @param delimiter a char that divides the columns in the source file, often a comma or tab
+     * @return A table containing the data from the file
+     * @throws IOException if file cannot be read
+     */
+    public static Table read(Reader reader, String tableName,  boolean header, char delimiter) throws IOException {
+        return read(reader, tableName, true, delimiter, false);
     }
 
-    public static Table read(String fileName, boolean header, char delimiter, boolean skipSampling) throws IOException {
-        ColumnType[] columnTypes = detectColumnTypes(fileName, header, delimiter, skipSampling);
-        return read(columnTypes, true, delimiter, fileName);
+    public static Table read(Reader reader, String tableName, boolean header, char delimiter, boolean skipSampling) throws IOException {
+        List<String[]> rows = parseCsv(reader, delimiter);  
+        ColumnType[] columnTypes = detectColumnTypes(rows, header, delimiter, skipSampling);
+        return read(rows, tableName, columnTypes, true, delimiter);
     }
 
-    public static Table read(String tableName,
-                             ColumnType types[],
+    public static Table read(Reader reader,
+                             String tableName,
+                             ColumnType[] types,
                              boolean header,
-                             char columnSeparator,
-                             InputStream stream)
-            throws IOException {
+                             char columnSeparator) throws IOException {
+      List<String[]> rows = parseCsv(reader, columnSeparator);
+      return read(rows, tableName, types, header, columnSeparator);
+    }
 
-        BufferedReader streamReader = new BufferedReader(new InputStreamReader(stream));
+    protected static Table read(List<String[]> rows,
+                             String tableName,
+                             ColumnType[] types,
+                             boolean header,
+                             char columnSeparator) throws IOException {
 
         Table table;
-        try (CSVReader reader = new CSVReader(streamReader, columnSeparator, '"')) {
+        String[] columnNames;
+        List<String> headerRow;
+        if (header) {
+            headerRow = Lists.newArrayList(rows.remove(0));
+            columnNames = selectColumnNames(headerRow, types);
+        } else {
+            columnNames = makeColumnNames(types);
+            headerRow = Lists.newArrayList(columnNames);
+        }
 
-            String[] nextLine;
-            String[] columnNames;
-            List<String> headerRow;
-            if (header) {
-                nextLine = reader.readNext();
-                headerRow = Lists.newArrayList(nextLine);
-                columnNames = selectColumnNames(headerRow, types);
-            } else {
-                columnNames = makeColumnNames(types);
-                headerRow = Lists.newArrayList(columnNames);
-            }
-
-            table = Table.create(nameMaker(tableName));
-            for (int x = 0; x < types.length; x++) {
-                if (types[x] != ColumnType.SKIP) {
-                    String columnName = headerRow.get(x);
-                    if (Strings.isNullOrEmpty(columnName)) {
-                        columnName = "Column " + table.columnCount();
-                    }
-                    Column newColumn = TypeUtils.newColumn(columnName.trim(), types[x]);
-                    table.addColumn(newColumn);
+        table = Table.create(tableName);
+        for (int x = 0; x < types.length; x++) {
+            if (types[x] != ColumnType.SKIP) {
+                String columnName = headerRow.get(x);
+                if (Strings.isNullOrEmpty(columnName)) {
+                    columnName = "Column " + table.columnCount();
                 }
+                Column newColumn = TypeUtils.newColumn(columnName.trim(), types[x]);
+                table.addColumn(newColumn);
             }
-            int[] columnIndexes = new int[columnNames.length];
-            for (int i = 0; i < columnIndexes.length; i++) {
-                // get the index in the original table, which includes skipped fields
-                columnIndexes[i] = headerRow.indexOf(columnNames[i]);
-            }
-            // Add the rows
-            long rowNumber = header ? 1L : 0L;
-            while ((nextLine = reader.readNext()) != null) {
-                // for each column that we're including (not skipping)
-                int cellIndex = 0;
-                for (int columnIndex : columnIndexes) {
-                    Column column = table.column(cellIndex);
-                    try {
-                        column.appendCell(nextLine[columnIndex]);
-                    } catch (Exception e) {
-                        throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
-                    }
-                    cellIndex++;
+        }
+        int[] columnIndexes = new int[columnNames.length];
+        for (int i = 0; i < columnIndexes.length; i++) {
+            // get the index in the original table, which includes skipped fields
+            columnIndexes[i] = headerRow.indexOf(columnNames[i]);
+        }
+        // Add the rows
+        long rowNumber = header ? 1L : 0L;
+        for (String[] nextLine : rows) {
+            // for each column that we're including (not skipping)
+            int cellIndex = 0;
+            for (int columnIndex : columnIndexes) {
+                Column column = table.column(cellIndex);
+                try {
+                    column.appendCell(nextLine[columnIndex]);
+                } catch (Exception e) {
+                    throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
                 }
-                rowNumber++;
+                cellIndex++;
             }
+            rowNumber++;
         }
         return table;
     }
@@ -252,24 +266,24 @@ public class CsvReader {
      * @param types           An array of the types of columns in the file, in the order they appear
      * @param header          Is the first row in the file a header?
      * @param columnSeparator the delimiter
-     * @param name            The fully specified file name. It is used to provide a default name for the table
-     * @return A Table containing the data in the csv file.
+     * @param file        The fully specified file name. It is used to provide a default name for the table
+     * @return A Relation containing the data in the csv file.
      * @throws IOException if file cannot be read
      */
-    public static Table headerOnly(String name, ColumnType types[], boolean header, char columnSeparator, InputStream
-            stream)
+    public static Table headerOnly(ColumnType types[], boolean header, char columnSeparator, File file)
             throws IOException {
 
-        BufferedReader streamReader = new BufferedReader(new InputStreamReader(stream));
+        Reader reader = new FileReader(file);
+        BufferedReader streamReader = new BufferedReader(reader);
 
         Table table;
-        try (CSVReader reader = new CSVReader(streamReader, columnSeparator, '"')) {
+        try (CSVReader csvReader = new CSVReader(streamReader, columnSeparator, '"')) {
 
             String[] nextLine;
             String[] columnNames;
             List<String> headerRow;
             if (header) {
-                nextLine = reader.readNext();
+                nextLine = csvReader.readNext();
                 headerRow = Lists.newArrayList(nextLine);
                 columnNames = selectColumnNames(headerRow, types);
             } else {
@@ -277,7 +291,7 @@ public class CsvReader {
                 headerRow = Lists.newArrayList(columnNames);
             }
 
-            table = Table.create(nameMaker(name));
+            table = Table.create(file.getName());
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != ColumnType.SKIP) {
                     Column newColumn = TypeUtils.newColumn(headerRow.get(x).trim(), types[x]);
@@ -290,7 +304,7 @@ public class CsvReader {
                 columnIndexes[i] = headerRow.indexOf(columnNames[i]);
             }
             // Add the rows
-            while ((nextLine = reader.readNext()) != null) {
+            while ((nextLine = csvReader.readNext()) != null) {
                 // for each column that we're including (not skipping)
                 int cellIndex = 0;
                 for (int columnIndex : columnIndexes) {
@@ -304,32 +318,15 @@ public class CsvReader {
     }
 
     /**
-     * Returns a Table constructed from a CSV File with the given file name
-     * <p>
-     * The @code{fileName} is used as the initial table name for the new table
-     *
-     * @param types           An array of the types of columns in the file, in the order they appear
-     * @param header          Is the first row in the file a header?
-     * @param columnSeparator the delimiter
-     * @param fileName        The fully specified file name. It is used to provide a default name for the table
-     * @return A Relation containing the data in the csv file.
-     * @throws IOException if file cannot be read
-     */
-    public static Table headerOnly(ColumnType types[], boolean header, char columnSeparator, String fileName)
-            throws IOException {
-
-        InputStream stream = new FileInputStream(fileName);
-        return headerOnly(fileName, types, header, columnSeparator, stream);
-    }
-
-    /**
      * Returns the structure of the table given by {@code csvFileName} as detected by analysis of a sample of the data
      *
      * @throws IOException if file cannot be read
      */
-    public static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
-        ColumnType[] types = detectColumnTypes(csvFileName, header, delimiter, false);
-        Table t = headerOnly(types, header, delimiter, csvFileName);
+    private static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
+        File file = new File(csvFileName);
+        List<String[]> rows = parseCsv(new FileReader(file), delimiter);
+        ColumnType[] types = detectColumnTypes(rows, header, delimiter, false);
+        Table t = headerOnly(types, header, delimiter, file);
         return t.structure();
     }
 
@@ -412,11 +409,6 @@ public class CsvReader {
         return header.toArray(result);
     }
 
-    private static String nameMaker(String path) {
-        Path p = Paths.get(path);
-        return p.getFileName().toString();
-    }
-
     /**
      * Provides placeholder column names for when the file read has no header
      */
@@ -428,6 +420,17 @@ public class CsvReader {
         return header;
     }
 
+    protected static List<String[]> parseCsv(Reader reader, char delimiter) throws IOException {
+      List<String[]> rows = new ArrayList<>();
+      String[] nextLine;
+      try (CSVReader csvReader = new CSVReader(reader, delimiter, '"', 0)) {
+        while ((nextLine = csvReader.readNext()) != null) {
+          rows.add(nextLine);
+        }
+      }
+      return rows;
+    }
+
     /**
      * Estimates and returns the type for each column in the delimited text file {@code file}
      * <p>
@@ -437,12 +440,10 @@ public class CsvReader {
      * <p>
      * The method {@code printColumnTypes()} can be used to print a list of the detected columns that can be
      * corrected and
-     * used to explicitely specify the correct column types.
+     * used to explicitly specify the correct column types.
      */
-    public static ColumnType[] detectColumnTypes(String file, boolean header, char delimiter, boolean skipSampling)
+    protected static ColumnType[] detectColumnTypes(List<String[]> rows, boolean header, char delimiter, boolean skipSampling)
             throws IOException {
-
-        int linesToSkip = header ? 1 : 0;
 
         // to hold the results
         List<ColumnType> columnTypes = new ArrayList<>();
@@ -451,33 +452,35 @@ public class CsvReader {
         List<List<String>> columnData = new ArrayList<>();
 
         int rowCount = 0; // make sure we don't go over maxRows
-        try (CSVReader reader = new CSVReader(new FileReader(file), delimiter, '"', linesToSkip)) {
-            String[] nextLine;
-            int nextRow = 0;
-            while ((nextLine = reader.readNext()) != null) {
-
-                // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
-                if (rowCount == 0) {
-                    for (String aNextLine : nextLine) {
-                        columnData.add(new ArrayList<>());
-                    }
-                }
-                int columnNumber = 0;
-                if (rowCount == nextRow) {
-                    for (String field : nextLine) {
-                        columnData.get(columnNumber).add(field);
-                        columnNumber++;
-                    }
-                }
-                if (rowCount == nextRow) {
-                    if (skipSampling) {
-                        nextRow = nextRowWithoutSampling(nextRow);
-                    } else {
-                        nextRow = nextRow(nextRow);
-                    }
-                }
-                rowCount++;
+        int nextRow = 0;
+        for (int i = 0; i < rows.size(); i++) {
+            if (header && i == 0) {
+              continue;
             }
+
+            String[] nextLine = rows.get(i);
+
+            // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
+            if (rowCount == 0) {
+                 for (int j = 0; j < nextLine.length; j++) {
+                     columnData.add(new ArrayList<>());
+                 }
+            }
+            int columnNumber = 0;
+            if (rowCount == nextRow) {
+                for (String field : nextLine) {
+                    columnData.get(columnNumber).add(field);
+                    columnNumber++;
+                }
+            }
+            if (rowCount == nextRow) {
+                if (skipSampling) {
+                    nextRow = nextRowWithoutSampling(nextRow);
+                } else {
+                    nextRow = nextRow(nextRow);
+                }
+            }
+            rowCount++;
         }
 
         // now detect
