@@ -55,17 +55,17 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         }
     };
 
-    private IntColumn(String name, int initialSize) {
+    public IntColumn(String name, int initialSize) {
         super(name);
         data = new IntArrayList(initialSize);
     }
 
-    private IntColumn(ColumnMetadata metadata) {
+    public IntColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new IntArrayList(metadata.getSize());
     }
 
-    private IntColumn(String name) {
+    public IntColumn(String name) {
         super(name);
         data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }

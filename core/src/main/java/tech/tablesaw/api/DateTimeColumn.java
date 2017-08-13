@@ -77,7 +77,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
      */
     private DateTimeFormatter selectedFormatter;
 
-    private DateTimeColumn(String name) {
+    public DateTimeColumn(String name) {
         super(name);
         data = new LongArrayList(DEFAULT_ARRAY_SIZE);
     }

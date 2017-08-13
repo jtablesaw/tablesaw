@@ -73,7 +73,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         }
     };
 
-    private TimeColumn(String name) {
+    public TimeColumn(String name) {
         super(name);
         data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }

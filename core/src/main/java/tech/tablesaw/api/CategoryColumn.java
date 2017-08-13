@@ -92,7 +92,7 @@ public class CategoryColumn extends AbstractColumn
         }
     };
 
-    private CategoryColumn(String name) {
+    public CategoryColumn(String name) {
         super(name);
         values = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }

@@ -73,7 +73,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         data = new ByteArrayList(DEFAULT_ARRAY_SIZE);
     }
 
-    private BooleanColumn(String name) {
+    public BooleanColumn(String name) {
         super(name);
         data = new ByteArrayList(DEFAULT_ARRAY_SIZE);
     }
@@ -83,7 +83,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         data = new ByteArrayList(initialSize);
     }
 
-    private BooleanColumn(String name, ByteArrayList values) {
+    public BooleanColumn(String name, ByteArrayList values) {
         super(name);
         data = values;
     }
