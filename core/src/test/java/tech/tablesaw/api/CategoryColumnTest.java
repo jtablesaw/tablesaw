@@ -1,9 +1,6 @@
 package tech.tablesaw.api;
 
 import tech.tablesaw.TestDataUtil;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.util.Selection;
 
 import org.junit.Assert;
@@ -97,5 +94,13 @@ public class CategoryColumnTest {
         assertEquals("Alabama", categoryColumn.get(selection.get(0)));
         assertEquals("Texas", categoryColumn.get(selection.get(1)));
         assertEquals(2, selection.size());
+    }
+
+    @Test
+    public void testToList() {
+        CategoryColumn categoryColumn = CategoryColumn.create("US States");
+        categoryColumn.addAll(TestDataUtil.usStates());
+        List<String> states = categoryColumn.toList();
+        assertEquals(51, states.size()); //includes Wash. DC
     }
 }

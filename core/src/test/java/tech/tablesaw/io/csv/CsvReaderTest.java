@@ -27,6 +27,7 @@ import static tech.tablesaw.api.QueryHelper.column;
 public class CsvReaderTest {
 
     private final ColumnType[] bus_types = {SHORT_INT, CATEGORY, CATEGORY, FLOAT, FLOAT};
+    private final ColumnType[] bus_types_with_SKIP = {SHORT_INT, CATEGORY, SKIP, FLOAT, FLOAT};
 
     @Test
     public void testWithBusData() throws Exception {
@@ -41,6 +42,16 @@ public class CsvReaderTest {
 
         Column c = table.floatColumn("stop_lat");
         Table v = table.selectWhere(column("stop_lon").isGreaterThan(-0.1f));
+    }
+
+    @Test
+    public void testWithColumnSKIP() throws Exception {
+        // Read the CSV file
+        Table table = CsvReader.read(bus_types_with_SKIP, true, ',', "../data/bus_stop_test.csv");
+
+        assertEquals(4, table.columnCount());
+        // Look at the column names
+        assertEquals("[stop_id, stop_name, stop_lat, stop_lon]", table.columnNames().toString());
     }
 
     @Test
