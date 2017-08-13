@@ -10,7 +10,6 @@
         <version>0.8-SNAPSHOT</version>
     </parent>
 
-    <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-plot</artifactId>
     <version>0.8-SNAPSHOT</version>
 
