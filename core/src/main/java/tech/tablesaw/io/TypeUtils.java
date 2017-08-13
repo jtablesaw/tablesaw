@@ -92,9 +92,9 @@ public final class TypeUtils {
     private static final DateTimeFormatter dtTimef1 =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private static final DateTimeFormatter dtTimef2 =
-            DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
     private static final DateTimeFormatter dtTimef3 =
-            DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm");
+            DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
     private static final DateTimeFormatter dtTimef4 =
             DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm");
     private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
