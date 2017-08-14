@@ -107,14 +107,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         this.data = data;
     }
 
-    private static BooleanColumn create(String name) {
-        return new BooleanColumn(name);
-    }
-
-    private static BooleanColumn create(String name, int rowSize) {
-        return new BooleanColumn(name, rowSize);
-    }
-
     public static boolean convert(String stringValue) {
         if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
             return (boolean) ColumnType.BOOLEAN.getMissingValue();
@@ -151,7 +143,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
         Table table = Table.create(name());
 
-        BooleanColumn booleanColumn = BooleanColumn.create("Value");
+        BooleanColumn booleanColumn = new BooleanColumn("Value");
         IntColumn countColumn = new IntColumn("Count");
         table.addColumn(booleanColumn);
         table.addColumn(countColumn);
@@ -220,14 +212,14 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
     @Override
     public BooleanColumn emptyCopy() {
-        BooleanColumn column = BooleanColumn.create(name());
+        BooleanColumn column = new BooleanColumn(name());
         column.setComment(comment());
         return column;
     }
 
     @Override
     public BooleanColumn emptyCopy(int rowSize) {
-        BooleanColumn column = BooleanColumn.create(name(), rowSize);
+        BooleanColumn column = new BooleanColumn(name(), rowSize);
         column.setComment(comment());
         return column;
     }
@@ -239,7 +231,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
     @Override
     public BooleanColumn copy() {
-        BooleanColumn column = BooleanColumn.create(name(), data);
+        BooleanColumn column = new BooleanColumn(name(), data);
         column.setComment(comment());
         return column;
     }

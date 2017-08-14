@@ -76,16 +76,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         data = new LongArrayList(DEFAULT_ARRAY_SIZE);
     }
 
-    private static LongColumn create(String name, int arraySize) {
-        return new LongColumn(name, arraySize);
-    }
-
-    private static LongColumn create(String name, LongArrayList ints) {
-        LongColumn column = new LongColumn(name, ints.size());
-        column.data = ints;
-        return column;
-    }
-
     /**
      * Returns a float that is parsed from the given String
      * <p>
@@ -180,11 +170,11 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public LongColumn unique() {
         LongSet longSet = new LongArraySet();
         longSet.addAll(data);
-        return LongColumn.create(name() + " Unique values", new LongArrayList(longSet));
+        return new LongColumn(name() + " Unique values", new LongArrayList(longSet));
     }
 
     public LongColumn remainder(LongColumn column2) {
-        LongColumn result = LongColumn.create(name() + " % " + column2.name(), size());
+        LongColumn result = new LongColumn(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) % column2.get(r));
         }
@@ -192,7 +182,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public LongColumn append(LongColumn column2) {
-        LongColumn result = LongColumn.create(name() + " + " + column2.name(), size());
+        LongColumn result = new LongColumn(name() + " + " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) + column2.get(r));
         }
@@ -200,7 +190,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public LongColumn subtract(LongColumn column2) {
-        LongColumn result = LongColumn.create(name() + " - " + column2.name(), size());
+        LongColumn result = new LongColumn(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) - column2.get(r));
         }
@@ -208,7 +198,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public LongColumn multiply(LongColumn column2) {
-        LongColumn result = LongColumn.create(name() + " * " + column2.name(), size());
+        LongColumn result = new LongColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }
@@ -232,7 +222,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public LongColumn divide(LongColumn column2) {
-        LongColumn result = LongColumn.create(name() + " / " + column2.name(), size());
+        LongColumn result = new LongColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
         }

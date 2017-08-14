@@ -75,24 +75,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
 
-    public static IntColumn create(String name) {
-        return new IntColumn(name, DEFAULT_ARRAY_SIZE);
-    }
-
-    public static IntColumn create(ColumnMetadata metadata) {
-        return new IntColumn(metadata);
-    }
-
-    public static IntColumn create(String name, int arraySize) {
-        return new IntColumn(name, arraySize);
-    }
-
-    public static IntColumn create(String name, IntArrayList ints) {
-        IntColumn column = new IntColumn(name, ints.size());
-        column.data.addAll(ints);
-        return column;
-    }
-
     /**
      * Returns a float that is parsed from the given String
      * <p>
@@ -217,7 +199,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public IntColumn unique() {
         Selection selection = new BitmapBackedSelection();
         data.forEach(selection::add);
-        return IntColumn.create(name() + " Unique values", IntArrayList.wrap(selection.toArray()));
+        return new IntColumn(name() + " Unique values", IntArrayList.wrap(selection.toArray()));
     }
 
     public IntSet asSet() {
@@ -260,7 +242,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
     @Override
     public IntColumn copy() {
-        IntColumn column = create(name(), data);
+        IntColumn column = new IntColumn(name(), data);
         column.setComment(comment());
         return column;
     }
@@ -525,7 +507,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public IntColumn remainder(IntColumn column2) {
-        IntColumn result = IntColumn.create(name() + " % " + column2.name(), size());
+        IntColumn result = new IntColumn(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) % column2.get(r));
         }
@@ -533,7 +515,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public IntColumn add(IntColumn column2) {
-        IntColumn result = IntColumn.create(name() + " + " + column2.name(), size());
+        IntColumn result = new IntColumn(name() + " + " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) + column2.get(r));
         }
@@ -541,7 +523,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public IntColumn addToEach(int value) {
-        IntColumn result = IntColumn.create(name() + " + " + value, size());
+        IntColumn result = new IntColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) + value);
         }
@@ -549,7 +531,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public IntColumn subtract(IntColumn column2) {
-        IntColumn result = IntColumn.create(name() + " - " + column2.name(), size());
+        IntColumn result = new IntColumn(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) - column2.get(r));
         }
@@ -557,7 +539,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public IntColumn multiply(IntColumn column2) {
-        IntColumn result = IntColumn.create(name() + " * " + column2.name(), size());
+        IntColumn result = new IntColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }

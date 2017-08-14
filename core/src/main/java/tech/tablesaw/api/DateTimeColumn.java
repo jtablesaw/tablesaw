@@ -45,7 +45,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     private static final int BYTE_SIZE = 8;
 
     private static int DEFAULT_ARRAY_SIZE = 128;
-    LongComparator reverseLongComparator = new LongComparator() {
+    private LongComparator reverseLongComparator = new LongComparator() {
 
         @Override
         public int compare(Long o2, Long o1) {
@@ -57,7 +57,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
             return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
         }
     };
+
     private LongArrayList data;
+
     IntComparator comparator = new IntComparator() {
 
         @Override
@@ -72,6 +74,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
             return Long.compare(f1, f2);
         }
     };
+
     /**
      * The formatter chosen to parse date-time strings for this particular column
      */
@@ -95,16 +98,6 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public DateTimeColumn(String name, LongArrayList data) {
         super(name);
         this.data = data;
-    }
-
-    public static DateTimeColumn create(String name) {
-        return new DateTimeColumn(name);
-    }
-
-    public static DateTimeColumn create(String fileName, LongArrayList dateTimes) {
-        DateTimeColumn column = new DateTimeColumn(fileName, dateTimes.size());
-        column.data.addAll(dateTimes);
-        return column;
     }
 
     @Override

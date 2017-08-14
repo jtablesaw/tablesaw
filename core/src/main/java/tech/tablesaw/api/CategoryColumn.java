@@ -118,22 +118,6 @@ public class CategoryColumn extends AbstractColumn
         values = new IntArrayList(size);
     }
 
-    private static CategoryColumn create(String name) {
-        return create(name, DEFAULT_ARRAY_SIZE);
-    }
-
-    private static CategoryColumn create(String name, int size) {
-        return new CategoryColumn(name, size);
-    }
-
-    private static CategoryColumn create(String name, List<String> categories) {
-        CategoryColumn column = new CategoryColumn(name, categories.size());
-        for (String string : categories) {
-            column.add(string);
-        }
-        return column;
-    }
-
     public static String convert(String stringValue) {
         if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
             return MISSING_VALUE;
@@ -206,7 +190,7 @@ public class CategoryColumn extends AbstractColumn
      */
     public Table countByCategory() {
         Table t = new Table("Column: " + name());
-        CategoryColumn categories = CategoryColumn.create("Category");
+        CategoryColumn categories = new CategoryColumn("Category");
         IntColumn counts = new IntColumn("Count");
 
         Int2IntMap valueToCount = new Int2IntOpenHashMap();
@@ -420,7 +404,7 @@ public class CategoryColumn extends AbstractColumn
      */
     public CategoryColumn unique() {
         List<String> strings = new ArrayList<>(lookupTable.categories());
-        return CategoryColumn.create(name() + " Unique values", strings);
+        return new CategoryColumn(name() + " Unique values", strings);
     }
 
     /**
@@ -466,7 +450,7 @@ public class CategoryColumn extends AbstractColumn
      * @return the new column
      */
     public CategoryColumn appendString(CategoryColumn append) {
-      CategoryColumn newColumn = CategoryColumn.create(name() + "[column appended]", this.size());
+      CategoryColumn newColumn = new CategoryColumn(name() + "[column appended]", this.size());
       for (int r = 0; r < size(); r++) {
         newColumn.add(get(r) + append.get(r));
       }
@@ -479,7 +463,7 @@ public class CategoryColumn extends AbstractColumn
      * @return the new column
      */
     public CategoryColumn appendString(String append) {
-      CategoryColumn newColumn = CategoryColumn.create(name() + "[append]", this.size());
+      CategoryColumn newColumn = new CategoryColumn(name() + "[append]", this.size());
       for (int r = 0; r < size(); r++) {
         newColumn.add(get(r) + append);
       }
@@ -495,7 +479,7 @@ public class CategoryColumn extends AbstractColumn
      */
     public CategoryColumn replaceAll(String[] regexArray, String replacement) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[repl]", this.size());
+        CategoryColumn newColumn = new CategoryColumn(name() + "[repl]", this.size());
 
         for (int r = 0; r < size(); r++) {
             String value = get(r);
@@ -508,7 +492,7 @@ public class CategoryColumn extends AbstractColumn
     }
 
     public CategoryColumn tokenizeAndSort(String separator) {
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[sorted]", this.size());
+        CategoryColumn newColumn = new CategoryColumn(name() + "[sorted]", this.size());
 
         for (int r = 0; r < size(); r++) {
             String value = get(r);
@@ -529,7 +513,7 @@ public class CategoryColumn extends AbstractColumn
      * Splits on Whitespace and returns the lexicographically sorted result
      */
     public CategoryColumn tokenizeAndSort() {
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[sorted]", this.size());
+        CategoryColumn newColumn = new CategoryColumn(name() + "[sorted]", this.size());
 
         for (int r = 0; r < size(); r++) {
             String value = get(r);
@@ -545,7 +529,7 @@ public class CategoryColumn extends AbstractColumn
     }
 
     public CategoryColumn tokenizeAndRemoveDuplicates() {
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[without duplicates]", this.size());
+        CategoryColumn newColumn = new CategoryColumn(name() + "[without duplicates]", this.size());
 
         for (int r = 0; r < size(); r++) {
             String value = get(r);
@@ -605,7 +589,7 @@ public class CategoryColumn extends AbstractColumn
     }
 
     public CategoryColumn copy() {
-        CategoryColumn newCol = CategoryColumn.create(name(), size());
+        CategoryColumn newCol = new CategoryColumn(name(), size());
         newCol.lookupTable = new DictionaryMap(lookupTable);
         newCol.values.addAll(values);
         newCol.setComment(comment());

@@ -77,12 +77,6 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         data = new ShortArrayList(DEFAULT_ARRAY_SIZE);
     }
 
-    private static ShortColumn create(String name, ShortArrayList ints) {
-        ShortColumn column = new ShortColumn(name, ints.size());
-        column.data = ints;
-        return column;
-    }
-
     /**
      * Returns a float that is parsed from the given String
      * <p>
@@ -197,7 +191,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         for (int i = 0; i < ints.length; i++) {
             shorts[i] = (short) ints[i];
         }
-        return ShortColumn.create(name() + " Unique values", ShortArrayList.wrap(shorts));
+        return new ShortColumn(name() + " Unique values", ShortArrayList.wrap(shorts));
     }
 
     @Override

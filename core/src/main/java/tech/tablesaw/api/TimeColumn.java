@@ -95,12 +95,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         data = times;
     }
 
-    private static TimeColumn create(String fileName, IntArrayList times) {
-        TimeColumn column = new TimeColumn(fileName, times.size());
-        column.data.addAll(times);
-        return column;
-    }
-
     public int size() {
         return data.size();
     }
@@ -144,7 +138,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
 
     @Override
     public TimeColumn copy() {
-        TimeColumn column = TimeColumn.create(name(), data);
+        TimeColumn column = new TimeColumn(name(), data);
         column.setComment(comment());
         return column;
     }
@@ -246,7 +240,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     @Override
     public TimeColumn unique() {
         IntSet ints = new IntOpenHashSet(data);
-        return TimeColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
+        return new TimeColumn(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
     }
 
     @Override

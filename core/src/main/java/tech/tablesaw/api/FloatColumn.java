@@ -94,17 +94,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         data = new FloatArrayList(metadata.getSize());
     }
 
-    private static FloatColumn create(String name, int initialSize) {
-        return new FloatColumn(name, initialSize);
-    }
-
-    private static FloatColumn create(String name, FloatArrayList floats) {
-        FloatColumn column = new FloatColumn(name, floats.size());
-        column.data = new FloatArrayList(floats.size());
-        column.data.addAll(floats);
-        return column;
-    }
-
     /**
      * Returns a float that is parsed from the given String
      * <p>
@@ -382,7 +371,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
 
     @Override
     public FloatColumn copy() {
-        FloatColumn column = FloatColumn.create(name(), data);
+        FloatColumn column = new FloatColumn(name(), data);
         column.setComment(comment());
         return column;
     }
@@ -437,7 +426,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
      * Returns the natural log of the values in this column as a new FloatColumn
      */
     public FloatColumn logN() {
-        FloatColumn newColumn = FloatColumn.create(name() + "[logN]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[logN]", size());
 
         for (float value : this) {
             newColumn.append((float) Math.log(value));
@@ -446,7 +435,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn log10() {
-        FloatColumn newColumn = FloatColumn.create(name() + "[log10]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[log10]", size());
 
         for (float value : this) {
             newColumn.append((float) Math.log10(value));
@@ -459,7 +448,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
      * values don't return -Infinity
      */
     public FloatColumn log1p() {
-        FloatColumn newColumn = FloatColumn.create(name() + "[1og1p]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[1og1p]", size());
         for (float value : this) {
             newColumn.append((float) Math.log1p(value));
         }
@@ -467,7 +456,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn round() {
-        FloatColumn newColumn = FloatColumn.create(name() + "[rounded]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[rounded]", size());
         for (float value : this) {
             newColumn.append(Math.round(value));
         }
@@ -475,7 +464,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn abs() {
-        FloatColumn newColumn = FloatColumn.create(name() + "[abs]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[abs]", size());
         for (float value : this) {
             newColumn.append(Math.abs(value));
         }
@@ -483,7 +472,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn square() {
-        FloatColumn newColumn = FloatColumn.create(name() + "[sq]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[sq]", size());
         for (float value : this) {
             newColumn.append(value * value);
         }
@@ -491,7 +480,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn sqrt() {
-        FloatColumn newColumn = FloatColumn.create(name() + "[sqrt]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[sqrt]", size());
         for (float value : this) {
             newColumn.append((float) Math.sqrt(value));
         }
@@ -499,7 +488,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn cubeRoot() {
-        FloatColumn newColumn = FloatColumn.create(name() + "[cbrt]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[cbrt]", size());
         for (float value : this) {
             newColumn.append((float) Math.cbrt(value));
         }
@@ -507,7 +496,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn cube() {
-        FloatColumn newColumn = FloatColumn.create(name() + "[cb]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[cb]", size());
         for (float value : this) {
             newColumn.append(value * value * value);
         }
@@ -515,7 +504,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn remainder(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " % " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) % column2.get(r));
         }
@@ -523,7 +512,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn append(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " + " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " + " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) + column2.get(r));
         }
@@ -531,7 +520,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn subtract(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " - " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) - column2.get(r));
         }
@@ -539,7 +528,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn multiply(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }
@@ -547,7 +536,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn multiply(IntColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }
@@ -555,7 +544,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn multiply(LongColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }
@@ -563,7 +552,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn multiply(ShortColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }
@@ -571,7 +560,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn divide(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
         }
@@ -579,7 +568,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn divide(IntColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
         }
@@ -587,7 +576,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn divide(LongColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
         }
@@ -595,7 +584,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn divide(ShortColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
         }
@@ -610,7 +599,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
      * 0     returns  0
      */
     public FloatColumn neg() {
-        FloatColumn newColumn = FloatColumn.create(name() + "[neg]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[neg]", size());
         for (float value : this) {
             newColumn.append(value * -1);
         }
@@ -774,7 +763,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
 
     @NotNull
     public FloatColumn add(@NotNull FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " - " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) + column2.get(r));
         }
@@ -783,7 +772,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
 
     @NotNull
     public FloatColumn addToEach(float value) {
-        FloatColumn result = FloatColumn.create(name() + " + " + value, size());
+        FloatColumn result = new FloatColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) + value);
         }
@@ -792,7 +781,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
 
     @NotNull
     public FloatColumn addToEach(int value) {
-        FloatColumn result = FloatColumn.create(name() + " + " + value, size());
+        FloatColumn result = new FloatColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) + value);
         }

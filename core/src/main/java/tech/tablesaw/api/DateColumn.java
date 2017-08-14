@@ -95,14 +95,9 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         data = new IntArrayList(initialSize);
     }
 
-    private static DateColumn create(String name) {
-        return new DateColumn(name);
-    }
-
-    private static DateColumn create(String columnName, IntArrayList dates) {
-        DateColumn column = new DateColumn(columnName, dates.size());
-        column.data.addAll(dates);
-        return column;
+    public DateColumn(String name, IntArrayList data) {
+        super(name);
+        this.data = data;
     }
 
     public int size() {
@@ -137,7 +132,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
 
     @Override
     public DateColumn emptyCopy() {
-        DateColumn column = DateColumn.create(name());
+        DateColumn column = new DateColumn(name());
         column.setComment(comment());
         return column;
     }
@@ -156,7 +151,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
 
     @Override
     public DateColumn copy() {
-        DateColumn column = DateColumn.create(name(), data);
+        DateColumn column = new DateColumn(name(), data);
         column.setComment(comment());
         return column;
     }
@@ -186,7 +181,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         for (int i = 0; i < size(); i++) {
             ints.add(data.getInt(i));
         }
-        return DateColumn.create(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
+        return new DateColumn(name() + " Unique values", IntArrayList.wrap(ints.toIntArray()));
     }
 
     public LocalDate firstElement() {
