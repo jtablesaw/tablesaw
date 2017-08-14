@@ -18,7 +18,7 @@ public interface StringMapUtils extends Column {
      */
 
     default CategoryColumn upperCase() {
-        CategoryColumn newColumn = CategoryColumn.create(this.name() + "[ucase]");
+        CategoryColumn newColumn = new CategoryColumn(this.name() + "[ucase]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -33,7 +33,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn lowerCase() {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[lcase]");
+        CategoryColumn newColumn = new CategoryColumn(name() + "[lcase]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -44,7 +44,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn trim() {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[trim]");
+        CategoryColumn newColumn = new CategoryColumn(name() + "[trim]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -55,7 +55,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn replaceAll(String regex, String replacement) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[repl]");
+        CategoryColumn newColumn = new CategoryColumn(name() + "[repl]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -66,7 +66,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn replaceFirst(String regex, String replacement) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[repl]");
+        CategoryColumn newColumn = new CategoryColumn(name() + "[repl]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -77,7 +77,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn substring(int start, int end) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[sub]");
+        CategoryColumn newColumn = new CategoryColumn(name() + "[sub]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -89,7 +89,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn substring(int start) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[sub]");
+        CategoryColumn newColumn = new CategoryColumn(name() + "[sub]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -100,7 +100,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn abbreviate(int maxWidth) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[abbr]");
+        CategoryColumn newColumn = new CategoryColumn(name() + "[abbr]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -111,7 +111,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn padEnd(int minLength, char padChar) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[pad]");
+        CategoryColumn newColumn = new CategoryColumn(name() + "[pad]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -122,7 +122,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn padStart(int minLength, char padChar) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + "[pad]");
+        CategoryColumn newColumn = new CategoryColumn(name() + "[pad]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -133,7 +133,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn commonPrefix(Column column2) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + column2.name() + "[prefix]");
+        CategoryColumn newColumn = new CategoryColumn(name() + column2.name() + "[prefix]");
 
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
@@ -145,7 +145,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn commonSuffix(Column column2) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + column2.name() + "[suffix]");
+        CategoryColumn newColumn = new CategoryColumn(name() + column2.name() + "[suffix]");
 
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
@@ -160,7 +160,7 @@ public interface StringMapUtils extends Column {
      */
     default Column distance(Column column2) {
 
-        FloatColumn newColumn = FloatColumn.create(name() + column2.name() + "[distance]");
+        FloatColumn newColumn = new FloatColumn(name() + column2.name() + "[distance]");
 
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
@@ -172,7 +172,7 @@ public interface StringMapUtils extends Column {
 
     default CategoryColumn join(Column column2, String delimiter) {
 
-        CategoryColumn newColumn = CategoryColumn.create(name() + column2.name() + "[join]");
+        CategoryColumn newColumn = new CategoryColumn(name() + column2.name() + "[join]");
 
         for (int r = 0; r < size(); r++) {
             String[] values = new String[2];

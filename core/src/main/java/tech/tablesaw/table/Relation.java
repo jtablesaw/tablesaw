@@ -200,12 +200,12 @@ public interface Relation {
                 .append(" variables (cols)");
 
         Table structure = Table.create(nameBuilder.toString());
-        structure.addColumn(IntColumn.create("Index"));
-        structure.addColumn(CategoryColumn.create("Column Name"));
-        structure.addColumn(CategoryColumn.create("Type"));
-        structure.addColumn(IntColumn.create("Unique Values"));
-        structure.addColumn(CategoryColumn.create("First"));
-        structure.addColumn(CategoryColumn.create("Last"));
+        structure.addColumn(new IntColumn("Index"));
+        structure.addColumn(new CategoryColumn("Column Name"));
+        structure.addColumn(new CategoryColumn("Type"));
+        structure.addColumn(new IntColumn("Unique Values"));
+        structure.addColumn(new CategoryColumn("First"));
+        structure.addColumn(new CategoryColumn("Last"));
 
         for (Column column : columns()) {
             structure.intColumn("Index").append(columnIndex(column));

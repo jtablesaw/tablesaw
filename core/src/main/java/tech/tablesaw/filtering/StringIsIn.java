@@ -24,12 +24,12 @@ public class StringIsIn extends ColumnFilter {
 
     public StringIsIn(ColumnReference reference, Collection<String> strings) {
       super(reference);
-      this.filterColumn = CategoryColumn.create("temp", Lists.newArrayList(strings));
+      this.filterColumn = new CategoryColumn("temp", Lists.newArrayList(strings));
     }
  
     public StringIsIn(ColumnReference reference, String... strings) {
         super(reference);
-        this.filterColumn = CategoryColumn.create("temp", Lists.newArrayList(strings));
+        this.filterColumn = new CategoryColumn("temp", Lists.newArrayList(strings));
     }
 
     public Selection apply(Table relation) {

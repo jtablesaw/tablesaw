@@ -29,7 +29,7 @@ public interface TimeMapUtils extends TimeColumnUtils {
     }
 
     default LongColumn difference(TimeColumn column2, ChronoUnit unit) {
-        LongColumn newColumn = LongColumn.create(name() + " - " + column2.name());
+        LongColumn newColumn = new LongColumn(name() + " - " + column2.name());
 
         for (int r = 0; r < size(); r++) {
             int c1 = this.getInt(r);
@@ -50,7 +50,7 @@ public interface TimeMapUtils extends TimeColumnUtils {
     }
 
     default ShortColumn hour() {
-        ShortColumn newColumn = ShortColumn.create(name() + "[" + "hour" + "]");
+        ShortColumn newColumn = new ShortColumn(name() + "[" + "hour" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getInt(r);
             if (c1 != TimeColumn.MISSING_VALUE) {
@@ -63,7 +63,7 @@ public interface TimeMapUtils extends TimeColumnUtils {
     }
 
     default IntColumn minuteOfDay() {
-        IntColumn newColumn = IntColumn.create(name() + "[" + "minute-of-day" + "]");
+        IntColumn newColumn = new IntColumn(name() + "[" + "minute-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getInt(r);
             if (c1 != TimeColumn.MISSING_VALUE) {
@@ -76,7 +76,7 @@ public interface TimeMapUtils extends TimeColumnUtils {
     }
 
     default IntColumn secondOfDay() {
-        IntColumn newColumn = IntColumn.create(name() + "[" + "second-of-day" + "]");
+        IntColumn newColumn = new IntColumn(name() + "[" + "second-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getInt(r);
             if (c1 != TimeColumn.MISSING_VALUE) {

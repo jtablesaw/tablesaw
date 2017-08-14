@@ -50,7 +50,7 @@ public class StandardConfusionMatrix implements ConfusionMatrix {
 
     public tech.tablesaw.api.Table toTable() {
         tech.tablesaw.api.Table t = tech.tablesaw.api.Table.create("Confusion Matrix");
-        t.addColumn(CategoryColumn.create(""));
+        t.addColumn(new CategoryColumn(""));
 
         // make a set of all the values needed, from the prediction set or the actual set
         TreeSet<Integer> allValues = new TreeSet<>();
@@ -58,7 +58,7 @@ public class StandardConfusionMatrix implements ConfusionMatrix {
         allValues.addAll(table.rowKeySet());
 
         for (Integer comparable : allValues) {
-            t.addColumn(IntColumn.create(String.valueOf(labels.get(comparable))));
+            t.addColumn(new IntColumn(String.valueOf(labels.get(comparable))));
             t.column(0).appendCell("Predicted " + labels.get(comparable));
         }
 

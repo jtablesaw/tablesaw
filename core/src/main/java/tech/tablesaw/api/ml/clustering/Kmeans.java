@@ -55,8 +55,8 @@ public class Kmeans {
 
     public Table clustered(Column labels) {
         Table table = Table.create("Clusters");
-        CategoryColumn labelColumn = CategoryColumn.create("Label");
-        IntColumn clusterColumn = IntColumn.create("Cluster");
+        CategoryColumn labelColumn = new CategoryColumn("Label");
+        IntColumn clusterColumn = new IntColumn("Cluster");
         table.addColumn(labelColumn);
         table.addColumn(clusterColumn);
         int[] clusters = kMeans.getClusterLabel();
@@ -70,11 +70,11 @@ public class Kmeans {
 
     public Table labeledCentroids() {
         Table table = Table.create("Centroids");
-        CategoryColumn labelColumn = CategoryColumn.create("Cluster");
+        CategoryColumn labelColumn = new CategoryColumn("Cluster");
         table.addColumn(labelColumn);
 
         for (int i = 0; i < inputColumns.length; i++) {
-            FloatColumn centroid = FloatColumn.create(inputColumns[i].name());
+            FloatColumn centroid = new FloatColumn(inputColumns[i].name());
             table.addColumn(centroid);
         }
 

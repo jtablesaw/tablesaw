@@ -60,6 +60,11 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         data = new IntArrayList(initialSize);
     }
 
+    public IntColumn(String name, IntArrayList data) {
+        super(name);
+        this.data = data;
+    }
+
     public IntColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new IntArrayList(metadata.getSize());
@@ -560,7 +565,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public FloatColumn multiply(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }
@@ -568,7 +573,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public FloatColumn divide(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
         }
@@ -616,7 +621,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public Stats stats() {
-        FloatColumn values = FloatColumn.create(name(), toFloatArray());
+        FloatColumn values = new FloatColumn(name(), toFloatArray());
         return Stats.create(values);
     }
 

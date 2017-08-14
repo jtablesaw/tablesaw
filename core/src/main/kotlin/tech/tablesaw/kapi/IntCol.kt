@@ -20,10 +20,10 @@ class IntCol(val target: IntColumn) : NumericCol {
 
     companion object Factory {
         fun create(name: String, arraySize: Int = IntColumn.DEFAULT_ARRAY_SIZE): IntCol
-                = IntCol(IntColumn.create(name, arraySize))
+                = IntCol(IntColumn(name, arraySize))
 
         fun create(columnMetadata: ColumnMetadata): IntCol
-                = IntCol(IntColumn.create(columnMetadata))
+                = IntCol(IntColumn(columnMetadata))
     }
 
     // column metadata

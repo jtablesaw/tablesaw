@@ -37,7 +37,7 @@ public final class CrossTab {
     public static Table xTabCount(Table table, Column column1, Column column2) {
 
         Table t = Table.create("Crosstab Counts: " + column1.name() + " x " + column2.name());
-        t.addColumn(CategoryColumn.create(""));
+        t.addColumn(new CategoryColumn(""));
 
         Table temp = table.sortOn(column1.name(), column2.name());
 
@@ -62,10 +62,10 @@ public final class CrossTab {
         }
 
         for (String colName : gTable.columnKeySet()) {
-            t.addColumn(IntColumn.create(colName));
+            t.addColumn(new IntColumn(colName));
         }
 
-        t.addColumn(IntColumn.create("total"));
+        t.addColumn(new IntColumn("total"));
 
         int[] columnTotals = new int[t.columnCount()];
 
@@ -101,7 +101,7 @@ public final class CrossTab {
     public static Table xTabCount(Table table, DateColumn column1, Column column2) {
 
         Table t = Table.create("CrossTab Counts");
-        t.addColumn(CategoryColumn.create("value"));
+        t.addColumn(new CategoryColumn("value"));
         Table temp = table.sortOn(column1.name(), column2.name());
 
         int colIndex2 = table.columnIndex(column2.name());
@@ -123,10 +123,10 @@ public final class CrossTab {
         }
 
         for (String colName : gTable.columnKeySet()) {
-            t.addColumn(FloatColumn.create(colName));
+            t.addColumn(new FloatColumn(colName));
         }
 
-        t.addColumn(FloatColumn.create("total"));
+        t.addColumn(new FloatColumn("total"));
 
         int[] columnTotals = new int[t.columnCount()];
 
@@ -179,7 +179,7 @@ public final class CrossTab {
   public static Table tablePercents(Table xTabCounts) {
 
     Table pctTable = new Table("Proportions");
-    CategoryColumn labels = CategoryColumn.createFromCsv("labels");
+    CategoryColumn labels = new CategoryColumnFromCsv("labels");
 
     pctTable.addColumn(labels);
 
@@ -189,7 +189,7 @@ public final class CrossTab {
 
     for (int i = 1; i < xTabCounts.columnCount(); i++) {
       Column column = xTabCounts.column(i);
-      pctTable.addColumn(FloatColumn.createFromCsv(column.name()));
+      pctTable.addColumn(new FloatColumnFromCsv(column.name()));
     }
 
     long tableTotal
@@ -210,7 +210,7 @@ public final class CrossTab {
     public static Table rowPercents(Table xTabCounts) {
 
         Table pctTable = Table.create("Crosstab Row Proportions: ");
-        CategoryColumn labels = CategoryColumn.create("");
+        CategoryColumn labels = new CategoryColumn("");
 
         pctTable.addColumn(labels);
 
@@ -220,7 +220,7 @@ public final class CrossTab {
 
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column column = xTabCounts.column(i);
-            pctTable.addColumn(FloatColumn.create(column.name()));
+            pctTable.addColumn(new FloatColumn(column.name()));
         }
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
@@ -240,7 +240,7 @@ public final class CrossTab {
     public static Table tablePercents(Table xTabCounts) {
 
         Table pctTable = Table.create("Crosstab Table Proportions: ");
-        CategoryColumn labels = CategoryColumn.create("");
+        CategoryColumn labels = new CategoryColumn("");
 
         pctTable.addColumn(labels);
 
@@ -252,7 +252,7 @@ public final class CrossTab {
 
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column column = xTabCounts.column(i);
-            pctTable.addColumn(FloatColumn.create(column.name()));
+            pctTable.addColumn(new FloatColumn(column.name()));
         }
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
@@ -270,7 +270,7 @@ public final class CrossTab {
     public static Table columnPercents(Table xTabCounts) {
 
         Table pctTable = Table.create("Crosstab Column Proportions: ");
-        CategoryColumn labels = CategoryColumn.create("");
+        CategoryColumn labels = new CategoryColumn("");
 
         pctTable.addColumn(labels);
 
@@ -284,7 +284,7 @@ public final class CrossTab {
         // create the new cols
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column column = xTabCounts.column(i);
-            pctTable.addColumn(FloatColumn.create(column.name()));
+            pctTable.addColumn(new FloatColumn(column.name()));
         }
 
         // get the column totals

@@ -7,7 +7,6 @@ import smile.association.ItemSet;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.ml.association.FrequentItemset;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class FrequentItemsetExample {
         out(table.structure().print());
         out(table.shape());
         ShortColumn movie = table.shortColumn("movie");
-        CategoryColumn moviecat = CategoryColumn.create("MovieCat");
+        CategoryColumn moviecat = new CategoryColumn("MovieCat");
         for (int i = 0; i < movie.size(); i++) {
             moviecat.appendCell(movie.getString(i));
         }

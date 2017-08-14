@@ -41,7 +41,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     private static final int BYTE_SIZE = 4;
 
     private static int DEFAULT_ARRAY_SIZE = 128;
-    IntComparator reverseIntComparator = new IntComparator() {
+    private IntComparator reverseIntComparator = new IntComparator() {
 
         @Override
         public int compare(Integer o2, Integer o1) {
@@ -57,7 +57,9 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
      * The formatter chosen to parse times for this particular column
      */
     private DateTimeFormatter selectedFormatter;
+
     private IntArrayList data;
+
     IntComparator comparator = new IntComparator() {
 
         @Override
@@ -88,11 +90,12 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         data = new IntArrayList(initialSize);
     }
 
-    public static TimeColumn create(String name) {
-        return new TimeColumn(name);
+    public TimeColumn(String name, IntArrayList times) {
+        super(name);
+        data = times;
     }
 
-    public static TimeColumn create(String fileName, IntArrayList times) {
+    private static TimeColumn create(String fileName, IntArrayList times) {
         TimeColumn column = new TimeColumn(fileName, times.size());
         column.data.addAll(times);
         return column;
@@ -200,8 +203,8 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     public Table summary() {
 
         Table table = Table.create("Column: " + name());
-        CategoryColumn measure = CategoryColumn.create("Measure");
-        CategoryColumn value = CategoryColumn.create("Value");
+        CategoryColumn measure = new CategoryColumn("Measure");
+        CategoryColumn value = new CategoryColumn("Value");
         table.addColumn(measure);
         table.addColumn(value);
 

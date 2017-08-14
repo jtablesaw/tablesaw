@@ -17,7 +17,7 @@ public class LocalDateTimeColumnTest  {
     @Before
     public void setUp() throws Exception {
         Table table = Table.create("Test");
-        column1 = DateTimeColumn.create("Game date");
+        column1 = new DateTimeColumn("Game date");
         table.addColumn(column1);
     }
 

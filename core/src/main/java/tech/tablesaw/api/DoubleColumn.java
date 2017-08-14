@@ -85,15 +85,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         data = new DoubleArrayList(metadata.getSize());
     }
 
-    public static DoubleColumn create(String name) {
-        return new DoubleColumn(name);
-    }
-
-    public static DoubleColumn create(String name, int initialSize) {
+    private static DoubleColumn create(String name, int initialSize) {
         return new DoubleColumn(name, initialSize);
     }
 
-    public static DoubleColumn create(String name, DoubleArrayList doubles) {
+    private static DoubleColumn create(String name, DoubleArrayList doubles) {
         DoubleColumn column = new DoubleColumn(name, doubles.size());
         column.data = new DoubleArrayList(doubles.size());
         column.data.addAll(doubles);

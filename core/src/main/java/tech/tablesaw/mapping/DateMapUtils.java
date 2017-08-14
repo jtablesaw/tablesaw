@@ -56,7 +56,7 @@ public interface DateMapUtils extends DateColumnUtils {
      */
     default FloatColumn difference(DateColumn column1, DateColumn column2, ChronoUnit unit) {
 
-        FloatColumn newColumn = FloatColumn.create(column1.name() + " - " + column2.name());
+        FloatColumn newColumn = new FloatColumn(column1.name() + " - " + column2.name());
         for (int r = 0; r < column1.size(); r++) {
             int c1 = column1.getInt(r);
             int c2 = column2.getInt(r);
@@ -108,7 +108,7 @@ public interface DateMapUtils extends DateColumnUtils {
 
     default DateColumn plus(int value, TemporalUnit unit) {
 
-        DateColumn newColumn = DateColumn.create(dateColumnName(this, value, unit));
+        DateColumn newColumn = new DateColumn(dateColumnName(this, value, unit));
         DateColumn column1 = (DateColumn) this;
 
         for (int r = 0; r < column1.size(); r++) {
@@ -126,7 +126,7 @@ public interface DateMapUtils extends DateColumnUtils {
 
     default DateColumn minus(int value, TemporalUnit unit) {
         DateColumn column1 = (DateColumn) this;
-        DateColumn newColumn = DateColumn.create(dateColumnName(column1, value, unit));
+        DateColumn newColumn = new DateColumn(dateColumnName(column1, value, unit));
         for (int r = 0; r < column1.size(); r++) {
             LocalDate c1 = column1.get(r);
             if (c1 == null) {
@@ -139,7 +139,7 @@ public interface DateMapUtils extends DateColumnUtils {
     }
 
     default DateTimeColumn atStartOfDay() {
-        DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + " start");
+        DateTimeColumn newColumn = new DateTimeColumn(this.name() + " " + " start");
         for (int r = 0; r < this.size(); r++) {
             LocalDate c1 = this.get(r);
             if (c1 == null) {
@@ -157,7 +157,7 @@ public interface DateMapUtils extends DateColumnUtils {
      */
     default DateTimeColumn atTime(LocalTime time) {
         Preconditions.checkNotNull(time);
-        DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + time.toString());
+        DateTimeColumn newColumn = new DateTimeColumn(this.name() + " " + time.toString());
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             if (c1 == MISSING_VALUE) {
@@ -175,7 +175,7 @@ public interface DateMapUtils extends DateColumnUtils {
      * times from the other column
      */
     default DateTimeColumn atTime(TimeColumn timeColumn) {
-        DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + timeColumn.name());
+        DateTimeColumn newColumn = new DateTimeColumn(this.name() + " " + timeColumn.name());
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             int c2 = timeColumn.getInt(r);

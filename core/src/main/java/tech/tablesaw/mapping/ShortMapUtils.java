@@ -16,7 +16,7 @@ public interface ShortMapUtils extends ShortColumnUtils {
         // TODO(lwhite): Assert all columns are the same size.
         String nString = names(columns);
         String name = String.format("sum(%s)", nString);
-        IntColumn newColumn = IntColumn.create(name);
+        IntColumn newColumn = new IntColumn(name);
 
         for (int r = 0; r < columns[0].size(); r++) {
             int result = 0;

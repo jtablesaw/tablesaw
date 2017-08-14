@@ -160,7 +160,7 @@ public class StorageManager {
     }
 
     private static IntColumn readIntColumn(String fileName, ColumnMetadata metadata) throws IOException {
-        IntColumn ints = IntColumn.create(metadata);
+        IntColumn ints = new IntColumn(metadata);
         try (FileInputStream fis = new FileInputStream(fileName);
              SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
              DataInputStream dis = new DataInputStream(sis)) {

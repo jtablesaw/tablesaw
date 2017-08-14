@@ -55,6 +55,7 @@ public class CategoryColumn extends AbstractColumn
 
     // a bidirectional map of keys to backing string values.
     private DictionaryMap lookupTable = new DictionaryMap();
+
     public final IntComparator rowComparator = new IntComparator() {
 
         @Override
@@ -69,6 +70,7 @@ public class CategoryColumn extends AbstractColumn
             return compare((int) i, (int) i1);
         }
     };
+
     private IntComparator dictionarySortComparator = new IntComparator() {
         @Override
         public int compare(int i, int i1) {
@@ -80,6 +82,7 @@ public class CategoryColumn extends AbstractColumn
             return compare((int) o1, (int) o2);
         }
     };
+
     private IntComparator reverseDictionarySortComparator = new IntComparator() {
         @Override
         public int compare(int i, int i1) {
@@ -97,6 +100,14 @@ public class CategoryColumn extends AbstractColumn
         values = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
 
+    public CategoryColumn(String name, List<String> categories) {
+        super(name);
+        values = new IntArrayList(categories.size());
+        for (String string : categories) {
+            add(string);
+        }
+    }
+
     public CategoryColumn(ColumnMetadata metadata) {
         super(metadata);
         values = new IntArrayList(DEFAULT_ARRAY_SIZE);
@@ -107,15 +118,15 @@ public class CategoryColumn extends AbstractColumn
         values = new IntArrayList(size);
     }
 
-    public static CategoryColumn create(String name) {
+    private static CategoryColumn create(String name) {
         return create(name, DEFAULT_ARRAY_SIZE);
     }
 
-    public static CategoryColumn create(String name, int size) {
+    private static CategoryColumn create(String name, int size) {
         return new CategoryColumn(name, size);
     }
 
-    public static CategoryColumn create(String name, List<String> categories) {
+    private static CategoryColumn create(String name, List<String> categories) {
         CategoryColumn column = new CategoryColumn(name, categories.size());
         for (String string : categories) {
             column.add(string);
@@ -196,7 +207,7 @@ public class CategoryColumn extends AbstractColumn
     public Table countByCategory() {
         Table t = new Table("Column: " + name());
         CategoryColumn categories = CategoryColumn.create("Category");
-        IntColumn counts = IntColumn.create("Count");
+        IntColumn counts = new IntColumn("Count");
 
         Int2IntMap valueToCount = new Int2IntOpenHashMap();
         for (int next : values) {
@@ -380,7 +391,7 @@ public class CategoryColumn extends AbstractColumn
 
         // createFromCsv the necessary columns
         for (Int2ObjectMap.Entry<String> entry : lookupTable.keyToValueMap().int2ObjectEntrySet()) {
-            BooleanColumn column = BooleanColumn.create(entry.getValue());
+            BooleanColumn column = new BooleanColumn(entry.getValue());
             results.add(column);
         }
 
@@ -421,7 +432,7 @@ public class CategoryColumn extends AbstractColumn
 
 
     public IntColumn toIntColumn() {
-        IntColumn intColumn = IntColumn.create(this.name() + ": codes", size());
+        IntColumn intColumn = new IntColumn(this.name() + ": codes", size());
         IntArrayList data = data();
         for (int i = 0; i < size(); i++) {
             intColumn.append(data.getInt(i));

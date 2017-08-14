@@ -851,7 +851,7 @@ public class Table implements Relation, IntIterable {
     }
 
     public BooleanColumn selectIntoColumn(String newColumnName, Selection selection) {
-        return BooleanColumn.create(newColumnName, selection, rowCount());
+        return new BooleanColumn(newColumnName, selection, rowCount());
     }
 
     public Table selectWhere(Filter filter) {
@@ -862,7 +862,7 @@ public class Table implements Relation, IntIterable {
     }
 
     public BooleanColumn selectIntoColumn(String newColumnName, Filter filter) {
-        return BooleanColumn.create(newColumnName, filter.apply(this), rowCount());
+        return new BooleanColumn(newColumnName, filter.apply(this), rowCount());
     }
 
     public ViewGroup splitOn(Column... columns) {
@@ -875,7 +875,7 @@ public class Table implements Relation, IntIterable {
 
     public Table structure() {
         Table t = new Table("Structure of " + name());
-        IntColumn index = IntColumn.create("Index", columnCount());
+        IntColumn index = new IntColumn("Index", columnCount());
         CategoryColumn columnName = new CategoryColumn("Column Name", columnCount());
         CategoryColumn columnType = new CategoryColumn("Column Type", columnCount());
         t.addColumn(index);

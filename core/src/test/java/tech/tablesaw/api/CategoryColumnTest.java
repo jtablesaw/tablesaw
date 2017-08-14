@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  */
 public class CategoryColumnTest {
 
-    private CategoryColumn column = CategoryColumn.create("testing");
+    private CategoryColumn column = new CategoryColumn("testing");
 
     @Before
     public void setUp() throws Exception {
@@ -59,21 +59,21 @@ public class CategoryColumnTest {
 
     @Test
     public void testMax() {
-        CategoryColumn categoryColumn = CategoryColumn.create("US States");
+        CategoryColumn categoryColumn = new CategoryColumn("US States");
         categoryColumn.addAll(TestDataUtil.usStates());
         assertTrue("Wyoming".equals(categoryColumn.top(5).get(0)));
     }
 
     @Test
     public void testMin() {
-        CategoryColumn categoryColumn = CategoryColumn.create("US States");
+        CategoryColumn categoryColumn = new CategoryColumn("US States");
         categoryColumn.addAll(TestDataUtil.usStates());
         assertTrue("Alabama".equals(categoryColumn.bottom(5).get(0)));
     }
 
     @Test
     public void testStartsWith() {
-        CategoryColumn categoryColumn = CategoryColumn.create("US States");
+        CategoryColumn categoryColumn = new CategoryColumn("US States");
         categoryColumn.addAll(TestDataUtil.usStates());
         Selection selection = categoryColumn.startsWith("A");
         assertEquals("Alabama", categoryColumn.get(selection.get(0)));
@@ -88,7 +88,7 @@ public class CategoryColumnTest {
 
     @Test
     public void testIsIn() {
-        CategoryColumn categoryColumn = CategoryColumn.create("US States");
+        CategoryColumn categoryColumn = new CategoryColumn("US States");
         categoryColumn.addAll(TestDataUtil.usStates());
         Selection selection = categoryColumn.isIn("Alabama", "Texas");
         assertEquals("Alabama", categoryColumn.get(selection.get(0)));
@@ -98,7 +98,7 @@ public class CategoryColumnTest {
 
     @Test
     public void testToList() {
-        CategoryColumn categoryColumn = CategoryColumn.create("US States");
+        CategoryColumn categoryColumn = new CategoryColumn("US States");
         categoryColumn.addAll(TestDataUtil.usStates());
         List<String> states = categoryColumn.toList();
         assertEquals(51, states.size()); //includes Wash. DC

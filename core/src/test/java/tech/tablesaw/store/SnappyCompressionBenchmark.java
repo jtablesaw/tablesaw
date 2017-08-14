@@ -58,7 +58,7 @@ public class SnappyCompressionBenchmark {
 
         File TEST_FOLDER = Paths.get("testfolder").toFile();
         Table t = Table.create("Test");
-        final IntColumn c = IntColumn.create("fc", 10_000_000);
+        final IntColumn c = new IntColumn("fc", 10_000_000);
         t.addColumn(c);
         RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
 

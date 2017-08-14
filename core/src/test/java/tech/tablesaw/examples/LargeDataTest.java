@@ -104,16 +104,16 @@ public class LargeDataTest {
 
         Fairy fairy = Fairy.create();
         Table t = Table.create("People");
-        CategoryColumn fName = CategoryColumn.create("first name");
-        CategoryColumn lName = CategoryColumn.create("last name");
-        CategoryColumn company = CategoryColumn.create("company");
-        CategoryColumn city = CategoryColumn.create("city");
-        CategoryColumn postalCode = CategoryColumn.create("postal code");
-        CategoryColumn state = CategoryColumn.create("state");
-        DateColumn birthDate = DateColumn.create("birth date");
-        ShortColumn height = ShortColumn.create("height");
-        ShortColumn weight = ShortColumn.create("weight");
-        BooleanColumn female = BooleanColumn.create("female");
+        CategoryColumn fName = new CategoryColumn("first name");
+        CategoryColumn lName = new CategoryColumn("last name");
+        CategoryColumn company = new CategoryColumn("company");
+        CategoryColumn city = new CategoryColumn("city");
+        CategoryColumn postalCode = new CategoryColumn("postal code");
+        CategoryColumn state = new CategoryColumn("state");
+        DateColumn birthDate = new DateColumn("birth date");
+        ShortColumn height = new ShortColumn("height");
+        ShortColumn weight = new ShortColumn("weight");
+        BooleanColumn female = new BooleanColumn("female");
 
         t.addColumn(fName);
         t.addColumn(lName);

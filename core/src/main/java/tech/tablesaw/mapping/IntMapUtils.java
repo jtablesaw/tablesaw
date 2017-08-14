@@ -15,7 +15,7 @@ public interface IntMapUtils extends IntColumnUtils {
         // TODO(lwhite): Assert all columns are the same size.
         String nString = names(columns);
         String name = String.format("sum(%s)", nString);
-        IntColumn newColumn = IntColumn.create(name);
+        IntColumn newColumn = new IntColumn(name);
 
         for (int r = 0; r < columns[0].size(); r++) {
             int result = 0;
@@ -31,7 +31,7 @@ public interface IntMapUtils extends IntColumnUtils {
 
         // TODO(lwhite): Assert all columns are the same size.
         String name = name() + " + " + value;
-        IntColumn newColumn = IntColumn.create(name);
+        IntColumn newColumn = new IntColumn(name);
 
         for (int r = 0; r < size(); r++) {
             newColumn.append(get(r) + value);
@@ -43,7 +43,7 @@ public interface IntMapUtils extends IntColumnUtils {
 
         // TODO(lwhite): Assert all columns are the same size.
         String name = name() + " * " + value;
-        IntColumn newColumn = IntColumn.create(name);
+        IntColumn newColumn = new IntColumn(name);
 
         for (int r = 0; r < size(); r++) {
             int result = (get(r) == IntColumn.MISSING_VALUE) ? IntColumn.MISSING_VALUE : get(r) * value;
@@ -56,7 +56,7 @@ public interface IntMapUtils extends IntColumnUtils {
 
         // TODO(lwhite): Assert all columns are the same size.
         String name = name() + " * " + value;
-        FloatColumn newColumn = FloatColumn.create(name);
+        FloatColumn newColumn = new FloatColumn(name);
 
         for (int r = 0; r < size(); r++) {
             newColumn.append(get(r) * (float) value);
@@ -68,7 +68,7 @@ public interface IntMapUtils extends IntColumnUtils {
 
         // TODO(lwhite): Assert all columns are the same size.
         String name = name() + " / " + value;
-        FloatColumn newColumn = FloatColumn.create(name);
+        FloatColumn newColumn = new FloatColumn(name);
 
         for (int r = 0; r < size(); r++) {
             newColumn.append(get(r) / (value * 1.0f));
@@ -80,7 +80,7 @@ public interface IntMapUtils extends IntColumnUtils {
 
         // TODO(lwhite): Assert all columns are the same size.
         String name = name() + " / " + value;
-        FloatColumn newColumn = FloatColumn.create(name);
+        FloatColumn newColumn = new FloatColumn(name);
 
         for (int r = 0; r < size(); r++) {
             newColumn.append(get(r) / value);
@@ -92,7 +92,7 @@ public interface IntMapUtils extends IntColumnUtils {
 
         // TODO(lwhite): Assert all columns are the same size.
         String name = name() + " / " + divisor.name();
-        FloatColumn newColumn = FloatColumn.create(name);
+        FloatColumn newColumn = new FloatColumn(name);
 
         for (int r = 0; r < size(); r++) {
             newColumn.append(get(r) / (divisor.get(r) * 1.0f));
@@ -153,7 +153,7 @@ public interface IntMapUtils extends IntColumnUtils {
     int get(int index);
 
     default IntColumn subtract(int value) {
-        IntColumn result = IntColumn.create(name() + " - " + value);
+        IntColumn result = new IntColumn(name() + " - " + value);
         for (int r = 0; r < size(); r++) {
             result.append(get(r) - value);
         }

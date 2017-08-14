@@ -25,8 +25,8 @@ import static org.junit.Assert.*;
  */
 public class LocalDateFilterTest {
 
-    DateColumn localDateColumn = DateColumn.create("testing");
-    Table table = Table.create("test");
+    private DateColumn localDateColumn = new DateColumn("testing");
+    private Table table = Table.create("test");
 
     @Before
     public void setUp() throws Exception {

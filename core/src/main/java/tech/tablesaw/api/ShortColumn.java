@@ -42,6 +42,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     private static final int BYTE_SIZE = 2;
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private ShortArrayList data;
+
     final IntComparator comparator = new IntComparator() {
 
         @Override
@@ -61,6 +62,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         data = new ShortArrayList(initialSize);
     }
 
+    public ShortColumn(String name, ShortArrayList data) {
+        super(name);
+        this.data = data;
+    }
+
     public ShortColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new ShortArrayList(metadata.getSize());
@@ -71,19 +77,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         data = new ShortArrayList(DEFAULT_ARRAY_SIZE);
     }
 
-    public static ShortColumn create(String name) {
-        return new ShortColumn(name, DEFAULT_ARRAY_SIZE);
-    }
-
-    public static ShortColumn create(ColumnMetadata metadata) {
-        return new ShortColumn(metadata);
-    }
-
-    public static ShortColumn create(String name, int arraySize) {
-        return new ShortColumn(name, arraySize);
-    }
-
-    public static ShortColumn create(String name, ShortArrayList ints) {
+    private static ShortColumn create(String name, ShortArrayList ints) {
         ShortColumn column = new ShortColumn(name, ints.size());
         column.data = ints;
         return column;
@@ -436,7 +430,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public IntColumn remainder(ShortColumn column2) {
-        IntColumn result = IntColumn.create(name() + " % " + column2.name(), size());
+        IntColumn result = new IntColumn(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) % column2.get(r));
         }
@@ -444,7 +438,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public IntColumn append(ShortColumn column2) {
-        IntColumn result = IntColumn.create(name() + " + " + column2.name(), size());
+        IntColumn result = new IntColumn(name() + " + " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) + column2.get(r));
         }
@@ -452,7 +446,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public IntColumn subtract(ShortColumn column2) {
-        IntColumn result = IntColumn.create(name() + " - " + column2.name(), size());
+        IntColumn result = new IntColumn(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) - column2.get(r));
         }
@@ -460,7 +454,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public IntColumn multiply(ShortColumn column2) {
-        IntColumn result = IntColumn.create(name() + " * " + column2.name(), size());
+        IntColumn result = new IntColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }
@@ -468,7 +462,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public FloatColumn multiply(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }
@@ -476,7 +470,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public FloatColumn divide(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
         }
@@ -484,7 +478,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public IntColumn divide(ShortColumn column2) {
-        IntColumn result = IntColumn.create(name() + " / " + column2.name(), size());
+        IntColumn result = new IntColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
         }
@@ -569,7 +563,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public Stats stats() {
-        FloatColumn values = FloatColumn.create(name(), toFloatArray());
+        FloatColumn values = new FloatColumn(name(), toFloatArray());
         return Stats.create(values);
     }
 
