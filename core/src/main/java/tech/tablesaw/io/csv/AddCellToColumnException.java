@@ -4,10 +4,10 @@ import java.io.PrintStream;
 
 /**
  * This Exception wraps another Exception thrown while adding a cell to a column.
- * <p/>
+ * <p>
  * The methods of this exception allow the causing Exception, row number,
  * column index, columnNames and line to be retrieved.
- * <p/>
+ * <p>
  * The dumpRow method allows the row in question to be printed to a
  * a PrintStream such as System.out
  */
