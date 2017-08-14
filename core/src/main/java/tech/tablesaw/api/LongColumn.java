@@ -61,6 +61,11 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         data = new LongArrayList(initialSize);
     }
 
+    public LongColumn(String name, LongArrayList data) {
+        super(name);
+        this.data = data;
+    }
+
     public LongColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new LongArrayList(metadata.getSize());
@@ -71,19 +76,19 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         data = new LongArrayList(DEFAULT_ARRAY_SIZE);
     }
 
-    public static LongColumn create(String name) {
+    private static LongColumn create(String name) {
         return new LongColumn(name, DEFAULT_ARRAY_SIZE);
     }
 
-    public static LongColumn create(ColumnMetadata metadata) {
+    private static LongColumn create(ColumnMetadata metadata) {
         return new LongColumn(metadata);
     }
 
-    public static LongColumn create(String name, int arraySize) {
+    private static LongColumn create(String name, int arraySize) {
         return new LongColumn(name, arraySize);
     }
 
-    public static LongColumn create(String name, LongArrayList ints) {
+    private static LongColumn create(String name, LongArrayList ints) {
         LongColumn column = new LongColumn(name, ints.size());
         column.data = ints;
         return column;
@@ -166,7 +171,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public Stats stats() {
-        FloatColumn values = FloatColumn.create(name(), toFloatArray());
+        FloatColumn values = new FloatColumn(name(), toFloatArray());
         return Stats.create(values);
     }
 
@@ -219,7 +224,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public FloatColumn multiply(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }
@@ -227,7 +232,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public FloatColumn divide(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
         }

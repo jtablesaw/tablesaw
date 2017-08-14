@@ -232,23 +232,23 @@ public final class TypeUtils {
 
         switch (type) {
             case LOCAL_DATE:
-                return DateColumn.create(name);
+                return new DateColumn(name);
             case LOCAL_TIME:
-                return TimeColumn.create(name);
+                return new TimeColumn(name);
             case LOCAL_DATE_TIME:
-                return DateTimeColumn.create(name);
+                return new DateTimeColumn(name);
             case INTEGER:
-                return IntColumn.create(name);
+                return new IntColumn(name);
             case FLOAT:
-                return FloatColumn.create(name);
+                return new FloatColumn(name);
             case BOOLEAN:
-                return BooleanColumn.create(name);
+                return new BooleanColumn(name);
             case CATEGORY:
-                return CategoryColumn.create(name);
+                return new CategoryColumn(name);
             case SHORT_INT:
-                return ShortColumn.create(name);
+                return new ShortColumn(name);
             case LONG_INT:
-                return LongColumn.create(name);
+                return new LongColumn(name);
             default:
                 throw new IllegalArgumentException("Unknown ColumnType: " + type);
         }

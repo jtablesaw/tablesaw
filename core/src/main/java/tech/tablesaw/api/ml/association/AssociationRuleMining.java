@@ -98,10 +98,10 @@ public class AssociationRuleMining {
                           Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap) {
 
         Table interestTable = Table.create("Interest");
-        interestTable.addColumn(CategoryColumn.create("Antecedent"));
-        interestTable.addColumn(CategoryColumn.create("Consequent"));
-        interestTable.addColumn(FloatColumn.create("Confidence"));
-        interestTable.addColumn(FloatColumn.create("Interest"));
+        interestTable.addColumn(new CategoryColumn("Antecedent"));
+        interestTable.addColumn(new CategoryColumn("Consequent"));
+        interestTable.addColumn(new FloatColumn("Confidence"));
+        interestTable.addColumn(new FloatColumn("Interest"));
 
         List<AssociationRule> rules = model.learn(confidenceThreshold);
 

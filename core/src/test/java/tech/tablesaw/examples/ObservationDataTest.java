@@ -121,10 +121,10 @@ public class ObservationDataTest {
     private static Table defineSchema() {
         Table t;
         t = Table.create("Observations");
-        CategoryColumn conceptId = CategoryColumn.create("concept");
-        DateColumn date = DateColumn.create("date");
-        FloatColumn value = FloatColumn.create("value");
-        IntColumn patientId = IntColumn.create("patient");
+        CategoryColumn conceptId = new CategoryColumn("concept");
+        DateColumn date = new DateColumn("date");
+        FloatColumn value = new FloatColumn("value");
+        IntColumn patientId = new IntColumn("patient");
 
         t.addColumn(conceptId);
         t.addColumn(date);

@@ -43,7 +43,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     /**
      * Compares two floats, such that a sort based on this comparator would sort in descending order
      */
-    FloatComparator reverseFloatComparator = new FloatComparator() {
+    private FloatComparator reverseFloatComparator = new FloatComparator() {
 
         @Override
         public int compare(Float o2, Float o1) {
@@ -55,7 +55,9 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
             return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
         }
     };
+
     private FloatArrayList data;
+
     private final IntComparator comparator = new IntComparator() {
 
         @Override
@@ -82,20 +84,25 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         data = new FloatArrayList(initialSize);
     }
 
+    public FloatColumn(String name, FloatArrayList data) {
+        super(name);
+        this.data = data;
+    }
+
     public FloatColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new FloatArrayList(metadata.getSize());
     }
 
-    public static FloatColumn create(String name) {
+    private static FloatColumn create(String name) {
         return new FloatColumn(name);
     }
 
-    public static FloatColumn create(String name, int initialSize) {
+    private static FloatColumn create(String name, int initialSize) {
         return new FloatColumn(name, initialSize);
     }
 
-    public static FloatColumn create(String name, FloatArrayList floats) {
+    private static FloatColumn create(String name, FloatArrayList floats) {
         FloatColumn column = new FloatColumn(name, floats.size());
         column.data = new FloatArrayList(floats.size());
         column.data.addAll(floats);

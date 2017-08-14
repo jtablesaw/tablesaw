@@ -20,7 +20,7 @@ public class IntIsIn extends ColumnFilter {
 
     public IntIsIn(ColumnReference reference, int... ints) {
         super(reference);
-        this.filterColumn = IntColumn.create("temp", new IntArrayList(ints));
+        this.filterColumn = new IntColumn("temp", new IntArrayList(ints));
     }
 
     public Selection apply(Table relation) {

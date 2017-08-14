@@ -44,7 +44,8 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     private static final int DEFAULT_ARRAY_SIZE = 128;
 
     private static final int BYTE_SIZE = 4;
-    IntComparator reverseIntComparator = new IntComparator() {
+
+    private IntComparator reverseIntComparator = new IntComparator() {
 
         @Override
         public int compare(Integer o2, Integer o1) {
@@ -56,7 +57,9 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
             return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
         }
     };
+
     private IntArrayList data;
+
     IntComparator comparator = new IntComparator() {
 
         @Override
@@ -71,12 +74,13 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
             return Integer.compare(f1, f2);
         }
     };
+
     /**
      * The formatter chosen to parse dates for this particular column
      */
     private DateTimeFormatter selectedFormatter;
 
-    private DateColumn(String name) {
+    public DateColumn(String name) {
         super(name);
         data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
@@ -86,16 +90,16 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
 
-    private DateColumn(String name, int initialSize) {
+    public DateColumn(String name, int initialSize) {
         super(name);
         data = new IntArrayList(initialSize);
     }
 
-    public static DateColumn create(String name) {
+    private static DateColumn create(String name) {
         return new DateColumn(name);
     }
 
-    public static DateColumn create(String columnName, IntArrayList dates) {
+    private static DateColumn create(String columnName, IntArrayList dates) {
         DateColumn column = new DateColumn(columnName, dates.size());
         column.data.addAll(dates);
         return column;
@@ -233,7 +237,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public CategoryColumn dayOfWeek() {
-        CategoryColumn newColumn = CategoryColumn.create(this.name() + " day of week");
+        CategoryColumn newColumn = new CategoryColumn(this.name() + " day of week");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             if (c1 == DateColumn.MISSING_VALUE) {
@@ -246,7 +250,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public ShortColumn dayOfWeekValue() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " day of week", this.size());
+        ShortColumn newColumn = new ShortColumn(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             if (c1 == (DateColumn.MISSING_VALUE)) {
@@ -259,7 +263,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public ShortColumn dayOfMonth() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " day of month");
+        ShortColumn newColumn = new ShortColumn(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             if (c1 == DateColumn.MISSING_VALUE) {
@@ -272,7 +276,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public ShortColumn dayOfYear() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " day of month");
+        ShortColumn newColumn = new ShortColumn(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             if (c1 == DateColumn.MISSING_VALUE) {
@@ -285,7 +289,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public ShortColumn monthValue() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " month");
+        ShortColumn newColumn = new ShortColumn(this.name() + " month");
 
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
@@ -299,7 +303,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public CategoryColumn month() {
-        CategoryColumn newColumn = CategoryColumn.create(this.name() + " month");
+        CategoryColumn newColumn = new CategoryColumn(this.name() + " month");
 
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
@@ -313,7 +317,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public ShortColumn year() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " year");
+        ShortColumn newColumn = new ShortColumn(this.name() + " year");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             if (c1 == MISSING_VALUE) {
@@ -406,8 +410,8 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     public Table summary() {
 
         Table table = Table.create("Column: " + name());
-        CategoryColumn measure = CategoryColumn.create("Measure");
-        CategoryColumn value = CategoryColumn.create("Value");
+        CategoryColumn measure = new CategoryColumn("Measure");
+        CategoryColumn value = new CategoryColumn("Value");
         table.addColumn(measure);
         table.addColumn(value);
 

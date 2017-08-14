@@ -3,9 +3,6 @@ package tech.tablesaw.api;
 import org.junit.Before;
 import org.junit.Test;
 
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.Table;
-
 import static org.junit.Assert.*;
 
 /**
@@ -13,7 +10,7 @@ import static org.junit.Assert.*;
  */
 public class BooleanColumnTest {
 
-    private final BooleanColumn column = BooleanColumn.create("Test");
+    private final BooleanColumn column = new BooleanColumn("Test");
 
     @Before
     public void setup() {

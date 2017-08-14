@@ -15,7 +15,7 @@ public interface LongMapUtils extends LongColumnUtils {
         // TODO(lwhite): Assert all columns are the same size.
         String nString = names(columns);
         String name = String.format("sum(%s)", nString);
-        LongColumn newColumn = LongColumn.create(name);
+        LongColumn newColumn = new LongColumn(name);
 
         for (int r = 0; r < columns[0].size(); r++) {
             long result = 0;
@@ -80,7 +80,7 @@ public interface LongMapUtils extends LongColumnUtils {
     long get(int index);
 
     default LongColumn difference(LongColumn column2) {
-        LongColumn result = LongColumn.create(name() + " - " + column2.name(), size());
+        LongColumn result = new LongColumn(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) - column2.get(r));
         }

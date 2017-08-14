@@ -17,9 +17,9 @@ import static org.junit.Assert.assertEquals;
  */
 public class DateTimeMapUtilsTest {
 
-    DateTimeColumn startCol = DateTimeColumn.create("start");
-    DateTimeColumn stopCol = DateTimeColumn.create("stop");
-    LocalDateTime start = LocalDateTime.now();
+    private DateTimeColumn startCol = new DateTimeColumn("start");
+    private DateTimeColumn stopCol = new DateTimeColumn("stop");
+    private LocalDateTime start = LocalDateTime.now();
 
 
     @Test

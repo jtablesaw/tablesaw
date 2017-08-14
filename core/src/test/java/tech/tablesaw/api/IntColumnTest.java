@@ -1,9 +1,6 @@
 package tech.tablesaw.api;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.Table;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.IntPredicate;
 
@@ -22,7 +19,7 @@ public class IntColumnTest {
 
     @Before
     public void setUp() throws Exception {
-        intColumn = IntColumn.create("t1");
+        intColumn = new IntColumn("t1");
     }
 
     @Test
@@ -141,7 +138,7 @@ public class IntColumnTest {
         int[] originalValues = new int[]{32, 42, 40, 57, 52};
         int[] expectedValues = new int[]{IntColumn.MISSING_VALUE, 10, -2, 17, -5};
 
-        IntColumn initial = IntColumn.create("Test", originalValues.length);
+        IntColumn initial = new IntColumn("Test", originalValues.length);
         for (int value : originalValues) {
             initial.append(value);
         }
@@ -157,9 +154,9 @@ public class IntColumnTest {
     public void testIntIsIn() {
         int[] originalValues = new int[]{32, 42, 40, 57, 52, -2};
         int[] inValues = new int[]{10, -2, 57, -5};
-        IntColumn inColumn = IntColumn.create("In", new IntArrayList(inValues));
+        IntColumn inColumn = new IntColumn("In", new IntArrayList(inValues));
 
-        IntColumn initial = IntColumn.create("Test", originalValues.length);
+        IntColumn initial = new IntColumn("Test", originalValues.length);
         Table t = Table.create("t", initial);
 
         for (int value : originalValues) {
@@ -174,7 +171,7 @@ public class IntColumnTest {
     @Test
     public void testDivide() {
         int[] originalValues = new int[]{32, 42, 40, 57, 52, -2};
-        IntColumn originals = IntColumn.create("Originals", new IntArrayList(originalValues));
+        IntColumn originals = new IntColumn("Originals", new IntArrayList(originalValues));
 
         Table t = Table.create("t", originals);
 
@@ -185,7 +182,7 @@ public class IntColumnTest {
     @Test
     public void testDivide2() {
         int[] originalValues = new int[]{32, 42, 40, 57, 52, -2};
-        IntColumn originals = IntColumn.create("Originals", new IntArrayList(originalValues));
+        IntColumn originals = new IntColumn("Originals", new IntArrayList(originalValues));
 
         Table t = Table.create("t", originals);
 

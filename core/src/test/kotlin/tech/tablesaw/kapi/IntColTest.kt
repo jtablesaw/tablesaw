@@ -10,7 +10,7 @@ class IntColTest {
 
     @Test
     fun plus() {
-        val column = IntColumn.create("test", 4)
+        val column = IntColumn("test", 4)
         column.append(1)
         column.append(2)
         column.append(3)
@@ -80,7 +80,7 @@ class IntColTest {
     @Test
     fun plus1() {
 
-        val column = IntColumn.create("test", 4)
+        val column = IntColumn("test", 4)
         column.append(1)
         column.append(2)
         column.append(3)

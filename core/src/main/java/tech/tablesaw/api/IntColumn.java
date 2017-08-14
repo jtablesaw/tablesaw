@@ -41,6 +41,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     private static final int BYTE_SIZE = 4;
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private IntArrayList data;
+
     final it.unimi.dsi.fastutil.ints.IntComparator comparator = new it.unimi.dsi.fastutil.ints.IntComparator() {
 
         @Override
@@ -55,34 +56,39 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         }
     };
 
-    private IntColumn(String name, int initialSize) {
+    public IntColumn(String name, int initialSize) {
         super(name);
         data = new IntArrayList(initialSize);
     }
 
-    private IntColumn(ColumnMetadata metadata) {
+    public IntColumn(String name, IntArrayList data) {
+        super(name);
+        this.data = data;
+    }
+
+    public IntColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new IntArrayList(metadata.getSize());
     }
 
-    private IntColumn(String name) {
+    public IntColumn(String name) {
         super(name);
         data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
 
-    public static IntColumn create(String name) {
+    private static IntColumn create(String name) {
         return new IntColumn(name, DEFAULT_ARRAY_SIZE);
     }
 
-    public static IntColumn create(ColumnMetadata metadata) {
+    private static IntColumn create(ColumnMetadata metadata) {
         return new IntColumn(metadata);
     }
 
-    public static IntColumn create(String name, int arraySize) {
+    private static IntColumn create(String name, int arraySize) {
         return new IntColumn(name, arraySize);
     }
 
-    public static IntColumn create(String name, IntArrayList ints) {
+    private static IntColumn create(String name, IntArrayList ints) {
         IntColumn column = new IntColumn(name, ints.size());
         column.data.addAll(ints);
         return column;
@@ -560,7 +566,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public FloatColumn multiply(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " * " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) * column2.get(r));
         }
@@ -568,7 +574,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public FloatColumn divide(FloatColumn column2) {
-        FloatColumn result = FloatColumn.create(name() + " / " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
         }
@@ -616,7 +622,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public Stats stats() {
-        FloatColumn values = FloatColumn.create(name(), toFloatArray());
+        FloatColumn values = new FloatColumn(name(), toFloatArray());
         return Stats.create(values);
     }
 

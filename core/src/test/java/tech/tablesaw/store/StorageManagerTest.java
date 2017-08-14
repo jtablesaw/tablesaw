@@ -9,7 +9,6 @@ import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReader;
-import tech.tablesaw.store.StorageManager;
 import tech.tablesaw.table.Relation;
 
 import org.junit.Before;
@@ -59,10 +58,10 @@ public class StorageManagerTest {
             CATEGORY,
             CATEGORY};
     private Relation table = Table.create("t");
-    private FloatColumn floatColumn = FloatColumn.create("float");
-    private CategoryColumn categoryColumn = CategoryColumn.create("cat");
-    private DateColumn localDateColumn = DateColumn.create("date");
-    private LongColumn longColumn = LongColumn.create("long");
+    private FloatColumn floatColumn = new FloatColumn("float");
+    private CategoryColumn categoryColumn = new CategoryColumn("cat");
+    private DateColumn localDateColumn = new DateColumn("date");
+    private LongColumn longColumn = new LongColumn("long");
 
     public static void main(String[] args) throws Exception {
 

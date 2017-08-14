@@ -2,6 +2,7 @@ package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
@@ -45,7 +46,8 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     private static final int BYTE_SIZE = 8;
 
     private static int DEFAULT_ARRAY_SIZE = 128;
-    LongComparator reverseLongComparator = new LongComparator() {
+
+    private LongComparator reverseLongComparator = new LongComparator() {
 
         @Override
         public int compare(Long o2, Long o1) {
@@ -57,7 +59,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
             return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
         }
     };
+
     private LongArrayList data;
+
     IntComparator comparator = new IntComparator() {
 
         @Override
@@ -77,9 +81,14 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
      */
     private DateTimeFormatter selectedFormatter;
 
-    private DateTimeColumn(String name) {
+    public DateTimeColumn(String name, LongArrayList data) {
         super(name);
-        data = new LongArrayList(DEFAULT_ARRAY_SIZE);
+        this.data = data;
+    }
+
+    public DateTimeColumn(String name) {
+        super(name);
+        this.data = new LongArrayList(DEFAULT_ARRAY_SIZE);
     }
 
     public DateTimeColumn(ColumnMetadata metadata) {
@@ -92,11 +101,11 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         data = new LongArrayList(initialSize);
     }
 
-    public static DateTimeColumn create(String name) {
+    private static DateTimeColumn create(String name) {
         return new DateTimeColumn(name);
     }
 
-    public static DateTimeColumn create(String fileName, LongArrayList dateTimes) {
+    private static DateTimeColumn create(String fileName, LongArrayList dateTimes) {
         DateTimeColumn column = new DateTimeColumn(fileName, dateTimes.size());
         column.data.addAll(dateTimes);
         return column;
@@ -194,7 +203,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
     @Override
     public DateTimeColumn copy() {
-        DateTimeColumn column = DateTimeColumn.create(name(), data);
+        DateTimeColumn column = new DateTimeColumn(name(), data);
         column.setComment(comment());
         return column;
     }
@@ -212,8 +221,8 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     @Override
     public Table summary() {
         Table table = Table.create("Column: " + name());
-        CategoryColumn measure = CategoryColumn.create("Measure");
-        CategoryColumn value = CategoryColumn.create("Value");
+        CategoryColumn measure = new CategoryColumn("Measure");
+        CategoryColumn value = new CategoryColumn("Value");
         table.addColumn(measure);
         table.addColumn(value);
 
@@ -247,7 +256,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (long i : data) {
             ints.add(i);
         }
-        return DateTimeColumn.create(name() + " Unique values",
+        return new DateTimeColumn(name() + " Unique values",
                 LongArrayList.wrap(ints.toLongArray()));
     }
 
@@ -270,7 +279,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public CategoryColumn dayOfWeek() {
-        CategoryColumn newColumn = CategoryColumn.create(this.name() + " day of week", this.size());
+        CategoryColumn newColumn = new CategoryColumn(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
@@ -283,7 +292,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public ShortColumn dayOfWeekValue() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " day of week", this.size());
+        ShortColumn newColumn = new ShortColumn(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
@@ -296,7 +305,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public ShortColumn dayOfYear() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " day of year", this.size());
+        ShortColumn newColumn = new ShortColumn(this.name() + " day of year", this.size());
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
@@ -309,7 +318,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public ShortColumn dayOfMonth() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " day of month");
+        ShortColumn newColumn = new ShortColumn(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == FloatColumn.MISSING_VALUE) {
@@ -325,7 +334,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
      * Returns a TimeColumn containing the time portion of each dateTime in this DateTimeColumn
      */
     public TimeColumn time() {
-        TimeColumn newColumn = TimeColumn.create(this.name() + " time");
+        TimeColumn newColumn = new TimeColumn(this.name() + " time");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == MISSING_VALUE) {
@@ -341,7 +350,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
      * Returns a DateColumn containing the date portion of each dateTime in this DateTimeColumn
      */
     public DateColumn date() {
-        DateColumn newColumn = DateColumn.create(this.name() + " date");
+        DateColumn newColumn = new DateColumn(this.name() + " date");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == MISSING_VALUE) {
@@ -354,7 +363,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public ShortColumn monthNumber() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " month");
+        ShortColumn newColumn = new ShortColumn(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == MISSING_VALUE) {
@@ -367,7 +376,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public CategoryColumn monthName() {
-        CategoryColumn newColumn = CategoryColumn.create(this.name() + " month");
+        CategoryColumn newColumn = new CategoryColumn(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == MISSING_VALUE) {
@@ -380,7 +389,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public ShortColumn year() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " year");
+        ShortColumn newColumn = new ShortColumn(this.name() + " year");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLong(r);
             if (c1 == MISSING_VALUE) {
@@ -556,7 +565,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public ShortColumn minuteOfDay() {
-        ShortColumn newColumn = ShortColumn.create(this.name() + " minute of day");
+        ShortColumn newColumn = new ShortColumn(this.name() + " minute of day");
         for (int r = 0; r < this.size(); r++) {
             long c1 = getLong(r);
             if (c1 == DateTimeColumn.MISSING_VALUE) {

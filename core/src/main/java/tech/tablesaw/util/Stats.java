@@ -51,17 +51,17 @@ public class Stats {
     }
 
     public static Stats create(final IntColumn ints) {
-        FloatColumn values = FloatColumn.create(ints.name(), ints.toFloatArray());
+        FloatColumn values = new FloatColumn(ints.name(), ints.toFloatArray());
         return create(values);
     }
 
     public static Stats create(final ShortColumn ints) {
-        FloatColumn values = FloatColumn.create(ints.name(), ints.toFloatArray());
+        FloatColumn values = new FloatColumn(ints.name(), ints.toFloatArray());
         return create(values);
     }
 
     public static Stats create(final LongColumn ints) {
-        FloatColumn values = FloatColumn.create(ints.name(), ints.toFloatArray());
+        FloatColumn values = new FloatColumn(ints.name(), ints.toFloatArray());
         return create(values);
     }
 
@@ -159,8 +159,8 @@ public class Stats {
 
     public Table asTable() {
         Table t = Table.create(name);
-        CategoryColumn measure = CategoryColumn.create("Measure");
-        FloatColumn value = FloatColumn.create("Value");
+        CategoryColumn measure = new CategoryColumn("Measure");
+        FloatColumn value = new FloatColumn("Value");
         t.addColumn(measure);
         t.addColumn(value);
 

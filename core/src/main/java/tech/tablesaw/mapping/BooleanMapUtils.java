@@ -12,7 +12,7 @@ public interface BooleanMapUtils extends Column {
      * TODO(lwhite): Replace this implementation with a roaring bitmap version
      */
     default BooleanColumn and(BooleanColumn... columns) {
-        BooleanColumn newColumn = BooleanColumn.create("");
+        BooleanColumn newColumn = new BooleanColumn("");
         BooleanColumn thisColumn = (BooleanColumn) this;
         for (int i = 0; i < this.size(); i++) {
             boolean booleanValue = thisColumn.get(i);
@@ -34,7 +34,7 @@ public interface BooleanMapUtils extends Column {
     }
 
     default BooleanColumn or(BooleanColumn... columns) {
-        BooleanColumn newColumn = BooleanColumn.create("");
+        BooleanColumn newColumn = new BooleanColumn("");
         BooleanColumn thisColumn = (BooleanColumn) this;
 
         for (int i = 0; i < this.size(); i++) {

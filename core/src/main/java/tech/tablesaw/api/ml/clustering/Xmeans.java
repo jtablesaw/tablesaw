@@ -50,11 +50,11 @@ public class Xmeans {
 
     public Table labeledCentroids() {
         Table table = Table.create("Centroids");
-        CategoryColumn labelColumn = CategoryColumn.create("Cluster");
+        CategoryColumn labelColumn = new CategoryColumn("Cluster");
         table.addColumn(labelColumn);
 
         for (int i = 0; i < inputColumns.length; i++) {
-            FloatColumn centroid = FloatColumn.create(inputColumns[i].name());
+            FloatColumn centroid = new FloatColumn(inputColumns[i].name());
             table.addColumn(centroid);
         }
 

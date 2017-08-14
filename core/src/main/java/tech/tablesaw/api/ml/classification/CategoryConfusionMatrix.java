@@ -56,10 +56,10 @@ public class CategoryConfusionMatrix implements ConfusionMatrix {
         Table<String, String, Integer> sortedTable = sortedTable();
 
         tech.tablesaw.api.Table t = tech.tablesaw.api.Table.create("Confusion Matrix");
-        t.addColumn(CategoryColumn.create(""));
+        t.addColumn(new CategoryColumn(""));
 
         for (String label : sortedTable.rowKeySet()) {
-            t.addColumn(IntColumn.create(label));
+            t.addColumn(new IntColumn(label));
             t.column(0).appendCell("Predicted " + label);
         }
 

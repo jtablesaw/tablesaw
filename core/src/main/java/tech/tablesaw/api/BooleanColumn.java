@@ -73,7 +73,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         data = new ByteArrayList(DEFAULT_ARRAY_SIZE);
     }
 
-    private BooleanColumn(String name) {
+    public BooleanColumn(String name) {
         super(name);
         data = new ByteArrayList(DEFAULT_ARRAY_SIZE);
     }
@@ -107,15 +107,15 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         this.data = data;
     }
 
-    public static BooleanColumn create(String name) {
+    private static BooleanColumn create(String name) {
         return new BooleanColumn(name);
     }
 
-    public static BooleanColumn create(String name, int rowSize) {
+    private static BooleanColumn create(String name, int rowSize) {
         return new BooleanColumn(name, rowSize);
     }
 
-    public static BooleanColumn create(String name, Selection selection, int rowSize) {
+    private static BooleanColumn create(String name, Selection selection, int rowSize) {
         return new BooleanColumn(name, selection, rowSize);
     }
 
@@ -132,7 +132,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         }
     }
 
-    public static BooleanColumn create(String fileName, ByteArrayList bools) {
+    private static BooleanColumn create(String fileName, ByteArrayList bools) {
         BooleanColumn booleanColumn = new BooleanColumn(fileName, bools.size());
         booleanColumn.data.addAll(bools);
         return booleanColumn;
@@ -156,7 +156,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         Table table = Table.create(name());
 
         BooleanColumn booleanColumn = BooleanColumn.create("Value");
-        IntColumn countColumn = IntColumn.create("Count");
+        IntColumn countColumn = new IntColumn("Count");
         table.addColumn(booleanColumn);
         table.addColumn(countColumn);
 
@@ -474,7 +474,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
     }
 
     public IntColumn toIntColumn() {
-        IntColumn intColumn = IntColumn.create(this.name() + ": ints", size());
+        IntColumn intColumn = new IntColumn(this.name() + ": ints", size());
         ByteArrayList data = data();
         for (int i = 0; i < size(); i++) {
             intColumn.append(data.getByte(i));
