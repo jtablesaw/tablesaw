@@ -11,12 +11,12 @@ Tablesaw also supports descriptive statistics, data visualization, and machine l
 
 There are other, more elaborate platforms for data science in Java. They're designed tof work with vast amounts of data, and  require a huge stack and a vast amount of effort.
 
-Tablesaw 0.8.x and later will have new Maven coordinates:  
+Tablesaw 0.8.x and later have new Maven coordinates:  
 
     <dependency>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw</artifactId>
-        <version>0.8-SNAPSHOT</version>
+        <version>0.8.0</version>
     </dependency>
 
 To include Tablesaw 0.7.x or earlier in your project use:  
