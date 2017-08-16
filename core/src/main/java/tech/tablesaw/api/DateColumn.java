@@ -425,27 +425,6 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         return table;
     }
 
-    /**
-     * Returns a DateTime column where each value consists of the dates from this column combined with the corresponding
-     * times from the other column
-     */
-/*
-  public DateTimeColumn atTime(TimeColumn c) {
-    DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + c.name());
-    for (int r = 0; r < this.size(); r++) {
-      int c1 = this.getInt(r);
-      int c2 = c.getInt(r);
-      if (c1 == MISSING_VALUE || c2 == TimeColumn.MISSING_VALUE) {
-        newColumn.add(DateTimeColumn.MISSING_VALUE);
-      } else {
-        LocalDate value1 = PackedLocalDate.asLocalDate(c1);
-        LocalTime time = PackedLocalTime.asLocalTime(c2);
-        newColumn.add(PackedLocalDateTime.pack(value1, time));
-      }
-    }
-    return newColumn;
-  }
-*/
     public Selection isAfter(int value) {
         return select(PackedLocalDate::isAfter, value);
     }

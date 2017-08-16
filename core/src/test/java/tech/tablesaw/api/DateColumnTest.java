@@ -8,9 +8,9 @@ import java.time.LocalDate;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests for LocalDate Column
+ * Tests for Date Column
  */
-public class LocalDateColumnTest {
+public class DateColumnTest {
 
     private DateColumn column1;
 
@@ -82,6 +82,4 @@ public class LocalDateColumnTest {
         assertEquals("Measure", summary.column(0).name());
         assertEquals("Value", summary.column(1).name());
     }
-
-
 }

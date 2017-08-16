@@ -7,6 +7,14 @@
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
     <version>0.8-SNAPSHOT</version>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
     <name>Tablesaw</name>
     <description>High-performance Java Dataframe with integrated columnar storage</description>
     <url>https://jtablesaw.wordpress.com</url>

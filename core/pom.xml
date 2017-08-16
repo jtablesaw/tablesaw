@@ -124,11 +124,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.codearte.jfairy</groupId>
             <artifactId>jfairy</artifactId>
             <version>0.5.2</version>

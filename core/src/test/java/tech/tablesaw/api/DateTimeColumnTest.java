@@ -2,7 +2,6 @@ package tech.tablesaw.api;
 
 import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.columns.ColumnReference;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +9,7 @@ import static tech.tablesaw.api.QueryHelper.column;
 
 import static org.junit.Assert.assertEquals;
 
-public class LocalDateTimeColumnTest  {
+public class DateTimeColumnTest {
 
     private DateTimeColumn column1;
 
