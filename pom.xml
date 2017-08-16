@@ -29,7 +29,6 @@
     </developer>
   </developers>
   <properties>
-    <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <kotlin.version>1.1.3-2</kotlin.version>
   </properties>
