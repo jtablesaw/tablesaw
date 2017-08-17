@@ -586,7 +586,6 @@ public class Table implements Relation, IntIterable {
       for(int i = 0; i < rowCount(); i++)
         integers.add(i);
       Rows.copyRowsToTable(integers,this,copy);
-
       return copy;
     }
 

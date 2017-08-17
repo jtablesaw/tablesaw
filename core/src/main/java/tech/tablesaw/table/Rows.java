@@ -6,6 +6,7 @@ import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
@@ -51,6 +52,10 @@ public class Rows {
                     copy(rows, (BooleanColumn) oldTable.column(columnIndex), (BooleanColumn) newTable.column
                             (columnIndex));
                     break;
+                case DOUBLE:
+                    copy(rows, (DoubleColumn) oldTable.column(columnIndex), (DoubleColumn) newTable.column
+                            (columnIndex));
+                    break;
                 case LOCAL_DATE:
                     copy(rows, (DateColumn) oldTable.column(columnIndex), (DateColumn) newTable.column(columnIndex));
                     break;
@@ -82,6 +87,11 @@ public class Rows {
             switch (columnType) {
                 case FLOAT:
                     result = compare(rowInOriginal, (FloatColumn) tempTable.column(columnIndex), (FloatColumn)
+                            original.column(columnIndex));
+                    if (!result) return false;
+                    break;
+                case DOUBLE:
+                    result = compare(rowInOriginal, (DoubleColumn) tempTable.column(columnIndex), (DoubleColumn)
                             original.column(columnIndex));
                     if (!result) return false;
                     break;
@@ -162,7 +172,17 @@ public class Rows {
         }
     }
 
+    private static void copy(IntArrayList rows, DoubleColumn oldColumn, DoubleColumn newColumn) {
+        for (int index : rows) {
+            newColumn.append(oldColumn.get(index));
+        }
+    }
+
     private static boolean compare(int row, FloatColumn tempTable, FloatColumn original) {
+        return original.get(row) == tempTable.get(tempTable.size() - 1);
+    }
+
+    private static boolean compare(int row, DoubleColumn tempTable, DoubleColumn original) {
         return original.get(row) == tempTable.get(tempTable.size() - 1);
     }
 
