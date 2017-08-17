@@ -271,7 +271,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public ShortColumn dayOfYear() {
-        ShortColumn newColumn = new ShortColumn(this.name() + " day of month");
+        ShortColumn newColumn = new ShortColumn(this.name() + " day of year");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getInt(r);
             if (c1 == DateColumn.MISSING_VALUE) {
