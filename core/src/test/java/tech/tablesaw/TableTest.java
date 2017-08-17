@@ -61,7 +61,6 @@ public class TableTest {
         FloatColumn floatColumn = this.floatColumn;
         floatColumn.append(2f);
         assertEquals(1, table.rowCount());
-
         floatColumn.append(2.2342f);
         assertEquals(2, table.rowCount());
     }
