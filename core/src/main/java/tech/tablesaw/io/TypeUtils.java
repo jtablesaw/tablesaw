@@ -9,6 +9,7 @@ import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
@@ -241,6 +242,8 @@ public final class TypeUtils {
                 return new IntColumn(name);
             case FLOAT:
                 return new FloatColumn(name);
+            case DOUBLE:
+                return new DoubleColumn(name);
             case BOOLEAN:
                 return new BooleanColumn(name);
             case CATEGORY:
