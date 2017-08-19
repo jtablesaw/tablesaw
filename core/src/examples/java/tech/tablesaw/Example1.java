@@ -26,6 +26,9 @@ public class Example1 {
         // return the name of the table
         out("Table name: " + table1.name());
 
+        // return the table's shape
+        out(table1.shape());
+
         // display the table structure:
         out(table1.structure().print());
 
