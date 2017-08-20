@@ -172,9 +172,6 @@ public class IntColumnTest {
     public void testDivide() {
         int[] originalValues = new int[]{32, 42, 40, 57, 52, -2};
         IntColumn originals = new IntColumn("Originals", new IntArrayList(originalValues));
-
-        Table t = Table.create("t", originals);
-
         FloatColumn divided = originals.divide(3);
         System.out.println(divided.print());
     }
@@ -183,9 +180,6 @@ public class IntColumnTest {
     public void testDivide2() {
         int[] originalValues = new int[]{32, 42, 40, 57, 52, -2};
         IntColumn originals = new IntColumn("Originals", new IntArrayList(originalValues));
-
-        Table t = Table.create("t", originals);
-
         FloatColumn divided = originals.divide(3.3);
         System.out.println(divided.print());
     }

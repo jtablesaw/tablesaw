@@ -34,7 +34,7 @@ public class HtmlTableWriterTest {
         Column byColumn = table.column("who");
         ViewGroup group = new ViewGroup(table, byColumn);
         Table result = group.reduce("approval", NumericReduceUtils.mean);
-        String str = HtmlTableWriter.write(result, "NA");
+        HtmlTableWriter.write(result, "NA");
     }
 
 }

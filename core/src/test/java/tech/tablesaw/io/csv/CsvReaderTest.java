@@ -6,7 +6,6 @@ import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReader;
 
 import java.io.File;
@@ -19,7 +18,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static tech.tablesaw.api.ColumnType.*;
-import static tech.tablesaw.api.QueryHelper.column;
 
 /**
  * Tests for CSV Reading
@@ -39,9 +37,6 @@ public class CsvReaderTest {
 
         table = table.sortDescendingOn("stop_id");
         table.removeColumns("stop_desc");
-
-        Column c = table.floatColumn("stop_lat");
-        Table v = table.selectWhere(column("stop_lon").isGreaterThan(-0.1f));
     }
 
     @Test

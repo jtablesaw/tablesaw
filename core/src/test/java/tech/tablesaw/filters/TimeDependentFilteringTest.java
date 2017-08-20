@@ -62,11 +62,6 @@ public class TimeDependentFilteringTest {
         String conceptD = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
         DependencyFilter independentConstraintFilter = DependencyFilter.FIRST;
 
-        // dependent temporal constraints
-        String conceptE = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
-        String conceptF = t.categoryColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
-        DependencyFilter dependentConstraintFilter = DependencyFilter.ANY;
-
         // temporal dependency range constraint
         Range<Integer> daysConstraint = Range.closed(0, 0);
 
@@ -102,7 +97,7 @@ public class TimeDependentFilteringTest {
 
         // Working with the filtered patient tables, calculate the event dates for the independent events
         for (TemporaryView patientTable : patientTables) {
-            IndependentResult result = new IndependentResult(Integer.parseInt(patientTable.name()));
+            IndependentResult result = new IndependentResult();
             List<LocalDate> eventDates = new ArrayList<>();
 
             // iterate an individual table and find the rows where concept matches the target concept
@@ -126,12 +121,6 @@ public class TimeDependentFilteringTest {
                 } //TODO handle last and any cases
             }
             independentResults.add(result);
-        }
-
-        for (TemporaryView patientTable : patientTables) {
-            // for every date range in rangeSet
-            // .. find any rows containing events matching the rangeSet
-            // .. run dependent clause on those rows
         }
 
 
@@ -207,12 +196,7 @@ public class TimeDependentFilteringTest {
     }
 
     private static class IndependentResult {
-        int patientId;
         RangeSet<LocalDate> dateRanges = TreeRangeSet.create();
-
-        IndependentResult(int patientId) {
-            this.patientId = patientId;
-        }
 
         void addRange(Range<LocalDate> dateRange) {
             dateRanges.add(dateRange);

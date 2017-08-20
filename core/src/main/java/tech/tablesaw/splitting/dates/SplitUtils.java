@@ -2,15 +2,12 @@ package tech.tablesaw.splitting.dates;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.temporal.ChronoField;
 import java.util.function.Function;
 
 import tech.tablesaw.columns.packeddata.PackedLocalDate;
 
-/**
- *
- */
+
 public class SplitUtils {
 
     public static LocalDateSplitter byYear = PackedLocalDate::getYear;
@@ -27,7 +24,7 @@ public class SplitUtils {
     public static LocalDateSplitter byQuarter = PackedLocalDate::getQuarter;
 
 
-    public static Function<Comparable, Object> byWeek = comparable -> {
+    public static Function<Comparable<?>, Object> byWeek = comparable -> {
         if (comparable instanceof LocalDate) {
             return ((LocalDate) comparable).get(ChronoField.ALIGNED_WEEK_OF_YEAR);
         } else if (comparable instanceof LocalDateTime) {
@@ -37,7 +34,7 @@ public class SplitUtils {
         }
     };
 
-    public static Function<Comparable, Object> byHour = comparable -> {
+    public static Function<Comparable<?>, Object> byHour = comparable -> {
         if (comparable instanceof LocalDateTime) {
             return ((LocalDateTime) comparable).get(ChronoField.HOUR_OF_DAY);
         } else {
@@ -45,7 +42,7 @@ public class SplitUtils {
         }
     };
 
-    public static Function<Comparable, Object> bySecondOfMinute = comparable -> {
+    public static Function<Comparable<?>, Object> bySecondOfMinute = comparable -> {
         if (comparable instanceof LocalDateTime) {
             return ((LocalDateTime) comparable).get(ChronoField.SECOND_OF_MINUTE);
         } else {
@@ -53,7 +50,7 @@ public class SplitUtils {
         }
     };
 
-    public static Function<Comparable, Object> bySecondOfDay = comparable -> {
+    public static Function<Comparable<?>, Object> bySecondOfDay = comparable -> {
         if (comparable instanceof LocalDateTime) {
             return ((LocalDateTime) comparable).get(ChronoField.SECOND_OF_DAY);
         } else {
@@ -61,7 +58,7 @@ public class SplitUtils {
         }
     };
 
-    public static Function<Comparable, Object> byMinuteOfHour = comparable -> {
+    public static Function<Comparable<?>, Object> byMinuteOfHour = comparable -> {
         if (comparable instanceof LocalDateTime) {
             return ((LocalDateTime) comparable).get(ChronoField.MINUTE_OF_HOUR);
         } else {
@@ -69,26 +66,13 @@ public class SplitUtils {
         }
     };
 
-    public static Function<Comparable, Object> byMinuteOfDay = comparable -> {
+    public static Function<Comparable<?>, Object> byMinuteOfDay = comparable -> {
         if (comparable instanceof LocalDateTime) {
             return ((LocalDateTime) comparable).get(ChronoField.MINUTE_OF_HOUR);
         } else {
             throw new IllegalArgumentException("Time function called on non-time column");
         }
     };
-
-    private static int getQuarter(Month month) {
-        int monthValue = month.getValue();
-        if (monthValue <= 3) {
-            return 1;
-        } else if (monthValue <= 6) {
-            return 2;
-        } else if (monthValue <= 9) {
-            return 3;
-        } else {
-            return 4;
-        }
-    }
 
 /*
   BY_QUARTER_AND_YEAR,  // 1974-Q1; 1974-Q2; etc.

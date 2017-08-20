@@ -2,7 +2,6 @@ package tech.tablesaw.examples;
 
 import static tech.tablesaw.api.QueryHelper.*;
 
-import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Table;
@@ -43,8 +42,6 @@ public class ServiceExample {
                                 (column("Operation").isEqualTo("Assembly"))));
 
         Table durationByFacilityAndShift = q2_429_assembly.median("Duration").by("Facility", "Shift");
-        // TODO(lwhite): We need a top() method that can be used to return the top table rows
-        FloatArrayList tops = durationByFacilityAndShift.floatColumn("Median").top(5);
 
         out(durationByFacilityAndShift.print());
 
@@ -53,10 +50,6 @@ public class ServiceExample {
 
     private static void out(Object obj) {
         System.out.println(String.valueOf(obj));
-    }
-
-    private static void out() {
-        System.out.println("");
     }
 
 }

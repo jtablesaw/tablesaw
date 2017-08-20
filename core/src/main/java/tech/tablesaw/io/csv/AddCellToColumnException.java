@@ -13,6 +13,8 @@ import java.io.PrintStream;
  */
 public class AddCellToColumnException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * The index of the column that threw the Exception
      */

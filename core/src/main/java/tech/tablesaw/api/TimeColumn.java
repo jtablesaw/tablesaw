@@ -555,7 +555,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
 
             @Override
             public LocalTime next() {
-                return PackedLocalTime.asLocalTime(intIterator.next());
+                return PackedLocalTime.asLocalTime(intIterator.nextInt());
             }
         };
     }

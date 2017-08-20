@@ -12,7 +12,7 @@ import tech.tablesaw.util.Selection;
  * Columns can either exist on their own or be a part of a table. All the data in a single column is of a particular
  * type.
  */
-public interface Column<E extends Column> {
+public interface Column {
 
     int size();
 
@@ -169,5 +169,5 @@ public interface Column<E extends Column> {
      * The Missing Value Indicator is used for the first cell in the new column.
      * (e.g. IntColumn.MISSING_VALUE)
      */
-    E difference();
+    Column difference();
 }

@@ -24,7 +24,6 @@ public class ConfusionMatrixTest extends Example {
     public void testAsTable() throws Exception {
 
         Table example = Table.createFromCsv("../data/KNN_Example_1.csv");
-        BooleanColumn booleanTarget = example.selectIntoColumn("bt", column("Label").isEqualTo(1));
 
         Table[] splits = example.sampleSplit(.5);
         Table train = splits[0];

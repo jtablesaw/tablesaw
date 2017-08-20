@@ -3,6 +3,7 @@ package tech.tablesaw.io;
 import org.junit.Test;
 import tech.tablesaw.api.DoubleColumn;
 
+import static org.junit.Assert.assertNotNull;
 import static tech.tablesaw.api.ColumnType.DOUBLE;
 
 public class TypeUtilsTest {
@@ -13,6 +14,7 @@ public class TypeUtilsTest {
     @Test
     public void newColumn() throws Exception {
         DoubleColumn column = (DoubleColumn) TypeUtils.newColumn("test", DOUBLE);
+        assertNotNull(column);
     }
 
 }

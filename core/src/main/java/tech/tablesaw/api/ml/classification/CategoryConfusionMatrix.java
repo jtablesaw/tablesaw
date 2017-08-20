@@ -8,7 +8,6 @@ import tech.tablesaw.api.IntColumn;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -91,7 +90,7 @@ public class CategoryConfusionMatrix implements ConfusionMatrix {
         TreeSet<Integer> allValues = new TreeSet<>();
         allValues.addAll(table.columnKeySet());
         allValues.addAll(table.rowKeySet());
-        List<Comparable> valuesList = new ArrayList<>(allValues);
+        List<Comparable<?>> valuesList = new ArrayList<>(allValues);
 
         for (int r = 0; r < valuesList.size(); r++) {
             for (int c = 0; c < valuesList.size(); c++) {
@@ -108,10 +107,9 @@ public class CategoryConfusionMatrix implements ConfusionMatrix {
 
     @Override
     public double accuracy() {
-        Set<Table.Cell<Integer, Integer, Integer>> cellSet = table.cellSet();
         int hits = 0;
         int misses = 0;
-        for (Table.Cell cell : cellSet) {
+        for (Table.Cell<Integer, Integer, Integer> cell : table.cellSet()) {
             if (cell.getRowKey().equals(cell.getColumnKey())) {
                 hits = hits + (int) cell.getValue();
             } else {

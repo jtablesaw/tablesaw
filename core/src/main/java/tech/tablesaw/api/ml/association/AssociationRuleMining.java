@@ -82,7 +82,7 @@ public class AssociationRuleMining {
 
     public List<AssociationRule> interestingRules(double confidenceThreshold,
                                                   double interestThreshold,
-                                                  Object2DoubleOpenHashMap confidenceMap) {
+                                                  Object2DoubleOpenHashMap<IntRBTreeSet> confidenceMap) {
         List<AssociationRule> rules = model.learn(confidenceThreshold);
         for (AssociationRule rule : rules) {
             double interest = rule.confidence - confidenceMap.getDouble(rule.consequent);

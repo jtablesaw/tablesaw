@@ -492,7 +492,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
          */
         @Override
         public Boolean next() {
-            byte b = iterator.next();
+            byte b = iterator.nextByte();
             if (b == (byte) 0) {
                 return false;
             }

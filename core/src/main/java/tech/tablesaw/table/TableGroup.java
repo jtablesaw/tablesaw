@@ -1,7 +1,6 @@
 package tech.tablesaw.table;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
 
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.FloatColumn;
@@ -19,7 +18,6 @@ import java.util.List;
 public class TableGroup implements Iterable<SubTable> {
 
     private static final String SPLIT_STRING = "~~~";
-    private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
     private final Table original;
 
     private final List<SubTable> subTables;
@@ -50,7 +48,6 @@ public class TableGroup implements Iterable<SubTable> {
     private List<SubTable> splitOn(String... columnNames) {
 
         int columnCount = columnNames.length;
-        List<Column> columns = original.columns(columnNames);
         List<SubTable> tables = new ArrayList<>();
 
         int[] columnIndices = new int[columnCount];
@@ -99,27 +96,6 @@ public class TableGroup implements Iterable<SubTable> {
             }
         }
         return tables;
-    }
-
-    private SubTable splitGroupingColumn(SubTable subTable, List<Column> columns) {
-
-        List<Column> newColumns = new ArrayList<>();
-
-        for (Column column : columns) {
-            Column newColumn = column.emptyCopy();
-            newColumns.add(newColumn);
-        }
-        // iterate through the rows in the table and split each of the grouping columns into multiple columns
-        for (int row = 0; row < subTable.rowCount(); row++) {
-            List<String> strings = SPLITTER.splitToList(subTable.name());
-            for (int col = 0; col < newColumns.size(); col++) {
-                newColumns.get(col).appendCell(strings.get(col));
-            }
-        }
-        for (Column c : newColumns) {
-            subTable.addColumn(c);
-        }
-        return subTable;
     }
 
     public List<SubTable> getSubTables() {

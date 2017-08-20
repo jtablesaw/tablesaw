@@ -1,6 +1,5 @@
 package tech.tablesaw.api.ml.association;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -29,9 +28,6 @@ public class FrequentItemset {
 
     // the number of sets (baskets) in the input data
     private final int setCount;
-
-    // Used to maintain a map of item labels so we can get them back later
-    private Int2ObjectMap<String> labelMap;
 
     /**
      * Constructs and returns a frequent itemset model
@@ -69,7 +65,6 @@ public class FrequentItemset {
 
     public FrequentItemset(IntColumn sets, CategoryColumn items, double support) {
 
-        labelMap = items.dictionaryMap().keyToValueMap();
         Table temp = Table.create("temp");
         temp.addColumn(sets.copy());
         IntColumn encodedItems = items.toIntColumn();
@@ -99,7 +94,6 @@ public class FrequentItemset {
 
     public FrequentItemset(ShortColumn sets, CategoryColumn items, double support) {
 
-        labelMap = items.dictionaryMap().keyToValueMap();
         Table temp = Table.create("temp");
         temp.addColumn(sets.copy());
         IntColumn encodedItems = items.toIntColumn();

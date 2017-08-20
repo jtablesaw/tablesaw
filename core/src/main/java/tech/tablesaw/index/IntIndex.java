@@ -10,18 +10,12 @@ import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 
-import java.util.Comparator;
 
 /**
  * An index for four-byte integer and integer backed columns (date, category, time)
  */
 public class IntIndex {
 
-    private final static Comparator<int[]> intArrayComparator = new Comparator<int[]>() {
-        public int compare(int[] a, int[] b) {
-            return Integer.compare(a[1], b[1]);
-        }
-    };
     private final Int2ObjectAVLTreeMap<IntArrayList> index;
 
     public IntIndex(IntColumn column) {

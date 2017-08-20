@@ -1,7 +1,5 @@
 package tech.tablesaw.index;
 
-import com.google.common.base.Stopwatch;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.DateColumnUtils;
@@ -37,7 +35,6 @@ public class IntIndexTest {
 
     @Before
     public void setUp() throws Exception {
-        Stopwatch stopwatch = Stopwatch.createStarted();
         table = CsvReader.read(types, "../data/BushApproval.csv");
         index = new IntIndex(table.intColumn("approval"));
         dateIndex = new DateIndex(table.dateColumn("date"));

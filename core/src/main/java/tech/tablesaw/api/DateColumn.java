@@ -761,7 +761,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
 
             @Override
             public LocalDate next() {
-                return PackedLocalDate.asLocalDate(intIterator.next());
+                return PackedLocalDate.asLocalDate(intIterator.nextInt());
             }
         };
     }

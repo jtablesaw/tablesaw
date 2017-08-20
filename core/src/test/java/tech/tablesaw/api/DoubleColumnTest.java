@@ -175,7 +175,7 @@ public class DoubleColumnTest {
         for (int i = 0; i < 100; i++) { // pick a hundred values at random and see if we can find them
             double aDouble = doubles[randomDataGenerator.nextInt(0, 999_999)];
             results = doubleColumn.isEqualTo(aDouble);
-            assertEquals(aDouble, doubleColumn.get(results.iterator().next()), .001);
+            assertEquals(aDouble, doubleColumn.get(results.iterator().nextInt()), .001);
         }
     }
 
@@ -420,7 +420,6 @@ public class DoubleColumnTest {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
             otherDoubles.append(doubles.get(i) - 1.0f);
         }
-        DoubleColumn diff = doubles.subtract(otherDoubles);
         for (int i = 0; i < doubles.size(); i++) {
             assertEquals(doubles.get(i), otherDoubles.get(i) + 1.0, 0.01);
         }

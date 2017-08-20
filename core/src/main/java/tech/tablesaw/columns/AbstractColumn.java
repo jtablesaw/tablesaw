@@ -9,7 +9,7 @@ import java.util.UUID;
 /**
  * Partial implementation of the {@link Column} interface
  */
-public abstract class AbstractColumn<E extends AbstractColumn> implements Column {
+public abstract class AbstractColumn implements Column {
 
     // this character is sometimes inserted into windows files and needs to be removed
     private static final String UTF8_BOM = "\uFEFF";
@@ -93,7 +93,7 @@ public abstract class AbstractColumn<E extends AbstractColumn> implements Column
     }
 
     @Override
-    public E difference() {
+    public Column difference() {
         throw new UnsupportedOperationException("difference() method not supported for all data types");
     }
 }

@@ -1,15 +1,10 @@
 package tech.tablesaw.util;
 
-/**
- *
- */
-
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -115,10 +110,10 @@ public class IntComparatorChain implements IntComparator, Serializable {
             this.isLocked = true;
         }
 
-        Iterator comparators = this.comparatorChain.iterator();
+        Iterator<IntComparator> comparators = this.comparatorChain.iterator();
 
         for (int comparatorIndex = 0; comparators.hasNext(); ++comparatorIndex) {
-            Comparator comparator = (Comparator) comparators.next();
+            IntComparator comparator = comparators.next();
             int retval = comparator.compare(o1, o2);
             if (retval != 0) {
                 if (this.orderingBits.get(comparatorIndex)) {
@@ -140,7 +135,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
             this.isLocked = true;
         }
 
-        Iterator comparators = this.comparatorChain.iterator();
+        Iterator<IntComparator> comparators = this.comparatorChain.iterator();
 
         for (int comparatorIndex = 0; comparators.hasNext(); ++comparatorIndex) {
             IntComparator comparator = (IntComparator) comparators.next();

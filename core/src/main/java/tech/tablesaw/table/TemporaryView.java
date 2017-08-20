@@ -116,7 +116,7 @@ public class TemporaryView implements Relation, IntIterable {
         int count = 0;
         IntIterator it = intIterator();
         while (it.hasNext() && count < nRows) {
-            int row = it.next();
+            int row = it.nextInt();
             newMap.add(row);
             count++;
         }
@@ -146,7 +146,7 @@ public class TemporaryView implements Relation, IntIterable {
         buf.append('\n');
         IntIterator iterator = intIterator();
         while (iterator.hasNext()) {
-            int r = iterator.next();
+            int r = iterator.nextInt();
             for (int i = 0; i < columnCount(); i++) {
                 String cell = StringUtils.rightPad(get(i, r), colWidths[i]);
                 buf.append(cell);

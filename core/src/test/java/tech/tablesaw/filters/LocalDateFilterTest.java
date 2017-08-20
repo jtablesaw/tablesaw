@@ -6,7 +6,6 @@ import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.filtering.LocalDatePredicate;
 import tech.tablesaw.filtering.datetimes.IsFirstDayOfTheMonth;
 import tech.tablesaw.filtering.datetimes.IsInFebruary;
 import tech.tablesaw.filtering.datetimes.IsInMarch;
@@ -20,9 +19,7 @@ import java.time.LocalDate;
 
 import static org.junit.Assert.*;
 
-/**
- *
- */
+
 public class LocalDateFilterTest {
 
     private DateColumn localDateColumn = new DateColumn("testing");
@@ -111,23 +108,4 @@ public class LocalDateFilterTest {
         assertFalse(selection.contains(2));
     }
 
-    @Test
-    public void testColumnFilters() {
-
-        LocalDatePredicate after_2_28 = new LocalDatePredicate() {
-            LocalDate date = LocalDate.of(2016, 2, 28);
-
-            @Override
-            public boolean test(LocalDate i) {
-                return i.isAfter(date);
-            }
-        };
-
-        DateColumn filtered = localDateColumn.selectIf(after_2_28);
-
-    }
-
-    private void print(Object o) {
-        System.out.println(o);
-    }
 }

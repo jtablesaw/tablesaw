@@ -190,10 +190,6 @@ public class Rows {
         newColumn.initializeWith(oldColumn.getValues(rows), oldColumn.dictionaryMap());
     }
 
-    private static void copyRow(int row, CategoryColumn oldColumn, CategoryColumn newColumn) {
-        newColumn.add(oldColumn.get(row));
-    }
-
     private static boolean compare(int row, CategoryColumn tempTable, CategoryColumn original) {
         String t = tempTable.get(tempTable.size() - 1);
         String o = original.get(row);

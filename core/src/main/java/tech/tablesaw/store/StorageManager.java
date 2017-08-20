@@ -75,7 +75,7 @@ public class StorageManager {
     public static tech.tablesaw.api.Table readTable(String path) throws IOException {
 
         ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
-        CompletionService readerCompletionService = new ExecutorCompletionService<>(executorService);
+        CompletionService<Void> readerCompletionService = new ExecutorCompletionService<>(executorService);
 
         TableMetadata tableMetadata = readTableMetadata(path + separator() + "Metadata.json");
         List<ColumnMetadata> columnMetadata = tableMetadata.getColumnMetadataList();
@@ -95,7 +95,7 @@ public class StorageManager {
                 });
             }
             for (int i = 0; i < columnMetadata.size(); i++) {
-                Future future = readerCompletionService.take();
+                Future<Void> future = readerCompletionService.take();
                 future.get();
             }
             for (Column c : columnList) {
@@ -323,7 +323,7 @@ public class StorageManager {
     public static String saveTable(String folderName, Relation table) throws IOException {
 
         ExecutorService executorService = Executors.newFixedThreadPool(10);
-        CompletionService writerCompletionService = new ExecutorCompletionService<>(executorService);
+        CompletionService<Void> writerCompletionService = new ExecutorCompletionService<>(executorService);
 
         String name = table.name();
         name = WHITE_SPACE_PATTERN.matcher(name).replaceAll(""); // remove whitespace from the table name
@@ -352,7 +352,7 @@ public class StorageManager {
                 });
             }
             for (int i = 0; i < table.columnCount(); i++) {
-                Future future = writerCompletionService.take();
+                Future<Void> future = writerCompletionService.take();
                 future.get();
             }
         } catch (InterruptedException | ExecutionException e) {

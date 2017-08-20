@@ -84,13 +84,13 @@ class CategoryCol(val target: CategoryColumn): Col {
     fun padEnd(minLength: Int, padChar: Char): CategoryCol = CategoryCol(target.padEnd(minLength, padChar))
     fun padStart(minLength: Int, padChar: Char): CategoryCol = CategoryCol(target.padStart(minLength, padChar))
 
-    fun commonPrefix(column2: Column<*>): CategoryCol = CategoryCol(target.commonPrefix(column2))
-    fun commonSuffix(column2: Column<*>): CategoryCol = CategoryCol(target.commonSuffix(column2))
+    fun commonPrefix(column2: Column): CategoryCol = CategoryCol(target.commonPrefix(column2))
+    fun commonSuffix(column2: Column): CategoryCol = CategoryCol(target.commonSuffix(column2))
 
     /**
      * Returns a column containing the levenshtein distance between the two given string columns
      */
-    fun distance(column2: Column<*>): Column<*> = target.distance(column2)
+    fun distance(column2: Column): Column = target.distance(column2)
 
-    fun join(column2: Column<*>, delimiter: String): CategoryCol = CategoryCol(target.join(column2, delimiter))
+    fun join(column2: Column, delimiter: String): CategoryCol = CategoryCol(target.join(column2, delimiter))
 }

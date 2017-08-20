@@ -4,7 +4,6 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
-import org.apache.commons.math3.util.FastMath;
 
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
@@ -400,25 +399,6 @@ public class NumericReduceUtils {
         @Override
         public double reduce(double[] data) {
             return Math.sqrt(StatUtils.variance(data));
-        }
-
-        /**
-         * Returns the standard deviation of the available values.
-         *
-         * @return The standard deviation, Double.NaN if no values have been added
-         * or 0.0 for a single value set.
-         */
-        public double stdDev(FloatColumn values) {
-            float stdDev = Float.NaN;
-            int N = values.size();
-            if (N > 0) {
-                if (N > 1) {
-                    stdDev = (float) FastMath.sqrt(variance.reduce(values));
-                } else {
-                    stdDev = 0.0f;
-                }
-            }
-            return stdDev;
         }
 
     };

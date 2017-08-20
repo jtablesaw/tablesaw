@@ -113,7 +113,7 @@ class Dataframe (val target : Table) {
         return col(col)
     }
 
-    fun col(col: Column<*>): Col {
+    fun col(col: Column): Col {
         return when (col) {
             is IntColumn -> IntCol(col)
             is FloatColumn -> FloatCol(col)

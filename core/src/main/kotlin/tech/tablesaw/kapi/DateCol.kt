@@ -110,7 +110,7 @@ class DateCol(val target: DateColumn) : Col {
 
     // Mapping utilities
 
-    fun dateColumnName(column1: Column<*>, value: Int, unit: TemporalUnit): String {
+    fun dateColumnName(column1: Column, value: Int, unit: TemporalUnit): String {
         return column1.name() + ": " + value + " " + unit.toString() + "(s)"
     }
 

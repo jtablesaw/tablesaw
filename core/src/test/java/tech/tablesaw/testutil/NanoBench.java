@@ -137,21 +137,17 @@ public class NanoBench {
     }
 
     private void stress() {
-        int m = 0;
         for (int j = 0; j < 100; j++) {
-            int dummy = 0;
             for (int i = 1; i < arrayStress.length; i++) {
                 arrayStress[i] = (int) Math.round(Math.log(i));
-                dummy += arrayStress[i - 1];
             }
-            m += dummy;
         }
     }
 
     private void doMeasure(String label, Runnable task) {
         for (int i = 0; i < this.numberOfMeasurement; i++) {
             TimeMeasureProxy tmp =
-                    new TimeMeasureProxy(new MeasureState(label, i, this.numberOfMeasurement), task, listeners);
+                    new TimeMeasureProxy(new MeasureState(label, this.numberOfMeasurement), task, listeners);
             tmp.run();
         }
     }
@@ -159,7 +155,7 @@ public class NanoBench {
     private void doWarmup(Runnable task) {
         for (int i = 0; i < this.numberOfWarmUp; i++) {
             TimeMeasureProxy tmp =
-                    new TimeMeasureProxy(new MeasureState("_warmup_", i, this.numberOfWarmUp), task, listeners);
+                    new TimeMeasureProxy(new MeasureState("_warmup_", this.numberOfWarmUp), task, listeners);
             tmp.run();
         }
     }
@@ -232,31 +228,17 @@ public class NanoBench {
         private String label;
         private long startTime;
         private long endTime;
-        private long index;
         private int measurement;
         private int bytesMeasure;
 
-        public MeasureState(String label, long index, int measurement) {
+        public MeasureState(String label, int measurement) {
             super();
             this.label = label;
             this.measurement = measurement;
-            this.index = index;
-        }
-
-        public long getIndex() {
-            return index;
         }
 
         public String getLabel() {
             return label;
-        }
-
-        public long getStartTime() {
-            return startTime;
-        }
-
-        public long getEndTime() {
-            return endTime;
         }
 
         public long getMeasurements() {

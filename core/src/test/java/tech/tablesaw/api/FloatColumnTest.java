@@ -179,7 +179,7 @@ public class FloatColumnTest {
         for (int i = 0; i < 100; i++) { // pick a hundred values at random and see if we can find them
             float f = floats[randomDataGenerator.nextInt(0, 999_999)];
             results = floatColumn.isEqualTo(f);
-            assertEquals(f, floatColumn.get(results.iterator().next()), .001);
+            assertEquals(f, floatColumn.get(results.iterator().nextInt()), .001);
         }
     }
 
@@ -424,7 +424,6 @@ public class FloatColumnTest {
             floats.append(RandomUtils.nextFloat(0, 10_000));
             otherFloats.append(floats.get(i) - 1.0f);
         }
-        FloatColumn diff = floats.subtract(otherFloats);
         for (int i = 0; i < floats.size(); i++) {
             assertEquals(floats.get(i), otherFloats.get(i) + 1.0, 0.01);
         }

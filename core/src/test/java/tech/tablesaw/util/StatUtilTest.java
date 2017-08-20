@@ -56,10 +56,4 @@ public class StatUtilTest {
         assertEquals(max, column.max(), 0.01f);
     }
 
-    @Test
-    public void testStats() {
-        Random random = new Random();
-        // assertEquals(sum, column.sum(), 0.01f);
-
-    }
 }
