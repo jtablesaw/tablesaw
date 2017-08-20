@@ -7,6 +7,9 @@ Tablesaw makes it easy to use Java for data science, but we can use your help. H
 * Report or fix a bug
 * Implement new features and enhancements
 
+## About questions
+Please use the project Issues section on Github to ask questions, tagging the issue as a "Question".
+
 ## Using Github to implement features and fix bugs
 
 If you want to help out with one of our bugs or implement a new feature, here are some suggestions for success.  The basic process looks like this:
@@ -31,13 +34,12 @@ To summarize:
 
 ## What to Contribute?
 
-Besides the open bugs and feature requests, there are a few features that would be both hugely valuable and relatively easy to implement. Here are some ideas:
+Among the open bugs and feature requests, we've tagged some as "Help Wanted". This indicates that a fix should be relatively straightforward to address. 
 
-Add support for more machine learning algorithms by adding new interfaces to Smile.  Basically, you’re creating methods that transform tables to the format the Smile needs, and wraps the Smile API so that the necessary options can be set through Tablesaw.
+We'd also love to add support for more machine learning algorithms by adding new interfaces to Smile.  Basically, you’re creating methods that transform tables to the format the Smile needs, and wraps the Smile API so that the necessary options can be set through Tablesaw. Some knowledge of machine learning would be helpful
 
-Add additional plot types by expanding the interface to the plotting libraries we use. Smile, again, has a number of plot types specialized for ML diagnostics that would be wonderful. We could also use a pie chart, a time series plot, etc.
 Implement an interface for a Javascript plotting library (big job, we know), but the best Javascript libraries are awesome.
-Email larry@tablesaw.tech if you have any questions about these suggestions.
+Email larry@tablesaw.tech if you have any questions, or use the comments for the issue.
 
 ## Become a Maintainer/Committer
 
