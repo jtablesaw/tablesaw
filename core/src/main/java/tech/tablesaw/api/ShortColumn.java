@@ -136,7 +136,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         int i = 0;
         ShortIterator shortIterator = f.iterator();
         for (int next : data) {
-            if (next == shortIterator.next()) {
+            if (next == shortIterator.nextShort()) {
                 results.add(i);
             }
             i++;

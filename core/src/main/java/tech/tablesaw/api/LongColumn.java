@@ -139,7 +139,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         int i = 0;
         LongIterator longIterator = f.iterator();
         for (long next : data) {
-            if (next == longIterator.next()) {
+            if (next == longIterator.nextLong()) {
                 results.add(i);
             }
             i++;

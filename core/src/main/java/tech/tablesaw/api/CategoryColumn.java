@@ -202,7 +202,7 @@ public class CategoryColumn extends AbstractColumn
             }
         }
 
-        for (Map.Entry<Integer, Integer> entry : valueToCount.entrySet()) {
+        for (Map.Entry<Integer, Integer> entry : valueToCount.int2IntEntrySet()) {
             categories.add(lookupTable.get(entry.getKey()));
             counts.append(entry.getValue());
         }

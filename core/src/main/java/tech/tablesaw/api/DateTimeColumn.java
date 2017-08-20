@@ -815,7 +815,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
             @Override
             public LocalDateTime next() {
-                return PackedLocalDateTime.asLocalDateTime(longIterator.next());
+                return PackedLocalDateTime.asLocalDateTime(longIterator.nextLong());
             }
         };
     }

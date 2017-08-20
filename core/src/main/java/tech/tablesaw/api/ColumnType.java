@@ -22,8 +22,7 @@ public enum ColumnType {
 
     private final Comparable missingValue;
 
-    ColumnType(
-            Comparable missingValue) {
+    ColumnType(Comparable missingValue) {
         this.missingValue = missingValue;
     }
 

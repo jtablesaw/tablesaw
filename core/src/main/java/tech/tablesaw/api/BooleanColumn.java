@@ -120,12 +120,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         }
     }
 
-    private static BooleanColumn create(String fileName, ByteArrayList bools) {
-        BooleanColumn booleanColumn = new BooleanColumn(fileName, bools.size());
-        booleanColumn.data.addAll(bools);
-        return booleanColumn;
-    }
-
     public int size() {
         return data.size();
     }
@@ -148,7 +142,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         table.addColumn(booleanColumn);
         table.addColumn(countColumn);
 
-        for (Map.Entry<Byte, Integer> entry : counts.entrySet()) {
+        for (Map.Entry<Byte, Integer> entry : counts.byte2IntEntrySet()) {
             booleanColumn.append(entry.getKey());
             countColumn.append(entry.getValue());
         }

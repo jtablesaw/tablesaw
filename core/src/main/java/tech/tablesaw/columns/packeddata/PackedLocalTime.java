@@ -126,7 +126,6 @@ public class PackedLocalTime {
         byte millisecondByte2 = (byte) time;
         char millis = (char) ((millisecondByte1 << 8) | (millisecondByte2 & 0xFF));
         int second = millis / 1000;
-        int millisOnly = millis % 1000;
 
         return String.format("%s:%s:%s",
                 Strings.padStart(Byte.toString(hourByte), 2, '0'),

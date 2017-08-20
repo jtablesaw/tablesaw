@@ -164,10 +164,6 @@ public class PackedLocalDateTime {
         return PackedLocalDate.getDayOfWeek(date);
     }
 
-    private static long toEpochDay(long packedDateTime) {
-        return PackedLocalDate.toEpochDay(date(packedDateTime));
-    }
-
     public static boolean isInQ1(long packedDateTime) {
         Month month = getMonth(packedDateTime);
         return month == Month.JANUARY ||
