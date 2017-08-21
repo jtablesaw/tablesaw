@@ -1,15 +1,16 @@
 package tech.tablesaw.plotting.fx;
 
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.Background;
+import javafx.geometry.Side;
+import javafx.scene.chart.PieChart;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.columns.Column;
-
-import java.util.List;
 
 /**
  *
@@ -28,8 +29,7 @@ public class FxBuilder {
         return categoryAxis;
     }
 
-    static XYChart.Series<String, Number> getSeries(NumericColumn numericColumn, List<XYChart.Data<String, Number>>
-            data) {
+    static XYChart.Series<String, Number> getSeries(NumericColumn numericColumn, List<XYChart.Data<String, Number>> data) {
         XYChart.Series<String, Number> series1
                 = new XYChart.Series<>(FXCollections.observableList(data));
 
@@ -47,5 +47,16 @@ public class FxBuilder {
         bar.setBackground(Background.EMPTY);
         bar.setVerticalGridLinesVisible(false);
         return bar;
+    }
+
+    static PieChart getPieChart(String title) {
+
+        PieChart pie = new PieChart();
+        pie.setTitle(title);
+        pie.setLegendVisible(false);
+        pie.setBackground(Background.EMPTY);
+        pie.setLegendVisible(true);
+        pie.setLegendSide(Side.RIGHT);
+        return pie;
     }
 }
