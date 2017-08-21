@@ -1,9 +1,6 @@
 package tech.tablesaw.plotting.fx;
 
 import javafx.scene.chart.PieChart;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.NumericColumn;
