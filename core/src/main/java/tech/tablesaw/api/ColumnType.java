@@ -20,13 +20,13 @@ public enum ColumnType {
     LOCAL_TIME(-1),
     SKIP(null);
 
-    private final Comparable missingValue;
+    private final Comparable<?> missingValue;
 
-    ColumnType(Comparable missingValue) {
+    ColumnType(Comparable<?> missingValue) {
         this.missingValue = missingValue;
     }
 
-    public Comparable getMissingValue() {
+    public Comparable<?> getMissingValue() {
         return missingValue;
     }
 }

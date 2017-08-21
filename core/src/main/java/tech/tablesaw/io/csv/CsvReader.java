@@ -23,7 +23,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
@@ -277,7 +280,10 @@ public class CsvReader {
         BufferedReader streamReader = new BufferedReader(reader);
 
         Table table;
-        try (CSVReader csvReader = new CSVReader(streamReader, columnSeparator, '"')) {
+        CSVParser csvParser = new CSVParserBuilder()
+            .withSeparator(columnSeparator)
+            .build();
+        try (CSVReader csvReader = new CSVReaderBuilder(streamReader).withCSVParser(csvParser).build()) {
 
             String[] nextLine;
             String[] columnNames;
@@ -423,7 +429,10 @@ public class CsvReader {
     protected static List<String[]> parseCsv(Reader reader, char delimiter) throws IOException {
       List<String[]> rows = new ArrayList<>();
       String[] nextLine;
-      try (CSVReader csvReader = new CSVReader(reader, delimiter, '"', 0)) {
+      CSVParser csvParser = new CSVParserBuilder()
+          .withSeparator(delimiter)
+          .build();
+      try (CSVReader csvReader = new CSVReaderBuilder(reader).withCSVParser(csvParser).build()) {
         while ((nextLine = csvReader.readNext()) != null) {
           rows.add(nextLine);
         }

@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  */
 public class ShortColumn extends AbstractColumn implements ShortMapUtils, NumericColumn {
 
-    public static final short MISSING_VALUE = (short) ColumnType.SHORT_INT.getMissingValue();
+    public static final short MISSING_VALUE = (Short) ColumnType.SHORT_INT.getMissingValue();
 
     private static final int DEFAULT_ARRAY_SIZE = 128;
     private static final int BYTE_SIZE = 2;
@@ -84,7 +84,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
      */
     public static short convert(String stringValue) {
         if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return (short) ColumnType.SHORT_INT.getMissingValue();
+            return (Short) ColumnType.SHORT_INT.getMissingValue();
         }
         Matcher matcher = COMMA_PATTERN.matcher(stringValue);
         return Short.parseShort(matcher.replaceAll(""));

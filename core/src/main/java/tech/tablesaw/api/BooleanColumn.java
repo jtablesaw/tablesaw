@@ -109,7 +109,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
 
     public static boolean convert(String stringValue) {
         if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return (boolean) ColumnType.BOOLEAN.getMissingValue();
+            return (Boolean) ColumnType.BOOLEAN.getMissingValue();
         } else if (TypeUtils.TRUE_STRINGS.contains(stringValue)) {
             return true;
         } else if (TypeUtils.FALSE_STRINGS.contains(stringValue)) {

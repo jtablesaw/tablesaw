@@ -15,8 +15,8 @@ import tech.tablesaw.columns.packeddata.PackedLocalDate;
 import tech.tablesaw.table.TemporaryView;
 import tech.tablesaw.table.ViewGroup;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.text.RandomStringGenerator;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -154,8 +154,10 @@ public class TimeDependentFilteringTest {
     private static void generateData(int observationCount, Table table) throws IOException {
         // createFromCsv pools of random values
 
+        RandomStringGenerator generator = new RandomStringGenerator.Builder()
+            .withinRange(32, 127).build();
         while (concepts.size() <= CONCEPT_COUNT) {
-            concepts.add(RandomStringUtils.randomAscii(30));
+            concepts.add(generator.generate(30));
         }
 
         while (patientIds.size() <= PATIENT_COUNT) {

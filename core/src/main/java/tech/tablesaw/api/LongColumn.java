@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  */
 public class LongColumn extends AbstractColumn implements LongMapUtils, NumericColumn {
 
-    public static final long MISSING_VALUE = (long) ColumnType.LONG_INT.getMissingValue();
+    public static final long MISSING_VALUE = (Long) ColumnType.LONG_INT.getMissingValue();
 
     private static final int DEFAULT_ARRAY_SIZE = 128;
     private static final int BYTE_SIZE = 8;
@@ -83,7 +83,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
      */
     public static long convert(String stringValue) {
         if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return (long) ColumnType.LONG_INT.getMissingValue();
+            return (Long) ColumnType.LONG_INT.getMissingValue();
         }
         Matcher matcher = COMMA_PATTERN.matcher(stringValue);
         return Long.parseLong(matcher.replaceAll(""));

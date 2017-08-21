@@ -37,7 +37,7 @@ import java.util.Set;
  */
 public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, TimeMapUtils {
 
-    public static final int MISSING_VALUE = (int) ColumnType.LOCAL_TIME.getMissingValue();
+    public static final int MISSING_VALUE = (Integer) ColumnType.LOCAL_TIME.getMissingValue();
     private static final int BYTE_SIZE = 4;
 
     private static int DEFAULT_ARRAY_SIZE = 128;
@@ -258,7 +258,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         if (Strings.isNullOrEmpty(value)
                 || TypeUtils.MISSING_INDICATORS.contains(value)
                 || value.equals("-1")) {
-            return (int) ColumnType.LOCAL_TIME.getMissingValue();
+            return (Integer) ColumnType.LOCAL_TIME.getMissingValue();
         }
         value = Strings.padStart(value, 4, '0');
         if (selectedFormatter == null) {

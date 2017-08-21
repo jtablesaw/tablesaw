@@ -49,7 +49,7 @@ public class DictionaryMap {
 
     public void remove(short key) {
         String value = keyToValue.remove(key);
-        valueToKey.remove(value);
+        valueToKey.removeInt(value);
     }
 
     public void remove(String value) {

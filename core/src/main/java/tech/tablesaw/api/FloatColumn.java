@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  */
 public class FloatColumn extends AbstractColumn implements FloatIterable, NumericColumn {
 
-    public static final float MISSING_VALUE = (float) ColumnType.FLOAT.getMissingValue();
+    public static final float MISSING_VALUE = (Float) ColumnType.FLOAT.getMissingValue();
     private static final int BYTE_SIZE = 4;
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private static int DEFAULT_ARRAY_SIZE = 128;

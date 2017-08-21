@@ -7,6 +7,7 @@ import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.columns.Column;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 
 /**
  *
@@ -165,7 +166,7 @@ public interface StringMapUtils extends Column {
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
             String value2 = column2.getString(r);
-            newColumn.append(StringUtils.getLevenshteinDistance(value1, value2));
+            newColumn.append(LevenshteinDistance.getDefaultInstance().apply(value1, value2));
         }
         return newColumn;
     }

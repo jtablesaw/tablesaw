@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  */
 public class IntColumn extends AbstractColumn implements IntMapUtils, NumericColumn {
 
-    public static final int MISSING_VALUE = (int) ColumnType.INTEGER.getMissingValue();
+    public static final int MISSING_VALUE = (Integer) ColumnType.INTEGER.getMissingValue();
     public static final int DEFAULT_ARRAY_SIZE = 128;
     private static final int BYTE_SIZE = 4;
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");

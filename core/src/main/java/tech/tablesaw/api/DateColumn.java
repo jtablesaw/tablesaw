@@ -39,7 +39,7 @@ import java.util.Set;
  */
 public class DateColumn extends AbstractColumn implements DateMapUtils {
 
-    public static final int MISSING_VALUE = (int) ColumnType.LOCAL_DATE.getMissingValue();
+    public static final int MISSING_VALUE = (Integer) ColumnType.LOCAL_DATE.getMissingValue();
 
     private static final int DEFAULT_ARRAY_SIZE = 128;
 
@@ -346,7 +346,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
      */
     public int convert(String value) {
         if (Strings.isNullOrEmpty(value) || TypeUtils.MISSING_INDICATORS.contains(value) || value.equals("-1")) {
-            return (int) ColumnType.LOCAL_DATE.getMissingValue();
+            return (Integer) ColumnType.LOCAL_DATE.getMissingValue();
         }
         value = Strings.padStart(value, 4, '0');
 

@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
  */
 public class DoubleColumn extends AbstractColumn implements DoubleIterable, NumericColumn {
 
-    public static final double MISSING_VALUE = (double) ColumnType.DOUBLE.getMissingValue();
+    public static final double MISSING_VALUE = (Double) ColumnType.DOUBLE.getMissingValue();
     private static final int BYTE_SIZE = 8;
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     private static int DEFAULT_ARRAY_SIZE = 128;

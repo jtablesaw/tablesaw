@@ -1,7 +1,10 @@
 package tech.tablesaw.io.csv;
 
 
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
 
 import javax.annotation.concurrent.Immutable;
@@ -25,7 +28,7 @@ public class CsvCombiner {
             throws IOException {
 
         FileWriter fileWriter = new FileWriter(newFileName);
-        try (CSVWriter writer = new CSVWriter(fileWriter, ',')) {
+        try (CSVWriter writer = new CSVWriter(fileWriter)) {
             final boolean[] skipHeader = {false};
             Files.walk(Paths.get(foldername)).forEach(filePath -> {
 
@@ -40,9 +43,10 @@ public class CsvCombiner {
 
     public static void append(String fileName, final CSVWriter writer, char columnSeparator, boolean skipHeader) {
 
-        CSVReader reader = null;
-        try {
-            reader = new CSVReader(new FileReader(fileName), columnSeparator);
+        CSVParser csvParser = new CSVParserBuilder()
+            .withSeparator(columnSeparator)
+            .build();
+        try (CSVReader reader = new CSVReaderBuilder(new FileReader(fileName)).withCSVParser(csvParser).build()) {
             if (skipHeader) { // skip the header
                 reader.readNext();
             }
@@ -51,15 +55,7 @@ public class CsvCombiner {
                 writer.writeNext(nextLine, false);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            throw new IllegalStateException(e);
         }
     }
 }
