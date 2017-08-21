@@ -41,7 +41,7 @@ public class FxBar extends FxBuilder {
             data.add(new XYChart.Data<>(categoryColumn.get(i), numericColumn.getFloat(i)));
         }
 
-        barChart.getData().addAll(getSeries(numericColumn, data));
+        barChart.getData().add(getSeries(numericColumn, data));
         return barChart;
     }
 
@@ -58,7 +58,7 @@ public class FxBar extends FxBuilder {
             data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
         }
 
-        barChart.getData().addAll(getSeries(numericColumn, data));
+        barChart.getData().add(getSeries(numericColumn, data));
         return barChart;
     }
 
@@ -74,7 +74,7 @@ public class FxBar extends FxBuilder {
             data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
         }
 
-        barChart.getData().addAll(getSeries(numericColumn, data));
+        barChart.getData().add(getSeries(numericColumn, data));
         return barChart;
     }
 }

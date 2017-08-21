@@ -48,7 +48,7 @@ public class FxHorizontalBar extends FxBuilder {
 
         XYChart.Series<Number, String> series1 = getNumberStringSeries(categoryColumn, d2);
 
-        bar.getData().addAll(series1);
+        bar.getData().add(series1);
         return bar;
     }
 
@@ -67,7 +67,7 @@ public class FxHorizontalBar extends FxBuilder {
 
         XYChart.Series<Number, String> series1 = getNumberStringSeries(categoryColumn, d2);
 
-        bar.getData().addAll(series1);
+        bar.getData().add(series1);
         return bar;
     }
 
@@ -85,7 +85,7 @@ public class FxHorizontalBar extends FxBuilder {
 
         XYChart.Series<Number, String> series1 = getNumberStringSeries(categoryColumn, d2);
 
-        bar.getData().addAll(series1);
+        bar.getData().add(series1);
         return bar;
     }
 

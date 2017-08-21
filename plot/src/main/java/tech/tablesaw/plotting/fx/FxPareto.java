@@ -54,7 +54,7 @@ public class FxPareto extends FxBuilder {
         bar.setBackground(Background.EMPTY);
         bar.setVerticalGridLinesVisible(false);
 
-        bar.getData().addAll(series1);
+        bar.getData().add(series1);
         return bar;
     }
 
@@ -73,7 +73,7 @@ public class FxPareto extends FxBuilder {
             data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
         }
 
-        barChart.getData().addAll(getSeries(numericColumn, data));
+        barChart.getData().add(getSeries(numericColumn, data));
         return barChart;
     }
 
@@ -93,7 +93,7 @@ public class FxPareto extends FxBuilder {
             data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
         }
 
-        barChart.getData().addAll(getSeries(numericColumn, data));
+        barChart.getData().add(getSeries(numericColumn, data));
         return barChart;
     }
 
