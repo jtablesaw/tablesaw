@@ -20,7 +20,7 @@ If you want to help out with one of our bugs or implement a new feature, here ar
 4. Implement your feature or fix the bug and push the results to your fork
 5. Send us a pull request.
 
-Our maintainers will review your pull request as soon as we can. You can find our project at Github:
+You can find more info about [creating a fork](https://help.github.com/articles/fork-a-repo/) and [pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) in the GitHub help articles. Our maintainers will review your pull request as soon as we can. You can find our project at Github:
 
 https://github.com/jtablesaw/tablesaw
 
