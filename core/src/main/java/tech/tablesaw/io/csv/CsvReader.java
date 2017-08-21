@@ -244,7 +244,8 @@ public class CsvReader {
         }
         // Add the rows
         long rowNumber = header ? 1L : 0L;
-        for (String[] nextLine : rows) {
+        while (rows.size() > 0) {
+            String[] nextLine = rows.remove(0);
             // for each column that we're including (not skipping)
             int cellIndex = 0;
             for (int columnIndex : columnIndexes) {
