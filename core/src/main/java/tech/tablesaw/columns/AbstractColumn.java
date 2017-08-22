@@ -11,9 +11,6 @@ import java.util.UUID;
  */
 public abstract class AbstractColumn implements Column {
 
-    // this character is sometimes inserted into windows files and needs to be removed
-    private static final String UTF8_BOM = "\uFEFF";
-
     private String id;
 
     private String name;
@@ -30,13 +27,6 @@ public abstract class AbstractColumn implements Column {
         setName(metadata.getName());
         this.comment = "";
         this.id = metadata.getId();
-    }
-
-    private static String removeUtf8Bom(String s) {
-        if (s.startsWith(UTF8_BOM)) {
-            s = s.substring(1);
-        }
-        return s;
     }
 
     public String name() {
@@ -58,7 +48,6 @@ public abstract class AbstractColumn implements Column {
      * @param name The new name MUST be unique for any table containing this column
      */
     public void setName(String name) {
-        name = removeUtf8Bom(name);
         this.name = name.trim();
     }
 
