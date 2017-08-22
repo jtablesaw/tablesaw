@@ -8,7 +8,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.reducing.CrossTab;
 import tech.tablesaw.util.Selection;
 
-import static  tech.tablesaw.api.QueryHelper.*;
+import static tech.tablesaw.api.QueryHelper.*;
 import static tech.tablesaw.reducing.NumericReduceUtils.range;
 
 /**

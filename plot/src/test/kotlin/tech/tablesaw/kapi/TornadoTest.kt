@@ -105,7 +105,7 @@ fun main(args: Array<String>) {
 
     println()
     println("Reading from Tablesaw format")
-    tornadoes = Dataframe(Table.readTable(dbName))
+    Dataframe(Table.readTable(dbName))
     println("Finished")
     exitProcess(1)
 }

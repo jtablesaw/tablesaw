@@ -1,22 +1,17 @@
 package tech.tablesaw.io.csv;
 
+import static org.junit.Assert.*;
+import static tech.tablesaw.api.ColumnType.*;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
-
 import java.io.File;
-import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static tech.tablesaw.api.ColumnType.*;
 
 /**
  * Tests for CSV Reading
@@ -66,7 +61,7 @@ public class CsvReaderTest {
 
         // Read the CSV file
         File file = new File("../data/BushApproval.csv");
-        Table table = CsvReader.read(new FileReader(file), file.getName(), true, ',', true);
+        Table table = CsvReader.read(new FileInputStream(file), file.getName(), true, ',', true);
 
         assertEquals(323, table.rowCount());
 
@@ -77,10 +72,8 @@ public class CsvReaderTest {
 
     @Test
     public void testDataTypeDetection() throws Exception {
-        Reader reader = new FileReader(new File("../data/bus_stop_test.csv"));
-        char delimiter = ',';
-        List<String[]> rows = CsvReader.parseCsv(reader, delimiter);
-        ColumnType[] columnTypes = CsvReader.detectColumnTypes(rows, true, delimiter, false);
+        InputStream stream = new FileInputStream(new File("../data/bus_stop_test.csv"));
+        ColumnType[] columnTypes = CsvReader.detectColumnTypes(stream, true, ',', false);
         assertTrue(Arrays.equals(bus_types, columnTypes));
     }
 
@@ -97,10 +90,8 @@ public class CsvReaderTest {
 
     @Test
     public void testDataTypeDetection2() throws Exception {
-        Reader reader = new FileReader(new File("../data/BushApproval.csv"));
-        char delimiter = ',';
-        List<String[]> rows = CsvReader.parseCsv(reader, delimiter);
-        ColumnType[] columnTypes = CsvReader.detectColumnTypes(rows, true, ',', false);
+        InputStream stream = new FileInputStream(new File("../data/BushApproval.csv"));
+        ColumnType[] columnTypes = CsvReader.detectColumnTypes(stream, true, ',', false);
         assertEquals(ColumnType.LOCAL_DATE, columnTypes[0]);
         assertEquals(ColumnType.SHORT_INT, columnTypes[1]);
         assertEquals(ColumnType.CATEGORY, columnTypes[2]);
@@ -112,7 +103,7 @@ public class CsvReaderTest {
         ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};
         String location = "https://raw.githubusercontent.com/jtablesaw/tablesaw/master/data/BushApproval.csv";
         Table table;
-        try (Reader input = new InputStreamReader(new URL(location).openStream())) {
+        try (InputStream input = new URL(location).openStream()) {
             table = Table.createFromReader(input, "Bush approval ratings", types, true, ',');
         }
         assertNotNull(table);

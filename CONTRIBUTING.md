@@ -14,12 +14,13 @@ Please use the project Issues section on Github to ask questions, tagging the is
 
 If you want to help out with one of our bugs or implement a new feature, here are some suggestions for success.  The basic process looks like this:
 
-1. Clone Tablesaw
-2. Create your issue branch
-3. Implement your feature or fix the bug
-4. Send us a pull request.
+1. Fork Tablesaw
+2. Clone your fork to your development machine
+3. Create your issue branch
+4. Implement your feature or fix the bug and push the results to your fork
+5. Send us a pull request.
 
-Our maintainers will review your pull request as soon as we can. You can find our project at Github:
+You can find more info about [creating a fork](https://help.github.com/articles/fork-a-repo/) and [pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) in the GitHub help articles. Our maintainers will review your pull request as soon as we can. You can find our project at Github:
 
 https://github.com/jtablesaw/tablesaw
 
