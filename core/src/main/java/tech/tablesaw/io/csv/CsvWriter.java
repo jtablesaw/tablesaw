@@ -30,15 +30,6 @@ final public class CsvWriter {
      * @throws IOException if the write fails
      */
     public static void write(String fileName, Table table) throws IOException {
-        write(fileName, table, null);
-    }
-
-    /**
-     * Writes the given table to a file with the given filename, using the given string to represent missing data
-     *
-     * @throws IOException if the write fails
-     */
-    public static void write(String fileName, Table table, String missing) throws IOException {
         try (CSVWriter writer = new CSVWriter(new FileWriter(fileName))) {
             String[] header = new String[table.columnCount()];
             for (int c = 0; c < table.columnCount(); c++) {

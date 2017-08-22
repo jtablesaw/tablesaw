@@ -27,6 +27,7 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
+import tech.tablesaw.io.DataFrameWriter;
 import tech.tablesaw.io.csv.CsvReader;
 import tech.tablesaw.io.csv.CsvWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
@@ -411,7 +412,11 @@ public class Table implements Relation, IntIterable {
     public static DataFrameReader read() {
         return new DataFrameReader();
     }
-    
+
+    public DataFrameWriter write() {
+      return new DataFrameWriter(this);
+    }
+ 
     /**
      * Returns an randomly generated array of ints of size N where Max is the largest possible value
      */
@@ -1058,7 +1063,9 @@ public class Table implements Relation, IntIterable {
      *
      * @param fileNameWithPath The name of the file to save to. By default, it writes to the working directory,
      *                         but you can specify a different folder by providing the path (e.g. mydata/myfile.csv)
+     * @deprecated use write().csv() instead
      */
+    @Deprecated
     public void exportToCsv(String fileNameWithPath) {
         try {
             CsvWriter.write(fileNameWithPath, this);
