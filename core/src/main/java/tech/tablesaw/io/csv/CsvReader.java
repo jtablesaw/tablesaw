@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -37,6 +36,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.TypeUtils;
+import tech.tablesaw.io.UnicodeBOMInputStream;
 
 /**
  *
@@ -44,8 +44,8 @@ import tech.tablesaw.io.TypeUtils;
 @Immutable
 public class CsvReader {
 
-    private static java.util.function.Predicate<String> isBoolean = s ->
-            TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
+    private static java.util.function.Predicate<String> isBoolean = s
+            -> TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
     private static Predicate<String> isLong = new Predicate<String>() {
 
         @Override
@@ -183,7 +183,7 @@ public class CsvReader {
         InputStream stream = new FileInputStream(file);
         return read(stream, file.getName(), true, delimiter);
     }
-    
+
     /**
      * Returns the given file after auto-detecting the column types, or trying to
      *
@@ -195,7 +195,7 @@ public class CsvReader {
      * @return A table containing the data from the file
      * @throws IOException if file cannot be read
      */
-    public static Table read(InputStream stream, String tableName,  boolean header, char delimiter) throws IOException {
+    public static Table read(InputStream stream, String tableName, boolean header, char delimiter) throws IOException {
         return read(stream, tableName, true, delimiter, false);
     }
 
@@ -207,64 +207,67 @@ public class CsvReader {
     }
 
     public static Table read(InputStream stream,
-                             String tableName,
-                             ColumnType[] types,
-                             boolean header,
-                             char columnSeparator) throws IOException {
-      BufferedReader streamReader = new BufferedReader(new InputStreamReader(stream));
+            String tableName,
+            ColumnType[] types,
+            boolean header,
+            char columnSeparator) throws IOException {
 
-      Table table;
-      CSVParser csvParser = new CSVParserBuilder()
-          .withSeparator(columnSeparator)
-          .build();
-      try (CSVReader reader = new CSVReaderBuilder(streamReader).withCSVParser(csvParser).build()) {
+        // All other read methods end up here, make sure we don't have leading Unicode BOM
+        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
+        ubis.skipBOM();
 
-          String[] nextLine;
-          String[] columnNames;
-          List<String> headerRow;
-          if (header) {
-              nextLine = reader.readNext();
-              headerRow = Lists.newArrayList(nextLine);
-              columnNames = selectColumnNames(headerRow, types);
-          } else {
-              columnNames = makeColumnNames(types);
-              headerRow = Lists.newArrayList(columnNames);
-          }
+        Table table;
+        CSVParser csvParser = new CSVParserBuilder()
+                .withSeparator(columnSeparator)
+                .build();
 
-          table = Table.create(tableName);
-          for (int x = 0; x < types.length; x++) {
-              if (types[x] != ColumnType.SKIP) {
-                  String columnName = headerRow.get(x);
-                  if (Strings.isNullOrEmpty(columnName)) {
-                      columnName = "Column " + table.columnCount();
-                  }
-                  Column newColumn = TypeUtils.newColumn(columnName.trim(), types[x]);
-                  table.addColumn(newColumn);
-              }
-          }
-          int[] columnIndexes = new int[columnNames.length];
-          for (int i = 0; i < columnIndexes.length; i++) {
-              // get the index in the original table, which includes skipped fields
-              columnIndexes[i] = headerRow.indexOf(columnNames[i]);
-          }
-          // Add the rows
-          long rowNumber = header ? 1L : 0L;
-          while ((nextLine = reader.readNext()) != null) {
-              // for each column that we're including (not skipping)
-              int cellIndex = 0;
-              for (int columnIndex : columnIndexes) {
-                  Column column = table.column(cellIndex);
-                  try {
-                      column.appendCell(nextLine[columnIndex]);
-                  } catch (Exception e) {
-                      throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
-                  }
-                  cellIndex++;
-              }
-              rowNumber++;
-          }
-      }
-      return table;
+        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis)).withCSVParser(csvParser).build()) {
+            String[] nextLine;
+            String[] columnNames;
+            List<String> headerRow;
+            if (header) {
+                nextLine = reader.readNext();
+                headerRow = Lists.newArrayList(nextLine);
+                columnNames = selectColumnNames(headerRow, types);
+            } else {
+                columnNames = makeColumnNames(types);
+                headerRow = Lists.newArrayList(columnNames);
+            }
+
+            table = Table.create(tableName);
+            for (int x = 0; x < types.length; x++) {
+                if (types[x] != ColumnType.SKIP) {
+                    String columnName = headerRow.get(x);
+                    if (Strings.isNullOrEmpty(columnName)) {
+                        columnName = "Column " + table.columnCount();
+                    }
+                    Column newColumn = TypeUtils.newColumn(columnName.trim(), types[x]);
+                    table.addColumn(newColumn);
+                }
+            }
+            int[] columnIndexes = new int[columnNames.length];
+            for (int i = 0; i < columnIndexes.length; i++) {
+                // get the index in the original table, which includes skipped fields
+                columnIndexes[i] = headerRow.indexOf(columnNames[i]);
+            }
+            // Add the rows
+            long rowNumber = header ? 1L : 0L;
+            while ((nextLine = reader.readNext()) != null) {
+                // for each column that we're including (not skipping)
+                int cellIndex = 0;
+                for (int columnIndex : columnIndexes) {
+                    Column column = table.column(cellIndex);
+                    try {
+                        column.appendCell(nextLine[columnIndex]);
+                    } catch (Exception e) {
+                        throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
+                    }
+                    cellIndex++;
+                }
+                rowNumber++;
+            }
+        }
+        return table;
     }
 
     /**
@@ -282,13 +285,18 @@ public class CsvReader {
     public static Table headerOnly(ColumnType types[], boolean header, char columnSeparator, File file)
             throws IOException {
 
-        Reader reader = new FileReader(file);
+        FileInputStream fis = new FileInputStream(file);       
+        // make sure we don't have leading Unicode BOM
+        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(fis);
+        ubis.skipBOM();
+        
+        Reader reader = new InputStreamReader(ubis);
         BufferedReader streamReader = new BufferedReader(reader);
 
         Table table;
         CSVParser csvParser = new CSVParserBuilder()
-            .withSeparator(columnSeparator)
-            .build();
+                .withSeparator(columnSeparator)
+                .build();
         try (CSVReader csvReader = new CSVReaderBuilder(streamReader).withCSVParser(csvParser).build()) {
 
             String[] nextLine;
@@ -336,7 +344,9 @@ public class CsvReader {
      */
     private static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
         File file = new File(csvFileName);
-        ColumnType[] types = detectColumnTypes(new FileInputStream(file), header, delimiter, false);
+        InputStream stream = new FileInputStream(file);
+
+        ColumnType[] types = detectColumnTypes(stream, header, delimiter, false);
         Table t = headerOnly(types, header, delimiter, file);
         return t.structure();
     }
@@ -454,10 +464,15 @@ public class CsvReader {
         List<List<String>> columnData = new ArrayList<>();
 
         int rowCount = 0; // make sure we don't go over maxRows
+
+        // make sure we don't have leading Unicode BOM
+        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
+        ubis.skipBOM();
+
         CSVParser csvParser = new CSVParserBuilder()
-            .withSeparator(delimiter)
-            .build();
-        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(stream))
+                .withSeparator(delimiter)
+                .build();
+        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis))
                 .withCSVParser(csvParser)
                 .withSkipLines(linesToSkip)
                 .build()) {
@@ -466,9 +481,9 @@ public class CsvReader {
             while ((nextLine = reader.readNext()) != null) {
                 // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
                 if (rowCount == 0) {
-                     for (int j = 0; j < nextLine.length; j++) {
-                         columnData.add(new ArrayList<>());
-                     }
+                    for (int j = 0; j < nextLine.length; j++) {
+                        columnData.add(new ArrayList<>());
+                    }
                 }
                 int columnNumber = 0;
                 if (rowCount == nextRow) {
@@ -482,9 +497,9 @@ public class CsvReader {
                         nextRow = nextRowWithoutSampling(nextRow);
                     } else {
                         nextRow = nextRow(nextRow);
-                   }
+                    }
                 }
-               rowCount++;
+                rowCount++;
             }
         }
 
@@ -528,11 +543,11 @@ public class CsvReader {
     private static ColumnType detectType(List<String> valuesList) {
 
         // Types to choose from. When more than one would work, we pick the first of the options
-        ColumnType[] typeArray =  // we leave out category, as that is the default type
+        ColumnType[] typeArray
+                = // we leave out category, as that is the default type
                 {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, SHORT_INT, INTEGER, LONG_INT, FLOAT, DOUBLE};
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
-
 
         for (String s : valuesList) {
             if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {
