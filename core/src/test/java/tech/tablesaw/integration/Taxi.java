@@ -3,6 +3,8 @@ package tech.tablesaw.integration;
 import com.google.common.base.Stopwatch;
 
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.csv.CsvReader;
 import tech.tablesaw.store.StorageManager;
 import tech.tablesaw.table.ViewGroup;
 
@@ -10,21 +12,29 @@ import static tech.tablesaw.reducing.NumericReduceUtils.*;
 
 import java.util.concurrent.TimeUnit;
 
-
+/**
+ *
+ */
 public class Taxi {
-
-    static Table trips;
 
     public static void main(String[] args) throws Exception {
         Stopwatch stopwatch = Stopwatch.createStarted();
         System.out.println("loading");
-        //trips = CsvReader.read("/Users/larrywhite/IdeaProjects/testdata/bigdata/yellow_tripdata_2015-06.csv");
-        trips = StorageManager.readTable("/Users/larrywhite/IdeaProjects/testdata/bigdata/Trips.saw");
+        Table trips;
+        trips = Table.createFromCsv("/Users/larrywhite/downloads/yellow_tripdata_2016-01.csv");
+        //trips = StorageManager.readTable("/Users/larrywhite/IdeaProjects/testdata/bigdata/Trips.saw");
         System.out.println(String.format("loaded %d records in %d seconds",
                 trips.rowCount(),
                 stopwatch.elapsed(TimeUnit.SECONDS)));
         out(trips.shape());
         out(trips.structure().print());
+        trips.setName("Trips");
+        trips.save("/Users/larrywhite/IdeaProjects/testdata/bigdata/");
+
+        System.exit(0);
+
+/*
+        Column c = trips.column("total_amount");
 
         stopwatch.reset().start();
         // Create a grouping for subsequent queries
@@ -48,6 +58,7 @@ public class Taxi {
         out(sum_total_fare.print());
 
         sum_total_fare = trips.sum("total_amount").by("passenger_count");
+*/
     }
 
     private static void out(Object obj) {
