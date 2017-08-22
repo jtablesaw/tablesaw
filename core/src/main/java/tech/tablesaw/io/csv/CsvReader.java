@@ -216,14 +216,12 @@ public class CsvReader {
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
 
-        BufferedReader streamReader = new BufferedReader(new InputStreamReader(ubis));
-
         Table table;
         CSVParser csvParser = new CSVParserBuilder()
                 .withSeparator(columnSeparator)
                 .build();
-        try (CSVReader reader = new CSVReaderBuilder(streamReader).withCSVParser(csvParser).build()) {
 
+        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis)).withCSVParser(csvParser).build()) {
             String[] nextLine;
             String[] columnNames;
             List<String> headerRow;
