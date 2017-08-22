@@ -256,8 +256,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public void appendCell(String object) {
         try {
             append(convert(object));
-        } catch (NumberFormatException nfe) {
-            throw new NumberFormatException(name() + ": " + nfe.getMessage());
         } catch (NullPointerException e) {
             throw new RuntimeException(name() + ": "
                     + String.valueOf(object) + ": "

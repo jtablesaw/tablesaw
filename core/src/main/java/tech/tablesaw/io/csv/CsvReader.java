@@ -463,11 +463,7 @@ public class CsvReader {
                 .build()) {
             String[] nextLine;
             int nextRow = 0;
-            for (int i = 0; (nextLine = reader.readNext()) != null; i++) {
-                if (header && i == 0) {
-                    continue;
-                }
-
+            while ((nextLine = reader.readNext()) != null) {
                 // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
                 if (rowCount == 0) {
                      for (int j = 0; j < nextLine.length; j++) {
