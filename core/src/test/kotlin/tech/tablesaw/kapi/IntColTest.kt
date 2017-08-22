@@ -22,8 +22,6 @@ class IntColTest {
         val result3 = col / 2
         val result4 = col + 200
         val result5 = col.emptyCopy()
-        val result6 = col * 2
-        val result7 = col - col
 
         println(result)
         println(result2)
