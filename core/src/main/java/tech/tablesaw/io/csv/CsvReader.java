@@ -212,7 +212,7 @@ public class CsvReader {
             boolean header,
             char columnSeparator) throws IOException {
 
-        // All other read methods end up here, make sure we do not have leading Unicode BOM
+        // All other read methods end up here, make sure we don't have leading Unicode BOM
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
 
@@ -287,9 +287,11 @@ public class CsvReader {
     public static Table headerOnly(ColumnType types[], boolean header, char columnSeparator, File file)
             throws IOException {
 
-        FileInputStream fis = new FileInputStream(file);
+        FileInputStream fis = new FileInputStream(file);       
+        // make sure we don't have leading Unicode BOM
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(fis);
         ubis.skipBOM();
+        
         Reader reader = new InputStreamReader(ubis);
         BufferedReader streamReader = new BufferedReader(reader);
 
@@ -344,11 +346,9 @@ public class CsvReader {
      */
     private static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
         File file = new File(csvFileName);
-        InputStream fis = new FileInputStream(file);
-        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(fis);
-        ubis.skipBOM();
+        InputStream stream = new FileInputStream(file);
 
-        ColumnType[] types = detectColumnTypes(ubis, header, delimiter, false);
+        ColumnType[] types = detectColumnTypes(stream, header, delimiter, false);
         Table t = headerOnly(types, header, delimiter, file);
         return t.structure();
     }
@@ -466,10 +466,15 @@ public class CsvReader {
         List<List<String>> columnData = new ArrayList<>();
 
         int rowCount = 0; // make sure we don't go over maxRows
+
+        // make sure we don't have leading Unicode BOM
+        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
+        ubis.skipBOM();
+
         CSVParser csvParser = new CSVParserBuilder()
                 .withSeparator(delimiter)
                 .build();
-        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(stream))
+        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis))
                 .withCSVParser(csvParser)
                 .withSkipLines(linesToSkip)
                 .build()) {

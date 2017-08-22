@@ -2,16 +2,19 @@ package tech.tablesaw.io.csv;
 
 import static org.junit.Assert.*;
 import static tech.tablesaw.api.ColumnType.*;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.Arrays;
+
 import org.junit.Ignore;
 import org.junit.Test;
+
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
-import java.io.File;
-import java.net.URL;
-import java.util.Arrays;
 
 /**
  * Tests for CSV Reading
