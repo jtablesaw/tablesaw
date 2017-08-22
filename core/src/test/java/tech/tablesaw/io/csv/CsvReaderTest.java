@@ -27,7 +27,9 @@ public class CsvReaderTest {
     @Test
     public void testWithBusData() throws Exception {
         // Read the CSV file
-        Table table = CsvReader.read(bus_types, true, ',', "../data/bus_stop_test.csv");
+        Table table = Table.read().csv(CsvReadOptions
+            .builder("../data/bus_stop_test.csv")
+            .columnTypes(bus_types));
 
         // Look at the column names
         assertEquals("[stop_id, stop_name, stop_desc, stop_lat, stop_lon]", table.columnNames().toString());
@@ -39,7 +41,9 @@ public class CsvReaderTest {
     @Test
     public void testWithColumnSKIP() throws Exception {
         // Read the CSV file
-        Table table = CsvReader.read(bus_types_with_SKIP, true, ',', "../data/bus_stop_test.csv");
+        Table table = Table.read().csv(CsvReadOptions
+            .builder("../data/bus_stop_test.csv")
+            .columnTypes(bus_types_with_SKIP));
 
         assertEquals(4, table.columnCount());
         // Look at the column names
@@ -48,10 +52,11 @@ public class CsvReaderTest {
 
     @Test
     public void testWithBushData() throws Exception {
-
         // Read the CSV file
         ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};
-        Table table = CsvReader.read(types, "../data/BushApproval.csv");
+        Table table = Table.read().csv(CsvReadOptions
+            .builder("../data/BushApproval.csv")
+            .columnTypes(types));
 
         assertEquals(323, table.rowCount());
 
@@ -61,10 +66,10 @@ public class CsvReaderTest {
 
     @Test
     public void testBushDataWithoutSamplingForTypeDetection() throws Exception {
-
         // Read the CSV file
-        File file = new File("../data/BushApproval.csv");
-        Table table = CsvReader.read(new FileInputStream(file), file.getName(), true, ',', true);
+        Table table = Table.read().csv(CsvReadOptions
+            .builder("../data/BushApproval.csv")
+            .sample(false));
 
         assertEquals(323, table.rowCount());
 
@@ -107,26 +112,28 @@ public class CsvReaderTest {
         String location = "https://raw.githubusercontent.com/jtablesaw/tablesaw/master/data/BushApproval.csv";
         Table table;
         try (InputStream input = new URL(location).openStream()) {
-            table = Table.createFromReader(input, "Bush approval ratings", types, true, ',');
+            table = Table.read().csv(CsvReadOptions
+                .builder(input, "Bush approval ratings")
+                .columnTypes(types));
         }
         assertNotNull(table);
     }
 
     @Test
     public void testBoundary1() throws Exception {
-        Table table1 = Table.createFromCsv("../data/boundaryTest1.csv");
+        Table table1 = Table.read().csv("../data/boundaryTest1.csv");
         table1.structure();  // just make sure the import completed
     }
 
     @Test
     public void testBoundary2() throws Exception {
-        Table table1 = Table.createFromCsv("../data/boundaryTest2.csv");
+        Table table1 = Table.read().csv("../data/boundaryTest2.csv");
         table1.structure(); // just make sure the import completed
     }
 
     @Test
     public void testReadFailure() throws Exception {
-        Table table1 = Table.createFromCsv("../data/read_failure_test.csv");
+        Table table1 = Table.read().csv("../data/read_failure_test.csv");
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
         System.out.println(test.summary().print());
@@ -134,7 +141,7 @@ public class CsvReaderTest {
 
     @Test
     public void testReadFailure2() throws Exception {
-        Table table1 = Table.createFromCsv("../data/read_failure_test2.csv");
+        Table table1 = Table.read().csv("../data/read_failure_test2.csv");
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
         System.out.println(test.summary().print());

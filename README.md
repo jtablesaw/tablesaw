@@ -82,21 +82,21 @@ BTW, those numbers were achieved on a laptop.
 The goal in this example is to identify the production shifts with the worst performance. These few lines demonstrate __data import__, column-wise operations (__differenceInSeconds()__), filters (__isInQ2()__) grouping and aggegating (__median()__ and __.by()__), and (__top(n)__) calculations. 
 
 ```java
-    Table ops = Table.createFromCsv("data/operations.csv");                             // load data
+    Table ops = Table.read().csv("data/operations.csv");                             // load data
     DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start"));
     DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End");
-    LongColumn duration = start.differenceInSeconds(end);                        // calc duration
+    LongColumn duration = start.differenceInSeconds(end);                            // calc duration
     duration.setName("Duration");
     ops.addColumn(duration);
     
-    Table filtered = ops.selectWhere(                                            // filter
+    Table filtered = ops.selectWhere(                                                // filter
           allOf
               (column("date").isInQ2(),
               (column("SKU").startsWith("429")),
               (column("Operation").isEqualTo("Assembly"))));
    
-    Table summary = filtered.median("Duration").by("Facility", "Shift");         // group medians
-    FloatArrayList tops = summary.floatColumn("Median").top(5);                  // get "slowest"
+    Table summary = filtered.median("Duration").by("Facility", "Shift");             // group medians
+    FloatArrayList tops = summary.floatColumn("Median").top(5);                      // get "slowest"
 
 ```
 If you see something that can be improved, please let us know.

@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
+import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.csv.CsvReader;
 import tech.tablesaw.io.csv.CsvWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
@@ -169,7 +170,9 @@ public class Table implements Relation, IntIterable {
      *
      * @param csvFileName The name of the file to import
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromCsv(String csvFileName) throws IOException {
         return createFromCsv(csvFileName, true, ',');
     }
@@ -183,7 +186,9 @@ public class Table implements Relation, IntIterable {
      * @param stream The source of the CSV
      * @param tableName The name to give the table
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromReader(InputStream stream, String tableName) throws IOException {
         return createFromReader(stream, tableName, true, ',');
     }
@@ -198,7 +203,9 @@ public class Table implements Relation, IntIterable {
      * @param header      True if the file has a single header row. False if it has no header row.
      *                    Multi-line headers are not supported
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromCsv(String csvFileName, boolean header) throws IOException {
         return CsvReader.read(new File(csvFileName), header, ',');
     }
@@ -214,7 +221,9 @@ public class Table implements Relation, IntIterable {
      * @param header      True if the file has a single header row. False if it has no header row.
      *                    Multi-line headers are not supported
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromReader(InputStream stream, String tableName, boolean header) throws IOException {
         return createFromReader(stream, tableName, header, ',');
     }
@@ -230,7 +239,9 @@ public class Table implements Relation, IntIterable {
      *                    Multi-line headers are not supported
      * @param delimiter   a char that divides the columns in the source file, often a comma or tab
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromCsv(String csvFileName, boolean header, char delimiter) throws IOException {
         return CsvReader.read(new File(csvFileName), header, delimiter);
     }
@@ -247,7 +258,9 @@ public class Table implements Relation, IntIterable {
      *                    Multi-line headers are not supported
      * @param delimiter   a char that divides the columns in the source file, often a comma or tab
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromReader(InputStream stream, String tableName, boolean header, char delimiter) throws IOException {
         return CsvReader.read(stream, tableName, header, delimiter);
     }
@@ -267,7 +280,9 @@ public class Table implements Relation, IntIterable {
      *                     needs. Setting this to true will cause the algorithm to check all the data in the table,
      *                     which may take a long time (a couple minutes?) on large tables (over 100,000,000 rows).
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromCsv(String csvFileName, boolean header, char delimiter, boolean skipSampling)
             throws IOException {
         InputStream stream = new FileInputStream(new File(csvFileName));
@@ -290,7 +305,9 @@ public class Table implements Relation, IntIterable {
      *                     needs. Setting this to true will cause the algorithm to check all the data in the table,
      *                     which may take a long time (a couple minutes?) on large tables (over 100,000,000 rows).
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromReader(InputStream stream, String tableName, boolean header, char delimiter, boolean skipSampling)
             throws IOException {
         return CsvReader.read(stream, tableName, header, delimiter, skipSampling);
@@ -305,7 +322,9 @@ public class Table implements Relation, IntIterable {
      * @param types       The column types, (see io.csv.CsvReader to run the heading to create an array you can edit)
      * @param csvFileName The name of the file to import
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromCsv(ColumnType[] types, String csvFileName) throws IOException {
         return CsvReader.read(types, true, ',', csvFileName);
     }
@@ -320,7 +339,9 @@ public class Table implements Relation, IntIterable {
      *                    Multi-line headers are not supported
      * @param csvFileName the name of the file to import
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromCsv(ColumnType[] types, String csvFileName, boolean header) throws IOException {
         return CsvReader.read(types, header, ',', csvFileName);
     }
@@ -336,7 +357,9 @@ public class Table implements Relation, IntIterable {
      * @param header      True if the file has a single header row. False if it has no header row.
      *                    Multi-line headers are not supported
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromCsv(InputStream stream, String tableName, ColumnType[] types, boolean header) throws IOException {
         return createFromReader(stream, tableName, types, header, ',');
     }
@@ -350,7 +373,9 @@ public class Table implements Relation, IntIterable {
      * @param delimiter   a char that divides the columns in the source file, often a comma or tab
      * @param csvFileName the name of the file to import
      * @throws IOException if the file can't be read
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromCsv(ColumnType[] types, String csvFileName, boolean header, char delimiter)
             throws IOException {
         return CsvReader.read(types, header, delimiter, csvFileName);
@@ -366,7 +391,9 @@ public class Table implements Relation, IntIterable {
      *                  Multi-line headers are not supported
      * @param delimiter a char that divides the columns in the source file, often a comma or tab
      * @param tableName the name of the resulting table
+     * @deprecated use read().csv() instead
      */
+    @Deprecated
     public static Table createFromReader(InputStream stream, String tableName, ColumnType[] types, boolean header,
                                          char delimiter) throws IOException {
         return CsvReader.read(stream, tableName, types, header, delimiter);
@@ -374,11 +401,17 @@ public class Table implements Relation, IntIterable {
 
     /**
      * Returns a new Table with the given name, and containing the data in the given result set
+     * @deprecated use read().db() instead
      */
+    @Deprecated
     public static Table create(ResultSet resultSet, String tableName) throws SQLException {
         return SqlResultSetReader.read(resultSet, tableName);
     }
 
+    public static DataFrameReader read() {
+        return new DataFrameReader();
+    }
+    
     /**
      * Returns an randomly generated array of ints of size N where Max is the largest possible value
      */
