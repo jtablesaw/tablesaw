@@ -4,7 +4,6 @@ import static tech.tablesaw.api.ColumnType.*;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.time.LocalDate;
@@ -27,11 +26,14 @@ import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.TypeUtils;
+import tech.tablesaw.io.UnicodeBOMInputStream;
 
 /**
  *
@@ -39,8 +41,8 @@ import tech.tablesaw.io.TypeUtils;
 @Immutable
 public class CsvReader {
 
-    private static java.util.function.Predicate<String> isBoolean = s ->
-            TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
+    private static java.util.function.Predicate<String> isBoolean = s
+            -> TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
     private static Predicate<String> isLong = new Predicate<String>() {
 
         @Override
@@ -160,7 +162,10 @@ public class CsvReader {
      */
     public static Table read(ColumnType types[], boolean header, char columnSeparator, String fileName) throws
             IOException {
-        Reader reader = new FileReader(new File(fileName));
+        FileInputStream fis = new FileInputStream(fileName);
+        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(fis);
+        ubis.skipBOM();
+        Reader reader = new InputStreamReader(ubis);
         return read(reader, fileName, types, header, columnSeparator);
     }
 
@@ -175,10 +180,13 @@ public class CsvReader {
      * @throws IOException if file cannot be read
      */
     public static Table read(File file, boolean header, char delimiter) throws IOException {
-        Reader reader = new FileReader(file);
+        FileInputStream fis = new FileInputStream(file);
+        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(fis);
+        ubis.skipBOM();
+        Reader reader = new InputStreamReader(ubis);
         return read(reader, file.getName(), true, delimiter);
     }
-    
+
     /**
      * Returns the given file after auto-detecting the column types, or trying to
      *
@@ -190,30 +198,30 @@ public class CsvReader {
      * @return A table containing the data from the file
      * @throws IOException if file cannot be read
      */
-    public static Table read(Reader reader, String tableName,  boolean header, char delimiter) throws IOException {
+    public static Table read(Reader reader, String tableName, boolean header, char delimiter) throws IOException {
         return read(reader, tableName, true, delimiter, false);
     }
 
     public static Table read(Reader reader, String tableName, boolean header, char delimiter, boolean skipSampling) throws IOException {
-        List<String[]> rows = parseCsv(reader, delimiter);  
+        List<String[]> rows = parseCsv(reader, delimiter);
         ColumnType[] columnTypes = detectColumnTypes(rows, header, delimiter, skipSampling);
         return read(rows, tableName, columnTypes, true, delimiter);
     }
 
     public static Table read(Reader reader,
-                             String tableName,
-                             ColumnType[] types,
-                             boolean header,
-                             char columnSeparator) throws IOException {
-      List<String[]> rows = parseCsv(reader, columnSeparator);
-      return read(rows, tableName, types, header, columnSeparator);
+            String tableName,
+            ColumnType[] types,
+            boolean header,
+            char columnSeparator) throws IOException {
+        List<String[]> rows = parseCsv(reader, columnSeparator);
+        return read(rows, tableName, types, header, columnSeparator);
     }
 
     protected static Table read(List<String[]> rows,
-                             String tableName,
-                             ColumnType[] types,
-                             boolean header,
-                             char columnSeparator) throws IOException {
+            String tableName,
+            ColumnType[] types,
+            boolean header,
+            char columnSeparator) throws IOException {
 
         Table table;
         String[] columnNames;
@@ -276,13 +284,16 @@ public class CsvReader {
     public static Table headerOnly(ColumnType types[], boolean header, char columnSeparator, File file)
             throws IOException {
 
-        Reader reader = new FileReader(file);
+        FileInputStream fis = new FileInputStream(file);
+        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(fis);
+        ubis.skipBOM();
+        Reader reader = new InputStreamReader(ubis);
         BufferedReader streamReader = new BufferedReader(reader);
 
         Table table;
         CSVParser csvParser = new CSVParserBuilder()
-            .withSeparator(columnSeparator)
-            .build();
+                .withSeparator(columnSeparator)
+                .build();
         try (CSVReader csvReader = new CSVReaderBuilder(streamReader).withCSVParser(csvParser).build()) {
 
             String[] nextLine;
@@ -330,7 +341,11 @@ public class CsvReader {
      */
     private static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
         File file = new File(csvFileName);
-        List<String[]> rows = parseCsv(new FileReader(file), delimiter);
+        FileInputStream fis = new FileInputStream(file);
+        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(fis);
+        ubis.skipBOM();
+        Reader reader = new InputStreamReader(ubis);
+        List<String[]> rows = parseCsv(reader, delimiter);
         ColumnType[] types = detectColumnTypes(rows, header, delimiter, false);
         Table t = headerOnly(types, header, delimiter, file);
         return t.structure();
@@ -427,17 +442,17 @@ public class CsvReader {
     }
 
     protected static List<String[]> parseCsv(Reader reader, char delimiter) throws IOException {
-      List<String[]> rows = new ArrayList<>();
-      String[] nextLine;
-      CSVParser csvParser = new CSVParserBuilder()
-          .withSeparator(delimiter)
-          .build();
-      try (CSVReader csvReader = new CSVReaderBuilder(reader).withCSVParser(csvParser).build()) {
-        while ((nextLine = csvReader.readNext()) != null) {
-          rows.add(nextLine);
+        List<String[]> rows = new ArrayList<>();
+        String[] nextLine;
+        CSVParser csvParser = new CSVParserBuilder()
+                .withSeparator(delimiter)
+                .build();
+        try (CSVReader csvReader = new CSVReaderBuilder(reader).withCSVParser(csvParser).build()) {
+            while ((nextLine = csvReader.readNext()) != null) {
+                rows.add(nextLine);
+            }
         }
-      }
-      return rows;
+        return rows;
     }
 
     /**
@@ -464,16 +479,16 @@ public class CsvReader {
         int nextRow = 0;
         for (int i = 0; i < rows.size(); i++) {
             if (header && i == 0) {
-              continue;
+                continue;
             }
 
             String[] nextLine = rows.get(i);
 
             // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
             if (rowCount == 0) {
-                 for (int j = 0; j < nextLine.length; j++) {
-                     columnData.add(new ArrayList<>());
-                 }
+                for (int j = 0; j < nextLine.length; j++) {
+                    columnData.add(new ArrayList<>());
+                }
             }
             int columnNumber = 0;
             if (rowCount == nextRow) {
@@ -532,11 +547,11 @@ public class CsvReader {
     private static ColumnType detectType(List<String> valuesList) {
 
         // Types to choose from. When more than one would work, we pick the first of the options
-        ColumnType[] typeArray =  // we leave out category, as that is the default type
+        ColumnType[] typeArray
+                = // we leave out category, as that is the default type
                 {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, SHORT_INT, INTEGER, LONG_INT, FLOAT, DOUBLE};
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
-
 
         for (String s : valuesList) {
             if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {

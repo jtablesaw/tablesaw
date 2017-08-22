@@ -6,7 +6,6 @@ import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReader;
 
 import java.io.File;
 import java.io.FileReader;
