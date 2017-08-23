@@ -187,7 +187,7 @@ public class CsvReader {
     /**
      * Returns the given file after auto-detecting the column types, or trying to
      *
-     * @param reader    The CSV
+     * @param stream    The CSV
      * @param tableName Name to give the table
      * @param header    True if the file has a single header row. False if it has no header row.
      *                  Multi-line headers are not supported

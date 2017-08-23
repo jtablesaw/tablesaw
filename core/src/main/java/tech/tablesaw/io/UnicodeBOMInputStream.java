@@ -21,13 +21,15 @@ import java.io.PushbackInputStream;
  * <li><pre>FE FF        = UTF-16, big-endian</pre></li>
  * <li><pre>FF FE        = UTF-16, little-endian</pre></li>
  * <li><pre>EF BB BF     = UTF-8</pre></li>
- * </ul></p>
+ * </ul>
  *
- * <p>Use the {@link #getBOM()} method to know whether a BOM has been detected
+ * <p>
+ * Use the {@link #getBOM()} method to know whether a BOM has been detected
  * or not.
- * </p>
- * <p>Use the {@link #skipBOM()} method to remove the detected BOM from the
- * wrapped <code>InputStream</code> object.</p>
+ * 
+ * <p>
+ * Use the {@link #skipBOM()} method to remove the detected BOM from the
+ * wrapped <code>InputStream</code> object.
  *
  * @author Gregory Pakosz
  * @version 1.0

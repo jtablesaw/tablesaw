@@ -18,8 +18,8 @@ public class MoneyballExample {
     public static void main(String[] args) throws Exception {
 
         // Get the data
-        Table baseball = Table.createFromCsv("../data/baseball.csv");
-        out(baseball.structure().print());
+        Table baseball = Table.read().csv("../data/baseball.csv");
+        out(baseball.structure());
 
         // filter to the data available in the 2002 season
         Table moneyball = baseball.selectWhere(column("year").isLessThan(2002));

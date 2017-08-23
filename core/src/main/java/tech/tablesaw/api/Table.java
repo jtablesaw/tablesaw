@@ -352,7 +352,7 @@ public class Table extends Relation implements IntIterable {
      * <p>
      * It is assumed that the file is truly comma-separated
      *
-     * @param reader      the CSV source
+     * @param stream      the CSV source
      * @param tableName   the name to give the table
      * @param types       The column types
      * @param header      True if the file has a single header row. False if it has no header row.

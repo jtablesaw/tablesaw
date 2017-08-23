@@ -13,7 +13,7 @@ public class RandomForestExample extends Example {
 
     public static void main(String[] args) throws Exception {
 
-        Table example = Table.createFromCsv("../data/KNN_Example_1.csv");
+        Table example = Table.read().csv("../data/KNN_Example_1.csv");
         out(example.structure().printHtml());
 
         // show all the label values

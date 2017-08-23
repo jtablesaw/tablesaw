@@ -7,6 +7,7 @@ import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.plot.Scatter;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 /**
  * Usage example using a Tornado dataset
@@ -46,23 +47,25 @@ public class TornadoExample {
 
     public static void main(String[] args) throws Exception {
 
-        Table tornadoes = Table.createFromCsv(COLUMN_TYPES_OLD, "../data/1950-2014_torn.csv");
+        Table tornadoes = Table.read().csv(CsvReadOptions
+            .builder("../data/1950-2014_torn.csv")
+            .columnTypes(COLUMN_TYPES_OLD));
         assert (tornadoes != null);
 
-        out(tornadoes.structure().print());
+        out(tornadoes.structure());
         out();
 
         tornadoes.removeColumns("Number", "Year", "Month", "Day", "Zone", "State FIPS", "Loss", "Crop Loss", "End " +
                 "Lat", "End Lon", "NS", "SN", "SG", "FIPS 1", "FIPS 2", "FIPS 3", "FIPS 4");
 
-        tornadoes.exportToCsv("../data/tornadoes_1950-2014.csv");
+        tornadoes.write().csv("../data/tornadoes_1950-2014.csv");
 
         //tornadoes = Table.createFromCsv(COLUMN_TYPES, "../data/tornadoes_1950-2014.csv");
-        tornadoes = Table.createFromCsv("../data/tornadoes_1950-2014.csv");
+        tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
         assert (tornadoes != null);
 
-        out(tornadoes.structure().print());
-        out(tornadoes.structure().selectWhere(column("Column Type").isEqualTo("INTEGER")).print());
+        out(tornadoes.structure());
+        out(tornadoes.structure().selectWhere(column("Column Type").isEqualTo("INTEGER")));
 
         tornadoes.setName("tornadoes");
 
@@ -81,7 +84,7 @@ public class TornadoExample {
 
         out();
         out("Use first(3) to view the first 3 rows:");
-        out(tornadoes.first(3).print());
+        out(tornadoes.first(3));
 
         tornadoes = tornadoes.selectWhere(column("Start Lat").isGreaterThan(20f));
         Scatter.show("US Tornadoes 1950-2014", tornadoes.nCol("Start Lon"), tornadoes.nCol("Start Lat"));
@@ -89,7 +92,7 @@ public class TornadoExample {
         out();
         out("Extact month from the date and make it a separate column");
         CategoryColumn month = tornadoes.dateColumn("Date").month();
-        out(month.summary().print());
+        out(month.summary());
 
         out("Add the month column to the table");
         tornadoes.addColumn(2, month);
@@ -101,7 +104,7 @@ public class TornadoExample {
         out(fatal.shape());
 
         out();
-        out(fatal.first(5).print());
+        out(fatal.first(5));
 
         out();
         out("Total fatalities: " + fatal.shortColumn("Fatalities").sum());
@@ -109,30 +112,30 @@ public class TornadoExample {
         out();
         out("Sorting on Fatalities in descending order");
         fatal = fatal.sortDescendingOn("Fatalities");
-        out(fatal.first(5).print());
+        out(fatal.first(5));
 
         out("");
         out("Calculating basic descriptive statistics on Fatalities");
-        out(fatal.shortColumn("Fatalities").summary().print());
+        out(fatal.shortColumn("Fatalities").summary());
 
 
         //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
         Table injuriesByScale = tornadoes.median("Injuries").by("Scale");
         Table fob = tornadoes.minimum("Injuries").by("Scale", "State");
-        out(fob.print());
+        out(fob);
         injuriesByScale.setName("Median injuries by Tornado Scale");
-        out(injuriesByScale.print());
+        out(injuriesByScale);
 
 
         //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
         Table injuriesByScaleState = tornadoes.median("Injuries").by("Scale", "State");
         injuriesByScaleState.setName("Median injuries by Tornado Scale and State");
-        out(injuriesByScaleState.print());
+        out(injuriesByScaleState);
 
 
         out();
         out("Writing the revised table to a new csv file");
-        tornadoes.exportToCsv("../data/rev_tornadoes_1950-2014.csv");
+        tornadoes.write().csv("../data/rev_tornadoes_1950-2014.csv");
 
         out();
         out("Saving to Tablesaw format");
