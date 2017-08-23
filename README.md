@@ -16,7 +16,7 @@ Tablesaw 0.8.x and later have new Maven coordinates. You can include tablesaw-co
     <dependency>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-core</artifactId>
-        <version>0.8.0</version>
+        <version>0.9.0</version>
     </dependency>
 
 If you'd like to use tablesaw's plotting capabilities you can include tablesaw-plot: 
@@ -24,7 +24,7 @@ If you'd like to use tablesaw's plotting capabilities you can include tablesaw-p
     <dependency>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-plot</artifactId>
-        <version>0.8.0</version>
+        <version>0.9.0</version>
     </dependency>
 
 To include Tablesaw 0.7.x or earlier in your project use:  
