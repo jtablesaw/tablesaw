@@ -22,7 +22,7 @@ class IntColTest {
         val result3 = col / 2
         val result4 = col + 200
         val result5 = col.emptyCopy()
-
+/*
         println(result)
         println(result2)
         println("Name: ${result.name()}")
@@ -70,9 +70,9 @@ class IntColTest {
         println(col.skewness())
         println(col.kurtosis())
 
-
+*/
         val subset = col.isEven()
-        println(subset.print())
+//        println(subset.print())
     }
 
     @Test
@@ -87,6 +87,7 @@ class IntColTest {
         val t = Table.createFromCsv("../data/BushApproval.csv")
         val frame = Dataframe(t)
 
+        /*
         println(frame.print())
         println(frame.printHtml())
         println(frame.name())
@@ -102,11 +103,13 @@ class IntColTest {
 
         println(frame.first(3).print())
         println(frame.last(3).print())
-
+*/
         val fromCsv = Dataframe.createFromCsv("../data/BushApproval.csv")
-        println(fromCsv.summary())
 
+/*
+        println(fromCsv.summary())
         println(frame[0].print())
         println(frame["approval"].summary().print())
+*/
     }
 }

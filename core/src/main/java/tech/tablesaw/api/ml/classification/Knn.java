@@ -103,8 +103,11 @@ public class Knn extends AbstractClassifier {
 
     @Override
     int predictFromModel(double[] data) {
+        //TODO(lwhite): Better tests
+/*
         if (data[0] == 5.0)
             System.out.println(Arrays.toString(data));
+*/
         return classifierModel.predict(data);
     }
 }
