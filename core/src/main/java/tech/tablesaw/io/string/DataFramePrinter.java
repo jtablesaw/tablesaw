@@ -82,12 +82,30 @@ public class DataFramePrinter {
     private String[][] getDataTokens(Relation frame) {
         if (frame.rowCount() == 0) return new String[0][0];
         final int rowCount = Math.min(maxRows, frame.rowCount());
+        final boolean truncated = frame.rowCount() > maxRows;
         final int colCount = frame.columnCount();
         final String[][] data = new String[rowCount][colCount];
-        for (int i = 0; i < rowCount; i++) {
+        if (truncated) {
+          int i = 0;
+          for (i = 0; i < rowCount / 2; i++) {
             for (int j = 0; j < colCount; j++) {
                 data[i][j] = frame.get(i, j);
             }
+          }
+          for (int j = 0; j < colCount; j++) {
+            data[i][j] = "...";
+          }
+          for (i++; i < rowCount; i++) {
+            for (int j = 0; j < colCount; j++) {
+                data[i][j] = frame.get(frame.rowCount() - maxRows + i, j);
+            }
+          }
+        } else {
+          for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < colCount; j++) {
+                data[i][j] = frame.get(i, j);
+            }
+          }
         }
         return data;
     }

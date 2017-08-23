@@ -161,12 +161,16 @@ public abstract class Relation {
         return widths;
     }
 
-    @Override
-    public String toString() {
+    public String toString(int rowLimit) {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      DataFramePrinter printer = new DataFramePrinter(Integer.MAX_VALUE, baos);
+      DataFramePrinter printer = new DataFramePrinter(rowLimit, baos);
       printer.print(this);
       return new String(baos.toByteArray());
+    }
+    
+    @Override
+    public String toString() {
+      return toString(50);
     }
 
     /**
