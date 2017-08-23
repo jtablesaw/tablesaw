@@ -33,7 +33,7 @@ import java.util.List;
  * View is something of a misnomer, as it is not like a database view, which is merely a query masquerading as a table,
  * nor is it like a materialized database view, which is like a real table.
  */
-public class TemporaryView implements Relation, IntIterable {
+public class TemporaryView extends Relation implements IntIterable {
 
     private final Selection rowMap;
     private String name;
@@ -204,10 +204,6 @@ public class TemporaryView implements Relation, IntIterable {
     public double reduce(String numericColumnName, NumericReduceFunction function) {
         Column column = column(numericColumnName);
         return function.reduce(column.subset(rowMap).toDoubleArray());
-    }
-
-    public String toString() {
-        return "View " + name() + ": Size = " + rowCount() + " x " + columns().size();
     }
 
     public BooleanColumn booleanColumn(int columnIndex) {

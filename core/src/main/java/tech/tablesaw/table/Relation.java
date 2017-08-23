@@ -22,30 +22,30 @@ import java.util.List;
 /**
  * A tabular data structure like a table in a relational database, but not formally implementing the relational algebra
  */
-public interface Relation {
+public abstract class Relation {
 
-    void addColumn(Column... cols);
+    public abstract void addColumn(Column... cols);
 
-    void setName(String name);
+    public abstract void setName(String name);
 
-    default boolean isEmpty() {
+    public boolean isEmpty() {
         return rowCount() == 0;
     }
 
-    default String shape() {
+    public String shape() {
         return rowCount() + " rows X " + columnCount() + " cols";
     }
 
-    default void removeColumn(int columnIndex) {
+    public void removeColumn(int columnIndex) {
         removeColumns(column(columnIndex));
     }
 
     /**
      * Removes the given columns from the receiver
      */
-    void removeColumns(Column... columns);
+    public abstract void removeColumns(Column... columns);
 
-    default void removeColumns(String... columnName) {
+    public void removeColumns(String... columnName) {
         Column[] cols = new Column[columnName.length];
         for (int i = 0; i < columnName.length; i++) {
             cols[i] = column(columnName[i]);
@@ -53,12 +53,12 @@ public interface Relation {
         removeColumns(cols);
     }
 
-    Table first(int nRows);
+    public abstract Table first(int nRows);
 
     /**
      * Returns the index of the column with the given columnName
      */
-    default int columnIndex(String columnName) {
+    public int columnIndex(String columnName) {
         int columnIndex = -1;
         for (int i = 0; i < columnCount(); i++) {
             if (columnNames().get(i).equalsIgnoreCase(columnName)) {
@@ -76,7 +76,7 @@ public interface Relation {
     /**
      * Returns the column with the given columnName, ignoring case
      */
-    default Column column(String columnName) {
+    public Column column(String columnName) {
         Column result = null;
         for (Column column : columns()) {
             String name = column.name().trim();
@@ -97,50 +97,50 @@ public interface Relation {
      * @param columnIndex an integer at least 0 and less than number of columns in the relation
      * @return the column at the given index
      */
-    Column column(int columnIndex);
+    public abstract Column column(int columnIndex);
 
     /**
      * Returns the number of columns in the relation
      */
-    int columnCount();
+    public abstract int columnCount();
 
     /**
      * Returns the number of rows in the relation
      */
-    int rowCount();
+    public abstract int rowCount();
 
     /**
      * Returns a list of all the columns in the relation
      */
-    List<Column> columns();
+    public abstract List<Column> columns();
 
     /**
      * Returns the index of the given column
      */
-    int columnIndex(Column col);
+    public abstract int columnIndex(Column col);
 
     /**
      * Returns a String representing the value found at column index c and row index r
      */
-    String get(int c, int r);
+    public abstract String get(int c, int r);
 
     /**
      * Returns the name of this relation
      */
-    String name();
+    public abstract String name();
 
     /**
      * Clears all the dat in the relation, leaving the structure intact
      */
-    void clear();
+    public abstract void clear();
 
-    List<String> columnNames();
+    public abstract List<String> columnNames();
 
     /**
      * Returns an array of the column types of all columns in the relation, including duplicates as appropriate,
      * and maintaining order
      */
-    default ColumnType[] columnTypes() {
+    public ColumnType[] columnTypes() {
         ColumnType[] columnTypes = new ColumnType[columnCount()];
         for (int i = 0; i < columnCount(); i++) {
             columnTypes[i] = columns().get(i).type();
@@ -151,7 +151,7 @@ public interface Relation {
     /**
      * Returns an array of column widths for printing tables
      */
-    default int[] colWidths() {
+    public int[] colWidths() {
         int cols = columnCount();
         int[] widths = new int[cols];
 
@@ -161,15 +161,23 @@ public interface Relation {
         return widths;
     }
 
-    default String print() {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        DataFramePrinter printer = new DataFramePrinter(Integer.MAX_VALUE, baos);
-        printer.print(this);
-        return new String(baos.toByteArray());
+    @Override
+    public String toString() {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      DataFramePrinter printer = new DataFramePrinter(Integer.MAX_VALUE, baos);
+      printer.print(this);
+      return new String(baos.toByteArray());
     }
 
-    default Table structure() {
+    /**
+     * @deprecated call toString instead
+     */
+    @Deprecated
+    public String print() {
+        return toString();
+    }
 
+    public Table structure() {
         StringBuilder nameBuilder = new StringBuilder();
         nameBuilder.append("Table: ")
                 .append(name())
@@ -198,7 +206,7 @@ public interface Relation {
         return structure;
     }
 
-    default String summary() {
+    public String summary() {
         StringBuilder builder = new StringBuilder();
         builder.append("\n")
                 .append("Table summary for: ")
@@ -212,15 +220,15 @@ public interface Relation {
         return builder.toString();
     }
 
-    default BooleanColumn booleanColumn(int columnIndex) {
+    public BooleanColumn booleanColumn(int columnIndex) {
         return (BooleanColumn) column(columnIndex);
     }
 
-    default BooleanColumn booleanColumn(String columnName) {
+    public BooleanColumn booleanColumn(String columnName) {
         return (BooleanColumn) column(columnName);
     }
 
-    default NumericColumn numericColumn(int columnIndex) {
+    public NumericColumn numericColumn(int columnIndex) {
         Column c = column(columnIndex);
         if (c.type() == ColumnType.CATEGORY) {
             CategoryColumn categoryColumn = (CategoryColumn) c;
@@ -232,7 +240,7 @@ public interface Relation {
         return (NumericColumn) column(columnIndex);
     }
 
-    default NumericColumn numericColumn(String columnName) {
+    public NumericColumn numericColumn(String columnName) {
         Column c = column(columnName);
         if (c.type() == ColumnType.CATEGORY) {
             CategoryColumn categoryColumn = (CategoryColumn) c;
@@ -249,7 +257,7 @@ public interface Relation {
      * <p>
      * Shorthand for numericColumn()
      */
-    default NumericColumn nCol(String columnName) {
+    public NumericColumn nCol(String columnName) {
         return numericColumn(columnName);
     }
 
@@ -258,79 +266,79 @@ public interface Relation {
      * <p>
      * Shorthand for numericColumn()
      */
-    default NumericColumn nCol(int columnIndex) {
+    public NumericColumn nCol(int columnIndex) {
         return numericColumn(columnIndex);
     }
 
-    default FloatColumn floatColumn(int columnIndex) {
+    public FloatColumn floatColumn(int columnIndex) {
         return (FloatColumn) column(columnIndex);
     }
 
-    default FloatColumn floatColumn(String columnName) {
+    public FloatColumn floatColumn(String columnName) {
         return (FloatColumn) column(columnName);
     }
 
-    default DoubleColumn doubleColumn(int columnIndex) {
+    public DoubleColumn doubleColumn(int columnIndex) {
         return (DoubleColumn) column(columnIndex);
     }
 
-    default DoubleColumn doubleColumn(String columnName) {
+    public DoubleColumn doubleColumn(String columnName) {
         return (DoubleColumn) column(columnName);
     }
 
-    default IntColumn intColumn(String columnName) {
+    public IntColumn intColumn(String columnName) {
         return (IntColumn) column(columnName);
     }
 
-    default IntColumn intColumn(int columnIndex) {
+    public IntColumn intColumn(int columnIndex) {
         return (IntColumn) column(columnIndex);
     }
 
-    default ShortColumn shortColumn(String columnName) {
+    public ShortColumn shortColumn(String columnName) {
         return (ShortColumn) column(columnName);
     }
 
-    default ShortColumn shortColumn(int columnIndex) {
+    public ShortColumn shortColumn(int columnIndex) {
         return (ShortColumn) column(columnIndex);
     }
 
-    default LongColumn longColumn(String columnName) {
+    public LongColumn longColumn(String columnName) {
         return (LongColumn) column(columnName);
     }
 
-    default LongColumn longColumn(int columnIndex) {
+    public LongColumn longColumn(int columnIndex) {
         return (LongColumn) column(columnIndex);
     }
 
-    default DateColumn dateColumn(int columnIndex) {
+    public DateColumn dateColumn(int columnIndex) {
         return (DateColumn) column(columnIndex);
     }
 
-    default DateColumn dateColumn(String columnName) {
+    public DateColumn dateColumn(String columnName) {
         return (DateColumn) column(columnName);
     }
 
-    default TimeColumn timeColumn(String columnName) {
+    public TimeColumn timeColumn(String columnName) {
         return (TimeColumn) column(columnName);
     }
 
-    default TimeColumn timeColumn(int columnIndex) {
+    public TimeColumn timeColumn(int columnIndex) {
         return (TimeColumn) column(columnIndex);
     }
 
-    default CategoryColumn categoryColumn(String columnName) {
+    public CategoryColumn categoryColumn(String columnName) {
         return (CategoryColumn) column(columnName);
     }
 
-    default CategoryColumn categoryColumn(int columnIndex) {
+    public CategoryColumn categoryColumn(int columnIndex) {
         return (CategoryColumn) column(columnIndex);
     }
 
-    default DateTimeColumn dateTimeColumn(int columnIndex) {
+    public DateTimeColumn dateTimeColumn(int columnIndex) {
         return (DateTimeColumn) column(columnIndex);
     }
 
-    default DateTimeColumn dateTimeColumn(String columnName) {
+    public DateTimeColumn dateTimeColumn(String columnName) {
         return (DateTimeColumn) column(columnName);
     }
 }

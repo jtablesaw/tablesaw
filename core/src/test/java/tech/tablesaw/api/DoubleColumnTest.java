@@ -86,7 +86,7 @@ public class DoubleColumnTest {
     @Test
     public void testIsLessThan() {
         int size = 1_000_000;
-        Relation table = Table.create("t");
+        Table table = Table.create("t");
         DoubleColumn doubleColumn = new DoubleColumn("test", size);
         table.addColumn(doubleColumn);
         for (int i = 0; i < size; i++) {
@@ -107,7 +107,7 @@ public class DoubleColumnTest {
     @Test
     public void testIsGreaterThan() {
         int size = 1_000_000;
-        Relation table = Table.create("t");
+        Table table = Table.create("t");
         DoubleColumn doubleColumn = new DoubleColumn("test", size);
         table.addColumn(doubleColumn);
         for (int i = 0; i < size; i++) {
@@ -160,8 +160,7 @@ public class DoubleColumnTest {
 
     @Test
     public void testIsEqualTo() {
-
-        Relation table = Table.create("t");
+        Table table = Table.create("t");
         DoubleColumn doubleColumn = new DoubleColumn("test", 1_000_000);
         double[] doubles = new double[1_000_000];
         table.addColumn(doubleColumn);

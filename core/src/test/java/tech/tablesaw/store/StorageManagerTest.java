@@ -57,7 +57,7 @@ public class StorageManagerTest {
             CATEGORY,
             CATEGORY,
             CATEGORY};
-    private Relation table = Table.create("t");
+    private Table table = Table.create("t");
     private FloatColumn floatColumn = new FloatColumn("float");
     private CategoryColumn categoryColumn = new CategoryColumn("cat");
     private DateColumn localDateColumn = new DateColumn("date");

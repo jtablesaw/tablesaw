@@ -62,7 +62,7 @@ import tech.tablesaw.util.Selection;
  * <p>
  * Tables are the main data-type and primary focus of Tablesaw.
  */
-public class Table implements Relation, IntIterable {
+public class Table extends Relation implements IntIterable {
 
     /**
      * The columns that hold the data in this table
@@ -1126,11 +1126,6 @@ public class Table implements Relation, IntIterable {
             }
         }
         return row;
-    }
-
-    @Override
-    public String toString() {
-        return "Table " + name + ": Size = " + rowCount() + " x " + columnCount();
     }
 
     @Override

@@ -90,7 +90,7 @@ public class FloatColumnTest {
     @Test
     public void testIsLessThan() {
         int size = 1_000_000;
-        Relation table = Table.create("t");
+        Table table = Table.create("t");
         FloatColumn floatColumn = new FloatColumn("test", size);
         table.addColumn(floatColumn);
         for (int i = 0; i < size; i++) {
@@ -111,7 +111,7 @@ public class FloatColumnTest {
     @Test
     public void testIsGreaterThan() {
         int size = 1_000_000;
-        Relation table = Table.create("t");
+        Table table = Table.create("t");
         FloatColumn floatColumn = new FloatColumn("test", size);
         table.addColumn(floatColumn);
         for (int i = 0; i < size; i++) {
@@ -164,8 +164,7 @@ public class FloatColumnTest {
 
     @Test
     public void testIsEqualTo() {
-
-        Relation table = Table.create("t");
+        Table table = Table.create("t");
         FloatColumn floatColumn = new FloatColumn("test", 1_000_000);
         float[] floats = new float[1_000_000];
         table.addColumn(floatColumn);
