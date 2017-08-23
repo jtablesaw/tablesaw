@@ -55,9 +55,12 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         }
     };
 
+    public IntColumn(String name) {
+      this(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
+    }
+
     public IntColumn(String name, int initialSize) {
-        super(name);
-        data = new IntArrayList(initialSize);
+        this(name, new IntArrayList(initialSize));
     }
 
     public IntColumn(String name, IntArrayList data) {
@@ -65,14 +68,13 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         this.data = data;
     }
 
+    public IntColumn(String name, int[] arr) {
+      this(name, new IntArrayList(arr));
+    }
+
     public IntColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new IntArrayList(metadata.getSize());
-    }
-
-    public IntColumn(String name) {
-        super(name);
-        data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
 
     /**

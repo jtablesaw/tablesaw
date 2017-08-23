@@ -108,6 +108,14 @@ public class CategoryColumn extends AbstractColumn
         }
     }
 
+    public CategoryColumn(String name, String[] categories) {
+      super(name);
+      values = new IntArrayList(categories.length);
+      for (String string : categories) {
+          add(string);
+      }
+    }
+
     public CategoryColumn(ColumnMetadata metadata) {
         super(metadata);
         values = new IntArrayList(DEFAULT_ARRAY_SIZE);

@@ -71,13 +71,15 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     };
 
     public DoubleColumn(String name) {
-        super(name);
-        data = new DoubleArrayList(DEFAULT_ARRAY_SIZE);
+        this(name, new DoubleArrayList(DEFAULT_ARRAY_SIZE));
     }
 
     public DoubleColumn(String name, int initialSize) {
-        super(name);
-        data = new DoubleArrayList(initialSize);
+        this(name, new DoubleArrayList(initialSize));
+    }
+
+    public DoubleColumn(String name, double[] arr) {
+      this(name, new DoubleArrayList(arr));
     }
 
     public DoubleColumn(String name, DoubleArrayList data) {

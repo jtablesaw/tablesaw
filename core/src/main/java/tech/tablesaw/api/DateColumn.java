@@ -81,8 +81,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     private DateTimeFormatter selectedFormatter;
 
     public DateColumn(String name) {
-        super(name);
-        data = new IntArrayList(DEFAULT_ARRAY_SIZE);
+        this(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
     }
 
     public DateColumn(ColumnMetadata metadata) {
@@ -91,8 +90,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public DateColumn(String name, int initialSize) {
-        super(name);
-        data = new IntArrayList(initialSize);
+        this(name, new IntArrayList(initialSize));
     }
 
     public DateColumn(String name, IntArrayList data) {

@@ -57,9 +57,16 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         }
     };
 
+    public ShortColumn(String name) {
+        this(name, new ShortArrayList(DEFAULT_ARRAY_SIZE));
+    }
+
     public ShortColumn(String name, int initialSize) {
-        super(name);
-        data = new ShortArrayList(initialSize);
+        this(name, new ShortArrayList(initialSize));
+    }
+
+    public ShortColumn(String name, short[] arr) {
+        this(name, new ShortArrayList(arr));
     }
 
     public ShortColumn(String name, ShortArrayList data) {
@@ -70,11 +77,6 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     public ShortColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new ShortArrayList(metadata.getSize());
-    }
-
-    public ShortColumn(String name) {
-        super(name);
-        data = new ShortArrayList(DEFAULT_ARRAY_SIZE);
     }
 
     /**

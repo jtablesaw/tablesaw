@@ -75,13 +75,15 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     };
 
     public FloatColumn(String name) {
-        super(name);
-        data = new FloatArrayList(DEFAULT_ARRAY_SIZE);
+        this(name, new FloatArrayList(DEFAULT_ARRAY_SIZE));
     }
 
     public FloatColumn(String name, int initialSize) {
-        super(name);
-        data = new FloatArrayList(initialSize);
+        this(name, new FloatArrayList(initialSize));
+    }
+
+    public FloatColumn(String name, float[] arr) {
+      this(name, new FloatArrayList(arr));
     }
 
     public FloatColumn(String name, FloatArrayList data) {

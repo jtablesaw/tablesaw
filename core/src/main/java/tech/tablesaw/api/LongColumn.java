@@ -56,9 +56,16 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         }
     };
 
+    public LongColumn(String name) {
+      this(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
+    }
+
     public LongColumn(String name, int initialSize) {
-        super(name);
-        data = new LongArrayList(initialSize);
+        this(name, new LongArrayList(initialSize));
+    }
+
+    public LongColumn(String name, long[] arr) {
+      this(name, new LongArrayList(arr));
     }
 
     public LongColumn(String name, LongArrayList data) {
@@ -69,11 +76,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public LongColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new LongArrayList(metadata.getSize());
-    }
-
-    public LongColumn(String name) {
-        super(name);
-        data = new LongArrayList(DEFAULT_ARRAY_SIZE);
     }
 
     /**
