@@ -4,12 +4,10 @@ import org.junit.Test;
 import smile.classification.KNN;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.ml.classification.ConfusionMatrix;
-import tech.tablesaw.api.ml.classification.LogisticRegression;
-import tech.tablesaw.api.ml.classification.StandardConfusionMatrix;
 import tech.tablesaw.util.DoubleArrays;
 import tech.tablesaw.util.Example;
 
+import static org.junit.Assert.assertNotNull;
 import static tech.tablesaw.api.QueryHelper.column;
 
 import java.util.SortedSet;
@@ -58,9 +56,7 @@ public class ConfusionMatrixTest extends Example {
         LogisticRegression lr = LogisticRegression.learn(
                 train.booleanColumn(3), train.nCol("X"), train.nCol("Y"));
 
-        System.out.println(lr.predictMatrix(test.booleanColumn(3), test.floatColumn(0), test.floatColumn(1)).toString
-                ());
-
+        //TODO(lwhite): Better tests
 
         int[] predicted = new int[test.rowCount()];
         SortedSet<Object> lableSet = new TreeSet<>(train.shortColumn(2).asSet());
@@ -73,6 +69,7 @@ public class ConfusionMatrixTest extends Example {
             confusion.increment((int) test.shortColumn(2).get(row), predicted[row]);
         }
 
-        System.out.println(confusion.toString());
+        //TODO(lwhite): Better tests
+        assertNotNull(confusion);
     }
 }

@@ -54,8 +54,8 @@ public class CsvReaderTest {
     public void testWithBushData() throws Exception {
         // Read the CSV file
         ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};
-        Table table = Table.read().csv(CsvReadOptions
-            .builder("../data/BushApproval.csv")
+        Table table = Table.read().csv(
+                CsvReadOptions.builder("../data/BushApproval.csv")
             .columnTypes(types));
 
         assertEquals(323, table.rowCount());
@@ -136,7 +136,8 @@ public class CsvReaderTest {
         Table table1 = Table.read().csv("../data/read_failure_test.csv");
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
-        System.out.println(test.summary());
+        //TODO(lwhite): Better tests
+        assertNotNull(test.summary());
     }
 
     @Test
@@ -144,6 +145,8 @@ public class CsvReaderTest {
         Table table1 = Table.read().csv("../data/read_failure_test2.csv");
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
-        System.out.println(test.summary());
+
+        //TODO(lwhite): Better tests
+        assertNotNull(test.summary());
     }
 }

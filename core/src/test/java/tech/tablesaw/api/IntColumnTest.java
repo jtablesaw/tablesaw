@@ -165,7 +165,7 @@ public class IntColumnTest {
 
         Filter filter = column("Test").isIn(inColumn);
         Table result = t.selectWhere(filter);
-        System.out.println(result);
+        assertNotNull(result);
     }
 
     @Test
@@ -173,7 +173,7 @@ public class IntColumnTest {
         int[] originalValues = new int[]{32, 42, 40, 57, 52, -2};
         IntColumn originals = new IntColumn("Originals", new IntArrayList(originalValues));
         FloatColumn divided = originals.divide(3);
-        System.out.println(divided.print());
+        assertEquals(originals.size(), divided.size());
     }
 
     @Test
@@ -181,6 +181,6 @@ public class IntColumnTest {
         int[] originalValues = new int[]{32, 42, 40, 57, 52, -2};
         IntColumn originals = new IntColumn("Originals", new IntArrayList(originalValues));
         FloatColumn divided = originals.divide(3.3);
-        System.out.println(divided.print());
+        assertEquals(originals.size(), divided.size());
     }
 }

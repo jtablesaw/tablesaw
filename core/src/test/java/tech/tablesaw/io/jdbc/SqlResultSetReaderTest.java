@@ -45,8 +45,6 @@ public class SqlResultSetReaderTest {
             sql = "SELECT * FROM coffee";
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 Table coffee = SqlResultSetReader.read(rs, "Coffee");
-                System.out.println(coffee.structure());
-                System.out.println(coffee);
                 Assert.assertEquals(4, coffee.columnCount());
                 Assert.assertEquals(18, coffee.rowCount());
             }
@@ -54,8 +52,6 @@ public class SqlResultSetReaderTest {
             sql = "SELECT * FROM Customer";
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 Table customer = SqlResultSetReader.read(rs, "Customer");
-                System.out.println(customer.structure());
-                System.out.println(customer);
                 Assert.assertEquals(6, customer.columnCount());
                 Assert.assertEquals(3, customer.rowCount());
             }
@@ -63,8 +59,6 @@ public class SqlResultSetReaderTest {
             sql = "SELECT * FROM UnpaidOrder";
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 Table unpaidInvoice = SqlResultSetReader.read(rs, "Unpaid Invoice");
-                System.out.println(unpaidInvoice.structure());
-                System.out.println(unpaidInvoice);
                 Assert.assertEquals(5, unpaidInvoice.columnCount());
                 Assert.assertEquals(0, unpaidInvoice.rowCount());
             }
