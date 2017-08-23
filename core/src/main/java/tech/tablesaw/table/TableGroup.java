@@ -70,7 +70,7 @@ public class TableGroup implements Iterable<SubTable> {
                 if (col > 0)
                     newKey = newKey + SPLIT_STRING;
 
-                String groupKey = original.get(columnIndices[col], row);
+                String groupKey = original.get(row, columnIndices[col]);
                 newKey = newKey + groupKey;
                 values.add(groupKey);
             }

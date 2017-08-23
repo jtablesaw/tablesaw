@@ -51,7 +51,7 @@ class Dataframe (val target : Table) {
     fun columnIndex(columnName: String): Int = target.columnIndex(columnName)
     fun append(dataframe: Dataframe) = target.append(dataframe.target)
 
-    operator fun get(c: Int, r: Int): String = target.get(c, r)
+    operator fun get(c: Int, r: Int): String = target.get(r, c)
     operator fun get(c: Int): Col = col(target.column(c))
     operator fun get(columnName: String): Col = col(target.column(columnName))
 

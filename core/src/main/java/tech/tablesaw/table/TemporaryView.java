@@ -78,8 +78,8 @@ public class TemporaryView implements Relation, IntIterable {
     }
 
     @Override
-    public String get(int c, int r) {
-        return table.get(c, r);
+    public String get(int r, int c) {
+        return table.get(r, c);
     }
 
     @Override

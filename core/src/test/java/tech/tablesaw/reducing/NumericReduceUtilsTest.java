@@ -44,7 +44,7 @@ public class NumericReduceUtilsTest {
         assertEquals(2, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(6, result.rowCount());
-        assertEquals("65.671875", result.get(1, 0));
+        assertEquals("65.671875", result.get(0, 1));
     }
 
     @Test
@@ -55,6 +55,6 @@ public class NumericReduceUtilsTest {
         assertEquals(2, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(6, result.rowCount());
-        assertEquals("65.671875", result.get(1, 0));
+        assertEquals("65.671875", result.get(0, 1));
     }
 }

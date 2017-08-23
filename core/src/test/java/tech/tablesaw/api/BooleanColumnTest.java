@@ -69,9 +69,9 @@ public class BooleanColumnTest {
         Table summary = column.summary();
         assertEquals(2, summary.columnCount());
         assertEquals(2, summary.rowCount());
-        assertEquals("true", summary.get(0, 1));
         assertEquals("false", summary.get(0, 0));
-        assertEquals("5", summary.get(1, 0));
+        assertEquals("5", summary.get(0, 1));
+        assertEquals("true", summary.get(1, 0));
         assertEquals("2", summary.get(1, 1));
     }
 
@@ -103,10 +103,10 @@ public class BooleanColumnTest {
         Table summary = bc.summary();
         assertEquals(2, summary.columnCount());
         assertEquals(2, summary.rowCount());
-        assertEquals("true", summary.get(0, 1));
         assertEquals("false", summary.get(0, 0));
+        assertEquals("2", summary.get(0, 1));
+        assertEquals("true", summary.get(1, 0));
         assertEquals("5", summary.get(1, 1));
-        assertEquals("2", summary.get(1, 0));
     }
 
     @Test

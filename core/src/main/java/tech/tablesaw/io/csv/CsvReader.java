@@ -397,15 +397,15 @@ public class CsvReader {
         int nameColWidth = nameCol.columnWidth();
 
         for (int r = 0; r < structure.rowCount(); r++) {
-            String cell = StringUtils.rightPad(structure.get(typeColIndex, r) + ",", typeColWidth);
+            String cell = StringUtils.rightPad(structure.get(r, typeColIndex) + ",", typeColWidth);
             buf.append(cell);
             buf.append(" // ");
 
-            cell = StringUtils.rightPad(structure.get(indxColIndex, r), indxColWidth);
+            cell = StringUtils.rightPad(structure.get(r, indxColIndex), indxColWidth);
             buf.append(cell);
             buf.append(' ');
 
-            cell = StringUtils.rightPad(structure.get(nameColIndex, r), nameColWidth);
+            cell = StringUtils.rightPad(structure.get(r, nameColIndex), nameColWidth);
             buf.append(cell);
             buf.append(' ');
 

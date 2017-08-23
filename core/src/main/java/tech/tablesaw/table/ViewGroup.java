@@ -75,7 +75,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
                 }
 
                 Column c = sortedOriginal.column(columnNames[col]);
-                String groupKey = sortedOriginal.get(sortedOriginal.columnIndex(c), row);
+                String groupKey = sortedOriginal.get(row, sortedOriginal.columnIndex(c));
                 newStringKey = newStringKey + groupKey;
                 byteBuffer.put(c.asBytes(row));
             }

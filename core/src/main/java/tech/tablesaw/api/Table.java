@@ -602,11 +602,11 @@ public class Table implements Relation, IntIterable {
     /**
      * Returns a string representation of the value at the given row and column indexes
      *
-     * @param c the column index, 0 based
      * @param r the row index, 0 based
+     * @param c the column index, 0 based
      */
     @Override
-    public String get(int c, int r) {
+    public String get(int r, int c) {
         Column column = column(c);
         return column.getString(r);
     }

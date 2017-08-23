@@ -1,7 +1,5 @@
 package tech.tablesaw.table;
 
-import org.apache.commons.lang3.StringUtils;
-
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
@@ -16,7 +14,9 @@ import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.string.DataFramePrinter;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 /**
@@ -152,7 +152,6 @@ public interface Relation {
      * Returns an array of column widths for printing tables
      */
     default int[] colWidths() {
-
         int cols = columnCount();
         int[] widths = new int[cols];
 
@@ -163,29 +162,10 @@ public interface Relation {
     }
 
     default String print() {
-        StringBuilder buf = new StringBuilder();
-
-        int[] colWidths = colWidths();
-        buf.append(name()).append('\n');
-        List<String> names = this.columnNames();
-
-        for (int colNum = 0; colNum < columnCount(); colNum++) {
-            buf.append(
-                    StringUtils.rightPad(
-                            StringUtils.defaultString(String.valueOf(names.get(colNum))), colWidths[colNum]));
-            buf.append(' ');
-        }
-        buf.append('\n');
-
-        for (int r = 0; r < rowCount(); r++) {
-            for (int c = 0; c < columnCount(); c++) {
-                String cell = StringUtils.rightPad(get(c, r), colWidths[c]);
-                buf.append(cell);
-                buf.append(' ');
-            }
-            buf.append('\n');
-        }
-        return buf.toString();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataFramePrinter printer = new DataFramePrinter(Integer.MAX_VALUE, baos);
+        printer.print(this);
+        return new String(baos.toByteArray());
     }
 
     default Table structure() {
