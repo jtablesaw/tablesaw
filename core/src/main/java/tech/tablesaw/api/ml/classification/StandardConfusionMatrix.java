@@ -44,7 +44,7 @@ public class StandardConfusionMatrix implements ConfusionMatrix {
 
     @Override
     public String toString() {
-        return toTable().print();
+        return toTable().toString();
     }
 
     public tech.tablesaw.api.Table toTable() {

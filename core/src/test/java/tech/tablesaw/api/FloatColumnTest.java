@@ -8,7 +8,6 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.table.Relation;
 import tech.tablesaw.util.Selection;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -46,7 +45,7 @@ public class FloatColumnTest {
         table.sortOn("test");
         System.out.println("Sort time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
         stopwatch.reset().start();
-        System.out.println(floatColumn.summary().print());
+        System.out.println(floatColumn.summary());
         stopwatch.reset().start();
         floatColumn.isLessThan(.5f);
         System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));

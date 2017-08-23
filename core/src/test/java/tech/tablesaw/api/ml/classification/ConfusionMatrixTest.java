@@ -23,7 +23,7 @@ public class ConfusionMatrixTest extends Example {
     @Test
     public void testAsTable() throws Exception {
 
-        Table example = Table.createFromCsv("../data/KNN_Example_1.csv");
+        Table example = Table.read().csv("../data/KNN_Example_1.csv");
 
         Table[] splits = example.sampleSplit(.5);
         Table train = splits[0];
@@ -48,7 +48,7 @@ public class ConfusionMatrixTest extends Example {
     @Test
     public void testWithBooleanColumn() throws Exception {
 
-        Table example = Table.createFromCsv("../data/KNN_Example_1.csv");
+        Table example = Table.read().csv("../data/KNN_Example_1.csv");
         BooleanColumn booleanTarget = example.selectIntoColumn("bt", column("Label").isEqualTo(1));
         example.addColumn(booleanTarget);
         Table[] splits = example.sampleSplit(.5);

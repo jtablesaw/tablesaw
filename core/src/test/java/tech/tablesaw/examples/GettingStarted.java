@@ -30,22 +30,22 @@ public class GettingStarted {
 
     @Test
     public void printStructure() throws Exception {
-        out(table.structure().print());
+        out(table.structure());
 
-        out(table.first(10).print());
+        out(table.first(10));
 
         out(table.summary());
 
         out(table.columnNames());
 
         Column approval = table.column("approval");
-        out(approval.summary().print());
+        out(approval.summary());
 
         Column who = table.column("who");
-        out(who.summary().print());
+        out(who.summary());
 
         Column date = table.column("date");
-        out(date.summary().print());
+        out(date.summary());
     }
 
     private synchronized void out(Object obj) {

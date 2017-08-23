@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.ml.association.AssociationRuleMining;
 import tech.tablesaw.api.ml.association.FrequentItemset;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 /**
  *
@@ -13,7 +14,9 @@ public class AssociationRuleMiningExample {
 
     public static void main(String[] args) throws Exception {
 
-        Table table = Table.createFromCsv("../data/movielens.data", true, '\t');
+        Table table = Table.read().csv(CsvReadOptions
+            .builder("../data/movielens.data")
+            .separator('\t'));
 
         double supportThreshold = .25;
         double confidenceThreshold = .5;
@@ -29,7 +32,7 @@ public class AssociationRuleMiningExample {
         Table interestingRuleTable = model.interest(confidenceThreshold, interestThreshold, confidenceMap);
 
         interestingRuleTable = interestingRuleTable.sortDescendingOn("Interest", "Antecedent");
-        out(interestingRuleTable.print());
+        out(interestingRuleTable);
     }
 
     private static void out(Object o) {

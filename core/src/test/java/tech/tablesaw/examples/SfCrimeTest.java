@@ -10,6 +10,7 @@ import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.ml.classification.ConfusionMatrix;
 import tech.tablesaw.api.ml.classification.LogisticRegression;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvReader;
 
 /**
@@ -19,10 +20,10 @@ public class SfCrimeTest {
 
     public static void main(String[] args) throws Exception {
 
-        Table crime = Table.createFromCsv("/Users/larrywhite/IdeaProjects/testdata/bigdata/train.csv");
+        Table crime = Table.read().csv("/Users/larrywhite/IdeaProjects/testdata/bigdata/train.csv");
 
         out(crime.shape());
-        out(crime.structure().print());
+        out(crime.structure());
 
         crime.removeColumns("DayOfWeek");
 
@@ -36,7 +37,7 @@ public class SfCrimeTest {
 
         CategoryColumn category = crime.categoryColumn("Category");
         Table categorySummary = category.summary().sortDescendingOn("Count");
-        out(categorySummary.print());
+        out(categorySummary);
 
         ShortColumn minuteOfDay = crime.dateTimeColumn("Dates").minuteOfDay();
         minuteOfDay.setName("MinuteOfDay");
@@ -83,7 +84,7 @@ public class SfCrimeTest {
                 test.nCol("Precinct"));
 
         out(matrix.accuracy());
-        out(matrix.toTable().print());
+        out(matrix.toTable());
 
         // Table trueCrime = Table.createFromCsv("/Users/larrywhite/IdeaProjects/testdata/bigdata/test.csv");
         // out(CsvReader.printColumnTypes("/Users/larrywhite/IdeaProjects/testdata/bigdata/sampleSubmission.csv",
@@ -132,8 +133,9 @@ public class SfCrimeTest {
                 FLOAT,  // 39    WEAPON LAWS
         };
 
-        Table results = Table.createFromCsv(columnTypes,
-                "/Users/larrywhite/IdeaProjects/testdata/bigdata/sampleSubmission.csv");
+        Table results = Table.read().csv(CsvReadOptions
+            .builder("/Users/larrywhite/IdeaProjects/testdata/bigdata/sampleSubmission.csv")
+            .columnTypes(columnTypes));
 
         FloatColumn larceny = results.floatColumn("LARCENY/THEFT");
         FloatColumn warrants = results.floatColumn("WARRANTS");
@@ -154,12 +156,12 @@ public class SfCrimeTest {
             larceny.set(row, 1.0f);
             warrants.set(row, 0f);
         }
-        results.exportToCsv("newSubmission.csv");
+        results.write().csv("newSubmission.csv");
     }
 
     private static Table testData() throws Exception {
         // Setup actual test data
-        Table trueCrime = Table.createFromCsv("/Users/larrywhite/IdeaProjects/testdata/bigdata/test.csv");
+        Table trueCrime = Table.read().csv("/Users/larrywhite/IdeaProjects/testdata/bigdata/test.csv");
 
         trueCrime.removeColumns("DayOfWeek");
 

@@ -11,9 +11,6 @@ import tech.tablesaw.io.html.HtmlTableWriter;
 import tech.tablesaw.reducing.NumericReduceUtils;
 import tech.tablesaw.table.ViewGroup;
 
-/**
- *
- */
 public class HtmlTableWriterTest {
 
     private static ColumnType[] types = {
@@ -34,7 +31,7 @@ public class HtmlTableWriterTest {
         Column byColumn = table.column("who");
         ViewGroup group = new ViewGroup(table, byColumn);
         Table result = group.reduce("approval", NumericReduceUtils.mean);
-        HtmlTableWriter.write(result, "NA");
+        HtmlTableWriter.write(result);
     }
 
 }

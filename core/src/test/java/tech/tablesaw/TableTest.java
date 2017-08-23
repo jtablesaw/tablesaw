@@ -50,7 +50,7 @@ public class TableTest {
 
     @Test
     public void testSampleSplit() throws Exception {
-        Table t = Table.createFromCsv("../data/BushApproval.csv");
+        Table t = Table.read().csv("../data/BushApproval.csv");
         Table[] results = t.sampleSplit(.75);
         assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
     }

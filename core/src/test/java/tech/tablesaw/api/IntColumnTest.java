@@ -165,7 +165,7 @@ public class IntColumnTest {
 
         Filter filter = column("Test").isIn(inColumn);
         Table result = t.selectWhere(filter);
-        System.out.println(result.print());
+        System.out.println(result);
     }
 
     @Test

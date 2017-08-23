@@ -7,6 +7,7 @@ import smile.association.ItemSet;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.util.List;
 
@@ -17,8 +18,10 @@ public class FrequentItemsetExample {
 
     public static void main(String[] args) throws Exception {
 
-        Table table = Table.createFromCsv("../data/movielens.data", true, '\t');
-        out(table.structure().print());
+        Table table = Table.read().csv(CsvReadOptions
+            .builder("../data/movielens.data")
+            .separator('\t'));
+        out(table.structure());
         out(table.shape());
         ShortColumn movie = table.shortColumn("movie");
         CategoryColumn moviecat = new CategoryColumn("MovieCat");

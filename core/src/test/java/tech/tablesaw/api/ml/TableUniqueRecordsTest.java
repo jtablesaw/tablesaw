@@ -17,7 +17,7 @@ public class TableUniqueRecordsTest {
 
     @Before
     public void setUp() throws Exception {
-        table = Table.createFromCsv("../data/BushApproval.csv");
+        table = Table.read().csv("../data/BushApproval.csv");
         table = table.first(4);
         table2 = Table.create("2 column version");
         table2.addColumn(table.column(1), table.column(2));

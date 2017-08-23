@@ -907,7 +907,7 @@ public class Table extends Relation implements IntIterable {
     }
 
     public String printHtml() {
-        return HtmlTableWriter.write(this, "");
+        return HtmlTableWriter.write(this);
     }
 
     public Table structure() {
@@ -1068,7 +1068,7 @@ public class Table extends Relation implements IntIterable {
     @Deprecated
     public void exportToCsv(String fileNameWithPath) {
         try {
-            CsvWriter.write(fileNameWithPath, this);
+            CsvWriter.write(this, fileNameWithPath);
         } catch (IOException e) {
             System.err.println("Unable to export table as CSV file");
             e.printStackTrace();

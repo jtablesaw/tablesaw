@@ -17,7 +17,7 @@ fun main(args: Array<String>) {
     var tornadoes: Dataframe = Dataframe(Table.createFromCsv(COLUMN_TYPES_OLD, "../data/1950-2014_torn.csv"))
 
     val tStructure = tornadoes.structure()
-    println(tStructure.print())
+    println(tStructure)
     println()
 
     tornadoes.removeColumns("Number", "Year", "Month", "Day", "Zone", "State FIPS", "Loss", "Crop Loss", "End " + "Lat", "End Lon", "NS", "SN", "SG", "FIPS 1", "FIPS 2", "FIPS 3", "FIPS 4")
@@ -26,8 +26,8 @@ fun main(args: Array<String>) {
 
     tornadoes = Dataframe(Table.createFromCsv("../data/tornadoes_1950-2014.csv"))
 
-    println(tornadoes.structure().print())
-    println(tornadoes.structure().target.selectWhere(column("Column Type").isEqualTo("INTEGER")).print())
+    println(tornadoes.structure())
+    println(tornadoes.structure().target.selectWhere(column("Column Type").isEqualTo("INTEGER")))
 
     tornadoes.setName("tornadoes")
 
@@ -46,7 +46,7 @@ fun main(args: Array<String>) {
 
     println()
     println("Use first(3) to view the first 3 rows:")
-    println(tornadoes.first(3).print())
+    println(tornadoes.first(3))
 
     tornadoes = Dataframe(tornadoes.target.selectWhere(column("Start Lat").isGreaterThan(20f)))
     Scatter.show("US Tornadoes 1950-2014", tornadoes.nCol("Start Lon"), tornadoes.nCol("Start Lat"))
@@ -54,7 +54,7 @@ fun main(args: Array<String>) {
     println()
     println("Extact month from the date and make it a separate column")
     val month = tornadoes.dateCol("Date").month()
-    println(month.summary().print())
+    println(month.summary())
 
     println("Add the month column to the table")
     tornadoes.target.addColumn(2, month)
@@ -66,7 +66,7 @@ fun main(args: Array<String>) {
     println(fatal.shape())
 
     println()
-    println(fatal.first(5).print())
+    println(fatal.first(5))
 
     println()
     println("Total fatalities: " + fatal.shortColumn("Fatalities").sum())
@@ -74,24 +74,24 @@ fun main(args: Array<String>) {
     println()
     println("Sorting on Fatalities in descending order")
     fatal = fatal.sortDescendingOn("Fatalities")
-    println(fatal.first(5).print())
+    println(fatal.first(5))
 
     println("")
     println("Calculating basic descriptive statistics on Fatalities")
-    println(fatal.shortColumn("Fatalities").summary().print())
+    println(fatal.shortColumn("Fatalities").summary())
 
 
     //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
     val injuriesByScale = tornadoes.median("Injuries").by("Scale")
     val fob = tornadoes.minimum("Injuries").by("Scale", "State")
-    println(fob.print())
+    println(fob)
     injuriesByScale.setName("Median injuries by Tornado Scale")
-    println(injuriesByScale.print())
+    println(injuriesByScale)
 
     //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
     val injuriesByScaleState = tornadoes.median("Injuries").by("Scale", "State")
     injuriesByScaleState.setName("Median injuries by Tornado Scale and State")
-    println(injuriesByScaleState.print())
+    println(injuriesByScaleState)
 
     println()
     println("Writing the revised table to a new csv file")

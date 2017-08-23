@@ -14,7 +14,7 @@ public class TableTest {
 
     @Test
     public void testGetAndRemoveColumn() throws Exception {
-        Table table = Table.createFromCsv("../data/tornadoes_1950-2014.csv");
+        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
         assertTrue(table.columnNames().contains("Width"));
 
         Column c = table.getAndRemoveColumn("Width");

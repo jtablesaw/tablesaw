@@ -38,27 +38,27 @@ public class LargeDataTest {
         System.out.println();
 
         stopwatch.reset().start();
-        System.out.println(t.shortColumn("weight").summary().print());
+        System.out.println(t.shortColumn("weight").summary());
         System.out.println("Time to summarize weight column " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
         System.out.println();
 
         stopwatch.reset().start();
-        System.out.println(t.shortColumn("height").summary().print());
+        System.out.println(t.shortColumn("height").summary());
         System.out.println("Time to summarize height column " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
         System.out.println();
 
         stopwatch.reset().start();
-        System.out.println(t.first(5).print());
+        System.out.println(t.first(5));
         System.out.println("Time to print first(5) " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
         System.out.println();
 
         stopwatch.reset().start();
-        System.out.println(t.structure().print());
+        System.out.println(t.structure());
         System.out.println("Time to print structure " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
         System.out.println();
 
         stopwatch.reset().start();
-        CsvWriter.write("bigdata/shortpeople2.csv", t);
+        CsvWriter.write(t, "bigdata/shortpeople2.csv");
         System.out.println("Time to write csv file " + stopwatch.elapsed(TimeUnit.SECONDS));
         System.out.println();
     }

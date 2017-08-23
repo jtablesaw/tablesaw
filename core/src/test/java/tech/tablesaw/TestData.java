@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 /**
  * This class setup tablesaw Table from test data sources.
@@ -64,7 +65,9 @@ public enum TestData {
     TestData(String[] columnNames, ColumnType[] columnTypes, String csvSource) {
         this.columnNames = columnNames;
         try {
-            this.table = Table.createFromCsv(columnTypes, csvSource);
+            this.table = Table.read().csv(CsvReadOptions
+                .builder(csvSource)
+                .columnTypes(columnTypes));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Unable to read from CSV file");

@@ -12,7 +12,7 @@ public class XmeansExample {
 
     public static void main(String[] args) throws Exception {
 
-        Table t = Table.createFromCsv("../data/whiskey.csv");
+        Table t = Table.read().csv("../data/whiskey.csv");
 
         Xmeans model = new Xmeans(
                 10,
@@ -34,7 +34,7 @@ public class XmeansExample {
         out("Cluster count: " + model.getClusterCount());
         out(Arrays.toString(model.getClusterLabels()));
         out(Arrays.toString(model.getClusterSizes()));
-        out(model.labeledCentroids().print());
+        out(model.labeledCentroids());
     }
 
     private static void out(Object object) {

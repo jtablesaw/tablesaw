@@ -72,7 +72,7 @@ class IntColTest {
 
 
         val subset = col.isEven()
-        println(subset.print())
+        println(subset)
     }
 
     @Test
@@ -87,7 +87,7 @@ class IntColTest {
         val t = Table.createFromCsv("../data/BushApproval.csv")
         val frame = Dataframe(t)
 
-        println(frame.print())
+        println(frame)
         println(frame.printHtml())
         println(frame.name())
         println(frame)
@@ -100,13 +100,13 @@ class IntColTest {
         println("Row Count: ${frame.rowCount()}")
         println("Column Count ${frame.columnCount()}")
 
-        println(frame.first(3).print())
-        println(frame.last(3).print())
+        println(frame.first(3))
+        println(frame.last(3))
 
         val fromCsv = Dataframe.createFromCsv("../data/BushApproval.csv")
         println(fromCsv.summary())
 
-        println(frame[0].print())
-        println(frame["approval"].summary().print())
+        println(frame[0])
+        println(frame["approval"].summary())
     }
 }

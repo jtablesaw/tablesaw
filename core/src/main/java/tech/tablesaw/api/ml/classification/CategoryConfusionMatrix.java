@@ -46,7 +46,7 @@ public class CategoryConfusionMatrix implements ConfusionMatrix {
 
     @Override
     public String toString() {
-        return toTable().print();
+        return toTable().toString();
     }
 
     @Override

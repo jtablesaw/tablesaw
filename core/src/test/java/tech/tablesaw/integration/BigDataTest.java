@@ -4,6 +4,7 @@ import com.google.common.base.Stopwatch;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.store.StorageManager;
 
 import java.util.concurrent.TimeUnit;
@@ -54,11 +55,11 @@ public class BigDataTest {
         //stopwatch.start();
         Table table = StorageManager.readTable("bigdata/" + "3f07b9bf-053f-4f9b-9dff-9d354835b276");
         out(String.format("Table read from column store in %d seconds", stopwatch.elapsed(TimeUnit.SECONDS)));
-        out(table.first(3).print());
+        out(table.first(3));
 
         out(table.columnNames());
 
-        out(table.floatColumn("DEP_DELAY").summary().print());
+        out(table.floatColumn("DEP_DELAY").summary());
         exit(1);
 
     }
@@ -70,8 +71,9 @@ public class BigDataTest {
     //@Test
     public void readCsvTest() throws Exception {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        Table table = Table.createFromCsv(types, "../data/BigData.csv", true);
-        table.first(3).print();
+        Table table = Table.read().csv(CsvReadOptions
+            .builder("../data/BigData.csv")
+            .columnTypes(types));
         out(table.rowCount());
         out("Table read from csv file");
         out(stopwatch.elapsed(TimeUnit.SECONDS));

@@ -4,7 +4,6 @@ import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.table.Relation;
 import tech.tablesaw.util.Selection;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -42,7 +41,7 @@ public class DoubleColumnTest {
         table.sortOn("test");
         System.out.println("Sort time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
         stopwatch.reset().start();
-        System.out.println(doubleColumn.summary().print());
+        System.out.println(doubleColumn.summary());
         stopwatch.reset().start();
         doubleColumn.isLessThan(.5f);
         System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));

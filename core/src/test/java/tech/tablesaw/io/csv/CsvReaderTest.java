@@ -136,7 +136,7 @@ public class CsvReaderTest {
         Table table1 = Table.read().csv("../data/read_failure_test.csv");
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
-        System.out.println(test.summary().print());
+        System.out.println(test.summary());
     }
 
     @Test
@@ -144,6 +144,6 @@ public class CsvReaderTest {
         Table table1 = Table.read().csv("../data/read_failure_test2.csv");
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
-        System.out.println(test.summary().print());
+        System.out.println(test.summary());
     }
 }

@@ -9,7 +9,6 @@ import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReader;
-import tech.tablesaw.table.Relation;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -74,12 +73,12 @@ public class StorageManagerTest {
                 stopwatch.elapsed(TimeUnit.SECONDS)));
         System.out.println(tornados.shape());
         System.out.println(tornados.columnNames().toString());
-        System.out.println(tornados.first(10).print());
+        System.out.println(tornados.first(10));
         stopwatch.reset().start();
         StorageManager.saveTable("/tmp/tablesaw/testdata", tornados);
         stopwatch.reset().start();
         tornados = StorageManager.readTable("/tmp/tablesaw/testdata/tornados.saw");
-        System.out.println(tornados.first(5).print());
+        System.out.println(tornados.first(5));
     }
 
     @Before

@@ -20,7 +20,7 @@ public class FloatIndexTest {
 
     @Before
     public void setUp() throws Exception {
-        table = Table.createFromCsv("../data/bus_stop_test.csv");
+        table = Table.read().csv("../data/bus_stop_test.csv");
         index = new FloatIndex(table.floatColumn("stop_lat"));
     }
 

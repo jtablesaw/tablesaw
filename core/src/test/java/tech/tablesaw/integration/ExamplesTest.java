@@ -26,7 +26,7 @@ public class ExamplesTest {
         out(table.columnNames());
 
         // Peak at the data
-        out(table.first(5).print());
+        out(table.first(5));
 
         // Remove the description column
         table.removeColumns("stop_desc");
@@ -36,11 +36,11 @@ public class ExamplesTest {
 
         // Take a look at some data
         out("In 'examples. Printing first(5)");
-        out(table.first(5).print());
+        out(table.first(5));
 
         // Lets take a look at the latitude and longitude columns
         // out(table.realColumn("stop_lat").rowSummary().out());
-        out(table.floatColumn("stop_lat").summary().print());
+        out(table.floatColumn("stop_lat").summary());
 
         // Now lets fill a column based on data in the existing columns
 
@@ -49,10 +49,10 @@ public class ExamplesTest {
         // Lets filtering out some of the rows. We're only interested in records with IDs between 524-624
 
         Table filtered = table.selectWhere(QueryHelper.column("stop_id").isBetween(524, 624));
-        out(filtered.first(5).print());
+        out(filtered.first(5));
 
         // Write out the new CSV file
-        CsvWriter.write("../data/filtered_bus_stops.csv", filtered);
+        CsvWriter.write(filtered, "../data/filtered_bus_stops.csv");
     }
 
     private static void out(Object o) {

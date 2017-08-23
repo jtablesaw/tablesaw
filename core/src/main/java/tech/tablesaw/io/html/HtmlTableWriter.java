@@ -1,13 +1,15 @@
 package tech.tablesaw.io.html;
 
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.annotations.VisibleForTesting;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
 
 /**
  * Static utility that Writes outlier tables in html table format for display
@@ -20,24 +22,29 @@ final public class HtmlTableWriter {
     private HtmlTableWriter() {
     }
 
-    public static String write(Table table, String missing) {
-
+    public static String write(Table table) {
         StringBuilder builder = new StringBuilder();
         builder.append(header(table.columnNames()));
         builder.append("<tbody>")
                 .append('\n');
         for (int row : table.rows()) {
-            builder.append(row(row, table, missing));
+            builder.append(row(row, table));
         }
         builder.append("</tbody>");
         return builder.toString();
+    }
+
+    public static void write(Table table, OutputStream outputStream) {
+        try (PrintWriter p = new PrintWriter(outputStream)) {
+            p.println(write(table));
+        }
     }
 
     /**
      * Returns a string containing the html output of one table row
      */
     @VisibleForTesting
-    static String row(int row, Table table, String missing) {
+    static String row(int row, Table table) {
         StringBuilder builder = new StringBuilder()
                 .append("<tr>");
 

@@ -32,7 +32,6 @@ class Dataframe (val target : Table) {
     fun name(): String = target.name()
 
     override fun toString(): String = target.toString()
-    fun print(): String = target.print()
     fun printHtml(): String = target.printHtml()
 
     fun summary(): String = target.summary()
@@ -70,10 +69,10 @@ class Dataframe (val target : Table) {
                 = Dataframe(Table.createFromCsv(csvString, header, delimiter))
     }
 
-    fun  setName(tableName: String) = target.setName(tableName)
-    fun  removeColumns(vararg names : String) = target.removeColumns(*names)
+    fun setName(tableName: String) = target.setName(tableName)
+    fun removeColumns(vararg names : String) = target.removeColumns(*names)
     fun exportToCsv(fileName: String) = target.exportToCsv(fileName)
-    fun  save(fileName: String): String = target.save(fileName)
+    fun save(fileName: String): String = target.save(fileName)
 
 
     fun sum(numericColumnName: String): Sum = target.sum(numericColumnName)

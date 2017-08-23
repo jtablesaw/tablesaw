@@ -15,9 +15,9 @@ public class ServiceExample {
 
         Table ops = Table.create("../data/operations.csv");
 
-        out(ops.structure().print());
+        out(ops.structure());
 
-        out(ops.print());
+        out(ops);
 
         DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start"));
         DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End"));
@@ -33,7 +33,7 @@ public class ServiceExample {
         ops.addColumn(duration);
         duration.setName("Duration");
 
-        out(ops.print());
+        out(ops);
 
         Table q2_429_assembly = ops.selectWhere(
                 allOf
@@ -43,9 +43,9 @@ public class ServiceExample {
 
         Table durationByFacilityAndShift = q2_429_assembly.median("Duration").by("Facility", "Shift");
 
-        out(durationByFacilityAndShift.print());
+        out(durationByFacilityAndShift);
 
-        durationByFacilityAndShift.exportToCsv("/tmp/durationByFacilityAndShift.csv");
+        durationByFacilityAndShift.write().csv("/tmp/durationByFacilityAndShift.csv");
     }
 
     private static void out(Object obj) {
