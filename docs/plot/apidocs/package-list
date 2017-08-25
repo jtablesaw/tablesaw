@@ -1,0 +1,5 @@
+tech.tablesaw.api.plot
+tech.tablesaw.plotting
+tech.tablesaw.plotting.fx
+tech.tablesaw.plotting.smile
+tech.tablesaw.plotting.xchart
