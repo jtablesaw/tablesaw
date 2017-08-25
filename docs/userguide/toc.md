@@ -1,13 +1,15 @@
 Tablesaw User Guide
 ===================
 
+## *Draft*
+
 ## Contents
 
 * [Tables](https://jtablesaw.github.io/tablesaw/userguide/tables)
-* Importing Data
-* Filtering (Queries)
-* Sorting
-* Mapping
-* Reducing
-* Summarizing
-* Columns
+* [Importing Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data)
+* [Filtering (Queries)](https://jtablesaw.github.io/tablesaw/userguide/filters)
+* [Sorting](https://jtablesaw.github.io/tablesaw/userguide/sorting)
+* [Mapping](https://jtablesaw.github.io/tablesaw/userguide/mapping)
+* [Reducing](https://jtablesaw.github.io/tablesaw/userguide/reducing)
+* [Summarizing](https://jtablesaw.github.io/tablesaw/userguide/summarizing)
+* [Columns](https://jtablesaw.github.io/tablesaw/userguide/columns)
