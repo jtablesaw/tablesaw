@@ -6,4 +6,4 @@
 * [Contributor's Guide](https://jtablesaw.wordpress.com/how-to-contribute/)
 
 Can't find what you're looking for?
-Ask your questions on the project Issues page: https://github.com/jtablesaw/tablesaw/issues
+Ask your questions on the project [Issues page](https://github.com/jtablesaw/tablesaw/issues)
