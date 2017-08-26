@@ -9,7 +9,6 @@ import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.util.DoubleArrays;
 
-import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
