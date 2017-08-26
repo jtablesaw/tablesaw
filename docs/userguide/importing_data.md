@@ -88,6 +88,7 @@ It can be used to read local files, but also files read across the net, in S3, e
 
 ### Database ResultSets
 
+```
 Table t = Table.read().db(ResultSet resultSet, String tableName);
 Here’s a more complete example that  includes the JDBC setup:
 
@@ -101,6 +102,6 @@ try (Statement stmt = conn.createStatement()) {
     customer = Table.read().db(results, "Customer");
   }
 }
- 
+```
 
 (Todo: Add section on multi-file loading).
