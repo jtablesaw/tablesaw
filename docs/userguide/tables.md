@@ -3,31 +3,19 @@ Tables
 Tables are the primary data-type and general focus of Tablesaw. Here we’ll provide an overview of the operations they provide. 
 Most of the sections below are for illustrative purposes, and typically will have their own section of the User Guide where they are examined more fully. For still more detail, see the JavaDoc for tech.tablesaw.api.Table.
 
-## Tables all the way down
+## Tables "all the way down"
+Tablesaw has a huge number of methods for creating, querying, manipulating, displaying, and saving tables. So it makes sense that we use tables widely, and many operations on tables return other tables. For example, when you ask a table to describe its structure, it returns a new table that contains the column names, types, and order. 
+
+## Creating tables
 
 
-## Import data
+### Import data
 
 Tablesaw can load data from character delimited text files (including CSV and Tab-separated files), from streams, and from any data source that can create a JDBC result set. As this includes essentially all relational databases, most of the world’s structured data in can be loaded without a prior transformation. 
 
-### Import from a CSV file
+#### Import from a CSV file
 
  
-
-Import from a Database
-
-Pulling data from a database is perhaps even simpler. The table is created from a result set, so you can execute arbitrary queries and hand tablesaw the results. The following code creates a table named “Customer”.
-
-    String DB_URL = "jdbc:derby:CoffeeDB;create=true";
-    Connection conn = DriverManager.getConnection(DB_URL);
-    
-    Table customer = null; 
-    try (Statement stmt = conn.createStatement()) {
-      String sql = "SELECT * FROM Customer";
-      try (ResultSet results = stmt.executeQuery(sql)) {
-        customer = Table.create(results, "Customer");
-      }
-    }
 
 ## Displaying data
 
@@ -42,7 +30,7 @@ Often, that produces too much output, so the methods first(n) and last(n) are av
 
 ## Getting table metadata
 
-There are a number of ways to get familiar with a new dataset. Here are some of the most useful ways.
+There are a number of ways to get familiar with a new dataset. Here are some of the most useful.
 
 table.columnNames() returns an array of column-name strings: 
 
