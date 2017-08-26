@@ -5,7 +5,6 @@ import smile.classification.KNN;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.util.DoubleArrays;
-import tech.tablesaw.util.Example;
 
 import static org.junit.Assert.assertNotNull;
 import static tech.tablesaw.api.QueryHelper.column;
@@ -13,10 +12,7 @@ import static tech.tablesaw.api.QueryHelper.column;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-/**
- *
- */
-public class ConfusionMatrixTest extends Example {
+public class ConfusionMatrixTest {
 
     @Test
     public void testAsTable() throws Exception {

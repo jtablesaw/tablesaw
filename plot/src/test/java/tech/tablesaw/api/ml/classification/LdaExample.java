@@ -6,9 +6,6 @@ import tech.tablesaw.api.ml.classification.Lda;
 import tech.tablesaw.api.plot.Scatter;
 import tech.tablesaw.util.Example;
 
-/**
- *
- */
 public class LdaExample extends Example {
 
     public static void main(String[] args) throws Exception {
