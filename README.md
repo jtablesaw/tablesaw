@@ -98,8 +98,3 @@ The goal in this example is to identify the production shifts with the worst per
 
 ```
 If you see something that can be improved, please let us know.
-
-### Importing into Eclipse
-
-* Install e(fx)clipse. Choose the update site that came with your installation of Eclipse. E.g. "Oxygen - http://download.eclipse.org/releases/oxygen". Then install "e(fx)clipse" under "General Purpose Tools"
-* [Install Kotlin support](https://kotlinlang.org/docs/tutorials/getting-started-eclipse.html). Read [this Stackoverflow post](https://stackoverflow.com/questions/42496708/cant-get-kotlin-classes-in-java-maven-project-to-work-eclipse) for tips on working around bugs in the Kotlin eclipse plugin.

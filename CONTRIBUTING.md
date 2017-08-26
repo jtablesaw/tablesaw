@@ -42,6 +42,11 @@ We'd also love to add support for more machine learning algorithms by adding new
 Implement an interface for a Javascript plotting library (big job, we know), but the best Javascript libraries are awesome.
 Email larry@tablesaw.tech if you have any questions, or use the comments for the issue.
 
+## Working on the code in Eclipse
+
+* Install e(fx)clipse. Choose the update site that came with your installation of Eclipse. E.g. "Oxygen - http://download.eclipse.org/releases/oxygen". Then install "e(fx)clipse" under "General Purpose Tools"
+* [Install Kotlin support](https://kotlinlang.org/docs/tutorials/getting-started-eclipse.html). Read [this Stackoverflow post](https://stackoverflow.com/questions/42496708/cant-get-kotlin-classes-in-java-maven-project-to-work-eclipse) for tips on working around bugs in the Kotlin eclipse plugin.
+
 ## Become a Maintainer/Committer
 
 We are actively seeking new maintainers for the project. The best way to get involved is to familiarize yourself with the project through use, and make a few minor changes/fixes. After that, introduce yourself by emailing info@tablesaw.tech and we’ll get in touch.
