@@ -5,6 +5,7 @@ Tablesaw User Guide
 
 ## Contents
 
+* [Introduction](https://jtablesaw.github.io/tablesaw/userguide/introduction)
 * [Tables](https://jtablesaw.github.io/tablesaw/userguide/tables)
 * [Importing Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data)
 * [Filtering (Queries)](https://jtablesaw.github.io/tablesaw/userguide/filters)
