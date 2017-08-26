@@ -11,11 +11,16 @@ Tablesaw has a huge number of methods for creating, querying, manipulating, disp
 
 ### Import data
 
-Tablesaw can load data from character delimited text files (including CSV and Tab-separated files), from streams, and from any data source that can create a JDBC result set. As this includes essentially all relational databases, most of the world’s structured data in can be loaded without a prior transformation. 
+Tablesaw can load data from character delimited text files (including CSV and Tab-separated files), from streams, and from any data source that can create a JDBC result set. As this includes essentially all relational databases (and many non-relational ones), most of the world’s structured data in can be loaded without a prior transformation. 
 
 #### Import from a CSV file
 
- 
+You can load a table from a CSV file by providing the file name. 
+
+    Table t = Table.read().csv("myFile.csv");
+    
+This simple method supplies default values for a number of parameters like the type of the separator character. See 
+[Importing data](https://jtablesaw.github.io/tablesaw/userguide/importing_data) for other options and more detail.    
 
 ## Displaying data
 
@@ -31,6 +36,8 @@ Often, that produces too much output, so the methods first(n) and last(n) are av
 ## Getting table metadata
 
 There are a number of ways to get familiar with a new dataset. Here are some of the most useful.
+
+table.name() returns its name, which defaults to the name of the file it was created from. You can change it if you like.
 
 table.columnNames() returns an array of column-name strings: 
 
