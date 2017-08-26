@@ -6,6 +6,7 @@ import tech.tablesaw.api.plot.Scatter
 
 import tech.tablesaw.api.ColumnType.*
 import tech.tablesaw.api.QueryHelper.column
+import tech.tablesaw.io.csv.CsvReadOptions
 import kotlin.system.exitProcess
 
 /**
@@ -14,7 +15,8 @@ import kotlin.system.exitProcess
 @Throws(Exception::class)
 fun main(args: Array<String>) {
 
-    var tornadoes: Dataframe = Dataframe(Table.createFromCsv(COLUMN_TYPES_OLD, "../data/1950-2014_torn.csv"))
+    var tornadoes: Dataframe = Dataframe(Table.read().csv(
+            CsvReadOptions.builder("../data/1950-2014_torn.csv").columnTypes(COLUMN_TYPES_OLD)))
 
     val tStructure = tornadoes.structure()
     println(tStructure)
@@ -24,7 +26,7 @@ fun main(args: Array<String>) {
 
     tornadoes.exportToCsv("../data/tornadoes_1950-2014.csv")
 
-    tornadoes = Dataframe(Table.createFromCsv("../data/tornadoes_1950-2014.csv"))
+    tornadoes = Dataframe(Table.read().csv("../data/tornadoes_1950-2014.csv"))
 
     println(tornadoes.structure())
     println(tornadoes.structure().target.selectWhere(column("Column Type").isEqualTo("INTEGER")))

@@ -3,6 +3,8 @@ package tech.tablesaw.kapi
 import tech.tablesaw.api.IntColumn
 import tech.tablesaw.api.Table
 import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 /**
  */
@@ -22,55 +24,57 @@ class IntColTest {
         val result3 = col / 2
         val result4 = col + 200
         val result5 = col.emptyCopy()
-/*
-        println(result)
-        println(result2)
-        println("Name: ${result.name()}")
-        println("Name: ${result3.name()}")
-        println("Name: ${result5.name()}")
-        println("Id: ${result.id()}")
 
-        println(result4[2])
-        println(col[2])
-        println("remainder: " + (result4 % col)[2])
+        assertEquals(4, result.get(0))
+        assertEquals(2, result2.get(0))
+        assertEquals("test + 3", result.name())
+        assertEquals("test / 2", result3.name())
+        assertEquals("test", result5.name())
 
-        println(result.firstElement())
-        println(result2.firstElement())
+        assertNotNull(result.id())
 
-        println(result.sum())
-        println(result2.sum())
+        assertEquals(203, result4[2])
+        assertEquals(3, col[2])
+        assertEquals(2, (result4 % col)[2])
 
-        println(result.javaClass)
-        println(result3.javaClass)
+        assertEquals(4, result.firstElement())
+        assertEquals(2, result2.firstElement())
 
-        println(result3 * result3)
+        /*
+                  println(result.sum())
+                  println(result2.sum())
 
-        println(col[2])
+                  println(result.javaClass)
+                  println(result3.javaClass)
 
-        println(3 in col)
-        println(10 in col)
-        println(10 !in col)
+                  println(result3 * result3)
 
-        // math functions
-        println(col.sum())
-        println(col.product())
-        println(col.max())
-        println(col.min())
-        println(col.median())
-        println(col.mean())
-        println(col.geometricMean())
-        println(col.quadraticMean())
-        println(col.quartile1())
-        println(col.quartile3())
-        println(col.percentile(.60))
-        println(col.sumOfLogs())
-        println(col.sumOfSquares())
-        println(col.populationVariance())
-        println(col.standardDeviation())
-        println(col.skewness())
-        println(col.kurtosis())
+                  println(col[2])
 
-*/
+                  println(3 in col)
+                  println(10 in col)
+                  println(10 !in col)
+
+                  // math functions
+                  println(col.sum())
+                  println(col.product())
+                  println(col.max())
+                  println(col.min())
+                  println(col.median())
+                  println(col.mean())
+                  println(col.geometricMean())
+                  println(col.quadraticMean())
+                  println(col.quartile1())
+                  println(col.quartile3())
+                  println(col.percentile(.60))
+                  println(col.sumOfLogs())
+                  println(col.sumOfSquares())
+                  println(col.populationVariance())
+                  println(col.standardDeviation())
+                  println(col.skewness())
+                  println(col.kurtosis())
+
+          */
         val subset = col.isEven()
 //        println(subset.print())
     }
