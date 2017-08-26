@@ -15,9 +15,9 @@ This method supplies defaults for everything but the filename. We assume that co
 
     Table t1 = Table.read().csv(CsvReadOptionsBuilder options);
 
-The *header* option indicates whether or not there’s a one-line header row at the top of the file. If *header* is false, we treat all the rows as data.
+The _header_ option indicates whether or not there’s a one-line header row at the top of the file. If *header* is false, we treat all the rows as data.
 
-The *separator* option allows you to specify a delimiter other than a comma, in case you’re loading a Tab-delimited file, for example.
+The _separator_ option allows you to specify a delimiter other than a comma, in case you’re loading a Tab-delimited file, for example.
 
 When the table is created, it is given a default name based on the name of the file it was loaded from. You can change the name at any time using table.setName(aString);
 
@@ -86,22 +86,22 @@ It can be used to read local files, but also files read across the net, in S3, e
     InputStream stream = object.getObjectContent();
     Table t = Table.csv(CsvReadOptions.bulider(stream, "bush").columnTypes(types)));
 
-### Database ResultSets
+### Loading from Database ResultSets
+It's equally easy to create a table from the results of a database query. In this case, you never need to specify the column types, because they are inferred from the database column types. 
 
-```
-Table t = Table.read().db(ResultSet resultSet, String tableName);
+    Table t = Table.read().db(ResultSet resultSet, String tableName);
+    
 Here’s a more complete example that  includes the JDBC setup:
 
-String DB_URL = "jdbc:derby:CoffeeDB;create=true";
-Connection conn = DriverManager.getConnection(DB_URL);
+    String DB_URL = "jdbc:derby:CoffeeDB;create=true";
+    Connection conn = DriverManager.getConnection(DB_URL);
 
-Table customer = null; 
-try (Statement stmt = conn.createStatement()) {
-  String sql = "SELECT * FROM Customer";
-  try (ResultSet results = stmt.executeQuery(sql)) {
-    customer = Table.read().db(results, "Customer");
-  }
-}
-```
+    Table customer = null; 
+    try (Statement stmt = conn.createStatement()) {
+      String sql = "SELECT * FROM Customer";
+      try (ResultSet results = stmt.executeQuery(sql)) {
+        customer = Table.read().db(results, "Customer");
+      }
+    }
 
 (Todo: Add section on multi-file loading).
