@@ -1,14 +1,16 @@
 Tables
 ======
-Tables are the primary data-type and general focus of Tablesaw. Here we’ll provide an overview of the operations they provide.  This is a work in process.
+Tables are the primary data-type and general focus of Tablesaw. Here we’ll provide an overview of the operations they provide. 
+Most of the sections below are for illustrative purposes, and typically will have their own section of the User Guide where they are examined more fully. For still more detail, see the JavaDoc for tech.tablesaw.api.Table.
 
-See JavaDoc for Table.java.
+## Tables all the way down
+
 
 ## Import data
 
-Tablesaw can currently load data from character delimited text files (including CSV and Tab-separated files), and from any data source that can create a JDBC result set. As this includes essentially all relational databases, most of the world’s structured data in can be loaded without a prior transformation.
+Tablesaw can load data from character delimited text files (including CSV and Tab-separated files), from streams, and from any data source that can create a JDBC result set. As this includes essentially all relational databases, most of the world’s structured data in can be loaded without a prior transformation. 
 
-Import from a CSV file
+### Import from a CSV file
 
  
 
@@ -29,7 +31,14 @@ Pulling data from a database is perhaps even simpler. The table is created from 
 
 ## Displaying data
 
+The simplest way to display a table is to call "print()" on it, which return a formatted String representation.
  
+    aTable.print();
+    
+Often, that produces too much output, so the methods first(n) and last(n) are available. These return a copy of the table that contains only the first n or last n rows respectively.
+
+    aTable.first(3);
+    aTable.last(4); 
 
 ## Getting table metadata
 
@@ -59,12 +68,14 @@ You can also get the rowCount() and columnCount() individually from a table.
 You can add a column to a Table using the addColumn() method:
 
     table.addColumn(aColumn);
+    
 You can also specify that the column be inserted at a particular place by providing an index:
 
     table.addColumn(3, aColumn);
-As is standard in java, column numbering begins at 0, rather than 1.
+    
+As usual in java, column numbering begins at 0, rather than 1.
 
-The column you add must either be empty, or have the same number of elements as the other columns in the table.
+The column you add must either be empty or have the same number of elements as the other columns in the table.
 
 To remove a column or columns:
 
