@@ -78,15 +78,10 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>2.10.4</version>
-          <configuration>
-              <reportOutputDirectory>../docs</reportOutputDirectory>
-              <destDir>apidocs</destDir>
-          </configuration>
           <executions>
             <execution>
               <id>attach-javadocs</id>
               <goals>
-                  <goal>javadoc</goal>
                   <goal>jar</goal>
               </goals>
             </execution>
@@ -210,6 +205,27 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.4</version>
+        <configuration>
+          <reportOutputDirectory>docs</reportOutputDirectory>
+          <destDir>apidocs</destDir>
+        </configuration>
+        <executions>
+          <execution>
+            <id>aggregate</id>
+            <phase>site</phase>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencyManagement>
