@@ -2,19 +2,18 @@
 
 The best way to describe Tablesaw is as "__A platform for data science in Java__." This needs some elaboration. 
 
-When we say "_data science_", we mean the array of disciplines, processes, and techniques that are used to discover, 
+When we say "_data science_", we mean the array of disciplines, processes, and techniques used to discover, 
 extract, and apply knowledge from data sets. That includes data wrangling, statistical analysis, machine learning, and
 visualization. 
 
 We say "_platform_" because we don't offer a single tool like a dataframe, or a library for machine-learning or 
-visualization. Instead we integrate a collection of tools, built around a single datatype: a __Table__. 
-Integration is key. What you produce in one step can be used in the next with as little work as possible.
+visualization. Instead we integrate a collection of tools, built around the _Table_ datatype. 
+Integration is key. What you produce in one step can be used directly in the next.
 
-If there is one overriding goal for the project, it is extreme usability. We focus on the task of the 
-data scientist/programmer and attempt to provide a frictionless environment for solving data science problems in Java.
+The one overriding goal for the project is extreme usability. We attempt to provide a frictionless environment for solving data science problems in Java.
 
 ## Usability and Performance
-One pitfall that has caught other technologies is performance. Poor performance destroys usability in two ways: 
+Performance is a pitfall that ensnares many data science platforms. Poor performance destroys usability in two ways: 
 First, it inhibits the analyst from trying a variety of approaches. If it takes two hours to run a job, 
 you're not going to approach the problem as creatively as you would if it took two minutes. 
 
@@ -29,29 +28,31 @@ Tablesaw is designed for high-performance for the sake of usability. Your work i
 Better still, most people will _never_ need to distribute their work, and nearly all will _rarely_ need to do so. 
 
 ## The tools in the toolchest 
-If you are familiar with other libraries, you may think of Tablesaw as a dataframe, with the added capabilities 
-that you can build statisical models and visualizations directly from the data in the dataframe. 
+If you are familiar with other libraries, you may think of Tablesaw as a dataframe, with the added ability 
+to create statisical models and visualizations directly from the data in the dataframe. 
 
 ### What's a dataframe?
-A dataframe is traditionally an in-memory, tabular data structure in which each column in the table consists of 
-a single type of data, while rows can contain a variety of types. Dataframes facilitate the transformation of their 
-data, generally providing several kinds of transformation opeations:
+A dataframe is an in-memory, tabular data structure in which each column in the table consists of 
+a single datatype, while rows can contain a variety of types. Dataframes facilitate the transformation of tabular 
+data, generally providing several kinds of transformation operations:
 
 * Importing and exporting data
 * Adding and removing columns
 * Sorting rows
 * Filtering rows
-* Creating new columns from the data in existing ones
+* Creating new columns from existing ones
 * Summarizing columns or tables
 * Combining tables
-* etc.
+* and so on.
+
+Even if you're not doing machine learning, if you work with data in Java you may find Tablesaw very useful.
 
 ### What else is there?
-Beyond the usual dataframe functionality, Tablesaw also contains a compressed, columnar storage format we call "Saw" files. 
+Beyond the usual dataframe functionality, Tablesaw also contains a compressed, columnar storage format we call "Saw". 
 Saw files are much smaller than CSV or other text files, so they consume less disk space and are easier and faster 
-to move across a network. They can also be loaded into a dataframe orders of magnitude faster than CSV imports. 
+to move across a network. They can also be loaded into a dataframe several orders of magnitude faster than the equivalent CSV file. 
 
-The other major components are interfaces that allow users to create visualizations and machine learning models 
+The other major components are interfaces for creating visualizations and machine learning models 
 directly from the dataframes. 
 
 ### Looking ahead
