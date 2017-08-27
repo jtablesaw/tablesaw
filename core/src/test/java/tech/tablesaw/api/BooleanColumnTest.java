@@ -57,6 +57,8 @@ public class BooleanColumnTest {
         assertTrue(lastEntry());
         column.appendCell("N");
         assertFalse(lastEntry());
+        column.appendCell("");
+        assertFalse(lastEntry());
     }
 
     @Test

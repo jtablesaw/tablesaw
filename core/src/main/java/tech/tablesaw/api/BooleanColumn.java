@@ -105,13 +105,16 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         this.data = data;
     }
 
-    public static boolean convert(String stringValue) {
+    public static byte convert(String stringValue) {
+
+        // TODO(lwhite): Improve handling of missing booleans by using a supporting index (bytearray) to indicate missing?
         if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return (Boolean) ColumnType.BOOLEAN.getMissingValue();
+            return 0;
+
         } else if (TypeUtils.TRUE_STRINGS.contains(stringValue)) {
-            return true;
+            return 1;
         } else if (TypeUtils.FALSE_STRINGS.contains(stringValue)) {
-            return false;
+            return 0;
         } else {
             throw new IllegalArgumentException("Attempting to convert non-boolean value " +
                     stringValue + " to Boolean");
