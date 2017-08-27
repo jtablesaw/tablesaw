@@ -340,16 +340,6 @@ public class CsvReader {
                 // get the index in the original table, which includes skipped fields
                 columnIndexes[i] = headerRow.indexOf(columnNames[i]);
             }
-            // Add the rows
-            while ((nextLine = csvReader.readNext()) != null) {
-                // for each column that we're including (not skipping)
-                int cellIndex = 0;
-                for (int columnIndex : columnIndexes) {
-                    Column column = table.column(cellIndex);
-                    column.appendCell(nextLine[columnIndex]);
-                    cellIndex++;
-                }
-            }
         }
         return table;
     }
