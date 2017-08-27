@@ -4,7 +4,6 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -185,8 +184,17 @@ public class CategoryColumn extends AbstractColumn
         return lookupTable.get(k);
     }
 
+    /**
+     * Returns a List<String> representation of all the values in this column
+     *
+     * NOTE: Unless you really need a string consider using the column itself for large datasets as it uses much less memory
+     */
     public List<String> toList() {
-        return Lists.newArrayList(dictionaryMap().categoryArray());
+        List<String> strings = new ArrayList<>();
+        for(String category : this) {
+            strings.add(category);
+        }
+        return strings;
     }
 
     @Override
