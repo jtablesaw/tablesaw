@@ -21,7 +21,7 @@ public class Example1 {
     public static void main(String[] args) throws Exception {
 
         // create our table from a flat file:
-        Table table1 = Table.createFromCsv("data/BushApproval.csv");
+        Table table1 = Table.read().csv("data/BushApproval.csv");
 
         // return the name of the table
         out("Table name: " + table1.name());
