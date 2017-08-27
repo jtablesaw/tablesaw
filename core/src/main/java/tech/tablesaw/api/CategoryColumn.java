@@ -185,7 +185,7 @@ public class CategoryColumn extends AbstractColumn
     }
 
     /**
-     * Returns a List<String> representation of all the values in this column
+     * Returns a List&lt;String&gt; representation of all the values in this column
      *
      * NOTE: Unless you really need a string consider using the column itself for large datasets as it uses much less memory
      */
