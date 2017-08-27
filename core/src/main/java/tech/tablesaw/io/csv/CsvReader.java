@@ -136,7 +136,9 @@ public class CsvReader {
      * and that they use a comma to separate between columns.
      *
      * @throws IOException If there is an issue reading any of the files
+     * @deprecated use read(CsvReadOptions) instead
      */
+    @Deprecated
     public static Table read(ColumnType types[], String... fileNames) throws IOException {
         if (fileNames.length == 1) {
             return read(types, true, ',', fileNames[0]);
@@ -162,7 +164,9 @@ public class CsvReader {
      * @param fileName        The fully specified file name. It is used to provide a default name for the table
      * @return A Table containing the data in the csv file.
      * @throws IOException if file cannot be read
+     * @deprecated use read(CsvReadOptions) instead
      */
+    @Deprecated
     public static Table read(ColumnType types[], boolean header, char columnSeparator, String fileName) throws
             IOException {
         InputStream stream = new FileInputStream(new File(fileName));
@@ -178,7 +182,9 @@ public class CsvReader {
      * @param delimiter a char that divides the columns in the source file, often a comma or tab
      * @return A table containing the data from the file
      * @throws IOException if file cannot be read
+     * @deprecated use read(CsvReadOptions) instead
      */
+    @Deprecated
     public static Table read(File file, boolean header, char delimiter) throws IOException {
         InputStream stream = new FileInputStream(file);
         return read(stream, file.getName(), true, delimiter);
@@ -194,7 +200,9 @@ public class CsvReader {
      * @param delimiter a char that divides the columns in the source file, often a comma or tab
      * @return A table containing the data from the file
      * @throws IOException if file cannot be read
+     * @deprecated use read(CsvReadOptions) instead
      */
+    @Deprecated
     public static Table read(InputStream stream, String tableName, boolean header, char delimiter) throws IOException {
         return read(stream, tableName, true, delimiter, false);
     }
@@ -207,7 +215,9 @@ public class CsvReader {
  
     /**
      * This method buffers the entire InputStream. Use the method taking a File for large input
+     * @deprecated use read(CsvReadOptions) instead
      */
+    @Deprecated
     public static Table read(InputStream stream, String tableName, boolean header, char delimiter, boolean skipSampling) throws IOException {
         byte[] bytes = ByteStreams.toByteArray(stream);
         ColumnType[] columnTypes = detectColumnTypes(new ByteArrayInputStream(bytes), header, delimiter, skipSampling);
@@ -215,6 +225,10 @@ public class CsvReader {
         return table;
     }
 
+    /**
+     * @deprecated use read(CsvReadOptions) instead
+     */
+    @Deprecated
     public static Table read(File file,
         String tableName,
         ColumnType[] types,
@@ -223,26 +237,47 @@ public class CsvReader {
       return read(new FileInputStream(file), tableName, types, header, columnSeparator);
     }
 
+    /**
+     * @deprecated use read(CsvReadOptions) instead
+     */
+    @Deprecated
     public static Table read(InputStream stream,
             String tableName,
             ColumnType[] types,
             boolean header,
             char columnSeparator) throws IOException {
+      return read(CsvReadOptions.builder(stream, tableName)
+          .columnTypes(types).header(header).separator(columnSeparator).build());
+    }
+
+    public static Table read(CsvReadOptions options) throws IOException {
+
+        ColumnType[] types = options.columnTypes();
+        byte[] bytes = options.stream() != null ? ByteStreams.toByteArray(options.stream()) : null;
+        if (types == null) {
+          InputStream detectTypesStream = options.stream() != null
+              ? new ByteArrayInputStream(bytes)
+              : new FileInputStream(options.file());
+          types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample()); 
+        }
 
         // All other read methods end up here, make sure we don't have leading Unicode BOM
+        InputStream stream = options.stream() != null
+            ? new ByteArrayInputStream(bytes)
+            : new FileInputStream(options.file());
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
 
         Table table;
         CSVParser csvParser = new CSVParserBuilder()
-                .withSeparator(columnSeparator)
+                .withSeparator(options.separator())
                 .build();
 
         try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis)).withCSVParser(csvParser).build()) {
             String[] nextLine;
             String[] columnNames;
             List<String> headerRow;
-            if (header) {
+            if (options.header()) {
                 nextLine = reader.readNext();
                 headerRow = Lists.newArrayList(nextLine);
                 columnNames = selectColumnNames(headerRow, types);
@@ -251,7 +286,7 @@ public class CsvReader {
                 headerRow = Lists.newArrayList(columnNames);
             }
 
-            table = Table.create(tableName);
+            table = Table.create(options.tableName());
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != ColumnType.SKIP) {
                     String columnName = headerRow.get(x);
@@ -268,7 +303,7 @@ public class CsvReader {
                 columnIndexes[i] = headerRow.indexOf(columnNames[i]);
             }
             // Add the rows
-            long rowNumber = header ? 1L : 0L;
+            long rowNumber = options.header() ? 1L : 0L;
             while ((nextLine = reader.readNext()) != null) {
                 // for each column that we're including (not skipping)
                 int cellIndex = 0;
