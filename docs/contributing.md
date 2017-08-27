@@ -8,7 +8,8 @@ Tablesaw makes it easy to use Java for data science, but we can use your help. H
 * Implement new features and enhancements
 
 ## About questions
-Please use the project Issues section on Github to ask questions, tagging the issue as a "Question".
+
+Please use the project [Issues section on Github](https://github.com/jtablesaw/tablesaw/issues) to ask questions, tagging the issue as a "Question".
 
 ## Using Github to implement features and fix bugs
 
@@ -20,9 +21,9 @@ If you want to help out with one of our bugs or implement a new feature, here ar
 4. Implement your feature or fix the bug and push the results to your fork
 5. Send us a pull request.
 
-You can find more info about [creating a fork](https://help.github.com/articles/fork-a-repo/) and [pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) in the GitHub help articles. Our maintainers will review your pull request as soon as we can. You can find our project at Github:
+You can find more info about [creating a fork](https://help.github.com/articles/fork-a-repo/) and [pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) in the GitHub help articles. Our maintainers will review your pull request as soon as we can. You can find our project on Github at:
 
-https://github.com/jtablesaw/tablesaw
+[https://github.com/jtablesaw/tablesaw](https://github.com/jtablesaw/tablesaw)
 
 ## What makes a good Pull Request?
 
