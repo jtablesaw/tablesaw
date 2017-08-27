@@ -1,7 +1,6 @@
 package tech.tablesaw.io.csv;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -14,6 +13,7 @@ import tech.tablesaw.api.ColumnType;
 @Builder(builderMethodName = "hiddenBuilder")
 public class CsvReadOptions {
 
+  private final File file;
   private final InputStream stream;
   private final String tableName;
   private final ColumnType[] columnTypes;
@@ -21,12 +21,15 @@ public class CsvReadOptions {
   @Builder.Default private final char separator = ',';
   @Builder.Default private final boolean sample = true;
 
+  /**
+   * This method buffers the entire InputStream. Use the method taking a File for large input
+   */
   public static CsvReadOptionsBuilder builder(InputStream stream, String tableName) {
     return hiddenBuilder().stream(stream).tableName(tableName);
   }
 
   public static CsvReadOptionsBuilder builder(File file) throws FileNotFoundException {
-    return hiddenBuilder().stream(new FileInputStream(file)).tableName(file.getName());
+    return hiddenBuilder().file(file).tableName(file.getName());
   }
 
   public static CsvReadOptionsBuilder builder(String file) throws FileNotFoundException {

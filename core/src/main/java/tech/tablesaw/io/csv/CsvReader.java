@@ -199,11 +199,28 @@ public class CsvReader {
         return read(stream, tableName, true, delimiter, false);
     }
 
+    public static Table read(File file, String tableName, boolean header, char delimiter, boolean skipSampling) throws IOException {
+      ColumnType[] columnTypes = detectColumnTypes(new FileInputStream(file), header, delimiter, skipSampling);
+      Table table = read(new FileInputStream(file), tableName, columnTypes, true, delimiter);
+      return table;
+    }
+ 
+    /**
+     * This method buffers the entire InputStream. Use the method taking a File for large input
+     */
     public static Table read(InputStream stream, String tableName, boolean header, char delimiter, boolean skipSampling) throws IOException {
         byte[] bytes = ByteStreams.toByteArray(stream);
         ColumnType[] columnTypes = detectColumnTypes(new ByteArrayInputStream(bytes), header, delimiter, skipSampling);
         Table table = read(new ByteArrayInputStream(bytes), tableName, columnTypes, true, delimiter);
         return table;
+    }
+
+    public static Table read(File file,
+        String tableName,
+        ColumnType[] types,
+        boolean header,
+        char columnSeparator) throws IOException {
+      return read(new FileInputStream(file), tableName, types, header, columnSeparator);
     }
 
     public static Table read(InputStream stream,
