@@ -4,12 +4,16 @@ Join us in making Java a great platform for data science
 Tablesaw makes it easy to use Java for data science, but we can use your help. Here are some ways you can contribute today:
 
 * Ask or answer questions
+* Improve the documentation
 * Report or fix a bug
 * Implement new features and enhancements
 
 ## About questions
 
 Please use the project [Issues section on Github](https://github.com/jtablesaw/tablesaw/issues) to ask questions, tagging the issue as a "Question".
+
+## Improve the documentation
+All our docs are in the docs folder of the tablesaw repo, and they are all written in Markdown. To provide enhancements, follow the directions on how to implement featues and bugs below as the workflow is basically the same.
 
 ## Using Github to implement features and fix bugs
 
@@ -35,11 +39,13 @@ To summarize:
 * Finally, We love small pull requests. That we we can find time to review them between work, and family, and watching Game of Thrones.
 
 ## What to Contribute?
+### "Help Wanted" labels
+Among the open bugs and feature requests, we've tagged some as "Help Wanted". This indicates that a fix should be relatively straightforward to address. We would, of course, LOVE help on some of the more challenging issues. Help Wanted simply means that this is a good place for a developer with limited knowlege of the library and/or limited experience with Java to jump in. 
 
-Among the open bugs and feature requests, we've tagged some as "Help Wanted". This indicates that a fix should be relatively straightforward to address. 
+### Machine learning algorithms
+We'd also love to add support for more machine learning algorithms by adding new interfaces to Smile.  Basically, you’re creating methods that transform tables to the format the Smile needs, and wraps the Smile API so that the necessary options can be set through Tablesaw. Some knowledge of Smile or machine learning would, of course, be helpful. Look at existing interfaces between Tablesaw and Smile before you start. The best solutions would include an example that shows how to use the algorithm end-to-end, including preliminary data exploration to see if the data is a good fit for the model, and showing how to use diagnostics to evaluate the model. The full example is _not_ a requirement for the pull requests, however. 
 
-We'd also love to add support for more machine learning algorithms by adding new interfaces to Smile.  Basically, you’re creating methods that transform tables to the format the Smile needs, and wraps the Smile API so that the necessary options can be set through Tablesaw. Some knowledge of machine learning would be helpful
-
+### Javascript visualiation libraries
 Implement an interface for a Javascript plotting library (big job, we know), but the best Javascript libraries are awesome.
 Email larry@tablesaw.tech if you have any questions, or use the comments for the issue.
 
