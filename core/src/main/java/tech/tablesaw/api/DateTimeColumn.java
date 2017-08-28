@@ -17,6 +17,7 @@ import tech.tablesaw.filtering.LocalDateTimePredicate;
 import tech.tablesaw.filtering.LongBiPredicate;
 import tech.tablesaw.filtering.LongPredicate;
 import tech.tablesaw.io.TypeUtils;
+import tech.tablesaw.io.TypeUtils.DateTimeConverter;
 import tech.tablesaw.mapping.DateTimeMapUtils;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
@@ -27,7 +28,6 @@ import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +79,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     /**
      * The formatter chosen to parse date-time strings for this particular column
      */
-    private DateTimeFormatter selectedFormatter;
+    private DateTimeConverter selectedFormatter;
 
     public DateTimeColumn(String name) {
         super(name);
@@ -136,14 +136,8 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         if (selectedFormatter == null) {
             selectedFormatter = TypeUtils.getDateTimeFormatter(value);
         }
-        LocalDateTime time;
-        try {
-            time = LocalDateTime.parse(value, selectedFormatter);
-        } catch (DateTimeParseException e) {
-            selectedFormatter = TypeUtils.DATE_TIME_FORMATTER;
-            time = LocalDateTime.parse(value, selectedFormatter);
-        }
-        return PackedLocalDateTime.pack(time);
+        LocalDateTime datetime = selectedFormatter.convert(value);
+        return PackedLocalDateTime.pack(datetime);
     }
 
     public int size() {
@@ -482,7 +476,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     /**
-     * Returns an array where each entry is the difference, measured in milliseconds,
+     * Returns an array where each entry is the difference, measured in seconds,
      * between the LocalDateTime and midnight, January 1, 1970 UTC.
      */
     public long[] toEpochSecondArray() {
@@ -493,6 +487,22 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
       long[] output = new long[data.size()];
       for (int i = 0; i < data.size(); i++) {
           output[i] = PackedLocalDateTime.asLocalDateTime(data.getLong(i)).toEpochSecond(offset);
+      }
+      return output;
+    }
+
+    /**
+     * Returns an array where each entry is the difference, measured in milliseconds,
+     * between the LocalDateTime and midnight, January 1, 1970 UTC.
+     */
+    public long[] toEpochMillisArray() {
+      return toEpochMillisArray(ZoneOffset.UTC);
+    }
+
+    public long[] toEpochMillisArray(ZoneOffset offset) {
+      long[] output = new long[data.size()];
+      for (int i = 0; i < data.size(); i++) {
+          output[i] = PackedLocalDateTime.asLocalDateTime(data.getLong(i)).toInstant(offset).toEpochMilli();
       }
       return output;
     }

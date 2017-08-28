@@ -19,6 +19,10 @@ import tech.tablesaw.columns.Column;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
@@ -284,17 +288,33 @@ public final class TypeUtils {
      * called again. This is an optimization, because the older version, which will try multiple formatters was too
      * slow for large data sets.
      */
-    public static DateTimeFormatter getDateTimeFormatter(String dateTimeValue) {
-
+    public static DateTimeConverter getDateTimeFormatter(String dateTimeValue) {
         for (DateTimeFormatter formatter : dateTimeFormatters) {
-            try {
-                formatter.parse(dateTimeValue);
-                return formatter;
-            } catch (DateTimeParseException e) {
-                // ignore;
+            if (canParse(formatter, dateTimeValue)) {
+              return new DateTimeConverter(formatter);
             }
         }
-        return DATE_FORMATTER;
+        if (canParse(DATE_FORMATTER, dateTimeValue)) {
+            return new DateTimeConverter(DATE_FORMATTER);
+        }
+        if (canParse(DATE_TIME_FORMATTER, dateTimeValue)) {
+            return new DateTimeConverter(DATE_TIME_FORMATTER);
+        }
+        try {
+            Long.parseLong(dateTimeValue);
+            return new DateTimeConverter();
+        } catch (NumberFormatException e) {
+        }
+        throw new IllegalArgumentException("Could not find datetime parser for " + dateTimeValue);
+    }
+
+    private static boolean canParse(DateTimeFormatter formatter, String dateTimeValue) {
+      try {
+        formatter.parse(dateTimeValue);
+        return true;
+      } catch (DateTimeParseException e) {
+        return false;
+      }
     }
 
     /**
@@ -305,7 +325,6 @@ public final class TypeUtils {
      * slow for large data sets.
      */
     public static DateTimeFormatter getTimeFormatter(String timeValue) {
-
         for (DateTimeFormatter formatter : timeFormatters) {
             try {
                 formatter.parse(timeValue);
@@ -316,4 +335,33 @@ public final class TypeUtils {
         }
         return DATE_FORMATTER;
     }
+
+    /**
+     * Handles converting formatted strings and timestamps.
+     * Assumes timestamps are milliseconds since epoch (midnight, January 1, 1970 UTC).
+     * This is the timestamp format most commonly used in Java.
+     * Unix uses seconds since epoch instead of Java's millis since epoch.
+     * Unix timestamps are not currently supported.
+     */
+    public static class DateTimeConverter {
+      private final boolean isTimestamp;
+      private final DateTimeFormatter dtFormatter;
+
+      public DateTimeConverter() {
+        this.dtFormatter = null;
+        this.isTimestamp = true;        
+      }
+
+      public DateTimeConverter(DateTimeFormatter dtFormatter) {
+        this.dtFormatter = dtFormatter;
+        this.isTimestamp = false;
+      }
+
+      public LocalDateTime convert(String dateTime) {
+        return isTimestamp
+            ? Instant.ofEpochMilli(Long.parseLong(dateTime)).atZone(ZoneOffset.UTC).toLocalDateTime()
+            : LocalDateTime.parse(dateTime, dtFormatter);
+      }
+    }
+
 }

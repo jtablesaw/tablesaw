@@ -21,7 +21,7 @@ public class DateTimeColumnTest {
     }
 
     @Test
-    public void testAddCell() throws Exception {
+    public void testAppendCell() throws Exception {
         column1.appendCell("1923-10-20T10:15:30");
         column1.appendCell("1924-12-10T10:15:30");
         column1.appendCell("2015-12-05T10:15:30");
@@ -30,6 +30,21 @@ public class DateTimeColumnTest {
         LocalDateTime date = LocalDateTime.now();
         column1.append(date);
         assertEquals(5, column1.size());
+    }
+
+    @Test
+    public void testConvertMillisSinceEpoch() throws Exception {
+        long millis = 1503952123189l;
+        column1.appendCell(Long.toString(millis));
+        assertEquals(1, column1.size());
+        assertEquals(2017, column1.get(0).getYear());
+        assertEquals(8, column1.get(0).getMonthValue());
+        assertEquals(28, column1.get(0).getDayOfMonth());
+        assertEquals(20, column1.get(0).getHour());
+
+        long[] millisArr = column1.toEpochMillisArray();
+        assertEquals(1, millisArr.length);
+        assertEquals(millis, millisArr[0]);        
     }
 
     @Test
