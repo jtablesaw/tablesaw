@@ -6,7 +6,9 @@ Tablesaw makes it easy to use Java for data science, but we can use your help. H
 * Ask or answer questions
 * Improve the documentation
 * Report or fix a bug
+* Implement tests for existing features
 * Implement new features and enhancements
+* Become a project maintainer
 
 ## About questions
 
@@ -15,7 +17,10 @@ Please use the project [Issues section on Github](https://github.com/jtablesaw/t
 ## Improve the documentation
 All our docs are in the docs folder of the tablesaw repo, and they are all written in Markdown. To provide enhancements, follow the directions on how to implement featues and bugs below as the workflow is basically the same.
 
-## Using Github to implement features and fix bugs
+### Tests
+We could always use better test coverage. If you see a gap you'd like to fill, follow the basic Github process outlined below. 
+
+## Using Github to implement features and fix bugs (and improve documentation or add tests)
 
 If you want to help out with one of our bugs or implement a new feature, here are some suggestions for success.  The basic process looks like this:
 
