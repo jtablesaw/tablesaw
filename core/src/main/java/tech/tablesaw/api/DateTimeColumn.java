@@ -26,6 +26,7 @@ import tech.tablesaw.util.Selection;
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -480,6 +481,21 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return count;
     }
 
+    /**
+     * Returns an array where each entry is the difference, measured in milliseconds,
+     * between the LocalDateTime and midnight, January 1, 1970 UTC.
+     */
+    public long[] toEpochSecondArray() {
+      return toEpochSecondArray(ZoneOffset.UTC);
+    }
+
+    public long[] toEpochSecondArray(ZoneOffset offset) {
+      long[] output = new long[data.size()];
+      for (int i = 0; i < data.size(); i++) {
+          output[i] = PackedLocalDateTime.asLocalDateTime(data.getLong(i)).toEpochSecond(offset);
+      }
+      return output;
+    }
 
     public String print() {
         StringBuilder builder = new StringBuilder();
