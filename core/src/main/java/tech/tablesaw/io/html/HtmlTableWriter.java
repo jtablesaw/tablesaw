@@ -12,9 +12,9 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 
 /**
- * Static utility that Writes outlier tables in html table format for display
+ * Static utility that writes Tables in HTML format for display
  */
-final public class HtmlTableWriter {
+public final class HtmlTableWriter {
 
     /**
      * Private constructor to prevent instantiation
