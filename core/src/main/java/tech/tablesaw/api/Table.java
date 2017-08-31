@@ -1047,6 +1047,14 @@ public class Table extends Relation implements IntIterable {
         return new Maximum(this, numericColumnName);
     }
 
+    public Minimum min(String numericColumnName) {
+      return new Minimum(this, numericColumnName);
+    }
+
+    /**
+     * @deprecated use min(String) instead
+     */
+    @Deprecated
     public Minimum minimum(String numericColumnName) {
         return new Minimum(this, numericColumnName);
     }
