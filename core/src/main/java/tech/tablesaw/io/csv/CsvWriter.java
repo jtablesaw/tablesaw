@@ -1,11 +1,11 @@
 package tech.tablesaw.io.csv;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -34,20 +34,20 @@ final public class CsvWriter {
      *
      * @throws IOException if the write fails
      */
-    public static void write(Table table, OutputStream stream) throws IOException {
-        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(stream))) {
+    public static void write(Table table, Writer writer) throws IOException {
+        try (CSVWriter csvWriter = new CSVWriter(writer)) {
             String[] header = new String[table.columnCount()];
             for (int c = 0; c < table.columnCount(); c++) {
                 header[c] = table.column(c).name();
             }
-            writer.writeNext(header, false);
+            csvWriter.writeNext(header, false);
             for (int r = 0; r < table.rowCount(); r++) {
                 String[] entries = new String[table.columnCount()];
                 for (int c = 0; c < table.columnCount(); c++) {
                     table.get(r, c);
                     entries[c] = table.get(r, c);
                 }
-                writer.writeNext(entries, false);
+                csvWriter.writeNext(entries, false);
             }
         }
     }
@@ -57,8 +57,17 @@ final public class CsvWriter {
      *
      * @throws IOException if the write fails
      */
+    public static void write(Table table, OutputStream stream) throws IOException {
+       write(table, new OutputStreamWriter(stream));    
+    }
+
+    /**
+     * Writes the given table to athe given file
+     *
+     * @throws IOException if the write fails
+     */
     public static void write(Table table, File file) throws IOException {
-       write(table, new FileOutputStream(file));    
+       write(table, new FileWriter(file));    
     }
 
     /**

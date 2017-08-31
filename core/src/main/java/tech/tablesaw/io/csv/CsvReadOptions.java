@@ -3,6 +3,8 @@ package tech.tablesaw.io.csv;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import lombok.Builder;
 import lombok.Value;
@@ -14,7 +16,7 @@ import tech.tablesaw.api.ColumnType;
 public class CsvReadOptions {
 
   private final File file;
-  private final InputStream stream;
+  private final Reader reader;
   private final String tableName;
   private final ColumnType[] columnTypes;
   @Builder.Default private final boolean header = true;
@@ -25,7 +27,14 @@ public class CsvReadOptions {
    * This method buffers the entire InputStream. Use the method taking a File for large input
    */
   public static CsvReadOptionsBuilder builder(InputStream stream, String tableName) {
-    return hiddenBuilder().stream(stream).tableName(tableName);
+    return builder(new InputStreamReader(stream), tableName);
+  }
+
+  /**
+   * This method buffers the entire InputStream. Use the method taking a File for large input
+   */
+  public static CsvReadOptionsBuilder builder(Reader reader, String tableName) {
+    return hiddenBuilder().reader(reader).tableName(tableName);
   }
 
   public static CsvReadOptionsBuilder builder(File file) throws FileNotFoundException {

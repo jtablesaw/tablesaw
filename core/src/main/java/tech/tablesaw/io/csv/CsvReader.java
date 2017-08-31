@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
+import com.google.common.io.CharStreams;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
@@ -251,18 +252,18 @@ public class CsvReader {
     }
 
     public static Table read(CsvReadOptions options) throws IOException {
-
         ColumnType[] types = options.columnTypes();
-        byte[] bytes = options.stream() != null ? ByteStreams.toByteArray(options.stream()) : null;
+        byte[] bytes = options.reader() != null
+            ? CharStreams.toString(options.reader()).getBytes() : null;
         if (types == null) {
-          InputStream detectTypesStream = options.stream() != null
+          InputStream detectTypesStream = options.reader() != null
               ? new ByteArrayInputStream(bytes)
               : new FileInputStream(options.file());
           types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample()); 
         }
 
         // All other read methods end up here, make sure we don't have leading Unicode BOM
-        InputStream stream = options.stream() != null
+        InputStream stream = options.reader() != null
             ? new ByteArrayInputStream(bytes)
             : new FileInputStream(options.file());
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);

@@ -3,6 +3,7 @@ package tech.tablesaw.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Writer;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvWriter;
@@ -26,6 +27,10 @@ public class DataFrameWriter {
 
   public void csv(OutputStream stream) throws IOException {
     CsvWriter.write(table, stream);
+  }
+
+  public void csv(Writer writer) throws IOException {
+    CsvWriter.write(table, writer);
   }
 
   public void html(OutputStream stream) throws IOException {

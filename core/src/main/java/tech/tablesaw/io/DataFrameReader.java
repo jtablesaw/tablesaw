@@ -3,6 +3,7 @@ package tech.tablesaw.io;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -24,6 +25,10 @@ public class DataFrameReader {
 
   public Table csv(InputStream stream, String tableName) throws IOException {
     return csv(CsvReadOptions.builder(stream, tableName));
+  }
+
+  public Table csv(Reader reader, String tableName) throws IOException {
+    return csv(CsvReadOptions.builder(reader, tableName));
   }
 
   public Table csv(CsvReadOptionsBuilder options) throws IOException {
