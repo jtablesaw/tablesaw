@@ -265,7 +265,7 @@ public class StorageManager {
         return times;
     }
 
-    public static CategoryColumn readCategoryColumn(String fileName, ColumnMetadata metadata) throws IOException {
+    static CategoryColumn readCategoryColumn(String fileName, ColumnMetadata metadata) throws IOException {
         CategoryColumn stringColumn = new CategoryColumn(metadata);
         try (FileInputStream fis = new FileInputStream(fileName);
              SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
@@ -404,7 +404,7 @@ public class StorageManager {
     }
 
     @VisibleForTesting
-    public static void writeColumn(String fileName, FloatColumn column) throws IOException {
+    static void writeColumn(String fileName, FloatColumn column) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
@@ -420,7 +420,7 @@ public class StorageManager {
         }
     }
 
-    public static void writeColumn(String fileName, DoubleColumn column) throws IOException {
+    static void writeColumn(String fileName, DoubleColumn column) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
@@ -443,8 +443,7 @@ public class StorageManager {
      *
      * @throws IOException IOException if the file can not be read
      */
-    public static void writeColumn(String fileName, CategoryColumn column) throws IOException {
-
+    static void writeColumn(String fileName, CategoryColumn column) throws IOException {
         int categoryCount = column.dictionaryMap().size();
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
@@ -471,7 +470,7 @@ public class StorageManager {
     }
 
     //TODO(lwhite): saveTable the column using integer compression
-    public static void writeColumn(String fileName, IntColumn column) throws IOException {
+    static void writeColumn(String fileName, IntColumn column) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
@@ -487,7 +486,7 @@ public class StorageManager {
         }
     }
 
-    public static void writeColumn(String fileName, ShortColumn column) throws IOException {
+    static void writeColumn(String fileName, ShortColumn column) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
@@ -503,7 +502,7 @@ public class StorageManager {
         }
     }
 
-    public static void writeColumn(String fileName, LongColumn column) throws IOException {
+    static void writeColumn(String fileName, LongColumn column) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
@@ -520,7 +519,7 @@ public class StorageManager {
     }
 
     //TODO(lwhite): saveTable the column using integer compression
-    public static void writeColumn(String fileName, DateColumn column) throws IOException {
+    static void writeColumn(String fileName, DateColumn column) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
@@ -536,7 +535,7 @@ public class StorageManager {
         }
     }
 
-    public static void writeColumn(String fileName, DateTimeColumn column) throws IOException {
+    static void writeColumn(String fileName, DateTimeColumn column) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
@@ -553,7 +552,7 @@ public class StorageManager {
     }
 
     //TODO(lwhite): saveTable the column using integer compression
-    public static void writeColumn(String fileName, TimeColumn column) throws IOException {
+    static void writeColumn(String fileName, TimeColumn column) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
@@ -570,7 +569,7 @@ public class StorageManager {
     }
 
     //TODO(lwhite): saveTable the column using compressed bitmap
-    public static void writeColumn(String fileName, BooleanColumn column) throws IOException {
+    static void writeColumn(String fileName, BooleanColumn column) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
