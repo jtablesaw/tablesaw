@@ -24,6 +24,10 @@ public class DataFrameWriter {
       CsvWriter.write(table, file);
   }
 
+  public void csv(OutputStream stream) throws IOException {
+    CsvWriter.write(table, stream);
+  }
+
   public void html(OutputStream stream) throws IOException {
       HtmlTableWriter.write(table, stream);
   }

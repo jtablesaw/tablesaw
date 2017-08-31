@@ -1,8 +1,11 @@
 package tech.tablesaw.io.csv;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -31,8 +34,8 @@ final public class CsvWriter {
      *
      * @throws IOException if the write fails
      */
-    public static void write(Table table, File file) throws IOException {
-        try (CSVWriter writer = new CSVWriter(new FileWriter(file))) {
+    public static void write(Table table, OutputStream stream) throws IOException {
+        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(stream))) {
             String[] header = new String[table.columnCount()];
             for (int c = 0; c < table.columnCount(); c++) {
                 header[c] = table.column(c).name();
@@ -47,6 +50,15 @@ final public class CsvWriter {
                 writer.writeNext(entries, false);
             }
         }
+    }
+
+    /**
+     * Writes the given table to a file with the given filename
+     *
+     * @throws IOException if the write fails
+     */
+    public static void write(Table table, File file) throws IOException {
+       write(table, new FileOutputStream(file));    
     }
 
     /**
