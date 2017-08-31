@@ -10,14 +10,11 @@ import tech.tablesaw.columns.Column;
  */
 public class ColumnMetadata {
 
-    static final Gson GSON = new Gson();
+    private static final Gson GSON = new Gson();
 
     private final String id;
-
     private final String name;
-
     private final ColumnType type;
-
     private final int size;
 
     public ColumnMetadata(Column column) {

@@ -10,17 +10,15 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Data about a specific physical table used in it's persistence
+ * Data about a specific physical table used in its persistence
  */
 public class TableMetadata {
 
     private static final Gson GSON = new Gson();
 
-    private final String name;
-
-    private final int rowCount;
-
     private final List<ColumnMetadata> columnMetadataList = new ArrayList<>();
+    private final String name;
+    private final int rowCount;
 
     public TableMetadata(Relation table) {
         this.name = table.name();
