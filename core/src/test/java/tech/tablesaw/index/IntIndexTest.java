@@ -7,7 +7,7 @@ import tech.tablesaw.columns.IntColumnUtils;
 import tech.tablesaw.columns.packeddata.PackedLocalDate;
 import tech.tablesaw.index.DateIndex;
 import tech.tablesaw.index.IntIndex;
-import tech.tablesaw.io.csv.CsvReader;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.util.Selection;
 
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class IntIndexTest {
 
     @Before
     public void setUp() throws Exception {
-        table = CsvReader.read(types, "../data/BushApproval.csv");
+        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv").columnTypes(types));
         index = new IntIndex(table.intColumn("approval"));
         dateIndex = new DateIndex(table.dateColumn("date"));
     }

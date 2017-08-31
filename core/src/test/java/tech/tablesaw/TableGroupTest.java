@@ -6,7 +6,7 @@ import org.junit.Test;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReader;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.table.SubTable;
 import tech.tablesaw.table.TableGroup;
 
@@ -29,7 +29,7 @@ public class TableGroupTest {
 
     @Before
     public void setUp() throws Exception {
-        table = CsvReader.read(types, "../data/BushApproval.csv");
+        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv").columnTypes(types));
     }
 
     @Test

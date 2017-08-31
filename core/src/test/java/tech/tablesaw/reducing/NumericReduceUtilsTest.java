@@ -6,15 +6,13 @@ import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.csv.CsvReader;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.reducing.NumericReduceUtils;
 import tech.tablesaw.table.ViewGroup;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- *
- */
+
 public class NumericReduceUtilsTest {
 
     private static ColumnType[] types = {
@@ -27,7 +25,7 @@ public class NumericReduceUtilsTest {
 
     @Before
     public void setUp() throws Exception {
-        table = CsvReader.read(types, "../data/BushApproval.csv");
+        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv").columnTypes(types));
     }
 
     @Test

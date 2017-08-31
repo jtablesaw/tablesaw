@@ -8,7 +8,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReader;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -66,7 +66,9 @@ public class StorageManagerTest {
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         System.out.println("loading");
-        tech.tablesaw.api.Table tornados = CsvReader.read(COLUMN_TYPES, "../data/1950-2014_torn.csv");
+        tech.tablesaw.api.Table tornados = Table.read()
+            .csv(CsvReadOptions.builder("../data/1950-2014_torn.csv").columnTypes(COLUMN_TYPES));
+
         tornados.setName("tornados");
         System.out.println(String.format("loaded %d records in %d seconds",
                 tornados.rowCount(),

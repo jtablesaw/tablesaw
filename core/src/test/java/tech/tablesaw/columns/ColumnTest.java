@@ -9,7 +9,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.csv.CsvReader;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
 
@@ -31,7 +31,7 @@ public class ColumnTest {
 
     @Before
     public void setUp() throws Exception {
-        table = CsvReader.read(types, "../data/BushApproval.csv");
+        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv").columnTypes(types));
     }
 
     @Test

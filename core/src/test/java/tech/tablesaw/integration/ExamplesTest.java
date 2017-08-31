@@ -5,7 +5,7 @@ import static tech.tablesaw.api.ColumnType.*;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReader;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvWriter;
 
 /**
@@ -20,7 +20,7 @@ public class ExamplesTest {
 
         // Read the CSV file
         ColumnType[] types = {INTEGER, CATEGORY, CATEGORY, FLOAT, FLOAT};
-        Table table = CsvReader.read(types, "../data/bus_stop_test.csv");
+        Table table = Table.read().csv(CsvReadOptions.builder("../data/bus_stop_test.csv").columnTypes(types));
 
         // Look at the column names
         out(table.columnNames());
