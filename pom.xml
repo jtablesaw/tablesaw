@@ -204,38 +204,40 @@
           </configuration>
         </plugin>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.4</version>
-          <inherited>false</inherited>
-          <configuration>
-            <reportOutputDirectory>docs</reportOutputDirectory>
-            <destDir>apidocs</destDir>
-          </configuration>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.7.9</version>
           <executions>
             <execution>
-              <id>aggregate</id>
-              <phase>site</phase>
+              <id>prepare-agent</id>
               <goals>
-                <goal>aggregate</goal>
+                <goal>prepare-agent</goal>
               </goals>
             </execution>
+            <execution>
+              <id>report</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+            <execution>
+                <id>post-unit-test</id>
+		<phase>test</phase>
+		<goals>
+                  <goal>report</goal>
+		</goals>
+		<configuration>
+                  <outputDirectory>target/jacoco-ut</outputDirectory>
+                  <dataFile>target/jacoco.exec</dataFile>
+		</configuration>
+            </execution>
           </executions>
-        </plugin>
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
-            <version>2.7</version>
-            <configuration>
-                <quiet>true</quiet>
-                <formats>
-                    <format>html</format>
-                    <format>xml</format>
-                </formats>
-                <format>xml</format>
-                <maxmem>256m</maxmem>
-                <aggregate>true</aggregate>
-            </configuration>
+          <configuration>
+            <systemPropertyVariables>
+              <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+            </systemPropertyVariables>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -244,10 +246,25 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.4</version>
+        <inherited>false</inherited>
+        <configuration>
+          <reportOutputDirectory>docs</reportOutputDirectory>
+          <destDir>apidocs</destDir>
+        </configuration>
+        <executions>
+          <execution>
+            <id>aggregate</id>
+            <phase>site</phase>
+            <goals>
+              <goal>aggregate</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
