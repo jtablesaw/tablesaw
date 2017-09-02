@@ -206,7 +206,7 @@
         <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>cobertura-maven-plugin</artifactId>
-            <version>2.6</version>
+            <version>2.7</version>
             <configuration>
                 <quiet>true</quiet>
                 <formats>
@@ -217,13 +217,6 @@
                 <maxmem>256m</maxmem>
                 <aggregate>true</aggregate>
             </configuration>
-            <dependencies>
-                <dependency>
-                    <groupId>org.ow2.asm</groupId>
-                    <artifactId>asm</artifactId>
-                    <version>5.0.3</version>
-                </dependency>
-            </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>
