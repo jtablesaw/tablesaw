@@ -204,6 +204,25 @@
           </configuration>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.10.4</version>
+          <inherited>false</inherited>
+          <configuration>
+            <reportOutputDirectory>docs</reportOutputDirectory>
+            <destDir>apidocs</destDir>
+          </configuration>
+          <executions>
+            <execution>
+              <id>aggregate</id>
+              <phase>site</phase>
+              <goals>
+                <goal>aggregate</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>cobertura-maven-plugin</artifactId>
             <version>2.7</version>
@@ -225,21 +244,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.4</version>
-        <inherited>false</inherited>
-        <configuration>
-          <reportOutputDirectory>docs</reportOutputDirectory>
-          <destDir>apidocs</destDir>
-        </configuration>
-        <executions>
-          <execution>
-            <id>aggregate</id>
-            <phase>site</phase>
-            <goals>
-              <goal>aggregate</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
