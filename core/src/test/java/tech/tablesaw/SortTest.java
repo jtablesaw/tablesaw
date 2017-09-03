@@ -20,7 +20,7 @@ public class SortTest {
     private Table unsortedTable;
 
     @Before
-    public void setup() {
+    public void setUp() {
         unsortedTable = TestData.SIMPLE_UNSORTED_DATA.getTable();
     }
 

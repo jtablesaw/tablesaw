@@ -13,7 +13,7 @@ public class BooleanColumnTest {
     private final BooleanColumn column = new BooleanColumn("Test");
 
     @Before
-    public void setup() {
+    public void setUp() {
         column.append(false);
         column.append(false);
         column.append(false);
