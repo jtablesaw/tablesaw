@@ -77,7 +77,7 @@ public class HorizontalBar extends FxPlot {
                                        int height) throws Exception {
         // This method is invoked on the EDT thread
         final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
-        BarChart<Number, String> chart = FxHorizontalBar.chart("", categoryColumn, numericColumn);
+        BarChart<Number, String> chart = FxHorizontalBar.chart(title, categoryColumn, numericColumn);
         Platform.runLater(() -> initFX(fxPanel, chart));
     }
 
@@ -88,7 +88,7 @@ public class HorizontalBar extends FxPlot {
                                        int height) throws Exception {
         // This method is invoked on the EDT thread
         final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
-        BarChart<Number, String> chart = FxHorizontalBar.chart("", categoryColumn, numericColumn);
+        BarChart<Number, String> chart = FxHorizontalBar.chart(title, categoryColumn, numericColumn);
         Platform.runLater(() -> initFX(fxPanel, chart));
     }
 
@@ -99,7 +99,7 @@ public class HorizontalBar extends FxPlot {
                                        int height) throws Exception {
         // This method is invoked on the EDT thread
         final JFXPanel fxPanel = getJfxPanel(WINDOW_TITLE, width, height);
-        BarChart<Number, String> chart = FxHorizontalBar.chart("", categoryColumn, numericColumn);
+        BarChart<Number, String> chart = FxHorizontalBar.chart(title, categoryColumn, numericColumn);
         Platform.runLater(() -> initFX(fxPanel, chart));
     }
 
