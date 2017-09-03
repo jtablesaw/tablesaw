@@ -222,15 +222,15 @@
               </goals>
             </execution>
             <execution>
-                <id>post-unit-test</id>
-		<phase>test</phase>
-		<goals>
-                  <goal>report</goal>
-		</goals>
-		<configuration>
-                  <outputDirectory>target/jacoco-ut</outputDirectory>
-                  <dataFile>target/jacoco.exec</dataFile>
-		</configuration>
+              <id>post-unit-test</id>
+              <phase>test</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+              <configuration>
+                <outputDirectory>target/jacoco-ut</outputDirectory>
+                <dataFile>target/jacoco.exec</dataFile>
+              </configuration>
             </execution>
           </executions>
           <configuration>
