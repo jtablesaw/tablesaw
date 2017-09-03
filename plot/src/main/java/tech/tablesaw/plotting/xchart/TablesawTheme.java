@@ -11,16 +11,9 @@ import tech.tablesaw.plotting.StandardColors;
 
 import java.awt.*;
 
-/**
- *
- */
 public class TablesawTheme implements Theme {
 
     GGPlot2Theme ggPlot2Theme = new GGPlot2Theme();
-
-    public TablesawTheme() {
-
-    }
 
     @Override
     public Color getChartBackgroundColor() {

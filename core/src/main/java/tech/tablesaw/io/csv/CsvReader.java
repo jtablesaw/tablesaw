@@ -600,50 +600,32 @@ public class CsvReader {
             if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {
                 continue;
             }
-            if (typeCandidates.contains(LOCAL_DATE_TIME)) {
-                if (!isLocalDateTime.test(s)) {
-                    typeCandidates.remove(LOCAL_DATE_TIME);
-                }
+            if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime.test(s)) {
+                typeCandidates.remove(LOCAL_DATE_TIME);
             }
-            if (typeCandidates.contains(LOCAL_TIME)) {
-                if (!isLocalTime.test(s)) {
-                    typeCandidates.remove(LOCAL_TIME);
-                }
+            if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime.test(s)) {
+                typeCandidates.remove(LOCAL_TIME);
             }
-            if (typeCandidates.contains(LOCAL_DATE)) {
-                if (!isLocalDate.test(s)) {
-                    typeCandidates.remove(LOCAL_DATE);
-                }
+            if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate.test(s)) {
+                typeCandidates.remove(LOCAL_DATE);
             }
-            if (typeCandidates.contains(BOOLEAN)) {
-                if (!isBoolean.test(s)) {
-                    typeCandidates.remove(BOOLEAN);
-                }
+            if (typeCandidates.contains(BOOLEAN) && !isBoolean.test(s)) {
+                typeCandidates.remove(BOOLEAN);
             }
-            if (typeCandidates.contains(SHORT_INT)) {
-                if (!isShort.test(s)) {
-                    typeCandidates.remove(SHORT_INT);
-                }
+            if (typeCandidates.contains(SHORT_INT) && !isShort.test(s)) {
+                typeCandidates.remove(SHORT_INT);
             }
-            if (typeCandidates.contains(INTEGER)) {
-                if (!isInteger.test(s)) {
-                    typeCandidates.remove(INTEGER);
-                }
+            if (typeCandidates.contains(INTEGER) && !isInteger.test(s)) {
+                typeCandidates.remove(INTEGER);
             }
-            if (typeCandidates.contains(LONG_INT)) {
-                if (!isLong.test(s)) {
-                    typeCandidates.remove(LONG_INT);
-                }
+            if (typeCandidates.contains(LONG_INT) && !isLong.test(s)) {
+                typeCandidates.remove(LONG_INT);
             }
-            if (typeCandidates.contains(FLOAT)) {
-                if (!isFloat.test(s)) {
-                    typeCandidates.remove(FLOAT);
-                }
+            if (typeCandidates.contains(FLOAT) && !isFloat.test(s)) {
+                typeCandidates.remove(FLOAT);
             }
-            if (typeCandidates.contains(DOUBLE)) {
-                if (!isDouble.test(s)) {
-                    typeCandidates.remove(DOUBLE);
-                }
+            if (typeCandidates.contains(DOUBLE) && !isDouble.test(s)) {
+                typeCandidates.remove(DOUBLE);
             }
         }
         return selectType(typeCandidates);

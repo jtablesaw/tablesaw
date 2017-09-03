@@ -179,7 +179,7 @@ public class PackedLocalDate {
             case DECEMBER:
                 return 4;
         }
-        throw new RuntimeException("Failed to extract quarter from packedDate");
+        throw new IllegalStateException("Failed to extract quarter from packedDate");
     }
 
     public static boolean isInQ1(int packedDate) {

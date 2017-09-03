@@ -55,8 +55,8 @@ public class StandardColors {
                     }
                 }
             }
-        } catch (IOException ex) {
-            throw new RuntimeException("Unable to read predefined colors file", ex);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Unable to read predefined colors file", e);
         }
         return standards;
     }
