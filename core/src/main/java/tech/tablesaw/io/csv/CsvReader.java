@@ -285,13 +285,14 @@ public class CsvReader {
             }
 
             table = Table.create(options.tableName());
+            cleanNames(headerRow);
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != ColumnType.SKIP) {
                     String columnName = headerRow.get(x);
                     if (Strings.isNullOrEmpty(columnName)) {
                         columnName = "Column " + table.columnCount();
                     }
-                    Column newColumn = TypeUtils.newColumn(columnName.trim(), types[x]);
+                    Column newColumn = TypeUtils.newColumn(columnName, types[x]);
                     table.addColumn(newColumn);
                 }
             }
@@ -318,6 +319,12 @@ public class CsvReader {
             }
         }
         return table;
+    }
+
+    private static void cleanNames(List<String> headerRow) {
+        for (int i = 0; i < headerRow.size(); i++) {
+            headerRow.set(i, headerRow.get(i).trim());
+        }
     }
 
     /**
