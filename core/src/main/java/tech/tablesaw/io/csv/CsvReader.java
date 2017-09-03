@@ -287,7 +287,7 @@ public class CsvReader {
             table = Table.create(options.tableName());
             cleanNames(headerRow);
             for (int x = 0; x < types.length; x++) {
-                if (types[x] != ColumnType.SKIP) {
+                if (types[x] != SKIP) {
                     String columnName = headerRow.get(x);
                     if (Strings.isNullOrEmpty(columnName)) {
                         columnName = "Column " + table.columnCount();
