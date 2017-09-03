@@ -103,7 +103,7 @@ public class NanoBench {
             }
         }
         if (listener == null) {
-            throw new RuntimeException("Can't find memory measures");
+            throw new IllegalStateException("Can't find memory measures");
         }
         return (MemoryUsage) listener;
     }

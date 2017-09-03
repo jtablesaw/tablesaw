@@ -421,8 +421,9 @@ public class Table extends Relation implements IntIterable {
      * Returns an randomly generated array of ints of size N where Max is the largest possible value
      */
     static int[] generateUniformBitmap(int N, int Max) {
-
-        if (N > Max) throw new RuntimeException("not possible");
+        if (N > Max) {
+          throw new IllegalArgumentException("Illegal arguments: N (" + N + ") greater than Max (" + Max + ")");
+        }
 
         int[] ans = new int[N];
         if (N == Max) {
@@ -459,7 +460,7 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * Throws a runtime exception if a column with the given name is already in the table
+     * Throws an IllegalArgumentException if a column with the given name is already in the table
      */
     private void validateColumn(Column newColumn) {
         Preconditions.checkNotNull(newColumn, "Attempted to add a null to the columns in table " + name);
@@ -469,7 +470,7 @@ public class Table extends Relation implements IntIterable {
         }
         if (stringList.contains(newColumn.name().toLowerCase())) {
             String message = String.format("Cannot add column with duplicate name %s to table %s", newColumn, name);
-            throw new RuntimeException(message);
+            throw new IllegalArgumentException(message);
         }
     }
 

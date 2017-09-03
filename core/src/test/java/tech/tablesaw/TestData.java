@@ -69,8 +69,7 @@ public enum TestData {
                 .builder(csvSource)
                 .columnTypes(columnTypes));
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Unable to read from CSV file");
+            throw new IllegalStateException("Unable to read from CSV file", e);
         }
         this.columnTypes = columnTypes;
         this.source = Paths.get(csvSource);
