@@ -93,6 +93,6 @@ public class ColumnTest {
     @Test
     public void testType() throws Exception {
         Column c = table.intColumn("approval");
-        assertEquals(ColumnType.INTEGER, c.type());
+        assertEquals(INTEGER, c.type());
     }
 }

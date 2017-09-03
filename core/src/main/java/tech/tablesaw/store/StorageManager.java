@@ -72,7 +72,7 @@ public class StorageManager {
      *             specified. The path will typically end in ".saw", as in "mytables/nasdaq-2015.saw"
      * @throws IOException if the file cannot be read
      */
-    public static tech.tablesaw.api.Table readTable(String path) throws IOException {
+    public static Table readTable(String path) throws IOException {
 
         ExecutorService executorService = Executors.newFixedThreadPool(READER_POOL_SIZE);
         CompletionService<Void> readerCompletionService = new ExecutorCompletionService<>(executorService);

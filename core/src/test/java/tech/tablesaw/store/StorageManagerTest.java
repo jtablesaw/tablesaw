@@ -66,7 +66,7 @@ public class StorageManagerTest {
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         System.out.println("loading");
-        tech.tablesaw.api.Table tornados = Table.read()
+        Table tornados = Table.read()
             .csv(CsvReadOptions.builder("../data/1950-2014_torn.csv").columnTypes(COLUMN_TYPES));
 
         tornados.setName("tornados");
@@ -123,7 +123,7 @@ public class StorageManagerTest {
     public void testWriteTableTwice() throws IOException {
 
         StorageManager.saveTable("/tmp/mytables2", table);
-        tech.tablesaw.api.Table t = StorageManager.readTable("/tmp/mytables2/t.saw");
+        Table t = StorageManager.readTable("/tmp/mytables2/t.saw");
         t.floatColumn("float").setName("a float column");
 
         StorageManager.saveTable("/tmp/mytables2", table);

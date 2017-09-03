@@ -39,13 +39,10 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.io.UnicodeBOMInputStream;
 
-/**
- *
- */
 @Immutable
 public class CsvReader {
 
-    private static java.util.function.Predicate<String> isBoolean = s
+    private static Predicate<String> isBoolean = s
             -> TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
     private static Predicate<String> isLong = new Predicate<String>() {
 
@@ -366,7 +363,7 @@ public class CsvReader {
 
             table = Table.create(file.getName());
             for (int x = 0; x < types.length; x++) {
-                if (types[x] != ColumnType.SKIP) {
+                if (types[x] != SKIP) {
                     Column newColumn = TypeUtils.newColumn(headerRow.get(x).trim(), types[x]);
                     table.addColumn(newColumn);
                 }
@@ -465,7 +462,7 @@ public class CsvReader {
     private static String[] selectColumnNames(List<String> names, ColumnType types[]) {
         List<String> header = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
-            if (types[i] != ColumnType.SKIP) {
+            if (types[i] != SKIP) {
                 header.add(names.get(i).trim());
             }
         }

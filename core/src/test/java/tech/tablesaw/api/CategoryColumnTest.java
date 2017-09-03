@@ -3,7 +3,6 @@ package tech.tablesaw.api;
 import tech.tablesaw.TestDataUtil;
 import tech.tablesaw.util.Selection;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,9 +10,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-/**
- *
- */
 public class CategoryColumnTest {
 
     private CategoryColumn column = new CategoryColumn("testing");
@@ -33,7 +29,7 @@ public class CategoryColumnTest {
 
     @Test
     public void testType() {
-        Assert.assertEquals(ColumnType.CATEGORY, column.type());
+        assertEquals(ColumnType.CATEGORY, column.type());
     }
 
     @Test

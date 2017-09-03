@@ -100,9 +100,9 @@ public class CsvReaderTest {
     public void testDataTypeDetection2() throws Exception {
         InputStream stream = new FileInputStream(new File("../data/BushApproval.csv"));
         ColumnType[] columnTypes = CsvReader.detectColumnTypes(stream, true, ',', false);
-        assertEquals(ColumnType.LOCAL_DATE, columnTypes[0]);
-        assertEquals(ColumnType.SHORT_INT, columnTypes[1]);
-        assertEquals(ColumnType.CATEGORY, columnTypes[2]);
+        assertEquals(LOCAL_DATE, columnTypes[0]);
+        assertEquals(SHORT_INT, columnTypes[1]);
+        assertEquals(CATEGORY, columnTypes[2]);
     }
 
     @Ignore

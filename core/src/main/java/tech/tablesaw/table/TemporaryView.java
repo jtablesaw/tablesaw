@@ -287,9 +287,9 @@ public class TemporaryView extends Relation implements IntIterable {
     }
 
     @Override
-    public it.unimi.dsi.fastutil.ints.IntIterator iterator() {
+    public IntIterator iterator() {
 
-        return new it.unimi.dsi.fastutil.ints.IntIterator() {
+        return new IntIterator() {
 
             private int i = 0;
 
