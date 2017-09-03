@@ -41,7 +41,7 @@ import java.util.Set;
  * of missing values in this class's methods.
  */
 public class CategoryColumn extends AbstractColumn
-        implements CategoryFilters, CategoryColumnUtils, Iterable<String> {
+        implements CategoryFilters, CategoryColumnUtils, IntConvertibleColumn, Iterable<String> {
 
     public static final String MISSING_VALUE = (String) ColumnType.CATEGORY.getMissingValue();
     private static final int BYTE_SIZE = 4;
@@ -195,6 +195,11 @@ public class CategoryColumn extends AbstractColumn
             strings.add(category);
         }
         return strings;
+    }
+
+    @Override
+    public int[] toIntArray() {
+      return data().toIntArray();
     }
 
     @Override

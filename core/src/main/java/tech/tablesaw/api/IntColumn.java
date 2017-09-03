@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 /**
  * A column that contains signed 4 byte integer values
  */
-public class IntColumn extends AbstractColumn implements IntMapUtils, NumericColumn {
+public class IntColumn extends AbstractColumn implements IntMapUtils, NumericColumn, IntConvertibleColumn {
 
     public static final int MISSING_VALUE = (Integer) ColumnType.INTEGER.getMissingValue();
     public static final int DEFAULT_ARRAY_SIZE = 128;
@@ -400,6 +400,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return output;
     }
 
+    @Override
     public int[] toIntArray() {
         int[] output = new int[data.size()];
         for (int i = 0; i < data.size(); i++) {

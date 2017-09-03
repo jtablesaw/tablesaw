@@ -7,14 +7,12 @@ import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.IntConvertibleColumn;
 import tech.tablesaw.util.DoubleArrays;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-/**
- *
- */
 public class LogisticRegression extends AbstractClassifier {
 
     private final smile.classification.LogisticRegression classifierModel;
@@ -23,62 +21,20 @@ public class LogisticRegression extends AbstractClassifier {
         this.classifierModel = classifierModel;
     }
 
-    public static LogisticRegression learn(ShortColumn labels, NumericColumn... predictors) {
+    public static LogisticRegression learn(IntConvertibleColumn labels, NumericColumn... predictors) {
         smile.classification.LogisticRegression classifierModel =
                 new smile.classification.LogisticRegression(DoubleArrays.to2dArray(predictors), labels.toIntArray());
         return new LogisticRegression(classifierModel);
     }
 
-    public static LogisticRegression learn(IntColumn labels, NumericColumn... predictors) {
-        smile.classification.LogisticRegression classifierModel =
-                new smile.classification.LogisticRegression(DoubleArrays.to2dArray(predictors), labels.data()
-                        .toIntArray());
-        return new LogisticRegression(classifierModel);
-    }
-
-    public static LogisticRegression learn(BooleanColumn labels, NumericColumn... predictors) {
-        smile.classification.LogisticRegression classifierModel =
-                new smile.classification.LogisticRegression(DoubleArrays.to2dArray(predictors), labels.toIntArray());
-        return new LogisticRegression(classifierModel);
-    }
-
-    public static LogisticRegression learn(CategoryColumn labels, NumericColumn... predictors) {
-        smile.classification.LogisticRegression classifierModel =
-                new smile.classification.LogisticRegression(DoubleArrays.to2dArray(predictors), labels.data()
-                        .toIntArray());
-        return new LogisticRegression(classifierModel);
-    }
-
-    public static LogisticRegression learn(ShortColumn labels, double lambda, NumericColumn... predictors) {
+    public static LogisticRegression learn(IntConvertibleColumn labels, double lambda, NumericColumn... predictors) {
         smile.classification.LogisticRegression classifierModel =
                 new smile.classification.LogisticRegression(DoubleArrays.to2dArray(predictors), labels.toIntArray(),
                         lambda);
         return new LogisticRegression(classifierModel);
     }
 
-    public static LogisticRegression learn(IntColumn labels, double lambda, NumericColumn... predictors) {
-        smile.classification.LogisticRegression classifierModel =
-                new smile.classification.LogisticRegression(DoubleArrays.to2dArray(predictors), labels.data()
-                        .toIntArray(), lambda);
-        return new LogisticRegression(classifierModel);
-    }
-
-    public static LogisticRegression learn(BooleanColumn labels, double lambda, NumericColumn... predictors) {
-        smile.classification.LogisticRegression classifierModel =
-                new smile.classification.LogisticRegression(DoubleArrays.to2dArray(predictors), labels.toIntArray(),
-                        lambda);
-        return new LogisticRegression(classifierModel);
-    }
-
-    public static LogisticRegression learn(CategoryColumn labels, double lambda, NumericColumn... predictors) {
-        smile.classification.LogisticRegression classifierModel =
-                new smile.classification.LogisticRegression(DoubleArrays.to2dArray(predictors), labels.data()
-                        .toIntArray(), lambda);
-
-        return new LogisticRegression(classifierModel);
-    }
-
-    public static LogisticRegression learn(ShortColumn labels,
+    public static LogisticRegression learn(IntConvertibleColumn labels,
                                            double lambda,
                                            double tolerance,
                                            int maxIters,
@@ -91,56 +47,6 @@ public class LogisticRegression extends AbstractClassifier {
                         lambda,
                         tolerance,
                         maxIters);
-        return new LogisticRegression(classifierModel);
-    }
-
-    public static LogisticRegression learn(IntColumn labels,
-                                           double lambda,
-                                           double tolerance,
-                                           int maxIters,
-                                           NumericColumn... predictors) {
-
-        smile.classification.LogisticRegression classifierModel =
-                new smile.classification.LogisticRegression(
-                        DoubleArrays.to2dArray(predictors),
-                        labels.data().toIntArray(),
-                        lambda,
-                        tolerance,
-                        maxIters);
-        return new LogisticRegression(classifierModel);
-    }
-
-    public static LogisticRegression learn(BooleanColumn labels,
-                                           double lambda,
-                                           double tolerance,
-                                           int maxIters,
-                                           NumericColumn... predictors) {
-
-        smile.classification.LogisticRegression classifierModel =
-                new smile.classification.LogisticRegression(
-                        DoubleArrays.to2dArray(predictors),
-                        labels.toIntArray(),
-                        lambda,
-                        tolerance,
-                        maxIters);
-        return new LogisticRegression(classifierModel);
-    }
-
-    public static LogisticRegression learn(CategoryColumn labels,
-                                           double lambda,
-                                           double tolerance,
-                                           int maxIters,
-                                           NumericColumn... predictors) {
-
-        smile.classification.LogisticRegression classifierModel =
-                new smile.classification.LogisticRegression(
-                        DoubleArrays.to2dArray(predictors),
-                        labels.data().toIntArray(),
-                        lambda,
-                        tolerance,
-                        maxIters
-                );
-
         return new LogisticRegression(classifierModel);
     }
 

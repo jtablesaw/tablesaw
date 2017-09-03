@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 /**
  * A column that contains signed 2 byte integer values
  */
-public class ShortColumn extends AbstractColumn implements ShortMapUtils, NumericColumn {
+public class ShortColumn extends AbstractColumn implements ShortMapUtils, NumericColumn, IntConvertibleColumn {
 
     public static final short MISSING_VALUE = (Short) ColumnType.SHORT_INT.getMissingValue();
 
@@ -603,6 +603,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return returnValue;
     }
 
+    @Override
     public int[] toIntArray() {
         int[] output = new int[data.size()];
         for (int i = 0; i < data.size(); i++) {

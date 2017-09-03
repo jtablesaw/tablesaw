@@ -7,18 +7,12 @@ import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.util.DoubleArrays;
 
-/**
- *
- */
 public class Xmeans {
 
     private final XMeans model;
-
     private final NumericColumn[] inputColumns;
 
-
     public Xmeans(int maxK, NumericColumn... columns) {
-
         double[][] data = DoubleArrays.to2dArray(columns);
         this.model = new XMeans(data, maxK);
         this.inputColumns = columns;

@@ -5,6 +5,7 @@ import smile.classification.KNN;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntConvertibleColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.util.DoubleArrays;
@@ -23,23 +24,8 @@ public class Knn extends AbstractClassifier {
         this.classifierModel = classifierModel;
     }
 
-    public static Knn learn(int k, ShortColumn labels, NumericColumn... predictors) {
+    public static Knn learn(int k, IntConvertibleColumn labels, NumericColumn... predictors) {
         KNN<double[]> classifierModel = KNN.learn(DoubleArrays.to2dArray(predictors), labels.toIntArray(), k);
-        return new Knn(classifierModel);
-    }
-
-    public static Knn learn(int k, IntColumn labels, NumericColumn... predictors) {
-        KNN<double[]> classifierModel = KNN.learn(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), k);
-        return new Knn(classifierModel);
-    }
-
-    public static Knn learn(int k, BooleanColumn labels, NumericColumn... predictors) {
-        KNN<double[]> classifierModel = KNN.learn(DoubleArrays.to2dArray(predictors), labels.toIntArray(), k);
-        return new Knn(classifierModel);
-    }
-
-    public static Knn learn(int k, CategoryColumn labels, NumericColumn... predictors) {
-        KNN<double[]> classifierModel = KNN.learn(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), k);
         return new Knn(classifierModel);
     }
 

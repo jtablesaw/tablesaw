@@ -3,7 +3,7 @@ package tech.tablesaw.api.ml.classification;
 import com.google.common.base.Preconditions;
 
 import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntConvertibleColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.util.DoubleArrays;
@@ -24,18 +24,8 @@ public class RandomForest extends AbstractClassifier {
         this.classifierModel = new smile.classification.RandomForest(data, classArray, nTrees);
     }
 
-    public static RandomForest learn(int nTrees, IntColumn classes, NumericColumn... columns) {
-        int[] classArray = classes.data().toIntArray();
-        return new RandomForest(nTrees, classArray, columns);
-    }
-
-    public static RandomForest learn(int nTrees, ShortColumn classes, NumericColumn... columns) {
+    public static RandomForest learn(int nTrees, IntConvertibleColumn classes, NumericColumn... columns) {
         int[] classArray = classes.toIntArray();
-        return new RandomForest(nTrees, classArray, columns);
-    }
-
-    public static RandomForest learn(int nTrees, CategoryColumn classes, NumericColumn... columns) {
-        int[] classArray = classes.data().toIntArray();
         return new RandomForest(nTrees, classArray, columns);
     }
 

@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * A column in a base table that contains float values
  */
-public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
+public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, IntConvertibleColumn {
 
     public static final byte MISSING_VALUE = Byte.MIN_VALUE;
 
@@ -448,6 +448,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils {
         return selection;
     }
 
+    @Override
     public int[] toIntArray() {
         int[] output = new int[data.size()];
         for (int i = 0; i < data.size(); i++) {

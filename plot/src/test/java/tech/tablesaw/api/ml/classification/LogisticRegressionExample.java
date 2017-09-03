@@ -1,9 +1,10 @@
 package tech.tablesaw.api.ml.classification;
 
+import smile.classification.LogisticRegression;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.ml.classification.ConfusionMatrix;
-import tech.tablesaw.api.ml.classification.LogisticRegression;
 import tech.tablesaw.api.plot.Scatter;
+import tech.tablesaw.util.DoubleArrays;
 import tech.tablesaw.util.Example;
 
 public class LogisticRegressionExample extends Example {
@@ -23,7 +24,9 @@ public class LogisticRegressionExample extends Example {
         Table train = splits[0];
         Table test = splits[1];
 
-        LogisticRegression model = LogisticRegression.learn(train.shortColumn(2), train.nCol("X"), train.nCol("Y"));
+        LogisticRegression model = new LogisticRegression(
+            DoubleArrays.to2dArray(train.nCol("X"), train.nCol("Y")),
+            train.shortColumn(2).toIntArray());
 
         ConfusionMatrix matrix = model.predictMatrix(test.shortColumn(2), test.nCol("X"), test.nCol("Y"));
 

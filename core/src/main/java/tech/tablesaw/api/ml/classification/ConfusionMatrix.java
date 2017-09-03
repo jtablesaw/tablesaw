@@ -1,8 +1,5 @@
 package tech.tablesaw.api.ml.classification;
 
-/**
- *
- */
 public interface ConfusionMatrix {
     void increment(Integer predicted, Integer actual);
 

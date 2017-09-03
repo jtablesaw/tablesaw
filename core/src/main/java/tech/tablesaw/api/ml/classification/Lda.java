@@ -5,6 +5,7 @@ import smile.classification.LDA;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntConvertibleColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.util.DoubleArrays;
@@ -23,65 +24,18 @@ public class Lda extends AbstractClassifier {
         this.classifierModel = classifierModel;
     }
 
-    public static Lda learn(ShortColumn labels, NumericColumn... predictors) {
+    public static Lda learn(IntConvertibleColumn labels, NumericColumn... predictors) {
         LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray());
         return new Lda(classifierModel);
     }
 
-    public static Lda learn(IntColumn labels, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray());
-        return new Lda(classifierModel);
-    }
-
-    public static Lda learn(BooleanColumn labels, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray());
-        return new Lda(classifierModel);
-    }
-
-    public static Lda learn(CategoryColumn labels, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray());
-        return new Lda(classifierModel);
-    }
-
-    public static Lda learn(ShortColumn labels, double[] priors, NumericColumn... predictors) {
+    public static Lda learn(IntConvertibleColumn labels, double[] priors, NumericColumn... predictors) {
         LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray(), priors);
         return new Lda(classifierModel);
     }
 
-    public static Lda learn(IntColumn labels, double[] priors, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), priors);
-        return new Lda(classifierModel);
-    }
-
-    public static Lda learn(BooleanColumn labels, double[] priors, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray(), priors);
-        return new Lda(classifierModel);
-    }
-
-    public static Lda learn(CategoryColumn labels, double[] priors, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), priors);
-        return new Lda(classifierModel);
-    }
-
-    public static Lda learn(ShortColumn labels, double[] priors, double tolerance, NumericColumn... predictors) {
+    public static Lda learn(IntConvertibleColumn labels, double[] priors, double tolerance, NumericColumn... predictors) {
         LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray(), priors, tolerance);
-        return new Lda(classifierModel);
-    }
-
-    public static Lda learn(IntColumn labels, double[] priors, double tolerance, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), priors,
-                tolerance);
-        return new Lda(classifierModel);
-    }
-
-    public static Lda learn(BooleanColumn labels, double[] priors, double tolerance, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray(), priors, tolerance);
-        return new Lda(classifierModel);
-    }
-
-    public static Lda learn(CategoryColumn labels, double[] priors, double tolerance, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.data().toIntArray(), priors,
-                tolerance);
         return new Lda(classifierModel);
     }
 

@@ -7,18 +7,12 @@ import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.util.DoubleArrays;
 
-/**
- *
- */
 public class Gmeans {
 
     private final GMeans model;
-
     private final NumericColumn[] inputColumns;
 
-
     public Gmeans(int maxK, NumericColumn... columns) {
-
         double[][] data = DoubleArrays.to2dArray(columns);
         this.model = new GMeans(data, maxK);
         this.inputColumns = columns;

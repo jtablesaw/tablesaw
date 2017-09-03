@@ -4,9 +4,6 @@ import smile.projection.PCA;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.util.DoubleArrays;
 
-/**
- *
- */
 public class PrincipalComponents {
 
     private final PCA pca;

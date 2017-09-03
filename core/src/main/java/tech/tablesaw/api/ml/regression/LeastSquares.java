@@ -5,9 +5,6 @@ import smile.regression.OLS;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.util.DoubleArrays;
 
-/**
- *
- */
 public class LeastSquares {
 
     private final OLS model;
@@ -15,7 +12,6 @@ public class LeastSquares {
     private final int explanatoryVariableCount;
     private final double[] responseVarArray;
     private final String[] explanatoryVariableNames;
-
 
     public LeastSquares(NumericColumn responseVariable, NumericColumn... explanatoryVars) {
         this.explanatoryVariables = DoubleArrays.to2dArray(explanatoryVars);

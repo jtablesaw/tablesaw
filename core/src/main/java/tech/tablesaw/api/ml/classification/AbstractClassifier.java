@@ -2,13 +2,9 @@ package tech.tablesaw.api.ml.classification;
 
 import tech.tablesaw.api.NumericColumn;
 
-/**
- *
- */
 public abstract class AbstractClassifier {
 
     abstract int predictFromModel(double[] data);
-
 
     void populateMatrix(int[] labels, ConfusionMatrix confusion, NumericColumn[] predictors) {
         double[] data = new double[predictors.length];
