@@ -30,7 +30,7 @@ public class DecisionTree extends AbstractClassifier {
     public ConfusionMatrix predictMatrix(IntConvertibleColumn labels, NumericColumn... predictors) {
         Preconditions.checkArgument(predictors.length > 0);
 
-        SortedSet<Object> labelSet = new TreeSet<>(labels.asSet());
+        SortedSet<Object> labelSet = new TreeSet<>(labels.asIntegerSet());
         ConfusionMatrix confusion = new StandardConfusionMatrix(labelSet);
 
         populateMatrix(labels.toIntArray(), confusion, predictors);

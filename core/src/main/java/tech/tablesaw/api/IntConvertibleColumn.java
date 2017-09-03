@@ -8,7 +8,7 @@ public interface IntConvertibleColumn {
 
     int[] toIntArray();
 
-    default Set<Integer> asSet() {
+    default Set<Integer> asIntegerSet() {
       return new IntOpenHashSet(toIntArray());
     }
 
