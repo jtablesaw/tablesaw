@@ -3,11 +3,14 @@ package tech.tablesaw.columns;
 import org.junit.Test;
 
 import tech.tablesaw.columns.packeddata.PackedLocalDate;
+import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
 import tech.tablesaw.columns.packeddata.PackedLocalTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
 
 import static org.junit.Assert.*;
@@ -102,5 +105,13 @@ public class PackedLocalDateTimeTest {
     public void testGetDayOfWeek() {
         LocalDateTime now = LocalDateTime.now();
         assertEquals(now.get(ChronoField.DAY_OF_WEEK), getDayOfWeek(pack(now)).getValue());
+    }
+
+    @Test
+    public void testToEpochMillis() {
+        long now = PackedLocalDateTime.pack(LocalDateTime.now());
+        long millis = PackedLocalDateTime.toEpochMilli(now, ZoneOffset.UTC);
+        long now2 = PackedLocalDateTime.ofEpochMilli(millis, ZoneId.of("UTC"));
+        assertEquals(now, now2);
     }
 }
