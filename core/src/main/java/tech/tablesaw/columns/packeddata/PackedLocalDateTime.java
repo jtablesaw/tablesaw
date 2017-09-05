@@ -368,7 +368,7 @@ public class PackedLocalDateTime {
     }
 
     public static long toEpochMilli(long packedLocalDateTime, ZoneOffset offset) {
-        LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(packedLocalDateTime);
+        LocalDateTime dateTime = asLocalDateTime(packedLocalDateTime);
         Instant instant = dateTime.toInstant(offset);
         return instant.toEpochMilli();
     }

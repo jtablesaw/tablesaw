@@ -109,9 +109,9 @@ public class PackedLocalDateTimeTest {
 
     @Test
     public void testToEpochMillis() {
-        long now = PackedLocalDateTime.pack(LocalDateTime.now());
-        long millis = PackedLocalDateTime.toEpochMilli(now, ZoneOffset.UTC);
-        long now2 = PackedLocalDateTime.ofEpochMilli(millis, ZoneId.of("UTC"));
+        long now = pack(LocalDateTime.now());
+        long millis = toEpochMilli(now, ZoneOffset.UTC);
+        long now2 = ofEpochMilli(millis, ZoneId.of("UTC"));
         assertEquals(now, now2);
     }
 }
