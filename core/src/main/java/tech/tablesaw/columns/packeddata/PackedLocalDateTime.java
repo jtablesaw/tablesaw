@@ -6,11 +6,13 @@ import com.google.common.primitives.Ints;
 import static tech.tablesaw.columns.packeddata.PackedLocalDate.asLocalDate;
 
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoField;
 import java.util.Date;
@@ -34,6 +36,8 @@ import java.util.Date;
  * store values of up to 60,000 milliseconds (60 secs * 1000)
  */
 public class PackedLocalDateTime {
+
+    private PackedLocalDateTime() {}
 
     public static byte getDayOfMonth(long date) {
         return (byte) date(date);  // last byte
@@ -361,7 +365,17 @@ public class PackedLocalDateTime {
 
     public static long create(int date, int time) {
         return (((long) date) << 32) | (time & 0xffffffffL);
+    }
 
+    public static long toEpochMilli(long packedLocalDateTime, ZoneOffset offset) {
+        LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(packedLocalDateTime);
+        Instant instant = dateTime.toInstant(offset);
+        return instant.toEpochMilli();
+    }
+
+    public static long ofEpochMilli(long millisecondsSinceEpoch, ZoneId zoneId) {
+        Instant instant = Instant.ofEpochMilli(millisecondsSinceEpoch);
+        return pack(LocalDateTime.ofInstant(instant, zoneId));
     }
 
     public int lengthOfYear(long packedDateTime) {
