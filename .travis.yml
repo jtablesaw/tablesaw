@@ -1,2 +1,11 @@
+# Codacy token
+env:
+  - secure: "xr+0QOtNCVgnrXYl+0A+WPCYWNQK9xZhkONi3TkXnorjjWKokiJjmyV88/MEskAtPUaOpFkoCSyLVPwA8AXh+KvoUPYwyFoSKtvj+4EdKIdEAHpBA8zVzMRJT/KYNMA9cWN3DWw+Yn4tILH0tyfwlSXuMWQ3tDXhAOWkbJD60L6SJGSivuXhpoAFOvypb2mZHEWgenQwcfe23xp9mc9JCka+g45dy/ZlXaBWJJ/xVGdstyOAEeLbZj83TqraKfcHMjT8d54LUFNxmWzM2Xu4wSJFNWe5w2rTeOBy1nT+NBjB57CpCCAiEM8oUluNvepnucNw+tH3n9cK+/s26Rq2qWyUVBkrKKhn88iG7DXgAD3miBfeUVtN/UHemwsw74MQHc297mZ1dMTFo9TrNejfr5p7euwuLsB/gTMloyxyd1/dNIlDF7pVhPDMzPDBDruO1JMCz6uOf4mqzFkXT9Aji/E7ycdAJdXKa5uAqo9u/7zzbLPq06NulP7ifN5BBq7l9fqorwuq7PkMK9a/YAlS7DJtHxIuAsvAMh4ypUHGbLkYWs/OIvZgU0nJyb7cj4webIe/eDVpE+A3iOBbdsPuRspNkBNqLUmq7fOFzPL/0c/2FrJ1abPCL4hXhDaEHX6dUNmhrOgRh3ahq5OT1e38GIEIGPq2KMOrOB9RoY2E6Io="
+
 language: java
+before_install:
+  - sudo apt-get install jq
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
 install: mvn install -DskipTests -Dgpg.skip
+script: mvn -B verify
+after_success: java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter -l Java -r aggregate/target/site/jacoco-aggregate/jacoco.xml
