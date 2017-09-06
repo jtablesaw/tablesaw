@@ -3,7 +3,6 @@ package tech.tablesaw.columns;
 import org.junit.Test;
 
 import tech.tablesaw.columns.packeddata.PackedLocalDate;
-import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
 import tech.tablesaw.columns.packeddata.PackedLocalTime;
 
 import java.time.LocalDate;
