@@ -55,8 +55,8 @@ public class TornadoExample {
         out(tornadoes.structure());
         out();
 
-        tornadoes.removeColumns("Number", "Year", "Month", "Day", "Zone", "State FIPS", "Loss", "Crop Loss", "End " +
-                "Lat", "End Lon", "NS", "SN", "SG", "FIPS 1", "FIPS 2", "FIPS 3", "FIPS 4");
+        tornadoes.removeColumns("Number", "Year", "Month", "Day", "Zone", "State FIPS", "Loss", "Crop Loss",
+            "End Lat", "End Lon", "NS", "SN", "SG", "FIPS 1", "FIPS 2", "FIPS 3", "FIPS 4");
 
         tornadoes.write().csv("../data/tornadoes_1950-2014.csv");
 
