@@ -1,13 +1,13 @@
 package tech.tablesaw.api;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static tech.tablesaw.api.QueryHelper.column;
 
 import java.time.LocalDateTime;
 
-import static tech.tablesaw.api.QueryHelper.column;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 public class DateTimeColumnTest {
 
@@ -58,4 +58,10 @@ public class DateTimeColumnTest {
         assertEquals(result.rowCount(), 1);
     }
 
+    @Test
+    public void testNull() {
+      DateTimeColumn col = new DateTimeColumn("Game date");
+      col.appendCell(null);
+      assertNull(col.get(0));
+    }
 }
