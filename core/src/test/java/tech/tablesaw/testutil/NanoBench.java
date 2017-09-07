@@ -116,7 +116,7 @@ public class NanoBench {
             }
         }
         if (listener == null) {
-            throw new RuntimeException("Can't find CPU measures");
+            throw new IllegalStateException("Can't find CPU measures");
         }
         return (CPUMeasure) listener;
     }
