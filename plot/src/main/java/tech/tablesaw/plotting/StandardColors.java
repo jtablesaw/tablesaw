@@ -87,7 +87,7 @@ public class StandardColors {
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeException("Unable to read predefined colors file", ex);
+            throw new IllegalStateException("Unable to read predefined colors file", ex);
         }
         return neutrals;
     }
