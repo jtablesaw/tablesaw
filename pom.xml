@@ -46,6 +46,7 @@
   <modules>
     <module>core</module>
     <module>plot</module>
+    <module>smile</module>
     <module>aggregate</module>
   </modules>
 

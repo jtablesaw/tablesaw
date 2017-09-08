@@ -8,7 +8,7 @@
     <version>0.9.6-SNAPSHOT</version>
   </parent>
 
-  <artifactId>tablesaw-plot</artifactId>
+  <artifactId>tablesaw-smile</artifactId>
 
   <packaging>jar</packaging>
 
@@ -46,10 +46,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
@@ -62,35 +58,12 @@
       <version>0.9.6-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>tech.tablesaw</groupId>
-      <artifactId>tablesaw-smile</artifactId>
-      <version>0.9.6-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>com.github.haifengl</groupId>
-      <artifactId>smile-plot</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.knowm.xchart</groupId>
-      <artifactId>xchart</artifactId>
-      <version>3.5.0</version>
-    </dependency>
-    <dependency>
-      <groupId>tech.tablesaw</groupId>
-      <artifactId>tablesaw-core</artifactId>
-      <type>test-jar</type>
-      <version>0.9.6-SNAPSHOT</version>
-      <scope>test</scope>
+      <artifactId>smile-core</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-test</artifactId>
-      <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
