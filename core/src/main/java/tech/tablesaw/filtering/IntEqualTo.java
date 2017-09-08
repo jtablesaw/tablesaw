@@ -10,11 +10,9 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- */
 public class IntEqualTo extends ColumnFilter {
 
-    private int value;
+    private final int value;
 
     public IntEqualTo(ColumnReference reference, int value) {
         super(reference);

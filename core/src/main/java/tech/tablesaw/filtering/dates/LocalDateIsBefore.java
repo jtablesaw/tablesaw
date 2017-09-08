@@ -6,12 +6,9 @@ import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
 public class LocalDateIsBefore extends ColumnFilter {
 
-    private int value;
+    private final int value;
 
     public LocalDateIsBefore(ColumnReference reference, int value) {
         super(reference);

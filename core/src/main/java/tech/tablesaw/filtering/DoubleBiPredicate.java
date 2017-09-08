@@ -1,8 +1,5 @@
 package tech.tablesaw.filtering;
 
-/**
- *
- */
 public interface DoubleBiPredicate {
 
     /**

@@ -10,7 +10,7 @@ import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
 
 /**
- * A filtering that selects cells in which all text is uppercase
+ * A filtering that selects cells in which all text is longer than the given length
  */
 @Immutable
 public class TextIsLongerThan extends ColumnFilter {

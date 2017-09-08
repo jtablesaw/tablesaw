@@ -7,11 +7,9 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- */
 public class IntIsIn extends ColumnFilter {
 
-    private IntColumn filterColumn;
+    private final IntColumn filterColumn;
 
     public IntIsIn(ColumnReference reference, IntColumn filterColumn) {
         super(reference);

@@ -13,7 +13,7 @@ import tech.tablesaw.util.Selection;
  */
 public class AnyOf extends CompositeFilter {
 
-    private List<Filter> filterList = new ArrayList<>();
+    private final List<Filter> filterList = new ArrayList<>();
 
     AnyOf(Collection<Filter> filters) {
 

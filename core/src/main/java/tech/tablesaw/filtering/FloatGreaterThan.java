@@ -7,11 +7,9 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- */
 public class FloatGreaterThan extends ColumnFilter {
 
-    private float value;
+    private final float value;
 
     public FloatGreaterThan(ColumnReference reference, float value) {
         super(reference);

@@ -7,11 +7,9 @@ import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- */
 public class TimeNotEqualTo extends ColumnFilter {
 
-    LocalTime value;
+    final LocalTime value;
 
     public TimeNotEqualTo(ColumnReference reference, LocalTime value) {
         super(reference);

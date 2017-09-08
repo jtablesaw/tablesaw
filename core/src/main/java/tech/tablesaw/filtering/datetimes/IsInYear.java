@@ -9,12 +9,9 @@ import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
 public class IsInYear extends ColumnFilter {
 
-    private int year;
+    private final int year;
 
     public IsInYear(ColumnReference reference, int year) {
         super(reference);

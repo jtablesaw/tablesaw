@@ -5,11 +5,10 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- */
 public class IntBetween extends ColumnFilter {
-    private int low;
-    private int high;
+
+    private final int low;
+    private final int high;
 
     public IntBetween(ColumnReference reference, int lowValue, int highValue) {
         super(reference);

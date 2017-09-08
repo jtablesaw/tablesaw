@@ -12,7 +12,7 @@ import tech.tablesaw.util.Selection;
  */
 public class StringNotEqualTo extends ColumnFilter {
 
-    private String value;
+    private final String value;
 
     public StringNotEqualTo(ColumnReference reference, String value) {
         super(reference);

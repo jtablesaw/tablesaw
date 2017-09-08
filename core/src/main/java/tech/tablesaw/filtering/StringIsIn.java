@@ -15,7 +15,7 @@ import tech.tablesaw.util.Selection;
  */
 public class StringIsIn extends ColumnFilter {
 
-    private CategoryColumn filterColumn;
+    private final CategoryColumn filterColumn;
 
     public StringIsIn(ColumnReference reference, CategoryColumn filterColumn) {
         super(reference);

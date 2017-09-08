@@ -7,11 +7,9 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- */
 public class LocalDateBetween extends ColumnFilter {
-    private LocalDate low;
-    private LocalDate high;
+    private final LocalDate low;
+    private final LocalDate high;
 
     public LocalDateBetween(ColumnReference reference, LocalDate lowValue, LocalDate highValue) {
         super(reference);

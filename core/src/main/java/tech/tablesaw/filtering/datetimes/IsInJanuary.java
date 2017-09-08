@@ -9,9 +9,6 @@ import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
 public class IsInJanuary extends ColumnFilter {
 
     public IsInJanuary(ColumnReference reference) {

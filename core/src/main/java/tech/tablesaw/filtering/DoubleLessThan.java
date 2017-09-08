@@ -5,12 +5,9 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
 public class DoubleLessThan extends ColumnFilter {
 
-    private double value;
+    private final double value;
 
     public DoubleLessThan(ColumnReference reference, double value) {
         super(reference);

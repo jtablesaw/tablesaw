@@ -12,9 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- *
- */
 public interface CategoryFilters extends CategoryColumnUtils {
 
     default Selection equalToIgnoringCase(String string) {

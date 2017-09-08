@@ -8,12 +8,10 @@ import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
+
 public class DateTimeIsBefore extends ColumnFilter {
 
-    private LocalDateTime value;
+    private final LocalDateTime value;
 
     public DateTimeIsBefore(ColumnReference reference, LocalDateTime value) {
         super(reference);

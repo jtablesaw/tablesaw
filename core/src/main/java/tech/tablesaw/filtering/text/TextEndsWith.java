@@ -10,7 +10,7 @@ import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
 
 /**
- * A filtering that selects cells in which all text is uppercase
+ * A filtering that selects cells which end with the given text
  */
 @Immutable
 public class TextEndsWith extends ColumnFilter {

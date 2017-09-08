@@ -5,9 +5,6 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
 public class BooleanIsFalse extends ColumnFilter {
 
     public BooleanIsFalse(ColumnReference reference) {

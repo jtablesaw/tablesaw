@@ -1,6 +1,5 @@
 package tech.tablesaw.filtering.datetimes;
 
-
 import javax.annotation.concurrent.Immutable;
 
 import tech.tablesaw.api.DateTimeColumn;
@@ -11,13 +10,11 @@ import tech.tablesaw.util.Selection;
 
 import java.time.LocalDateTime;
 
-/**
- *
- */
+
 @Immutable
 public class DateTimeIsAfter extends ColumnFilter {
 
-    private LocalDateTime value;
+    private final LocalDateTime value;
 
     public DateTimeIsAfter(ColumnReference reference, LocalDateTime value) {
         super(reference);

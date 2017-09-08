@@ -1,6 +1,5 @@
 package tech.tablesaw.filtering.datetimes;
 
-
 import javax.annotation.concurrent.Immutable;
 
 import tech.tablesaw.api.DateTimeColumn;
@@ -9,13 +8,11 @@ import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
+
 @Immutable
 public class DateIsOnOrBefore extends ColumnFilter {
 
-    private int value;
+    private final int value;
 
     public DateIsOnOrBefore(ColumnReference reference, int value) {
         super(reference);

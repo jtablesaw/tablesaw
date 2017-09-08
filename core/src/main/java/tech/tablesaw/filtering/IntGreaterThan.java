@@ -9,12 +9,9 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
 public class IntGreaterThan extends ColumnFilter {
 
-    private int value;
+    private final int value;
 
     public IntGreaterThan(ColumnReference reference, int value) {
         super(reference);

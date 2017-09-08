@@ -12,7 +12,7 @@ import tech.tablesaw.util.Selection;
  */
 public class StringEqualTo extends ColumnFilter {
 
-    private String value;
+    private final String value;
 
     public StringEqualTo(ColumnReference reference, String value) {
         super(reference);

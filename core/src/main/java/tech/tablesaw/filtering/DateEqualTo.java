@@ -7,11 +7,9 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- */
 public class DateEqualTo extends ColumnFilter {
 
-    LocalDate value;
+    final LocalDate value;
 
     public DateEqualTo(ColumnReference reference, LocalDate value) {
         super(reference);

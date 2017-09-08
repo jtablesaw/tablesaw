@@ -13,7 +13,7 @@ import tech.tablesaw.util.Selection;
  */
 public class AllOf extends CompositeFilter {
 
-    private List<Filter> filterList = new ArrayList<>();
+    private final List<Filter> filterList = new ArrayList<>();
 
     private AllOf(Collection<Filter> filters) {
         this.filterList.addAll(filters);

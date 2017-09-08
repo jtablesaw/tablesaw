@@ -10,7 +10,7 @@ import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
 
 /**
- * A filtering that selects cells in which all text is lowercase
+ * A filtering that selects cells in which all text is empty
  */
 @Immutable
 public class TextIsEmpty extends ColumnFilter {

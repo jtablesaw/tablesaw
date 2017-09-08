@@ -5,12 +5,9 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
 public class DoubleGreaterThanOrEqualTo extends ColumnFilter {
 
-    private double value;
+    private final double value;
 
     public DoubleGreaterThanOrEqualTo(ColumnReference reference, double value) {
         super(reference);

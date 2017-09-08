@@ -5,12 +5,9 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
 public class LongLessThan extends ColumnFilter {
 
-    private long value;
+    private final long value;
 
     public LongLessThan(ColumnReference reference, long value) {
         super(reference);

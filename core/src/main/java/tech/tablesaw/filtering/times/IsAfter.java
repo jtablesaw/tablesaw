@@ -8,12 +8,9 @@ import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
 public class IsAfter extends ColumnFilter {
 
-    private LocalTime value;
+    private final LocalTime value;
 
     public IsAfter(ColumnReference reference, LocalTime value) {
         super(reference);

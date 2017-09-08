@@ -9,9 +9,6 @@ import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
 
-/**
- *
- */
 public class IsInMay extends ColumnFilter {
 
     public IsInMay(ColumnReference reference) {

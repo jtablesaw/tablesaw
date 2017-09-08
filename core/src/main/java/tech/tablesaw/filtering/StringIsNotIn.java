@@ -15,7 +15,7 @@ import tech.tablesaw.util.Selection;
  */
 public class StringIsNotIn extends ColumnFilter {
 
-    private CategoryColumn filterColumn;
+    private final CategoryColumn filterColumn;
 
     public StringIsNotIn(ColumnReference reference, CategoryColumn filterColumn) {
         super(reference);
