@@ -13,29 +13,15 @@ Tablesaw also supports descriptive statistics, data visualization, and machine l
 
 There are other, more elaborate platforms for data science in Java. They're designed to work with vast amounts of data, and  require a huge stack and a vast amount of effort.
 
-Tablesaw 0.8.x and later have new Maven coordinates. You can include tablesaw-core, which is the dataframe library itself, with: 
+You can include tablesaw-core, which is the dataframe library itself, with: 
 
     <dependency>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-core</artifactId>
-        <version>0.9.4</version>
+        <version>0.10.0</version>
     </dependency>
 
-If you'd like to use tablesaw's plotting capabilities you can include tablesaw-plot: 
-
-    <dependency>
-        <groupId>tech.tablesaw</groupId>
-        <artifactId>tablesaw-plot</artifactId>
-        <version>0.9.4</version>
-    </dependency>
-
-To include Tablesaw 0.7.x or earlier in your project use:  
-
-    <dependency>
-        <groupId>com.github.lwhite1</groupId>
-        <artifactId>tablesaw</artifactId>
-        <version>0.7.7.3</version>
-    </dependency>
+You may also add dependencies for `tablesaw-plot` to use the plotting capability and `tablesaw-smile` to use the [Smile](https://github.com/haifengl/smile) machine learning integration.
 
 ### Documentation and support:
 
