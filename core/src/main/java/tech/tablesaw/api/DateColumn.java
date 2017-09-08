@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -79,6 +80,9 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
      * The formatter chosen to parse dates for this particular column
      */
     private DateTimeFormatter selectedFormatter;
+    
+    /** locale for formater */
+    private Locale locale = Locale.getDefault();
 
     public DateColumn(String name) {
         this(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
@@ -96,6 +100,10 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     public DateColumn(String name, IntArrayList data) {
         super(name);
         this.data = data;
+    }
+    
+    public void setLocale(Locale locale) {
+        this.locale = locale;
     }
 
     public int size() {
@@ -349,18 +357,19 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         value = Strings.padStart(value, 4, '0');
 
         if (selectedFormatter == null) {
-            selectedFormatter = TypeUtils.getDateFormatter(value);
+            selectedFormatter = TypeUtils.getDateFormatter(value).withLocale(locale);
         }
         LocalDate date;
         try {
             date = LocalDate.parse(value, selectedFormatter);
         } catch (DateTimeParseException e) {
-            selectedFormatter = TypeUtils.DATE_FORMATTER;
+            selectedFormatter = TypeUtils.DATE_FORMATTER.withLocale(locale);
             date = LocalDate.parse(value, selectedFormatter);
         }
         return PackedLocalDate.pack(date);
     }
 
+    @Override
     public void appendCell(String string) {
         try {
             appendInternal(convert(string));

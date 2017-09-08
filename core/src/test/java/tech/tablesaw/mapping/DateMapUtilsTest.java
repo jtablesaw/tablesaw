@@ -8,6 +8,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 
 import java.time.LocalTime;
+import java.util.Locale;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -20,6 +21,7 @@ public class DateMapUtilsTest {
     public void setUp() throws Exception {
         Table table = Table.create("Test");
         column1 = new DateColumn("Game date");
+        column1.setLocale(Locale.ENGLISH);
         table.addColumn(column1);
     }
 
