@@ -161,10 +161,10 @@ public interface DateMapUtils extends DateColumnUtils {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (c1 == MISSING_VALUE) {
-                newColumn.append(DateTimeColumn.MISSING_VALUE);
+                newColumn.appendInternal(DateTimeColumn.MISSING_VALUE);
             } else {
                 LocalDate value1 = PackedLocalDate.asLocalDate(c1);
-                newColumn.append(PackedLocalDateTime.pack(value1, time));
+                newColumn.appendInternal(PackedLocalDateTime.pack(value1, time));
             }
         }
         return newColumn;
@@ -180,10 +180,10 @@ public interface DateMapUtils extends DateColumnUtils {
             int c1 = this.getIntInternal(r);
             int c2 = timeColumn.getIntInternal(r);
             if (c1 == MISSING_VALUE || c2 == TimeColumn.MISSING_VALUE) {
-                newColumn.append(DateTimeColumn.MISSING_VALUE);
+                newColumn.appendInternal(DateTimeColumn.MISSING_VALUE);
             } else {
                 LocalDate value1 = PackedLocalDate.asLocalDate(c1);
-                newColumn.append(PackedLocalDateTime.pack(value1, PackedLocalTime.asLocalTime(c2)));
+                newColumn.appendInternal(PackedLocalDateTime.pack(value1, PackedLocalTime.asLocalTime(c2)));
             }
         }
         return newColumn;

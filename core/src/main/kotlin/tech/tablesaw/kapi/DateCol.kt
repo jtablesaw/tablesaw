@@ -14,9 +14,6 @@ import java.time.LocalTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalUnit
 
-/**
- *
- */
 class DateCol(val target: DateColumn) : Col {
 
     override fun size(): Int = target.size()
@@ -56,7 +53,6 @@ class DateCol(val target: DateColumn) : Col {
     override fun print(): String = target.print()
 
 
-    fun append(value: Int) = target.append(value)
     override fun appendCell(stringValue: String) = target.appendCell(stringValue)
     //fun append(c: Column) = target.append(c)
 

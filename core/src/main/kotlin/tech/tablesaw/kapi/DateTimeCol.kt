@@ -6,8 +6,6 @@ import tech.tablesaw.store.ColumnMetadata
 import tech.tablesaw.util.Selection
 import java.time.LocalDateTime
 
-/**
- */
 class DateTimeCol(val target: DateTimeColumn) : Col {
 
     override fun size(): Int = target.size()
@@ -46,8 +44,6 @@ class DateTimeCol(val target: DateTimeColumn) : Col {
 
     override fun print(): String = target.print()
 
-
-    fun append(value: Long) = target.append(value)
     fun append(value: LocalDateTime) = target.append(value)
     override fun appendCell(stringValue: String) = target.appendCell(stringValue)
 //fun append(c: Column) = target.append(c)

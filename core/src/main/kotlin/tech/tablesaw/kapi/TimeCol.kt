@@ -6,9 +6,6 @@ import tech.tablesaw.store.ColumnMetadata
 import tech.tablesaw.util.Selection
 import java.time.LocalTime
 
-/**
- *
- */
 class TimeCol(val target: TimeColumn) : Col {
 
     override fun size(): Int = target.size()
@@ -47,7 +44,6 @@ class TimeCol(val target: TimeColumn) : Col {
 
     override fun print(): String = target.print()
 
-    fun append(value: Int) = target.append(value)
     fun append(value: LocalTime) = target.append(value)
     override fun appendCell(stringValue: String) = target.appendCell(stringValue)
     //fun append(c: Column) = target.append(c)

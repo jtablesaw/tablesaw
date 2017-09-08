@@ -219,7 +219,7 @@ public class StorageManager {
             while (!EOF) {
                 try {
                     int cell = dis.readInt();
-                    dates.append(cell);
+                    dates.appendInternal(cell);
                 } catch (EOFException e) {
                     EOF = true;
                 }
@@ -238,7 +238,7 @@ public class StorageManager {
             while (!EOF) {
                 try {
                     long cell = dis.readLong();
-                    dates.append(cell);
+                    dates.appendInternal(cell);
                 } catch (EOFException e) {
                     EOF = true;
                 }
@@ -256,7 +256,7 @@ public class StorageManager {
             while (!EOF) {
                 try {
                     int cell = dis.readInt();
-                    times.append(cell);
+                    times.appendInternal(cell);
                 } catch (EOFException e) {
                     EOF = true;
                 }

@@ -175,7 +175,7 @@ public class TimeDependentFilteringTest {
 
         // sample from the pools to write the data
         for (int i = 0; i < observationCount; i++) {
-            dateColumn.append(dates.getInt(RandomUtils.nextInt(0, dates.size())));
+            dateColumn.appendInternal(dates.getInt(RandomUtils.nextInt(0, dates.size())));
             conceptColumn.add(concepts.get(RandomUtils.nextInt(0, concepts.size())));
             valueColumn.append(RandomUtils.nextFloat(0f, 100_000f));
             patientColumn.append(patientIds.getInt(RandomUtils.nextInt(0, patientIds.size())));

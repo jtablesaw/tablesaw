@@ -99,7 +99,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return data.size();
     }
 
-    public void append(int f) {
+    public void appendInternal(int f) {
         data.add(f);
     }
 
@@ -277,7 +277,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     @Override
     public void appendCell(String object) {
         try {
-            append(convert(object));
+            appendInternal(convert(object));
         } catch (NullPointerException e) {
             throw new RuntimeException(name() + ": "
                     + String.valueOf(object) + ": "
@@ -349,7 +349,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
             if (predicate.test(PackedLocalTime.asLocalTime(next))) {
-                column.append(next);
+                column.appendInternal(next);
             }
         }
         return column;
@@ -366,7 +366,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
             if (predicate.test(next)) {
-                column.append(next);
+                column.appendInternal(next);
             }
         }
         return column;
@@ -377,7 +377,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         Preconditions.checkArgument(column.type() == this.type());
         TimeColumn intColumn = (TimeColumn) column;
         for (int i = 0; i < intColumn.size(); i++) {
-            append(intColumn.getIntInternal(i));
+            appendInternal(intColumn.getIntInternal(i));
         }
     }
 

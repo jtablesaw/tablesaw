@@ -107,7 +107,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         return ColumnType.LOCAL_DATE;
     }
 
-    public void append(int f) {
+    public void appendInternal(int f) {
         data.add(f);
     }
 
@@ -120,7 +120,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public void append(LocalDate f) {
-        append(PackedLocalDate.pack(f));
+        appendInternal(PackedLocalDate.pack(f));
     }
 
     @Override
@@ -363,7 +363,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
 
     public void appendCell(String string) {
         try {
-            append(convert(string));
+            appendInternal(convert(string));
         } catch (NullPointerException e) {
             throw new RuntimeException(name() + ": " + string + ": " + e.getMessage());
         }
@@ -607,7 +607,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         Preconditions.checkArgument(column.type() == this.type());
         DateColumn intColumn = (DateColumn) column;
         for (int i = 0; i < intColumn.size(); i++) {
-            append(intColumn.getIntInternal(i));
+            appendInternal(intColumn.getIntInternal(i));
         }
     }
 
@@ -617,7 +617,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
             if (predicate.test(PackedLocalDate.asLocalDate(next))) {
-                column.append(next);
+                column.appendInternal(next);
             }
         }
         return column;
@@ -634,7 +634,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         while (iterator.hasNext()) {
             int next = iterator.nextInt();
             if (predicate.test(next)) {
-                column.append(next);
+                column.appendInternal(next);
             }
         }
         return column;
@@ -717,7 +717,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
             int date = getIntInternal(row);
             int time = timeColumn.getIntInternal(row);
             long packedLocalDateTime = PackedLocalDateTime.create(date, time);
-            dateTimeColumn.append(packedLocalDateTime);
+            dateTimeColumn.appendInternal(packedLocalDateTime);
         }
         return dateTimeColumn;
     }
