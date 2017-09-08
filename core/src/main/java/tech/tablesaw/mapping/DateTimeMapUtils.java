@@ -40,8 +40,8 @@ public interface DateTimeMapUtils extends DateTimeColumnUtils {
         LongColumn newColumn = new LongColumn(name() + " - " + column2.name());
 
         for (int r = 0; r < size(); r++) {
-            long c1 = this.getLong(r);
-            long c2 = column2.getLong(r);
+            long c1 = this.getLongInternal(r);
+            long c2 = column2.getLongInternal(r);
             if (c1 == DateTimeColumn.MISSING_VALUE || c2 == DateTimeColumn.MISSING_VALUE) {
                 newColumn.append(IntColumn.MISSING_VALUE);
             } else {
@@ -60,7 +60,7 @@ public interface DateTimeMapUtils extends DateTimeColumnUtils {
     default ShortColumn hour() {
         ShortColumn newColumn = new ShortColumn(name() + "[" + "hour" + "]");
         for (int r = 0; r < size(); r++) {
-            long c1 = getLong(r);
+            long c1 = getLongInternal(r);
             if (c1 != DateTimeColumn.MISSING_VALUE) {
                 newColumn.append(PackedLocalDateTime.getHour(c1));
             } else {
@@ -73,7 +73,7 @@ public interface DateTimeMapUtils extends DateTimeColumnUtils {
     default ShortColumn minuteOfDay() {
         ShortColumn newColumn = new ShortColumn(name() + "[" + "minute-of-day" + "]");
         for (int r = 0; r < size(); r++) {
-            long c1 = getLong(r);
+            long c1 = getLongInternal(r);
             if (c1 != DateTimeColumn.MISSING_VALUE) {
                 newColumn.append((short) PackedLocalDateTime.getMinuteOfDay(c1));
             } else {
@@ -86,7 +86,7 @@ public interface DateTimeMapUtils extends DateTimeColumnUtils {
     default IntColumn secondOfDay() {
         IntColumn newColumn = new IntColumn(name() + "[" + "second-of-day" + "]");
         for (int r = 0; r < size(); r++) {
-            long c1 = getLong(r);
+            long c1 = getLongInternal(r);
             if (c1 != DateTimeColumn.MISSING_VALUE) {
                 newColumn.append(PackedLocalDateTime.getSecondOfDay(c1));
             } else {
@@ -98,5 +98,5 @@ public interface DateTimeMapUtils extends DateTimeColumnUtils {
 
     LocalDateTime get(int r);
 
-    long getLong(int r);
+    long getLongInternal(int r);
 }

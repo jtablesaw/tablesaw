@@ -70,8 +70,8 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
         @Override
         public int compare(int r1, int r2) {
-            long f1 = getLong(r1);
-            long f2 = getLong(r2);
+            long f1 = getLongInternal(r1);
+            long f2 = getLongInternal(r2);
             return Long.compare(f1, f2);
         }
     };
@@ -163,7 +163,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
     @Override
     public String getString(int row) {
-        return PackedLocalDateTime.toString(getLong(row));
+        return PackedLocalDateTime.toString(getLongInternal(row));
     }
 
     @Override
@@ -249,12 +249,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return data.isEmpty();
     }
 
-    public long getLong(int index) {
+    public long getLongInternal(int index) {
         return data.getLong(index);
     }
 
     public LocalDateTime get(int index) {
-        return PackedLocalDateTime.asLocalDateTime(getLong(index));
+        return PackedLocalDateTime.asLocalDateTime(getLongInternal(index));
     }
 
     @Override
@@ -265,7 +265,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public CategoryColumn dayOfWeek() {
         CategoryColumn newColumn = new CategoryColumn(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLong(r);
+            long c1 = this.getLongInternal(r);
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
                 newColumn.set(r, null);
             } else {
@@ -278,7 +278,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public ShortColumn dayOfWeekValue() {
         ShortColumn newColumn = new ShortColumn(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLong(r);
+            long c1 = this.getLongInternal(r);
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
                 newColumn.set(r, ShortColumn.MISSING_VALUE);
             } else {
@@ -291,7 +291,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public ShortColumn dayOfYear() {
         ShortColumn newColumn = new ShortColumn(this.name() + " day of year", this.size());
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLong(r);
+            long c1 = this.getLongInternal(r);
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
                 newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
@@ -304,7 +304,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public ShortColumn dayOfMonth() {
         ShortColumn newColumn = new ShortColumn(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLong(r);
+            long c1 = this.getLongInternal(r);
             if (c1 == FloatColumn.MISSING_VALUE) {
                 newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
@@ -320,7 +320,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public TimeColumn time() {
         TimeColumn newColumn = new TimeColumn(this.name() + " time");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLong(r);
+            long c1 = this.getLongInternal(r);
             if (c1 == MISSING_VALUE) {
                 newColumn.append(TimeColumn.MISSING_VALUE);
             } else {
@@ -336,7 +336,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public DateColumn date() {
         DateColumn newColumn = new DateColumn(this.name() + " date");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLong(r);
+            long c1 = this.getLongInternal(r);
             if (c1 == MISSING_VALUE) {
                 newColumn.append(DateColumn.MISSING_VALUE);
             } else {
@@ -349,7 +349,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public ShortColumn monthNumber() {
         ShortColumn newColumn = new ShortColumn(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLong(r);
+            long c1 = this.getLongInternal(r);
             if (c1 == MISSING_VALUE) {
                 newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
@@ -362,7 +362,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public CategoryColumn monthName() {
         CategoryColumn newColumn = new CategoryColumn(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLong(r);
+            long c1 = this.getLongInternal(r);
             if (c1 == MISSING_VALUE) {
                 newColumn.add(CategoryColumn.MISSING_VALUE);
             } else {
@@ -375,7 +375,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public ShortColumn year() {
         ShortColumn newColumn = new ShortColumn(this.name() + " year");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLong(r);
+            long c1 = this.getLongInternal(r);
             if (c1 == MISSING_VALUE) {
                 newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
@@ -468,7 +468,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (getLong(i) == MISSING_VALUE) {
+            if (getLongInternal(i) == MISSING_VALUE) {
                 count++;
             }
         }
@@ -544,7 +544,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public LocalDateTime max() {
         long max;
         if (!isEmpty()) {
-            max = getLong(0);
+            max = getLongInternal(0);
         } else {
             return null;
         }
@@ -564,7 +564,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         long min;
 
         if (!isEmpty()) {
-            min = getLong(0);
+            min = getLongInternal(0);
         } else {
             return null;
         }
@@ -582,7 +582,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public ShortColumn minuteOfDay() {
         ShortColumn newColumn = new ShortColumn(this.name() + " minute of day");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = getLong(r);
+            long c1 = getLongInternal(r);
             if (c1 == DateTimeColumn.MISSING_VALUE) {
                 newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
@@ -819,7 +819,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
      */
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(8).putLong(getLong(rowNumber)).array();
+        return ByteBuffer.allocate(8).putLong(getLongInternal(rowNumber)).array();
     }
 
     /**

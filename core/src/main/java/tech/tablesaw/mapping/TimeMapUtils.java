@@ -32,8 +32,8 @@ public interface TimeMapUtils extends TimeColumnUtils {
         LongColumn newColumn = new LongColumn(name() + " - " + column2.name());
 
         for (int r = 0; r < size(); r++) {
-            int c1 = this.getInt(r);
-            int c2 = column2.getInt(r);
+            int c1 = this.getIntInternal(r);
+            int c2 = column2.getIntInternal(r);
             if (c1 == TimeColumn.MISSING_VALUE || c2 == TimeColumn.MISSING_VALUE) {
                 newColumn.append(IntColumn.MISSING_VALUE);
             } else {
@@ -52,7 +52,7 @@ public interface TimeMapUtils extends TimeColumnUtils {
     default ShortColumn hour() {
         ShortColumn newColumn = new ShortColumn(name() + "[" + "hour" + "]");
         for (int r = 0; r < size(); r++) {
-            int c1 = getInt(r);
+            int c1 = getIntInternal(r);
             if (c1 != TimeColumn.MISSING_VALUE) {
                 newColumn.append(PackedLocalTime.getHour(c1));
             } else {
@@ -65,7 +65,7 @@ public interface TimeMapUtils extends TimeColumnUtils {
     default IntColumn minuteOfDay() {
         IntColumn newColumn = new IntColumn(name() + "[" + "minute-of-day" + "]");
         for (int r = 0; r < size(); r++) {
-            int c1 = getInt(r);
+            int c1 = getIntInternal(r);
             if (c1 != TimeColumn.MISSING_VALUE) {
                 newColumn.append(PackedLocalTime.getMinuteOfDay(c1));
             } else {
@@ -78,7 +78,7 @@ public interface TimeMapUtils extends TimeColumnUtils {
     default IntColumn secondOfDay() {
         IntColumn newColumn = new IntColumn(name() + "[" + "second-of-day" + "]");
         for (int r = 0; r < size(); r++) {
-            int c1 = getInt(r);
+            int c1 = getIntInternal(r);
             if (c1 != TimeColumn.MISSING_VALUE) {
                 newColumn.append(PackedLocalTime.getSecondOfDay(c1));
             } else {
@@ -90,5 +90,5 @@ public interface TimeMapUtils extends TimeColumnUtils {
 
     LocalTime get(int r);
 
-    int getInt(int r);
+    int getIntInternal(int r);
 }

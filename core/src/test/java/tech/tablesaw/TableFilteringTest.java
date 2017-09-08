@@ -60,7 +60,7 @@ public class TableFilteringTest {
         DateColumn dates = result.dateColumn("date");
         IntColumn approval = result.intColumn("approval");
         for (int row : result) {
-            assertTrue(PackedLocalDate.isInApril(dates.getInt(row)));
+            assertTrue(PackedLocalDate.isInApril(dates.getIntInternal(row)));
             assertTrue(approval.get(row) > 70);
         }
     }

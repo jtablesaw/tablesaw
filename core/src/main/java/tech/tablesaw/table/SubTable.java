@@ -73,15 +73,15 @@ public class SubTable extends Table {
                     break;
                 case LOCAL_DATE:
                     DateColumn localDateColumn = (DateColumn) column;
-                    localDateColumn.append(sourceTable.dateColumn(i).getInt(rowIndex));
+                    localDateColumn.append(sourceTable.dateColumn(i).getIntInternal(rowIndex));
                     break;
                 case LOCAL_TIME:
                     TimeColumn timeColumn = (TimeColumn) column;
-                    timeColumn.append(sourceTable.timeColumn(i).getInt(rowIndex));
+                    timeColumn.append(sourceTable.timeColumn(i).getIntInternal(rowIndex));
                     break;
                 case LOCAL_DATE_TIME:
                     DateTimeColumn localDateTimeColumn = (DateTimeColumn) column;
-                    localDateTimeColumn.append(sourceTable.dateTimeColumn(i).getLong(rowIndex));
+                    localDateTimeColumn.append(sourceTable.dateTimeColumn(i).getLongInternal(rowIndex));
                     break;
                 case CATEGORY:
                     CategoryColumn categoryColumn = (CategoryColumn) column;

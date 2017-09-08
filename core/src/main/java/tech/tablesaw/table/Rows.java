@@ -240,31 +240,31 @@ public class Rows {
 
     private static void copy(IntArrayList rows, DateTimeColumn oldColumn, DateTimeColumn newColumn) {
         for (int index : rows) {
-            newColumn.append(oldColumn.getLong(index));
+            newColumn.append(oldColumn.getLongInternal(index));
         }
     }
 
     private static boolean compare(int row, DateTimeColumn tempTable, DateTimeColumn original) {
-        return original.getLong(row) == tempTable.getLong(tempTable.size() - 1);
+        return original.getLongInternal(row) == tempTable.getLongInternal(tempTable.size() - 1);
     }
 
     private static void copy(IntArrayList rows, DateColumn oldColumn, DateColumn newColumn) {
         for (int index : rows) {
-            newColumn.append(oldColumn.getInt(index));
+            newColumn.append(oldColumn.getIntInternal(index));
         }
     }
 
     private static boolean compare(int row, DateColumn tempTable, DateColumn original) {
-        return original.getInt(row) == tempTable.getInt(tempTable.size() - 1);
+        return original.getIntInternal(row) == tempTable.getIntInternal(tempTable.size() - 1);
     }
 
     private static void copy(IntArrayList rows, TimeColumn oldColumn, TimeColumn newColumn) {
         for (int index : rows) {
-            newColumn.append(oldColumn.getInt(index));
+            newColumn.append(oldColumn.getIntInternal(index));
         }
     }
 
     private static boolean compare(int row, TimeColumn tempTable, TimeColumn original) {
-        return original.getInt(row) == tempTable.getInt(tempTable.size() - 1);
+        return original.getIntInternal(row) == tempTable.getIntInternal(tempTable.size() - 1);
     }
 }

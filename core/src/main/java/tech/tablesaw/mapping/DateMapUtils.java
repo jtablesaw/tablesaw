@@ -58,8 +58,8 @@ public interface DateMapUtils extends DateColumnUtils {
 
         FloatColumn newColumn = new FloatColumn(column1.name() + " - " + column2.name());
         for (int r = 0; r < column1.size(); r++) {
-            int c1 = column1.getInt(r);
-            int c2 = column2.getInt(r);
+            int c1 = column1.getIntInternal(r);
+            int c2 = column2.getIntInternal(r);
             if (c1 == FloatColumn.MISSING_VALUE || c2 == FloatColumn.MISSING_VALUE) {
                 newColumn.append(FloatColumn.MISSING_VALUE);
             } else {
@@ -159,7 +159,7 @@ public interface DateMapUtils extends DateColumnUtils {
         Preconditions.checkNotNull(time);
         DateTimeColumn newColumn = new DateTimeColumn(this.name() + " " + time.toString());
         for (int r = 0; r < this.size(); r++) {
-            int c1 = this.getInt(r);
+            int c1 = this.getIntInternal(r);
             if (c1 == MISSING_VALUE) {
                 newColumn.append(DateTimeColumn.MISSING_VALUE);
             } else {
@@ -177,8 +177,8 @@ public interface DateMapUtils extends DateColumnUtils {
     default DateTimeColumn atTime(TimeColumn timeColumn) {
         DateTimeColumn newColumn = new DateTimeColumn(this.name() + " " + timeColumn.name());
         for (int r = 0; r < this.size(); r++) {
-            int c1 = this.getInt(r);
-            int c2 = timeColumn.getInt(r);
+            int c1 = this.getIntInternal(r);
+            int c2 = timeColumn.getIntInternal(r);
             if (c1 == MISSING_VALUE || c2 == TimeColumn.MISSING_VALUE) {
                 newColumn.append(DateTimeColumn.MISSING_VALUE);
             } else {
@@ -189,7 +189,7 @@ public interface DateMapUtils extends DateColumnUtils {
         return newColumn;
     }
 
-    int getInt(int r);
+    int getIntInternal(int r);
 
     LocalDate get(int index);
 }

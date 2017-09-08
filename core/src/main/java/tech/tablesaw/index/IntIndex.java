@@ -40,7 +40,7 @@ public class IntIndex {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Int2ObjectOpenHashMap<IntArrayList> tempMap = new Int2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
-            int value = column.getInt(i);
+            int value = column.getIntInternal(i);
             IntArrayList recordIds = tempMap.get(value);
             if (recordIds == null) {
                 recordIds = new IntArrayList();
@@ -58,7 +58,7 @@ public class IntIndex {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Int2ObjectOpenHashMap<IntArrayList> tempMap = new Int2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
-            int value = column.getInt(i);
+            int value = column.getIntInternal(i);
             IntArrayList recordIds = tempMap.get(value);
             if (recordIds == null) {
                 recordIds = new IntArrayList();

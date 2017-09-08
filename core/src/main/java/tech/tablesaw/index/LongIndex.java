@@ -38,7 +38,7 @@ public class LongIndex {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
-            long value = column.getLong(i);
+            long value = column.getLongInternal(i);
             IntArrayList recordIds = tempMap.get(value);
             if (recordIds == null) {
                 recordIds = new IntArrayList();

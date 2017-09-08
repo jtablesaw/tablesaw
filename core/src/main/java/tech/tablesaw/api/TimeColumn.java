@@ -69,8 +69,8 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
 
         @Override
         public int compare(int r1, int r2) {
-            int f1 = getInt(r1);
-            int f2 = getInt(r2);
+            int f1 = getIntInternal(r1);
+            int f2 = getIntInternal(r2);
             return Integer.compare(f1, f2);
         }
     };
@@ -114,7 +114,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
 
     @Override
     public String getString(int row) {
-        return PackedLocalTime.toShortTimeString(getInt(row));
+        return PackedLocalTime.toShortTimeString(getIntInternal(row));
     }
 
     @Override
@@ -157,7 +157,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         int max;
         int missing = Integer.MIN_VALUE;
         if (!isEmpty()) {
-            max = getInt(0);
+            max = getIntInternal(0);
         } else {
             return null;
         }
@@ -178,7 +178,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         int missing = Integer.MIN_VALUE;
 
         if (!isEmpty()) {
-            min = getInt(0);
+            min = getIntInternal(0);
         } else {
             return null;
         }
@@ -224,7 +224,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (getInt(i) == MISSING_VALUE) {
+            if (getIntInternal(i) == MISSING_VALUE) {
                 count++;
             }
         }
@@ -285,12 +285,12 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         }
     }
 
-    public int getInt(int index) {
+    public int getIntInternal(int index) {
         return data.getInt(index);
     }
 
     public LocalTime get(int index) {
-        return PackedLocalTime.asLocalTime(getInt(index));
+        return PackedLocalTime.asLocalTime(getIntInternal(index));
     }
 
     @Override
@@ -377,7 +377,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         Preconditions.checkArgument(column.type() == this.type());
         TimeColumn intColumn = (TimeColumn) column;
         for (int i = 0; i < intColumn.size(); i++) {
-            append(intColumn.getInt(i));
+            append(intColumn.getIntInternal(i));
         }
     }
 
@@ -533,7 +533,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
      */
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(4).putInt(getInt(rowNumber)).array();
+        return ByteBuffer.allocate(4).putInt(getIntInternal(rowNumber)).array();
     }
 
     /**

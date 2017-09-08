@@ -169,8 +169,6 @@ class DateCol(val target: DateColumn) : Col {
      */
     fun atTime(timeColumn: TimeColumn): DateTimeCol = DateTimeCol(target.atTime(timeColumn))
 
-    fun getInt(row: Int): Int = target.getInt(row)
-
     operator fun get(index: Int): LocalDate? = target.get(index);
 
     fun dayOfWeek(): CategoryColumn = target.dayOfWeek()
