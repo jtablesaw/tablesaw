@@ -11,8 +11,6 @@ import tech.tablesaw.columns.Column;
 import java.util.Random;
 
 import static org.junit.Assert.*;
-import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * Tests for Table
@@ -20,11 +18,11 @@ import static org.junit.Assume.assumeTrue;
 public class TableTest {
 
     private static final int ROWS_BOUNDARY = 1000;
+    private static final Random RANDOM = new Random();
 
     private Table table;
     private FloatColumn floatColumn = new FloatColumn("f1");
     private DoubleColumn doubleColumn = new DoubleColumn("d1");
-    private Random random = new Random();
 
     @Before
     public void setUp() throws Exception {
@@ -74,28 +72,32 @@ public class TableTest {
 
     @Test
     public void testAppend() throws Exception {
-        int appendSize = random.nextInt(ROWS_BOUNDARY);
-        appendTableWithSingleColumn(appendSize);
+        int appendedRows = appendRandomlyGeneratedColumn(table);
+        assertTableColumnSize(table, floatColumn, appendedRows);
     }
 
     @Test
     public void testAppendEmptyTable() throws Exception {
-        appendTableWithSingleColumn(0);
+        appendEmptyColumn(table);
+        assertTrue(table.isEmpty());
     }
 
     @Test
     public void testAppendToNonEmptyTable() throws Exception {
-        int appendSize = random.nextInt(ROWS_BOUNDARY);
         populateColumn(floatColumn);
-        assumeFalse(table.isEmpty());
-        appendTableWithSingleColumn(appendSize);
+        assertFalse(table.isEmpty());
+        int initialSize = table.rowCount();
+        int appendedRows = appendRandomlyGeneratedColumn(table);
+        assertTableColumnSize(table, floatColumn, initialSize + appendedRows);
     }
 
     @Test
     public void testAppendEmptyTableToNonEmptyTable() throws Exception {
         populateColumn(floatColumn);
-        assumeFalse(table.isEmpty());
-        appendTableWithSingleColumn(0);
+        assertFalse(table.isEmpty());
+        int initialSize = table.rowCount();
+        appendEmptyColumn(table);
+        assertTableColumnSize(table, floatColumn, initialSize);
     }
 
     @Test
@@ -108,8 +110,8 @@ public class TableTest {
         int secondColumnSize = populateColumn(second);
         Table tableToAppend = Table.create("populated", first, second);
         table.append(tableToAppend);
-        assertColumnSize(floatColumn, firstColumnSize);
-        assertColumnSize(column, secondColumnSize);
+        assertTableColumnSize(table, floatColumn, firstColumnSize);
+        assertTableColumnSize(table, column, secondColumnSize);
     }
 
     @Test(expected = NullPointerException.class)
@@ -135,35 +137,39 @@ public class TableTest {
         FloatColumn column = new FloatColumn("e1");
         table.addColumn(column);
         Table tableToAppend = Table.create("different", column);
-        assumeTrue(table.columns().size() == 2);
-        assumeTrue(tableToAppend.columns().size() == 1);
+        assertTrue(table.columns().size() == 2);
+        assertTrue(tableToAppend.columns().size() == 1);
         table.append(tableToAppend);
     }
 
-    private void appendTableWithSingleColumn(final int rowsToAppend) {
+    private int appendRandomlyGeneratedColumn(Table table) {
         FloatColumn column = floatColumn.emptyCopy();
-        populateColumn(column, rowsToAppend);
-        Table tableToAppend = Table.create("populated", column);
-        int initialSize = table.rowCount();
-        table.append(tableToAppend);
-        assertColumnSize(floatColumn, initialSize + rowsToAppend);
+        populateColumn(column);
+        return appendColumn(table, column);
     }
 
-    private void assertColumnSize(Column column, int expected) {
+    private void appendEmptyColumn(Table table) {
+        FloatColumn column = floatColumn.emptyCopy();
+        appendColumn(table, column);
+    }
+
+    private int appendColumn(Table table, Column column) {
+        Table tableToAppend = Table.create("populated", column);
+        table.append(tableToAppend);
+        return column.size();
+    }
+
+    private void assertTableColumnSize(Table table, Column column, int expected) {
         int actual = table.column(column.name()).size();
         assertEquals(expected, actual);
     }
 
-    private int populateColumn(final FloatColumn floatColumn) {
-        int rowsCount = random.nextInt(ROWS_BOUNDARY);
-        return populateColumn(floatColumn, rowsCount);
-    }
-
-    private int populateColumn(final FloatColumn floatColumn, final int rowsCount) {
+    private int populateColumn(FloatColumn floatColumn) {
+        int rowsCount = RANDOM.nextInt(ROWS_BOUNDARY);
         for (int i = 0; i < rowsCount; i++) {
-            floatColumn.append(random.nextFloat());
+            floatColumn.append(RANDOM.nextFloat());
         }
-        assumeTrue(floatColumn.size() == rowsCount);
+        assertTrue(floatColumn.size() == rowsCount);
         return rowsCount;
     }
 }
