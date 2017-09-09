@@ -82,15 +82,14 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     private DateTimeFormatter selectedFormatter;
     
     /** locale for formater */
-    private Locale locale = Locale.getDefault();
+    private final Locale locale;
 
     public DateColumn(String name) {
-        this(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
+        this(name, Locale.getDefault());
     }
-
-    public DateColumn(ColumnMetadata metadata) {
-        super(metadata);
-        data = new IntArrayList(DEFAULT_ARRAY_SIZE);
+    
+    public DateColumn(String name, Locale locale) {
+        this(name, new IntArrayList(DEFAULT_ARRAY_SIZE), locale);
     }
 
     public DateColumn(String name, int initialSize) {
@@ -98,14 +97,26 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public DateColumn(String name, IntArrayList data) {
-        super(name);
-        this.data = data;
+        this(name, data, Locale.getDefault());
     }
     
-    public void setLocale(Locale locale) {
+    public DateColumn(String name, IntArrayList data, Locale locale) {
+        super(name);
+        this.data = data;
+        this.locale = locale;
+    }
+    
+    public DateColumn(ColumnMetadata metadata) {
+        this(metadata, Locale.getDefault());
+    }
+    
+    public DateColumn(ColumnMetadata metadata, Locale locale) {
+        super(metadata);
+        this.data = new IntArrayList(DEFAULT_ARRAY_SIZE);
         this.locale = locale;
     }
 
+    @Override
     public int size() {
         return data.size();
     }
@@ -119,6 +130,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         data.add(f);
     }
 
+    @Override
     public IntArrayList data() {
         return data;
     }
@@ -378,6 +390,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         }
     }
 
+    @Override
     public int getIntInternal(int index) {
         return data.getInt(index);
     }
@@ -407,6 +420,8 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
 
     /**
      * Returns a table of dates and the number of observations of those dates
+     * 
+     * @return the summary table
      */
     @Override
     public Table summary() {
@@ -572,6 +587,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         return select(PackedLocalDate::isInYear, year);
     }
 
+    @Override
     public String print() {
         StringBuilder builder = new StringBuilder();
         builder.append(title());
@@ -743,6 +759,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
 
     /**
      * Returns the contents of the cell at rowNumber as a byte[]
+     * @param rowNumber the number of the row as int
      */
     @Override
     public byte[] asBytes(int rowNumber) {

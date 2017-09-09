@@ -18,8 +18,7 @@ public class DateColumnTest {
     @Before
     public void setUp() throws Exception {
         Table table = Table.create("Test");
-        column1 = new DateColumn("Game date");
-        column1.setLocale(Locale.ENGLISH);
+        column1 = new DateColumn("Game date", Locale.ENGLISH);
         table.addColumn(column1);
     }
 
