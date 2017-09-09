@@ -9,6 +9,6 @@ jdk:
 before_install:
   - sudo apt-get install jq
   - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
-install: mvn install -Dgpg.skip
+install: mvn install -DskipTests -Dgpg.skip
 script: mvn -B verify
 after_success: java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter --language Java --coverageReport aggregate/target/site/jacoco-aggregate/jacoco.xml
