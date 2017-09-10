@@ -3,6 +3,7 @@ package tech.tablesaw.api;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import org.apache.commons.lang3.ArrayUtils;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.FloatColumn;
@@ -82,6 +83,48 @@ public class FloatColumnTest {
         }
         Stats stats = Stats.create(column);
         assertEquals(rowsCount, stats.n());
+    }
+
+    @Test
+    public void testTop() throws Exception {
+        float[] top = {Float.POSITIVE_INFINITY, 540.34f};
+        float[] bottom = {Float.NEGATIVE_INFINITY, 0.0f, 42f};
+        float[] floats = ArrayUtils.addAll(top, bottom);
+        FloatColumn column = new FloatColumn("floats", floats);
+        assertArrayEquals(top, column.top(top.length).toFloatArray(), 0.01f);
+    }
+
+    @Test
+    public void testTopMoreThanColumnSize() throws Exception {
+        float[] floats = {42f, 23f, 11f};
+        int uniques = floats.length;
+        FloatColumn column = new FloatColumn("floats", floats);
+        assertEquals(uniques, column.top(uniques + 10).size());
+    }
+
+    @Test
+    public void testTopEmptyColumn() throws Exception {
+        FloatColumn column = new FloatColumn("empty");
+        assertTrue(column.top(10).isEmpty());
+    }
+
+    @Test
+    public void testTopColumnWithRepeatedValues() throws Exception {
+        float[] top = {42f, 42f, 42f};
+        float[] bottom = {23f, 23f, 11f};
+        float[] floats = ArrayUtils.addAll(top, bottom);
+        FloatColumn column = new FloatColumn("floats", floats);
+        assertArrayEquals(top, column.top(top.length).toFloatArray(), 0.01f);
+    }
+
+    @Test
+    public void testTopZero() throws Exception {
+        FloatColumn column = new FloatColumn("c");
+        int rowsCount = 100;
+        for (int i = 0; i < rowsCount; i++) {
+            column.append((float) Math.random());
+        }
+        assertTrue(column.top(0).isEmpty());
     }
 
     @Ignore
