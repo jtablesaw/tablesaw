@@ -8,6 +8,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.util.Selection;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -15,15 +16,73 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import tech.tablesaw.util.Stats;
 
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.Float.NaN;
 import static org.junit.Assert.*;
 
 /**
  * Unit tests for the FloatColumn class
  */
 public class FloatColumnTest {
+
+    @Test
+    public void testConvert() throws Exception {
+        float result = FloatColumn.convert("42.23");
+        assertEquals(42.23f, result, 0.01f);
+    }
+
+    @Test
+    public void testRemoveCommasOnConvert() throws Exception {
+        float result = FloatColumn.convert("23,32,45.5,2");
+        assertEquals(233245.52f, result, 0.01f);
+    }
+
+    @Test
+    public void testConvertNull() throws Exception {
+        float result = FloatColumn.convert(null);
+        assertEquals(ColumnType.FLOAT.getMissingValue(), result);
+    }
+
+    @Test
+    public void testConvertEmptyString() throws Exception {
+        float result = FloatColumn.convert("");
+        assertEquals(ColumnType.FLOAT.getMissingValue(), result);
+    }
+
+    @Test
+    public void testConvertMissingIndicator() throws Exception {
+        for (String indicator : TypeUtils.MISSING_INDICATORS) {
+            float result = FloatColumn.convert(indicator);
+            assertEquals(ColumnType.FLOAT.getMissingValue(), result);
+        }
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testConvertNotANumber() throws Exception {
+        FloatColumn.convert("not a number");
+    }
+
+    @Test
+    public void testSummary() throws Exception {
+        FloatColumn column = new FloatColumn("c");
+        Table table = column.summary();
+        assertEquals(2, table.columnCount());
+        assertEquals(8, table.rowCount());
+    }
+
+    @Test
+    public void testStats() throws Exception {
+        FloatColumn column = new FloatColumn("c");
+        int rowsCount = 10_000;
+        for (int i = 0; i < rowsCount; i++) {
+            column.append((float) Math.random());
+        }
+        Stats stats = Stats.create(column);
+        assertEquals(rowsCount, stats.n());
+    }
 
     @Ignore
     @Test
@@ -430,7 +489,7 @@ public class FloatColumnTest {
     @Test
     public void testDifferencePositive() {
         float[] originalValues = new float[]{32, 42, 40, 57, 52};
-        float[] expectedValues = new float[]{Float.NaN, 10, -2, 17, -5};
+        float[] expectedValues = new float[]{NaN, 10, -2, 17, -5};
 
         FloatColumn initial = new FloatColumn("Test", originalValues.length);
         for (float value : originalValues) {
