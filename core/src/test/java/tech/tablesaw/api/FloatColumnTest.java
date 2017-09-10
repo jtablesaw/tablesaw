@@ -4,10 +4,6 @@ import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import org.apache.commons.lang3.ArrayUtils;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.util.Selection;
@@ -21,7 +17,6 @@ import tech.tablesaw.util.Stats;
 
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.Float.NaN;
 import static org.junit.Assert.*;
 
 /**
@@ -574,7 +569,7 @@ public class FloatColumnTest {
     @Test
     public void testDifferencePositive() {
         float[] originalValues = new float[]{32, 42, 40, 57, 52};
-        float[] expectedValues = new float[]{NaN, 10, -2, 17, -5};
+        float[] expectedValues = new float[]{Float.NaN, 10, -2, 17, -5};
 
         FloatColumn initial = new FloatColumn("Test", originalValues.length);
         for (float value : originalValues) {
