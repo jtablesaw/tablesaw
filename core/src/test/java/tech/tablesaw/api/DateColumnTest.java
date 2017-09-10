@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,7 +18,7 @@ public class DateColumnTest {
     @Before
     public void setUp() throws Exception {
         Table table = Table.create("Test");
-        column1 = new DateColumn("Game date");
+        column1 = new DateColumn("Game date", Locale.ENGLISH);
         table.addColumn(column1);
     }
 

@@ -22,3 +22,8 @@ test_col_test
 .settings
 .classpath
 bin/
+
+# NetBeans
+nbproject/private/
+nbactions.xml
+nb-configuration.xml
