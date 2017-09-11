@@ -3,11 +3,9 @@ package tech.tablesaw.api;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.Table;
+import org.apache.commons.lang3.ArrayUtils;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.util.Selection;
 
 import org.apache.commons.lang3.RandomUtils;
@@ -15,6 +13,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import tech.tablesaw.util.Stats;
 
 import java.util.concurrent.TimeUnit;
 
@@ -24,6 +23,146 @@ import static org.junit.Assert.*;
  * Unit tests for the FloatColumn class
  */
 public class FloatColumnTest {
+
+    @Test
+    public void testConvert() throws Exception {
+        float result = FloatColumn.convert("42.23");
+        assertEquals(42.23f, result, 0.01f);
+    }
+
+    @Test
+    public void testRemoveCommasOnConvert() throws Exception {
+        float result = FloatColumn.convert("23,32,45.5,2");
+        assertEquals(233245.52f, result, 0.01f);
+    }
+
+    @Test
+    public void testConvertNull() throws Exception {
+        float result = FloatColumn.convert(null);
+        assertEquals(ColumnType.FLOAT.getMissingValue(), result);
+    }
+
+    @Test
+    public void testConvertEmptyString() throws Exception {
+        float result = FloatColumn.convert("");
+        assertEquals(ColumnType.FLOAT.getMissingValue(), result);
+    }
+
+    @Test
+    public void testConvertMissingIndicator() throws Exception {
+        for (String indicator : TypeUtils.MISSING_INDICATORS) {
+            float result = FloatColumn.convert(indicator);
+            assertEquals(ColumnType.FLOAT.getMissingValue(), result);
+        }
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void testConvertNotANumber() throws Exception {
+        FloatColumn.convert("not a number");
+    }
+
+    @Test
+    public void testSummary() throws Exception {
+        FloatColumn column = new FloatColumn("c");
+        Table table = column.summary();
+        assertEquals(2, table.columnCount());
+        assertEquals(8, table.rowCount());
+    }
+
+    @Test
+    public void testStats() throws Exception {
+        FloatColumn column = new FloatColumn("c");
+        int rowsCount = 10_000;
+        for (int i = 0; i < rowsCount; i++) {
+            column.append((float) Math.random());
+        }
+        Stats stats = Stats.create(column);
+        assertEquals(rowsCount, stats.n());
+    }
+
+    @Test
+    public void testTop() throws Exception {
+        float[] top = {Float.POSITIVE_INFINITY, 540.34f};
+        float[] bottom = {Float.NEGATIVE_INFINITY, 0.0f, 42f};
+        float[] floats = ArrayUtils.addAll(top, bottom);
+        FloatColumn column = new FloatColumn("floats", floats);
+        assertArrayEquals(top, column.top(top.length).toFloatArray(), 0.01f);
+    }
+
+    @Test
+    public void testTopMoreThanColumnSize() throws Exception {
+        float[] floats = {42f, 23f, 11f};
+        int uniques = floats.length;
+        FloatColumn column = new FloatColumn("floats", floats);
+        assertEquals(uniques, column.top(uniques + 10).size());
+    }
+
+    @Test
+    public void testTopEmptyColumn() throws Exception {
+        FloatColumn column = new FloatColumn("empty");
+        assertTrue(column.top(10).isEmpty());
+    }
+
+    @Test
+    public void testTopColumnWithRepeatedValues() throws Exception {
+        float[] top = {42f, 42f, 42f};
+        float[] bottom = {23f, 23f, 11f};
+        float[] floats = ArrayUtils.addAll(top, bottom);
+        FloatColumn column = new FloatColumn("floats", floats);
+        assertArrayEquals(top, column.top(top.length).toFloatArray(), 0.01f);
+    }
+
+    @Test
+    public void testTopZero() throws Exception {
+        FloatColumn column = new FloatColumn("c");
+        int rowsCount = 100;
+        for (int i = 0; i < rowsCount; i++) {
+            column.append((float) Math.random());
+        }
+        assertTrue(column.top(0).isEmpty());
+    }
+
+    @Test
+    public void testBottom() throws Exception {
+        float[] top = {Float.POSITIVE_INFINITY, 540.34f};
+        float[] bottom = {Float.NEGATIVE_INFINITY, 0.0f, 42f};
+        float[] floats = ArrayUtils.addAll(top, bottom);
+        FloatColumn column = new FloatColumn("floats", floats);
+        assertArrayEquals(bottom, column.bottom(bottom.length).toFloatArray(), 0.01f);
+    }
+
+    @Test
+    public void testBottomMoreThanColumnSize() throws Exception {
+        float[] floats = {42f, 23f, 11f};
+        int uniques = floats.length;
+        FloatColumn column = new FloatColumn("floats", floats);
+        assertEquals(uniques, column.bottom(uniques + 10).size());
+    }
+
+    @Test
+    public void testBottomEmptyColumn() throws Exception {
+        FloatColumn column = new FloatColumn("empty");
+        assertTrue(column.bottom(10).isEmpty());
+    }
+
+    @Test
+    public void testBottomColumnWithRepeatedValues() throws Exception {
+        float[] top = {Float.POSITIVE_INFINITY, 42f, 42f};
+        float[] bottom = {23f, 23f, 23f};
+        float[] floats = ArrayUtils.addAll(top, bottom);
+        FloatColumn column = new FloatColumn("floats", floats);
+        assertArrayEquals(bottom, column.bottom(bottom.length).toFloatArray(), 0.01f);
+    }
+
+    @Test
+    public void testBottomZero() throws Exception {
+        FloatColumn column = new FloatColumn("c");
+        int rowsCount = 100;
+        for (int i = 0; i < rowsCount; i++) {
+            column.append((float) Math.random());
+        }
+        assertTrue(column.bottom(0).isEmpty());
+    }
 
     @Ignore
     @Test
