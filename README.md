@@ -76,10 +76,10 @@ duration.setName("Duration");
 ops.addColumn(duration);
 
 Table filtered = ops.selectWhere(                                                // filter
-    allOf
-        (column("date").isInQ2(),
-        (column("SKU").startsWith("429")),
-        (column("Operation").isEqualTo("Assembly"))));
+    allOf(
+        column("date").isInQ2(),
+        column("SKU").startsWith("429"),
+        column("Operation").isEqualTo("Assembly")));
    
 Table summary = filtered.median("Duration").by("Facility", "Shift");             // group medians
 FloatArrayList tops = summary.floatColumn("Median").top(5);                      // get "slowest"
