@@ -27,22 +27,26 @@ public interface Column {
     }
 
     /**
-     * Returns the count of missing values in this column
+     * Returns the count of missing values in this column.
+     * @return missing values as int
      */
     int countMissing();
 
     /**
-     * Returns the count of unique values in this column
+     * Returns the count of unique values in this column.
+     * @return unique values as int
      */
     int countUnique();
 
     /**
-     * Returns a column of the same type as the receiver, containing only the unique values of the receiver
+     * Returns a column of the same type as the receiver, containing only the unique values of the receiver.
+     * @return a {@link Column}
      */
     Column unique();
 
     /**
-     * Returns the column's name
+     * Returns the column's name.
+     * @return name as String
      */
     String name();
 
@@ -55,26 +59,33 @@ public interface Column {
 
     /**
      * Returns this column's ColumnType
+     * @return {@link ColumnType}
      */
     ColumnType type();
 
     /**
-     * Returns a string representation of the value at the given row
+     * Returns a string representation of the value at the given row.
+     * @param row The index of the row.
+     * @return value as String
      */
     String getString(int row);
 
     /**
-     * Returns a copy of the receiver with no data. The column name and type are the same
+     * Returns a copy of the receiver with no data. The column name and type are the same.
+     * @return a empty copy of {@link Column}
      */
     Column emptyCopy();
 
     /**
      * Returns a deep copy of the receiver
+     * @return a {@link Column}
      */
     Column copy();
 
     /**
-     * Returns an empty copy of the receiver, with its internal storage initialized to the given row size
+     * Returns an empty copy of the receiver, with its internal storage initialized to the given row size.
+     * @param rowSize the initial row size
+     * @return a {@link Column}
      */
     Column emptyCopy(int rowSize);
 
@@ -86,18 +97,21 @@ public interface Column {
 
     /**
      * Returns true if the column has no data
+     * @return true if empty, false if not
      */
     boolean isEmpty();
 
     void appendCell(String stringValue);
 
     /**
-     * Returns a unique string that identifies this column
+     * Returns a unique string that identifies this column.
+     * @return the unique identifier as string.
      */
     String id();
 
     /**
-     * Returns a String containing the column's metadata in json format
+     * Returns a String containing the column's metadata in json format.
+     * @return metadata as String
      */
     String metadata();
 
@@ -154,12 +168,15 @@ public interface Column {
     Selection isNotMissing();
 
     /**
-     * Returns the width of a cell in this column, in bytes
+     * Returns the width of a cell in this column, in bytes.
+     * @return width in bytes
      */
     int byteSize();
 
     /**
-     * Returns the contents of the cell at rowNumber as a byte[]
+     * Returns the contents of the cell at rowNumber as a byte[].
+     * @param rowNumber index of the row
+     * @return content as byte[]
      */
     byte[] asBytes(int rowNumber);
 
@@ -168,6 +185,7 @@ public interface Column {
      * contain the difference between each cell in the original and it's predecessor.
      * The Missing Value Indicator is used for the first cell in the new column.
      * (e.g. IntColumn.MISSING_VALUE)
+     * @return a {@link Column}
      */
     Column difference();
 }
