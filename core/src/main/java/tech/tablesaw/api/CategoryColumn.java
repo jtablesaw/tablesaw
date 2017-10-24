@@ -25,6 +25,7 @@ import tech.tablesaw.util.Selection;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -98,21 +99,17 @@ public class CategoryColumn extends AbstractColumn
         super(name);
         values = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
+    
+    public CategoryColumn(String name, String[] categories) {
+       this(name, Arrays.asList(categories));
+    }
 
     public CategoryColumn(String name, List<String> categories) {
         super(name);
         values = new IntArrayList(categories.size());
         for (String string : categories) {
-            add(string);
+            addValue(string);
         }
-    }
-
-    public CategoryColumn(String name, String[] categories) {
-      super(name);
-      values = new IntArrayList(categories.length);
-      for (String string : categories) {
-          add(string);
-      }
     }
 
     public CategoryColumn(ColumnMetadata metadata) {
@@ -294,13 +291,17 @@ public class CategoryColumn extends AbstractColumn
         return bottom;
     }
 
-    public final void add(String stringValue) {
-        int valueId = lookupTable.get(stringValue);
-        if (valueId < 0) {
-            valueId = id++;
-            lookupTable.put(valueId, stringValue);
+    public void add(String stringValue) {
+        addValue(stringValue);
+    }
+    
+    private void addValue(String value) {
+        int key = lookupTable.get(value);
+        if (key < 0) {
+            key = id++;
+            lookupTable.put(key, value);
         }
-        values.add(valueId);
+        values.add(key);
     }
 
     /**
