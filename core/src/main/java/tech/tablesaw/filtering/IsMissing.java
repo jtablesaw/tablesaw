@@ -14,6 +14,7 @@ public class IsMissing extends ColumnFilter {
         super(reference);
     }
 
+    @Override
     public Selection apply(Table relation) {
         Column column = relation.column(columnReference.getColumnName());
         return column.isMissing();

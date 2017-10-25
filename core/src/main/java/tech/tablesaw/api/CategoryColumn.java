@@ -25,6 +25,7 @@ import tech.tablesaw.util.Selection;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -82,7 +83,7 @@ public class CategoryColumn extends AbstractColumn
         }
     };
 
-    private IntComparator reverseDictionarySortComparator = new IntComparator() {
+    private final IntComparator reverseDictionarySortComparator = new IntComparator() {
         @Override
         public int compare(int i, int i1) {
             return -lookupTable.get(i).compareTo(lookupTable.get(i1));
@@ -98,21 +99,17 @@ public class CategoryColumn extends AbstractColumn
         super(name);
         values = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
+    
+    public CategoryColumn(String name, String[] categories) {
+       this(name, Arrays.asList(categories));
+    }
 
     public CategoryColumn(String name, List<String> categories) {
         super(name);
         values = new IntArrayList(categories.size());
         for (String string : categories) {
-            add(string);
+            addValue(string);
         }
-    }
-
-    public CategoryColumn(String name, String[] categories) {
-      super(name);
-      values = new IntArrayList(categories.length);
-      for (String string : categories) {
-          add(string);
-      }
     }
 
     public CategoryColumn(ColumnMetadata metadata) {
@@ -168,6 +165,7 @@ public class CategoryColumn extends AbstractColumn
 
     /**
      * Returns the number of elements (a.k.a. rows or cells) in the column
+     * @return size as int
      */
     @Override
     public int size() {
@@ -176,7 +174,8 @@ public class CategoryColumn extends AbstractColumn
 
     /**
      * Returns the value at rowIndex in this column. The index is zero-based.
-     *
+     * @param rowIndex index of the row
+     * @return value as String
      * @throws IndexOutOfBoundsException if the given rowIndex is not in the column
      */
     public String get(int rowIndex) {
@@ -188,6 +187,7 @@ public class CategoryColumn extends AbstractColumn
      * Returns a List&lt;String&gt; representation of all the values in this column
      *
      * NOTE: Unless you really need a string consider using the column itself for large datasets as it uses much less memory
+     * @return values as a list of String.
      */
     public List<String> toList() {
         List<String> strings = new ArrayList<>();
@@ -292,12 +292,16 @@ public class CategoryColumn extends AbstractColumn
     }
 
     public void add(String stringValue) {
-        int valueId = lookupTable.get(stringValue);
-        if (valueId < 0) {
-            valueId = id++;
-            lookupTable.put(valueId, stringValue);
+        addValue(stringValue);
+    }
+    
+    private void addValue(String value) {
+        int key = lookupTable.get(value);
+        if (key < 0) {
+            key = id++;
+            lookupTable.put(key, value);
         }
-        values.add(valueId);
+        values.add(key);
     }
 
     /**
@@ -311,13 +315,17 @@ public class CategoryColumn extends AbstractColumn
 
     /**
      * Returns true if this column contains a cell with the given string, and false otherwise
+     * @param aString the value to look for
+     * @return true if contains, false otherwhise
      */
     public boolean contains(String aString) {
         return values.indexOf(dictionaryMap().get(aString)) >= 0;
     }
 
     /**
-     * Returns all the values associated with the given indexes
+     * Returns all the values associated with the given indexes.
+     * @param indexes the indexes
+     * @return values as {@link IntArrayList}
      */
     public IntArrayList getValues(IntArrayList indexes) {
         IntArrayList newList = new IntArrayList(indexes.size());
@@ -329,6 +337,7 @@ public class CategoryColumn extends AbstractColumn
 
     /**
      * Add all the strings in the list to this column
+     * @param stringValues a list of values
      */
     public void addAll(List<String> stringValues) {
         for (String stringValue : stringValues) {
@@ -336,6 +345,7 @@ public class CategoryColumn extends AbstractColumn
         }
     }
 
+    @Override
     public void appendCell(String object) {
         try {
             add(convert(object));
@@ -390,6 +400,7 @@ public class CategoryColumn extends AbstractColumn
      * Returns a list of boolean columns suitable for use as dummy variables in, for example, regression analysis,
      * selectWhere a column of categorical data must be encoded as a list of columns, such that each column represents
      * a single category and indicates whether it is present (1) or not present (0)
+     * @return a list of {@link BooleanColumn}
      */
     public List<BooleanColumn> getDummies() {
         List<BooleanColumn> results = new ArrayList<>();
@@ -422,14 +433,17 @@ public class CategoryColumn extends AbstractColumn
 
     /**
      * Returns a new Column containing all the unique values in this column
+     * @return a column with unique values.
      */
+    @Override
     public CategoryColumn unique() {
         List<String> strings = new ArrayList<>(lookupTable.categories());
         return new CategoryColumn(name() + " Unique values", strings);
     }
 
     /**
-     * Returns the integers that back this column
+     * Returns the integers that back this column.
+     * @return data as {@link IntArrayList}
      */
     public IntArrayList data() {
         return values;
@@ -445,6 +459,7 @@ public class CategoryColumn extends AbstractColumn
         return intColumn;
     }
 
+    @Override
     public DictionaryMap dictionaryMap() {
         return lookupTable;
     }
@@ -456,6 +471,7 @@ public class CategoryColumn extends AbstractColumn
 
     /**
      * Returns the raw indexes that this column contains.
+     * @return indexes as int[]
      */
     public int[] indexes() {
         int[] rowIndexes = new int[size()];
@@ -531,7 +547,8 @@ public class CategoryColumn extends AbstractColumn
     }
 
     /**
-     * Splits on Whitespace and returns the lexicographically sorted result
+     * Splits on Whitespace and returns the lexicographically sorted result.
+     * @return a {@link CategoryColumn}
      */
     public CategoryColumn tokenizeAndSort() {
         CategoryColumn newColumn = new CategoryColumn(name() + "[sorted]", this.size());
@@ -566,6 +583,7 @@ public class CategoryColumn extends AbstractColumn
         return newColumn;
     }
 
+    @Override
     public String print() {
         StringBuilder builder = new StringBuilder();
         builder.append(title());
@@ -609,6 +627,7 @@ public class CategoryColumn extends AbstractColumn
         return selection;
     }
 
+    @Override
     public CategoryColumn copy() {
         CategoryColumn newCol = new CategoryColumn(name(), size());
         newCol.lookupTable = new DictionaryMap(lookupTable);
@@ -644,7 +663,7 @@ public class CategoryColumn extends AbstractColumn
     public Iterator<String> iterator() {
         return new Iterator<String>() {
 
-            private IntListIterator valuesIt = values.iterator();
+            private final IntListIterator valuesIt = values.iterator();
 
             @Override
             public boolean hasNext() {
@@ -675,7 +694,9 @@ public class CategoryColumn extends AbstractColumn
     /**
      * Returns the integer encoded value of each cell in this column. It can be used to lookup the mapped string in
      * the lookupTable
+     * @return values a {@link IntArrayList}
      */
+    @Override
     public IntArrayList values() {
         return values;
     }
