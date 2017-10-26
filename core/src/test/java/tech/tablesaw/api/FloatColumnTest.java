@@ -270,42 +270,42 @@ public class FloatColumnTest {
     
     @Test
     public void testIsPositive() {
-    		int positiveRecords = 987_000;
-    		int negativeRecords = 654_000;
-    		FloatColumn floatColumn = new FloatColumn("test", positiveRecords+negativeRecords);
-    		for (int i = 0; i < positiveRecords; i++) {
-    			floatColumn.append((float) Math.random()*100);
-    		}
+        int positiveRecords = 987_000;
+        int negativeRecords = 654_000;
+        FloatColumn floatColumn = new FloatColumn("test", positiveRecords+negativeRecords);
+        for (int i = 0; i < positiveRecords; i++) {
+            floatColumn.append((float) Math.random()*100);
+        }
 
-    		for (int i = 0; i < negativeRecords; i++) {
-    			floatColumn.append((float) Math.random() * -100);
-    		}
-    		
-    		Selection results = floatColumn.isPositive();
-    		
+        for (int i = 0; i < negativeRecords; i++) {
+            floatColumn.append((float) Math.random() * -100);
+        }
+
+        Selection results = floatColumn.isPositive();
+
         assertTrue(results.size() == positiveRecords);
     }
     
     @Test
     public void testIsNonNegative() {
-    		int positiveRecords = 980_000;
-    		int negativeRecords = 654_000;
-    		int zeroRecords = 20_000;
-    		FloatColumn floatColumn = new FloatColumn("test", positiveRecords+negativeRecords+zeroRecords);
-    		for (int i = 0; i < positiveRecords; i++) {
-    			floatColumn.append((float) Math.random()*100);
-    		}
+        int positiveRecords = 980_000;
+        int negativeRecords = 654_000;
+        int zeroRecords = 20_000;
+        FloatColumn floatColumn = new FloatColumn("test", positiveRecords+negativeRecords+zeroRecords);
+        for (int i = 0; i < positiveRecords; i++) {
+            floatColumn.append((float) Math.random()*100);
+        }
 
-    		for (int i = 0; i < negativeRecords; i++) {
-    			floatColumn.append((float) Math.random() * -100);
-    		}
-    		
-    		for (int i = 0; i < zeroRecords; i++) {
-    			floatColumn.append(0);
-    		}
-    		
-    		Selection results = floatColumn.isNonNegative();
-    		
+        for (int i = 0; i < negativeRecords; i++) {
+            floatColumn.append((float) Math.random() * -100);
+        }
+
+        for (int i = 0; i < zeroRecords; i++) {
+            floatColumn.append(0);
+        }
+
+        Selection results = floatColumn.isNonNegative();
+
         assertTrue(results.size() == positiveRecords+zeroRecords);
     }
 
