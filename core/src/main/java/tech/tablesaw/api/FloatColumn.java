@@ -300,10 +300,10 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return select(isNegative);
     }
     public Selection isPositive() {
-        return select(isZero);
+        return select(isPositive);
     }
     public Selection isNonNegative() {
-        return select(isZero);
+        return select(isNonNegative);
     }
 
     public Selection isMissing() {
