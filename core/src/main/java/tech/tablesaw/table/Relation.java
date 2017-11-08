@@ -38,9 +38,9 @@ import java.util.List;
  */
 public abstract class Relation {
 
-    public abstract void addColumn(Column... cols);
+    public abstract Relation addColumn(Column... cols);
 
-    public abstract void setName(String name);
+    public abstract Relation setName(String name);
 
     public boolean isEmpty() {
         return rowCount() == 0;
@@ -50,21 +50,23 @@ public abstract class Relation {
         return rowCount() + " rows X " + columnCount() + " cols";
     }
 
-    public void removeColumn(int columnIndex) {
+    public Relation removeColumn(int columnIndex) {
         removeColumns(column(columnIndex));
+        return this;
     }
 
     /**
      * Removes the given columns from the receiver
      */
-    public abstract void removeColumns(Column... columns);
+    public abstract Relation removeColumns(Column... columns);
 
-    public void removeColumns(String... columnName) {
+    public Relation removeColumns(String... columnName) {
         Column[] cols = new Column[columnName.length];
         for (int i = 0; i < columnName.length; i++) {
             cols[i] = column(columnName[i]);
         }
         removeColumns(cols);
+        return this;
     }
 
     public abstract Table first(int nRows);

@@ -97,7 +97,7 @@ public class TemporaryView extends Relation implements IntIterable {
     }
 
     @Override
-    public void addColumn(Column... column) {
+    public TemporaryView addColumn(Column... column) {
         throw new UnsupportedOperationException("TemporaryView does not support the addColumn operation");
     }
 
@@ -120,7 +120,7 @@ public class TemporaryView extends Relation implements IntIterable {
     }
 
     @Override
-    public void removeColumns(Column... columns) {
+    public TemporaryView removeColumns(Column... columns) {
         throw new UnsupportedOperationException("TemporaryView does not support the removeColumns operation");
     }
 
@@ -138,8 +138,9 @@ public class TemporaryView extends Relation implements IntIterable {
     }
 
     @Override
-    public void setName(String name) {
+    public TemporaryView setName(String name) {
         this.name = name;
+        return this;
     }
 
 

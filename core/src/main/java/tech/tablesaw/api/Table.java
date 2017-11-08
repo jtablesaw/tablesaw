@@ -466,11 +466,12 @@ public class Table extends Relation implements IntIterable {
      * Adds the given column to this table
      */
     @Override
-    public void addColumn(Column... cols) {
+    public Table addColumn(Column... cols) {
         for (Column c : cols) {
             validateColumn(c);
             columnList.add(c);
         }
+        return this;
     }
 
     /**
@@ -494,17 +495,19 @@ public class Table extends Relation implements IntIterable {
      * @param index  Zero-based index into the column list
      * @param column Column to be added
      */
-    public void addColumn(int index, Column column) {
+    public Table addColumn(int index, Column column) {
         validateColumn(column);
         columnList.add(index, column);
+        return this;
     }
 
     /**
      * Sets the name of the table
      */
     @Override
-    public void setName(String name) {
+    public Table setName(String name) {
         this.name = name;
+        return this;
     }
 
     /**
@@ -996,8 +999,9 @@ public class Table extends Relation implements IntIterable {
      * Removes the given columns
      */
     @Override
-    public void removeColumns(Column... columns) {
+    public Table removeColumns(Column... columns) {
         columnList.removeAll(Arrays.asList(columns));
+        return this;
     }
 
     /**
