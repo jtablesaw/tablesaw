@@ -976,7 +976,7 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns a table with only the given rows
      * @param rows the rows to keep
-     * @return the table with selected rows
+     * @return the table with the selected rows
      */
     public Table selectRows(IntArrayList rows) {
       Table newTable = emptyCopy();
