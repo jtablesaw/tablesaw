@@ -973,6 +973,28 @@ public class Table extends Relation implements IntIterable {
       IntArrayList rows2 = new IntArrayList(rows);
       return dropRows(rows2);
     }
+    
+    /**
+     * Returns a table with only the given rows
+     * @param rows the rows to keep
+     * @return the table with selected rows
+     */
+    public Table selectRows(IntArrayList rows) {
+      Table newTable = emptyCopy();
+      Rows.copyRowsToTable(rows, this, newTable);
+      return newTable;
+
+    }
+    
+    /**
+     * Returns a table with only the given rows 
+     * @param rows the rows to keep
+     * @return the table with the selected rows
+     */
+    public Table dropRows(int... rows) {
+      IntArrayList rows2 = new IntArrayList(rows);
+      return selectRows(rows2);
+    }
 
     /**
      * Returns the unique records in this table
