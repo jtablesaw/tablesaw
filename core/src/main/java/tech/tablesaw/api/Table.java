@@ -961,7 +961,6 @@ public class Table extends Relation implements IntIterable {
       allRows.removeAll(rows2);
       Rows.copyRowsToTable(allRows, this, newTable);
       return newTable;
-
     }
 
     /**
@@ -983,7 +982,6 @@ public class Table extends Relation implements IntIterable {
       Table newTable = emptyCopy();
       Rows.copyRowsToTable(rows, this, newTable);
       return newTable;
-
     }
     
     /**
@@ -991,7 +989,7 @@ public class Table extends Relation implements IntIterable {
      * @param rows the rows to keep
      * @return the table with the selected rows
      */
-    public Table dropRows(int... rows) {
+    public Table selectRows(int... rows) {
       IntArrayList rows2 = new IntArrayList(rows);
       return selectRows(rows2);
     }
