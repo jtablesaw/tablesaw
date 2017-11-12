@@ -380,17 +380,17 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         if (Strings.isNullOrEmpty(value) || TypeUtils.MISSING_INDICATORS.contains(value) || value.equals("-1")) {
             return (Integer) ColumnType.LOCAL_DATE.getMissingValue();
         }
-        value = Strings.padStart(value, 4, '0');
+        String paddedValue = Strings.padStart(value, 4, '0');
 
         if (selectedFormatter == null) {
-            selectedFormatter = TypeUtils.getDateFormatter(value).withLocale(locale);
+            selectedFormatter = TypeUtils.getDateFormatter(paddedValue).withLocale(locale);
         }
         LocalDate date;
         try {
-            date = LocalDate.parse(value, selectedFormatter);
+            date = LocalDate.parse(paddedValue, selectedFormatter);
         } catch (DateTimeParseException e) {
             selectedFormatter = TypeUtils.DATE_FORMATTER.withLocale(locale);
-            date = LocalDate.parse(value, selectedFormatter);
+            date = LocalDate.parse(paddedValue, selectedFormatter);
         }
         return PackedLocalDate.pack(date);
     }
