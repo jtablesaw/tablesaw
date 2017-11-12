@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -946,22 +947,33 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * Returns a table with the given rows dropped
-     * @param rows the rows to drop
-     * @return the table with the dropped rows
+     * Returns a table with the given rows selected
+     * @param rows the rows to select
+     * @return the table with the selected rows
      */
-    public Table dropRows(IntArrayList rows) {
+    public Table selectRows(Collection<Integer> rows) {
       Table newTable = emptyCopy();
-      IntArrayList rows2 = new IntArrayList(rows);
-      IntArrayList allRows = new IntArrayList();
-      for (int i = 0; i < rowCount(); i++) {
-        allRows.add(i);
-      }
-      //rows to keep
-      allRows.removeAll(rows2);
-      Rows.copyRowsToTable(allRows, this, newTable);
+      Rows.copyRowsToTable(new IntArrayList(rows), this, newTable);
       return newTable;
 
+    }
+
+    /**
+     * Returns a table with the given rows selected
+     * @param start the first row to select
+     * @param end the last row to select
+     * @return the table with the selected rows
+     */
+    public Table selectRows(int start, int end) {
+      Table newTable = emptyCopy();
+      IntArrayList rowsToKeep = new IntArrayList();
+      for (int i = 0; i < rowCount(); i++) {
+        if (i >= start && i <= end) {
+          rowsToKeep.add(i);
+        }
+      }
+      Rows.copyRowsToTable(rowsToKeep, this, newTable);
+      return newTable;
     }
 
     /**
@@ -969,9 +981,33 @@ public class Table extends Relation implements IntIterable {
      * @param rows the rows to drop
      * @return the table with the dropped rows
      */
-    public Table dropRows(int... rows) {
-      IntArrayList rows2 = new IntArrayList(rows);
-      return dropRows(rows2);
+    public Table dropRows(Collection<Integer> rows) {
+      Table newTable = emptyCopy();
+      IntArrayList rowsToKeep = new IntArrayList();
+      for (int i = 0; i < rowCount(); i++) {
+        rowsToKeep.add(i);
+      }
+      rowsToKeep.removeAll(new IntArrayList(rows));
+      Rows.copyRowsToTable(rowsToKeep, this, newTable);
+      return newTable;
+    }
+
+    /**
+     * Returns a table with the given rows dropped
+     * @param start the first row to drop
+     * @param end the last row to drop
+     * @return the table with the dropped rows
+     */
+    public Table dropRows(int start, int end) {
+      Table newTable = emptyCopy();
+      IntArrayList rowsToKeep = new IntArrayList();
+      for (int i = 0; i < rowCount(); i++) {
+        if (i < start || i > end) {
+          rowsToKeep.add(i);
+        }
+      }
+      Rows.copyRowsToTable(rowsToKeep, this, newTable);
+      return newTable;
     }
 
     /**
