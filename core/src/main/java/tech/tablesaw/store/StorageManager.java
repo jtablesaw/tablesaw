@@ -151,7 +151,7 @@ public class StorageManager {
             case LONG_INT:
                 return readLongColumn(fileName, columnMetadata);
             default:
-                throw new RuntimeException("Unhandled column type writing columns");
+                throw new IllegalStateException("Unhandled column type writing columns");
         }
     }
 
