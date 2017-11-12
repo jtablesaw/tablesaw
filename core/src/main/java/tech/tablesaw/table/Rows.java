@@ -81,7 +81,7 @@ public class Rows {
                     copy(rows, (TimeColumn) oldTable.column(columnIndex), (TimeColumn) newTable.column(columnIndex));
                     break;
                 default:
-                    throw new RuntimeException("Unhandled column type in case statement");
+                    throw new IllegalStateException("Unhandled column type in case statement");
             }
         }
     }

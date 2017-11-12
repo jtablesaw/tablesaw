@@ -432,7 +432,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         } catch (NumberFormatException nfe) {
             throw new NumberFormatException(name() + ": " + nfe.getMessage());
         } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
+            throw new NullPointerException(name() + ": "
                     + String.valueOf(object) + ": "
                     + e.getMessage());
         }

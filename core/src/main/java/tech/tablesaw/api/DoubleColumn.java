@@ -411,10 +411,10 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public void appendCell(String object) {
         try {
             append(convert(object));
-        } catch (NumberFormatException nfe) {
-            throw new NumberFormatException(name() + ": " + nfe.getMessage());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException(name() + ": " + e.getMessage());
         } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
+            throw new NullPointerException(name() + ": "
                     + String.valueOf(object) + ": "
                     + e.getMessage());
         }
