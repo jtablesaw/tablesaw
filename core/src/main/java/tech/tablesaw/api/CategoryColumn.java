@@ -361,13 +361,8 @@ public class CategoryColumn extends AbstractColumn
 
     @Override
     public void appendCell(String object) {
-        try {
-            add(convert(object));
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
-        }
+        Preconditions.checkNotNull(object);
+        add(convert(object));
     }
 
     @Override

@@ -256,13 +256,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     public void appendCell(String object) {
-        try {
-            append(convert(object));
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
-        }
+        Preconditions.checkNotNull(object);
+        append(convert(object));
     }
 
     /**

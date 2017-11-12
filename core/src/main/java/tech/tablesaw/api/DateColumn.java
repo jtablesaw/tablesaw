@@ -397,11 +397,8 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
 
     @Override
     public void appendCell(String string) {
-        try {
-            appendInternal(convert(string));
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": " + string + ": " + e.getMessage());
-        }
+        Preconditions.checkNotNull(string);
+        appendInternal(convert(string));
     }
 
     @Override

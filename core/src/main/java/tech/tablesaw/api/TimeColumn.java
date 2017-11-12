@@ -290,13 +290,8 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
 
     @Override
     public void appendCell(String object) {
-        try {
-            appendInternal(convert(object));
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
-        }
+        Preconditions.checkNotNull(object);
+        appendInternal(convert(object));
     }
 
     public int getIntInternal(int index) {

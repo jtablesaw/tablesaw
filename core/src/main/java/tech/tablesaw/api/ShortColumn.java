@@ -259,14 +259,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
 
     @Override  // TODO(lwhite): Move to AbstractColumn
     public void appendCell(String object) {
+        Preconditions.checkNotNull(object);
         try {
             append(convert(object));
         } catch (NumberFormatException nfe) {
             throw new NumberFormatException(name() + ": " + nfe.getMessage());
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
         }
     }
 
