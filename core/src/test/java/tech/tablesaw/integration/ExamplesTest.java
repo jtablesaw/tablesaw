@@ -62,7 +62,7 @@ public class ExamplesTest {
 
         // Lets filtering out some of the rows. We're only interested in records with IDs between 524-624
 
-        Table filtered = table.selectWhere(QueryHelper.column("stop_id").isBetween(524, 624));
+        Table filtered = table.selectWhere(QueryHelper.column("stop_id").isBetweenIncluding(524, 624));
         out(filtered.first(5));
 
         // Write out the new CSV file

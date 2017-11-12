@@ -29,7 +29,8 @@ import tech.tablesaw.filtering.FloatGreaterThan;
 import tech.tablesaw.filtering.FloatGreaterThanOrEqualTo;
 import tech.tablesaw.filtering.FloatLessThan;
 import tech.tablesaw.filtering.FloatLessThanOrEqualTo;
-import tech.tablesaw.filtering.IntBetween;
+import tech.tablesaw.filtering.IntBetweenExclusive;
+import tech.tablesaw.filtering.IntBetweenInclusive;
 import tech.tablesaw.filtering.IntEqualTo;
 import tech.tablesaw.filtering.IntGreaterThan;
 import tech.tablesaw.filtering.IntGreaterThanOrEqualTo;
@@ -38,7 +39,8 @@ import tech.tablesaw.filtering.IntLessThan;
 import tech.tablesaw.filtering.IntLessThanOrEqualTo;
 import tech.tablesaw.filtering.IsMissing;
 import tech.tablesaw.filtering.IsNotMissing;
-import tech.tablesaw.filtering.LocalDateBetween;
+import tech.tablesaw.filtering.LocalDateBetweenExclusive;
+import tech.tablesaw.filtering.LocalDateBetweenInclusive;
 import tech.tablesaw.filtering.StringEqualTo;
 import tech.tablesaw.filtering.StringNotEqualTo;
 import tech.tablesaw.filtering.TimeEqualTo;
@@ -136,12 +138,20 @@ public class ColumnReference {
         return new ColumnEqualTo(this, reference);
     }
 
-    public Filter isBetween(int low, int high) {
-        return new IntBetween(this, low, high);
+    public Filter isBetweenIncluding(int low, int high) {
+        return new IntBetweenInclusive(this, low, high);
     }
 
-    public Filter isBetween(LocalDate low, LocalDate high) {
-        return new LocalDateBetween(this, low, high);
+    public Filter isBetweenIncluding(LocalDate low, LocalDate high) {
+        return new LocalDateBetweenInclusive(this, low, high);
+    }
+
+    public Filter isBetweenExcluding(int low, int high) {
+        return new IntBetweenExclusive(this, low, high);
+    }
+
+    public Filter isBetweenExcluding(LocalDate low, LocalDate high) {
+        return new LocalDateBetweenExclusive(this, low, high);
     }
 
     public Filter isEqualTo(float value) {
