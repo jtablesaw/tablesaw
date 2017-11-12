@@ -102,7 +102,7 @@ public class SubTable extends Table {
                     categoryColumn.add(sourceTable.categoryColumn(i).get(rowIndex));
                     break;
                 default:
-                    throw new RuntimeException("Unhandled column type updating columns");
+                    throw new IllegalStateException("Unhandled column type updating columns");
             }
         }
     }
