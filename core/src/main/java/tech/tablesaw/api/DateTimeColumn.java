@@ -110,9 +110,16 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         data = new LongArrayList(initialSize);
     }
 
-    public DateTimeColumn(String name, LongArrayList data) {
+    private DateTimeColumn(String name, LongArrayList data) {
         super(name);
         this.data = data;
+    }
+
+    public DateTimeColumn(String name, List<LocalDateTime> data) {
+      this(name);
+      for (LocalDateTime date : data) {
+        append(date);
+      }
     }
 
     @Override

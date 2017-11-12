@@ -82,7 +82,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
       this(name, new LongArrayList(arr));
     }
 
-    public LongColumn(String name, LongArrayList data) {
+    private LongColumn(String name, LongArrayList data) {
         super(name);
         this.data = data;
     }

@@ -83,7 +83,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         this(name, new ShortArrayList(arr));
     }
 
-    public ShortColumn(String name, ShortArrayList data) {
+    private ShortColumn(String name, ShortArrayList data) {
         super(name);
         this.data = data;
     }

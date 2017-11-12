@@ -95,7 +95,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         this(name, new ByteArrayList(initialSize));
     }
 
-    public BooleanColumn(String name, ByteArrayList values) {
+    private BooleanColumn(String name, ByteArrayList values) {
         super(name);
         data = values;
     }

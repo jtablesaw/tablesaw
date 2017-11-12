@@ -104,9 +104,16 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         data = new IntArrayList(initialSize);
     }
 
-    public TimeColumn(String name, IntArrayList times) {
+    private TimeColumn(String name, IntArrayList times) {
         super(name);
         data = times;
+    }
+
+    public TimeColumn(String name, List<LocalTime> data) {
+      this(name);
+      for (LocalTime time : data) {
+        append(time);
+      }
     }
 
     public int size() {

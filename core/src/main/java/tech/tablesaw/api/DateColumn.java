@@ -110,20 +110,27 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         this(name, new IntArrayList(initialSize));
     }
 
-    public DateColumn(String name, IntArrayList data) {
+    public DateColumn(String name, List<LocalDate> data) {
+      this(name);
+      for (LocalDate date : data) {
+        append(date);
+      }
+    }
+
+    private DateColumn(String name, IntArrayList data) {
         this(name, data, Locale.getDefault());
     }
-    
-    public DateColumn(String name, IntArrayList data, Locale locale) {
+
+    private DateColumn(String name, IntArrayList data, Locale locale) {
         super(name);
         this.data = data;
         this.locale = locale;
     }
-    
+
     public DateColumn(ColumnMetadata metadata) {
         this(metadata, Locale.getDefault());
     }
-    
+
     public DateColumn(ColumnMetadata metadata, Locale locale) {
         super(metadata);
         this.data = new IntArrayList(DEFAULT_ARRAY_SIZE);
