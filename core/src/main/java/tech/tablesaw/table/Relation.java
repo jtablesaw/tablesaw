@@ -186,7 +186,7 @@ public abstract class Relation {
     
     @Override
     public String toString() {
-      return toString(50);
+      return toString(20);
     }
 
     /**
