@@ -19,9 +19,6 @@ import static tech.tablesaw.reducing.NumericReduceUtils.variance;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.reducing.NumericReduceFunction;
 
-/**
- *
- */
 public class Variance extends SummaryFunction {
 
     public Variance(Table original, String summarizedColumnName) {

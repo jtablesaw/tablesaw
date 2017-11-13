@@ -19,9 +19,6 @@ import static tech.tablesaw.reducing.NumericReduceUtils.min;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.reducing.NumericReduceFunction;
 
-/**
- *
- */
 public class Minimum extends SummaryFunction {
 
     public Minimum(Table original, String summarizedColumnName) {

@@ -16,9 +16,6 @@ package tech.tablesaw.mapping;
 
 import tech.tablesaw.api.Table;
 
-/**
- *
- */
 public class SummaryFunction {
 
     private final Table original;

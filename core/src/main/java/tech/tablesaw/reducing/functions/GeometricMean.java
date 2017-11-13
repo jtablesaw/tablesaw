@@ -19,9 +19,6 @@ import static tech.tablesaw.reducing.NumericReduceUtils.geometricMean;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.reducing.NumericReduceFunction;
 
-/**
- *
- */
 public class GeometricMean extends SummaryFunction {
 
     public GeometricMean(Table original, String summarizedColumnName) {

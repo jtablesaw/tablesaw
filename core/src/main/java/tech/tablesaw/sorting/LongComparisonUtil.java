@@ -14,9 +14,6 @@
 
 package tech.tablesaw.sorting;
 
-/**
- *
- */
 public class LongComparisonUtil {
 
     private static LongComparisonUtil instance = new LongComparisonUtil();

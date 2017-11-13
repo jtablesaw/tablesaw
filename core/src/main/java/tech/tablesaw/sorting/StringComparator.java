@@ -14,9 +14,6 @@
 
 package tech.tablesaw.sorting;
 
-/**
- *
- */
 public class StringComparator {
 
     private static StringComparator instance = new StringComparator();

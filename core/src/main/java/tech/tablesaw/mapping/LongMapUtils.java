@@ -19,9 +19,6 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.LongColumnUtils;
 
-/**
- *
- */
 public interface LongMapUtils extends LongColumnUtils {
 
     default LongColumn plus(LongColumn... columns) {

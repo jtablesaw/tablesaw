@@ -19,9 +19,6 @@ import static tech.tablesaw.reducing.NumericReduceUtils.mean;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.reducing.NumericReduceFunction;
 
-/**
- *
- */
 public class Mean extends SummaryFunction {
 
     public Mean(Table original, String summarizedColumnName) {

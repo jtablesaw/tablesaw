@@ -19,9 +19,6 @@ import tech.tablesaw.reducing.NumericReduceFunction;
 import tech.tablesaw.reducing.NumericSummaryTable;
 import tech.tablesaw.table.ViewGroup;
 
-/**
- *
- */
 public abstract class SummaryFunction {
 
     private final Table original;

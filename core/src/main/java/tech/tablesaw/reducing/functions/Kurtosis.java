@@ -19,9 +19,6 @@ import static tech.tablesaw.reducing.NumericReduceUtils.kurtosis;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.reducing.NumericReduceFunction;
 
-/**
- *
- */
 public class Kurtosis extends SummaryFunction {
 
     public Kurtosis(Table original, String summarizedColumnName) {

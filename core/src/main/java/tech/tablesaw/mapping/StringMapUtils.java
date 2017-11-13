@@ -24,13 +24,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
 /**
- *
+ * String utility functions. Each function takes one or more String columns as input and produces
+ * another Column as output. The resulting column need not be a string column.
  */
 public interface StringMapUtils extends Column {
-    /**
-     * String utility functions. Each function takes one or more String columns as input and produces
-     * another Column as output. The resulting column need not be a string column.
-     */
 
     default CategoryColumn upperCase() {
         CategoryColumn newColumn = new CategoryColumn(this.name() + "[ucase]");

@@ -19,9 +19,6 @@ import static tech.tablesaw.reducing.NumericReduceUtils.median;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.reducing.NumericReduceFunction;
 
-/**
- *
- */
 public class Median extends SummaryFunction {
 
     public Median(Table original, String summarizedColumnName) {

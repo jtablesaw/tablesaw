@@ -19,9 +19,6 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.IntColumnUtils;
 
-/**
- *
- */
 public interface IntMapUtils extends IntColumnUtils {
 
     default IntColumn plus(IntColumn... columns) {

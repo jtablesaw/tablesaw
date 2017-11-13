@@ -19,9 +19,6 @@ import static tech.tablesaw.reducing.NumericReduceUtils.n;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.reducing.NumericReduceFunction;
 
-/**
- *
- */
 public class Count extends SummaryFunction {
 
     public Count(Table original, String summarizedColumnName) {

@@ -16,9 +16,6 @@ package tech.tablesaw.reducing;
 
 import tech.tablesaw.columns.Column;
 
-/**
- *
- */
 public interface CategoryReduceUtils extends Column, Iterable<String> {
 
     int size();

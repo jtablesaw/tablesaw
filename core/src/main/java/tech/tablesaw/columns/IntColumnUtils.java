@@ -19,9 +19,6 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.filtering.IntBiPredicate;
 import tech.tablesaw.filtering.IntPredicate;
 
-/**
- *
- */
 public interface IntColumnUtils extends Column, IntIterable {
 
     IntPredicate isZero = i -> i == 0;

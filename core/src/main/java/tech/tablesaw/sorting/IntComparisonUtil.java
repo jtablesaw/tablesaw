@@ -14,9 +14,6 @@
 
 package tech.tablesaw.sorting;
 
-/**
- *
- */
 public class IntComparisonUtil {
 
     private static IntComparisonUtil instance = new IntComparisonUtil();
