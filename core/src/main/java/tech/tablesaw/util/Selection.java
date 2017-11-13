@@ -25,11 +25,11 @@ public interface Selection extends IntIterable {
 
     int[] toArray();
 
+    RoaringBitmap toBitmap();
+
     /**
      * Returns an IntArrayList containing the ints in this selection
      */
-    RoaringBitmap toBitmap();
-
     IntArrayList toIntArrayList();
 
     /**
