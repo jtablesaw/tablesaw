@@ -67,7 +67,7 @@ public class DictionaryMap {
     }
 
     public void remove(String value) {
-        int key = valueToKey.remove(value);
+        int key = valueToKey.removeInt(value);
         keyToValue.remove(key);
     }
 
