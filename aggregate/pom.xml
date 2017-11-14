@@ -64,5 +64,10 @@
       <artifactId>tablesaw-smile</artifactId>
       <version>0.10.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>tech.tablesaw</groupId>
+      <artifactId>tablesaw-beakerx</artifactId>
+      <version>0.10.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

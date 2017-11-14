@@ -47,6 +47,7 @@
     <module>core</module>
     <module>plot</module>
     <module>smile</module>
+    <module>beakerx</module>
     <module>aggregate</module>
   </modules>
 
