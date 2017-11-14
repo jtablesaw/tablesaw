@@ -35,8 +35,6 @@ import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import org.jetbrains.annotations.NotNull;
-
 import static tech.tablesaw.columns.FloatColumnUtils.*;
 import static tech.tablesaw.reducing.NumericReduceUtils.*;
 
@@ -775,8 +773,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return returnValue;
     }
 
-    @NotNull
-    public FloatColumn add(@NotNull FloatColumn column2) {
+    public FloatColumn add(FloatColumn column2) {
         FloatColumn result = new FloatColumn(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) + column2.get(r));
@@ -784,7 +781,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return result;
     }
 
-    @NotNull
     public FloatColumn addToEach(float value) {
         FloatColumn result = new FloatColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {
@@ -793,7 +789,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return result;
     }
 
-    @NotNull
     public FloatColumn addToEach(int value) {
         FloatColumn result = new FloatColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {

@@ -58,10 +58,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
@@ -103,11 +99,6 @@
       <groupId>org.iq80.snappy</groupId>
       <artifactId>snappy</artifactId>
       <version>0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-stdlib-jre8</artifactId>
-      <version>${kotlin.version}</version>
     </dependency>
     <dependency>
       <groupId>org.roaringbitmap</groupId>
@@ -154,12 +145,6 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>1.4.193</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-test-junit</artifactId>
-      <version>${kotlin.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
