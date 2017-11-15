@@ -135,7 +135,7 @@ public class TornadoExample {
 
         //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
         Table injuriesByScale = tornadoes.median("Injuries").by("Scale");
-        Table fob = tornadoes.minimum("Injuries").by("Scale", "State");
+        Table fob = tornadoes.min("Injuries").by("Scale", "State");
         out(fob);
         injuriesByScale.setName("Median injuries by Tornado Scale");
         out(injuriesByScale);

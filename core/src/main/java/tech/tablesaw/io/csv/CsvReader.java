@@ -14,7 +14,17 @@
 
 package tech.tablesaw.io.csv;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.BOOLEAN;
+import static tech.tablesaw.api.ColumnType.CATEGORY;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
+import static tech.tablesaw.api.ColumnType.LONG_INT;
+import static tech.tablesaw.api.ColumnType.SHORT_INT;
+import static tech.tablesaw.api.ColumnType.SKIP;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -40,7 +50,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
 import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
@@ -139,127 +148,6 @@ public class CsvReader {
      * Private constructor to prevent instantiation
      */
     private CsvReader() {
-    }
-
-    /**
-     * Constructs and returns a table from one or more CSV files, all containing the same column types
-     * <p>
-     * This constructor assumes the files have a one-line header, which is used to populate the column names,
-     * and that they use a comma to separate between columns.
-     *
-     * @throws IOException If there is an issue reading any of the files
-     * @deprecated use read(CsvReadOptions) instead
-     */
-    @Deprecated
-    public static Table read(ColumnType types[], String... fileNames) throws IOException {
-        if (fileNames.length == 1) {
-            return read(types, true, ',', fileNames[0]);
-        } else {
-
-            Table table = read(types, true, ',', fileNames[0]);
-            for (int i = 1; i < fileNames.length; i++) {
-                String fileName = fileNames[i];
-                table.append(read(types, true, ',', fileName));
-            }
-            return table;
-        }
-    }
-
-    /**
-     * Returns a Table constructed from a CSV File with the given file name
-     * <p>
-     * The @code{fileName} is used as the initial table name for the new table
-     *
-     * @param types           An array of the types of columns in the file, in the order they appear
-     * @param header          Is the first row in the file a header?
-     * @param columnSeparator the delimiter
-     * @param fileName        The fully specified file name. It is used to provide a default name for the table
-     * @return A Table containing the data in the csv file.
-     * @throws IOException if file cannot be read
-     * @deprecated use read(CsvReadOptions) instead
-     */
-    @Deprecated
-    public static Table read(ColumnType types[], boolean header, char columnSeparator, String fileName) throws
-            IOException {
-        InputStream stream = new FileInputStream(new File(fileName));
-        return read(stream, fileName, types, header, columnSeparator);
-    }
-
-    /**
-     * Returns the given file after auto-detecting the column types, or trying to
-     *
-     * @param file      The file to load
-     * @param header    True if the file has a single header row. False if it has no header row.
-     *                  Multi-line headers are not supported
-     * @param delimiter a char that divides the columns in the source file, often a comma or tab
-     * @return A table containing the data from the file
-     * @throws IOException if file cannot be read
-     * @deprecated use read(CsvReadOptions) instead
-     */
-    @Deprecated
-    public static Table read(File file, boolean header, char delimiter) throws IOException {
-        InputStream stream = new FileInputStream(file);
-        return read(stream, file.getName(), true, delimiter);
-    }
-
-    /**
-     * Returns the given file after auto-detecting the column types, or trying to
-     *
-     * @param stream    The CSV
-     * @param tableName Name to give the table
-     * @param header    True if the file has a single header row. False if it has no header row.
-     *                  Multi-line headers are not supported
-     * @param delimiter a char that divides the columns in the source file, often a comma or tab
-     * @return A table containing the data from the file
-     * @throws IOException if file cannot be read
-     * @deprecated use read(CsvReadOptions) instead
-     */
-    @Deprecated
-    public static Table read(InputStream stream, String tableName, boolean header, char delimiter) throws IOException {
-        return read(stream, tableName, true, delimiter, false);
-    }
-
-    public static Table read(File file, String tableName, boolean header, char delimiter, boolean skipSampling) throws IOException {
-      ColumnType[] columnTypes = detectColumnTypes(new FileInputStream(file), header, delimiter, skipSampling);
-      Table table = read(new FileInputStream(file), tableName, columnTypes, true, delimiter);
-      return table;
-    }
- 
-    /**
-     * This method buffers the entire InputStream. Use the method taking a File for large input
-     * @deprecated use read(CsvReadOptions) instead
-     */
-    @Deprecated
-    public static Table read(InputStream stream, String tableName, boolean header, char delimiter, boolean skipSampling) throws IOException {
-        byte[] bytes = ByteStreams.toByteArray(stream);
-        ColumnType[] columnTypes = detectColumnTypes(new ByteArrayInputStream(bytes), header, delimiter, skipSampling);
-        Table table = read(new ByteArrayInputStream(bytes), tableName, columnTypes, true, delimiter);
-        return table;
-    }
-
-    /**
-     * @deprecated use read(CsvReadOptions) instead
-     */
-    @Deprecated
-    public static Table read(File file,
-        String tableName,
-        ColumnType[] types,
-        boolean header,
-        char columnSeparator) throws IOException {
-      return read(new FileInputStream(file), tableName, types, header, columnSeparator);
-    }
-
-    /**
-     * @deprecated use read(CsvReadOptions) instead
-     */
-    @Deprecated
-    public static Table read(InputStream stream,
-            String tableName,
-            ColumnType[] types,
-            boolean header,
-            char columnSeparator) throws IOException {
-      return read(CsvReadOptions.builder(stream, tableName)
-          .columnTypes(types).header(header).separator(columnSeparator).build());
     }
 
     public static Table read(CsvReadOptions options) throws IOException {

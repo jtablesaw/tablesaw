@@ -14,12 +14,7 @@
 
 package tech.tablesaw.api;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -43,10 +38,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
-import tech.tablesaw.io.csv.CsvReader;
-import tech.tablesaw.io.csv.CsvWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
-import tech.tablesaw.io.jdbc.SqlResultSetReader;
 import tech.tablesaw.reducing.NumericReduceFunction;
 import tech.tablesaw.reducing.functions.Count;
 import tech.tablesaw.reducing.functions.Maximum;
@@ -176,252 +168,6 @@ public class Table extends Relation implements IntIterable {
             return null;
         }
         return t;
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param csvFileName The name of the file to import
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(String csvFileName) throws IOException {
-        return createFromCsv(csvFileName, true, ',');
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param stream The source of the CSV
-     * @param tableName The name to give the table
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromReader(InputStream stream, String tableName) throws IOException {
-        return createFromReader(stream, tableName, true, ',');
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param csvFileName The name of the file to import
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(String csvFileName, boolean header) throws IOException {
-        return CsvReader.read(new File(csvFileName), header, ',');
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param stream      The source of the CSV
-     * @param tableName   The name to give the table
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromReader(InputStream stream, String tableName, boolean header) throws IOException {
-        return createFromReader(stream, tableName, header, ',');
-    }
-    
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param csvFileName The name of the file to import
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @param delimiter   a char that divides the columns in the source file, often a comma or tab
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(String csvFileName, boolean header, char delimiter) throws IOException {
-        return CsvReader.read(new File(csvFileName), header, delimiter);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param stream      The source of the CSV
-     * @param tableName   The name to give the table
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @param delimiter   a char that divides the columns in the source file, often a comma or tab
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromReader(InputStream stream, String tableName, boolean header, char delimiter) throws IOException {
-        return CsvReader.read(stream, tableName, header, delimiter);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param csvFileName  The name of the file to import
-     * @param header       True if the file has a single header row. False if it has no header row.
-     *                     Multi-line headers are not supported
-     * @param delimiter    a char that divides the columns in the source file, often a comma or tab
-     * @param skipSampling This applies only to column type detection. Column type detection uses sampling to pick a
-     *                     column type. This may cause the algorithm to skip a row that has information the algorithm
-     *                     needs. Setting this to true will cause the algorithm to check all the data in the table,
-     *                     which may take a long time (a couple minutes?) on large tables (over 100,000,000 rows).
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(String csvFileName, boolean header, char delimiter, boolean skipSampling)
-            throws IOException {
-        InputStream stream = new FileInputStream(new File(csvFileName));
-        return CsvReader.read(stream, csvFileName, header, delimiter, skipSampling);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param stream       The source of the CSV
-     * @param tableName    The name to give the table
-     * @param header       True if the file has a single header row. False if it has no header row.
-     *                     Multi-line headers are not supported
-     * @param delimiter    a char that divides the columns in the source file, often a comma or tab
-     * @param skipSampling This applies only to column type detection. Column type detection uses sampling to pick a
-     *                     column type. This may cause the algorithm to skip a row that has information the algorithm
-     *                     needs. Setting this to true will cause the algorithm to check all the data in the table,
-     *                     which may take a long time (a couple minutes?) on large tables (over 100,000,000 rows).
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromReader(InputStream stream, String tableName, boolean header, char delimiter, boolean skipSampling)
-            throws IOException {
-        return CsvReader.read(stream, tableName, header, delimiter, skipSampling);
-    }    
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param types       The column types, (see io.csv.CsvReader to run the heading to create an array you can edit)
-     * @param csvFileName The name of the file to import
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(ColumnType[] types, String csvFileName) throws IOException {
-        return CsvReader.read(types, true, ',', csvFileName);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated
-     *
-     * @param types       The column types
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @param csvFileName the name of the file to import
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(ColumnType[] types, String csvFileName, boolean header) throws IOException {
-        return CsvReader.read(types, header, ',', csvFileName);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated
-     *
-     * @param stream      the CSV source
-     * @param tableName   the name to give the table
-     * @param types       The column types
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(InputStream stream, String tableName, ColumnType[] types, boolean header) throws IOException {
-        return createFromReader(stream, tableName, types, header, ',');
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     *
-     * @param types       The column types
-     * @param header      true if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @param delimiter   a char that divides the columns in the source file, often a comma or tab
-     * @param csvFileName the name of the file to import
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(ColumnType[] types, String csvFileName, boolean header, char delimiter)
-            throws IOException {
-        return CsvReader.read(types, header, delimiter, csvFileName);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     *
-     * @param stream    The source of the CSV
-     * @param tableName name to give the table
-     * @param types     The column types
-     * @param header    true if the file has a single header row. False if it has no header row.
-     *                  Multi-line headers are not supported
-     * @param delimiter a char that divides the columns in the source file, often a comma or tab
-     * @param tableName the name of the resulting table
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromReader(InputStream stream, String tableName, ColumnType[] types, boolean header,
-                                         char delimiter) throws IOException {
-        return CsvReader.read(stream, tableName, types, header, delimiter);
-    }
-
-    /**
-     * Returns a new Table with the given name, and containing the data in the given result set
-     * @deprecated use read().db() instead
-     */
-    @Deprecated
-    public static Table create(ResultSet resultSet, String tableName) throws SQLException {
-        return SqlResultSetReader.read(resultSet, tableName);
     }
 
     public static DataFrameReader read() {
@@ -1118,35 +864,10 @@ public class Table extends Relation implements IntIterable {
       return new Minimum(this, numericColumnName);
     }
 
-    /**
-     * @deprecated use min(String) instead
-     */
-    @Deprecated
-    public Minimum minimum(String numericColumnName) {
-        return new Minimum(this, numericColumnName);
-    }
-
     public void append(Table tableToAppend) {
         for (Column column : columnList) {
             Column columnToAppend = tableToAppend.column(column.name());
             column.append(columnToAppend);
-        }
-    }
-
-    /**
-     * Exports this table as a CSV file with the name (and path) of the given file
-     *
-     * @param fileNameWithPath The name of the file to save to. By default, it writes to the working directory,
-     *                         but you can specify a different folder by providing the path (e.g. mydata/myfile.csv)
-     * @deprecated use write().csv() instead
-     */
-    @Deprecated
-    public void exportToCsv(String fileNameWithPath) {
-        try {
-            CsvWriter.write(this, fileNameWithPath);
-        } catch (IOException e) {
-            System.err.println("Unable to export table as CSV file");
-            e.printStackTrace();
         }
     }
 
