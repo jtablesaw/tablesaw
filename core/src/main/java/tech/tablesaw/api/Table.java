@@ -921,6 +921,18 @@ public class Table extends Relation implements IntIterable {
         return new BooleanColumn(newColumnName, filter.apply(this), rowCount());
     }
 
+    /**
+     * Synonymous with splitOn
+     * The first stage of a split-apply-combine operation
+     */
+    public ViewGroup groupBy(Column... columns) {
+      return splitOn(columns);
+    }
+
+    /**
+     * Synonymous with groupBy
+     * The first stage of a split-apply-combine operation
+     */
     public ViewGroup splitOn(Column... columns) {
         return new ViewGroup(this, columns);
     }

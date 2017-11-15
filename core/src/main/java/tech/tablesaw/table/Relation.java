@@ -138,7 +138,7 @@ public abstract class Relation {
     /**
      * Returns a String representing the value found at column index c and row index r
      */
-    public abstract String get(int c, int r);
+    public abstract String get(int r, int c);
 
     /**
      * Returns the name of this relation

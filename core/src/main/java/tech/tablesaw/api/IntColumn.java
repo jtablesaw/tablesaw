@@ -36,8 +36,6 @@ import tech.tablesaw.util.ReverseIntComparator;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import org.jetbrains.annotations.NotNull;
-
 import static tech.tablesaw.reducing.NumericReduceUtils.*;
 
 import java.nio.ByteBuffer;
@@ -606,7 +604,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return bottom;
     }
 
-    @NotNull
     @Override
     public IntIterator iterator() {
         return data.iterator();
