@@ -1,5 +1,7 @@
 package tech.tablesaw.table;
 
+import org.apache.commons.lang3.StringUtils;
+
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
@@ -24,18 +26,28 @@ public class RollingColumn {
     this.window = window;
   }
 
-  public DoubleColumn mean(String resultColName) {
-    return calc(NumericReduceUtils.mean, resultColName);
+  public DoubleColumn mean() {
+    return calc(NumericReduceUtils.mean);
   }
 
   public DoubleColumn sum(String resultColName) {
-    return calc(NumericReduceUtils.sum, resultColName);
+    return calc(NumericReduceUtils.sum);
   }
 
-  public DoubleColumn calc(NumericReduceFunction function, String resultColName) {
+  private String generateNewColumnName(NumericReduceFunction function) {
+    boolean useSpaces = column.name().matches("\\s+");
+    String separator = useSpaces ? " " : "";
+    String newColumnName = new StringBuilder(column.name())
+        .append(separator).append(useSpaces ? function.functionName() : StringUtils.capitalize(function.functionName()))
+        .append(separator).append(window)
+        .toString();
+    return newColumnName;
+  }
+
+  public DoubleColumn calc(NumericReduceFunction function) {
     // TODO: should this always return a DoubleColumn? right now it has to because NumericReduceFunction does
     // TODO: the subset operation copies the array. creating a view would likely be more efficient
-    DoubleColumn result = new DoubleColumn(resultColName, column.size());
+    DoubleColumn result = new DoubleColumn(generateNewColumnName(function), column.size());
     for (int i = 0; i < window - 1; i++) {
       result.append(DoubleColumn.MISSING_VALUE);
     }
