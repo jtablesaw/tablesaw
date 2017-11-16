@@ -18,6 +18,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.store.ColumnMetadata;
+import tech.tablesaw.table.RollingColumn;
 import tech.tablesaw.util.Selection;
 
 /**
@@ -202,4 +203,9 @@ public interface Column {
      * @return a {@link Column}
      */
     Column difference();
+
+    default RollingColumn rolling(int windowSize) {
+      return new RollingColumn(this, windowSize);
+  }
+
 }
