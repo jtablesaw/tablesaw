@@ -14,10 +14,10 @@
 
 package tech.tablesaw.reducing.functions;
 
-import static tech.tablesaw.reducing.NumericReduceUtils.quadraticMean;
+import static tech.tablesaw.reducing.AggregateFunctions.quadraticMean;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 
 public class QuadraticMean extends SummaryFunction {
 
@@ -26,7 +26,7 @@ public class QuadraticMean extends SummaryFunction {
     }
 
     @Override
-    public NumericReduceFunction function() {
+    public AggregateFunction function() {
         return quadraticMean;
     }
 }

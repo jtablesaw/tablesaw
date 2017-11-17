@@ -29,14 +29,14 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.DoubleBiPredicate;
 import tech.tablesaw.filtering.DoublePredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.reducing.NumericReduceUtils;
+import tech.tablesaw.reducing.AggregateFunctions;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
 import static tech.tablesaw.columns.DoubleColumnUtils.*;
-import static tech.tablesaw.reducing.NumericReduceUtils.*;
+import static tech.tablesaw.reducing.AggregateFunctions.*;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -204,84 +204,84 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     // Reduce functions applied to the whole column
     public double sum() {
-        return sum.reduce(this);
+        return sum.agg(this);
     }
 
     public double product() {
-        return product.reduce(this);
+        return product.agg(this);
     }
 
     public double mean() {
-        return mean.reduce(this);
+        return mean.agg(this);
     }
 
     public double median() {
-        return median.reduce(this);
+        return median.agg(this);
     }
 
     public double quartile1() {
-        return quartile1.reduce(this);
+        return quartile1.agg(this);
     }
 
     public double quartile3() {
-        return quartile3.reduce(this);
+        return quartile3.agg(this);
     }
 
     public double percentile(double percentile) {
-        return NumericReduceUtils.percentile(this.toDoubleArray(), percentile);
+        return AggregateFunctions.percentile(this.toDoubleArray(), percentile);
     }
 
     public double range() {
-        return range.reduce(this);
+        return range.agg(this);
     }
 
     public double max() {
-        return max.reduce(this);
+        return max.agg(this);
     }
 
     public double min() {
-        return min.reduce(this);
+        return min.agg(this);
     }
 
     public double variance() {
-        return variance.reduce(this);
+        return variance.agg(this);
     }
 
     public double populationVariance() {
-        return populationVariance.reduce(this);
+        return populationVariance.agg(this);
     }
 
     public double standardDeviation() {
-        return stdDev.reduce(this);
+        return stdDev.agg(this);
     }
 
     public double sumOfLogs() {
-        return sumOfLogs.reduce(this);
+        return sumOfLogs.agg(this);
     }
 
     // Predicate  functions
 
     public double sumOfSquares() {
-        return sumOfSquares.reduce(this);
+        return sumOfSquares.agg(this);
     }
 
     public double geometricMean() {
-        return geometricMean.reduce(this);
+        return geometricMean.agg(this);
     }
 
     /**
      * Returns the quadraticMean, aka the root-mean-square, for all values in this column
      */
     public double quadraticMean() {
-        return quadraticMean.reduce(this);
+        return quadraticMean.agg(this);
     }
 
     public double kurtosis() {
-        return kurtosis.reduce(this);
+        return kurtosis.agg(this);
     }
 
     public double skewness() {
-        return skewness.reduce(this);
+        return skewness.agg(this);
     }
 
     /**

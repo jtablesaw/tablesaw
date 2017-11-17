@@ -15,7 +15,7 @@
 package tech.tablesaw.reducing.functions;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 import tech.tablesaw.reducing.NumericSummaryTable;
 import tech.tablesaw.table.ViewGroup;
 
@@ -39,7 +39,7 @@ public abstract class SummaryFunction {
 
     public NumericSummaryTable by(String... columnNames) {
         ViewGroup group = ViewGroup.create(original(), columnNames);
-        return group.reduce(summarizedColumnName(), function());
+        return group.agg(summarizedColumnName(), function());
     }
 
     /**
@@ -49,5 +49,5 @@ public abstract class SummaryFunction {
         return original.reduce(summarizedColumnName, function());
     }
 
-    public abstract NumericReduceFunction function();
+    public abstract AggregateFunction function();
 }

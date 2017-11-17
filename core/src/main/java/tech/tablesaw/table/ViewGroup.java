@@ -14,24 +14,26 @@
 
 package tech.tablesaw.table;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
-
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.reducing.NumericReduceFunction;
-import tech.tablesaw.reducing.NumericSummaryTable;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.Selection;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableMap;
+
+import tech.tablesaw.api.CategoryColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.reducing.AggregateFunction;
+import tech.tablesaw.reducing.NumericSummaryTable;
+import tech.tablesaw.util.BitmapBackedSelection;
+import tech.tablesaw.util.Selection;
 
 /**
  * A group of tables formed by performing splitting operations on an original table
@@ -177,22 +179,59 @@ public class ViewGroup implements Iterable<TemporaryView> {
         return groupTable;
     }
 
+    public NumericSummaryTable agg(String colName1, AggregateFunction func1) {
+        return agg(ImmutableMap.of(colName1, func1));
+    }
 
-    public NumericSummaryTable reduce(String numericColumnName, NumericReduceFunction function) {
-        Preconditions.checkArgument(!subTables.isEmpty());
-        NumericSummaryTable groupTable = NumericSummaryTable.create(sortedOriginal.name() + " summary");
-        CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
-        FloatColumn resultColumn = new FloatColumn(reduceColumnName(numericColumnName, function.functionName()),
-                subTables.size());
-        groupTable.addColumn(groupColumn);
-        groupTable.addColumn(resultColumn);
+    public NumericSummaryTable agg(
+        String colName1, AggregateFunction func1,
+        String colName2, AggregateFunction func2) {
+      return agg(ImmutableMap.of(
+          colName1, func1,
+          colName2, func2));
+    }
 
-        for (TemporaryView subTable : subTables) {
-            double result = subTable.reduce(numericColumnName, function);
-            groupColumn.add(subTable.name());
-            resultColumn.append((float) result);
-        }
-        return splitGroupingColumn(groupTable);
+    public NumericSummaryTable agg(
+        String colName1, AggregateFunction func1,
+        String colName2, AggregateFunction func2,
+        String colName3, AggregateFunction func3) {
+      return agg(ImmutableMap.of(
+          colName1, func1,
+          colName2, func2,
+          colName3, func3));
+    }
+
+    public NumericSummaryTable agg(
+        String colName1, AggregateFunction func1,
+        String colName2, AggregateFunction func2,
+        String colName3, AggregateFunction func3,
+        String colName4, AggregateFunction func4) {
+      return agg(ImmutableMap.of(
+          colName1, func1,
+          colName2, func2,
+          colName3, func3,
+          colName4, func4));
+    }
+
+    public NumericSummaryTable agg(Map<String, AggregateFunction> functions) {
+      Preconditions.checkArgument(!subTables.isEmpty());
+      NumericSummaryTable groupTable = NumericSummaryTable.create(sortedOriginal.name() + " summary");
+      CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
+      groupTable.addColumn(groupColumn);
+      for (Map.Entry<String, AggregateFunction> entry : functions.entrySet()) {
+          String columnName = entry.getKey();
+          AggregateFunction function = entry.getValue();
+
+          String colName = reduceColumnName(columnName, function.functionName());
+          DoubleColumn resultColumn = new DoubleColumn(colName, subTables.size());
+          for (TemporaryView subTable : subTables) {
+              double result = subTable.reduce(columnName, function);
+              groupColumn.add(subTable.name());
+              resultColumn.append(result);
+          }
+          groupTable.addColumn(resultColumn);
+      }
+      return splitGroupingColumn(groupTable);
     }
 
     /**

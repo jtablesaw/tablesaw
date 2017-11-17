@@ -14,10 +14,10 @@
 
 package tech.tablesaw.reducing.functions;
 
-import static tech.tablesaw.reducing.NumericReduceUtils.quartile1;
+import static tech.tablesaw.reducing.AggregateFunctions.quartile1;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 
 public class FirstQuartile extends SummaryFunction {
 
@@ -26,7 +26,7 @@ public class FirstQuartile extends SummaryFunction {
     }
 
     @Override
-    public NumericReduceFunction function() {
+    public AggregateFunction function() {
         return quartile1;
     }
 }

@@ -20,7 +20,7 @@ import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -120,7 +120,7 @@ public class TableGroup implements Iterable<SubTable> {
         return subTables.size();
     }
 
-    public Table reduce(String numericColumnName, NumericReduceFunction function) {
+    public Table reduce(String numericColumnName, AggregateFunction function) {
         Preconditions.checkArgument(!subTables.isEmpty());
         Table t = Table.create(original.name() + " summary");
         CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());

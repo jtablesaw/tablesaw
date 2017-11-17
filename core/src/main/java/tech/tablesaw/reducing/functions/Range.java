@@ -14,10 +14,10 @@
 
 package tech.tablesaw.reducing.functions;
 
-import static tech.tablesaw.reducing.NumericReduceUtils.range;
+import static tech.tablesaw.reducing.AggregateFunctions.range;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 
 public class Range extends SummaryFunction {
 
@@ -26,7 +26,7 @@ public class Range extends SummaryFunction {
     }
 
     @Override
-    public NumericReduceFunction function() {
+    public AggregateFunction function() {
         return range;
     }
 }

@@ -14,10 +14,10 @@
 
 package tech.tablesaw.reducing.functions;
 
-import static tech.tablesaw.reducing.NumericReduceUtils.mean;
+import static tech.tablesaw.reducing.AggregateFunctions.mean;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 
 public class Mean extends SummaryFunction {
 
@@ -26,7 +26,7 @@ public class Mean extends SummaryFunction {
     }
 
     @Override
-    public NumericReduceFunction function() {
+    public AggregateFunction function() {
         return mean;
     }
 }

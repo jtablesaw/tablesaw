@@ -14,10 +14,10 @@
 
 package tech.tablesaw.reducing.functions;
 
-import static tech.tablesaw.reducing.NumericReduceUtils.skewness;
+import static tech.tablesaw.reducing.AggregateFunctions.skewness;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 
 public class Skewness extends SummaryFunction {
 
@@ -26,7 +26,7 @@ public class Skewness extends SummaryFunction {
     }
 
     @Override
-    public NumericReduceFunction function() {
+    public AggregateFunction function() {
         return skewness;
     }
 }

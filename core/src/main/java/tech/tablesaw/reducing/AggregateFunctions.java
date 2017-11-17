@@ -25,14 +25,14 @@ import tech.tablesaw.api.FloatColumn;
 /**
  * Contains common utilities for double and long types
  */
-public class NumericReduceUtils {
+public class AggregateFunctions {
 
     // TODO(lwhite): Re-implement these methods to work natively with float[], instead of converting to double[]
 
     /**
      * A function that calculates the count of the values in the column param
      */
-    public static NumericReduceFunction count = new NumericReduceFunction() {
+    public static AggregateFunction count = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -40,7 +40,7 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return data.length;
         }
     };  
@@ -48,7 +48,7 @@ public class NumericReduceUtils {
     /**
      * A function that calculates the mean of the values in the column param
      */
-    public static NumericReduceFunction mean = new NumericReduceFunction() {
+    public static AggregateFunction mean = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -56,7 +56,7 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.mean(data);
         }
     };
@@ -64,7 +64,7 @@ public class NumericReduceUtils {
     /**
      * A function that calculates the sum of the values in the column param
      */
-    public static NumericReduceFunction sum = new NumericReduceFunction() {
+    public static AggregateFunction sum = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -72,12 +72,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.sum(data);
         }
 
         @Override
-        public double reduce(FloatColumn floatColumn) {
+        public double agg(FloatColumn floatColumn) {
             float sum;
             sum = 0.0f;
             for (float value : floatColumn) {
@@ -89,7 +89,7 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(DoubleColumn floatColumn) {
+        public double agg(DoubleColumn floatColumn) {
             float sum;
             sum = 0.0f;
             for (double value : floatColumn) {
@@ -101,7 +101,7 @@ public class NumericReduceUtils {
         }
     };
 
-    public static NumericReduceFunction median = new NumericReduceFunction() {
+    public static AggregateFunction median = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -109,12 +109,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return percentile(data, 50.0);
         }
     };
 
-    public static NumericReduceFunction n = new NumericReduceFunction() {
+    public static AggregateFunction n = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -123,12 +123,12 @@ public class NumericReduceUtils {
 
         //TODO: Consider whether we should provide a count without missing values
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return data.length;
         }
     };
 
-    public static NumericReduceFunction quartile1 = new NumericReduceFunction() {
+    public static AggregateFunction quartile1 = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -136,12 +136,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return percentile(data, 25.0);
         }
     };
 
-    public static NumericReduceFunction quartile3 = new NumericReduceFunction() {
+    public static AggregateFunction quartile3 = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -149,12 +149,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return percentile(data, 75.0);
         }
     };
 
-    public static NumericReduceFunction percentile90 = new NumericReduceFunction() {
+    public static AggregateFunction percentile90 = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -162,12 +162,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return percentile(data, 90.0);
         }
     };
 
-    public static NumericReduceFunction percentile95 = new NumericReduceFunction() {
+    public static AggregateFunction percentile95 = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -175,12 +175,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return percentile(data, 95.0);
         }
     };
 
-    public static NumericReduceFunction percentile99 = new NumericReduceFunction() {
+    public static AggregateFunction percentile99 = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -188,12 +188,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return percentile(data, 99.0);
         }
     };
 
-    public static NumericReduceFunction range = new NumericReduceFunction() {
+    public static AggregateFunction range = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -201,12 +201,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.max(data) - StatUtils.min(data);
         }
     };
 
-    public static NumericReduceFunction min = new NumericReduceFunction() {
+    public static AggregateFunction min = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -214,12 +214,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.min(data);
         }
 
         @Override
-        public double reduce(FloatColumn data) {
+        public double agg(FloatColumn data) {
             if (data.size() == 0) {
                 return Float.NaN;
             }
@@ -233,7 +233,7 @@ public class NumericReduceUtils {
         }
     };
 
-    public static NumericReduceFunction max = new NumericReduceFunction() {
+    public static AggregateFunction max = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -241,12 +241,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.max(data);
         }
     };
 
-    public static NumericReduceFunction product = new NumericReduceFunction() {
+    public static AggregateFunction product = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -254,12 +254,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.product(data);
         }
 
         @Override
-        public double reduce(FloatColumn data) {
+        public double agg(FloatColumn data) {
             float product = 1.0f;
             boolean empty = true;
             for (float value : data) {
@@ -275,7 +275,7 @@ public class NumericReduceUtils {
         }
     };
 
-    public static NumericReduceFunction geometricMean = new NumericReduceFunction() {
+    public static AggregateFunction geometricMean = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -283,12 +283,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.geometricMean(data);
         }
     };
 
-    public static NumericReduceFunction populationVariance = new NumericReduceFunction() {
+    public static AggregateFunction populationVariance = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -296,7 +296,7 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.populationVariance(data);
         }
     };
@@ -304,7 +304,7 @@ public class NumericReduceUtils {
     /**
      * Returns the quadratic mean, aka, the root-mean-square
      */
-    public static NumericReduceFunction quadraticMean = new NumericReduceFunction() {
+    public static AggregateFunction quadraticMean = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -312,12 +312,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return new DescriptiveStatistics(data).getQuadraticMean();
         }
     };
 
-    public static NumericReduceFunction kurtosis = new NumericReduceFunction() {
+    public static AggregateFunction kurtosis = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -325,12 +325,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return new Kurtosis().evaluate(data, 0, data.length);
         }
     };
 
-    public static NumericReduceFunction skewness = new NumericReduceFunction() {
+    public static AggregateFunction skewness = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -338,12 +338,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return new Skewness().evaluate(data, 0, data.length);
         }
     };
 
-    public static NumericReduceFunction sumOfSquares = new NumericReduceFunction() {
+    public static AggregateFunction sumOfSquares = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -351,12 +351,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.sumSq(data);
         }
     };
 
-    public static NumericReduceFunction sumOfLogs = new NumericReduceFunction() {
+    public static AggregateFunction sumOfLogs = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -364,12 +364,12 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.sumLog(data);
         }
     };
 
-    public static NumericReduceFunction variance = new NumericReduceFunction() {
+    public static AggregateFunction variance = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -377,7 +377,7 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.variance(data);
         }
 
@@ -391,8 +391,8 @@ public class NumericReduceUtils {
          * or 0.0 for a single value set.
          */
         @Override
-        public double reduce(FloatColumn column) {
-            double avg = mean.reduce(column);
+        public double agg(FloatColumn column) {
+            double avg = mean.agg(column);
             double sumSquaredDiffs = 0.0f;
             for (float value : column) {
                 double diff = value - avg;
@@ -403,7 +403,7 @@ public class NumericReduceUtils {
         }
     };
 
-    public static NumericReduceFunction stdDev = new NumericReduceFunction() {
+    public static AggregateFunction stdDev = new AggregateFunction() {
 
         @Override
         public String functionName() {
@@ -411,7 +411,7 @@ public class NumericReduceUtils {
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return Math.sqrt(StatUtils.variance(data));
         }
 

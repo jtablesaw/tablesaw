@@ -8,8 +8,8 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.reducing.NumericReduceFunction;
-import tech.tablesaw.reducing.NumericReduceUtils;
+import tech.tablesaw.reducing.AggregateFunction;
+import tech.tablesaw.reducing.AggregateFunctions;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 
@@ -27,14 +27,14 @@ public class RollingColumn {
   }
 
   public DoubleColumn mean() {
-    return calc(NumericReduceUtils.mean);
+    return calc(AggregateFunctions.mean);
   }
 
   public DoubleColumn sum(String resultColName) {
-    return calc(NumericReduceUtils.sum);
+    return calc(AggregateFunctions.sum);
   }
 
-  private String generateNewColumnName(NumericReduceFunction function) {
+  private String generateNewColumnName(AggregateFunction function) {
     boolean useSpaces = column.name().matches("\\s+");
     String separator = useSpaces ? " " : "";
     String newColumnName = new StringBuilder(column.name())
@@ -44,8 +44,7 @@ public class RollingColumn {
     return newColumnName;
   }
 
-  public DoubleColumn calc(NumericReduceFunction function) {
-    // TODO: should this always return a DoubleColumn? right now it has to because NumericReduceFunction does
+  public DoubleColumn calc(AggregateFunction function) {
     // TODO: the subset operation copies the array. creating a view would likely be more efficient
     DoubleColumn result = new DoubleColumn(generateNewColumnName(function), column.size());
     for (int i = 0; i < window - 1; i++) {
@@ -57,15 +56,15 @@ public class RollingColumn {
       Column windowedColumn = column.subset(selection);
       double calc;
       if (windowedColumn instanceof DoubleColumn) {
-        calc = function.reduce((DoubleColumn) windowedColumn);
+        calc = function.agg((DoubleColumn) windowedColumn);
       } else if (windowedColumn instanceof FloatColumn) {
-        calc = function.reduce((FloatColumn) windowedColumn);
+        calc = function.agg((FloatColumn) windowedColumn);
       } else if (windowedColumn instanceof IntColumn) {
-        calc = function.reduce((IntColumn) windowedColumn);
+        calc = function.agg((IntColumn) windowedColumn);
       } else if (windowedColumn instanceof LongColumn) {
-        calc = function.reduce((LongColumn) windowedColumn);
+        calc = function.agg((LongColumn) windowedColumn);
       } else if (windowedColumn instanceof ShortColumn) {
-        calc = function.reduce((ShortColumn) windowedColumn);
+        calc = function.agg((ShortColumn) windowedColumn);
       } else {
         throw new IllegalArgumentException("Cannot calculate " + function.functionName()
             + " on column of type " + windowedColumn.type());

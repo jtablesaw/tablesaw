@@ -22,30 +22,31 @@ import tech.tablesaw.api.ShortColumn;
 
 /**
  * Functions that calculate values over the data of an entire column, such as sum, mean, std. dev, etc.
+ * TODO: not sure that this should always return a double
  */
-public interface NumericReduceFunction {
+public interface AggregateFunction {
 
     String functionName();
 
-    double reduce(double[] data);
+    double agg(double[] data);
 
-    default double reduce(FloatColumn data) {
-        return this.reduce(data.toDoubleArray());
+    default double agg(FloatColumn data) {
+        return this.agg(data.toDoubleArray());
     }
 
-    default double reduce(DoubleColumn doubles) {
-        return this.reduce(doubles.toDoubleArray());
+    default double agg(DoubleColumn doubles) {
+        return this.agg(doubles.toDoubleArray());
     }
 
-    default double reduce(IntColumn data) {
-        return this.reduce(data.toDoubleArray());
+    default double agg(IntColumn data) {
+        return this.agg(data.toDoubleArray());
     }
 
-    default double reduce(ShortColumn data) {
-        return this.reduce(data.toDoubleArray());
+    default double agg(ShortColumn data) {
+        return this.agg(data.toDoubleArray());
     }
 
-    default double reduce(LongColumn data) {
-        return this.reduce(data.toDoubleArray());
+    default double agg(LongColumn data) {
+        return this.agg(data.toDoubleArray());
     }
 }

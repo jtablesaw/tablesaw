@@ -14,10 +14,10 @@
 
 package tech.tablesaw.reducing.functions;
 
-import static tech.tablesaw.reducing.NumericReduceUtils.sumOfSquares;
+import static tech.tablesaw.reducing.AggregateFunctions.sumOfSquares;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 
 public class SumOfSquares extends SummaryFunction {
 
@@ -26,7 +26,7 @@ public class SumOfSquares extends SummaryFunction {
     }
 
     @Override
-    public NumericReduceFunction function() {
+    public AggregateFunction function() {
         return sumOfSquares;
     }
 }

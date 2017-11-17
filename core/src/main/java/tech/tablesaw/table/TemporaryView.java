@@ -28,7 +28,7 @@ import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 
@@ -216,9 +216,9 @@ public class TemporaryView extends Relation implements IntIterable {
      * @return the function result
      * @throws IllegalArgumentException if numericColumnName doesn't name a numeric column in this table
      */
-    public double reduce(String numericColumnName, NumericReduceFunction function) {
+    public double reduce(String numericColumnName, AggregateFunction function) {
         Column column = column(numericColumnName);
-        return function.reduce(column.subset(rowMap).toDoubleArray());
+        return function.agg(column.subset(rowMap).toDoubleArray());
     }
 
     public BooleanColumn booleanColumn(int columnIndex) {

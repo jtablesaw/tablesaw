@@ -21,7 +21,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.reducing.NumericReduceUtils;
+import tech.tablesaw.reducing.AggregateFunctions;
 import tech.tablesaw.table.ViewGroup;
 
 import static org.junit.Assert.assertEquals;
@@ -44,7 +44,7 @@ public class NumericReduceUtilsTest {
 
     @Test
     public void testMean() {
-        double result = table.reduce("approval", NumericReduceUtils.mean);
+        double result = table.reduce("approval", AggregateFunctions.mean);
         assertEquals(64.88235294117646, result, 0.01);
     }
 
@@ -52,7 +52,7 @@ public class NumericReduceUtilsTest {
     public void testGroupMean() {
         Column byColumn = table.column("who");
         ViewGroup group = new ViewGroup(table, byColumn);
-        Table result = group.reduce("approval", NumericReduceUtils.mean);
+        Table result = group.agg("approval", AggregateFunctions.mean);
         assertEquals(2, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(6, result.rowCount());
@@ -63,7 +63,7 @@ public class NumericReduceUtilsTest {
     public void test2ColumnGroupMean() {
         Column byColumn1 = table.column("who");
         ViewGroup group = new ViewGroup(table, byColumn1);
-        Table result = group.reduce("approval", NumericReduceUtils.mean);
+        Table result = group.agg("approval", AggregateFunctions.mean);
         assertEquals(2, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(6, result.rowCount());

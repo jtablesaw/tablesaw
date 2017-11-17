@@ -39,7 +39,7 @@ import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 import tech.tablesaw.reducing.functions.Count;
 import tech.tablesaw.reducing.functions.Maximum;
 import tech.tablesaw.reducing.functions.Mean;
@@ -890,15 +890,15 @@ public class Table extends Relation implements IntIterable {
      * @return the function result
      * @throws IllegalArgumentException if numericColumnName doesn't name a numeric column in this table
      */
-    public double reduce(String numericColumnName, NumericReduceFunction function) {
+    public double reduce(String numericColumnName, AggregateFunction function) {
         Column column = column(numericColumnName);
-        return function.reduce(column.toDoubleArray());
+        return function.agg(column.toDoubleArray());
     }
 
-    public SummaryFunction summarize(String numericColumnName, NumericReduceFunction function) {
+    public SummaryFunction summarize(String numericColumnName, AggregateFunction function) {
         return new SummaryFunction(this, numericColumnName) {
             @Override
-            public NumericReduceFunction function() {
+            public AggregateFunction function() {
                 return function;
             }
         };

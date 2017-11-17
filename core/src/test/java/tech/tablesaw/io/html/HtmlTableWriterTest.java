@@ -22,7 +22,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.html.HtmlTableWriter;
-import tech.tablesaw.reducing.NumericReduceUtils;
+import tech.tablesaw.reducing.AggregateFunctions;
 import tech.tablesaw.table.ViewGroup;
 
 public class HtmlTableWriterTest {
@@ -44,7 +44,7 @@ public class HtmlTableWriterTest {
     public void testWrite() {
         Column byColumn = table.column("who");
         ViewGroup group = new ViewGroup(table, byColumn);
-        Table result = group.reduce("approval", NumericReduceUtils.mean);
+        Table result = group.agg("approval", AggregateFunctions.mean);
         HtmlTableWriter.write(result);
     }
 

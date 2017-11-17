@@ -22,7 +22,7 @@ import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.reducing.NumericReduceFunction;
+import tech.tablesaw.reducing.AggregateFunction;
 import tech.tablesaw.table.TemporaryView;
 import tech.tablesaw.table.ViewGroup;
 
@@ -35,14 +35,14 @@ import static org.junit.Assert.*;
  */
 public class ViewGroupTest {
 
-    static NumericReduceFunction exaggerate = new NumericReduceFunction() {
+    static AggregateFunction exaggerate = new AggregateFunction() {
         @Override
         public String functionName() {
             return "exaggeration";
         }
 
         @Override
-        public double reduce(double[] data) {
+        public double agg(double[] data) {
             return StatUtils.max(data) + 1000;
         }
     };
@@ -74,7 +74,6 @@ public class ViewGroupTest {
 
     @Test
     public void testViewTwoColumn() {
-
         ViewGroup group = new ViewGroup(table, table.column("who"), table.column("approval"));
         List<TemporaryView> viewList = group.getSubTables();
 
@@ -96,7 +95,7 @@ public class ViewGroupTest {
         Table t = table.sum("approval").by(splitColumnNames);
 
         // compare the sum of the original column with the sum of the sums of the group table
-        assertEquals(table.intColumn(1).sum(), Math.round(t.floatColumn(2).sum()));
+        assertEquals(table.intColumn(1).sum(), Math.round(t.doubleColumn(2).sum()));
         assertEquals(65, tables.size());
     }
 
@@ -120,6 +119,6 @@ public class ViewGroupTest {
     public void testSumGroup() {
         Table groups = table.sum("approval").by("who");
         // compare the sum of the original column with the sum of the sums of the group table
-        assertEquals(table.intColumn(1).sum(), Math.round(groups.floatColumn(1).sum()));
+        assertEquals(table.intColumn(1).sum(), Math.round(groups.doubleColumn(1).sum()));
     }
 }
