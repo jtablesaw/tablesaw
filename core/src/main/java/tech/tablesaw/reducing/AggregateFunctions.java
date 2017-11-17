@@ -30,6 +30,38 @@ public class AggregateFunctions {
     // TODO(lwhite): Re-implement these methods to work natively with float[], instead of converting to double[]
 
     /**
+     * A function that returns the first item
+     */
+    public static AggregateFunction first = new AggregateFunction() {
+
+        @Override
+        public String functionName() {
+            return "First";
+        }
+
+        @Override
+        public double agg(double[] data) {
+            return data.length == 0 ? Float.NaN : data[0];
+        }
+    };  
+
+    /**
+     * A function that returns the last item
+     */
+    public static AggregateFunction last = new AggregateFunction() {
+
+        @Override
+        public String functionName() {
+            return "Last";
+        }
+
+        @Override
+        public double agg(double[] data) {
+            return data.length == 0 ? Float.NaN : data[data.length-1];
+        }
+    };
+
+    /**
      * A function that calculates the count of the values in the column param
      */
     public static AggregateFunction count = new AggregateFunction() {
