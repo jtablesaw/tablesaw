@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.stream.IntStream;
 
+import org.apache.commons.lang3.StringUtils;
+
 import tech.tablesaw.table.Relation;
 
 /**
@@ -53,7 +55,9 @@ public class DataFramePrinter {
             final String dataTemplate = getDataTemplate(widths);
             final String headerTemplate = getHeaderTemplate(widths, headers);
             final int totalWidth = IntStream.of(widths).map(w -> w + 5).sum()-1;
-            final StringBuilder text = new StringBuilder(totalWidth * data.length).append("\n");
+            final int totalHeight = data.length + 1;
+            final StringBuilder text = new StringBuilder(totalWidth * totalHeight);
+            text.append(tableName(frame, totalWidth)).append("\n");
             final String headerLine = String.format(headerTemplate, (Object[]) headers);
             text.append(headerLine).append("\n");
             for (int j = 0; j < totalWidth; j++) {
@@ -72,6 +76,14 @@ public class DataFramePrinter {
         }
     }
 
+    private String tableName(Relation frame, int width) {
+      if (frame.name().length() > width) {
+        return frame.name();
+      }
+      int diff = width - frame.name().length();
+      String result = StringUtils.repeat(" ", diff / 2) + frame.name();
+      return result + StringUtils.repeat(" ", width - result.length());
+    }
 
     /**
      * Returns the header string tokens for the frame
