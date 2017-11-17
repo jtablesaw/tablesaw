@@ -668,11 +668,25 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * Synonymous with splitOn
+     * The first stage of a split-apply-combine operation
+     */
+    public ViewGroup groupBy(String... columns) {
+      return groupBy(columns(columns).toArray(new Column[columns.length]));
+    }
+
+    /**
      * The first stage of a split-apply-combine operation
      */
     public ViewGroup groupBy(Column... columns) {
-      return splitOn(columns);
+      return new ViewGroup(this, columns);
+    }
+
+    /**
+     * Synonymous with groupBy
+     * The first stage of a split-apply-combine operation
+     */
+    public ViewGroup splitOn(String... columns) {
+        return groupBy(columns);
     }
 
     /**
@@ -680,7 +694,7 @@ public class Table extends Relation implements IntIterable {
      * The first stage of a split-apply-combine operation
      */
     public ViewGroup splitOn(Column... columns) {
-        return new ViewGroup(this, columns);
+        return groupBy(columns);
     }
 
     public String printHtml() {

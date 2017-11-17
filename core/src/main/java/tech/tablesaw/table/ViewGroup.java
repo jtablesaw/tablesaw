@@ -14,6 +14,8 @@
 
 package tech.tablesaw.table;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -177,6 +179,79 @@ public class ViewGroup implements Iterable<TemporaryView> {
         }
         groupTable.removeColumns("Group");
         return groupTable;
+    }
+
+    public NumericSummaryTable first(String columnName) {
+      return agg(columnName, first);
+    }
+    public NumericSummaryTable last(String columnName) {
+      return agg(columnName, last);
+    }
+    public NumericSummaryTable count(String columnName) {
+      return agg(columnName, count);
+    }
+    public NumericSummaryTable mean(String columnName) {
+      return agg(columnName, mean);
+    }
+    public NumericSummaryTable sum(String columnName) {
+      return agg(columnName, sum);
+    }
+    public NumericSummaryTable median(String columnName) {
+      return agg(columnName, median);
+    }
+    public NumericSummaryTable quartile1(String columnName) {
+      return agg(columnName, quartile1);
+    }
+    public NumericSummaryTable quartile3(String columnName) {
+      return agg(columnName, quartile3);
+    }
+    public NumericSummaryTable percentile90(String columnName) {
+      return agg(columnName, percentile90);
+    }
+    public NumericSummaryTable percentile95(String columnName) {
+      return agg(columnName, percentile95);
+    }
+    public NumericSummaryTable percentile99(String columnName) {
+      return agg(columnName, percentile99);
+    }
+    public NumericSummaryTable range(String columnName) {
+      return agg(columnName, range);
+    }
+    public NumericSummaryTable min(String columnName) {
+      return agg(columnName, min);
+    }
+    public NumericSummaryTable max(String columnName) {
+      return agg(columnName, max);
+    }
+    public NumericSummaryTable product(String columnName) {
+      return agg(columnName, product);
+    }
+    public NumericSummaryTable geometricMean(String columnName) {
+      return agg(columnName, geometricMean);
+    }
+    public NumericSummaryTable populationVariance(String columnName) {
+      return agg(columnName, populationVariance);
+    }
+    public NumericSummaryTable quadraticMean(String columnName) {
+      return agg(columnName, quadraticMean);
+    }
+    public NumericSummaryTable kurtosis(String columnName) {
+      return agg(columnName, kurtosis);
+    }
+    public NumericSummaryTable skewness(String columnName) {
+      return agg(columnName, skewness);
+    }
+    public NumericSummaryTable sumOfSquares(String columnName) {
+      return agg(columnName, sumOfSquares);
+    }
+    public NumericSummaryTable sumOfLogs(String columnName) {
+      return agg(columnName, sumOfLogs);
+    }
+    public NumericSummaryTable variance(String columnName) {
+      return agg(columnName, variance);
+    }
+    public NumericSummaryTable stdDev(String columnName) {
+      return agg(columnName, stdDev);
     }
 
     /**
