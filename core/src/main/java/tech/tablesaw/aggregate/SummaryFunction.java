@@ -12,21 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.aggregate.functions;
+package tech.tablesaw.aggregate;
 
-import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.aggregate.NumericSummaryTable;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.table.ViewGroup;
 
-public abstract class SummaryFunction {
+public class SummaryFunction {
 
     private final Table original;
     private final String summarizedColumnName;
+    private final AggregateFunction function;
 
-    public SummaryFunction(Table original, String summarizedColumnName) {
+    public SummaryFunction(Table original, String summarizedColumnName, AggregateFunction function) {
         this.original = original;
         this.summarizedColumnName = summarizedColumnName;
+        this.function = function;
     }
 
     public String summarizedColumnName() {
@@ -39,15 +39,14 @@ public abstract class SummaryFunction {
 
     public NumericSummaryTable by(String... columnNames) {
         ViewGroup group = ViewGroup.create(original(), columnNames);
-        return group.agg(summarizedColumnName(), function());
+        return group.agg(summarizedColumnName(), function);
     }
 
     /**
      * Returns the result of applying to the function to all the values in the appropriate column
      */
     public double get() {
-        return original.reduce(summarizedColumnName, function());
+        return original.agg(summarizedColumnName, function);
     }
 
-    public abstract AggregateFunction function();
 }

@@ -129,7 +129,7 @@ public class TableGroup implements Iterable<SubTable> {
         t.addColumn(resultColumn);
 
         for (SubTable subTable : subTables) {
-            double result = subTable.reduce(numericColumnName, function);
+            double result = subTable.agg(numericColumnName, function);
             groupColumn.add(subTable.name().replace(SPLIT_STRING, " * "));
             resultColumn.append((float) result);
         }

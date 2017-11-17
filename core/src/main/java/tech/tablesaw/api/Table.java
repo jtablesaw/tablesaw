@@ -14,6 +14,8 @@
 
 package tech.tablesaw.api;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,15 +37,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.aggregate.functions.Count;
-import tech.tablesaw.aggregate.functions.Maximum;
-import tech.tablesaw.aggregate.functions.Mean;
-import tech.tablesaw.aggregate.functions.Median;
-import tech.tablesaw.aggregate.functions.Minimum;
-import tech.tablesaw.aggregate.functions.StandardDeviation;
-import tech.tablesaw.aggregate.functions.Sum;
-import tech.tablesaw.aggregate.functions.SummaryFunction;
-import tech.tablesaw.aggregate.functions.Variance;
+import tech.tablesaw.aggregate.SummaryFunction;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
@@ -846,36 +840,29 @@ public class Table extends Relation implements IntIterable {
         columnList.retainAll(columns(columnNames));
     }
 
-    public Sum sum(String numericColumnName) {
-        return new Sum(this, numericColumnName);
+    public SummaryFunction sum(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, sum);
     }
-
-    public Mean mean(String numericColumnName) {
-        return new Mean(this, numericColumnName);
+    public SummaryFunction mean(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, mean);
     }
-
-    public Median median(String numericColumnName) {
-        return new Median(this, numericColumnName);
+    public SummaryFunction median(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, median);
     }
-
-    public Variance variance(String numericColumnName) {
-        return new Variance(this, numericColumnName);
+    public SummaryFunction variance(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, variance);
     }
-
-    public StandardDeviation stdDev(String numericColumnName) {
-        return new StandardDeviation(this, numericColumnName);
+    public SummaryFunction stdDev(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, stdDev);
     }
-
-    public Count count(String numericColumnName) {
-        return new Count(this, numericColumnName);
+    public SummaryFunction count(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, count);
     }
-
-    public Maximum max(String numericColumnName) {
-        return new Maximum(this, numericColumnName);
+    public SummaryFunction max(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, max);
     }
-
-    public Minimum min(String numericColumnName) {
-      return new Minimum(this, numericColumnName);
+    public SummaryFunction min(String numericColumnName) {
+      return new SummaryFunction(this, numericColumnName, min);
     }
 
     public void append(Table tableToAppend) {
@@ -897,25 +884,20 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * Returns the result of applying the given function to the specified column
+     * Returns the result of applying the given aggregate function to the specified column
      *
      * @param numericColumnName The name of a numeric (integer, float, etc.) column in this table
-     * @param function          A numeric reduce function
+     * @param function          An aggregation function
      * @return the function result
      * @throws IllegalArgumentException if numericColumnName doesn't name a numeric column in this table
      */
-    public double reduce(String numericColumnName, AggregateFunction function) {
+    public double agg(String numericColumnName, AggregateFunction function) {
         Column column = column(numericColumnName);
         return function.agg(column.toDoubleArray());
     }
 
     public SummaryFunction summarize(String numericColumnName, AggregateFunction function) {
-        return new SummaryFunction(this, numericColumnName) {
-            @Override
-            public AggregateFunction function() {
-                return function;
-            }
-        };
+        return new SummaryFunction(this, numericColumnName, function);
     }
 
     public Table countBy(CategoryColumn column) {

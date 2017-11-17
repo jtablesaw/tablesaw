@@ -44,7 +44,7 @@ public class AggregateFunctionsTest {
 
     @Test
     public void testMean() {
-        double result = table.reduce("approval", AggregateFunctions.mean);
+        double result = table.agg("approval", AggregateFunctions.mean);
         assertEquals(64.88235294117646, result, 0.01);
     }
 
