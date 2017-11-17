@@ -14,8 +14,8 @@
 
 package tech.tablesaw.api.plot;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 import static tech.tablesaw.api.plot.Bar.show;
-import static tech.tablesaw.reducing.AggregateFunctions.sum;
 
 import tech.tablesaw.api.Table;
 

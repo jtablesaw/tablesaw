@@ -12,21 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
-import static tech.tablesaw.reducing.AggregateFunctions.range;
+import static tech.tablesaw.aggregate.AggregateFunctions.max;
 
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
 
-public class Range extends SummaryFunction {
+public class Maximum extends SummaryFunction {
 
-    public Range(Table original, String summarizedColumnName) {
+    public Maximum(Table original, String summarizedColumnName) {
         super(original, summarizedColumnName);
     }
 
     @Override
     public AggregateFunction function() {
-        return range;
+        return max;
     }
 }

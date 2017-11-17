@@ -2,14 +2,14 @@ package tech.tablesaw.table;
 
 import org.apache.commons.lang3.StringUtils;
 
+import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.reducing.AggregateFunction;
-import tech.tablesaw.reducing.AggregateFunctions;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 

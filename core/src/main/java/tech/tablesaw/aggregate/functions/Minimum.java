@@ -12,21 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
-import static tech.tablesaw.reducing.AggregateFunctions.quartile3;
+import static tech.tablesaw.aggregate.AggregateFunctions.min;
 
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
 
-public class ThirdQuartile extends SummaryFunction {
+public class Minimum extends SummaryFunction {
 
-    public ThirdQuartile(Table original, String summarizedColumnName) {
+    public Minimum(Table original, String summarizedColumnName) {
         super(original, summarizedColumnName);
     }
 
     @Override
     public AggregateFunction function() {
-        return quartile3;
+        return min;
     }
 }

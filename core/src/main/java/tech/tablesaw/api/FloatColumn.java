@@ -24,19 +24,19 @@ import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.FloatBiPredicate;
 import tech.tablesaw.filtering.FloatPredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.reducing.AggregateFunctions;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.columns.FloatColumnUtils.*;
-import static tech.tablesaw.reducing.AggregateFunctions.*;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

@@ -12,21 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
-import static tech.tablesaw.reducing.AggregateFunctions.sumOfSquares;
+import static tech.tablesaw.aggregate.AggregateFunctions.range;
 
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
 
-public class SumOfSquares extends SummaryFunction {
+public class Range extends SummaryFunction {
 
-    public SumOfSquares(Table original, String summarizedColumnName) {
+    public Range(Table original, String summarizedColumnName) {
         super(original, summarizedColumnName);
     }
 
     @Override
     public AggregateFunction function() {
-        return sumOfSquares;
+        return range;
     }
 }

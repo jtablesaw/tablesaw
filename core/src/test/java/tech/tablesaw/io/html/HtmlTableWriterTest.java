@@ -17,12 +17,12 @@ package tech.tablesaw.io.html;
 import org.junit.Before;
 import org.junit.Test;
 
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.html.HtmlTableWriter;
-import tech.tablesaw.reducing.AggregateFunctions;
 import tech.tablesaw.table.ViewGroup;
 
 public class HtmlTableWriterTest {

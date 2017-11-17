@@ -26,12 +26,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 
+import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.aggregate.NumericSummaryTable;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.reducing.AggregateFunction;
-import tech.tablesaw.reducing.NumericSummaryTable;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 
@@ -46,10 +46,10 @@ public class ViewGroup implements Iterable<TemporaryView> {
 
     private final Table sortedOriginal;
 
-    private List<TemporaryView> subTables = new ArrayList<>();
+    private final List<TemporaryView> subTables = new ArrayList<>();
 
     // the name(s) of the column(s) we're splitting the table on
-    private String[] splitColumnNames;
+    private final String[] splitColumnNames;
 
     public ViewGroup(Table original, Column... columns) {
         splitColumnNames = new String[columns.length];
@@ -179,10 +179,18 @@ public class ViewGroup implements Iterable<TemporaryView> {
         return groupTable;
     }
 
+    /**
+     * Applies the given aggregation to the given column.
+     * The apply and combine steps of a split-apply-combine.
+     */
     public NumericSummaryTable agg(String colName1, AggregateFunction func1) {
         return agg(ImmutableMap.of(colName1, func1));
     }
 
+    /**
+     * Applies the given aggregation to the given column.
+     * The apply and combine steps of a split-apply-combine.
+     */
     public NumericSummaryTable agg(
         String colName1, AggregateFunction func1,
         String colName2, AggregateFunction func2) {
@@ -191,6 +199,10 @@ public class ViewGroup implements Iterable<TemporaryView> {
           colName2, func2));
     }
 
+    /**
+     * Applies the given aggregation to the given column.
+     * The apply and combine steps of a split-apply-combine.
+     */
     public NumericSummaryTable agg(
         String colName1, AggregateFunction func1,
         String colName2, AggregateFunction func2,
@@ -201,6 +213,10 @@ public class ViewGroup implements Iterable<TemporaryView> {
           colName3, func3));
     }
 
+    /**
+     * Applies the given aggregation to the given column.
+     * The apply and combine steps of a split-apply-combine.
+     */
     public NumericSummaryTable agg(
         String colName1, AggregateFunction func1,
         String colName2, AggregateFunction func2,
@@ -213,6 +229,11 @@ public class ViewGroup implements Iterable<TemporaryView> {
           colName4, func4));
     }
 
+    /**
+     * Applies the given aggregations to the given columns.
+     * The apply and combine steps of a split-apply-combine.
+     * @param functions map from column name to aggregation to apply on that function
+     */
     public NumericSummaryTable agg(Map<String, AggregateFunction> functions) {
       Preconditions.checkArgument(!subTables.isEmpty());
       NumericSummaryTable groupTable = NumericSummaryTable.create(sortedOriginal.name() + " summary");
@@ -222,7 +243,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
           String columnName = entry.getKey();
           AggregateFunction function = entry.getValue();
 
-          String colName = reduceColumnName(columnName, function.functionName());
+          String colName = aggregateColumnName(columnName, function.functionName());
           DoubleColumn resultColumn = new DoubleColumn(colName, subTables.size());
           for (TemporaryView subTable : subTables) {
               double result = subTable.reduce(columnName, function);
@@ -244,7 +265,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
         return subTables.iterator();
     }
 
-    private String reduceColumnName(String columnName, String functionName) {
+    private String aggregateColumnName(String columnName, String functionName) {
         return String.format("%s [%s]", functionName, columnName);
     }
 }

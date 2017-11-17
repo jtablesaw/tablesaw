@@ -23,6 +23,7 @@ import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ShortColumnUtils;
@@ -30,7 +31,6 @@ import tech.tablesaw.filtering.ShortBiPredicate;
 import tech.tablesaw.filtering.ShortPredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.mapping.ShortMapUtils;
-import tech.tablesaw.reducing.AggregateFunctions;
 import tech.tablesaw.sorting.IntComparisonUtil;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
@@ -38,7 +38,7 @@ import tech.tablesaw.util.ReverseShortComparator;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import static tech.tablesaw.reducing.AggregateFunctions.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

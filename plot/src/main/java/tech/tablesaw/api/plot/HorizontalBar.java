@@ -18,13 +18,13 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
+import tech.tablesaw.aggregate.NumericSummaryTable;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.plotting.fx.FxHorizontalBar;
 import tech.tablesaw.plotting.fx.FxPlot;
-import tech.tablesaw.reducing.NumericSummaryTable;
 
 import javax.swing.*;
 

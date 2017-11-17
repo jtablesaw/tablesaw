@@ -12,11 +12,11 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
+import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.aggregate.NumericSummaryTable;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
-import tech.tablesaw.reducing.NumericSummaryTable;
 import tech.tablesaw.table.ViewGroup;
 
 public abstract class SummaryFunction {

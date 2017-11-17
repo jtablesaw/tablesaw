@@ -16,9 +16,10 @@ package tech.tablesaw.api.plot;
 
 
 import tech.tablesaw.api.Table;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 import static tech.tablesaw.api.plot.Pie.show;
-import static tech.tablesaw.reducing.AggregateFunctions.mean;
-import static tech.tablesaw.reducing.AggregateFunctions.sum;
 
 /**
  * Basic sample pie chart

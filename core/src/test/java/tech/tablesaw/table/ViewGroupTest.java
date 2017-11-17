@@ -18,11 +18,11 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.reducing.AggregateFunction;
 import tech.tablesaw.table.TemporaryView;
 import tech.tablesaw.table.ViewGroup;
 

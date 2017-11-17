@@ -12,22 +12,22 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing;
+package tech.tablesaw.aggregate;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.reducing.AggregateFunctions;
 import tech.tablesaw.table.ViewGroup;
 
 import static org.junit.Assert.assertEquals;
 
 
-public class NumericReduceUtilsTest {
+public class AggregateFunctionsTest {
 
     private static ColumnType[] types = {
             ColumnType.LOCAL_DATE,     // date of poll

@@ -12,21 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
-import static tech.tablesaw.reducing.AggregateFunctions.sumOfLogs;
+import static tech.tablesaw.aggregate.AggregateFunctions.product;
 
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
 
-public class SumOfLogs extends SummaryFunction {
+public class Product extends SummaryFunction {
 
-    public SumOfLogs(Table original, String summarizedColumnName) {
+    public Product(Table original, String summarizedColumnName) {
         super(original, summarizedColumnName);
     }
 
     @Override
     public AggregateFunction function() {
-        return sumOfLogs;
+        return product;
     }
 }

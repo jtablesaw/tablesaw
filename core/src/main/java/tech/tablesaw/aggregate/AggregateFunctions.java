@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing;
+package tech.tablesaw.aggregate;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;

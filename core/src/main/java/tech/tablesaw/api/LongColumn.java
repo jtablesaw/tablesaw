@@ -24,13 +24,13 @@ import it.unimi.dsi.fastutil.longs.LongArrays;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.LongBiPredicate;
 import tech.tablesaw.filtering.LongPredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.mapping.LongMapUtils;
-import tech.tablesaw.reducing.AggregateFunctions;
 import tech.tablesaw.sorting.LongComparisonUtil;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
@@ -38,7 +38,7 @@ import tech.tablesaw.util.ReverseLongComparator;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import static tech.tablesaw.reducing.AggregateFunctions.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

@@ -12,21 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
-import static tech.tablesaw.reducing.AggregateFunctions.populationVariance;
+import static tech.tablesaw.aggregate.AggregateFunctions.quadraticMean;
 
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
 
-public class PopulationVariance extends SummaryFunction {
+public class QuadraticMean extends SummaryFunction {
 
-    public PopulationVariance(Table original, String summarizedColumnName) {
+    public QuadraticMean(Table original, String summarizedColumnName) {
         super(original, summarizedColumnName);
     }
 
     @Override
     public AggregateFunction function() {
-        return populationVariance;
+        return quadraticMean;
     }
 }

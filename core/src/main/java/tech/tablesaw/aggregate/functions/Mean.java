@@ -12,22 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
 
-import static tech.tablesaw.reducing.AggregateFunctions.stdDev;
-
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
 
-public class StandardDeviation extends SummaryFunction {
+public class Mean extends SummaryFunction {
 
-    public StandardDeviation(Table original, String summarizedColumnName) {
+    public Mean(Table original, String summarizedColumnName) {
         super(original, summarizedColumnName);
     }
 
     @Override
     public AggregateFunction function() {
-        return stdDev;
+        return mean;
     }
 }

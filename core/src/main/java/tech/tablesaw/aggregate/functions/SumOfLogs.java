@@ -12,21 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
-import static tech.tablesaw.reducing.AggregateFunctions.geometricMean;
+import static tech.tablesaw.aggregate.AggregateFunctions.sumOfLogs;
 
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
 
-public class GeometricMean extends SummaryFunction {
+public class SumOfLogs extends SummaryFunction {
 
-    public GeometricMean(Table original, String summarizedColumnName) {
+    public SumOfLogs(Table original, String summarizedColumnName) {
         super(original, summarizedColumnName);
     }
 
     @Override
     public AggregateFunction function() {
-        return geometricMean;
+        return sumOfLogs;
     }
 }

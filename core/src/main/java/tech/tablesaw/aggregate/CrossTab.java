@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing;
+package tech.tablesaw.aggregate;
 
 import com.google.common.collect.TreeBasedTable;
 

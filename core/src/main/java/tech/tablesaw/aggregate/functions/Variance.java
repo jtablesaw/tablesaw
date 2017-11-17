@@ -12,21 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
-import static tech.tablesaw.reducing.AggregateFunctions.product;
+import static tech.tablesaw.aggregate.AggregateFunctions.variance;
 
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
 
-public class Product extends SummaryFunction {
+public class Variance extends SummaryFunction {
 
-    public Product(Table original, String summarizedColumnName) {
+    public Variance(Table original, String summarizedColumnName) {
         super(original, summarizedColumnName);
     }
 
     @Override
     public AggregateFunction function() {
-        return product;
+        return variance;
     }
 }

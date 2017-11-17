@@ -16,6 +16,7 @@ package tech.tablesaw.table;
 
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.DateColumn;
@@ -28,7 +29,6 @@ import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.reducing.AggregateFunction;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 

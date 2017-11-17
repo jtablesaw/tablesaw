@@ -12,21 +12,22 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
-import static tech.tablesaw.reducing.AggregateFunctions.max;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
 
-public class Maximum extends SummaryFunction {
+public class StandardDeviation extends SummaryFunction {
 
-    public Maximum(Table original, String summarizedColumnName) {
+    public StandardDeviation(Table original, String summarizedColumnName) {
         super(original, summarizedColumnName);
     }
 
     @Override
     public AggregateFunction function() {
-        return max;
+        return stdDev;
     }
 }

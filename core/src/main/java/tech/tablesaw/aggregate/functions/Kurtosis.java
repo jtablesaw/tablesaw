@@ -12,21 +12,21 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.reducing.functions;
+package tech.tablesaw.aggregate.functions;
 
-import static tech.tablesaw.reducing.AggregateFunctions.median;
+import static tech.tablesaw.aggregate.AggregateFunctions.kurtosis;
 
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.AggregateFunction;
 
-public class Median extends SummaryFunction {
+public class Kurtosis extends SummaryFunction {
 
-    public Median(Table original, String summarizedColumnName) {
+    public Kurtosis(Table original, String summarizedColumnName) {
         super(original, summarizedColumnName);
     }
 
     @Override
     public AggregateFunction function() {
-        return median;
+        return kurtosis;
     }
 }
