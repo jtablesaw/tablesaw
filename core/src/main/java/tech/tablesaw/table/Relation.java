@@ -177,24 +177,20 @@ public abstract class Relation {
         return widths;
     }
 
-    public String toString(int rowLimit) {
+    @Override
+    public String toString() {
+      return "Table " + name() + ": Size = " + rowCount() + " x " + columnCount();
+    }
+
+    public String print(int rowLimit) {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       DataFramePrinter printer = new DataFramePrinter(rowLimit, baos);
       printer.print(this);
       return new String(baos.toByteArray());
     }
-    
-    @Override
-    public String toString() {
-      return toString(20);
-    }
 
-    /**
-     * @deprecated call toString instead
-     */
-    @Deprecated
     public String print() {
-        return toString();
+      return print(20);
     }
 
     public Table structure() {
