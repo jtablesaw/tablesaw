@@ -152,6 +152,18 @@ public class Table extends Relation implements IntIterable {
         return key;
     }
 
+    /**
+     * Creates an IntColumn containing the integers from star to rowCount() and adds it to this table
+     */
+    public void addIndexColumn(String columnName, int startsWith) {
+
+        IntColumn indexColumn = new IntColumn("Index", rowCount());
+        for (int i = 0; i < rowCount(); i++) {
+            indexColumn.set(i, i + startsWith);
+        }
+        addColumn(indexColumn);
+    }
+
     public static Table readTable(String tableNameAndPath) {
         Table t;
         try {
