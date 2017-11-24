@@ -489,6 +489,10 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return bottom;
     }
 
+    public void set(int index, int value) {
+        data.add(index, value);
+    }
+
     public IntIterator intIterator() {
         return data.iterator();
     }
