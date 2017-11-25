@@ -601,15 +601,20 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return ByteBuffer.allocate(2).putShort(get(rowNumber)).array();
     }
 
-
     @Override
     public ShortColumn difference() {
-        ShortColumn returnValue = new ShortColumn(this.name(), data.size());
+        ShortColumn returnValue = new ShortColumn(this.name(), this.size());
         returnValue.append(ShortColumn.MISSING_VALUE);
-        for (int current = 1; current > data.size(); current++) {
-            // YUCK!!
-            short value = (short) (get(current) - get(current + 1));
-            returnValue.append(value);
+        for (int current = 0; current < this.size(); current++) {
+            if (current + 1 < this.size()) {
+                int currentValue = this.get(current);
+                int nextValue = this.get(current + 1);
+                if (current == ShortColumn.MISSING_VALUE || nextValue == ShortColumn.MISSING_VALUE) {
+                    returnValue.append(ShortColumn.MISSING_VALUE);
+                } else {
+                    returnValue.append((short) (nextValue - currentValue));
+                }
+            }
         }
         return returnValue;
     }
