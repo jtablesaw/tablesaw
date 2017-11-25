@@ -153,7 +153,9 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * Creates an IntColumn containing the integers from star to rowCount() and adds it to this table
+     * Creates an IntColumn containing the integers from startsWith to rowCount() and adds it to this table.
+     * Can be used for maintaining/restoring a specific order on data without an existing order column, or for
+     * generating scatter/line plots where the variation of points in some order is what you're trying to see.
      */
     public void addIndexColumn(String columnName, int startsWith) {
 

@@ -764,6 +764,10 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return bitmap;
     }
 
+    public void set(int index, long value) {
+        data.add(index, value);
+    }
+
     public Selection select(LongBiPredicate predicate, long value) {
         Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {

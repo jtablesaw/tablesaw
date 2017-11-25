@@ -637,7 +637,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public void set(int r, float value) {
-        data.set(r, value);
+        data.add(r, value);
     }
 
     // TODO(lwhite): Reconsider the implementation of this functionality to allow user to provide a specific max error.

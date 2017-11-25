@@ -120,7 +120,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public void set(int index, int value) {
-        data.set(index, value);
+        data.add(index, value);
     }
 
     public Selection isLessThan(int i) {

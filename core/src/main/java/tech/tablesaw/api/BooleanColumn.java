@@ -356,7 +356,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     public void set(int i, boolean b) {
-        data.set(i, b ? (byte) 1 : (byte) 0);
+        data.add(i, b ? (byte) 1 : (byte) 0);
     }
 
     @Override
