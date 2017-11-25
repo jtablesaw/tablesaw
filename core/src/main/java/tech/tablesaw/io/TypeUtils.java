@@ -130,6 +130,8 @@ public final class TypeUtils {
 
     private static final DateTimeFormatter dtTimef7 =
             DateTimeFormatter.ofPattern("M/d/yy H:mm");
+    private static final DateTimeFormatter dtTimef8 =
+            DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a");
 
     // A formatter that handles date time formats defined above
     public static final DateTimeFormatter DATE_TIME_FORMATTER =
@@ -142,6 +144,7 @@ public final class TypeUtils {
                     .appendOptional(dtTimef5)
                     .appendOptional(dtTimef6)
                     .appendOptional(dtTimef7)
+                    .appendOptional(dtTimef8)
                     .toFormatter();
     private static final DateTimeFormatter timef1 = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
     private static final DateTimeFormatter timef2 = DateTimeFormatter.ofPattern("hh:mm:ss a");
