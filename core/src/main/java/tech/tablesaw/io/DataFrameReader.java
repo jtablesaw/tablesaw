@@ -26,6 +26,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvReadOptions.CsvReadOptionsBuilder;
 import tech.tablesaw.io.csv.CsvReader;
+import tech.tablesaw.io.html.HtmlTableReader;
 import tech.tablesaw.io.jdbc.SqlResultSetReader;
 
 public class DataFrameReader {
@@ -58,8 +59,12 @@ public class DataFrameReader {
     return CsvReader.read(options);
   }
 
-  public static Table db(ResultSet resultSet, String tableName) throws SQLException {
+  public Table db(ResultSet resultSet, String tableName) throws SQLException {
     return SqlResultSetReader.read(resultSet, tableName);
+  }
+
+  public Table html(String url) throws IOException {
+    return csv(new HtmlTableReader().tableToCsv(url), url);
   }
 
 }
