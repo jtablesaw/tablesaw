@@ -4,7 +4,7 @@
 
   <groupId>tech.tablesaw</groupId>
   <artifactId>tablesaw-parent</artifactId>
-  <version>0.11.1</version>
+  <version>0.11.2-SNAPSHOT</version>
   <name>Tablesaw</name>
   <description>High-performance Java Dataframe with integrated columnar storage</description>
   <url>https://jtablesaw.wordpress.com</url>
@@ -12,7 +12,7 @@
     <connection>scm:git:git@github.com:jtablesaw/tablesaw.git</connection>
     <developerConnection>scm:git:git@github.com:jtablesaw/tablesaw.git</developerConnection>
     <url>git@github.com:jtablesaw/tablesaw.git</url>
-    <tag>v0.11.1</tag>
+    <tag>HEAD</tag>
   </scm>
   <licenses>
     <license>
