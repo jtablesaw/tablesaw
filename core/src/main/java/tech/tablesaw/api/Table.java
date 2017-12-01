@@ -14,7 +14,14 @@
 
 package tech.tablesaw.api;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.count;
+import static tech.tablesaw.aggregate.AggregateFunctions.max;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.median;
+import static tech.tablesaw.aggregate.AggregateFunctions.min;
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import static tech.tablesaw.aggregate.AggregateFunctions.variance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +37,7 @@ import org.apache.commons.lang3.RandomUtils;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
@@ -754,6 +762,15 @@ public class Table extends Relation implements IntIterable {
       }
       Rows.copyRowsToTable(rowsToKeep, this, newTable);
       return newTable;
+    }
+
+    /**
+     * Returns a table with the given rows dropped
+     * @param row the row to drop
+     * @return the table with the dropped rows
+     */
+    public Table dropRow(int row) {
+      return dropRows(ImmutableList.of(row));
     }
 
     /**
