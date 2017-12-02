@@ -363,10 +363,10 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     @Override
     public String getString(int row) {
         float value = data.getFloat(row);
-        if (!Float.isNaN(value)) {
-            return String.valueOf(value);
+        if (Float.isNaN(value)) {
+            return null;
         }
-        return "";
+        return String.valueOf(value);
     }
 
     @Override
@@ -412,16 +412,14 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
 
     /**
      * Returns the count of missing values in this column
-     * <p>
-     * Implementation note: We use NaN for missing, so we can't compare against the MISSING_VALUE and use val != val
-     * instead
      */
     @Override
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
             float f = get(i);
-            if (f != f) {
+            // We use NaN for missing, so we can't compare against the MISSING_VALUE
+            if (Float.isNaN(f)) {
                 count++;
             }
         }
@@ -430,7 +428,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
 
     @Override
     public void appendCell(String object) {
-        Preconditions.checkNotNull(object);
         try {
             append(convert(object));
         } catch (NumberFormatException nfe) {
@@ -757,18 +754,12 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         returnValue.append(FloatColumn.MISSING_VALUE);
         for (int current = 0; current < this.size(); current++) {
             if (current + 1 < this.size()) {
-
-            /*
-             * check for missing values:
-             * note that for floats you test val != val,
-             * since a missing float is encoded as Float.NaN and nothing is equal to NaN.
-             */
-
                 float currentValue = get(current);
                 float nextValue = get(current + 1);
-
-                if (currentValue != currentValue || nextValue != nextValue) {
-                    returnValue.append(Float.NaN);
+                // check for missing values
+                // equality doesn't work with NaN, which is how missing value is encoded
+                if (Float.isNaN(currentValue) || Float.isNaN(nextValue)) {
+                    returnValue.append(MISSING_VALUE);
                 } else {
                     returnValue.append(nextValue - currentValue);
                 }

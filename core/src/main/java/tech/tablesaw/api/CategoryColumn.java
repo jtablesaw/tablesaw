@@ -364,7 +364,6 @@ public class CategoryColumn extends AbstractColumn
 
     @Override
     public void appendCell(String object) {
-        Preconditions.checkNotNull(object);
         add(convert(object));
     }
 

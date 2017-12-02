@@ -223,10 +223,10 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     @Override
     public String getString(int row) {
         int value = data.getInt(row);
-        if (value != MISSING_VALUE){
-            return String.valueOf(value);
-        }
-        return "";
+        if (value == MISSING_VALUE) {
+          return null;
+      }
+      return String.valueOf(value);
     }
 
     @Override
@@ -272,7 +272,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
     @Override
     public void appendCell(String object) {
-        Preconditions.checkNotNull(object);
         append(convert(object));
     }
 

@@ -248,10 +248,10 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     @Override
     public String getString(int row) {
         long value = data.getLong(row);
-        if (value != MISSING_VALUE){
-            return String.valueOf(value);
-        }
-        return "";
+        if (value == MISSING_VALUE) {
+          return null;
+      }
+      return String.valueOf(value);
     }
 
     @Override
@@ -312,7 +312,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
 
     @Override
     public void appendCell(String object) {
-        Preconditions.checkNotNull(object);
         try {
             append(convert(object));
         } catch (NumberFormatException nfe) {

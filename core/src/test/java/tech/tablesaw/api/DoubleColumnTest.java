@@ -439,8 +439,8 @@ public class DoubleColumnTest {
 
     @Test
     public void testDifferencePositive() {
-        double[] originalValues = new double[]{32, 42, 40, 57, 52};
-        double[] expectedValues = new double[]{Double.NaN, 10, -2, 17, -5};
+        double[] originalValues = new double[]{ 32, 42, 40, 57, 52 };
+        double[] expectedValues = new double[]{ DoubleColumn.MISSING_VALUE, 10, -2, 17, -5 };
 
         DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
         for (double value : originalValues) {
@@ -450,18 +450,14 @@ public class DoubleColumnTest {
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
             double actual = difference.get(index);
-            if (index == 0) {
-                assertTrue("difference operation at index:" + index + " failed", Double.isNaN(actual));
-            } else {
-                assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0);
-            }
+            assertEquals("difference operation at index " + index + " failed", expectedValues[index], actual, 0);
         }
     }
 
     @Test
     public void testDifferenceNegative() {
-        double[] originalValues = new double[]{32, 42, 40, 57, 52};
-        double[] expectedValues = new double[]{Double.MAX_VALUE, Double.MIN_VALUE, -12, 117, 5};
+        double[] originalValues = new double[]{ 32, 42, 40, 57, 52 };
+        double[] expectedValues = new double[]{ Double.MAX_VALUE, Double.MIN_VALUE, -12, 117, 5 };
 
         DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
         for (double value : originalValues) {
@@ -471,11 +467,7 @@ public class DoubleColumnTest {
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
             double actual = difference.get(index);
-            if (index == 0) {
-                assertTrue("difference operation at index:" + index + " failed", Double.isNaN(actual));
-            } else {
-                assertNotEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0.0);
-            }
+            assertNotEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0.0);
         }
     }
 

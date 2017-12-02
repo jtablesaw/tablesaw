@@ -623,8 +623,8 @@ public class FloatColumnTest {
 
     @Test
     public void testDifferencePositive() {
-        float[] originalValues = new float[]{32, 42, 40, 57, 52};
-        float[] expectedValues = new float[]{Float.NaN, 10, -2, 17, -5};
+        float[] originalValues = new float[]{ 32, 42, 40, 57, 52 };
+        float[] expectedValues = new float[]{ FloatColumn.MISSING_VALUE, 10, -2, 17, -5 };
 
         FloatColumn initial = new FloatColumn("Test", originalValues.length);
         for (float value : originalValues) {
@@ -634,18 +634,14 @@ public class FloatColumnTest {
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
             float actual = difference.get(index);
-            if (index == 0) {
-                assertTrue("difference operation at index:" + index + " failed", Float.isNaN(actual));
-            } else {
-                assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0);
-            }
+            assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0);
         }
     }
 
     @Test
     public void testDifferenceNegative() {
-        float[] originalValues = new float[]{32, 42, 40, 57, 52};
-        float[] expectedValues = new float[]{Float.MAX_VALUE, Float.MIN_VALUE, -12, 117, 5};
+        float[] originalValues = new float[]{ 32, 42, 40, 57, 52 };
+        float[] expectedValues = new float[]{ Float.MAX_VALUE, Float.MIN_VALUE, -12, 117, 5 };
 
         FloatColumn initial = new FloatColumn("Test", originalValues.length);
         for (float value : originalValues) {
@@ -655,11 +651,7 @@ public class FloatColumnTest {
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
             float actual = difference.get(index);
-            if (index == 0) {
-                assertTrue("difference operation at index:" + index + " failed", Float.isNaN(actual));
-            } else {
-                assertNotEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0.0);
-            }
+            assertNotEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0.0);
         }
     }
 

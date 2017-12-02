@@ -213,10 +213,10 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     @Override
     public String getString(int row) {
         short value = data.getShort(row);
-        if (value != MISSING_VALUE){
-            return String.valueOf(value);
+        if (value == MISSING_VALUE) {
+            return null;
         }
-        return "";
+        return String.valueOf(value);
     }
 
     @Override
@@ -263,7 +263,6 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
 
     @Override  // TODO(lwhite): Move to AbstractColumn
     public void appendCell(String object) {
-        Preconditions.checkNotNull(object);
         try {
             append(convert(object));
         } catch (NumberFormatException nfe) {

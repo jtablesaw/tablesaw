@@ -345,11 +345,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     @Override
     public String getString(int row) {
-        double value = data.getDouble(row);
-        if (!Double.isNaN(value)) { 
-            return String.valueOf(value);
-        }
-        return "";
+      double value = data.getDouble(row);
+      if (Double.isNaN(value)) {
+          return null;
+      }
+      return String.valueOf(value);
     }
 
     @Override
@@ -395,16 +395,14 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     /**
      * Returns the count of missing values in this column
-     * <p>
-     * Implementation note: We use NaN for missing, so we can't compare against the MISSING_VALUE and use val != val
-     * instead
      */
     @Override
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
             double f = get(i);
-            if (f != f) {
+            // We use NaN for missing, so we can't compare against the MISSING_VALUE
+            if (Double.isNaN(f)) {
                 count++;
             }
         }
@@ -413,7 +411,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     @Override
     public void appendCell(String object) {
-        Preconditions.checkNotNull(object);
         try {
             append(convert(object));
         } catch (NumberFormatException e) {
@@ -770,18 +767,12 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         returnValue.append(DoubleColumn.MISSING_VALUE);
         for (int current = 0; current < this.size(); current++) {
             if (current + 1 < this.size()) {
-
-            /*
-             * check for missing values:
-             * note that for doubles you test val != val,
-             * since a missing double is encoded as Double.NaN and nothing is equal to NaN.
-             */
-
                 double currentValue = get(current);
                 double nextValue = get(current + 1);
-
-                if (currentValue != currentValue || nextValue != nextValue) {
-                    returnValue.append(Double.NaN);
+                // check for missing values
+                // equality doesn't work with NaN, which is how missing value is encoded
+                if (Double.isNaN(currentValue) || Double.isNaN(nextValue)) {
+                    returnValue.append(MISSING_VALUE);
                 } else {
                     returnValue.append(nextValue - currentValue);
                 }

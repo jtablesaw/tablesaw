@@ -129,7 +129,8 @@ public class DataFramePrinter {
         } else {
           for (int i = 0; i < rowCount; i++) {
             for (int j = 0; j < colCount; j++) {
-                data[i][j] = frame.get(i, j);
+              String value = frame.get(i, j);
+              data[i][j] = value == null ? "" : value;
             }
           }
         }

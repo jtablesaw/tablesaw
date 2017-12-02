@@ -404,7 +404,6 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
 
     @Override
     public void appendCell(String string) {
-        Preconditions.checkNotNull(string);
         appendInternal(convert(string));
     }
 
