@@ -253,6 +253,9 @@ public class CategoryColumn extends AbstractColumn
     }
 
     public void set(int rowIndex, String stringValue) {
+        if (stringValue == null) {
+            stringValue = MISSING_VALUE;
+        }
         boolean b = lookupTable.contains(stringValue);
         int valueId;
         if (!b) {
