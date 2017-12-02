@@ -182,7 +182,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
             doubles.add(data.getDouble(i));
         }
         DoubleColumn column = new DoubleColumn(name() + " Unique values", doubles.size());
-        doubles.forEach(column::append);
+        doubles.forEach((double i) -> column.append(i));
         return column;
     }
 

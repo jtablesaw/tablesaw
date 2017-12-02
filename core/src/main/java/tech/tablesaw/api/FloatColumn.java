@@ -185,7 +185,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
             floats.add(data.getFloat(i));
         }
         FloatColumn column = new FloatColumn(name() + " Unique values", floats.size());
-        floats.forEach(column::append);
+        floats.forEach((double i) -> column.append(i));
         return column;
     }
 

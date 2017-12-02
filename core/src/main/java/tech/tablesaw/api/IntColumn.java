@@ -205,14 +205,14 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     @Override
     public int countUnique() {
         Selection selection = new BitmapBackedSelection();
-        data.forEach(selection::add);
+        data.forEach((int i) -> selection.add(i));
         return selection.size();
     }
 
     @Override
     public IntColumn unique() {
         Selection selection = new BitmapBackedSelection();
-        data.forEach(selection::add);
+        data.forEach((int i) -> selection.add(i));
         return new IntColumn(name() + " Unique values", IntArrayList.wrap(selection.toArray()));
     }
 
