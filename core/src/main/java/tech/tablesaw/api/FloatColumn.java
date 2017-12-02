@@ -363,7 +363,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     @Override
     public String getString(int row) {
         float value = data.getFloat(row);
-        if (value != MISSING_VALUE) {
+        if (value != value) { // it's NaN
             return String.valueOf(value);
         }
         return "";

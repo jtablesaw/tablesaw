@@ -346,7 +346,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     @Override
     public String getString(int row) {
         double value = data.getDouble(row);
-        if (value != MISSING_VALUE) {
+        if (value != value) { // it's NaN 
             return String.valueOf(value);
         }
         return "";
