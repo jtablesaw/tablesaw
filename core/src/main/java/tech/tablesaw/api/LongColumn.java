@@ -247,7 +247,11 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
 
     @Override
     public String getString(int row) {
-        return String.valueOf(data.getLong(row));
+        long value = data.getLong(row);
+        if (value != MISSING_VALUE){
+            return String.valueOf(value);
+        }
+        return "";
     }
 
     @Override

@@ -345,7 +345,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     @Override
     public String getString(int row) {
-        return String.valueOf(data.getDouble(row));
+        double value = data.getDouble(row);
+        if (value != MISSING_VALUE) {
+            return String.valueOf(value);
+        }
+        return "";
     }
 
     @Override

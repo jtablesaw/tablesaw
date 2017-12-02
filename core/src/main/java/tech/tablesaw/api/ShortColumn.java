@@ -212,7 +212,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
 
     @Override
     public String getString(int row) {
-        return String.valueOf(data.getShort(row));
+        short value = data.getShort(row);
+        if (value != MISSING_VALUE){
+            return String.valueOf(value);
+        }
+        return "";
     }
 
     @Override

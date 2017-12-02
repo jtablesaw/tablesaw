@@ -222,7 +222,11 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
     @Override
     public String getString(int row) {
-        return String.valueOf(data.getInt(row));
+        int value = data.getInt(row);
+        if (value != MISSING_VALUE){
+            return String.valueOf(value);
+        }
+        return "";
     }
 
     @Override
