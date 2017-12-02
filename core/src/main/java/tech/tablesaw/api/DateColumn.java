@@ -275,7 +275,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (c1 == DateColumn.MISSING_VALUE) {
-                newColumn.add(null);
+                newColumn.add(CategoryColumn.MISSING_VALUE);
             } else {
                 newColumn.add(PackedLocalDate.getDayOfWeek(c1).toString());
             }
