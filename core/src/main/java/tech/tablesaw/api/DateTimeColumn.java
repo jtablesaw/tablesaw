@@ -288,7 +288,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
-                newColumn.set(r, null);
+                newColumn.set(r, CategoryColumn.MISSING_VALUE);
             } else {
                 newColumn.add(PackedLocalDateTime.getDayOfWeek(c1).toString());
             }
