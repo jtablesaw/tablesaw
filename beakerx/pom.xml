@@ -68,7 +68,7 @@
     <dependency>
       <groupId>com.github.twosigma</groupId>
       <artifactId>beakerx</artifactId>
-      <version>0.7.0</version>
+      <version>0.9.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
