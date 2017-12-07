@@ -231,40 +231,31 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public LocalDate max() {
-        int max;
-        int missing = Integer.MIN_VALUE;
-        if (!isEmpty()) {
-            max = getIntInternal(0);
-        } else {
+        if (isEmpty()) {
             return null;
         }
+
+        int max = getIntInternal(0);
         for (int aData : data) {
-            if (missing != aData) {
-                max = (max > aData) ? max : aData;
-            }
+            max = (max > aData) ? max : aData;
         }
 
-        if (missing == max) {
+        if (DateColumn.MISSING_VALUE == max) {
             return null;
         }
         return PackedLocalDate.asLocalDate(max);
     }
 
     public LocalDate min() {
-        int min;
-        int missing = Integer.MIN_VALUE;
-
-        if (!isEmpty()) {
-            min = getIntInternal(0);
-        } else {
+        if (isEmpty()) {
             return null;
         }
+
+        int min = getIntInternal(0);
         for (int aData : data) {
-            if (missing != aData) {
-                min = (min < aData) ? min : aData;
-            }
+            min = (min < aData) ? min : aData;
         }
-        if (Integer.MIN_VALUE == min) {
+        if (DateColumn.MISSING_VALUE == min) {
             return null;
         }
         return PackedLocalDate.asLocalDate(min);

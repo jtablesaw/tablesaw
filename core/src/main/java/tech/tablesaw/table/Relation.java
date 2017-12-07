@@ -75,36 +75,26 @@ public abstract class Relation {
      * Returns the index of the column with the given columnName
      */
     public int columnIndex(String columnName) {
-        int columnIndex = -1;
         for (int i = 0; i < columnCount(); i++) {
             if (columnNames().get(i).equalsIgnoreCase(columnName)) {
-                columnIndex = i;
-                break;
+                return i;
             }
         }
-        if (columnIndex == -1) {
-            throw new IllegalArgumentException(String.format("Column %s is not present in table %s", columnName, name
-                    ()));
-        }
-        return columnIndex;
+        throw new IllegalArgumentException(String.format("Column %s is not present in table %s", columnName, name
+                ()));
     }
 
     /**
      * Returns the column with the given columnName, ignoring case
      */
     public Column column(String columnName) {
-        Column result = null;
         for (Column column : columns()) {
             String name = column.name().trim();
             if (name.equalsIgnoreCase(columnName)) {
-                result = column;
-                break;
+                return column;
             }
         }
-        if (result == null) {
-            throw new IllegalStateException(String.format("Column %s does not exist in table %s", columnName, name()));
-        }
-        return result;
+        throw new IllegalStateException(String.format("Column %s does not exist in table %s", columnName, name()));
     }
 
     /**

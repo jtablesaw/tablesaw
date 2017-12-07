@@ -112,7 +112,7 @@ public class DataFramePrinter {
         final int colCount = frame.columnCount();
         final String[][] data = new String[rowCount][colCount];
         if (truncated) {
-          int i = 0;
+          int i;
           for (i = 0; i < rowCount / 2; i++) {
             for (int j = 0; j < colCount; j++) {
                 data[i][j] = frame.get(i, j);
@@ -177,7 +177,7 @@ public class DataFramePrinter {
             whitespace(text, trailing);
             text.append("  |");
             return text.toString();
-        }).reduce((left, right) -> left + " " + right).orElseGet(() -> "");
+        }).reduce((left, right) -> left + " " + right).orElse("");
     }
 
     /**
@@ -189,7 +189,7 @@ public class DataFramePrinter {
         return IntStream.range(0, widths.length)
                 .mapToObj(i -> " %" + (i + 1) + "$" + widths[i] + "s  |")
                 .reduce((left, right) -> left + " " + right)
-                .orElseGet(() -> "");
+                .orElse("");
     }
 
     /**

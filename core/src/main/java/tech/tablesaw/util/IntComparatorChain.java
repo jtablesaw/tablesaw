@@ -152,7 +152,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
         Iterator<IntComparator> comparators = this.comparatorChain.iterator();
 
         for (int comparatorIndex = 0; comparators.hasNext(); ++comparatorIndex) {
-            IntComparator comparator = (IntComparator) comparators.next();
+            IntComparator comparator = comparators.next();
             int retval = comparator.compare(o1, o2);
             if (retval != 0) {
                 if (this.orderingBits.get(comparatorIndex)) {
