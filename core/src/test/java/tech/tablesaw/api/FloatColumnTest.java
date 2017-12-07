@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
 import com.google.common.base.Stopwatch;
@@ -266,6 +280,47 @@ public class FloatColumnTest {
         // Probabilistic answer.
         assertTrue(count < 575_000);
         assertTrue(count > 425_000);
+    }
+    
+    @Test
+    public void testIsPositive() {
+        int positiveRecords = 987_000;
+        int negativeRecords = 654_000;
+        FloatColumn floatColumn = new FloatColumn("test", positiveRecords+negativeRecords);
+        for (int i = 0; i < positiveRecords; i++) {
+            floatColumn.append((float) Math.random()*100);
+        }
+
+        for (int i = 0; i < negativeRecords; i++) {
+            floatColumn.append((float) Math.random() * -100);
+        }
+
+        Selection results = floatColumn.isPositive();
+
+        assertTrue(results.size() == positiveRecords);
+    }
+    
+    @Test
+    public void testIsNonNegative() {
+        int positiveRecords = 980_000;
+        int negativeRecords = 654_000;
+        int zeroRecords = 20_000;
+        FloatColumn floatColumn = new FloatColumn("test", positiveRecords+negativeRecords+zeroRecords);
+        for (int i = 0; i < positiveRecords; i++) {
+            floatColumn.append((float) Math.random()*100);
+        }
+
+        for (int i = 0; i < negativeRecords; i++) {
+            floatColumn.append((float) Math.random() * -100);
+        }
+
+        for (int i = 0; i < zeroRecords; i++) {
+            floatColumn.append(0);
+        }
+
+        Selection results = floatColumn.isNonNegative();
+
+        assertTrue(results.size() == positiveRecords+zeroRecords);
     }
 
     @Test
@@ -568,8 +623,8 @@ public class FloatColumnTest {
 
     @Test
     public void testDifferencePositive() {
-        float[] originalValues = new float[]{32, 42, 40, 57, 52};
-        float[] expectedValues = new float[]{Float.NaN, 10, -2, 17, -5};
+        float[] originalValues = new float[]{ 32, 42, 40, 57, 52 };
+        float[] expectedValues = new float[]{ FloatColumn.MISSING_VALUE, 10, -2, 17, -5 };
 
         FloatColumn initial = new FloatColumn("Test", originalValues.length);
         for (float value : originalValues) {
@@ -579,18 +634,14 @@ public class FloatColumnTest {
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
             float actual = difference.get(index);
-            if (index == 0) {
-                assertTrue("difference operation at index:" + index + " failed", Float.isNaN(actual));
-            } else {
-                assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0);
-            }
+            assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0);
         }
     }
 
     @Test
     public void testDifferenceNegative() {
-        float[] originalValues = new float[]{32, 42, 40, 57, 52};
-        float[] expectedValues = new float[]{Float.MAX_VALUE, Float.MIN_VALUE, -12, 117, 5};
+        float[] originalValues = new float[]{ 32, 42, 40, 57, 52 };
+        float[] expectedValues = new float[]{ Float.MAX_VALUE, Float.MIN_VALUE, -12, 117, 5 };
 
         FloatColumn initial = new FloatColumn("Test", originalValues.length);
         for (float value : originalValues) {
@@ -600,11 +651,7 @@ public class FloatColumnTest {
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
             float actual = difference.get(index);
-            if (index == 0) {
-                assertTrue("difference operation at index:" + index + " failed", Float.isNaN(actual));
-            } else {
-                assertNotEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0.0);
-            }
+            assertNotEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0.0);
         }
     }
 

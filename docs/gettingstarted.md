@@ -9,7 +9,7 @@ Tablesaw is available from Maven Central.
 <dependency>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-core</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
 </dependency>
 
 It requires Java 8 or newer.
@@ -26,7 +26,6 @@ We’ll use a tornado data set from NOAA. Here’s what we’ll cover:
 * Running descriptive stats (mean, min, max, etc.)
 * Performing mapping operations over columns
 * Filtering rows
-* Combining group and reduce functions to compute stats for subsets
 * Computing cross-tabs
 * Storing tables in Tablesaw’s compressed columnar storage format
 

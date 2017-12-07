@@ -70,7 +70,7 @@ producing:
     TX    4.0   219.0          
     TX    5.0   174.0  
         
-Data: The tornado dataset is from NOAA http://http://www.spc.noaa.gov/gis/svrgis/.
+Data: The tornado dataset is from [NOAA's Storm Prediction Center Severe Weather GIS](http://www.spc.noaa.gov/gis/svrgis/).
 
 Code: The code can be found in the BasicGroupby.java example in the Tablesaw repo on Github.
 

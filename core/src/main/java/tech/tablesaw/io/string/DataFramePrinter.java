@@ -1,8 +1,24 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.io.string;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.stream.IntStream;
+
+import org.apache.commons.lang3.StringUtils;
 
 import tech.tablesaw.table.Relation;
 
@@ -39,7 +55,9 @@ public class DataFramePrinter {
             final String dataTemplate = getDataTemplate(widths);
             final String headerTemplate = getHeaderTemplate(widths, headers);
             final int totalWidth = IntStream.of(widths).map(w -> w + 5).sum()-1;
-            final StringBuilder text = new StringBuilder(totalWidth * data.length).append("\n");
+            final int totalHeight = data.length + 1;
+            final StringBuilder text = new StringBuilder(totalWidth * totalHeight);
+            text.append(tableName(frame, totalWidth)).append("\n");
             final String headerLine = String.format(headerTemplate, (Object[]) headers);
             text.append(headerLine).append("\n");
             for (int j = 0; j < totalWidth; j++) {
@@ -58,6 +76,14 @@ public class DataFramePrinter {
         }
     }
 
+    private String tableName(Relation frame, int width) {
+      if (frame.name().length() > width) {
+        return frame.name();
+      }
+      int diff = width - frame.name().length();
+      String result = StringUtils.repeat(" ", diff / 2) + frame.name();
+      return result + StringUtils.repeat(" ", width - result.length());
+    }
 
     /**
      * Returns the header string tokens for the frame
@@ -86,7 +112,7 @@ public class DataFramePrinter {
         final int colCount = frame.columnCount();
         final String[][] data = new String[rowCount][colCount];
         if (truncated) {
-          int i = 0;
+          int i;
           for (i = 0; i < rowCount / 2; i++) {
             for (int j = 0; j < colCount; j++) {
                 data[i][j] = frame.get(i, j);
@@ -103,7 +129,8 @@ public class DataFramePrinter {
         } else {
           for (int i = 0; i < rowCount; i++) {
             for (int j = 0; j < colCount; j++) {
-                data[i][j] = frame.get(i, j);
+              String value = frame.get(i, j);
+              data[i][j] = value == null ? "" : value;
             }
           }
         }
@@ -150,7 +177,7 @@ public class DataFramePrinter {
             whitespace(text, trailing);
             text.append("  |");
             return text.toString();
-        }).reduce((left, right) -> left + " " + right).orElseGet(() -> "");
+        }).reduce((left, right) -> left + " " + right).orElse("");
     }
 
     /**
@@ -162,7 +189,7 @@ public class DataFramePrinter {
         return IntStream.range(0, widths.length)
                 .mapToObj(i -> " %" + (i + 1) + "$" + widths[i] + "s  |")
                 .reduce((left, right) -> left + " " + right)
-                .orElseGet(() -> "");
+                .orElse("");
     }
 
     /**

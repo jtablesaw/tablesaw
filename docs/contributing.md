@@ -57,7 +57,6 @@ Email larry@tablesaw.tech if you have any questions, or use the comments for the
 ## Working on the code in Eclipse
 
 * Install e(fx)clipse. Choose the update site that came with your installation of Eclipse. E.g. "Oxygen - http://download.eclipse.org/releases/oxygen". Then install "e(fx)clipse" under "General Purpose Tools"
-* [Install Kotlin support](https://kotlinlang.org/docs/tutorials/getting-started-eclipse.html). Read [this Stackoverflow post](https://stackoverflow.com/questions/42496708/cant-get-kotlin-classes-in-java-maven-project-to-work-eclipse) for tips on working around bugs in the Kotlin eclipse plugin.
 
 ## Become a Maintainer/Committer
 

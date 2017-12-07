@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
@@ -9,6 +23,7 @@ import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ShortColumnUtils;
@@ -16,7 +31,6 @@ import tech.tablesaw.filtering.ShortBiPredicate;
 import tech.tablesaw.filtering.ShortPredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.mapping.ShortMapUtils;
-import tech.tablesaw.reducing.NumericReduceUtils;
 import tech.tablesaw.sorting.IntComparisonUtil;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
@@ -24,7 +38,7 @@ import tech.tablesaw.util.ReverseShortComparator;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import static tech.tablesaw.reducing.NumericReduceUtils.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -69,7 +83,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         this(name, new ShortArrayList(arr));
     }
 
-    public ShortColumn(String name, ShortArrayList data) {
+    private ShortColumn(String name, ShortArrayList data) {
         super(name);
         this.data = data;
     }
@@ -106,7 +120,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public void set(int index, short value) {
-        data.set(index, value);
+        data.add(index, value);
     }
 
     public Selection isLessThan(int i) {
@@ -198,7 +212,11 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
 
     @Override
     public String getString(int row) {
-        return String.valueOf(data.getShort(row));
+        short value = data.getShort(row);
+        if (value == MISSING_VALUE) {
+            return null;
+        }
+        return String.valueOf(value);
     }
 
     @Override
@@ -249,10 +267,6 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
             append(convert(object));
         } catch (NumberFormatException nfe) {
             throw new NumberFormatException(name() + ": " + nfe.getMessage());
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
         }
     }
 
@@ -272,82 +286,82 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
 
     // Reduce functions applied to the whole column
     public long sum() {
-        return Math.round(sum.reduce(toDoubleArray()));
+        return Math.round(sum.agg(toDoubleArray()));
     }
 
     public double product() {
-        return product.reduce(this);
+        return product.agg(this);
     }
 
     public double mean() {
-        return mean.reduce(this);
+        return mean.agg(this);
     }
 
     public double median() {
-        return median.reduce(this);
+        return median.agg(this);
     }
 
     public double quartile1() {
-        return quartile1.reduce(this);
+        return quartile1.agg(this);
     }
 
     public double quartile3() {
-        return quartile3.reduce(this);
+        return quartile3.agg(this);
     }
 
     public double percentile(double percentile) {
-        return NumericReduceUtils.percentile(this.toDoubleArray(), percentile);
+        return AggregateFunctions.percentile(this.toDoubleArray(), percentile);
     }
 
     public double range() {
-        return range.reduce(this);
+        return range.agg(this);
     }
 
     public double max() {
-        return (short) Math.round(max.reduce(this));
+        return (short) Math.round(max.agg(this));
     }
 
     public double min() {
-        return (short) Math.round(min.reduce(this));
+        return (short) Math.round(min.agg(this));
     }
 
     public double variance() {
-        return variance.reduce(this);
+        return variance.agg(this);
     }
 
     public double populationVariance() {
-        return populationVariance.reduce(this);
+        return populationVariance.agg(this);
     }
 
     public double standardDeviation() {
-        return stdDev.reduce(this);
+        return stdDev.agg(this);
     }
 
     public double sumOfLogs() {
-        return sumOfLogs.reduce(this);
+        return sumOfLogs.agg(this);
     }
 
     public double sumOfSquares() {
-        return sumOfSquares.reduce(this);
+        return sumOfSquares.agg(this);
     }
 
     public double geometricMean() {
-        return geometricMean.reduce(this);
+        return geometricMean.agg(this);
     }
 
     /**
      * Returns the quadraticMean, aka the root-mean-square, for all values in this column
      */
     public double quadraticMean() {
-        return quadraticMean.reduce(this);
+        return quadraticMean.agg(this);
     }
 
     public double kurtosis() {
-        return kurtosis.reduce(this);
+        return kurtosis.agg(this);
     }
 
     public double skewness() {
-        return skewness.reduce(this);
+        return skewness.agg(this);
     }
 
     public short firstElement() {
@@ -590,15 +604,20 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return ByteBuffer.allocate(2).putShort(get(rowNumber)).array();
     }
 
-
     @Override
     public ShortColumn difference() {
-        ShortColumn returnValue = new ShortColumn(this.name(), data.size());
+        ShortColumn returnValue = new ShortColumn(this.name(), this.size());
         returnValue.append(ShortColumn.MISSING_VALUE);
-        for (int current = 1; current > data.size(); current++) {
-            // YUCK!!
-            short value = (short) (get(current) - get(current + 1));
-            returnValue.append(value);
+        for (int current = 0; current < this.size(); current++) {
+            if (current + 1 < this.size()) {
+                int currentValue = this.get(current);
+                int nextValue = this.get(current + 1);
+                if (current == ShortColumn.MISSING_VALUE || nextValue == ShortColumn.MISSING_VALUE) {
+                    returnValue.append(ShortColumn.MISSING_VALUE);
+                } else {
+                    returnValue.append((short) (nextValue - currentValue));
+                }
+            }
         }
         return returnValue;
     }

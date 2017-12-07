@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.util;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -138,7 +152,7 @@ public class IntComparatorChain implements IntComparator, Serializable {
         Iterator<IntComparator> comparators = this.comparatorChain.iterator();
 
         for (int comparatorIndex = 0; comparators.hasNext(); ++comparatorIndex) {
-            IntComparator comparator = (IntComparator) comparators.next();
+            IntComparator comparator = comparators.next();
             int retval = comparator.compare(o1, o2);
             if (retval != 0) {
                 if (this.orderingBits.get(comparatorIndex)) {

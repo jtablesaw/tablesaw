@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
 import com.google.common.base.CharMatcher;
@@ -239,6 +253,9 @@ public class CategoryColumn extends AbstractColumn
     }
 
     public void set(int rowIndex, String stringValue) {
+        if (stringValue == null) {
+            stringValue = MISSING_VALUE;
+        }
         boolean b = lookupTable.contains(stringValue);
         int valueId;
         if (!b) {
@@ -249,7 +266,7 @@ public class CategoryColumn extends AbstractColumn
         } else {
             valueId = lookupTable.get(stringValue);
         }
-        values.set(rowIndex, valueId);
+        values.add(rowIndex, valueId);
     }
 
     @Override
@@ -347,13 +364,7 @@ public class CategoryColumn extends AbstractColumn
 
     @Override
     public void appendCell(String object) {
-        try {
-            add(convert(object));
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
-        }
+        add(convert(object));
     }
 
     @Override

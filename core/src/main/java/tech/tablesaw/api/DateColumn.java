@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
@@ -96,20 +110,27 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         this(name, new IntArrayList(initialSize));
     }
 
-    public DateColumn(String name, IntArrayList data) {
+    public DateColumn(String name, List<LocalDate> data) {
+      this(name);
+      for (LocalDate date : data) {
+        append(date);
+      }
+    }
+
+    private DateColumn(String name, IntArrayList data) {
         this(name, data, Locale.getDefault());
     }
-    
-    public DateColumn(String name, IntArrayList data, Locale locale) {
+
+    private DateColumn(String name, IntArrayList data, Locale locale) {
         super(name);
         this.data = data;
         this.locale = locale;
     }
-    
+
     public DateColumn(ColumnMetadata metadata) {
         this(metadata, Locale.getDefault());
     }
-    
+
     public DateColumn(ColumnMetadata metadata, Locale locale) {
         super(metadata);
         this.data = new IntArrayList(DEFAULT_ARRAY_SIZE);
@@ -136,7 +157,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public void set(int index, int value) {
-        data.set(index, value);
+        data.add(index, value);
     }
 
     public void append(LocalDate f) {
@@ -210,40 +231,31 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public LocalDate max() {
-        int max;
-        int missing = Integer.MIN_VALUE;
-        if (!isEmpty()) {
-            max = getIntInternal(0);
-        } else {
+        if (isEmpty()) {
             return null;
         }
+
+        int max = getIntInternal(0);
         for (int aData : data) {
-            if (missing != aData) {
-                max = (max > aData) ? max : aData;
-            }
+            max = (max > aData) ? max : aData;
         }
 
-        if (missing == max) {
+        if (DateColumn.MISSING_VALUE == max) {
             return null;
         }
         return PackedLocalDate.asLocalDate(max);
     }
 
     public LocalDate min() {
-        int min;
-        int missing = Integer.MIN_VALUE;
-
-        if (!isEmpty()) {
-            min = getIntInternal(0);
-        } else {
+        if (isEmpty()) {
             return null;
         }
+
+        int min = getIntInternal(0);
         for (int aData : data) {
-            if (missing != aData) {
-                min = (min < aData) ? min : aData;
-            }
+            min = (min < aData) ? min : aData;
         }
-        if (Integer.MIN_VALUE == min) {
+        if (DateColumn.MISSING_VALUE == min) {
             return null;
         }
         return PackedLocalDate.asLocalDate(min);
@@ -254,7 +266,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (c1 == DateColumn.MISSING_VALUE) {
-                newColumn.add(null);
+                newColumn.add(CategoryColumn.MISSING_VALUE);
             } else {
                 newColumn.add(PackedLocalDate.getDayOfWeek(c1).toString());
             }
@@ -366,28 +378,24 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         if (Strings.isNullOrEmpty(value) || TypeUtils.MISSING_INDICATORS.contains(value) || value.equals("-1")) {
             return (Integer) ColumnType.LOCAL_DATE.getMissingValue();
         }
-        value = Strings.padStart(value, 4, '0');
+        String paddedValue = Strings.padStart(value, 4, '0');
 
         if (selectedFormatter == null) {
-            selectedFormatter = TypeUtils.getDateFormatter(value).withLocale(locale);
+            selectedFormatter = TypeUtils.getDateFormatter(paddedValue).withLocale(locale);
         }
         LocalDate date;
         try {
-            date = LocalDate.parse(value, selectedFormatter);
+            date = LocalDate.parse(paddedValue, selectedFormatter);
         } catch (DateTimeParseException e) {
             selectedFormatter = TypeUtils.DATE_FORMATTER.withLocale(locale);
-            date = LocalDate.parse(value, selectedFormatter);
+            date = LocalDate.parse(paddedValue, selectedFormatter);
         }
         return PackedLocalDate.pack(date);
     }
 
     @Override
     public void appendCell(String string) {
-        try {
-            appendInternal(convert(string));
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": " + string + ": " + e.getMessage());
-        }
+        appendInternal(convert(string));
     }
 
     @Override

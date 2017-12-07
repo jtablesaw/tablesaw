@@ -1,7 +1,22 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.table;
 
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.DateColumn;
@@ -14,7 +29,6 @@ import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.reducing.NumericReduceFunction;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 
@@ -83,7 +97,7 @@ public class TemporaryView extends Relation implements IntIterable {
     }
 
     @Override
-    public void addColumn(Column... column) {
+    public TemporaryView addColumn(Column... column) {
         throw new UnsupportedOperationException("TemporaryView does not support the addColumn operation");
     }
 
@@ -106,7 +120,7 @@ public class TemporaryView extends Relation implements IntIterable {
     }
 
     @Override
-    public void removeColumns(Column... columns) {
+    public TemporaryView removeColumns(Column... columns) {
         throw new UnsupportedOperationException("TemporaryView does not support the removeColumns operation");
     }
 
@@ -124,8 +138,9 @@ public class TemporaryView extends Relation implements IntIterable {
     }
 
     @Override
-    public void setName(String name) {
+    public TemporaryView setName(String name) {
         this.name = name;
+        return this;
     }
 
 
@@ -201,9 +216,9 @@ public class TemporaryView extends Relation implements IntIterable {
      * @return the function result
      * @throws IllegalArgumentException if numericColumnName doesn't name a numeric column in this table
      */
-    public double reduce(String numericColumnName, NumericReduceFunction function) {
+    public double reduce(String numericColumnName, AggregateFunction function) {
         Column column = column(numericColumnName);
-        return function.reduce(column.subset(rowMap).toDoubleArray());
+        return function.agg(column.subset(rowMap).toDoubleArray());
     }
 
     public BooleanColumn booleanColumn(int columnIndex) {

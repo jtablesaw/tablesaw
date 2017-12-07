@@ -1,3 +1,4 @@
+tech.tablesaw.aggregate
 tech.tablesaw.api
 tech.tablesaw.api.ml.association
 tech.tablesaw.api.ml.classification
@@ -5,6 +6,7 @@ tech.tablesaw.api.ml.clustering
 tech.tablesaw.api.ml.features
 tech.tablesaw.api.ml.regression
 tech.tablesaw.api.plot
+tech.tablesaw.beakerx
 tech.tablesaw.columns
 tech.tablesaw.columns.packeddata
 tech.tablesaw.filtering
@@ -24,8 +26,6 @@ tech.tablesaw.plotting
 tech.tablesaw.plotting.fx
 tech.tablesaw.plotting.smile
 tech.tablesaw.plotting.xchart
-tech.tablesaw.reducing
-tech.tablesaw.reducing.functions
 tech.tablesaw.sorting
 tech.tablesaw.splitting.dates
 tech.tablesaw.store

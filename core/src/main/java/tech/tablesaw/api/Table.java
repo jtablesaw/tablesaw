@@ -1,14 +1,33 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
-import java.io.File;
-import java.io.FileInputStream;
+import static tech.tablesaw.aggregate.AggregateFunctions.count;
+import static tech.tablesaw.aggregate.AggregateFunctions.max;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.median;
+import static tech.tablesaw.aggregate.AggregateFunctions.min;
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import static tech.tablesaw.aggregate.AggregateFunctions.variance;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,30 +37,20 @@ import org.apache.commons.lang3.RandomUtils;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
+import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.aggregate.SummaryFunction;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
-import tech.tablesaw.io.csv.CsvReader;
-import tech.tablesaw.io.csv.CsvWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
-import tech.tablesaw.io.jdbc.SqlResultSetReader;
-import tech.tablesaw.reducing.NumericReduceFunction;
-import tech.tablesaw.reducing.functions.Count;
-import tech.tablesaw.reducing.functions.Maximum;
-import tech.tablesaw.reducing.functions.Mean;
-import tech.tablesaw.reducing.functions.Median;
-import tech.tablesaw.reducing.functions.Minimum;
-import tech.tablesaw.reducing.functions.StandardDeviation;
-import tech.tablesaw.reducing.functions.Sum;
-import tech.tablesaw.reducing.functions.SummaryFunction;
-import tech.tablesaw.reducing.functions.Variance;
 import tech.tablesaw.sorting.Sort;
 import tech.tablesaw.sorting.Sort.Order;
 import tech.tablesaw.store.StorageManager;
@@ -151,6 +160,20 @@ public class Table extends Relation implements IntIterable {
         return key;
     }
 
+    /**
+     * Creates an IntColumn containing the integers from startsWith to rowCount() and adds it to this table.
+     * Can be used for maintaining/restoring a specific order on data without an existing order column, or for
+     * generating scatter/line plots where the variation of points in some order is what you're trying to see.
+     */
+    public void addIndexColumn(String columnName, int startsWith) {
+
+        IntColumn indexColumn = new IntColumn(columnName, rowCount());
+        for (int i = 0; i < rowCount(); i++) {
+            indexColumn.set(i, i + startsWith);
+        }
+        addColumn(indexColumn);
+    }
+
     public static Table readTable(String tableNameAndPath) {
         Table t;
         try {
@@ -161,252 +184,6 @@ public class Table extends Relation implements IntIterable {
             return null;
         }
         return t;
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param csvFileName The name of the file to import
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(String csvFileName) throws IOException {
-        return createFromCsv(csvFileName, true, ',');
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param stream The source of the CSV
-     * @param tableName The name to give the table
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromReader(InputStream stream, String tableName) throws IOException {
-        return createFromReader(stream, tableName, true, ',');
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param csvFileName The name of the file to import
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(String csvFileName, boolean header) throws IOException {
-        return CsvReader.read(new File(csvFileName), header, ',');
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param stream      The source of the CSV
-     * @param tableName   The name to give the table
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromReader(InputStream stream, String tableName, boolean header) throws IOException {
-        return createFromReader(stream, tableName, header, ',');
-    }
-    
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param csvFileName The name of the file to import
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @param delimiter   a char that divides the columns in the source file, often a comma or tab
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(String csvFileName, boolean header, char delimiter) throws IOException {
-        return CsvReader.read(new File(csvFileName), header, delimiter);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param stream      The source of the CSV
-     * @param tableName   The name to give the table
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @param delimiter   a char that divides the columns in the source file, often a comma or tab
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromReader(InputStream stream, String tableName, boolean header, char delimiter) throws IOException {
-        return CsvReader.read(stream, tableName, header, delimiter);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param csvFileName  The name of the file to import
-     * @param header       True if the file has a single header row. False if it has no header row.
-     *                     Multi-line headers are not supported
-     * @param delimiter    a char that divides the columns in the source file, often a comma or tab
-     * @param skipSampling This applies only to column type detection. Column type detection uses sampling to pick a
-     *                     column type. This may cause the algorithm to skip a row that has information the algorithm
-     *                     needs. Setting this to true will cause the algorithm to check all the data in the table,
-     *                     which may take a long time (a couple minutes?) on large tables (over 100,000,000 rows).
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(String csvFileName, boolean header, char delimiter, boolean skipSampling)
-            throws IOException {
-        InputStream stream = new FileInputStream(new File(csvFileName));
-        return CsvReader.read(stream, csvFileName, header, delimiter, skipSampling);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param stream       The source of the CSV
-     * @param tableName    The name to give the table
-     * @param header       True if the file has a single header row. False if it has no header row.
-     *                     Multi-line headers are not supported
-     * @param delimiter    a char that divides the columns in the source file, often a comma or tab
-     * @param skipSampling This applies only to column type detection. Column type detection uses sampling to pick a
-     *                     column type. This may cause the algorithm to skip a row that has information the algorithm
-     *                     needs. Setting this to true will cause the algorithm to check all the data in the table,
-     *                     which may take a long time (a couple minutes?) on large tables (over 100,000,000 rows).
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromReader(InputStream stream, String tableName, boolean header, char delimiter, boolean skipSampling)
-            throws IOException {
-        return CsvReader.read(stream, tableName, header, delimiter, skipSampling);
-    }    
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated, and that the file has a one-line header,
-     * which is used to populate the column names
-     *
-     * @param types       The column types, (see io.csv.CsvReader to run the heading to create an array you can edit)
-     * @param csvFileName The name of the file to import
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(ColumnType[] types, String csvFileName) throws IOException {
-        return CsvReader.read(types, true, ',', csvFileName);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated
-     *
-     * @param types       The column types
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @param csvFileName the name of the file to import
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(ColumnType[] types, String csvFileName, boolean header) throws IOException {
-        return CsvReader.read(types, header, ',', csvFileName);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     * <p>
-     * It is assumed that the file is truly comma-separated
-     *
-     * @param stream      the CSV source
-     * @param tableName   the name to give the table
-     * @param types       The column types
-     * @param header      True if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(InputStream stream, String tableName, ColumnType[] types, boolean header) throws IOException {
-        return createFromReader(stream, tableName, types, header, ',');
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     *
-     * @param types       The column types
-     * @param header      true if the file has a single header row. False if it has no header row.
-     *                    Multi-line headers are not supported
-     * @param delimiter   a char that divides the columns in the source file, often a comma or tab
-     * @param csvFileName the name of the file to import
-     * @throws IOException if the file can't be read
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromCsv(ColumnType[] types, String csvFileName, boolean header, char delimiter)
-            throws IOException {
-        return CsvReader.read(types, header, delimiter, csvFileName);
-    }
-
-    /**
-     * Returns a new table constructed from a character delimited (aka CSV) text file
-     *
-     * @param stream    The source of the CSV
-     * @param tableName name to give the table
-     * @param types     The column types
-     * @param header    true if the file has a single header row. False if it has no header row.
-     *                  Multi-line headers are not supported
-     * @param delimiter a char that divides the columns in the source file, often a comma or tab
-     * @param tableName the name of the resulting table
-     * @deprecated use read().csv() instead
-     */
-    @Deprecated
-    public static Table createFromReader(InputStream stream, String tableName, ColumnType[] types, boolean header,
-                                         char delimiter) throws IOException {
-        return CsvReader.read(stream, tableName, types, header, delimiter);
-    }
-
-    /**
-     * Returns a new Table with the given name, and containing the data in the given result set
-     * @deprecated use read().db() instead
-     */
-    @Deprecated
-    public static Table create(ResultSet resultSet, String tableName) throws SQLException {
-        return SqlResultSetReader.read(resultSet, tableName);
     }
 
     public static DataFrameReader read() {
@@ -452,11 +229,12 @@ public class Table extends Relation implements IntIterable {
      * Adds the given column to this table
      */
     @Override
-    public void addColumn(Column... cols) {
+    public Table addColumn(Column... cols) {
         for (Column c : cols) {
             validateColumn(c);
             columnList.add(c);
         }
+        return this;
     }
 
     /**
@@ -480,17 +258,19 @@ public class Table extends Relation implements IntIterable {
      * @param index  Zero-based index into the column list
      * @param column Column to be added
      */
-    public void addColumn(int index, Column column) {
+    public Table addColumn(int index, Column column) {
         validateColumn(column);
         columnList.add(index, column);
+        return this;
     }
 
     /**
      * Sets the name of the table
      */
     @Override
-    public void setName(String name) {
+    public Table setName(String name) {
         this.name = name;
+        return this;
     }
 
     /**
@@ -669,8 +449,8 @@ public class Table extends Relation implements IntIterable {
         Selection table1Selection = new BitmapBackedSelection();
 
         int[] table1Records = generateUniformBitmap(table1Count, rowCount());
-        for (int i = 0; i < table1Records.length; i++) {
-            table1Selection.add(table1Records[i]);
+        for (int table1Record : table1Records) {
+            table1Selection.add(table1Record);
         }
         table2Selection.andNot(table1Selection);
         tables[0] = selectWhere(table1Selection);
@@ -732,13 +512,13 @@ public class Table extends Relation implements IntIterable {
     public Table sortOn(String... columnNames) {
 
         Sort key = null;
-        Order order;
         List<String> names = new ArrayList<>();
         for (String name : columnNames()) {
             names.add(name.toUpperCase());
         }
 
         for (String columnName : columnNames) {
+            Order order;
             if (names.contains(columnName.toUpperCase())) {
                 // the column name has not been annotated with a prefix.
                 order = Order.ASCEND;
@@ -903,8 +683,34 @@ public class Table extends Relation implements IntIterable {
         return new BooleanColumn(newColumnName, filter.apply(this), rowCount());
     }
 
+    /**
+     * The first stage of a split-apply-combine operation
+     */
+    public ViewGroup groupBy(String... columns) {
+      return groupBy(columns(columns).toArray(new Column[columns.length]));
+    }
+
+    /**
+     * The first stage of a split-apply-combine operation
+     */
+    public ViewGroup groupBy(Column... columns) {
+      return new ViewGroup(this, columns);
+    }
+
+    /**
+     * Synonymous with groupBy
+     * The first stage of a split-apply-combine operation
+     */
+    public ViewGroup splitOn(String... columns) {
+        return groupBy(columns);
+    }
+
+    /**
+     * Synonymous with groupBy
+     * The first stage of a split-apply-combine operation
+     */
     public ViewGroup splitOn(Column... columns) {
-        return new ViewGroup(this, columns);
+        return groupBy(columns);
     }
 
     public String printHtml() {
@@ -929,22 +735,42 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * Returns a table with the given rows dropped
-     * @param rows the rows to drop
-     * @return the table with the dropped rows
+     * Returns a table with the given rows selected
+     * @param rows the rows to select
+     * @return the table with the selected rows
      */
-    public Table dropRows(IntArrayList rows) {
+    public Table selectRows(Collection<Integer> rows) {
       Table newTable = emptyCopy();
-      IntArrayList rows2 = new IntArrayList(rows);
-      IntArrayList allRows = new IntArrayList();
-      for (int i = 0; i < rowCount(); i++) {
-        allRows.add(i);
-      }
-      //rows to keep
-      allRows.removeAll(rows2);
-      Rows.copyRowsToTable(allRows, this, newTable);
+      Rows.copyRowsToTable(new IntArrayList(rows), this, newTable);
       return newTable;
 
+    }
+
+    /**
+     * Returns a table with the given rows selected
+     * @param start the first row to select
+     * @param end the last row to select
+     * @return the table with the selected rows
+     */
+    public Table selectRows(int start, int end) {
+      Table newTable = emptyCopy();
+      IntArrayList rowsToKeep = new IntArrayList();
+      for (int i = 0; i < rowCount(); i++) {
+        if (i >= start && i <= end) {
+          rowsToKeep.add(i);
+        }
+      }
+      Rows.copyRowsToTable(rowsToKeep, this, newTable);
+      return newTable;
+    }
+
+    /**
+     * Returns a table with the given rows dropped
+     * @param row the row to drop
+     * @return the table with the dropped rows
+     */
+    public Table dropRow(int row) {
+      return dropRows(ImmutableList.of(row));
     }
 
     /**
@@ -952,9 +778,33 @@ public class Table extends Relation implements IntIterable {
      * @param rows the rows to drop
      * @return the table with the dropped rows
      */
-    public Table dropRows(int... rows) {
-      IntArrayList rows2 = new IntArrayList(rows);
-      return dropRows(rows2);
+    public Table dropRows(Collection<Integer> rows) {
+      Table newTable = emptyCopy();
+      IntArrayList rowsToKeep = new IntArrayList();
+      for (int i = 0; i < rowCount(); i++) {
+        rowsToKeep.add(i);
+      }
+      rowsToKeep.removeAll(new IntArrayList(rows));
+      Rows.copyRowsToTable(rowsToKeep, this, newTable);
+      return newTable;
+    }
+
+    /**
+     * Returns a table with the given rows dropped
+     * @param start the first row to drop
+     * @param end the last row to drop
+     * @return the table with the dropped rows
+     */
+    public Table dropRows(int start, int end) {
+      Table newTable = emptyCopy();
+      IntArrayList rowsToKeep = new IntArrayList();
+      for (int i = 0; i < rowCount(); i++) {
+        if (i < start || i > end) {
+          rowsToKeep.add(i);
+        }
+      }
+      Rows.copyRowsToTable(rowsToKeep, this, newTable);
+      return newTable;
     }
 
     /**
@@ -982,8 +832,9 @@ public class Table extends Relation implements IntIterable {
      * Removes the given columns
      */
     @Override
-    public void removeColumns(Column... columns) {
+    public Table removeColumns(Column... columns) {
         columnList.removeAll(Arrays.asList(columns));
+        return this;
     }
 
     /**
@@ -1020,67 +871,35 @@ public class Table extends Relation implements IntIterable {
         columnList.retainAll(columns(columnNames));
     }
 
-    public Sum sum(String numericColumnName) {
-        return new Sum(this, numericColumnName);
+    public SummaryFunction sum(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, sum);
     }
-
-    public Mean mean(String numericColumnName) {
-        return new Mean(this, numericColumnName);
+    public SummaryFunction mean(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, mean);
     }
-
-    public Median median(String numericColumnName) {
-        return new Median(this, numericColumnName);
+    public SummaryFunction median(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, median);
     }
-
-    public Variance variance(String numericColumnName) {
-        return new Variance(this, numericColumnName);
+    public SummaryFunction variance(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, variance);
     }
-
-    public StandardDeviation stdDev(String numericColumnName) {
-        return new StandardDeviation(this, numericColumnName);
+    public SummaryFunction stdDev(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, stdDev);
     }
-
-    public Count count(String numericColumnName) {
-        return new Count(this, numericColumnName);
+    public SummaryFunction count(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, count);
     }
-
-    public Maximum max(String numericColumnName) {
-        return new Maximum(this, numericColumnName);
+    public SummaryFunction max(String numericColumnName) {
+        return new SummaryFunction(this, numericColumnName, max);
     }
-
-    public Minimum min(String numericColumnName) {
-      return new Minimum(this, numericColumnName);
-    }
-
-    /**
-     * @deprecated use min(String) instead
-     */
-    @Deprecated
-    public Minimum minimum(String numericColumnName) {
-        return new Minimum(this, numericColumnName);
+    public SummaryFunction min(String numericColumnName) {
+      return new SummaryFunction(this, numericColumnName, min);
     }
 
     public void append(Table tableToAppend) {
         for (Column column : columnList) {
             Column columnToAppend = tableToAppend.column(column.name());
             column.append(columnToAppend);
-        }
-    }
-
-    /**
-     * Exports this table as a CSV file with the name (and path) of the given file
-     *
-     * @param fileNameWithPath The name of the file to save to. By default, it writes to the working directory,
-     *                         but you can specify a different folder by providing the path (e.g. mydata/myfile.csv)
-     * @deprecated use write().csv() instead
-     */
-    @Deprecated
-    public void exportToCsv(String fileNameWithPath) {
-        try {
-            CsvWriter.write(this, fileNameWithPath);
-        } catch (IOException e) {
-            System.err.println("Unable to export table as CSV file");
-            e.printStackTrace();
         }
     }
 
@@ -1096,25 +915,20 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * Returns the result of applying the given function to the specified column
+     * Returns the result of applying the given aggregate function to the specified column
      *
      * @param numericColumnName The name of a numeric (integer, float, etc.) column in this table
-     * @param function          A numeric reduce function
+     * @param function          An aggregation function
      * @return the function result
      * @throws IllegalArgumentException if numericColumnName doesn't name a numeric column in this table
      */
-    public double reduce(String numericColumnName, NumericReduceFunction function) {
+    public double agg(String numericColumnName, AggregateFunction function) {
         Column column = column(numericColumnName);
-        return function.reduce(column.toDoubleArray());
+        return function.agg(column.toDoubleArray());
     }
 
-    public SummaryFunction summarize(String numericColumnName, NumericReduceFunction function) {
-        return new SummaryFunction(this, numericColumnName) {
-            @Override
-            public NumericReduceFunction function() {
-                return function;
-            }
-        };
+    public SummaryFunction summarize(String numericColumnName, AggregateFunction function) {
+        return new SummaryFunction(this, numericColumnName, function);
     }
 
     public Table countBy(CategoryColumn column) {

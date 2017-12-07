@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
@@ -90,9 +104,16 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         data = new IntArrayList(initialSize);
     }
 
-    public TimeColumn(String name, IntArrayList times) {
+    private TimeColumn(String name, IntArrayList times) {
         super(name);
         data = times;
+    }
+
+    public TimeColumn(String name, List<LocalTime> data) {
+      this(name);
+      for (LocalTime time : data) {
+        append(time);
+      }
     }
 
     public int size() {
@@ -276,13 +297,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
 
     @Override
     public void appendCell(String object) {
-        try {
-            appendInternal(convert(object));
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
-        }
+        appendInternal(convert(object));
     }
 
     public int getIntInternal(int index) {
@@ -471,6 +486,10 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
             bottom.add(PackedLocalTime.asLocalTime(values[i]));
         }
         return bottom;
+    }
+
+    public void set(int index, int value) {
+        data.add(index, value);
     }
 
     public IntIterator intIterator() {

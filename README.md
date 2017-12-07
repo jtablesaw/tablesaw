@@ -18,15 +18,16 @@ You can include tablesaw-core, which is the dataframe library itself, with:
     <dependency>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-core</artifactId>
-        <version>0.10.0</version>
+        <version>0.11.0</version>
     </dependency>
 
 You may also add dependencies for `tablesaw-plot` to use the plotting capability and `tablesaw-smile` to use the [Smile](https://github.com/haifengl/smile) machine learning integration.
 
 ### Documentation and support:
 
-Please see our documentation page: https://jtablesaw.github.io/tablesaw/ 
- 
+* Please see our documentation page: https://jtablesaw.github.io/tablesaw/ 
+* We also recommend trying Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html), which lets you experiment with Tablesaw in a more interactive manner. Get started by [installing BeakerX](http://beakerx.com/documentation) and trying [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
+
 ### Tablesaw features: 
 
 #### Data processing & transformation

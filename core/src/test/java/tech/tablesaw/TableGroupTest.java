@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw;
 
 import org.junit.Before;
@@ -50,7 +64,7 @@ public class TableGroupTest {
         Table t = table.sum("approval").by(splitColumnNames);
 
         // compare the sum of the original column with the sum of the sums of the group table
-        assertEquals(table.intColumn(1).sum(), Math.round(t.floatColumn(2).sum()));
+        assertEquals(table.intColumn(1).sum(), Math.round(t.doubleColumn(2).sum()));
         assertEquals(65, tables.size());
     }
 
@@ -67,6 +81,6 @@ public class TableGroupTest {
     public void testSumGroup() {
         Table groups = table.sum("approval").by("who");
         // compare the sum of the original column with the sum of the sums of the group table
-        assertEquals(table.intColumn(1).sum(), Math.round(groups.floatColumn(1).sum()));
+        assertEquals(table.intColumn(1).sum(), Math.round(groups.doubleColumn(1).sum()));
     }
 }

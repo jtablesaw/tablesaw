@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
 import com.google.common.base.Stopwatch;
@@ -34,7 +48,7 @@ public class DoubleColumnTest {
         table.addColumn(doubleColumn);
         table.addColumn(booleanColumn);
         for (int i = 0; i < 1_000_000_000; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
             booleanColumn.append(fairy.baseProducer().trueOrFalse());
         }
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -53,7 +67,7 @@ public class DoubleColumnTest {
 
         DoubleColumn doubleColumn = new DoubleColumn("test", 1_000_000_000);
         for (int i = 0; i < 1_000_000_000; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         Stopwatch stopwatch = Stopwatch.createStarted();
         System.out.println(doubleColumn.sum());
@@ -73,7 +87,7 @@ public class DoubleColumnTest {
         DoubleColumn doubleColumn = new DoubleColumn("test", 1_000_000_000);
         System.out.println("Adding doubles to column");
         for (int i = 0; i < 1_000_000_000; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         System.out.println("Sorting");
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -89,7 +103,7 @@ public class DoubleColumnTest {
         DoubleColumn doubleColumn = new DoubleColumn("test", size);
         table.addColumn(doubleColumn);
         for (int i = 0; i < size; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         Selection results = doubleColumn.isLessThan(.5f);
         int count = 0;
@@ -110,7 +124,7 @@ public class DoubleColumnTest {
         DoubleColumn doubleColumn = new DoubleColumn("test", size);
         table.addColumn(doubleColumn);
         for (int i = 0; i < size; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         Selection results = doubleColumn.isGreaterThan(.5f);
 
@@ -130,7 +144,7 @@ public class DoubleColumnTest {
         int records = 1_000_000;
         DoubleColumn doubleColumn = new DoubleColumn("test", records);
         for (int i = 0; i < records; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         doubleColumn.sortAscending();
         double last = Double.NEGATIVE_INFINITY;
@@ -147,7 +161,7 @@ public class DoubleColumnTest {
         records = 10;
         doubleColumn = new DoubleColumn("test", records);
         for (int i = 0; i < records; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         doubleColumn.sortDescending();
         last = Double.POSITIVE_INFINITY;
@@ -425,8 +439,8 @@ public class DoubleColumnTest {
 
     @Test
     public void testDifferencePositive() {
-        double[] originalValues = new double[]{32, 42, 40, 57, 52};
-        double[] expectedValues = new double[]{Double.NaN, 10, -2, 17, -5};
+        double[] originalValues = new double[]{ 32, 42, 40, 57, 52 };
+        double[] expectedValues = new double[]{ DoubleColumn.MISSING_VALUE, 10, -2, 17, -5 };
 
         DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
         for (double value : originalValues) {
@@ -436,18 +450,14 @@ public class DoubleColumnTest {
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
             double actual = difference.get(index);
-            if (index == 0) {
-                assertTrue("difference operation at index:" + index + " failed", Double.isNaN(actual));
-            } else {
-                assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0);
-            }
+            assertEquals("difference operation at index " + index + " failed", expectedValues[index], actual, 0);
         }
     }
 
     @Test
     public void testDifferenceNegative() {
-        double[] originalValues = new double[]{32, 42, 40, 57, 52};
-        double[] expectedValues = new double[]{Double.MAX_VALUE, Double.MIN_VALUE, -12, 117, 5};
+        double[] originalValues = new double[]{ 32, 42, 40, 57, 52 };
+        double[] expectedValues = new double[]{ Double.MAX_VALUE, Double.MIN_VALUE, -12, 117, 5 };
 
         DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
         for (double value : originalValues) {
@@ -457,11 +467,7 @@ public class DoubleColumnTest {
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
             double actual = difference.get(index);
-            if (index == 0) {
-                assertTrue("difference operation at index:" + index + " failed", Double.isNaN(actual));
-            } else {
-                assertNotEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0.0);
-            }
+            assertNotEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0.0);
         }
     }
 

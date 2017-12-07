@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
@@ -10,13 +24,13 @@ import it.unimi.dsi.fastutil.longs.LongArrays;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.LongBiPredicate;
 import tech.tablesaw.filtering.LongPredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.mapping.LongMapUtils;
-import tech.tablesaw.reducing.NumericReduceUtils;
 import tech.tablesaw.sorting.LongComparisonUtil;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
@@ -24,7 +38,7 @@ import tech.tablesaw.util.ReverseLongComparator;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import static tech.tablesaw.reducing.NumericReduceUtils.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -68,7 +82,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
       this(name, new LongArrayList(arr));
     }
 
-    public LongColumn(String name, LongArrayList data) {
+    private LongColumn(String name, LongArrayList data) {
         super(name);
         this.data = data;
     }
@@ -109,7 +123,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public void set(int index, long value) {
-        data.set(index, value);
+        data.add(index, value);
     }
 
     public Selection isLessThan(long i) {
@@ -233,7 +247,11 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
 
     @Override
     public String getString(int row) {
-        return String.valueOf(data.getLong(row));
+        long value = data.getLong(row);
+        if (value == MISSING_VALUE) {
+          return null;
+      }
+      return String.valueOf(value);
     }
 
     @Override
@@ -298,10 +316,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
             append(convert(object));
         } catch (NumberFormatException nfe) {
             throw new NumberFormatException(name() + ": " + nfe.getMessage());
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
         }
     }
 
@@ -321,82 +335,82 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
 
     // Reduce functions applied to the whole column
     public long sum() {
-        return Math.round(sum.reduce(toDoubleArray()));
+        return Math.round(sum.agg(toDoubleArray()));
     }
 
     public double product() {
-        return product.reduce(this);
+        return product.agg(this);
     }
 
     public double mean() {
-        return mean.reduce(this);
+        return mean.agg(this);
     }
 
     public double median() {
-        return median.reduce(this);
+        return median.agg(this);
     }
 
     public double quartile1() {
-        return quartile1.reduce(this);
+        return quartile1.agg(this);
     }
 
     public double quartile3() {
-        return quartile3.reduce(this);
+        return quartile3.agg(this);
     }
 
     public double percentile(double percentile) {
-        return NumericReduceUtils.percentile(this.toDoubleArray(), percentile);
+        return AggregateFunctions.percentile(this.toDoubleArray(), percentile);
     }
 
     public double range() {
-        return range.reduce(this);
+        return range.agg(this);
     }
 
     public double max() {
-        return Math.round(max.reduce(this));
+        return Math.round(max.agg(this));
     }
 
     public double min() {
-        return Math.round(min.reduce(this));
+        return Math.round(min.agg(this));
     }
 
     public double variance() {
-        return variance.reduce(this);
+        return variance.agg(this);
     }
 
     public double populationVariance() {
-        return populationVariance.reduce(this);
+        return populationVariance.agg(this);
     }
 
     public double standardDeviation() {
-        return stdDev.reduce(this);
+        return stdDev.agg(this);
     }
 
     public double sumOfLogs() {
-        return sumOfLogs.reduce(this);
+        return sumOfLogs.agg(this);
     }
 
     public double sumOfSquares() {
-        return sumOfSquares.reduce(this);
+        return sumOfSquares.agg(this);
     }
 
     public double geometricMean() {
-        return geometricMean.reduce(this);
+        return geometricMean.agg(this);
     }
 
     /**
      * Returns the quadraticMean, aka the root-mean-square, for all values in this column
      */
     public double quadraticMean() {
-        return quadraticMean.reduce(this);
+        return quadraticMean.agg(this);
     }
 
     public double kurtosis() {
-        return kurtosis.reduce(this);
+        return kurtosis.agg(this);
     }
 
     public double skewness() {
-        return skewness.reduce(this);
+        return skewness.agg(this);
     }
 
     public long firstElement() {

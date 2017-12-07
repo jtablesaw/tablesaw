@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.io;
 
 import com.google.common.base.Preconditions;
@@ -37,16 +51,17 @@ public final class TypeUtils {
 
     // These Strings will convert to true booleans
     public static final List<String> TRUE_STRINGS =
-            Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "1");
+            Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "True", "1");
     // A more restricted set of 'true' strings that is used for column type detection
     public static final List<String> TRUE_STRINGS_FOR_DETECTION =
-            Arrays.asList("T", "t", "Y", "y", "TRUE", "true");
+            Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "True");
     // These Strings will convert to false booleans
     public static final List<String> FALSE_STRINGS =
-            Arrays.asList("F", "f", "N", "n", "FALSE", "false", "0");
+            Arrays.asList("F", "f", "N", "n", "FALSE", "false", "False", "0");
     // A more restricted set of 'false' strings that is used for column type detection
     public static final List<String> FALSE_STRINGS_FOR_DETECTION =
-            Arrays.asList("F", "f", "N", "n", "FALSE", "false");
+            Arrays.asList("F", "f", "N", "n", "FALSE", "false", "False");
+
     // Formats that we accept in parsing dates from strings
     // TODO: Add more types, especially dates with month names spelled-out fully.
     private static final DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -114,6 +129,11 @@ public final class TypeUtils {
                 .toFormatter();
     }
 
+    private static final DateTimeFormatter dtTimef7 =
+            DateTimeFormatter.ofPattern("M/d/yy H:mm");
+    private static final DateTimeFormatter dtTimef8 =
+            DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a");
+
     // A formatter that handles date time formats defined above
     public static final DateTimeFormatter DATE_TIME_FORMATTER =
             new DateTimeFormatterBuilder()
@@ -124,6 +144,8 @@ public final class TypeUtils {
                     .appendOptional(dtTimef0)
                     .appendOptional(dtTimef5)
                     .appendOptional(dtTimef6)
+                    .appendOptional(dtTimef7)
+                    .appendOptional(dtTimef8)
                     .toFormatter();
     private static final DateTimeFormatter timef1 = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
     private static final DateTimeFormatter timef2 = DateTimeFormatter.ofPattern("hh:mm:ss a");

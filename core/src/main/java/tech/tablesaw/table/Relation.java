@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.table;
 
 import tech.tablesaw.api.BooleanColumn;
@@ -24,9 +38,9 @@ import java.util.List;
  */
 public abstract class Relation {
 
-    public abstract void addColumn(Column... cols);
+    public abstract Relation addColumn(Column... cols);
 
-    public abstract void setName(String name);
+    public abstract Relation setName(String name);
 
     public boolean isEmpty() {
         return rowCount() == 0;
@@ -36,21 +50,23 @@ public abstract class Relation {
         return rowCount() + " rows X " + columnCount() + " cols";
     }
 
-    public void removeColumn(int columnIndex) {
+    public Relation removeColumn(int columnIndex) {
         removeColumns(column(columnIndex));
+        return this;
     }
 
     /**
      * Removes the given columns from the receiver
      */
-    public abstract void removeColumns(Column... columns);
+    public abstract Relation removeColumns(Column... columns);
 
-    public void removeColumns(String... columnName) {
+    public Relation removeColumns(String... columnName) {
         Column[] cols = new Column[columnName.length];
         for (int i = 0; i < columnName.length; i++) {
             cols[i] = column(columnName[i]);
         }
         removeColumns(cols);
+        return this;
     }
 
     public abstract Table first(int nRows);
@@ -59,36 +75,26 @@ public abstract class Relation {
      * Returns the index of the column with the given columnName
      */
     public int columnIndex(String columnName) {
-        int columnIndex = -1;
         for (int i = 0; i < columnCount(); i++) {
             if (columnNames().get(i).equalsIgnoreCase(columnName)) {
-                columnIndex = i;
-                break;
+                return i;
             }
         }
-        if (columnIndex == -1) {
-            throw new IllegalArgumentException(String.format("Column %s is not present in table %s", columnName, name
-                    ()));
-        }
-        return columnIndex;
+        throw new IllegalArgumentException(String.format("Column %s is not present in table %s", columnName, name
+                ()));
     }
 
     /**
      * Returns the column with the given columnName, ignoring case
      */
     public Column column(String columnName) {
-        Column result = null;
         for (Column column : columns()) {
             String name = column.name().trim();
             if (name.equalsIgnoreCase(columnName)) {
-                result = column;
-                break;
+                return column;
             }
         }
-        if (result == null) {
-            throw new IllegalStateException(String.format("Column %s does not exist in table %s", columnName, name()));
-        }
-        return result;
+        throw new IllegalStateException(String.format("Column %s does not exist in table %s", columnName, name()));
     }
 
     /**
@@ -122,7 +128,7 @@ public abstract class Relation {
     /**
      * Returns a String representing the value found at column index c and row index r
      */
-    public abstract String get(int c, int r);
+    public abstract String get(int r, int c);
 
     /**
      * Returns the name of this relation
@@ -161,24 +167,20 @@ public abstract class Relation {
         return widths;
     }
 
-    public String toString(int rowLimit) {
+    @Override
+    public String toString() {
+      return "Table " + name() + ": Size = " + rowCount() + " x " + columnCount();
+    }
+
+    public String print(int rowLimit) {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       DataFramePrinter printer = new DataFramePrinter(rowLimit, baos);
       printer.print(this);
       return new String(baos.toByteArray());
     }
-    
-    @Override
-    public String toString() {
-      return toString(50);
-    }
 
-    /**
-     * @deprecated call toString instead
-     */
-    @Deprecated
     public String print() {
-        return toString();
+      return print(20);
     }
 
     public Table structure() {

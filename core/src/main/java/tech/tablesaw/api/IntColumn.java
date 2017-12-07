@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
@@ -8,13 +22,13 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.IntBiPredicate;
 import tech.tablesaw.filtering.IntPredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.mapping.IntMapUtils;
-import tech.tablesaw.reducing.NumericReduceUtils;
 import tech.tablesaw.sorting.IntComparisonUtil;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
@@ -22,9 +36,7 @@ import tech.tablesaw.util.ReverseIntComparator;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import org.jetbrains.annotations.NotNull;
-
-import static tech.tablesaw.reducing.NumericReduceUtils.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -108,7 +120,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public void set(int index, int value) {
-        data.set(index, value);
+        data.add(index, value);
     }
 
     public Selection isLessThan(int i) {
@@ -193,14 +205,14 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     @Override
     public int countUnique() {
         Selection selection = new BitmapBackedSelection();
-        data.forEach(selection::add);
+        data.forEach((int i) -> selection.add(i));
         return selection.size();
     }
 
     @Override
     public IntColumn unique() {
         Selection selection = new BitmapBackedSelection();
-        data.forEach(selection::add);
+        data.forEach((int i) -> selection.add(i));
         return new IntColumn(name() + " Unique values", IntArrayList.wrap(selection.toArray()));
     }
 
@@ -210,7 +222,11 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
     @Override
     public String getString(int row) {
-        return String.valueOf(data.getInt(row));
+        int value = data.getInt(row);
+        if (value == MISSING_VALUE) {
+          return null;
+      }
+      return String.valueOf(value);
     }
 
     @Override
@@ -256,13 +272,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
     @Override
     public void appendCell(String object) {
-        try {
-            append(convert(object));
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
-        }
+        append(convert(object));
     }
 
     public int get(int index) {
@@ -288,82 +298,82 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
     // Reduce functions applied to the whole column
     public long sum() {
-        return Math.round(sum.reduce(toDoubleArray()));
+        return Math.round(sum.agg(toDoubleArray()));
     }
 
     public double product() {
-        return product.reduce(this);
+        return product.agg(this);
     }
 
     public double mean() {
-        return mean.reduce(this);
+        return mean.agg(this);
     }
 
     public double median() {
-        return median.reduce(this);
+        return median.agg(this);
     }
 
     public double quartile1() {
-        return quartile1.reduce(this);
+        return quartile1.agg(this);
     }
 
     public double quartile3() {
-        return quartile3.reduce(this);
+        return quartile3.agg(this);
     }
 
     public double percentile(double percentile) {
-        return NumericReduceUtils.percentile(this.toDoubleArray(), percentile);
+        return AggregateFunctions.percentile(this.toDoubleArray(), percentile);
     }
 
     public double range() {
-        return range.reduce(this);
+        return range.agg(this);
     }
 
     public double max() {
-        return (int) Math.round(max.reduce(this));
+        return (int) Math.round(max.agg(this));
     }
 
     public double min() {
-        return (int) Math.round(min.reduce(this));
+        return (int) Math.round(min.agg(this));
     }
 
     public double variance() {
-        return variance.reduce(this);
+        return variance.agg(this);
     }
 
     public double populationVariance() {
-        return populationVariance.reduce(this);
+        return populationVariance.agg(this);
     }
 
     public double standardDeviation() {
-        return stdDev.reduce(this);
+        return stdDev.agg(this);
     }
 
     public double sumOfLogs() {
-        return sumOfLogs.reduce(this);
+        return sumOfLogs.agg(this);
     }
 
     public double sumOfSquares() {
-        return sumOfSquares.reduce(this);
+        return sumOfSquares.agg(this);
     }
 
     public double geometricMean() {
-        return geometricMean.reduce(this);
+        return geometricMean.agg(this);
     }
 
     /**
      * Returns the quadraticMean, aka the root-mean-square, for all values in this column
      */
     public double quadraticMean() {
-        return quadraticMean.reduce(this);
+        return quadraticMean.agg(this);
     }
 
     public double kurtosis() {
-        return kurtosis.reduce(this);
+        return kurtosis.agg(this);
     }
 
     public double skewness() {
-        return skewness.reduce(this);
+        return skewness.agg(this);
     }
 
     // boolean functions
@@ -597,7 +607,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return bottom;
     }
 
-    @NotNull
     @Override
     public IntIterator iterator() {
         return data.iterator();

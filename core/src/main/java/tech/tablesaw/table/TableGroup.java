@@ -1,12 +1,26 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.table;
 
 import com.google.common.base.Preconditions;
 
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.reducing.NumericReduceFunction;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -106,7 +120,7 @@ public class TableGroup implements Iterable<SubTable> {
         return subTables.size();
     }
 
-    public Table reduce(String numericColumnName, NumericReduceFunction function) {
+    public Table reduce(String numericColumnName, AggregateFunction function) {
         Preconditions.checkArgument(!subTables.isEmpty());
         Table t = Table.create(original.name() + " summary");
         CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
@@ -115,7 +129,7 @@ public class TableGroup implements Iterable<SubTable> {
         t.addColumn(resultColumn);
 
         for (SubTable subTable : subTables) {
-            double result = subTable.reduce(numericColumnName, function);
+            double result = subTable.agg(numericColumnName, function);
             groupColumn.add(subTable.name().replace(SPLIT_STRING, " * "));
             resultColumn.append((float) result);
         }

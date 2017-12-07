@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
@@ -81,7 +95,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         this(name, new ByteArrayList(initialSize));
     }
 
-    public BooleanColumn(String name, ByteArrayList values) {
+    private BooleanColumn(String name, ByteArrayList values) {
         super(name);
         data = values;
     }
@@ -242,13 +256,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     public void appendCell(String object) {
-        try {
-            append(convert(object));
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
-        }
+        append(convert(object));
     }
 
     /**
@@ -347,7 +355,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     public void set(int i, boolean b) {
-        data.set(i, b ? (byte) 1 : (byte) 0);
+        data.add(i, b ? (byte) 1 : (byte) 0);
     }
 
     @Override

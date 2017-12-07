@@ -1,3 +1,17 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
@@ -10,19 +24,19 @@ import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.DoubleBiPredicate;
 import tech.tablesaw.filtering.DoublePredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.reducing.NumericReduceUtils;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.columns.DoubleColumnUtils.*;
-import static tech.tablesaw.reducing.NumericReduceUtils.*;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -82,7 +96,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
       this(name, new DoubleArrayList(arr));
     }
 
-    public DoubleColumn(String name, DoubleArrayList data) {
+    private DoubleColumn(String name, DoubleArrayList data) {
         super(name);
         this.data = data;
     }
@@ -168,7 +182,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
             doubles.add(data.getDouble(i));
         }
         DoubleColumn column = new DoubleColumn(name() + " Unique values", doubles.size());
-        doubles.forEach(column::append);
+        doubles.forEach((double i) -> column.append(i));
         return column;
     }
 
@@ -190,84 +204,84 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     // Reduce functions applied to the whole column
     public double sum() {
-        return sum.reduce(this);
+        return sum.agg(this);
     }
 
     public double product() {
-        return product.reduce(this);
+        return product.agg(this);
     }
 
     public double mean() {
-        return mean.reduce(this);
+        return mean.agg(this);
     }
 
     public double median() {
-        return median.reduce(this);
+        return median.agg(this);
     }
 
     public double quartile1() {
-        return quartile1.reduce(this);
+        return quartile1.agg(this);
     }
 
     public double quartile3() {
-        return quartile3.reduce(this);
+        return quartile3.agg(this);
     }
 
     public double percentile(double percentile) {
-        return NumericReduceUtils.percentile(this.toDoubleArray(), percentile);
+        return AggregateFunctions.percentile(this.toDoubleArray(), percentile);
     }
 
     public double range() {
-        return range.reduce(this);
+        return range.agg(this);
     }
 
     public double max() {
-        return max.reduce(this);
+        return max.agg(this);
     }
 
     public double min() {
-        return min.reduce(this);
+        return min.agg(this);
     }
 
     public double variance() {
-        return variance.reduce(this);
+        return variance.agg(this);
     }
 
     public double populationVariance() {
-        return populationVariance.reduce(this);
+        return populationVariance.agg(this);
     }
 
     public double standardDeviation() {
-        return stdDev.reduce(this);
+        return stdDev.agg(this);
     }
 
     public double sumOfLogs() {
-        return sumOfLogs.reduce(this);
+        return sumOfLogs.agg(this);
     }
 
     // Predicate  functions
 
     public double sumOfSquares() {
-        return sumOfSquares.reduce(this);
+        return sumOfSquares.agg(this);
     }
 
     public double geometricMean() {
-        return geometricMean.reduce(this);
+        return geometricMean.agg(this);
     }
 
     /**
      * Returns the quadraticMean, aka the root-mean-square, for all values in this column
      */
     public double quadraticMean() {
-        return quadraticMean.reduce(this);
+        return quadraticMean.agg(this);
     }
 
     public double kurtosis() {
-        return kurtosis.reduce(this);
+        return kurtosis.agg(this);
     }
 
     public double skewness() {
-        return skewness.reduce(this);
+        return skewness.agg(this);
     }
 
     /**
@@ -331,7 +345,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     @Override
     public String getString(int row) {
-        return String.valueOf(data.getDouble(row));
+      double value = data.getDouble(row);
+      if (Double.isNaN(value)) {
+          return null;
+      }
+      return String.valueOf(value);
     }
 
     @Override
@@ -377,16 +395,14 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     /**
      * Returns the count of missing values in this column
-     * <p>
-     * Implementation note: We use NaN for missing, so we can't compare against the MISSING_VALUE and use val != val
-     * instead
      */
     @Override
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
             double f = get(i);
-            if (f != f) {
+            // We use NaN for missing, so we can't compare against the MISSING_VALUE
+            if (Double.isNaN(f)) {
                 count++;
             }
         }
@@ -397,12 +413,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public void appendCell(String object) {
         try {
             append(convert(object));
-        } catch (NumberFormatException nfe) {
-            throw new NumberFormatException(name() + ": " + nfe.getMessage());
-        } catch (NullPointerException e) {
-            throw new RuntimeException(name() + ": "
-                    + String.valueOf(object) + ": "
-                    + e.getMessage());
+        } catch (NumberFormatException e) {
+            throw new NumberFormatException(name() + ": " + e.getMessage());
         }
     }
 
@@ -624,7 +636,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     public void set(int r, double value) {
-        data.set(r, value);
+        data.add(r, value);
     }
 
     // TODO(lwhite): Reconsider the implementation of this functionality to allow user to provide a specific max error.
@@ -755,18 +767,12 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         returnValue.append(DoubleColumn.MISSING_VALUE);
         for (int current = 0; current < this.size(); current++) {
             if (current + 1 < this.size()) {
-
-            /*
-             * check for missing values:
-             * note that for doubles you test val != val,
-             * since a missing double is encoded as Double.NaN and nothing is equal to NaN.
-             */
-
                 double currentValue = get(current);
                 double nextValue = get(current + 1);
-
-                if (currentValue != currentValue || nextValue != nextValue) {
-                    returnValue.append(Double.NaN);
+                // check for missing values
+                // equality doesn't work with NaN, which is how missing value is encoded
+                if (Double.isNaN(currentValue) || Double.isNaN(nextValue)) {
+                    returnValue.append(MISSING_VALUE);
                 } else {
                     returnValue.append(nextValue - currentValue);
                 }
