@@ -36,10 +36,11 @@ import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 
-import static tech.tablesaw.columns.BooleanColumnUtils.*;
-
 import java.util.Iterator;
 import java.util.Map;
+
+import static tech.tablesaw.columns.BooleanColumnUtils.isMissing;
+import static tech.tablesaw.columns.BooleanColumnUtils.isNotMissing;
 
 /**
  * A column in a base table that contains float values
@@ -386,11 +387,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         builder.append(title());
         for (byte next : data) {
             if (next == (byte) 0) {
-                builder.append(String.valueOf(false));
+                builder.append(false);
             } else if (next == (byte) 1) {
-                builder.append(String.valueOf(true));
+                builder.append(true);
             } else {
-                builder.append(String.valueOf("NA"));
+                builder.append("NA");
             }
             builder.append('\n');
         }
@@ -513,4 +514,16 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BooleanColumn that = (BooleanColumn) o;
+        return java.util.Objects.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(data);
+    }
 }
