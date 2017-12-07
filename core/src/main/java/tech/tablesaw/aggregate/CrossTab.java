@@ -31,6 +31,8 @@ import java.time.LocalDate;
  */
 public final class CrossTab {
 
+    private static final String LABEL_COLUMN_NAME = "[labels]";
+
     public static Table xCount(Table table, Column column1, Column column2) {
         if (column1.type() == ColumnType.FLOAT || column2.type() == ColumnType.FLOAT) {
             throw new UnsupportedOperationException("X-tabs on FLOAT columns are not supported");
@@ -51,7 +53,7 @@ public final class CrossTab {
     public static Table xTabCount(Table table, Column column1, Column column2) {
 
         Table t = Table.create("Crosstab Counts: " + column1.name() + " x " + column2.name());
-        t.addColumn(new CategoryColumn(""));
+        t.addColumn(new CategoryColumn(LABEL_COLUMN_NAME));
 
         Table temp = table.sortOn(column1.name(), column2.name());
 
@@ -115,7 +117,7 @@ public final class CrossTab {
     public static Table xTabCount(Table table, DateColumn column1, Column column2) {
 
         Table t = Table.create("CrossTab Counts");
-        t.addColumn(new CategoryColumn("value"));
+        t.addColumn(new CategoryColumn(LABEL_COLUMN_NAME));
         Table temp = table.sortOn(column1.name(), column2.name());
 
         int colIndex2 = table.columnIndex(column2.name());
@@ -193,7 +195,7 @@ public final class CrossTab {
   public static Table tablePercents(Table xTabCounts) {
 
     Table pctTable = new Table("Proportions");
-    CategoryColumn labels = new CategoryColumnFromCsv("labels");
+    CategoryColumn labels = new CategoryColumnFromCsv(LABEL_COLUMN_NAME);
 
     pctTable.addColumn(labels);
 
@@ -224,7 +226,7 @@ public final class CrossTab {
     public static Table rowPercents(Table xTabCounts) {
 
         Table pctTable = Table.create("Crosstab Row Proportions: ");
-        CategoryColumn labels = new CategoryColumn("");
+        CategoryColumn labels = new CategoryColumn(LABEL_COLUMN_NAME);
 
         pctTable.addColumn(labels);
 
@@ -254,7 +256,7 @@ public final class CrossTab {
     public static Table tablePercents(Table xTabCounts) {
 
         Table pctTable = Table.create("Crosstab Table Proportions: ");
-        CategoryColumn labels = new CategoryColumn("");
+        CategoryColumn labels = new CategoryColumn(LABEL_COLUMN_NAME);
 
         pctTable.addColumn(labels);
 
@@ -284,7 +286,7 @@ public final class CrossTab {
     public static Table columnPercents(Table xTabCounts) {
 
         Table pctTable = Table.create("Crosstab Column Proportions: ");
-        CategoryColumn labels = new CategoryColumn("");
+        CategoryColumn labels = new CategoryColumn(LABEL_COLUMN_NAME);
 
         pctTable.addColumn(labels);
 
