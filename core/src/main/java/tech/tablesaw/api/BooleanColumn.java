@@ -38,6 +38,7 @@ import tech.tablesaw.util.Selection;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 import static tech.tablesaw.columns.BooleanColumnUtils.isMissing;
 import static tech.tablesaw.columns.BooleanColumnUtils.isNotMissing;
@@ -118,6 +119,14 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
             data.set(i, b);
         }
         this.data = data;
+    }
+
+    public BooleanColumn(String name, boolean[] array) {
+        super(name);
+        this.data = new ByteArrayList(array.length);
+        for (boolean b : array) {
+            append(b);
+        }
     }
 
     public static byte convert(String stringValue) {
@@ -519,11 +528,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BooleanColumn that = (BooleanColumn) o;
-        return java.util.Objects.equals(data, that.data);
+        return Objects.equals(data, that.data);
     }
 
     @Override
     public int hashCode() {
-        return java.util.Objects.hash(data);
+        return Objects.hash(data);
     }
 }

@@ -6,33 +6,20 @@ import tech.tablesaw.api.BooleanColumn;
 import static org.junit.Assert.assertEquals;
 
 public class BooleanMapUtilsTest {
+    private BooleanColumn singleFalse = new BooleanColumn("", new boolean[]{ false });
+    private BooleanColumn singleTrue = new BooleanColumn("", new boolean[]{ true });
+
     @Test
-    public void testAdd() {
-        BooleanColumn booleanColumn = new BooleanColumn("");
-        booleanColumn.append(true);
+    public void testAnd() {
+        BooleanColumn actual = singleTrue.and(singleFalse);
 
-        BooleanColumn booleanColumn2 = new BooleanColumn("");
-        booleanColumn2.append(false);
-
-        BooleanColumn actual = booleanColumn.and(booleanColumn2);
-
-        BooleanColumn expected = new BooleanColumn("");
-        expected.append(false);
-        assertEquals(expected, actual);
+        assertEquals(singleFalse, actual);
     }
 
     @Test
     public void testOr() {
-        BooleanColumn booleanColumn = new BooleanColumn("");
-        booleanColumn.append(false);
+        BooleanColumn actual = singleFalse.or(singleTrue);
 
-        BooleanColumn booleanColumn2 = new BooleanColumn("");
-        booleanColumn2.append(true);
-
-        BooleanColumn actual = booleanColumn.or(booleanColumn2);
-
-        BooleanColumn expected = new BooleanColumn("");
-        expected.append(true);
-        assertEquals(expected, actual);
+        assertEquals(singleTrue, actual);
     }
 }
