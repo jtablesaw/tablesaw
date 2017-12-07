@@ -67,17 +67,13 @@ public class CsvReader {
 
     private static Predicate<String> isBoolean = s
             -> TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
-    private static Predicate<String> isLong = new Predicate<String>() {
-
-        @Override
-        public boolean test(@Nullable String s) {
-            try {
-                Long.parseLong(s);
-                return true;
-            } catch (NumberFormatException e) {
-                // it's all part of the plan
-                return false;
-            }
+    private static Predicate<String> isLong = s -> {
+        try {
+            Long.parseLong(s);
+            return true;
+        } catch (NumberFormatException e) {
+            // it's all part of the plan
+            return false;
         }
     };
     private static Predicate<String> isInteger = s -> {
@@ -430,7 +426,7 @@ public class CsvReader {
             while ((nextLine = reader.readNext()) != null) {
                 // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
                 if (rowCount == 0) {
-                    for (String field : nextLine) {
+                    for (int j = 0; j < nextLine.length; j++) {
                         columnData.add(new ArrayList<>());
                     }
                 }
