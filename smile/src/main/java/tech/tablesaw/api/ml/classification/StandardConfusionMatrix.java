@@ -101,9 +101,9 @@ public class StandardConfusionMatrix implements ConfusionMatrix {
         int misses = 0;
         for (Table.Cell<Integer, Integer, Integer> cell : table.cellSet()) {
             if (cell.getRowKey().equals(cell.getColumnKey())) {
-                hits = hits + (int) cell.getValue();
+                hits = hits + cell.getValue();
             } else {
-                misses = misses + (int) cell.getValue();
+                misses = misses + cell.getValue();
             }
         }
         return hits / ((hits + misses) * 1.0);

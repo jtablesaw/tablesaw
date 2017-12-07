@@ -48,7 +48,7 @@ public class DoubleColumnTest {
         table.addColumn(doubleColumn);
         table.addColumn(booleanColumn);
         for (int i = 0; i < 1_000_000_000; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
             booleanColumn.append(fairy.baseProducer().trueOrFalse());
         }
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -67,7 +67,7 @@ public class DoubleColumnTest {
 
         DoubleColumn doubleColumn = new DoubleColumn("test", 1_000_000_000);
         for (int i = 0; i < 1_000_000_000; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         Stopwatch stopwatch = Stopwatch.createStarted();
         System.out.println(doubleColumn.sum());
@@ -87,7 +87,7 @@ public class DoubleColumnTest {
         DoubleColumn doubleColumn = new DoubleColumn("test", 1_000_000_000);
         System.out.println("Adding doubles to column");
         for (int i = 0; i < 1_000_000_000; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         System.out.println("Sorting");
         Stopwatch stopwatch = Stopwatch.createStarted();
@@ -103,7 +103,7 @@ public class DoubleColumnTest {
         DoubleColumn doubleColumn = new DoubleColumn("test", size);
         table.addColumn(doubleColumn);
         for (int i = 0; i < size; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         Selection results = doubleColumn.isLessThan(.5f);
         int count = 0;
@@ -124,7 +124,7 @@ public class DoubleColumnTest {
         DoubleColumn doubleColumn = new DoubleColumn("test", size);
         table.addColumn(doubleColumn);
         for (int i = 0; i < size; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         Selection results = doubleColumn.isGreaterThan(.5f);
 
@@ -144,7 +144,7 @@ public class DoubleColumnTest {
         int records = 1_000_000;
         DoubleColumn doubleColumn = new DoubleColumn("test", records);
         for (int i = 0; i < records; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         doubleColumn.sortAscending();
         double last = Double.NEGATIVE_INFINITY;
@@ -161,7 +161,7 @@ public class DoubleColumnTest {
         records = 10;
         doubleColumn = new DoubleColumn("test", records);
         for (int i = 0; i < records; i++) {
-            doubleColumn.append((double) Math.random());
+            doubleColumn.append(Math.random());
         }
         doubleColumn.sortDescending();
         last = Double.POSITIVE_INFINITY;

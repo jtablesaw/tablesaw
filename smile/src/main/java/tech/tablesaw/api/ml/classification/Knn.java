@@ -66,8 +66,8 @@ public class Knn extends AbstractClassifier {
         int[] predictedLabels = new int[predictors[0].size()];
         for (int row = 0; row < predictors[0].size(); row++) {
             double[] data = new double[predictors.length];
-            for (int col = 0; col < predictors.length; col++) {
-                data[row] = predictors[col].getFloat(row);
+            for (NumericColumn predictor : predictors) {
+                data[row] = predictor.getFloat(row);
             }
             predictedLabels[row] = classifierModel.predict(data);
         }

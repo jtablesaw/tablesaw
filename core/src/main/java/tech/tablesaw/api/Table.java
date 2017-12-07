@@ -449,8 +449,8 @@ public class Table extends Relation implements IntIterable {
         Selection table1Selection = new BitmapBackedSelection();
 
         int[] table1Records = generateUniformBitmap(table1Count, rowCount());
-        for (int i = 0; i < table1Records.length; i++) {
-            table1Selection.add(table1Records[i]);
+        for (int table1Record : table1Records) {
+            table1Selection.add(table1Record);
         }
         table2Selection.andNot(table1Selection);
         tables[0] = selectWhere(table1Selection);
@@ -512,13 +512,13 @@ public class Table extends Relation implements IntIterable {
     public Table sortOn(String... columnNames) {
 
         Sort key = null;
-        Order order;
         List<String> names = new ArrayList<>();
         for (String name : columnNames()) {
             names.add(name.toUpperCase());
         }
 
         for (String columnName : columnNames) {
+            Order order;
             if (names.contains(columnName.toUpperCase())) {
                 // the column name has not been annotated with a prefix.
                 order = Order.ASCEND;

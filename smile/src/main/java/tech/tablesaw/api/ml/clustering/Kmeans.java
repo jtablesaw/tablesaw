@@ -87,8 +87,8 @@ public class Kmeans {
         CategoryColumn labelColumn = new CategoryColumn("Cluster");
         table.addColumn(labelColumn);
 
-        for (int i = 0; i < inputColumns.length; i++) {
-            FloatColumn centroid = new FloatColumn(inputColumns[i].name());
+        for (NumericColumn inputColumn : inputColumns) {
+            FloatColumn centroid = new FloatColumn(inputColumn.name());
             table.addColumn(centroid);
         }
 
