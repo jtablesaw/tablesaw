@@ -50,6 +50,7 @@ import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
+import tech.tablesaw.join.DataFrameJoiner;
 import tech.tablesaw.sorting.Sort;
 import tech.tablesaw.sorting.Sort.Order;
 import tech.tablesaw.store.StorageManager;
@@ -957,6 +958,10 @@ public class Table extends Relation implements IntIterable {
             }
         }
         return row;
+    }
+
+    public DataFrameJoiner join(String columnName) {
+      return new DataFrameJoiner(this, columnName);
     }
 
     @Override

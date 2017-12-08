@@ -16,7 +16,16 @@ package tech.tablesaw.store;
 
 import com.google.gson.Gson;
 
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 
 /**
@@ -93,4 +102,30 @@ public class ColumnMetadata {
     public int getSize() {
         return size;
     }
+    
+    public Column createColumn() {
+      switch (getType()) {
+        case FLOAT:
+          return new FloatColumn(this);
+        case INTEGER:
+          return new IntColumn(this);
+        case BOOLEAN:
+          return new BooleanColumn(this);
+        case LOCAL_DATE:
+          return new DateColumn(this);
+        case LOCAL_TIME:
+          return new TimeColumn(this);
+        case LOCAL_DATE_TIME:
+          return new DateTimeColumn(this);
+        case CATEGORY:
+          return new CategoryColumn(this);
+        case SHORT_INT:
+          return new ShortColumn(this);
+        case LONG_INT:
+          return new LongColumn(this);
+        default:
+            throw new IllegalStateException("Unhandled column type writing columns");
+      }
+    }
+    
 }

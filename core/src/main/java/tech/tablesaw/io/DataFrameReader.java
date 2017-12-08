@@ -35,8 +35,12 @@ public class DataFrameReader {
     return csv(CsvReadOptions.builder(file));
   }
 
-  public Table csv(String contents, String tableName) throws IOException {
-    return csv(new StringReader(contents), tableName);
+  public Table csv(String contents, String tableName) {
+    try {
+      return csv(new StringReader(contents), tableName);
+    }  catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   public Table csv(File file) throws IOException {
