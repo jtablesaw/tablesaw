@@ -36,10 +36,12 @@ import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 
-import static tech.tablesaw.columns.BooleanColumnUtils.*;
-
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
+
+import static tech.tablesaw.columns.BooleanColumnUtils.isMissing;
+import static tech.tablesaw.columns.BooleanColumnUtils.isNotMissing;
 
 /**
  * A column in a base table that contains float values
@@ -117,6 +119,14 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
             data.set(i, b);
         }
         this.data = data;
+    }
+
+    public BooleanColumn(String name, boolean[] array) {
+        super(name);
+        this.data = new ByteArrayList(array.length);
+        for (boolean b : array) {
+            append(b);
+        }
     }
 
     public static byte convert(String stringValue) {
@@ -386,11 +396,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         builder.append(title());
         for (byte next : data) {
             if (next == (byte) 0) {
-                builder.append(String.valueOf(false));
+                builder.append(false);
             } else if (next == (byte) 1) {
-                builder.append(String.valueOf(true));
+                builder.append(true);
             } else {
-                builder.append(String.valueOf("NA"));
+                builder.append("NA");
             }
             builder.append('\n');
         }
@@ -513,4 +523,16 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BooleanColumn that = (BooleanColumn) o;
+        return Objects.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(data);
+    }
 }

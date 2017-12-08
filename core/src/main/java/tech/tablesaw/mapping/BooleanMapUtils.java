@@ -37,7 +37,6 @@ public interface BooleanMapUtils extends Column {
                 for (BooleanColumn booleanColumn : columns) {
                     result = booleanColumn.get(i);
                     if (!result) {
-                        newColumn.append(false);
                         break;
                     }
                 }
@@ -60,7 +59,6 @@ public interface BooleanMapUtils extends Column {
                 for (BooleanColumn booleanColumn : columns) {
                     result = booleanColumn.get(i);
                     if (result) {
-                        newColumn.append(true);
                         break;
                     }
                 }
