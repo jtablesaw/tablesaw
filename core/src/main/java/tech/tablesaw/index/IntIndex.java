@@ -100,7 +100,9 @@ public class IntIndex {
     public Selection get(int value) {
         Selection selection = new BitmapBackedSelection();
         IntArrayList list = index.get(value);
-        addAllToSelection(list, selection);
+        if (list != null) {
+          addAllToSelection(list, selection);
+        }
         return selection;
     }
 

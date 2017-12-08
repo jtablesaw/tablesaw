@@ -80,7 +80,9 @@ public class LongIndex {
     public Selection get(long value) {
         Selection selection = new BitmapBackedSelection();
         IntArrayList list = index.get(value);
-        addAllToSelection(list, selection);
+        if (list != null) {
+          addAllToSelection(list, selection);
+        }
         return selection;
     }
 
