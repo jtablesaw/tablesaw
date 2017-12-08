@@ -1,13 +1,19 @@
 package tech.tablesaw.join;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import com.google.common.collect.Streams;
 
 import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.index.DateIndex;
+import tech.tablesaw.index.DateTimeIndex;
+import tech.tablesaw.index.TimeIndex;
 
 public class DataFrameJoiner {
 
@@ -20,23 +26,40 @@ public class DataFrameJoiner {
   }
 
   public Table inner(Table table2, String col2Name) {
-    DateIndex index;
+    Table result = emptyTableFromColumns(table, table2, col2Name);
     if (column instanceof DateColumn) {
-      index = new DateIndex(table2.dateColumn(col2Name));
+      DateIndex index = new DateIndex(table2.dateColumn(col2Name));
+      DateColumn col1 = (DateColumn) column;
+      for (int i = 0; i < col1.size(); i++) {
+        LocalDate value = col1.get(i);
+        Table table1Rows = table.selectRow(i);
+        Table table2Rows = table2.selectWhere(index.get(value));
+        table2Rows.removeColumns(col2Name);
+        crossProduct(result, table1Rows, table2Rows);
+      }
+    } else if (column instanceof DateTimeColumn) {
+      DateTimeIndex index = new DateTimeIndex(table2.dateTimeColumn(col2Name));
+      DateTimeColumn col1 = (DateTimeColumn) column;
+      for (int i = 0; i < col1.size(); i++) {
+        LocalDateTime value = col1.get(i);
+        Table table1Rows = table.selectRow(i);
+        Table table2Rows = table2.selectWhere(index.get(value));
+        table2Rows.removeColumns(col2Name);
+        crossProduct(result, table1Rows, table2Rows);
+      }
+    } else if (column instanceof TimeColumn) {
+      TimeIndex index = new TimeIndex(table2.timeColumn(col2Name));
+      TimeColumn col1 = (TimeColumn) column;
+      for (int i = 0; i < col1.size(); i++) {
+        LocalTime value = col1.get(i);
+        Table table1Rows = table.selectRow(i);
+        Table table2Rows = table2.selectWhere(index.get(value));
+        table2Rows.removeColumns(col2Name);
+        crossProduct(result, table1Rows, table2Rows);
+      }
     } else {
       throw new IllegalArgumentException(
-          "Only joining on date columns is supported so far");
-    }
-
-    Table result = emptyTableFromColumns(table, table2, col2Name);
-
-    DateColumn col1 = (DateColumn) column;
-    for (int i = 0; i < col1.size(); i++) {
-      LocalDate date = col1.get(i);
-      Table table1Rows = table.selectRow(i);
-      Table table2Rows = table2.selectWhere(index.get(date));
-      table2Rows.removeColumns(col2Name);
-      crossProduct(result, table1Rows, table2Rows);
+          "Only joining on date-like columns is supported so far");
     }
 
     return result;
