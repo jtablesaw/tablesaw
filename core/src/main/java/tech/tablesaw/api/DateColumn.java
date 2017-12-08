@@ -235,12 +235,18 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
             return null;
         }
 
-        int max = getIntInternal(0);
+        Integer max = null;
         for (int aData : data) {
-            max = (max > aData) ? max : aData;
+            if (DateColumn.MISSING_VALUE != aData) {
+                if (max == null) {
+                    max = aData;
+                } else {
+                    max = (max > aData) ? max : aData;
+                }
+            }
         }
 
-        if (DateColumn.MISSING_VALUE == max) {
+        if (max == null) {
             return null;
         }
         return PackedLocalDate.asLocalDate(max);
@@ -251,11 +257,17 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
             return null;
         }
 
-        int min = getIntInternal(0);
+        Integer min = null;
         for (int aData : data) {
-            min = (min < aData) ? min : aData;
+            if (DateColumn.MISSING_VALUE != aData) {
+                if (min == null) {
+                    min = aData;
+                } else {
+                    min = (min < aData) ? min : aData;
+                }
+            }
         }
-        if (DateColumn.MISSING_VALUE == min) {
+        if (min == null) {
             return null;
         }
         return PackedLocalDate.asLocalDate(min);
