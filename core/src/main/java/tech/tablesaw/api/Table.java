@@ -37,7 +37,6 @@ import org.apache.commons.lang3.RandomUtils;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
@@ -739,7 +738,7 @@ public class Table extends Relation implements IntIterable {
      * @param row the row to select
      * @return the table with the selected rows
      */
-    public Table seclectRow(int row) {
+    public Table selectRow(int row) {
       return selectRows(row, row);
     }
     
