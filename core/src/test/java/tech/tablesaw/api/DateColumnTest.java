@@ -16,6 +16,7 @@ package tech.tablesaw.api;
 
 import org.junit.Before;
 import org.junit.Test;
+import tech.tablesaw.columns.packeddata.PackedLocalDate;
 
 import java.time.LocalDate;
 import java.util.Locale;
@@ -96,5 +97,15 @@ public class DateColumnTest {
         assertEquals(2, summary.columnCount());
         assertEquals("Measure", summary.column(0).name());
         assertEquals("Value", summary.column(1).name());
+    }
+
+    @Test
+    public void testMin() {
+        column1.appendInternal(DateColumn.MISSING_VALUE);
+        column1.appendCell("2013-10-23");
+
+        LocalDate actual = column1.min();
+
+        assertEquals(PackedLocalDate.asLocalDate(column1.convert("2013-10-23")), actual);
     }
 }
