@@ -736,6 +736,15 @@ public class Table extends Relation implements IntIterable {
 
     /**
      * Returns a table with the given rows selected
+     * @param row the row to select
+     * @return the table with the selected rows
+     */
+    public Table seclectRow(int row) {
+      return selectRows(row, row);
+    }
+    
+    /**
+     * Returns a table with the given rows selected
      * @param rows the rows to select
      * @return the table with the selected rows
      */
@@ -770,7 +779,7 @@ public class Table extends Relation implements IntIterable {
      * @return the table with the dropped rows
      */
     public Table dropRow(int row) {
-      return dropRows(ImmutableList.of(row));
+      return dropRows(row, row);
     }
 
     /**
