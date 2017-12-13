@@ -44,7 +44,7 @@ public class XchartBubble {
         return display(chart);
     }
     
-    JFrame display(BubbleChart chart) {
+    private JFrame display(BubbleChart chart) {
         return new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
     }
 }

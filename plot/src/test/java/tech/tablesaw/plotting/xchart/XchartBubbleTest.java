@@ -15,48 +15,71 @@
  */
 package tech.tablesaw.plotting.xchart;
 
+import java.awt.Component;
+import java.util.Arrays;
+import java.util.Optional;
 import javax.swing.JFrame;
-import static org.hamcrest.CoreMatchers.equalTo;
-import org.junit.After;
+import static org.hamcrest.CoreMatchers.*;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.netbeans.jemmy.JemmyProperties;
+import org.knowm.xchart.BubbleChart;
+import org.knowm.xchart.XChartPanel;
 import org.netbeans.jemmy.operators.JFrameOperator;
-import tech.tablesaw.api.plot.Bubble;
 
 /**
  *
  * @author mario.schroeder
  */
 public class XchartBubbleTest {
-    
-    private JFrameOperator operator;
-    private JFrame frame;
-    
-    private double [] x = new double[]{10,15,20};
-    private double [] y = new double[]{10,15,20};
-    private double [] data = new double[]{9,14,19};
-    
-    
-    @Before
-    public void setUp() throws InterruptedException {
+
+    private static JFrameOperator operator;
+    private static JFrame frame;
+
+    @BeforeClass
+    public static void setUp() throws InterruptedException {
+        double[] x = new double[]{10, 15, 20};
+        double[] y = new double[]{10, 15, 20};
+        double[] data = new double[]{9, 14, 19};
+
         XchartBubble bubble = new XchartBubble();
         frame = bubble.show("foo", x, "a", y, "b", data);
         operator = new JFrameOperator("Tablesaw");
     }
-    
-    @After
-    public void tearDown() {
+
+    @AfterClass
+    public static void tearDown() {
         frame.setVisible(false);
         frame.dispose();
     }
+    
+    private Optional<XChartPanel> findXChartPanel() {
+        Component [] comps = operator.getContentPane().getComponents();
+        Optional<Component> comp = Arrays.asList(comps).stream().filter(c -> c instanceof XChartPanel).findFirst();
+        return comp.map(c -> (XChartPanel)c);
+    }
 
-     @Test
-     public void testShow_Title_shoulBe_Tablesaw() {
-         String title = operator.getTitle();
-         assertThat(title, equalTo("Tablesaw"));
-     }
+    @Test
+    public void title_shouldBe_Tablesaw() {
+        String title = operator.getTitle();
+        assertThat(title, equalTo("Tablesaw"));
+    }
+    
+    @Test
+    public void shouldHave_XChartpanel() {
+        Optional<XChartPanel> pan = findXChartPanel();
+        assertThat(pan.isPresent(), is(true));
+    }
+    
+    @Test
+    public void chartPanel_shouldHave_BubbleChart() {
+        Optional<XChartPanel> pan = findXChartPanel();
+        if(pan.isPresent()){
+            XChartPanel xpan = pan.get();
+            assertThat(xpan.getChart(), instanceOf(BubbleChart.class));
+        }else{
+            fail("Expected a XChartPanel");
+        }
+    }
 }
