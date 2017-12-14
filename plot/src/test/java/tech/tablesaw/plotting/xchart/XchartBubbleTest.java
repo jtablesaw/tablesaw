@@ -24,6 +24,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 import org.knowm.xchart.BubbleChart;
 import org.knowm.xchart.XChartPanel;
 import org.netbeans.jemmy.operators.JFrameOperator;
@@ -53,11 +54,11 @@ public class XchartBubbleTest {
         frame.setVisible(false);
         frame.dispose();
     }
-    
+
     private Optional<XChartPanel> findXChartPanel() {
-        Component [] comps = operator.getContentPane().getComponents();
+        Component[] comps = operator.getContentPane().getComponents();
         Optional<Component> comp = Arrays.asList(comps).stream().filter(c -> c instanceof XChartPanel).findFirst();
-        return comp.map(c -> (XChartPanel)c);
+        return comp.map(c -> (XChartPanel) c);
     }
 
     @Test
@@ -65,21 +66,19 @@ public class XchartBubbleTest {
         String title = operator.getTitle();
         assertThat(title, equalTo("Tablesaw"));
     }
-    
+
     @Test
     public void shouldHave_XChartpanel() {
         Optional<XChartPanel> pan = findXChartPanel();
         assertThat(pan.isPresent(), is(true));
     }
-    
+
     @Test
     public void chartPanel_shouldHave_BubbleChart() {
         Optional<XChartPanel> pan = findXChartPanel();
-        if(pan.isPresent()){
-            XChartPanel xpan = pan.get();
-            assertThat(xpan.getChart(), instanceOf(BubbleChart.class));
-        }else{
-            fail("Expected a XChartPanel");
-        }
+        assumeTrue(pan.isPresent());
+
+        XChartPanel xpan = pan.get();
+        assertThat(xpan.getChart(), instanceOf(BubbleChart.class));
     }
 }
