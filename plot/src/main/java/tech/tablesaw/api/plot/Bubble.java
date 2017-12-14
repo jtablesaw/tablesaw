@@ -23,14 +23,24 @@ import tech.tablesaw.plotting.xchart.XchartBubble;
  * Interface to render a bubble plot.
  */
 public class Bubble {
-    
+
     public static void show(NumericColumn x, NumericColumn y, NumericColumn data) {
 
-        show(x.toDoubleArray(), y.toDoubleArray(), data.toDoubleArray());
+        show("", x, y, data);
     }
 
+    public static void show(String chartTitle, NumericColumn x, NumericColumn y, NumericColumn data) {
+
+        show(chartTitle, x.toDoubleArray(), y.toDoubleArray(), data.toDoubleArray());
+    }
+    
     public static void show(double[] x, double[] y, double[] data) {
 
-        new XchartBubble().show("", x, "", y, "", data);
+        show("", x, y, data);
+    }
+
+    public static void show(String chartTitle, double[] x, double[] y, double[] data) {
+
+        new XchartBubble().show(chartTitle, x, "", y, "", data);
     }
 }

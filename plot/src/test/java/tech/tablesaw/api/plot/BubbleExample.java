@@ -30,7 +30,7 @@ public class BubbleExample {
         NumericColumn x = sub.nCol("Products");
         NumericColumn y = sub.nCol("Sales");
         NumericColumn data = sub.nCol("Market_Share");
-        Bubble.show(x, y, data);
+        Bubble.show("Market Share", x, y, data);
     }
 
 }
