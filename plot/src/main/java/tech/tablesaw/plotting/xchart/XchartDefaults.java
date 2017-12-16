@@ -20,8 +20,6 @@ package tech.tablesaw.plotting.xchart;
  * Default values for Xcharts implementations.
  */
 final class XchartDefaults {
-    
-    private XchartDefaults(){}
 
     static final String WINDOW_TITLE = "Tablesaw";
     
@@ -31,4 +29,5 @@ final class XchartDefaults {
     
     static final int DEFAULT_HEIGHT = 400;
     
+    private XchartDefaults(){}
 }
