@@ -27,10 +27,7 @@ import org.knowm.xchart.BubbleChart;
 import org.knowm.xchart.XChartPanel;
 import org.netbeans.jemmy.operators.JFrameOperator;
 
-/**
- *
- * @author mario.schroeder
- */
+
 public class XchartBubbleTest {
 
     private static JFrameOperator operator;
