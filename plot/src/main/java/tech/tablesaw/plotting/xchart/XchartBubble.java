@@ -19,7 +19,6 @@ import javax.swing.JFrame;
 import org.knowm.xchart.BubbleChart;
 import org.knowm.xchart.BubbleChartBuilder;
 import org.knowm.xchart.SwingWrapper;
-import org.knowm.xchart.style.Styler;
 
 import static tech.tablesaw.plotting.xchart.XchartDefaults.*;
 

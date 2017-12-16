@@ -61,19 +61,19 @@ public class XchartBubbleTest {
     }
 
     @Test
-    public void title_shouldBe_Tablesaw() {
+    public void titleShouldBeTablesaw() {
         String title = operator.getTitle();
         assertThat(title, equalTo("Tablesaw"));
     }
 
     @Test
-    public void shouldHave_XChartpanel() {
+    public void shouldHaveXChartpanel() {
         Optional<XChartPanel> pan = findXChartPanel();
         assertThat(pan.isPresent(), is(true));
     }
 
     @Test
-    public void chartPanel_shouldHave_BubbleChart() {
+    public void chartPanelShouldHaveBubbleChart() {
         Optional<XChartPanel> pan = findXChartPanel();
         assumeTrue(pan.isPresent());
 
