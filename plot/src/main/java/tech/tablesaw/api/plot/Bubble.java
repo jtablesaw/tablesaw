@@ -27,8 +27,8 @@ public final class Bubble {
     private Bubble() {}
 
     /**
-     * Shows a bubble blot where the chart title will be "Bubbleplot" and titles 
-     * x and y axis will be taken from the columns.
+     * Shows a bubble plot where the chart title will be "Bubbleplot" and titles 
+     * for x and y axis will be taken from the columns.
      * 
      * @param x column for the x axis
      * @param y column for the y axis
@@ -40,7 +40,7 @@ public final class Bubble {
     }
 
     /**
-     * Shows a bubble blot with the chart title. The titles 
+     * Shows a bubble plot with the chart title. The titles 
      * for x and y axis will be taken from the columns.
      * 
      * @param chartTitle title for the chart
@@ -53,7 +53,7 @@ public final class Bubble {
     }
     
     /**
-     * Shows a bubble blot with the chart title. The titles 
+     * Shows a bubble plot with the chart title. The titles 
      * for x and y axis will be taken from the parameters.
      * 
      * @param chartTitle title for the chart
