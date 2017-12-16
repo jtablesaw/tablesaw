@@ -20,27 +20,92 @@ import tech.tablesaw.plotting.xchart.XchartBubble;
 
 /**
  *
- * Interface to render a bubble plot.
+ * API to render a bubble plot.
  */
-public class Bubble {
+public final class Bubble {
+    
+    private static final String CHART_TITLE = "Bubbleplot";
+    
+    private Bubble() {}
 
+    /**
+     * Shows a bubble blot where the chart title will be "Bubbleplot" and titles 
+     * x and y axis will be taken from the columns.
+     * 
+     * @param x column for the x axis
+     * @param y column for the y axis
+     * @param data column for the bubbles
+     */
     public static void show(NumericColumn x, NumericColumn y, NumericColumn data) {
 
-        show("", x, y, data);
+        show(CHART_TITLE, x, y, data);
     }
 
+    /**
+     * Shows a bubble blot with the chart title. The titles 
+     * for x and y axis will be taken from the columns.
+     * 
+     * @param chartTitle title for the chart
+     * @param x column for the x axis
+     * @param y column for the y axis
+     * @param data column for the bubbles
+     */
     public static void show(String chartTitle, NumericColumn x, NumericColumn y, NumericColumn data) {
-
-        show(chartTitle, x.toDoubleArray(), y.toDoubleArray(), data.toDoubleArray());
+        show(chartTitle, x, x.name(), y, y.name(), data);
     }
     
+    /**
+     * Shows a bubble blot with the chart title. The titles 
+     * for x and y axis will be taken from the parameters.
+     * 
+     * @param chartTitle title for the chart
+     * @param x column for the x axis
+     * @param xAxis title for x axis
+     * @param y column for the xy axis
+     * @param yAxis title for y axis
+     * @param data column for the bubbles
+     */
+    public static void show(String chartTitle, NumericColumn x, String xAxis, NumericColumn y, String yAxis, NumericColumn data) {
+        show(chartTitle, x.toDoubleArray(), xAxis, y.toDoubleArray(), yAxis, data.toDoubleArray());
+    }
+    
+    /**
+     * Shows a bubble plot with the title "Bubbleplot" and data from the parameter.
+     * 
+     * @param x values for the x axis
+     * @param y values for the y axis
+     * @param data values for the bubbles 
+     */
     public static void show(double[] x, double[] y, double[] data) {
 
-        show("", x, y, data);
+        show(CHART_TITLE, x, y, data);
     }
-
+    
+    /**
+     * Shows a bubble plot with the give title and data from the parameter.
+     * 
+     * @param chartTitle title for the chart
+     * @param x values for the x axis
+     * @param y values for the y axis
+     * @param data values for the bubbles 
+     */
     public static void show(String chartTitle, double[] x, double[] y, double[] data) {
 
-        new XchartBubble().show(chartTitle, x, "", y, "", data);
+        show(chartTitle, x, "", y, "", data);
+    }
+
+    /**
+     * Shows a bubble plot with the give title and data from the parameter.
+     * 
+     * @param chartTitle title for the chart
+     * @param x values for the x axis
+     * @param xAxis
+     * @param y values for the y axis
+     * @param yAxis
+     * @param data values for the bubbles
+     */
+    public static void show(String chartTitle, double[] x, String xAxis, double[] y, String yAxis, double[] data) {
+
+        XchartBubble.show(chartTitle, x, xAxis, y, yAxis, data);
     }
 }

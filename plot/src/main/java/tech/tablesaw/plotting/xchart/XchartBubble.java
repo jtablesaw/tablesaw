@@ -27,24 +27,26 @@ import static tech.tablesaw.plotting.xchart.XchartDefaults.*;
  *
  * Renders bubble plots.
  */
-public class XchartBubble {
+public final class XchartBubble {
     
-    public JFrame show(String chartTitle, double[] xData, String xLabel, double[] yData, String yLabel, double [] bubbleData) {
+    private XchartBubble(){}
+    
+    public static JFrame show(String chartTitle, double[] xData, String xLabel, double[] yData, String yLabel, double [] bubbleData) {
         return show(chartTitle, xData, xLabel, yData, yLabel, bubbleData, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
-    public JFrame show(String chartTitle, double[] xData, String xLabel, double[] yData, String yLabel, double [] bubbleData, int width, int height) {
-        BubbleChart chart = new BubbleChartBuilder().width(width).height(height).title(chartTitle).xAxisTitle(xLabel).yAxisTitle(yLabel).build();
+    public static JFrame show(String chartTitle, double[] xData, String xLabel, double[] yData, String yLabel, double [] bubbleData, int width, int height) {
+        BubbleChart chart = new BubbleChartBuilder()
+                .width(width).height(height).title(chartTitle)
+                .xAxisTitle(xLabel).yAxisTitle(yLabel).build();
         chart.getStyler().setTheme(new TablesawTheme());
-        chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideN);
-        chart.getStyler().setLegendLayout(Styler.LegendLayout.Horizontal);
 
         chart.addSeries(SERIES, xData, yData, bubbleData);
         
         return display(chart);
     }
     
-    private JFrame display(BubbleChart chart) {
+    private static JFrame display(BubbleChart chart) {
         return new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
     }
 }

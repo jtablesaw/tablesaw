@@ -44,8 +44,7 @@ public class XchartBubbleTest {
         double[] y = new double[]{10, 15, 20};
         double[] data = new double[]{9, 14, 19};
 
-        XchartBubble bubble = new XchartBubble();
-        frame = bubble.show("foo", x, "a", y, "b", data);
+        frame = XchartBubble.show("foo", x, "a", y, "b", data);
         operator = new JFrameOperator("Tablesaw");
     }
 
