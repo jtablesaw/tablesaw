@@ -21,12 +21,12 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import tech.tablesaw.api.NumericColumn;
 
+import static tech.tablesaw.plotting.xchart.XchartDefaults.*;
+
 /**
  *
  */
 public class XchartQuantile {
-
-    private static final String WINDOW_TITLE = "Tablesaw";
 
     public static void show(String chartTitle, NumericColumn yColumn) {
         double[] x = new double[yColumn.size()];
@@ -37,7 +37,7 @@ public class XchartQuantile {
 
         NumericColumn copy = (NumericColumn) yColumn.copy();
         copy.sortAscending();
-        show(chartTitle, x, copy, 600, 400);
+        show(chartTitle, x, copy, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
     public static void show(String chartTitle, double[] xData, NumericColumn yColumn, int width, int height) {

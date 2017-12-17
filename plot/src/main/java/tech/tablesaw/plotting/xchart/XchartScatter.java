@@ -26,15 +26,12 @@ import tech.tablesaw.util.DoubleArrays;
 
 import java.util.Arrays;
 
+import static tech.tablesaw.plotting.xchart.XchartDefaults.*;
+
 /**
  * Render scatter plots using Swing
  */
 public class XchartScatter {
-
-    private static final int DEFAULT_WIDTH = 600;
-    private static final int DEFAULT_HEIGHT = 400;
-
-    private static final String WINDOW_TITLE = "Tablesaw";
 
     public static void show(String chartTitle, NumericColumn yColumn) {
         double[] x = DoubleArrays.toN(yColumn.size());
@@ -145,7 +142,7 @@ public class XchartScatter {
         chart.getStyler().setMarkerSize(5);
         chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
 
-        XYSeries series = chart.addSeries("series 1", xData, yData);
+        XYSeries series = chart.addSeries(SERIES, xData, yData);
         series.setMarker(SeriesMarkers.CIRCLE);
         new SwingWrapper<>(chart)
                 .displayChart(WINDOW_TITLE);
