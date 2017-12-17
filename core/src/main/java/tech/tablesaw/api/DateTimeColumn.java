@@ -60,6 +60,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     private static final int BYTE_SIZE = 8;
 
     private static int DEFAULT_ARRAY_SIZE = 128;
+
     private LongComparator reverseLongComparator = new LongComparator() {
 
         @Override
@@ -388,6 +389,78 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
                 newColumn.add(CategoryColumn.MISSING_VALUE);
             } else {
                 newColumn.add(Month.of(PackedLocalDateTime.getMonthValue(c1)).name());
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a CategoryColumn with the year and month from this column concatenated into a String that will sort
+     * lexicographically in temporal order.
+     *
+     * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
+     * you want monthly data but your source data is more than a year long and you don't want months from different
+     * years aggregated together).
+     */
+    public CategoryColumn yearMonthString() {
+        CategoryColumn newColumn = new CategoryColumn(this.name() + " year & month");
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (c1 == MISSING_VALUE) {
+                newColumn.add(CategoryColumn.MISSING_VALUE);
+            } else {
+                String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
+                ym = ym + "-" + Strings.padStart(
+                        String.valueOf(PackedLocalDateTime.getMonthValue(c1)), 2, '0');
+                newColumn.add(ym);
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a CategoryColumn with the year and day-of-year derived from this column concatenated into a String
+     * that will sort lexicographically in temporal order.
+     *
+     * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
+     * you want monthly data but your source data is more than a year long and you don't want months from different
+     * years aggregated together).
+     */
+    public CategoryColumn yearDayString() {
+        CategoryColumn newColumn = new CategoryColumn(this.name() + " year & month");
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (c1 == MISSING_VALUE) {
+                newColumn.add(CategoryColumn.MISSING_VALUE);
+            } else {
+                String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
+                ym = ym + "-" + Strings.padStart(
+                        String.valueOf(PackedLocalDateTime.getDayOfYear(c1)), 3, '0');
+                newColumn.add(ym);
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a CategoryColumn with the year and week-of-year derived from this column concatenated into a String
+     * that will sort lexicographically in temporal order.
+     *
+     * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
+     * you want monthly data but your source data is more than a year long and you don't want months from different
+     * years aggregated together).
+     */
+    public CategoryColumn yearWeekString() {
+        CategoryColumn newColumn = new CategoryColumn(this.name() + " year & month");
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (c1 == MISSING_VALUE) {
+                newColumn.add(CategoryColumn.MISSING_VALUE);
+            } else {
+                String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
+                ym = ym + "-" + Strings.padStart(
+                        String.valueOf(PackedLocalDateTime.getWeekOfYear(c1)), 2, '0');
+                newColumn.add(ym);
             }
         }
         return newColumn;
