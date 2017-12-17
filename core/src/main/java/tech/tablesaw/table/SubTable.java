@@ -99,7 +99,7 @@ public class SubTable extends Table {
                     break;
                 case CATEGORY:
                     CategoryColumn categoryColumn = (CategoryColumn) column;
-                    categoryColumn.add(sourceTable.categoryColumn(i).get(rowIndex));
+                    categoryColumn.append(sourceTable.categoryColumn(i).get(rowIndex));
                     break;
                 default:
                     throw new IllegalStateException("Unhandled column type updating columns");

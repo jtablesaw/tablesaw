@@ -231,7 +231,7 @@ public final class CrossTab {
         pctTable.addColumn(labels);
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
-            labels.add(xTabCounts.column(0).getString(i));
+            labels.append(xTabCounts.column(0).getString(i));
         }
 
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
@@ -263,7 +263,7 @@ public final class CrossTab {
         int grandTotal = xTabCounts.intColumn(xTabCounts.columnCount() - 1).get(xTabCounts.rowCount() - 1);
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
-            labels.add(xTabCounts.column(0).getString(i));
+            labels.append(xTabCounts.column(0).getString(i));
         }
 
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
@@ -292,7 +292,7 @@ public final class CrossTab {
 
         // setup the labels
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
-            labels.add(xTabCounts.column(0).getString(i));
+            labels.append(xTabCounts.column(0).getString(i));
         }
 
         // create the new cols

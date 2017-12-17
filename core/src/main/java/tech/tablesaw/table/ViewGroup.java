@@ -322,7 +322,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
           DoubleColumn resultColumn = new DoubleColumn(colName, subTables.size());
           for (TemporaryView subTable : subTables) {
               double result = subTable.reduce(columnName, function);
-              groupColumn.add(subTable.name());
+              groupColumn.append(subTable.name());
               resultColumn.append(result);
           }
           groupTable.addColumn(resultColumn);

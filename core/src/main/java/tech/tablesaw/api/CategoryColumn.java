@@ -122,7 +122,7 @@ public class CategoryColumn extends AbstractColumn
         super(name);
         values = new IntArrayList(categories.size());
         for (String string : categories) {
-            addValue(string);
+            append(string);
         }
     }
 
@@ -312,7 +312,7 @@ public class CategoryColumn extends AbstractColumn
      * @deprecated Use append(String value) instead
      */
     public void add(String stringValue) {
-        addValue(stringValue);
+        addValue(convert(stringValue));
     }
     
     private void addValue(String value) {

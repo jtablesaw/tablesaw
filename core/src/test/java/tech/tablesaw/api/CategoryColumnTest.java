@@ -30,10 +30,10 @@ public class CategoryColumnTest {
 
     @Before
     public void setUp() throws Exception {
-        column.add("Value 1");
-        column.add("Value 2");
-        column.add("Value 3");
-        column.add("Value 4");
+        column.append("Value 1");
+        column.append("Value 2");
+        column.append("Value 3");
+        column.append("Value 4");
     }
 
     @Test

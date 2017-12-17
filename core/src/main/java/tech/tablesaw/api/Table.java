@@ -729,7 +729,7 @@ public class Table extends Relation implements IntIterable {
         for (int i = 0; i < columnCount(); i++) {
             Column column = columnList.get(i);
             index.append(i);
-            columnType.add(column.type().name());
+            columnType.append(column.type().name());
         }
         return t;
     }
