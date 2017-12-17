@@ -607,15 +607,6 @@ public class CategoryColumn extends AbstractColumn
         return select(isNotMissing);
     }
 
-    public CategoryColumn select(Selection selection) {
-        CategoryColumn column = emptyCopy();
-        for (Integer next : selection) {
-            column.appendCell(this.get(next));
-        }
-        return column;
-    }
-
-
     public Selection select(StringPredicate predicate) {
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < data().size(); idx++) {

@@ -102,7 +102,7 @@ public class CategoryColumnTest {
         categoryColumn.addAll(TestDataUtil.usStates());
 
         Selection selection = categoryColumn.isNotEqualTo("Alabama");
-        CategoryColumn result = categoryColumn.select(selection);
+        CategoryColumn result = (CategoryColumn) categoryColumn.subset(selection);
         assertEquals(result.size(), categoryColumn.size() - 1);
         assertFalse(result.contains("Alabama"));
         assertEquals(categoryColumn.size(), 51);
@@ -115,7 +115,7 @@ public class CategoryColumnTest {
 
         Selection selection2 = categoryColumn.isNotEqualTo("Yugoslavia");
         assertEquals(selection2.size(), 51);
-        CategoryColumn result2 = categoryColumn.select(selection2);
+        CategoryColumn result2 = (CategoryColumn) categoryColumn.subset(selection2);
         assertEquals(result2.size(), categoryColumn.size());
     }
 
