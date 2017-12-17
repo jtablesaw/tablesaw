@@ -23,7 +23,7 @@ import tech.tablesaw.columns.Column;
 public enum ColumnType {
 
     BOOLEAN(Byte.MIN_VALUE),
-    CATEGORY(null),
+    CATEGORY(""),
     FLOAT(Float.NaN),
     DOUBLE(Double.NaN),
     SHORT_INT(Short.MIN_VALUE),
