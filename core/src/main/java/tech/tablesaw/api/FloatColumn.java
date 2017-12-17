@@ -524,18 +524,10 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return result;
     }
 
-    public FloatColumn append(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " + " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) + column2.get(r));
-        }
-        return result;
-    }
-
     public FloatColumn subtract(FloatColumn column2) {
         FloatColumn result = new FloatColumn(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.append(get(r) - column2.get(r));
+            result.append(subtract(get(r), column2.get(r)));
         }
         return result;
     }
@@ -769,26 +761,48 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn add(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " - " + column2.name(), size());
+        FloatColumn result = new FloatColumn(name() + " + " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.append(get(r) + column2.get(r));
+            result.append(add(get(r), column2.get(r)));
         }
         return result;
     }
 
-    public FloatColumn addToEach(float value) {
+    public FloatColumn add(float value) {
         FloatColumn result = new FloatColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {
-            result.append(get(r) + value);
+            result.append(add(get(r), value));
         }
         return result;
     }
 
-    public FloatColumn addToEach(int value) {
+    public FloatColumn subtract(float value) {
         FloatColumn result = new FloatColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {
-            result.append(get(r) + value);
+            result.append(subtract(get(r), value));
         }
         return result;
+    }
+
+    public FloatColumn add(int value) {
+        FloatColumn result = new FloatColumn(name() + " + " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(add(get(r), value));
+        }
+        return result;
+    }
+
+    private float add(float val1, float val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 + val2;
+    }
+
+    private float subtract(float val1, float val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 - val2;
     }
 }

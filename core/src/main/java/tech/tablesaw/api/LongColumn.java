@@ -208,7 +208,38 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public LongColumn subtract(LongColumn column2) {
         LongColumn result = new LongColumn(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.append(get(r) - column2.get(r));
+            result.append(subtract(get(r), column2.get(r)));
+        }
+        return result;
+    }
+
+    /**
+     * Returns a new LongColumn containing the values obtained by adding each value of that column to the corresponding
+     * value of this column
+     */
+    public LongColumn add(LongColumn column2) {
+        LongColumn result = new LongColumn(name() + " + " + column2.name(), size());
+        for (int r = 0; r < size(); r++) {
+            result.append(add(get(r), column2.get(r)));
+        }
+        return result;
+    }
+
+    public LongColumn subtract(long value) {
+        LongColumn result = new LongColumn(name() + " - " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(subtract(get(r), value));
+        }
+        return result;
+    }
+
+    /**
+     * Returns a new column created by adding the given value to each non-missing value in this column
+     */
+    public LongColumn add(long value) {
+        LongColumn result = new LongColumn(name() + " + " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(add(get(r), value));
         }
         return result;
     }
@@ -605,5 +636,19 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
             returnValue.append(get(current) - get(current + 1));
         }
         return returnValue;
+    }
+
+    private long add(long val1, long val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 + val2;
+    }
+
+    private long subtract(long val1, long val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 - val2;
     }
 }

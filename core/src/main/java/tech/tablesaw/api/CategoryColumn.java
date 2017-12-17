@@ -308,6 +308,9 @@ public class CategoryColumn extends AbstractColumn
         return bottom;
     }
 
+    /**
+     * @deprecated Use append(String value) instead
+     */
     public void add(String stringValue) {
         addValue(stringValue);
     }
@@ -364,7 +367,7 @@ public class CategoryColumn extends AbstractColumn
 
     @Override
     public void appendCell(String object) {
-        add(convert(object));
+        addValue(convert(object));
     }
 
     @Override
@@ -738,6 +741,12 @@ public class CategoryColumn extends AbstractColumn
       return isIn(strings.toArray(new String[strings.size()]));
     }
 
+    /**
+     * Added for naming consistency with all other columns
+     */
+    public void append(String value) {
+        appendCell(value);
+    }
 
     public Selection isNotIn(String... strings) {
       Selection results = new BitmapBackedSelection();

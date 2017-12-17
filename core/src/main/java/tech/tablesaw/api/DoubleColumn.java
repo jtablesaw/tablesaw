@@ -521,7 +521,23 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn add(DoubleColumn column2) {
         DoubleColumn result = new DoubleColumn(name() + " + " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.append(get(r) + column2.get(r));
+            result.append(add(get(r), column2.get(r)));
+        }
+        return result;
+    }
+
+    public DoubleColumn add(double value) {
+        DoubleColumn result = new DoubleColumn(name() + " + " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(add(get(r), value));
+        }
+        return result;
+    }
+
+    public DoubleColumn subtract(double value) {
+        DoubleColumn result = new DoubleColumn(name() + " - " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(subtract(get(r), value));
         }
         return result;
     }
@@ -529,7 +545,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn subtract(DoubleColumn column2) {
         DoubleColumn result = new DoubleColumn(name() + " - " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.append(get(r) - column2.get(r));
+            result.append(subtract(get(r), column2.get(r)));
         }
         return result;
     }
@@ -779,5 +795,19 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
             }
         }
         return returnValue;
+    }
+
+    private double add(double val1, double val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 + val2;
+    }
+
+    private double subtract(double val1, double val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 - val2;
     }
 }
