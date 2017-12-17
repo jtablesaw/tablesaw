@@ -18,11 +18,18 @@ import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.plotting.xchart.XchartLine;
 
 /**
- *
+ * Displays a line chart
  */
 public class Line {
 
-    public static void show(String chart, NumericColumn x, NumericColumn y) {
-        XchartLine.show(chart, x, y);
+    public static void show(String chartTitle, NumericColumn x, NumericColumn y) {
+        XchartLine.show(chartTitle, x, y);
+    }
+
+    /**
+     * Displays a line chart with multiple series
+     */
+    public static void show(String chartTitle, NumericColumn x, NumericColumn ... y) {
+        XchartLine.show(chartTitle, x, y);
     }
 }

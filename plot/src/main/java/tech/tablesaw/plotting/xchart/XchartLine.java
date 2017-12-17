@@ -26,6 +26,9 @@ import tech.tablesaw.util.DoubleArrays;
 
 import java.util.Arrays;
 
+import static tech.tablesaw.plotting.xchart.XchartDefaults.DEFAULT_HEIGHT;
+import static tech.tablesaw.plotting.xchart.XchartDefaults.DEFAULT_WIDTH;
+
 /**
  *
  */
@@ -35,20 +38,20 @@ public class XchartLine {
 
     public static void show(String chartTitle, NumericColumn yColumn) {
         double[] x = DoubleArrays.toN(yColumn.size());
-        show(chartTitle, x, yColumn, 600, 400);
+        show(chartTitle, x, yColumn, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
     public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, int markerSize) {
-        show(chartTitle, xColumn, yColumn, 600, 400, markerSize);
+        show(chartTitle, xColumn, yColumn, DEFAULT_WIDTH, DEFAULT_HEIGHT, markerSize);
     }
 
     public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn) {
         int markerSize = 2;
-        show(chartTitle, xColumn, yColumn, 600, 400, markerSize);
+        show(chartTitle, xColumn, yColumn, DEFAULT_WIDTH, DEFAULT_HEIGHT, markerSize);
     }
 
     public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, ViewGroup group) {
-        XYChart chart = new XYChart(600, 400);
+        XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         chart.setTitle(chartTitle);
         chart.setXAxisTitle(xColumn.name());
         chart.setYAxisTitle(yColumn.name());
@@ -71,7 +74,7 @@ public class XchartLine {
                             NumericColumn yColumn,
                             ViewGroup group,
                             int markerSize) {
-        XYChart chart = new XYChart(600, 400);
+        XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         chart.setTitle(chartTitle);
         chart.setXAxisTitle(xColumn.name());
         chart.setYAxisTitle(yColumn.name());
@@ -126,5 +129,25 @@ public class XchartLine {
         XYSeries series = chart.addSeries("Ranked: " + yColumn.name(), xData, yData);
         series.setMarker(SeriesMarkers.CIRCLE);
         new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
+    }
+
+    /**
+     * Displays a line chart with the first numeric column used for the x axis, and the others as
+     * series to plot against it
+     */
+    public static void show(String chartTitle, NumericColumn x, NumericColumn ... ySeries) {
+
+        XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        chart.setTitle(chartTitle);
+        chart.setXAxisTitle(x.name());
+        chart.getStyler().setTheme(new TablesawTheme());
+        chart.getStyler().setMarkerSize(1);
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Line);
+
+        for (NumericColumn y : ySeries) {
+            chart.addSeries(y.name(), x.toDoubleArray(), y.toDoubleArray());
+        }
+        new SwingWrapper<>(chart)
+                .displayChart(WINDOW_TITLE);
     }
 }
