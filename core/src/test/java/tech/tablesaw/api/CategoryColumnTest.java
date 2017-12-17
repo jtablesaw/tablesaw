@@ -97,6 +97,29 @@ public class CategoryColumnTest {
     }
 
     @Test
+    public void testIsNotEqualTo() {
+        CategoryColumn categoryColumn = new CategoryColumn("US States");
+        categoryColumn.addAll(TestDataUtil.usStates());
+
+        Selection selection = categoryColumn.isNotEqualTo("Alabama");
+        CategoryColumn result = categoryColumn.select(selection);
+        assertEquals(result.size(), categoryColumn.size() - 1);
+        assertFalse(result.contains("Alabama"));
+        assertEquals(categoryColumn.size(), 51);
+    }
+
+    @Test
+    public void testIsNotEqualTo2() {
+        CategoryColumn categoryColumn = new CategoryColumn("US States");
+        categoryColumn.addAll(TestDataUtil.usStates());
+
+        Selection selection2 = categoryColumn.isNotEqualTo("Yugoslavia");
+        assertEquals(selection2.size(), 51);
+        CategoryColumn result2 = categoryColumn.select(selection2);
+        assertEquals(result2.size(), categoryColumn.size());
+    }
+
+    @Test
     public void testIsIn() {
         CategoryColumn categoryColumn = new CategoryColumn("US States");
         categoryColumn.addAll(TestDataUtil.usStates());

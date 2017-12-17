@@ -393,18 +393,10 @@ public class CategoryColumn extends AbstractColumn
     }
 
     public Selection isNotEqualTo(String string) {
-        Selection results = new BitmapBackedSelection();
-        int key = lookupTable.get(string);
-        if (key >= 0) {
-            int i = 0;
-            for (int next : values) {
-                if (key != next) {
-                    results.add(i);
-                }
-                i++;
-            }
-        }
-        return results;
+        Selection selection = new BitmapBackedSelection();
+        selection.addRange(0, size());
+        selection.andNot(isEqualTo(string));
+        return selection;
     }
 
     /**
@@ -613,6 +605,14 @@ public class CategoryColumn extends AbstractColumn
     @Override
     public Selection isNotMissing() {
         return select(isNotMissing);
+    }
+
+    public CategoryColumn select(Selection selection) {
+        CategoryColumn column = emptyCopy();
+        for (Integer next : selection) {
+            column.appendCell(this.get(next));
+        }
+        return column;
     }
 
 
