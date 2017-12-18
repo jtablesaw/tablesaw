@@ -838,7 +838,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public void set(int index, long value) {
-        data.add(index, value);
+        data.set(index, value);
     }
 
     public Selection select(LongBiPredicate predicate, long value) {

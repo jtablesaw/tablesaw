@@ -123,7 +123,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public void set(int index, long value) {
-        data.add(index, value);
+        data.set(index, value);
     }
 
     public Selection isLessThan(long i) {
