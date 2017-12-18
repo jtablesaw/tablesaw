@@ -23,6 +23,11 @@ import tech.tablesaw.columns.packeddata.PackedLocalDate;
 import tech.tablesaw.filtering.BooleanIsFalse;
 import tech.tablesaw.filtering.BooleanIsTrue;
 import tech.tablesaw.filtering.DateEqualTo;
+import tech.tablesaw.filtering.DoubleEqualTo;
+import tech.tablesaw.filtering.DoubleGreaterThan;
+import tech.tablesaw.filtering.DoubleGreaterThanOrEqualTo;
+import tech.tablesaw.filtering.DoubleLessThan;
+import tech.tablesaw.filtering.DoubleLessThanOrEqualTo;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.FloatEqualTo;
 import tech.tablesaw.filtering.FloatGreaterThan;
@@ -158,6 +163,10 @@ public class ColumnReference {
         return new FloatEqualTo(this, value);
     }
 
+    public Filter isEqualTo(double value) {
+        return new DoubleEqualTo(this, value);
+    }
+
     public Filter isEqualTo(LocalTime value) {
         return new TimeEqualTo(this, value);
     }
@@ -210,16 +219,32 @@ public class ColumnReference {
         return new FloatGreaterThan(this, value);
     }
 
+    public Filter isGreaterThan(double value) {
+        return new DoubleGreaterThan(this, value);
+    }
+
     public Filter isLessThan(float value) {
         return new FloatLessThan(this, value);
+    }
+
+    public Filter isLessThan(double value) {
+        return new DoubleLessThan(this, value);
     }
 
     public Filter isLessThanOrEqualTo(float value) {
         return new FloatLessThanOrEqualTo(this, value);
     }
 
+    public Filter isLessThanOrEqualTo(double value) {
+        return new DoubleLessThanOrEqualTo(this, value);
+    }
+
     public Filter isGreaterThanOrEqualTo(float value) {
         return new FloatGreaterThanOrEqualTo(this, value);
+    }
+
+    public Filter isGreaterThanOrEqualTo(double value) {
+        return new DoubleGreaterThanOrEqualTo(this, value);
     }
 
     public String getColumnName() {
