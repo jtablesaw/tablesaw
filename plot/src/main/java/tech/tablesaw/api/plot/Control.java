@@ -50,10 +50,10 @@ public class Control {
         DoubleColumn lcl = new DoubleColumn("LCL");
 
         for (int i = 0; i < data.size(); i++) {
-            index.set(i, i + 1);
-            mean.set(i, avg);
-            ucl.set(i, avg + controlLimit);
-            lcl.set(i, avg - controlLimit);
+            index.append(i + 1);
+            mean.append(avg);
+            ucl.append(avg + controlLimit);
+            lcl.append(avg - controlLimit);
         }
 
         XchartLine.show(name, index, data, mean, ucl, lcl);

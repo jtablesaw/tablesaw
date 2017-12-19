@@ -169,7 +169,7 @@ public class Table extends Relation implements IntIterable {
 
         IntColumn indexColumn = new IntColumn(columnName, rowCount());
         for (int i = 0; i < rowCount(); i++) {
-            indexColumn.set(i, i + startsWith);
+            indexColumn.append(i + startsWith);
         }
         addColumn(indexColumn);
     }
