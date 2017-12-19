@@ -652,7 +652,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     public void set(int r, double value) {
-        data.add(r, value);
+        data.set(r, value);
     }
 
     // TODO(lwhite): Reconsider the implementation of this functionality to allow user to provide a specific max error.

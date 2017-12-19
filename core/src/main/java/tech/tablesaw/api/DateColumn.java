@@ -157,7 +157,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public void set(int index, int value) {
-        data.add(index, value);
+        data.set(index, value);
     }
 
     public void append(LocalDate f) {

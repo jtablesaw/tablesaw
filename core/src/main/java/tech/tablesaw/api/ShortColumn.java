@@ -120,7 +120,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public void set(int index, short value) {
-        data.add(index, value);
+        data.set(index, value);
     }
 
     public Selection isLessThan(int i) {

@@ -266,7 +266,7 @@ public class CategoryColumn extends AbstractColumn
         } else {
             valueId = lookupTable.get(stringValue);
         }
-        values.add(rowIndex, valueId);
+        values.set(rowIndex, valueId);
     }
 
     @Override
