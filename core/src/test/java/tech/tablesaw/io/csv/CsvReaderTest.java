@@ -37,7 +37,7 @@ public class CsvReaderTest {
 
     private final ColumnType[] bus_types = {SHORT_INT, CATEGORY, CATEGORY, FLOAT, FLOAT};
     private final ColumnType[] bus_types_with_SKIP = {SHORT_INT, CATEGORY, SKIP, FLOAT, FLOAT};
-
+    
     @Test
     public void testWithBusData() throws Exception {
         // Read the CSV file
@@ -119,6 +119,23 @@ public class CsvReaderTest {
         assertEquals(CATEGORY, columnTypes[2]);
     }
 
+    @Test
+    public void testDataTypeDetection3() {
+      Table oneYear = Table.read().csv(
+          "Date,1 Yr Treasury Rate\n"
+              + "\"Dec 1, 2017\",1.65%\n"
+              + "\"Nov 1, 2017\",1.56%\n"
+              + "\"Oct 1, 2017\",1.40%\n"
+              + "\"Sep 1, 2017\",1.28%\n"
+              + "\"Aug 1, 2017\",1.23%\n"
+              + "\"Jul 1, 2017\",1.22%\n",
+          "1 Yr Treasury Rate");
+      assertEquals(2, oneYear.columnCount());
+      ColumnType[] columnTypes = oneYear.columnTypes();
+      assertEquals(LOCAL_DATE, columnTypes[0]);
+      assertEquals(CATEGORY, columnTypes[1]);
+    }
+
     @Ignore
     @Test
     public void testLoadFromUrl() throws Exception {
@@ -163,4 +180,5 @@ public class CsvReaderTest {
         //TODO(lwhite): Better tests
         assertNotNull(test.summary());
     }
+
 }
