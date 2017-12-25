@@ -6,11 +6,13 @@ import java.time.LocalTime;
 
 import com.google.common.collect.Streams;
 
+import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.index.CategoryIndex;
 import tech.tablesaw.index.DateIndex;
 import tech.tablesaw.index.DateTimeIndex;
 import tech.tablesaw.index.TimeIndex;
@@ -57,9 +59,20 @@ public class DataFrameJoiner {
         table2Rows.removeColumns(col2Name);
         crossProduct(result, table1Rows, table2Rows);
       }
+    } else if (column instanceof CategoryColumn) {
+      CategoryIndex index = new CategoryIndex(table2.categoryColumn(col2Name));
+      CategoryColumn col1 = (CategoryColumn) column;
+      for (int i = 0; i < col1.size(); i++) {
+        String value = col1.get(i);
+        Table table1Rows = table.selectRow(i);
+        Table table2Rows = table2.selectWhere(index.get(value));
+        table2Rows.removeColumns(col2Name);
+        crossProduct(result, table1Rows, table2Rows);
+      }
     } else {
       throw new IllegalArgumentException(
-          "Only joining on date-like columns is supported so far");
+          "Only joining on category and date-like columns is supported so far. Column "
+              + column.name() + " is of type " + column.type());
     }
 
     return result;
