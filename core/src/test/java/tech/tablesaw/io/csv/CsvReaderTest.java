@@ -37,7 +37,7 @@ public class CsvReaderTest {
 
     private final ColumnType[] bus_types = {SHORT_INT, CATEGORY, CATEGORY, FLOAT, FLOAT};
     private final ColumnType[] bus_types_with_SKIP = {SHORT_INT, CATEGORY, SKIP, FLOAT, FLOAT};
-    
+
     @Test
     public void testWithBusData() throws Exception {
         // Read the CSV file
