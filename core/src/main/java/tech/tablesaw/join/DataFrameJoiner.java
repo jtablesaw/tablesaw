@@ -9,12 +9,16 @@ import com.google.common.collect.Streams;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.index.CategoryIndex;
 import tech.tablesaw.index.DateIndex;
 import tech.tablesaw.index.DateTimeIndex;
+import tech.tablesaw.index.IntIndex;
+import tech.tablesaw.index.LongIndex;
 import tech.tablesaw.index.TimeIndex;
 
 public class DataFrameJoiner {
@@ -69,9 +73,29 @@ public class DataFrameJoiner {
         table2Rows.removeColumns(col2Name);
         crossProduct(result, table1Rows, table2Rows);
       }
+    } else if (column instanceof LongColumn) {
+      LongIndex index = new LongIndex(table2.longColumn(col2Name));
+      LongColumn col1 = (LongColumn) column;
+      for (int i = 0; i < col1.size(); i++) {
+        long value = col1.get(i);
+        Table table1Rows = table.selectRow(i);
+        Table table2Rows = table2.selectWhere(index.get(value));
+        table2Rows.removeColumns(col2Name);
+        crossProduct(result, table1Rows, table2Rows);
+      }
+    } else if (column instanceof IntColumn) {
+      IntIndex index = new IntIndex(table2.intColumn(col2Name));
+      IntColumn col1 = (IntColumn) column;
+      for (int i = 0; i < col1.size(); i++) {
+        int value = col1.get(i);
+        Table table1Rows = table.selectRow(i);
+        Table table2Rows = table2.selectWhere(index.get(value));
+        table2Rows.removeColumns(col2Name);
+        crossProduct(result, table1Rows, table2Rows);
+      }
     } else {
       throw new IllegalArgumentException(
-          "Only joining on category and date-like columns is supported so far. Column "
+          "Joining is supported on int, long, category, and date-like columns. Column "
               + column.name() + " is of type " + column.type());
     }
 
