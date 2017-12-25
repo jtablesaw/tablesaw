@@ -134,6 +134,8 @@ public class StorageManager {
         switch (columnMetadata.getType()) {
             case FLOAT:
                 return readFloatColumn(fileName, columnMetadata);
+            case DOUBLE:
+              return readDoubleColumn(fileName, columnMetadata);
             case INTEGER:
                 return readIntColumn(fileName, columnMetadata);
             case BOOLEAN:
@@ -171,6 +173,24 @@ public class StorageManager {
             }
         }
         return floats;
+    }
+
+    private static DoubleColumn readDoubleColumn(String fileName, ColumnMetadata metadata) throws IOException {
+      DoubleColumn doubles = new DoubleColumn(metadata);
+        try (FileInputStream fis = new FileInputStream(fileName);
+             SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
+             DataInputStream dis = new DataInputStream(sis)) {
+            boolean EOF = false;
+            while (!EOF) {
+                try {
+                    double cell = dis.readDouble();
+                    doubles.append(cell);
+                } catch (EOFException e) {
+                    EOF = true;
+                }
+            }
+        }
+        return doubles;
     }
 
     private static IntColumn readIntColumn(String fileName, ColumnMetadata metadata) throws IOException {

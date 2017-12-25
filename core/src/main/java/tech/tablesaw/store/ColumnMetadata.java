@@ -21,6 +21,7 @@ import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
@@ -107,6 +108,8 @@ public class ColumnMetadata {
       switch (getType()) {
         case FLOAT:
           return new FloatColumn(this);
+        case DOUBLE:
+          return new DoubleColumn(this);
         case INTEGER:
           return new IntColumn(this);
         case BOOLEAN:

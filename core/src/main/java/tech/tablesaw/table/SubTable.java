@@ -21,6 +21,7 @@ import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
@@ -68,6 +69,10 @@ public class SubTable extends Table {
                 case FLOAT:
                     FloatColumn floatColumn = (FloatColumn) column;
                     floatColumn.append(sourceTable.floatColumn(i).get(rowIndex));
+                    break;
+                case DOUBLE:
+                    DoubleColumn doubleColumn = (DoubleColumn) column;
+                    doubleColumn.append(sourceTable.doubleColumn(i).get(rowIndex));
                     break;
                 case INTEGER:
                     IntColumn intColumn = (IntColumn) column;
