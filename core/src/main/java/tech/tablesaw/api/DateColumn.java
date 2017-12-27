@@ -745,6 +745,14 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         return selection;
     }
 
+    public List<LocalDate> asList() {
+      List<LocalDate> dates = new ArrayList<>(size());
+      for (Iterator<LocalDate> iter = iterator(); iter.hasNext();) {
+          dates.add(iter.next());
+      }
+      return dates;
+    }
+ 
     public Set<LocalDate> asSet() {
         Set<LocalDate> dates = new HashSet<>();
         DateColumn unique = unique();
