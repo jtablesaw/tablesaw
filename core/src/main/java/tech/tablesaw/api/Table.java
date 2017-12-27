@@ -581,16 +581,10 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns a comparator that can be used to sort the records in this table according to the given sort key
      */
-    public IntComparator getComparator(Sort key) {
+    private IntComparator getComparator(Sort key) {
         Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
         Map.Entry<String, Sort.Order> sort = entries.next();
-        IntComparator comparator;
-        if (sort.getValue() == Order.ASCEND) {
-            comparator = rowComparator(sort.getKey(), false);
-        } else {
-            comparator = rowComparator(sort.getKey(), true);
-        }
-        return comparator;
+        return rowComparator(sort.getKey(), sort.getValue());
     }
 
     /**
@@ -600,21 +594,12 @@ public class Table extends Relation implements IntIterable {
         Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
         Map.Entry<String, Sort.Order> sort = entries.next();
 
-        IntComparator comparator;
-        if (sort.getValue() == Order.ASCEND) {
-            comparator = rowComparator(sort.getKey(), false);
-        } else {
-            comparator = rowComparator(sort.getKey(), true);
-        }
+        IntComparator comparator = rowComparator(sort.getKey(), sort.getValue());
 
         IntComparatorChain chain = new IntComparatorChain(comparator);
         while (entries.hasNext()) {
             sort = entries.next();
-            if (sort.getValue() == Order.ASCEND) {
-                chain.addComparator(rowComparator(sort.getKey(), false));
-            } else {
-                chain.addComparator(rowComparator(sort.getKey(), true));
-            }
+            chain.addComparator(rowComparator(sort.getKey(), sort.getValue()));
         }
         return chain;
     }
@@ -650,12 +635,11 @@ public class Table extends Relation implements IntIterable {
      * @param columnName The name of the column to sort
      * @param reverse    {@code true} if the column should be sorted in reverse
      */
-    private IntComparator rowComparator(String columnName, boolean reverse) {
-
+    private IntComparator rowComparator(String columnName, Order order) {
         Column column = this.column(columnName);
         IntComparator rowComparator = column.rowComparator();
 
-        if (reverse) {
+        if (order == Order.DESCEND) {
             return ReversingIntComparator.reverse(rowComparator);
         } else {
             return rowComparator;
