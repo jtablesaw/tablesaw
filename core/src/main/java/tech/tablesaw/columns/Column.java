@@ -69,8 +69,9 @@ public interface Column {
      * Sets the columns name to the given string
      *
      * @param name The new name MUST be unique for any table containing this column
+     * @return this Column to allow method chaining
      */
-    void setName(String name);
+    Column setName(String name);
 
     /**
      * Returns this column's ColumnType
