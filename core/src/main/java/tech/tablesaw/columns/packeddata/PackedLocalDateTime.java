@@ -66,15 +66,8 @@ public class PackedLocalDateTime {
         return (byte) date(date);  // last byte
     }
 
-    public static short getYear(int date) {
-        // get first two bytes, then convert to a short
-        byte byte1 = (byte) (date >> 24);
-        byte byte2 = (byte) (date >> 16);
-        return (short) ((byte1 << 8) + (byte2 & 0xFF));
-    }
-
     public static short getYear(long dateTime) {
-        return getYear(date(dateTime));
+        return PackedLocalDate.getYear(date(dateTime));
     }
 
     public static LocalDateTime asLocalDateTime(long dateTime) {
@@ -101,9 +94,7 @@ public class PackedLocalDateTime {
     public static long pack(LocalDateTime dateTime) {
         LocalDate date = dateTime.toLocalDate();
         LocalTime time = dateTime.toLocalTime();
-        int d = PackedLocalDate.pack(date);
-        int t = PackedLocalTime.pack(time);
-        return (((long) d) << 32) | (t & 0xffffffffL);
+        return (pack(date, time));
     }
 
     public static long pack(Date date) {
@@ -111,13 +102,7 @@ public class PackedLocalDateTime {
     }
 
     public static long pack(short yr, byte m, byte d, byte hr, byte min, byte s, byte n) {
-        byte byte1 = (byte) yr;
-        byte byte2 = (byte) ((yr >> 8) & 0xff);
-        int date = Ints.fromBytes(
-                byte1,
-                byte2,
-                m,
-                d);
+        int date = PackedLocalDate.pack(yr, m, d);
 
         int time = Ints.fromBytes(hr, min, s, n);
 
@@ -139,16 +124,12 @@ public class PackedLocalDateTime {
         int date = date(dateTime);
         int time = time(dateTime);
 
-        // get first two bytes, then each of the other two
-        byte yearByte1 = (byte) (date >> 24);
-        byte yearByte2 = (byte) (date >> 16);
-
         return
-                "" + (short) ((yearByte2 << 8) + (yearByte1 & 0xFF))
+                "" + PackedLocalDate.getYear(date)
                         + "-"
-                        + Strings.padStart(Byte.toString((byte) (date >> 8)), 2, '0')
+                        + Strings.padStart(Byte.toString(PackedLocalDate.getMonthValue(date)), 2, '0')
                         + "-"
-                        + Strings.padStart(Byte.toString((byte) date), 2, '0')
+                        + Strings.padStart(Byte.toString(PackedLocalDate.getDayOfMonth(date)), 2, '0')
                         + "T"
                         + Strings.padStart(Byte.toString(PackedLocalTime.getHour(time)), 2, '0')
                         + ":"

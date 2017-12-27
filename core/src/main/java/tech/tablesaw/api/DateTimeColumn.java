@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.LongColumnUtils;
+import tech.tablesaw.columns.packeddata.PackedLocalDate;
 import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
 import tech.tablesaw.filtering.LocalDateTimePredicate;
 import tech.tablesaw.filtering.LongBiPredicate;
@@ -473,7 +474,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
             if (c1 == MISSING_VALUE) {
                 newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
-                newColumn.append(PackedLocalDateTime.getYear(PackedLocalDateTime.date(c1)));
+                newColumn.append(PackedLocalDate.getYear(PackedLocalDateTime.date(c1)));
             }
         }
         return newColumn;
