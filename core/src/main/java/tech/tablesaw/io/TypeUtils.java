@@ -88,7 +88,6 @@ public final class TypeUtils {
             new DateTimeFormatterBuilder()
                     .appendOptional(dtf1)
                     .appendOptional(dtf2)
-                    .appendOptional(dtf2)
                     .appendOptional(dtf3)
                     .appendOptional(dtf4)
                     .appendOptional(dtf5)
