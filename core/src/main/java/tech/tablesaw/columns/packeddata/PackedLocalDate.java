@@ -53,7 +53,7 @@ public class PackedLocalDate {
         // get first two bytes, then convert to a short
         byte byte1 = (byte) (date >> 24);
         byte byte2 = (byte) (date >> 16);
-        return (short) ((byte2 << 8) + (byte1 & 0xFF));
+        return (short) ((byte1 << 8) + (byte2 & 0xFF));
     }
 
     public static LocalDate asLocalDate(int date) {
@@ -61,14 +61,10 @@ public class PackedLocalDate {
             return null;
         }
 
-        // get first two bytes, then each of the other two
-        byte yearByte1 = (byte) (date >> 24);
-        byte yearByte2 = (byte) (date >> 16);
-
         return LocalDate.of(
-                (short) ((yearByte2 << 8) + (yearByte1 & 0xFF)),
-                (byte) (date >> 8),
-                (byte) date);
+                (short) getYear(date),
+                (byte) getMonthValue(date),
+                (byte) getDayOfMonth(date));
     }
 
     public static byte getMonthValue(int date) {
@@ -77,14 +73,10 @@ public class PackedLocalDate {
     }
 
     public static int pack(LocalDate date) {
-        short year = (short) date.getYear();
-        byte byte1 = (byte) year;
-        byte byte2 = (byte) ((year >> 8) & 0xff);
-        return Ints.fromBytes(
-                byte1,
-                byte2,
-                (byte) date.getMonthValue(),
-                (byte) date.getDayOfMonth());
+        return pack(
+            (short) date.getYear(),
+            (byte) date.getMonthValue(),
+            (byte) date.getDayOfMonth());
     }
 
     public static int pack(Date date) {
@@ -92,8 +84,8 @@ public class PackedLocalDate {
     }
 
     public static int pack(short yr, byte m, byte d) {
-        byte byte1 = (byte) yr;
-        byte byte2 = (byte) ((yr >> 8) & 0xff);
+        byte byte1 = (byte) ((yr >> 8) & 0xff);
+        byte byte2 = (byte) yr;
         return Ints.fromBytes(
                 byte1,
                 byte2,
@@ -106,11 +98,7 @@ public class PackedLocalDate {
             return "NA";
         }
 
-        // get first two bytes, then each of the other two
-        byte yearByte1 = (byte) (date >> 24);
-        byte yearByte2 = (byte) (date >> 16);
-
-        return (short) ((yearByte2 << 8) + (yearByte1 & 0xFF))
+        return (short) getYear(date)
                 + "-"
                 + Strings.padStart(Byte.toString((byte) (date >> 8)), 2, '0')
                 + "-"

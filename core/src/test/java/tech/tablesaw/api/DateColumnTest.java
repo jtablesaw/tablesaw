@@ -112,7 +112,7 @@ public class DateColumnTest {
         assertEquals(PackedLocalDate.asLocalDate(column1.convert("2013-10-23")), actual);
     }
 
-    @Test @Ignore
+    @Test
     public void testSortOn() {
       Table unsorted = Table.read().csv(
           "Date,1 Yr Treasury Rate\n"

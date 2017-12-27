@@ -29,9 +29,6 @@ import java.time.temporal.ChronoField;
 import static org.junit.Assert.*;
 import static tech.tablesaw.columns.packeddata.PackedLocalDateTime.*;
 
-/**
- *
- */
 public class PackedLocalDateTimeTest {
 
     @Test

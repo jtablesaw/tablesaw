@@ -70,7 +70,7 @@ public class PackedLocalDateTime {
         // get first two bytes, then convert to a short
         byte byte1 = (byte) (date >> 24);
         byte byte2 = (byte) (date >> 16);
-        return (short) ((byte2 << 8) + (byte1 & 0xFF));
+        return (short) ((byte1 << 8) + (byte2 & 0xFF));
     }
 
     public static short getYear(long dateTime) {
