@@ -16,11 +16,18 @@ package tech.tablesaw.filtering.columnbased;
 
 import com.google.common.base.Preconditions;
 
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
@@ -47,6 +54,34 @@ public class ColumnEqualTo extends ColumnFilter {
         return column1.isEqualTo(column2);
     }
 
+    private static Selection apply(CategoryColumn column1, CategoryColumn column2) {
+        return column1.isEqualTo(column2);
+    }
+
+    private static Selection apply(BooleanColumn column1, BooleanColumn column2) {
+        return column1.isEqualTo(column2);
+    }
+
+    private static Selection apply(DateColumn column1, DateColumn column2) {
+        return column1.isEqualTo(column2);
+    }
+
+    private static Selection apply(DateTimeColumn column1, DateTimeColumn column2) {
+        return column1.isEqualTo(column2);
+    }
+
+    private static Selection apply(TimeColumn column1, TimeColumn column2) {
+        return column1.isEqualTo(column2);
+    }
+
+    private static Selection apply(FloatColumn column1, FloatColumn column2) {
+        return column1.isEqualTo(column2);
+    }
+
+    private static Selection apply(DoubleColumn column1, DoubleColumn column2) {
+        return column1.isEqualTo(column2);
+    }
+
     public Selection apply(Table relation) {
 
         Column column = relation.column(columnReference().getColumnName());
@@ -62,6 +97,27 @@ public class ColumnEqualTo extends ColumnFilter {
 
         if (column.type() == ColumnType.SHORT_INT)
             return apply((ShortColumn) column, (ShortColumn) other);
+
+        if (column.type() == ColumnType.CATEGORY)
+            return apply((CategoryColumn) column, (CategoryColumn) other);
+
+        if (column.type() == ColumnType.BOOLEAN)
+            return apply((BooleanColumn) column, (BooleanColumn) other);
+
+        if (column.type() == ColumnType.LOCAL_DATE)
+            return apply((DateColumn) column, (DateColumn) other);
+
+        if (column.type() == ColumnType.LOCAL_DATE_TIME)
+            return apply((DateTimeColumn) column, (DateTimeColumn) other);
+
+        if (column.type() == ColumnType.LOCAL_TIME)
+            return apply((TimeColumn) column, (TimeColumn) other);
+
+        if (column.type() == ColumnType.FLOAT)
+            return apply((FloatColumn) column, (FloatColumn) other);
+
+        if (column.type() == ColumnType.DOUBLE)
+            return apply((DoubleColumn) column, (DoubleColumn) other);
 
         throw new UnsupportedOperationException("Not yet implemented for this column type");
     }

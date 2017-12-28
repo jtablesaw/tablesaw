@@ -505,6 +505,24 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         }
     }
 
+    /**
+     * Returns a bitmap flagging the records for which the value in this column is equal to the value in the given
+     * column
+     * Columnwise isEqualTo.
+     */
+    public Selection isEqualTo(TimeColumn column) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        IntIterator intIterator = column.intIterator();
+        for (int next : data) {
+            if (next == intIterator.nextInt()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
     public IntIterator intIterator() {
         return data.iterator();
     }

@@ -252,6 +252,19 @@ public class CategoryColumn extends AbstractColumn
         lookupTable.clear();
     }
 
+    public Selection isEqualTo(CategoryColumn other) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        Iterator<String> iterator = other.iterator();
+        for (String next : this) {
+            if (next.equals(iterator.next())) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
     /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria
