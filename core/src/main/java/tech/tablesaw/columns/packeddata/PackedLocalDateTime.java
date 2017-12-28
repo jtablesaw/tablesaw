@@ -119,7 +119,7 @@ public class PackedLocalDateTime {
 
     public static String toString(long dateTime) {
         if (dateTime == Long.MIN_VALUE) {
-            return "NA";
+            return "";
         }
         int date = date(dateTime);
         int time = time(dateTime);

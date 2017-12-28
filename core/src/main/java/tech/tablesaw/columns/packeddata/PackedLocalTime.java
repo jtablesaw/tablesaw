@@ -131,7 +131,7 @@ public class PackedLocalTime {
 
     public static String toShortTimeString(int time) {
         if (time == -1) {
-            return "NA";
+            return "";
         }
 
         byte hourByte = (byte) (time >> 24);

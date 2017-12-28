@@ -43,7 +43,7 @@ public class PackedLocalDate {
      * There are five 400 year cycles from year zero to 2000.
      * There are 7 leap years from 1970 to 2000.
      */
-    static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
+    private static final long DAYS_0000_TO_1970 = (DAYS_PER_CYCLE * 5L) - (30L * 365L + 7L);
 
     public static byte getDayOfMonth(int date) {
         return (byte) date;  // last byte
@@ -95,14 +95,14 @@ public class PackedLocalDate {
 
     public static String toDateString(int date) {
         if (date == Integer.MIN_VALUE) {
-            return "NA";
+            return "";
         }
 
-        return (short) getYear(date)
+        return getYear(date)
                 + "-"
-                + Strings.padStart(Byte.toString((byte) (date >> 8)), 2, '0')
+                + Strings.padStart(Byte.toString(getMonthValue(date)), 2, '0')
                 + "-"
-                + Strings.padStart(Byte.toString((byte) date), 2, '0');
+                + Strings.padStart(Byte.toString(getDayOfMonth(date)), 2, '0');
     }
 
     public static int getDayOfYear(int packedDate) {
