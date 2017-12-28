@@ -492,6 +492,19 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         data.set(index, value);
     }
 
+    /**
+     * Conditionally update this column, replacing current values with newValue for all rows where the current value
+     * matches the selection criteria
+     *
+     * Example:
+     * myColumn.set(LocalTime.now(), myColumn.isMissing()); // no more missing values
+     */
+    public void set(LocalTime newValue, Selection rowSelection) {
+        for (int row : rowSelection) {
+            set(row, PackedLocalTime.pack(newValue));
+        }
+    }
+
     public IntIterator intIterator() {
         return data.iterator();
     }

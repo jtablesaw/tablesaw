@@ -160,6 +160,10 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
         data.set(index, value);
     }
 
+    public void set(int index, LocalDate value) {
+        data.set(index, PackedLocalDate.pack(value));
+    }
+
     public void append(LocalDate f) {
         appendInternal(PackedLocalDate.pack(f));
     }
@@ -284,6 +288,19 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
             }
         }
         return newColumn;
+    }
+
+    /**
+     * Conditionally update this column, replacing current values with newValue for all rows where the current value
+     * matches the selection criteria
+     *
+     * Example:
+     * myColumn.set(LocalDate.now(), myColumn.isMissing()); // no more missing values
+     */
+    public void set(LocalDate newValue, Selection rowSelection) {
+        for (int row : rowSelection) {
+            set(row, newValue);
+        }
     }
 
     public ShortColumn dayOfWeekValue() {

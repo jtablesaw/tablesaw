@@ -480,6 +480,19 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return newColumn;
     }
 
+    /**
+     * Conditionally update this column, replacing current values with newValue for all rows where the current value
+     * matches the selection criteria
+     *
+     * Example:
+     * myColumn.set(LocalDateTime.now(), myColumn.isMissing()); // no more missing values
+     */
+    public void set(LocalDateTime newValue, Selection rowSelection) {
+        for (int row : rowSelection) {
+            set(row, newValue);
+        }
+    }
+
     public Selection isEqualTo(LocalDateTime value) {
         long packed = PackedLocalDateTime.pack(value);
         return select(LongColumnUtils.isEqualTo, packed);
@@ -840,6 +853,10 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
     public void set(int index, long value) {
         data.set(index, value);
+    }
+
+    public void set(int index, LocalDateTime value) {
+        data.set(index, PackedLocalDateTime.pack(value));
     }
 
     public Selection select(LongBiPredicate predicate, long value) {

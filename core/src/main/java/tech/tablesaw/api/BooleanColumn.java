@@ -368,6 +368,16 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         data.set(i, b ? (byte) 1 : (byte) 0);
     }
 
+    /**
+     * Conditionally update this column, replacing current values with newValue for all rows where the current value
+     * matches the selection criteria
+     **/
+    public void set(boolean newValue, Selection rowSelection) {
+        for (int row : rowSelection) {
+            set(row, newValue);
+        }
+    }
+
     @Override
     public IntComparator rowComparator() {
         return comparator;

@@ -633,6 +633,19 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         data.set(r, value);
     }
 
+    /**
+     * Conditionally update this column, replacing current values with newValue for all rows where the current value
+     * matches the selection criteria
+     *
+     * Example:
+     * myColumn.set(4.0f, myColumn.isMissing()); // no more missing values
+     */
+    public void set(float newValue, Selection rowSelection) {
+        for (int row : rowSelection) {
+            set(row, newValue);
+        }
+    }
+
     // TODO(lwhite): Reconsider the implementation of this functionality to allow user to provide a specific max error.
     // TODO(lwhite): continued: Also see section in Effective Java on floating point comparisons.
     Selection isCloseTo(float target) {

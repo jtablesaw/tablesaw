@@ -39,6 +39,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.columns.DoubleColumnUtils.*;
 
 import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -653,6 +654,19 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     public void set(int r, double value) {
         data.set(r, value);
+    }
+
+    /**
+     * Conditionally update this column, replacing current values with newValue for all rows where the current value
+     * matches the selection criteria
+     *
+     * Example:
+     * myColumn.set(4.0, myColumn.isMissing()); // no more missing values
+     */
+    public void set(double newValue, Selection rowSelection) {
+        for (int row : rowSelection) {
+            set(row, newValue);
+        }
     }
 
     // TODO(lwhite): Reconsider the implementation of this functionality to allow user to provide a specific max error.

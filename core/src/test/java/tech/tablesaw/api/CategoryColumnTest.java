@@ -37,6 +37,13 @@ public class CategoryColumnTest {
     }
 
     @Test
+    public void testConditionalSet() {
+        column.set("no Value", column.isEqualTo("Value 4"));
+        assertTrue(column.contains("no Value"));
+        assertFalse(column.contains("Value 4"));
+    }
+
+    @Test
     public void testDefaultReturnValue() {
         assertEquals(-1, column.dictionaryMap().get("test"));
     }

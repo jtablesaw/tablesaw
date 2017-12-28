@@ -123,6 +123,19 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         data.set(index, value);
     }
 
+    /**
+     * Conditionally update this column, replacing current values with newValue for all rows where the current value
+     * matches the selection criteria
+     *
+     * Example:
+     * myColumn.set(4, myColumn.isMissing()); // no more missing values
+     */
+    public void set(int newValue, Selection rowSelection) {
+        for (int row : rowSelection) {
+            set(row, newValue);
+        }
+    }
+
     public Selection isLessThan(int i) {
         return select(isLessThan, i);
     }

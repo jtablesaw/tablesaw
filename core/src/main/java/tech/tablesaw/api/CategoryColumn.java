@@ -252,6 +252,20 @@ public class CategoryColumn extends AbstractColumn
         lookupTable.clear();
     }
 
+    /**
+     * Conditionally update this column, replacing current values with newValue for all rows where the current value
+     * matches the selection criteria
+     *
+     * Examples:
+     * myCatColumn.set("Dog", myCatColumn.isEqualTo("Cat")); // no more cats
+     * myCatColumn.set("Fox", myCatColumn.isMissing()); // no more missing values
+     */
+    public void set(String newValue, Selection rowSelection) {
+        for (int row : rowSelection) {
+            set(row, newValue);
+        }
+    }
+
     public void set(int rowIndex, String stringValue) {
         if (stringValue == null) {
             stringValue = MISSING_VALUE;
