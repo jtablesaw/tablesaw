@@ -343,6 +343,32 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return results;
     }
 
+    public Selection isGreaterThan(DoubleColumn d) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        DoubleIterator doubleIterator = d.iterator();
+        for (double doubles : data) {
+            if (doubles > doubleIterator.nextDouble()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    public Selection isLessThan(DoubleColumn d) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        DoubleIterator doubleIterator = d.iterator();
+        for (double doubles : data) {
+            if (doubles < doubleIterator.nextDouble()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
     @Override
     public String getString(int row) {
       double value = data.getDouble(row);

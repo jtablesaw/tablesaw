@@ -360,6 +360,32 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return results;
     }
 
+    public Selection isGreaterThan(FloatColumn f) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        FloatIterator floatIterator = f.iterator();
+        for (float floats : data) {
+            if (floats > floatIterator.nextFloat()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    public Selection isLessThan(FloatColumn f) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        FloatIterator floatIterator = f.iterator();
+        for (float floats : data) {
+            if (floats < floatIterator.nextFloat()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
     @Override
     public String getString(int row) {
         float value = data.getFloat(row);

@@ -162,13 +162,39 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public Selection isNotEqualTo(long i) {
       return select(isNotEqualTo, i);
     }
- 
+
     public Selection isEqualTo(LongColumn f) {
         Selection results = new BitmapBackedSelection();
         int i = 0;
         LongIterator longIterator = f.iterator();
         for (long next : data) {
             if (next == longIterator.nextLong()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    public Selection isGreaterThan(LongColumn f) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        LongIterator longIterator = f.iterator();
+        for (long next : data) {
+            if (next > longIterator.nextLong()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    public Selection isLessThan(LongColumn f) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        LongIterator longIterator = f.iterator();
+        for (long next : data) {
+            if (next < longIterator.nextLong()) {
                 results.add(i);
             }
             i++;

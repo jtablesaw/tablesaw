@@ -144,6 +144,32 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return select(ShortColumnUtils.isGreaterThan, i);
     }
 
+    public Selection isGreaterThan(ShortColumn other) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        ShortIterator shortIterator = other.iterator();
+        for (int next : data) {
+            if (next > shortIterator.nextShort()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    public Selection isLessThan(ShortColumn other) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        ShortIterator shortIterator = other.iterator();
+        for (int next : data) {
+            if (next < shortIterator.nextShort()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
     public Selection isGreaterThanOrEqualTo(int i) {
         return select(ShortColumnUtils.isGreaterThanOrEqualTo, i);
     }

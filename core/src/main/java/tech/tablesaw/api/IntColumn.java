@@ -196,6 +196,34 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return results;
     }
 
+    public Selection isGreaterThan(IntColumn other) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        IntIterator otherIterator = other.iterator();
+        for (int next : data) {
+            int otherNext = otherIterator.nextInt();
+            if (next > otherNext) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    public Selection isLessThan(IntColumn other) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        IntIterator otherIterator = other.iterator();
+        for (int next : data) {
+            int otherNext = otherIterator.nextInt();
+            if (next < otherNext) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
     @Override
     public Table summary() {
         return Stats.create(this).asTable();
