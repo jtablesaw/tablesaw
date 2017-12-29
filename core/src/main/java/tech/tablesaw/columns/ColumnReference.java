@@ -52,6 +52,7 @@ import tech.tablesaw.filtering.TimeEqualTo;
 import tech.tablesaw.filtering.TimeNotEqualTo;
 import tech.tablesaw.filtering.columnbased.ColumnEqualTo;
 import tech.tablesaw.filtering.columnbased.ColumnGreaterThan;
+import tech.tablesaw.filtering.columnbased.ColumnLessThan;
 import tech.tablesaw.filtering.dates.LocalDateIsAfter;
 import tech.tablesaw.filtering.dates.LocalDateIsBefore;
 import tech.tablesaw.filtering.datetimes.DateTimeIsAfter;
@@ -146,6 +147,10 @@ public class ColumnReference {
 
     public Filter isGreaterThan(ColumnReference reference) {
         return new ColumnGreaterThan(this, reference);
+    }
+
+    public Filter isLessThan(ColumnReference reference) {
+        return new ColumnLessThan(this, reference);
     }
 
     public Filter isBetweenIncluding(int low, int high) {
