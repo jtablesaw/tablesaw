@@ -21,7 +21,6 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import tech.tablesaw.columns.packeddata.PackedLocalDate;
