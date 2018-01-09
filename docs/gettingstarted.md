@@ -9,7 +9,7 @@ Tablesaw is available from Maven Central.
 <dependency>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-core</artifactId>
-    <version>0.11.0</version>
+    <version>0.11.4</version>
 </dependency>
 
 It requires Java 8 or newer.
@@ -173,7 +173,7 @@ WY    0  405   178   51   11   0   0  645
 Total 44 27253 20009 9067 2580 670 68 59691
 Write the new CSV file to disk
 
-tornadoes.exportToCsv("data/rev_tornadoes_1950-2014.csv");
+tornadoes.write().csv("data/rev_tornadoes_1950-2014.csv");
 Read and write data using Tablesaw’s “.saw” format
 
 Once you’ve imported data you can use Tablesaw’s own disk format to save it. In .saw format, reads and writes are an order of magnitude faster than optimized CSV operations.
