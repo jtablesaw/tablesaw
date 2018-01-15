@@ -19,11 +19,11 @@ import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.reducing.CrossTab;
+import tech.tablesaw.aggregate.CrossTab;
 import tech.tablesaw.util.Selection;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.range;
 import static tech.tablesaw.api.QueryHelper.*;
-import static tech.tablesaw.reducing.NumericReduceUtils.range;
 
 /**
  *         Example code for:
