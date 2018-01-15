@@ -78,6 +78,19 @@ public class DateColumnTest {
     }
 
     @Test
+    public void testYearMonthString() throws Exception {
+        column1.appendCell("2013-10-23");
+        column1.appendCell("12/24/1924");
+        column1.appendCell("12-May-2015");
+        column1.appendCell("14-Jan-2015");
+        CategoryColumn c2 = column1.yearMonthString();
+        assertEquals("2013-10", c2.get(0));
+        assertEquals("1924-12", c2.get(1));
+        assertEquals("2015-05", c2.get(2));
+        assertEquals("2015-01", c2.get(3));
+    }
+
+    @Test
     public void testYear() throws Exception {
         column1.appendCell("2013-10-23");
         column1.appendCell("12/24/1924");
