@@ -38,12 +38,29 @@ import tech.tablesaw.util.ReverseShortComparator;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
-
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.geometricMean;
+import static tech.tablesaw.aggregate.AggregateFunctions.kurtosis;
+import static tech.tablesaw.aggregate.AggregateFunctions.max;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.median;
+import static tech.tablesaw.aggregate.AggregateFunctions.min;
+import static tech.tablesaw.aggregate.AggregateFunctions.populationVariance;
+import static tech.tablesaw.aggregate.AggregateFunctions.product;
+import static tech.tablesaw.aggregate.AggregateFunctions.quadraticMean;
+import static tech.tablesaw.aggregate.AggregateFunctions.quartile1;
+import static tech.tablesaw.aggregate.AggregateFunctions.quartile3;
+import static tech.tablesaw.aggregate.AggregateFunctions.range;
+import static tech.tablesaw.aggregate.AggregateFunctions.skewness;
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import static tech.tablesaw.aggregate.AggregateFunctions.sumOfLogs;
+import static tech.tablesaw.aggregate.AggregateFunctions.sumOfSquares;
+import static tech.tablesaw.aggregate.AggregateFunctions.variance;
 
 /**
  * A column that contains signed 2 byte integer values
@@ -126,7 +143,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria
-     *
+     * <p>
      * Example:
      * myColumn.set((short) 4, myColumn.isMissing()); // no more missing values
      */
@@ -179,9 +196,9 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public Selection isNotEqualTo(int i) {
-      return select(ShortColumnUtils.isNotEqualTo, i);
+        return select(ShortColumnUtils.isNotEqualTo, i);
     }
- 
+
     public Selection isEqualTo(int i) {
         return select(ShortColumnUtils.isEqualTo, i);
     }
@@ -598,7 +615,12 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     public double[] toDoubleArray() {
         double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            output[i] = data.getShort(i);
+            long val = data.getShort(i);
+            if (val == MISSING_VALUE) {
+                output[i] = Double.NaN;
+            } else {
+                output[i] = val;
+            }
         }
         return output;
     }

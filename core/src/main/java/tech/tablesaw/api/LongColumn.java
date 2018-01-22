@@ -291,6 +291,14 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return result;
     }
 
+    public LongColumn multiply(long value) {
+        LongColumn result = new LongColumn(name() + " * " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(get(r) * value);
+        }
+        return result;
+    }
+
     public FloatColumn multiply(FloatColumn column2) {
         FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
@@ -303,6 +311,14 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / column2.get(r));
+        }
+        return result;
+    }
+
+    public LongColumn divide(long value) {
+        LongColumn result = new LongColumn(name() + " / " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(get(r) / value);
         }
         return result;
     }
@@ -631,7 +647,12 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public double[] toDoubleArray() {
         double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            output[i] = data.getLong(i);
+            long val = data.getLong(i);
+            if (val == MISSING_VALUE) {
+                output[i] = Double.NaN;
+            } else {
+                output[i] = val;
+            }
         }
         return output;
     }

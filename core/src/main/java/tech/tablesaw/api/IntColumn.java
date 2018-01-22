@@ -463,7 +463,12 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public double[] toDoubleArray() {
         double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            output[i] = data.getInt(i);
+            long val = data.getInt(i);
+            if (val == MISSING_VALUE) {
+                output[i] = Double.NaN;
+            } else {
+                output[i] = val;
+            }
         }
         return output;
     }
