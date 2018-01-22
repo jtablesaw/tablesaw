@@ -14,13 +14,19 @@
 
 package tech.tablesaw.aggregate;
 
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleList;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
 
+import org.apache.commons.math3.util.DoubleArray;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.ShortColumn;
 
 /**
  * Contains common utilities for double and long types
@@ -89,7 +95,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return StatUtils.mean(data);
+            return StatUtils.mean(removeMissing(data));
         }
     };
 
@@ -105,7 +111,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return StatUtils.sum(data);
+            return StatUtils.sum(removeMissing(data));
         }
 
         @Override
@@ -234,6 +240,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
+            data = removeMissing(data);
             return StatUtils.max(data) - StatUtils.min(data);
         }
     };
@@ -247,7 +254,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return StatUtils.min(data);
+            return StatUtils.min(removeMissing(data));
         }
 
         @Override
@@ -274,7 +281,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return StatUtils.max(data);
+            return StatUtils.max(removeMissing(data));
         }
     };
 
@@ -287,7 +294,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return StatUtils.product(data);
+            return StatUtils.product(removeMissing(data));
         }
 
         @Override
@@ -316,7 +323,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return StatUtils.geometricMean(data);
+            return StatUtils.geometricMean(removeMissing(data));
         }
     };
 
@@ -329,7 +336,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return StatUtils.populationVariance(data);
+            return StatUtils.populationVariance(removeMissing(data));
         }
     };
 
@@ -345,7 +352,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return new DescriptiveStatistics(data).getQuadraticMean();
+            return new DescriptiveStatistics(removeMissing(data)).getQuadraticMean();
         }
     };
 
@@ -358,7 +365,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return new Kurtosis().evaluate(data, 0, data.length);
+            return new Kurtosis().evaluate(removeMissing(data), 0, data.length);
         }
     };
 
@@ -371,7 +378,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return new Skewness().evaluate(data, 0, data.length);
+            return new Skewness().evaluate(removeMissing(data), 0, data.length);
         }
     };
 
@@ -384,7 +391,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return StatUtils.sumSq(data);
+            return StatUtils.sumSq(removeMissing(data));
         }
     };
 
@@ -397,7 +404,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return StatUtils.sumLog(data);
+            return StatUtils.sumLog(removeMissing(data));
         }
     };
 
@@ -410,7 +417,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return StatUtils.variance(data);
+            return StatUtils.variance(removeMissing(data));
         }
 
         /**
@@ -444,13 +451,28 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return Math.sqrt(StatUtils.variance(data));
+            return Math.sqrt(StatUtils.variance(removeMissing(data)));
         }
 
     };
 
     public static double percentile(double[] data, double percentile) {
-        return StatUtils.percentile(data, percentile);
+        return StatUtils.percentile(removeMissing(data), percentile);
+    }
+
+
+    private static double[] removeMissing(double[] data) {
+        DoubleList doubleArray = new DoubleArrayList();
+        for (double d : data) {
+            if (isNotMissing(d)) {
+                doubleArray.add(d);
+            }
+        }
+        return doubleArray.toDoubleArray();
+    }
+
+    private static boolean isNotMissing(double value) {
+        return ! Double.isNaN(value);
     }
 
     // TODO(lwhite): These are two column reductions. We need a class for that
