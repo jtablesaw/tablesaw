@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
@@ -57,7 +58,7 @@ public interface DateTimeMapUtils extends DateTimeColumnUtils {
             long c1 = this.getLongInternal(r);
             long c2 = column2.getLongInternal(r);
             if (c1 == DateTimeColumn.MISSING_VALUE || c2 == DateTimeColumn.MISSING_VALUE) {
-                newColumn.append(IntColumn.MISSING_VALUE);
+                newColumn.append(LongColumn.MISSING_VALUE);
             } else {
                 newColumn.append(difference(c1, c2, unit));
             }
