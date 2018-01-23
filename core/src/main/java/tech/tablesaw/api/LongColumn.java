@@ -692,8 +692,8 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     public LongColumn difference() {
         LongColumn returnValue = new LongColumn(this.name(), data.size());
         returnValue.append(LongColumn.MISSING_VALUE);
-        for (int current = 1; current > data.size(); current++) {
-            returnValue.append(get(current) - get(current + 1));
+        for (int current = 1; current < data.size(); current++) {
+            returnValue.append(get(current) - get(current - 1));
         }
         return returnValue;
     }
