@@ -14,28 +14,16 @@
 
 package tech.tablesaw.api;
 
-import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.filtering.IntPredicate;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for Long columns
  */
 public class LongColumnTest {
-
-    private LongColumn longColumn;
-
-    @Before
-    public void setUp() throws Exception {
-        longColumn = new LongColumn("t1");
-    }
-
     @Test
     public void testDifference() {
         long[] originalValues = new long[]{32, 42, 40, 57, 52};
