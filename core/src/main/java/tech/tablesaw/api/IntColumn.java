@@ -697,16 +697,19 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     @Override
     public IntColumn difference() {
         IntColumn returnValue = new IntColumn(this.name(), this.size());
-        returnValue.append(IntColumn.MISSING_VALUE);
-        for (int current = 0; current < this.size(); current++) {
-            if (current + 1 < this.size()) {
-                int currentValue = this.get(current);
-                int nextValue = this.get(current + 1);
-                if (current == IntColumn.MISSING_VALUE || nextValue == IntColumn.MISSING_VALUE) {
-                    returnValue.append(IntColumn.MISSING_VALUE);
-                } else {
-                    returnValue.append(nextValue - currentValue);
-                }
+        if (data.isEmpty()) {
+            return returnValue;
+        }
+
+        returnValue.append(MISSING_VALUE);
+        for (int current = 1; current < data.size(); current++) {
+            int currentValue = get(current);
+            int previousValue = get(current - 1);
+            // check for missing values
+            if (currentValue == MISSING_VALUE || previousValue == MISSING_VALUE) {
+                returnValue.append(MISSING_VALUE);
+            } else {
+                returnValue.append(currentValue - previousValue);
             }
         }
         return returnValue;

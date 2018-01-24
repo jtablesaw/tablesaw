@@ -32,6 +32,7 @@ import tech.tablesaw.util.Stats;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
+import static tech.tablesaw.api.FloatColumn.MISSING_VALUE;
 
 /**
  * Unit tests for the FloatColumn class
@@ -465,7 +466,7 @@ public class FloatColumnTest {
         assertEquals(0, floats.countMissing());
         floats.clear();
         for (int i = 0; i < 10; i++) {
-            floats.append(FloatColumn.MISSING_VALUE);
+            floats.append(MISSING_VALUE);
         }
         assertEquals(10, floats.countMissing());
     }
@@ -517,7 +518,7 @@ public class FloatColumnTest {
         assertEquals(10, floats.isNotMissing().size());
         floats.clear();
         for (int i = 0; i < 10; i++) {
-            floats.append(FloatColumn.MISSING_VALUE);
+            floats.append(MISSING_VALUE);
         }
         assertEquals(10, floats.isMissing().size());
         assertEquals(0, floats.isNotMissing().size());
@@ -607,29 +608,26 @@ public class FloatColumnTest {
         }
     }
 
-    // todo - question - does this test really test difference method?
     @Test
     public void testDifference() {
-        FloatColumn floats = new FloatColumn("floats", 100);
-        FloatColumn otherFloats = new FloatColumn("otherFloats", 100);
-        for (int i = 0; i < 100; i++) {
-            floats.append(RandomUtils.nextFloat(0, 10_000));
-            otherFloats.append(floats.get(i) - 1.0f);
-        }
-        for (int i = 0; i < floats.size(); i++) {
-            assertEquals(floats.get(i), otherFloats.get(i) + 1.0, 0.01);
-        }
+        float[] originalValues = new float[]{32, 42, 40, 57, 52};
+        float[] expectedValues = new float[]{MISSING_VALUE, 10, -2, 17, -5};
+        computeAndValidateDifference(originalValues, expectedValues);
     }
 
     @Test
-    public void testDifferencePositive() {
-        float[] originalValues = new float[]{ 32, 42, 40, 57, 52 };
-        float[] expectedValues = new float[]{ FloatColumn.MISSING_VALUE, 10, -2, 17, -5 };
+    public void testMissingValuesInColumn() {
+        float[] originalValues = new float[]{32, 42, MISSING_VALUE, 57, 52};
+        float[] expectedValues = new float[]{MISSING_VALUE, 10, MISSING_VALUE, MISSING_VALUE, -5};
+        computeAndValidateDifference(originalValues, expectedValues);
+    }
 
+    private void computeAndValidateDifference(float[] originalValues, float[] expectedValues) {
         FloatColumn initial = new FloatColumn("Test", originalValues.length);
         for (float value : originalValues) {
             initial.append(value);
         }
+
         FloatColumn difference = initial.difference();
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
@@ -639,20 +637,9 @@ public class FloatColumnTest {
     }
 
     @Test
-    public void testDifferenceNegative() {
-        float[] originalValues = new float[]{ 32, 42, 40, 57, 52 };
-        float[] expectedValues = new float[]{ Float.MAX_VALUE, Float.MIN_VALUE, -12, 117, 5 };
-
-        FloatColumn initial = new FloatColumn("Test", originalValues.length);
-        for (float value : originalValues) {
-            initial.append(value);
-        }
+    public void testDifferenceEmptyColumn() {
+        FloatColumn initial = new FloatColumn("Test");
         FloatColumn difference = initial.difference();
-        assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
-        for (int index = 0; index < difference.size(); index++) {
-            float actual = difference.get(index);
-            assertNotEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0.0);
-        }
+        assertEquals("Expecting empty data set.", 0, difference.size());
     }
-
 }

@@ -29,6 +29,7 @@ import org.junit.Test;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
+import static tech.tablesaw.api.DoubleColumn.MISSING_VALUE;
 
 /**
  * Unit tests for the DoubleColumn class
@@ -281,7 +282,7 @@ public class DoubleColumnTest {
         assertEquals(0, doubles.countMissing());
         doubles.clear();
         for (int i = 0; i < 10; i++) {
-            doubles.append(DoubleColumn.MISSING_VALUE);
+            doubles.append(MISSING_VALUE);
         }
         assertEquals(10, doubles.countMissing());
     }
@@ -333,7 +334,7 @@ public class DoubleColumnTest {
         assertEquals(10, doubles.isNotMissing().size());
         doubles.clear();
         for (int i = 0; i < 10; i++) {
-            doubles.append(DoubleColumn.MISSING_VALUE);
+            doubles.append(MISSING_VALUE);
         }
         assertEquals(10, doubles.isMissing().size());
         assertEquals(0, doubles.isNotMissing().size());
@@ -423,52 +424,38 @@ public class DoubleColumnTest {
         }
     }
 
-    // todo - question - does this test really test difference method?
     @Test
     public void testDifference() {
-        DoubleColumn doubles = new DoubleColumn("doubles", 100);
-        DoubleColumn otherDoubles = new DoubleColumn("otherDoubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-            otherDoubles.append(doubles.get(i) - 1.0f);
-        }
-        for (int i = 0; i < doubles.size(); i++) {
-            assertEquals(doubles.get(i), otherDoubles.get(i) + 1.0, 0.01);
-        }
+        double[] originalValues = new double[]{32, 42, 40, 57, 52};
+        double[] expectedValues = new double[]{MISSING_VALUE, 10, -2, 17, -5};
+        computeAndValidateDifference(originalValues, expectedValues);
     }
 
     @Test
-    public void testDifferencePositive() {
-        double[] originalValues = new double[]{ 32, 42, 40, 57, 52 };
-        double[] expectedValues = new double[]{ DoubleColumn.MISSING_VALUE, 10, -2, 17, -5 };
+    public void testMissingValuesInColumn() {
+        double[] originalValues = new double[]{32, 42, MISSING_VALUE, 57, 52};
+        double[] expectedValues = new double[]{MISSING_VALUE, 10, MISSING_VALUE, MISSING_VALUE, -5};
+        computeAndValidateDifference(originalValues, expectedValues);
+    }
 
+    private void computeAndValidateDifference(double[] originalValues, double[] expectedValues) {
         DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
         for (double value : originalValues) {
             initial.append(value);
         }
+
         DoubleColumn difference = initial.difference();
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
             double actual = difference.get(index);
-            assertEquals("difference operation at index " + index + " failed", expectedValues[index], actual, 0);
+            assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0);
         }
     }
 
     @Test
-    public void testDifferenceNegative() {
-        double[] originalValues = new double[]{ 32, 42, 40, 57, 52 };
-        double[] expectedValues = new double[]{ Double.MAX_VALUE, Double.MIN_VALUE, -12, 117, 5 };
-
-        DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
-        for (double value : originalValues) {
-            initial.append(value);
-        }
+    public void testDifferenceEmptyColumn() {
+        DoubleColumn initial = new DoubleColumn("Test");
         DoubleColumn difference = initial.difference();
-        assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
-        for (int index = 0; index < difference.size(); index++) {
-            double actual = difference.get(index);
-            assertNotEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0.0);
-        }
+        assertEquals("Expecting empty data set.", 0, difference.size());
     }
-
 }

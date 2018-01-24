@@ -798,18 +798,20 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     @Override
     public FloatColumn difference() {
         FloatColumn returnValue = new FloatColumn(this.name(), this.size());
+        if (data.isEmpty()) {
+            return returnValue;
+        }
+
         returnValue.append(FloatColumn.MISSING_VALUE);
-        for (int current = 0; current < this.size(); current++) {
-            if (current + 1 < this.size()) {
-                float currentValue = get(current);
-                float nextValue = get(current + 1);
-                // check for missing values
-                // equality doesn't work with NaN, which is how missing value is encoded
-                if (Float.isNaN(currentValue) || Float.isNaN(nextValue)) {
-                    returnValue.append(MISSING_VALUE);
-                } else {
-                    returnValue.append(nextValue - currentValue);
-                }
+        for (int current = 1; current < data.size(); current++) {
+            float currentValue = get(current);
+            float previousValue = get(current - 1);
+            // check for missing values
+            // equality doesn't work with NaN, which is how missing value is encoded
+            if (Float.isNaN(currentValue) || Float.isNaN(previousValue)) {
+                returnValue.append(MISSING_VALUE);
+            } else {
+                returnValue.append(currentValue - previousValue);
             }
         }
         return returnValue;

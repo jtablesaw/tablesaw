@@ -691,9 +691,20 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     @Override
     public LongColumn difference() {
         LongColumn returnValue = new LongColumn(this.name(), data.size());
-        returnValue.append(LongColumn.MISSING_VALUE);
+        if (data.isEmpty()) {
+            return returnValue;
+        }
+
+        returnValue.append(MISSING_VALUE);
         for (int current = 1; current < data.size(); current++) {
-            returnValue.append(get(current) - get(current - 1));
+            long currentValue = get(current);
+            long previousValue = get(current - 1);
+            // check for missing values
+            if (currentValue == MISSING_VALUE || previousValue == MISSING_VALUE) {
+                returnValue.append(MISSING_VALUE);
+            } else {
+                returnValue.append(currentValue - previousValue);
+            }
         }
         return returnValue;
     }
