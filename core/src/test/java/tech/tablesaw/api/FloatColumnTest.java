@@ -612,17 +612,17 @@ public class FloatColumnTest {
     public void testDifference() {
         float[] originalValues = new float[]{32, 42, 40, 57, 52};
         float[] expectedValues = new float[]{MISSING_VALUE, 10, -2, 17, -5};
-        computeAndValidateDifference(originalValues, expectedValues);
+        assertTrue(computeAndValidateDifference(originalValues, expectedValues));
     }
 
     @Test
     public void testMissingValuesInColumn() {
         float[] originalValues = new float[]{32, 42, MISSING_VALUE, 57, 52};
         float[] expectedValues = new float[]{MISSING_VALUE, 10, MISSING_VALUE, MISSING_VALUE, -5};
-        computeAndValidateDifference(originalValues, expectedValues);
+        assertTrue(computeAndValidateDifference(originalValues, expectedValues));
     }
 
-    private void computeAndValidateDifference(float[] originalValues, float[] expectedValues) {
+    private boolean computeAndValidateDifference(float[] originalValues, float[] expectedValues) {
         FloatColumn initial = new FloatColumn("Test", originalValues.length);
         for (float value : originalValues) {
             initial.append(value);
@@ -634,6 +634,8 @@ public class FloatColumnTest {
             float actual = difference.get(index);
             assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0);
         }
+
+        return true;
     }
 
     @Test

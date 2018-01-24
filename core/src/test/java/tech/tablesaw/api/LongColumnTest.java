@@ -19,6 +19,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static tech.tablesaw.api.LongColumn.MISSING_VALUE;
 
 /**
@@ -29,17 +30,17 @@ public class LongColumnTest {
     public void testDifference() {
         long[] originalValues = new long[]{32, 42, 40, 57, 52};
         long[] expectedValues = new long[]{MISSING_VALUE, 10, -2, 17, -5};
-        computeAndValidateDifference(originalValues, expectedValues);
+        assertTrue(computeAndValidateDifference(originalValues, expectedValues));
     }
 
     @Test
     public void testMissingValuesInColumn() {
         long[] originalValues = new long[]{32, 42, MISSING_VALUE, 57, 52};
         long[] expectedValues = new long[]{MISSING_VALUE, 10, MISSING_VALUE, MISSING_VALUE, -5};
-        computeAndValidateDifference(originalValues, expectedValues);
+        assertTrue(computeAndValidateDifference(originalValues, expectedValues));
     }
 
-    private void computeAndValidateDifference(long[] originalValues, long[] expectedValues) {
+    private boolean computeAndValidateDifference(long[] originalValues, long[] expectedValues) {
         LongColumn initial = new LongColumn("Test", originalValues.length);
         Arrays.stream(originalValues).forEach(initial::append);
 
@@ -50,6 +51,8 @@ public class LongColumnTest {
             long actual = difference.get(index);
             assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual);
         }
+
+        return true;
     }
 
     @Test

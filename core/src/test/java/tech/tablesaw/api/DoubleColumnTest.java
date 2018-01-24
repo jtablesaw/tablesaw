@@ -428,17 +428,17 @@ public class DoubleColumnTest {
     public void testDifference() {
         double[] originalValues = new double[]{32, 42, 40, 57, 52};
         double[] expectedValues = new double[]{MISSING_VALUE, 10, -2, 17, -5};
-        computeAndValidateDifference(originalValues, expectedValues);
+        assertTrue(computeAndValidateDifference(originalValues, expectedValues));
     }
 
     @Test
     public void testMissingValuesInColumn() {
         double[] originalValues = new double[]{32, 42, MISSING_VALUE, 57, 52};
         double[] expectedValues = new double[]{MISSING_VALUE, 10, MISSING_VALUE, MISSING_VALUE, -5};
-        computeAndValidateDifference(originalValues, expectedValues);
+        assertTrue(computeAndValidateDifference(originalValues, expectedValues));
     }
 
-    private void computeAndValidateDifference(double[] originalValues, double[] expectedValues) {
+    private boolean computeAndValidateDifference(double[] originalValues, double[] expectedValues) {
         DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
         for (double value : originalValues) {
             initial.append(value);
@@ -450,6 +450,8 @@ public class DoubleColumnTest {
             double actual = difference.get(index);
             assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0);
         }
+
+        return true;
     }
 
     @Test
