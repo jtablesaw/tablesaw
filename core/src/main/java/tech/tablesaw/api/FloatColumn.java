@@ -804,15 +804,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
 
         returnValue.append(FloatColumn.MISSING_VALUE);
         for (int current = 1; current < data.size(); current++) {
-            float currentValue = get(current);
-            float previousValue = get(current - 1);
-            // check for missing values
-            // equality doesn't work with NaN, which is how missing value is encoded
-            if (Float.isNaN(currentValue) || Float.isNaN(previousValue)) {
-                returnValue.append(MISSING_VALUE);
-            } else {
-                returnValue.append(currentValue - previousValue);
-            }
+            returnValue.append(subtract(get(current), get(current - 1)));
         }
         return returnValue;
     }
@@ -857,7 +849,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     private float subtract(float val1, float val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+        // equality doesn't work with NaN, which is how missing value is encoded
+        if (Float.isNaN(val1) || Float.isNaN(val2)) {
             return MISSING_VALUE;
         }
         return val1 - val2;

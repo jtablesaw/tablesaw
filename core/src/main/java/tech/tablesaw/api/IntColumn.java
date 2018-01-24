@@ -703,14 +703,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
         returnValue.append(MISSING_VALUE);
         for (int current = 1; current < data.size(); current++) {
-            int currentValue = get(current);
-            int previousValue = get(current - 1);
-            // check for missing values
-            if (currentValue == MISSING_VALUE || previousValue == MISSING_VALUE) {
-                returnValue.append(MISSING_VALUE);
-            } else {
-                returnValue.append(currentValue - previousValue);
-            }
+            returnValue.append(subtract(get(current), get(current - 1)));
         }
         return returnValue;
     }
