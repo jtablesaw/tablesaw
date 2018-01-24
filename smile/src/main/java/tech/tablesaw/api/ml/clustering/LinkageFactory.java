@@ -13,15 +13,15 @@ import smile.clustering.linkage.WardLinkage;
  * TODO
  */
 public class LinkageFactory {
-	
-	
-	/**
-	 * TODO
-	 */
-	public enum type {
-		COMPLETE, SINGLE, UPGMA, UPGMC, WARD, WPGMA, WPGMC
-	}
-	
+    
+    
+    /**
+     * TODO
+     */
+    public enum type {
+        COMPLETE, SINGLE, UPGMA, UPGMC, WARD, WPGMA, WPGMC
+    }
+    
     /**
      * TODO
      * 
@@ -30,33 +30,33 @@ public class LinkageFactory {
      * @return TODO
      */
     public Linkage createLinkage(double[][] proximity, type linkageType) {
-    	
+        
         Linkage link;
         switch (linkageType) {
-	        case WARD:
-	        	link = new WardLinkage(proximity);
-	            break;
-	        case COMPLETE:
-	        	link = new CompleteLinkage(proximity);
-	            break;
-	        case SINGLE:
-	        	link = new SingleLinkage(proximity);
-	        	break;
-	        case UPGMA:
-	        	link = new UPGMALinkage(proximity);
-	        	break;
-	        case UPGMC:
-	        	link = new UPGMCLinkage(proximity);
-	        	break;
-	        case WPGMA:
-	        	link = new WPGMALinkage(proximity);
-	        	break;
-	        case WPGMC:
-	        	link = new WPGMCLinkage(proximity);
-	        	break;
-	        default: 
-	        	link = new SingleLinkage(proximity);
-	            break;
+            case WARD:
+                link = new WardLinkage(proximity);
+                break;
+            case COMPLETE:
+                link = new CompleteLinkage(proximity);
+                break;
+            case SINGLE:
+                link = new SingleLinkage(proximity);
+                break;
+            case UPGMA:
+                link = new UPGMALinkage(proximity);
+                break;
+            case UPGMC:
+                link = new UPGMCLinkage(proximity);
+                break;
+            case WPGMA:
+                link = new WPGMALinkage(proximity);
+                break;
+            case WPGMC:
+                link = new WPGMCLinkage(proximity);
+                break;
+            default: 
+                link = new SingleLinkage(proximity);
+                break;
         }
         
         return link;
