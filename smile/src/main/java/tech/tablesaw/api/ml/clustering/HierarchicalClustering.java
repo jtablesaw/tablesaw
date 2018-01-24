@@ -1,15 +1,14 @@
 package tech.tablesaw.api.ml.clustering;
 
-import smile.clustering.HierarchicalClustering;
 import smile.clustering.linkage.Linkage;
 import tech.tablesaw.api.NumericColumn;
 
 /**
  * TODO
  */
-public class Hclust {
-	
-    private final HierarchicalClustering hierarchicalClustering;
+public class HierarchicalClustering {
+
+    private final smile.clustering.HierarchicalClustering hclust;
 
     /**
      * Constructor.
@@ -17,17 +16,17 @@ public class Hclust {
      * @param linkageType TODO
      * @param columns TODO
      */
-    public Hclust(LinkageFactory.type linkageType, NumericColumn... columns) {
+    public HierarchicalClustering(LinkageFactory.type linkageType, NumericColumn... columns) {
         Proximity proximity = new Proximity(columns);
         Linkage linkage = new LinkageFactory().createLinkage(proximity.getMatrix(), linkageType);
-        this.hierarchicalClustering = new HierarchicalClustering(linkage);
+        this.hclust = new smile.clustering.HierarchicalClustering(linkage);
     }
     
     public int[][] getTree() {
-        return hierarchicalClustering.getTree();
+        return hclust.getTree();
     } 
     public double[] getHeight() {
-        return hierarchicalClustering.getHeight();
+        return hclust.getHeight();
     }
     
     /**
@@ -38,7 +37,7 @@ public class Hclust {
      */
     public int[] partition(int k) {
         // given number of desired clusters, returns clusters
-        return hierarchicalClustering.partition(k);
+        return hclust.partition(k);
     }    
     /**
      * TODO
@@ -48,7 +47,7 @@ public class Hclust {
      */
     public int[] partition(double h) {
         // given height to cut tree at, returns clusters
-        return hierarchicalClustering.partition(h);
+        return hclust.partition(h);
     } 
 
 }

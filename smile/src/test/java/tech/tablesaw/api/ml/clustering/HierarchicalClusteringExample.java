@@ -16,19 +16,18 @@ package tech.tablesaw.api.ml.clustering;
 
 import java.util.Arrays;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.ml.clustering.Hclust;
 
 /**
  * An example program illustrating the use of hierarchical clustering
  */
-public class HclustExample {
+public class HierarchicalClusteringExample {
 
     public static void main(String[] args) throws Exception {
 
         Table t = Table.read().csv("../data/whiskey.csv");
 
-        Hclust model = new Hclust(
-        		LinkageFactory.type.SINGLE,
+        HierarchicalClustering model = new HierarchicalClustering(
+                LinkageFactory.type.SINGLE,
                 t.nCol(2),
                 t.nCol(3),
                 t.nCol(4),
