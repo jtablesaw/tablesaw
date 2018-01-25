@@ -669,10 +669,24 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     @Override
-    public float getFloat(int index) {
-        return (float) data.getDouble(index);
+    public int getInt(int index) {
+        double value = data.getDouble(index);
+        return Double.isNaN(value) ? IntColumn.MISSING_VALUE : (int) value;
     }
 
+    @Override
+    public long getLong(int index) {
+        double value = data.getDouble(index);
+        return Double.isNaN(value) ? LongColumn.MISSING_VALUE : (long) value;
+    }
+
+    @Override
+    public float getFloat(int index) {
+        double value = data.getDouble(index);
+        return Double.isNaN(value) ? FloatColumn.MISSING_VALUE : (float) value;
+    }
+
+    @Override
     public double getDouble(int index) {
         return data.getDouble(index);
     }

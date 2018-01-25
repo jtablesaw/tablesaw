@@ -41,17 +41,11 @@ public class LongColumnTest {
     }
 
     private boolean computeAndValidateDifference(long[] originalValues, long[] expectedValues) {
-        LongColumn initial = new LongColumn("Test", originalValues.length);
-        Arrays.stream(originalValues).forEach(initial::append);
-
+        LongColumn initial = createLongColumn(originalValues);
         LongColumn difference = initial.difference();
+
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
-
-        for (int index = 0; index < difference.size(); index++) {
-            long actual = difference.get(index);
-            assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual);
-        }
-
+        validateDifferenceColumn(expectedValues, difference);
         return true;
     }
 
@@ -60,5 +54,93 @@ public class LongColumnTest {
         LongColumn initial = new LongColumn("Test");
         LongColumn difference = initial.difference();
         assertEquals("Expecting empty data set.", 0, difference.size());
+    }
+
+    @Test
+    public void testGetInt() {
+        LongColumn column = createLongColumn(new long[]{20L, 32452345, MISSING_VALUE, 234});
+        assertEquals("Primitive type conversion error", 20, column.getInt(0));
+        assertEquals("Primitive type conversion error", 32452345, column.getInt(1));
+        assertEquals("Primitive type conversion error", IntColumn.MISSING_VALUE, column.getInt(2));
+        assertEquals("Primitive type conversion error", 234, column.getInt(3));
+    }
+
+    @Test
+    public void testGetFloat() {
+        LongColumn column = createLongColumn(new long[]{20L, 32452345, MISSING_VALUE, 234});
+        assertEquals("Primitive type conversion error", 20.0, column.getFloat(0), 0.1);
+        assertEquals("Primitive type conversion error", 32452345.0, column.getFloat(1), 1);
+        assertTrue("Primitive type conversion error", Float.isNaN(column.getFloat(2)));
+        assertEquals("Primitive type conversion error", 234.0, column.getFloat(3), 0.1);
+    }
+
+    @Test
+    public void testGetDouble() {
+        LongColumn column = createLongColumn(new long[]{20L, 32452345, MISSING_VALUE, 234});
+        assertEquals("Primitive type conversion error", 20.0, column.getDouble(0), 0.1);
+        assertEquals("Primitive type conversion error", 32452345.0, column.getDouble(1), 1);
+        assertTrue("Primitive type conversion error", Double.isNaN(column.getDouble(2)));
+        assertEquals("Primitive type conversion error", 234.0, column.getDouble(3), 0.1);
+    }
+
+    private void validateDifferenceColumn(long[] expectedValues, LongColumn difference) {
+        for (int index = 0; index < difference.size(); index++) {
+            long actual = difference.get(index);
+            assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual);
+        }
+    }
+
+    @Test
+    public void testSubtractSmallerDoubleCol() {
+        long[] thisColValues = new long[]{32, 42, 40, 57, 52};
+        double[] thatColumnValues = new double[]{42, 32, 40};
+        long[] expectedValues = new long[]{-10, 10, 0};
+
+        LongColumn thisColumn = createLongColumn(thisColValues);
+        DoubleColumn thatColumn = createDoubleColumn(thatColumnValues);
+        LongColumn difference = thisColumn.subtract(thatColumn);
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
+        validateDifferenceColumn(expectedValues, difference);
+    }
+
+    @Test
+    public void testSubtractBiggerDoubleCol() {
+        long[] thisColValues = new long[]{32, 42, 40, 57, 52};
+        double[] thatColumnValues = new double[]{42, 32, 40, 91, 52, 98, 23};
+        long[] expectedValues = new long[]{-10, 10, 0, -34, 0};
+
+        LongColumn thisColumn = createLongColumn(thisColValues);
+        DoubleColumn thatColumn = createDoubleColumn(thatColumnValues);
+        LongColumn difference = thisColumn.subtract(thatColumn);
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
+        validateDifferenceColumn(expectedValues, difference);
+    }
+
+    @Test
+    public void testSubtractMissingValues() {
+        long[] thisColValues = new long[]{32, MISSING_VALUE, 40, 57, 52};
+        double[] thatColumnValues = new double[]{42, 32, 40, 91, 52, 98, 23};
+        long[] expectedValues = new long[]{-10, MISSING_VALUE, 0, -34, 0};
+
+        LongColumn thisColumn = createLongColumn(thisColValues);
+        DoubleColumn thatColumn = createDoubleColumn(thatColumnValues);
+        LongColumn difference = thisColumn.subtract(thatColumn);
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
+        validateDifferenceColumn(expectedValues, difference);
+    }
+
+    private DoubleColumn createDoubleColumn(double[] values) {
+        DoubleColumn column = new DoubleColumn("Test", values.length);
+        Arrays.stream(values).forEach(column::append);
+        return column;
+    }
+
+    private LongColumn createLongColumn(long[] values) {
+        LongColumn column = new LongColumn("Test", values.length);
+        Arrays.stream(values).forEach(column::append);
+        return column;
     }
 }

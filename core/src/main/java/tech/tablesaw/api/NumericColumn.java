@@ -23,7 +23,21 @@ public interface NumericColumn extends Column {
 
     double[] toDoubleArray();
 
-    float getFloat(int index);
+    default int getInt(int index) {
+        throw new UnsupportedOperationException("getInt() method not supported for all data types");
+    }
+
+    default float getFloat(int index) {
+        throw new UnsupportedOperationException("getFloat() method not supported for all data types");
+    }
+
+    default long getLong(int index) {
+        throw new UnsupportedOperationException("getLong() method not supported for all data types");
+    }
+
+    default double getDouble(int index) {
+        throw new UnsupportedOperationException("getDouble() method not supported for all data types");
+    }
 
     double max();
 

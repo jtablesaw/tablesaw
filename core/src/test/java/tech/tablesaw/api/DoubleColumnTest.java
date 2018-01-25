@@ -432,17 +432,14 @@ public class DoubleColumnTest {
     }
 
     @Test
-    public void testMissingValuesInColumn() {
+    public void testDifferenceMissingValuesInColumn() {
         double[] originalValues = new double[]{32, 42, MISSING_VALUE, 57, 52};
         double[] expectedValues = new double[]{MISSING_VALUE, 10, MISSING_VALUE, MISSING_VALUE, -5};
         assertTrue(computeAndValidateDifference(originalValues, expectedValues));
     }
 
     private boolean computeAndValidateDifference(double[] originalValues, double[] expectedValues) {
-        DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
-        for (double value : originalValues) {
-            initial.append(value);
-        }
+        DoubleColumn initial = createDoubleColumn(originalValues);
 
         DoubleColumn difference = initial.difference();
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
@@ -459,5 +456,40 @@ public class DoubleColumnTest {
         DoubleColumn initial = new DoubleColumn("Test");
         DoubleColumn difference = initial.difference();
         assertEquals("Expecting empty data set.", 0, difference.size());
+    }
+
+    @Test
+    public void getLong() {
+        DoubleColumn column = createDoubleColumn(new double[]{20.2, 32452345.3, MISSING_VALUE, 234});
+        assertEquals("Primitive type conversion error", 20L, column.getLong(0));
+        assertEquals("Primitive type conversion error", 32452345L, column.getLong(1));
+        assertEquals("Primitive type conversion error", LongColumn.MISSING_VALUE, column.getLong(2));
+        assertEquals("Primitive type conversion error", 234, column.getLong(3));
+    }
+
+    @Test
+    public void getInt() {
+        DoubleColumn column = createDoubleColumn(new double[]{20.2, 32452345.3, MISSING_VALUE, 234});
+        assertEquals("Primitive type conversion error", 20, column.getInt(0));
+        assertEquals("Primitive type conversion error", 32452345, column.getInt(1));
+        assertEquals("Primitive type conversion error", IntColumn.MISSING_VALUE, column.getInt(2));
+        assertEquals("Primitive type conversion error", 234, column.getInt(3));
+    }
+
+    @Test
+    public void getFloat() {
+        DoubleColumn column = createDoubleColumn(new double[]{20.2, 32452345.3, MISSING_VALUE, 234});
+        assertEquals("Primitive type conversion error", 20.2, column.getFloat(0), 0.1);
+        assertEquals("Primitive type conversion error", 32452345.3, column.getFloat(1), 1);
+        assertTrue("Primitive type conversion error", Float.isNaN(column.getFloat(2)));
+        assertEquals("Primitive type conversion error", 234.0, column.getFloat(3), 0.1);
+    }
+
+    private DoubleColumn createDoubleColumn(double[] originalValues) {
+        DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
+        for (double value : originalValues) {
+            initial.append(value);
+        }
+        return initial;
     }
 }
