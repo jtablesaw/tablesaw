@@ -26,6 +26,7 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -440,15 +441,8 @@ public class DoubleColumnTest {
 
     private boolean computeAndValidateDifference(double[] originalValues, double[] expectedValues) {
         DoubleColumn initial = createDoubleColumn(originalValues);
-
         DoubleColumn difference = initial.difference();
-        assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
-        for (int index = 0; index < difference.size(); index++) {
-            double actual = difference.get(index);
-            assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual, 0);
-        }
-
-        return true;
+        return validateEquality(expectedValues, difference);
     }
 
     @Test
@@ -458,11 +452,55 @@ public class DoubleColumnTest {
         assertEquals("Expecting empty data set.", 0, difference.size());
     }
 
+    @Test
+    public void testSubtractLongColumn() {
+        long[] col1Values = new long[]{32, LongColumn.MISSING_VALUE, 42, 57, 52};
+        double[] col2Values = new double[]{31.5, 42, 38.67, MISSING_VALUE, 52.01, 102};
+        double[] expected = new double[]{-0.5, MISSING_VALUE, -3.33, MISSING_VALUE, .01};
+
+        LongColumn col1 = new LongColumn("Test", col1Values.length);
+        Arrays.stream(col1Values).forEach(col1::append);
+        DoubleColumn col2 = createDoubleColumn(col2Values);
+
+        NumericColumn difference = col2.subtract(col1);
+        assertTrue("Expecting DoubleColumn type result", difference instanceof DoubleColumn);
+        DoubleColumn diffDoubleCol = (DoubleColumn) difference;
+        validateEquality(expected, diffDoubleCol);
+    }
+
+    @Test
+    public void testSubtract2Columns() {
+        double[] col1Values = new double[]{32.5, MISSING_VALUE, 42, 57, 52};
+        double[] col2Values = new double[]{32, 42, 38.67, MISSING_VALUE, 52.01, 102};
+        double[] expected = new double[]{0.5, MISSING_VALUE, 3.33, MISSING_VALUE, -.01};
+
+        DoubleColumn col1 = createDoubleColumn(col1Values);
+        DoubleColumn col2 = createDoubleColumn(col2Values);
+
+        DoubleColumn difference = DoubleColumn.subtractDouble(col1, col2);
+        validateEquality(expected, difference);
+
+        // change order to verify size of returned column
+        difference = DoubleColumn.subtractDouble(col2, col1);
+        expected = new double[]{-0.5, MISSING_VALUE, -3.33, MISSING_VALUE, .01};
+        validateEquality(expected, difference);
+    }
+
     private DoubleColumn createDoubleColumn(double[] originalValues) {
         DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
         for (double value : originalValues) {
             initial.append(value);
         }
         return initial;
+    }
+
+    private boolean validateEquality(double[] expectedValues, DoubleColumn col) {
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, col.size());
+        for (int index = 0; index < col.size(); index++) {
+            double actual = col.get(index);
+            assertEquals("value mismatch at index:" + index, expectedValues[index], actual, 0.01);
+        }
+
+        return true;
     }
 }
