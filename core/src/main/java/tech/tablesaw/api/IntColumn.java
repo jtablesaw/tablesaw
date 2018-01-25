@@ -328,19 +328,19 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     @Override
     public float getFloat(int index) {
         int value = data.getInt(index);
-        return value == IntColumn.MISSING_VALUE ? FloatColumn.MISSING_VALUE : (float) value;
+        return value == MISSING_VALUE ? FloatColumn.MISSING_VALUE : (float) value;
     }
 
     @Override
     public long getLong(int index) {
         int value = data.getInt(index);
-        return value == IntColumn.MISSING_VALUE ? LongColumn.MISSING_VALUE : value;
+        return value == MISSING_VALUE ? LongColumn.MISSING_VALUE : value;
     }
 
     @Override
     public double getDouble(int index) {
         int value = data.getInt(index);
-        return value == IntColumn.MISSING_VALUE ? DoubleColumn.MISSING_VALUE : (float) value;
+        return value == MISSING_VALUE ? DoubleColumn.MISSING_VALUE : (float) value;
     }
 
     @Override

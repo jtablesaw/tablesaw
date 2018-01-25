@@ -58,7 +58,7 @@ public class LongColumnTest {
 
     @Test
     public void testGetInt() {
-        LongColumn column = createLongColumn(new long[]{20L, 32452345, LongColumn.MISSING_VALUE, 234});
+        LongColumn column = createLongColumn(new long[]{20L, 32452345, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20, column.getInt(0));
         assertEquals("Primitive type conversion error", 32452345, column.getInt(1));
         assertEquals("Primitive type conversion error", IntColumn.MISSING_VALUE, column.getInt(2));
@@ -67,7 +67,7 @@ public class LongColumnTest {
 
     @Test
     public void testGetFloat() {
-        LongColumn column = createLongColumn(new long[]{20L, 32452345, LongColumn.MISSING_VALUE, 234});
+        LongColumn column = createLongColumn(new long[]{20L, 32452345, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20.0, column.getFloat(0), 0.1);
         assertEquals("Primitive type conversion error", 32452345.0, column.getFloat(1), 1);
         assertTrue("Primitive type conversion error", Float.isNaN(column.getFloat(2)));
@@ -76,7 +76,7 @@ public class LongColumnTest {
 
     @Test
     public void testGetDouble() {
-        LongColumn column = createLongColumn(new long[]{20L, 32452345, LongColumn.MISSING_VALUE, 234});
+        LongColumn column = createLongColumn(new long[]{20L, 32452345, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20.0, column.getDouble(0), 0.1);
         assertEquals("Primitive type conversion error", 32452345.0, column.getDouble(1), 1);
         assertTrue("Primitive type conversion error", Double.isNaN(column.getDouble(2)));
@@ -120,9 +120,9 @@ public class LongColumnTest {
 
     @Test
     public void testSubtractMissingValues() {
-        long[] thisColValues = new long[]{32, LongColumn.MISSING_VALUE, 40, 57, 52};
+        long[] thisColValues = new long[]{32, MISSING_VALUE, 40, 57, 52};
         double[] thatColumnValues = new double[]{42, 32, 40, 91, 52, 98, 23};
-        long[] expectedValues = new long[]{-10, LongColumn.MISSING_VALUE, 0, -34, 0};
+        long[] expectedValues = new long[]{-10, MISSING_VALUE, 0, -34, 0};
 
         LongColumn thisColumn = createLongColumn(thisColValues);
         DoubleColumn thatColumn = createDoubleColumn(thatColumnValues);

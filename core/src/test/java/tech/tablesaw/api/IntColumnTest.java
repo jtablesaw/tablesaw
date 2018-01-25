@@ -220,7 +220,7 @@ public class IntColumnTest {
 
     @Test
     public void testGetLong() {
-        IntColumn column = createIntColumn(new int[]{20, 32452345, IntColumn.MISSING_VALUE, 234});
+        IntColumn column = createIntColumn(new int[]{20, 32452345, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20, column.getLong(0));
         assertEquals("Primitive type conversion error", 32452345, column.getLong(1));
         assertEquals("Primitive type conversion error", LongColumn.MISSING_VALUE, column.getLong(2));
@@ -229,7 +229,7 @@ public class IntColumnTest {
 
     @Test
     public void testGetFloat() {
-        IntColumn column = createIntColumn(new int[]{20, 32452345, IntColumn.MISSING_VALUE, 234});
+        IntColumn column = createIntColumn(new int[]{20, 32452345, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20.0, column.getFloat(0), 0.1);
         assertEquals("Primitive type conversion error", 32452345.0, column.getFloat(1), 1);
         assertTrue("Primitive type conversion error", Float.isNaN(column.getFloat(2)));
@@ -238,7 +238,7 @@ public class IntColumnTest {
 
     @Test
     public void testGetDouble() {
-        IntColumn column = createIntColumn(new int[]{20, 32452345, IntColumn.MISSING_VALUE, 234});
+        IntColumn column = createIntColumn(new int[]{20, 32452345, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20.0, column.getDouble(0), 0.1);
         assertEquals("Primitive type conversion error", 32452345.0, column.getDouble(1), 1);
         assertTrue("Primitive type conversion error", Double.isNaN(column.getDouble(2)));

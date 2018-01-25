@@ -644,7 +644,7 @@ public class FloatColumnTest {
 
     @Test
     public void getInt() {
-        FloatColumn column = createFloatColumn(new float[]{20.2f, 3245234.3f, FloatColumn.MISSING_VALUE, 234});
+        FloatColumn column = createFloatColumn(new float[]{20.2f, 3245234.3f, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20, column.getInt(0));
         assertEquals("Primitive type conversion error", 3245234, column.getInt(1));
         assertEquals("Primitive type conversion error", IntColumn.MISSING_VALUE, column.getInt(2));
@@ -653,7 +653,7 @@ public class FloatColumnTest {
 
     @Test
     public void getLong() {
-        FloatColumn column = createFloatColumn(new float[]{20.2f, 3245234.3f, FloatColumn.MISSING_VALUE, 234});
+        FloatColumn column = createFloatColumn(new float[]{20.2f, 3245234.3f, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20L, column.getLong(0));
         assertEquals("Primitive type conversion error", 3245234L, column.getLong(1));
         assertEquals("Primitive type conversion error", LongColumn.MISSING_VALUE, column.getLong(2));
@@ -662,7 +662,7 @@ public class FloatColumnTest {
 
     @Test
     public void getFloat() {
-        FloatColumn column = createFloatColumn(new float[]{20.2f, 3245234.3f, FloatColumn.MISSING_VALUE, 234});
+        FloatColumn column = createFloatColumn(new float[]{20.2f, 3245234.3f, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20.2, column.getDouble(0), 0.1);
         assertEquals("Primitive type conversion error", 3245234.3, column.getDouble(1), 1);
         assertTrue("Primitive type conversion error", Double.isNaN(column.getDouble(2)));
