@@ -623,12 +623,9 @@ public class FloatColumnTest {
     }
 
     private boolean computeAndValidateDifference(float[] originalValues, float[] expectedValues) {
-        FloatColumn initial = new FloatColumn("Test", originalValues.length);
-        for (float value : originalValues) {
-            initial.append(value);
-        }
-
+        FloatColumn initial = createFloatColumn(originalValues);
         FloatColumn difference = initial.difference();
+
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
         for (int index = 0; index < difference.size(); index++) {
             float actual = difference.get(index);
@@ -643,5 +640,40 @@ public class FloatColumnTest {
         FloatColumn initial = new FloatColumn("Test");
         FloatColumn difference = initial.difference();
         assertEquals("Expecting empty data set.", 0, difference.size());
+    }
+
+    @Test
+    public void getInt() {
+        FloatColumn column = createFloatColumn(new float[]{20.2f, 3245234.3f, FloatColumn.MISSING_VALUE, 234});
+        assertEquals("Primitive type conversion error", 20, column.getInt(0));
+        assertEquals("Primitive type conversion error", 3245234, column.getInt(1));
+        assertEquals("Primitive type conversion error", IntColumn.MISSING_VALUE, column.getInt(2));
+        assertEquals("Primitive type conversion error", 234, column.getInt(3));
+    }
+
+    @Test
+    public void getLong() {
+        FloatColumn column = createFloatColumn(new float[]{20.2f, 3245234.3f, FloatColumn.MISSING_VALUE, 234});
+        assertEquals("Primitive type conversion error", 20L, column.getLong(0));
+        assertEquals("Primitive type conversion error", 3245234L, column.getLong(1));
+        assertEquals("Primitive type conversion error", LongColumn.MISSING_VALUE, column.getLong(2));
+        assertEquals("Primitive type conversion error", 234, column.getLong(3));
+    }
+
+    @Test
+    public void getFloat() {
+        FloatColumn column = createFloatColumn(new float[]{20.2f, 3245234.3f, FloatColumn.MISSING_VALUE, 234});
+        assertEquals("Primitive type conversion error", 20.2, column.getDouble(0), 0.1);
+        assertEquals("Primitive type conversion error", 3245234.3, column.getDouble(1), 1);
+        assertTrue("Primitive type conversion error", Double.isNaN(column.getDouble(2)));
+        assertEquals("Primitive type conversion error", 234.0, column.getDouble(3), 0.1);
+    }
+
+    private FloatColumn createFloatColumn(float[] originalValues) {
+        FloatColumn initial = new FloatColumn("Test", originalValues.length);
+        for (float value : originalValues) {
+            initial.append(value);
+        }
+        return initial;
     }
 }

@@ -667,8 +667,26 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     @Override
+    public int getInt(int index) {
+        float value = data.getFloat(index);
+        return Float.isNaN(value) ? IntColumn.MISSING_VALUE : (int) value;
+    }
+
+    @Override
+    public long getLong(int index) {
+        float value = data.getFloat(index);
+        return Float.isNaN(value) ? LongColumn.MISSING_VALUE : (long) value;
+    }
+
+    @Override
     public float getFloat(int index) {
         return data.getFloat(index);
+    }
+
+    @Override
+    public double getDouble(int index) {
+        float value = data.getFloat(index);
+        return Float.isNaN(value) ? DoubleColumn.MISSING_VALUE : value;
     }
 
     public void set(int r, float value) {
