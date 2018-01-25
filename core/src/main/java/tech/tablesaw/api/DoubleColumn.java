@@ -819,19 +819,13 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     @Override
     public DoubleColumn difference() {
         DoubleColumn returnValue = new DoubleColumn(this.name(), this.size());
+        if (data.isEmpty()) {
+            return returnValue;
+        }
+
         returnValue.append(DoubleColumn.MISSING_VALUE);
-        for (int current = 0; current < this.size(); current++) {
-            if (current + 1 < this.size()) {
-                double currentValue = get(current);
-                double nextValue = get(current + 1);
-                // check for missing values
-                // equality doesn't work with NaN, which is how missing value is encoded
-                if (Double.isNaN(currentValue) || Double.isNaN(nextValue)) {
-                    returnValue.append(MISSING_VALUE);
-                } else {
-                    returnValue.append(nextValue - currentValue);
-                }
-            }
+        for (int current = 1; current < data.size(); current++) {
+            returnValue.append(subtract(get(current), get(current - 1)));
         }
         return returnValue;
     }
@@ -844,7 +838,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     private double subtract(double val1, double val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+        // equality doesn't work with NaN, which is how missing value is encoded
+        if (Double.isNaN(val1) || Double.isNaN(val2)) {
             return MISSING_VALUE;
         }
         return val1 - val2;
