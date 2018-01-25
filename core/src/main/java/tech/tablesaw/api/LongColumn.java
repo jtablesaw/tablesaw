@@ -244,10 +244,10 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return result;
     }
 
-    public LongColumn subtract(LongColumn column2) {
+    public LongColumn subtract(NumericColumn column2) {
         LongColumn result = new LongColumn(name() + " - " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(subtract(get(r), column2.get(r)));
+        for (int r = 0; r < size() && r < column2.size(); r++) {
+            result.append(subtract(get(r), column2.getLong(r)));
         }
         return result;
     }

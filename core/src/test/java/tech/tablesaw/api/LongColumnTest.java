@@ -90,6 +90,54 @@ public class LongColumnTest {
         }
     }
 
+    @Test
+    public void testSubtractSmallerDoubleCol() {
+        long[] thisColValues = new long[]{32, 42, 40, 57, 52};
+        double[] thatColumnValues = new double[]{42, 32, 40};
+        long[] expectedValues = new long[]{-10, 10, 0};
+
+        LongColumn thisColumn = createLongColumn(thisColValues);
+        DoubleColumn thatColumn = createDoubleColumn(thatColumnValues);
+        LongColumn difference = thisColumn.subtract(thatColumn);
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
+        validateDifferenceColumn(expectedValues, difference);
+    }
+
+    @Test
+    public void testSubtractBiggerDoubleCol() {
+        long[] thisColValues = new long[]{32, 42, 40, 57, 52};
+        double[] thatColumnValues = new double[]{42, 32, 40, 91, 52, 98, 23};
+        long[] expectedValues = new long[]{-10, 10, 0, -34, 0};
+
+        LongColumn thisColumn = createLongColumn(thisColValues);
+        DoubleColumn thatColumn = createDoubleColumn(thatColumnValues);
+        LongColumn difference = thisColumn.subtract(thatColumn);
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
+        validateDifferenceColumn(expectedValues, difference);
+    }
+
+    @Test
+    public void testSubtractMissingValues() {
+        long[] thisColValues = new long[]{32, LongColumn.MISSING_VALUE, 40, 57, 52};
+        double[] thatColumnValues = new double[]{42, 32, 40, 91, 52, 98, 23};
+        long[] expectedValues = new long[]{-10, LongColumn.MISSING_VALUE, 0, -34, 0};
+
+        LongColumn thisColumn = createLongColumn(thisColValues);
+        DoubleColumn thatColumn = createDoubleColumn(thatColumnValues);
+        LongColumn difference = thisColumn.subtract(thatColumn);
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
+        validateDifferenceColumn(expectedValues, difference);
+    }
+
+    private DoubleColumn createDoubleColumn(double[] values) {
+        DoubleColumn column = new DoubleColumn("Test", values.length);
+        Arrays.stream(values).forEach(column::append);
+        return column;
+    }
+
     private LongColumn createLongColumn(long[] values) {
         LongColumn column = new LongColumn("Test", values.length);
         Arrays.stream(values).forEach(column::append);
