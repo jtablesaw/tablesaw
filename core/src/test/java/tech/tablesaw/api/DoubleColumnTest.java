@@ -432,17 +432,14 @@ public class DoubleColumnTest {
     }
 
     @Test
-    public void testMissingValuesInColumn() {
+    public void testDifferenceMissingValuesInColumn() {
         double[] originalValues = new double[]{32, 42, MISSING_VALUE, 57, 52};
         double[] expectedValues = new double[]{MISSING_VALUE, 10, MISSING_VALUE, MISSING_VALUE, -5};
         assertTrue(computeAndValidateDifference(originalValues, expectedValues));
     }
 
     private boolean computeAndValidateDifference(double[] originalValues, double[] expectedValues) {
-        DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
-        for (double value : originalValues) {
-            initial.append(value);
-        }
+        DoubleColumn initial = createDoubleColumn(originalValues);
 
         DoubleColumn difference = initial.difference();
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
@@ -459,5 +456,13 @@ public class DoubleColumnTest {
         DoubleColumn initial = new DoubleColumn("Test");
         DoubleColumn difference = initial.difference();
         assertEquals("Expecting empty data set.", 0, difference.size());
+    }
+
+    private DoubleColumn createDoubleColumn(double[] originalValues) {
+        DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
+        for (double value : originalValues) {
+            initial.append(value);
+        }
+        return initial;
     }
 }

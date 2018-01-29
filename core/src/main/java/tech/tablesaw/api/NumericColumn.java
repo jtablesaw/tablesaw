@@ -23,7 +23,45 @@ public interface NumericColumn extends Column {
 
     double[] toDoubleArray();
 
-    float getFloat(int index);
+    /**
+     * Returns int value at <code>index</code> position in the column. A conversion, if needed, could result
+     * in data or accuracy loss.
+     * @param index position in column
+     * @return int value at position
+     */
+    default int getInt(int index) {
+        throw new UnsupportedOperationException("getInt() method not supported for all data types");
+    }
+
+    /**
+     * Returns long value at <code>index</code> position in the column. A conversion, if needed, could result
+     * in data or accuracy loss.
+     * @param index position in column
+     * @return long value at position
+     */
+    default long getLong(int index) {
+        throw new UnsupportedOperationException("getLong() method not supported for all data types");
+    }
+
+    /**
+     * Returns float value at <code>index</code> position in the column. A conversion, if needed, could result
+     * in data or accuracy loss.
+     * @param index position in column
+     * @return float value at position
+     */
+    default float getFloat(int index) {
+        throw new UnsupportedOperationException("getFloat() method not supported for all data types");
+    }
+
+    /**
+     * Returns double value at <code>index</code> position in the column. A conversion, if needed, could result
+     * in data or accuracy loss.
+     * @param index position in column
+     * @return double value at position
+     */
+    default double getDouble(int index) {
+        throw new UnsupportedOperationException("getDouble() method not supported for all data types");
+    }
 
     double max();
 
