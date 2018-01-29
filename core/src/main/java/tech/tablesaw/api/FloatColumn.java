@@ -109,6 +109,10 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         data = new FloatArrayList(metadata.getSize());
     }
 
+    protected static boolean isMissing(float value) {
+      return Float.isNaN(value);
+    }
+    
     /**
      * Returns a float that is parsed from the given String
      * <p>
@@ -389,7 +393,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     @Override
     public String getString(int row) {
         float value = data.getFloat(row);
-        if (Float.isNaN(value)) {
+        if (isMissing(value)) {
             return null;
         }
         return String.valueOf(value);
@@ -443,9 +447,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            float f = get(i);
-            // We use NaN for missing, so we can't compare against the MISSING_VALUE
-            if (Float.isNaN(f)) {
+            if (isMissing(get(i))) {
                 count++;
             }
         }
@@ -674,7 +676,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     @Override
     public double getDouble(int index) {
         float value = data.getFloat(index);
-        return Float.isNaN(value) ? DoubleColumn.MISSING_VALUE : value;
+        return isMissing(value) ? DoubleColumn.MISSING_VALUE : value;
     }
 
     public void set(int r, float value) {
@@ -855,8 +857,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     private float subtract(float val1, float val2) {
-        // equality doesn't work with NaN, which is how missing value is encoded
-        if (Float.isNaN(val1) || Float.isNaN(val2)) {
+        if (isMissing(val1) || isMissing(val2)) {
             return MISSING_VALUE;
         }
         return val1 - val2;

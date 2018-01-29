@@ -106,6 +106,10 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         data = new DoubleArrayList(metadata.getSize());
     }
 
+    protected static boolean isMissing(double value) {
+      return Double.isNaN(value);
+    }
+
     /**
      * Returns a double that is parsed from the given String
      * <p>
@@ -372,7 +376,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     @Override
     public String getString(int row) {
       double value = data.getDouble(row);
-      if (Double.isNaN(value)) {
+      if (isMissing(value)) {
           return null;
       }
       return String.valueOf(value);
@@ -426,9 +430,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            double f = get(i);
-            // We use NaN for missing, so we can't compare against the MISSING_VALUE
-            if (Double.isNaN(f)) {
+            if (isMissing(get(i))) {
                 count++;
             }
         }
@@ -834,8 +836,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     private double subtract(double val1, double val2) {
-        // equality doesn't work with NaN, which is how missing value is encoded
-        if (Double.isNaN(val1) || Double.isNaN(val2)) {
+        if (isMissing(val1) || isMissing(val2)) {
             return MISSING_VALUE;
         }
         return val1 - val2;
