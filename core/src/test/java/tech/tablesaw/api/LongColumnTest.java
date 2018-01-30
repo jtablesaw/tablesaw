@@ -45,8 +45,7 @@ public class LongColumnTest {
         LongColumn difference = initial.difference();
 
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
-        validateDifferenceColumn(expectedValues, difference);
-        return true;
+        return validateDifferenceColumn(expectedValues, difference);
     }
 
     @Test
@@ -65,16 +64,18 @@ public class LongColumnTest {
         assertEquals("Primitive type conversion error", 234.0, column.getDouble(3), 0.1);
     }
 
-    private void validateDifferenceColumn(long[] expectedValues, LongColumn difference) {
+    private boolean validateDifferenceColumn(long[] expectedValues, LongColumn difference) {
         for (int index = 0; index < difference.size(); index++) {
             long actual = difference.get(index);
             assertEquals("difference operation at index:" + index + " failed", expectedValues[index], actual);
         }
+
+        return true;
     }
 
     @Test
     public void testSubtractDoubleColumn() {
-        long[] col1Values = new long[]{32, LongColumn.MISSING_VALUE, 42, 57, 52};
+        long[] col1Values = new long[]{32, MISSING_VALUE, 42, 57, 52};
         double[] col2Values = new double[]{31.5, 42, 38.67, DoubleColumn.MISSING_VALUE, 52.01, 102};
         double[] expected = new double[]{0.5, DoubleColumn.MISSING_VALUE, 3.33, DoubleColumn.MISSING_VALUE, -.01};
 
@@ -106,7 +107,7 @@ public class LongColumnTest {
         NumericColumn difference = col1.subtract(col2);
         assertTrue("Expecting LongColumn type result", difference instanceof LongColumn);
         LongColumn diffLongCol = (LongColumn) difference;
-        validateDifferenceColumn(expected, diffLongCol);
+        assertTrue(validateDifferenceColumn(expected, diffLongCol));
     }
 
     @Test
@@ -119,12 +120,12 @@ public class LongColumnTest {
         LongColumn col2 = createLongColumn(col2Values);
 
         LongColumn difference = LongColumn.subtractLong(col1, col2);
-        validateDifferenceColumn(expected, difference);
+        assertTrue(validateDifferenceColumn(expected, difference));
 
         // change order to verify size of returned column
         difference = LongColumn.subtractLong(col2, col1);
         expected = new long[]{0, MISSING_VALUE, -4, MISSING_VALUE, 0};
-        validateDifferenceColumn(expected, difference);
+        assertTrue(validateDifferenceColumn(expected, difference));
     }
 
     private LongColumn createLongColumn(long[] values) {

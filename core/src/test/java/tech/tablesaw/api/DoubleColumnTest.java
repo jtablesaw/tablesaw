@@ -465,7 +465,7 @@ public class DoubleColumnTest {
         NumericColumn difference = col2.subtract(col1);
         assertTrue("Expecting DoubleColumn type result", difference instanceof DoubleColumn);
         DoubleColumn diffDoubleCol = (DoubleColumn) difference;
-        validateEquality(expected, diffDoubleCol);
+        assertTrue(validateEquality(expected, diffDoubleCol));
     }
 
     @Test
@@ -478,12 +478,12 @@ public class DoubleColumnTest {
         DoubleColumn col2 = createDoubleColumn(col2Values);
 
         DoubleColumn difference = DoubleColumn.subtractDouble(col1, col2);
-        validateEquality(expected, difference);
+        assertTrue(validateEquality(expected, difference));
 
         // change order to verify size of returned column
         difference = DoubleColumn.subtractDouble(col2, col1);
         expected = new double[]{-0.5, MISSING_VALUE, -3.33, MISSING_VALUE, .01};
-        validateEquality(expected, difference);
+        assertTrue(validateEquality(expected, difference));
     }
 
     private DoubleColumn createDoubleColumn(double[] originalValues) {
