@@ -163,23 +163,18 @@ public class CsvReader {
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
 
-        Table table;
         CSVParser csvParser = new CSVParserBuilder()
                 .withSeparator(options.separator())
                 .build();
 
         try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis)).withCSVParser(csvParser).build()) {
-            String[] nextLine;
-            String[] columnNames;
-            List<String> headerRow;
-
             final String[] headerNames =
-                    options.header() ? nextLine = reader.readNext() : makeColumnNames(types);
+                    options.header() ? reader.readNext() : makeColumnNames(types);
+            final List<String> headerRow = Lists.newArrayList(headerNames);
 
-            headerRow = Lists.newArrayList(headerNames);
-            columnNames = selectColumnNames(headerRow, types);
+            final String[] columnNames = selectColumnNames(headerRow, types);
 
-            table = Table.create(options.tableName());
+            final Table table = Table.create(options.tableName());
             cleanNames(headerRow);
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != SKIP) {
@@ -187,33 +182,34 @@ public class CsvReader {
                     if (Strings.isNullOrEmpty(columnName)) {
                         columnName = "Column " + table.columnCount();
                     }
-                    Column newColumn = TypeUtils.newColumn(columnName, types[x]);
+                    final Column newColumn = TypeUtils.newColumn(columnName, types[x]);
                     table.addColumn(newColumn);
                 }
             }
-            int[] columnIndexes = new int[columnNames.length];
+            final int[] columnIndexes = new int[columnNames.length];
             for (int i = 0; i < columnIndexes.length; i++) {
                 // get the index in the original table, which includes skipped fields
                 columnIndexes[i] = headerRow.indexOf(columnNames[i]);
             }
-            // Add the rows
             long rowNumber = options.header() ? 1L : 0L;
+            String[] nextLine;
+            // Add the rows
             while ((nextLine = reader.readNext()) != null) {
                 // for each column that we're including (not skipping)
                 int cellIndex = 0;
-                for (int columnIndex : columnIndexes) {
-                    Column column = table.column(cellIndex);
+                for (final int columnIndex : columnIndexes) {
+                    final Column column = table.column(cellIndex);
                     try {
                         column.appendCell(nextLine[columnIndex]);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
                     }
                     cellIndex++;
                 }
                 rowNumber++;
             }
+            return table;
         }
-        return table;
     }
 
     private static void cleanNames(List<String> headerRow) {
