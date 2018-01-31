@@ -47,6 +47,8 @@ import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
@@ -146,35 +148,49 @@ public class CsvReader {
     }
 
     public static Table read(CsvReadOptions options) throws IOException {
-        ColumnType[] types = options.columnTypes();
-        byte[] bytes = options.reader() != null
+
+        final byte[] bytes = options.reader() != null
             ? CharStreams.toString(options.reader()).getBytes() : null;
-        if (types == null) {
-          InputStream detectTypesStream = options.reader() != null
-              ? new ByteArrayInputStream(bytes)
-              : new FileInputStream(options.file());
-          types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample()); 
+
+        final ColumnType[] types;
+        if (options.columnTypes() != null) {
+            types = options.columnTypes();
+        } else {
+            final InputStream detectTypesStream = options.reader() != null
+                    ? new ByteArrayInputStream(bytes)
+                    : new FileInputStream(options.file());
+            types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample()); 
         }
 
         // All other read methods end up here, make sure we don't have leading Unicode BOM
-        InputStream stream = options.reader() != null
+        final InputStream stream = options.reader() != null
             ? new ByteArrayInputStream(bytes)
             : new FileInputStream(options.file());
-        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
+
+        final UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
 
-        CSVParser csvParser = new CSVParserBuilder()
+        final CSVParser csvParser = new CSVParserBuilder()
                 .withSeparator(options.separator())
                 .build();
 
         try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis)).withCSVParser(csvParser).build()) {
-            final String[] headerNames =
-                    options.header() ? reader.readNext() : makeColumnNames(types);
+            final Table table = Table.create(options.tableName());
+
+            final String[] headerNames;
+            if (options.header()) {
+                headerNames = reader.readNext();
+                if (headerNames == null) {
+                    return table;
+                }
+            } else {
+                headerNames =  makeColumnNames(types);
+            }
+
             final List<String> headerRow = Lists.newArrayList(headerNames);
 
             final String[] columnNames = selectColumnNames(headerRow, types);
 
-            final Table table = Table.create(options.tableName());
             cleanNames(headerRow);
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != SKIP) {
@@ -191,6 +207,7 @@ public class CsvReader {
                 // get the index in the original table, which includes skipped fields
                 columnIndexes[i] = headerRow.indexOf(columnNames[i]);
             }
+
             long rowNumber = options.header() ? 1L : 0L;
             String[] nextLine;
             // Add the rows
@@ -208,6 +225,7 @@ public class CsvReader {
                 }
                 rowNumber++;
             }
+
             return table;
         }
     }

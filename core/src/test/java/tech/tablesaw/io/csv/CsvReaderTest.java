@@ -177,4 +177,20 @@ public class CsvReaderTest {
         assertNotNull(test.summary());
     }
 
+    @Test
+    public void testEmptyFileHeaderEnabled() throws Exception {
+        Table table1 = Table.read().csv(CsvReadOptions
+                .builder("../data/empty_file.csv")
+                .header(true));
+        assertEquals("0 rows X 0 cols", table1.shape().toString());
+    }
+
+    @Test
+    public void testEmptyFileHeaderDisabled() throws Exception {
+        Table table1 = Table.read().csv(CsvReadOptions
+                .builder("../data/empty_file.csv")
+                .header(false));
+        assertEquals("0 rows X 0 cols", table1.shape().toString());
+    }
+
 }
