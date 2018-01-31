@@ -210,6 +210,7 @@ public class CsvReader {
 
             long rowNumber = options.header() ? 1L : 0L;
             String[] nextLine;
+
             // Add the rows
             while ((nextLine = reader.readNext()) != null) {
                 // for each column that we're including (not skipping)
