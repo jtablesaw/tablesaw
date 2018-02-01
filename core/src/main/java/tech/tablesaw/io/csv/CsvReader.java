@@ -146,42 +146,49 @@ public class CsvReader {
     }
 
     public static Table read(CsvReadOptions options) throws IOException {
-        ColumnType[] types = options.columnTypes();
+
         byte[] bytes = options.reader() != null
             ? CharStreams.toString(options.reader()).getBytes() : null;
-        if (types == null) {
-          InputStream detectTypesStream = options.reader() != null
-              ? new ByteArrayInputStream(bytes)
-              : new FileInputStream(options.file());
-          types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample()); 
+
+        ColumnType[] types;
+        if (options.columnTypes() != null) {
+            types = options.columnTypes();
+        } else {
+            InputStream detectTypesStream = options.reader() != null
+                    ? new ByteArrayInputStream(bytes)
+                    : new FileInputStream(options.file());
+            types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample()); 
         }
 
         // All other read methods end up here, make sure we don't have leading Unicode BOM
         InputStream stream = options.reader() != null
             ? new ByteArrayInputStream(bytes)
             : new FileInputStream(options.file());
+
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
 
-        Table table;
         CSVParser csvParser = new CSVParserBuilder()
                 .withSeparator(options.separator())
                 .build();
 
         try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis)).withCSVParser(csvParser).build()) {
-            String[] nextLine;
-            String[] columnNames;
-            List<String> headerRow;
+            Table table = Table.create(options.tableName());
+
+            String[] headerNames;
             if (options.header()) {
-                nextLine = reader.readNext();
-                headerRow = Lists.newArrayList(nextLine);
-                columnNames = selectColumnNames(headerRow, types);
+                headerNames = reader.readNext();
+                if (headerNames == null) {
+                    return table;
+                }
             } else {
-                columnNames = makeColumnNames(types);
-                headerRow = Lists.newArrayList(columnNames);
+                headerNames =  makeColumnNames(types);
             }
 
-            table = Table.create(options.tableName());
+            List<String> headerRow = Lists.newArrayList(headerNames);
+
+            String[] columnNames = selectColumnNames(headerRow, types);
+
             cleanNames(headerRow);
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != SKIP) {
@@ -198,8 +205,11 @@ public class CsvReader {
                 // get the index in the original table, which includes skipped fields
                 columnIndexes[i] = headerRow.indexOf(columnNames[i]);
             }
-            // Add the rows
+
             long rowNumber = options.header() ? 1L : 0L;
+            String[] nextLine;
+
+            // Add the rows
             while ((nextLine = reader.readNext()) != null) {
                 // for each column that we're including (not skipping)
                 int cellIndex = 0;
@@ -214,8 +224,9 @@ public class CsvReader {
                 }
                 rowNumber++;
             }
+
+            return table;
         }
-        return table;
     }
 
     private static void cleanNames(List<String> headerRow) {
@@ -253,17 +264,14 @@ public class CsvReader {
                 .build();
         try (CSVReader csvReader = new CSVReaderBuilder(streamReader).withCSVParser(csvParser).build()) {
 
-            String[] nextLine;
             String[] columnNames;
             List<String> headerRow;
-            if (header) {
-                nextLine = csvReader.readNext();
-                headerRow = Lists.newArrayList(nextLine);
-                columnNames = selectColumnNames(headerRow, types);
-            } else {
-                columnNames = makeColumnNames(types);
-                headerRow = Lists.newArrayList(columnNames);
-            }
+
+            String[] headerNames =
+                    header ? csvReader.readNext() : makeColumnNames(types);
+
+            headerRow = Lists.newArrayList(headerNames);
+            columnNames = selectColumnNames(headerRow, types);
 
             table = Table.create(file.getName());
             for (int x = 0; x < types.length; x++) {

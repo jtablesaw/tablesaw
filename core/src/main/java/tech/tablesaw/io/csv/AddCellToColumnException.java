@@ -59,7 +59,7 @@ public class AddCellToColumnException extends RuntimeException {
      * @param line        The original line that caused the Exception
      */
     public AddCellToColumnException(Exception e, int columnIndex, long rowNumber, String[] columnNames, String[] line) {
-        super("Error while addding cell from row " + rowNumber + " and column " + columnNames[columnIndex] + "" +
+        super("Error while adding cell from row " + rowNumber + " and column " + columnNames[columnIndex] + "" +
                 "(position:" + columnIndex + "): " + e.getMessage(), e);
         this.columnIndex = columnIndex;
         this.rowNumber = rowNumber;

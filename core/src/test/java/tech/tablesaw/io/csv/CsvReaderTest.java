@@ -65,6 +65,19 @@ public class CsvReaderTest {
     }
 
     @Test
+    public void testWithColumnSKIPWithoutHeader() throws Exception {
+        // Read the CSV file
+        Table table = Table.read().csv(CsvReadOptions
+            .builder("../data/bus_stop_noheader_test.csv")
+            .header(false)
+            .columnTypes(bus_types_with_SKIP));
+
+        assertEquals(4, table.columnCount());
+        // Look at the column names
+        assertEquals("[C0, C1, C3, C4]", table.columnNames().toString());
+    }
+
+    @Test
     public void testWithBushData() throws Exception {
         // Read the CSV file
         ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};
@@ -162,6 +175,22 @@ public class CsvReaderTest {
 
         //TODO(lwhite): Better tests
         assertNotNull(test.summary());
+    }
+
+    @Test
+    public void testEmptyFileHeaderEnabled() throws Exception {
+        Table table1 = Table.read().csv(CsvReadOptions
+                .builder("../data/empty_file.csv")
+                .header(true));
+        assertEquals("0 rows X 0 cols", table1.shape().toString());
+    }
+
+    @Test
+    public void testEmptyFileHeaderDisabled() throws Exception {
+        Table table1 = Table.read().csv(CsvReadOptions
+                .builder("../data/empty_file.csv")
+                .header(false));
+        assertEquals("0 rows X 0 cols", table1.shape().toString());
     }
 
 }
