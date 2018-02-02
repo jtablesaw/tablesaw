@@ -92,6 +92,10 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         data = new LongArrayList(metadata.getSize());
     }
 
+    protected static boolean isMissing(long value) {
+      return value == MISSING_VALUE;
+    }
+
     /**
      * Returns a float that is parsed from the given String
      * <p>
@@ -720,5 +724,27 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
             return MISSING_VALUE;
         }
         return val1 - val2;
+    }
+
+    /**
+    * Returns a new column with a cumulative sum calculated
+    */
+    public LongColumn cumSum() {
+        long cSum = 0L;
+        LongColumn newColumn = new LongColumn(name() + "[cumSum]", size());
+        for (long value : this) {
+            if (!isMissing(value)) {
+                cSum += value;
+            }
+            newColumn.append(cSum);
+        }
+        return newColumn;
+    }
+
+    /**
+     * cSum() is an alias for cumSum();
+     */
+    public LongColumn cSum() {
+        return cumSum();
     }
 }
