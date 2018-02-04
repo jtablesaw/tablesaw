@@ -75,6 +75,7 @@ public class StorageManagerTest {
     private CategoryColumn categoryColumn = new CategoryColumn("cat");
     private DateColumn localDateColumn = new DateColumn("date");
     private LongColumn longColumn = new LongColumn("long");
+    private static String tempDir = System.getProperty("java.io.tmpdir");
 
     public static void main(String[] args) throws Exception {
 
@@ -91,9 +92,9 @@ public class StorageManagerTest {
         System.out.println(tornados.columnNames().toString());
         System.out.println(tornados.first(10));
         stopwatch.reset().start();
-        StorageManager.saveTable("/tmp/tablesaw/testdata", tornados);
+        StorageManager.saveTable(tempDir + "/tablesaw/testdata", tornados);
         stopwatch.reset().start();
-        tornados = StorageManager.readTable("/tmp/tablesaw/testdata/tornados.saw");
+        tornados = StorageManager.readTable(tempDir + "/tablesaw/testdata/tornados.saw");
         System.out.println(tornados.first(5));
     }
 
@@ -114,8 +115,8 @@ public class StorageManagerTest {
 
     @Test
     public void testCatStorage() throws Exception {
-        StorageManager.writeColumn("/tmp/cat_dogs", categoryColumn);
-        CategoryColumn readCat = StorageManager.readCategoryColumn("/tmp/cat_dogs", categoryColumn.columnMetadata());
+        StorageManager.writeColumn(tempDir + "/cat_dogs", categoryColumn);
+        CategoryColumn readCat = StorageManager.readCategoryColumn(tempDir + "/cat_dogs", categoryColumn.columnMetadata());
         for (int i = 0; i < categoryColumn.size(); i++) {
             assertEquals(categoryColumn.get(i), readCat.get(i));
         }
@@ -123,8 +124,8 @@ public class StorageManagerTest {
 
     @Test
     public void testWriteTable() throws IOException {
-        StorageManager.saveTable("/tmp/zeta", table);
-        Table t = StorageManager.readTable("/tmp/zeta/t.saw");
+        StorageManager.saveTable(tempDir + "/zeta", table);
+        Table t = StorageManager.readTable(tempDir + "/zeta/t.saw");
         assertEquals(table.columnCount(), t.columnCount());
         assertEquals(table.rowCount(), t.rowCount());
         for (int i = 0; i < table.rowCount(); i++) {
@@ -136,12 +137,12 @@ public class StorageManagerTest {
     @Test
     public void testWriteTableTwice() throws IOException {
 
-        StorageManager.saveTable("/tmp/mytables2", table);
-        Table t = StorageManager.readTable("/tmp/mytables2/t.saw");
+        StorageManager.saveTable(tempDir + "/mytables2", table);
+        Table t = StorageManager.readTable(tempDir + "/mytables2/t.saw");
         t.floatColumn("float").setName("a float column");
 
-        StorageManager.saveTable("/tmp/mytables2", table);
-        t = StorageManager.readTable("/tmp/mytables2/t.saw");
+        StorageManager.saveTable(tempDir + "/mytables2", table);
+        t = StorageManager.readTable(tempDir + "/mytables2/t.saw");
 
         assertEquals(table.name(), t.name());
         assertEquals(table.rowCount(), t.rowCount());
