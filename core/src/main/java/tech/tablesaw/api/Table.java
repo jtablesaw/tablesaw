@@ -265,6 +265,30 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
+     * Replaces an existing column (by index) in this table with the given new column
+     *
+     * @param colIndex  Zero-based index of the column to be replaced
+     * @param newColumn Column to be added
+     */
+    public Table replaceColumn(int colIndex, Column newColumn) {       
+        removeColumns(column(colIndex));
+        addColumn(colIndex, newColumn);
+        return this;
+    }
+
+    /**
+     * Replaces an existing column (by name) in this table with the given new column
+     *
+     * @param columnName String name of the column to be replaced
+     * @param newColumn  Column to be added
+     */
+    public Table replaceColumn(String columnName, Column newColumn) {
+        int colIndex = columnIndex(columnName);
+        replaceColumn(colIndex, newColumn);
+        return this;
+    }
+
+    /**
      * Sets the name of the table
      */
     @Override
