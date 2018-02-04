@@ -110,6 +110,10 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         data = new ShortArrayList(metadata.getSize());
     }
 
+    protected static boolean isMissing(short value) {
+      return value == MISSING_VALUE;
+    }
+
     /**
      * Returns a float that is parsed from the given String
      * <p>
@@ -709,5 +713,20 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
             output[i] = data.getShort(i);
         }
         return output;
+    }
+
+    /**
+    * Returns a new column with a cumulative sum calculated
+    */
+    public ShortColumn cumSum() {
+        short cSum = 0;
+        ShortColumn newColumn = new ShortColumn(name() + "[cumSum]", size());
+        for (short value : this) {
+            if (!isMissing(value)) {
+                cSum += value;
+            }
+            newColumn.append(cSum);
+        }
+        return newColumn;
     }
 }

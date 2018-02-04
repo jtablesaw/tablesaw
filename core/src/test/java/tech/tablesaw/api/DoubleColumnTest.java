@@ -465,4 +465,23 @@ public class DoubleColumnTest {
         }
         return initial;
     }
+
+    private boolean computeAndValidateCumSum(double[] originalValues, double[] expectedValues) {
+        DoubleColumn initial = createDoubleColumn(originalValues);
+
+        DoubleColumn csum = initial.cumSum();
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
+        for (int index = 0; index < csum.size(); index++) {
+            double actual = csum.get(index);
+            assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
+        }
+        return true;
+    }
+
+    @Test
+    public void testCumSum() {
+        double[] originalValues = new double[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
+        double[] expectedValues = new double[]{32, 74, 74, 131, 183, 173, 173};
+        assertTrue(computeAndValidateCumSum(originalValues, expectedValues));
+    }
 }

@@ -77,4 +77,23 @@ public class LongColumnTest {
         Arrays.stream(values).forEach(column::append);
         return column;
     }
+		
+    private boolean computeAndValidateCumSum(long[] originalValues, long[] expectedValues) {
+        LongColumn initial = createLongColumn(originalValues);
+
+        LongColumn csum = initial.cumSum();
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
+        for (int index = 0; index < csum.size(); index++) {
+            long actual = csum.get(index);
+            assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
+        }
+        return true;
+    }
+
+    @Test
+    public void testCumSum() {
+        long[] originalValues = new long[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
+        long[] expectedValues = new long[]{32, 74, 74, 131, 183, 173, 173};
+        assertTrue(computeAndValidateCumSum(originalValues, expectedValues));
+    }
 }
