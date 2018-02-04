@@ -167,6 +167,22 @@ public class TableTest {
         table.append(tableToAppend);
     }
 
+    @Test
+    public void testReplaceColumn() throws Exception {
+        FloatColumn first = new FloatColumn("c1", new float[]{1,2,3,4,5});
+        FloatColumn second = new FloatColumn("c2", new float[]{6,7,8,9,10});
+        FloatColumn replacement = new FloatColumn("c2", new float[]{10,20,30,40,50});
+
+        Table t = Table.create("populated", first, second);
+        
+        int colIndex = t.columnIndex(second);
+        assertTrue(t.column("c2") == second);
+        t.replaceColumn("c2", replacement);
+        assertTrue(t.column("c1") == first);
+        assertTrue(t.column("c2") == replacement);
+        assertTrue(t.columnIndex(replacement) == colIndex);
+    }
+
     private int appendRandomlyGeneratedColumn(Table table) {
         FloatColumn column = floatColumn.emptyCopy();
         populateColumn(column);
