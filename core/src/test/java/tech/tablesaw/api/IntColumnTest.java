@@ -251,22 +251,18 @@ public class IntColumnTest {
         return column;
     }
 
-    private boolean computeAndValidateCumSum(int[] originalValues, int[] expectedValues) {
-        IntColumn initial = createIntColumn(originalValues);
-
-        IntColumn csum = initial.cumSum();
-        assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
-        for (int index = 0; index < csum.size(); index++) {
-            int actual = csum.get(index);
-            assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
-        }
-        return true;
-    }
-
     @Test
     public void testCumSum() {
         int[] originalValues = new int[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
         int[] expectedValues = new int[]{32, 74, 74, 131, 183, 173, 173};
-        assertTrue(computeAndValidateCumSum(originalValues, expectedValues));
+        IntColumn initial = createIntColumn(originalValues);
+        IntColumn csum = initial.cumSum();
+        
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
+        
+        for (int index = 0; index < csum.size(); index++) {
+            int actual = csum.get(index);
+            assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
+        }
     }
 }
