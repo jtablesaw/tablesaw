@@ -716,8 +716,8 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     /**
-    * Returns a new column with a cumulative sum calculated
-    */
+     * Returns a new column with a cumulative sum calculated
+     */
     public ShortColumn cumSum() {
         short cSum = 0;
         ShortColumn newColumn = new ShortColumn(name() + "[cumSum]", size());

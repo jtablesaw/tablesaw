@@ -843,8 +843,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     /**
-    * Returns a new column with a cumulative sum calculated
-    */
+     * Returns a new column with a cumulative sum calculated
+     */
     public DoubleColumn cumSum() {
         double cSum = 0.0;
         DoubleColumn newColumn = new DoubleColumn(name() + "[cumSum]", size());

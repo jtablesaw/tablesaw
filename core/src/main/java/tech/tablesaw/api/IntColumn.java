@@ -745,8 +745,8 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     /**
-    * Returns a new column with a cumulative sum calculated
-    */
+     * Returns a new column with a cumulative sum calculated
+     */
     public IntColumn cumSum() {
         int cSum = 0;
         IntColumn newColumn = new IntColumn(name() + "[cumSum]", size());

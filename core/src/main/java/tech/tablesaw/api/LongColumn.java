@@ -727,8 +727,8 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     /**
-    * Returns a new column with a cumulative sum calculated
-    */
+     * Returns a new column with a cumulative sum calculated
+     */
     public LongColumn cumSum() {
         long cSum = 0L;
         LongColumn newColumn = new LongColumn(name() + "[cumSum]", size());

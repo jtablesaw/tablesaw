@@ -864,8 +864,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     /**
-    * Returns a new column with a cumulative sum calculated
-    */
+     * Returns a new column with a cumulative sum calculated
+     */
     public FloatColumn cumSum() {
         float cSum = 0.0f;
         FloatColumn newColumn = new FloatColumn(name() + "[cumSum]", size());
