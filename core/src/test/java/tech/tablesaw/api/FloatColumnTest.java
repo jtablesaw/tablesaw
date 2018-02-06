@@ -658,4 +658,19 @@ public class FloatColumnTest {
         }
         return initial;
     }
+
+    @Test
+    public void testCumSum() {
+        float[] originalValues = new float[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
+        float[] expectedValues = new float[]{32, 74, 74, 131, 183, 173, 173};
+        FloatColumn initial = createFloatColumn(originalValues);
+        FloatColumn csum = initial.cumSum();
+        
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
+        
+        for (int index = 0; index < csum.size(); index++) {
+            float actual = csum.get(index);
+            assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
+        }
+    }
 }

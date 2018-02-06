@@ -862,4 +862,19 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         }
         return val1 - val2;
     }
+
+    /**
+     * Returns a new column with a cumulative sum calculated
+     */
+    public FloatColumn cumSum() {
+        float cSum = 0.0f;
+        FloatColumn newColumn = new FloatColumn(name() + "[cumSum]", size());
+        for (float value : this) {
+            if (!isMissing(value)) {
+                cSum += value;
+            }
+            newColumn.append(cSum);
+        }
+        return newColumn;
+    }
 }
