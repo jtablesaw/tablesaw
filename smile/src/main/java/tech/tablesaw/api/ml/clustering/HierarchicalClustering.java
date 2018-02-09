@@ -28,7 +28,7 @@ import tech.tablesaw.api.NumericColumn;
  * <li>David Eppstein. Fast hierarchical clustering andv other applications of dynamic closest pairs. SODA 1998.</li>
  * </ol>
  * 
- * @see {@linktourl https://github.com/haifengl/smile/blob/master/core/src/main/java/smile/clustering/HierarchicalClustering.java}
+ * @see <a href="https://github.com/haifengl/smile/blob/master/core/src/main/java/smile/clustering/HierarchicalClustering.java">HierarchicalClustering.java</a>
  * 
  * @author Haifeng Li (docs) and Chris Baker (code)
  */

@@ -26,7 +26,8 @@ import smile.clustering.linkage.WardLinkage;
  * </ul>
  * 
  * @author Haifeng Li (docs) and Chris Baker (code)
- * @see {@linktourl https://github.com/haifengl/smile/blob/355198c504f1c45652542da6580a3041799cb0f8/core/src/main/java/smile/clustering/linkage/package-info.java}
+ * 
+ * @see <a href="https://github.com/haifengl/smile/blob/355198c504f1c45652542da6580a3041799cb0f8/core/src/main/java/smile/clustering/linkage/package-info.java">linkage/package-info.java</a>
  */
 public class LinkageFactory {
     
@@ -48,7 +49,7 @@ public class LinkageFactory {
      * 
      * @return a measure of dissimilarity between clusters
      * 
-     * @see {@linktourl https://github.com/haifengl/smile/blob/355198c504f1c45652542da6580a3041799cb0f8/core/src/main/java/smile/clustering/linkage/Linkage.java}
+     * @see <a href="https://github.com/haifengl/smile/blob/355198c504f1c45652542da6580a3041799cb0f8/core/src/main/java/smile/clustering/linkage/Linkage.java">Linkage.java</a>
      */
     public Linkage createLinkage(double[][] proximity, type linkageType) {
         
