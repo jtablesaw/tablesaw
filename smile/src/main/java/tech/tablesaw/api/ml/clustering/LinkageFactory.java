@@ -10,24 +10,45 @@ import smile.clustering.linkage.WPGMCLinkage;
 import smile.clustering.linkage.WardLinkage;
 
 /**
- * TODO
+ * Cluster dissimilarity measures. An agglomerative hierarchical clustering
+ * builds the hierarchy from the individual elements by progressively merging
+ * clusters. The linkage criteria determines the distance between clusters
+ * (i.e. sets of observations) based on as a pairwise distance function between
+ * observations. Some commonly used linkage criteria are:
+ * <ul>
+ * <li> Maximum or complete linkage clustering (COMPLETE) </li>
+ * <li> Minimum or single-linkage clustering (SINGLE) </li>
+ * <li> Mean or average linkage clustering (UPGMA) </li>
+ * <li> Unweighted Pair Group Method using Centroids (UPCMA). Also known as centroid linkage. </li>
+ * <li> Weighted Pair Group Method with Arithmetic mean (WPGMA) </li>
+ * <li> Weighted Pair Group Method using Centroids (WPGMC). Also known as median linkage. </li>
+ * <li> Ward's linkage (WARD) </li>
+ * </ul>
+ * 
+ * @author Haifeng Li (docs) and Chris Baker (code)
+ * @see {@linktourl https://github.com/haifengl/smile/blob/355198c504f1c45652542da6580a3041799cb0f8/core/src/main/java/smile/clustering/linkage/package-info.java}
  */
 public class LinkageFactory {
     
     
     /**
-     * TODO
+     * Cluster dissimilarity measure
      */
     public enum type {
         COMPLETE, SINGLE, UPGMA, UPGMC, WARD, WPGMA, WPGMC
     }
     
     /**
-     * TODO
+     * Create a Linkage object.
      * 
-     * @param proximity TODO
-     * @param linkageType TODO
-     * @return TODO
+     * @param proximity the proximity matrix to store the measures of
+     * dissimilarity between each pair of observations/rows
+     * @param linkageType the type of dissimilarity measure you would like 
+     * to use when determining which clusters to merge
+     * 
+     * @return a measure of dissimilarity between clusters
+     * 
+     * @see {@linktourl https://github.com/haifengl/smile/blob/355198c504f1c45652542da6580a3041799cb0f8/core/src/main/java/smile/clustering/linkage/Linkage.java}
      */
     public Linkage createLinkage(double[][] proximity, type linkageType) {
         

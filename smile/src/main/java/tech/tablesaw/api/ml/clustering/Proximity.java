@@ -4,7 +4,8 @@ import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.util.DoubleArrays;
 
 /**
- * TODO
+ * A matrix containing the measures of dissimilarity between all pairs
+ * of observations.
  */
 public class Proximity {
     
@@ -13,7 +14,8 @@ public class Proximity {
     /**
      * Constructor. 
      * 
-     * @param columns TODO
+     * @param columns the columns of data containing the various measures (i.e., variables)
+     * describing each observations
      */
     public Proximity(NumericColumn... columns) {
         double[][] input = DoubleArrays.to2dArray(columns);
