@@ -290,9 +290,9 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
-                newColumn.set(r, CategoryColumn.MISSING_VALUE);
+                newColumn.append(CategoryColumn.MISSING_VALUE);
             } else {
-                newColumn.add(PackedLocalDateTime.getDayOfWeek(c1).toString());
+                newColumn.append(PackedLocalDateTime.getDayOfWeek(c1).toString());
             }
         }
         return newColumn;
@@ -303,7 +303,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (c1 == (DateTimeColumn.MISSING_VALUE)) {
-                newColumn.set(r, ShortColumn.MISSING_VALUE);
+                newColumn.append(ShortColumn.MISSING_VALUE);
             } else {
                 newColumn.append((short) PackedLocalDateTime.getDayOfWeek(c1).getValue());
             }
