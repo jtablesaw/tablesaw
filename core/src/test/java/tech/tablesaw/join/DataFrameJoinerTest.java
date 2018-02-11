@@ -28,11 +28,40 @@ public class DataFrameJoinerTest {
           + "\"Jun 1, 2017\",2430.06\n",
       "S&P 500");
 
+  private static final Table ANIMAL_NAMES = Table.read().csv(
+      "Animal,Name\n"
+          + "\"Pig\",Bob\n"
+          + "\"Pig\",James\n"
+          + "\"Horse\",David\n"
+          + "\"Goat\",Samantha\n",
+      "Animal Names");
+
+  private static final Table ANIMAL_FEED = Table.read().csv(
+      "Animal,Feed\n"
+          + "\"Pig\",Mush\n"
+          + "\"Horse\",Hay\n"
+          + "\"Goat\",Anything\n",
+      "Ainmal Feed");  
+
   @Test
   public void innerJoin() {
     Table joined = SP500.join("Date").inner(ONE_YEAR, "Date");
     assertEquals(3, joined.columnCount());
     assertEquals(5, joined.rowCount());
+  }
+
+  @Test
+  public void innerJoin_duplicateKeysFirstTable() {
+    Table joined = ANIMAL_NAMES.join("Animal").inner(ANIMAL_FEED, "Animal");
+    assertEquals(3, joined.columnCount());
+    assertEquals(4, joined.rowCount());
+  }
+  
+  @Test
+  public void innerJoin_duplicateKeysSecondTable() {
+    Table joined = ANIMAL_FEED.join("Animal").inner(ANIMAL_NAMES, "Animal");
+    assertEquals(3, joined.columnCount());
+    assertEquals(4, joined.rowCount());
   }
 
 }

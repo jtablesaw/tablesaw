@@ -112,13 +112,15 @@ public class DataFrameJoiner {
 
   private void crossProduct(Table destination, Table table1, Table table2) {
     for (int c = 0; c < table1.columnCount() + table2.columnCount(); c++) {
-      for (int r = 0; r < table1.rowCount() * table2.rowCount(); r++) {
-        if (c < table1.columnCount()) {
-          destination.column(c).appendCell(table1.get(r, c));          
-        } else {
-          destination.column(c).appendCell(table2.get(r, c - table1.columnCount()));
+      for (int r1 = 0; r1 < table1.rowCount(); r1++) {
+        for (int r2 = 0; r2 < table2.rowCount(); r2++) {
+          if (c < table1.columnCount()) {
+            destination.column(c).appendCell(table1.get(r1, c));
+          } else {
+            destination.column(c).appendCell(table2.get(r2, c - table1.columnCount()));
+          }
         }
-      }    
+      }
     }
   }
 
