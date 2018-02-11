@@ -62,6 +62,11 @@
       <artifactId>smile-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.github.haifengl</groupId>
+      <artifactId>smile-math</artifactId>
+      <version>1.4.0</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
