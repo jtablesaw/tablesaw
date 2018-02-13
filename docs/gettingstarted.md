@@ -9,7 +9,7 @@ Tablesaw is available from Maven Central.
 <dependency>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-core</artifactId>
-    <version>0.11.5</version>
+    <version>0.11.6</version>
 </dependency>
 
 It requires Java 8 or newer.

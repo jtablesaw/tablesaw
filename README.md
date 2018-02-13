@@ -18,7 +18,7 @@ You can include tablesaw-core, which is the dataframe library itself, with:
     <dependency>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-core</artifactId>
-        <version>0.11.5</version>
+        <version>0.11.6</version>
     </dependency>
 
 You may also add dependencies for `tablesaw-plot` to use the plotting capability and `tablesaw-smile` to use the [Smile](https://github.com/haifengl/smile) machine learning integration.
