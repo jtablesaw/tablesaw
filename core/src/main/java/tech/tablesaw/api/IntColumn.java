@@ -748,14 +748,33 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
      * Returns a new column with a cumulative sum calculated
      */
     public IntColumn cumSum() {
-        int cSum = 0;
+        int total = 0;
         IntColumn newColumn = new IntColumn(name() + "[cumSum]", size());
         for (int value : this) {
-            if (!isMissing(value)) {
-                cSum += value;
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                total += value;
+                newColumn.append(total);
             }
-            newColumn.append(cSum);
         }
         return newColumn;
     }
+
+    /**
+     * Returns a new column with a cumulative product calculated
+     */
+    public IntColumn cumProd() {
+        int total = 1;
+        IntColumn newColumn = new IntColumn(name() + "[cumProd]", size());
+        for (int value : this) {
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                total *= value;
+                newColumn.append(total);
+            }
+        }
+        return newColumn;
+    }    
 }

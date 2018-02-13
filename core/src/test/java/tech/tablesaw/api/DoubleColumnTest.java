@@ -469,7 +469,7 @@ public class DoubleColumnTest {
     @Test
     public void testCumSum() {
         double[] originalValues = new double[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
-        double[] expectedValues = new double[]{32, 74, 74, 131, 183, 173, 173};
+        double[] expectedValues = new double[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
         DoubleColumn initial = createDoubleColumn(originalValues);
         DoubleColumn csum = initial.cumSum();
         
@@ -480,4 +480,20 @@ public class DoubleColumnTest {
             assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
         }
     }
+
+    @Test
+    public void testCumProd() {
+        double[] originalValues = new double[]{ 1, 2, MISSING_VALUE, 3, 4 };
+        double[] expectedValues = new double[]{ 1, 2, MISSING_VALUE, 6, 24 };
+        DoubleColumn initial = createDoubleColumn(originalValues);
+        DoubleColumn cprod = initial.cumProd();
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, cprod.size());
+
+        for (int index = 0; index < cprod.size(); index++) {
+            double actual = cprod.get(index);
+            assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
+        }
+    }
+
 }

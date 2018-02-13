@@ -81,7 +81,7 @@ public class LongColumnTest {
     @Test
     public void testCumSum() {
         long[] originalValues = new long[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
-        long[] expectedValues = new long[]{32, 74, 74, 131, 183, 173, 173};
+        long[] expectedValues = new long[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
         LongColumn initial = createLongColumn(originalValues);
         LongColumn csum = initial.cumSum();
         

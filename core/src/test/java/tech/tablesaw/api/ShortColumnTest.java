@@ -71,7 +71,7 @@ public class ShortColumnTest {
     @Test
     public void testCumSum() {
         short[] originalValues = new short[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
-        short[] expectedValues = new short[]{32, 74, 74, 131, 183, 173, 173};
+        short[] expectedValues = new short[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
         ShortColumn initial = createShortColumn(originalValues);
         ShortColumn csum = initial.cumSum();
         

@@ -254,7 +254,7 @@ public class IntColumnTest {
     @Test
     public void testCumSum() {
         int[] originalValues = new int[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
-        int[] expectedValues = new int[]{32, 74, 74, 131, 183, 173, 173};
+        int[] expectedValues = new int[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
         IntColumn initial = createIntColumn(originalValues);
         IntColumn csum = initial.cumSum();
         

@@ -846,14 +846,34 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
      * Returns a new column with a cumulative sum calculated
      */
     public DoubleColumn cumSum() {
-        double cSum = 0.0;
+        double total = 0.0;
         DoubleColumn newColumn = new DoubleColumn(name() + "[cumSum]", size());
         for (double value : this) {
-            if (!isMissing(value)) {
-                cSum += value;
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                total += value;
+                newColumn.append(total);
             }
-            newColumn.append(cSum);
         }
         return newColumn;
     }
+
+    /**
+     * Returns a new column with a cumulative product calculated
+     */
+    public DoubleColumn cumProd() {
+        double total = 1.0;
+        DoubleColumn newColumn = new DoubleColumn(name() + "[cumProd]", size());
+        for (double value : this) {
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                total *= value;
+                newColumn.append(total);
+            }
+        }
+        return newColumn;
+    }
+
 }

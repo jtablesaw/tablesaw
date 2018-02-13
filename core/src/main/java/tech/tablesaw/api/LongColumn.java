@@ -730,14 +730,34 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
      * Returns a new column with a cumulative sum calculated
      */
     public LongColumn cumSum() {
-        long cSum = 0L;
+        long total = 0L;
         LongColumn newColumn = new LongColumn(name() + "[cumSum]", size());
         for (long value : this) {
-            if (!isMissing(value)) {
-                cSum += value;
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                total += value;
+                newColumn.append(total);
             }
-            newColumn.append(cSum);
         }
         return newColumn;
     }
+
+    /**
+     * Returns a new column with a cumulative product calculated
+     */
+    public LongColumn cumProd() {
+        long total = 1;
+        LongColumn newColumn = new LongColumn(name() + "[cumProd]", size());
+        for (long value : this) {
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                total *= value;
+                newColumn.append(total);
+            }
+        }
+        return newColumn;
+    } 
+
 }

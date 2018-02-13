@@ -719,13 +719,32 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
      * Returns a new column with a cumulative sum calculated
      */
     public ShortColumn cumSum() {
-        short cSum = 0;
+        short total = 0;
         ShortColumn newColumn = new ShortColumn(name() + "[cumSum]", size());
         for (short value : this) {
-            if (!isMissing(value)) {
-                cSum += value;
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                total += value;
+                newColumn.append(total);
             }
-            newColumn.append(cSum);
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a new column with a cumulative product calculated
+     */
+    public ShortColumn cumProd() {
+        short total = 1;
+        ShortColumn newColumn = new ShortColumn(name() + "[cumProd]", size());
+        for (short value : this) {
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                total *= value;
+                newColumn.append(total);
+            }
         }
         return newColumn;
     }
