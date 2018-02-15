@@ -5,7 +5,7 @@
   <parent>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.11.7-SNAPSHOT</version>
+    <version>0.11.7</version>
   </parent>
 
   <artifactId>tablesaw-plot</artifactId>
@@ -55,12 +55,12 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.11.7-SNAPSHOT</version>
+      <version>0.11.7</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-smile</artifactId>
-      <version>0.11.7-SNAPSHOT</version>
+      <version>0.11.7</version>
     </dependency>
     <dependency>
       <groupId>com.github.haifengl</groupId>
@@ -75,7 +75,7 @@
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
       <type>test-jar</type>
-      <version>0.11.7-SNAPSHOT</version>
+      <version>0.11.7</version>
       <scope>test</scope>
     </dependency>
     <dependency>
