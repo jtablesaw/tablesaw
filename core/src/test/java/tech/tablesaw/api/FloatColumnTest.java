@@ -623,7 +623,7 @@ public class FloatColumnTest {
     }
 
     private boolean computeAndValidateDifference(float[] originalValues, float[] expectedValues) {
-        FloatColumn initial = createFloatColumn(originalValues);
+        FloatColumn initial = new FloatColumn("Test", originalValues);
         FloatColumn difference = initial.difference();
 
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
@@ -644,26 +644,18 @@ public class FloatColumnTest {
 
     @Test
     public void testGetDouble() {
-        FloatColumn column = createFloatColumn(new float[]{20.2f, 3245234.3f, MISSING_VALUE, 234});
+        FloatColumn column = new FloatColumn("Test", new float[]{20.2f, 3245234.3f, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20.2, column.getDouble(0), 0.1);
         assertEquals("Primitive type conversion error", 3245234.3, column.getDouble(1), 1);
         assertTrue("Primitive type conversion error", Double.isNaN(column.getDouble(2)));
         assertEquals("Primitive type conversion error", 234.0, column.getDouble(3), 0.1);
     }
 
-    private FloatColumn createFloatColumn(float[] originalValues) {
-        FloatColumn initial = new FloatColumn("Test", originalValues.length);
-        for (float value : originalValues) {
-            initial.append(value);
-        }
-        return initial;
-    }
-
     @Test
     public void testCumSum() {
         float[] originalValues = new float[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
         float[] expectedValues = new float[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
-        FloatColumn initial = createFloatColumn(originalValues);
+        FloatColumn initial = new FloatColumn("Test", originalValues);
         FloatColumn csum = initial.cumSum();
         
         assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
@@ -673,4 +665,20 @@ public class FloatColumnTest {
             assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
         }
     }
+
+    @Test
+    public void testPctChange() {
+        float[] originalValues = new float[]{ 10, 12, 13 };
+        float[] expectedValues = new float[]{ MISSING_VALUE, 0.2f, 0.083333f };
+        FloatColumn initial = new FloatColumn("Test", originalValues);
+        FloatColumn pctChange = initial.pctChange();
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, pctChange.size());
+
+        for (int index = 0; index < pctChange.size(); index++) {
+            float actual = pctChange.get(index);
+            assertEquals("pctChange() operation at index:" + index + " failed", expectedValues[index], actual, 0.0001);
+        }
+    }
+
 }

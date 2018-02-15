@@ -26,7 +26,7 @@ import static tech.tablesaw.api.ShortColumn.MISSING_VALUE;
 public class ShortColumnTest {
     @Test
     public void testGetInt() {
-        ShortColumn column = createShortColumn(new short[]{20, 3245, MISSING_VALUE, 234});
+        ShortColumn column = new ShortColumn("Test", new short[]{20, 3245, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20, column.getInt(0));
         assertEquals("Primitive type conversion error", 3245, column.getInt(1));
         assertEquals("Primitive type conversion error", IntColumn.MISSING_VALUE, column.getInt(2));
@@ -35,7 +35,7 @@ public class ShortColumnTest {
 
     @Test
     public void testGetLong() {
-        ShortColumn column = createShortColumn(new short[]{20, 3245, MISSING_VALUE, 234});
+        ShortColumn column = new ShortColumn("Test", new short[]{20, 3245, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20L, column.getLong(0));
         assertEquals("Primitive type conversion error", 3245L, column.getLong(1));
         assertEquals("Primitive type conversion error", LongColumn.MISSING_VALUE, column.getLong(2));
@@ -44,7 +44,7 @@ public class ShortColumnTest {
 
     @Test
     public void testGetFloat() {
-        ShortColumn column = createShortColumn(new short[]{20, 3245, MISSING_VALUE, 234});
+        ShortColumn column = new ShortColumn("Test", new short[]{20, 3245, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20.0, column.getFloat(0), 0.1);
         assertEquals("Primitive type conversion error", 3245.0, column.getFloat(1), 1);
         assertTrue("Primitive type conversion error", Float.isNaN(column.getFloat(2)));
@@ -53,26 +53,18 @@ public class ShortColumnTest {
 
     @Test
     public void testGetDouble() {
-        ShortColumn column = createShortColumn(new short[]{20, 3245, MISSING_VALUE, 234});
+        ShortColumn column = new ShortColumn("Test", new short[]{20, 3245, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20.0, column.getDouble(0), 0.1);
         assertEquals("Primitive type conversion error", 3245.0, column.getDouble(1), 1);
         assertTrue("Primitive type conversion error", Double.isNaN(column.getDouble(2)));
         assertEquals("Primitive type conversion error", 234.0, column.getDouble(3), 0.1);
     }
 
-    private ShortColumn createShortColumn(short[] values) {
-        ShortColumn column = new ShortColumn("Test", values.length);
-        for (short value: values) {
-            column.append(value);
-        }
-        return column;
-    }
-
     @Test
     public void testCumSum() {
         short[] originalValues = new short[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
         short[] expectedValues = new short[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
-        ShortColumn initial = createShortColumn(originalValues);
+        ShortColumn initial = new ShortColumn("Test", originalValues);
         ShortColumn csum = initial.cumSum();
         
         assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
@@ -82,5 +74,19 @@ public class ShortColumnTest {
             assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
         }
     }
+
+    @Test
+    public void testPctChange() {
+        short[] originalValues = new short[]{ 10, 12, 13 };
+        float[] expectedValues = new float[]{ FloatColumn.MISSING_VALUE, 0.2f, 0.083333f };
+        ShortColumn initial = new ShortColumn("Test", originalValues);
+        FloatColumn pctChange = initial.pctChange();
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, pctChange.size());
+
+        for (int index = 0; index < pctChange.size(); index++) {
+            double actual = pctChange.get(index);
+            assertEquals("pctChange() operation at index:" + index + " failed", expectedValues[index], actual, 0.0001);
+        }
+    }
 }
- 

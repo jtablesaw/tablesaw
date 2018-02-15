@@ -439,7 +439,7 @@ public class DoubleColumnTest {
     }
 
     private boolean computeAndValidateDifference(double[] originalValues, double[] expectedValues) {
-        DoubleColumn initial = createDoubleColumn(originalValues);
+        DoubleColumn initial = new DoubleColumn("Test", originalValues);
 
         DoubleColumn difference = initial.difference();
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
@@ -458,19 +458,11 @@ public class DoubleColumnTest {
         assertEquals("Expecting empty data set.", 0, difference.size());
     }
 
-    private DoubleColumn createDoubleColumn(double[] originalValues) {
-        DoubleColumn initial = new DoubleColumn("Test", originalValues.length);
-        for (double value : originalValues) {
-            initial.append(value);
-        }
-        return initial;
-    }
-
     @Test
     public void testCumSum() {
         double[] originalValues = new double[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
         double[] expectedValues = new double[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
-        DoubleColumn initial = createDoubleColumn(originalValues);
+        DoubleColumn initial = new DoubleColumn("Test", originalValues);
         DoubleColumn csum = initial.cumSum();
         
         assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
@@ -485,14 +477,29 @@ public class DoubleColumnTest {
     public void testCumProd() {
         double[] originalValues = new double[]{ 1, 2, MISSING_VALUE, 3, 4 };
         double[] expectedValues = new double[]{ 1, 2, MISSING_VALUE, 6, 24 };
-        DoubleColumn initial = createDoubleColumn(originalValues);
+        DoubleColumn initial = new DoubleColumn("Test", originalValues);
         DoubleColumn cprod = initial.cumProd();
 
         assertEquals("Both sets of data should be the same size.", expectedValues.length, cprod.size());
 
         for (int index = 0; index < cprod.size(); index++) {
             double actual = cprod.get(index);
-            assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
+            assertEquals("cumProd() operation at index:" + index + " failed", expectedValues[index], actual, 0);
+        }
+    }
+
+    @Test
+    public void testPctChange() {
+        double[] originalValues = new double[]{ 10, 12, 13 };
+        double[] expectedValues = new double[]{ MISSING_VALUE, 0.2, 0.083333 };
+        DoubleColumn initial = new DoubleColumn("Test", originalValues);
+        DoubleColumn pctChange = initial.pctChange();
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, pctChange.size());
+
+        for (int index = 0; index < pctChange.size(); index++) {
+            double actual = pctChange.get(index);
+            assertEquals("pctChange() operation at index:" + index + " failed", expectedValues[index], actual, 0.0001);
         }
     }
 

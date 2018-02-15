@@ -16,8 +16,6 @@ package tech.tablesaw.api;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static tech.tablesaw.api.LongColumn.MISSING_VALUE;
@@ -41,7 +39,7 @@ public class LongColumnTest {
     }
 
     private boolean computeAndValidateDifference(long[] originalValues, long[] expectedValues) {
-        LongColumn initial = createLongColumn(originalValues);
+        LongColumn initial = new LongColumn("Test", originalValues);
         LongColumn difference = initial.difference();
 
         assertEquals("Both sets of data should be the same size.", expectedValues.length, difference.size());
@@ -58,7 +56,7 @@ public class LongColumnTest {
 
     @Test
     public void testGetDouble() {
-        LongColumn column = createLongColumn(new long[]{20L, 32452345, MISSING_VALUE, 234});
+        LongColumn column = new LongColumn("Test", new long[]{20L, 32452345, MISSING_VALUE, 234});
         assertEquals("Primitive type conversion error", 20.0, column.getDouble(0), 0.1);
         assertEquals("Primitive type conversion error", 32452345.0, column.getDouble(1), 1);
         assertTrue("Primitive type conversion error", Double.isNaN(column.getDouble(2)));
@@ -72,17 +70,11 @@ public class LongColumnTest {
         }
     }
 
-    private LongColumn createLongColumn(long[] values) {
-        LongColumn column = new LongColumn("Test", values.length);
-        Arrays.stream(values).forEach(column::append);
-        return column;
-    }
-
     @Test
     public void testCumSum() {
         long[] originalValues = new long[]{32, 42, MISSING_VALUE, 57, 52, -10, 0};
         long[] expectedValues = new long[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
-        LongColumn initial = createLongColumn(originalValues);
+        LongColumn initial = new LongColumn("Test", originalValues);
         LongColumn csum = initial.cumSum();
         
         assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
@@ -90,6 +82,21 @@ public class LongColumnTest {
         for (int index = 0; index < csum.size(); index++) {
             long actual = csum.get(index);
             assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
+        }
+    }
+
+    @Test
+    public void testPctChange() {
+        long[] originalValues = new long[]{ 10, 12, 13 };
+        double[] expectedValues = new double[]{ DoubleColumn.MISSING_VALUE, 0.2, 0.083333 };
+        LongColumn initial = new LongColumn("Test", originalValues);
+        DoubleColumn pctChange = initial.pctChange();
+
+        assertEquals("Both sets of data should be the same size.", expectedValues.length, pctChange.size());
+
+        for (int index = 0; index < pctChange.size(); index++) {
+            double actual = pctChange.get(index);
+            assertEquals("pctChange() operation at index:" + index + " failed", expectedValues[index], actual, 0.0001);
         }
     }
 }

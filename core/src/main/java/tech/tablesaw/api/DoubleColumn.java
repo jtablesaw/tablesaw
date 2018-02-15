@@ -876,4 +876,16 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return newColumn;
     }
 
+    /**
+     * Returns a new column with a percent change calculated
+     */
+    public DoubleColumn pctChange() {
+        DoubleColumn newColumn = new DoubleColumn(name() + "[pctChange]", size());
+        newColumn.append(MISSING_VALUE);
+        for (int i = 1; i < size(); i++) {
+            newColumn.append(get(i) / get(i-1) - 1);
+        }
+        return newColumn;
+    }
+
 }

@@ -748,4 +748,17 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         }
         return newColumn;
     }
+
+    /**
+     * Returns a new column with a percent change calculated
+     */
+    public FloatColumn pctChange() {
+        FloatColumn newColumn = new FloatColumn(name() + "[pctChange]", size());
+        newColumn.append(FloatColumn.MISSING_VALUE);
+        for (int i = 1; i < size(); i++) {
+            newColumn.append((float) get(i) / get(i-1) - 1);
+        }
+        return newColumn;
+    }
+
 }

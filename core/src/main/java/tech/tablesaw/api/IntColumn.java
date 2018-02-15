@@ -776,5 +776,18 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
             }
         }
         return newColumn;
-    }    
+    }
+
+    /**
+     * Returns a new column with a percent change calculated
+     */
+    public DoubleColumn pctChange() {
+        DoubleColumn newColumn = new DoubleColumn(name() + "[pctChange]", size());
+        newColumn.append(DoubleColumn.MISSING_VALUE);
+        for (int i = 1; i < size(); i++) {
+            newColumn.append((double) get(i) / get(i-1) - 1);
+        }
+        return newColumn;
+    }  
+
 }
