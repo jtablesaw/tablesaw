@@ -578,6 +578,14 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return result;
     }
 
+    public DoubleColumn multiply(double value) {
+        DoubleColumn result = new DoubleColumn(name() + " * " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(get(r) * value);
+        }
+        return result;
+    }
+
     public DoubleColumn multiply(DoubleColumn column2) {
         DoubleColumn result = new DoubleColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
@@ -610,6 +618,14 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return result;
     }
 
+    public DoubleColumn divide(double value) {
+        DoubleColumn result = new DoubleColumn(name() + " / " + value, size());
+        for (int r = 0; r < size(); r++) {
+            result.append(get(r) / value);
+        }
+        return result;
+    }    
+ 
     public DoubleColumn divide(DoubleColumn column2) {
         DoubleColumn result = new DoubleColumn(name() + " / " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
