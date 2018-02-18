@@ -731,6 +731,10 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return output;
     }
 
+    public DoubleColumn toDoubleColumn() {
+        return new DoubleColumn(name(), toDoubleArray());
+    }
+
     public String print() {
         StringBuilder builder = new StringBuilder();
         builder.append(title());
