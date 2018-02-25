@@ -595,17 +595,17 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return result;
     }
 
-    public NumericColumn subtract(NumericColumn column2) {
+    public DoubleColumn subtract(NumericColumn column2) {
         return DoubleColumn.subtractDouble(this, column2);
     }
 
-    public static DoubleColumn subtractDouble(NumericColumn column1, NumericColumn column2) {
+    static DoubleColumn subtractDouble(NumericColumn column1, NumericColumn column2) {
         int col1Size = column1.size();
         int col2Size = column2.size();
-        int resultSize = col1Size < col2Size ? col1Size : col2Size;
+        if (col1Size != col2Size) throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        DoubleColumn result = new DoubleColumn(column1.name() + " - " + column2.name(), resultSize);
-        for (int r = 0; r < resultSize; r++) {
+        DoubleColumn result = new DoubleColumn(column1.name() + " - " + column2.name(), col1Size);
+        for (int r = 0; r < col1Size; r++) {
             result.append(subtract(column1.getDouble(r), column2.getDouble(r)));
         }
         return result;

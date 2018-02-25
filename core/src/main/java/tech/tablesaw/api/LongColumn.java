@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -259,11 +260,14 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         }
     }
 
+    @VisibleForTesting
     static LongColumn subtractLong(NumericColumn column1, NumericColumn column2) {
         int col1Size = column1.size();
         int col2Size = column2.size();
+        if (col1Size != col2Size) throw new IllegalArgumentException("The columns must have the same number of elements");
+
         LongColumn result = new LongColumn(column1.name() + " - " + column2.name(), col1Size);
-        for (int r = 0; r < col1Size && r < col2Size; r++) {
+        for (int r = 0; r < col1Size; r++) {
             result.append(subtract(column1.getLong(r), column2.getLong(r)));
         }
         return result;
