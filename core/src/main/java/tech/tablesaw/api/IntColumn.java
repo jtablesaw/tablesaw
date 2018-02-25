@@ -593,14 +593,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return result;
     }
 
-    public IntColumn subtract(int value) {
-        IntColumn result = new IntColumn(name() + " - " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(subtract(get(r), value));
-        }
-        return result;
-    }
-
     /**
      * Returns the largest ("top") n values in the column
      *

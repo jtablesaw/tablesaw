@@ -248,31 +248,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return result;
     }
 
-
-    public LongColumn subtract(long value) {
-        LongColumn result = new LongColumn(name() + " - " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(subtract(get(r), value));
-        }
-        return result;
-    }
-
-    public LongColumn multiply(long value) {
-        LongColumn result = new LongColumn(name() + " * " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * value);
-        }
-        return result;
-    }
-
-    public LongColumn divide(long value) {
-        LongColumn result = new LongColumn(name() + " / " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / value);
-        }
-        return result;
-    }
-
     @Override
     public String getString(int row) {
         long value = data.getLong(row);

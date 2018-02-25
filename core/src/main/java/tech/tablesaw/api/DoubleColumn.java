@@ -572,30 +572,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return result;
     }
 
-    public DoubleColumn subtract(double value) {
-        DoubleColumn result = new DoubleColumn(name() + " - " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(subtract(get(r), value));
-        }
-        return result;
-    }
-
-    public DoubleColumn multiply(double value) {
-        DoubleColumn result = new DoubleColumn(name() + " * " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * value);
-        }
-        return result;
-    }
-
-    public DoubleColumn divide(double value) {
-        DoubleColumn result = new DoubleColumn(name() + " / " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / value);
-        }
-        return result;
-    }    
-
     /**
      * For each item in the column, returns the same number with the sign changed.
      * For example:

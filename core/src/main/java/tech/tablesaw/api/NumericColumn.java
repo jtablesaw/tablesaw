@@ -216,6 +216,99 @@ public interface NumericColumn extends Column {
         return result;
     }
 
+    default NumericColumn subtract(Number value) {
+        if (value instanceof Double || this instanceof DoubleColumn) {
+            double val = (double) value;
+            DoubleColumn result = new DoubleColumn(name() + " - " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(DoubleColumn.subtract(getDouble(i) , val));
+            }
+            return result;
+        } else if (value instanceof Float || this instanceof FloatColumn) {
+            float val = (float) value;
+            FloatColumn result = new FloatColumn(name() + " - " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(FloatColumn.subtract(val, getFloat(i)));
+            }
+            return result;
+        } else if (value instanceof Long || this instanceof LongColumn) {
+            long val = (long) value;
+            LongColumn result = new LongColumn(name() + " - " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(LongColumn.subtract(getLong(i), val));
+            }
+            return result;
+        }
+        int val = (int) value;
+        IntColumn result = new IntColumn(name() + " - " + val);
+        for (int i = 0; i < size(); i++) {
+            result.append(IntColumn.subtract(getInt(i), val));
+        }
+        return result;
+    }
+
+    default NumericColumn divide(Number value) {
+        if (value instanceof Double || this instanceof DoubleColumn) {
+            double val = (double) value;
+            DoubleColumn result = new DoubleColumn(name() + " / " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(DoubleColumn.divide(getDouble(i) , val));
+            }
+            return result;
+        } else if (value instanceof Float || this instanceof FloatColumn) {
+            float val = (float) value;
+            FloatColumn result = new FloatColumn(name() + " / " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(FloatColumn.divide(val, getFloat(i)));
+            }
+            return result;
+        } else if (value instanceof Long || this instanceof LongColumn) {
+            long val = (long) value;
+            LongColumn result = new LongColumn(name() + " / " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(LongColumn.divide(getLong(i), val));
+            }
+            return result;
+        }
+        int val = (int) value;
+        IntColumn result = new IntColumn(name() + " / " + val);
+        for (int i = 0; i < size(); i++) {
+            result.append(IntColumn.divide(getInt(i), val));
+        }
+        return result;
+    }
+
+    default NumericColumn multiply(Number value) {
+        if (value instanceof Double || this instanceof DoubleColumn) {
+            double val = (double) value;
+            DoubleColumn result = new DoubleColumn(name() + " * " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(DoubleColumn.multiply(getDouble(i) , val));
+            }
+            return result;
+        } else if (value instanceof Float || this instanceof FloatColumn) {
+            float val = (float) value;
+            FloatColumn result = new FloatColumn(name() + " * " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(FloatColumn.multiply(val, getFloat(i)));
+            }
+            return result;
+        } else if (value instanceof Long || this instanceof LongColumn) {
+            long val = (long) value;
+            LongColumn result = new LongColumn(name() + " * " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(LongColumn.multiply(getLong(i), val));
+            }
+            return result;
+        }
+        int val = (int) value;
+        IntColumn result = new IntColumn(name() + " * " + val);
+        for (int i = 0; i < size(); i++) {
+            result.append(IntColumn.multiply(getInt(i), val));
+        }
+        return result;
+    }
+
     double[] toDoubleArray();
 
     /**

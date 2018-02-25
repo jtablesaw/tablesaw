@@ -563,22 +563,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return result;
     }
 
-    public FloatColumn multiply(float f) {
-        FloatColumn result = new FloatColumn(name() + " * " + " x " + f, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * f);
-        }
-        return result;
-    }
-
-    public FloatColumn divide(float f) {
-        FloatColumn result = new FloatColumn(name() + " / " + " / " + f, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / f);
-        }
-        return result;
-    }
-
     /**
      * For each item in the column, returns the same number with the sign changed.
      * For example:
@@ -758,14 +742,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
             returnValue.append(subtract(get(current), get(current - 1)));
         }
         return returnValue;
-    }
-
-    public FloatColumn subtract(float value) {
-        FloatColumn result = new FloatColumn(name() + " - " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(subtract(get(r), value));
-        }
-        return result;
     }
 
     static float add(float val1, float val2) {
