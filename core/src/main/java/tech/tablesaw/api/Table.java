@@ -903,12 +903,15 @@ public class Table extends Relation implements IntIterable {
     public SummaryFunction stdDev(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, stdDev);
     }
+
     public SummaryFunction count(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, count);
     }
+
     public SummaryFunction max(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, max);
     }
+
     public SummaryFunction min(String numericColumnName) {
       return new SummaryFunction(this, numericColumnName, min);
     }
