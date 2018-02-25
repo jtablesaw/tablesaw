@@ -119,11 +119,11 @@ public class LongColumnTest {
         LongColumn col1 = new LongColumn("1", col1Values);
         LongColumn col2 = new LongColumn("2", col2Values);
 
-        LongColumn difference = LongColumn.subtractLong(col1, col2);
+        LongColumn difference = (LongColumn) NumericColumn.subtractColumns(col1, col2);
         assertTrue(validateDifferenceColumn(expected, difference));
 
         // change order to verify size of returned column
-        difference = LongColumn.subtractLong(col2, col1);
+        difference = (LongColumn) NumericColumn.subtractColumns(col2, col1);
         expected = new long[]{0, MISSING_VALUE, -4, MISSING_VALUE, 0};
         assertTrue(validateDifferenceColumn(expected, difference));
     }

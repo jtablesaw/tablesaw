@@ -507,11 +507,11 @@ public class DoubleColumnTest {
         DoubleColumn col1 = new DoubleColumn("1", col1Values);
         DoubleColumn col2 = new DoubleColumn("2", col2Values);
 
-        DoubleColumn difference = DoubleColumn.subtractDouble(col1, col2);
+        DoubleColumn difference = (DoubleColumn) NumericColumn.subtractColumns(col1, col2);
         assertTrue(validateEquality(expected, difference));
 
         // change order to verify size of returned column
-        difference = DoubleColumn.subtractDouble(col2, col1);
+        difference = (DoubleColumn) NumericColumn.subtractColumns(col2, col1);
         expected = new double[]{-0.5, MISSING_VALUE, -3.33, MISSING_VALUE, .01};
         assertTrue(validateEquality(expected, difference));
     }

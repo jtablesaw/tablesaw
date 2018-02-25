@@ -737,7 +737,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return val1 + val2;
     }
 
-    private int subtract(int val1, int val2) {
+    static int subtract(int val1, int val2) {
         if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
             return MISSING_VALUE;
         }

@@ -21,6 +21,47 @@ import tech.tablesaw.columns.Column;
  */
 public interface NumericColumn extends Column {
 
+    static NumericColumn subtractColumns(NumericColumn column1, NumericColumn column2) {
+        int col1Size = column1.size();
+        int col2Size = column2.size();
+        if (column1.size() != column2.size()) throw new IllegalArgumentException("The columns must have the same number of elements");
+
+        if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
+            DoubleColumn result = new DoubleColumn(column1.name() + " - " + column2.name(), col1Size);
+            for (int r = 0; r < col1Size; r++) {
+                result.append(DoubleColumn.subtract(column1.getDouble(r), column2.getDouble(r)));
+            }
+            return result;
+        }
+
+        else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
+            FloatColumn result = new FloatColumn(column1.name() + " - " + column2.name(), col1Size);
+            for (int r = 0; r < col1Size; r++) {
+                result.append(FloatColumn.subtract(column1.getFloat(r), column2.getFloat(r)));
+            }
+            return result;
+        }
+
+        else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
+            LongColumn result = new LongColumn(column1.name() + " - " + column2.name(), col1Size);
+            for (int r = 0; r < col1Size; r++) {
+                result.append(LongColumn.subtract(column1.getLong(r), column2.getLong(r)));
+            }
+            return result;
+        }
+        // otherwise we return an IntColumn
+
+        IntColumn result = new IntColumn(column1.name() + " - " + column2.name(), col1Size);
+        for (int r = 0; r < col1Size; r++) {
+            result.append(IntColumn.subtract(column1.getInt(r), column2.getInt(r)));
+        }
+        return result;
+    }
+
+    default NumericColumn subtract(NumericColumn column2) {
+        return NumericColumn.subtractColumns(this, column2);
+    }
+
     double[] toDoubleArray();
 
     /**

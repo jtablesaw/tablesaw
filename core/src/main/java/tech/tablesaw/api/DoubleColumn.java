@@ -595,22 +595,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return result;
     }
 
-    public DoubleColumn subtract(NumericColumn column2) {
-        return DoubleColumn.subtractDouble(this, column2);
-    }
-
-    static DoubleColumn subtractDouble(NumericColumn column1, NumericColumn column2) {
-        int col1Size = column1.size();
-        int col2Size = column2.size();
-        if (col1Size != col2Size) throw new IllegalArgumentException("The columns must have the same number of elements");
-
-        DoubleColumn result = new DoubleColumn(column1.name() + " - " + column2.name(), col1Size);
-        for (int r = 0; r < col1Size; r++) {
-            result.append(subtract(column1.getDouble(r), column2.getDouble(r)));
-        }
-        return result;
-    }
-
     public DoubleColumn multiply(double value) {
         DoubleColumn result = new DoubleColumn(name() + " * " + value, size());
         for (int r = 0; r < size(); r++) {
@@ -724,11 +708,13 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return data.getDouble(index);
     }
 
+/*
     @Override
     public float getFloat(int index) {
         double value = data.getDouble(index);
         return value == MISSING_VALUE ? FloatColumn.MISSING_VALUE : (float) value;
     }
+*/
 
     public void set(int r, double value) {
         data.set(r, value);
@@ -890,7 +876,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return val1 + val2;
     }
 
-    private static double subtract(double val1, double val2) {
+    static double subtract(double val1, double val2) {
         if (isMissing(val1) || isMissing(val2)) {
             return MISSING_VALUE;
         }
