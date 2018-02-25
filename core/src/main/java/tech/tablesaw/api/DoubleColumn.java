@@ -493,6 +493,31 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     /**
+     * Returns the rounded values as a LongColumn
+     */
+    public LongColumn roundLong() {
+        LongColumn newColumn = new LongColumn(name() + "[rounded]", size());
+        for (double value : this) {
+            newColumn.append(Math.round(value));
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns the rounded values as a IntColumn. This will throw an exception if the values are too large to fit,
+     * however many double columns can safely use this method. Use roundLong() if larger
+     *
+     * @throws ClassCastException if the returned value will not fit in an int
+     */
+    public IntColumn roundInt() {
+        IntColumn newColumn = new IntColumn(name() + "[rounded]", size());
+        for (double value : this) {
+            newColumn.append((int) Math.round(value));
+        }
+        return newColumn;
+    }
+
+    /**
      * Returns a doubleColumn with the absolute value of each value in this column
      */
     public DoubleColumn abs() {

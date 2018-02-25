@@ -504,6 +504,17 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return newColumn;
     }
 
+    /**
+     * Returns the rounded values as a IntColumn.
+     */
+    public IntColumn roundInt() {
+        IntColumn newColumn = new IntColumn(name() + "[rounded]", size());
+        for (float value : this) {
+            newColumn.append(Math.round(value));
+        }
+        return newColumn;
+    }
+
     public FloatColumn abs() {
         FloatColumn newColumn = new FloatColumn(name() + "[abs]", size());
         for (float value : this) {
