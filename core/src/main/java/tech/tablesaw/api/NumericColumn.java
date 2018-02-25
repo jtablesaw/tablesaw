@@ -95,12 +95,94 @@ public interface NumericColumn extends Column {
         return result;
     }
 
+    static NumericColumn multiplyColumns(NumericColumn column1, NumericColumn column2) {
+        int col1Size = column1.size();
+        int col2Size = column2.size();
+        if (col1Size != col2Size) throw new IllegalArgumentException("The columns must have the same number of elements");
+
+        if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
+            DoubleColumn result = new DoubleColumn(column1.name() + " * " + column2.name(), col1Size);
+            for (int r = 0; r < col1Size; r++) {
+                result.append(DoubleColumn.multiply(column1.getDouble(r), column2.getDouble(r)));
+            }
+            return result;
+        }
+
+        else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
+            FloatColumn result = new FloatColumn(column1.name() + " * " + column2.name(), col1Size);
+            for (int r = 0; r < col1Size; r++) {
+                result.append(FloatColumn.multiply(column1.getFloat(r), column2.getFloat(r)));
+            }
+            return result;
+        }
+
+        else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
+            LongColumn result = new LongColumn(column1.name() + " * " + column2.name(), col1Size);
+            for (int r = 0; r < col1Size; r++) {
+                result.append(LongColumn.multiply(column1.getLong(r), column2.getLong(r)));
+            }
+            return result;
+        }
+        // otherwise we return an IntColumn
+
+        IntColumn result = new IntColumn(column1.name() + " * " + column2.name(), col1Size);
+        for (int r = 0; r < col1Size; r++) {
+            result.append(IntColumn.multiply(column1.getInt(r), column2.getInt(r)));
+        }
+        return result;
+    }
+
+    static NumericColumn divideColumns(NumericColumn column1, NumericColumn column2) {
+        int col1Size = column1.size();
+        int col2Size = column2.size();
+        if (col1Size != col2Size) throw new IllegalArgumentException("The columns must have the same number of elements");
+
+        if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
+            DoubleColumn result = new DoubleColumn(column1.name() + " / " + column2.name(), col1Size);
+            for (int r = 0; r < col1Size; r++) {
+                result.append(DoubleColumn.divide(column1.getDouble(r), column2.getDouble(r)));
+            }
+            return result;
+        }
+
+        else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
+            FloatColumn result = new FloatColumn(column1.name() + " / " + column2.name(), col1Size);
+            for (int r = 0; r < col1Size; r++) {
+                result.append(FloatColumn.divide(column1.getFloat(r), column2.getFloat(r)));
+            }
+            return result;
+        }
+
+        else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
+            LongColumn result = new LongColumn(column1.name() + " / " + column2.name(), col1Size);
+            for (int r = 0; r < col1Size; r++) {
+                result.append(LongColumn.divide(column1.getLong(r), column2.getLong(r)));
+            }
+            return result;
+        }
+        // otherwise we return an IntColumn
+
+        IntColumn result = new IntColumn(column1.name() + " / " + column2.name(), col1Size);
+        for (int r = 0; r < col1Size; r++) {
+            result.append(IntColumn.divide(column1.getInt(r), column2.getInt(r)));
+        }
+        return result;
+    }
+
     default NumericColumn subtract(NumericColumn column2) {
         return NumericColumn.subtractColumns(this, column2);
     }
 
     default NumericColumn add(NumericColumn column2) {
         return NumericColumn.addColumns(this, column2);
+    }
+
+    default NumericColumn multiply(NumericColumn column2) {
+        return NumericColumn.multiplyColumns(this, column2);
+    }
+
+    default NumericColumn divide(NumericColumn column2) {
+        return NumericColumn.divideColumns(this, column2);
     }
 
     double[] toDoubleArray();

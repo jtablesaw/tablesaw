@@ -855,6 +855,20 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return val1 + val2;
     }
 
+    static float multiply(float val1, float val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 * val2;
+    }
+
+    static float divide(float val1, float val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 / val2;
+    }
+
     static float subtract(float val1, float val2) {
         if (isMissing(val1) || isMissing(val2)) {
             return MISSING_VALUE;

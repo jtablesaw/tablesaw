@@ -14,7 +14,6 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
@@ -269,14 +268,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return result;
     }
 
-    public LongColumn multiply(LongColumn column2) {
-        LongColumn result = new LongColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
     public LongColumn multiply(long value) {
         LongColumn result = new LongColumn(name() + " * " + value, size());
         for (int r = 0; r < size(); r++) {
@@ -285,34 +276,10 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return result;
     }
 
-    public FloatColumn multiply(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public FloatColumn divide(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
-
     public LongColumn divide(long value) {
         LongColumn result = new LongColumn(name() + " / " + value, size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / value);
-        }
-        return result;
-    }
-
-    public LongColumn divide(LongColumn column2) {
-        LongColumn result = new LongColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
         }
         return result;
     }
@@ -705,6 +672,20 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
             return MISSING_VALUE;
         }
         return val1 + val2;
+    }
+
+    static long multiply(long val1, long val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 * val2;
+    }
+
+    static long divide(long val1, long val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 / val2;
     }
 
     static long subtract(long val1, long val2) {

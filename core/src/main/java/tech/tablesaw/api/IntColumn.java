@@ -612,30 +612,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return result;
     }
 
-    public IntColumn multiply(IntColumn column2) {
-        IntColumn result = new IntColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public FloatColumn multiply(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public FloatColumn divide(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
-
     /**
      * Returns the largest ("top") n values in the column
      *
@@ -716,6 +692,20 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
             return MISSING_VALUE;
         }
         return val1 + val2;
+    }
+
+    static int multiply(int val1, int val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 * val2;
+    }
+
+    static int divide(int val1, int val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 / val2;
     }
 
     static int subtract(int val1, int val2) {

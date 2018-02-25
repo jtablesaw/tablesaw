@@ -67,6 +67,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
             return (Double.compare(o1, o2));
         }
     };
+
     private DoubleArrayList data;
     private final IntComparator comparator = new IntComparator() {
 
@@ -595,38 +596,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return result;
     }
 
-    public DoubleColumn multiply(DoubleColumn column2) {
-        DoubleColumn result = new DoubleColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public DoubleColumn multiply(IntColumn column2) {
-        DoubleColumn result = new DoubleColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public DoubleColumn multiply(LongColumn column2) {
-        DoubleColumn result = new DoubleColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public DoubleColumn multiply(ShortColumn column2) {
-        DoubleColumn result = new DoubleColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
     public DoubleColumn divide(double value) {
         DoubleColumn result = new DoubleColumn(name() + " / " + value, size());
         for (int r = 0; r < size(); r++) {
@@ -634,38 +603,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         }
         return result;
     }    
- 
-    public DoubleColumn divide(DoubleColumn column2) {
-        DoubleColumn result = new DoubleColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
-
-    public DoubleColumn divide(IntColumn column2) {
-        DoubleColumn result = new DoubleColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
-
-    public DoubleColumn divide(LongColumn column2) {
-        DoubleColumn result = new DoubleColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
-
-    public DoubleColumn divide(ShortColumn column2) {
-        DoubleColumn result = new DoubleColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
 
     /**
      * For each item in the column, returns the same number with the sign changed.
@@ -866,6 +803,20 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
             return MISSING_VALUE;
         }
         return val1 + val2;
+    }
+
+    static double multiply(double val1, double val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 * val2;
+    }
+
+    static double divide(double val1, double val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 / val2;
     }
 
     static double subtract(double val1, double val2) {

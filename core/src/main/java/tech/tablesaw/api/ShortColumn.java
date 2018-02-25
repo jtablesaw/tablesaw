@@ -534,38 +534,6 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return result;
     }
 
-    public IntColumn multiply(ShortColumn column2) {
-        IntColumn result = new IntColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public FloatColumn multiply(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public FloatColumn divide(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
-
-    public IntColumn divide(ShortColumn column2) {
-        IntColumn result = new IntColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
-
     /**
      * Returns the largest ("top") n values in the column
      *
