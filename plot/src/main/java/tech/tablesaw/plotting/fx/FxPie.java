@@ -42,7 +42,7 @@ public class FxPie extends FxBuilder {
         List<PieChart.Data> data = new ArrayList<>(categoryColumn.size());
 
         for (int i = 0; i < categoryColumn.size(); i++) {
-            data.add(new PieChart.Data(categoryColumn.getString(i), numericColumn.getFloat(i)));
+            data.add(new PieChart.Data(categoryColumn.getString(i), numericColumn.getDouble(i)));
         }
 
         return createChart(title, data);
@@ -54,7 +54,7 @@ public class FxPie extends FxBuilder {
 
         for (int i = 0; i < categoryColumn.size(); i++) {
             String name = Short.toString(categoryColumn.get(i));
-            data.add(new PieChart.Data(name, numericColumn.getFloat(i)));
+            data.add(new PieChart.Data(name, numericColumn.getDouble(i)));
         }
 
         return createChart(title, data);
@@ -66,7 +66,7 @@ public class FxPie extends FxBuilder {
 
         for (int i = 0; i < categoryColumn.size(); i++) {
             String name = Integer.toString(categoryColumn.get(i));
-            data.add(new PieChart.Data(name, numericColumn.getFloat(i)));
+            data.add(new PieChart.Data(name, numericColumn.getDouble(i)));
         }
 
         return createChart(title, data);

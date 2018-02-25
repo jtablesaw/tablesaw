@@ -52,7 +52,7 @@ public class FxBar extends FxBuilder {
         List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
 
         for (int i = 0; i < categoryColumn.size(); i++) {
-            data.add(new XYChart.Data<>(categoryColumn.get(i), numericColumn.getFloat(i)));
+            data.add(new XYChart.Data<>(categoryColumn.get(i), numericColumn.getDouble(i)));
         }
 
         barChart.getData().add(getSeries(numericColumn, data));
@@ -69,7 +69,7 @@ public class FxBar extends FxBuilder {
         List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
 
         for (int i = 0; i < categoryColumn.size(); i++) {
-            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
+            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getDouble(i)));
         }
 
         barChart.getData().add(getSeries(numericColumn, data));
@@ -85,7 +85,7 @@ public class FxBar extends FxBuilder {
         List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
 
         for (int i = 0; i < categoryColumn.size(); i++) {
-            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
+            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getDouble(i)));
         }
 
         barChart.getData().add(getSeries(numericColumn, data));

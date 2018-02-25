@@ -55,7 +55,7 @@ public class FxPareto extends FxBuilder {
         List<XYChart.Data<String, Number>> d2 = new ArrayList<>(x.size());
 
         for (int i = 0; i < x.size(); i++) {
-            d2.add(new XYChart.Data<>(t.categoryColumn(0).get(i), t.nCol(1).getFloat(i)));
+            d2.add(new XYChart.Data<>(t.categoryColumn(0).get(i), t.nCol(1).getDouble(i)));
         }
         XYChart.Series<String, Number> series1
                 = new XYChart.Series<>(FXCollections.observableList(d2));
@@ -84,7 +84,7 @@ public class FxPareto extends FxBuilder {
         List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
 
         for (int i = 0; i < categoryColumn.size(); i++) {
-            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
+            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getDouble(i)));
         }
 
         barChart.getData().add(getSeries(numericColumn, data));
@@ -104,7 +104,7 @@ public class FxPareto extends FxBuilder {
         List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
 
         for (int i = 0; i < categoryColumn.size(); i++) {
-            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getFloat(i)));
+            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getDouble(i)));
         }
 
         barChart.getData().add(getSeries(numericColumn, data));
