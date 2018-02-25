@@ -563,14 +563,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return result;
     }
 
-    public FloatColumn subtract(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " - " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(subtract(get(r), column2.get(r)));
-        }
-        return result;
-    }
-
     public FloatColumn multiply(FloatColumn column2) {
         FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
@@ -856,6 +848,28 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return result;
     }
 
+    public NumericColumn subtract(NumericColumn column2) {
+        return FloatColumn.subtractColumns(this, column2);
+    }
+
+    /**
+     * Returns a DoubleColumn, if either operand is a DoubleColumn and a FloatColumn otherwise
+     */
+    static NumericColumn subtractColumns(NumericColumn column1, NumericColumn column2) {
+        int col1Size = column1.size();
+        int col2Size = column2.size();
+        if (col1Size != col2Size) throw new IllegalArgumentException("The columns must have the same number of elements");
+
+        if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
+            return DoubleColumn.subtractDouble(column1, column2);
+        }
+        FloatColumn result = new FloatColumn(column1.name() + " - " + column2.name(), col1Size);
+        for (int r = 0; r < col1Size; r++) {
+            result.append(subtract(column1.getFloat(r), column2.getFloat(r)));
+        }
+        return result;
+    }
+
     public FloatColumn add(int value) {
         FloatColumn result = new FloatColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {
@@ -871,7 +885,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return val1 + val2;
     }
 
-    private float subtract(float val1, float val2) {
+    static float subtract(float val1, float val2) {
         if (isMissing(val1) || isMissing(val2)) {
             return MISSING_VALUE;
         }

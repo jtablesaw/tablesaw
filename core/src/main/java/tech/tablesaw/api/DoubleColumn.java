@@ -724,6 +724,12 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return data.getDouble(index);
     }
 
+    @Override
+    public float getFloat(int index) {
+        double value = data.getDouble(index);
+        return value == MISSING_VALUE ? FloatColumn.MISSING_VALUE : (float) value;
+    }
+
     public void set(int r, double value) {
         data.set(r, value);
     }

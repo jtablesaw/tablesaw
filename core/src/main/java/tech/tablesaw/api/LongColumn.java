@@ -437,8 +437,14 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
 
     @Override
     public double getDouble(int index) {
-        double value = data.getLong(index);
-        return value == MISSING_VALUE ? DoubleColumn.MISSING_VALUE : (float) value;
+        long value = data.getLong(index);
+        return value == MISSING_VALUE ? DoubleColumn.MISSING_VALUE : (double) value;
+    }
+
+    @Override
+    public float getFloat(int index) {
+        long value = data.getLong(index);
+        return value == MISSING_VALUE ? FloatColumn.MISSING_VALUE : (float) value;
     }
 
     @Override
