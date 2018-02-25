@@ -824,14 +824,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return returnValue;
     }
 
-    public FloatColumn add(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " + " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(add(get(r), column2.get(r)));
-        }
-        return result;
-    }
-
     public FloatColumn add(float value) {
         FloatColumn result = new FloatColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {
@@ -856,7 +848,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return result;
     }
 
-    private float add(float val1, float val2) {
+    static float add(float val1, float val2) {
         if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
             return MISSING_VALUE;
         }

@@ -571,14 +571,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return result;
     }
 
-    public DoubleColumn add(DoubleColumn column2) {
-        DoubleColumn result = new DoubleColumn(name() + " + " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(add(get(r), column2.get(r)));
-        }
-        return result;
-    }
-
     public DoubleColumn add(double value) {
         DoubleColumn result = new DoubleColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {
@@ -869,7 +861,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return returnValue;
     }
 
-    private double add(double val1, double val2) {
+    static double add(double val1, double val2) {
         if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
             return MISSING_VALUE;
         }

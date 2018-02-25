@@ -534,14 +534,6 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return result;
     }
 
-    public IntColumn subtract(ShortColumn column2) {
-        IntColumn result = new IntColumn(name() + " - " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) - column2.get(r));
-        }
-        return result;
-    }
-
     public IntColumn multiply(ShortColumn column2) {
         IntColumn result = new IntColumn(name() + " * " + column2.name(), size());
         for (int r = 0; r < size(); r++) {

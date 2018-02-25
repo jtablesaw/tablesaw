@@ -249,17 +249,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return result;
     }
 
-    /**
-     * Returns a new LongColumn containing the values obtained by adding each value of that column to the corresponding
-     * value of this column
-     */
-    public LongColumn add(LongColumn column2) {
-        LongColumn result = new LongColumn(name() + " + " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(add(get(r), column2.get(r)));
-        }
-        return result;
-    }
 
     public LongColumn subtract(long value) {
         LongColumn result = new LongColumn(name() + " - " + value, size());
@@ -711,7 +700,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return returnValue;
     }
 
-    private long add(long val1, long val2) {
+    static long add(long val1, long val2) {
         if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
             return MISSING_VALUE;
         }

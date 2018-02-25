@@ -594,31 +594,12 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     /**
-     * @deprecated Use plus(IntColumn) instead
-     */
-    public IntColumn add(IntColumn column2) {
-        IntColumn result = new IntColumn(name() + " + " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(add(get(r), column2.get(r)));
-        }
-        return result;
-    }
-
-    /**
      * Returns a new IntColumn containing the result of adding the given value to each element in this column
      */
     public IntColumn add(int value) {
         IntColumn result = new IntColumn(name() + " + " + value, size());
         for (int r = 0; r < size(); r++) {
             result.append(add(get(r), value));
-        }
-        return result;
-    }
-
-    public IntColumn subtract(IntColumn column2) {
-        IntColumn result = new IntColumn(name() + " - " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(subtract(get(r), column2.get(r)));
         }
         return result;
     }
@@ -730,7 +711,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return returnValue;
     }
 
-    private int add(int val1, int val2) {
+    static int add(int val1, int val2) {
         if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
             return MISSING_VALUE;
         }
