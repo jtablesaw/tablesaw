@@ -485,12 +485,12 @@ public class DoubleColumnTest {
     @Test
     public void testSubtractLongColumn() {
         long[] col1Values = new long[]{32, LongColumn.MISSING_VALUE, 42, 57, 52};
-        double[] col2Values = new double[]{31.5, 42, 38.67, MISSING_VALUE, 52.01, 102};
+        double[] col2Values = new double[]{31.5, 42, 38.67, MISSING_VALUE, 52.01};
         double[] expected = new double[]{-0.5, MISSING_VALUE, -3.33, MISSING_VALUE, .01};
 
-        LongColumn col1 = new LongColumn("Test", col1Values.length);
+        LongColumn col1 = new LongColumn("1", col1Values.length);
         Arrays.stream(col1Values).forEach(col1::append);
-        DoubleColumn col2 = new DoubleColumn("Test", col2Values);
+        DoubleColumn col2 = new DoubleColumn("2", col2Values);
 
         NumericColumn difference = col2.subtract(col1);
         assertTrue("Expecting DoubleColumn type result", difference instanceof DoubleColumn);
@@ -501,11 +501,11 @@ public class DoubleColumnTest {
     @Test
     public void testSubtract2Columns() {
         double[] col1Values = new double[]{32.5, MISSING_VALUE, 42, 57, 52};
-        double[] col2Values = new double[]{32, 42, 38.67, MISSING_VALUE, 52.01, 102};
+        double[] col2Values = new double[]{32, 42, 38.67, MISSING_VALUE, 52.01};
         double[] expected = new double[]{0.5, MISSING_VALUE, 3.33, MISSING_VALUE, -.01};
 
-        DoubleColumn col1 = new DoubleColumn("Test", col1Values);
-        DoubleColumn col2 = new DoubleColumn("Test", col2Values);
+        DoubleColumn col1 = new DoubleColumn("1", col1Values);
+        DoubleColumn col2 = new DoubleColumn("2", col2Values);
 
         DoubleColumn difference = DoubleColumn.subtractDouble(col1, col2);
         assertTrue(validateEquality(expected, difference));

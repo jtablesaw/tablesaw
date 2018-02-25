@@ -76,11 +76,11 @@ public class LongColumnTest {
     @Test
     public void testSubtractDoubleColumn() {
         long[] col1Values = new long[]{32, MISSING_VALUE, 42, 57, 52};
-        double[] col2Values = new double[]{31.5, 42, 38.67, DoubleColumn.MISSING_VALUE, 52.01, 102};
+        double[] col2Values = new double[]{31.5, 42, 38.67, DoubleColumn.MISSING_VALUE, 52.01};
         double[] expected = new double[]{0.5, DoubleColumn.MISSING_VALUE, 3.33, DoubleColumn.MISSING_VALUE, -.01};
 
-        LongColumn col1 = new LongColumn("Test", col1Values);
-        DoubleColumn col2 = new DoubleColumn("Test", col2Values.length);
+        LongColumn col1 = new LongColumn("1", col1Values);
+        DoubleColumn col2 = new DoubleColumn("2", col2Values.length);
         Arrays.stream(col2Values).forEach(col2::append);
 
         NumericColumn difference = col1.subtract(col2);
@@ -97,11 +97,11 @@ public class LongColumnTest {
     @Test
     public void testSubtractIntColumn() {
         long[] col1Values = new long[]{32, MISSING_VALUE, 38, 57, 52};
-        int[] col2Values = new int[]{31, 42, 42, IntColumn.MISSING_VALUE, 51, 102};
+        int[] col2Values = new int[]{31, 42, 42, IntColumn.MISSING_VALUE, 51};
         long[] expected = new long[]{1, MISSING_VALUE, -4, MISSING_VALUE, 1};
 
-        LongColumn col1 = new LongColumn("Test", col1Values);
-        IntColumn col2 = new IntColumn("Test", col1Values.length);
+        LongColumn col1 = new LongColumn("1", col1Values);
+        IntColumn col2 = new IntColumn("2", col1Values.length);
         Arrays.stream(col2Values).forEach(col2::append);
 
         NumericColumn difference = col1.subtract(col2);
@@ -113,11 +113,11 @@ public class LongColumnTest {
     @Test
     public void testSubtract2Columns() {
         long[] col1Values = new long[]{32, MISSING_VALUE, 42, 57, 52};
-        long[] col2Values = new long[]{32, 42, 38, MISSING_VALUE, 52, 102};
+        long[] col2Values = new long[]{32, 42, 38, MISSING_VALUE, 52};
         long[] expected = new long[]{0, MISSING_VALUE, 4, MISSING_VALUE, 0};
 
-        LongColumn col1 = new LongColumn("Test", col1Values);
-        LongColumn col2 = new LongColumn("Test", col2Values);
+        LongColumn col1 = new LongColumn("1", col1Values);
+        LongColumn col2 = new LongColumn("2", col2Values);
 
         LongColumn difference = LongColumn.subtractLong(col1, col2);
         assertTrue(validateDifferenceColumn(expected, difference));
