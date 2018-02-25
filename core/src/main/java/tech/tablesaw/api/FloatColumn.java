@@ -562,15 +562,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         }
         return result;
     }
-
-    public FloatColumn multiply(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
+    
     public FloatColumn multiply(float f) {
         FloatColumn result = new FloatColumn(name() + " * " + " x " + f, size());
         for (int r = 0; r < size(); r++) {
@@ -579,66 +571,10 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return result;
     }
 
-    public FloatColumn multiply(IntColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public FloatColumn multiply(LongColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public FloatColumn multiply(ShortColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " * " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) * column2.get(r));
-        }
-        return result;
-    }
-
-    public FloatColumn divide(FloatColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
-
     public FloatColumn divide(float f) {
         FloatColumn result = new FloatColumn(name() + " / " + " / " + f, size());
         for (int r = 0; r < size(); r++) {
             result.append(get(r) / f);
-        }
-        return result;
-    }
-
-    public FloatColumn divide(IntColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
-
-    public FloatColumn divide(LongColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
-        }
-        return result;
-    }
-
-    public FloatColumn divide(ShortColumn column2) {
-        FloatColumn result = new FloatColumn(name() + " / " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(get(r) / column2.get(r));
         }
         return result;
     }
