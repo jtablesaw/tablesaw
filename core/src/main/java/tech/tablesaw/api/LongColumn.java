@@ -248,10 +248,23 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return result;
     }
 
-    public LongColumn subtract(LongColumn column2) {
-        LongColumn result = new LongColumn(name() + " - " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            result.append(subtract(get(r), column2.get(r)));
+    public NumericColumn subtract(NumericColumn column2) {
+        if (column2 instanceof ShortColumn || column2 instanceof IntColumn || column2 instanceof LongColumn) {
+            return subtractLong(this, column2);
+        } else if (column2 instanceof FloatColumn || column2 instanceof DoubleColumn) {
+            return DoubleColumn.subtractDouble(this, column2);
+        } else {
+            throw new UnsupportedOperationException("LongColumn.subtract() method not supported for " +
+                                                        column2.getClass().getName() + " type");
+        }
+    }
+
+    static LongColumn subtractLong(NumericColumn column1, NumericColumn column2) {
+        int col1Size = column1.size();
+        int col2Size = column2.size();
+        LongColumn result = new LongColumn(column1.name() + " - " + column2.name(), col1Size);
+        for (int r = 0; r < col1Size && r < col2Size; r++) {
+            result.append(subtract(column1.getLong(r), column2.getLong(r)));
         }
         return result;
     }
@@ -719,7 +732,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return val1 + val2;
     }
 
-    private long subtract(long val1, long val2) {
+    private static long subtract(long val1, long val2) {
         if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
             return MISSING_VALUE;
         }
