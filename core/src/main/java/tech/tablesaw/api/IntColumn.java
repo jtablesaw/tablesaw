@@ -593,17 +593,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return result;
     }
 
-    /**
-     * Returns a new IntColumn containing the result of adding the given value to each element in this column
-     */
-    public IntColumn add(int value) {
-        IntColumn result = new IntColumn(name() + " + " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(add(get(r), value));
-        }
-        return result;
-    }
-
     public IntColumn subtract(int value) {
         IntColumn result = new IntColumn(name() + " - " + value, size());
         for (int r = 0; r < size(); r++) {

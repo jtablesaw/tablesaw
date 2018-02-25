@@ -572,14 +572,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return result;
     }
 
-    public DoubleColumn add(double value) {
-        DoubleColumn result = new DoubleColumn(name() + " + " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(add(get(r), value));
-        }
-        return result;
-    }
-
     public DoubleColumn subtract(double value) {
         DoubleColumn result = new DoubleColumn(name() + " - " + value, size());
         for (int r = 0; r < size(); r++) {

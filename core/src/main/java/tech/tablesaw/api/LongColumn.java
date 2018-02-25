@@ -257,17 +257,6 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return result;
     }
 
-    /**
-     * Returns a new column created by adding the given value to each non-missing value in this column
-     */
-    public LongColumn add(long value) {
-        LongColumn result = new LongColumn(name() + " + " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(add(get(r), value));
-        }
-        return result;
-    }
-
     public LongColumn multiply(long value) {
         LongColumn result = new LongColumn(name() + " * " + value, size());
         for (int r = 0; r < size(); r++) {

@@ -760,14 +760,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return returnValue;
     }
 
-    public FloatColumn add(float value) {
-        FloatColumn result = new FloatColumn(name() + " + " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(add(get(r), value));
-        }
-        return result;
-    }
-
     public FloatColumn subtract(float value) {
         FloatColumn result = new FloatColumn(name() + " - " + value, size());
         for (int r = 0; r < size(); r++) {
