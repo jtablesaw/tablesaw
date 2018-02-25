@@ -45,7 +45,7 @@ public class MoneyballExample {
         Scatter.show("Regular season wins by year", wins, year, moneyball.splitOn(playoffs));
 
         // Calculate the run difference for use in the regression model
-        IntColumn runDifference = moneyball.shortColumn("RS").subtract(moneyball.shortColumn("RA"));
+        IntColumn runDifference = (IntColumn) moneyball.shortColumn("RS").subtract(moneyball.shortColumn("RA"));
         moneyball.addColumn(runDifference);
         runDifference.setName("RD");
 
