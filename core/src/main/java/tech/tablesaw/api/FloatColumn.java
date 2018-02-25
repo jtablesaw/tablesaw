@@ -775,7 +775,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         }
         return result;
     }
-    
+
     static float add(float val1, float val2) {
         if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
             return MISSING_VALUE;

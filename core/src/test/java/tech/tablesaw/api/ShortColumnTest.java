@@ -76,6 +76,20 @@ public class ShortColumnTest {
     }
 
     @Test
+    public void testAdd() {
+        short[] originalValues = new short[]{32, 42, 57, 52, -10, 0};
+        ShortColumn initial = new ShortColumn("Test", originalValues);
+        LongColumn longs = (LongColumn) initial.add(1234L);
+
+        assertEquals("Both sets of data should be the same size.", longs.size(), initial.size());
+
+        for (int index = 0; index < initial.size(); index++) {
+            long actual = longs.get(index);
+            assertEquals("add() operation at index:" + index + " failed", 1234 + originalValues[index], actual, 0);
+        }
+    }
+
+    @Test
     public void testPctChange() {
         short[] originalValues = new short[]{ 10, 12, 13 };
         float[] expectedValues = new float[]{ FloatColumn.MISSING_VALUE, 0.2f, 0.083333f };
