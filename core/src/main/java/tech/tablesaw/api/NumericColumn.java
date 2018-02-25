@@ -185,6 +185,37 @@ public interface NumericColumn extends Column {
         return NumericColumn.divideColumns(this, column2);
     }
 
+    default NumericColumn add(Number value) {
+        if (value instanceof Double || this instanceof DoubleColumn) {
+            double val = (double) value;
+            DoubleColumn result = new DoubleColumn(name() + " + " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(getDouble(i) + val);
+            }
+            return result;
+        } else if (value instanceof Float || this instanceof FloatColumn) {
+            float val = (float) value;
+            FloatColumn result = new FloatColumn(name() + " + " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(getDouble(i) + val);
+            }
+            return result;
+        } else if (value instanceof Long || this instanceof LongColumn) {
+            long val = (long) value;
+            LongColumn result = new LongColumn(name() + " + " + val);
+            for (int i = 0; i < size(); i++) {
+                result.append(getLong(i) + val);
+            }
+            return result;
+        }
+        int val = (int) value;
+        IntColumn result = new IntColumn(name() + " + " + val);
+        for (int i = 0; i < size(); i++) {
+            result.append(getInt(i) + val);
+        }
+        return result;
+    }
+
     double[] toDoubleArray();
 
     /**

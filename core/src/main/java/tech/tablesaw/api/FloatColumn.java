@@ -562,7 +562,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         }
         return result;
     }
-    
+
     public FloatColumn multiply(float f) {
         FloatColumn result = new FloatColumn(name() + " * " + " x " + f, size());
         for (int r = 0; r < size(); r++) {
@@ -769,21 +769,13 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn subtract(float value) {
-        FloatColumn result = new FloatColumn(name() + " + " + value, size());
+        FloatColumn result = new FloatColumn(name() + " - " + value, size());
         for (int r = 0; r < size(); r++) {
             result.append(subtract(get(r), value));
         }
         return result;
     }
-
-    public FloatColumn add(int value) {
-        FloatColumn result = new FloatColumn(name() + " + " + value, size());
-        for (int r = 0; r < size(); r++) {
-            result.append(add(get(r), value));
-        }
-        return result;
-    }
-
+    
     static float add(float val1, float val2) {
         if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
             return MISSING_VALUE;

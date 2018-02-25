@@ -720,5 +720,4 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         }
         return newColumn;
     }
-
 }
