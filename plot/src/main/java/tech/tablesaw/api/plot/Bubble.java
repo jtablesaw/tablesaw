@@ -64,7 +64,7 @@ public final class Bubble {
      * @param data column for the bubbles
      */
     public static void show(String chartTitle, NumericColumn x, String xAxis, NumericColumn y, String yAxis, NumericColumn data) {
-        show(chartTitle, x.toDoubleArray(), xAxis, y.toDoubleArray(), yAxis, data.toDoubleArray());
+        show(chartTitle, x.asDoubleArray(), xAxis, y.asDoubleArray(), yAxis, data.asDoubleArray());
     }
     
     /**

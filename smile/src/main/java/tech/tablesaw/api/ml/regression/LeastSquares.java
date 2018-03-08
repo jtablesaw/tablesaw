@@ -30,7 +30,7 @@ public class LeastSquares {
     public LeastSquares(NumericColumn responseVariable, NumericColumn... explanatoryVars) {
         this.explanatoryVariables = DoubleArrays.to2dArray(explanatoryVars);
 
-        this.responseVarArray = responseVariable.toDoubleArray();
+        this.responseVarArray = responseVariable.asDoubleArray();
         this.model = new OLS(explanatoryVariables, responseVarArray);
         this.explanatoryVariableCount = explanatoryVars.length;
         this.explanatoryVariableNames = new String[explanatoryVariableCount];

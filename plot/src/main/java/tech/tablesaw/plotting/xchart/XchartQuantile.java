@@ -41,7 +41,7 @@ public class XchartQuantile {
     }
 
     public static void show(String chartTitle, double[] xData, NumericColumn yColumn, int width, int height) {
-        double[] yData = yColumn.toDoubleArray();
+        double[] yData = yColumn.asDoubleArray();
 
         // Create Chart
         XYChart chart = new XYChart(width, height);

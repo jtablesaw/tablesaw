@@ -30,7 +30,7 @@ public class SmileHistogram {
 
 
     public static PlotCanvas create(String plotTitle, String xTitle, String yTitle, NumericColumn column) {
-        PlotCanvas canvas = smile.plot.Histogram.plot(column.toDoubleArray());
+        PlotCanvas canvas = smile.plot.Histogram.plot(column.asDoubleArray());
         canvas.setForeground(Color.DARK_GRAY);
         canvas.setTitle(plotTitle);
         canvas.setAxisLabel(0, xTitle);

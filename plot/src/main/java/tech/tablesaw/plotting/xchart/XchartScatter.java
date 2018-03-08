@@ -59,8 +59,8 @@ public class XchartScatter {
         chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
 
         for (TemporaryView view : group) {
-            double[] xData = view.numericColumn(xColumn.name()).toDoubleArray();
-            double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
+            double[] xData = view.numericColumn(xColumn.name()).asDoubleArray();
+            double[] yData = view.numericColumn(yColumn.name()).asDoubleArray();
 
             chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
         }
@@ -83,8 +83,8 @@ public class XchartScatter {
         chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
 
         for (TemporaryView view : group) {
-            double[] xData = view.numericColumn(xColumn.name()).toDoubleArray();
-            double[] yData = view.numericColumn(yColumn.name()).toDoubleArray();
+            double[] xData = view.numericColumn(xColumn.name()).asDoubleArray();
+            double[] yData = view.numericColumn(yColumn.name()).asDoubleArray();
             chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
         }
         new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
@@ -96,8 +96,8 @@ public class XchartScatter {
                             int width,
                             int height,
                             int markerSize) {
-        double[] xData = xColumn.toDoubleArray();
-        double[] yData = yColumn.toDoubleArray();
+        double[] xData = xColumn.asDoubleArray();
+        double[] yData = yColumn.asDoubleArray();
 
         // Create Chart
         XYChart chart = new XYChart(width, height);
@@ -114,7 +114,7 @@ public class XchartScatter {
     }
 
     public static void show(String chartTitle, double[] xData, NumericColumn yColumn, int width, int height) {
-        double[] yData = yColumn.toDoubleArray();
+        double[] yData = yColumn.asDoubleArray();
 
         // Create Chart
         XYChart chart = new XYChart(width, height);
