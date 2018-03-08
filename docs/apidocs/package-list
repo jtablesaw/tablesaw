@@ -21,6 +21,7 @@ tech.tablesaw.io.csv
 tech.tablesaw.io.html
 tech.tablesaw.io.jdbc
 tech.tablesaw.io.string
+tech.tablesaw.join
 tech.tablesaw.mapping
 tech.tablesaw.plotting
 tech.tablesaw.plotting.fx
