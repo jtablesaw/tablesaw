@@ -640,8 +640,7 @@ public class CategoryColumn extends AbstractColumn
     public Selection select(StringPredicate predicate) {
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < data().size(); idx++) {
-            int next = data().getInt(idx);
-            if (predicate.test(get(next))) {
+            if (predicate.test(get(idx))) {
                 selection.add(idx);
             }
         }
@@ -651,8 +650,7 @@ public class CategoryColumn extends AbstractColumn
     public Selection select(StringBiPredicate predicate, String value) {
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < data().size(); idx++) {
-            int next = data().getInt(idx);
-            if (predicate.test(get(next), value)) {
+            if (predicate.test(get(idx), value)) {
                 selection.add(idx);
             }
         }
