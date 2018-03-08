@@ -347,4 +347,20 @@ public abstract class Relation {
     public DateTimeColumn dateTimeColumn(String columnName) {
         return (DateTimeColumn) column(columnName);
     }
+
+    public double[][] asColumnMatrix() {
+      return columns().stream().map(col -> col.asDoubleArray()).toArray(size -> new double[size][]);
+    }
+
+    public double[][] asMatrix() {
+        double[][] columnMatrix = asColumnMatrix();
+        double[][] result = new double[columnMatrix[0].length][columnMatrix.length];
+        for (int i = 0; i < columnMatrix.length; i++) {
+            for (int j = 0; j < columnMatrix[0].length; j++) {
+                result[j][i] = columnMatrix[i][j];
+            }
+        }
+        return result;
+    }
+
 }
