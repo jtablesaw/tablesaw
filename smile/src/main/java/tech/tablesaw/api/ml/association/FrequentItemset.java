@@ -81,7 +81,7 @@ public class FrequentItemset {
 
         Table temp = Table.create("temp");
         temp.addColumn(sets.copy());
-        IntColumn encodedItems = items.toIntColumn();
+        IntColumn encodedItems = items.asIntColumn();
         encodedItems.setName(items.name());   // Needs t
         temp.addColumn(encodedItems);
         temp.sortAscendingOn(sets.name(), items.name());
@@ -110,7 +110,7 @@ public class FrequentItemset {
 
         Table temp = Table.create("temp");
         temp.addColumn(sets.copy());
-        IntColumn encodedItems = items.toIntColumn();
+        IntColumn encodedItems = items.asIntColumn();
         encodedItems.setName(items.name());   // Needs t
         temp.addColumn(encodedItems);
         temp.sortAscendingOn(sets.name(), items.name());

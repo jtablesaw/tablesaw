@@ -33,7 +33,7 @@ public class Knn extends AbstractClassifier {
     }
 
     public static Knn learn(int k, IntConvertibleColumn labels, NumericColumn... predictors) {
-        KNN<double[]> classifierModel = KNN.learn(DoubleArrays.to2dArray(predictors), labels.toIntArray(), k);
+        KNN<double[]> classifierModel = KNN.learn(DoubleArrays.to2dArray(predictors), labels.asIntArray(), k);
         return new Knn(classifierModel);
     }
 
@@ -47,7 +47,7 @@ public class Knn extends AbstractClassifier {
         SortedSet<Object> labelSet = new TreeSet<>(labels.asIntegerSet());
         ConfusionMatrix confusion = new StandardConfusionMatrix(labelSet);
 
-        populateMatrix(labels.toIntArray(), confusion, predictors);
+        populateMatrix(labels.asIntArray(), confusion, predictors);
         return confusion;
     }
 

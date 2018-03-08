@@ -39,7 +39,7 @@ public class ConfusionMatrixTest {
 
         KNN<double[]> knn = KNN.learn(
                 DoubleArrays.to2dArray(train.nCol("X"), train.nCol("Y")),
-                train.shortColumn(2).toIntArray(), 2);
+                train.shortColumn(2).asIntArray(), 2);
 
         int[] predicted = new int[test.rowCount()];
         SortedSet<Object> lableSet = new TreeSet<>(train.shortColumn(2).asSet());

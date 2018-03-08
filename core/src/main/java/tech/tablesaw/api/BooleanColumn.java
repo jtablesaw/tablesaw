@@ -392,7 +392,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         }
     }
 
-    public double[] toDoubleArray() {
+    public double[] asDoubleArray() {
         double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = data.getByte(i);
@@ -477,7 +477,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     @Override
-    public int[] toIntArray() {
+    public int[] asIntArray() {
         int[] output = new int[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = data.getByte(i);
@@ -485,7 +485,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return output;
     }
 
-    public IntColumn toIntColumn() {
+    public IntColumn asIntColumn() {
         IntColumn intColumn = new IntColumn(this.name() + ": ints", size());
         ByteArrayList data = data();
         for (int i = 0; i < size(); i++) {

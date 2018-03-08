@@ -70,7 +70,7 @@ public class AssociationRuleMining {
     public AssociationRuleMining(IntColumn sets, CategoryColumn items, double support) {
         Table temp = Table.create("temp");
         temp.addColumn(sets.copy());
-        temp.addColumn(items.toIntColumn());
+        temp.addColumn(items.asIntColumn());
         temp.sortAscendingOn(sets.name(), items.name());
 
         ViewGroup baskets = temp.splitOn(temp.column(0));

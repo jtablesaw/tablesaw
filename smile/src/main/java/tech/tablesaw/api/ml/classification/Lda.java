@@ -32,17 +32,17 @@ public class Lda extends AbstractClassifier {
     }
 
     public static Lda learn(IntConvertibleColumn labels, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray());
+        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.asIntArray());
         return new Lda(classifierModel);
     }
 
     public static Lda learn(IntConvertibleColumn labels, double[] priors, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray(), priors);
+        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.asIntArray(), priors);
         return new Lda(classifierModel);
     }
 
     public static Lda learn(IntConvertibleColumn labels, double[] priors, double tolerance, NumericColumn... predictors) {
-        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.toIntArray(), priors, tolerance);
+        LDA classifierModel = new LDA(DoubleArrays.to2dArray(predictors), labels.asIntArray(), priors, tolerance);
         return new Lda(classifierModel);
     }
 
@@ -56,7 +56,7 @@ public class Lda extends AbstractClassifier {
         SortedSet<Object> labelSet = new TreeSet<>(labels.asIntegerSet());
         ConfusionMatrix confusion = new StandardConfusionMatrix(labelSet);
 
-        populateMatrix(labels.toIntArray(), confusion, predictors);
+        populateMatrix(labels.asIntArray(), confusion, predictors);
         return confusion;
     }
 

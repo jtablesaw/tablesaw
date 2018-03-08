@@ -587,11 +587,11 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
      * Returns an array where each entry is the difference, measured in seconds,
      * between the LocalDateTime and midnight, January 1, 1970 UTC.
      */
-    public long[] toEpochSecondArray() {
-      return toEpochSecondArray(ZoneOffset.UTC);
+    public long[] asEpochSecondArray() {
+      return asEpochSecondArray(ZoneOffset.UTC);
     }
 
-    public long[] toEpochSecondArray(ZoneOffset offset) {
+    public long[] asEpochSecondArray(ZoneOffset offset) {
       long[] output = new long[data.size()];
       for (int i = 0; i < data.size(); i++) {
           output[i] = PackedLocalDateTime.asLocalDateTime(data.getLong(i)).toEpochSecond(offset);
@@ -603,11 +603,11 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
      * Returns an array where each entry is the difference, measured in milliseconds,
      * between the LocalDateTime and midnight, January 1, 1970 UTC.
      */
-    public long[] toEpochMillisArray() {
-      return toEpochMillisArray(ZoneOffset.UTC);
+    public long[] asEpochMillisArray() {
+      return asEpochMillisArray(ZoneOffset.UTC);
     }
 
-    public long[] toEpochMillisArray(ZoneOffset offset) {
+    public long[] asEpochMillisArray(ZoneOffset offset) {
       long[] output = new long[data.size()];
       for (int i = 0; i < data.size(); i++) {
           output[i] = PackedLocalDateTime.asLocalDateTime(data.getLong(i)).toInstant(offset).toEpochMilli();

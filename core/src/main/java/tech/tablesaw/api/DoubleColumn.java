@@ -233,7 +233,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     public double percentile(double percentile) {
-        return AggregateFunctions.percentile(this.toDoubleArray(), percentile);
+        return AggregateFunctions.percentile(this.asDoubleArray(), percentile);
     }
 
     public double range() {
@@ -672,7 +672,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return select(isNonNegative);
     }
 
-    public double[] toDoubleArray() {
+    public double[] asDoubleArray() {
         double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = data.getDouble(i);

@@ -20,10 +20,10 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 public interface IntConvertibleColumn {
 
-    int[] toIntArray();
+    int[] asIntArray();
 
     default Set<Integer> asIntegerSet() {
-      return new IntOpenHashSet(toIntArray());
+      return new IntOpenHashSet(asIntArray());
     }
 
 }

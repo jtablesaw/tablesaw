@@ -56,7 +56,7 @@ public class DateTimeColumnTest {
         assertEquals(28, column1.get(0).getDayOfMonth());
         assertEquals(20, column1.get(0).getHour());
 
-        long[] millisArr = column1.toEpochMillisArray();
+        long[] millisArr = column1.asEpochMillisArray();
         assertEquals(1, millisArr.length);
         assertEquals(millis, millisArr[0]);        
     }

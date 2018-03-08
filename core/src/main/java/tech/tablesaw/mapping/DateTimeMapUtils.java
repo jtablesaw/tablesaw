@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;

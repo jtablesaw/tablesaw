@@ -944,7 +944,7 @@ public class Table extends Relation implements IntIterable {
      */
     public double agg(String numericColumnName, AggregateFunction function) {
         Column column = column(numericColumnName);
-        return function.agg(column.toDoubleArray());
+        return function.agg(column.asDoubleArray());
     }
 
     public SummaryFunction summarize(String numericColumnName, AggregateFunction function) {

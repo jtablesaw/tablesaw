@@ -212,7 +212,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public Stats stats() {
-        FloatColumn values = new FloatColumn(name(), toFloatArray());
+        FloatColumn values = new FloatColumn(name(), asFloatArray());
         return Stats.create(values);
     }
 
@@ -350,7 +350,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
 
     // Reduce functions applied to the whole column
     public long sum() {
-        return Math.round(sum.agg(toDoubleArray()));
+        return Math.round(sum.agg(asDoubleArray()));
     }
 
     public double product() {
@@ -374,7 +374,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     public double percentile(double percentile) {
-        return AggregateFunctions.percentile(this.toDoubleArray(), percentile);
+        return AggregateFunctions.percentile(this.asDoubleArray(), percentile);
     }
 
     public double range() {
@@ -459,7 +459,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
         return select(isOdd);
     }
 
-    public FloatArrayList toFloatArray() {
+    public FloatArrayList asFloatArray() {
         FloatArrayList output = new FloatArrayList(data.size());
         for (long aData : data) {
             output.add(aData);
@@ -573,7 +573,7 @@ public class LongColumn extends AbstractColumn implements LongMapUtils, NumericC
     }
 
     @Override
-    public double[] toDoubleArray() {
+    public double[] asDoubleArray() {
         double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
             long val = data.getLong(i);

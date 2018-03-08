@@ -309,7 +309,7 @@ public interface NumericColumn extends Column {
         return result;
     }
 
-    double[] toDoubleArray();
+    double[] asDoubleArray();
 
     /**
      * Returns int value at <code>index</code> position in the column. A conversion, if needed, could result

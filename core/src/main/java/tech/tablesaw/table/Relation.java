@@ -238,10 +238,10 @@ public abstract class Relation {
         Column c = column(columnIndex);
         if (c.type() == ColumnType.CATEGORY) {
             CategoryColumn categoryColumn = (CategoryColumn) c;
-            return categoryColumn.toIntColumn();
+            return categoryColumn.asIntColumn();
         } else if (c.type() == ColumnType.BOOLEAN) {
             BooleanColumn booleanColumn = (BooleanColumn) c;
-            return booleanColumn.toIntColumn();
+            return booleanColumn.asIntColumn();
         }
         return (NumericColumn) column(columnIndex);
     }
@@ -250,10 +250,10 @@ public abstract class Relation {
         Column c = column(columnName);
         if (c.type() == ColumnType.CATEGORY) {
             CategoryColumn categoryColumn = (CategoryColumn) c;
-            return categoryColumn.toIntColumn();
+            return categoryColumn.asIntColumn();
         } else if (c.type() == ColumnType.BOOLEAN) {
             BooleanColumn booleanColumn = (BooleanColumn) c;
-            return booleanColumn.toIntColumn();
+            return booleanColumn.asIntColumn();
         }
         return (NumericColumn) column(columnName);
     }

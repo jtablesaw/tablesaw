@@ -361,7 +361,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
 
     // Reduce functions applied to the whole column
     public long sum() {
-        return Math.round(sum.agg(toDoubleArray()));
+        return Math.round(sum.agg(asDoubleArray()));
     }
 
     public double product() {
@@ -385,7 +385,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public double percentile(double percentile) {
-        return AggregateFunctions.percentile(this.toDoubleArray(), percentile);
+        return AggregateFunctions.percentile(this.asDoubleArray(), percentile);
     }
 
     public double range() {
@@ -465,7 +465,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return select(isOdd);
     }
 
-    public FloatArrayList toFloatArray() {
+    public FloatArrayList asFloatArray() {
         FloatArrayList output = new FloatArrayList(data.size());
         for (int aData : data) {
             output.add(aData);
@@ -474,7 +474,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     @Override
-    public int[] toIntArray() {
+    public int[] asIntArray() {
         int[] output = new int[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = data.getInt(i);
@@ -482,7 +482,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return output;
     }
 
-    public double[] toDoubleArray() {
+    public double[] asDoubleArray() {
         double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
             long val = data.getInt(i);
@@ -633,7 +633,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public Stats stats() {
-        FloatColumn values = new FloatColumn(name(), toFloatArray());
+        FloatColumn values = new FloatColumn(name(), asFloatArray());
         return Stats.create(values);
     }
 

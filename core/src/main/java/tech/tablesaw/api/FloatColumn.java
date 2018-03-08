@@ -235,7 +235,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public double percentile(double percentile) {
-        return AggregateFunctions.percentile(this.toDoubleArray(), percentile);
+        return AggregateFunctions.percentile(this.asDoubleArray(), percentile);
     }
 
     public double range() {
@@ -646,7 +646,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return results;
     }
 
-    public double[] toDoubleArray() {
+    public double[] asDoubleArray() {
         double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = data.getFloat(i);
@@ -654,8 +654,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return output;
     }
 
-    public DoubleColumn toDoubleColumn() {
-        return new DoubleColumn(name(), toDoubleArray());
+    public DoubleColumn asDoubleColumn() {
+        return new DoubleColumn(name(), asDoubleArray());
     }
 
     public String print() {

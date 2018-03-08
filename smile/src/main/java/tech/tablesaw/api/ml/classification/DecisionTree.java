@@ -33,7 +33,7 @@ public class DecisionTree extends AbstractClassifier {
     }
 
     public static DecisionTree learn(int maxNodes, IntConvertibleColumn classes, NumericColumn... columns) {
-        int[] classArray = classes.toIntArray();
+        int[] classArray = classes.asIntArray();
         return new DecisionTree(maxNodes, classArray, columns);
     }
 
@@ -47,7 +47,7 @@ public class DecisionTree extends AbstractClassifier {
         SortedSet<Object> labelSet = new TreeSet<>(labels.asIntegerSet());
         ConfusionMatrix confusion = new StandardConfusionMatrix(labelSet);
 
-        populateMatrix(labels.toIntArray(), confusion, predictors);
+        populateMatrix(labels.asIntArray(), confusion, predictors);
         return confusion;
     }
 

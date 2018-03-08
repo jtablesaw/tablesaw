@@ -140,7 +140,7 @@ public class CategoryColumnTest {
     public void testToList() {
         CategoryColumn categoryColumn = new CategoryColumn("US States");
         categoryColumn.addAll(TestDataUtil.usStates());
-        List<String> states = categoryColumn.toList();
+        List<String> states = categoryColumn.asList();
         assertEquals(51, states.size()); //includes Wash. DC
     }
 }

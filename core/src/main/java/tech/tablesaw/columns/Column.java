@@ -173,7 +173,7 @@ public interface Column {
 
     void setComment(String comment);
 
-    default double[] toDoubleArray() {
+    default double[] asDoubleArray() {
         throw new UnsupportedOperationException("Method toDoubleArray() is not supported on non-numeric columns");
     }
 

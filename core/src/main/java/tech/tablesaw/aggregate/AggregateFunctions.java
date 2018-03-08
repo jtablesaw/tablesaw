@@ -21,12 +21,8 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
 
-import org.apache.commons.math3.util.DoubleArray;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
 
 /**
  * Contains common utilities for double and long types
@@ -477,10 +473,10 @@ public class AggregateFunctions {
 
     // TODO(lwhite): These are two column reductions. We need a class for that
     public static double meanDifference(FloatColumn column1, FloatColumn column2) {
-        return StatUtils.meanDifference(column1.toDoubleArray(), column2.toDoubleArray());
+        return StatUtils.meanDifference(column1.asDoubleArray(), column2.asDoubleArray());
     }
 
     public static double sumDifference(FloatColumn column1, FloatColumn column2) {
-        return StatUtils.sumDifference(column1.toDoubleArray(), column2.toDoubleArray());
+        return StatUtils.sumDifference(column1.asDoubleArray(), column2.asDoubleArray());
     }
 }

@@ -99,7 +99,7 @@ public class BooleanColumnTest {
 
     @Test
     public void testToDoubleArray() throws Exception {
-        double[] result = column.toDoubleArray();
+        double[] result = column.asDoubleArray();
         assertEquals(0.0, result[0], 0.01);
         assertEquals(0.0, result[1], 0.01);
         assertEquals(0.0, result[2], 0.01);
@@ -127,7 +127,7 @@ public class BooleanColumnTest {
 
     @Test
     public void testConversionToInt() {
-        int[] array = column.toIntArray();
+        int[] array = column.asIntArray();
         assertTrue(array[0] == 0);
         assertTrue(array[1] == 0);
         assertTrue(array[2] == 0);

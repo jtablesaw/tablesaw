@@ -218,7 +218,7 @@ public class TemporaryView extends Relation implements IntIterable {
      */
     public double reduce(String numericColumnName, AggregateFunction function) {
         Column column = column(numericColumnName);
-        return function.agg(column.subset(rowMap).toDoubleArray());
+        return function.agg(column.subset(rowMap).asDoubleArray());
     }
 
     public BooleanColumn booleanColumn(int columnIndex) {

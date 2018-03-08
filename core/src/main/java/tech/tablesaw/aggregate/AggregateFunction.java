@@ -31,22 +31,22 @@ public interface AggregateFunction {
     double agg(double[] data);
 
     default double agg(FloatColumn data) {
-        return this.agg(data.toDoubleArray());
+        return this.agg(data.asDoubleArray());
     }
 
     default double agg(DoubleColumn doubles) {
-        return this.agg(doubles.toDoubleArray());
+        return this.agg(doubles.asDoubleArray());
     }
 
     default double agg(IntColumn data) {
-        return this.agg(data.toDoubleArray());
+        return this.agg(data.asDoubleArray());
     }
 
     default double agg(ShortColumn data) {
-        return this.agg(data.toDoubleArray());
+        return this.agg(data.asDoubleArray());
     }
 
     default double agg(LongColumn data) {
-        return this.agg(data.toDoubleArray());
+        return this.agg(data.asDoubleArray());
     }
 }

@@ -365,7 +365,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
 
     // Reduce functions applied to the whole column
     public long sum() {
-        return Math.round(sum.agg(toDoubleArray()));
+        return Math.round(sum.agg(asDoubleArray()));
     }
 
     public double product() {
@@ -389,7 +389,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public double percentile(double percentile) {
-        return AggregateFunctions.percentile(this.toDoubleArray(), percentile);
+        return AggregateFunctions.percentile(this.asDoubleArray(), percentile);
     }
 
     public double range() {
@@ -474,7 +474,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return select(ShortColumnUtils.isOdd);
     }
 
-    public FloatArrayList toFloatArray() {
+    public FloatArrayList asFloatArray() {
         FloatArrayList output = new FloatArrayList(data.size());
         for (short aData : data) {
             output.add(aData);
@@ -595,7 +595,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         return bitmap;
     }
 
-    public double[] toDoubleArray() {
+    public double[] asDoubleArray() {
         double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
             long val = data.getShort(i);
@@ -617,7 +617,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     public Stats stats() {
-        FloatColumn values = new FloatColumn(name(), toFloatArray());
+        FloatColumn values = new FloatColumn(name(), asFloatArray());
         return Stats.create(values);
     }
 
@@ -667,7 +667,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     @Override
-    public int[] toIntArray() {
+    public int[] asIntArray() {
         int[] output = new int[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = data.getShort(i);

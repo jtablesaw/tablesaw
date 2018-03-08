@@ -65,17 +65,17 @@ public class Stats {
     }
 
     public static Stats create(final IntColumn ints) {
-        FloatColumn values = new FloatColumn(ints.name(), ints.toFloatArray());
+        FloatColumn values = new FloatColumn(ints.name(), ints.asFloatArray());
         return create(values);
     }
 
     public static Stats create(final ShortColumn ints) {
-        FloatColumn values = new FloatColumn(ints.name(), ints.toFloatArray());
+        FloatColumn values = new FloatColumn(ints.name(), ints.asFloatArray());
         return create(values);
     }
 
     public static Stats create(final LongColumn ints) {
-        FloatColumn values = new FloatColumn(ints.name(), ints.toFloatArray());
+        FloatColumn values = new FloatColumn(ints.name(), ints.asFloatArray());
         return create(values);
     }
 
