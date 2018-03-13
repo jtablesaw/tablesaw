@@ -429,8 +429,6 @@ public class Table extends Relation implements IntIterable {
         return column.getString(r);
     }
 
-
-
     /**
      * Returns a table with the same columns as this table
      */
