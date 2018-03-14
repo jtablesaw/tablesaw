@@ -108,6 +108,10 @@ public class CsvReadOptions {
         return sample;
     }
 
+    public Locale locale() {
+        return locale;
+    }
+
     public DateTimeFormatter dateTimeFormatter() {
         if (Strings.isNullOrEmpty(dateTimeFormat)) {
             return null;
@@ -202,4 +206,5 @@ public class CsvReadOptions {
             return new CsvReadOptions(this);
         }
     }
+
 }

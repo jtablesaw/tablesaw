@@ -14,20 +14,35 @@
 
 package tech.tablesaw.io.csv;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.Table;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.NUMBER;
+import static tech.tablesaw.api.ColumnType.SKIP;
+import static tech.tablesaw.api.ColumnType.STRING;
+import static tech.tablesaw.io.csv.CsvReader.detectColumnTypes;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
-import static org.junit.Assert.*;
-import static tech.tablesaw.api.ColumnType.*;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Table;
 
 /**
  * Tests for CSV Reading
@@ -107,8 +122,96 @@ public class CsvReaderTest {
     @Test
     public void testDataTypeDetection() throws Exception {
         InputStream stream = new FileInputStream(new File("../data/bus_stop_test.csv"));
-        ColumnType[] columnTypes = CsvReader.detectColumnTypes(stream, true, ',', false);
+        ColumnType[] columnTypes = detectColumnTypes(stream, true, ',', false, Locale.getDefault());
         assertTrue(Arrays.equals(bus_types, columnTypes));
+    }
+    
+    @Test
+    public void testLocalDateDetectionEnglish() throws Exception {
+
+        final InputStream stream = new ByteArrayInputStream((
+                "Date\n"
+            + "\"Nov 1, 2017\"\n"
+            + "\"Oct 1, 2017\"\n"
+            + "\"Sep 1, 2017\"\n"
+            + "\"Aug 1, 2017\"\n"
+            + "\"Jul 1, 2017\"\n"
+            + "\"Jun 1, 2017\"\n").getBytes());
+
+        final boolean header = true;
+        final char delimiter = ',';
+        final boolean useSampling = true;
+
+        final List<ColumnType> actual = asList(detectColumnTypes(stream, header, delimiter, useSampling, Locale.ENGLISH));
+
+        assertThat(actual, is(equalTo(asList(LOCAL_DATE))));
+
+    }
+    
+    @Test
+    public void testLocalDateTimeDetectionEnglish() throws Exception {
+
+        final InputStream stream = new ByteArrayInputStream((
+              "Date\n"
+            + "09-Nov-2014 13:03\n"
+            + "09-Oct-2014 13:03\n"
+            + "09-Sep-2014 13:03\n"
+            + "09-Aug-2014 13:03\n"
+            + "09-Jul-2014 13:03\n"
+            + "09-Jun-2014 13:03\n").getBytes());
+
+        final boolean header = true;
+        final char delimiter = ',';
+        final boolean useSampling = true;
+
+        final List<ColumnType> actual = asList(detectColumnTypes(stream, header, delimiter, useSampling, Locale.ENGLISH));
+
+        assertThat(actual, is(equalTo(asList(LOCAL_DATE_TIME))));
+
+    }
+
+    @Test
+    public void testLocalDateDetectionFrench() throws Exception {
+
+        final InputStream stream = new ByteArrayInputStream((
+                "Date\n"
+            + "\"nov. 1, 2017\"\n"
+            + "\"oct. 1, 2017\"\n"
+            + "\"sept. 1, 2017\"\n"
+            + "\"août 1, 2017\"\n"
+            + "\"juil. 1, 2017\"\n"
+            + "\"juin 1, 2017\"\n").getBytes());
+        
+        final boolean header = true;
+        final char delimiter = ',';
+        final boolean useSampling = true;
+
+        final List<ColumnType> actual = asList(detectColumnTypes(stream, header, delimiter, useSampling, Locale.FRENCH));
+
+        assertThat(actual, is(equalTo(asList(LOCAL_DATE))));
+
+    }
+
+    @Test
+    public void testLocalDateTimeDetectionFrench() throws Exception {
+
+        final InputStream stream = new ByteArrayInputStream((
+              "Date\n"
+            + "09-nov.-2014 13:03\n"
+            + "09-oct.-2014 13:03\n"
+            + "09-sept.-2014 13:03\n"
+            + "09-août-2014 13:03\n"
+            + "09-juil.-2014 13:03\n"
+            + "09-juin-2014 13:03\n").getBytes());
+
+        final boolean header = true;
+        final char delimiter = ',';
+        final boolean useSampling = true;
+
+        final List<ColumnType> actual = asList(detectColumnTypes(stream, header, delimiter, useSampling, Locale.FRENCH));
+
+        assertThat(actual, is(equalTo(asList(LOCAL_DATE_TIME))));
+
     }
 
     @Test
@@ -119,13 +222,13 @@ public class CsvReaderTest {
                         "NUMBER,     // 1.0   approval    \n" +
                         "STRING,     // 2.0   who         \n" +
                         "}\n";
-        assertEquals(output, CsvReader.printColumnTypes("../data/bush.csv", true, ','));
+        assertEquals(output, CsvReader.printColumnTypes("../data/bush.csv", true, ',', Locale.getDefault()));
     }
 
     @Test
     public void testDataTypeDetection2() throws Exception {
         InputStream stream = new FileInputStream(new File("../data/bush.csv"));
-        ColumnType[] columnTypes = CsvReader.detectColumnTypes(stream, true, ',', false);
+        ColumnType[] columnTypes = detectColumnTypes(stream, true, ',', false, Locale.getDefault());
         assertEquals(LOCAL_DATE, columnTypes[0]);
         assertEquals(NUMBER, columnTypes[1]);
         assertEquals(STRING, columnTypes[2]);

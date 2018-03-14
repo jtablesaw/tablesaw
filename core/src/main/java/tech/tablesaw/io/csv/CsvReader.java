@@ -43,7 +43,9 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 import static tech.tablesaw.api.ColumnType.*;
@@ -64,9 +66,9 @@ public class CsvReader {
         }
     };
 
-    private static final Predicate<String> isLocalDate = s -> {
+    private static final BiPredicate<String, Locale> isLocalDate = (s, locale) -> {
         try {
-            LocalDate.parse(s, TypeUtils.DATE_FORMATTER);
+            LocalDate.parse(s, TypeUtils.DATE_FORMATTER.withLocale(locale));
             return true;
         } catch (DateTimeParseException e) {
             // it's all part of the plan
@@ -82,9 +84,9 @@ public class CsvReader {
             return false;
         }
     };
-    private static final Predicate<String> isLocalDateTime = s -> {
+    private static final BiPredicate<String, Locale> isLocalDateTime = (s, locale) -> {
         try {
-            LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER);
+            LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER.withLocale(locale));
             return true;
         } catch (DateTimeParseException e) {
             // it's all part of the plan
@@ -110,7 +112,7 @@ public class CsvReader {
             InputStream detectTypesStream = options.reader() != null
                     ? new ByteArrayInputStream(bytes)
                     : new FileInputStream(options.file());
-            types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample());
+            types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample(), options.locale());
         }
 
         // All other read methods end up here, make sure we don't have leading Unicode BOM
@@ -247,11 +249,11 @@ public class CsvReader {
      *
      * @throws IOException if file cannot be read
      */
-    private static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
+    private static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter, Locale locale) throws IOException {
         File file = new File(csvFileName);
         InputStream stream = new FileInputStream(file);
 
-        ColumnType[] types = detectColumnTypes(stream, header, delimiter, false);
+        ColumnType[] types = detectColumnTypes(stream, header, delimiter, false, locale);
         Table t = headerOnly(types, header, delimiter, file);
         return t.structure();
     }
@@ -280,9 +282,9 @@ public class CsvReader {
      *
      * @throws IOException if file cannot be read
      */
-    public static String printColumnTypes(String csvFileName, boolean header, char delimiter) throws IOException {
+    public static String printColumnTypes(String csvFileName, boolean header, char delimiter, Locale locale) throws IOException {
 
-        Table structure = detectedColumnTypes(csvFileName, header, delimiter);
+        Table structure = detectedColumnTypes(csvFileName, header, delimiter, locale);
 
         StringBuilder buf = new StringBuilder();
         buf.append("ColumnType[] columnTypes = {");
@@ -357,7 +359,7 @@ public class CsvReader {
      * corrected and
      * used to explicitly specify the correct column types.
      */
-    protected static ColumnType[] detectColumnTypes(InputStream stream, boolean header, char delimiter, boolean useSampling)
+    protected static ColumnType[] detectColumnTypes(InputStream stream, boolean header, char delimiter, boolean useSampling, Locale locale)
             throws IOException {
 
         int linesToSkip = header ? 1 : 0;
@@ -410,7 +412,7 @@ public class CsvReader {
 
         // now detect
         for (List<String> valuesList : columnData) {
-            ColumnType detectedType = detectType(valuesList);
+            ColumnType detectedType = detectType(valuesList, locale);
             columnTypes.add(detectedType);
         }
         return columnTypes.toArray(new ColumnType[columnTypes.size()]);
@@ -445,7 +447,7 @@ public class CsvReader {
         return nextRow + 10_000_000;
     }
 
-    private static ColumnType detectType(List<String> valuesList) {
+    private static ColumnType detectType(List<String> valuesList, Locale locale) {
 
         // Types to choose from. When more than one would work, we pick the first of the options
         ColumnType[] typeArray
@@ -458,13 +460,13 @@ public class CsvReader {
             if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {
                 continue;
             }
-            if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime.test(s)) {
+            if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime.test(s, locale)) {
                 typeCandidates.remove(LOCAL_DATE_TIME);
             }
             if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime.test(s)) {
                 typeCandidates.remove(LOCAL_TIME);
             }
-            if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate.test(s)) {
+            if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate.test(s, locale)) {
                 typeCandidates.remove(LOCAL_DATE);
             }
             if (typeCandidates.contains(BOOLEAN) && !isBoolean.test(s)) {
