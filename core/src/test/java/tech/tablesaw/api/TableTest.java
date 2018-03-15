@@ -22,6 +22,8 @@ import tech.tablesaw.columns.Column;
 import java.util.Random;
 
 import static org.junit.Assert.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
 /**
  * Tests for Table
@@ -53,6 +55,15 @@ public class TableTest {
 
         Column c1 = table.getAndRemoveColumn(0);
         assertNotNull(c1);
+    }
+
+    @Test
+    public void testSummarize() throws Exception {
+        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
+        Table result = table.summarize("Injuries", mean, stdDev).by("State");
+        assertEquals(49, result.rowCount());
+        assertEquals(3, result.columnCount());
+        assertEquals("4.580805569368455", result.column(1).getString(0));
     }
 
     @Test
