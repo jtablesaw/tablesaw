@@ -1008,6 +1008,10 @@ public class Table extends Relation implements IntIterable {
         return function.agg(column.asDoubleArray());
     }
 
+    public Map<AggregateFunction, Double> aggAll(String numericColumnName, AggregateFunction ... functions) {
+        return summarize(numericColumnName, functions).getAll();
+    }
+
     public SummaryFunction summarize(String numericColumnName, AggregateFunction ... function) {
         return new SummaryFunction(this, numericColumnName, function);
     }

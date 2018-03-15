@@ -17,6 +17,9 @@ package tech.tablesaw.aggregate;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.table.ViewGroup;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SummaryFunction {
 
     private final Table original;
@@ -45,9 +48,20 @@ public class SummaryFunction {
     /**
      * Returns the result of applying to the function to all the values in the appropriate column
      *
-     * Note this only works for a single function
+     * Note this only works for the first function if there is more than one.
      */
     public double get() {
         return original.agg(summarizedColumnName, function[0]);
+    }
+
+    /**
+     * Returns the result of applying to the functions to all the values in the appropriate column
+     */
+    public Map<AggregateFunction, Double> getAll() {
+        Map<AggregateFunction, Double> results = new HashMap<>();
+        for (AggregateFunction fun : function) {
+            results.put(fun, original.agg(summarizedColumnName, fun));
+        }
+        return results;
     }
 }
