@@ -1008,7 +1008,7 @@ public class Table extends Relation implements IntIterable {
         return function.agg(column.asDoubleArray());
     }
 
-    public SummaryFunction summarize(String numericColumnName, AggregateFunction function) {
+    public SummaryFunction summarize(String numericColumnName, AggregateFunction ... function) {
         return new SummaryFunction(this, numericColumnName, function);
     }
 

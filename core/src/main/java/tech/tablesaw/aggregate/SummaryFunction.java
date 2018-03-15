@@ -21,9 +21,9 @@ public class SummaryFunction {
 
     private final Table original;
     private final String summarizedColumnName;
-    private final AggregateFunction function;
+    private final AggregateFunction[] function;
 
-    public SummaryFunction(Table original, String summarizedColumnName, AggregateFunction function) {
+    public SummaryFunction(Table original, String summarizedColumnName, AggregateFunction ... function) {
         this.original = original;
         this.summarizedColumnName = summarizedColumnName;
         this.function = function;
@@ -44,9 +44,10 @@ public class SummaryFunction {
 
     /**
      * Returns the result of applying to the function to all the values in the appropriate column
+     *
+     * Note this only works for a single function
      */
     public double get() {
-        return original.agg(summarizedColumnName, function);
+        return original.agg(summarizedColumnName, function[0]);
     }
-
 }
