@@ -17,8 +17,6 @@ package tech.tablesaw.aggregate;
 import org.junit.Before;
 import org.junit.Test;
 
-import tech.tablesaw.aggregate.AggregateFunctions;
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -29,17 +27,11 @@ import static org.junit.Assert.assertEquals;
 
 public class AggregateFunctionsTest {
 
-    private static ColumnType[] types = {
-            ColumnType.LOCAL_DATE,     // date of poll
-            ColumnType.INTEGER,        // approval rating (pct)
-            ColumnType.CATEGORY        // polling org
-    };
-
     private Table table;
 
     @Before
     public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv").columnTypes(types));
+        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv"));
     }
 
     @Test
@@ -52,21 +44,23 @@ public class AggregateFunctionsTest {
     public void testGroupMean() {
         Column byColumn = table.column("who");
         ViewGroup group = new ViewGroup(table, byColumn);
-        Table result = group.agg("approval", AggregateFunctions.mean);
-        assertEquals(2, result.columnCount());
+        Table result = group.agg("approval", AggregateFunctions.mean, AggregateFunctions.stdDev);
+        assertEquals(3, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(6, result.rowCount());
         assertEquals("65.671875", result.get(0, 1));
+        assertEquals("10.648876067826901", result.get(0, 2));
     }
 
     @Test
     public void test2ColumnGroupMean() {
         Column byColumn1 = table.column("who");
-        ViewGroup group = new ViewGroup(table, byColumn1);
-        Table result = group.agg("approval", AggregateFunctions.mean);
-        assertEquals(2, result.columnCount());
+        Column byColumn2 = table.column("date");
+        ViewGroup group = new ViewGroup(table, byColumn1, byColumn2);
+        Table result = group.agg("approval", AggregateFunctions.mean, AggregateFunctions.sum);
+        assertEquals(4, result.columnCount());
         assertEquals("who", result.column(0).name());
-        assertEquals(6, result.rowCount());
-        assertEquals("65.671875", result.get(0, 1));
+        assertEquals(323, result.rowCount());
+        assertEquals("46.0", result.get(0, 2));
     }
 }
