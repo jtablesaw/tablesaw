@@ -22,7 +22,6 @@ import tech.tablesaw.api.ShortColumn;
 
 /**
  * Functions that calculate values over the data of an entire column, such as sum, mean, std. dev, etc.
- * TODO: not sure that this should always return a double
  */
 public interface AggregateFunction {
 

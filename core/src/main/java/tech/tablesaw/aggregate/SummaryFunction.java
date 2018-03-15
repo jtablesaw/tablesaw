@@ -29,11 +29,11 @@ public class SummaryFunction {
         this.function = function;
     }
 
-    public String summarizedColumnName() {
+    private String summarizedColumnName() {
         return summarizedColumnName;
     }
 
-    Table original() {
+    private Table original() {
         return original;
     }
 

@@ -164,7 +164,10 @@ public class Table extends Relation implements IntIterable {
      * Creates an IntColumn containing the integers from startsWith to rowCount() and adds it to this table.
      * Can be used for maintaining/restoring a specific order on data without an existing order column, or for
      * generating scatter/line plots where the variation of points in some order is what you're trying to see.
+     *
+     * TODO: Move this functionality to IntColumn, and add other fill methods there
      */
+    @Deprecated
     public void addIndexColumn(String columnName, int startsWith) {
 
         IntColumn indexColumn = new IntColumn(columnName, rowCount());
@@ -901,30 +904,42 @@ public class Table extends Relation implements IntIterable {
         columnList.retainAll(columns(columnNames));
     }
 
+    @Deprecated
     public SummaryFunction sum(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, sum);
     }
+
+    @Deprecated
     public SummaryFunction mean(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, mean);
     }
+
+    @Deprecated
     public SummaryFunction median(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, median);
     }
+
+    @Deprecated
     public SummaryFunction variance(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, variance);
     }
+
+    @Deprecated
     public SummaryFunction stdDev(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, stdDev);
     }
 
+    @Deprecated
     public SummaryFunction count(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, count);
     }
 
+    @Deprecated
     public SummaryFunction max(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, max);
     }
 
+    @Deprecated
     public SummaryFunction min(String numericColumnName) {
       return new SummaryFunction(this, numericColumnName, min);
     }

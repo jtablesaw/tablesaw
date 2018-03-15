@@ -24,6 +24,7 @@ import tech.tablesaw.util.DictionaryMap;
 public interface CategoryColumnUtils extends Column, StringMapUtils, CategoryReduceUtils, Iterable<String> {
 
     StringPredicate isMissing = i -> i.equals(CategoryColumn.MISSING_VALUE);
+
     StringPredicate isNotMissing = i -> !i.equals(CategoryColumn.MISSING_VALUE);
 
     DictionaryMap dictionaryMap();
