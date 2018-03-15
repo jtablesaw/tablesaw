@@ -702,7 +702,7 @@ public class CategoryColumn extends AbstractColumn
 
             @Override
             public String next() {
-                return lookupTable.get(valuesIt.next());
+                return lookupTable.get(valuesIt.nextInt());
             }
         };
     }

@@ -200,7 +200,7 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns an randomly generated array of ints of size N where Max is the largest possible value
      */
-    static int[] generateUniformBitmap(int N, int Max) {
+    private static int[] generateUniformBitmap(int N, int Max) {
         if (N > Max) {
           throw new IllegalArgumentException("Illegal arguments: N (" + N + ") greater than Max (" + Max + ")");
         }
@@ -893,52 +893,87 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * Removes the given columns from this table
+     * Removes all columns except for those given in the argument from this table
      */
     public void retainColumns(Column... columns) {
         List<Column> retained = Arrays.asList(columns);
         columnList.retainAll(retained);
     }
 
+    /**
+     * Removes all columns except for those given in the argument from this table
+     */
     public void retainColumns(String... columnNames) {
         columnList.retainAll(columns(columnNames));
     }
 
+    /**
+     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * eg: table.summarize(numericColumnName, sum);
+     */
     @Deprecated
     public SummaryFunction sum(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, sum);
     }
 
+    /**
+     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * eg: table.summarize(numericColumnName, mean);
+     */
     @Deprecated
     public SummaryFunction mean(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, mean);
     }
 
+    /**
+     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * eg: table.summarize(numericColumnName, median);
+     */
     @Deprecated
     public SummaryFunction median(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, median);
     }
 
+    /**
+     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * eg: table.summarize(numericColumnName, variance);
+     */
     @Deprecated
     public SummaryFunction variance(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, variance);
     }
 
+    /**
+     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * eg: table.summarize(numericColumnName, sd);
+     */
     @Deprecated
     public SummaryFunction stdDev(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, stdDev);
     }
 
+    /**
+     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * e.g.: table.summarize(numericColumnName, count);
+     */
     @Deprecated
     public SummaryFunction count(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, count);
     }
 
+    /**
+     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * e.g.: table.summarize(numericColumnName, count);
+     */
     @Deprecated
     public SummaryFunction max(String numericColumnName) {
         return new SummaryFunction(this, numericColumnName, max);
     }
 
+    /**
+     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * e.g.: table.summarize(numericColumnName, count);
+     */
     @Deprecated
     public SummaryFunction min(String numericColumnName) {
       return new SummaryFunction(this, numericColumnName, min);
@@ -987,6 +1022,7 @@ public class Table extends Relation implements IntIterable {
      * Returns the first row for which the column {@code columnName} contains {@code value}, or
      * null if there are no matches
      * TODO(lwhite) This is a toy implementation badly in need of rewrite for performance.
+     * @deprecated Use a select() on the column to get the matching records and take the first match
      */
     public int getFirst(Column column, String value) {
         int row = -1;
