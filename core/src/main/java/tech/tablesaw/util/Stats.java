@@ -29,22 +29,22 @@ import tech.tablesaw.api.Table;
  */
 public class Stats {
 
-    long n;
-    double sum;
-    double mean;
-    double min;
-    double max;
-    double variance;
-    double standardDeviation;
-    double geometricMean;
-    double quadraticMean;
-    double secondMoment;
-    double populationVariance;
-    double sumOfLogs;
-    double sumOfSquares;
+    private long n;
+    private double sum;
+    private double mean;
+    private double min;
+    private double max;
+    private double variance;
+    private double standardDeviation;
+    private double geometricMean;
+    private double quadraticMean;
+    private double secondMoment;
+    private double populationVariance;
+    private double sumOfLogs;
+    private double sumOfSquares;
     private String name;
 
-    public Stats(String name) {
+    private Stats(String name) {
         this.name = name;
     }
 
@@ -178,28 +178,28 @@ public class Stats {
         t.addColumn(measure);
         t.addColumn(value);
 
-        measure.add("n");
+        measure.append("n");
         value.append(n);
 
-        measure.add("sum");
+        measure.append("sum");
         value.append(sum());
 
-        measure.add("Mean");
+        measure.append("Mean");
         value.append(mean());
 
-        measure.add("Min");
+        measure.append("Min");
         value.append(min());
 
-        measure.add("Max");
+        measure.append("Max");
         value.append(max());
 
-        measure.add("Range");
+        measure.append("Range");
         value.append(range());
 
-        measure.add("Variance");
+        measure.append("Variance");
         value.append(variance());
 
-        measure.add("Std. Dev");
+        measure.append("Std. Dev");
         value.append(standardDeviation());
 
         return t;
@@ -211,22 +211,22 @@ public class Stats {
         CategoryColumn measure = t.categoryColumn("Measure");
         FloatColumn value = t.floatColumn("Value");
 
-        measure.add("Sum of Squares");
+        measure.append("Sum of Squares");
         value.append(sumOfSquares());
 
-        measure.add("Sum of Logs");
+        measure.append("Sum of Logs");
         value.append(sumOfLogs());
 
-        measure.add("Population Variance");
+        measure.append("Population Variance");
         value.append(populationVariance());
 
-        measure.add("Geometric Mean");
+        measure.append("Geometric Mean");
         value.append(geometricMean());
 
-        measure.add("Quadratic Mean");
+        measure.append("Quadratic Mean");
         value.append(quadraticMean());
 
-        measure.add("Second Moment");
+        measure.append("Second Moment");
         value.append(secondMoment());
 
         return t;

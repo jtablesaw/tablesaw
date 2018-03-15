@@ -410,15 +410,7 @@ public class CategoryColumn extends AbstractColumn
     public Selection isEqualTo(String string) {
         Selection results = new BitmapBackedSelection();
         int key = lookupTable.get(string);
-        if (key >= 0) {
-            int i = 0;
-            for (int next : values) {
-                if (key == next) {
-                    results.add(i);
-                }
-                i++;
-            }
-        }
+        addValuesToSelection(results, key);
         return results;
     }
 
@@ -748,6 +740,12 @@ public class CategoryColumn extends AbstractColumn
       Selection results = new BitmapBackedSelection();
       for (String string : strings) {
         int key = lookupTable.get(string);
+          addValuesToSelection(results, key);
+      }
+      return results;
+    }
+
+    private void addValuesToSelection(Selection results, int key) {
         if (key >= 0) {
           int i = 0;
           for (int next : values) {
@@ -757,9 +755,6 @@ public class CategoryColumn extends AbstractColumn
             i++;
           }
         }
-      }
-
-      return results;
     }
 
     public Selection isIn(Collection<String> strings) {
