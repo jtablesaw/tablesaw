@@ -147,8 +147,7 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns an object that can be used to sort this table in the order specified for by the given column names
      */
-    @VisibleForTesting
-    public static Sort getSort(String... columnNames) {
+    private static Sort getSort(String... columnNames) {
         Sort key = null;
         for (String s : columnNames) {
             if (key == null) {
@@ -673,7 +672,7 @@ public class Table extends Relation implements IntIterable {
      * Returns a comparator for the column matching the specified name
      *
      * @param columnName The name of the column to sort
-     * @param reverse    {@code true} if the column should be sorted in reverse
+     * @param order      Specifies whether the sort should be in ascending or descending order
      */
     private IntComparator rowComparator(String columnName, Order order) {
         Column column = this.column(columnName);
@@ -776,7 +775,6 @@ public class Table extends Relation implements IntIterable {
       Table newTable = emptyCopy();
       Rows.copyRowsToTable(new IntArrayList(rows), this, newTable);
       return newTable;
-
     }
 
     /**
