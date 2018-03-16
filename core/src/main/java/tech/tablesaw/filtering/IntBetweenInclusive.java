@@ -33,7 +33,8 @@ public class IntBetweenInclusive extends ColumnFilter {
     public Selection apply(Table relation) {
         IntColumn intColumn = (IntColumn) relation.column(columnReference.getColumnName());
         Selection matches = intColumn.isGreaterThanOrEqualTo(low);
-        matches.toBitmap().and(intColumn.isLessThanOrEqualTo(high).toBitmap());
+        Selection highMatches = intColumn.isLessThanOrEqualTo(high);
+        matches.and(highMatches);
         return matches;
     }
 }
