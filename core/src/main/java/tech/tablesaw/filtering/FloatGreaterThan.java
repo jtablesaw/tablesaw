@@ -14,12 +14,12 @@
 
 package tech.tablesaw.filtering;
 
-import static tech.tablesaw.columns.FloatColumnUtils.isGreaterThan;
-
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
+
+import static tech.tablesaw.columns.FloatColumnUtils.isGreaterThan;
 
 public class FloatGreaterThan extends ColumnFilter {
 

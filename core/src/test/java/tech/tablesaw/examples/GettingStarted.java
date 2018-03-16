@@ -14,15 +14,14 @@
 
 package tech.tablesaw.examples;
 
-import static tech.tablesaw.api.ColumnType.*;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
+
+import static tech.tablesaw.api.ColumnType.*;
 
 /**
  * Basic example code

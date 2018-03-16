@@ -14,13 +14,13 @@
 
 package tech.tablesaw.filtering;
 
+import tech.tablesaw.api.Table;
+import tech.tablesaw.util.Selection;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import tech.tablesaw.api.Table;
-import tech.tablesaw.util.Selection;
 
 /**
  * A composite filtering that only returns {@code true} if all component filters return true

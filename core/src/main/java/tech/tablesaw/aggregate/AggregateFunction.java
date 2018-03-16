@@ -14,11 +14,7 @@
 
 package tech.tablesaw.aggregate;
 
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.*;
 
 /**
  * Functions that calculate values over the data of an entire column, such as sum, mean, std. dev, etc.

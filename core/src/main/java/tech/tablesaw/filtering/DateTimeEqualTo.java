@@ -14,12 +14,12 @@
 
 package tech.tablesaw.filtering;
 
-import java.time.LocalDateTime;
-
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
+
+import java.time.LocalDateTime;
 
 public class DateTimeEqualTo extends ColumnFilter {
 

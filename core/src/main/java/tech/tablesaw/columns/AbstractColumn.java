@@ -15,7 +15,6 @@
 package tech.tablesaw.columns;
 
 import org.apache.commons.lang3.StringUtils;
-
 import tech.tablesaw.store.ColumnMetadata;
 
 import java.util.UUID;

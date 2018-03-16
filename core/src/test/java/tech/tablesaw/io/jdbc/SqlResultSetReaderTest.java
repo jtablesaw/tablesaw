@@ -16,16 +16,14 @@ package tech.tablesaw.io.jdbc;
 
 import org.junit.Assert;
 import org.junit.Test;
-
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.jdbc.SqlResultSetReader;
-
-import static tech.tablesaw.util.TestDb.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+import static tech.tablesaw.util.TestDb.*;
 
 /**
  * Tests for creating Tables from JDBC result sets using SqlResutSetReader

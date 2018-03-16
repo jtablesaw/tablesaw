@@ -14,15 +14,14 @@
 
 package tech.tablesaw.filtering;
 
-import java.util.Collection;
-import java.util.Set;
-
 import com.google.common.collect.Lists;
-
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
+
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * Implements EqualTo testing for Category and Text Columns
@@ -37,10 +36,10 @@ public class StringIsIn extends ColumnFilter {
     }
 
     public StringIsIn(ColumnReference reference, Collection<String> strings) {
-      super(reference);
-      this.filterColumn = new CategoryColumn("temp", Lists.newArrayList(strings));
+        super(reference);
+        this.filterColumn = new CategoryColumn("temp", Lists.newArrayList(strings));
     }
- 
+
     public StringIsIn(ColumnReference reference, String... strings) {
         super(reference);
         this.filterColumn = new CategoryColumn("temp", Lists.newArrayList(strings));

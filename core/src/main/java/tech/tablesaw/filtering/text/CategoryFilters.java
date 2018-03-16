@@ -14,11 +14,10 @@
 
 package tech.tablesaw.filtering.text;
 
+import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.columns.CategoryColumnUtils;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

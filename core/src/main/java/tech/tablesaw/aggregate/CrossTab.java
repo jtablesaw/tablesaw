@@ -15,7 +15,6 @@
 package tech.tablesaw.aggregate;
 
 import com.google.common.collect.TreeBasedTable;
-
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
 
@@ -101,9 +100,9 @@ public final class CrossTab {
     }
 
 
-  public static Table counts(Table table, String column1) {
-    return table.countBy(table.categoryColumn(column1));
-  }
+    public static Table counts(Table table, String column1) {
+        return table.countBy(table.categoryColumn(column1));
+    }
 
 
     public static Table rowPercents(Table xTabCounts) {

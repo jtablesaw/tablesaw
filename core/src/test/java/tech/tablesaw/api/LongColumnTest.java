@@ -134,9 +134,9 @@ public class LongColumnTest {
         long[] expectedValues = new long[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
         LongColumn initial = new LongColumn("Test", originalValues);
         LongColumn csum = initial.cumSum();
-        
+
         assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
-        
+
         for (int index = 0; index < csum.size(); index++) {
             long actual = csum.get(index);
             assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
@@ -145,8 +145,8 @@ public class LongColumnTest {
 
     @Test
     public void testPctChange() {
-        long[] originalValues = new long[]{ 10, 12, 13 };
-        double[] expectedValues = new double[]{ DoubleColumn.MISSING_VALUE, 0.2, 0.083333 };
+        long[] originalValues = new long[]{10, 12, 13};
+        double[] expectedValues = new double[]{DoubleColumn.MISSING_VALUE, 0.2, 0.083333};
         LongColumn initial = new LongColumn("Test", originalValues);
         DoubleColumn pctChange = initial.pctChange();
 

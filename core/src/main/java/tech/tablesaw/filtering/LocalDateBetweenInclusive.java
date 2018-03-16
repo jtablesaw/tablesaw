@@ -14,12 +14,12 @@
 
 package tech.tablesaw.filtering;
 
-import java.time.LocalDate;
-
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.Selection;
+
+import java.time.LocalDate;
 
 public class LocalDateBetweenInclusive extends ColumnFilter {
     private final LocalDate low;

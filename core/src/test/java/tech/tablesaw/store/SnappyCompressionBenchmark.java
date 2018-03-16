@@ -14,15 +14,13 @@
 
 package tech.tablesaw.store;
 
+import org.apache.commons.math3.random.RandomDataGenerator;
+import org.junit.Test;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.store.StorageManager;
 import tech.tablesaw.testutil.DirectoryUtils;
 import tech.tablesaw.testutil.NanoBench;
-
-import org.apache.commons.math3.random.RandomDataGenerator;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;

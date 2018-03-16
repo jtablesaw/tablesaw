@@ -41,7 +41,7 @@ public interface DoubleColumnUtils extends Column, IntIterable {
     DoubleBiPredicate isEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
 
     DoubleBiPredicate isNotEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest != valueToCompareAgainst;
-    
+
     DoublePredicate isMissing = i -> i != i;
 
     DoublePredicate isNotMissing = i -> i == i;

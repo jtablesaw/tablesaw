@@ -6,8 +6,8 @@ import tech.tablesaw.api.BooleanColumn;
 import static org.junit.Assert.assertEquals;
 
 public class BooleanMapUtilsTest {
-    private BooleanColumn singleFalse = new BooleanColumn("", new boolean[]{ false });
-    private BooleanColumn singleTrue = new BooleanColumn("", new boolean[]{ true });
+    private BooleanColumn singleFalse = new BooleanColumn("", new boolean[]{false});
+    private BooleanColumn singleTrue = new BooleanColumn("", new boolean[]{true});
 
     @Test
     public void testAnd() {

@@ -14,14 +14,14 @@
 
 package tech.tablesaw.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static tech.tablesaw.api.QueryHelper.column;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.time.LocalDateTime;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static tech.tablesaw.api.QueryHelper.column;
 
 public class DateTimeColumnTest {
 
@@ -58,7 +58,7 @@ public class DateTimeColumnTest {
 
         long[] millisArr = column1.asEpochMillisArray();
         assertEquals(1, millisArr.length);
-        assertEquals(millis, millisArr[0]);        
+        assertEquals(millis, millisArr[0]);
     }
 
     @Test
@@ -74,8 +74,8 @@ public class DateTimeColumnTest {
 
     @Test
     public void testNull() {
-      DateTimeColumn col = new DateTimeColumn("Game date");
-      col.appendCell(null);
-      assertNull(col.get(0));
+        DateTimeColumn col = new DateTimeColumn("Game date");
+        col.appendCell(null);
+        assertNull(col.get(0));
     }
 }

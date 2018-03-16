@@ -18,15 +18,14 @@ import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import org.apache.commons.lang3.ArrayUtils;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.util.Selection;
-
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.TypeUtils;
+import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
 import java.util.concurrent.TimeUnit;
@@ -282,14 +281,14 @@ public class FloatColumnTest {
         assertTrue(count < 575_000);
         assertTrue(count > 425_000);
     }
-    
+
     @Test
     public void testIsPositive() {
         int positiveRecords = 987_000;
         int negativeRecords = 654_000;
-        FloatColumn floatColumn = new FloatColumn("test", positiveRecords+negativeRecords);
+        FloatColumn floatColumn = new FloatColumn("test", positiveRecords + negativeRecords);
         for (int i = 0; i < positiveRecords; i++) {
-            floatColumn.append((float) Math.random()*100);
+            floatColumn.append((float) Math.random() * 100);
         }
 
         for (int i = 0; i < negativeRecords; i++) {
@@ -300,15 +299,15 @@ public class FloatColumnTest {
 
         assertTrue(results.size() == positiveRecords);
     }
-    
+
     @Test
     public void testIsNonNegative() {
         int positiveRecords = 980_000;
         int negativeRecords = 654_000;
         int zeroRecords = 20_000;
-        FloatColumn floatColumn = new FloatColumn("test", positiveRecords+negativeRecords+zeroRecords);
+        FloatColumn floatColumn = new FloatColumn("test", positiveRecords + negativeRecords + zeroRecords);
         for (int i = 0; i < positiveRecords; i++) {
-            floatColumn.append((float) Math.random()*100);
+            floatColumn.append((float) Math.random() * 100);
         }
 
         for (int i = 0; i < negativeRecords; i++) {
@@ -321,7 +320,7 @@ public class FloatColumnTest {
 
         Selection results = floatColumn.isNonNegative();
 
-        assertTrue(results.size() == positiveRecords+zeroRecords);
+        assertTrue(results.size() == positiveRecords + zeroRecords);
     }
 
     @Test
@@ -657,9 +656,9 @@ public class FloatColumnTest {
         float[] expectedValues = new float[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
         FloatColumn initial = new FloatColumn("Test", originalValues);
         FloatColumn csum = initial.cumSum();
-        
+
         assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
-        
+
         for (int index = 0; index < csum.size(); index++) {
             float actual = csum.get(index);
             assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
@@ -668,8 +667,8 @@ public class FloatColumnTest {
 
     @Test
     public void testPctChange() {
-        float[] originalValues = new float[]{ 10, 12, 13 };
-        float[] expectedValues = new float[]{ MISSING_VALUE, 0.2f, 0.083333f };
+        float[] originalValues = new float[]{10, 12, 13};
+        float[] expectedValues = new float[]{MISSING_VALUE, 0.2f, 0.083333f};
         FloatColumn initial = new FloatColumn("Test", originalValues);
         FloatColumn pctChange = initial.pctChange();
 

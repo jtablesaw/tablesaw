@@ -14,16 +14,15 @@
 
 package tech.tablesaw.api;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
+import tech.tablesaw.columns.packeddata.PackedLocalDate;
 
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for Date Column
@@ -126,17 +125,17 @@ public class DateColumnTest {
 
     @Test
     public void testSortOn() {
-      Table unsorted = Table.read().csv(
-          "Date,1 Yr Treasury Rate\n"
-              + "\"01-01-1871\",4.44%\n"
-              + "\"01-01-1920\",8.83%\n"
-              + "\"01-01-1921\",7.11%\n"
-              + "\"01-01-1919\",7.85%\n",
-          "1 Yr Treasury Rate");
-      Table sorted = unsorted.sortOn("Date");
-      assertEquals(
-          sorted.dateColumn("Date").asList().stream().sorted().collect(Collectors.toList()),
-          sorted.dateColumn("Date").asList());
+        Table unsorted = Table.read().csv(
+                "Date,1 Yr Treasury Rate\n"
+                        + "\"01-01-1871\",4.44%\n"
+                        + "\"01-01-1920\",8.83%\n"
+                        + "\"01-01-1921\",7.11%\n"
+                        + "\"01-01-1919\",7.85%\n",
+                "1 Yr Treasury Rate");
+        Table sorted = unsorted.sortOn("Date");
+        assertEquals(
+                sorted.dateColumn("Date").asList().stream().sorted().collect(Collectors.toList()),
+                sorted.dateColumn("Date").asList());
     }
 
 }

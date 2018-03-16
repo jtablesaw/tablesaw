@@ -15,7 +15,6 @@
 package tech.tablesaw.mapping;
 
 import org.junit.Test;
-
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;

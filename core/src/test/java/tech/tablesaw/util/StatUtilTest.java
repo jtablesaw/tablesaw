@@ -15,7 +15,6 @@
 package tech.tablesaw.util;
 
 import org.junit.Test;
-
 import tech.tablesaw.api.FloatColumn;
 
 import java.util.Random;

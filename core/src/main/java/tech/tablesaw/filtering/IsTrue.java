@@ -14,10 +14,10 @@
 
 package tech.tablesaw.filtering;
 
-import javax.annotation.concurrent.Immutable;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.util.Selection;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A boolean filtering. For symmetry with IsFalse

@@ -14,10 +14,11 @@
 
 package tech.tablesaw.io;
 
-import java.time.LocalDate;
-import java.util.Locale;
 import org.junit.Test;
 import tech.tablesaw.api.DoubleColumn;
+
+import java.time.LocalDate;
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -33,7 +34,7 @@ public class TypeUtilsTest {
         DoubleColumn column = (DoubleColumn) TypeUtils.newColumn("test", DOUBLE);
         assertThat(column, notNullValue());
     }
-    
+
     @Test
     public void testDateFormaterWithLocaleEN() {
         String anotherDate = "12-May-2015";

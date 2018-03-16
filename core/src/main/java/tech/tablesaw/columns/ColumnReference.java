@@ -14,96 +14,21 @@
 
 package tech.tablesaw.columns;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.columns.packeddata.PackedLocalDate;
-import tech.tablesaw.filtering.BooleanIsFalse;
-import tech.tablesaw.filtering.BooleanIsTrue;
-import tech.tablesaw.filtering.DateEqualTo;
-import tech.tablesaw.filtering.DoubleEqualTo;
-import tech.tablesaw.filtering.DoubleGreaterThan;
-import tech.tablesaw.filtering.DoubleGreaterThanOrEqualTo;
-import tech.tablesaw.filtering.DoubleLessThan;
-import tech.tablesaw.filtering.DoubleLessThanOrEqualTo;
-import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.filtering.FloatEqualTo;
-import tech.tablesaw.filtering.FloatGreaterThan;
-import tech.tablesaw.filtering.FloatGreaterThanOrEqualTo;
-import tech.tablesaw.filtering.FloatLessThan;
-import tech.tablesaw.filtering.FloatLessThanOrEqualTo;
-import tech.tablesaw.filtering.IntBetweenExclusive;
-import tech.tablesaw.filtering.IntBetweenInclusive;
-import tech.tablesaw.filtering.IntEqualTo;
-import tech.tablesaw.filtering.IntGreaterThan;
-import tech.tablesaw.filtering.IntGreaterThanOrEqualTo;
-import tech.tablesaw.filtering.IntIsIn;
-import tech.tablesaw.filtering.IntLessThan;
-import tech.tablesaw.filtering.IntLessThanOrEqualTo;
-import tech.tablesaw.filtering.IsMissing;
-import tech.tablesaw.filtering.IsNotMissing;
-import tech.tablesaw.filtering.LocalDateBetweenExclusive;
-import tech.tablesaw.filtering.LocalDateBetweenInclusive;
-import tech.tablesaw.filtering.StringEqualTo;
-import tech.tablesaw.filtering.StringNotEqualTo;
-import tech.tablesaw.filtering.TimeEqualTo;
-import tech.tablesaw.filtering.TimeNotEqualTo;
+import tech.tablesaw.filtering.*;
 import tech.tablesaw.filtering.columnbased.ColumnEqualTo;
 import tech.tablesaw.filtering.columnbased.ColumnGreaterThan;
 import tech.tablesaw.filtering.columnbased.ColumnLessThan;
 import tech.tablesaw.filtering.dates.LocalDateIsAfter;
 import tech.tablesaw.filtering.dates.LocalDateIsBefore;
-import tech.tablesaw.filtering.datetimes.DateTimeIsAfter;
-import tech.tablesaw.filtering.datetimes.DateTimeIsBefore;
-import tech.tablesaw.filtering.datetimes.IsFirstDayOfTheMonth;
-import tech.tablesaw.filtering.datetimes.IsFriday;
-import tech.tablesaw.filtering.datetimes.IsInApril;
-import tech.tablesaw.filtering.datetimes.IsInAugust;
-import tech.tablesaw.filtering.datetimes.IsInDecember;
-import tech.tablesaw.filtering.datetimes.IsInFebruary;
-import tech.tablesaw.filtering.datetimes.IsInJanuary;
-import tech.tablesaw.filtering.datetimes.IsInJuly;
-import tech.tablesaw.filtering.datetimes.IsInJune;
-import tech.tablesaw.filtering.datetimes.IsInMarch;
-import tech.tablesaw.filtering.datetimes.IsInMay;
-import tech.tablesaw.filtering.datetimes.IsInNovember;
-import tech.tablesaw.filtering.datetimes.IsInOctober;
-import tech.tablesaw.filtering.datetimes.IsInQ1;
-import tech.tablesaw.filtering.datetimes.IsInQ2;
-import tech.tablesaw.filtering.datetimes.IsInQ3;
-import tech.tablesaw.filtering.datetimes.IsInQ4;
-import tech.tablesaw.filtering.datetimes.IsInSeptember;
-import tech.tablesaw.filtering.datetimes.IsInYear;
-import tech.tablesaw.filtering.datetimes.IsLastDayOfTheMonth;
-import tech.tablesaw.filtering.datetimes.IsMonday;
-import tech.tablesaw.filtering.datetimes.IsSaturday;
-import tech.tablesaw.filtering.datetimes.IsSunday;
-import tech.tablesaw.filtering.datetimes.IsThursday;
-import tech.tablesaw.filtering.datetimes.IsTuesday;
-import tech.tablesaw.filtering.datetimes.IsWednesday;
-import tech.tablesaw.filtering.text.TextContains;
-import tech.tablesaw.filtering.text.TextEndsWith;
-import tech.tablesaw.filtering.text.TextEqualToIgnoringCase;
-import tech.tablesaw.filtering.text.TextHasLengthEqualTo;
-import tech.tablesaw.filtering.text.TextIsAlpha;
-import tech.tablesaw.filtering.text.TextIsAlphaNumeric;
-import tech.tablesaw.filtering.text.TextIsEmpty;
-import tech.tablesaw.filtering.text.TextIsIn;
-import tech.tablesaw.filtering.text.TextIsLongerThan;
-import tech.tablesaw.filtering.text.TextIsLowerCase;
-import tech.tablesaw.filtering.text.TextIsNumeric;
-import tech.tablesaw.filtering.text.TextIsShorterThan;
-import tech.tablesaw.filtering.text.TextIsUpperCase;
-import tech.tablesaw.filtering.text.TextMatchesRegex;
-import tech.tablesaw.filtering.text.TextStartsWith;
-import tech.tablesaw.filtering.times.IsAfter;
-import tech.tablesaw.filtering.times.IsAfterNoon;
-import tech.tablesaw.filtering.times.IsBefore;
-import tech.tablesaw.filtering.times.IsBeforeNoon;
-import tech.tablesaw.filtering.times.IsMidnight;
-import tech.tablesaw.filtering.times.IsNoon;
+import tech.tablesaw.filtering.datetimes.*;
+import tech.tablesaw.filtering.text.*;
+import tech.tablesaw.filtering.times.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * A reference to a column that can be used in evaluating query predicates. It is a key part of having a fluent API
@@ -182,8 +107,8 @@ public class ColumnReference {
     }
 
     public Filter isNotEqualTo(LocalTime value) {
-      return new TimeNotEqualTo(this, value);
-    }    
+        return new TimeNotEqualTo(this, value);
+    }
 
     public Filter isEqualTo(LocalDate value) {
         return new DateEqualTo(this, value);

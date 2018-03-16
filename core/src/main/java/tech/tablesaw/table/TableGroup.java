@@ -15,7 +15,6 @@
 package tech.tablesaw.table;
 
 import com.google.common.base.Preconditions;
-
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.FloatColumn;

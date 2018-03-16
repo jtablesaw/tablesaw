@@ -74,9 +74,9 @@ public class PackedLocalDate {
 
     public static int pack(LocalDate date) {
         return pack(
-            (short) date.getYear(),
-            (byte) date.getMonthValue(),
-            (byte) date.getDayOfMonth());
+                (short) date.getYear(),
+                (byte) date.getMonthValue(),
+                (byte) date.getDayOfMonth());
     }
 
     public static int pack(Date date) {

@@ -14,12 +14,12 @@
 
 package tech.tablesaw.splitting.dates;
 
+import tech.tablesaw.columns.packeddata.PackedLocalDate;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.function.Function;
-
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
 
 
 public class SplitUtils {

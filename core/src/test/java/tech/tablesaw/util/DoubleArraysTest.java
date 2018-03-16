@@ -15,10 +15,8 @@
 package tech.tablesaw.util;
 
 import org.junit.Test;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.table.ViewGroup;
-import tech.tablesaw.util.DoubleArrays;
 
 /**
  *

@@ -15,7 +15,6 @@
 package tech.tablesaw.columns;
 
 import org.junit.Test;
-
 import tech.tablesaw.columns.packeddata.PackedLocalDate;
 
 import java.time.LocalDate;

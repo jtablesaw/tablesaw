@@ -14,8 +14,11 @@
 
 package tech.tablesaw.io.csv;
 
-import static org.junit.Assert.*;
-import static tech.tablesaw.api.ColumnType.*;
+import org.junit.Ignore;
+import org.junit.Test;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.Table;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,12 +26,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
+import static org.junit.Assert.*;
+import static tech.tablesaw.api.ColumnType.*;
 
 /**
  * Tests for CSV Reading
@@ -42,8 +41,8 @@ public class CsvReaderTest {
     public void testWithBusData() throws Exception {
         // Read the CSV file
         Table table = Table.read().csv(CsvReadOptions
-            .builder("../data/bus_stop_test.csv")
-            .columnTypes(bus_types));
+                .builder("../data/bus_stop_test.csv")
+                .columnTypes(bus_types));
 
         // Look at the column names
         assertEquals("[stop_id, stop_name, stop_desc, stop_lat, stop_lon]", table.columnNames().toString());
@@ -56,8 +55,8 @@ public class CsvReaderTest {
     public void testWithColumnSKIP() throws Exception {
         // Read the CSV file
         Table table = Table.read().csv(CsvReadOptions
-            .builder("../data/bus_stop_test.csv")
-            .columnTypes(bus_types_with_SKIP));
+                .builder("../data/bus_stop_test.csv")
+                .columnTypes(bus_types_with_SKIP));
 
         assertEquals(4, table.columnCount());
         // Look at the column names
@@ -68,9 +67,9 @@ public class CsvReaderTest {
     public void testWithColumnSKIPWithoutHeader() throws Exception {
         // Read the CSV file
         Table table = Table.read().csv(CsvReadOptions
-            .builder("../data/bus_stop_noheader_test.csv")
-            .header(false)
-            .columnTypes(bus_types_with_SKIP));
+                .builder("../data/bus_stop_noheader_test.csv")
+                .header(false)
+                .columnTypes(bus_types_with_SKIP));
 
         assertEquals(4, table.columnCount());
         // Look at the column names
@@ -83,7 +82,7 @@ public class CsvReaderTest {
         ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};
         Table table = Table.read().csv(
                 CsvReadOptions.builder("../data/BushApproval.csv")
-            .columnTypes(types));
+                        .columnTypes(types));
 
         assertEquals(323, table.rowCount());
 
@@ -95,8 +94,8 @@ public class CsvReaderTest {
     public void testBushDataWithoutSamplingForTypeDetection() throws Exception {
         // Read the CSV file
         Table table = Table.read().csv(CsvReadOptions
-            .builder("../data/BushApproval.csv")
-            .sample(false));
+                .builder("../data/BushApproval.csv")
+                .sample(false));
 
         assertEquals(323, table.rowCount());
 
@@ -140,8 +139,8 @@ public class CsvReaderTest {
         Table table;
         try (InputStream input = new URL(location).openStream()) {
             table = Table.read().csv(CsvReadOptions
-                .builder(input, "Bush approval ratings")
-                .columnTypes(types));
+                    .builder(input, "Bush approval ratings")
+                    .columnTypes(types));
         }
         assertNotNull(table);
     }

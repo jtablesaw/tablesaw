@@ -16,22 +16,16 @@ package tech.tablesaw.filters;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.filtering.datetimes.IsFirstDayOfTheMonth;
-import tech.tablesaw.filtering.datetimes.IsInFebruary;
-import tech.tablesaw.filtering.datetimes.IsInMarch;
-import tech.tablesaw.filtering.datetimes.IsInYear;
-import tech.tablesaw.filtering.datetimes.IsLastDayOfTheMonth;
-import tech.tablesaw.filtering.datetimes.IsMonday;
-import tech.tablesaw.filtering.datetimes.IsSunday;
+import tech.tablesaw.filtering.datetimes.*;
 import tech.tablesaw.util.Selection;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 public class LocalDateFilterTest {

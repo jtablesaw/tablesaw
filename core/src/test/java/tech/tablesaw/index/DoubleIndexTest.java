@@ -14,16 +14,15 @@
 
 package tech.tablesaw.index;
 
-import static org.junit.Assert.assertEquals;
-import static tech.tablesaw.io.csv.CsvReadOptions.builder;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.DoubleColumnUtils;
 import tech.tablesaw.util.Selection;
+
+import static org.junit.Assert.assertEquals;
+import static tech.tablesaw.io.csv.CsvReadOptions.builder;
 
 /**
  *
@@ -35,17 +34,17 @@ public class DoubleIndexTest {
 
     @Before
     public void setUp() throws Exception {
-        
+
         table = Table.read().csv(
-                    builder("../data/bus_stop_test.csv")
+                builder("../data/bus_stop_test.csv")
                         // explicitly set column type, due to CsvReader#detectType returns ColumnType.FLOAT
                         // for 'stop_lat' and 'stop_lon' columns
-                        .columnTypes(new ColumnType[] {
-                            ColumnType.SHORT_INT,
-                            ColumnType.CATEGORY,
-                            ColumnType.CATEGORY,
-                            ColumnType.DOUBLE,
-                            ColumnType.DOUBLE }));
+                        .columnTypes(new ColumnType[]{
+                                ColumnType.SHORT_INT,
+                                ColumnType.CATEGORY,
+                                ColumnType.CATEGORY,
+                                ColumnType.DOUBLE,
+                                ColumnType.DOUBLE}));
         index = new DoubleIndex(table.doubleColumn("stop_lat"));
     }
 

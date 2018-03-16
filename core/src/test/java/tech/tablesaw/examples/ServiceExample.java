@@ -14,11 +14,12 @@
 
 package tech.tablesaw.examples;
 
-import static tech.tablesaw.api.QueryHelper.*;
-
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Table;
+
+import static tech.tablesaw.api.QueryHelper.allOf;
+import static tech.tablesaw.api.QueryHelper.column;
 
 /**
  * Usage example using a Tornado dataset

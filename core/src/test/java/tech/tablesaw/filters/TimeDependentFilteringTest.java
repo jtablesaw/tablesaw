@@ -19,18 +19,13 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.Table;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.text.RandomStringGenerator;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.columns.packeddata.PackedLocalDate;
 import tech.tablesaw.table.TemporaryView;
 import tech.tablesaw.table.ViewGroup;
-
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.text.RandomStringGenerator;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -41,7 +36,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.out;
-import static tech.tablesaw.api.QueryHelper.*;
+import static tech.tablesaw.api.QueryHelper.both;
+import static tech.tablesaw.api.QueryHelper.column;
 
 /**
  * Tests manipulation of large (but not big) data sets
@@ -169,7 +165,7 @@ public class TimeDependentFilteringTest {
         // createFromCsv pools of random values
 
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
-            .withinRange(32, 127).build();
+                .withinRange(32, 127).build();
         while (concepts.size() <= CONCEPT_COUNT) {
             concepts.add(generator.generate(30));
         }

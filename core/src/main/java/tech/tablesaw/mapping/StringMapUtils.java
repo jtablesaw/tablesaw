@@ -15,13 +15,11 @@
 package tech.tablesaw.mapping;
 
 import com.google.common.base.Strings;
-
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.columns.Column;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.similarity.LevenshteinDistance;
 
 /**
  * String utility functions. Each function takes one or more String columns as input and produces

@@ -14,14 +14,14 @@
 
 package tech.tablesaw.filtering.text;
 
-import javax.annotation.concurrent.Immutable;
-
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A filtering that selects cells in which all text is longer than the given length

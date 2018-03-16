@@ -20,7 +20,6 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
-
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
 
@@ -45,7 +44,7 @@ public class AggregateFunctions {
         public double agg(double[] data) {
             return data.length == 0 ? Float.NaN : data[0];
         }
-    };  
+    };
 
     /**
      * A function that returns the last item
@@ -59,7 +58,7 @@ public class AggregateFunctions {
 
         @Override
         public double agg(double[] data) {
-            return data.length == 0 ? Float.NaN : data[data.length-1];
+            return data.length == 0 ? Float.NaN : data[data.length - 1];
         }
     };
 
@@ -77,7 +76,7 @@ public class AggregateFunctions {
         public double agg(double[] data) {
             return data.length;
         }
-    };  
+    };
 
     /**
      * A function that calculates the mean of the values in the column param
@@ -468,7 +467,7 @@ public class AggregateFunctions {
     }
 
     private static boolean isNotMissing(double value) {
-        return ! Double.isNaN(value);
+        return !Double.isNaN(value);
     }
 
     // TODO(lwhite): These are two column reductions. We need a class for that

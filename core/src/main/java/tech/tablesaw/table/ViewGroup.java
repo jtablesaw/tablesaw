@@ -14,16 +14,10 @@
 
 package tech.tablesaw.table;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
-
-import java.nio.ByteBuffer;
-import java.util.*;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import tech.tablesaw.aggregate.AggregateFunction;
@@ -34,6 +28,11 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
+
+import java.nio.ByteBuffer;
+import java.util.*;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * A group of tables formed by performing splitting operations on an original table

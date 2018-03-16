@@ -16,11 +16,9 @@ package tech.tablesaw.index;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.LongColumnUtils;
-import tech.tablesaw.index.LongIndex;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.util.Selection;
 

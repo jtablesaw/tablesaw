@@ -66,9 +66,9 @@ public class ShortColumnTest {
         short[] expectedValues = new short[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
         ShortColumn initial = new ShortColumn("Test", originalValues);
         ShortColumn csum = initial.cumSum();
-        
+
         assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
-        
+
         for (int index = 0; index < csum.size(); index++) {
             short actual = csum.get(index);
             assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
@@ -91,8 +91,8 @@ public class ShortColumnTest {
 
     @Test
     public void testPctChange() {
-        short[] originalValues = new short[]{ 10, 12, 13 };
-        float[] expectedValues = new float[]{ FloatColumn.MISSING_VALUE, 0.2f, 0.083333f };
+        short[] originalValues = new short[]{10, 12, 13};
+        float[] expectedValues = new float[]{FloatColumn.MISSING_VALUE, 0.2f, 0.083333f};
         ShortColumn initial = new ShortColumn("Test", originalValues);
         FloatColumn pctChange = initial.pctChange();
 

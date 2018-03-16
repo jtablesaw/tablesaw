@@ -14,18 +14,15 @@
 
 package tech.tablesaw.index;
 
+import org.junit.Before;
+import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.DateColumnUtils;
 import tech.tablesaw.columns.IntColumnUtils;
 import tech.tablesaw.columns.packeddata.PackedLocalDate;
-import tech.tablesaw.index.DateIndex;
-import tech.tablesaw.index.IntIndex;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.util.Selection;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import java.time.LocalDate;
 

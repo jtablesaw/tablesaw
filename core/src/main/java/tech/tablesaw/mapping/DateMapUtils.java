@@ -15,7 +15,6 @@
 package tech.tablesaw.mapping;
 
 import com.google.common.base.Preconditions;
-
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.FloatColumn;
@@ -26,12 +25,12 @@ import tech.tablesaw.columns.packeddata.PackedLocalDate;
 import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
 import tech.tablesaw.columns.packeddata.PackedLocalTime;
 
-import static tech.tablesaw.api.DateColumn.MISSING_VALUE;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+
+import static tech.tablesaw.api.DateColumn.MISSING_VALUE;
 
 /**
  * An interface for mapping operations unique to Date columns

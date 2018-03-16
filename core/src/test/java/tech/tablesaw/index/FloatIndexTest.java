@@ -16,10 +16,8 @@ package tech.tablesaw.index;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.FloatColumnUtils;
-import tech.tablesaw.index.FloatIndex;
 import tech.tablesaw.util.Selection;
 
 import static org.junit.Assert.assertEquals;

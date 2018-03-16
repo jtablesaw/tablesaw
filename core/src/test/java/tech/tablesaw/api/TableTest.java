@@ -16,7 +16,6 @@ package tech.tablesaw.api;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.columns.Column;
 
 import java.util.Random;
@@ -180,12 +179,12 @@ public class TableTest {
 
     @Test
     public void testReplaceColumn() throws Exception {
-        FloatColumn first = new FloatColumn("c1", new float[]{1,2,3,4,5});
-        FloatColumn second = new FloatColumn("c2", new float[]{6,7,8,9,10});
-        FloatColumn replacement = new FloatColumn("c2", new float[]{10,20,30,40,50});
+        FloatColumn first = new FloatColumn("c1", new float[]{1, 2, 3, 4, 5});
+        FloatColumn second = new FloatColumn("c2", new float[]{6, 7, 8, 9, 10});
+        FloatColumn replacement = new FloatColumn("c2", new float[]{10, 20, 30, 40, 50});
 
         Table t = Table.create("populated", first, second);
-        
+
         int colIndex = t.columnIndex(second);
         assertTrue(t.column("c2") == second);
         t.replaceColumn("c2", replacement);
@@ -227,18 +226,18 @@ public class TableTest {
 
     @Test
     public void testAsMatrix() throws Exception {
-        DoubleColumn first = new DoubleColumn("c1", new double[]{ 1l, 2l, 3l, 4l, 5l });
-        DoubleColumn second = new DoubleColumn("c2", new double[]{ 6.0f, 7.0f, 8.0f, 9.0f, 10.0f });
-        DoubleColumn third = new DoubleColumn("c3", new double[]{ 10.0, 20.0, 30.0, 40.0, 50.0 });
+        DoubleColumn first = new DoubleColumn("c1", new double[]{1l, 2l, 3l, 4l, 5l});
+        DoubleColumn second = new DoubleColumn("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
+        DoubleColumn third = new DoubleColumn("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
 
         Table t = Table.create("table", first, second, third);
         double[][] matrix = t.asMatrix();
         assertEquals(5, matrix.length);
-        assertArrayEquals(new double[]{ 1.0,  6.0,  10.0 }, matrix[0], 0.0000001);
-        assertArrayEquals(new double[]{ 2.0,  7.0,  20.0 }, matrix[1], 0.0000001);
-        assertArrayEquals(new double[]{ 3.0,  8.0,  30.0 }, matrix[2], 0.0000001);
-        assertArrayEquals(new double[]{ 4.0,  9.0,  40.0 }, matrix[3], 0.0000001);
-        assertArrayEquals(new double[]{ 5.0,  10.0,  50.0 }, matrix[4], 0.0000001);
+        assertArrayEquals(new double[]{1.0, 6.0, 10.0}, matrix[0], 0.0000001);
+        assertArrayEquals(new double[]{2.0, 7.0, 20.0}, matrix[1], 0.0000001);
+        assertArrayEquals(new double[]{3.0, 8.0, 30.0}, matrix[2], 0.0000001);
+        assertArrayEquals(new double[]{4.0, 9.0, 40.0}, matrix[3], 0.0000001);
+        assertArrayEquals(new double[]{5.0, 10.0, 50.0}, matrix[4], 0.0000001);
     }
 
 }

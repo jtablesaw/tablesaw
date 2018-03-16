@@ -119,126 +119,126 @@ public class TestDb {
                     "'Bolivian Dark', " +
                     "'14-001', " +
                     "8.95, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #2.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Bolivian Medium', " +
                     "'14-002', " +
                     "8.95, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #3.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Brazilian Dark', " +
                     "'15-001', " +
                     "7.95, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #4.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Brazilian Medium', " +
                     "'15-002', " +
                     "7.95, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #5.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Brazilian Decaf', " +
                     "'15-003', " +
                     "8.55, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #6.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Central American Dark', " +
                     "'16-001', " +
                     "9.95, " +
-                    "false )");
+                    "FALSE )");
 
             // Insert row #7.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Central American Medium', " +
                     "'16-002', " +
                     "9.95, " +
-                    "false )");
+                    "FALSE )");
 
             // Insert row #8.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Sumatra Dark', " +
                     "'17-001', " +
                     "7.95, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #9.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Sumatra Decaf', " +
                     "'17-002', " +
                     "8.95, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #10.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Sumatra Medium', " +
                     "'17-003', " +
                     "7.95, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #11.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Sumatra Organic Dark', " +
                     "'17-004', " +
                     "11.95, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #12.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Kona Medium', " +
                     "'18-001', " +
                     "18.45, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #13.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Kona Dark', " +
                     "'18-002', " +
                     "18.45, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #14.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'French Roast Dark', " +
                     "'19-001', " +
                     "9.65, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #15.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Galapagos Medium', " +
                     "'20-001', " +
                     "6.85, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #16.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Guatemalan Dark', " +
                     "'21-001', " +
                     "9.95, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #17.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Guatemalan Decaf', " +
                     "'21-002', " +
                     "10.45, " +
-                    "true )");
+                    "TRUE )");
 
             // Insert row #18.
             stmt.execute("INSERT INTO Coffee VALUES ( " +
                     "'Guatemalan Medium', " +
                     "'21-003', " +
                     "9.95, " +
-                    "true )");
+                    "TRUE )");
         } catch (SQLException ex) {
             System.out.println("ERROR: " + ex.getMessage());
         }

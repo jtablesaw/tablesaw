@@ -14,16 +14,14 @@
 
 package tech.tablesaw.io.html;
 
+import com.google.common.annotations.VisibleForTesting;
+import org.apache.commons.lang3.StringUtils;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.annotations.VisibleForTesting;
-
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
 
 /**
  * Static utility that writes Tables in HTML format for display

@@ -14,19 +14,12 @@
 
 package tech.tablesaw.io.csv;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-
-import javax.annotation.concurrent.Immutable;
-
 import com.opencsv.CSVWriter;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+
+import javax.annotation.concurrent.Immutable;
+import java.io.*;
 
 /**
  * Static utility class that writes tables and individual columns to CSV files
@@ -72,7 +65,7 @@ final public class CsvWriter {
      * @throws IOException if the write fails
      */
     public static void write(Table table, OutputStream stream) throws IOException {
-       write(table, new OutputStreamWriter(stream));    
+        write(table, new OutputStreamWriter(stream));
     }
 
     /**
@@ -81,7 +74,7 @@ final public class CsvWriter {
      * @throws IOException if the write fails
      */
     public static void write(Table table, File file) throws IOException {
-       write(table, new FileWriter(file));    
+        write(table, new FileWriter(file));
     }
 
     /**
@@ -90,7 +83,7 @@ final public class CsvWriter {
      * @throws IOException if the write fails
      */
     public static void write(Table table, String fileName) throws IOException {
-       write(table, new File(fileName));    
+        write(table, new File(fileName));
     }
 
     /**

@@ -14,15 +14,15 @@
 
 package tech.tablesaw.mapping;
 
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.TimeColumnUtils;
 import tech.tablesaw.columns.packeddata.PackedLocalTime;
+
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 public interface TimeMapUtils extends TimeColumnUtils {
 

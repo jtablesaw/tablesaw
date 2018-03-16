@@ -14,11 +14,11 @@
 
 package tech.tablesaw.filtering;
 
-import javax.annotation.concurrent.Immutable;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A boolean filtering, returns true if the filtering it wraps returns false, and vice-versa.

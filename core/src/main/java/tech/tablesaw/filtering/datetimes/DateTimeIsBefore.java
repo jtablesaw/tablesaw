@@ -14,13 +14,13 @@
 
 package tech.tablesaw.filtering.datetimes;
 
-import java.time.LocalDateTime;
-
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
+
+import java.time.LocalDateTime;
 
 
 public class DateTimeIsBefore extends ColumnFilter {

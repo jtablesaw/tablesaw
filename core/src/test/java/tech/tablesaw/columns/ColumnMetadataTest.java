@@ -15,9 +15,7 @@
 package tech.tablesaw.columns;
 
 import org.junit.Test;
-
 import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.store.ColumnMetadata;
 
 import static org.junit.Assert.assertEquals;

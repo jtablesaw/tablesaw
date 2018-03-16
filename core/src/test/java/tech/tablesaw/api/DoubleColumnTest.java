@@ -17,14 +17,13 @@ package tech.tablesaw.api;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.util.Selection;
-
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.util.Selection;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -458,9 +457,9 @@ public class DoubleColumnTest {
         double[] expectedValues = new double[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
         DoubleColumn initial = new DoubleColumn("Test", originalValues);
         DoubleColumn csum = initial.cumSum();
-        
+
         assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
-        
+
         for (int index = 0; index < csum.size(); index++) {
             double actual = csum.get(index);
             assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
@@ -518,8 +517,8 @@ public class DoubleColumnTest {
 
     @Test
     public void testPctChange() {
-        double[] originalValues = new double[]{ 10, 12, 13 };
-        double[] expectedValues = new double[]{ MISSING_VALUE, 0.2, 0.083333 };
+        double[] originalValues = new double[]{10, 12, 13};
+        double[] expectedValues = new double[]{MISSING_VALUE, 0.2, 0.083333};
         DoubleColumn initial = new DoubleColumn("Test", originalValues);
         DoubleColumn pctChange = initial.pctChange();
 

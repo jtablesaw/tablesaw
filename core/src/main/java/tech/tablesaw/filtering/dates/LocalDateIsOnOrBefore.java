@@ -14,13 +14,13 @@
 
 package tech.tablesaw.filtering.dates;
 
-import javax.annotation.concurrent.Immutable;
-
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.Selection;
+
+import javax.annotation.concurrent.Immutable;
 
 @Immutable
 public class LocalDateIsOnOrBefore extends ColumnFilter {

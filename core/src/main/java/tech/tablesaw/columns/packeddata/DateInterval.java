@@ -15,7 +15,6 @@
 package tech.tablesaw.columns.packeddata;
 
 import com.google.common.annotations.Beta;
-
 import tech.tablesaw.columns.DateIntervalColumn;
 
 /**

@@ -14,13 +14,13 @@
 
 package tech.tablesaw.integration;
 
-import static tech.tablesaw.api.ColumnType.*;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvWriter;
+
+import static tech.tablesaw.api.ColumnType.*;
 
 /**
  * Some example code using the API

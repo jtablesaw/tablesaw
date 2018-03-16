@@ -15,11 +15,10 @@
 package tech.tablesaw.api;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.filtering.IntPredicate;
-
 import org.junit.Before;
 import org.junit.Test;
+import tech.tablesaw.filtering.Filter;
+import tech.tablesaw.filtering.IntPredicate;
 
 import static org.junit.Assert.*;
 import static tech.tablesaw.api.IntColumn.MISSING_VALUE;
@@ -249,9 +248,9 @@ public class IntColumnTest {
         int[] expectedValues = new int[]{32, 74, MISSING_VALUE, 131, 183, 173, 173};
         IntColumn initial = new IntColumn("Test", originalValues);
         IntColumn csum = initial.cumSum();
-        
+
         assertEquals("Both sets of data should be the same size.", expectedValues.length, csum.size());
-        
+
         for (int index = 0; index < csum.size(); index++) {
             int actual = csum.get(index);
             assertEquals("cumSum() operation at index:" + index + " failed", expectedValues[index], actual, 0);
@@ -260,8 +259,8 @@ public class IntColumnTest {
 
     @Test
     public void testPctChange() {
-        int[] originalValues = new int[]{ 10, 12, 13 };
-        double[] expectedValues = new double[]{ DoubleColumn.MISSING_VALUE, 0.2, 0.083333 };
+        int[] originalValues = new int[]{10, 12, 13};
+        double[] expectedValues = new double[]{DoubleColumn.MISSING_VALUE, 0.2, 0.083333};
         IntColumn initial = new IntColumn("Test", originalValues);
         DoubleColumn pctChange = initial.pctChange();
 

@@ -15,23 +15,17 @@
 package tech.tablesaw.store;
 
 import com.google.common.base.Stopwatch;
-
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReadOptions;
-
 import org.junit.Before;
 import org.junit.Test;
+import tech.tablesaw.api.*;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static tech.tablesaw.api.ColumnType.*;
 
 /**
@@ -70,19 +64,19 @@ public class StorageManagerTest {
             CATEGORY,
             CATEGORY,
             CATEGORY};
+    private static String tempDir = System.getProperty("java.io.tmpdir");
     private Table table = Table.create("t");
     private FloatColumn floatColumn = new FloatColumn("float");
     private CategoryColumn categoryColumn = new CategoryColumn("cat");
     private DateColumn localDateColumn = new DateColumn("date");
     private LongColumn longColumn = new LongColumn("long");
-    private static String tempDir = System.getProperty("java.io.tmpdir");
 
     public static void main(String[] args) throws Exception {
 
         Stopwatch stopwatch = Stopwatch.createStarted();
         System.out.println("loading");
         Table tornados = Table.read()
-            .csv(CsvReadOptions.builder("../data/1950-2014_torn.csv").columnTypes(COLUMN_TYPES));
+                .csv(CsvReadOptions.builder("../data/1950-2014_torn.csv").columnTypes(COLUMN_TYPES));
 
         tornados.setName("tornados");
         System.out.println(String.format("loaded %d records in %d seconds",

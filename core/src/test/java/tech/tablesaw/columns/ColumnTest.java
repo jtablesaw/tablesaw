@@ -16,13 +16,7 @@ package tech.tablesaw.columns;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
+import tech.tablesaw.api.*;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;

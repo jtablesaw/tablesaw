@@ -14,26 +14,22 @@
 
 package tech.tablesaw.io.csv;
 
-import static tech.tablesaw.api.ColumnType.BOOLEAN;
-import static tech.tablesaw.api.ColumnType.CATEGORY;
-import static tech.tablesaw.api.ColumnType.DOUBLE;
-import static tech.tablesaw.api.ColumnType.FLOAT;
-import static tech.tablesaw.api.ColumnType.INTEGER;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
-import static tech.tablesaw.api.ColumnType.LONG_INT;
-import static tech.tablesaw.api.ColumnType.SHORT_INT;
-import static tech.tablesaw.api.ColumnType.SKIP;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.io.CharStreams;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import org.apache.commons.lang3.StringUtils;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.TypeUtils;
+import tech.tablesaw.io.UnicodeBOMInputStream;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import javax.annotation.concurrent.Immutable;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -43,23 +39,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 
-import javax.annotation.concurrent.Immutable;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.io.CharStreams;
-import com.opencsv.CSVParser;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.io.UnicodeBOMInputStream;
+import static tech.tablesaw.api.ColumnType.*;
 
 @Immutable
 public class CsvReader {
@@ -148,7 +128,7 @@ public class CsvReader {
     public static Table read(CsvReadOptions options) throws IOException {
 
         byte[] bytes = options.reader() != null
-            ? CharStreams.toString(options.reader()).getBytes() : null;
+                ? CharStreams.toString(options.reader()).getBytes() : null;
 
         ColumnType[] types;
         if (options.columnTypes() != null) {
@@ -157,13 +137,13 @@ public class CsvReader {
             InputStream detectTypesStream = options.reader() != null
                     ? new ByteArrayInputStream(bytes)
                     : new FileInputStream(options.file());
-            types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample()); 
+            types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample());
         }
 
         // All other read methods end up here, make sure we don't have leading Unicode BOM
         InputStream stream = options.reader() != null
-            ? new ByteArrayInputStream(bytes)
-            : new FileInputStream(options.file());
+                ? new ByteArrayInputStream(bytes)
+                : new FileInputStream(options.file());
 
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
@@ -182,7 +162,7 @@ public class CsvReader {
                     return table;
                 }
             } else {
-                headerNames =  makeColumnNames(types);
+                headerNames = makeColumnNames(types);
             }
 
             List<String> headerRow = Lists.newArrayList(headerNames);
@@ -243,18 +223,18 @@ public class CsvReader {
      * @param types           An array of the types of columns in the file, in the order they appear
      * @param header          Is the first row in the file a header?
      * @param columnSeparator the delimiter
-     * @param file        The fully specified file name. It is used to provide a default name for the table
+     * @param file            The fully specified file name. It is used to provide a default name for the table
      * @return A Relation containing the data in the csv file.
      * @throws IOException if file cannot be read
      */
     public static Table headerOnly(ColumnType types[], boolean header, char columnSeparator, File file)
             throws IOException {
 
-        FileInputStream fis = new FileInputStream(file);       
+        FileInputStream fis = new FileInputStream(file);
         // make sure we don't have leading Unicode BOM
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(fis);
         ubis.skipBOM();
-        
+
         Reader reader = new InputStreamReader(ubis);
         BufferedReader streamReader = new BufferedReader(reader);
 
