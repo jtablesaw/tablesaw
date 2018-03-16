@@ -29,7 +29,7 @@ public class CategoryColumnTest {
     private CategoryColumn column = new CategoryColumn("testing");
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         column.append("Value 1");
         column.append("Value 2");
         column.append("Value 3");

@@ -19,15 +19,12 @@ import tech.tablesaw.aggregate.CategoryReduceUtils;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.filtering.StringPredicate;
 import tech.tablesaw.mapping.StringMapUtils;
-import tech.tablesaw.util.DictionaryMap;
 
 public interface CategoryColumnUtils extends Column, StringMapUtils, CategoryReduceUtils, Iterable<String> {
 
     StringPredicate isMissing = i -> i.equals(CategoryColumn.MISSING_VALUE);
 
     StringPredicate isNotMissing = i -> !i.equals(CategoryColumn.MISSING_VALUE);
-
-    DictionaryMap dictionaryMap();
 
     IntArrayList values();
 }

@@ -18,13 +18,9 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntListIterator;
+import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.CategoryColumnUtils;
 import tech.tablesaw.columns.Column;
@@ -34,7 +30,6 @@ import tech.tablesaw.filtering.text.CategoryFilters;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.DictionaryMap;
 import tech.tablesaw.util.Selection;
 
 import java.nio.ByteBuffer;
@@ -341,7 +336,16 @@ public class CategoryColumn extends AbstractColumn
     public void add(String stringValue) {
         addValue(convert(stringValue));
     }
-    
+
+    /**
+     * Puts Strings directly into the backing data structure.
+     * Do not use
+     * This method is unsafe, and will be removed in a future release without replacement
+     */
+    public void UnsafePutToDictionary(int key, String value) {
+        lookupTable.put(key, value);
+    }
+
     private void addValue(String value) {
         int key = lookupTable.get(value);
         if (key < 0) {
@@ -484,7 +488,10 @@ public class CategoryColumn extends AbstractColumn
         return intColumn;
     }
 
-    @Override
+    /**
+     * @deprecated This is an implementation detail that should not be public. Going away soon.
+     */
+    @Deprecated
     public DictionaryMap dictionaryMap() {
         return lookupTable;
     }
@@ -788,5 +795,96 @@ public class CategoryColumn extends AbstractColumn
 
     public Selection isNotIn(Collection<String> strings) {
       return isNotIn(strings.toArray(new String[strings.size()]));
+    }
+
+    public Int2ObjectMap<String> keyToValueMap() {
+        return new Int2ObjectOpenHashMap<>(lookupTable.keyToValue);
+    }
+
+    /**
+     * A map that supports reversible key value pairs of int-String
+     */
+    static class DictionaryMap {
+
+        private final Int2ObjectMap<String> keyToValue = new Int2ObjectOpenHashMap<>();
+
+        private final Object2IntMap<String> valueToKey = new Object2IntOpenHashMap<>();
+
+        DictionaryMap() {
+            super();
+            valueToKey.defaultReturnValue(-1);
+        }
+
+        /**
+         * Returns a new DictionaryMap that is a deep copy of the original
+         */
+        DictionaryMap(DictionaryMap original) {
+            for (Int2ObjectMap.Entry<String> entry : original.keyToValue.int2ObjectEntrySet()) {
+                keyToValue.put(entry.getIntKey(), entry.getValue());
+                valueToKey.put(entry.getValue(), entry.getIntKey());
+            }
+            valueToKey.defaultReturnValue(-1);
+        }
+
+        void put(int key, String value) {
+            keyToValue.put(key, value);
+            valueToKey.put(value, key);
+        }
+
+        String get(int key) {
+            return keyToValue.get(key);
+        }
+
+        int get(String value) {
+            return valueToKey.getInt(value);
+        }
+
+        void remove(short key) {
+            String value = keyToValue.remove(key);
+            valueToKey.removeInt(value);
+        }
+
+        void remove(String value) {
+            int key = valueToKey.removeInt(value);
+            keyToValue.remove(key);
+        }
+
+        void clear() {
+            keyToValue.clear();
+            valueToKey.clear();
+        }
+
+        boolean contains(String stringValue) {
+            return valueToKey.containsKey(stringValue);
+        }
+
+        int size() {
+            return categories().size();
+        }
+
+        Set<String> categories() {
+            return valueToKey.keySet();
+        }
+
+        /**
+         * Returns the strings in the dictionary as an array in order of the numeric key
+         * @deprecated This is an implementation detail that should not be public.
+         * If you need the strings you can get them by calling unique() or asSet() on the column,
+         */
+        @Deprecated String[] categoryArray() {
+            return keyToValue.values().toArray(new String[size()]);
+        }
+
+        IntCollection values() {
+            return valueToKey.values();
+        }
+
+        Int2ObjectMap<String> keyToValueMap() {
+            return keyToValue;
+        }
+
+        Object2IntMap<String> valueToKeyMap() {
+            return valueToKey;
+        }
     }
 }

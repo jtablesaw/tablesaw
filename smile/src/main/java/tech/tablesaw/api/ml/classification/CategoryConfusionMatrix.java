@@ -98,7 +98,7 @@ public class CategoryConfusionMatrix implements ConfusionMatrix {
     }
 
     private Table<String, String, Integer> sortedTable() {
-        Int2ObjectMap<String> labelKeys = labelColumn.dictionaryMap().keyToValueMap();
+        Int2ObjectMap<String> labelKeys = labelColumn.keyToValueMap();
         Table<String, String, Integer> sortedTable = TreeBasedTable.create();
         // make a set of all the values needed, from the prediction set or the actual set
         TreeSet<Integer> allValues = new TreeSet<>();

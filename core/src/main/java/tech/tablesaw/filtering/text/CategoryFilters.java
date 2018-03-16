@@ -14,11 +14,8 @@
 
 package tech.tablesaw.filtering.text;
 
-import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import tech.tablesaw.columns.CategoryColumnUtils;
 import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.DictionaryMap;
 import tech.tablesaw.util.Selection;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,20 +39,9 @@ public interface CategoryFilters extends CategoryColumnUtils {
 
     default Selection startsWith(String string) {
         Selection results = new BitmapBackedSelection();
-
-        IntRBTreeSet sorted = new IntRBTreeSet();
-        DictionaryMap dictionaryMap = this.dictionaryMap();
-
-        for (Object2IntMap.Entry<String> entry : dictionaryMap.valueToKeyMap().object2IntEntrySet()) {
-            String key = entry.getKey();
-            if (key.startsWith(string)) {
-                sorted.add(entry.getIntValue());
-            }
-        }
-
         int i = 0;
-        for (int next : values()) {
-            if (sorted.contains(next)) {
+        for (String next : this) {
+            if (next.startsWith(string)) {
                 results.add(i);
             }
             i++;

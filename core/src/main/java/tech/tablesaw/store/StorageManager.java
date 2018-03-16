@@ -309,7 +309,7 @@ public class StorageManager {
 
             int j = 0;
             while (j < stringCount) {
-                stringColumn.dictionaryMap().put(j, dis.readUTF());
+                stringColumn.UnsafePutToDictionary(j, dis.readUTF());
                 j++;
             }
 
@@ -478,16 +478,16 @@ public class StorageManager {
      * @throws IOException IOException if the file can not be read
      */
     static void writeColumn(String fileName, CategoryColumn column) throws IOException {
-        int categoryCount = column.dictionaryMap().size();
+        int categoryCount = column.countUnique();
         try (FileOutputStream fos = new FileOutputStream(fileName);
              SnappyFramedOutputStream sos = new SnappyFramedOutputStream(fos);
              DataOutputStream dos = new DataOutputStream(sos)) {
 
             dos.writeInt(categoryCount);
             // write the strings
-            SortedSet<Integer> keys = new TreeSet<>(column.dictionaryMap().keyToValueMap().keySet());
+            SortedSet<Integer> keys = new TreeSet<>(column.asIntegerSet());
             for (int key : keys) {
-                dos.writeUTF(column.dictionaryMap().get(key));
+                dos.writeUTF(column.get(key));
             }
             dos.flush();
 
