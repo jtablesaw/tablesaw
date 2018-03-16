@@ -33,7 +33,7 @@ public interface StringMapUtils extends Column {
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
             if (value == null) {
-                newColumn.add(null);
+                newColumn.append(CategoryColumn.MISSING_VALUE);
             } else {
                 newColumn.add(value.toUpperCase());
             }
@@ -47,7 +47,7 @@ public interface StringMapUtils extends Column {
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-            newColumn.add(value.toLowerCase());
+            newColumn.append(value.toLowerCase());
         }
         return newColumn;
     }
@@ -58,7 +58,7 @@ public interface StringMapUtils extends Column {
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-            newColumn.add(value.trim());
+            newColumn.append(value.trim());
         }
         return newColumn;
     }
@@ -69,7 +69,7 @@ public interface StringMapUtils extends Column {
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-            newColumn.add(value.replaceAll(regex, replacement));
+            newColumn.append(value.replaceAll(regex, replacement));
         }
         return newColumn;
     }
@@ -80,7 +80,7 @@ public interface StringMapUtils extends Column {
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-            newColumn.add(value.replaceFirst(regex, replacement));
+            newColumn.append(value.replaceFirst(regex, replacement));
         }
         return newColumn;
     }
@@ -91,7 +91,7 @@ public interface StringMapUtils extends Column {
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-            newColumn.add(value.substring(start, end));
+            newColumn.append(value.substring(start, end));
         }
         return newColumn;
     }
@@ -103,7 +103,7 @@ public interface StringMapUtils extends Column {
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-            newColumn.add(value.substring(start));
+            newColumn.append(value.substring(start));
         }
         return newColumn;
     }
@@ -114,7 +114,7 @@ public interface StringMapUtils extends Column {
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-            newColumn.add(StringUtils.abbreviate(value, maxWidth));
+            newColumn.append(StringUtils.abbreviate(value, maxWidth));
         }
         return newColumn;
     }
@@ -125,7 +125,7 @@ public interface StringMapUtils extends Column {
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-            newColumn.add(Strings.padEnd(value, minLength, padChar));
+            newColumn.append(Strings.padEnd(value, minLength, padChar));
         }
         return newColumn;
     }
@@ -136,7 +136,7 @@ public interface StringMapUtils extends Column {
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-            newColumn.add(Strings.padStart(value, minLength, padChar));
+            newColumn.append(Strings.padStart(value, minLength, padChar));
         }
         return newColumn;
     }
@@ -148,7 +148,7 @@ public interface StringMapUtils extends Column {
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
             String value2 = column2.getString(r);
-            newColumn.add(Strings.commonPrefix(value1, value2));
+            newColumn.append(Strings.commonPrefix(value1, value2));
         }
         return newColumn;
     }
@@ -160,7 +160,7 @@ public interface StringMapUtils extends Column {
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
             String value2 = column2.getString(r);
-            newColumn.add(Strings.commonSuffix(value1, value2));
+            newColumn.append(Strings.commonSuffix(value1, value2));
         }
         return newColumn;
     }
@@ -188,7 +188,7 @@ public interface StringMapUtils extends Column {
             String[] values = new String[2];
             values[0] = getString(r);
             values[1] = column2.getString(r);
-            newColumn.add(StringUtils.join(values, delimiter));
+            newColumn.append(StringUtils.join(values, delimiter));
         }
         return newColumn;
     }
