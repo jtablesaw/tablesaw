@@ -110,6 +110,16 @@ public final class TypeUtils {
             DateTimeFormatter.ofPattern("M/d/yy H:mm");
     private static final DateTimeFormatter dtTimef8 =
             DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a");
+
+    static {
+        dtTimef6 = new DateTimeFormatterBuilder()
+                .parseCaseInsensitive()
+                .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                .appendLiteral('.')
+                .appendPattern("SSS")
+                .toFormatter();
+    }
+
     // A formatter that handles date time formats defined above
     public static final DateTimeFormatter DATE_TIME_FORMATTER =
             new DateTimeFormatterBuilder()
@@ -214,15 +224,6 @@ public final class TypeUtils {
             timef6
             //, timef7
     );
-
-    static {
-        dtTimef6 = new DateTimeFormatterBuilder()
-                .parseCaseInsensitive()
-                .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                .appendLiteral('.')
-                .appendPattern("SSS")
-                .toFormatter();
-    }
 
     /**
      * Private constructor to prevent instantiation
