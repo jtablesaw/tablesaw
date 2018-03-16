@@ -123,7 +123,7 @@ public class Example1 {
 
         CategoryColumn who = table1.categoryColumn("who");
 
-        Table xtab = CrossTab.xTabCount(table1, month, who);
+        Table xtab = CrossTab.counts(table1, month, who);
         out(xtab.print());
 
         out(CrossTab.tablePercents(xtab).print());
