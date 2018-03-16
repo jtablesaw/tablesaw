@@ -104,6 +104,20 @@ public final class CrossTab {
         return table.countBy(table.categoryColumn(column1));
     }
 
+    public static Table percents(Table table, String column1) {
+        Table countTable = counts(table, column1);
+        Table percentTable = Table.create(countTable.name());
+        percentTable.addColumn(countTable.column(0).copy());
+
+        IntColumn countsColumn = countTable.intColumn("Count");
+        FloatColumn pctsColumn = new FloatColumn("Percents");
+        double sum = countsColumn.sum();
+        for (int i = 0; i < countsColumn.size(); i++) {
+            pctsColumn.append(countsColumn.get(i) / sum);
+        }
+        percentTable.addColumn(pctsColumn);
+        return percentTable;
+    }
 
     public static Table rowPercents(Table xTabCounts) {
 
