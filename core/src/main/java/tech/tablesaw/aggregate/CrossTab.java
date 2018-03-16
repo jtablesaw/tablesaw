@@ -35,7 +35,7 @@ public final class CrossTab {
      * @param column2 Another column in {@code table}
      * @return A table containing the cross-tabs
      */
-    private static Table counts(Table table, CategoricalColumn column1, CategoricalColumn column2) {
+    public static Table counts(Table table, CategoricalColumn column1, CategoricalColumn column2) {
 
         Table t = Table.create("Crosstab Counts: " + column1.name() + " x " + column2.name());
         t.addColumn(new CategoryColumn(LABEL_COLUMN_NAME));

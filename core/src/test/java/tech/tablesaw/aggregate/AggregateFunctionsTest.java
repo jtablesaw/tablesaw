@@ -16,6 +16,7 @@ package tech.tablesaw.aggregate;
 
 import org.junit.Before;
 import org.junit.Test;
+import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -41,7 +42,7 @@ public class AggregateFunctionsTest {
 
     @Test
     public void testGroupMean() {
-        Column byColumn = table.column("who");
+        CategoricalColumn byColumn = table.categoryColumn("who");
         ViewGroup group = new ViewGroup(table, byColumn);
         Table result = group.aggregate("approval", AggregateFunctions.mean, AggregateFunctions.stdDev);
         assertEquals(3, result.columnCount());
@@ -53,8 +54,8 @@ public class AggregateFunctionsTest {
 
     @Test
     public void test2ColumnGroupMean() {
-        Column byColumn1 = table.column("who");
-        Column byColumn2 = table.column("date");
+        CategoricalColumn byColumn1 = table.categoryColumn("who");
+        CategoricalColumn byColumn2 = table.categoricalColumn("date");
         ViewGroup group = new ViewGroup(table, byColumn1, byColumn2);
         Table result = group.aggregate("approval", AggregateFunctions.mean, AggregateFunctions.sum);
         assertEquals(4, result.columnCount());

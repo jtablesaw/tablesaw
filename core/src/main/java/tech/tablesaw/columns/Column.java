@@ -70,6 +70,13 @@ public interface Column {
     String name();
 
     /**
+     * Returns true if this column is suitable to use as the grouping column for aggregation and cross-tabulation
+     */
+    default boolean isCategorical() {
+        return type().isCategorical();
+    }
+
+    /**
      * Sets the columns name to the given string
      *
      * @param name The new name MUST be unique for any table containing this column

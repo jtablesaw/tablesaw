@@ -17,7 +17,18 @@ package tech.tablesaw.api;
 import tech.tablesaw.columns.Column;
 
 /**
+ * A column type that can be summarized, or serve as a grouping variable in cross tabs or other aggregation operations.
  *
+ * The column data is discrete.
+ *
+ * Supporting subtypes include:
+ * - CategoryColumn
+ * - IntColumn
+ * - BooleanColumn
+ * - ShortColumn
+ * - DateColumn
+ *
+ * Floating point types (float, double) and near-continuous time columns (Time and DateTime) are not included.
  */
 public interface CategoricalColumn extends Column {
 

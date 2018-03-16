@@ -46,8 +46,6 @@ public class FrequentItemset {
     /**
      * Constructs and returns a frequent itemset model
      *
-     * @param sets
-     * @param items
      * @param supportThreshold the minimum support required to be included
      */
     public FrequentItemset(IntColumn sets, IntColumn items, double supportThreshold) {
@@ -57,7 +55,7 @@ public class FrequentItemset {
         temp.addColumn(items.copy());
         temp.sortAscendingOn(sets.name(), items.name());
 
-        ViewGroup baskets = temp.splitOn(temp.column(0));
+        ViewGroup baskets = temp.splitOn(temp.categoricalColumn(0));
 
         this.setCount = baskets.size();
 
@@ -86,7 +84,7 @@ public class FrequentItemset {
         temp.addColumn(encodedItems);
         temp.sortAscendingOn(sets.name(), items.name());
 
-        ViewGroup baskets = temp.splitOn(temp.column(0));
+        ViewGroup baskets = temp.splitOn(temp.categoricalColumn(0));
 
         this.setCount = baskets.size();
 
@@ -115,7 +113,7 @@ public class FrequentItemset {
         temp.addColumn(encodedItems);
         temp.sortAscendingOn(sets.name(), items.name());
 
-        ViewGroup baskets = temp.splitOn(temp.column(0));
+        ViewGroup baskets = temp.splitOn(temp.categoricalColumn(0));
 
         this.setCount = baskets.size();
 
@@ -142,7 +140,7 @@ public class FrequentItemset {
         temp.addColumn(items.copy());
         temp.sortAscendingOn(sets.name(), items.name());
 
-        ViewGroup baskets = temp.splitOn(temp.column(0));
+        ViewGroup baskets = temp.splitOn(temp.categoricalColumn(0));
 
         this.setCount = baskets.size();
 

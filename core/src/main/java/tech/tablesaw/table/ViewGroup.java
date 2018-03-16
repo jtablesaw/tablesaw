@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.NumericSummaryTable;
+import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
@@ -50,7 +51,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
     // the name(s) of the column(s) we're splitting the table on
     private final String[] splitColumnNames;
 
-    public ViewGroup(Table original, Column... columns) {
+    public ViewGroup(Table original, CategoricalColumn... columns) {
         splitColumnNames = new String[columns.length];
         for (int i = 0; i < columns.length; i++) {
             splitColumnNames[i] = columns[i].name();
@@ -59,9 +60,13 @@ public class ViewGroup implements Iterable<TemporaryView> {
         splitOn(splitColumnNames);
     }
 
+    /**
+     * Returns a viewGroup splitting the original table on the given columns.
+     * The named columns must be CategoricalColumns
+     */
     public static ViewGroup create(Table original, String... columnsNames) {
-        List<Column> columns = original.columns(columnsNames);
-        return new ViewGroup(original, columns.toArray(new Column[columns.size()]));
+        List<CategoricalColumn> columns = original.categoricalColumns(columnsNames);
+        return new ViewGroup(original, columns.toArray(new CategoricalColumn[columns.size()]));
     }
 
     /**

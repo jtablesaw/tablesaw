@@ -58,7 +58,7 @@ public class SmileBox {
 
     public static PlotCanvas create(String plotTitle, Table table, String summaryColumnName, String
             groupingColumnName) {
-        ViewGroup groups = table.splitOn(table.column(groupingColumnName));
+        ViewGroup groups = table.splitOn(table.categoricalColumn(groupingColumnName));
         int columnNumber = table.columnIndex(summaryColumnName);
         double[][] dataArray = DoubleArrays.to2dArray(groups, columnNumber);
         String[] grounpNames = groupNames(groups);

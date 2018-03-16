@@ -22,25 +22,33 @@ import tech.tablesaw.columns.Column;
  */
 public enum ColumnType {
 
-    BOOLEAN(Byte.MIN_VALUE),
-    CATEGORY(""),
-    FLOAT(Float.NaN),
-    DOUBLE(Double.NaN),
-    SHORT_INT(Short.MIN_VALUE),
-    INTEGER(Integer.MIN_VALUE),
-    LONG_INT(Long.MIN_VALUE),
-    LOCAL_DATE(Integer.MIN_VALUE),
-    LOCAL_DATE_TIME(Long.MIN_VALUE),
-    LOCAL_TIME(-1),
-    SKIP(null);
+    BOOLEAN(Byte.MIN_VALUE, true),
+    CATEGORY("", true),
+    FLOAT(Float.NaN, false),
+    DOUBLE(Double.NaN, false),
+    SHORT_INT(Short.MIN_VALUE, true),
+    INTEGER(Integer.MIN_VALUE, true),
+    LONG_INT(Long.MIN_VALUE, true),
+    LOCAL_DATE(Integer.MIN_VALUE, true),
+    LOCAL_DATE_TIME(Long.MIN_VALUE, false),
+    LOCAL_TIME(-1, false),
+    SKIP(null, false);
 
     private final Comparable<?> missingValue;
 
-    ColumnType(Comparable<?> missingValue) {
+    // does this column type handle data that is suitable for summarization (aggregation) operations?
+    private final boolean isCategorical;
+
+    ColumnType(Comparable<?> missingValue, boolean isCategorical) {
+        this.isCategorical = isCategorical;
         this.missingValue = missingValue;
     }
 
     public Comparable<?> getMissingValue() {
         return missingValue;
+    }
+
+    public boolean isCategorical() {
+        return isCategorical;
     }
 }

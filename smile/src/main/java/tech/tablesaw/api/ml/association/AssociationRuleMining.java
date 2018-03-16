@@ -50,7 +50,7 @@ public class AssociationRuleMining {
         temp.addColumn(items.copy());
         temp.sortAscendingOn(sets.name(), items.name());
 
-        ViewGroup baskets = temp.splitOn(temp.column(0));
+        ViewGroup baskets = temp.splitOn(temp.categoricalColumn(0));
         int[][] itemsets = new int[baskets.size()][];
         int basketIndex = 0;
         for (TemporaryView basket : baskets) {
@@ -73,7 +73,7 @@ public class AssociationRuleMining {
         temp.addColumn(items.asIntColumn());
         temp.sortAscendingOn(sets.name(), items.name());
 
-        ViewGroup baskets = temp.splitOn(temp.column(0));
+        ViewGroup baskets = temp.splitOn(temp.categoricalColumn(0));
         int[][] itemsets = new int[baskets.size()][];
         int basketIndex = 0;
         for (TemporaryView basket : baskets) {

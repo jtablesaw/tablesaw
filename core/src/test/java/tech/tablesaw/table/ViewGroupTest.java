@@ -19,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
@@ -33,7 +32,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ViewGroupTest {
 
-    static AggregateFunction exaggerate = new AggregateFunction() {
+    private static AggregateFunction exaggerate = new AggregateFunction() {
         @Override
         public String functionName() {
             return "exaggeration";
@@ -44,22 +43,18 @@ public class ViewGroupTest {
             return StatUtils.max(data) + 1000;
         }
     };
-    private final ColumnType[] types = {
-            ColumnType.LOCAL_DATE,     // date of poll
-            ColumnType.INTEGER,        // approval rating (pct)
-            ColumnType.CATEGORY        // polling org
-    };
+
     private Table table;
 
     @Before
     public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv").columnTypes(types));
+        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv"));
     }
 
     @Test
     public void testViewGroupCreation() {
 
-        ViewGroup group = new ViewGroup(table, table.column("who"));
+        ViewGroup group = new ViewGroup(table, table.categoricalColumn("who"));
         assertEquals(6, group.size());
         List<TemporaryView> viewList = group.getSubTables();
 
@@ -72,7 +67,9 @@ public class ViewGroupTest {
 
     @Test
     public void testViewTwoColumn() {
-        ViewGroup group = new ViewGroup(table, table.column("who"), table.column("approval"));
+        ViewGroup group = new ViewGroup(table,
+                table.categoricalColumn("who"),
+                table.categoricalColumn("approval"));
         List<TemporaryView> viewList = group.getSubTables();
 
         int count = 0;

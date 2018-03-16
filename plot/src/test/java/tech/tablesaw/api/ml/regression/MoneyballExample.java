@@ -16,6 +16,7 @@ package tech.tablesaw.api.ml.regression;
 
 import static tech.tablesaw.api.QueryHelper.column;
 
+import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
@@ -41,7 +42,7 @@ public class MoneyballExample {
         // plot regular season wins against year, segregating on whether the team made the plays
         NumericColumn wins = moneyball.numericColumn("W");
         NumericColumn year = moneyball.numericColumn("Year");
-        Column playoffs = moneyball.column("Playoffs");
+        CategoricalColumn playoffs = moneyball.categoricalColumn("Playoffs");
         Scatter.show("Regular season wins by year", wins, year, moneyball.splitOn(playoffs));
 
         // Calculate the run difference for use in the regression model

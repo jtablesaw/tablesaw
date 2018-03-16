@@ -331,6 +331,17 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
+     * Returns only the columns whose names are given in the input array
+     */
+    public List<CategoricalColumn> categoricalColumns(String... columnNames) {
+        List<CategoricalColumn> columns = new ArrayList<>();
+        for (String columnName : columnNames) {
+            columns.add(categoryColumn(columnName));
+        }
+        return columns;
+    }
+
+    /**
      * Returns the index of the column with the given name
      *
      * @throws IllegalArgumentException if the input string is not the name of any column in the table
@@ -691,13 +702,13 @@ public class Table extends Relation implements IntIterable {
      * The first stage of a split-apply-combine operation
      */
     public ViewGroup groupBy(String... columns) {
-        return groupBy(columns(columns).toArray(new Column[columns.length]));
+        return groupBy(categoricalColumns(columns).toArray(new CategoricalColumn[columns.length]));
     }
 
     /**
      * The first stage of a split-apply-combine operation
      */
-    public ViewGroup groupBy(Column... columns) {
+    public ViewGroup groupBy(CategoricalColumn... columns) {
         return new ViewGroup(this, columns);
     }
 
@@ -713,7 +724,7 @@ public class Table extends Relation implements IntIterable {
      * Synonymous with groupBy
      * The first stage of a split-apply-combine operation
      */
-    public ViewGroup splitOn(Column... columns) {
+    public ViewGroup splitOn(CategoricalColumn... columns) {
         return groupBy(columns);
     }
 

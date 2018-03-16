@@ -14,6 +14,7 @@
 
 package tech.tablesaw.table;
 
+import com.google.common.base.Preconditions;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.string.DataFramePrinter;
@@ -244,6 +245,18 @@ public abstract class Relation {
             return booleanColumn.asIntColumn();
         }
         return (NumericColumn) column(columnName);
+    }
+
+    public CategoricalColumn categoricalColumn(String columnName) {
+        Column c = column(columnName);
+        Preconditions.checkState(c.isCategorical(), "Columns of type " + c.type() + " are note categorical.");
+        return (CategoricalColumn) c;
+    }
+
+    public CategoricalColumn categoricalColumn(int columnNumber) {
+        Column c = column(columnNumber);
+        Preconditions.checkState(c.isCategorical(), "Columns of type " + c.type() + " are note categorical.");
+        return (CategoricalColumn) c;
     }
 
     /**

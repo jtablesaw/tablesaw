@@ -32,6 +32,6 @@ public class ScatterplotExample {
         Scatter.show("Regular season wins by year",
                 baseball.numericColumn("W"),
                 baseball.numericColumn("Year"),
-                baseball.splitOn(baseball.column("Playoffs")));
+                baseball.splitOn(baseball.categoricalColumn("Playoffs")));
     }
 }
