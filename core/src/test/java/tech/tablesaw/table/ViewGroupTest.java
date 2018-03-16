@@ -90,7 +90,7 @@ public class ViewGroupTest {
         Table t = table.sum("approval").by(splitColumnNames);
 
         // compare the sum of the original column with the sum of the sums of the group table
-        assertEquals(table.intColumn(1).sum(), Math.round(t.doubleColumn(2).sum()));
+        assertEquals(table.shortColumn(1).sum(), Math.round(t.doubleColumn(2).sum()));
         assertEquals(65, tables.size());
     }
 
@@ -114,6 +114,6 @@ public class ViewGroupTest {
     public void testSumGroup() {
         Table groups = table.sum("approval").by("who");
         // compare the sum of the original column with the sum of the sums of the group table
-        assertEquals(table.intColumn(1).sum(), Math.round(groups.doubleColumn(1).sum()));
+        assertEquals(table.shortColumn(1).sum(), Math.round(groups.doubleColumn(1).sum()));
     }
 }
