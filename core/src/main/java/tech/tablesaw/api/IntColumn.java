@@ -17,11 +17,7 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.*;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
@@ -36,12 +32,12 @@ import tech.tablesaw.util.ReverseIntComparator;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
-
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * A column that contains signed 4 byte integer values
@@ -68,7 +64,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     };
 
     public IntColumn(String name) {
-      this(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
+        this(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
     }
 
     public IntColumn(String name, int initialSize) {
@@ -81,7 +77,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public IntColumn(String name, int[] arr) {
-      this(name, new IntArrayList(arr));
+        this(name, new IntArrayList(arr));
     }
 
     public IntColumn(ColumnMetadata metadata) {
@@ -90,7 +86,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     protected static boolean isMissing(int value) {
-      return value == MISSING_VALUE;
+        return value == MISSING_VALUE;
     }
 
     /**
@@ -104,6 +100,34 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         }
         Matcher matcher = COMMA_PATTERN.matcher(stringValue);
         return Integer.parseInt(matcher.replaceAll(""));
+    }
+
+    static int add(int val1, int val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 + val2;
+    }
+
+    static int multiply(int val1, int val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 * val2;
+    }
+
+    static int divide(int val1, int val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 / val2;
+    }
+
+    static int subtract(int val1, int val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 - val2;
     }
 
     public IntArrayList data() {
@@ -130,7 +154,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria
-     *
+     * <p>
      * Example:
      * myColumn.set(4, myColumn.isMissing()); // no more missing values
      */
@@ -157,7 +181,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     }
 
     public Selection isNotEqualTo(int i) {
-      return select(isNotEqualTo, i);
+        return select(isNotEqualTo, i);
     }
 
     public Selection isEqualTo(int i) {
@@ -172,7 +196,7 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return select(isNotMissing);
     }
 
-    public Selection isIn(int ... values) {
+    public Selection isIn(int... values) {
         Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
             int next = data.getInt(idx);
@@ -269,9 +293,9 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public String getString(int row) {
         int value = data.getInt(row);
         if (value == MISSING_VALUE) {
-          return null;
-      }
-      return String.valueOf(value);
+            return null;
+        }
+        return String.valueOf(value);
     }
 
     @Override
@@ -420,6 +444,8 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return sumOfSquares.agg(this);
     }
 
+    // boolean functions
+
     public double geometricMean() {
         return geometricMean.agg(this);
     }
@@ -438,8 +464,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
     public double skewness() {
         return skewness.agg(this);
     }
-
-    // boolean functions
 
     public Selection isPositive() {
         return select(isPositive);
@@ -668,34 +692,6 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         return returnValue;
     }
 
-    static int add(int val1, int val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 + val2;
-    }
-
-    static int multiply(int val1, int val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 * val2;
-    }
-
-    static int divide(int val1, int val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 / val2;
-    }
-
-    static int subtract(int val1, int val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 - val2;
-    }
-
     /**
      * Returns a new column with a cumulative sum calculated
      */
@@ -737,9 +733,9 @@ public class IntColumn extends AbstractColumn implements IntMapUtils, NumericCol
         DoubleColumn newColumn = new DoubleColumn(name() + "[pctChange]", size());
         newColumn.append(DoubleColumn.MISSING_VALUE);
         for (int i = 1; i < size(); i++) {
-            newColumn.append((double) get(i) / get(i-1) - 1);
+            newColumn.append((double) get(i) / get(i - 1) - 1);
         }
         return newColumn;
-    }  
+    }
 
 }

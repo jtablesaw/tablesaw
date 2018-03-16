@@ -17,23 +17,11 @@ package tech.tablesaw.io;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -118,21 +106,10 @@ public final class TypeUtils {
             DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm");
     private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private static final DateTimeFormatter dtTimef6;
-
-    static {
-        dtTimef6 = new DateTimeFormatterBuilder()
-                .parseCaseInsensitive()
-                .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                .appendLiteral('.')
-                .appendPattern("SSS")
-                .toFormatter();
-    }
-
     private static final DateTimeFormatter dtTimef7 =
             DateTimeFormatter.ofPattern("M/d/yy H:mm");
     private static final DateTimeFormatter dtTimef8 =
             DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a");
-
     // A formatter that handles date time formats defined above
     public static final DateTimeFormatter DATE_TIME_FORMATTER =
             new DateTimeFormatterBuilder()
@@ -238,6 +215,15 @@ public final class TypeUtils {
             //, timef7
     );
 
+    static {
+        dtTimef6 = new DateTimeFormatterBuilder()
+                .parseCaseInsensitive()
+                .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                .appendLiteral('.')
+                .appendPattern("SSS")
+                .toFormatter();
+    }
+
     /**
      * Private constructor to prevent instantiation
      */
@@ -312,7 +298,7 @@ public final class TypeUtils {
     public static DateTimeConverter getDateTimeFormatter(String dateTimeValue) {
         for (DateTimeFormatter formatter : dateTimeFormatters) {
             if (canParse(formatter, dateTimeValue)) {
-              return new DateTimeConverter(formatter);
+                return new DateTimeConverter(formatter);
             }
         }
         if (canParse(DATE_FORMATTER, dateTimeValue)) {
@@ -330,12 +316,12 @@ public final class TypeUtils {
     }
 
     private static boolean canParse(DateTimeFormatter formatter, String dateTimeValue) {
-      try {
-        formatter.parse(dateTimeValue);
-        return true;
-      } catch (DateTimeParseException e) {
-        return false;
-      }
+        try {
+            formatter.parse(dateTimeValue);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 
     /**
@@ -365,24 +351,24 @@ public final class TypeUtils {
      * Unix timestamps are not currently supported.
      */
     public static class DateTimeConverter {
-      private final boolean isTimestamp;
-      private final DateTimeFormatter dtFormatter;
+        private final boolean isTimestamp;
+        private final DateTimeFormatter dtFormatter;
 
-      public DateTimeConverter() {
-        this.dtFormatter = null;
-        this.isTimestamp = true;        
-      }
+        public DateTimeConverter() {
+            this.dtFormatter = null;
+            this.isTimestamp = true;
+        }
 
-      public DateTimeConverter(DateTimeFormatter dtFormatter) {
-        this.dtFormatter = dtFormatter;
-        this.isTimestamp = false;
-      }
+        public DateTimeConverter(DateTimeFormatter dtFormatter) {
+            this.dtFormatter = dtFormatter;
+            this.isTimestamp = false;
+        }
 
-      public LocalDateTime convert(String dateTime) {
-        return isTimestamp
-            ? Instant.ofEpochMilli(Long.parseLong(dateTime)).atZone(ZoneOffset.UTC).toLocalDateTime()
-            : LocalDateTime.parse(dateTime, dtFormatter);
-      }
+        public LocalDateTime convert(String dateTime) {
+            return isTimestamp
+                    ? Instant.ofEpochMilli(Long.parseLong(dateTime)).atZone(ZoneOffset.UTC).toLocalDateTime()
+                    : LocalDateTime.parse(dateTime, dtFormatter);
+        }
     }
 
 }

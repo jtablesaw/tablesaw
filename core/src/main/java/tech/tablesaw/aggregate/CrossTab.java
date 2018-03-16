@@ -16,11 +16,7 @@ package tech.tablesaw.aggregate;
 
 import com.google.common.collect.TreeBasedTable;
 
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.Table;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
 
 /**
@@ -36,30 +32,11 @@ public final class CrossTab {
      * <p>
      *
      * @param table   The table we're deriving the counts from
-     * @param column1 A column in {@code table}        Cannot be a Float or Double column
-     * @param column2 Another column in {@code table}  Cannot be a Float or Double column
-     * @return A table containing the cross-tabs
-     */
-    public static Table counts(Table table, Column column1, Column column2) {
-        if (column1.type() == ColumnType.FLOAT || column2.type() == ColumnType.FLOAT
-            || column1.type() == ColumnType.DOUBLE || column2.type() == ColumnType.DOUBLE
-                ) {
-            throw new UnsupportedOperationException("X-tabs on Float or Double columns are not supported");
-        }
-        return xTabCount(table, column1, column2);
-    }
-
-    /**
-     * Returns a table containing two-dimensional cross-tabulated counts for each combination of values in
-     * {@code column1} and {@code column2}
-     * <p>
-     *
-     * @param table   The table we're deriving the counts from
      * @param column1 A column in {@code table}
      * @param column2 Another column in {@code table}
      * @return A table containing the cross-tabs
      */
-    private static Table xTabCount(Table table, Column column1, Column column2) {
+    private static Table counts(Table table, CategoricalColumn column1, CategoricalColumn column2) {
 
         Table t = Table.create("Crosstab Counts: " + column1.name() + " x " + column2.name());
         t.addColumn(new CategoryColumn(LABEL_COLUMN_NAME));
@@ -123,11 +100,11 @@ public final class CrossTab {
         return t;
     }
 
-/*
-  public static Table xTabCount(Table table, String column1) {
-    return Table.groupApply(table, column1, StaticUtils::count, column1);
+
+  public static Table counts(Table table, String column1) {
+    return table.countBy(table.categoryColumn(column1));
   }
-*/
+
 
     public static Table rowPercents(Table xTabCounts) {
 
@@ -231,7 +208,7 @@ public final class CrossTab {
      * Returns a table containing the column percents made from a source table, after first calculating the counts
      * cross-tabulated from the given columns
      */
-    public static Table columnPercents(Table table, Column column1, Column column2) {
+    public static Table columnPercents(Table table, CategoricalColumn column1, CategoricalColumn column2) {
         Table xTabs = counts(table, column1, column2);
         return columnPercents(xTabs);
     }
@@ -240,7 +217,7 @@ public final class CrossTab {
      * Returns a table containing the row percents made from a source table, after first calculating the counts
      * cross-tabulated from the given columns
      */
-    public static Table rowPercents(Table table, Column column1, Column column2) {
+    public static Table rowPercents(Table table, CategoricalColumn column1, CategoricalColumn column2) {
         Table xTabs = counts(table, column1, column2);
         return rowPercents(xTabs);
     }
@@ -249,7 +226,7 @@ public final class CrossTab {
      * Returns a table containing the table percents made from a source table, after first calculating the counts
      * cross-tabulated from the given columns
      */
-    public static Table tablePercents(Table table, Column column1, Column column2) {
+    public static Table tablePercents(Table table, CategoricalColumn column1, CategoricalColumn column2) {
         Table xTabs = counts(table, column1, column2);
         return tablePercents(xTabs);
     }

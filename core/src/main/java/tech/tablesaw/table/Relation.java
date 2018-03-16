@@ -14,19 +14,7 @@
 
 package tech.tablesaw.table;
 
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.string.DataFramePrinter;
 
@@ -169,18 +157,18 @@ public abstract class Relation {
 
     @Override
     public String toString() {
-      return "Table " + name() + ": Size = " + rowCount() + " x " + columnCount();
+        return "Table " + name() + ": Size = " + rowCount() + " x " + columnCount();
     }
 
     public String print(int rowLimit) {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      DataFramePrinter printer = new DataFramePrinter(rowLimit, baos);
-      printer.print(this);
-      return new String(baos.toByteArray());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataFramePrinter printer = new DataFramePrinter(rowLimit, baos);
+        printer.print(this);
+        return new String(baos.toByteArray());
     }
 
     public String print() {
-      return print(20);
+        return print(20);
     }
 
     public Table structure() {
@@ -349,7 +337,7 @@ public abstract class Relation {
     }
 
     public double[][] asColumnMatrix() {
-      return columns().stream().map(col -> col.asDoubleArray()).toArray(size -> new double[size][]);
+        return columns().stream().map(col -> col.asDoubleArray()).toArray(size -> new double[size][]);
     }
 
     public double[][] asMatrix() {

@@ -24,7 +24,8 @@ public interface NumericColumn extends Column {
     static NumericColumn subtractColumns(NumericColumn column1, NumericColumn column2) {
         int col1Size = column1.size();
         int col2Size = column2.size();
-        if (col1Size != col2Size) throw new IllegalArgumentException("The columns must have the same number of elements");
+        if (col1Size != col2Size)
+            throw new IllegalArgumentException("The columns must have the same number of elements");
 
         if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
             DoubleColumn result = new DoubleColumn(column1.name() + " - " + column2.name(), col1Size);
@@ -32,17 +33,13 @@ public interface NumericColumn extends Column {
                 result.append(DoubleColumn.subtract(column1.getDouble(r), column2.getDouble(r)));
             }
             return result;
-        }
-
-        else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
+        } else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
             FloatColumn result = new FloatColumn(column1.name() + " - " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
                 result.append(FloatColumn.subtract(column1.getFloat(r), column2.getFloat(r)));
             }
             return result;
-        }
-
-        else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
+        } else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
             LongColumn result = new LongColumn(column1.name() + " - " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
                 result.append(LongColumn.subtract(column1.getLong(r), column2.getLong(r)));
@@ -61,7 +58,8 @@ public interface NumericColumn extends Column {
     static NumericColumn addColumns(NumericColumn column1, NumericColumn column2) {
         int col1Size = column1.size();
         int col2Size = column2.size();
-        if (col1Size != col2Size) throw new IllegalArgumentException("The columns must have the same number of elements");
+        if (col1Size != col2Size)
+            throw new IllegalArgumentException("The columns must have the same number of elements");
 
         if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
             DoubleColumn result = new DoubleColumn(column1.name() + " + " + column2.name(), col1Size);
@@ -69,17 +67,13 @@ public interface NumericColumn extends Column {
                 result.append(DoubleColumn.add(column1.getDouble(r), column2.getDouble(r)));
             }
             return result;
-        }
-
-        else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
+        } else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
             FloatColumn result = new FloatColumn(column1.name() + " + " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
                 result.append(FloatColumn.add(column1.getFloat(r), column2.getFloat(r)));
             }
             return result;
-        }
-
-        else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
+        } else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
             LongColumn result = new LongColumn(column1.name() + " + " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
                 result.append(LongColumn.add(column1.getLong(r), column2.getLong(r)));
@@ -98,7 +92,8 @@ public interface NumericColumn extends Column {
     static NumericColumn multiplyColumns(NumericColumn column1, NumericColumn column2) {
         int col1Size = column1.size();
         int col2Size = column2.size();
-        if (col1Size != col2Size) throw new IllegalArgumentException("The columns must have the same number of elements");
+        if (col1Size != col2Size)
+            throw new IllegalArgumentException("The columns must have the same number of elements");
 
         if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
             DoubleColumn result = new DoubleColumn(column1.name() + " * " + column2.name(), col1Size);
@@ -106,17 +101,13 @@ public interface NumericColumn extends Column {
                 result.append(DoubleColumn.multiply(column1.getDouble(r), column2.getDouble(r)));
             }
             return result;
-        }
-
-        else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
+        } else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
             FloatColumn result = new FloatColumn(column1.name() + " * " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
                 result.append(FloatColumn.multiply(column1.getFloat(r), column2.getFloat(r)));
             }
             return result;
-        }
-
-        else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
+        } else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
             LongColumn result = new LongColumn(column1.name() + " * " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
                 result.append(LongColumn.multiply(column1.getLong(r), column2.getLong(r)));
@@ -135,7 +126,8 @@ public interface NumericColumn extends Column {
     static NumericColumn divideColumns(NumericColumn column1, NumericColumn column2) {
         int col1Size = column1.size();
         int col2Size = column2.size();
-        if (col1Size != col2Size) throw new IllegalArgumentException("The columns must have the same number of elements");
+        if (col1Size != col2Size)
+            throw new IllegalArgumentException("The columns must have the same number of elements");
 
         if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
             DoubleColumn result = new DoubleColumn(column1.name() + " / " + column2.name(), col1Size);
@@ -143,17 +135,13 @@ public interface NumericColumn extends Column {
                 result.append(DoubleColumn.divide(column1.getDouble(r), column2.getDouble(r)));
             }
             return result;
-        }
-
-        else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
+        } else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
             FloatColumn result = new FloatColumn(column1.name() + " / " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
                 result.append(FloatColumn.divide(column1.getFloat(r), column2.getFloat(r)));
             }
             return result;
-        }
-
-        else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
+        } else if (column1 instanceof LongColumn || column2 instanceof LongColumn) {
             LongColumn result = new LongColumn(column1.name() + " / " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
                 result.append(LongColumn.divide(column1.getLong(r), column2.getLong(r)));
@@ -190,7 +178,7 @@ public interface NumericColumn extends Column {
             double val = (double) value;
             DoubleColumn result = new DoubleColumn(name() + " + " + val);
             for (int i = 0; i < size(); i++) {
-                result.append(DoubleColumn.add(getDouble(i) , val));
+                result.append(DoubleColumn.add(getDouble(i), val));
             }
             return result;
         } else if (value instanceof Float || this instanceof FloatColumn) {
@@ -221,7 +209,7 @@ public interface NumericColumn extends Column {
             double val = (double) value;
             DoubleColumn result = new DoubleColumn(name() + " - " + val);
             for (int i = 0; i < size(); i++) {
-                result.append(DoubleColumn.subtract(getDouble(i) , val));
+                result.append(DoubleColumn.subtract(getDouble(i), val));
             }
             return result;
         } else if (value instanceof Float || this instanceof FloatColumn) {
@@ -252,7 +240,7 @@ public interface NumericColumn extends Column {
             double val = (double) value;
             DoubleColumn result = new DoubleColumn(name() + " / " + val);
             for (int i = 0; i < size(); i++) {
-                result.append(DoubleColumn.divide(getDouble(i) , val));
+                result.append(DoubleColumn.divide(getDouble(i), val));
             }
             return result;
         } else if (value instanceof Float || this instanceof FloatColumn) {
@@ -283,7 +271,7 @@ public interface NumericColumn extends Column {
             double val = (double) value;
             DoubleColumn result = new DoubleColumn(name() + " * " + val);
             for (int i = 0; i < size(); i++) {
-                result.append(DoubleColumn.multiply(getDouble(i) , val));
+                result.append(DoubleColumn.multiply(getDouble(i), val));
             }
             return result;
         } else if (value instanceof Float || this instanceof FloatColumn) {
@@ -314,6 +302,7 @@ public interface NumericColumn extends Column {
     /**
      * Returns int value at <code>index</code> position in the column. A conversion, if needed, could result
      * in data or accuracy loss.
+     *
      * @param index position in column
      * @return int value at position
      */
@@ -324,6 +313,7 @@ public interface NumericColumn extends Column {
     /**
      * Returns long value at <code>index</code> position in the column. A conversion, if needed, could result
      * in data or accuracy loss.
+     *
      * @param index position in column
      * @return long value at position
      */
@@ -334,6 +324,7 @@ public interface NumericColumn extends Column {
     /**
      * Returns float value at <code>index</code> position in the column. A conversion, if needed, could result
      * in data or accuracy loss.
+     *
      * @param index position in column
      * @return float value at position
      */
@@ -344,6 +335,7 @@ public interface NumericColumn extends Column {
     /**
      * Returns double value at <code>index</code> position in the column. A conversion, if needed, could result
      * in data or accuracy loss.
+     *
      * @param index position in column
      * @return double value at position
      */

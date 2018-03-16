@@ -16,12 +16,7 @@ package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.*;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.packeddata.PackedLocalTime;
@@ -39,12 +34,7 @@ import java.nio.ByteBuffer;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A column in a base table that contains float values
@@ -110,10 +100,10 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     }
 
     public TimeColumn(String name, List<LocalTime> data) {
-      this(name);
-      for (LocalTime time : data) {
-        append(time);
-      }
+        this(name);
+        for (LocalTime time : data) {
+            append(time);
+        }
     }
 
     public int size() {
@@ -314,17 +304,17 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     }
 
     public Selection isNotEqualTo(LocalTime value) {
-      Selection results = new BitmapBackedSelection();
-      int packedLocalTime = PackedLocalTime.pack(value);
-      int i = 0;
-      for (int next : data) {
-          if (packedLocalTime != next) {
-              results.add(i);
-          }
-          i++;
-      }
-      return results;
-    }    
+        Selection results = new BitmapBackedSelection();
+        int packedLocalTime = PackedLocalTime.pack(value);
+        int i = 0;
+        for (int next : data) {
+            if (packedLocalTime != next) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
 
     public Selection isEqualTo(LocalTime value) {
         Selection results = new BitmapBackedSelection();
@@ -495,7 +485,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria
-     *
+     * <p>
      * Example:
      * myColumn.set(LocalTime.now(), myColumn.isMissing()); // no more missing values
      */

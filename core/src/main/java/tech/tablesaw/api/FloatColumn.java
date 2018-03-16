@@ -16,13 +16,7 @@ package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.floats.FloatArrayList;
-import it.unimi.dsi.fastutil.floats.FloatArrays;
-import it.unimi.dsi.fastutil.floats.FloatComparator;
-import it.unimi.dsi.fastutil.floats.FloatIterable;
-import it.unimi.dsi.fastutil.floats.FloatIterator;
-import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
-import it.unimi.dsi.fastutil.floats.FloatSet;
+import it.unimi.dsi.fastutil.floats.*;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
@@ -35,13 +29,13 @@ import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.columns.FloatColumnUtils.*;
-
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.columns.FloatColumnUtils.*;
 
 /**
  * A column in a base table that contains float values
@@ -96,7 +90,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public FloatColumn(String name, float[] arr) {
-      this(name, new FloatArrayList(arr));
+        this(name, new FloatArrayList(arr));
     }
 
     public FloatColumn(String name, FloatArrayList data) {
@@ -110,9 +104,9 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     protected static boolean isMissing(float value) {
-      return Float.isNaN(value);
+        return Float.isNaN(value);
     }
-    
+
     /**
      * Returns a float that is parsed from the given String
      * <p>
@@ -124,6 +118,34 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         }
         Matcher matcher = COMMA_PATTERN.matcher(stringValue);
         return Float.parseFloat(matcher.replaceAll(""));
+    }
+
+    static float add(float val1, float val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 + val2;
+    }
+
+    static float multiply(float val1, float val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 * val2;
+    }
+
+    static float divide(float val1, float val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 / val2;
+    }
+
+    static float subtract(float val1, float val2) {
+        if (isMissing(val1) || isMissing(val2)) {
+            return MISSING_VALUE;
+        }
+        return val1 - val2;
     }
 
     public int size() {
@@ -250,6 +272,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return min.agg(this);
     }
 
+    // Predicate  functions
+
     public double variance() {
         return variance.agg(this);
     }
@@ -265,8 +289,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     public double sumOfLogs() {
         return sumOfLogs.agg(this);
     }
-
-    // Predicate  functions
 
     public double sumOfSquares() {
         return sumOfSquares.agg(this);
@@ -316,9 +338,11 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     public Selection isNegative() {
         return select(isNegative);
     }
+
     public Selection isPositive() {
         return select(isPositive);
     }
+
     public Selection isNonNegative() {
         return select(isNonNegative);
     }
@@ -344,8 +368,8 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     }
 
     public Selection isNotEqualTo(float f) {
-      return select(isNotEqualTo, f);
-    }    
+        return select(isNotEqualTo, f);
+    }
 
     public Selection isEqualTo(float f) {
         return select(isEqualTo, f);
@@ -609,7 +633,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria
-     *
+     * <p>
      * Example:
      * myColumn.set(4.0f, myColumn.isMissing()); // no more missing values
      */
@@ -744,34 +768,6 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
         return returnValue;
     }
 
-    static float add(float val1, float val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 + val2;
-    }
-
-    static float multiply(float val1, float val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 * val2;
-    }
-
-    static float divide(float val1, float val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 / val2;
-    }
-
-    static float subtract(float val1, float val2) {
-        if (isMissing(val1) || isMissing(val2)) {
-            return MISSING_VALUE;
-        }
-        return val1 - val2;
-    }
-
     /**
      * Returns a new column with a cumulative sum calculated
      */
@@ -810,12 +806,12 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
      * Returns a new column with a percent change calculated
      */
     public FloatColumn pctChange() {
-      FloatColumn newColumn = new FloatColumn(name() + "[pctChange]", size());
+        FloatColumn newColumn = new FloatColumn(name() + "[pctChange]", size());
         newColumn.append(MISSING_VALUE);
         for (int i = 1; i < size(); i++) {
-            newColumn.append(get(i) / get(i-1) - 1);
+            newColumn.append(get(i) / get(i - 1) - 1);
         }
         return newColumn;
-    }    
+    }
 
 }

@@ -15,50 +15,18 @@
 package tech.tablesaw.store;
 
 import com.google.common.annotations.VisibleForTesting;
-
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TimeColumn;
+import org.iq80.snappy.SnappyFramedInputStream;
+import org.iq80.snappy.SnappyFramedOutputStream;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.Relation;
 
-import org.iq80.snappy.SnappyFramedInputStream;
-import org.iq80.snappy.SnappyFramedOutputStream;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.nio.file.*;
+import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
 /**
@@ -135,7 +103,7 @@ public class StorageManager {
             case FLOAT:
                 return readFloatColumn(fileName, columnMetadata);
             case DOUBLE:
-              return readDoubleColumn(fileName, columnMetadata);
+                return readDoubleColumn(fileName, columnMetadata);
             case INTEGER:
                 return readIntColumn(fileName, columnMetadata);
             case BOOLEAN:
@@ -176,7 +144,7 @@ public class StorageManager {
     }
 
     private static DoubleColumn readDoubleColumn(String fileName, ColumnMetadata metadata) throws IOException {
-      DoubleColumn doubles = new DoubleColumn(metadata);
+        DoubleColumn doubles = new DoubleColumn(metadata);
         try (FileInputStream fis = new FileInputStream(fileName);
              SnappyFramedInputStream sis = new SnappyFramedInputStream(fis, true);
              DataInputStream dis = new DataInputStream(sis)) {

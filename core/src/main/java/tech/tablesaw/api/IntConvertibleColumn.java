@@ -14,16 +14,15 @@
 
 package tech.tablesaw.api;
 
-import java.util.Set;
-
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
-public interface IntConvertibleColumn {
+import java.util.Set;
+
+public interface IntConvertibleColumn extends CategoricalColumn {
 
     int[] asIntArray();
 
     default Set<Integer> asIntegerSet() {
-      return new IntOpenHashSet(asIntArray());
+        return new IntOpenHashSet(asIntArray());
     }
-
 }

@@ -15,7 +15,6 @@
 package tech.tablesaw.store;
 
 import com.google.gson.Gson;
-
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.Relation;
 

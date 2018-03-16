@@ -14,35 +14,10 @@
 
 package tech.tablesaw.api;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.count;
-import static tech.tablesaw.aggregate.AggregateFunctions.max;
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.median;
-import static tech.tablesaw.aggregate.AggregateFunctions.min;
-import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
-import static tech.tablesaw.aggregate.AggregateFunctions.sum;
-import static tech.tablesaw.aggregate.AggregateFunctions.variance;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.RandomUtils;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterable;
-import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.ints.*;
+import org.apache.commons.lang3.RandomUtils;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.SummaryFunction;
 import tech.tablesaw.columns.Column;
@@ -63,6 +38,12 @@ import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.IntComparatorChain;
 import tech.tablesaw.util.ReversingIntComparator;
 import tech.tablesaw.util.Selection;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
@@ -159,23 +140,6 @@ public class Table extends Relation implements IntIterable {
         return key;
     }
 
-    /**
-     * Creates an IntColumn containing the integers from startsWith to rowCount() and adds it to this table.
-     * Can be used for maintaining/restoring a specific order on data without an existing order column, or for
-     * generating scatter/line plots where the variation of points in some order is what you're trying to see.
-     *
-     * TODO: Move this functionality to IntColumn, and add other fill methods there
-     */
-    @Deprecated
-    public void addIndexColumn(String columnName, int startsWith) {
-
-        IntColumn indexColumn = new IntColumn(columnName, rowCount());
-        for (int i = 0; i < rowCount(); i++) {
-            indexColumn.append(i + startsWith);
-        }
-        addColumn(indexColumn);
-    }
-
     public static Table readTable(String tableNameAndPath) {
         Table t;
         try {
@@ -192,16 +156,12 @@ public class Table extends Relation implements IntIterable {
         return new DataFrameReader();
     }
 
-    public DataFrameWriter write() {
-      return new DataFrameWriter(this);
-    }
- 
     /**
      * Returns an randomly generated array of ints of size N where Max is the largest possible value
      */
     private static int[] generateUniformBitmap(int N, int Max) {
         if (N > Max) {
-          throw new IllegalArgumentException("Illegal arguments: N (" + N + ") greater than Max (" + Max + ")");
+            throw new IllegalArgumentException("Illegal arguments: N (" + N + ") greater than Max (" + Max + ")");
         }
 
         int[] ans = new int[N];
@@ -225,6 +185,27 @@ public class Table extends Relation implements IntIterable {
             ans[pos++] = i;
         }
         return ans;
+    }
+
+    /**
+     * Creates an IntColumn containing the integers from startsWith to rowCount() and adds it to this table.
+     * Can be used for maintaining/restoring a specific order on data without an existing order column, or for
+     * generating scatter/line plots where the variation of points in some order is what you're trying to see.
+     * <p>
+     * TODO: Move this functionality to IntColumn, and add other fill methods there
+     */
+    @Deprecated
+    public void addIndexColumn(String columnName, int startsWith) {
+
+        IntColumn indexColumn = new IntColumn(columnName, rowCount());
+        for (int i = 0; i < rowCount(); i++) {
+            indexColumn.append(i + startsWith);
+        }
+        addColumn(indexColumn);
+    }
+
+    public DataFrameWriter write() {
+        return new DataFrameWriter(this);
     }
 
     /**
@@ -272,7 +253,7 @@ public class Table extends Relation implements IntIterable {
      * @param colIndex  Zero-based index of the column to be replaced
      * @param newColumn Column to be added
      */
-    public Table replaceColumn(int colIndex, Column newColumn) {       
+    public Table replaceColumn(int colIndex, Column newColumn) {
         removeColumns(column(colIndex));
         addColumn(colIndex, newColumn);
         return this;
@@ -421,10 +402,10 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns a string representation of the value at the given row and column indexes
      *
-     * @param r the row index, 0 based
+     * @param r          the row index, 0 based
      * @param columnName the name of the column to be returned
-     *
-     * // TODO: performance would be greatly enhanced if columns could be referenced via a hashTable
+     *                   <p>
+     *                   // TODO: performance would be greatly enhanced if columns could be referenced via a hashTable
      */
     public String get(int r, String columnName) {
         Column column = column(columnIndex(columnName));
@@ -435,16 +416,16 @@ public class Table extends Relation implements IntIterable {
      * Returns a table with the same columns as this table
      */
     public Table fullCopy() {
-      Table copy = new Table(name);
-      for (Column column : columnList) {
-        copy.addColumn(column.emptyCopy());
-      }
+        Table copy = new Table(name);
+        for (Column column : columnList) {
+            copy.addColumn(column.emptyCopy());
+        }
 
-      IntArrayList integers = new IntArrayList();
-      for(int i = 0; i < rowCount(); i++)
-        integers.add(i);
-      Rows.copyRowsToTable(integers,this,copy);
-      return copy;
+        IntArrayList integers = new IntArrayList();
+        for (int i = 0; i < rowCount(); i++)
+            integers.add(i);
+        Rows.copyRowsToTable(integers, this, copy);
+        return copy;
     }
 
     /**
@@ -710,14 +691,14 @@ public class Table extends Relation implements IntIterable {
      * The first stage of a split-apply-combine operation
      */
     public ViewGroup groupBy(String... columns) {
-      return groupBy(columns(columns).toArray(new Column[columns.length]));
+        return groupBy(columns(columns).toArray(new Column[columns.length]));
     }
 
     /**
      * The first stage of a split-apply-combine operation
      */
     public ViewGroup groupBy(Column... columns) {
-      return new ViewGroup(this, columns);
+        return new ViewGroup(this, columns);
     }
 
     /**
@@ -759,83 +740,89 @@ public class Table extends Relation implements IntIterable {
 
     /**
      * Returns a table with the given rows selected
+     *
      * @param row the row to select
      * @return the table with the selected rows
      */
     public Table selectRow(int row) {
-      return selectRows(row, row);
+        return selectRows(row, row);
     }
-    
+
     /**
      * Returns a table with the given rows selected
+     *
      * @param rows the rows to select
      * @return the table with the selected rows
      */
     public Table selectRows(Collection<Integer> rows) {
-      Table newTable = emptyCopy();
-      Rows.copyRowsToTable(new IntArrayList(rows), this, newTable);
-      return newTable;
+        Table newTable = emptyCopy();
+        Rows.copyRowsToTable(new IntArrayList(rows), this, newTable);
+        return newTable;
     }
 
     /**
      * Returns a table with the given rows selected
+     *
      * @param start the first row to select
-     * @param end the last row to select
+     * @param end   the last row to select
      * @return the table with the selected rows
      */
     public Table selectRows(int start, int end) {
-      Table newTable = emptyCopy();
-      IntArrayList rowsToKeep = new IntArrayList();
-      for (int i = 0; i < rowCount(); i++) {
-        if (i >= start && i <= end) {
-          rowsToKeep.add(i);
+        Table newTable = emptyCopy();
+        IntArrayList rowsToKeep = new IntArrayList();
+        for (int i = 0; i < rowCount(); i++) {
+            if (i >= start && i <= end) {
+                rowsToKeep.add(i);
+            }
         }
-      }
-      Rows.copyRowsToTable(rowsToKeep, this, newTable);
-      return newTable;
+        Rows.copyRowsToTable(rowsToKeep, this, newTable);
+        return newTable;
     }
 
     /**
      * Returns a table with the given rows dropped
+     *
      * @param row the row to drop
      * @return the table with the dropped rows
      */
     public Table dropRow(int row) {
-      return dropRows(row, row);
+        return dropRows(row, row);
     }
 
     /**
      * Returns a table with the given rows dropped
+     *
      * @param rows the rows to drop
      * @return the table with the dropped rows
      */
     public Table dropRows(Collection<Integer> rows) {
-      Table newTable = emptyCopy();
-      IntArrayList rowsToKeep = new IntArrayList();
-      for (int i = 0; i < rowCount(); i++) {
-        rowsToKeep.add(i);
-      }
-      rowsToKeep.removeAll(new IntArrayList(rows));
-      Rows.copyRowsToTable(rowsToKeep, this, newTable);
-      return newTable;
+        Table newTable = emptyCopy();
+        IntArrayList rowsToKeep = new IntArrayList();
+        for (int i = 0; i < rowCount(); i++) {
+            rowsToKeep.add(i);
+        }
+        rowsToKeep.removeAll(new IntArrayList(rows));
+        Rows.copyRowsToTable(rowsToKeep, this, newTable);
+        return newTable;
     }
 
     /**
      * Returns a table with the given rows dropped
+     *
      * @param start the first row to drop
-     * @param end the last row to drop
+     * @param end   the last row to drop
      * @return the table with the dropped rows
      */
     public Table dropRows(int start, int end) {
-      Table newTable = emptyCopy();
-      IntArrayList rowsToKeep = new IntArrayList();
-      for (int i = 0; i < rowCount(); i++) {
-        if (i < start || i > end) {
-          rowsToKeep.add(i);
+        Table newTable = emptyCopy();
+        IntArrayList rowsToKeep = new IntArrayList();
+        for (int i = 0; i < rowCount(); i++) {
+            if (i < start || i > end) {
+                rowsToKeep.add(i);
+            }
         }
-      }
-      Rows.copyRowsToTable(rowsToKeep, this, newTable);
-      return newTable;
+        Rows.copyRowsToTable(rowsToKeep, this, newTable);
+        return newTable;
     }
 
     /**
@@ -906,7 +893,7 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * @deprecated Use the equivalent method on the column, or the general summarize method:
      * eg: table.summarize(numericColumnName, sum);
      */
     @Deprecated
@@ -915,7 +902,7 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * @deprecated Use the equivalent method on the column, or the general summarize method:
      * eg: table.summarize(numericColumnName, mean);
      */
     @Deprecated
@@ -924,7 +911,7 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * @deprecated Use the equivalent method on the column, or the general summarize method:
      * eg: table.summarize(numericColumnName, median);
      */
     @Deprecated
@@ -933,7 +920,7 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * @deprecated Use the equivalent method on the column, or the general summarize method:
      * eg: table.summarize(numericColumnName, variance);
      */
     @Deprecated
@@ -942,7 +929,7 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * @deprecated Use the equivalent method on the column, or the general summarize method:
      * eg: table.summarize(numericColumnName, sd);
      */
     @Deprecated
@@ -951,7 +938,7 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * @deprecated Use the equivalent method on the column, or the general summarize method:
      * e.g.: table.summarize(numericColumnName, count);
      */
     @Deprecated
@@ -960,7 +947,7 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * @deprecated Use the equivalent method on the column, or the general summarize method:
      * e.g.: table.summarize(numericColumnName, count);
      */
     @Deprecated
@@ -969,12 +956,12 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * @deprecated  Use the equivalent method on the column, or the general summarize method:
+     * @deprecated Use the equivalent method on the column, or the general summarize method:
      * e.g.: table.summarize(numericColumnName, count);
      */
     @Deprecated
     public SummaryFunction min(String numericColumnName) {
-      return new SummaryFunction(this, numericColumnName, min);
+        return new SummaryFunction(this, numericColumnName, min);
     }
 
     public void append(Table tableToAppend) {
@@ -1008,11 +995,11 @@ public class Table extends Relation implements IntIterable {
         return function.agg(column.asDoubleArray());
     }
 
-    public Map<AggregateFunction, Double> aggAll(String numericColumnName, AggregateFunction ... functions) {
+    public Map<AggregateFunction, Double> aggAll(String numericColumnName, AggregateFunction... functions) {
         return summarize(numericColumnName, functions).getAll();
     }
 
-    public SummaryFunction summarize(String numericColumnName, AggregateFunction ... function) {
+    public SummaryFunction summarize(String numericColumnName, AggregateFunction... function) {
         return new SummaryFunction(this, numericColumnName, function);
     }
 
@@ -1024,6 +1011,7 @@ public class Table extends Relation implements IntIterable {
      * Returns the first row for which the column {@code columnName} contains {@code value}, or
      * null if there are no matches
      * TODO(lwhite) This is a toy implementation badly in need of rewrite for performance.
+     *
      * @deprecated Use a select() on the column to get the matching records and take the first match
      */
     public int getFirst(Column column, String value) {
@@ -1038,7 +1026,7 @@ public class Table extends Relation implements IntIterable {
     }
 
     public DataFrameJoiner join(String columnName) {
-      return new DataFrameJoiner(this, columnName);
+        return new DataFrameJoiner(this, columnName);
     }
 
     @Override

@@ -15,7 +15,6 @@
 package tech.tablesaw.util;
 
 import com.google.common.base.Preconditions;
-
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.table.TemporaryView;
 import tech.tablesaw.table.ViewGroup;

@@ -16,7 +16,6 @@ package tech.tablesaw;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.IntColumn;
@@ -26,7 +25,8 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static tech.tablesaw.api.QueryHelper.*;
 
 /**

@@ -62,7 +62,7 @@ public class DoubleIndex {
         Selection selection = new BitmapBackedSelection();
         IntArrayList list = index.get(value);
         if (list != null) {
-          addAllToSelection(list, selection);
+            addAllToSelection(list, selection);
         }
         return selection;
     }

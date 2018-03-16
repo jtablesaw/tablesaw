@@ -180,83 +180,106 @@ public class ViewGroup implements Iterable<TemporaryView> {
     }
 
     public NumericSummaryTable first(String columnName) {
-      return agg(columnName, first);
+        return agg(columnName, first);
     }
+
     public NumericSummaryTable last(String columnName) {
-      return agg(columnName, last);
+        return agg(columnName, last);
     }
+
     public NumericSummaryTable count(String columnName) {
-      return agg(columnName, count);
+        return agg(columnName, count);
     }
+
     public NumericSummaryTable mean(String columnName) {
-      return agg(columnName, mean);
+        return agg(columnName, mean);
     }
+
     public NumericSummaryTable sum(String columnName) {
-      return agg(columnName, sum);
+        return agg(columnName, sum);
     }
+
     public NumericSummaryTable median(String columnName) {
-      return agg(columnName, median);
+        return agg(columnName, median);
     }
+
     public NumericSummaryTable quartile1(String columnName) {
-      return agg(columnName, quartile1);
+        return agg(columnName, quartile1);
     }
+
     public NumericSummaryTable quartile3(String columnName) {
-      return agg(columnName, quartile3);
+        return agg(columnName, quartile3);
     }
+
     public NumericSummaryTable percentile90(String columnName) {
-      return agg(columnName, percentile90);
+        return agg(columnName, percentile90);
     }
+
     public NumericSummaryTable percentile95(String columnName) {
-      return agg(columnName, percentile95);
+        return agg(columnName, percentile95);
     }
+
     public NumericSummaryTable percentile99(String columnName) {
-      return agg(columnName, percentile99);
+        return agg(columnName, percentile99);
     }
+
     public NumericSummaryTable range(String columnName) {
-      return agg(columnName, range);
+        return agg(columnName, range);
     }
+
     public NumericSummaryTable min(String columnName) {
-      return agg(columnName, min);
+        return agg(columnName, min);
     }
+
     public NumericSummaryTable max(String columnName) {
-      return agg(columnName, max);
+        return agg(columnName, max);
     }
+
     public NumericSummaryTable product(String columnName) {
-      return agg(columnName, product);
+        return agg(columnName, product);
     }
+
     public NumericSummaryTable geometricMean(String columnName) {
-      return agg(columnName, geometricMean);
+        return agg(columnName, geometricMean);
     }
+
     public NumericSummaryTable populationVariance(String columnName) {
-      return agg(columnName, populationVariance);
+        return agg(columnName, populationVariance);
     }
+
     public NumericSummaryTable quadraticMean(String columnName) {
-      return agg(columnName, quadraticMean);
+        return agg(columnName, quadraticMean);
     }
+
     public NumericSummaryTable kurtosis(String columnName) {
-      return agg(columnName, kurtosis);
+        return agg(columnName, kurtosis);
     }
+
     public NumericSummaryTable skewness(String columnName) {
-      return agg(columnName, skewness);
+        return agg(columnName, skewness);
     }
+
     public NumericSummaryTable sumOfSquares(String columnName) {
-      return agg(columnName, sumOfSquares);
+        return agg(columnName, sumOfSquares);
     }
+
     public NumericSummaryTable sumOfLogs(String columnName) {
-      return agg(columnName, sumOfLogs);
+        return agg(columnName, sumOfLogs);
     }
+
     public NumericSummaryTable variance(String columnName) {
-      return agg(columnName, variance);
+        return agg(columnName, variance);
     }
+
     public NumericSummaryTable stdDev(String columnName) {
-      return agg(columnName, stdDev);
+        return agg(columnName, stdDev);
     }
 
     /**
      * Applies the given aggregation to the given column.
      * The apply and combine steps of a split-apply-combine.
      */
-    public NumericSummaryTable aggregate(String colName1, AggregateFunction ... func1) {
+    public NumericSummaryTable aggregate(String colName1, AggregateFunction... func1) {
         ArrayListMultimap<String, AggregateFunction> map = ArrayListMultimap.create();
         map.putAll(colName1, Lists.newArrayList(func1));
         return aggregate(map);
@@ -316,36 +339,38 @@ public class ViewGroup implements Iterable<TemporaryView> {
     /**
      * Applies the given aggregations to the given columns.
      * The apply and combine steps of a split-apply-combine.
+     *
      * @param functions map from column name to aggregation to apply on that function
      */
     public NumericSummaryTable aggregate(ArrayListMultimap<String, AggregateFunction> functions) {
-      Preconditions.checkArgument(!subTables.isEmpty());
-      NumericSummaryTable groupTable = NumericSummaryTable.create(sortedOriginal.name() + " summary");
-      CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
-      groupTable.addColumn(groupColumn);
-      for (Map.Entry<String, Collection<AggregateFunction>> entry : functions.asMap().entrySet()) {
-          String columnName = entry.getKey();
-          int functionCount = 0;
-          for (AggregateFunction function : entry.getValue()) {
-              String colName = aggregateColumnName(columnName, function.functionName());
-              DoubleColumn resultColumn = new DoubleColumn(colName, subTables.size());
-              for (TemporaryView subTable : subTables) {
-                  double result = subTable.reduce(columnName, function);
-                  if (functionCount == 0) {
-                      groupColumn.append(subTable.name());
-                  }
-                  resultColumn.append(result);
-              }
-              groupTable.addColumn(resultColumn);
-              functionCount++;
-          }
-      }
-      return splitGroupingColumn(groupTable);
+        Preconditions.checkArgument(!subTables.isEmpty());
+        NumericSummaryTable groupTable = NumericSummaryTable.create(sortedOriginal.name() + " summary");
+        CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
+        groupTable.addColumn(groupColumn);
+        for (Map.Entry<String, Collection<AggregateFunction>> entry : functions.asMap().entrySet()) {
+            String columnName = entry.getKey();
+            int functionCount = 0;
+            for (AggregateFunction function : entry.getValue()) {
+                String colName = aggregateColumnName(columnName, function.functionName());
+                DoubleColumn resultColumn = new DoubleColumn(colName, subTables.size());
+                for (TemporaryView subTable : subTables) {
+                    double result = subTable.reduce(columnName, function);
+                    if (functionCount == 0) {
+                        groupColumn.append(subTable.name());
+                    }
+                    resultColumn.append(result);
+                }
+                groupTable.addColumn(resultColumn);
+                functionCount++;
+            }
+        }
+        return splitGroupingColumn(groupTable);
     }
 
     /**
      * Applies the given aggregations to the given columns.
      * The apply and combine steps of a split-apply-combine.
+     *
      * @param functions map from column name to aggregation to apply on that function
      */
     public NumericSummaryTable agg(Map<String, AggregateFunction> functions) {
@@ -368,7 +393,6 @@ public class ViewGroup implements Iterable<TemporaryView> {
         }
         return splitGroupingColumn(groupTable);
     }
-
 
 
     /**

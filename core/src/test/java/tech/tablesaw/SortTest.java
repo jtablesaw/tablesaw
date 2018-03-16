@@ -17,7 +17,6 @@ package tech.tablesaw;
 import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
-
 import tech.tablesaw.api.Table;
 
 import static org.junit.Assert.assertEquals;

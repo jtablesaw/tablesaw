@@ -16,7 +16,8 @@ package tech.tablesaw;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Make sure our test data is available

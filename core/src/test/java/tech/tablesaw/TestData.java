@@ -14,15 +14,15 @@
 
 package tech.tablesaw;
 
-import static tech.tablesaw.api.ColumnType.*;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import static tech.tablesaw.api.ColumnType.*;
 
 /**
  * This class setup tablesaw Table from test data sources.
@@ -80,8 +80,8 @@ public enum TestData {
         this.columnNames = columnNames;
         try {
             this.table = Table.read().csv(CsvReadOptions
-                .builder(csvSource)
-                .columnTypes(columnTypes));
+                    .builder(csvSource)
+                    .columnTypes(columnTypes));
         } catch (IOException e) {
             throw new IllegalStateException("Unable to read from CSV file", e);
         }

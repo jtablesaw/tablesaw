@@ -14,11 +14,11 @@
 
 package tech.tablesaw.index;
 
-import java.time.LocalDateTime;
-
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
 import tech.tablesaw.util.Selection;
+
+import java.time.LocalDateTime;
 
 /**
  * An index for four-byte integer and Date columns

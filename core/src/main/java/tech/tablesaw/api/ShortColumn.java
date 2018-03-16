@@ -18,11 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrays;
-import it.unimi.dsi.fastutil.shorts.ShortIterator;
-import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
-import it.unimi.dsi.fastutil.shorts.ShortSet;
+import it.unimi.dsi.fastutil.shorts.*;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
@@ -43,24 +39,7 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.geometricMean;
-import static tech.tablesaw.aggregate.AggregateFunctions.kurtosis;
-import static tech.tablesaw.aggregate.AggregateFunctions.max;
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.median;
-import static tech.tablesaw.aggregate.AggregateFunctions.min;
-import static tech.tablesaw.aggregate.AggregateFunctions.populationVariance;
-import static tech.tablesaw.aggregate.AggregateFunctions.product;
-import static tech.tablesaw.aggregate.AggregateFunctions.quadraticMean;
-import static tech.tablesaw.aggregate.AggregateFunctions.quartile1;
-import static tech.tablesaw.aggregate.AggregateFunctions.quartile3;
-import static tech.tablesaw.aggregate.AggregateFunctions.range;
-import static tech.tablesaw.aggregate.AggregateFunctions.skewness;
-import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
-import static tech.tablesaw.aggregate.AggregateFunctions.sum;
-import static tech.tablesaw.aggregate.AggregateFunctions.sumOfLogs;
-import static tech.tablesaw.aggregate.AggregateFunctions.sumOfSquares;
-import static tech.tablesaw.aggregate.AggregateFunctions.variance;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * A column that contains signed 2 byte integer values
@@ -111,7 +90,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
     }
 
     protected static boolean isMissing(short value) {
-      return value == MISSING_VALUE;
+        return value == MISSING_VALUE;
     }
 
     /**
@@ -716,7 +695,7 @@ public class ShortColumn extends AbstractColumn implements ShortMapUtils, Numeri
         FloatColumn newColumn = new FloatColumn(name() + "[pctChange]", size());
         newColumn.append(FloatColumn.MISSING_VALUE);
         for (int i = 1; i < size(); i++) {
-            newColumn.append((float) get(i) / get(i-1) - 1);
+            newColumn.append((float) get(i) / get(i - 1) - 1);
         }
         return newColumn;
     }

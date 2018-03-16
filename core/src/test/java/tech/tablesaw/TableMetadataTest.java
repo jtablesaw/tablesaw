@@ -16,7 +16,6 @@ package tech.tablesaw;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;

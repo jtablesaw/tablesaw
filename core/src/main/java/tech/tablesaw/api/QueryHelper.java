@@ -14,16 +14,12 @@
 
 package tech.tablesaw.api;
 
+import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.filtering.*;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.filtering.AllOf;
-import tech.tablesaw.filtering.AnyOf;
-import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.filtering.IsFalse;
-import tech.tablesaw.filtering.IsTrue;
 
 /**
  * A static utility class designed to take some of the work, and verbosity, out of making queries.

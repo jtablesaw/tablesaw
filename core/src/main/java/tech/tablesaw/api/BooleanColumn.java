@@ -18,14 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanOpenHashSet;
 import it.unimi.dsi.fastutil.booleans.BooleanSet;
-import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
-import it.unimi.dsi.fastutil.bytes.Byte2IntOpenHashMap;
-import it.unimi.dsi.fastutil.bytes.ByteArrayList;
-import it.unimi.dsi.fastutil.bytes.ByteArrays;
-import it.unimi.dsi.fastutil.bytes.ByteComparator;
-import it.unimi.dsi.fastutil.bytes.ByteIterator;
-import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
-import it.unimi.dsi.fastutil.bytes.ByteSet;
+import it.unimi.dsi.fastutil.bytes.*;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
@@ -494,6 +487,19 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return intColumn;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BooleanColumn that = (BooleanColumn) o;
+        return Objects.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(data);
+    }
+
     private static class BooleanColumnIterator implements Iterator<Boolean> {
 
         final ByteIterator iterator;
@@ -531,18 +537,5 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
             }
             return null;
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BooleanColumn that = (BooleanColumn) o;
-        return Objects.equals(data, that.data);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(data);
     }
 }

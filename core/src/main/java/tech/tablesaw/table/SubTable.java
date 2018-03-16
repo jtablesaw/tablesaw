@@ -14,21 +14,10 @@
 
 package tech.tablesaw.table;
 
-import java.util.List;
-
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
+
+import java.util.List;
 
 /**
  * A specialization of the standard Relation used for tables formed by grouping operations on a Relation

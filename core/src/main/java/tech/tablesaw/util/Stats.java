@@ -15,14 +15,7 @@
 package tech.tablesaw.util;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
+import tech.tablesaw.api.*;
 
 /**
  *

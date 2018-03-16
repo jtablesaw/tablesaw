@@ -16,12 +16,7 @@ package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.*;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.IntColumnUtils;
@@ -41,25 +36,22 @@ import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A column in a base table that contains float values
  */
-public class DateColumn extends AbstractColumn implements DateMapUtils {
+public class DateColumn extends AbstractColumn implements DateMapUtils, CategoricalColumn {
 
     public static final int MISSING_VALUE = (Integer) ColumnType.LOCAL_DATE.getMissingValue();
 
     private static final int DEFAULT_ARRAY_SIZE = 128;
 
     private static final int BYTE_SIZE = 4;
-
+    /**
+     * locale for formater
+     */
+    private final Locale locale;
     private IntComparator reverseIntComparator = new IntComparator() {
 
         @Override
@@ -72,9 +64,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
             return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
         }
     };
-
     private IntArrayList data;
-
     IntComparator comparator = new IntComparator() {
 
         @Override
@@ -89,19 +79,15 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
             return Integer.compare(f1, f2);
         }
     };
-
     /**
      * The formatter chosen to parse dates for this particular column
      */
     private DateTimeFormatter selectedFormatter;
-    
-    /** locale for formater */
-    private final Locale locale;
 
     public DateColumn(String name) {
         this(name, Locale.getDefault());
     }
-    
+
     public DateColumn(String name, Locale locale) {
         this(name, new IntArrayList(DEFAULT_ARRAY_SIZE), locale);
     }
@@ -111,10 +97,10 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public DateColumn(String name, List<LocalDate> data) {
-      this(name);
-      for (LocalDate date : data) {
-        append(date);
-      }
+        this(name);
+        for (LocalDate date : data) {
+            append(date);
+        }
     }
 
     private DateColumn(String name, IntArrayList data) {
@@ -293,7 +279,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria
-     *
+     * <p>
      * Example:
      * myColumn.set(LocalDate.now(), myColumn.isMissing()); // no more missing values
      */
@@ -359,7 +345,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     /**
      * Returns a CategoryColumn with the year and month from this column concatenated into a String that will sort
      * lexicographically in temporal order.
-     *
+     * <p>
      * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
      * you want monthly data but your source data is more than a year long and you don't want months from different
      * years aggregated together).
@@ -481,7 +467,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
 
     /**
      * Returns a table of dates and the number of observations of those dates
-     * 
+     *
      * @return the summary table
      */
     @Override
@@ -787,13 +773,13 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
     }
 
     public List<LocalDate> asList() {
-      List<LocalDate> dates = new ArrayList<>(size());
-      for (Iterator<LocalDate> iter = iterator(); iter.hasNext();) {
-          dates.add(iter.next());
-      }
-      return dates;
+        List<LocalDate> dates = new ArrayList<>(size());
+        for (Iterator<LocalDate> iter = iterator(); iter.hasNext(); ) {
+            dates.add(iter.next());
+        }
+        return dates;
     }
- 
+
     public Set<LocalDate> asSet() {
         Set<LocalDate> dates = new HashSet<>();
         DateColumn unique = unique();
@@ -828,6 +814,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils {
 
     /**
      * Returns the contents of the cell at rowNumber as a byte[]
+     *
      * @param rowNumber the number of the row as int
      */
     @Override

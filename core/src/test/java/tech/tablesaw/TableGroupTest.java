@@ -16,7 +16,6 @@ package tech.tablesaw;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
@@ -26,7 +25,8 @@ import tech.tablesaw.table.TableGroup;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests grouping and aggregation operations on tables
