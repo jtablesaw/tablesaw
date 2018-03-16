@@ -217,6 +217,7 @@ public class CategoryColumn extends AbstractColumn
         IntColumn counts = new IntColumn("Count");
 
         Int2IntMap valueToCount = new Int2IntOpenHashMap();
+
         for (int next : values) {
             if (valueToCount.containsKey(next)) {
                 valueToCount.put(next, valueToCount.get(next) + 1);
@@ -224,10 +225,13 @@ public class CategoryColumn extends AbstractColumn
                 valueToCount.put(next, 1);
             }
         }
-
         for (Map.Entry<Integer, Integer> entry : valueToCount.int2IntEntrySet()) {
-            categories.add(lookupTable.get(entry.getKey()));
+            categories.append(lookupTable.get(entry.getKey()));
             counts.append(entry.getValue());
+        }
+        if (countMissing() > 0) {
+            categories.append("* missing values");
+            counts.append(countMissing());
         }
         t.addColumn(categories);
         t.addColumn(counts);
