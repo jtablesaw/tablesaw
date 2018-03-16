@@ -16,13 +16,7 @@ package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.doubles.DoubleArrays;
-import it.unimi.dsi.fastutil.doubles.DoubleComparator;
-import it.unimi.dsi.fastutil.doubles.DoubleIterable;
-import it.unimi.dsi.fastutil.doubles.DoubleIterator;
-import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
-import it.unimi.dsi.fastutil.doubles.DoubleSet;
+import it.unimi.dsi.fastutil.doubles.*;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.AbstractColumn;
@@ -35,13 +29,13 @@ import tech.tablesaw.util.BitmapBackedSelection;
 import tech.tablesaw.util.Selection;
 import tech.tablesaw.util.Stats;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.columns.DoubleColumnUtils.*;
-
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.columns.DoubleColumnUtils.*;
 
 /**
  * A column in a base table that contains double precision floating point values
@@ -94,7 +88,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     public DoubleColumn(String name, double[] arr) {
-      this(name, new DoubleArrayList(arr));
+        this(name, new DoubleArrayList(arr));
     }
 
     private DoubleColumn(String name, DoubleArrayList data) {
@@ -108,7 +102,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     protected static boolean isMissing(double value) {
-      return Double.isNaN(value);
+        return Double.isNaN(value);
     }
 
     /**
@@ -122,6 +116,34 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         }
         Matcher matcher = COMMA_PATTERN.matcher(stringValue);
         return Double.parseDouble(matcher.replaceAll(""));
+    }
+
+    static double add(double val1, double val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 + val2;
+    }
+
+    static double multiply(double val1, double val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 * val2;
+    }
+
+    static double divide(double val1, double val2) {
+        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+            return MISSING_VALUE;
+        }
+        return val1 / val2;
+    }
+
+    static double subtract(double val1, double val2) {
+        if (isMissing(val1) || isMissing(val2)) {
+            return MISSING_VALUE;
+        }
+        return val1 - val2;
     }
 
     public int size() {
@@ -248,6 +270,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return min.agg(this);
     }
 
+    // Predicate  functions
+
     public double variance() {
         return variance.agg(this);
     }
@@ -263,8 +287,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public double sumOfLogs() {
         return sumOfLogs.agg(this);
     }
-
-    // Predicate  functions
 
     public double sumOfSquares() {
         return sumOfSquares.agg(this);
@@ -328,7 +350,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     public Selection isNotEqualTo(double d) {
-      return select(isNotEqualTo, d);
+        return select(isNotEqualTo, d);
     }
 
     public Selection isEqualTo(double d) {
@@ -376,11 +398,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     @Override
     public String getString(int row) {
-      double value = data.getDouble(row);
-      if (isMissing(value)) {
-          return null;
-      }
-      return String.valueOf(value);
+        double value = data.getDouble(row);
+        if (isMissing(value)) {
+            return null;
+        }
+        return String.valueOf(value);
     }
 
     @Override
@@ -572,6 +594,14 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return result;
     }
 
+/*
+    @Override
+    public float getFloat(int index) {
+        double value = data.getDouble(index);
+        return value == MISSING_VALUE ? FloatColumn.MISSING_VALUE : (float) value;
+    }
+*/
+
     /**
      * For each item in the column, returns the same number with the sign changed.
      * For example:
@@ -605,14 +635,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return data.getDouble(index);
     }
 
-/*
-    @Override
-    public float getFloat(int index) {
-        double value = data.getDouble(index);
-        return value == MISSING_VALUE ? FloatColumn.MISSING_VALUE : (float) value;
-    }
-*/
-
     public void set(int r, double value) {
         data.set(r, value);
     }
@@ -620,7 +642,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria
-     *
+     * <p>
      * Example:
      * myColumn.set(4.0, myColumn.isMissing()); // no more missing values
      */
@@ -766,34 +788,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return returnValue;
     }
 
-    static double add(double val1, double val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 + val2;
-    }
-
-    static double multiply(double val1, double val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 * val2;
-    }
-
-    static double divide(double val1, double val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 / val2;
-    }
-
-    static double subtract(double val1, double val2) {
-        if (isMissing(val1) || isMissing(val2)) {
-            return MISSING_VALUE;
-        }
-        return val1 - val2;
-    }
-
     /**
      * Returns a new column with a cumulative sum calculated
      */
@@ -835,7 +829,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         DoubleColumn newColumn = new DoubleColumn(name() + "[pctChange]", size());
         newColumn.append(MISSING_VALUE);
         for (int i = 1; i < size(); i++) {
-            newColumn.append(get(i) / get(i-1) - 1);
+            newColumn.append(get(i) / get(i - 1) - 1);
         }
         return newColumn;
     }

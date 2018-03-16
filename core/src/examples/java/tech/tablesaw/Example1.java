@@ -14,21 +14,16 @@
 
 package tech.tablesaw;
 
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
 import tech.tablesaw.aggregate.CrossTab;
+import tech.tablesaw.api.*;
 import tech.tablesaw.util.Selection;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.range;
-import static tech.tablesaw.api.QueryHelper.*;
+import static tech.tablesaw.api.QueryHelper.column;
 
 /**
- *         Example code for:
- *         Learning Data Science with Java and Tablesaw
- *
+ * Example code for:
+ * Learning Data Science with Java and Tablesaw
  */
 public class Example1 {
 
