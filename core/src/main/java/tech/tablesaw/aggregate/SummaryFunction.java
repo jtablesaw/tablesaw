@@ -42,7 +42,7 @@ public class SummaryFunction {
 
     public NumericSummaryTable by(String... columnNames) {
         ViewGroup group = ViewGroup.create(original(), columnNames);
-        return group.agg(summarizedColumnName(), function);
+        return group.aggregate(summarizedColumnName(), function);
     }
 
     /**

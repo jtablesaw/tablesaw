@@ -24,6 +24,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.NumericSummaryTable;
@@ -255,18 +256,69 @@ public class ViewGroup implements Iterable<TemporaryView> {
      * Applies the given aggregation to the given column.
      * The apply and combine steps of a split-apply-combine.
      */
-    public NumericSummaryTable agg(String colName1, AggregateFunction ... func1) {
+    public NumericSummaryTable aggregate(String colName1, AggregateFunction ... func1) {
         ArrayListMultimap<String, AggregateFunction> map = ArrayListMultimap.create();
         map.putAll(colName1, Lists.newArrayList(func1));
-        return agg(map);
+        return aggregate(map);
     }
+
+    /**
+     * Applies the given aggregation to the given column.
+     * The apply and combine steps of a split-apply-combine.
+     */
+    public NumericSummaryTable agg(String colName1, AggregateFunction func1) {
+        return agg(ImmutableMap.of(colName1, func1));
+    }
+
+    /**
+     * Applies the given aggregation to the given column.
+     * The apply and combine steps of a split-apply-combine.
+     */
+    public NumericSummaryTable agg(
+            String colName1, AggregateFunction func1,
+            String colName2, AggregateFunction func2) {
+        return agg(ImmutableMap.of(
+                colName1, func1,
+                colName2, func2));
+    }
+
+    /**
+     * Applies the given aggregation to the given column.
+     * The apply and combine steps of a split-apply-combine.
+     */
+    public NumericSummaryTable agg(
+            String colName1, AggregateFunction func1,
+            String colName2, AggregateFunction func2,
+            String colName3, AggregateFunction func3) {
+        return agg(ImmutableMap.of(
+                colName1, func1,
+                colName2, func2,
+                colName3, func3));
+    }
+
+    /**
+     * Applies the given aggregation to the given column.
+     * The apply and combine steps of a split-apply-combine.
+     */
+    public NumericSummaryTable agg(
+            String colName1, AggregateFunction func1,
+            String colName2, AggregateFunction func2,
+            String colName3, AggregateFunction func3,
+            String colName4, AggregateFunction func4) {
+        return agg(ImmutableMap.of(
+                colName1, func1,
+                colName2, func2,
+                colName3, func3,
+                colName4, func4));
+    }
+
 
     /**
      * Applies the given aggregations to the given columns.
      * The apply and combine steps of a split-apply-combine.
      * @param functions map from column name to aggregation to apply on that function
      */
-    public NumericSummaryTable agg(ArrayListMultimap<String, AggregateFunction> functions) {
+    public NumericSummaryTable aggregate(ArrayListMultimap<String, AggregateFunction> functions) {
       Preconditions.checkArgument(!subTables.isEmpty());
       NumericSummaryTable groupTable = NumericSummaryTable.create(sortedOriginal.name() + " summary");
       CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
@@ -290,6 +342,34 @@ public class ViewGroup implements Iterable<TemporaryView> {
       }
       return splitGroupingColumn(groupTable);
     }
+
+    /**
+     * Applies the given aggregations to the given columns.
+     * The apply and combine steps of a split-apply-combine.
+     * @param functions map from column name to aggregation to apply on that function
+     */
+    public NumericSummaryTable agg(Map<String, AggregateFunction> functions) {
+        Preconditions.checkArgument(!subTables.isEmpty());
+        NumericSummaryTable groupTable = NumericSummaryTable.create(sortedOriginal.name() + " summary");
+        CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
+        groupTable.addColumn(groupColumn);
+        for (Map.Entry<String, AggregateFunction> entry : functions.entrySet()) {
+            String columnName = entry.getKey();
+            AggregateFunction function = entry.getValue();
+
+            String colName = aggregateColumnName(columnName, function.functionName());
+            DoubleColumn resultColumn = new DoubleColumn(colName, subTables.size());
+            for (TemporaryView subTable : subTables) {
+                double result = subTable.reduce(columnName, function);
+                groupColumn.append(subTable.name());
+                resultColumn.append(result);
+            }
+            groupTable.addColumn(resultColumn);
+        }
+        return splitGroupingColumn(groupTable);
+    }
+
+
 
     /**
      * Returns an iterator over elements of type {@code T}.

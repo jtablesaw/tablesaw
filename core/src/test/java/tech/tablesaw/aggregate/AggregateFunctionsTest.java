@@ -44,7 +44,7 @@ public class AggregateFunctionsTest {
     public void testGroupMean() {
         Column byColumn = table.column("who");
         ViewGroup group = new ViewGroup(table, byColumn);
-        Table result = group.agg("approval", AggregateFunctions.mean, AggregateFunctions.stdDev);
+        Table result = group.aggregate("approval", AggregateFunctions.mean, AggregateFunctions.stdDev);
         assertEquals(3, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(6, result.rowCount());
@@ -57,7 +57,7 @@ public class AggregateFunctionsTest {
         Column byColumn1 = table.column("who");
         Column byColumn2 = table.column("date");
         ViewGroup group = new ViewGroup(table, byColumn1, byColumn2);
-        Table result = group.agg("approval", AggregateFunctions.mean, AggregateFunctions.sum);
+        Table result = group.aggregate("approval", AggregateFunctions.mean, AggregateFunctions.sum);
         assertEquals(4, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(323, result.rowCount());
