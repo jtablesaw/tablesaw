@@ -23,6 +23,8 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.table.ViewGroup;
 
 import static org.junit.Assert.assertEquals;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
 
 public class AggregateFunctionsTest {
@@ -36,7 +38,7 @@ public class AggregateFunctionsTest {
 
     @Test
     public void testMean() {
-        double result = table.agg("approval", AggregateFunctions.mean);
+        double result = table.agg("approval", mean);
         assertEquals(64.88235294117646, result, 0.01);
     }
 
@@ -44,7 +46,7 @@ public class AggregateFunctionsTest {
     public void testGroupMean() {
         CategoricalColumn byColumn = table.categoryColumn("who");
         ViewGroup group = new ViewGroup(table, byColumn);
-        Table result = group.aggregate("approval", AggregateFunctions.mean, AggregateFunctions.stdDev);
+        Table result = group.aggregate("approval", mean, AggregateFunctions.stdDev);
         assertEquals(3, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(6, result.rowCount());
@@ -53,11 +55,27 @@ public class AggregateFunctionsTest {
     }
 
     @Test
+    public void testGroupMean3() {
+        SummaryFunction function = table.summarize("approval", mean, stdDev);
+        Table result = function.by("Group", 10);
+        assertEquals(32, result.rowCount());
+    }
+
+    @Test
+    public void testGroupMeanByStep() {
+        ViewGroup group = ViewGroup.create(table, "Step", 5);
+        Table result = group.aggregate("approval", mean, AggregateFunctions.stdDev);
+        assertEquals(3, result.columnCount());
+        assertEquals("53.6", result.get(0, 1));
+        assertEquals("2.5099800796022267", result.get(0, 2));
+    }
+
+    @Test
     public void test2ColumnGroupMean() {
         CategoricalColumn byColumn1 = table.categoryColumn("who");
         CategoricalColumn byColumn2 = table.categoricalColumn("date");
         ViewGroup group = new ViewGroup(table, byColumn1, byColumn2);
-        Table result = group.aggregate("approval", AggregateFunctions.mean, AggregateFunctions.sum);
+        Table result = group.aggregate("approval", mean, AggregateFunctions.sum);
         assertEquals(4, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(323, result.rowCount());

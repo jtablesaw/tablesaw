@@ -45,6 +45,11 @@ public class SummaryFunction {
         return group.aggregate(summarizedColumnName(), function);
     }
 
+    public NumericSummaryTable by(String groupNameTemplate, int step) {
+        ViewGroup group = ViewGroup.create(original(), summarizedColumnName, step);
+        return group.aggregate(summarizedColumnName(), function);
+    }
+
     /**
      * Returns the result of applying to the function to all the values in the appropriate column
      * <p>

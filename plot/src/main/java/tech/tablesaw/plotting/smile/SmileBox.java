@@ -52,7 +52,7 @@ public class SmileBox {
         PlotCanvas canvas = BoxPlot.plot(dataArray, grounpNames);
         canvas.setTitle(plotTitle);
         canvas.setAxisLabel(0, "");
-        canvas.setAxisLabel(1, groups.getSortedOriginal().column(columnNumber).name());
+        canvas.setAxisLabel(1, groups.getSourceTable().column(columnNumber).name());
         return canvas;
     }
 
