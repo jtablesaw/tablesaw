@@ -1039,13 +1039,7 @@ public class Table extends Relation implements IntIterable {
 
         return new IntIterator() {
 
-            private Row row = new Row(Table.this);
-
             private int i = 0;
-
-            public Row nextRow() {
-                return row.next();
-            }
 
             @Override
             public int nextInt() {
