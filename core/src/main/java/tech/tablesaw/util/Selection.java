@@ -69,4 +69,10 @@ public interface Selection extends IntIterable {
     void addRange(int start, int end);
 
     int get(int i);
+
+    void remove(long start, long end);
+
+    void add(long start, long end);
+
+    void flip();
 }

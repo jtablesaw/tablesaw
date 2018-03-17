@@ -683,17 +683,22 @@ public class Table extends Relation implements IntIterable {
         return newTable;
     }
 
+    public Table selectWhere(Filter filter) {
+        return selectWhere(filter.apply(this));
+    }
+
+    /**
+     * @deprecated This method doesn't add enough value to be part of the Table API
+     */
+    @Deprecated
     public BooleanColumn selectIntoColumn(String newColumnName, Selection selection) {
         return new BooleanColumn(newColumnName, selection, rowCount());
     }
 
-    public Table selectWhere(Filter filter) {
-        Selection map = filter.apply(this);
-        Table newTable = this.emptyCopy(map.size());
-        Rows.copyRowsToTable(map, this, newTable);
-        return newTable;
-    }
-
+    /**
+     * @deprecated This method doesn't add enough value to be part of the Table API
+     */
+    @Deprecated
     public BooleanColumn selectIntoColumn(String newColumnName, Filter filter) {
         return new BooleanColumn(newColumnName, filter.apply(this), rowCount());
     }
@@ -756,7 +761,7 @@ public class Table extends Relation implements IntIterable {
      * @return the table with the selected rows
      */
     public Table selectRow(int row) {
-        return selectRows(row, row);
+        return selectRows(row, row + 1);
     }
 
     /**
@@ -774,20 +779,15 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns a table with the given rows selected
      *
-     * @param start the first row to select
-     * @param end   the last row to select
+     * @param start the first row to select, inclusive
+     * @param end   the last row to select, exclusive
      * @return the table with the selected rows
      */
     public Table selectRows(int start, int end) {
-        Table newTable = emptyCopy();
-        IntArrayList rowsToKeep = new IntArrayList();
-        for (int i = 0; i < rowCount(); i++) {
-            if (i >= start && i <= end) {
-                rowsToKeep.add(i);
-            }
-        }
-        Rows.copyRowsToTable(rowsToKeep, this, newTable);
-        return newTable;
+        Selection selection = new BitmapBackedSelection(rowCount());
+        selection.flip();
+        selection.add(start, end);
+        return selectWhere(selection);
     }
 
     /**
@@ -797,7 +797,7 @@ public class Table extends Relation implements IntIterable {
      * @return the table with the dropped rows
      */
     public Table dropRow(int row) {
-        return dropRows(row, row);
+        return dropRows(row, row + 1);
     }
 
     /**
@@ -820,20 +820,14 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns a table with the given rows dropped
      *
-     * @param start the first row to drop
-     * @param end   the last row to drop
+     * @param start the first row to drop, inclusive
+     * @param end   the last row to drop, exclusive
      * @return the table with the dropped rows
      */
     public Table dropRows(int start, int end) {
-        Table newTable = emptyCopy();
-        IntArrayList rowsToKeep = new IntArrayList();
-        for (int i = 0; i < rowCount(); i++) {
-            if (i < start || i > end) {
-                rowsToKeep.add(i);
-            }
-        }
-        Rows.copyRowsToTable(rowsToKeep, this, newTable);
-        return newTable;
+        Selection selection = new BitmapBackedSelection(rowCount());
+        selection.remove(start, end);
+        return selectWhere(selection);
     }
 
     /**
@@ -1045,7 +1039,13 @@ public class Table extends Relation implements IntIterable {
 
         return new IntIterator() {
 
+            private Row row = new Row(Table.this);
+
             private int i = 0;
+
+            public Row nextRow() {
+                return row.next();
+            }
 
             @Override
             public int nextInt() {

@@ -22,12 +22,35 @@ public class BitmapBackedSelection implements Selection {
 
     private final RoaringBitmap bitmap;
 
+    /**
+     * Returns a selection initialized from 0 to the given size, which cane be used for
+     * queries that exclude certain items, by first selecting the items to exclude,
+     * then flipping the bits.
+     * @param size  The size    The end point, exclusive
+     */
+    public BitmapBackedSelection(int size) {
+        this.bitmap = new RoaringBitmap();
+        addRange(0, size);
+    }
+
     public BitmapBackedSelection(RoaringBitmap bitmap) {
         this.bitmap = bitmap;
     }
 
     public BitmapBackedSelection() {
         this.bitmap = new RoaringBitmap();
+    }
+
+    public void remove(long start, long end) {
+        this.bitmap.remove(start, end);
+    }
+
+    public void add(long start, long end) {
+        this.bitmap.add(start, end);
+    }
+
+    public void flip() {
+        this.bitmap.flip((long) 0, bitmap.getCardinality());
     }
 
     public void add(int i) {
