@@ -832,6 +832,10 @@ public class DateColumn extends AbstractColumn implements DateMapUtils, Categori
 
         return new Iterator<LocalDate>() {
 
+            DateColumn column = DateColumn.this;
+
+            PackedDate date = new PackedDate(column);
+
             IntIterator intIterator = intIterator();
 
             @Override
@@ -842,6 +846,11 @@ public class DateColumn extends AbstractColumn implements DateMapUtils, Categori
             @Override
             public LocalDate next() {
                 return PackedLocalDate.asLocalDate(intIterator.nextInt());
+            }
+
+            public PackedDate nextPackedDate() {
+                date.next();
+                return date;
             }
         };
     }
@@ -864,4 +873,26 @@ public class DateColumn extends AbstractColumn implements DateMapUtils, Categori
   */
     }
 
+    class PackedDate {
+
+        private int index = 0;
+        private final DateColumn dateColumn;
+
+        public PackedDate(DateColumn column) {
+            this.dateColumn = column;
+        }
+
+        PackedDate next() {
+            index++;
+            return this;
+        }
+
+        public LocalDate asLocalDate() {
+            return PackedLocalDate.asLocalDate(dateColumn.getIntInternal(index));
+        }
+
+        public byte getMonthValue() {
+            return PackedLocalDate.getMonthValue(dateColumn.getIntInternal(index));
+        }
+    }
 }
