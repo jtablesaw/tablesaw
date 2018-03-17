@@ -582,6 +582,7 @@ public class FloatColumn extends AbstractColumn implements FloatIterable, Numeri
     public FloatColumn remainder(FloatColumn column2) {
         FloatColumn result = new FloatColumn(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
+            // TODO(lwhite): move to NumericColumn and generalize, as with division, multiplication
             result.append(get(r) % column2.get(r));
         }
         return result;

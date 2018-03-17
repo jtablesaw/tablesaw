@@ -485,11 +485,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         DoubleColumn newColumn = new DoubleColumn(name() + "[logN]", size());
 
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                newColumn.append(Math.log(value));
-            }
+            newColumn.append(Math.log(value));
         }
         return newColumn;
     }
@@ -503,11 +499,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         DoubleColumn newColumn = new DoubleColumn(name() + "[log10]", size());
 
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                newColumn.append(Math.log10(value));
-            }
+            newColumn.append(Math.log10(value));
         }
         return newColumn;
     }
@@ -519,11 +511,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn log1p() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[1og1p]", size());
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                newColumn.append(Math.log1p(value));
-            }
+            newColumn.append(Math.log1p(value));
         }
         return newColumn;
     }
@@ -531,11 +519,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn round() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[rounded]", size());
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                newColumn.append(Math.round(value));
-            }
+            newColumn.append(Math.round(value));
         }
         return newColumn;
     }
@@ -546,11 +530,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public LongColumn roundLong() {
         LongColumn newColumn = new LongColumn(name() + "[rounded]", size());
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(LongColumn.MISSING_VALUE);
-            } else {
-                newColumn.append(Math.round(value));
-            }
+            newColumn.append(Math.round(value));
         }
         return newColumn;
     }
@@ -564,11 +544,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public IntColumn roundInt() {
         IntColumn newColumn = new IntColumn(name() + "[rounded]", size());
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(IntColumn.MISSING_VALUE);
-            } else {
-                newColumn.append((int) Math.round(value));
-            }
+            newColumn.append((int) Math.round(value));
         }
         return newColumn;
     }
@@ -579,11 +555,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn abs() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[abs]", size());
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                newColumn.append(Math.abs(value));
-            }
+            newColumn.append(Math.abs(value));
         }
         return newColumn;
     }
@@ -594,11 +566,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn square() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[sq]", size());
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                newColumn.append(value * value);
-            }
+            newColumn.append(value * value);
         }
         return newColumn;
     }
@@ -606,11 +574,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn sqrt() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[sqrt]", size());
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                newColumn.append(Math.sqrt(value));
-            }
+            newColumn.append(Math.sqrt(value));
         }
         return newColumn;
     }
@@ -618,11 +582,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn cubeRoot() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[cbrt]", size());
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                newColumn.append(Math.cbrt(value));
-            }
+            newColumn.append(Math.cbrt(value));
         }
         return newColumn;
     }
@@ -630,15 +590,14 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn cube() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[cb]", size());
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                newColumn.append(value * value * value);
-            }
+            newColumn.append(value * value * value);
         }
         return newColumn;
     }
 
+    /**
+     * TODO(lwhite): Move to NumericColumn and generalize like division
+     */
     public DoubleColumn remainder(DoubleColumn column2) {
         DoubleColumn result = new DoubleColumn(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
@@ -672,11 +631,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn neg() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[neg]", size());
         for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                newColumn.append(value * -1);
-            }
+            newColumn.append(value * -1);
         }
         return newColumn;
     }
@@ -832,8 +787,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     /**
      * Returns the contents of the cell at rowNumber as a byte[]
-     *
-     * TODO(lwhite) Missing value handling
      */
     @Override
     public byte[] asBytes(int rowNumber) {
@@ -889,8 +842,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     /**
      * Returns a new column with a percent change calculated
-     *
-     * TODO(lwhite): Handle missing values
      */
     public DoubleColumn pctChange() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[pctChange]", size());
