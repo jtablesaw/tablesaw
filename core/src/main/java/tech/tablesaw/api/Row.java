@@ -6,7 +6,6 @@ import tech.tablesaw.columns.Column;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,7 +18,7 @@ class Row implements Iterator<Row> {
 
     Row(Table table) {
         this.table = table;
-        rowNumber = 0;
+        rowNumber = -1;
         Map<String, Column> map = new HashMap<>();
         for (Column column : table.columns()) {
             map.put(column.name(), column);
@@ -89,5 +88,13 @@ class Row implements Iterator<Row> {
         Column c = columnMap.get(columnName);
         FloatColumn column = (FloatColumn) c;
         return column.get(rowNumber);
+    }
+
+    public void at(int rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public int getRowNumber() {
+        return rowNumber;
     }
 }

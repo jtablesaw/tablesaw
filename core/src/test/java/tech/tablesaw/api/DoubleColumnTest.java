@@ -492,7 +492,7 @@ public class DoubleColumnTest {
         DoubleColumn col2 = new DoubleColumn("2", col2Values);
 
         NumericColumn difference = col2.subtract(col1);
-        assertTrue("Expecting DoubleColumn type result", difference instanceof DoubleColumn);
+        assertTrue("Expecting DoubleColumn type runningAverage", difference instanceof DoubleColumn);
         DoubleColumn diffDoubleCol = (DoubleColumn) difference;
         assertTrue(validateEquality(expected, diffDoubleCol));
     }

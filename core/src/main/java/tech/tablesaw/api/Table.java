@@ -1068,4 +1068,73 @@ public class Table extends Relation implements IntIterable {
             }
         };
     }
+
+    /**
+     * Applies the function in {@code doable} to every row in the table
+     */
+    public void doWithEachRow(Doable doable) {
+        Row row = new Row(this);
+        while (row.hasNext()) {
+            doable.doWithRow(row.next());
+        }
+    }
+
+    /**
+     * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
+     */
+    public void doWithRowPairs(Pairs pairs) {
+        Row row1 = new Row(this);
+        Row row2 = new Row(this);
+        if (!isEmpty()) {
+            int max = rowCount();
+            for (int i = 1; i < max; i++) {
+                row1.at(i - 1);
+                row2.at(i);
+                pairs.doWithPair(row1, row2);
+            }
+        }
+    }
+
+    /**
+     * Applies the function in {@code collectable} to every row in the table
+     */
+    public void collectFromEachRow(Collectable collectable) {
+        Row row = new Row(this);
+        while (row.hasNext()) {
+            collectable.collectFromRow(row.next());
+        }
+    }
+
+    interface Pairs {
+        void doWithPair(Row row1, Row row2);
+    }
+
+    /**
+     * A function object that can be used to enumerate a table and perform operations on each row,
+     * without explicit loops
+     */
+    static abstract class Doable {
+
+        public abstract void doWithRow(Row row);
+    }
+
+    /**
+     * A function object that can be used to enumerate a table and perform operations on each row,
+     * without explicit loops. {@code Collectable} fills the given column with the results, so the column
+     * must be of the correct type for whatever results are produced in the collectWithRow operation.
+     */
+    static abstract class Collectable {
+
+        private final Column column;
+
+        public Collectable(Column column) {
+            this.column = column;
+        }
+
+        public Column column() {
+            return column;
+        }
+
+        abstract void collectFromRow(Row row);
+    }
 }

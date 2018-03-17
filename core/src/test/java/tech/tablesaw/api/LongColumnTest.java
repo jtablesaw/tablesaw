@@ -84,7 +84,7 @@ public class LongColumnTest {
         Arrays.stream(col2Values).forEach(col2::append);
 
         NumericColumn difference = col1.subtract(col2);
-        assertTrue("Expecting DoubleColumn type result", difference instanceof DoubleColumn);
+        assertTrue("Expecting DoubleColumn type runningAverage", difference instanceof DoubleColumn);
 
         DoubleColumn diffDoubleCol = (DoubleColumn) difference;
         assertEquals("Both sets of data should be the same size.", expected.length, diffDoubleCol.size());
@@ -105,7 +105,7 @@ public class LongColumnTest {
         Arrays.stream(col2Values).forEach(col2::append);
 
         NumericColumn difference = col1.subtract(col2);
-        assertTrue("Expecting LongColumn type result", difference instanceof LongColumn);
+        assertTrue("Expecting LongColumn type runningAverage", difference instanceof LongColumn);
         LongColumn diffLongCol = (LongColumn) difference;
         assertTrue(validateDifferenceColumn(expected, diffLongCol));
     }
