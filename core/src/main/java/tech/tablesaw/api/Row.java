@@ -1,6 +1,9 @@
 package tech.tablesaw.api;
 
 import com.google.common.collect.ImmutableSortedMap;
+import tech.tablesaw.api.DateColumn.PackedDate;
+import tech.tablesaw.api.DateTimeColumn.PackedDateTime;
+import tech.tablesaw.api.TimeColumn.PackedTime;
 import tech.tablesaw.columns.Column;
 
 import java.time.LocalDate;
@@ -15,6 +18,15 @@ class Row implements Iterator<Row> {
     private int rowNumber;
     private final Table table;
     private final Map<String, Column> columnMap;
+    private final Map<String, PackedDate> dateColumnMap = new HashMap<>();
+    private final Map<String, DoubleColumn> doubleColumnMap = new HashMap<>();
+    private final Map<String, ShortColumn> shortColumnMap = new HashMap<>();
+    private final Map<String, IntColumn> intColumnMap = new HashMap<>();
+    private final Map<String, CategoryColumn> categoryColumnMap = new HashMap<>();
+    private final Map<String, FloatColumn> floatColumnMap = new HashMap<>();
+    private final Map<String, BooleanColumn> booleanColumnMap = new HashMap<>();
+    private final Map<String, PackedDateTime> dateTimeColumnMap = new HashMap<>();
+    private final Map<String, PackedTime> timeColumnMap = new HashMap<>();
 
     Row(Table table) {
         this.table = table;
@@ -22,6 +34,35 @@ class Row implements Iterator<Row> {
         Map<String, Column> map = new HashMap<>();
         for (Column column : table.columns()) {
             map.put(column.name(), column);
+            if (column instanceof DateColumn) {
+                dateColumnMap.put(column.name(), new PackedDate((DateColumn) column));
+            }
+            else if (column instanceof DoubleColumn) {
+                doubleColumnMap.put(column.name(), (DoubleColumn) column);
+            }
+            else if (column instanceof ShortColumn) {
+                shortColumnMap.put(column.name(), (ShortColumn) column);
+            }
+            else if (column instanceof IntColumn) {
+                intColumnMap.put(column.name(), (IntColumn) column);
+            }
+            else if (column instanceof CategoryColumn) {
+                categoryColumnMap.put(column.name(), (CategoryColumn) column);
+            }
+            else if (column instanceof FloatColumn) {
+                floatColumnMap.put(column.name(), (FloatColumn) column);
+            }
+            else if (column instanceof BooleanColumn) {
+                booleanColumnMap.put(column.name(), (BooleanColumn) column);
+            }
+            else if (column instanceof DateTimeColumn) {
+                dateTimeColumnMap.put(column.name(), new PackedDateTime((DateTimeColumn) column));
+            }
+            else if (column instanceof TimeColumn) {
+                timeColumnMap.put(column.name(), new PackedTime((TimeColumn) column));
+            } else {
+                throw new RuntimeException("Unsupported Column type in column " + column);
+            }
         }
         this.columnMap = ImmutableSortedMap.copyOf(map);
     }
@@ -38,56 +79,51 @@ class Row implements Iterator<Row> {
     }
 
     public int getInt(String columnName) {
-        Column column = columnMap.get(columnName);
-        IntColumn intColumn = (IntColumn) column;
-        return intColumn.getInt(rowNumber);
+        return intColumnMap.get(columnName).getInt(rowNumber);
     }
 
     public double getDouble(String columnName) {
-        Column c = columnMap.get(columnName);
-        DoubleColumn column = (DoubleColumn) c;
-        return column.getDouble(rowNumber);
+        return doubleColumnMap.get(columnName).getDouble(rowNumber);
     }
 
     public String getString(String columnName) {
-        Column c = columnMap.get(columnName);
-        CategoryColumn column = (CategoryColumn) c;
-        return column.get(rowNumber);
+        return categoryColumnMap.get(columnName).get(rowNumber);
     }
 
-    public LocalDate getPackedLocalDate(String columnName) {
-        DateColumn c = (DateColumn) columnMap.get(columnName);
-        return c.get(rowNumber);
+    public LocalDate getLocalDate(String columnName) {
+        return getPackedDate(columnName).asLocalDate();
     }
 
-    public LocalDateTime getLocalDateTime(String columnName) {
-        Column c = columnMap.get(columnName);
-        DateTimeColumn column = (DateTimeColumn) c;
-        return column.get(rowNumber);
+    public PackedDate getPackedDate(String columnName) {
+        return dateColumnMap.get(columnName).get(rowNumber);
     }
 
     public LocalTime getLocalTime(String columnName) {
-        Column c = columnMap.get(columnName);
-        TimeColumn column = (TimeColumn) c;
-        return column.get(rowNumber);
+        return getPackedTime(columnName).asLocalTime();
+    }
+
+    public LocalDateTime getLocalDateTime(String columnName) {
+        return getPackedDateTime(columnName).asLocalDateTime();
+    }
+
+    public PackedTime getPackedTime(String columnName) {
+        return timeColumnMap.get(columnName).get(rowNumber);
+    }
+
+    public PackedDateTime getPackedDateTime(String columnName) {
+        return dateTimeColumnMap.get(columnName).get(rowNumber);
     }
 
     public short getShort(String columnName) {
-        Column c = columnMap.get(columnName);
-        ShortColumn column = (ShortColumn) c;
-        return column.get(rowNumber);
+        return shortColumnMap.get(columnName).get(rowNumber);
     }
 
     public boolean getBoolean(String columnName) {
-        Column c = columnMap.get(columnName);
-        BooleanColumn column = (BooleanColumn) c;
-        return column.get(rowNumber);
+        return booleanColumnMap.get(columnName).get(rowNumber);
     }
 
     public float getFloat(String columnName) {
-        Column c = columnMap.get(columnName);
-        FloatColumn column = (FloatColumn) c;
-        return column.get(rowNumber);
+        return floatColumnMap.get(columnName).get(rowNumber);
     }
 
     public void at(int rowNumber) {

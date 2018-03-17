@@ -107,7 +107,7 @@ public class TableTest {
             public void doWithRow(Row row) {
                 if (row.getRowNumber() < 5) {
                     System.out.println("On "
-                            + row.getPackedLocalDate("date")
+                            + row.getPackedDate("date")
                             + ", his approval sucks: "
                             + row.getShort("approval"));
                 }
