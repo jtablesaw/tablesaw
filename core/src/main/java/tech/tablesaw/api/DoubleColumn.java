@@ -159,18 +159,24 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return Stats.create(this);
     }
 
+    /**
+     * Returns the number of unique values in this column, excluding missing values
+     * @return
+     */
     @Override
     public int countUnique() {
         DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
-            doubles.add(data.getDouble(i));
+            if (!isMissing(data.getDouble(i))) {
+                doubles.add(data.getDouble(i));
+            }
         }
         return doubles.size();
     }
 
     /**
      * Returns the largest ("top") n values in the column
-     *
+     * TODO(lwhite): Consider whether this should exclude missing
      * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
      *          number of observations in the column
      * @return A list, possibly empty, of the largest observations
@@ -187,7 +193,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     /**
      * Returns the smallest ("bottom") n values in the column
-     *
+     * TODO(lwhite): Consider whether this should exclude missing
      * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
      *          number of observations in the column
      * @return A list, possibly empty, of the smallest n observations
@@ -202,6 +208,9 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return bottom;
     }
 
+    /**
+     * TODO(lwhite): Ensure proper handling of missing values. They should not end up in the result set
+     */
     @Override
     public DoubleColumn unique() {
         DoubleSet doubles = new DoubleOpenHashSet();
@@ -476,7 +485,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         DoubleColumn newColumn = new DoubleColumn(name() + "[logN]", size());
 
         for (double value : this) {
-            newColumn.append(Math.log(value));
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                newColumn.append(Math.log(value));
+            }
         }
         return newColumn;
     }
@@ -490,7 +503,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         DoubleColumn newColumn = new DoubleColumn(name() + "[log10]", size());
 
         for (double value : this) {
-            newColumn.append(Math.log10(value));
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                newColumn.append(Math.log10(value));
+            }
         }
         return newColumn;
     }
@@ -502,7 +519,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn log1p() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[1og1p]", size());
         for (double value : this) {
-            newColumn.append(Math.log1p(value));
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                newColumn.append(Math.log1p(value));
+            }
         }
         return newColumn;
     }
@@ -510,7 +531,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn round() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[rounded]", size());
         for (double value : this) {
-            newColumn.append(Math.round(value));
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                newColumn.append(Math.round(value));
+            }
         }
         return newColumn;
     }
@@ -521,7 +546,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public LongColumn roundLong() {
         LongColumn newColumn = new LongColumn(name() + "[rounded]", size());
         for (double value : this) {
-            newColumn.append(Math.round(value));
+            if (isMissing(value)) {
+                newColumn.append(LongColumn.MISSING_VALUE);
+            } else {
+                newColumn.append(Math.round(value));
+            }
         }
         return newColumn;
     }
@@ -535,7 +564,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public IntColumn roundInt() {
         IntColumn newColumn = new IntColumn(name() + "[rounded]", size());
         for (double value : this) {
-            newColumn.append((int) Math.round(value));
+            if (isMissing(value)) {
+                newColumn.append(IntColumn.MISSING_VALUE);
+            } else {
+                newColumn.append((int) Math.round(value));
+            }
         }
         return newColumn;
     }
@@ -546,7 +579,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn abs() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[abs]", size());
         for (double value : this) {
-            newColumn.append(Math.abs(value));
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                newColumn.append(Math.abs(value));
+            }
         }
         return newColumn;
     }
@@ -557,7 +594,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn square() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[sq]", size());
         for (double value : this) {
-            newColumn.append(value * value);
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                newColumn.append(value * value);
+            }
         }
         return newColumn;
     }
@@ -565,7 +606,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn sqrt() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[sqrt]", size());
         for (double value : this) {
-            newColumn.append(Math.sqrt(value));
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                newColumn.append(Math.sqrt(value));
+            }
         }
         return newColumn;
     }
@@ -573,7 +618,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn cubeRoot() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[cbrt]", size());
         for (double value : this) {
-            newColumn.append(Math.cbrt(value));
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                newColumn.append(Math.cbrt(value));
+            }
         }
         return newColumn;
     }
@@ -581,7 +630,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn cube() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[cb]", size());
         for (double value : this) {
-            newColumn.append(value * value * value);
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                newColumn.append(value * value * value);
+            }
         }
         return newColumn;
     }
@@ -589,7 +642,14 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn remainder(DoubleColumn column2) {
         DoubleColumn result = new DoubleColumn(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
-            result.append(get(r) % column2.get(r));
+            double val1 = get(r);
+            double val2 = column2.get(r);
+            if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
+                result.append(MISSING_VALUE);
+            }
+            else {
+                result.append(get(r) % column2.get(r));
+            }
         }
         return result;
     }
@@ -612,7 +672,11 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleColumn neg() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[neg]", size());
         for (double value : this) {
-            newColumn.append(value * -1);
+            if (isMissing(value)) {
+                newColumn.append(MISSING_VALUE);
+            } else {
+                newColumn.append(value * -1);
+            }
         }
         return newColumn;
     }
@@ -646,7 +710,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
      * Example:
      * myColumn.set(4.0, myColumn.isMissing()); // no more missing values
      */
-    public void set(double newValue, Selection rowSelection) {
+    public void set(Selection rowSelection, double newValue) {
         for (int row : rowSelection) {
             set(row, newValue);
         }
@@ -768,6 +832,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     /**
      * Returns the contents of the cell at rowNumber as a byte[]
+     *
+     * TODO(lwhite) Missing value handling
      */
     @Override
     public byte[] asBytes(int rowNumber) {
@@ -780,7 +846,6 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         if (data.isEmpty()) {
             return returnValue;
         }
-
         returnValue.append(DoubleColumn.MISSING_VALUE);
         for (int current = 1; current < data.size(); current++) {
             returnValue.append(subtract(get(current), get(current - 1)));
@@ -824,6 +889,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
 
     /**
      * Returns a new column with a percent change calculated
+     *
+     * TODO(lwhite): Handle missing values
      */
     public DoubleColumn pctChange() {
         DoubleColumn newColumn = new DoubleColumn(name() + "[pctChange]", size());

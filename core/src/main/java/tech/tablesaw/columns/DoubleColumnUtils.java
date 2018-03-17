@@ -18,6 +18,11 @@ import it.unimi.dsi.fastutil.ints.IntIterable;
 import tech.tablesaw.filtering.DoubleBiPredicate;
 import tech.tablesaw.filtering.DoublePredicate;
 
+/**
+ * Support for built-in predicates on double column
+ *
+ * TODO(lwhite): Ensure each returns false when handling missing values
+ */
 public interface DoubleColumnUtils extends Column, IntIterable {
 
     DoublePredicate isZero = i -> i == 0.0f;
