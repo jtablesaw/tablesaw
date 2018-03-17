@@ -1096,13 +1096,58 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
+     * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
+     */
+    public void rollWithNrows(MultiRowDoable rowz, int n) {
+        if (!isEmpty()) {
+            Row[] rows = new Row[n];
+            for (int i = 0; i < n; i++) {
+                rows[i] = new Row(this);
+            }
+
+            int max = rowCount() - (n - 2);
+            for (int i = 1; i < max; i++) {
+                for (int r = 0; r < n; r++) {
+                    rows[r].at(i + r - 1);
+                }
+                rowz.doWithNrows(rows);
+            }
+        }
+    }
+
+    /**
+     * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
+     */
+    public void stepWithNrows(MultiRowDoable rowz, int n) {
+        if (!isEmpty()) {
+            Row[] rows = new Row[n];
+            for (int i = 0; i < n; i++) {
+                rows[i] = new Row(this);
+            }
+
+            int max = rowCount() - n;
+            for (int i = 0; i <= max; i++) {
+                for (int r = 0; r < n; r++) {
+                    rows[r].at(i + r);
+                }
+                rowz.doWithNrows(rows);
+            }
+        }
+    }
+
+    /**
      * Applies the function in {@code collectable} to every row in the table
      */
-    public void collectFromEachRow(Collectable collectable) {
+    public Column collectFromEachRow(Collectable collectable) {
         Row row = new Row(this);
         while (row.hasNext()) {
             collectable.collectFromRow(row.next());
         }
+        return collectable.column();
+    }
+
+    interface MultiRowDoable {
+        void doWithNrows(Row[] rows);
     }
 
     interface Pairs {

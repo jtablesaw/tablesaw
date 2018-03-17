@@ -16,6 +16,8 @@ package tech.tablesaw.api;
 
 import org.junit.Before;
 import org.junit.Test;
+import tech.tablesaw.api.Table.Collectable;
+import tech.tablesaw.api.Table.MultiRowDoable;
 import tech.tablesaw.columns.Column;
 
 import java.util.ArrayList;
@@ -121,7 +123,7 @@ public class TableTest {
     public void testCollectFromEachRow() throws Exception {
         Table t = Table.read().csv("../data/BushApproval.csv");
 
-        Table.Collectable collectable = new Table.Collectable(new CategoryColumn("stringz")) {
+        Collectable collectable = new Collectable(new CategoryColumn("stringz")) {
 
             @Override
             void collectFromRow(Row row) {
@@ -131,9 +133,9 @@ public class TableTest {
             }
         };
 
-        t.collectFromEachRow(collectable);
-        assertEquals("fox can't predict 53", (collectable.column().getString(0)));
-        assertEquals("fox can't predict 53", (collectable.column().getString(1)));
+        Column result = t.collectFromEachRow(collectable);
+        assertEquals("fox can't predict 53", (result.getString(0)));
+        assertEquals("fox can't predict 53", (result.getString(1)));
     }
 
     @Test
@@ -142,6 +144,20 @@ public class TableTest {
         PairChild pairs = new PairChild();
         t.doWithRowPairs(pairs);
         System.out.println(pairs.runningAverage);
+    }
+
+    @Test
+    public void testRolllWithNrows() throws Exception {
+        Table t = Table.read().csv("../data/BushApproval.csv");
+
+        MultiRowDoable multiRowDoable = rows -> {
+            int sum = 0;
+            for (Row row : rows) {
+                sum += row.getShort("approval");
+            }
+            System.out.println("Running avg = " + sum / (double) rows.length);
+        };
+        t.rollWithNrows(multiRowDoable,2);
     }
 
     private class PairChild implements Table.Pairs {
@@ -156,6 +172,18 @@ public class TableTest {
         }
 
         public List<Double> result() {return runningAverage;}
+    }
+    @Test
+    public void testStepWithNrows() throws Exception {
+        Table t = Table.read().csv("../data/BushApproval.csv");
+
+        MultiRowDoable multiRowDoable = rows -> {
+            int sum = 0;
+            for (Row row : rows) {
+                sum += row.getShort("approval");
+            }
+        };
+        t.stepWithNrows(multiRowDoable,10);
     }
 
     @Test

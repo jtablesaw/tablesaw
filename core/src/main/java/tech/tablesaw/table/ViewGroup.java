@@ -44,20 +44,31 @@ public class ViewGroup implements Iterable<TemporaryView> {
     private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
 
 
-    private final Table sortedOriginal;
+    private final Table sourceTable;
 
     private final List<TemporaryView> subTables = new ArrayList<>();
 
-    // the name(s) of the column(s) we're splitting the table on
-    private final String[] splitColumnNames;
+    private String[] splitColumnNames;
 
     public ViewGroup(Table original, CategoricalColumn... columns) {
         splitColumnNames = new String[columns.length];
         for (int i = 0; i < columns.length; i++) {
             splitColumnNames[i] = columns[i].name();
         }
-        this.sortedOriginal = original.sortOn(splitColumnNames);
+        this.sourceTable = original.sortOn(splitColumnNames);
         splitOn(splitColumnNames);
+    }
+
+    public ViewGroup(Table original, String subTableNameTemplate, int step) {
+        this.sourceTable = original;
+        List<Selection> selections = new ArrayList<>();
+        for (int i = 0; i < original.rowCount() - step; i+= step) {
+            Selection selection = new BitmapBackedSelection();
+            selection.addRange(i, i + step);
+            selections.add(selection);
+        }
+        splitColumnNames = new String[0];
+        splitOnSelection(subTableNameTemplate, selections);
     }
 
     /**
@@ -70,12 +81,12 @@ public class ViewGroup implements Iterable<TemporaryView> {
     }
 
     /**
-     * Splits the sortedOriginal table into sub-tables, grouping on the columns whose names are given in
+     * Splits the sourceTable table into sub-tables, grouping on the columns whose names are given in
      * splitColumnNames
      */
     private void splitOn(String... columnNames) {
 
-        List<Column> columns = sortedOriginal.columns(columnNames);
+        List<Column> columns = sourceTable.columns(columnNames);
         int byteSize = getByteSize(columns);
 
         byte[] currentKey = null;
@@ -84,7 +95,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
 
         Selection selection = new BitmapBackedSelection();
 
-        for (int row = 0; row < sortedOriginal.rowCount(); row++) {
+        for (int row = 0; row < sourceTable.rowCount(); row++) {
 
             ByteBuffer byteBuffer = ByteBuffer.allocate(byteSize);
             String newStringKey = "";
@@ -94,8 +105,8 @@ public class ViewGroup implements Iterable<TemporaryView> {
                     newStringKey = newStringKey + SPLIT_STRING;
                 }
 
-                Column c = sortedOriginal.column(columnNames[col]);
-                String groupKey = sortedOriginal.get(row, sortedOriginal.columnIndex(c));
+                Column c = sourceTable.column(columnNames[col]);
+                String groupKey = sourceTable.get(row, sourceTable.columnIndex(c));
                 newStringKey = newStringKey + groupKey;
                 byteBuffer.put(c.asBytes(row));
             }
@@ -106,7 +117,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
             }
             if (!Arrays.equals(newKey, currentKey)) {
                 currentKey = newKey;
-                view = new TemporaryView(sortedOriginal, selection);
+                view = new TemporaryView(sourceTable, selection);
                 view.setName(currentStringKey);
                 currentStringKey = newStringKey;
                 addViewToSubTables(view);
@@ -117,7 +128,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
             }
         }
         if (!selection.isEmpty()) {
-            view = new TemporaryView(sortedOriginal, selection);
+            view = new TemporaryView(sourceTable, selection);
             view.setName(currentStringKey);
             addViewToSubTables(view);
         }
@@ -133,6 +144,15 @@ public class ViewGroup implements Iterable<TemporaryView> {
         return byteSize;
     }
 
+    private void splitOnSelection(String nameTemplate, List<Selection> selections) {
+        for (int i = 0; i < selections.size(); i++ ) {
+            TemporaryView view = new TemporaryView(sourceTable, selections.get(i));
+            String name = nameTemplate + ": " + i + 1;
+            view.setName(name);
+            subTables.add(view);
+        }
+    }
+
     private void addViewToSubTables(TemporaryView view) {
         subTables.add(view);
     }
@@ -146,8 +166,8 @@ public class ViewGroup implements Iterable<TemporaryView> {
     }
 
     @VisibleForTesting
-    public Table getSortedOriginal() {
-        return sortedOriginal;
+    public Table getSourceTable() {
+        return sourceTable;
     }
 
     public int size() {
@@ -161,25 +181,27 @@ public class ViewGroup implements Iterable<TemporaryView> {
      */
     private NumericSummaryTable splitGroupingColumn(NumericSummaryTable groupTable) {
 
-        List<Column> newColumns = new ArrayList<>();
-
-        List<Column> columns = sortedOriginal.columns(splitColumnNames);
-        for (Column column : columns) {
-            Column newColumn = column.emptyCopy();
-            newColumns.add(newColumn);
-        }
-        // iterate through the rows in the table and split each of the grouping columns into multiple columns
-        for (int row = 0; row < groupTable.rowCount(); row++) {
-            List<String> strings = SPLITTER.splitToList(groupTable.categoryColumn("Group").get(row));
-            for (int col = 0; col < newColumns.size(); col++) {
-                newColumns.get(col).appendCell(strings.get(col));
+        if (splitColumnNames.length > 0) {
+            List<Column> newColumns = new ArrayList<>();
+            List<Column> columns = sourceTable.columns(splitColumnNames);
+            for (Column column : columns) {
+                Column newColumn = column.emptyCopy();
+                newColumns.add(newColumn);
             }
+            // iterate through the rows in the table and split each of the grouping columns into multiple columns
+            for (int row = 0; row < groupTable.rowCount(); row++) {
+                List<String> strings = SPLITTER.splitToList(groupTable.categoryColumn("Group").get(row));
+                for (int col = 0; col < newColumns.size(); col++) {
+                    newColumns.get(col).appendCell(strings.get(col));
+                }
+            }
+            for (int col = 0; col < newColumns.size(); col++) {
+                Column c = newColumns.get(col);
+                groupTable.addColumn(col, c);
+            }
+            groupTable.removeColumns("Group");
         }
-        for (int col = 0; col < newColumns.size(); col++) {
-            Column c = newColumns.get(col);
-            groupTable.addColumn(col, c);
-        }
-        groupTable.removeColumns("Group");
+
         return groupTable;
     }
 
@@ -348,7 +370,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
      */
     public NumericSummaryTable aggregate(ArrayListMultimap<String, AggregateFunction> functions) {
         Preconditions.checkArgument(!subTables.isEmpty());
-        NumericSummaryTable groupTable = NumericSummaryTable.create(sortedOriginal.name() + " summary");
+        NumericSummaryTable groupTable = NumericSummaryTable.create(sourceTable.name() + " summary");
         CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
         groupTable.addColumn(groupColumn);
         for (Map.Entry<String, Collection<AggregateFunction>> entry : functions.asMap().entrySet()) {
@@ -379,7 +401,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
      */
     public NumericSummaryTable agg(Map<String, AggregateFunction> functions) {
         Preconditions.checkArgument(!subTables.isEmpty());
-        NumericSummaryTable groupTable = NumericSummaryTable.create(sortedOriginal.name() + " summary");
+        NumericSummaryTable groupTable = NumericSummaryTable.create(sourceTable.name() + " summary");
         CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
         groupTable.addColumn(groupColumn);
         for (Map.Entry<String, AggregateFunction> entry : functions.entrySet()) {

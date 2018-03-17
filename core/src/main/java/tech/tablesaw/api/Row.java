@@ -1,6 +1,5 @@
 package tech.tablesaw.api;
 
-import com.google.common.collect.ImmutableSortedMap;
 import tech.tablesaw.api.DateColumn.PackedDate;
 import tech.tablesaw.api.DateTimeColumn.PackedDateTime;
 import tech.tablesaw.api.TimeColumn.PackedTime;
@@ -17,7 +16,6 @@ class Row implements Iterator<Row> {
 
     private int rowNumber;
     private final Table table;
-    private final Map<String, Column> columnMap;
     private final Map<String, PackedDate> dateColumnMap = new HashMap<>();
     private final Map<String, DoubleColumn> doubleColumnMap = new HashMap<>();
     private final Map<String, ShortColumn> shortColumnMap = new HashMap<>();
@@ -33,7 +31,7 @@ class Row implements Iterator<Row> {
         rowNumber = -1;
         Map<String, Column> map = new HashMap<>();
         for (Column column : table.columns()) {
-            map.put(column.name(), column);
+
             if (column instanceof DateColumn) {
                 dateColumnMap.put(column.name(), new PackedDate((DateColumn) column));
             }
@@ -64,7 +62,6 @@ class Row implements Iterator<Row> {
                 throw new RuntimeException("Unsupported Column type in column " + column);
             }
         }
-        this.columnMap = ImmutableSortedMap.copyOf(map);
     }
 
     @Override

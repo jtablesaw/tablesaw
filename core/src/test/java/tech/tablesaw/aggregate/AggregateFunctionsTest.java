@@ -53,6 +53,16 @@ public class AggregateFunctionsTest {
     }
 
     @Test
+    public void testGroupMeanByStep() {
+        ViewGroup group = new ViewGroup(table, "Step", 5);
+        Table result = group.aggregate("approval", AggregateFunctions.mean, AggregateFunctions.stdDev);
+        assertEquals(3, result.columnCount());
+        assertEquals("53.6", result.get(0, 1));
+        assertEquals("2.5099800796022267", result.get(0, 2));
+        System.out.println(result.print(64));
+    }
+
+    @Test
     public void test2ColumnGroupMean() {
         CategoricalColumn byColumn1 = table.categoryColumn("who");
         CategoricalColumn byColumn2 = table.categoricalColumn("date");
