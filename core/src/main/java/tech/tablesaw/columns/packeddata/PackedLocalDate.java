@@ -311,7 +311,7 @@ public class PackedLocalDate {
         return getYear(next) == year;
     }
 
-    public int lengthOfYear(int packedDate) {
+    public static int lengthOfYear(int packedDate) {
         return (isLeapYear(packedDate) ? 366 : 365);
     }
 }

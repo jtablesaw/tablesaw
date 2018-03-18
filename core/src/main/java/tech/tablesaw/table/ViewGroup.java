@@ -48,7 +48,8 @@ public class ViewGroup implements Iterable<TemporaryView> {
 
     private final List<TemporaryView> subTables = new ArrayList<>();
 
-    private String[] splitColumnNames;
+    // the name(s) of the column(s) we're splitting the table on
+    private final String[] splitColumnNames;
 
     public ViewGroup(Table original, CategoricalColumn... columns) {
         splitColumnNames = new String[columns.length];
@@ -423,7 +424,6 @@ public class ViewGroup implements Iterable<TemporaryView> {
         }
         return splitGroupingColumn(groupTable);
     }
-
 
     /**
      * Returns an iterator over elements of type {@code T}.

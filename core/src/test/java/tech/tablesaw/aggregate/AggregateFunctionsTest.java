@@ -23,8 +23,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.table.ViewGroup;
 
 import static org.junit.Assert.assertEquals;
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 
 public class AggregateFunctionsTest {
@@ -46,7 +45,7 @@ public class AggregateFunctionsTest {
     public void testGroupMean() {
         CategoricalColumn byColumn = table.categoryColumn("who");
         ViewGroup group = new ViewGroup(table, byColumn);
-        Table result = group.aggregate("approval", mean, AggregateFunctions.stdDev);
+        Table result = group.aggregate("approval", mean, stdDev);
         assertEquals(3, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(6, result.rowCount());
@@ -75,7 +74,7 @@ public class AggregateFunctionsTest {
         CategoricalColumn byColumn1 = table.categoryColumn("who");
         CategoricalColumn byColumn2 = table.categoricalColumn("date");
         ViewGroup group = new ViewGroup(table, byColumn1, byColumn2);
-        Table result = group.aggregate("approval", mean, AggregateFunctions.sum);
+        Table result = group.aggregate("approval", mean, sum);
         assertEquals(4, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(323, result.rowCount());
