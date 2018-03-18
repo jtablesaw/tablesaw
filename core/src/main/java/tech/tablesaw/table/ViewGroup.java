@@ -420,7 +420,6 @@ public class ViewGroup implements Iterable<TemporaryView> {
         return splitGroupingColumn(groupTable);
     }
 
-
     /**
      * Returns an iterator over elements of type {@code T}.
      *

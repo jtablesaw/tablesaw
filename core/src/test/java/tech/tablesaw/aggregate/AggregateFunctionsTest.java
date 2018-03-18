@@ -18,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.table.ViewGroup;
 
