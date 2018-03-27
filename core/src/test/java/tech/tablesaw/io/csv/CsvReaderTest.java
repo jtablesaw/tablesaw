@@ -192,4 +192,30 @@ public class CsvReaderTest {
         assertEquals("0 rows X 0 cols", table1.shape().toString());
     }
 
+   @Test
+   public void testReadFileCustomDateTimeFormat() throws Exception {
+      // Read the CSV file
+      Table table1 = Table.read().csv(CsvReadOptions
+         .builder("../data/custom_datetime_file.csv")
+         .dateTimeFormat("yyyyMMdd HHmmssSSS"));
+
+      assertEquals(10, table1.rowCount());
+
+      // Look at the column type of the first column
+      assertEquals(LOCAL_DATE_TIME, table1.column(0).type());
+   }
+
+   @Test
+   public void testReadFileCustomDateFormat() throws Exception {
+      // Read the CSV file
+      Table table1 = Table.read().csv(CsvReadOptions
+         .builder("../data/custom_date_file.csv")
+         .dateFormat("yyyy.MM.dd"));
+
+      assertEquals(10, table1.rowCount());
+
+      // Look at the column type of the first column
+      assertEquals(LOCAL_DATE, table1.column(0).type());
+   }
+
 }

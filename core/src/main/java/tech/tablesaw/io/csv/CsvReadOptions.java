@@ -30,6 +30,8 @@ public class CsvReadOptions {
     private final Reader reader;
     private final String tableName;
     private final ColumnType[] columnTypes;
+    private final String dateTimeFormat;
+    private final String dateFormat;
     @Builder.Default
     private final boolean header = true;
     @Builder.Default

@@ -33,6 +33,8 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +129,25 @@ public class CsvReader {
 
     public static Table read(CsvReadOptions options) throws IOException {
 
-        byte[] bytes = options.reader() != null
+       TypeUtils.DATE_FORMATTER = options.dateFormat() != null
+          ? new DateTimeFormatterBuilder()
+               .appendOptional(TypeUtils.DATE_FORMATTER)
+               .appendOptional(DateTimeFormatter.ofPattern(options.dateFormat()))
+               .toFormatter()
+          : new DateTimeFormatterBuilder()
+               .appendOptional(TypeUtils.DATE_FORMATTER)
+               .toFormatter();
+
+       TypeUtils.DATE_TIME_FORMATTER = options.dateTimeFormat() != null
+          ? new DateTimeFormatterBuilder()
+               .appendOptional(TypeUtils.DATE_TIME_FORMATTER)
+               .appendOptional(DateTimeFormatter.ofPattern(options.dateTimeFormat()))
+               .toFormatter()
+          : new DateTimeFormatterBuilder()
+               .appendOptional(TypeUtils.DATE_TIME_FORMATTER)
+               .toFormatter();
+
+       byte[] bytes = options.reader() != null
                 ? CharStreams.toString(options.reader()).getBytes() : null;
 
         ColumnType[] types;

@@ -72,7 +72,7 @@ public final class TypeUtils {
     private static final DateTimeFormatter dtf18 = DateTimeFormatter.ofPattern("MMM dd, yyyy");
     private static final DateTimeFormatter dtf19 = DateTimeFormatter.ofPattern("MMM d, yyyy");
     // A formatter that handles all the date formats defined above
-    public static final DateTimeFormatter DATE_FORMATTER =
+    public static DateTimeFormatter DATE_FORMATTER =
             new DateTimeFormatterBuilder()
                     .appendOptional(dtf1)
                     .appendOptional(dtf2)
@@ -121,7 +121,7 @@ public final class TypeUtils {
     }
 
     // A formatter that handles date time formats defined above
-    public static final DateTimeFormatter DATE_TIME_FORMATTER =
+    public static DateTimeFormatter DATE_TIME_FORMATTER =
             new DateTimeFormatterBuilder()
                     .appendOptional(dtTimef2)
                     .appendOptional(dtTimef3)
