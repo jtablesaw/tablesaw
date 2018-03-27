@@ -129,23 +129,29 @@ public class CsvReader {
 
     public static Table read(CsvReadOptions options) throws IOException {
 
-       TypeUtils.DATE_FORMATTER = options.dateFormat() != null
-          ? new DateTimeFormatterBuilder()
-               .appendOptional(TypeUtils.DATE_FORMATTER)
-               .appendOptional(DateTimeFormatter.ofPattern(options.dateFormat()))
-               .toFormatter()
-          : new DateTimeFormatterBuilder()
-               .appendOptional(TypeUtils.DATE_FORMATTER)
-               .toFormatter();
+       if (options.dateFormat() != null) {
+          TypeUtils.dateFormatters.add(DateTimeFormatter.ofPattern(options.dateFormat()));
+          TypeUtils.DATE_FORMATTER = new DateTimeFormatterBuilder()
+             .appendOptional(TypeUtils.DATE_FORMATTER)
+             .appendOptional(DateTimeFormatter.ofPattern(options.dateFormat()))
+             .toFormatter();
+       }
 
-       TypeUtils.DATE_TIME_FORMATTER = options.dateTimeFormat() != null
-          ? new DateTimeFormatterBuilder()
-               .appendOptional(TypeUtils.DATE_TIME_FORMATTER)
-               .appendOptional(DateTimeFormatter.ofPattern(options.dateTimeFormat()))
-               .toFormatter()
-          : new DateTimeFormatterBuilder()
-               .appendOptional(TypeUtils.DATE_TIME_FORMATTER)
-               .toFormatter();
+       if (options.dateTimeFormat() != null) {
+          TypeUtils.dateTimeFormatters.add(DateTimeFormatter.ofPattern(options.dateTimeFormat()));
+          TypeUtils.DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+             .appendOptional(TypeUtils.DATE_TIME_FORMATTER)
+             .appendOptional(DateTimeFormatter.ofPattern(options.dateTimeFormat()))
+             .toFormatter();
+       }
+
+       if (options.timeFormat() != null) {
+          TypeUtils.timeFormatters.add(DateTimeFormatter.ofPattern(options.timeFormat()));
+          TypeUtils.TIME_DETECTION_FORMATTER = new DateTimeFormatterBuilder()
+             .appendOptional(TypeUtils.TIME_DETECTION_FORMATTER)
+             .appendOptional(DateTimeFormatter.ofPattern(options.timeFormat()))
+             .toFormatter();
+       }
 
        byte[] bytes = options.reader() != null
                 ? CharStreams.toString(options.reader()).getBytes() : null;

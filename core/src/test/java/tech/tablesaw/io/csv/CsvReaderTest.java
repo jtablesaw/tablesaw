@@ -218,4 +218,17 @@ public class CsvReaderTest {
       assertEquals(LOCAL_DATE, table1.column(0).type());
    }
 
+   @Test
+   public void testReadFileCustomTimeFormat() throws Exception {
+      // Read the CSV file
+      Table table1 = Table.read().csv(CsvReadOptions
+         .builder("../data/custom_time_file.csv")
+         .timeFormat("HHmmssSSS"));
+
+      assertEquals(10, table1.rowCount());
+
+      // Look at the column type of the first column
+      assertEquals(LOCAL_TIME, table1.column(0).type());
+   }
+
 }
