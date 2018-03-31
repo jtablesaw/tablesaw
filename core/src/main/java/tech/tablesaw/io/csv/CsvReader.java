@@ -384,7 +384,7 @@ public class CsvReader {
      * corrected and
      * used to explicitly specify the correct column types.
      */
-    protected static ColumnType[] detectColumnTypes(InputStream stream, boolean header, char delimiter, boolean skipSampling)
+    protected static ColumnType[] detectColumnTypes(InputStream stream, boolean header, char delimiter, boolean useSampling)
             throws IOException {
 
         int linesToSkip = header ? 1 : 0;
@@ -425,10 +425,10 @@ public class CsvReader {
                     }
                 }
                 if (rowCount == nextRow) {
-                    if (skipSampling) {
-                        nextRow = nextRowWithoutSampling(nextRow);
-                    } else {
+                    if (useSampling) {
                         nextRow = nextRow(nextRow);
+                    } else {
+                        nextRow = nextRowWithoutSampling(nextRow);
                     }
                 }
                 rowCount++;
