@@ -16,8 +16,6 @@ package tech.tablesaw.api;
 
 import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.api.Table.Collectable;
-import tech.tablesaw.api.Table.MultiRowDoable;
 import tech.tablesaw.columns.Column;
 
 import java.util.ArrayList;
@@ -98,94 +96,7 @@ public class TableTest {
         Table[] results = t.sampleSplit(.75);
         assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
     }
-
-    @Test
-    public void testDoWithEachRow() throws Exception {
-        Table t = Table.read().csv("../data/BushApproval.csv").first(10);
-        System.out.println(t.print());
-        Table.Doable doable = new Table.Doable() {
-
-            @Override
-            public void doWithRow(Row row) {
-                if (row.getRowNumber() < 5) {
-                    System.out.println("On "
-                            + row.getPackedDate("date")
-                            + ", his approval sucks: "
-                            + row.getShort("approval"));
-                }
-            }
-        };
-
-        t.doWithEachRow(doable);
-    }
-
-    @Test
-    public void testCollectFromEachRow() throws Exception {
-        Table t = Table.read().csv("../data/BushApproval.csv");
-
-        Collectable collectable = new Collectable(new CategoryColumn("stringz")) {
-
-            @Override
-            void collectFromRow(Row row) {
-                ((CategoryColumn) column())
-                        .append(row.getString("who") + " can't predict "
-                        + row.getShort("approval"));
-            }
-        };
-
-        Column result = t.collectFromEachRow(collectable);
-        assertEquals("fox can't predict 53", (result.getString(0)));
-        assertEquals("fox can't predict 53", (result.getString(1)));
-    }
-
-    @Test
-    public void testPairs() throws Exception {
-        Table t = Table.read().csv("../data/BushApproval.csv");
-        PairChild pairs = new PairChild();
-        t.doWithRowPairs(pairs);
-        System.out.println(pairs.runningAverage);
-    }
-
-    @Test
-    public void testRolllWithNrows() throws Exception {
-        Table t = Table.read().csv("../data/BushApproval.csv");
-
-        MultiRowDoable multiRowDoable = rows -> {
-            int sum = 0;
-            for (Row row : rows) {
-                sum += row.getShort("approval");
-            }
-            System.out.println("Running avg = " + sum / (double) rows.length);
-        };
-        t.rollWithNrows(multiRowDoable,2);
-    }
-
-    private class PairChild implements Table.Pairs {
-
-        List<Double> runningAverage = new ArrayList<>();
-
-        @Override
-        public void doWithPair(Row row1, Row row2) {
-            int r1  = row1.getShort("approval");
-            int r2  = row2.getShort("approval");
-            runningAverage.add((r1 + r2) / 2.0);
-        }
-
-        public List<Double> result() {return runningAverage;}
-    }
-    @Test
-    public void testStepWithNrows() throws Exception {
-        Table t = Table.read().csv("../data/BushApproval.csv");
-
-        MultiRowDoable multiRowDoable = rows -> {
-            int sum = 0;
-            for (Row row : rows) {
-                sum += row.getShort("approval");
-            }
-        };
-        t.stepWithNrows(multiRowDoable,10);
-    }
-
+    
     @Test
     public void testRowCount() throws Exception {
         assertEquals(0, table.rowCount());
