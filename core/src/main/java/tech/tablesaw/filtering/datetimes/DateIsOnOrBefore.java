@@ -26,9 +26,14 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public class DateIsOnOrBefore extends ColumnFilter {
 
-    private final int value;
+    private final long value;
 
-    public DateIsOnOrBefore(ColumnReference reference, int value) {
+    /**
+     * Returns a filter initialized with the given params
+     * @param reference A reference to a DateTimeColumn
+     * @param value     A long encoding a PackedLocalDateTime value
+     */
+    public DateIsOnOrBefore(ColumnReference reference, long value) {
         super(reference);
         this.value = value;
     }
