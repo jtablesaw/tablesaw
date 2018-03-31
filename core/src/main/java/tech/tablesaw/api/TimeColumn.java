@@ -19,7 +19,6 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.*;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
 import tech.tablesaw.columns.packeddata.PackedLocalTime;
 import tech.tablesaw.filtering.IntBiPredicate;
 import tech.tablesaw.filtering.IntPredicate;
@@ -32,7 +31,6 @@ import tech.tablesaw.util.ReverseIntComparator;
 import tech.tablesaw.util.Selection;
 
 import java.nio.ByteBuffer;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -600,29 +598,5 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
                 return PackedLocalTime.asLocalTime(intIterator.nextInt());
             }
         };
-    }
-
-    static class PackedTime {
-
-        private int index = 0;
-        private final TimeColumn timeColumn;
-
-        public PackedTime(TimeColumn column) {
-            this.timeColumn = column;
-        }
-
-        PackedTime next() {
-            index++;
-            return this;
-        }
-
-        public PackedTime get(int rowNumber) {
-            index = rowNumber;
-            return this;
-        }
-
-        public LocalTime asLocalTime() {
-            return PackedLocalTime.asLocalTime(timeColumn.getIntInternal(index));
-        }
     }
 }
