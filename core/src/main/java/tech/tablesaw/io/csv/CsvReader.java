@@ -29,7 +29,14 @@ import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.io.UnicodeBOMInputStream;
 
 import javax.annotation.concurrent.Immutable;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -44,36 +51,10 @@ import static tech.tablesaw.api.ColumnType.*;
 @Immutable
 public class CsvReader {
 
-    private static Predicate<String> isBoolean = s
+    private static final Predicate<String> isBoolean = s
             -> TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
-    private static Predicate<String> isLong = s -> {
-        try {
-            Long.parseLong(s);
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-    private static Predicate<String> isInteger = s -> {
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-    private static Predicate<String> isFloat = s -> {
-        try {
-            Float.parseFloat(s);
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-    private static Predicate<String> isDouble = s -> {
+
+    private static final Predicate<String> isDouble = s -> {
         try {
             Double.parseDouble(s);
             return true;
@@ -82,16 +63,8 @@ public class CsvReader {
             return false;
         }
     };
-    private static Predicate<String> isShort = s -> {
-        try {
-            Short.parseShort(s);
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-    private static Predicate<String> isLocalDate = s -> {
+
+    private static final Predicate<String> isLocalDate = s -> {
         try {
             LocalDate.parse(s, TypeUtils.DATE_FORMATTER);
             return true;
@@ -100,7 +73,7 @@ public class CsvReader {
             return false;
         }
     };
-    private static Predicate<String> isLocalTime = s -> {
+    private static final Predicate<String> isLocalTime = s -> {
         try {
             LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER);
             return true;
@@ -109,7 +82,7 @@ public class CsvReader {
             return false;
         }
     };
-    private static Predicate<String> isLocalDateTime = s -> {
+    private static final Predicate<String> isLocalDateTime = s -> {
         try {
             LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER);
             return true;
@@ -171,7 +144,7 @@ public class CsvReader {
 
             cleanNames(headerRow);
             for (int x = 0; x < types.length; x++) {
-                if (types[x] != SKIP) {
+                if (types[x] != ColumnType.SKIP) {
                     String columnName = headerRow.get(x);
                     if (Strings.isNullOrEmpty(columnName)) {
                         columnName = "Column " + table.columnCount();
@@ -255,7 +228,7 @@ public class CsvReader {
 
             table = Table.create(file.getName());
             for (int x = 0; x < types.length; x++) {
-                if (types[x] != SKIP) {
+                if (types[x] != ColumnType.SKIP) {
                     Column newColumn = TypeUtils.newColumn(headerRow.get(x).trim(), types[x]);
                     table.addColumn(newColumn);
                 }
@@ -294,7 +267,7 @@ public class CsvReader {
      * <p>
      * LOCAL_DATE, // 0     date
      * SHORT_INT,  // 1     approval
-     * CATEGORY,   // 2     who
+     * STRING,   // 2     who
      * <p>
      * Note that the types are array separated, and that the index position and the column name are printed such that
      * they would be interpreted as comments if you paste the output into an array:
@@ -302,7 +275,7 @@ public class CsvReader {
      * ColumnType[] types = {
      * LOCAL_DATE, // 0     date
      * SHORT_INT,  // 1     approval
-     * CATEGORY,   // 2     who
+     * STRING,   // 2     who
      * }
      *
      * @throws IOException if file cannot be read
@@ -354,7 +327,7 @@ public class CsvReader {
     private static String[] selectColumnNames(List<String> names, ColumnType types[]) {
         List<String> header = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
-            if (types[i] != SKIP) {
+            if (types[i] != ColumnType.SKIP) {
                 header.add(names.get(i).trim());
             }
         }
@@ -413,7 +386,7 @@ public class CsvReader {
             while ((nextLine = reader.readNext()) != null) {
                 // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
                 if (rowCount == 0) {
-                    for (int j = 0; j < nextLine.length; j++) {
+                    for (String aNextLine : nextLine) {
                         columnData.add(new ArrayList<>());
                     }
                 }
@@ -477,7 +450,7 @@ public class CsvReader {
         // Types to choose from. When more than one would work, we pick the first of the options
         ColumnType[] typeArray
                 = // we leave out category, as that is the default type
-                {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, SHORT_INT, INTEGER, LONG_INT, FLOAT, DOUBLE};
+                {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, NUMBER};
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
@@ -485,11 +458,11 @@ public class CsvReader {
             if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {
                 continue;
             }
-            if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime.test(s)) {
-                typeCandidates.remove(LOCAL_DATE_TIME);
+            if (typeCandidates.contains(ColumnType.LOCAL_DATE_TIME) && !isLocalDateTime.test(s)) {
+                typeCandidates.remove(ColumnType.LOCAL_DATE_TIME);
             }
-            if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime.test(s)) {
-                typeCandidates.remove(LOCAL_TIME);
+            if (typeCandidates.contains(ColumnType.LOCAL_TIME) && !isLocalTime.test(s)) {
+                typeCandidates.remove(ColumnType.LOCAL_TIME);
             }
             if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate.test(s)) {
                 typeCandidates.remove(LOCAL_DATE);
@@ -497,20 +470,8 @@ public class CsvReader {
             if (typeCandidates.contains(BOOLEAN) && !isBoolean.test(s)) {
                 typeCandidates.remove(BOOLEAN);
             }
-            if (typeCandidates.contains(SHORT_INT) && !isShort.test(s)) {
-                typeCandidates.remove(SHORT_INT);
-            }
-            if (typeCandidates.contains(INTEGER) && !isInteger.test(s)) {
-                typeCandidates.remove(INTEGER);
-            }
-            if (typeCandidates.contains(LONG_INT) && !isLong.test(s)) {
-                typeCandidates.remove(LONG_INT);
-            }
-            if (typeCandidates.contains(FLOAT) && !isFloat.test(s)) {
-                typeCandidates.remove(FLOAT);
-            }
-            if (typeCandidates.contains(DOUBLE) && !isDouble.test(s)) {
-                typeCandidates.remove(DOUBLE);
+            if (typeCandidates.contains(NUMBER) && !isDouble.test(s)) {
+                typeCandidates.remove(NUMBER);
             }
         }
         return selectType(typeCandidates);
@@ -523,7 +484,7 @@ public class CsvReader {
      */
     private static ColumnType selectType(List<ColumnType> typeCandidates) {
         if (typeCandidates.isEmpty()) {
-            return CATEGORY;
+            return ColumnType.STRING;
         } else {
             return typeCandidates.get(0);
         }

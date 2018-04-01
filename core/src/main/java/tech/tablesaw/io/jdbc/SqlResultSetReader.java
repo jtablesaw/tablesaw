@@ -31,8 +31,8 @@ import java.sql.Types;
  */
 public class SqlResultSetReader {
 
-    // Maps from supported SQL types to their Tablesaw 'equivalents'
-    private static final ImmutableMap<Integer, ColumnType> SQL_TYPE_TO_TABLESAW_TYPE =
+    // Maps from supported SQL types to their Airframe 'equivalents'
+    private static final ImmutableMap<Integer, ColumnType> SQL_TYPE_TO_Airframe_TYPE =
             new ImmutableMap.Builder<Integer, ColumnType>()
                     .put(Types.BINARY, ColumnType.BOOLEAN)
                     .put(Types.BOOLEAN, ColumnType.BOOLEAN)
@@ -42,29 +42,29 @@ public class SqlResultSetReader {
                     .put(Types.TIME, ColumnType.LOCAL_TIME)
                     .put(Types.TIMESTAMP, ColumnType.LOCAL_DATE_TIME)
 
-                    .put(Types.DECIMAL, ColumnType.FLOAT)
-                    .put(Types.DOUBLE, ColumnType.FLOAT)
-                    .put(Types.FLOAT, ColumnType.FLOAT)
-                    .put(Types.NUMERIC, ColumnType.FLOAT)
-                    .put(Types.REAL, ColumnType.FLOAT)
+                    .put(Types.DECIMAL, ColumnType.NUMBER)
+                    .put(Types.DOUBLE, ColumnType.NUMBER)
+                    .put(Types.FLOAT, ColumnType.NUMBER)
+                    .put(Types.NUMERIC, ColumnType.NUMBER)
+                    .put(Types.REAL, ColumnType.NUMBER)
 
-                    .put(Types.INTEGER, ColumnType.INTEGER)
-                    .put(Types.SMALLINT, ColumnType.SHORT_INT)
-                    .put(Types.TINYINT, ColumnType.SHORT_INT)
-                    .put(Types.BIGINT, ColumnType.LONG_INT)
+                    .put(Types.INTEGER, ColumnType.NUMBER)
+                    .put(Types.SMALLINT, ColumnType.NUMBER)
+                    .put(Types.TINYINT, ColumnType.NUMBER)
+                    .put(Types.BIGINT, ColumnType.NUMBER)
 
-                    .put(Types.CHAR, ColumnType.CATEGORY)
-                    .put(Types.LONGVARCHAR, ColumnType.CATEGORY)
-                    .put(Types.LONGNVARCHAR, ColumnType.CATEGORY)
-                    .put(Types.NCHAR, ColumnType.CATEGORY)
-                    .put(Types.NVARCHAR, ColumnType.CATEGORY)
-                    .put(Types.VARCHAR, ColumnType.CATEGORY)
+                    .put(Types.CHAR, ColumnType.STRING)
+                    .put(Types.LONGVARCHAR, ColumnType.STRING)
+                    .put(Types.LONGNVARCHAR, ColumnType.STRING)
+                    .put(Types.NCHAR, ColumnType.STRING)
+                    .put(Types.NVARCHAR, ColumnType.STRING)
+                    .put(Types.VARCHAR, ColumnType.STRING)
                     .build();
 
     /**
      * Returns a new table with the given tableName, constructed from the given result set
      *
-     * @throws SQLException
+     * @throws SQLException if there is a problem detected in the database
      */
     public static Table read(ResultSet resultSet, String tableName) throws SQLException {
 
@@ -75,7 +75,7 @@ public class SqlResultSetReader {
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             String name = metaData.getColumnName(i);
 
-            ColumnType type = SQL_TYPE_TO_TABLESAW_TYPE.get(metaData.getColumnType(i));
+            ColumnType type = SQL_TYPE_TO_Airframe_TYPE.get(metaData.getColumnType(i));
             Preconditions.checkState(type != null,
                     "No column type found for %s as specified for column %s", metaData.getColumnType(i), name);
 

@@ -5,7 +5,7 @@
   <parent>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.12.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>tablesaw-plot</artifactId>
@@ -55,12 +55,7 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.12.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>tech.tablesaw</groupId>
-      <artifactId>tablesaw-smile</artifactId>
-      <version>0.12.1-SNAPSHOT</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.github.haifengl</groupId>
@@ -70,13 +65,6 @@
       <groupId>org.knowm.xchart</groupId>
       <artifactId>xchart</artifactId>
       <version>3.5.0</version>
-    </dependency>
-    <dependency>
-      <groupId>tech.tablesaw</groupId>
-      <artifactId>tablesaw-core</artifactId>
-      <type>test-jar</type>
-      <version>0.12.1-SNAPSHOT</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

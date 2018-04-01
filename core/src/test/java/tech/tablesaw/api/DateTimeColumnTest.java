@@ -21,21 +21,20 @@ import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static tech.tablesaw.api.QueryHelper.column;
 
 public class DateTimeColumnTest {
 
     private DateTimeColumn column1;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Table table = Table.create("Test");
-        column1 = new DateTimeColumn("Game date");
+        column1 = DateTimeColumn.create("Game date");
         table.addColumn(column1);
     }
 
     @Test
-    public void testAppendCell() throws Exception {
+    public void testAppendCell() {
         column1.appendCell("1923-10-20T10:15:30");
         column1.appendCell("1924-12-10T10:15:30");
         column1.appendCell("2015-12-05T10:15:30");
@@ -47,8 +46,16 @@ public class DateTimeColumnTest {
     }
 
     @Test
-    public void testConvertMillisSinceEpoch() throws Exception {
-        long millis = 1503952123189l;
+    public void testAppendCell2() {
+        column1.appendCell("10/12/2016 12:18:03 AM");
+        column1.appendCell("10/2/2016 8:18:03 AM");
+        column1.appendCell("10/12/2016 12:18:03 AM");
+        assertEquals(3, column1.size());
+    }
+
+    @Test
+    public void testConvertMillisSinceEpoch() {
+        long millis = 1503952123189L;
         column1.appendCell(Long.toString(millis));
         assertEquals(1, column1.size());
         assertEquals(2017, column1.get(0).getYear());
@@ -62,19 +69,19 @@ public class DateTimeColumnTest {
     }
 
     @Test
-    public void testAfter() throws Exception {
+    public void testAfter() {
         Table t = Table.create("test");
         t.addColumn(column1);
         column1.appendCell("2015-12-03T10:15:30");
         column1.appendCell("2015-01-03T10:15:30");
-        Table result = t.selectWhere(column("Game date")
+        Table result = t.selectWhere(QueryHelper.dateTimeColumn("Game date")
                 .isAfter(LocalDateTime.of(2015, 2, 2, 0, 0)));
         assertEquals(result.rowCount(), 1);
     }
 
     @Test
     public void testNull() {
-        DateTimeColumn col = new DateTimeColumn("Game date");
+        DateTimeColumn col = DateTimeColumn.create("Game date");
         col.appendCell(null);
         assertNull(col.get(0));
     }

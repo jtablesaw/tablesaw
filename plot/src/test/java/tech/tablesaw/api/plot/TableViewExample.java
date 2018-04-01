@@ -14,9 +14,10 @@
 
 package tech.tablesaw.api.plot;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 import tech.tablesaw.api.Table;
-import static tech.tablesaw.api.plot.TableView.show;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.api.plot.TableView.*;
 
 /**
  *

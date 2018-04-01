@@ -16,7 +16,11 @@ package tech.tablesaw.api;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterable;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.apache.commons.lang3.RandomUtils;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.SummaryFunction;
@@ -25,32 +29,32 @@ import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
-import tech.tablesaw.join.DataFrameJoiner;
+import tech.tablesaw.joining.DataFrameJoiner;
 import tech.tablesaw.sorting.Sort;
-import tech.tablesaw.sorting.Sort.Order;
-import tech.tablesaw.store.StorageManager;
-import tech.tablesaw.store.TableMetadata;
+import tech.tablesaw.sorting.comparators.IntComparatorChain;
+import tech.tablesaw.sorting.comparators.ReversingIntComparator;
 import tech.tablesaw.table.Projection;
 import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
+import tech.tablesaw.table.StandardViewGroup;
 import tech.tablesaw.table.ViewGroup;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.IntComparatorChain;
-import tech.tablesaw.util.ReversingIntComparator;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
  * All the data in a column has the same type: integer, float, category, etc., but a table may contain an arbitrary
  * number of columns of any type.
  * <p>
- * Tables are the main data-type and primary focus of Tablesaw.
+ * Tables are the main data-type and primary focus of Airframe.
  */
 public class Table extends Relation implements IntIterable {
 
@@ -71,15 +75,6 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * Returns a new table initialized with data from the given TableMetadata object
-     * <p>
-     * The metadata is used by the storage module to save tables and read their data from disk
-     */
-    private Table(TableMetadata metadata) {
-        this.name = metadata.getName();
-    }
-
-    /**
      * Returns a new Table initialized with the given names and columns
      *
      * @param name    The name of the table
@@ -97,14 +92,6 @@ public class Table extends Relation implements IntIterable {
      */
     public static Table create(String tableName) {
         return new Table(tableName);
-    }
-
-
-    /**
-     * Returns a new, empty table constructed according to the given metadata
-     */
-    public static Table create(TableMetadata metadata) {
-        return new Table(metadata);
     }
 
     /**
@@ -132,24 +119,12 @@ public class Table extends Relation implements IntIterable {
         Sort key = null;
         for (String s : columnNames) {
             if (key == null) {
-                key = first(s, Order.DESCEND);
+                key = first(s, Sort.Order.DESCEND);
             } else {
-                key.next(s, Order.DESCEND);
+                key.next(s, Sort.Order.DESCEND);
             }
         }
         return key;
-    }
-
-    public static Table readTable(String tableNameAndPath) {
-        Table t;
-        try {
-            t = StorageManager.readTable(tableNameAndPath);
-        } catch (IOException e) {
-            System.err.println("Unable to load table from Tablesaw table format");
-            e.printStackTrace();
-            return null;
-        }
-        return t;
     }
 
     public static DataFrameReader read() {
@@ -185,23 +160,6 @@ public class Table extends Relation implements IntIterable {
             ans[pos++] = i;
         }
         return ans;
-    }
-
-    /**
-     * Creates an IntColumn containing the integers from startsWith to rowCount() and adds it to this table.
-     * Can be used for maintaining/restoring a specific order on data without an existing order column, or for
-     * generating scatter/line plots where the variation of points in some order is what you're trying to see.
-     * <p>
-     * TODO: Move this functionality to IntColumn, and add other fill methods there
-     */
-    @Deprecated
-    public void addIndexColumn(String columnName, int startsWith) {
-
-        IntColumn indexColumn = new IntColumn(columnName, rowCount());
-        for (int i = 0; i < rowCount(); i++) {
-            indexColumn.append(i + startsWith);
-        }
-        addColumn(indexColumn);
     }
 
     public DataFrameWriter write() {
@@ -413,10 +371,22 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns a string representation of the value at the given row and column indexes
      *
+     * @param r the row index, 0 based
+     * @param c the column index, 0 based
+     */
+    @Override
+    public String getUnformatted(int r, int c) {
+        Column column = column(c);
+        return column.getUnformattedString(r);
+    }
+
+    /**
+     * Returns a string representation of the value at the given row and column indexes
+     *
      * @param r          the row index, 0 based
      * @param columnName the name of the column to be returned
      *                   <p>
-     *                   // TODO: performance would be greatly enhanced if columns could be referenced via a hashTable
+     *                   // TODO: performance would be enhanced if columns could be referenced via a hashTable
      */
     public String get(int r, String columnName) {
         Column column = column(columnIndex(columnName));
@@ -536,6 +506,19 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
+     * Sorts this table into a new table on the columns indexed in ascending order
+     * <p>
+     * TODO(lwhite): Rework this so passing an negative number does a descending sort
+     */
+    public Table sortOn(int... columnIndexes) {
+        List<String> names = new ArrayList<>();
+        for (int i : columnIndexes) {
+            names.add(columnList.get(i).name());
+        }
+        return sortOn(names.toArray(new String[names.size()]));
+    }
+
+    /**
      * Returns a copy of this table sorted on the given column names, applied in order,
      * <p>
      * if column name starts with - then sort that column descending otherwise sort ascending
@@ -549,10 +532,10 @@ public class Table extends Relation implements IntIterable {
         }
 
         for (String columnName : columnNames) {
-            Order order;
+            Sort.Order order;
             if (names.contains(columnName.toUpperCase())) {
                 // the column name has not been annotated with a prefix.
-                order = Order.ASCEND;
+                order = Sort.Order.ASCEND;
             } else {
 
                 // get the prefix which could be - or +
@@ -563,10 +546,10 @@ public class Table extends Relation implements IntIterable {
 
                 switch (prefix) {
                     case "+":
-                        order = Order.ASCEND;
+                        order = Sort.Order.ASCEND;
                         break;
                     case "-":
-                        order = Order.DESCEND;
+                        order = Sort.Order.DESCEND;
                         break;
                     default:
                         throw new IllegalStateException("Column prefix: " + prefix + " is unknown.");
@@ -591,6 +574,7 @@ public class Table extends Relation implements IntIterable {
 
     /**
      * Returns a copy of this table sorted on the given column names, applied in order, descending
+     * TODO: Provide equivalent methods naming columns by index
      */
     public Table sortDescendingOn(String... columnNames) {
         Sort key = getSort(columnNames);
@@ -666,14 +650,87 @@ public class Table extends Relation implements IntIterable {
      * @param columnName The name of the column to sort
      * @param order      Specifies whether the sort should be in ascending or descending order
      */
-    private IntComparator rowComparator(String columnName, Order order) {
+    private IntComparator rowComparator(String columnName, Sort.Order order) {
         Column column = this.column(columnName);
         IntComparator rowComparator = column.rowComparator();
 
-        if (order == Order.DESCEND) {
+        if (order == Sort.Order.DESCEND) {
             return ReversingIntComparator.reverse(rowComparator);
         } else {
             return rowComparator;
+        }
+    }
+
+    /**
+     * Adds a single row to this table from sourceTable, copying every column in sourceTable
+     */
+    public void addRow(int rowIndex, Table sourceTable) {
+        for (int i = 0; i < columnCount(); i++) {
+            Column column = column(i);
+            ColumnType type = column.type();
+            switch (type) {
+                case NUMBER:
+                    NumberColumn numberColumn = (NumberColumn) column;
+                    numberColumn.append(sourceTable.numberColumn(i).get(rowIndex));
+                    break;
+                case BOOLEAN:
+                    BooleanColumn booleanColumn = (BooleanColumn) column;
+                    booleanColumn.append(sourceTable.booleanColumn(i).get(rowIndex));
+                    break;
+                case LOCAL_DATE:
+                    DateColumn localDateColumn = (DateColumn) column;
+                    localDateColumn.appendInternal(sourceTable.dateColumn(i).getIntInternal(rowIndex));
+                    break;
+                case LOCAL_TIME:
+                    TimeColumn timeColumn = (TimeColumn) column;
+                    timeColumn.appendInternal(sourceTable.timeColumn(i).getIntInternal(rowIndex));
+                    break;
+                case LOCAL_DATE_TIME:
+                    DateTimeColumn localDateTimeColumn = (DateTimeColumn) column;
+                    localDateTimeColumn.appendInternal(sourceTable.dateTimeColumn(i).getLongInternal(rowIndex));
+                    break;
+                case STRING:
+                    StringColumn stringColumn = (StringColumn) column;
+                    stringColumn.append(sourceTable.stringColumn(i).get(rowIndex));
+                    break;
+                default:
+                    throw new IllegalStateException("Unhandled column type updating columns");
+            }
+        }
+    }
+
+    public void addRow(Row row) {
+        //TODO Implement
+        for (Column column : columns()) {
+            ColumnType type = column.type();
+            switch (type) {
+                case NUMBER:
+                    NumberColumn numberColumn = (NumberColumn) column;
+                    numberColumn.append(row.getDouble(column.name()));
+                    break;
+                case BOOLEAN:
+                    BooleanColumn booleanColumn = (BooleanColumn) column;
+                    booleanColumn.append(row.getBoolean(column.name()));
+                    break;
+                case LOCAL_DATE:
+                    DateColumn localDateColumn = (DateColumn) column;
+                    localDateColumn.appendInternal(row.getPackedDate(column.name()).getPackedValue());
+                    break;
+                case LOCAL_TIME:
+                    TimeColumn timeColumn = (TimeColumn) column;
+                    timeColumn.appendInternal(row.getPackedTime(column.name()).getPackedValue());
+                    break;
+                case LOCAL_DATE_TIME:
+                    DateTimeColumn localDateTimeColumn = (DateTimeColumn) column;
+                    localDateTimeColumn.appendInternal(row.getPackedDateTime(column.name()).getPackedValue());
+                    break;
+                case STRING:
+                    StringColumn stringColumn = (StringColumn) column;
+                    stringColumn.append(row.getString(column.name()));
+                    break;
+                default:
+                    throw new IllegalStateException("Unhandled column type updating columns");
+            }
         }
     }
 
@@ -683,54 +740,35 @@ public class Table extends Relation implements IntIterable {
         return newTable;
     }
 
+    public Table rejectWhere(Selection selection) {
+        Selection opposite = new BitmapBackedSelection();
+        opposite.addRange(0, rowCount());
+        opposite.andNot(selection);
+        Table newTable = this.emptyCopy(opposite.size());
+        Rows.copyRowsToTable(opposite, this, newTable);
+        return newTable;
+    }
+
     public Table selectWhere(Filter filter) {
         return selectWhere(filter.apply(this));
     }
 
-    /**
-     * @deprecated This method doesn't add enough value to be part of the Table API
-     */
-    @Deprecated
-    public BooleanColumn selectIntoColumn(String newColumnName, Selection selection) {
-        return new BooleanColumn(newColumnName, selection, rowCount());
+    public Table rejectWhere(Filter filter) {
+        return rejectWhere(filter.apply(this));
     }
 
     /**
-     * @deprecated This method doesn't add enough value to be part of the Table API
-     */
-    @Deprecated
-    public BooleanColumn selectIntoColumn(String newColumnName, Filter filter) {
-        return new BooleanColumn(newColumnName, filter.apply(this), rowCount());
-    }
-
-    /**
-     * The first stage of a split-apply-combine operation
-     */
-    public ViewGroup groupBy(String... columns) {
-        return groupBy(categoricalColumns(columns).toArray(new CategoricalColumn[columns.length]));
-    }
-
-    /**
-     * The first stage of a split-apply-combine operation
-     */
-    public ViewGroup groupBy(CategoricalColumn... columns) {
-        return new ViewGroup(this, columns);
-    }
-
-    /**
-     * Synonymous with groupBy
      * The first stage of a split-apply-combine operation
      */
     public ViewGroup splitOn(String... columns) {
-        return groupBy(columns);
+        return splitOn(categoricalColumns(columns).toArray(new CategoricalColumn[columns.length]));
     }
 
     /**
-     * Synonymous with groupBy
      * The first stage of a split-apply-combine operation
      */
     public ViewGroup splitOn(CategoricalColumn... columns) {
-        return groupBy(columns);
+        return StandardViewGroup.create(this, columns);
     }
 
     public String printHtml() {
@@ -739,9 +777,9 @@ public class Table extends Relation implements IntIterable {
 
     public Table structure() {
         Table t = new Table("Structure of " + name());
-        IntColumn index = new IntColumn("Index", columnCount());
-        CategoryColumn columnName = new CategoryColumn("Column Name", columnCount());
-        CategoryColumn columnType = new CategoryColumn("Column Type", columnCount());
+        NumberColumn index = NumberColumn.create("Index", columnCount());
+        StringColumn columnName = StringColumn.create("Column Name", columnCount());
+        StringColumn columnType = StringColumn.create("Column Type", columnCount());
         t.addColumn(index);
         t.addColumn(columnName);
         t.addColumn(columnType);
@@ -752,82 +790,6 @@ public class Table extends Relation implements IntIterable {
             columnType.append(column.type().name());
         }
         return t;
-    }
-
-    /**
-     * Returns a table with the given rows selected
-     *
-     * @param row the row to select
-     * @return the table with the selected rows
-     */
-    public Table selectRow(int row) {
-        return selectRows(row, row + 1);
-    }
-
-    /**
-     * Returns a table with the given rows selected
-     *
-     * @param rows the rows to select
-     * @return the table with the selected rows
-     */
-    public Table selectRows(Collection<Integer> rows) {
-        Table newTable = emptyCopy();
-        Rows.copyRowsToTable(new IntArrayList(rows), this, newTable);
-        return newTable;
-    }
-
-    /**
-     * Returns a table with the given rows selected
-     *
-     * @param start the first row to select, inclusive
-     * @param end   the last row to select, exclusive
-     * @return the table with the selected rows
-     */
-    public Table selectRows(int start, int end) {
-        Selection selection = new BitmapBackedSelection(rowCount());
-        selection.flip();
-        selection.add(start, end);
-        return selectWhere(selection);
-    }
-
-    /**
-     * Returns a table with the given rows dropped
-     *
-     * @param row the row to drop
-     * @return the table with the dropped rows
-     */
-    public Table dropRow(int row) {
-        return dropRows(row, row + 1);
-    }
-
-    /**
-     * Returns a table with the given rows dropped
-     *
-     * @param rows the rows to drop
-     * @return the table with the dropped rows
-     */
-    public Table dropRows(Collection<Integer> rows) {
-        Table newTable = emptyCopy();
-        IntArrayList rowsToKeep = new IntArrayList();
-        for (int i = 0; i < rowCount(); i++) {
-            rowsToKeep.add(i);
-        }
-        rowsToKeep.removeAll(new IntArrayList(rows));
-        Rows.copyRowsToTable(rowsToKeep, this, newTable);
-        return newTable;
-    }
-
-    /**
-     * Returns a table with the given rows dropped
-     *
-     * @param start the first row to drop, inclusive
-     * @param end   the last row to drop, exclusive
-     * @return the table with the dropped rows
-     */
-    public Table dropRows(int start, int end) {
-        Selection selection = new BitmapBackedSelection(rowCount());
-        selection.remove(start, end);
-        return selectWhere(selection);
     }
 
     /**
@@ -861,179 +823,51 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * Removes the given column from this table and returns it
-     *
-     * @throws IllegalStateException if the given columnName does not match the name of a column in the table
-     */
-    public Column getAndRemoveColumn(String columnName) {
-        Column c = column(columnName);
-        removeColumns(c);
-        return c;
-    }
-
-    /**
-     * Removes the given column from this table and returns it
-     *
-     * @throws IndexOutOfBoundsException if the given columnIndex does not match any column in the table
-     */
-    public Column getAndRemoveColumn(int columnIndex) {
-        Column c = column(columnIndex);
-        removeColumns(c);
-        return c;
-    }
-
-    /**
      * Removes all columns except for those given in the argument from this table
      */
-    public void retainColumns(Column... columns) {
+    public Table retainColumns(Column... columns) {
         List<Column> retained = Arrays.asList(columns);
-        columnList.retainAll(retained);
+        columnList.clear();
+        columnList.addAll(retained);
+        return this;
     }
 
     /**
      * Removes all columns except for those given in the argument from this table
      */
-    public void retainColumns(String... columnNames) {
-        columnList.retainAll(columns(columnNames));
+    public Table retainColumns(String... columnNames) {
+        List<Column> retained = columns(columnNames);
+        columnList.clear();
+        columnList.addAll(retained);
+        return this;
     }
 
-    /**
-     * @deprecated Use the equivalent method on the column, or the general summarize method:
-     * eg: table.summarize(numericColumnName, sum);
-     */
-    @Deprecated
-    public SummaryFunction sum(String numericColumnName) {
-        return new SummaryFunction(this, numericColumnName, sum);
-    }
-
-    /**
-     * @deprecated Use the equivalent method on the column, or the general summarize method:
-     * eg: table.summarize(numericColumnName, mean);
-     */
-    @Deprecated
-    public SummaryFunction mean(String numericColumnName) {
-        return new SummaryFunction(this, numericColumnName, mean);
-    }
-
-    /**
-     * @deprecated Use the equivalent method on the column, or the general summarize method:
-     * eg: table.summarize(numericColumnName, median);
-     */
-    @Deprecated
-    public SummaryFunction median(String numericColumnName) {
-        return new SummaryFunction(this, numericColumnName, median);
-    }
-
-    /**
-     * @deprecated Use the equivalent method on the column, or the general summarize method:
-     * eg: table.summarize(numericColumnName, variance);
-     */
-    @Deprecated
-    public SummaryFunction variance(String numericColumnName) {
-        return new SummaryFunction(this, numericColumnName, variance);
-    }
-
-    /**
-     * @deprecated Use the equivalent method on the column, or the general summarize method:
-     * eg: table.summarize(numericColumnName, sd);
-     */
-    @Deprecated
-    public SummaryFunction stdDev(String numericColumnName) {
-        return new SummaryFunction(this, numericColumnName, stdDev);
-    }
-
-    /**
-     * @deprecated Use the equivalent method on the column, or the general summarize method:
-     * e.g.: table.summarize(numericColumnName, count);
-     */
-    @Deprecated
-    public SummaryFunction count(String numericColumnName) {
-        return new SummaryFunction(this, numericColumnName, count);
-    }
-
-    /**
-     * @deprecated Use the equivalent method on the column, or the general summarize method:
-     * e.g.: table.summarize(numericColumnName, count);
-     */
-    @Deprecated
-    public SummaryFunction max(String numericColumnName) {
-        return new SummaryFunction(this, numericColumnName, max);
-    }
-
-    /**
-     * @deprecated Use the equivalent method on the column, or the general summarize method:
-     * e.g.: table.summarize(numericColumnName, count);
-     */
-    @Deprecated
-    public SummaryFunction min(String numericColumnName) {
-        return new SummaryFunction(this, numericColumnName, min);
-    }
-
-    public void append(Table tableToAppend) {
+    public Table append(Table tableToAppend) {
         for (Column column : columnList) {
             Column columnToAppend = tableToAppend.column(column.name());
             column.append(columnToAppend);
         }
-    }
-
-    public String save(String folder) {
-        String storageFolder = "";
-        try {
-            storageFolder = StorageManager.saveTable(folder, this);
-        } catch (IOException e) {
-            System.err.println("Unable to save table in Tablesaw format");
-            e.printStackTrace();
-        }
-        return storageFolder;
-    }
-
-    /**
-     * Returns the result of applying the given aggregate function to the specified column
-     *
-     * @param numericColumnName The name of a numeric (integer, float, etc.) column in this table
-     * @param function          An aggregation function
-     * @return the function result
-     * @throws IllegalArgumentException if numericColumnName doesn't name a numeric column in this table
-     */
-    public double agg(String numericColumnName, AggregateFunction function) {
-        Column column = column(numericColumnName);
-        return function.agg(column.asDoubleArray());
-    }
-
-    public Map<AggregateFunction, Double> aggAll(String numericColumnName, AggregateFunction... functions) {
-        return summarize(numericColumnName, functions).getAll();
+        return this;
     }
 
     public SummaryFunction summarize(String numericColumnName, AggregateFunction... function) {
         return new SummaryFunction(this, numericColumnName, function);
     }
 
-    public Table countBy(CategoryColumn column) {
-        return column.countByCategory();
-    }
-
     /**
-     * Returns the first row for which the column {@code columnName} contains {@code value}, or
-     * null if there are no matches
-     * TODO(lwhite) This is a toy implementation badly in need of rewrite for performance.
-     *
-     * @deprecated Use a select() on the column to get the matching records and take the first match
+     * Returns a table containing two columns, the grouping column, and a column named "Count" that contains
+     * the counts for each grouping column value
+     * Todo: extend count by category to all categorical columns
      */
-    public int getFirst(Column column, String value) {
-        int row = -1;
-        for (int r : this) {
-            if (column.getString(r).equals(value)) {
-                row = r;
-                break;
-            }
-        }
-        return row;
+    public Table countBy(StringColumn groupingColumn) {
+        return groupingColumn.countByCategory();
     }
 
     public DataFrameJoiner join(String columnName) {
         return new DataFrameJoiner(this, columnName);
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public IntIterator iterator() {
 
@@ -1055,11 +889,120 @@ public class Table extends Relation implements IntIterable {
             public boolean hasNext() {
                 return i < rowCount();
             }
-
-            @Override
-            public Integer next() {
-                return i++;
-            }
         };
+    }
+
+    /**
+     * Applies the function in {@code doable} to every row in the table
+     */
+    public void doWithEachRow(Doable doable) {
+        Row row = new Row(this);
+        while (row.hasNext()) {
+            doable.doWithRow(row.next());
+        }
+    }
+
+    /**
+     * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
+     */
+    public void doWithRowPairs(Pairs pairs) {
+        Row row1 = new Row(this);
+        Row row2 = new Row(this);
+        if (!isEmpty()) {
+            int max = rowCount();
+            for (int i = 1; i < max; i++) {
+                row1.at(i - 1);
+                row2.at(i);
+                pairs.doWithPair(row1, row2);
+            }
+        }
+    }
+
+    /**
+     * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
+     */
+    public void rollWithNrows(MultiRowDoable rowz, int n) {
+        if (!isEmpty()) {
+            Row[] rows = new Row[n];
+            for (int i = 0; i < n; i++) {
+                rows[i] = new Row(this);
+            }
+
+            int max = rowCount() - (n - 2);
+            for (int i = 1; i < max; i++) {
+                for (int r = 0; r < n; r++) {
+                    rows[r].at(i + r - 1);
+                }
+                rowz.doWithNrows(rows);
+            }
+        }
+    }
+
+    /**
+     * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
+     */
+    public void stepWithNrows(MultiRowDoable rowz, int n) {
+        if (!isEmpty()) {
+            Row[] rows = new Row[n];
+            for (int i = 0; i < n; i++) {
+                rows[i] = new Row(this);
+            }
+
+            int max = rowCount() - n;
+            for (int i = 0; i <= max; i++) {
+                for (int r = 0; r < n; r++) {
+                    rows[r].at(i + r);
+                }
+                rowz.doWithNrows(rows);
+            }
+        }
+    }
+
+    /**
+     * Applies the function in {@code collectable} to every row in the table
+     */
+    public Column collectFromEachRow(Collectable collectable) {
+        Row row = new Row(this);
+        while (row.hasNext()) {
+            collectable.collectFromRow(row.next());
+        }
+        return collectable.column();
+    }
+
+    interface MultiRowDoable {
+        void doWithNrows(Row[] rows);
+    }
+
+    interface Pairs {
+        void doWithPair(Row row1, Row row2);
+    }
+
+    /**
+     * A function object that can be used to enumerate a table and perform operations on each row,
+     * without explicit loops
+     */
+    static abstract class Doable {
+
+        public abstract void doWithRow(Row row);
+    }
+
+    /**
+     * A function object that can be used to enumerate a table and perform operations on each row,
+     * without explicit loops. {@code Collectable} fills the given column with the results, so the column
+     * must be of the correct type for whatever results are produced in the collectWithRow operation.
+     */
+    static abstract class Collectable {
+
+        private final Column column;
+
+        public Collectable(Column column) {
+            this.column = column;
+        }
+
+        public Column column() {
+            return column;
+        }
+
+        abstract void collectFromRow(Row row);
     }
 }

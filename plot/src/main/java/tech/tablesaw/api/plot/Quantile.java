@@ -14,7 +14,7 @@
 
 package tech.tablesaw.api.plot;
 
-import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.plotting.xchart.XchartQuantile;
 
 /**
@@ -22,19 +22,19 @@ import tech.tablesaw.plotting.xchart.XchartQuantile;
  */
 public class Quantile {
 
-    public static void show(String chartTitle, NumericColumn yColumn) {
+    public static void show(String chartTitle, NumberColumn yColumn) {
         double[] x = new double[yColumn.size()];
 
         for (int i = 0; i < x.length; i++) {
             x[i] = i / (float) x.length;
         }
 
-        NumericColumn copy = (NumericColumn) yColumn.copy();
+        NumberColumn copy = (NumberColumn) yColumn.copy();
         copy.sortAscending();
         show(chartTitle, x, copy);
     }
 
-    public static void show(String chartTitle, double[] xData, NumericColumn yColumn) {
+    public static void show(String chartTitle, double[] xData, NumberColumn yColumn) {
 
         // Create Chart
         XchartQuantile.show(chartTitle, xData, yColumn, 600, 400);

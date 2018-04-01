@@ -3,11 +3,11 @@ package tech.tablesaw.mapping;
 import org.junit.Test;
 import tech.tablesaw.api.BooleanColumn;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class BooleanMapUtilsTest {
-    private BooleanColumn singleFalse = new BooleanColumn("", new boolean[]{false});
-    private BooleanColumn singleTrue = new BooleanColumn("", new boolean[]{true});
+    private BooleanColumn singleFalse = BooleanColumn.create("", new boolean[]{false});
+    private BooleanColumn singleTrue = BooleanColumn.create("", new boolean[]{true});
 
     @Test
     public void testAnd() {

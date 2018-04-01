@@ -13,19 +13,21 @@
  */
 package tech.tablesaw.plotting.xchart;
 
-import java.awt.Component;
-import java.util.Arrays;
-import java.util.Optional;
-import javax.swing.JFrame;
-import static org.hamcrest.CoreMatchers.*;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
 import org.knowm.xchart.BubbleChart;
 import org.knowm.xchart.XChartPanel;
 import org.netbeans.jemmy.operators.JFrameOperator;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Arrays;
+import java.util.Optional;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 
 public class XchartBubbleTest {
@@ -34,7 +36,7 @@ public class XchartBubbleTest {
     private static JFrame frame;
 
     @BeforeClass
-    public static void setUp() throws InterruptedException {
+    public static void setUp() {
         double[] x = new double[]{10, 15, 20};
         double[] y = new double[]{10, 15, 20};
         double[] data = new double[]{9, 14, 19};

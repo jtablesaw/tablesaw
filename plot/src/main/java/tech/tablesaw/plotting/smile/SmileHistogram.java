@@ -15,13 +15,12 @@
 package tech.tablesaw.plotting.smile;
 
 import smile.plot.PlotCanvas;
-import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.NumberColumn;
 
 import javax.swing.*;
-
-import static tech.tablesaw.plotting.smile.SmilePlotUtils.getjFrame;
-
 import java.awt.*;
+
+import static tech.tablesaw.plotting.smile.SmilePlotUtils.*;
 
 /**
  * Simple API for producing basic histogram plots directly from Tablesaw tables and columns
@@ -29,7 +28,7 @@ import java.awt.*;
 public class SmileHistogram {
 
 
-    public static PlotCanvas create(String plotTitle, String xTitle, String yTitle, NumericColumn column) {
+    public static PlotCanvas create(String plotTitle, String xTitle, String yTitle, NumberColumn column) {
         PlotCanvas canvas = smile.plot.Histogram.plot(column.asDoubleArray());
         canvas.setForeground(Color.DARK_GRAY);
         canvas.setTitle(plotTitle);
@@ -39,8 +38,7 @@ public class SmileHistogram {
     }
 
     public static PlotCanvas create(double[] x, String yTitle) {
-        PlotCanvas canvas = smile.plot.Histogram.plot(x);
-        return canvas;
+        return smile.plot.Histogram.plot(yTitle, x);
     }
 
     public static void show(double[] x) {
@@ -52,14 +50,14 @@ public class SmileHistogram {
         frame.setVisible(true);
     }
 
-    public static void show(String plotTitle, NumericColumn column) {
+    public static void show(String plotTitle, NumberColumn column) {
         JFrame frame = getjFrame(600, 400);
         PlotCanvas canvas = create(plotTitle, column.name(), "proportion", column);
         frame.add(canvas);
         frame.setVisible(true);
     }
 
-    public static void show(NumericColumn column) {
+    public static void show(NumberColumn column) {
         JFrame frame = getjFrame(600, 400);
         PlotCanvas canvas = create("", column.name(), "proportion", column);
         frame.add(canvas);

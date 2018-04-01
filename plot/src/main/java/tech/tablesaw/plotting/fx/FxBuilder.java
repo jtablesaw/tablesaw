@@ -14,26 +14,27 @@
 
 package tech.tablesaw.plotting.fx;
 
-import java.util.List;
 import javafx.collections.FXCollections;
+import javafx.geometry.Side;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.Background;
-import javafx.geometry.Side;
-import javafx.scene.chart.PieChart;
-import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
+
+import java.util.List;
 
 /**
  *
  */
 public class FxBuilder {
 
-    static NumberAxis getNumberAxis(NumericColumn numericColumn) {
+    static NumberAxis getNumberAxis(NumberColumn numberColumn) {
         final NumberAxis numberAxis = new NumberAxis();
-        numberAxis.setLabel(numericColumn.name());
+        numberAxis.setLabel(numberColumn.name());
         return numberAxis;
     }
 
@@ -43,11 +44,11 @@ public class FxBuilder {
         return categoryAxis;
     }
 
-    static XYChart.Series<String, Number> getSeries(NumericColumn numericColumn, List<XYChart.Data<String, Number>> data) {
+    static XYChart.Series<String, Number> getSeries(NumberColumn numberColumn, List<XYChart.Data<String, Number>> data) {
         XYChart.Series<String, Number> series1
                 = new XYChart.Series<>(FXCollections.observableList(data));
 
-        series1.setName(numericColumn.name());
+        series1.setName(numberColumn.name());
         return series1;
     }
 

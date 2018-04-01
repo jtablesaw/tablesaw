@@ -4,9 +4,9 @@
 
   <groupId>tech.tablesaw</groupId>
   <artifactId>tablesaw-parent</artifactId>
-  <version>0.12.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <name>Tablesaw</name>
-  <description>High-performance Java Dataframe with integrated columnar storage</description>
+  <description>High-performance Java Dataframe</description>
   <url>https://jtablesaw.wordpress.com</url>
   <scm>
     <connection>scm:git:git@github.com:jtablesaw/tablesaw.git</connection>
@@ -45,7 +45,6 @@
   <modules>
     <module>core</module>
     <module>plot</module>
-    <module>smile</module>
     <module>beakerx</module>
     <module>aggregate</module>
   </modules>
@@ -170,8 +169,8 @@
             </execution>
           </executions>
           <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
+            <source>1.9</source>
+            <target>1.9</target>
           </configuration>
         </plugin>
       </plugins>

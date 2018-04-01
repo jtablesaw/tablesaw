@@ -17,101 +17,118 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.*;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrays;
+import it.unimi.dsi.fastutil.longs.LongComparator;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.LongColumnUtils;
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
-import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
-import tech.tablesaw.filtering.LocalDateTimePredicate;
-import tech.tablesaw.filtering.LongBiPredicate;
-import tech.tablesaw.filtering.LongPredicate;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
+import tech.tablesaw.columns.datetimes.DateTimeMapUtils;
+import tech.tablesaw.columns.datetimes.DateTimePredicates;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.filtering.predicates.LocalDateTimePredicate;
+import tech.tablesaw.filtering.predicates.LongBiPredicate;
+import tech.tablesaw.filtering.predicates.LongPredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.io.TypeUtils.DateTimeConverter;
-import tech.tablesaw.mapping.DateTimeMapUtils;
-import tech.tablesaw.store.ColumnMetadata;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.ReverseLongComparator;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.sorting.comparators.DescendingLongComparator;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.*;
 
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
-public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, Iterable<LocalDateTime> {
+public class DateTimeColumn extends AbstractColumn
+        implements DateTimeMapUtils, Iterable<LocalDateTime> {
 
-    public static final long MISSING_VALUE = Long.MIN_VALUE;
+    public static final long MISSING_VALUE = (Long) ColumnType.LOCAL_DATE_TIME.getMissingValue();
 
-    private static final int BYTE_SIZE = 8;
-
-    private static int DEFAULT_ARRAY_SIZE = 128;
-
-    private LongComparator reverseLongComparator = new LongComparator() {
-
-        @Override
-        public int compare(Long o2, Long o1) {
-            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
-        }
-
-        @Override
-        public int compare(long o2, long o1) {
-            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
-        }
-    };
+    private final LongComparator reverseLongComparator = DescendingLongComparator.instance();
 
     private LongArrayList data;
 
-    IntComparator comparator = new IntComparator() {
-
-        @Override
-        public int compare(Integer r1, Integer r2) {
-            return compare((int) r1, (int) r2);
-        }
-
-        @Override
-        public int compare(int r1, int r2) {
-            long f1 = getLongInternal(r1);
-            long f2 = getLongInternal(r2);
-            return Long.compare(f1, f2);
-        }
+    private final IntComparator comparator = (r1, r2) -> {
+        long f1 = getPackedDateTime(r1);
+        long f2 = getPackedDateTime(r2);
+        return Long.compare(f1, f2);
     };
 
     /**
      * The formatter chosen to parse date-time strings for this particular column
      */
-    private DateTimeConverter selectedFormatter;
+    private TypeUtils.DateTimeConverter selectedFormatter;
 
-    public DateTimeColumn(String name) {
-        super(name);
-        data = new LongArrayList(DEFAULT_ARRAY_SIZE);
+    private DateTimeColumnFormatter printFormatter = new DateTimeColumnFormatter();
+
+    private Locale locale;
+
+    public static boolean isMissing(long value) {
+        return MISSING_VALUE == value;
     }
 
-    public DateTimeColumn(ColumnMetadata metadata) {
-        super(metadata);
-        data = new LongArrayList(DEFAULT_ARRAY_SIZE);
+    public static DateTimeColumn create(String name) {
+        return create(name, DEFAULT_ARRAY_SIZE);
     }
 
-    public DateTimeColumn(String name, int initialSize) {
-        super(name);
-        data = new LongArrayList(initialSize);
+    public static DateTimeColumn create(String name, int initialSize) {
+        return create(name, initialSize, Locale.getDefault());
     }
 
-    private DateTimeColumn(String name, LongArrayList data) {
-        super(name);
-        this.data = data;
+    public static DateTimeColumn create(String name, int initialSize, Locale locale) {
+        return new DateTimeColumn(name, new LongArrayList(initialSize), locale);
     }
 
-    public DateTimeColumn(String name, List<LocalDateTime> data) {
-        this(name);
+    public static DateTimeColumn create(String name, List<LocalDateTime> data) {
+        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.size()), Locale.getDefault());
         for (LocalDateTime date : data) {
-            append(date);
+            column.append(date);
         }
+        return column;
+    }
+
+    public static DateTimeColumn create(String name, LocalDateTime[] data) {
+        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.length), Locale.getDefault());
+        for (LocalDateTime date : data) {
+            column.append(date);
+        }
+        return column;
+    }
+
+    private DateTimeColumn(String name, LongArrayList data, Locale locale) {
+        super(LOCAL_DATE_TIME, name);
+        this.data = data;
+        this.locale = locale;
+    }
+
+    public void setPrintFormatter(DateTimeFormatter dateTimeFormatter, String missingValueString) {
+        Preconditions.checkNotNull(dateTimeFormatter);
+        Preconditions.checkNotNull(missingValueString);
+        this.printFormatter = new DateTimeColumnFormatter(dateTimeFormatter, missingValueString);
+    }
+
+    public void setPrintFormatter(DateTimeColumnFormatter formatter) {
+        Preconditions.checkNotNull(formatter);
+        this.printFormatter = formatter;
     }
 
     @Override
@@ -131,6 +148,30 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         } else {
             appendInternal(MISSING_VALUE);
         }
+    }
+
+    public DateTimeColumn lead(int n) {
+        DateTimeColumn column = lag(-n);
+        column.setName(name() + " lead(" + n + ")");
+        return column;
+    }
+
+    public DateTimeColumn lag(int n) {
+        int srcPos = n >= 0 ? 0 : 0 - n;
+        long[] dest = new long[size()];
+        int destPos = n <= 0 ? 0 : n;
+        int length = n >= 0 ? size() - n : size() + n;
+
+        for (int i = 0; i < size(); i++) {
+            dest[i] = MISSING_VALUE;
+        }
+
+        System.arraycopy(data.toLongArray(), srcPos, dest, destPos, length);
+
+        DateTimeColumn copy = emptyCopy(size());
+        copy.data = new LongArrayList(dest);
+        copy.setName(name() + " lag(" + n + ")");
+        return copy;
     }
 
     /**
@@ -163,7 +204,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
     @Override
     public ColumnType type() {
-        return ColumnType.LOCAL_DATE_TIME;
+        return LOCAL_DATE_TIME;
     }
 
     public void appendInternal(long dateTime) {
@@ -176,20 +217,31 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
     @Override
     public String getString(int row) {
-        return PackedLocalDateTime.toString(getLongInternal(row));
+        return printFormatter.format(getPackedDateTime(row));
+    }
+
+    @Override
+    public String getUnformattedString(int row) {
+        return PackedLocalDateTime.toString(getPackedDateTime(row));
     }
 
     @Override
     public DateTimeColumn emptyCopy() {
-        DateTimeColumn column = new DateTimeColumn(name());
-        column.setComment(comment());
-        return column;
+        return emptyCopy(DEFAULT_ARRAY_SIZE);
     }
 
     @Override
     public DateTimeColumn emptyCopy(int rowSize) {
-        DateTimeColumn column = new DateTimeColumn(name(), rowSize);
-        column.setComment(comment());
+        DateTimeColumn column = create(name(), rowSize, locale);
+        column.selectedFormatter = selectedFormatter;
+        column.setPrintFormatter(printFormatter);
+        return column;
+    }
+
+    @Override
+    public DateTimeColumn copy() {
+        DateTimeColumn column = emptyCopy(data.size());
+        column.data = data.clone();
         return column;
     }
 
@@ -198,12 +250,6 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         data.clear();
     }
 
-    @Override
-    public DateTimeColumn copy() {
-        DateTimeColumn column = new DateTimeColumn(name(), data);
-        column.setComment(comment());
-        return column;
-    }
 
     @Override
     public void sortAscending() {
@@ -218,22 +264,22 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     @Override
     public Table summary() {
         Table table = Table.create("Column: " + name());
-        CategoryColumn measure = new CategoryColumn("Measure");
-        CategoryColumn value = new CategoryColumn("Value");
+        StringColumn measure = StringColumn.create("Measure");
+        StringColumn value = StringColumn.create("Value");
         table.addColumn(measure);
         table.addColumn(value);
 
-        measure.add("Count");
-        value.add(String.valueOf(size()));
+        measure.append("Count");
+        value.append(String.valueOf(size()));
 
-        measure.add("Missing");
-        value.add(String.valueOf(countMissing()));
+        measure.append("Missing");
+        value.append(String.valueOf(countMissing()));
 
-        measure.add("Earliest");
-        value.add(String.valueOf(min()));
+        measure.append("Earliest");
+        value.append(String.valueOf(min()));
 
-        measure.add("Latest");
-        value.add(String.valueOf(max()));
+        measure.append("Latest");
+        value.append(String.valueOf(max()));
 
         return table;
     }
@@ -253,8 +299,10 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         for (long i : data) {
             ints.add(i);
         }
-        return new DateTimeColumn(name() + " Unique values",
-                LongArrayList.wrap(ints.toLongArray()));
+        DateTimeColumn column = emptyCopy(ints.size());
+        column.setName(name() + " Unique values");
+        column.data = LongArrayList.wrap(ints.toLongArray());
+        return column;
     }
 
     @Override
@@ -266,8 +314,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return data.getLong(index);
     }
 
+    public long getPackedDateTime(int index) {
+        return getLongInternal(index);
+    }
+
     public LocalDateTime get(int index) {
-        return PackedLocalDateTime.asLocalDateTime(getLongInternal(index));
+        return PackedLocalDateTime.asLocalDateTime(getPackedDateTime(index));
     }
 
     @Override
@@ -275,12 +327,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return comparator;
     }
 
-    public CategoryColumn dayOfWeek() {
-        CategoryColumn newColumn = new CategoryColumn(this.name() + " day of week", this.size());
+    public StringColumn dayOfWeek() {
+        StringColumn newColumn = StringColumn.create(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == (DateTimeColumn.MISSING_VALUE)) {
-                newColumn.append(CategoryColumn.MISSING_VALUE);
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 newColumn.append(PackedLocalDateTime.getDayOfWeek(c1).toString());
             }
@@ -288,12 +340,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return newColumn;
     }
 
-    public ShortColumn dayOfWeekValue() {
-        ShortColumn newColumn = new ShortColumn(this.name() + " day of week", this.size());
+    public NumberColumn dayOfWeekValue() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == (DateTimeColumn.MISSING_VALUE)) {
-                newColumn.append(ShortColumn.MISSING_VALUE);
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append((short) PackedLocalDateTime.getDayOfWeek(c1).getValue());
             }
@@ -301,12 +353,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return newColumn;
     }
 
-    public ShortColumn dayOfYear() {
-        ShortColumn newColumn = new ShortColumn(this.name() + " day of year", this.size());
+    public NumberColumn dayOfYear() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " day of year", this.size());
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == (DateTimeColumn.MISSING_VALUE)) {
-                newColumn.append(ShortColumn.MISSING_VALUE);
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append((short) PackedLocalDateTime.getDayOfYear(c1));
             }
@@ -314,12 +366,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return newColumn;
     }
 
-    public ShortColumn dayOfMonth() {
-        ShortColumn newColumn = new ShortColumn(this.name() + " day of month");
+    public NumberColumn dayOfMonth() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == FloatColumn.MISSING_VALUE) {
-                newColumn.append(ShortColumn.MISSING_VALUE);
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append(PackedLocalDateTime.getDayOfMonth(c1));
             }
@@ -331,10 +383,10 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
      * Returns a TimeColumn containing the time portion of each dateTime in this DateTimeColumn
      */
     public TimeColumn time() {
-        TimeColumn newColumn = new TimeColumn(this.name() + " time");
+        TimeColumn newColumn = TimeColumn.create(this.name() + " time");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == MISSING_VALUE) {
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
                 newColumn.appendInternal(TimeColumn.MISSING_VALUE);
             } else {
                 newColumn.appendInternal(PackedLocalDateTime.time(c1));
@@ -347,10 +399,10 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
      * Returns a DateColumn containing the date portion of each dateTime in this DateTimeColumn
      */
     public DateColumn date() {
-        DateColumn newColumn = new DateColumn(this.name() + " date");
+        DateColumn newColumn = DateColumn.create(this.name() + " date");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == MISSING_VALUE) {
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
                 newColumn.appendInternal(DateColumn.MISSING_VALUE);
             } else {
                 newColumn.appendInternal(PackedLocalDateTime.date(c1));
@@ -359,12 +411,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return newColumn;
     }
 
-    public ShortColumn monthNumber() {
-        ShortColumn newColumn = new ShortColumn(this.name() + " month");
+    public NumberColumn monthNumber() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == MISSING_VALUE) {
-                newColumn.append(ShortColumn.MISSING_VALUE);
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append((short) PackedLocalDateTime.getMonthValue(c1));
             }
@@ -372,97 +424,97 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return newColumn;
     }
 
-    public CategoryColumn monthName() {
-        CategoryColumn newColumn = new CategoryColumn(this.name() + " month");
+    public StringColumn monthName() {
+        StringColumn newColumn = StringColumn.create(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == MISSING_VALUE) {
-                newColumn.add(CategoryColumn.MISSING_VALUE);
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
             } else {
-                newColumn.add(Month.of(PackedLocalDateTime.getMonthValue(c1)).name());
+                newColumn.append(Month.of(PackedLocalDateTime.getMonthValue(c1)).name());
             }
         }
         return newColumn;
     }
 
     /**
-     * Returns a CategoryColumn with the year and month from this column concatenated into a String that will sort
+     * Returns a StringColumn with the year and month from this column concatenated into a String that will sort
      * lexicographically in temporal order.
      * <p>
      * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
      * you want monthly data but your source data is more than a year long and you don't want months from different
      * years aggregated together).
      */
-    public CategoryColumn yearMonthString() {
-        CategoryColumn newColumn = new CategoryColumn(this.name() + " year & month");
+    public StringColumn yearMonthString() {
+        StringColumn newColumn = StringColumn.create(this.name() + " year & month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == MISSING_VALUE) {
-                newColumn.add(CategoryColumn.MISSING_VALUE);
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
                 ym = ym + "-" + Strings.padStart(
                         String.valueOf(PackedLocalDateTime.getMonthValue(c1)), 2, '0');
-                newColumn.add(ym);
+                newColumn.append(ym);
             }
         }
         return newColumn;
     }
 
     /**
-     * Returns a CategoryColumn with the year and day-of-year derived from this column concatenated into a String
+     * Returns a StringColumn with the year and day-of-year derived from this column concatenated into a String
      * that will sort lexicographically in temporal order.
      * <p>
      * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
      * you want monthly data but your source data is more than a year long and you don't want months from different
      * years aggregated together).
      */
-    public CategoryColumn yearDayString() {
-        CategoryColumn newColumn = new CategoryColumn(this.name() + " year & month");
+    public StringColumn yearDayString() {
+        StringColumn newColumn = StringColumn.create(this.name() + " year & month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == MISSING_VALUE) {
-                newColumn.add(CategoryColumn.MISSING_VALUE);
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
                 ym = ym + "-" + Strings.padStart(
                         String.valueOf(PackedLocalDateTime.getDayOfYear(c1)), 3, '0');
-                newColumn.add(ym);
+                newColumn.append(ym);
             }
         }
         return newColumn;
     }
 
     /**
-     * Returns a CategoryColumn with the year and week-of-year derived from this column concatenated into a String
+     * Returns a StringColumn with the year and week-of-year derived from this column concatenated into a String
      * that will sort lexicographically in temporal order.
      * <p>
      * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
      * you want monthly data but your source data is more than a year long and you don't want months from different
      * years aggregated together).
      */
-    public CategoryColumn yearWeekString() {
-        CategoryColumn newColumn = new CategoryColumn(this.name() + " year & month");
+    public StringColumn yearWeekString() {
+        StringColumn newColumn = StringColumn.create(this.name() + " year & month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == MISSING_VALUE) {
-                newColumn.add(CategoryColumn.MISSING_VALUE);
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
                 ym = ym + "-" + Strings.padStart(
                         String.valueOf(PackedLocalDateTime.getWeekOfYear(c1)), 2, '0');
-                newColumn.add(ym);
+                newColumn.append(ym);
             }
         }
         return newColumn;
     }
 
-    public ShortColumn year() {
-        ShortColumn newColumn = new ShortColumn(this.name() + " year");
+    public NumberColumn year() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " year");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (c1 == MISSING_VALUE) {
-                newColumn.append(ShortColumn.MISSING_VALUE);
+            long c1 = this.getPackedDateTime(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append(PackedLocalDate.getYear(PackedLocalDateTime.date(c1)));
             }
@@ -485,7 +537,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
     public Selection isEqualTo(LocalDateTime value) {
         long packed = PackedLocalDateTime.pack(value);
-        return select(LongColumnUtils.isEqualTo, packed);
+        return eval(DateTimePredicates.isEqualTo, packed);
+    }
+
+    public Selection isNotEqualTo(LocalDateTime value) {
+        long packed = PackedLocalDateTime.pack(value);
+        return eval(DateTimePredicates.isNotEqualTo, packed);
     }
 
     public Selection isEqualTo(DateTimeColumn column) {
@@ -502,35 +559,35 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public Selection isAfter(LocalDateTime value) {
-        return select(LongColumnUtils.isGreaterThan, PackedLocalDateTime.pack(value));
+        return eval(DateTimePredicates.isGreaterThan, PackedLocalDateTime.pack(value));
     }
 
     public Selection isAfter(Long packedDateTime) {
-        return select(LongColumnUtils.isGreaterThan, packedDateTime);
+        return eval(DateTimePredicates.isGreaterThan, packedDateTime);
     }
 
     public Selection isOnOrAfter(long value) {
-        return select(LongColumnUtils.isGreaterThanOrEqualTo, value);
+        return eval(DateTimePredicates.isGreaterThanOrEqualTo, value);
     }
 
     public Selection isOnOrAfter(LocalDateTime value) {
-        return select(LongColumnUtils.isGreaterThanOrEqualTo, PackedLocalDateTime.pack(value));
+        return eval(DateTimePredicates.isGreaterThanOrEqualTo, PackedLocalDateTime.pack(value));
     }
 
     public Selection isBefore(LocalDateTime value) {
-        return select(LongColumnUtils.isLessThan, PackedLocalDateTime.pack(value));
+        return eval(DateTimePredicates.isLessThan, PackedLocalDateTime.pack(value));
     }
 
     public Selection isBefore(Long packedDateTime) {
-        return select(LongColumnUtils.isLessThan, packedDateTime);
+        return eval(DateTimePredicates.isLessThan, packedDateTime);
     }
 
     public Selection isOnOrBefore(long value) {
-        return select(LongColumnUtils.isLessThanOrEqualTo, value);
+        return eval(DateTimePredicates.isLessThanOrEqualTo, value);
     }
 
     public Selection isOnOrBefore(LocalDateTime value) {
-        return select(LongColumnUtils.isLessThanOrEqualTo, PackedLocalDateTime.pack(value));
+        return eval(DateTimePredicates.isLessThanOrEqualTo, PackedLocalDateTime.pack(value));
     }
 
     public Selection isAfter(DateTimeColumn column) {
@@ -566,7 +623,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (getLongInternal(i) == MISSING_VALUE) {
+            if (getPackedDateTime(i) == MISSING_VALUE) {
                 count++;
             }
         }
@@ -605,44 +662,29 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return output;
     }
 
-    public String print() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(title());
-        for (long next : data) {
-            builder.append(String.valueOf(PackedLocalDateTime.asLocalDateTime(next)));
-            builder.append('\n');
-        }
-        return builder.toString();
-    }
-
     @Override
     public Selection isMissing() {
-        return select(isMissing);
+        return eval(isMissing);
     }
 
     @Override
     public Selection isNotMissing() {
-        return select(isNotMissing);
-    }
-
-    @Override
-    public String toString() {
-        return "LocalDateTime column: " + name();
+        return eval(isNotMissing);
     }
 
     @Override
     public void append(Column column) {
         Preconditions.checkArgument(column.type() == this.type());
-        DateTimeColumn intColumn = (DateTimeColumn) column;
-        for (int i = 0; i < intColumn.size(); i++) {
-            add(intColumn.get(i));
+        DateTimeColumn doubleColumn = (DateTimeColumn) column;
+        for (int i = 0; i < doubleColumn.size(); i++) {
+            add(doubleColumn.get(i));
         }
     }
 
     public LocalDateTime max() {
         long max;
         if (!isEmpty()) {
-            max = getLongInternal(0);
+            max = getPackedDateTime(0);
         } else {
             return null;
         }
@@ -662,7 +704,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         long min;
 
         if (!isEmpty()) {
-            min = getLongInternal(0);
+            min = getPackedDateTime(0);
         } else {
             return null;
         }
@@ -677,12 +719,12 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         return PackedLocalDateTime.asLocalDateTime(min);
     }
 
-    public ShortColumn minuteOfDay() {
-        ShortColumn newColumn = new ShortColumn(this.name() + " minute of day");
+    public NumberColumn minuteOfDay() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " minute of day");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = getLongInternal(r);
+            long c1 = getPackedDateTime(r);
             if (c1 == DateTimeColumn.MISSING_VALUE) {
-                newColumn.append(ShortColumn.MISSING_VALUE);
+                newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append((short) PackedLocalDateTime.getMinuteOfDay(c1));
             }
@@ -715,122 +757,122 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public Selection isMonday() {
-        return select(PackedLocalDateTime::isMonday);
+        return eval(PackedLocalDateTime::isMonday);
     }
 
     public Selection isTuesday() {
-        return select(PackedLocalDateTime::isTuesday);
+        return eval(PackedLocalDateTime::isTuesday);
     }
 
     public Selection isWednesday() {
-        return select(PackedLocalDateTime::isWednesday);
+        return eval(PackedLocalDateTime::isWednesday);
     }
 
     public Selection isThursday() {
-        return select(PackedLocalDateTime::isThursday);
+        return eval(PackedLocalDateTime::isThursday);
     }
 
     public Selection isFriday() {
-        return select(PackedLocalDateTime::isFriday);
+        return eval(PackedLocalDateTime::isFriday);
     }
 
     public Selection isSaturday() {
-        return select(PackedLocalDateTime::isSaturday);
+        return eval(PackedLocalDateTime::isSaturday);
     }
 
     public Selection isSunday() {
-        return select(PackedLocalDateTime::isSunday);
+        return eval(PackedLocalDateTime::isSunday);
     }
 
     public Selection isInJanuary() {
-        return select(PackedLocalDateTime::isInJanuary);
+        return eval(PackedLocalDateTime::isInJanuary);
     }
 
     public Selection isInFebruary() {
-        return select(PackedLocalDateTime::isInFebruary);
+        return eval(PackedLocalDateTime::isInFebruary);
     }
 
     public Selection isInMarch() {
-        return select(PackedLocalDateTime::isInMarch);
+        return eval(PackedLocalDateTime::isInMarch);
     }
 
     public Selection isInApril() {
-        return select(PackedLocalDateTime::isInApril);
+        return eval(PackedLocalDateTime::isInApril);
     }
 
     public Selection isInMay() {
-        return select(PackedLocalDateTime::isInMay);
+        return eval(PackedLocalDateTime::isInMay);
     }
 
     public Selection isInJune() {
-        return select(PackedLocalDateTime::isInJune);
+        return eval(PackedLocalDateTime::isInJune);
     }
 
     public Selection isInJuly() {
-        return select(PackedLocalDateTime::isInJuly);
+        return eval(PackedLocalDateTime::isInJuly);
     }
 
     public Selection isInAugust() {
-        return select(PackedLocalDateTime::isInAugust);
+        return eval(PackedLocalDateTime::isInAugust);
     }
 
     public Selection isInSeptember() {
-        return select(PackedLocalDateTime::isInSeptember);
+        return eval(PackedLocalDateTime::isInSeptember);
     }
 
     public Selection isInOctober() {
-        return select(PackedLocalDateTime::isInOctober);
+        return eval(PackedLocalDateTime::isInOctober);
     }
 
     public Selection isInNovember() {
-        return select(PackedLocalDateTime::isInNovember);
+        return eval(PackedLocalDateTime::isInNovember);
     }
 
     public Selection isInDecember() {
-        return select(PackedLocalDateTime::isInDecember);
+        return eval(PackedLocalDateTime::isInDecember);
     }
 
     public Selection isFirstDayOfMonth() {
-        return select(PackedLocalDateTime::isFirstDayOfMonth);
+        return eval(PackedLocalDateTime::isFirstDayOfMonth);
     }
 
     public Selection isLastDayOfMonth() {
-        return select(PackedLocalDateTime::isLastDayOfMonth);
+        return eval(PackedLocalDateTime::isLastDayOfMonth);
     }
 
     public Selection isInQ1() {
-        return select(PackedLocalDateTime::isInQ1);
+        return eval(PackedLocalDateTime::isInQ1);
     }
 
     public Selection isInQ2() {
-        return select(PackedLocalDateTime::isInQ2);
+        return eval(PackedLocalDateTime::isInQ2);
     }
 
     public Selection isInQ3() {
-        return select(PackedLocalDateTime::isInQ3);
+        return eval(PackedLocalDateTime::isInQ3);
     }
 
     public Selection isInQ4() {
-        return select(PackedLocalDateTime::isInQ4);
+        return eval(PackedLocalDateTime::isInQ4);
     }
 
     public Selection isNoon() {
-        return select(PackedLocalDateTime::isNoon);
+        return eval(PackedLocalDateTime::isNoon);
     }
 
     public Selection isMidnight() {
-        return select(PackedLocalDateTime::isMidnight);
+        return eval(PackedLocalDateTime::isMidnight);
     }
 
     public Selection isBeforeNoon() {
-        return select(PackedLocalDateTime::AM);
+        return eval(PackedLocalDateTime::AM);
     }
 
     public Selection isAfterNoon() {
-        return select(PackedLocalDateTime::PM);
+        return eval(PackedLocalDateTime::PM);
     }
 
-    public Selection select(LongPredicate predicate) {
+    public Selection eval(LongPredicate predicate) {
         Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
             long next = data.getLong(idx);
@@ -849,7 +891,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         data.set(index, PackedLocalDateTime.pack(value));
     }
 
-    public Selection select(LongBiPredicate predicate, long value) {
+    public Selection eval(LongBiPredicate predicate, long value) {
         Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
             long next = data.getLong(idx);
@@ -870,7 +912,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public List<LocalDateTime> top(int n) {
         List<LocalDateTime> top = new ArrayList<>();
         long[] values = data.toLongArray();
-        LongArrays.parallelQuickSort(values, ReverseLongComparator.instance());
+        LongArrays.parallelQuickSort(values, DescendingLongComparator.instance());
         for (int i = 0; i < n && i < values.length; i++) {
             top.add(PackedLocalDateTime.asLocalDateTime(values[i]));
         }
@@ -908,7 +950,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public Selection isInYear(int year) {
-        return select(i -> PackedLocalDateTime.isInYear(i, year));
+        return eval(i -> PackedLocalDateTime.isInYear(i, year));
     }
 
     public boolean contains(LocalDateTime dateTime) {
@@ -917,7 +959,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     }
 
     public int byteSize() {
-        return BYTE_SIZE;
+        return type().byteSize();
     }
 
     /**
@@ -925,7 +967,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
      */
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(8).putLong(getLongInternal(rowNumber)).array();
+        return ByteBuffer.allocate(byteSize()).putLong(getPackedDateTime(rowNumber)).array();
     }
 
     /**
@@ -938,7 +980,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
 
         return new Iterator<LocalDateTime>() {
 
-            LongIterator longIterator = longIterator();
+            final LongIterator longIterator = longIterator();
 
             @Override
             public boolean hasNext() {
@@ -952,21 +994,4 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
         };
     }
 
-    @Override
-    public DateTimeColumn difference() {
-        throw new UnsupportedOperationException("DateTimeColumn.difference() currently not supported");
-   /*
-    DateTimeColumn returnValue = new DateTimeColumn(this.name(), data.size());
-    returnValue.add(DateTimeColumn.MISSING_VALUE);
-    for (int current = 1; current > data.size(); current++) {
-      LocalDateTime currentValue = get(current);
-      LocalDateTime nextValue = get(current+1);
-      Duration duration = Duration.between(currentValue, nextValue);
-      LocalDateTime date =
-              LocalDateTime.ofInstant(Instant.ofEpochMilli(duration.toMillis()), ZoneId.systemDefault());
-      returnValue.add(date);
-    }
-    return returnValue;
-    */
-    }
 }

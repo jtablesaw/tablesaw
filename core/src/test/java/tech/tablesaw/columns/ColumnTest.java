@@ -14,15 +14,15 @@
 
 package tech.tablesaw.columns;
 
+import tech.tablesaw.api.*;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.api.*;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
-import static tech.tablesaw.api.ColumnType.*;
 
 /**
  * Tests for Column functionality that is common across column types
@@ -30,20 +30,20 @@ import static tech.tablesaw.api.ColumnType.*;
 public class ColumnTest {
 
     private static final ColumnType[] types = {
-            LOCAL_DATE,     // date of poll
-            INTEGER,        // approval rating (pct)
-            CATEGORY             // polling org
+            ColumnType.LOCAL_DATE,     // date of poll
+            ColumnType.NUMBER,        // approval rating (pct)
+            ColumnType.STRING             // polling org
     };
 
     private Table table;
 
     @Before
     public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv").columnTypes(types));
+        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").columnTypes(types));
     }
 
     @Test
-    public void testFirst() throws Exception {
+    public void testFirst() {
         // test with dates
         DateColumn first = (DateColumn) table.dateColumn("date").first(3);
         assertEquals(LocalDate.parse("2004-02-04"), first.get(0));
@@ -51,20 +51,20 @@ public class ColumnTest {
         assertEquals(LocalDate.parse("2004-01-07"), first.get(2));
 
         // test with ints
-        IntColumn first2 = (IntColumn) table.intColumn("approval").first(3);
-        assertEquals(53, first2.get(0));
-        assertEquals(53, first2.get(1));
-        assertEquals(58, first2.get(2));
+        NumberColumn first2 = (NumberColumn) table.numberColumn("approval").first(3);
+        assertEquals(53, first2.get(0), 0.0001);
+        assertEquals(53, first2.get(1), 0.0001);
+        assertEquals(58, first2.get(2), 0.0001);
 
         // test with categories
-        CategoryColumn first3 = (CategoryColumn) table.categoryColumn("who").first(3);
+        StringColumn first3 = (StringColumn) table.stringColumn("who").first(3);
         assertEquals("fox", first3.get(0));
         assertEquals("fox", first3.get(1));
         assertEquals("fox", first3.get(2));
     }
 
     @Test
-    public void testLast() throws Exception {
+    public void testLast() {
 
         // test with dates
         DateColumn last = (DateColumn) table.dateColumn("date").last(3);
@@ -73,34 +73,27 @@ public class ColumnTest {
         assertEquals(LocalDate.parse("2001-02-09"), last.get(2));
 
         // test with ints
-        IntColumn last2 = (IntColumn) table.intColumn("approval").last(3);
-        assertEquals(52, last2.get(0));
-        assertEquals(53, last2.get(1));
-        assertEquals(57, last2.get(2));
+        NumberColumn last2 = (NumberColumn) table.numberColumn("approval").last(3);
+        assertEquals(52, last2.get(0), 0.0001);
+        assertEquals(53, last2.get(1), 0.0001);
+        assertEquals(57, last2.get(2), 0.0001);
 
         // test with categories
-        CategoryColumn last3 = (CategoryColumn) table.categoryColumn("who").last(3);
+        StringColumn last3 = (StringColumn) table.stringColumn("who").last(3);
         assertEquals("zogby", last3.get(0));
         assertEquals("zogby", last3.get(1));
         assertEquals("zogby", last3.get(2));
     }
 
     @Test
-    public void testName() throws Exception {
-        Column c = table.intColumn("approval");
+    public void testName() {
+        Column c = table.numberColumn("approval");
         assertEquals("approval", c.name());
     }
 
     @Test
-    public void testComment() throws Exception {
-        Column c = table.intColumn("approval");
-        c.setComment("Dumb comment");
-        assertEquals("Dumb comment", c.comment());
-    }
-
-    @Test
-    public void testType() throws Exception {
-        Column c = table.intColumn("approval");
-        assertEquals(INTEGER, c.type());
+    public void testType() {
+        Column c = table.numberColumn("approval");
+        Assert.assertEquals(ColumnType.NUMBER, c.type());
     }
 }

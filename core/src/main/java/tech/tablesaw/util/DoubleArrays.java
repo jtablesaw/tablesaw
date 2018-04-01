@@ -15,8 +15,8 @@
 package tech.tablesaw.util;
 
 import com.google.common.base.Preconditions;
-import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.table.TemporaryView;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.ViewGroup;
 
 /**
@@ -32,15 +32,15 @@ public class DoubleArrays {
         return result;
     }
 
-    public static double[][] to2dArray(NumericColumn... columns) {
+    public static double[][] to2dArray(NumberColumn... columns) {
         Preconditions.checkArgument(columns.length >= 1);
         int obs = columns[0].size();
         double[][] allVals = new double[obs][columns.length];
 
         for (int r = 0; r < obs; r++) {
             for (int c = 0; c < columns.length; c++) {
-                allVals[r][c] = columns[c].getFloat(r);
-                allVals[r][c] = columns[c].getFloat(r);
+                allVals[r][c] = columns[c].get(r);
+                allVals[r][c] = columns[c].get(r);
             }
         }
         return allVals;
@@ -52,11 +52,11 @@ public class DoubleArrays {
 
         double[][] allVals = new double[viewCount][];
         for (int viewNumber = 0; viewNumber < viewCount; viewNumber++) {
-            TemporaryView view = views.get(viewNumber);
+            TableSlice view = views.get(viewNumber);
             allVals[viewNumber] = new double[view.rowCount()];
-            NumericColumn numericColumn = view.numericColumn(columnNumber);
+            NumberColumn numberColumn = view.numberColumn(columnNumber);
             for (int r = 0; r < view.rowCount(); r++) {
-                allVals[viewNumber][r] = numericColumn.getFloat(r);
+                allVals[viewNumber][r] = numberColumn.get(r);
             }
         }
         return allVals;
@@ -71,11 +71,11 @@ public class DoubleArrays {
         return allVals;
     }
 
-    public static double[][] to2dArray(NumericColumn x, NumericColumn y) {
+    public static double[][] to2dArray(NumberColumn x, NumberColumn y) {
         double[][] allVals = new double[x.size()][2];
         for (int i = 0; i < x.size(); i++) {
-            allVals[i][0] = x.getFloat(i);
-            allVals[i][1] = y.getFloat(i);
+            allVals[i][0] = x.get(i);
+            allVals[i][1] = y.get(i);
         }
         return allVals;
     }

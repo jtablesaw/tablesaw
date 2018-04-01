@@ -17,13 +17,12 @@ package tech.tablesaw.io.jdbc;
 import org.junit.Assert;
 import org.junit.Test;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.util.TestDb;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
-import static tech.tablesaw.util.TestDb.*;
 
 /**
  * Tests for creating Tables from JDBC result sets using SqlResutSetReader
@@ -41,16 +40,16 @@ public class SqlResultSetReaderTest {
         Connection conn = DriverManager.getConnection(DB_URL);
 
         // If the DB already exists, drop the tables.
-        dropTables(conn);
+        TestDb.dropTables(conn);
 
         // Build the Coffee table.
-        buildCoffeeTable(conn);
+        TestDb.buildCoffeeTable(conn);
 
         // Build the Customer table.
-        buildCustomerTable(conn);
+        TestDb.buildCustomerTable(conn);
 
         // Build the UnpaidInvoice table.
-        buildUnpaidOrderTable(conn);
+        TestDb.buildUnpaidOrderTable(conn);
 
         try (Statement stmt = conn.createStatement()) {
             String sql;

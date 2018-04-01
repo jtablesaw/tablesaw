@@ -14,14 +14,15 @@
 
 package tech.tablesaw.examples;
 
-import static tech.tablesaw.api.ColumnType.*;
-import static tech.tablesaw.api.QueryHelper.column;
-
-import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.plot.Scatter;
 import tech.tablesaw.io.csv.CsvReadOptions;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.QueryHelper.*;
 
 /**
  * Usage example using a Tornado dataset
@@ -30,34 +31,34 @@ public class TornadoExample {
 
     // column types for the tornado table
     private static final ColumnType[] COLUMN_TYPES_OLD = {
-            INTEGER,     // number by year
-            INTEGER,     // year
-            INTEGER,     // month
-            INTEGER,     // day
+            NUMBER,     // number by year
+            NUMBER,     // year
+            NUMBER,     // month
+            NUMBER,     // day
             LOCAL_DATE,  // date
             LOCAL_TIME,  // time
-            CATEGORY,    // tz
-            CATEGORY,    // st
-            CATEGORY,    // state fips
-            INTEGER,     // state torn number
-            INTEGER,     // scale
-            INTEGER,     // injuries
-            INTEGER,     // fatalities
-            FLOAT,       // loss
-            FLOAT,   // crop loss
-            FLOAT,   // St. Lat
-            FLOAT,   // St. Lon
-            FLOAT,   // End Lat
-            FLOAT,   // End Lon
-            FLOAT,   // length
-            FLOAT,   // width
-            FLOAT,   // NS
-            FLOAT,   // SN
-            FLOAT,   // SG
-            CATEGORY,  // Count FIPS 1-4
-            CATEGORY,
-            CATEGORY,
-            CATEGORY};
+            STRING,    // tz
+            STRING,    // st
+            STRING,    // state fips
+            NUMBER,     // state torn number
+            NUMBER,     // scale
+            NUMBER,     // injuries
+            NUMBER,     // fatalities
+            NUMBER,       // loss
+            NUMBER,   // crop loss
+            NUMBER,   // St. Lat
+            NUMBER,   // St. Lon
+            NUMBER,   // End Lat
+            NUMBER,   // End Lon
+            NUMBER,   // length
+            NUMBER,   // width
+            NUMBER,   // NS
+            NUMBER,   // SN
+            NUMBER,   // SG
+            STRING,  // Count FIPS 1-4
+            STRING,
+            STRING,
+            STRING};
 
     public static void main(String[] args) throws Exception {
 
@@ -79,7 +80,7 @@ public class TornadoExample {
         assert (tornadoes != null);
 
         out(tornadoes.structure());
-        out(tornadoes.structure().selectWhere(column("Column Type").isEqualTo("INTEGER")));
+        out(tornadoes.structure().selectWhere(stringColumn("Column Type").isEqualTo("NUMBER")));
 
         tornadoes.setName("tornadoes");
 
@@ -100,12 +101,12 @@ public class TornadoExample {
         out("Use first(3) to view the first 3 rows:");
         out(tornadoes.first(3));
 
-        tornadoes = tornadoes.selectWhere(column("Start Lat").isGreaterThan(20f));
+        tornadoes = tornadoes.selectWhere(numberColumn("Start Lat").isGreaterThan(20f));
         Scatter.show("US Tornadoes 1950-2014", tornadoes.nCol("Start Lon"), tornadoes.nCol("Start Lat"));
 
         out();
         out("Extact month from the date and make it a separate column");
-        CategoryColumn month = tornadoes.dateColumn("Date").month();
+        StringColumn month = tornadoes.dateColumn("Date").month();
         out(month.summary());
 
         out("Add the month column to the table");
@@ -114,14 +115,14 @@ public class TornadoExample {
 
         out();
         out("Filtering: Tornadoes where there were fatalities");
-        Table fatal = tornadoes.selectWhere(column("Fatalities").isGreaterThan(0));
+        Table fatal = tornadoes.selectWhere(numberColumn("Fatalities").isGreaterThan(0));
         out(fatal.shape());
 
         out();
         out(fatal.first(5));
 
         out();
-        out("Total fatalities: " + fatal.shortColumn("Fatalities").sum());
+        out("Total fatalities: " + fatal.numberColumn("Fatalities").sum());
 
         out();
         out("Sorting on Fatalities in descending order");
@@ -130,19 +131,17 @@ public class TornadoExample {
 
         out("");
         out("Calculating basic descriptive statistics on Fatalities");
-        out(fatal.shortColumn("Fatalities").summary());
-
+        out(fatal.numberColumn("Fatalities").summary());
 
         //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
-        Table injuriesByScale = tornadoes.median("Injuries").by("Scale");
-        Table fob = tornadoes.min("Injuries").by("Scale", "State");
+        Table injuriesByScale = tornadoes.summarize("Injuries", median).by("Scale");
+        Table fob = tornadoes.summarize("Injuries", min).by("Scale", "State");
         out(fob);
         injuriesByScale.setName("Median injuries by Tornado Scale");
         out(injuriesByScale);
 
-
         //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
-        Table injuriesByScaleState = tornadoes.median("Injuries").by("Scale", "State");
+        Table injuriesByScaleState = tornadoes.summarize("Injuries", median).by("Scale", "State");
         injuriesByScaleState.setName("Median injuries by Tornado Scale and State");
         out(injuriesByScaleState);
 
@@ -150,16 +149,6 @@ public class TornadoExample {
         out();
         out("Writing the revised table to a new csv file");
         tornadoes.write().csv("../data/rev_tornadoes_1950-2014.csv");
-
-        out();
-        out("Saving to Tablesaw format");
-        String dbName = tornadoes.save("/tmp/tablesaw/testdata");
-
-        // NOTE: dbName is equal to "/tmp/tablesaw/testdata/tornadoes.saw"
-
-        out();
-        out("Reading from Tablesaw format");
-        tornadoes = Table.readTable(dbName);
     }
 
     private static void out(Object obj) {

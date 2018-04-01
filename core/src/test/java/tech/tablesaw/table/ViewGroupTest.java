@@ -18,14 +18,13 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.api.CategoryColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -48,18 +47,18 @@ public class ViewGroupTest {
 
     @Before
     public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv"));
+        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
     }
 
     @Test
     public void testViewGroupCreation() {
 
-        ViewGroup group = new ViewGroup(table, table.categoricalColumn("who"));
+        ViewGroup group = StandardViewGroup.create(table, table.categoricalColumn("who"));
         assertEquals(6, group.size());
-        List<TemporaryView> viewList = group.getSubTables();
+        List<TableSlice> viewList = group.getSubTables();
 
         int count = 0;
-        for (TemporaryView view : viewList) {
+        for (TableSlice view : viewList) {
             count += view.rowCount();
         }
         assertEquals(table.rowCount(), count);
@@ -67,53 +66,29 @@ public class ViewGroupTest {
 
     @Test
     public void testViewTwoColumn() {
-        ViewGroup group = new ViewGroup(table,
+        ViewGroup group = StandardViewGroup.create(table,
                 table.categoricalColumn("who"),
                 table.categoricalColumn("approval"));
-        List<TemporaryView> viewList = group.getSubTables();
+        List<TableSlice> viewList = group.getSubTables();
 
         int count = 0;
-        for (TemporaryView view : viewList) {
+        for (TableSlice view : viewList) {
             count += view.rowCount();
         }
         assertEquals(table.rowCount(), count);
     }
 
     @Test
-    public void testWith2GroupingCols() {
-        CategoryColumn month = table.dateColumn(0).month();
-        month.setName("month");
-        table.addColumn(month);
-        String[] splitColumnNames = {table.column(2).name(), "month"};
-        ViewGroup tableGroup = ViewGroup.create(table, splitColumnNames);
-        List<TemporaryView> tables = tableGroup.getSubTables();
-        Table t = table.sum("approval").by(splitColumnNames);
-
-        // compare the sum of the original column with the sum of the sums of the group table
-        assertEquals(table.shortColumn(1).sum(), Math.round(t.doubleColumn(2).sum()));
-        assertEquals(65, tables.size());
-    }
-
-    @Test
-    public void testCountByGroup() {
-        Table groups = table.count("approval").by("who");
-        assertEquals(2, groups.columnCount());
-        assertEquals(6, groups.rowCount());
-        CategoryColumn group = groups.categoryColumn(0);
-        assertTrue(group.contains("fox"));
-    }
-
-    @Test
     public void testCustomFunction() {
         Table exaggeration = table.summarize("approval", exaggerate).by("who");
-        CategoryColumn group = exaggeration.categoryColumn(0);
+        StringColumn group = exaggeration.stringColumn(0);
         assertTrue(group.contains("fox"));
     }
 
     @Test
-    public void testSumGroup() {
-        Table groups = table.sum("approval").by("who");
-        // compare the sum of the original column with the sum of the sums of the group table
-        assertEquals(table.shortColumn(1).sum(), Math.round(groups.doubleColumn(1).sum()));
+    public void asTableList() {
+        ViewGroup group = StandardViewGroup.create(table, "who");
+        List<Table> tables = group.asTableList();
+        assertEquals(6, tables.size());
     }
 }

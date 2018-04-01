@@ -13,9 +13,11 @@
  */
 package tech.tablesaw.api.plot;
 
-import java.io.IOException;
-import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.util.selection.Selection;
+
+import java.io.IOException;
 
 /**
  *
@@ -23,11 +25,11 @@ import tech.tablesaw.api.Table;
 public class BubbleExample {
 
     public static void main(String[] args) throws IOException {
-        Table baseball = Table.read().csv("../data/market_share.csv");
-        Table sub = baseball.selectRows(0, 10);
-        NumericColumn x = sub.nCol("Products");
-        NumericColumn y = sub.nCol("Sales");
-        NumericColumn data = sub.nCol("Market_Share");
+        Table marketShare = Table.read().csv("../data/market_share.csv");
+        Table sub = marketShare.selectWhere(Selection.withRange(0, 4));
+        NumberColumn x = sub.nCol("Products");
+        NumberColumn y = sub.nCol("Sales");
+        NumberColumn data = sub.nCol("Market_Share");
         Bubble.show("Market Share", x, y, data);
     }
 

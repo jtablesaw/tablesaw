@@ -21,28 +21,26 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import static tech.tablesaw.api.ColumnType.*;
-
 /**
  * Basic example code
  */
 public class GettingStarted {
 
     private ColumnType[] types = {
-            LOCAL_DATE,     // date of poll
-            INTEGER,        // approval rating (pct)
-            CATEGORY        // polling org
+            ColumnType.LOCAL_DATE,     // date of poll
+            ColumnType.NUMBER,        // approval rating (pct)
+            ColumnType.STRING        // polling org
     };
 
     private Table table;
 
     @Before
     public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv").columnTypes(types));
+        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").columnTypes(types));
     }
 
     @Test
-    public void printStructure() throws Exception {
+    public void printStructure() {
         out(table.structure());
 
         out(table.first(10));

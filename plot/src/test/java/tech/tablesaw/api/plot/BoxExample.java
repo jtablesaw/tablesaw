@@ -15,7 +15,6 @@
 package tech.tablesaw.api.plot;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.plot.Box;
 
 
 /**

@@ -17,13 +17,13 @@ package tech.tablesaw.plotting.smile;
 import smile.plot.BoxPlot;
 import smile.plot.PlotCanvas;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.table.TemporaryView;
+import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.ViewGroup;
 import tech.tablesaw.util.DoubleArrays;
 
-import static tech.tablesaw.plotting.smile.SmilePlotUtils.getjFrame;
-
 import javax.swing.*;
+
+import static tech.tablesaw.plotting.smile.SmilePlotUtils.*;
 
 /**
  *
@@ -72,7 +72,7 @@ public class SmileBox {
     private static String[] groupNames(ViewGroup groups) {
         String[] result = new String[groups.size()];
         for (int i = 0; i < groups.size(); i++) {
-            TemporaryView view = groups.get(i);
+            TableSlice view = groups.get(i);
             result[i] = view.name();
         }
         return result;

@@ -14,12 +14,12 @@
 
 package tech.tablesaw.examples;
 
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.api.DateTimeColumn;
 
-import static tech.tablesaw.api.QueryHelper.allOf;
-import static tech.tablesaw.api.QueryHelper.column;
+import static tech.tablesaw.aggregate.AggregateFunctions.median;
+import static tech.tablesaw.api.QueryHelper.*;
 
 /**
  * Usage example using a Tornado dataset
@@ -44,19 +44,20 @@ public class ServiceExample {
         }
 
         // Calc duration
-        LongColumn duration = start.differenceInSeconds(end);
+        NumberColumn duration = start.differenceInSeconds(end);
         ops.addColumn(duration);
         duration.setName("Duration");
 
         out(ops);
 
         Table q2_429_assembly = ops.selectWhere(
-                allOf
-                        (column("date").isInQ2(),
-                                (column("SKU").startsWith("429")),
-                                (column("Operation").isEqualTo("Assembly"))));
+                and
+                        (dateColumn("date").isInQ2(),
+                                (stringColumn("SKU").startsWith("429")),
+                                (stringColumn("Operation").isEqualTo("Assembly"))));
 
-        Table durationByFacilityAndShift = q2_429_assembly.median("Duration").by("Facility", "Shift");
+        Table durationByFacilityAndShift = q2_429_assembly.summarize("Duration", median)
+                .by("Facility", "Shift");
 
         out(durationByFacilityAndShift);
 

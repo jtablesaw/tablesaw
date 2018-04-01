@@ -14,13 +14,21 @@
 
 package tech.tablesaw.table;
 
-import com.google.common.base.Preconditions;
-import tech.tablesaw.api.*;
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.CategoricalColumn;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.string.DataFramePrinter;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A tabular data structure like a table in a relational database, but not formally implementing the relational algebra
@@ -56,6 +64,12 @@ public abstract class Relation {
         }
         removeColumns(cols);
         return this;
+    }
+
+    public List<Column> columnsOfType(ColumnType type) {
+        return columns().stream()
+                .filter(column -> column.type() == type)
+                .collect(Collectors.toList());
     }
 
     public abstract Table first(int nRows);
@@ -158,7 +172,11 @@ public abstract class Relation {
 
     @Override
     public String toString() {
-        return "Table " + name() + ": Size = " + rowCount() + " x " + columnCount();
+        return print();
+    }
+
+    public String printAll() {
+        return print(rowCount());
     }
 
     public String print(int rowLimit) {
@@ -183,20 +201,20 @@ public abstract class Relation {
                 .append(" variables (cols)");
 
         Table structure = Table.create(nameBuilder.toString());
-        structure.addColumn(new IntColumn("Index"));
-        structure.addColumn(new CategoryColumn("Column Name"));
-        structure.addColumn(new CategoryColumn("Type"));
-        structure.addColumn(new IntColumn("Unique Values"));
-        structure.addColumn(new CategoryColumn("First"));
-        structure.addColumn(new CategoryColumn("Last"));
+        structure.addColumn(NumberColumn.create("Index"));
+        structure.addColumn(StringColumn.create("Column Name"));
+        structure.addColumn(StringColumn.create("Type"));
+        structure.addColumn(NumberColumn.create("Unique Values"));
+        structure.addColumn(StringColumn.create("First"));
+        structure.addColumn(StringColumn.create("Last"));
 
         for (Column column : columns()) {
-            structure.intColumn("Index").append(columnIndex(column));
-            structure.categoryColumn("Column Name").append(column.name());
-            structure.categoryColumn("Type").append(column.type().name());
-            structure.intColumn("Unique Values").append(column.countUnique());
-            structure.categoryColumn("First").append(column.first());
-            structure.categoryColumn("Last").append(column.getString(column.size() - 1));
+            structure.numberColumn("Index").append(columnIndex(column));
+            structure.stringColumn("Column Name").append(column.name());
+            structure.stringColumn("Type").append(column.type().name());
+            structure.numberColumn("Unique Values").append(column.countUnique());
+            structure.stringColumn("First").append(column.getString(0));
+            structure.stringColumn("Last").append(column.getString(column.size() - 1));
         }
         return structure;
     }
@@ -223,98 +241,54 @@ public abstract class Relation {
         return (BooleanColumn) column(columnName);
     }
 
-    public NumericColumn numericColumn(int columnIndex) {
+    public NumberColumn numberColumn(int columnIndex) {
         Column c = column(columnIndex);
-        if (c.type() == ColumnType.CATEGORY) {
-            CategoryColumn categoryColumn = (CategoryColumn) c;
-            return categoryColumn.asIntColumn();
+        if (c.type() == ColumnType.STRING) {
+            StringColumn stringColumn = (StringColumn) c;
+            return stringColumn.asNumberColumn();
         } else if (c.type() == ColumnType.BOOLEAN) {
             BooleanColumn booleanColumn = (BooleanColumn) c;
-            return booleanColumn.asIntColumn();
+            return booleanColumn.asNumberColumn();
         }
-        return (NumericColumn) column(columnIndex);
+        return (NumberColumn) column(columnIndex);
     }
 
-    public NumericColumn numericColumn(String columnName) {
+    public NumberColumn numberColumn(String columnName) {
         Column c = column(columnName);
-        if (c.type() == ColumnType.CATEGORY) {
-            CategoryColumn categoryColumn = (CategoryColumn) c;
-            return categoryColumn.asIntColumn();
+        if (c.type() == ColumnType.STRING) {
+            StringColumn stringColumn = (StringColumn) c;
+            return stringColumn.asNumberColumn();
         } else if (c.type() == ColumnType.BOOLEAN) {
             BooleanColumn booleanColumn = (BooleanColumn) c;
-            return booleanColumn.asIntColumn();
+            return booleanColumn.asNumberColumn();
         }
-        return (NumericColumn) column(columnName);
+        return (NumberColumn) column(columnName);
     }
 
     public CategoricalColumn categoricalColumn(String columnName) {
-        Column c = column(columnName);
-        Preconditions.checkState(c.isCategorical(), "Columns of type " + c.type() + " are note categorical.");
-        return (CategoricalColumn) c;
+        return (CategoricalColumn) column(columnName);
     }
 
     public CategoricalColumn categoricalColumn(int columnNumber) {
-        Column c = column(columnNumber);
-        Preconditions.checkState(c.isCategorical(), "Columns of type " + c.type() + " are note categorical.");
-        return (CategoricalColumn) c;
+        return (CategoricalColumn) column(columnNumber);
     }
 
     /**
-     * Returns the column with the given name cast to a NumericColumn
+     * Returns the column with the given name cast to a NumberColumn
      * <p>
-     * Shorthand for numericColumn()
+     * Shorthand for numberColumn()
      */
-    public NumericColumn nCol(String columnName) {
-        return numericColumn(columnName);
+    public NumberColumn nCol(String columnName) {
+        return numberColumn(columnName);
     }
 
     /**
-     * Returns the column with the given name cast to a NumericColumn
+     * Returns the column with the given name cast to a NumberColumn
      * <p>
-     * Shorthand for numericColumn()
+     * Shorthand for numberColumn()
      */
-    public NumericColumn nCol(int columnIndex) {
-        return numericColumn(columnIndex);
-    }
-
-    public FloatColumn floatColumn(int columnIndex) {
-        return (FloatColumn) column(columnIndex);
-    }
-
-    public FloatColumn floatColumn(String columnName) {
-        return (FloatColumn) column(columnName);
-    }
-
-    public DoubleColumn doubleColumn(int columnIndex) {
-        return (DoubleColumn) column(columnIndex);
-    }
-
-    public DoubleColumn doubleColumn(String columnName) {
-        return (DoubleColumn) column(columnName);
-    }
-
-    public IntColumn intColumn(String columnName) {
-        return (IntColumn) column(columnName);
-    }
-
-    public IntColumn intColumn(int columnIndex) {
-        return (IntColumn) column(columnIndex);
-    }
-
-    public ShortColumn shortColumn(String columnName) {
-        return (ShortColumn) column(columnName);
-    }
-
-    public ShortColumn shortColumn(int columnIndex) {
-        return (ShortColumn) column(columnIndex);
-    }
-
-    public LongColumn longColumn(String columnName) {
-        return (LongColumn) column(columnName);
-    }
-
-    public LongColumn longColumn(int columnIndex) {
-        return (LongColumn) column(columnIndex);
+    public NumberColumn nCol(int columnIndex) {
+        return numberColumn(columnIndex);
     }
 
     public DateColumn dateColumn(int columnIndex) {
@@ -333,12 +307,12 @@ public abstract class Relation {
         return (TimeColumn) column(columnIndex);
     }
 
-    public CategoryColumn categoryColumn(String columnName) {
-        return (CategoryColumn) column(columnName);
+    public StringColumn stringColumn(String columnName) {
+        return (StringColumn) column(columnName);
     }
 
-    public CategoryColumn categoryColumn(int columnIndex) {
-        return (CategoryColumn) column(columnIndex);
+    public StringColumn stringColumn(int columnIndex) {
+        return (StringColumn) column(columnIndex);
     }
 
     public DateTimeColumn dateTimeColumn(int columnIndex) {
@@ -350,7 +324,8 @@ public abstract class Relation {
     }
 
     private double[][] asColumnMatrix() {
-        return columns().stream().map(col -> col.asDoubleArray()).toArray(size -> new double[size][]);
+        return columnsOfType(ColumnType.NUMBER).stream()
+                .map(Column::asDoubleArray).toArray(double[][]::new);
     }
 
     public double[][] asMatrix() {
@@ -364,4 +339,7 @@ public abstract class Relation {
         return result;
     }
 
+    public String getUnformatted(int r1, int c) {
+        return null;
+    }
 }

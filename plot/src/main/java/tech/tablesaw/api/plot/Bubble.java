@@ -13,7 +13,7 @@
  */
 package tech.tablesaw.api.plot;
 
-import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.plotting.xchart.XchartBubble;
 
 /**
@@ -22,7 +22,7 @@ import tech.tablesaw.plotting.xchart.XchartBubble;
  */
 public final class Bubble {
     
-    private static final String CHART_TITLE = "Bubbleplot";
+    private static final String DEFAULT_CHART_TITLE = "";
     
     private Bubble() {}
 
@@ -34,9 +34,9 @@ public final class Bubble {
      * @param y column for the y axis
      * @param data column for the bubbles
      */
-    public static void show(NumericColumn x, NumericColumn y, NumericColumn data) {
+    public static void show(NumberColumn x, NumberColumn y, NumberColumn data) {
 
-        show(CHART_TITLE, x, y, data);
+        show(DEFAULT_CHART_TITLE, x, y, data);
     }
 
     /**
@@ -48,7 +48,7 @@ public final class Bubble {
      * @param y column for the y axis
      * @param data column for the bubbles
      */
-    public static void show(String chartTitle, NumericColumn x, NumericColumn y, NumericColumn data) {
+    public static void show(String chartTitle, NumberColumn x, NumberColumn y, NumberColumn data) {
         show(chartTitle, x, x.name(), y, y.name(), data);
     }
     
@@ -63,7 +63,7 @@ public final class Bubble {
      * @param yAxis title for y axis
      * @param data column for the bubbles
      */
-    public static void show(String chartTitle, NumericColumn x, String xAxis, NumericColumn y, String yAxis, NumericColumn data) {
+    public static void show(String chartTitle, NumberColumn x, String xAxis, NumberColumn y, String yAxis, NumberColumn data) {
         show(chartTitle, x.asDoubleArray(), xAxis, y.asDoubleArray(), yAxis, data.asDoubleArray());
     }
     
@@ -76,7 +76,7 @@ public final class Bubble {
      */
     public static void show(double[] x, double[] y, double[] data) {
 
-        show(CHART_TITLE, x, y, data);
+        show(DEFAULT_CHART_TITLE, x, y, data);
     }
     
     /**
@@ -97,9 +97,9 @@ public final class Bubble {
      * 
      * @param chartTitle title for the chart
      * @param x values for the x axis
-     * @param xAxis
+     * @param xAxis xAxis label
      * @param y values for the y axis
-     * @param yAxis
+     * @param yAxis yAxis label
      * @param data values for the bubbles
      */
     public static void show(String chartTitle, double[] x, String xAxis, double[] y, String yAxis, double[] data) {

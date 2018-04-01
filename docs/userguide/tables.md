@@ -1,7 +1,7 @@
 Tables
 ======
 Tables are the primary data-type and general focus of Tablesaw. Here we’ll provide an overview of the operations they provide. 
-Most of the sections below are for illustrative purposes, and typically will have their own section of the User Guide where they are examined more fully. For still more detail, see the JavaDoc for tech.tablesaw.api.Table.
+Most of the sections below are for illustrative purposes, and typically will have their own section of the User Guide where they are examined more fully. For still more detail, see the JavaDoc for tech.Tablesaw.api.Table.
 
 ## Tables "all the way down"
 Tablesaw has a huge number of methods for creating, querying, manipulating, displaying, and saving tables. So it makes sense that we use tables widely, and many operations on tables return other tables. For example, when you ask a table to describe its structure, it returns a new table that contains the column names, types, and order. 
@@ -20,7 +20,7 @@ You can load a table from a CSV file by providing the file name.
     Table t = Table.read().csv("myFile.csv");
     
 This simple method supplies default values for a number of parameters like the type of the separator character. See 
-[Importing data](https://jtablesaw.github.io/tablesaw/userguide/importing_data) for other options and more detail.    
+[Importing data](https://jTablesaw.github.io/Tablesaw/userguide/importing_data) for other options and more detail.    
 
 ## Displaying data
 
@@ -126,7 +126,10 @@ Add and remove rows
 
 ## Export
 
- 
+````java
+table.write().csv("filename.csv");
+
+````
 
 ## Save
 
@@ -136,5 +139,5 @@ In .saw format, reads and writes are (at least) an order of magnitude faster tha
 
 To save the table, you provide the path to the directory where the data will reside.  The save method returns a string based on the table name that can be used to reload it. When you reload the data, use that string.
 
-    String dbName = tornadoes.save("/tmp/tablesaw/testdata");
+    String dbName = tornadoes.save("/tmp/Tablesaw/testdata");
     Table tornadoes = Table.readTable(dbName);

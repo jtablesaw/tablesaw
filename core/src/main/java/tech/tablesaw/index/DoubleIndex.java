@@ -18,9 +18,9 @@ import it.unimi.dsi.fastutil.doubles.Double2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectSortedMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 /**
  * An index for double-precision 64-bit IEEE 754 floating point columns.
@@ -29,7 +29,7 @@ public class DoubleIndex {
 
     private final Double2ObjectAVLTreeMap<IntArrayList> index;
 
-    public DoubleIndex(DoubleColumn column) {
+    public DoubleIndex(NumberColumn column) {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Double2ObjectOpenHashMap<IntArrayList> tempMap = new Double2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
