@@ -15,13 +15,14 @@
 package tech.tablesaw.io.html;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
+
+import static tech.tablesaw.io.ParsingUtils.*;
 
 /**
  * Static utility that writes Tables in HTML format for display
@@ -56,7 +57,7 @@ public final class HtmlTableWriter {
      * Returns a string containing the html output of one table row
      */
     @VisibleForTesting
-    static String row(int row, Table table) {
+    private static String row(int row, Table table) {
         StringBuilder builder = new StringBuilder()
                 .append("<tr>");
 
@@ -73,7 +74,7 @@ public final class HtmlTableWriter {
     }
 
     @VisibleForTesting
-    static String header(List<String> columnNames) {
+    private static String header(List<String> columnNames) {
         StringBuilder builder = new StringBuilder()
                 .append("<thead>")
                 .append('\n')
@@ -91,21 +92,5 @@ public final class HtmlTableWriter {
                 .append('\n');
 
         return builder.toString();
-    }
-
-    // todo move to utils
-    private static String splitCamelCase(String s) {
-        return StringUtils.join(
-                StringUtils.splitByCharacterTypeCamelCase(s),
-                ' '
-        );
-    }
-
-    // todo move to utils
-    static String splitOnUnderscore(String s) {
-        return StringUtils.join(
-                StringUtils.split(s, '_'),
-                ' '
-        );
     }
 }

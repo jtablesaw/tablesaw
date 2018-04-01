@@ -14,7 +14,7 @@
 
 package tech.tablesaw.api.plot;
 
-import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.plotting.smile.SmileHistogram;
 
 /**
@@ -22,8 +22,7 @@ import tech.tablesaw.plotting.smile.SmileHistogram;
  */
 public class Histogram {
 
-
-    public static void show(NumericColumn x) {
+    public static void show(NumberColumn x) {
         SmileHistogram.show(x);
     }
 
@@ -31,7 +30,7 @@ public class Histogram {
         SmileHistogram.show(x);
     }
 
-    public static void show(String title, NumericColumn x) {
+    public static void show(String title, NumberColumn x) {
         SmileHistogram.show(title, x);
     }
 }

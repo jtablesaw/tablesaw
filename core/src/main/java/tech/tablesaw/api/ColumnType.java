@@ -22,33 +22,35 @@ import tech.tablesaw.columns.Column;
  */
 public enum ColumnType {
 
-    BOOLEAN(Byte.MIN_VALUE, true),
-    CATEGORY("", true),
-    FLOAT(Float.NaN, false),
-    DOUBLE(Double.NaN, false),
-    SHORT_INT(Short.MIN_VALUE, true),
-    INTEGER(Integer.MIN_VALUE, true),
-    LONG_INT(Long.MIN_VALUE, true),
-    LOCAL_DATE(Integer.MIN_VALUE, true),
-    LOCAL_DATE_TIME(Long.MIN_VALUE, false),
-    LOCAL_TIME(-1, false),
-    SKIP(null, false);
+    BOOLEAN(Byte.MIN_VALUE, 1, "Boolean"),
+    STRING("", 4, "String"),
+    NUMBER(Double.NaN, 8, "Number"),
+    LOCAL_DATE(Integer.MIN_VALUE, 4, "Date"),
+    LOCAL_DATE_TIME(Long.MIN_VALUE, 8, "DateTime"),
+    LOCAL_TIME(Integer.MIN_VALUE, 4, "Time"),
+    SKIP(null, 0, "Skipped");
 
     private final Comparable<?> missingValue;
 
-    // does this column type handle data that is suitable for summarization (aggregation) operations?
-    private final boolean isCategorical;
+    private final int byteSize;
 
-    ColumnType(Comparable<?> missingValue, boolean isCategorical) {
-        this.isCategorical = isCategorical;
+    private final String printerFriendlyName;
+
+    ColumnType(Comparable<?> missingValue, int byteSize, String name) {
         this.missingValue = missingValue;
+        this.byteSize = byteSize;
+        this.printerFriendlyName = name;
     }
 
     public Comparable<?> getMissingValue() {
         return missingValue;
     }
 
-    public boolean isCategorical() {
-        return isCategorical;
+    public int byteSize() {
+        return byteSize;
+    }
+
+    public String getPrinterFriendlyName() {
+        return printerFriendlyName;
     }
 }

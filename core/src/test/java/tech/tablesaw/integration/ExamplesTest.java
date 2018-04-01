@@ -20,8 +20,6 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvWriter;
 
-import static tech.tablesaw.api.ColumnType.*;
-
 /**
  * Some example code using the API
  */
@@ -33,7 +31,7 @@ public class ExamplesTest {
         out("Some Examples: ");
 
         // Read the CSV file
-        ColumnType[] types = {INTEGER, CATEGORY, CATEGORY, FLOAT, FLOAT};
+        ColumnType[] types = {ColumnType.NUMBER, ColumnType.STRING, ColumnType.STRING, ColumnType.NUMBER, ColumnType.NUMBER};
         Table table = Table.read().csv(CsvReadOptions.builder("../data/bus_stop_test.csv").columnTypes(types));
 
         // Look at the column names
@@ -54,7 +52,7 @@ public class ExamplesTest {
 
         // Lets take a look at the latitude and longitude columns
         // out(table.realColumn("stop_lat").rowSummary().out());
-        out(table.floatColumn("stop_lat").summary());
+        out(table.numberColumn("stop_lat").summary());
 
         // Now lets fill a column based on data in the existing columns
 
@@ -62,7 +60,7 @@ public class ExamplesTest {
 
         // Lets filtering out some of the rows. We're only interested in records with IDs between 524-624
 
-        Table filtered = table.selectWhere(QueryHelper.column("stop_id").isBetweenIncluding(524, 624));
+        Table filtered = table.selectWhere(QueryHelper.numberColumn("stop_id").isBetweenInclusive(524, 624));
         out(filtered.first(5));
 
         // Write out the new CSV file

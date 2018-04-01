@@ -14,16 +14,17 @@
 
 package tech.tablesaw.aggregate;
 
+import tech.tablesaw.table.SelectionViewGroup;
+import tech.tablesaw.table.StandardViewGroup;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.table.ViewGroup;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 import static org.junit.Assert.assertEquals;
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
-
 
 public class AggregateFunctionsTest {
 
@@ -31,19 +32,13 @@ public class AggregateFunctionsTest {
 
     @Before
     public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv"));
-    }
-
-    @Test
-    public void testMean() {
-        double result = table.agg("approval", mean);
-        assertEquals(64.88235294117646, result, 0.01);
+        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
     }
 
     @Test
     public void testGroupMean() {
-        CategoricalColumn byColumn = table.categoryColumn("who");
-        ViewGroup group = new ViewGroup(table, byColumn);
+        CategoricalColumn byColumn = table.stringColumn("who");
+        ViewGroup group = StandardViewGroup.create(table, byColumn);
         Table result = group.aggregate("approval", mean, stdDev);
         assertEquals(3, result.columnCount());
         assertEquals("who", result.column(0).name());
@@ -61,7 +56,7 @@ public class AggregateFunctionsTest {
 
     @Test
     public void testGroupMeanByStep() {
-        ViewGroup group = ViewGroup.create(table, "Step", 5);
+        ViewGroup group = SelectionViewGroup.create(table, "Step", 5);
         Table result = group.aggregate("approval", mean, AggregateFunctions.stdDev);
         assertEquals(3, result.columnCount());
         assertEquals("53.6", result.get(0, 1));
@@ -70,9 +65,9 @@ public class AggregateFunctionsTest {
 
     @Test
     public void test2ColumnGroupMean() {
-        CategoricalColumn byColumn1 = table.categoryColumn("who");
+        CategoricalColumn byColumn1 = table.stringColumn("who");
         CategoricalColumn byColumn2 = table.categoricalColumn("date");
-        ViewGroup group = new ViewGroup(table, byColumn1, byColumn2);
+        ViewGroup group = StandardViewGroup.create(table, byColumn1, byColumn2);
         Table result = group.aggregate("approval", mean, sum);
         assertEquals(4, result.columnCount());
         assertEquals("who", result.column(0).name());

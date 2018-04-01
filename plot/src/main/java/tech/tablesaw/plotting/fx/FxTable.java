@@ -14,9 +14,6 @@
 
 package tech.tablesaw.plotting.fx;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -24,9 +21,11 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -42,26 +41,24 @@ public class FxTable extends TableView<Integer> {
     }
 
     /**
-     * Return an empty TableSawFxViewer
-     * @return an empty TableSawFxViewer
+     * Return an empty TablesawFxViewer
+     * @return an empty TablesawFxViewer
      */
-    static public FxTable build() {
-        FxTable tableSawFxViewer = new FxTable();
-
-        return tableSawFxViewer;
+    private static FxTable build() {
+        return new FxTable();
     }
 
     /**
-     * Return a TableSawFxViewer initialized with a Table
+     * Return a TablesawFxViewer initialized with a Table
      * @param table the {@link Table} containing the data to insert in the {@link TableView}
-     * @return a TableSawFxViewer initialized with a Table
+     * @return a TablesawFxViewer initialized with a Table
      */
     static public FxTable build(Table table) {
 
-        FxTable tableSawFxViewer = build();
-        tableSawFxViewer.setData(table);
+        FxTable TablesawFxViewer = build();
+        TablesawFxViewer.setData(table);
 
-        return tableSawFxViewer;
+        return TablesawFxViewer;
     }
 
     /**
@@ -77,7 +74,7 @@ public class FxTable extends TableView<Integer> {
      * Rebuild the {@link TableView}.
      * To be called every time the underlying {@link TableView} changed.
      */
-    public void refreshTableView() {
+    private void refreshTableView() {
 
         if (tableData == null) {
             return;
@@ -104,14 +101,14 @@ public class FxTable extends TableView<Integer> {
     }
 
     /**
-     * Build a TableView {@link TableColumn} from a TableSaw {@Column}
-     * @param col a TableSaw {@Column}
+     * Build a TableView {@link TableColumn} from a Tablesaw {@link Column}
+     * @param col a Tablesaw {@link Column}
      * @return a TableView {@link TableColumn}
      */
-    private TableColumn createColumn(Column col) {
+    private TableColumn<Integer, String> createColumn(Column col) {
 
         // the name is just the column name
-        TableColumn<Integer, String> stringColumn = new TableColumn(col.name());
+        TableColumn<Integer, String> stringColumn = new TableColumn<>(col.name());
         // Setup the cell value factory: return the string representation of the value at the given index
         stringColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Integer, String>, ObservableValue<String>>() {
             @Override
@@ -122,8 +119,6 @@ public class FxTable extends TableView<Integer> {
                 return new SimpleStringProperty(name);
             }
         });
-
         return stringColumn;
     }
-
 }

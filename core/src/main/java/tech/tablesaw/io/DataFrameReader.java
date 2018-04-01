@@ -16,12 +16,15 @@ package tech.tablesaw.io;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.io.csv.CsvReadOptions.CsvReadOptionsBuilder;
 import tech.tablesaw.io.csv.CsvReader;
 import tech.tablesaw.io.html.HtmlTableReader;
 import tech.tablesaw.io.jdbc.SqlResultSetReader;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -51,7 +54,7 @@ public class DataFrameReader {
         return csv(CsvReadOptions.builder(reader, tableName));
     }
 
-    public Table csv(CsvReadOptionsBuilder options) throws IOException {
+    public Table csv(CsvReadOptions.Builder options) throws IOException {
         return csv(options.build());
     }
 

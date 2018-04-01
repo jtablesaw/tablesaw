@@ -14,7 +14,7 @@
 
 package tech.tablesaw.aggregate;
 
-import tech.tablesaw.api.*;
+import tech.tablesaw.api.NumberColumn;
 
 /**
  * Functions that calculate values over the data of an entire column, such as sum, mean, std. dev, etc.
@@ -25,23 +25,9 @@ public interface AggregateFunction {
 
     double agg(double[] data);
 
-    default double agg(FloatColumn data) {
-        return this.agg(data.asDoubleArray());
-    }
-
-    default double agg(DoubleColumn doubles) {
+    default double agg(NumberColumn doubles) {
         return this.agg(doubles.asDoubleArray());
     }
 
-    default double agg(IntColumn data) {
-        return this.agg(data.asDoubleArray());
-    }
-
-    default double agg(ShortColumn data) {
-        return this.agg(data.asDoubleArray());
-    }
-
-    default double agg(LongColumn data) {
-        return this.agg(data.asDoubleArray());
-    }
+    String toString();
 }

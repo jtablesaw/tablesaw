@@ -14,11 +14,11 @@
 
 package tech.tablesaw.api.plot;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.sum;
-import static tech.tablesaw.api.QueryHelper.column;
-import static tech.tablesaw.api.plot.HorizontalBar.show;
-
+import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.api.plot.HorizontalBar.*;
 
 /**
  *
@@ -27,9 +27,9 @@ public class HorizontalBarExample {
 
     public static void main(String[] args) throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        Table t2 = table.countBy(table.categoryColumn("State"));
-        t2 = t2.selectWhere(column("Count").isGreaterThan(100));
-        show("tornadoes by state", t2.categoryColumn("Category"), t2.nCol("Count"));
+        Table t2 = table.countBy(table.stringColumn("State"));
+        t2 = t2.selectWhere(QueryHelper.numberColumn("Count").isGreaterThan(100));
+        show("tornadoes by state", t2.stringColumn("Category"), t2.nCol("Count"));
         show("T", table.summarize("fatalities", sum).by("Scale"));
     }
 }

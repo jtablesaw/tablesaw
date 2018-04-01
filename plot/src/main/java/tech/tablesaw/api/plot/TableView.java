@@ -17,12 +17,11 @@ package tech.tablesaw.api.plot;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-
-import javax.swing.SwingUtilities;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotting.fx.FxPlot;
 import tech.tablesaw.plotting.fx.FxTable;
+
+import javax.swing.*;
 
 /**
  *
@@ -31,7 +30,7 @@ public class TableView extends FxPlot {
 
     private static final String WINDOW_TITLE = "Tablesaw";
 
-    public static void show(String title, Table data) throws Exception {
+    public static void show(String title, Table data) {
 
         SwingUtilities.invokeLater(() -> {
             try {

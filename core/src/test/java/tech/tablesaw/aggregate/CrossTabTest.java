@@ -9,13 +9,13 @@ public class CrossTabTest {
 
     @Test
     public void counts() throws Exception {
-        Table bush = Table.read().csv("../data/BushApproval.csv");
+        Table bush = Table.read().csv("../data/bush.csv");
         Table counts = CrossTab.counts(bush, "who");
         Table pcts = CrossTab.percents(bush, "who");
-        double sum = counts.intColumn("Count").sum();
+        double sum = counts.numberColumn("Count").sum();
         for (int row : pcts) {
-            assertEquals(counts.intColumn("Count").get(row) / sum,
-                    pcts.floatColumn(1).get(row),
+            assertEquals(counts.numberColumn("Count").get(row) / sum,
+                    pcts.numberColumn(1).get(row),
                     0.01);
         }
     }

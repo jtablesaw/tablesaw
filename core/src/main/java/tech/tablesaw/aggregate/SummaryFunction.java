@@ -15,6 +15,8 @@
 package tech.tablesaw.aggregate;
 
 import tech.tablesaw.api.Table;
+import tech.tablesaw.table.SelectionViewGroup;
+import tech.tablesaw.table.StandardViewGroup;
 import tech.tablesaw.table.ViewGroup;
 
 import java.util.HashMap;
@@ -40,23 +42,21 @@ public class SummaryFunction {
         return original;
     }
 
-    public NumericSummaryTable by(String... columnNames) {
-        ViewGroup group = ViewGroup.create(original(), columnNames);
+    public Table by(String... columnNames) {
+        ViewGroup group = StandardViewGroup.create(original(), columnNames);
         return group.aggregate(summarizedColumnName(), function);
     }
 
-    public NumericSummaryTable by(String groupNameTemplate, int step) {
-        ViewGroup group = ViewGroup.create(original(), summarizedColumnName, step);
+/*
+    public Table by(Splitter splitter) {
+        ViewGroup group = ViewGroup.create(original(), splitter);
         return group.aggregate(summarizedColumnName(), function);
     }
+*/
 
-    /**
-     * Returns the result of applying to the function to all the values in the appropriate column
-     * <p>
-     * Note this only works for the first function if there is more than one.
-     */
-    public double get() {
-        return original.agg(summarizedColumnName, function[0]);
+    public Table by(String groupNameTemplate, int step) {
+        ViewGroup group = SelectionViewGroup.create(original(), groupNameTemplate, step);
+        return group.aggregate(summarizedColumnName(), function);
     }
 
     /**
@@ -65,7 +65,7 @@ public class SummaryFunction {
     public Map<AggregateFunction, Double> getAll() {
         Map<AggregateFunction, Double> results = new HashMap<>();
         for (AggregateFunction fun : function) {
-            results.put(fun, original.agg(summarizedColumnName, fun));
+            results.put(fun, fun.agg(original.numberColumn(summarizedColumnName).asDoubleArray()));
         }
         return results;
     }

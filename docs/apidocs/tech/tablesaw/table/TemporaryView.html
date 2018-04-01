@@ -104,7 +104,7 @@ var activeTableTab = "activeTableTab";
 <li><a href="../../../tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">tech.tablesaw.table.Relation</a></li>
 <li>
 <ul class="inheritance">
-<li>tech.tablesaw.table.TemporaryView</li>
+<li>tech.tablesaw.table.TableSlice</li>
 </ul>
 </li>
 </ul>
@@ -148,7 +148,7 @@ implements it.unimi.dsi.fastutil.ints.IntIterable</pre>
 <th class="colOne" scope="col">Constructor and Description</th>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/TemporaryView.html#TemporaryView-tech.tablesaw.api.Table-tech.tablesaw.util.Selection-">TemporaryView</a></span>(<a href="../../../tech/tablesaw/api/Table.html" title="class in tech.tablesaw.api">Table</a>&nbsp;table,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/TemporaryView.html#TemporaryView-tech.tablesaw.api.Table-tech.tablesaw.util.selection.Selection-">TemporaryView</a></span>(<a href="../../../tech/tablesaw/api/Table.html" title="class in tech.tablesaw.api">Table</a>&nbsp;table,
              <a href="../../../tech/tablesaw/util/Selection.html" title="interface in tech.tablesaw.util">Selection</a>&nbsp;rowSelection)</code>
 <div class="block">Returns a new View constructed from the given table, containing only the rows represented by the bitmap</div>
 </td>
@@ -186,11 +186,11 @@ implements it.unimi.dsi.fastutil.ints.IntIterable</pre>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/TemporaryView.html#categoryColumn-int-">categoryColumn</a></span>(int&nbsp;columnIndex)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/TemporaryView.html#stringColumn-int-">stringColumn</a></span>(int&nbsp;columnIndex)</code>&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/TemporaryView.html#categoryColumn-java.lang.String-">categoryColumn</a></span>(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/TemporaryView.html#stringColumn-java.lang.String-">stringColumn</a></span>(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</code>&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
@@ -350,7 +350,7 @@ implements it.unimi.dsi.fastutil.ints.IntIterable</pre>
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;tech.tablesaw.table.<a href="../../../tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></h3>
-<code><a href="../../../tech/tablesaw/table/Relation.html#asColumnMatrix--">asColumnMatrix</a>, <a href="../../../tech/tablesaw/table/Relation.html#asMatrix--">asMatrix</a>, <a href="../../../tech/tablesaw/table/Relation.html#column-java.lang.String-">column</a>, <a href="../../../tech/tablesaw/table/Relation.html#columnIndex-java.lang.String-">columnIndex</a>, <a href="../../../tech/tablesaw/table/Relation.html#columnTypes--">columnTypes</a>, <a href="../../../tech/tablesaw/table/Relation.html#doubleColumn-int-">doubleColumn</a>, <a href="../../../tech/tablesaw/table/Relation.html#doubleColumn-java.lang.String-">doubleColumn</a>, <a href="../../../tech/tablesaw/table/Relation.html#isEmpty--">isEmpty</a>, <a href="../../../tech/tablesaw/table/Relation.html#nCol-int-">nCol</a>, <a href="../../../tech/tablesaw/table/Relation.html#nCol-java.lang.String-">nCol</a>, <a href="../../../tech/tablesaw/table/Relation.html#print-int-">print</a>, <a href="../../../tech/tablesaw/table/Relation.html#removeColumn-int-">removeColumn</a>, <a href="../../../tech/tablesaw/table/Relation.html#removeColumns-java.lang.String...-">removeColumns</a>, <a href="../../../tech/tablesaw/table/Relation.html#shape--">shape</a>, <a href="../../../tech/tablesaw/table/Relation.html#structure--">structure</a>, <a href="../../../tech/tablesaw/table/Relation.html#summary--">summary</a>, <a href="../../../tech/tablesaw/table/Relation.html#toString--">toString</a></code></li>
+<code><a href="../../../tech/tablesaw/table/Relation.html#asColumnMatrix--">asColumnMatrix</a>, <a href="../../../tech/tablesaw/table/Relation.html#asMatrix--">asMatrix</a>, <a href="../../../tech/tablesaw/table/Relation.html#column-java.lang.String-">column</a>, <a href="../../../tech/tablesaw/table/Relation.html#columnIndex-java.lang.String-">columnIndex</a>, <a href="../../../tech/tablesaw/table/Relation.html#columnTypes--">columnTypes</a>, <a href="../../../tech/tablesaw/table/Relation.html#numberColumn-int-">numberColumn</a>, <a href="../../../tech/tablesaw/table/Relation.html#numberColumn-java.lang.String-">numberColumn</a>, <a href="../../../tech/tablesaw/table/Relation.html#isEmpty--">isEmpty</a>, <a href="../../../tech/tablesaw/table/Relation.html#nCol-int-">nCol</a>, <a href="../../../tech/tablesaw/table/Relation.html#nCol-java.lang.String-">nCol</a>, <a href="../../../tech/tablesaw/table/Relation.html#print-int-">print</a>, <a href="../../../tech/tablesaw/table/Relation.html#removeColumn-int-">removeColumn</a>, <a href="../../../tech/tablesaw/table/Relation.html#removeColumns-java.lang.String...-">removeColumns</a>, <a href="../../../tech/tablesaw/table/Relation.html#shape--">shape</a>, <a href="../../../tech/tablesaw/table/Relation.html#structure--">structure</a>, <a href="../../../tech/tablesaw/table/Relation.html#summary--">summary</a>, <a href="../../../tech/tablesaw/table/Relation.html#toString--">toString</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.java.lang.Object">
@@ -387,7 +387,7 @@ implements it.unimi.dsi.fastutil.ints.IntIterable</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a name="TemporaryView-tech.tablesaw.api.Table-tech.tablesaw.util.Selection-">
+<a name="TemporaryView-tech.tablesaw.api.Table-tech.tablesaw.util.selection.Selection-">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -861,29 +861,29 @@ implements it.unimi.dsi.fastutil.ints.IntIterable</pre>
 </dl>
 </li>
 </ul>
-<a name="categoryColumn-java.lang.String-">
+<a name="stringColumn-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>categoryColumn</h4>
-<pre>public&nbsp;<a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a>&nbsp;categoryColumn(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</pre>
+<h4>stringColumn</h4>
+<pre>public&nbsp;<a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a>&nbsp;stringColumn(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../tech/tablesaw/table/Relation.html#categoryColumn-java.lang.String-">categoryColumn</a></code>&nbsp;in class&nbsp;<code><a href="../../../tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></code></dd>
+<dd><code><a href="../../../tech/tablesaw/table/Relation.html#stringColumn-java.lang.String-">stringColumn</a></code>&nbsp;in class&nbsp;<code><a href="../../../tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></code></dd>
 </dl>
 </li>
 </ul>
-<a name="categoryColumn-int-">
+<a name="stringColumn-int-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>categoryColumn</h4>
-<pre>public&nbsp;<a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a>&nbsp;categoryColumn(int&nbsp;columnIndex)</pre>
+<h4>stringColumn</h4>
+<pre>public&nbsp;<a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a>&nbsp;stringColumn(int&nbsp;columnIndex)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../../../tech/tablesaw/table/Relation.html#categoryColumn-int-">categoryColumn</a></code>&nbsp;in class&nbsp;<code><a href="../../../tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></code></dd>
+<dd><code><a href="../../../tech/tablesaw/table/Relation.html#stringColumn-int-">stringColumn</a></code>&nbsp;in class&nbsp;<code><a href="../../../tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></code></dd>
 </dl>
 </li>
 </ul>

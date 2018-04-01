@@ -14,11 +14,9 @@
 
 package tech.tablesaw.api.plot;
 
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.plotting.xchart.XchartLine;
-import tech.tablesaw.util.BitmapBackedSelection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
 
 /**
  * A control chart
@@ -27,15 +25,15 @@ import tech.tablesaw.util.BitmapBackedSelection;
  */
 public class Control {
 
-    public static void show(String name, NumericColumn data) {
+    public static void show(String name, NumberColumn data) {
         show(name, data, 0, data.size());
     }
 
-    public static void show(String name, NumericColumn sourceData, int controlRangeStart, int controlRangeEnd) {
+    public static void show(String name, NumberColumn sourceData, int controlRangeStart, int controlRangeEnd) {
 
         BitmapBackedSelection selection = new BitmapBackedSelection();
         selection.addRange(controlRangeStart, controlRangeEnd);
-        NumericColumn data = (NumericColumn) sourceData.subset(selection);
+        NumberColumn data = (NumberColumn) sourceData.subset(selection);
         double avg = data.mean();
         double stdDev = data.standardDeviation();
         double controlLimit = 3 * stdDev;
@@ -43,11 +41,11 @@ public class Control {
         show(name, data, avg, controlLimit);
     }
 
-    public static void show(String name, NumericColumn data, double avg, double controlLimit) {
-        IntColumn index = new IntColumn("Observations");
-        DoubleColumn mean = new DoubleColumn("Mean");
-        DoubleColumn ucl = new DoubleColumn("UCL");
-        DoubleColumn lcl = new DoubleColumn("LCL");
+    public static void show(String name, NumberColumn data, double avg, double controlLimit) {
+        NumberColumn index = NumberColumn.create("Observations");
+        NumberColumn mean = NumberColumn.create("Mean");
+        NumberColumn ucl = NumberColumn.create("UCL");
+        NumberColumn lcl = NumberColumn.create("LCL");
 
         for (int i = 0; i < data.size(); i++) {
             index.append(i + 1);

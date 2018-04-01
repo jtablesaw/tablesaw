@@ -28,7 +28,7 @@ public class HtmlTableReader {
                 Elements headerCells = row.getElementsByTag("th");
                 Elements cells = row.getElementsByTag("td");
                 String[] nextLine = Stream.concat(headerCells.stream(), cells.stream())
-                        .map(cell -> cell.text()).toArray(size -> new String[size]);
+                        .map(Element::text).toArray(String[]::new);
                 csvWriter.writeNext(nextLine);
             }
             return stringWriter.toString();

@@ -14,57 +14,64 @@
 
 package tech.tablesaw.filters;
 
+import tech.tablesaw.columns.dates.DateColumnReference;
+import tech.tablesaw.columns.datetimes.filters.IsInApril;
 import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.filtering.datetimes.*;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.columns.datetimes.filters.IsFirstDayOfTheMonth;
+import tech.tablesaw.columns.datetimes.filters.IsInFebruary;
+import tech.tablesaw.columns.datetimes.filters.IsInMarch;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.columns.datetimes.filters.IsInYear;
+import tech.tablesaw.columns.datetimes.filters.IsLastDayOfTheMonth;
+import tech.tablesaw.util.selection.Selection;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class LocalDateFilterTest {
 
-    private DateColumn localDateColumn = new DateColumn("testing");
+    private DateColumn localDateColumn = DateColumn.create("testing");
     private Table table = Table.create("test");
+    private DateColumnReference reference = new DateColumnReference("testing");
 
     @Before
-    public void setUp() throws Exception {
-        localDateColumn.append(LocalDate.of(2016, 2, 28));
-        localDateColumn.append(LocalDate.of(2016, 2, 29));
-        localDateColumn.append(LocalDate.of(2016, 3, 1));
+    public void setUp() {
+        localDateColumn.append(LocalDate.of(2016, 2, 28)); // sunday
+        localDateColumn.append(LocalDate.of(2016, 2, 29)); // monday
+        localDateColumn.append(LocalDate.of(2016, 3, 1));  // tues
+        localDateColumn.append(LocalDate.of(2016, 3, 2));  // weds
+        localDateColumn.append(LocalDate.of(2016, 3, 3));  // thurs
+        localDateColumn.append(LocalDate.of(2016, 4, 1));
+        localDateColumn.append(LocalDate.of(2016, 4, 2));
+        localDateColumn.append(LocalDate.of(2016, 3, 4));   // fri
+        localDateColumn.append(LocalDate.of(2016, 3, 5));   // sat
         table.addColumn(localDateColumn);
     }
 
     @Test
-    public void testIsSunday() {
-        ColumnReference reference = new ColumnReference("testing");
-        IsSunday isSunday = new IsSunday(reference);
-        Selection selection = isSunday.apply(table);
-        assertTrue(selection.contains(0));
-        assertFalse(selection.contains(1));
-        assertFalse(selection.contains(2));
-    }
-
-    @Test
-    public void testIsMonday() {
-        ColumnReference reference = new ColumnReference("testing");
-        IsMonday isSunday = new IsMonday(reference);
-        Selection selection = isSunday.apply(table);
-        assertFalse(selection.contains(0));
-        assertTrue(selection.contains(1));
-        assertFalse(selection.contains(2));
+    public void testDow() {
+        Selection selection = reference.isSunday().apply(table);
+        assertTrue(reference.isSunday().apply(table).contains(0));
+        assertTrue(reference.isMonday().apply(table).contains(1));
+        assertTrue(reference.isTuesday().apply(table).contains(2));
+        assertTrue(reference.isWednesday().apply(table).contains(3));
+        assertTrue(reference.isThursday().apply(table).contains(4));
+        assertTrue(reference.isFriday().apply(table).contains(7));
+        assertTrue(reference.isSaturday().apply(table).contains(8));
+        assertFalse(selection.contains(3));
+        assertFalse(selection.contains(4));
+        assertFalse(selection.contains(5));
+        assertFalse(selection.contains(6));
+        assertFalse(selection.contains(7));
     }
 
     @Test
     public void testIsFebruary() {
-        ColumnReference reference = new ColumnReference("testing");
-        IsInFebruary isFebruary = new IsInFebruary(reference);
+        IsInFebruary isFebruary = reference.isInFebruary();
         Selection selection = isFebruary.apply(table);
         assertTrue(selection.contains(0));
         assertTrue(selection.contains(1));
@@ -73,28 +80,36 @@ public class LocalDateFilterTest {
 
     @Test
     public void testIsMarch() {
-        ColumnReference reference = new ColumnReference("testing");
-        IsInMarch result = new IsInMarch(reference);
+        IsInMarch result = reference.isInMarch();
         Selection selection = result.apply(table);
         assertFalse(selection.contains(0));
         assertFalse(selection.contains(1));
         assertTrue(selection.contains(2));
+    }
+
+    @Test
+    public void testIsApril() {
+        IsInApril result = reference.isInApril();
+        Selection selection = result.apply(table);
+        assertFalse(selection.contains(0));
+        assertTrue(selection.contains(5));
+        assertTrue(selection.contains(6));
     }
 
     @Test
     public void testIsFirstDayOfTheMonth() {
-        ColumnReference reference = new ColumnReference("testing");
-        IsFirstDayOfTheMonth result = new IsFirstDayOfTheMonth(reference);
+        IsFirstDayOfTheMonth result = reference.isFirstDayOfMonth();
         Selection selection = result.apply(table);
         assertFalse(selection.contains(0));
         assertFalse(selection.contains(1));
         assertTrue(selection.contains(2));
+        assertTrue(selection.contains(5));
+        assertFalse(selection.contains(6));
     }
 
     @Test
     public void testIsLastDayOfTheMonth() {
-        ColumnReference reference = new ColumnReference("testing");
-        IsLastDayOfTheMonth result = new IsLastDayOfTheMonth(reference);
+        IsLastDayOfTheMonth result = reference.isLastDayOfMonth();
         Selection selection = result.apply(table);
         assertFalse(selection.contains(0));
         assertTrue(selection.contains(1));
@@ -103,8 +118,7 @@ public class LocalDateFilterTest {
 
     @Test
     public void testIsInYear() {
-        ColumnReference reference = new ColumnReference("testing");
-        IsInYear result = new IsInYear(reference, 2016);
+        IsInYear result = reference.isInYear(2016);
         Selection selection = result.apply(table);
         assertTrue(selection.contains(0));
         assertTrue(selection.contains(1));
@@ -115,5 +129,4 @@ public class LocalDateFilterTest {
         assertFalse(selection.contains(1));
         assertFalse(selection.contains(2));
     }
-
 }

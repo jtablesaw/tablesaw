@@ -3,10 +3,10 @@ package tech.tablesaw.table;
 import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.AggregateFunctions;
-import tech.tablesaw.api.*;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 /**
  * Does a calculation on a rolling basis (e.g. mean for last 20 days)
@@ -21,45 +21,36 @@ public class RollingColumn {
         this.window = window;
     }
 
-    public DoubleColumn mean() {
+    public NumberColumn mean() {
         return calc(AggregateFunctions.mean);
     }
 
-    public DoubleColumn sum(String resultColName) {
+    public NumberColumn sum(String resultColName) {
         return calc(AggregateFunctions.sum);
     }
 
     private String generateNewColumnName(AggregateFunction function) {
         boolean useSpaces = column.name().matches("\\s+");
         String separator = useSpaces ? " " : "";
-        String newColumnName = new StringBuilder(column.name())
+        return new StringBuilder(column.name())
                 .append(separator).append(useSpaces ? function.functionName() : StringUtils.capitalize(function.functionName()))
                 .append(separator).append(window)
                 .toString();
-        return newColumnName;
     }
 
-    public DoubleColumn calc(AggregateFunction function) {
+    public NumberColumn calc(AggregateFunction function) {
         // TODO: the subset operation copies the array. creating a view would likely be more efficient
-        DoubleColumn result = new DoubleColumn(generateNewColumnName(function), column.size());
+        NumberColumn result = NumberColumn.create(generateNewColumnName(function), column.size());
         for (int i = 0; i < window - 1; i++) {
-            result.append(DoubleColumn.MISSING_VALUE);
+            result.append(NumberColumn.MISSING_VALUE);
         }
         for (int origColIndex = 0; origColIndex < column.size() - window + 1; origColIndex++) {
             Selection selection = new BitmapBackedSelection();
             selection.addRange(origColIndex, origColIndex + window);
             Column windowedColumn = column.subset(selection);
             double calc;
-            if (windowedColumn instanceof DoubleColumn) {
-                calc = function.agg((DoubleColumn) windowedColumn);
-            } else if (windowedColumn instanceof FloatColumn) {
-                calc = function.agg((FloatColumn) windowedColumn);
-            } else if (windowedColumn instanceof IntColumn) {
-                calc = function.agg((IntColumn) windowedColumn);
-            } else if (windowedColumn instanceof LongColumn) {
-                calc = function.agg((LongColumn) windowedColumn);
-            } else if (windowedColumn instanceof ShortColumn) {
-                calc = function.agg((ShortColumn) windowedColumn);
+            if (windowedColumn instanceof NumberColumn) {
+                calc = function.agg((NumberColumn) windowedColumn);
             } else {
                 throw new IllegalArgumentException("Cannot calculate " + function.functionName()
                         + " on column of type " + windowedColumn.type());

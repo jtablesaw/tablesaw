@@ -122,7 +122,11 @@ public class DataFramePrinter {
             final String headerTemplate = getHeaderTemplate(widths, headers);
             final int totalWidth = IntStream.of(widths).map(w -> w + 5).sum() - 1;
             final int totalHeight = data.length + 1;
-            final StringBuilder text = new StringBuilder(totalWidth * totalHeight);
+            int capacity = totalWidth * totalHeight;
+            if (capacity < 0) {
+                capacity = 0;
+            }
+            final StringBuilder text = new StringBuilder(capacity);
             text.append(tableName(frame, totalWidth)).append("\n");
             final String headerLine = String.format(headerTemplate, (Object[]) headers);
             text.append(headerLine).append("\n");

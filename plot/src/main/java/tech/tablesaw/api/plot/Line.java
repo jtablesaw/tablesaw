@@ -14,7 +14,7 @@
 
 package tech.tablesaw.api.plot;
 
-import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.plotting.xchart.XchartLine;
 
 /**
@@ -22,14 +22,18 @@ import tech.tablesaw.plotting.xchart.XchartLine;
  */
 public class Line {
 
-    public static void show(String chartTitle, NumericColumn x, NumericColumn y) {
+    public static void show(String chartTitle, NumberColumn x, NumberColumn y) {
         XchartLine.show(chartTitle, x, y);
     }
 
     /**
      * Displays a line chart with multiple series
+     *
+     * @param chartTitle    The main title
+     * @param x             The column supplying the x values
+     * @param y             The column supplying the y values
      */
-    public static void show(String chartTitle, NumericColumn x, NumericColumn ... y) {
+    public static void show(String chartTitle, NumberColumn x, NumberColumn... y) {
         XchartLine.show(chartTitle, x, y);
     }
 }

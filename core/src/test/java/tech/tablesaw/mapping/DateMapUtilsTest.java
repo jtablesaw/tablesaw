@@ -24,28 +24,27 @@ import tech.tablesaw.api.TimeColumn;
 import java.time.LocalTime;
 import java.util.Locale;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class DateMapUtilsTest {
 
     private DateColumn column1;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         Table table = Table.create("Test");
-        column1 = new DateColumn("Game date", Locale.ENGLISH);
+        column1 = DateColumn.create("Game date", Locale.ENGLISH);
         table.addColumn(column1);
     }
 
     @Test
-    public void testAtTimeColumn() throws Exception {
+    public void testAtTimeColumn() {
         column1.appendCell("2013-10-23");
         column1.appendCell("12/24/1924");
         column1.appendCell("12-May-2015");
         column1.appendCell("14-Jan-2015");
 
-        TimeColumn timeColumn = new TimeColumn("times");
+        TimeColumn timeColumn = TimeColumn.create("times");
         timeColumn.append(LocalTime.NOON);
         timeColumn.append(LocalTime.NOON);
         timeColumn.append(LocalTime.NOON);
@@ -56,7 +55,7 @@ public class DateMapUtilsTest {
     }
 
     @Test
-    public void testAtTime() throws Exception {
+    public void testAtTime() {
         column1.appendCell("2013-10-23");
         column1.appendCell("12/24/1924");
         column1.appendCell("12-May-2015");

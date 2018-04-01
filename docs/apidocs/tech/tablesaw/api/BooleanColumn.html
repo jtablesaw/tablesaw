@@ -174,7 +174,7 @@ implements <a href="../../../tech/tablesaw/mapping/BooleanMapUtils.html" title="
              int&nbsp;initialSize)</code>&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colOne"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/api/BooleanColumn.html#BooleanColumn-java.lang.String-tech.tablesaw.util.Selection-int-">BooleanColumn</a></span>(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/api/BooleanColumn.html#BooleanColumn-java.lang.String-tech.tablesaw.util.selection.Selection-int-">BooleanColumn</a></span>(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;name,
              <a href="../../../tech/tablesaw/util/Selection.html" title="interface in tech.tablesaw.util">Selection</a>&nbsp;hits,
              int&nbsp;columnSize)</code>&nbsp;</td>
 </tr>
@@ -367,7 +367,7 @@ implements <a href="../../../tech/tablesaw/mapping/BooleanMapUtils.html" title="
 </tr>
 <tr id="i37" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/api/BooleanColumn.html#set-boolean-tech.tablesaw.util.Selection-">set</a></span>(boolean&nbsp;newValue,
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/api/BooleanColumn.html#set-boolean-tech.tablesaw.util.selection.Selection-">set</a></span>(boolean&nbsp;newValue,
    <a href="../../../tech/tablesaw/util/Selection.html" title="interface in tech.tablesaw.util">Selection</a>&nbsp;rowSelection)</code>
 <div class="block">Conditionally update this column, replacing current values with newValue for all rows where the current value
  matches the selection criteria</div>
@@ -426,7 +426,7 @@ implements <a href="../../../tech/tablesaw/mapping/BooleanMapUtils.html" title="
 <code><a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#clone--" title="class or interface in java.lang">clone</a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#finalize--" title="class or interface in java.lang">finalize</a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#getClass--" title="class or interface in java.lang">getClass</a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#notify--" title="class or interface in java.lang">notify</a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#notifyAll--" title="class or interface in java.lang">notifyAll</a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait--" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait-long-" title="class or interface in java.lang">wait</a>, <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?is-external=true#wait-long-int-" title="class or interface in java.lang">wait</a></code></li>
 </ul>
 <ul class="blockList">
-<li class="blockList"><a name="methods.inherited.from.class.tech.tablesaw.mapping.BooleanMapUtils">
+<li class="blockList"><a name="methods.inherited.from.class.tech.tablesaw.columns.booleans.BooleanMapUtils">
 <!--   -->
 </a>
 <h3>Methods inherited from interface&nbsp;tech.tablesaw.mapping.<a href="../../../tech/tablesaw/mapping/BooleanMapUtils.html" title="interface in tech.tablesaw.mapping">BooleanMapUtils</a></h3>
@@ -437,7 +437,7 @@ implements <a href="../../../tech/tablesaw/mapping/BooleanMapUtils.html" title="
 <!--   -->
 </a>
 <h3>Methods inherited from interface&nbsp;tech.tablesaw.columns.<a href="../../../tech/tablesaw/columns/Column.html" title="interface in tech.tablesaw.columns">Column</a></h3>
-<code><a href="../../../tech/tablesaw/columns/Column.html#columnMetadata--">columnMetadata</a>, <a href="../../../tech/tablesaw/columns/Column.html#columnWidth--">columnWidth</a>, <a href="../../../tech/tablesaw/columns/Column.html#comment--">comment</a>, <a href="../../../tech/tablesaw/columns/Column.html#difference--">difference</a>, <a href="../../../tech/tablesaw/columns/Column.html#first--">first</a>, <a href="../../../tech/tablesaw/columns/Column.html#first-int-">first</a>, <a href="../../../tech/tablesaw/columns/Column.html#id--">id</a>, <a href="../../../tech/tablesaw/columns/Column.html#last--">last</a>, <a href="../../../tech/tablesaw/columns/Column.html#last-int-">last</a>, <a href="../../../tech/tablesaw/columns/Column.html#metadata--">metadata</a>, <a href="../../../tech/tablesaw/columns/Column.html#name--">name</a>, <a href="../../../tech/tablesaw/columns/Column.html#rolling-int-">rolling</a>, <a href="../../../tech/tablesaw/columns/Column.html#setComment-java.lang.String-">setComment</a>, <a href="../../../tech/tablesaw/columns/Column.html#setName-java.lang.String-">setName</a>, <a href="../../../tech/tablesaw/columns/Column.html#subset-tech.tablesaw.util.Selection-">subset</a>, <a href="../../../tech/tablesaw/columns/Column.html#title--">title</a></code></li>
+<code><a href="../../../tech/tablesaw/columns/Column.html#columnMetadata--">columnMetadata</a>, <a href="../../../tech/tablesaw/columns/Column.html#columnWidth--">columnWidth</a>, <a href="../../../tech/tablesaw/columns/Column.html#comment--">comment</a>, <a href="../../../tech/tablesaw/columns/Column.html#difference--">difference</a>, <a href="../../../tech/tablesaw/columns/Column.html#first--">first</a>, <a href="../../../tech/tablesaw/columns/Column.html#first-int-">first</a>, <a href="../../../tech/tablesaw/columns/Column.html#id--">id</a>, <a href="../../../tech/tablesaw/columns/Column.html#last--">last</a>, <a href="../../../tech/tablesaw/columns/Column.html#last-int-">last</a>, <a href="../../../tech/tablesaw/columns/Column.html#metadata--">metadata</a>, <a href="../../../tech/tablesaw/columns/Column.html#name--">name</a>, <a href="../../../tech/tablesaw/columns/Column.html#rolling-int-">rolling</a>, <a href="../../../tech/tablesaw/columns/Column.html#setComment-java.lang.String-">setComment</a>, <a href="../../../tech/tablesaw/columns/Column.html#setName-java.lang.String-">setName</a>, <a href="../../../tech/tablesaw/columns/Column.html#subset-tech.tablesaw.util.selection.Selection-">subset</a>, <a href="../../../tech/tablesaw/columns/Column.html#title--">title</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a name="methods.inherited.from.class.tech.tablesaw.api.IntConvertibleColumn">
@@ -509,7 +509,7 @@ implements <a href="../../../tech/tablesaw/mapping/BooleanMapUtils.html" title="
                      int&nbsp;initialSize)</pre>
 </li>
 </ul>
-<a name="BooleanColumn-java.lang.String-tech.tablesaw.util.Selection-int-">
+<a name="BooleanColumn-java.lang.String-tech.tablesaw.util.selection.Selection-int-">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -896,7 +896,7 @@ implements <a href="../../../tech/tablesaw/mapping/BooleanMapUtils.html" title="
                 boolean&nbsp;b)</pre>
 </li>
 </ul>
-<a name="set-boolean-tech.tablesaw.util.Selection-">
+<a name="set-boolean-tech.tablesaw.util.selection.Selection-">
 <!--   -->
 </a>
 <ul class="blockList">
