@@ -33,6 +33,8 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,7 +129,31 @@ public class CsvReader {
 
     public static Table read(CsvReadOptions options) throws IOException {
 
-        byte[] bytes = options.reader() != null
+       if (options.dateFormat() != null) {
+          TypeUtils.dateFormatters.add(DateTimeFormatter.ofPattern(options.dateFormat()));
+          TypeUtils.DATE_FORMATTER = new DateTimeFormatterBuilder()
+             .appendOptional(TypeUtils.DATE_FORMATTER)
+             .appendOptional(DateTimeFormatter.ofPattern(options.dateFormat()))
+             .toFormatter();
+       }
+
+       if (options.dateTimeFormat() != null) {
+          TypeUtils.dateTimeFormatters.add(DateTimeFormatter.ofPattern(options.dateTimeFormat()));
+          TypeUtils.DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+             .appendOptional(TypeUtils.DATE_TIME_FORMATTER)
+             .appendOptional(DateTimeFormatter.ofPattern(options.dateTimeFormat()))
+             .toFormatter();
+       }
+
+       if (options.timeFormat() != null) {
+          TypeUtils.timeFormatters.add(DateTimeFormatter.ofPattern(options.timeFormat()));
+          TypeUtils.TIME_DETECTION_FORMATTER = new DateTimeFormatterBuilder()
+             .appendOptional(TypeUtils.TIME_DETECTION_FORMATTER)
+             .appendOptional(DateTimeFormatter.ofPattern(options.timeFormat()))
+             .toFormatter();
+       }
+
+       byte[] bytes = options.reader() != null
                 ? CharStreams.toString(options.reader()).getBytes() : null;
 
         ColumnType[] types;

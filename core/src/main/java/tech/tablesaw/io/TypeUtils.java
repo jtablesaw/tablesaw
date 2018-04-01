@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -72,7 +73,7 @@ public final class TypeUtils {
     private static final DateTimeFormatter dtf18 = DateTimeFormatter.ofPattern("MMM dd, yyyy");
     private static final DateTimeFormatter dtf19 = DateTimeFormatter.ofPattern("MMM d, yyyy");
     // A formatter that handles all the date formats defined above
-    public static final DateTimeFormatter DATE_FORMATTER =
+    public static DateTimeFormatter DATE_FORMATTER =
             new DateTimeFormatterBuilder()
                     .appendOptional(dtf1)
                     .appendOptional(dtf2)
@@ -121,7 +122,7 @@ public final class TypeUtils {
     }
 
     // A formatter that handles date time formats defined above
-    public static final DateTimeFormatter DATE_TIME_FORMATTER =
+    public static DateTimeFormatter DATE_TIME_FORMATTER =
             new DateTimeFormatterBuilder()
                     .appendOptional(dtTimef2)
                     .appendOptional(dtTimef3)
@@ -141,7 +142,7 @@ public final class TypeUtils {
     private static final DateTimeFormatter timef6 = DateTimeFormatter.ofPattern("h:mm a");
     // A formatter that handles time formats defined above used for type detection.
     // It is more conservative than the converter
-    public static final DateTimeFormatter TIME_DETECTION_FORMATTER =
+    public static DateTimeFormatter TIME_DETECTION_FORMATTER =
             new DateTimeFormatterBuilder()
                     .appendOptional(timef5)
                     .appendOptional(timef2)
@@ -179,7 +180,7 @@ public final class TypeUtils {
     /**
      * List of formatters for use in code that selects the correct one for a given Date string
      */
-    private static ImmutableList<DateTimeFormatter> dateFormatters = ImmutableList.of(
+    private static DateTimeFormatter[] dateFormattersArray = new DateTimeFormatter[] {
             dtf1,
             dtf2,
             dtf3,
@@ -199,31 +200,35 @@ public final class TypeUtils {
             dtf17,
             dtf18,
             dtf19
-    );
+    };
+    public static List<DateTimeFormatter> dateFormatters = new LinkedList<>(Arrays.asList(dateFormattersArray));
+
     /**
      * List of formatters for use in code that selects the correct one for a given DateTime string
      */
-    private static ImmutableList<DateTimeFormatter> dateTimeFormatters = ImmutableList.of(
-            dtTimef0,
-            dtTimef1,
-            dtTimef2,
-            dtTimef3,
-            dtTimef4,
-            dtTimef5,
-            dtTimef6
-    );
+    private static DateTimeFormatter[] dateTimeFormattersArray = new DateTimeFormatter[] {
+       dtTimef0,
+       dtTimef1,
+       dtTimef2,
+       dtTimef3,
+       dtTimef4,
+       dtTimef5,
+       dtTimef6
+    };
+    public static List<DateTimeFormatter> dateTimeFormatters = new LinkedList<>(Arrays.asList(dateTimeFormattersArray));
+
     /**
      * List of formatters for use in code that selects the correct one for a given Time string
      */
-    private static ImmutableList<DateTimeFormatter> timeFormatters = ImmutableList.of(
-            timef1,
-            timef2,
-            timef3,
-            timef4,
-            timef5,
-            timef6
-            //, timef7
-    );
+    private static DateTimeFormatter[] timeFormattersArray = new DateTimeFormatter[] {
+       timef1,
+       timef2,
+       timef3,
+       timef4,
+       timef5,
+       timef6
+    };
+    public static List<DateTimeFormatter> timeFormatters = new LinkedList<>(Arrays.asList(timeFormattersArray));
 
     /**
      * Private constructor to prevent instantiation
@@ -341,6 +346,7 @@ public final class TypeUtils {
                 // ignore;
             }
         }
+        System.out.println("HERE");
         return DATE_FORMATTER;
     }
 
