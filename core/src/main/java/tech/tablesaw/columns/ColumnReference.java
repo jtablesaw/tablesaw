@@ -15,7 +15,14 @@
 package tech.tablesaw.columns;
 
 import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.columns.booleans.filters.IsFalse;
+import tech.tablesaw.columns.booleans.filters.IsTrue;
 import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.number.filters.DoubleEqualTo;
+import tech.tablesaw.columns.number.filters.DoubleGreaterThan;
+import tech.tablesaw.columns.number.filters.DoubleGreaterThanOrEqualTo;
+import tech.tablesaw.columns.number.filters.DoubleLessThan;
+import tech.tablesaw.columns.number.filters.DoubleLessThanOrEqualTo;
 import tech.tablesaw.filtering.*;
 import tech.tablesaw.filtering.columnbased.ColumnEqualTo;
 import tech.tablesaw.filtering.columnbased.ColumnGreaterThan;
@@ -387,10 +394,10 @@ public class ColumnReference {
     }
 
     public Filter isTrue() {
-        return new BooleanIsTrue(this);
+        return new IsTrue(this);
     }
 
     public Filter isFalse() {
-        return new BooleanIsFalse(this);
+        return new IsFalse(this);
     }
 }

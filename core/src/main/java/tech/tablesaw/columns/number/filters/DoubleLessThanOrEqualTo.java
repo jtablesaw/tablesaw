@@ -12,14 +12,15 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.columns.number.filters;
 
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class DoubleLessThanOrEqualTo extends ColumnFilter {
+public class LessThanOrEqualTo extends ColumnFilter {
 
     private final double value;
 

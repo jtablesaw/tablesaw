@@ -20,25 +20,17 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.NumberColumn;
 
 /**
- * Contains common utilities for double and long types
+ * The default set of aggregate functions
  */
 public class AggregateFunctions {
-
-    // TODO(lwhite): Re-implement these methods to work natively with float[], instead of converting to double[]
 
     /**
      * A function that returns the first item
      */
-    public static AggregateFunction first = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "First";
-        }
+    public static AggregateFunction first = new Reduction("First") {
 
         @Override
         public double agg(double[] data) {
@@ -49,12 +41,7 @@ public class AggregateFunctions {
     /**
      * A function that returns the last item
      */
-    public static AggregateFunction last = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Last";
-        }
+    public static AggregateFunction last = new Reduction("Last") {
 
         @Override
         public double agg(double[] data) {
@@ -65,12 +52,7 @@ public class AggregateFunctions {
     /**
      * A function that calculates the count of the values in the column param
      */
-    public static AggregateFunction count = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Count";
-        }
+    public static AggregateFunction count = new Reduction("Count") {
 
         @Override
         public double agg(double[] data) {
@@ -81,12 +63,7 @@ public class AggregateFunctions {
     /**
      * A function that calculates the mean of the values in the column param
      */
-    public static AggregateFunction mean = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Mean";
-        }
+    public static final AggregateFunction mean = new Reduction("Mean") {
 
         @Override
         public double agg(double[] data) {
@@ -97,49 +74,15 @@ public class AggregateFunctions {
     /**
      * A function that calculates the sum of the values in the column param
      */
-    public static AggregateFunction sum = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Sum";
-        }
+    public static final AggregateFunction sum = new Reduction("Sum") {
 
         @Override
         public double agg(double[] data) {
             return StatUtils.sum(removeMissing(data));
         }
-
-        @Override
-        public double agg(FloatColumn floatColumn) {
-            float sum;
-            sum = 0.0f;
-            for (float value : floatColumn) {
-                if (value != Float.NaN) {
-                    sum += value;
-                }
-            }
-            return sum;
-        }
-
-        @Override
-        public double agg(DoubleColumn floatColumn) {
-            float sum;
-            sum = 0.0f;
-            for (double value : floatColumn) {
-                if (value != Float.NaN) {
-                    sum += value;
-                }
-            }
-            return sum;
-        }
     };
 
-    public static AggregateFunction median = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Median";
-        }
+    public static final AggregateFunction median = new Reduction("Median") {
 
         @Override
         public double agg(double[] data) {
@@ -147,13 +90,8 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction n = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "N";
-        }
-
+    public static final AggregateFunction n = new Reduction("N") {
+        //TODO: This is the same as count -> Get rid of one of them
         //TODO: Consider whether we should provide a count without missing values
         @Override
         public double agg(double[] data) {
@@ -161,12 +99,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction quartile1 = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "First Quartile";
-        }
+    public static final AggregateFunction quartile1 = new Reduction("First Quartile") {
 
         @Override
         public double agg(double[] data) {
@@ -174,12 +107,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction quartile3 = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Third Quartile";
-        }
+    public static final AggregateFunction quartile3 = new Reduction("Third Quartile") {
 
         @Override
         public double agg(double[] data) {
@@ -187,12 +115,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction percentile90 = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "90th Percentile";
-        }
+    public static final AggregateFunction percentile90 = new Reduction("90th Percentile") {
 
         @Override
         public double agg(double[] data) {
@@ -200,12 +123,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction percentile95 = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "95th Percentile";
-        }
+    public static final AggregateFunction percentile95 = new Reduction("95th Percentile") {
 
         @Override
         public double agg(double[] data) {
@@ -213,12 +131,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction percentile99 = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "99th Percentile";
-        }
+    public static final AggregateFunction percentile99 = new Reduction("99th Percentile") {
 
         @Override
         public double agg(double[] data) {
@@ -226,12 +139,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction range = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Range";
-        }
+    public static final AggregateFunction range = new Reduction("Range") {
 
         @Override
         public double agg(double[] data) {
@@ -240,39 +148,15 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction min = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Min";
-        }
+    public static final AggregateFunction min = new Reduction("Min") {
 
         @Override
         public double agg(double[] data) {
             return StatUtils.min(removeMissing(data));
         }
-
-        @Override
-        public double agg(FloatColumn data) {
-            if (data.size() == 0) {
-                return Float.NaN;
-            }
-            float min = data.firstElement();
-            for (float value : data) {
-                if (!Float.isNaN(value)) {
-                    min = (min < value) ? min : value;
-                }
-            }
-            return min;
-        }
     };
 
-    public static AggregateFunction max = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Max";
-        }
+    public static final AggregateFunction max = new Reduction("Max") {
 
         @Override
         public double agg(double[] data) {
@@ -280,41 +164,15 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction product = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Product";
-        }
+    public static final AggregateFunction product = new Reduction("Product") {
 
         @Override
         public double agg(double[] data) {
             return StatUtils.product(removeMissing(data));
         }
-
-        @Override
-        public double agg(FloatColumn data) {
-            float product = 1.0f;
-            boolean empty = true;
-            for (float value : data) {
-                if (value != Float.NaN) {
-                    empty = false;
-                    product *= value;
-                }
-            }
-            if (empty) {
-                return Float.NaN;
-            }
-            return product;
-        }
     };
 
-    public static AggregateFunction geometricMean = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Geometric Mean";
-        }
+    public static final AggregateFunction geometricMean = new Reduction("Geometric Mean") {
 
         @Override
         public double agg(double[] data) {
@@ -322,12 +180,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction populationVariance = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Population Variance";
-        }
+    public static final AggregateFunction populationVariance = new Reduction("Population Variance") {
 
         @Override
         public double agg(double[] data) {
@@ -338,12 +191,7 @@ public class AggregateFunctions {
     /**
      * Returns the quadratic mean, aka, the root-mean-square
      */
-    public static AggregateFunction quadraticMean = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Quadratic Mean";
-        }
+    public static final AggregateFunction quadraticMean = new Reduction("Quadratic Mean") {
 
         @Override
         public double agg(double[] data) {
@@ -351,12 +199,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction kurtosis = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Kurtosis";
-        }
+    public static final AggregateFunction kurtosis = new Reduction("Kurtosis") {
 
         @Override
         public double agg(double[] data) {
@@ -364,12 +207,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction skewness = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Skewness";
-        }
+    public static final AggregateFunction skewness = new Reduction("Skewness") {
 
         @Override
         public double agg(double[] data) {
@@ -377,7 +215,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction sumOfSquares = new AggregateFunction() {
+    public static final AggregateFunction sumOfSquares = new Reduction("Sum of Squares") {
 
         @Override
         public String functionName() {
@@ -390,12 +228,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction sumOfLogs = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Sum of Logs";
-        }
+    public static final AggregateFunction sumOfLogs = new Reduction("Sum of Logs") {
 
         @Override
         public double agg(double[] data) {
@@ -403,46 +236,15 @@ public class AggregateFunctions {
         }
     };
 
-    public static AggregateFunction variance = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Variance";
-        }
+    public static final AggregateFunction variance = new Reduction("Variance") {
 
         @Override
         public double agg(double[] data) {
             return StatUtils.variance(removeMissing(data));
         }
-
-        /**
-         * Returns the (sample) variance of the available values.
-         * <p>
-         * <p>This method returns the bias-corrected sample variance (using {@code n - 1} in
-         * the denominator).
-         *
-         * @return The variance, Double.NaN if no values have been added
-         * or 0.0 for a single value set.
-         */
-        @Override
-        public double agg(FloatColumn column) {
-            double avg = mean.agg(column);
-            double sumSquaredDiffs = 0.0f;
-            for (float value : column) {
-                double diff = value - avg;
-                double sqrdDiff = diff * diff;
-                sumSquaredDiffs += sqrdDiff;
-            }
-            return sumSquaredDiffs / (column.size() - 1);
-        }
     };
 
-    public static AggregateFunction stdDev = new AggregateFunction() {
-
-        @Override
-        public String functionName() {
-            return "Std. Deviation";
-        }
+    public static final AggregateFunction stdDev = new Reduction("Std. Deviation") {
 
         @Override
         public double agg(double[] data) {
@@ -471,11 +273,11 @@ public class AggregateFunctions {
     }
 
     // TODO(lwhite): These are two column reductions. We need a class for that
-    public static double meanDifference(FloatColumn column1, FloatColumn column2) {
+    public static double meanDifference(NumberColumn column1, NumberColumn column2) {
         return StatUtils.meanDifference(column1.asDoubleArray(), column2.asDoubleArray());
     }
 
-    public static double sumDifference(FloatColumn column1, FloatColumn column2) {
+    public static double sumDifference(NumberColumn column1, NumberColumn column2) {
         return StatUtils.sumDifference(column1.asDoubleArray(), column2.asDoubleArray());
     }
 }

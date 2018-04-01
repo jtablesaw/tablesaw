@@ -12,24 +12,25 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.columns.number.filters;
 
-import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class FloatEqualTo extends ColumnFilter {
+public class NotEqualTo extends ColumnFilter {
 
-    private final float value;
+    private final double value;
 
-    public FloatEqualTo(ColumnReference reference, float value) {
+    public NotEqualTo(ColumnReference reference, double value) {
         super(reference);
         this.value = value;
     }
 
     public Selection apply(Table relation) {
-        FloatColumn floatColumn = (FloatColumn) relation.column(columnReference.getColumnName());
-        return floatColumn.isEqualTo(value);
+        DoubleColumn doubleColumn = (DoubleColumn) relation.column(columnReference.getColumnName());
+        return doubleColumn.isNotEqualTo(value);
     }
 }

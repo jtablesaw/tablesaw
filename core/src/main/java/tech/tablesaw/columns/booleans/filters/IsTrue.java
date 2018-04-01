@@ -12,24 +12,22 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.columns.booleans.filters;
 
-import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class LongNotEqualTo extends ColumnFilter {
+public class IsTrue extends ColumnFilter {
 
-    private final long value;
-
-    public LongNotEqualTo(ColumnReference reference, long value) {
+    public IsTrue(ColumnReference reference) {
         super(reference);
-        this.value = value;
     }
 
     public Selection apply(Table relation) {
-        LongColumn longColumn = (LongColumn) relation.column(columnReference.getColumnName());
-        return longColumn.isNotEqualTo(value);
+        BooleanColumn booleanColumn = (BooleanColumn) relation.column(columnReference.getColumnName());
+        return booleanColumn.isTrue();
     }
 }

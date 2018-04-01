@@ -12,24 +12,22 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.columns.booleans.filters;
 
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class DoubleGreaterThanOrEqualTo extends ColumnFilter {
+public class IsFalse extends ColumnFilter {
 
-    private final double value;
-
-    public DoubleGreaterThanOrEqualTo(ColumnReference reference, double value) {
+    public IsFalse(ColumnReference reference) {
         super(reference);
-        this.value = value;
     }
 
     public Selection apply(Table relation) {
-        DoubleColumn doubleColumn = (DoubleColumn) relation.column(columnReference.getColumnName());
-        return doubleColumn.isGreaterThanOrEqualTo(value);
+        BooleanColumn booleanColumn = (BooleanColumn) relation.column(columnReference.getColumnName());
+        return booleanColumn.isFalse();
     }
 }

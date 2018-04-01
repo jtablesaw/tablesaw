@@ -14,11 +14,18 @@
 
 package tech.tablesaw.api;
 
-import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.filtering.*;
+import tech.tablesaw.columns.booleans.BooleanColumnReference;
+import tech.tablesaw.columns.dates.DateColumnReference;
+import tech.tablesaw.columns.datetimes.DateTimeColumnReference;
+import tech.tablesaw.columns.number.NumberColumnReference;
+import tech.tablesaw.columns.string.StringColumnReference;
+import tech.tablesaw.columns.times.TimeColumnReference;
+import tech.tablesaw.filtering.Filter;
+import tech.tablesaw.filtering.composite.AllOf;
+import tech.tablesaw.filtering.composite.AnyOf;
+import tech.tablesaw.filtering.composite.IsFalse;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,11 +37,32 @@ import java.util.List;
 public class QueryHelper {
 
     /**
-     * Returns a column reference for a column with the given name. It will be resolved at query time by associating
-     * it with a table. At construction time, the columnType it will resolve to is unknown.
+     * Returns a column reference for a Stringolumn with the given name. It will be resolved at query time by associating
+     * it with a table. At construction time, the columnType is unknown, so the user has to pick the
+     * correct type.
      */
-    public static ColumnReference column(String columnName) {
-        return new ColumnReference(columnName);
+    public static StringColumnReference stringColumn(String columnName) {
+        return new StringColumnReference(columnName);
+    }
+
+    public static TimeColumnReference timeColumn(String columnName) {
+        return new TimeColumnReference(columnName);
+    }
+
+    public static DateColumnReference dateColumn(String columnName) {
+        return new DateColumnReference(columnName);
+    }
+
+    public static DateTimeColumnReference dateTimeColumn(String columnName) {
+        return new DateTimeColumnReference(columnName);
+    }
+
+    public static NumberColumnReference numberColumn(String columnName) {
+        return new NumberColumnReference(columnName);
+    }
+
+    public static BooleanColumnReference booleanColumn(String columnName) {
+        return new BooleanColumnReference(columnName);
     }
 
     public static Filter both(Filter a, Filter b) {
@@ -48,28 +76,12 @@ public class QueryHelper {
         return AllOf.allOf(filters);
     }
 
-    public static Filter allOf(Collection<Filter> filters) {
-        return AllOf.allOf(filters);
-    }
-
     public static Filter and(Filter... filters) {
-        return AllOf.allOf(filters);
-    }
-
-    public static Filter and(Collection<Filter> filters) {
         return AllOf.allOf(filters);
     }
 
     public static Filter not(Filter filter) {
         return IsFalse.isFalse(filter);
-    }
-
-    public static Filter isFalse(Filter filter) {
-        return IsFalse.isFalse(filter);
-    }
-
-    public static Filter isTrue(Filter filter) {
-        return IsTrue.isTrue(filter);
     }
 
     public static Filter either(Filter a, Filter b) {
@@ -83,16 +95,7 @@ public class QueryHelper {
         return AnyOf.anyOf(filters);
     }
 
-    public static Filter anyOf(Collection<Filter> filters) {
-        return AnyOf.anyOf(filters);
-    }
-
     public static Filter or(Filter... filters) {
         return AnyOf.anyOf(filters);
     }
-
-    public static Filter or(Collection<Filter> filters) {
-        return AnyOf.anyOf(filters);
-    }
-
 }

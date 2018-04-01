@@ -12,24 +12,25 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.columns.number.filters;
 
-import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class LongGreaterThan extends ColumnFilter {
+public class EqualTo extends ColumnFilter {
 
-    private final long value;
+    private final double value;
 
-    public LongGreaterThan(ColumnReference reference, long value) {
+    public DoubleEqualTo(ColumnReference reference, double value) {
         super(reference);
         this.value = value;
     }
 
     public Selection apply(Table relation) {
-        LongColumn longColumn = (LongColumn) relation.column(columnReference.getColumnName());
-        return longColumn.isGreaterThan(value);
+        DoubleColumn doubleColumn = (DoubleColumn) relation.column(columnReference.getColumnName());
+        return doubleColumn.isEqualTo(value);
     }
 }

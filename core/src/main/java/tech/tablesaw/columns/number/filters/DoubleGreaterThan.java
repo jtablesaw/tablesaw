@@ -12,24 +12,25 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.columns.number.filters;
 
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class DoubleNotEqualTo extends ColumnFilter {
+public class GreaterThan extends ColumnFilter {
 
     private final double value;
 
-    public DoubleNotEqualTo(ColumnReference reference, double value) {
+    public DoubleGreaterThan(ColumnReference reference, double value) {
         super(reference);
         this.value = value;
     }
 
     public Selection apply(Table relation) {
         DoubleColumn doubleColumn = (DoubleColumn) relation.column(columnReference.getColumnName());
-        return doubleColumn.isNotEqualTo(value);
+        return doubleColumn.isGreaterThan(value);
     }
 }
