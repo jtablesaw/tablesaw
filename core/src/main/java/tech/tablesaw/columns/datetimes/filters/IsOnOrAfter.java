@@ -16,32 +16,40 @@ package tech.tablesaw.columns.datetimes.filters;
 
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.datetimes.DateTimePredicates;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
 import javax.annotation.concurrent.Immutable;
+import java.time.LocalDateTime;
 
 
 @Immutable
-public class DateIsOnOrAfter extends ColumnFilter {
+public class IsOnOrAfter extends ColumnFilter {
 
     private final long value;
 
-    /**
-     * Returns a filter initialized with the given params
-     * @param reference A reference to a DateTimeColumn
-     * @param value     A long encoding a PackedLocalDateTime value
-     */
-    public DateIsOnOrAfter(ColumnReference reference, long value) {
+    public IsOnOrAfter(ColumnReference reference, long value) {
         super(reference);
         this.value = value;
     }
 
+    public IsOnOrAfter(ColumnReference reference, LocalDateTime value) {
+        super(reference);
+        this.value = PackedLocalDateTime.pack(value);
+    }
+
     @Override
     public Selection apply(Table relation) {
+        return apply(relation.column(columnReference().getColumnName()));
+    }
 
-        DateTimeColumn dateColumn = (DateTimeColumn) relation.column(columnReference().getColumnName());
-        return dateColumn.isOnOrAfter(value);
+    @Override
+    public Selection apply(Column column) {
+        DateTimeColumn dateColumn = (DateTimeColumn) column;
+        return dateColumn.eval(DateTimePredicates.isGreaterThanOrEqualTo, value);
     }
 }

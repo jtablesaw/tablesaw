@@ -14,44 +14,41 @@
 
 package tech.tablesaw.columns.datetimes.filters;
 
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.datetimes.DateTimePredicates;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class IsFirstDayOfTheMonth extends ColumnFilter {
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-    public IsFirstDayOfTheMonth(ColumnReference columnReference) {
-        super(columnReference);
+// TODO(lwhite): Handle nulls in the constructor or in apply. A null should ideally return an empty selection the size of the column
+public class IsBefore extends ColumnFilter {
+
+    private final LocalDateTime value;
+
+    public IsBefore(ColumnReference reference, LocalDateTime value) {
+        super(reference);
+        this.value = value;
+    }
+
+    public IsBefore(ColumnReference reference, LocalDate value) {
+        super(reference);
+        this.value = value.atStartOfDay();
     }
 
     @Override
     public Selection apply(Table relation) {
-        String name = columnReference().getColumnName();
-        Column column = relation.column(name);
-        return apply(column);
+        return apply(relation.column(columnReference().getColumnName()));
     }
 
     @Override
     public Selection apply(Column column) {
-
-        ColumnType type = column.type();
-        switch (type) {
-            case LOCAL_DATE:
-                DateColumn dateColumn = (DateColumn) column;
-                return dateColumn.eval(PackedLocalDate::isFirstDayOfMonth);
-            case LOCAL_DATE_TIME:
-                DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
-                return dateTimeColumn.eval(PackedLocalDateTime::isFirstDayOfMonth);
-            default:
-                throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "
-                        + "isFirstDayOfTheMonth() ");
-        }
+        DateTimeColumn dateColumn = (DateTimeColumn) column;
+        return dateColumn.eval(DateTimePredicates.isLessThan, PackedLocalDateTime.pack(value));
     }
 }

@@ -33,13 +33,18 @@ public class IsInJuly extends ColumnFilter {
     public Selection apply(Table relation) {
         String name = columnReference().getColumnName();
         Column column = relation.column(name);
+        return apply(column);
+    }
+
+    @Override
+    public Selection apply(Column column) {
         ColumnType type = column.type();
         switch (type) {
             case LOCAL_DATE:
-                DateColumn dateColumn = relation.dateColumn(name);
+                DateColumn dateColumn = (DateColumn) column;
                 return dateColumn.isInJuly();
             case LOCAL_DATE_TIME:
-                DateTimeColumn dateTimeColumn = relation.dateTimeColumn(name);
+                DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
                 return dateTimeColumn.isInJuly();
             default:
                 throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "

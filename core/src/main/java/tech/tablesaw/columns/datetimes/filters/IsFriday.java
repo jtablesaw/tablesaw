@@ -20,6 +20,8 @@ import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
@@ -31,17 +33,21 @@ public class IsFriday extends ColumnFilter {
 
     @Override
     public Selection apply(Table relation) {
-
         String name = columnReference().getColumnName();
         Column column = relation.column(name);
+        return apply(column);
+    }
+
+    @Override
+    public Selection apply(Column column) {
         ColumnType type = column.type();
         switch (type) {
             case LOCAL_DATE:
-                DateColumn dateColumn = relation.dateColumn(name);
-                return dateColumn.isFriday();
+                DateColumn dateColumn = (DateColumn) column;
+                return dateColumn.eval(PackedLocalDate::isFriday);
             case LOCAL_DATE_TIME:
-                DateTimeColumn dateTimeColumn = relation.dateTimeColumn(name);
-                return dateTimeColumn.isFriday();
+                DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
+                return dateTimeColumn.eval(PackedLocalDateTime::isFriday);
             default:
                 throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "
                         + "isFriday() ");

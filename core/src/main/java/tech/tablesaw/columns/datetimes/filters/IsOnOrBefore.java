@@ -16,26 +16,39 @@ package tech.tablesaw.columns.datetimes.filters;
 
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.datetimes.DateTimePredicates;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
+import javax.annotation.concurrent.Immutable;
 import java.time.LocalDateTime;
 
+@Immutable
+public class IsOnOrBefore extends ColumnFilter {
 
-public class DateTimeIsBefore extends ColumnFilter {
+    private final long value;
 
-    private final LocalDateTime value;
-
-    public DateTimeIsBefore(ColumnReference reference, LocalDateTime value) {
+    public IsOnOrBefore(ColumnReference reference, long value) {
         super(reference);
         this.value = value;
     }
 
+    public IsOnOrBefore(ColumnReference reference, LocalDateTime value) {
+        super(reference);
+        this.value = PackedLocalDateTime.pack(value);
+    }
+
     @Override
     public Selection apply(Table relation) {
+        return apply(relation.column(columnReference().getColumnName()));
+    }
 
-        DateTimeColumn dateColumn = (DateTimeColumn) relation.column(columnReference().getColumnName());
-        return dateColumn.isBefore(value);
+    @Override
+    public Selection apply(Column column) {
+        DateTimeColumn dateColumn = (DateTimeColumn) column;
+        return dateColumn.eval(DateTimePredicates.isLessThanOrEqualTo, value);
     }
 }

@@ -16,32 +16,30 @@ package tech.tablesaw.columns.datetimes.filters;
 
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-import javax.annotation.concurrent.Immutable;
+import java.time.LocalDateTime;
 
+public class EqualTo extends ColumnFilter {
 
-@Immutable
-public class DateIsOnOrBefore extends ColumnFilter {
+    private final LocalDateTime value;
 
-    private final long value;
-
-    /**
-     * Returns a filter initialized with the given params
-     * @param reference A reference to a DateTimeColumn
-     * @param value     A long encoding a PackedLocalDateTime value
-     */
-    public DateIsOnOrBefore(ColumnReference reference, long value) {
+    public EqualTo(ColumnReference reference, LocalDateTime value) {
         super(reference);
         this.value = value;
     }
 
     @Override
     public Selection apply(Table relation) {
+        return apply(relation.column(columnReference().getColumnName()));
+    }
 
-        DateTimeColumn dateColumn = (DateTimeColumn) relation.column(columnReference().getColumnName());
-        return dateColumn.isOnOrBefore(value);
+    @Override
+    public Selection apply(Column column) {
+        DateTimeColumn dateColumn = (DateTimeColumn) column;
+        return dateColumn.isEqualTo(value);
     }
 }
