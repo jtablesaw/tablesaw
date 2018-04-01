@@ -121,7 +121,7 @@ public class Stats {
     }
 
     public float mean() {
-        return (float) (sum / (double) n);
+        return (float) mean;
     }
 
     public float min() {

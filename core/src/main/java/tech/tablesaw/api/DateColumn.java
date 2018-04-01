@@ -832,8 +832,6 @@ public class DateColumn extends AbstractColumn implements DateMapUtils, Categori
 
         return new Iterator<LocalDate>() {
 
-            DateColumn column = DateColumn.this;
-
             IntIterator intIterator = intIterator();
 
             @Override

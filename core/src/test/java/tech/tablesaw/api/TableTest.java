@@ -18,8 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.*;
