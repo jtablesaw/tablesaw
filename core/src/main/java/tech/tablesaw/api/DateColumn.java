@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import static tech.tablesaw.columns.DateAndTimePredicates.*;
+
 /**
  * A column in a base table that contains float values
  */
@@ -599,7 +601,7 @@ public class DateColumn extends AbstractColumn implements DateFilters,
     @Override
     public Iterator<LocalDate> iterator() {
 
-        return new Iterator<>() {
+        return new Iterator<LocalDate>() {
 
             final IntIterator intIterator = intIterator();
 

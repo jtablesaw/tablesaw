@@ -612,7 +612,7 @@ public class StringColumn extends AbstractColumn
 
     @Override
     public Iterator<String> iterator() {
-        return new Iterator<>() {
+        return new Iterator<String>() {
 
             private final IntListIterator valuesIt = values.iterator();
 

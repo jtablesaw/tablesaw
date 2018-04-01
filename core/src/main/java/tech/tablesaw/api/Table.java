@@ -36,6 +36,7 @@ import tech.tablesaw.sorting.comparators.ReversingIntComparator;
 import tech.tablesaw.table.Projection;
 import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
+import tech.tablesaw.table.StandardViewGroup;
 import tech.tablesaw.table.ViewGroup;
 import tech.tablesaw.util.selection.BitmapBackedSelection;
 import tech.tablesaw.util.selection.Selection;

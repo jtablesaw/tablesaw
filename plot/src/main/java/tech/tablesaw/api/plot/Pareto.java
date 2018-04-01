@@ -29,7 +29,7 @@ import javax.swing.*;
 
 public class Pareto extends FxBuilder {
 
-    private static final String WINDOW_TITLE = "Airframe";
+    private static final String WINDOW_TITLE = "Tablesaw";
 
     /**
      * Display a pareto plot with the given title, derived from the given table

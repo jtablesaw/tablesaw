@@ -28,7 +28,7 @@ import javax.swing.*;
 
 public class Pie extends FxPlot {
 
-    private static final String WINDOW_TITLE = "Airframe";
+    private static final String WINDOW_TITLE = "Tablesaw";
 
     public static void show(String title, StringColumn stringColumn, NumberColumn numberColumn) throws Exception {
 

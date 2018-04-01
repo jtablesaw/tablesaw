@@ -29,7 +29,6 @@ import static java.time.DayOfWeek.*;
 import static java.time.Month.*;
 import static java.time.temporal.ChronoField.*;
 import static tech.tablesaw.api.NumberColumn.*;
-import static tech.tablesaw.columns.DateAndTimePredicates.*;
 import static tech.tablesaw.columns.DateAndTimePredicates.isEqualTo;
 import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThan;
 import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThanOrEqualTo;
@@ -178,7 +177,7 @@ public class PackedLocalDate {
     }
 
     public static DayOfWeek getDayOfWeek(int packedDate) {
-        int dow0 = Math.floorMod(toEpochDay(packedDate) + 3, 7);
+        int dow0 = Math.floorMod((int) toEpochDay(packedDate) + 3, 7);
         return DayOfWeek.of(dow0 + 1);
     }
 
@@ -383,8 +382,8 @@ public class PackedLocalDate {
         // TODO now good stuff again
         long monthCount = y * 12L + (m - 1);
         long calcMonths = monthCount + months;
-        int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcMonths, 12));
-        int newMonth = Math.floorMod(calcMonths, 12) + 1;
+        int newYear = YEAR.checkValidIntValue(Math.floorDiv((int) calcMonths, 12));
+        int newMonth = Math.floorMod((int) calcMonths, 12) + 1;
         return resolvePreviousValid(newYear, newMonth, d);
     }
 

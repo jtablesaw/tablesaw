@@ -33,7 +33,7 @@ import static tech.tablesaw.plotting.xchart.XchartDefaults.*;
  */
 public class XchartLine {
 
-    private static final String WINDOW_TITLE = "Airframe";
+    private static final String WINDOW_TITLE = "Tablesaw";
 
     public static void show(String chartTitle, NumberColumn yColumn) {
         double[] x = DoubleArrays.toN(yColumn.size());

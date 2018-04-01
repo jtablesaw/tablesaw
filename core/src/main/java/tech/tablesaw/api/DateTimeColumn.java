@@ -53,6 +53,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.*;
 
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
@@ -977,7 +978,7 @@ public class DateTimeColumn extends AbstractColumn
     @Override
     public Iterator<LocalDateTime> iterator() {
 
-        return new Iterator<>() {
+        return new Iterator<LocalDateTime>() {
 
             final LongIterator longIterator = longIterator();
 

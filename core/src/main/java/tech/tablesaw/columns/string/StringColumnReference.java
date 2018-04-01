@@ -16,6 +16,27 @@ package tech.tablesaw.columns.string;
 
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.string.filters.ColumnEqualTo;
+import tech.tablesaw.columns.string.filters.ColumnEqualToIgnoringCase;
+import tech.tablesaw.columns.string.filters.ColumnNotEqualTo;
+import tech.tablesaw.columns.string.filters.ContainsString;
+import tech.tablesaw.columns.string.filters.EndsWith;
+import tech.tablesaw.columns.string.filters.EqualTo;
+import tech.tablesaw.columns.string.filters.EqualToIgnoringCase;
+import tech.tablesaw.columns.string.filters.HasLengthEqualTo;
+import tech.tablesaw.columns.string.filters.IsAlpha;
+import tech.tablesaw.columns.string.filters.IsAlphaNumeric;
+import tech.tablesaw.columns.string.filters.IsEmpty;
+import tech.tablesaw.columns.string.filters.IsIn;
+import tech.tablesaw.columns.string.filters.IsLongerThan;
+import tech.tablesaw.columns.string.filters.IsLowerCase;
+import tech.tablesaw.columns.string.filters.IsNotIn;
+import tech.tablesaw.columns.string.filters.IsNumeric;
+import tech.tablesaw.columns.string.filters.IsShorterThan;
+import tech.tablesaw.columns.string.filters.IsUpperCase;
+import tech.tablesaw.columns.string.filters.MatchesRegex;
+import tech.tablesaw.columns.string.filters.NotEqualTo;
+import tech.tablesaw.columns.string.filters.StartsWith;
 import tech.tablesaw.filtering.Filter;
 
 /**

@@ -23,7 +23,7 @@ import java.awt.*;
 import static tech.tablesaw.plotting.smile.SmilePlotUtils.*;
 
 /**
- * Simple API for producing basic histogram plots directly from Airframe tables and columns
+ * Simple API for producing basic histogram plots directly from Tablesaw tables and columns
  */
 public class SmileHistogram {
 

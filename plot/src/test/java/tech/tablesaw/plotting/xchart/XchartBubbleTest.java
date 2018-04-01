@@ -58,9 +58,9 @@ public class XchartBubbleTest {
     }
 
     @Test
-    public void titleShouldBeAirframe() {
+    public void titleShouldBeTablesaw() {
         String title = operator.getTitle();
-        assertThat(title, equalTo("Airframe"));
+        assertThat(title, equalTo("Tablesaw"));
     }
 
     @Test

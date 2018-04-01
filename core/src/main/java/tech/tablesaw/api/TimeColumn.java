@@ -50,6 +50,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 /**
  * A column in a base table that contains float values
@@ -590,7 +591,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     @Override
     public Iterator<LocalTime> iterator() {
 
-        return new Iterator<>() {
+        return new Iterator<LocalTime>() {
 
             final IntIterator intIterator = intIterator();
 

@@ -41,24 +41,24 @@ public class FxTable extends TableView<Integer> {
     }
 
     /**
-     * Return an empty AirframeFxViewer
-     * @return an empty AirframeFxViewer
+     * Return an empty TablesawFxViewer
+     * @return an empty TablesawFxViewer
      */
     private static FxTable build() {
         return new FxTable();
     }
 
     /**
-     * Return a AirframeFxViewer initialized with a Table
+     * Return a TablesawFxViewer initialized with a Table
      * @param table the {@link Table} containing the data to insert in the {@link TableView}
-     * @return a AirframeFxViewer initialized with a Table
+     * @return a TablesawFxViewer initialized with a Table
      */
     static public FxTable build(Table table) {
 
-        FxTable AirframeFxViewer = build();
-        AirframeFxViewer.setData(table);
+        FxTable TablesawFxViewer = build();
+        TablesawFxViewer.setData(table);
 
-        return AirframeFxViewer;
+        return TablesawFxViewer;
     }
 
     /**
@@ -101,8 +101,8 @@ public class FxTable extends TableView<Integer> {
     }
 
     /**
-     * Build a TableView {@link TableColumn} from a Airframe {@link Column}
-     * @param col a Airframe {@link Column}
+     * Build a TableView {@link TableColumn} from a Tablesaw {@link Column}
+     * @param col a Tablesaw {@link Column}
      * @return a TableView {@link TableColumn}
      */
     private TableColumn<Integer, String> createColumn(Column col) {

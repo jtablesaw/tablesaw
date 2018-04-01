@@ -21,7 +21,7 @@ import javax.swing.*;
  */
 public class SmilePlotUtils {
 
-    private static final String WINDOW_TITLE = "Airframe";
+    private static final String WINDOW_TITLE = "Tablesaw";
 
     static JFrame getjFrame(int width, int height) {
         JFrame frame = new JFrame(WINDOW_TITLE);

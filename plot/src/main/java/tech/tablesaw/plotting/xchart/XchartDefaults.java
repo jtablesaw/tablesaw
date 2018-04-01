@@ -19,7 +19,7 @@ package tech.tablesaw.plotting.xchart;
  */
 final class XchartDefaults {
 
-    static final String WINDOW_TITLE = "Airframe";
+    static final String WINDOW_TITLE = "Tablesaw";
     
     static final String SERIES = "series 1";
     
