@@ -1,4 +1,4 @@
-package tech.tablesaw.join;
+package tech.tablesaw.joining;
 
 import org.junit.Test;
 import tech.tablesaw.api.Table;

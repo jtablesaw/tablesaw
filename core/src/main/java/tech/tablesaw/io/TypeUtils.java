@@ -17,7 +17,13 @@ package tech.tablesaw.io;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import tech.tablesaw.api.*;
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 
 import javax.annotation.Nonnull;
@@ -50,8 +56,8 @@ public final class TypeUtils {
     public static final List<String> FALSE_STRINGS_FOR_DETECTION =
             Arrays.asList("F", "f", "N", "n", "FALSE", "false", "False");
 
-    // Formats that we accept in parsing filters from strings
-    // TODO: Add more types, especially filters with month names spelled-out fully.
+    // Formats that we accept in parsing dates from strings
+    // TODO: Add more types, especially dates with month names spelled-out fully.
     private static final DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private static final DateTimeFormatter dtf3 = DateTimeFormatter.ofPattern("MM-dd-yyyy");
@@ -95,21 +101,17 @@ public final class TypeUtils {
                     .appendOptional(dtf19)
                     .toFormatter();
     private static final DateTimeFormatter dtTimef0 =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private static final DateTimeFormatter dtTimef1 =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");     // 2014-07-09 13:03:44
     private static final DateTimeFormatter dtTimef2 =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-    private static final DateTimeFormatter dtTimef3 =
-            DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");   // 2014-07-09 13:03:44.7 (as above, but without leading 0 in millis
     private static final DateTimeFormatter dtTimef4 =
-            DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm");
+            DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm");       // 09-Jul-2014 13:03
     private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-    private static final DateTimeFormatter dtTimef6;
-    private static final DateTimeFormatter dtTimef7 =
+    private static final DateTimeFormatter dtTimef6;                // ISO, with millis appended
+    private static final DateTimeFormatter dtTimef7 =               //  7/9/14 9:04
             DateTimeFormatter.ofPattern("M/d/yy H:mm");
     private static final DateTimeFormatter dtTimef8 =
-            DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a");
+            DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a");      //  7/9/2014 9:04:55 PM
 
     static {
         dtTimef6 = new DateTimeFormatterBuilder()
@@ -123,15 +125,13 @@ public final class TypeUtils {
     // A formatter that handles date time formats defined above
     public static final DateTimeFormatter DATE_TIME_FORMATTER =
             new DateTimeFormatterBuilder()
+                    .appendOptional(dtTimef7)
+                    .appendOptional(dtTimef8)
                     .appendOptional(dtTimef2)
-                    .appendOptional(dtTimef3)
                     .appendOptional(dtTimef4)
-                    .appendOptional(dtTimef1)
                     .appendOptional(dtTimef0)
                     .appendOptional(dtTimef5)
                     .appendOptional(dtTimef6)
-                    .appendOptional(dtTimef7)
-                    .appendOptional(dtTimef8)
                     .toFormatter();
     private static final DateTimeFormatter timef1 = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
     private static final DateTimeFormatter timef2 = DateTimeFormatter.ofPattern("hh:mm:ss a");
@@ -205,12 +205,12 @@ public final class TypeUtils {
      */
     private static ImmutableList<DateTimeFormatter> dateTimeFormatters = ImmutableList.of(
             dtTimef0,
-            dtTimef1,
             dtTimef2,
-            dtTimef3,
             dtTimef4,
             dtTimef5,
-            dtTimef6
+            dtTimef6,
+            dtTimef7,
+            dtTimef8
     );
     /**
      * List of formatters for use in code that selects the correct one for a given Time string
@@ -222,7 +222,6 @@ public final class TypeUtils {
             timef4,
             timef5,
             timef6
-            //, timef7
     );
 
     /**
@@ -245,25 +244,17 @@ public final class TypeUtils {
 
         switch (type) {
             case LOCAL_DATE:
-                return new DateColumn(name);
+                return DateColumn.create(name);
             case LOCAL_TIME:
-                return new TimeColumn(name);
+                return TimeColumn.create(name);
             case LOCAL_DATE_TIME:
-                return new DateTimeColumn(name);
-            case INTEGER:
-                return new IntColumn(name);
-            case FLOAT:
-                return new FloatColumn(name);
-            case DOUBLE:
-                return new NumberColumn(name);
+                return DateTimeColumn.create(name);
+            case NUMBER:
+                return NumberColumn.create(name);
             case BOOLEAN:
-                return new BooleanColumn(name);
-            case CATEGORY:
-                return new StringColumn(name);
-            case SHORT_INT:
-                return new ShortColumn(name);
-            case LONG_INT:
-                return new LongColumn(name);
+                return BooleanColumn.create(name);
+            case STRING:
+                return StringColumn.create(name);
             default:
                 throw new IllegalArgumentException("Unknown ColumnType: " + type);
         }

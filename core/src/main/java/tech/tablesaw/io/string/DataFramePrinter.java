@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import java.util.stream.IntStream;
 
 /**
- * A class that can pretty print a DataFrame to filters for visualization in a console
+ * A class that can pretty print a DataFrame to text for visualization in a console
  * <p>
  * Based off of https://github.com/zavtech/morpheus-core/blob/master/src/main/java/com/zavtech/morpheus/reference/XDataFramePrinter.java
  * under Apache 2 license
@@ -122,7 +122,11 @@ public class DataFramePrinter {
             final String headerTemplate = getHeaderTemplate(widths, headers);
             final int totalWidth = IntStream.of(widths).map(w -> w + 5).sum() - 1;
             final int totalHeight = data.length + 1;
-            final StringBuilder text = new StringBuilder(totalWidth * totalHeight);
+            int capacity = totalWidth * totalHeight;
+            if (capacity < 0) {
+                capacity = 0;
+            }
+            final StringBuilder text = new StringBuilder(capacity);
             text.append(tableName(frame, totalWidth)).append("\n");
             final String headerLine = String.format(headerTemplate, (Object[]) headers);
             text.append(headerLine).append("\n");

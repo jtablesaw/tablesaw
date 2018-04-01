@@ -47,7 +47,7 @@ public class DataFrameWriter {
         CsvWriter.write(table, writer);
     }
 
-    public void html(OutputStream stream) throws IOException {
+    public void html(OutputStream stream) {
         HtmlTableWriter.write(table, stream);
     }
 

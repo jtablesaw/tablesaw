@@ -24,18 +24,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class DescendingLongComparator {
 
-    static final LongComparator reverseLongComparator = new LongComparator() {
-
-        @Override
-        public int compare(Long o2, Long o1) {
-            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
-        }
-
-        @Override
-        public int compare(long o2, long o1) {
-            return (o1 < o2 ? -1 : (o1 == o2 ? 0 : 1));
-        }
-    };
+    private static final LongComparator reverseLongComparator = (o2, o1) -> (Long.compare(o1, o2));
 
     public static LongComparator instance() {
         return reverseLongComparator;

@@ -19,8 +19,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import javax.annotation.concurrent.Immutable;
 
 /**
- * A Comparator to sort int primitives in reverse order, selectWhere the un-reversed order is defined by another
- * comparator
+ * A Comparator for int primitives that takes an input comparator and creates its opposite
  */
 @Immutable
 public final class ReversingIntComparator implements IntComparator {
@@ -38,10 +37,5 @@ public final class ReversingIntComparator implements IntComparator {
     @Override
     public int compare(int i, int i1) {
         return -intComparator.compare(i, i1);
-    }
-
-    @Override
-    public int compare(Integer o1, Integer o2) {
-        return -intComparator.compare(o1, o2);
     }
 }

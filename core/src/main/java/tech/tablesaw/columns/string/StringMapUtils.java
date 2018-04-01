@@ -189,7 +189,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn join(Column column2, String delimiter) {
 
-        StringColumn newColumn = StringColumn.create(name() + column2.name() + "[join]");
+        StringColumn newColumn = StringColumn.create(name() + column2.name() + "[joining]");
 
         for (int r = 0; r < size(); r++) {
             String[] values = new String[2];

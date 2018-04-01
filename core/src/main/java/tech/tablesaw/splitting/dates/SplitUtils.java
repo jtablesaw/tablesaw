@@ -14,7 +14,9 @@
 
 package tech.tablesaw.splitting.dates;
 
-import tech.tablesaw.columns.dates.PackedLocalDate;
+import com.google.common.base.Preconditions;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.splitting.Classification;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,8 +26,16 @@ import java.util.function.Function;
 
 public class SplitUtils {
 
-    public static LocalDateSplitter byYear = PackedLocalDate::getYear;
+    public static Classification byYear = new YearSplitter();
 
+    public static Classification byMonth = (row, column) -> {
+        ColumnType type = column.type();
+        Preconditions.checkArgument(type.equals(ColumnType.LOCAL_DATE)
+                || type.equals(ColumnType.LOCAL_DATE_TIME));
+        return row.getPackedDate(column.name()).getMonthValue();
+    };
+
+/*
     public static LocalDateSplitter byMonth = PackedLocalDate::getMonthValue;
 
     public static LocalDateSplitter byDayOfMonth = PackedLocalDate::getDayOfMonth;
@@ -36,6 +46,7 @@ public class SplitUtils {
             PackedLocalDate.getDayOfWeek(packedLocalDate).getValue();
 
     public static LocalDateSplitter byQuarter = PackedLocalDate::getQuarter;
+*/
 
 
     public static Function<Comparable<?>, Object> byWeek = comparable -> {

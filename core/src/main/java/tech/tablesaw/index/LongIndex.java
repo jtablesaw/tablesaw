@@ -19,9 +19,12 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.util.selection.BitmapBackedSelection;
 import tech.tablesaw.util.selection.Selection;
+
+import java.time.LocalDateTime;
 
 /**
  * An index for eight-byte long and long backed columns (datetime)
@@ -30,11 +33,11 @@ public class LongIndex {
 
     private final Long2ObjectAVLTreeMap<IntArrayList> index;
 
-    public LongIndex(LongColumn column) {
+    public LongIndex(DateTimeColumn column) {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
-            long value = column.get(i);
+            long value = column.getLongInternal(i);
             IntArrayList recordIds = tempMap.get(value);
             if (recordIds == null) {
                 recordIds = new IntArrayList();
@@ -48,11 +51,11 @@ public class LongIndex {
         index = new Long2ObjectAVLTreeMap<>(tempMap);
     }
 
-    public LongIndex(DateTimeColumn column) {
+    public LongIndex(NumberColumn column) {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
-            long value = column.getLongInternal(i);
+            long value = column.getLong(i);
             IntArrayList recordIds = tempMap.get(value);
             if (recordIds == null) {
                 recordIds = new IntArrayList();
@@ -86,6 +89,10 @@ public class LongIndex {
         return selection;
     }
 
+    public Selection get(LocalDateTime value) {
+        return get(PackedLocalDateTime.pack(value));
+    }
+
     public Selection atLeast(long value) {
         Selection selection = new BitmapBackedSelection();
         Long2ObjectSortedMap<IntArrayList> tail = index.tailMap(value);
@@ -93,6 +100,10 @@ public class LongIndex {
             addAllToSelection(keys, selection);
         }
         return selection;
+    }
+
+    public Selection atLeast(LocalDateTime value) {
+        return atLeast(PackedLocalDateTime.pack(value));
     }
 
     public Selection greaterThan(long value) {
@@ -104,6 +115,10 @@ public class LongIndex {
         return selection;
     }
 
+    public Selection greaterThan(LocalDateTime value) {
+        return greaterThan(PackedLocalDateTime.pack(value));
+    }
+
     public Selection atMost(long value) {
         Selection selection = new BitmapBackedSelection();
         Long2ObjectSortedMap<IntArrayList> head = index.headMap(value + 1);  // we add 1 to get values equal to the arg
@@ -113,6 +128,10 @@ public class LongIndex {
         return selection;
     }
 
+    public Selection atMost(LocalDateTime value) {
+        return atMost(PackedLocalDateTime.pack(value));
+    }
+
     public Selection lessThan(long value) {
         Selection selection = new BitmapBackedSelection();
         Long2ObjectSortedMap<IntArrayList> head = index.headMap(value);  // we add 1 to get values equal to the arg
@@ -120,5 +139,9 @@ public class LongIndex {
             addAllToSelection(keys, selection);
         }
         return selection;
+    }
+
+    public Selection lessThan(LocalDateTime value) {
+        return lessThan(PackedLocalDateTime.pack(value));
     }
 }
