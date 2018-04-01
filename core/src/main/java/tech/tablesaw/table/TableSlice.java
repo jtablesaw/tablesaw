@@ -274,12 +274,12 @@ public class TableSlice extends Relation implements IntIterable {
         return (DateTimeColumn) column(columnName).subset(rowMap);
     }
 
-    public CategoryColumn categoryColumn(String columnName) {
-        return (CategoryColumn) column(columnName).subset(rowMap);
+    public StringColumn categoryColumn(String columnName) {
+        return (StringColumn) column(columnName).subset(rowMap);
     }
 
-    public CategoryColumn categoryColumn(int columnIndex) {
-        return (CategoryColumn) column(columnIndex).subset(rowMap);
+    public StringColumn categoryColumn(int columnIndex) {
+        return (StringColumn) column(columnIndex).subset(rowMap);
     }
 
     public NumericColumn numericColumn(int columnIndex) {

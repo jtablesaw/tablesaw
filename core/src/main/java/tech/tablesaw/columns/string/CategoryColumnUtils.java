@@ -16,15 +16,15 @@ package tech.tablesaw.columns.string;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.aggregate.CategoryReduceUtils;
-import tech.tablesaw.api.CategoryColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.StringPredicate;
 
 public interface CategoryColumnUtils extends Column, StringMapUtils, CategoryReduceUtils, Iterable<String> {
 
-    StringPredicate isMissing = i -> i.equals(CategoryColumn.MISSING_VALUE);
+    StringPredicate isMissing = i -> i.equals(StringColumn.MISSING_VALUE);
 
-    StringPredicate isNotMissing = i -> !i.equals(CategoryColumn.MISSING_VALUE);
+    StringPredicate isNotMissing = i -> !i.equals(StringColumn.MISSING_VALUE);
 
     IntArrayList values();
 }

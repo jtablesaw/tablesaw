@@ -160,7 +160,7 @@ Cross Tabs
 
 Tablesaw lets you easily produce two-dimensional cross-tabulations (“cross tabs”) of counts and proportions with row and column subtotals. Here’s a count example where we look at the interaction of tornado severity and US state:
 
-CrossTab.xCount(t, t.categoryColumn("State"), t.shortColumn("Scale"));
+CrossTab.xCount(t, t.stringColumn("State"), t.shortColumn("Scale"));
 Crosstab Counts: State x Scale
       -9 0     1     2    3    4   5  total 
 AL    0  623   769   424  141  37  11 2005  

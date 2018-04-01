@@ -18,7 +18,7 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.api.CategoryColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
@@ -81,7 +81,7 @@ public class ViewGroupTest {
 
     @Test
     public void testWith2GroupingCols() {
-        CategoryColumn month = table.dateColumn(0).month();
+        StringColumn month = table.dateColumn(0).month();
         month.setName("month");
         table.addColumn(month);
         String[] splitColumnNames = {table.column(2).name(), "month"};
@@ -99,14 +99,14 @@ public class ViewGroupTest {
         Table groups = table.count("approval").by("who");
         assertEquals(2, groups.columnCount());
         assertEquals(6, groups.rowCount());
-        CategoryColumn group = groups.categoryColumn(0);
+        StringColumn group = groups.categoryColumn(0);
         assertTrue(group.contains("fox"));
     }
 
     @Test
     public void testCustomFunction() {
         Table exaggeration = table.summarize("approval", exaggerate).by("who");
-        CategoryColumn group = exaggeration.categoryColumn(0);
+        StringColumn group = exaggeration.categoryColumn(0);
         assertTrue(group.contains("fox"));
     }
 

@@ -76,17 +76,17 @@ public class LongColumnTest {
     @Test
     public void testSubtractDoubleColumn() {
         long[] col1Values = new long[]{32, MISSING_VALUE, 42, 57, 52};
-        double[] col2Values = new double[]{31.5, 42, 38.67, DoubleColumn.MISSING_VALUE, 52.01};
-        double[] expected = new double[]{0.5, DoubleColumn.MISSING_VALUE, 3.33, DoubleColumn.MISSING_VALUE, -.01};
+        double[] col2Values = new double[]{31.5, 42, 38.67, NumberColumn.MISSING_VALUE, 52.01};
+        double[] expected = new double[]{0.5, NumberColumn.MISSING_VALUE, 3.33, NumberColumn.MISSING_VALUE, -.01};
 
         LongColumn col1 = new LongColumn("1", col1Values);
-        DoubleColumn col2 = new DoubleColumn("2", col2Values.length);
+        NumberColumn col2 = new NumberColumn("2", col2Values.length);
         Arrays.stream(col2Values).forEach(col2::append);
 
         NumericColumn difference = col1.subtract(col2);
-        assertTrue("Expecting DoubleColumn type runningAverage", difference instanceof DoubleColumn);
+        assertTrue("Expecting NumberColumn type runningAverage", difference instanceof NumberColumn);
 
-        DoubleColumn diffDoubleCol = (DoubleColumn) difference;
+        NumberColumn diffDoubleCol = (NumberColumn) difference;
         assertEquals("Both sets of data should be the same size.", expected.length, diffDoubleCol.size());
         for (int index = 0; index < expected.length; index++) {
             double actual = diffDoubleCol.get(index);
@@ -146,9 +146,9 @@ public class LongColumnTest {
     @Test
     public void testPctChange() {
         long[] originalValues = new long[]{10, 12, 13};
-        double[] expectedValues = new double[]{DoubleColumn.MISSING_VALUE, 0.2, 0.083333};
+        double[] expectedValues = new double[]{NumberColumn.MISSING_VALUE, 0.2, 0.083333};
         LongColumn initial = new LongColumn("Test", originalValues);
-        DoubleColumn pctChange = initial.pctChange();
+        NumberColumn pctChange = initial.pctChange();
 
         assertEquals("Both sets of data should be the same size.", expectedValues.length, pctChange.size());
 

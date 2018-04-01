@@ -57,7 +57,7 @@ public class ColumnTest {
         assertEquals(58, first2.get(2));
 
         // test with categories
-        CategoryColumn first3 = (CategoryColumn) table.categoryColumn("who").first(3);
+        StringColumn first3 = (StringColumn) table.categoryColumn("who").first(3);
         assertEquals("fox", first3.get(0));
         assertEquals("fox", first3.get(1));
         assertEquals("fox", first3.get(2));
@@ -79,7 +79,7 @@ public class ColumnTest {
         assertEquals(57, last2.get(2));
 
         // test with categories
-        CategoryColumn last3 = (CategoryColumn) table.categoryColumn("who").last(3);
+        StringColumn last3 = (StringColumn) table.categoryColumn("who").last(3);
         assertEquals("zogby", last3.get(0));
         assertEquals("zogby", last3.get(1));
         assertEquals("zogby", last3.get(2));

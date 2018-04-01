@@ -1,7 +1,7 @@
 package tech.tablesaw.io.string;
 
 import org.junit.Test;
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -11,7 +11,7 @@ public class DataFramePrinterTest {
 
     @Test
     public void printNull() {
-        DoubleColumn col = new DoubleColumn("testCol");
+        NumberColumn col = new NumberColumn("testCol");
         col.append(5.0);
         col.appendCell(null);
         col.append(3.0);

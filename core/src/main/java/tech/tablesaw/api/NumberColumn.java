@@ -40,7 +40,7 @@ import static tech.tablesaw.columns.number.NumberFilters.*;
 /**
  * A column in a base table that contains double precision floating point values
  */
-public class DoubleColumn extends AbstractColumn implements DoubleIterable, NumericColumn {
+public class NumberColumn extends AbstractColumn implements DoubleIterable, NumericColumn {
 
     public static final double MISSING_VALUE = (Double) ColumnType.DOUBLE.getMissingValue();
     private static final int BYTE_SIZE = 8;
@@ -79,24 +79,24 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         }
     };
 
-    public DoubleColumn(String name) {
+    public NumberColumn(String name) {
         this(name, new DoubleArrayList(DEFAULT_ARRAY_SIZE));
     }
 
-    public DoubleColumn(String name, int initialSize) {
+    public NumberColumn(String name, int initialSize) {
         this(name, new DoubleArrayList(initialSize));
     }
 
-    public DoubleColumn(String name, double[] arr) {
+    public NumberColumn(String name, double[] arr) {
         this(name, new DoubleArrayList(arr));
     }
 
-    private DoubleColumn(String name, DoubleArrayList data) {
+    private NumberColumn(String name, DoubleArrayList data) {
         super(name);
         this.data = data;
     }
 
-    public DoubleColumn(ColumnMetadata metadata) {
+    public NumberColumn(ColumnMetadata metadata) {
         super(metadata);
         data = new DoubleArrayList(metadata.getSize());
     }
@@ -212,12 +212,12 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
      * TODO(lwhite): Ensure proper handling of missing values. They should not end up in the result set
      */
     @Override
-    public DoubleColumn unique() {
+    public NumberColumn unique() {
         DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
             doubles.add(data.getDouble(i));
         }
-        DoubleColumn column = new DoubleColumn(name() + " Unique values", doubles.size());
+        NumberColumn column = new NumberColumn(name() + " Unique values", doubles.size());
         doubles.forEach((double i) -> column.append(i));
         return column;
     }
@@ -366,7 +366,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return select(isEqualTo, d);
     }
 
-    public Selection isEqualTo(DoubleColumn d) {
+    public Selection isEqualTo(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
         int i = 0;
         DoubleIterator doubleIterator = d.iterator();
@@ -379,7 +379,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return results;
     }
 
-    public Selection isGreaterThan(DoubleColumn d) {
+    public Selection isGreaterThan(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
         int i = 0;
         DoubleIterator doubleIterator = d.iterator();
@@ -392,7 +392,7 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
         return results;
     }
 
-    public Selection isLessThan(DoubleColumn d) {
+    public Selection isLessThan(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
         int i = 0;
         DoubleIterator doubleIterator = d.iterator();
@@ -415,15 +415,15 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     @Override
-    public DoubleColumn emptyCopy() {
-        DoubleColumn column = new DoubleColumn(name());
+    public NumberColumn emptyCopy() {
+        NumberColumn column = new NumberColumn(name());
         column.setComment(comment());
         return column;
     }
 
     @Override
-    public DoubleColumn emptyCopy(int rowSize) {
-        DoubleColumn column = new DoubleColumn(name(), rowSize);
+    public NumberColumn emptyCopy(int rowSize) {
+        NumberColumn column = new NumberColumn(name(), rowSize);
         column.setComment(comment());
         return column;
     }
@@ -434,8 +434,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     @Override
-    public DoubleColumn copy() {
-        DoubleColumn column = new DoubleColumn(name(), data);
+    public NumberColumn copy() {
+        NumberColumn column = new NumberColumn(name(), data);
         column.setComment(comment());
         return column;
     }
@@ -479,10 +479,10 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     /**
-     * Returns the natural log of the values in this column as a new DoubleColumn
+     * Returns the natural log of the values in this column as a new NumberColumn
      */
-    public DoubleColumn logN() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[logN]", size());
+    public NumberColumn logN() {
+        NumberColumn newColumn = new NumberColumn(name() + "[logN]", size());
 
         for (double value : this) {
             newColumn.append(Math.log(value));
@@ -491,12 +491,12 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     /**
-     * Returns the base 10 log of the values in this column as a new DoubleColumn
+     * Returns the base 10 log of the values in this column as a new NumberColumn
      *
      * @return
      */
-    public DoubleColumn log10() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[log10]", size());
+    public NumberColumn log10() {
+        NumberColumn newColumn = new NumberColumn(name() + "[log10]", size());
 
         for (double value : this) {
             newColumn.append(Math.log10(value));
@@ -508,16 +508,16 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
      * Returns the natural log of the values in this column, after adding 1 to each so that zero
      * values don't return -Infinity
      */
-    public DoubleColumn log1p() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[1og1p]", size());
+    public NumberColumn log1p() {
+        NumberColumn newColumn = new NumberColumn(name() + "[1og1p]", size());
         for (double value : this) {
             newColumn.append(Math.log1p(value));
         }
         return newColumn;
     }
 
-    public DoubleColumn round() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[rounded]", size());
+    public NumberColumn round() {
+        NumberColumn newColumn = new NumberColumn(name() + "[rounded]", size());
         for (double value : this) {
             newColumn.append(Math.round(value));
         }
@@ -552,8 +552,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     /**
      * Returns a doubleColumn with the absolute value of each value in this column
      */
-    public DoubleColumn abs() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[abs]", size());
+    public NumberColumn abs() {
+        NumberColumn newColumn = new NumberColumn(name() + "[abs]", size());
         for (double value : this) {
             newColumn.append(Math.abs(value));
         }
@@ -563,32 +563,32 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     /**
      * Returns a doubleColumn with the square of each value in this column
      */
-    public DoubleColumn square() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[sq]", size());
+    public NumberColumn square() {
+        NumberColumn newColumn = new NumberColumn(name() + "[sq]", size());
         for (double value : this) {
             newColumn.append(value * value);
         }
         return newColumn;
     }
 
-    public DoubleColumn sqrt() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[sqrt]", size());
+    public NumberColumn sqrt() {
+        NumberColumn newColumn = new NumberColumn(name() + "[sqrt]", size());
         for (double value : this) {
             newColumn.append(Math.sqrt(value));
         }
         return newColumn;
     }
 
-    public DoubleColumn cubeRoot() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[cbrt]", size());
+    public NumberColumn cubeRoot() {
+        NumberColumn newColumn = new NumberColumn(name() + "[cbrt]", size());
         for (double value : this) {
             newColumn.append(Math.cbrt(value));
         }
         return newColumn;
     }
 
-    public DoubleColumn cube() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[cb]", size());
+    public NumberColumn cube() {
+        NumberColumn newColumn = new NumberColumn(name() + "[cb]", size());
         for (double value : this) {
             newColumn.append(value * value * value);
         }
@@ -598,8 +598,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     /**
      * TODO(lwhite): Move to NumericColumn and generalize like division
      */
-    public DoubleColumn remainder(DoubleColumn column2) {
-        DoubleColumn result = new DoubleColumn(name() + " % " + column2.name(), size());
+    public NumberColumn remainder(NumberColumn column2) {
+        NumberColumn result = new NumberColumn(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             double val1 = get(r);
             double val2 = column2.get(r);
@@ -628,8 +628,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
      * 2.135 returns -2.135
      * 0     returns  0
      */
-    public DoubleColumn neg() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[neg]", size());
+    public NumberColumn neg() {
+        NumberColumn newColumn = new NumberColumn(name() + "[neg]", size());
         for (double value : this) {
             newColumn.append(value * -1);
         }
@@ -739,9 +739,9 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     @Override
     public void append(Column column) {
         Preconditions.checkArgument(column.type() == this.type());
-        DoubleColumn doubleColumn = (DoubleColumn) column;
-        for (int i = 0; i < doubleColumn.size(); i++) {
-            append(doubleColumn.get(i));
+        NumberColumn numberColumn = (NumberColumn) column;
+        for (int i = 0; i < numberColumn.size(); i++) {
+            append(numberColumn.get(i));
         }
     }
 
@@ -794,12 +794,12 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     @Override
-    public DoubleColumn difference() {
-        DoubleColumn returnValue = new DoubleColumn(this.name(), this.size());
+    public NumberColumn difference() {
+        NumberColumn returnValue = new NumberColumn(this.name(), this.size());
         if (data.isEmpty()) {
             return returnValue;
         }
-        returnValue.append(DoubleColumn.MISSING_VALUE);
+        returnValue.append(NumberColumn.MISSING_VALUE);
         for (int current = 1; current < data.size(); current++) {
             returnValue.append(subtract(get(current), get(current - 1)));
         }
@@ -809,9 +809,9 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     /**
      * Returns a new column with a cumulative sum calculated
      */
-    public DoubleColumn cumSum() {
+    public NumberColumn cumSum() {
         double total = 0.0;
-        DoubleColumn newColumn = new DoubleColumn(name() + "[cumSum]", size());
+        NumberColumn newColumn = new NumberColumn(name() + "[cumSum]", size());
         for (double value : this) {
             if (isMissing(value)) {
                 newColumn.append(MISSING_VALUE);
@@ -826,9 +826,9 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     /**
      * Returns a new column with a cumulative product calculated
      */
-    public DoubleColumn cumProd() {
+    public NumberColumn cumProd() {
         double total = 1.0;
-        DoubleColumn newColumn = new DoubleColumn(name() + "[cumProd]", size());
+        NumberColumn newColumn = new NumberColumn(name() + "[cumProd]", size());
         for (double value : this) {
             if (isMissing(value)) {
                 newColumn.append(MISSING_VALUE);
@@ -843,8 +843,8 @@ public class DoubleColumn extends AbstractColumn implements DoubleIterable, Nume
     /**
      * Returns a new column with a percent change calculated
      */
-    public DoubleColumn pctChange() {
-        DoubleColumn newColumn = new DoubleColumn(name() + "[pctChange]", size());
+    public NumberColumn pctChange() {
+        NumberColumn newColumn = new NumberColumn(name() + "[pctChange]", size());
         newColumn.append(MISSING_VALUE);
         for (int i = 1; i < size(); i++) {
             newColumn.append(get(i) / get(i - 1) - 1);

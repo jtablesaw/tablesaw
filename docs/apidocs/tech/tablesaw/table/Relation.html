@@ -174,11 +174,11 @@ extends <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/Relation.html#categoryColumn-int-">categoryColumn</a></span>(int&nbsp;columnIndex)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/Relation.html#stringColumn-int-">stringColumn</a></span>(int&nbsp;columnIndex)</code>&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/Relation.html#categoryColumn-java.lang.String-">categoryColumn</a></span>(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/Relation.html#stringColumn-java.lang.String-">stringColumn</a></span>(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</code>&nbsp;</td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>abstract void</code></td>
@@ -257,11 +257,11 @@ extends <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?
 </tr>
 <tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="../../../tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/Relation.html#doubleColumn-int-">doubleColumn</a></span>(int&nbsp;columnIndex)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/Relation.html#numberColumn-int-">numberColumn</a></span>(int&nbsp;columnIndex)</code>&nbsp;</td>
 </tr>
 <tr id="i22" class="altColor">
 <td class="colFirst"><code><a href="../../../tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/Relation.html#doubleColumn-java.lang.String-">doubleColumn</a></span>(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../tech/tablesaw/table/Relation.html#numberColumn-java.lang.String-">numberColumn</a></span>(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</code>&nbsp;</td>
 </tr>
 <tr id="i23" class="rowColor">
 <td class="colFirst"><code>abstract <a href="../../../tech/tablesaw/api/Table.html" title="class in tech.tablesaw.api">Table</a></code></td>
@@ -768,22 +768,22 @@ extends <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?
 <pre>public&nbsp;<a href="../../../tech/tablesaw/api/FloatColumn.html" title="class in tech.tablesaw.api">FloatColumn</a>&nbsp;floatColumn(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</pre>
 </li>
 </ul>
-<a name="doubleColumn-int-">
+<a name="numberColumn-int-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>doubleColumn</h4>
-<pre>public&nbsp;<a href="../../../tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a>&nbsp;doubleColumn(int&nbsp;columnIndex)</pre>
+<h4>numberColumn</h4>
+<pre>public&nbsp;<a href="../../../tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a>&nbsp;numberColumn(int&nbsp;columnIndex)</pre>
 </li>
 </ul>
-<a name="doubleColumn-java.lang.String-">
+<a name="numberColumn-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>doubleColumn</h4>
-<pre>public&nbsp;<a href="../../../tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a>&nbsp;doubleColumn(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</pre>
+<h4>numberColumn</h4>
+<pre>public&nbsp;<a href="../../../tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a>&nbsp;numberColumn(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</pre>
 </li>
 </ul>
 <a name="intColumn-java.lang.String-">
@@ -876,22 +876,22 @@ extends <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/Object.html?
 <pre>public&nbsp;<a href="../../../tech/tablesaw/api/TimeColumn.html" title="class in tech.tablesaw.api">TimeColumn</a>&nbsp;timeColumn(int&nbsp;columnIndex)</pre>
 </li>
 </ul>
-<a name="categoryColumn-java.lang.String-">
+<a name="stringColumn-java.lang.String-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>categoryColumn</h4>
-<pre>public&nbsp;<a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a>&nbsp;categoryColumn(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</pre>
+<h4>stringColumn</h4>
+<pre>public&nbsp;<a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a>&nbsp;stringColumn(<a href="http://docs.oracle.com/javase/8/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a>&nbsp;columnName)</pre>
 </li>
 </ul>
-<a name="categoryColumn-int-">
+<a name="stringColumn-int-">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>categoryColumn</h4>
-<pre>public&nbsp;<a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a>&nbsp;categoryColumn(int&nbsp;columnIndex)</pre>
+<h4>stringColumn</h4>
+<pre>public&nbsp;<a href="../../../tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a>&nbsp;stringColumn(int&nbsp;columnIndex)</pre>
 </li>
 </ul>
 <a name="dateTimeColumn-int-">

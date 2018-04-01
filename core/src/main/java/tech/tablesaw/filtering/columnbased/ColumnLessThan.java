@@ -46,7 +46,7 @@ public class ColumnLessThan extends ColumnFilter {
         return column1.isLessThan(column2);
     }
 
-    private static Selection apply(DoubleColumn column1, DoubleColumn column2) {
+    private static Selection apply(NumberColumn column1, NumberColumn column2) {
         return column1.isLessThan(column2);
     }
 
@@ -70,7 +70,7 @@ public class ColumnLessThan extends ColumnFilter {
             return apply((FloatColumn) column, (FloatColumn) other);
 
         if (column.type() == ColumnType.DOUBLE)
-            return apply((DoubleColumn) column, (DoubleColumn) other);
+            return apply((NumberColumn) column, (NumberColumn) other);
 
         throw new UnsupportedOperationException("Not supported (currently) for this column type");
     }

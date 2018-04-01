@@ -16,7 +16,7 @@ package tech.tablesaw;
 
 import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.api.CategoryColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -55,7 +55,7 @@ public class TableGroupTest {
 
     @Test
     public void testWith2GroupingCols() {
-        CategoryColumn month = table.dateColumn(0).month();
+        StringColumn month = table.dateColumn(0).month();
         month.setName("month");
         table.addColumn(month);
         String[] splitColumnNames = {table.column(2).name(), "month"};
@@ -73,7 +73,7 @@ public class TableGroupTest {
         Table groups = table.count("approval").by("who");
         assertEquals(2, groups.columnCount());
         assertEquals(6, groups.rowCount());
-        CategoryColumn group = groups.categoryColumn(0);
+        StringColumn group = groups.categoryColumn(0);
         assertTrue(group.contains("fox"));
     }
 

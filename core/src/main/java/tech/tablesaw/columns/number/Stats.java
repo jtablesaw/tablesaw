@@ -49,7 +49,7 @@ public class Stats {
         return getStats(values, summaryStatistics);
     }
 
-    public static Stats create(final DoubleColumn values) {
+    public static Stats create(final NumberColumn values) {
         SummaryStatistics summaryStatistics = new SummaryStatistics();
         for (double f : values) {
             summaryStatistics.addValue(f);
@@ -90,7 +90,7 @@ public class Stats {
         return stats;
     }
 
-    private static Stats getStats(DoubleColumn values, SummaryStatistics summaryStatistics) {
+    private static Stats getStats(NumberColumn values, SummaryStatistics summaryStatistics) {
         Stats stats = new Stats("Column: " + values.name());
         stats.min = summaryStatistics.getMin();
         stats.max = summaryStatistics.getMax();
@@ -166,7 +166,7 @@ public class Stats {
 
     public Table asTable() {
         Table t = Table.create(name);
-        CategoryColumn measure = new CategoryColumn("Measure");
+        StringColumn measure = new StringColumn("Measure");
         FloatColumn value = new FloatColumn("Value");
         t.addColumn(measure);
         t.addColumn(value);
@@ -201,7 +201,7 @@ public class Stats {
     public Table asTableComplete() {
         Table t = asTable();
 
-        CategoryColumn measure = t.categoryColumn("Measure");
+        StringColumn measure = t.categoryColumn("Measure");
         FloatColumn value = t.floatColumn("Value");
 
         measure.append("Sum of Squares");

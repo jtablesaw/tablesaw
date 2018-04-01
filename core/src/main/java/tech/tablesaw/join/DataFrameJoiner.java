@@ -51,9 +51,9 @@ public class DataFrameJoiner {
                 table2Rows.removeColumns(col2Name);
                 crossProduct(result, table1Rows, table2Rows);
             }
-        } else if (column instanceof CategoryColumn) {
+        } else if (column instanceof StringColumn) {
             CategoryIndex index = new CategoryIndex(table2.categoryColumn(col2Name));
-            CategoryColumn col1 = (CategoryColumn) column;
+            StringColumn col1 = (StringColumn) column;
             for (int i = 0; i < col1.size(); i++) {
                 String value = col1.get(i);
                 Table table1Rows = table.selectRow(i);

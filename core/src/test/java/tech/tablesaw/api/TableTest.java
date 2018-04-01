@@ -34,7 +34,7 @@ public class TableTest {
 
     private Table table;
     private FloatColumn floatColumn = new FloatColumn("f1");
-    private DoubleColumn doubleColumn = new DoubleColumn("d1");
+    private NumberColumn numberColumn = new NumberColumn("d1");
 
     @Before
     public void setUp() throws Exception {
@@ -73,11 +73,11 @@ public class TableTest {
 
     @Test
     public void testFullCopy() throws Exception {
-        doubleColumn.append(2.23424);
+        numberColumn.append(2.23424);
         Table t = Table.create("test");
-        t.addColumn(doubleColumn);
+        t.addColumn(numberColumn);
         Table c = t.fullCopy();
-        DoubleColumn doubles = c.doubleColumn(0);
+        NumberColumn doubles = c.doubleColumn(0);
         assertNotNull(doubles);
         assertEquals(1, doubles.size());
     }
@@ -156,7 +156,7 @@ public class TableTest {
 
     @Test(expected = IllegalStateException.class)
     public void testAppendTableWithNonExistingColumns() throws Exception {
-        Table tableToAppend = Table.create("wrong", doubleColumn);
+        Table tableToAppend = Table.create("wrong", numberColumn);
         table.append(tableToAppend);
     }
 
@@ -226,9 +226,9 @@ public class TableTest {
 
     @Test
     public void testAsMatrix() throws Exception {
-        DoubleColumn first = new DoubleColumn("c1", new double[]{1l, 2l, 3l, 4l, 5l});
-        DoubleColumn second = new DoubleColumn("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
-        DoubleColumn third = new DoubleColumn("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
+        NumberColumn first = new NumberColumn("c1", new double[]{1l, 2l, 3l, 4l, 5l});
+        NumberColumn second = new NumberColumn("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
+        NumberColumn third = new NumberColumn("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
 
         Table t = Table.create("table", first, second, third);
         double[][] matrix = t.asMatrix();

@@ -48,7 +48,7 @@ public class Rows {
                     copy(rows, (LongColumn) oldTable.column(columnIndex), (LongColumn) newTable.column(columnIndex));
                     break;
                 case CATEGORY:
-                    copy(rows, (CategoryColumn) oldTable.column(columnIndex), (CategoryColumn) newTable.column
+                    copy(rows, (StringColumn) oldTable.column(columnIndex), (StringColumn) newTable.column
                             (columnIndex));
                     break;
                 case BOOLEAN:
@@ -56,7 +56,7 @@ public class Rows {
                             (columnIndex));
                     break;
                 case DOUBLE:
-                    copy(rows, (DoubleColumn) oldTable.column(columnIndex), (DoubleColumn) newTable.column
+                    copy(rows, (NumberColumn) oldTable.column(columnIndex), (NumberColumn) newTable.column
                             (columnIndex));
                     break;
                 case LOCAL_DATE:
@@ -94,7 +94,7 @@ public class Rows {
                     if (!result) return false;
                     break;
                 case DOUBLE:
-                    result = compare(rowInOriginal, (DoubleColumn) tempTable.column(columnIndex), (DoubleColumn)
+                    result = compare(rowInOriginal, (NumberColumn) tempTable.column(columnIndex), (NumberColumn)
                             original.column(columnIndex));
                     if (!result) return false;
                     break;
@@ -114,7 +114,7 @@ public class Rows {
                     if (!result) return false;
                     break;
                 case CATEGORY:
-                    result = compare(rowInOriginal, (CategoryColumn) tempTable.column(columnIndex), (CategoryColumn)
+                    result = compare(rowInOriginal, (StringColumn) tempTable.column(columnIndex), (StringColumn)
                             original.column(columnIndex));
                     if (!result) return false;
                     break;
@@ -175,7 +175,7 @@ public class Rows {
         }
     }
 
-    private static void copy(IntArrayList rows, DoubleColumn oldColumn, DoubleColumn newColumn) {
+    private static void copy(IntArrayList rows, NumberColumn oldColumn, NumberColumn newColumn) {
         for (int index : rows) {
             newColumn.append(oldColumn.get(index));
         }
@@ -185,15 +185,15 @@ public class Rows {
         return original.get(row) == tempTable.get(tempTable.size() - 1);
     }
 
-    private static boolean compare(int row, DoubleColumn tempTable, DoubleColumn original) {
+    private static boolean compare(int row, NumberColumn tempTable, NumberColumn original) {
         return original.get(row) == tempTable.get(tempTable.size() - 1);
     }
 
-    private static void copy(IntArrayList rows, CategoryColumn oldColumn, CategoryColumn newColumn) {
+    private static void copy(IntArrayList rows, StringColumn oldColumn, StringColumn newColumn) {
         newColumn.initializeWith(oldColumn.getValues(rows), oldColumn.dictionaryMap());
     }
 
-    private static boolean compare(int row, CategoryColumn tempTable, CategoryColumn original) {
+    private static boolean compare(int row, StringColumn tempTable, StringColumn original) {
         String t = tempTable.get(tempTable.size() - 1);
         String o = original.get(row);
         return o.equals(t);

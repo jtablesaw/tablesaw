@@ -260,9 +260,9 @@ public class IntColumnTest {
     @Test
     public void testPctChange() {
         int[] originalValues = new int[]{10, 12, 13};
-        double[] expectedValues = new double[]{DoubleColumn.MISSING_VALUE, 0.2, 0.083333};
+        double[] expectedValues = new double[]{NumberColumn.MISSING_VALUE, 0.2, 0.083333};
         IntColumn initial = new IntColumn("Test", originalValues);
-        DoubleColumn pctChange = initial.pctChange();
+        NumberColumn pctChange = initial.pctChange();
 
         assertEquals("Both sets of data should be the same size.", expectedValues.length, pctChange.size());
 

@@ -14,7 +14,7 @@
 
 package tech.tablesaw.filtering;
 
-import tech.tablesaw.api.CategoryColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -38,8 +38,8 @@ public class StringNotEqualTo extends ColumnFilter {
         ColumnType type = column.type();
         switch (type) {
             case CATEGORY: {
-                CategoryColumn categoryColumn = (CategoryColumn) relation.column(columnReference.getColumnName());
-                return categoryColumn.isNotEqualTo(value);
+                StringColumn stringColumn = (StringColumn) relation.column(columnReference.getColumnName());
+                return stringColumn.isNotEqualTo(value);
             }
             default:
                 throw new UnsupportedOperationException(

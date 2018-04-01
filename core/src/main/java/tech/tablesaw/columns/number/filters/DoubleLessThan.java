@@ -14,7 +14,7 @@
 
 package tech.tablesaw.columns.number.filters;
 
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
@@ -30,7 +30,7 @@ public class LessThan extends ColumnFilter {
     }
 
     public Selection apply(Table relation) {
-        DoubleColumn doubleColumn = (DoubleColumn) relation.column(columnReference.getColumnName());
-        return doubleColumn.isLessThan(value);
+        NumberColumn numberColumn = (NumberColumn) relation.column(columnReference.getColumnName());
+        return numberColumn.isLessThan(value);
     }
 }

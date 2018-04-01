@@ -14,7 +14,7 @@
 
 package tech.tablesaw.columns.string.filters;
 
-import tech.tablesaw.api.CategoryColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
@@ -36,7 +36,7 @@ public class TextIsUpperCase extends ColumnFilter {
     @Override
     public Selection apply(Table relation) {
         Column column = relation.column(columnReference().getColumnName());
-        CategoryColumn textColumn = (CategoryColumn) column;
+        StringColumn textColumn = (StringColumn) column;
         return textColumn.isUpperCase();
 
     }

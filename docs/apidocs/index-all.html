@@ -79,7 +79,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#abs--">abs()</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
 <dd>
-<div class="block">Returns a doubleColumn with the absolute value of each value in this column</div>
+<div class="block">Returns a numberColumn with the absolute value of each value in this column</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/FloatColumn.html#abs--">abs()</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/FloatColumn.html" title="class in tech.tablesaw.api">FloatColumn</a></dt>
 <dd>&nbsp;</dd>
@@ -171,7 +171,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/aggregate/AggregateFunction.html#agg-tech.tablesaw.api.FloatColumn-">agg(FloatColumn)</a></span> - Method in interface tech.tablesaw.aggregate.<a href="tech/tablesaw/aggregate/AggregateFunction.html" title="interface in tech.tablesaw.aggregate">AggregateFunction</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/aggregate/AggregateFunction.html#agg-tech.tablesaw.api.DoubleColumn-">agg(DoubleColumn)</a></span> - Method in interface tech.tablesaw.aggregate.<a href="tech/tablesaw/aggregate/AggregateFunction.html" title="interface in tech.tablesaw.aggregate">AggregateFunction</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/aggregate/AggregateFunction.html#agg-tech.tablesaw.api.NumberColumn-">agg(DoubleColumn)</a></span> - Method in interface tech.tablesaw.aggregate.<a href="tech/tablesaw/aggregate/AggregateFunction.html" title="interface in tech.tablesaw.aggregate">AggregateFunction</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/aggregate/AggregateFunction.html#agg-tech.tablesaw.api.IntColumn-">agg(IntColumn)</a></span> - Method in interface tech.tablesaw.aggregate.<a href="tech/tablesaw/aggregate/AggregateFunction.html" title="interface in tech.tablesaw.aggregate">AggregateFunction</a></dt>
 <dd>&nbsp;</dd>
@@ -367,7 +367,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/table/Rows.html#appendRowToTable-int-tech.tablesaw.api.Table-tech.tablesaw.api.Table-">appendRowToTable(int, Table, Table)</a></span> - Static method in class tech.tablesaw.table.<a href="tech/tablesaw/table/Rows.html" title="class in tech.tablesaw.table">Rows</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/CategoryColumn.html#appendString-tech.tablesaw.api.CategoryColumn-">appendString(CategoryColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/CategoryColumn.html#appendString-tech.tablesaw.api.StringColumn-">appendString(CategoryColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></dt>
 <dd>
 <div class="block">Return a copy of this column with the given string appended</div>
 </dd>
@@ -755,7 +755,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/ml/association/AssociationRuleMining.html#AssociationRuleMining-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.ShortColumn-double-">AssociationRuleMining(ShortColumn, ShortColumn, double)</a></span> - Constructor for class tech.tablesaw.api.ml.association.<a href="tech/tablesaw/api/ml/association/AssociationRuleMining.html" title="class in tech.tablesaw.api.ml.association">AssociationRuleMining</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/ml/association/AssociationRuleMining.html#AssociationRuleMining-tech.tablesaw.api.IntColumn-tech.tablesaw.api.CategoryColumn-double-">AssociationRuleMining(IntColumn, CategoryColumn, double)</a></span> - Constructor for class tech.tablesaw.api.ml.association.<a href="tech/tablesaw/api/ml/association/AssociationRuleMining.html" title="class in tech.tablesaw.api.ml.association">AssociationRuleMining</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/ml/association/AssociationRuleMining.html#AssociationRuleMining-tech.tablesaw.api.IntColumn-tech.tablesaw.api.StringColumn-double-">AssociationRuleMining(IntColumn, CategoryColumn, double)</a></span> - Constructor for class tech.tablesaw.api.ml.association.<a href="tech/tablesaw/api/ml/association/AssociationRuleMining.html" title="class in tech.tablesaw.api.ml.association">AssociationRuleMining</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/table/TemporaryView.html#asTable--">asTable()</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/TemporaryView.html" title="class in tech.tablesaw.table">TemporaryView</a></dt>
 <dd>&nbsp;</dd>
@@ -1005,13 +1005,13 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/CategoryColumn.html#CategoryColumn-java.lang.String-int-">CategoryColumn(String, int)</a></span> - Constructor for class tech.tablesaw.api.<a href="tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/table/Relation.html#categoryColumn-java.lang.String-">categoryColumn(String)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/table/Relation.html#stringColumn-java.lang.String-">stringColumn(String)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/table/Relation.html#categoryColumn-int-">categoryColumn(int)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/table/Relation.html#stringColumn-int-">stringColumn(int)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/table/TemporaryView.html#categoryColumn-java.lang.String-">categoryColumn(String)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/TemporaryView.html" title="class in tech.tablesaw.table">TemporaryView</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/table/TemporaryView.html#stringColumn-java.lang.String-">stringColumn(String)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/TemporaryView.html" title="class in tech.tablesaw.table">TemporaryView</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/table/TemporaryView.html#categoryColumn-int-">categoryColumn(int)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/TemporaryView.html" title="class in tech.tablesaw.table">TemporaryView</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/table/TemporaryView.html#stringColumn-int-">stringColumn(int)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/TemporaryView.html" title="class in tech.tablesaw.table">TemporaryView</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tech/tablesaw/columns/CategoryColumnUtils.html" title="interface in tech.tablesaw.columns"><span class="typeNameLink">CategoryColumnUtils</span></a> - Interface in <a href="tech/tablesaw/columns/package-summary.html">tech.tablesaw.columns</a></dt>
 <dd>&nbsp;</dd>
@@ -1021,7 +1021,7 @@
  incorrect values produced when testing the classifier such that the counts are made for every combination of
  correct and incorrect classification</div>
 </dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/ml/classification/CategoryConfusionMatrix.html#CategoryConfusionMatrix-tech.tablesaw.api.CategoryColumn-java.util.SortedSet-">CategoryConfusionMatrix(CategoryColumn, SortedSet&lt;String&gt;)</a></span> - Constructor for class tech.tablesaw.api.ml.classification.<a href="tech/tablesaw/api/ml/classification/CategoryConfusionMatrix.html" title="class in tech.tablesaw.api.ml.classification">CategoryConfusionMatrix</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/ml/classification/CategoryConfusionMatrix.html#CategoryConfusionMatrix-tech.tablesaw.api.StringColumn-java.util.SortedSet-">CategoryConfusionMatrix(CategoryColumn, SortedSet&lt;String&gt;)</a></span> - Constructor for class tech.tablesaw.api.ml.classification.<a href="tech/tablesaw/api/ml/classification/CategoryConfusionMatrix.html" title="class in tech.tablesaw.api.ml.classification">CategoryConfusionMatrix</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tech/tablesaw/filtering/text/CategoryFilters.html" title="interface in tech.tablesaw.columns.string.filters"><span class="typeNameLink">CategoryFilters</span></a> - Interface in <a href="tech/tablesaw/filtering/text/package-summary.html">tech.tablesaw.columns.string.filters</a></dt>
 <dd>&nbsp;</dd>
@@ -1029,7 +1029,7 @@
 <dd>
 <div class="block">An index for four-byte integer and Date columns</div>
 </dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/index/CategoryIndex.html#CategoryIndex-tech.tablesaw.api.CategoryColumn-">CategoryIndex(CategoryColumn)</a></span> - Constructor for class tech.tablesaw.index.<a href="tech/tablesaw/index/CategoryIndex.html" title="class in tech.tablesaw.index">CategoryIndex</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/index/CategoryIndex.html#CategoryIndex-tech.tablesaw.api.StringColumn-">CategoryIndex(CategoryColumn)</a></span> - Constructor for class tech.tablesaw.index.<a href="tech/tablesaw/index/CategoryIndex.html" title="class in tech.tablesaw.index">CategoryIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tech/tablesaw/aggregate/CategoryReduceUtils.html" title="interface in tech.tablesaw.aggregate"><span class="typeNameLink">CategoryReduceUtils</span></a> - Interface in <a href="tech/tablesaw/aggregate/package-summary.html">tech.tablesaw.aggregate</a></dt>
 <dd>&nbsp;</dd>
@@ -1041,7 +1041,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxBar.html#chart-java.lang.String-tech.tablesaw.api.Table-java.lang.String-java.lang.String-">chart(String, Table, String, String)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxBar.html" title="class in tech.tablesaw.plotting.fx">FxBar</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxBar.html#chart-java.lang.String-tech.tablesaw.api.CategoryColumn-tech.tablesaw.api.NumericColumn-">chart(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxBar.html" title="class in tech.tablesaw.plotting.fx">FxBar</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxBar.html#chart-java.lang.String-tech.tablesaw.api.StringColumn-tech.tablesaw.api.NumericColumn-">chart(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxBar.html" title="class in tech.tablesaw.plotting.fx">FxBar</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxBar.html#chart-java.lang.String-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.NumericColumn-">chart(String, ShortColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxBar.html" title="class in tech.tablesaw.plotting.fx">FxBar</a></dt>
 <dd>&nbsp;</dd>
@@ -1049,13 +1049,13 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxHorizontalBar.html#chart-java.lang.String-tech.tablesaw.api.Table-java.lang.String-java.lang.String-">chart(String, Table, String, String)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxHorizontalBar.html" title="class in tech.tablesaw.plotting.fx">FxHorizontalBar</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxHorizontalBar.html#chart-java.lang.String-tech.tablesaw.api.CategoryColumn-tech.tablesaw.api.NumericColumn-">chart(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxHorizontalBar.html" title="class in tech.tablesaw.plotting.fx">FxHorizontalBar</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxHorizontalBar.html#chart-java.lang.String-tech.tablesaw.api.StringColumn-tech.tablesaw.api.NumericColumn-">chart(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxHorizontalBar.html" title="class in tech.tablesaw.plotting.fx">FxHorizontalBar</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxHorizontalBar.html#chart-java.lang.String-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.NumericColumn-">chart(String, ShortColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxHorizontalBar.html" title="class in tech.tablesaw.plotting.fx">FxHorizontalBar</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxHorizontalBar.html#chart-java.lang.String-tech.tablesaw.api.IntColumn-tech.tablesaw.api.NumericColumn-">chart(String, IntColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxHorizontalBar.html" title="class in tech.tablesaw.plotting.fx">FxHorizontalBar</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxPareto.html#chart-java.lang.String-tech.tablesaw.api.CategoryColumn-tech.tablesaw.api.NumericColumn-">chart(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxPareto.html" title="class in tech.tablesaw.plotting.fx">FxPareto</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxPareto.html#chart-java.lang.String-tech.tablesaw.api.StringColumn-tech.tablesaw.api.NumericColumn-">chart(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxPareto.html" title="class in tech.tablesaw.plotting.fx">FxPareto</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxPareto.html#chart-java.lang.String-tech.tablesaw.api.IntColumn-tech.tablesaw.api.NumericColumn-">chart(String, IntColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxPareto.html" title="class in tech.tablesaw.plotting.fx">FxPareto</a></dt>
 <dd>&nbsp;</dd>
@@ -1063,7 +1063,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxPie.html#chart-java.lang.String-tech.tablesaw.api.Table-java.lang.String-java.lang.String-">chart(String, Table, String, String)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxPie.html" title="class in tech.tablesaw.plotting.fx">FxPie</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxPie.html#chart-java.lang.String-tech.tablesaw.api.CategoryColumn-tech.tablesaw.api.NumericColumn-">chart(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxPie.html" title="class in tech.tablesaw.plotting.fx">FxPie</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxPie.html#chart-java.lang.String-tech.tablesaw.api.StringColumn-tech.tablesaw.api.NumericColumn-">chart(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxPie.html" title="class in tech.tablesaw.plotting.fx">FxPie</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/plotting/fx/FxPie.html#chart-java.lang.String-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.NumericColumn-">chart(String, ShortColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.plotting.fx.<a href="tech/tablesaw/plotting/fx/FxPie.html" title="class in tech.tablesaw.plotting.fx">FxPie</a></dt>
 <dd>&nbsp;</dd>
@@ -1394,7 +1394,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/table/ViewGroup.html#count-java.lang.String-">count(String)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/ViewGroup.html" title="class in tech.tablesaw.table">ViewGroup</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/Table.html#countBy-tech.tablesaw.api.CategoryColumn-">countBy(CategoryColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/Table.html" title="class in tech.tablesaw.api">Table</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/Table.html#countBy-tech.tablesaw.api.StringColumn-">countBy(CategoryColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/Table.html" title="class in tech.tablesaw.api">Table</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/CategoryColumn.html#countByCategory--">countByCategory()</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></dt>
 <dd>&nbsp;</dd>
@@ -1504,7 +1504,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/util/Stats.html#create-tech.tablesaw.api.FloatColumn-">create(FloatColumn)</a></span> - Static method in class tech.tablesaw.util.<a href="tech/tablesaw/util/Stats.html" title="class in tech.tablesaw.util">Stats</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/util/Stats.html#create-tech.tablesaw.api.DoubleColumn-">create(DoubleColumn)</a></span> - Static method in class tech.tablesaw.util.<a href="tech/tablesaw/util/Stats.html" title="class in tech.tablesaw.util">Stats</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/util/Stats.html#create-tech.tablesaw.api.NumberColumn-">create(DoubleColumn)</a></span> - Static method in class tech.tablesaw.util.<a href="tech/tablesaw/util/Stats.html" title="class in tech.tablesaw.util">Stats</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/util/Stats.html#create-tech.tablesaw.api.IntColumn-">create(IntColumn)</a></span> - Static method in class tech.tablesaw.util.<a href="tech/tablesaw/util/Stats.html" title="class in tech.tablesaw.util">Stats</a></dt>
 <dd>&nbsp;</dd>
@@ -1927,9 +1927,9 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#DoubleColumn-tech.tablesaw.store.ColumnMetadata-">DoubleColumn(ColumnMetadata)</a></span> - Constructor for class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/table/Relation.html#doubleColumn-int-">doubleColumn(int)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/table/Relation.html#numberColumn-int-">numberColumn(int)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/table/Relation.html#doubleColumn-java.lang.String-">doubleColumn(String)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/table/Relation.html#numberColumn-java.lang.String-">numberColumn(String)</a></span> - Method in class tech.tablesaw.table.<a href="tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tech/tablesaw/columns/DoubleColumnUtils.html" title="interface in tech.tablesaw.columns"><span class="typeNameLink">DoubleColumnUtils</span></a> - Interface in <a href="tech/tablesaw/columns/package-summary.html">tech.tablesaw.columns</a></dt>
 <dd>&nbsp;</dd>
@@ -1953,7 +1953,7 @@
 <dd>
 <div class="block">An index for double-precision 64-bit IEEE 754 floating point columns.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/index/DoubleIndex.html#DoubleIndex-tech.tablesaw.api.DoubleColumn-">DoubleIndex(DoubleColumn)</a></span> - Constructor for class tech.tablesaw.index.<a href="tech/tablesaw/index/DoubleIndex.html" title="class in tech.tablesaw.index">DoubleIndex</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/index/DoubleIndex.html#DoubleIndex-tech.tablesaw.api.NumberColumn-">DoubleIndex(DoubleColumn)</a></span> - Constructor for class tech.tablesaw.index.<a href="tech/tablesaw/index/DoubleIndex.html" title="class in tech.tablesaw.index">DoubleIndex</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="tech/tablesaw/filtering/DoubleLessThan.html" title="class in tech.tablesaw.filtering"><span class="typeNameLink">DoubleLessThan</span></a> - Class in <a href="tech/tablesaw/filtering/package-summary.html">tech.tablesaw.filtering</a></dt>
 <dd>&nbsp;</dd>
@@ -2187,9 +2187,9 @@
 <dd>
 <div class="block">Constructs and returns a frequent itemset model</div>
 </dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/ml/association/FrequentItemset.html#FrequentItemset-tech.tablesaw.api.IntColumn-tech.tablesaw.api.CategoryColumn-double-">FrequentItemset(IntColumn, CategoryColumn, double)</a></span> - Constructor for class tech.tablesaw.api.ml.association.<a href="tech/tablesaw/api/ml/association/FrequentItemset.html" title="class in tech.tablesaw.api.ml.association">FrequentItemset</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/ml/association/FrequentItemset.html#FrequentItemset-tech.tablesaw.api.IntColumn-tech.tablesaw.api.StringColumn-double-">FrequentItemset(IntColumn, CategoryColumn, double)</a></span> - Constructor for class tech.tablesaw.api.ml.association.<a href="tech/tablesaw/api/ml/association/FrequentItemset.html" title="class in tech.tablesaw.api.ml.association">FrequentItemset</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/ml/association/FrequentItemset.html#FrequentItemset-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.CategoryColumn-double-">FrequentItemset(ShortColumn, CategoryColumn, double)</a></span> - Constructor for class tech.tablesaw.api.ml.association.<a href="tech/tablesaw/api/ml/association/FrequentItemset.html" title="class in tech.tablesaw.api.ml.association">FrequentItemset</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/ml/association/FrequentItemset.html#FrequentItemset-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.StringColumn-double-">FrequentItemset(ShortColumn, CategoryColumn, double)</a></span> - Constructor for class tech.tablesaw.api.ml.association.<a href="tech/tablesaw/api/ml/association/FrequentItemset.html" title="class in tech.tablesaw.api.ml.association">FrequentItemset</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/ml/association/FrequentItemset.html#FrequentItemset-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.ShortColumn-double-">FrequentItemset(ShortColumn, ShortColumn, double)</a></span> - Constructor for class tech.tablesaw.api.ml.association.<a href="tech/tablesaw/api/ml/association/FrequentItemset.html" title="class in tech.tablesaw.api.ml.association">FrequentItemset</a></dt>
 <dd>&nbsp;</dd>
@@ -3116,7 +3116,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/BooleanColumn.html#isEqualTo-tech.tablesaw.api.BooleanColumn-">isEqualTo(BooleanColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/BooleanColumn.html" title="class in tech.tablesaw.api">BooleanColumn</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/CategoryColumn.html#isEqualTo-tech.tablesaw.api.CategoryColumn-">isEqualTo(CategoryColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/CategoryColumn.html#isEqualTo-tech.tablesaw.api.StringColumn-">isEqualTo(CategoryColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/CategoryColumn.html#isEqualTo-java.lang.String-">isEqualTo(String)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/CategoryColumn.html" title="class in tech.tablesaw.api">CategoryColumn</a></dt>
 <dd>&nbsp;</dd>
@@ -3134,7 +3134,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#isEqualTo-double-">isEqualTo(double)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#isEqualTo-tech.tablesaw.api.DoubleColumn-">isEqualTo(DoubleColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#isEqualTo-tech.tablesaw.api.NumberColumn-">isEqualTo(DoubleColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/FloatColumn.html#isEqualTo-float-">isEqualTo(float)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/FloatColumn.html" title="class in tech.tablesaw.api">FloatColumn</a></dt>
 <dd>&nbsp;</dd>
@@ -3246,7 +3246,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#isGreaterThan-double-">isGreaterThan(double)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#isGreaterThan-tech.tablesaw.api.DoubleColumn-">isGreaterThan(DoubleColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#isGreaterThan-tech.tablesaw.api.NumberColumn-">isGreaterThan(DoubleColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/FloatColumn.html#isGreaterThan-float-">isGreaterThan(float)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/FloatColumn.html" title="class in tech.tablesaw.api">FloatColumn</a></dt>
 <dd>&nbsp;</dd>
@@ -3588,7 +3588,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#isLessThan-double-">isLessThan(double)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#isLessThan-tech.tablesaw.api.DoubleColumn-">isLessThan(DoubleColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#isLessThan-tech.tablesaw.api.NumberColumn-">isLessThan(DoubleColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/FloatColumn.html#isLessThan-float-">isLessThan(float)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/FloatColumn.html" title="class in tech.tablesaw.api">FloatColumn</a></dt>
 <dd>&nbsp;</dd>
@@ -5119,7 +5119,7 @@
 </dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/table/Relation.html#Relation--">Relation()</a></span> - Constructor for class tech.tablesaw.table.<a href="tech/tablesaw/table/Relation.html" title="class in tech.tablesaw.table">Relation</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#remainder-tech.tablesaw.api.DoubleColumn-">remainder(DoubleColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#remainder-tech.tablesaw.api.NumberColumn-">remainder(DoubleColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/FloatColumn.html#remainder-tech.tablesaw.api.FloatColumn-">remainder(FloatColumn)</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/FloatColumn.html" title="class in tech.tablesaw.api">FloatColumn</a></dt>
 <dd>&nbsp;</dd>
@@ -5575,7 +5575,7 @@
 <dd>&nbsp;</dd>
 <dt><a href="tech/tablesaw/filtering/ShortPredicate.html" title="interface in tech.tablesaw.filtering"><span class="typeNameLink">ShortPredicate</span></a> - Interface in <a href="tech/tablesaw/filtering/package-summary.html">tech.tablesaw.filtering</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Bar.html#show-java.lang.String-tech.tablesaw.api.CategoryColumn-tech.tablesaw.api.NumericColumn-">show(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Bar.html" title="class in tech.tablesaw.api.plot">Bar</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Bar.html#show-java.lang.String-tech.tablesaw.api.StringColumn-tech.tablesaw.api.NumericColumn-">show(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Bar.html" title="class in tech.tablesaw.api.plot">Bar</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Bar.html#show-java.lang.String-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.NumericColumn-">show(String, ShortColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Bar.html" title="class in tech.tablesaw.api.plot">Bar</a></dt>
 <dd>&nbsp;</dd>
@@ -5624,7 +5624,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Histogram.html#show-java.lang.String-tech.tablesaw.api.NumericColumn-">show(String, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Histogram.html" title="class in tech.tablesaw.api.plot">Histogram</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/HorizontalBar.html#show-java.lang.String-tech.tablesaw.api.CategoryColumn-tech.tablesaw.api.NumericColumn-">show(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/HorizontalBar.html" title="class in tech.tablesaw.api.plot">HorizontalBar</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/HorizontalBar.html#show-java.lang.String-tech.tablesaw.api.StringColumn-tech.tablesaw.api.NumericColumn-">show(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/HorizontalBar.html" title="class in tech.tablesaw.api.plot">HorizontalBar</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/HorizontalBar.html#show-java.lang.String-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.NumericColumn-">show(String, ShortColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/HorizontalBar.html" title="class in tech.tablesaw.api.plot">HorizontalBar</a></dt>
 <dd>&nbsp;</dd>
@@ -5640,13 +5640,13 @@
 </dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Pareto.html#show-java.lang.String-tech.tablesaw.aggregate.NumericSummaryTable-">show(String, NumericSummaryTable)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Pareto.html" title="class in tech.tablesaw.api.plot">Pareto</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Pareto.html#show-java.lang.String-tech.tablesaw.api.CategoryColumn-tech.tablesaw.api.NumericColumn-">show(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Pareto.html" title="class in tech.tablesaw.api.plot">Pareto</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Pareto.html#show-java.lang.String-tech.tablesaw.api.StringColumn-tech.tablesaw.api.NumericColumn-">show(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Pareto.html" title="class in tech.tablesaw.api.plot">Pareto</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Pareto.html#show-java.lang.String-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.NumericColumn-">show(String, ShortColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Pareto.html" title="class in tech.tablesaw.api.plot">Pareto</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Pareto.html#show-java.lang.String-tech.tablesaw.api.IntColumn-tech.tablesaw.api.NumericColumn-">show(String, IntColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Pareto.html" title="class in tech.tablesaw.api.plot">Pareto</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Pie.html#show-java.lang.String-tech.tablesaw.api.CategoryColumn-tech.tablesaw.api.NumericColumn-">show(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Pie.html" title="class in tech.tablesaw.api.plot">Pie</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Pie.html#show-java.lang.String-tech.tablesaw.api.StringColumn-tech.tablesaw.api.NumericColumn-">show(String, CategoryColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Pie.html" title="class in tech.tablesaw.api.plot">Pie</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/plot/Pie.html#show-java.lang.String-tech.tablesaw.api.ShortColumn-tech.tablesaw.api.NumericColumn-">show(String, ShortColumn, NumericColumn)</a></span> - Static method in class tech.tablesaw.api.plot.<a href="tech/tablesaw/api/plot/Pie.html" title="class in tech.tablesaw.api.plot">Pie</a></dt>
 <dd>&nbsp;</dd>
@@ -5900,7 +5900,7 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/DoubleColumn.html#square--">square()</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/DoubleColumn.html" title="class in tech.tablesaw.api">DoubleColumn</a></dt>
 <dd>
-<div class="block">Returns a doubleColumn with the square of each value in this column</div>
+<div class="block">Returns a numberColumn with the square of each value in this column</div>
 </dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/api/FloatColumn.html#square--">square()</a></span> - Method in class tech.tablesaw.api.<a href="tech/tablesaw/api/FloatColumn.html" title="class in tech.tablesaw.api">FloatColumn</a></dt>
 <dd>&nbsp;</dd>
@@ -5986,7 +5986,7 @@
 <dd>
 <div class="block">Implements EqualTo testing for Category and Text Columns</div>
 </dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/filtering/StringIsIn.html#StringIsIn-tech.tablesaw.columns.ColumnReference-tech.tablesaw.api.CategoryColumn-">StringIsIn(ColumnReference, CategoryColumn)</a></span> - Constructor for class tech.tablesaw.filtering.<a href="tech/tablesaw/filtering/StringIsIn.html" title="class in tech.tablesaw.filtering">StringIsIn</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/filtering/StringIsIn.html#StringIsIn-tech.tablesaw.columns.ColumnReference-tech.tablesaw.api.StringColumn-">StringIsIn(ColumnReference, CategoryColumn)</a></span> - Constructor for class tech.tablesaw.filtering.<a href="tech/tablesaw/filtering/StringIsIn.html" title="class in tech.tablesaw.filtering">StringIsIn</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/filtering/StringIsIn.html#StringIsIn-tech.tablesaw.columns.ColumnReference-java.util.Collection-">StringIsIn(ColumnReference, Collection&lt;String&gt;)</a></span> - Constructor for class tech.tablesaw.filtering.<a href="tech/tablesaw/filtering/StringIsIn.html" title="class in tech.tablesaw.filtering">StringIsIn</a></dt>
 <dd>&nbsp;</dd>
@@ -5996,7 +5996,7 @@
 <dd>
 <div class="block">Implements NotEqualTo testing for Category and Text Columns</div>
 </dd>
-<dt><span class="memberNameLink"><a href="tech/tablesaw/filtering/StringIsNotIn.html#StringIsNotIn-tech.tablesaw.columns.ColumnReference-tech.tablesaw.api.CategoryColumn-">StringIsNotIn(ColumnReference, CategoryColumn)</a></span> - Constructor for class tech.tablesaw.filtering.<a href="tech/tablesaw/filtering/StringIsNotIn.html" title="class in tech.tablesaw.filtering">StringIsNotIn</a></dt>
+<dt><span class="memberNameLink"><a href="tech/tablesaw/filtering/StringIsNotIn.html#StringIsNotIn-tech.tablesaw.columns.ColumnReference-tech.tablesaw.api.StringColumn-">StringIsNotIn(ColumnReference, CategoryColumn)</a></span> - Constructor for class tech.tablesaw.filtering.<a href="tech/tablesaw/filtering/StringIsNotIn.html" title="class in tech.tablesaw.filtering">StringIsNotIn</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="tech/tablesaw/filtering/StringIsNotIn.html#StringIsNotIn-tech.tablesaw.columns.ColumnReference-java.util.Collection-">StringIsNotIn(ColumnReference, Collection&lt;String&gt;)</a></span> - Constructor for class tech.tablesaw.filtering.<a href="tech/tablesaw/filtering/StringIsNotIn.html" title="class in tech.tablesaw.filtering">StringIsNotIn</a></dt>
 <dd>&nbsp;</dd>

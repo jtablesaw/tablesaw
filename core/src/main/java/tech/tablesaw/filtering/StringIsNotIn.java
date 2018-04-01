@@ -15,7 +15,7 @@
 package tech.tablesaw.filtering;
 
 import com.google.common.collect.Lists;
-import tech.tablesaw.api.CategoryColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.util.selection.Selection;
@@ -28,27 +28,27 @@ import java.util.Set;
  */
 public class StringIsNotIn extends ColumnFilter {
 
-    private final CategoryColumn filterColumn;
+    private final StringColumn filterColumn;
 
-    public StringIsNotIn(ColumnReference reference, CategoryColumn filterColumn) {
+    public StringIsNotIn(ColumnReference reference, StringColumn filterColumn) {
         super(reference);
         this.filterColumn = filterColumn;
     }
 
     public StringIsNotIn(ColumnReference reference, Collection<String> strings) {
         super(reference);
-        this.filterColumn = new CategoryColumn("temp", Lists.newArrayList(strings));
+        this.filterColumn = new StringColumn("temp", Lists.newArrayList(strings));
     }
 
     public StringIsNotIn(ColumnReference reference, String... strings) {
         super(reference);
-        this.filterColumn = new CategoryColumn("temp", Lists.newArrayList(strings));
+        this.filterColumn = new StringColumn("temp", Lists.newArrayList(strings));
     }
 
     public Selection apply(Table relation) {
-        CategoryColumn categoryColumn = (CategoryColumn) relation.column(columnReference.getColumnName());
-        Set<String> firstSet = categoryColumn.asSet();
+        StringColumn stringColumn = (StringColumn) relation.column(columnReference.getColumnName());
+        Set<String> firstSet = stringColumn.asSet();
         firstSet.removeAll(filterColumn.data());
-        return categoryColumn.select(firstSet::contains);
+        return stringColumn.select(firstSet::contains);
     }
 }

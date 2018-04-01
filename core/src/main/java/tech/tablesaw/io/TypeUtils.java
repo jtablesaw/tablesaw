@@ -255,11 +255,11 @@ public final class TypeUtils {
             case FLOAT:
                 return new FloatColumn(name);
             case DOUBLE:
-                return new DoubleColumn(name);
+                return new NumberColumn(name);
             case BOOLEAN:
                 return new BooleanColumn(name);
             case CATEGORY:
-                return new CategoryColumn(name);
+                return new StringColumn(name);
             case SHORT_INT:
                 return new ShortColumn(name);
             case LONG_INT:

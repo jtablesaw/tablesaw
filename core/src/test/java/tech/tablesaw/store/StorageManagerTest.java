@@ -67,7 +67,7 @@ public class StorageManagerTest {
     private static String tempDir = System.getProperty("java.io.tmpdir");
     private Table table = Table.create("t");
     private FloatColumn floatColumn = new FloatColumn("float");
-    private CategoryColumn categoryColumn = new CategoryColumn("cat");
+    private StringColumn stringColumn = new StringColumn("cat");
     private DateColumn localDateColumn = new DateColumn("date");
     private LongColumn longColumn = new LongColumn("long");
 
@@ -98,21 +98,21 @@ public class StorageManagerTest {
         for (int i = 0; i < COUNT; i++) {
             floatColumn.append((float) i);
             localDateColumn.append(LocalDate.now());
-            categoryColumn.append("Category " + i);
+            stringColumn.append("Category " + i);
             longColumn.append(i);
         }
         table.addColumn(floatColumn);
         table.addColumn(localDateColumn);
-        table.addColumn(categoryColumn);
+        table.addColumn(stringColumn);
         table.addColumn(longColumn);
     }
 
     @Test
     public void testCatStorage() throws Exception {
-        StorageManager.writeColumn(tempDir + "/cat_dogs", categoryColumn);
-        CategoryColumn readCat = StorageManager.readCategoryColumn(tempDir + "/cat_dogs", categoryColumn.columnMetadata());
-        for (int i = 0; i < categoryColumn.size(); i++) {
-            assertEquals(categoryColumn.get(i), readCat.get(i));
+        StorageManager.writeColumn(tempDir + "/cat_dogs", stringColumn);
+        StringColumn readCat = StorageManager.readCategoryColumn(tempDir + "/cat_dogs", stringColumn.columnMetadata());
+        for (int i = 0; i < stringColumn.size(); i++) {
+            assertEquals(stringColumn.get(i), readCat.get(i));
         }
     }
 
@@ -123,7 +123,7 @@ public class StorageManagerTest {
         assertEquals(table.columnCount(), t.columnCount());
         assertEquals(table.rowCount(), t.rowCount());
         for (int i = 0; i < table.rowCount(); i++) {
-            assertEquals(categoryColumn.get(i), t.categoryColumn("cat").get(i));
+            assertEquals(stringColumn.get(i), t.categoryColumn("cat").get(i));
         }
         t.sortOn("cat"); // exercise the column a bit
     }

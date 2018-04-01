@@ -42,7 +42,7 @@ public class ColumnEqualTo extends ColumnFilter {
         return column1.isEqualTo(column2);
     }
 
-    private static Selection apply(CategoryColumn column1, CategoryColumn column2) {
+    private static Selection apply(StringColumn column1, StringColumn column2) {
         return column1.isEqualTo(column2);
     }
 
@@ -66,7 +66,7 @@ public class ColumnEqualTo extends ColumnFilter {
         return column1.isEqualTo(column2);
     }
 
-    private static Selection apply(DoubleColumn column1, DoubleColumn column2) {
+    private static Selection apply(NumberColumn column1, NumberColumn column2) {
         return column1.isEqualTo(column2);
     }
 
@@ -87,7 +87,7 @@ public class ColumnEqualTo extends ColumnFilter {
             return apply((ShortColumn) column, (ShortColumn) other);
 
         if (column.type() == ColumnType.CATEGORY)
-            return apply((CategoryColumn) column, (CategoryColumn) other);
+            return apply((StringColumn) column, (StringColumn) other);
 
         if (column.type() == ColumnType.BOOLEAN)
             return apply((BooleanColumn) column, (BooleanColumn) other);
@@ -105,7 +105,7 @@ public class ColumnEqualTo extends ColumnFilter {
             return apply((FloatColumn) column, (FloatColumn) other);
 
         if (column.type() == ColumnType.DOUBLE)
-            return apply((DoubleColumn) column, (DoubleColumn) other);
+            return apply((NumberColumn) column, (NumberColumn) other);
 
         throw new UnsupportedOperationException("Not yet implemented for this column type");
     }

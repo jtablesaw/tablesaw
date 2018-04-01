@@ -27,10 +27,10 @@ public interface NumericColumn extends Column {
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
-            DoubleColumn result = new DoubleColumn(column1.name() + " - " + column2.name(), col1Size);
+        if (column1 instanceof NumberColumn || column2 instanceof NumberColumn) {
+            NumberColumn result = new NumberColumn(column1.name() + " - " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
-                result.append(DoubleColumn.subtract(column1.getDouble(r), column2.getDouble(r)));
+                result.append(NumberColumn.subtract(column1.getDouble(r), column2.getDouble(r)));
             }
             return result;
         } else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
@@ -61,10 +61,10 @@ public interface NumericColumn extends Column {
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
-            DoubleColumn result = new DoubleColumn(column1.name() + " + " + column2.name(), col1Size);
+        if (column1 instanceof NumberColumn || column2 instanceof NumberColumn) {
+            NumberColumn result = new NumberColumn(column1.name() + " + " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
-                result.append(DoubleColumn.add(column1.getDouble(r), column2.getDouble(r)));
+                result.append(NumberColumn.add(column1.getDouble(r), column2.getDouble(r)));
             }
             return result;
         } else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
@@ -95,10 +95,10 @@ public interface NumericColumn extends Column {
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
-            DoubleColumn result = new DoubleColumn(column1.name() + " * " + column2.name(), col1Size);
+        if (column1 instanceof NumberColumn || column2 instanceof NumberColumn) {
+            NumberColumn result = new NumberColumn(column1.name() + " * " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
-                result.append(DoubleColumn.multiply(column1.getDouble(r), column2.getDouble(r)));
+                result.append(NumberColumn.multiply(column1.getDouble(r), column2.getDouble(r)));
             }
             return result;
         } else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
@@ -129,10 +129,10 @@ public interface NumericColumn extends Column {
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        if (column1 instanceof DoubleColumn || column2 instanceof DoubleColumn) {
-            DoubleColumn result = new DoubleColumn(column1.name() + " / " + column2.name(), col1Size);
+        if (column1 instanceof NumberColumn || column2 instanceof NumberColumn) {
+            NumberColumn result = new NumberColumn(column1.name() + " / " + column2.name(), col1Size);
             for (int r = 0; r < col1Size; r++) {
-                result.append(DoubleColumn.divide(column1.getDouble(r), column2.getDouble(r)));
+                result.append(NumberColumn.divide(column1.getDouble(r), column2.getDouble(r)));
             }
             return result;
         } else if (column1 instanceof FloatColumn || column2 instanceof FloatColumn) {
@@ -174,11 +174,11 @@ public interface NumericColumn extends Column {
     }
 
     default NumericColumn add(Number value) {
-        if (value instanceof Double || this instanceof DoubleColumn) {
+        if (value instanceof Double || this instanceof NumberColumn) {
             double val = (double) value;
-            DoubleColumn result = new DoubleColumn(name() + " + " + val);
+            NumberColumn result = new NumberColumn(name() + " + " + val);
             for (int i = 0; i < size(); i++) {
-                result.append(DoubleColumn.add(getDouble(i), val));
+                result.append(NumberColumn.add(getDouble(i), val));
             }
             return result;
         } else if (value instanceof Float || this instanceof FloatColumn) {
@@ -205,11 +205,11 @@ public interface NumericColumn extends Column {
     }
 
     default NumericColumn subtract(Number value) {
-        if (value instanceof Double || this instanceof DoubleColumn) {
+        if (value instanceof Double || this instanceof NumberColumn) {
             double val = (double) value;
-            DoubleColumn result = new DoubleColumn(name() + " - " + val);
+            NumberColumn result = new NumberColumn(name() + " - " + val);
             for (int i = 0; i < size(); i++) {
-                result.append(DoubleColumn.subtract(getDouble(i), val));
+                result.append(NumberColumn.subtract(getDouble(i), val));
             }
             return result;
         } else if (value instanceof Float || this instanceof FloatColumn) {
@@ -236,11 +236,11 @@ public interface NumericColumn extends Column {
     }
 
     default NumericColumn divide(Number value) {
-        if (value instanceof Double || this instanceof DoubleColumn) {
+        if (value instanceof Double || this instanceof NumberColumn) {
             double val = (double) value;
-            DoubleColumn result = new DoubleColumn(name() + " / " + val);
+            NumberColumn result = new NumberColumn(name() + " / " + val);
             for (int i = 0; i < size(); i++) {
-                result.append(DoubleColumn.divide(getDouble(i), val));
+                result.append(NumberColumn.divide(getDouble(i), val));
             }
             return result;
         } else if (value instanceof Float || this instanceof FloatColumn) {
@@ -267,11 +267,11 @@ public interface NumericColumn extends Column {
     }
 
     default NumericColumn multiply(Number value) {
-        if (value instanceof Double || this instanceof DoubleColumn) {
+        if (value instanceof Double || this instanceof NumberColumn) {
             double val = (double) value;
-            DoubleColumn result = new DoubleColumn(name() + " * " + val);
+            NumberColumn result = new NumberColumn(name() + " * " + val);
             for (int i = 0; i < size(); i++) {
-                result.append(DoubleColumn.multiply(getDouble(i), val));
+                result.append(NumberColumn.multiply(getDouble(i), val));
             }
             return result;
         } else if (value instanceof Float || this instanceof FloatColumn) {

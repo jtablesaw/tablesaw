@@ -92,7 +92,7 @@ public class TimeDependentFilteringTest {
 
         // Apply the independent temporal event filtering to the patient subtables and remove any that don't pass
         for (TableSlice patientTable : patients) {
-            CategoryColumn concepts = patientTable.categoryColumn("concept");
+            StringColumn concepts = patientTable.categoryColumn("concept");
             int patientId = Integer.parseInt(patientTable.name());
             if (!concepts.contains(conceptZ)
                     || concepts.contains(conceptD)) {
@@ -112,7 +112,7 @@ public class TimeDependentFilteringTest {
 
             // iterate an individual table and find the rows where concept matches the target concept
             for (int row : patientTable) {
-                CategoryColumn concepts = patientTable.categoryColumn("concept");
+                StringColumn concepts = patientTable.categoryColumn("concept");
                 DateColumn dates = patientTable.dateColumn("date");
                 if (concepts.get(row).equals(conceptZ)) {
                     eventDates.add(dates.get(row));
@@ -140,7 +140,7 @@ public class TimeDependentFilteringTest {
     private static Table defineSchema() {
         Table t;
         t = Table.create("Observations");
-        CategoryColumn conceptId = new CategoryColumn("concept");
+        StringColumn conceptId = new StringColumn("concept");
         DateColumn date = new DateColumn("date");
         FloatColumn value = new FloatColumn("value");
         IntColumn patientId = new IntColumn("patient");
@@ -179,7 +179,7 @@ public class TimeDependentFilteringTest {
         }
 
         DateColumn dateColumn = table.dateColumn("date");
-        CategoryColumn conceptColumn = table.categoryColumn("concept");
+        StringColumn conceptColumn = table.categoryColumn("concept");
         FloatColumn valueColumn = table.floatColumn("value");
         IntColumn patientColumn = table.intColumn("patient");
 

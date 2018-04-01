@@ -23,8 +23,8 @@ import com.google.common.collect.Lists;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.NumericSummaryTable;
 import tech.tablesaw.api.CategoricalColumn;
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.util.selection.BitmapBackedSelection;
@@ -376,14 +376,14 @@ public class ViewGroup implements Iterable<TableSlice> {
     public NumericSummaryTable aggregate(ArrayListMultimap<String, AggregateFunction> functions) {
         Preconditions.checkArgument(!subTables.isEmpty());
         NumericSummaryTable groupTable = NumericSummaryTable.create(sourceTable.name() + " summary");
-        CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
+        StringColumn groupColumn = new StringColumn("Group", subTables.size());
         groupTable.addColumn(groupColumn);
         for (Map.Entry<String, Collection<AggregateFunction>> entry : functions.asMap().entrySet()) {
             String columnName = entry.getKey();
             int functionCount = 0;
             for (AggregateFunction function : entry.getValue()) {
                 String colName = aggregateColumnName(columnName, function.functionName());
-                DoubleColumn resultColumn = new DoubleColumn(colName, subTables.size());
+                NumberColumn resultColumn = new NumberColumn(colName, subTables.size());
                 for (TableSlice subTable : subTables) {
                     double result = subTable.reduce(columnName, function);
                     if (functionCount == 0) {
@@ -407,14 +407,14 @@ public class ViewGroup implements Iterable<TableSlice> {
     public NumericSummaryTable agg(Map<String, AggregateFunction> functions) {
         Preconditions.checkArgument(!subTables.isEmpty());
         NumericSummaryTable groupTable = NumericSummaryTable.create(sourceTable.name() + " summary");
-        CategoryColumn groupColumn = new CategoryColumn("Group", subTables.size());
+        StringColumn groupColumn = new StringColumn("Group", subTables.size());
         groupTable.addColumn(groupColumn);
         for (Map.Entry<String, AggregateFunction> entry : functions.entrySet()) {
             String columnName = entry.getKey();
             AggregateFunction function = entry.getValue();
 
             String colName = aggregateColumnName(columnName, function.functionName());
-            DoubleColumn resultColumn = new DoubleColumn(colName, subTables.size());
+            NumberColumn resultColumn = new NumberColumn(colName, subTables.size());
             for (TableSlice subTable : subTables) {
                 double result = subTable.reduce(columnName, function);
                 groupColumn.append(subTable.name());

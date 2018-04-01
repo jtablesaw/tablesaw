@@ -184,11 +184,11 @@ public abstract class Relation {
 
         Table structure = Table.create(nameBuilder.toString());
         structure.addColumn(new IntColumn("Index"));
-        structure.addColumn(new CategoryColumn("Column Name"));
-        structure.addColumn(new CategoryColumn("Type"));
+        structure.addColumn(new StringColumn("Column Name"));
+        structure.addColumn(new StringColumn("Type"));
         structure.addColumn(new IntColumn("Unique Values"));
-        structure.addColumn(new CategoryColumn("First"));
-        structure.addColumn(new CategoryColumn("Last"));
+        structure.addColumn(new StringColumn("First"));
+        structure.addColumn(new StringColumn("Last"));
 
         for (Column column : columns()) {
             structure.intColumn("Index").append(columnIndex(column));
@@ -226,8 +226,8 @@ public abstract class Relation {
     public NumericColumn numericColumn(int columnIndex) {
         Column c = column(columnIndex);
         if (c.type() == ColumnType.CATEGORY) {
-            CategoryColumn categoryColumn = (CategoryColumn) c;
-            return categoryColumn.asIntColumn();
+            StringColumn stringColumn = (StringColumn) c;
+            return stringColumn.asIntColumn();
         } else if (c.type() == ColumnType.BOOLEAN) {
             BooleanColumn booleanColumn = (BooleanColumn) c;
             return booleanColumn.asIntColumn();
@@ -238,8 +238,8 @@ public abstract class Relation {
     public NumericColumn numericColumn(String columnName) {
         Column c = column(columnName);
         if (c.type() == ColumnType.CATEGORY) {
-            CategoryColumn categoryColumn = (CategoryColumn) c;
-            return categoryColumn.asIntColumn();
+            StringColumn stringColumn = (StringColumn) c;
+            return stringColumn.asIntColumn();
         } else if (c.type() == ColumnType.BOOLEAN) {
             BooleanColumn booleanColumn = (BooleanColumn) c;
             return booleanColumn.asIntColumn();
@@ -285,12 +285,12 @@ public abstract class Relation {
         return (FloatColumn) column(columnName);
     }
 
-    public DoubleColumn doubleColumn(int columnIndex) {
-        return (DoubleColumn) column(columnIndex);
+    public NumberColumn doubleColumn(int columnIndex) {
+        return (NumberColumn) column(columnIndex);
     }
 
-    public DoubleColumn doubleColumn(String columnName) {
-        return (DoubleColumn) column(columnName);
+    public NumberColumn doubleColumn(String columnName) {
+        return (NumberColumn) column(columnName);
     }
 
     public IntColumn intColumn(String columnName) {
@@ -333,12 +333,12 @@ public abstract class Relation {
         return (TimeColumn) column(columnIndex);
     }
 
-    public CategoryColumn categoryColumn(String columnName) {
-        return (CategoryColumn) column(columnName);
+    public StringColumn categoryColumn(String columnName) {
+        return (StringColumn) column(columnName);
     }
 
-    public CategoryColumn categoryColumn(int columnIndex) {
-        return (CategoryColumn) column(columnIndex);
+    public StringColumn categoryColumn(int columnIndex) {
+        return (StringColumn) column(columnIndex);
     }
 
     public DateTimeColumn dateTimeColumn(int columnIndex) {

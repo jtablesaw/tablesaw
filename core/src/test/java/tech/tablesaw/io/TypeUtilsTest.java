@@ -15,7 +15,7 @@
 package tech.tablesaw.io;
 
 import org.junit.Test;
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
 
 import java.time.LocalDate;
 import java.util.Locale;
@@ -31,7 +31,7 @@ public class TypeUtilsTest {
      */
     @Test
     public void testNewColumn() {
-        DoubleColumn column = (DoubleColumn) TypeUtils.newColumn("test", DOUBLE);
+        NumberColumn column = (NumberColumn) TypeUtils.newColumn("test", DOUBLE);
         assertThat(column, notNullValue());
     }
 

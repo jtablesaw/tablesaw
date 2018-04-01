@@ -15,7 +15,7 @@
 package tech.tablesaw.index;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import tech.tablesaw.api.CategoryColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.util.selection.BitmapBackedSelection;
 import tech.tablesaw.util.selection.Selection;
 
@@ -29,7 +29,7 @@ public class CategoryIndex {
 
     private final Map<String, IntArrayList> index;
 
-    public CategoryIndex(CategoryColumn column) {
+    public CategoryIndex(StringColumn column) {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Map<String, IntArrayList> tempMap = new HashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
