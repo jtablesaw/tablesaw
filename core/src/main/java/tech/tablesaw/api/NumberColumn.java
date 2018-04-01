@@ -16,61 +16,65 @@ package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.doubles.*;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleArrays;
+import it.unimi.dsi.fastutil.doubles.DoubleComparator;
+import it.unimi.dsi.fastutil.doubles.DoubleIterable;
+import it.unimi.dsi.fastutil.doubles.DoubleIterator;
+import it.unimi.dsi.fastutil.doubles.DoubleList;
+import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
+import it.unimi.dsi.fastutil.doubles.DoubleRBTreeSet;
+import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import tech.tablesaw.aggregate.AggregateFunctions;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.DoubleBiPredicate;
-import tech.tablesaw.filtering.DoublePredicate;
+import tech.tablesaw.columns.number.NumberColumnFormatter;
+import tech.tablesaw.columns.number.NumberFilters;
+import tech.tablesaw.columns.number.NumberMapUtils;
+import tech.tablesaw.columns.number.NumberReduceUtils;
+import tech.tablesaw.columns.number.Stats;
+import tech.tablesaw.filtering.Filter;
+import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
+import tech.tablesaw.filtering.predicates.DoublePredicate;
+import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.selection.BitmapBackedSelection;
 import tech.tablesaw.util.selection.Selection;
-import tech.tablesaw.columns.number.Stats;
 
 import java.nio.ByteBuffer;
+import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.DoubleConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.columns.number.NumberFilters.*;
+import static tech.tablesaw.api.ColumnType.*;
 
 /**
  * A column in a base table that contains double precision floating point values
  */
-public class NumberColumn extends AbstractColumn implements DoubleIterable, NumericColumn {
+public class NumberColumn extends AbstractColumn implements DoubleIterable, IntConvertibleColumn,
+        NumberMapUtils, NumberReduceUtils, NumberFilters, CategoricalColumn {
 
-    public static final double MISSING_VALUE = (Double) ColumnType.DOUBLE.getMissingValue();
-    private static final int BYTE_SIZE = 8;
+    public static final double MISSING_VALUE = (Double) NUMBER.getMissingValue();
+
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
-    private static int DEFAULT_ARRAY_SIZE = 128;
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
      */
-    private DoubleComparator reverseDoubleComparator = new DoubleComparator() {
-
-        @Override
-        public int compare(Double o2, Double o1) {
-            return (o1 < o2 ? -1 : (o1.equals(o2) ? 0 : 1));
-        }
-
-        @Override
-        public int compare(double o2, double o1) {
-            return (Double.compare(o1, o2));
-        }
-    };
+    private final DoubleComparator descendingComparator = (o2, o1) -> (Double.compare(o1, o2));
 
     private DoubleArrayList data;
-    private final IntComparator comparator = new IntComparator() {
 
-        @Override
-        public int compare(Integer r1, Integer r2) {
-            double f1 = data.getDouble(r1);
-            double f2 = data.getDouble(r2);
-            return Double.compare(f1, f2);
-        }
+    private NumberColumnFormatter printFormatter = new NumberColumnFormatter();
+
+    private Locale locale;
+
+    private final IntComparator comparator = new IntComparator() {
 
         public int compare(int r1, int r2) {
             double f1 = data.getDouble(r1);
@@ -79,30 +83,87 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
         }
     };
 
-    public NumberColumn(String name) {
-        this(name, new DoubleArrayList(DEFAULT_ARRAY_SIZE));
+    public static boolean isMissing(double value) {
+        return Double.isNaN(value);
     }
 
-    public NumberColumn(String name, int initialSize) {
-        this(name, new DoubleArrayList(initialSize));
+    public void setPrintFormatter(NumberFormat format, String missingValueString) {
+        this.printFormatter = new NumberColumnFormatter(format, missingValueString);
     }
 
-    public NumberColumn(String name, double[] arr) {
-        this(name, new DoubleArrayList(arr));
+    public void setPrintFormatter(NumberColumnFormatter formatter) {
+        this.printFormatter = formatter;
+    }
+
+    public static NumberColumn create(String name) {
+        return create(name, DEFAULT_ARRAY_SIZE);
+    }
+
+    public static NumberColumn create(String name, int initialSize) {
+        return new NumberColumn(name, new DoubleArrayList(initialSize));
+    }
+
+    public static NumberColumn create(String name, double[] arr) {
+        return new NumberColumn(name, new DoubleArrayList(arr));
+    }
+
+    public static NumberColumn create(String name, float[] arr) {
+        double[] doubles = new double[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            doubles[i] = arr[i];
+        }
+        return new NumberColumn(name, new DoubleArrayList(doubles));
+    }
+
+    public static NumberColumn create(String name, int[] arr) {
+        double[] doubles = new double[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            doubles[i] = arr[i];
+        }
+        return new NumberColumn(name, new DoubleArrayList(doubles));
+    }
+
+    public static NumberColumn create(String name, long[] arr) {
+        double[] doubles = new double[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            doubles[i] = arr[i];
+        }
+        return new NumberColumn(name, new DoubleArrayList(doubles));
+    }
+
+    public static NumberColumn create(String name, List<Number> numberList) {
+        double[] doubles = new double[numberList.size()];
+        for (int i = 0; i < numberList.size(); i++) {
+            doubles[i] = numberList.get(i).doubleValue();
+        }
+        return new NumberColumn(name, new DoubleArrayList(doubles));
+    }
+
+    public static NumberColumn create(String name, Number[] numbers) {
+        double[] doubles = new double[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            doubles[i] = numbers[i].doubleValue();
+        }
+        return new NumberColumn(name, new DoubleArrayList(doubles));
+    }
+
+    /**
+     * Returns a new numeric column initialized with the given name and size. The values in the column are
+     * integers beginning at startsWith and continuing through size (exclusive), monotonically increasing by 1
+     * TODO consider a generic fill funciton including steps or random samples from various distributions
+     */
+    public static NumberColumn indexColumn(String columnName, int size, int startsWith) {
+        NumberColumn indexColumn = NumberColumn.create(columnName, size);
+        for (int i = 0; i < size; i++) {
+            indexColumn.append(i + startsWith);
+        }
+        indexColumn.setPrintFormatter(NumberColumnFormatter.ints());
+        return indexColumn;
     }
 
     private NumberColumn(String name, DoubleArrayList data) {
-        super(name);
+        super(NUMBER, name);
         this.data = data;
-    }
-
-    public NumberColumn(ColumnMetadata metadata) {
-        super(metadata);
-        data = new DoubleArrayList(metadata.getSize());
-    }
-
-    protected static boolean isMissing(double value) {
-        return Double.isNaN(value);
     }
 
     /**
@@ -116,34 +177,6 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
         }
         Matcher matcher = COMMA_PATTERN.matcher(stringValue);
         return Double.parseDouble(matcher.replaceAll(""));
-    }
-
-    static double add(double val1, double val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 + val2;
-    }
-
-    static double multiply(double val1, double val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 * val2;
-    }
-
-    static double divide(double val1, double val2) {
-        if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-            return MISSING_VALUE;
-        }
-        return val1 / val2;
-    }
-
-    static double subtract(double val1, double val2) {
-        if (isMissing(val1) || isMissing(val2)) {
-            return MISSING_VALUE;
-        }
-        return val1 - val2;
     }
 
     public int size() {
@@ -160,23 +193,9 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     /**
-     * Returns the number of unique values in this column, excluding missing values
-     * @return
-     */
-    @Override
-    public int countUnique() {
-        DoubleSet doubles = new DoubleOpenHashSet();
-        for (int i = 0; i < size(); i++) {
-            if (!isMissing(data.getDouble(i))) {
-                doubles.add(data.getDouble(i));
-            }
-        }
-        return doubles.size();
-    }
-
-    /**
      * Returns the largest ("top") n values in the column
      * TODO(lwhite): Consider whether this should exclude missing
+     *
      * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
      *          number of observations in the column
      * @return A list, possibly empty, of the largest observations
@@ -184,7 +203,7 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
     public DoubleArrayList top(int n) {
         DoubleArrayList top = new DoubleArrayList();
         double[] values = data.toDoubleArray();
-        DoubleArrays.parallelQuickSort(values, reverseDoubleComparator);
+        DoubleArrays.parallelQuickSort(values, descendingComparator);
         for (int i = 0; i < n && i < values.length; i++) {
             top.add(values[i]);
         }
@@ -194,6 +213,7 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
     /**
      * Returns the smallest ("bottom") n values in the column
      * TODO(lwhite): Consider whether this should exclude missing
+     *
      * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
      *          number of observations in the column
      * @return A list, possibly empty, of the smallest n observations
@@ -212,13 +232,13 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
      * TODO(lwhite): Ensure proper handling of missing values. They should not end up in the result set
      */
     @Override
-    public NumberColumn unique() {
+    public Column unique() {
         DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
             doubles.add(data.getDouble(i));
         }
-        NumberColumn column = new NumberColumn(name() + " Unique values", doubles.size());
-        doubles.forEach((double i) -> column.append(i));
+        NumberColumn column = NumberColumn.create(name() + " Unique values", doubles.size());
+        doubles.forEach((DoubleConsumer) column::append);
         return column;
     }
 
@@ -226,98 +246,11 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
         return data;
     }
 
-    @Override
-    public ColumnType type() {
-        return ColumnType.DOUBLE;
-    }
-
     public double firstElement() {
         if (size() > 0) {
             return data.getDouble(0);
         }
         return MISSING_VALUE;
-    }
-
-    // Reduce functions applied to the whole column
-    public double sum() {
-        return sum.agg(this);
-    }
-
-    public double product() {
-        return product.agg(this);
-    }
-
-    public double mean() {
-        return mean.agg(this);
-    }
-
-    public double median() {
-        return median.agg(this);
-    }
-
-    public double quartile1() {
-        return quartile1.agg(this);
-    }
-
-    public double quartile3() {
-        return quartile3.agg(this);
-    }
-
-    public double percentile(double percentile) {
-        return AggregateFunctions.percentile(this.asDoubleArray(), percentile);
-    }
-
-    public double range() {
-        return range.agg(this);
-    }
-
-    public double max() {
-        return max.agg(this);
-    }
-
-    public double min() {
-        return min.agg(this);
-    }
-
-    // Predicate  functions
-
-    public double variance() {
-        return variance.agg(this);
-    }
-
-    public double populationVariance() {
-        return populationVariance.agg(this);
-    }
-
-    public double standardDeviation() {
-        return stdDev.agg(this);
-    }
-
-    public double sumOfLogs() {
-        return sumOfLogs.agg(this);
-    }
-
-    public double sumOfSquares() {
-        return sumOfSquares.agg(this);
-    }
-
-    public double geometricMean() {
-        return geometricMean.agg(this);
-    }
-
-    /**
-     * Returns the quadraticMean, aka the root-mean-square, for all values in this column
-     */
-    public double quadraticMean() {
-        return quadraticMean.agg(this);
-    }
-
-    public double kurtosis() {
-        return kurtosis.agg(this);
-    }
-
-    public double skewness() {
-        return skewness.agg(this);
     }
 
     /**
@@ -334,97 +267,62 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
         data.add(d);
     }
 
-    public Selection isLessThan(double f) {
-        return select(isLessThan, f);
-    }
-
-    public Selection isMissing() {
-        return select(isMissing);
-    }
-
-    public Selection isNotMissing() {
-        return select(isNotMissing);
-    }
-
-    public Selection isGreaterThan(double f) {
-        return select(isGreaterThan, f);
-    }
-
-    public Selection isGreaterThanOrEqualTo(double f) {
-        return select(isGreaterThanOrEqualTo, f);
-    }
-
-    public Selection isLessThanOrEqualTo(double f) {
-        return select(isLessThanOrEqualTo, f);
-    }
-
-    public Selection isNotEqualTo(double d) {
-        return select(isNotEqualTo, d);
-    }
-
-    public Selection isEqualTo(double d) {
-        return select(isEqualTo, d);
-    }
-
-    public Selection isEqualTo(NumberColumn d) {
-        Selection results = new BitmapBackedSelection();
-        int i = 0;
-        DoubleIterator doubleIterator = d.iterator();
-        for (double doubles : data) {
-            if (doubles == doubleIterator.nextDouble()) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
-    }
-
-    public Selection isGreaterThan(NumberColumn d) {
-        Selection results = new BitmapBackedSelection();
-        int i = 0;
-        DoubleIterator doubleIterator = d.iterator();
-        for (double doubles : data) {
-            if (doubles > doubleIterator.nextDouble()) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
-    }
-
-    public Selection isLessThan(NumberColumn d) {
-        Selection results = new BitmapBackedSelection();
-        int i = 0;
-        DoubleIterator doubleIterator = d.iterator();
-        for (double doubles : data) {
-            if (doubles < doubleIterator.nextDouble()) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
-    }
 
     @Override
     public String getString(int row) {
         double value = data.getDouble(row);
         if (isMissing(value)) {
-            return null;
+            return "";
         }
-        return String.valueOf(value);
+        return String.valueOf(printFormatter.format(value));
+    }
+
+    @Override
+    public String getUnformattedString(int row) {
+        return String.valueOf(get(row));
     }
 
     @Override
     public NumberColumn emptyCopy() {
-        NumberColumn column = new NumberColumn(name());
-        column.setComment(comment());
-        return column;
+        return emptyCopy(DEFAULT_ARRAY_SIZE);
     }
 
     @Override
     public NumberColumn emptyCopy(int rowSize) {
-        NumberColumn column = new NumberColumn(name(), rowSize);
-        column.setComment(comment());
+        NumberColumn column = NumberColumn.create(name(), rowSize);
+        column.setPrintFormatter(printFormatter);
+        column.locale = locale;
+        return column;
+    }
+
+    public NumberColumn lead(int n) {
+        NumberColumn numberColumn = lag(-n);
+        numberColumn.setName(name() + " lead(" + n + ")");
+        return numberColumn;
+    }
+
+    public NumberColumn lag(int n) {
+        int srcPos = n >= 0 ? 0 : 0 - n;
+        double[] dest = new double[size()];
+        int destPos = n <= 0 ? 0 : n;
+        int length = n >= 0 ? size() - n : size() + n;
+
+        for (int i = 0; i < size(); i++) {
+            dest[i] = MISSING_VALUE;
+        }
+
+        System.arraycopy(data.toDoubleArray(), srcPos, dest, destPos, length);
+
+        NumberColumn copy = emptyCopy(size());
+        copy.data = new DoubleArrayList(dest);
+        copy.setName(name() + " lag(" + n + ")");
+        return copy;
+    }
+
+    @Override
+    public NumberColumn copy() {
+        NumberColumn column = emptyCopy(size());
+        column.data = data.clone();
         return column;
     }
 
@@ -434,39 +332,18 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     @Override
-    public NumberColumn copy() {
-        NumberColumn column = new NumberColumn(name(), data);
-        column.setComment(comment());
-        return column;
-    }
-
-    @Override
     public void sortAscending() {
         Arrays.parallelSort(data.elements());
     }
 
     @Override
     public void sortDescending() {
-        DoubleArrays.parallelQuickSort(data.elements(), reverseDoubleComparator);
+        DoubleArrays.parallelQuickSort(data.elements(), descendingComparator);
     }
 
     @Override
     public boolean isEmpty() {
         return data.isEmpty();
-    }
-
-    /**
-     * Returns the count of missing values in this column
-     */
-    @Override
-    public int countMissing() {
-        int count = 0;
-        for (int i = 0; i < size(); i++) {
-            if (isMissing(get(i))) {
-                count++;
-            }
-        }
-        return count;
     }
 
     @Override
@@ -479,161 +356,27 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     /**
-     * Returns the natural log of the values in this column as a new NumberColumn
-     */
-    public NumberColumn logN() {
-        NumberColumn newColumn = new NumberColumn(name() + "[logN]", size());
-
-        for (double value : this) {
-            newColumn.append(Math.log(value));
-        }
-        return newColumn;
-    }
-
-    /**
-     * Returns the base 10 log of the values in this column as a new NumberColumn
-     *
-     * @return
-     */
-    public NumberColumn log10() {
-        NumberColumn newColumn = new NumberColumn(name() + "[log10]", size());
-
-        for (double value : this) {
-            newColumn.append(Math.log10(value));
-        }
-        return newColumn;
-    }
-
-    /**
-     * Returns the natural log of the values in this column, after adding 1 to each so that zero
-     * values don't return -Infinity
-     */
-    public NumberColumn log1p() {
-        NumberColumn newColumn = new NumberColumn(name() + "[1og1p]", size());
-        for (double value : this) {
-            newColumn.append(Math.log1p(value));
-        }
-        return newColumn;
-    }
-
-    public NumberColumn round() {
-        NumberColumn newColumn = new NumberColumn(name() + "[rounded]", size());
-        for (double value : this) {
-            newColumn.append(Math.round(value));
-        }
-        return newColumn;
-    }
-
-    /**
-     * Returns the rounded values as a LongColumn
-     */
-    public LongColumn roundLong() {
-        LongColumn newColumn = new LongColumn(name() + "[rounded]", size());
-        for (double value : this) {
-            newColumn.append(Math.round(value));
-        }
-        return newColumn;
-    }
-
-    /**
-     * Returns the rounded values as a IntColumn. This will throw an exception if the values are too large to fit,
-     * however many double columns can safely use this method. Use roundLong() if larger
+     * Returns the rounded value as an int
      *
      * @throws ClassCastException if the returned value will not fit in an int
      */
-    public IntColumn roundInt() {
-        IntColumn newColumn = new IntColumn(name() + "[rounded]", size());
-        for (double value : this) {
-            newColumn.append((int) Math.round(value));
+    public Integer roundInt(int i) {
+        double value = get(i);
+        if (isMissing(value)) {
+            return null;
         }
-        return newColumn;
+        return (int) Math.round(get(i));
     }
 
     /**
-     * Returns a doubleColumn with the absolute value of each value in this column
+     * Returns the value of the ith element rounded to the nearest long
+     *
+     * @param i the index in the column
+     * @return the value at i, rounded to the nearest integer
      */
-    public NumberColumn abs() {
-        NumberColumn newColumn = new NumberColumn(name() + "[abs]", size());
-        for (double value : this) {
-            newColumn.append(Math.abs(value));
-        }
-        return newColumn;
-    }
-
-    /**
-     * Returns a doubleColumn with the square of each value in this column
-     */
-    public NumberColumn square() {
-        NumberColumn newColumn = new NumberColumn(name() + "[sq]", size());
-        for (double value : this) {
-            newColumn.append(value * value);
-        }
-        return newColumn;
-    }
-
-    public NumberColumn sqrt() {
-        NumberColumn newColumn = new NumberColumn(name() + "[sqrt]", size());
-        for (double value : this) {
-            newColumn.append(Math.sqrt(value));
-        }
-        return newColumn;
-    }
-
-    public NumberColumn cubeRoot() {
-        NumberColumn newColumn = new NumberColumn(name() + "[cbrt]", size());
-        for (double value : this) {
-            newColumn.append(Math.cbrt(value));
-        }
-        return newColumn;
-    }
-
-    public NumberColumn cube() {
-        NumberColumn newColumn = new NumberColumn(name() + "[cb]", size());
-        for (double value : this) {
-            newColumn.append(value * value * value);
-        }
-        return newColumn;
-    }
-
-    /**
-     * TODO(lwhite): Move to NumericColumn and generalize like division
-     */
-    public NumberColumn remainder(NumberColumn column2) {
-        NumberColumn result = new NumberColumn(name() + " % " + column2.name(), size());
-        for (int r = 0; r < size(); r++) {
-            double val1 = get(r);
-            double val2 = column2.get(r);
-            if (val1 == MISSING_VALUE || val2 == MISSING_VALUE) {
-                result.append(MISSING_VALUE);
-            }
-            else {
-                result.append(get(r) % column2.get(r));
-            }
-        }
-        return result;
-    }
-
-/*
-    @Override
-    public float getFloat(int index) {
-        double value = data.getDouble(index);
-        return value == MISSING_VALUE ? FloatColumn.MISSING_VALUE : (float) value;
-    }
-*/
-
-    /**
-     * For each item in the column, returns the same number with the sign changed.
-     * For example:
-     * -1.3   returns  1.3,
-     * 2.135 returns -2.135
-     * 0     returns  0
-     */
-    public NumberColumn neg() {
-        NumberColumn newColumn = new NumberColumn(name() + "[neg]", size());
-        for (double value : this) {
-            newColumn.append(value * -1);
-        }
-        return newColumn;
+    public long getLong(int i) {
+        double value = data.getDouble(i);
+        return isMissing(value) ? DateTimeColumn.MISSING_VALUE : Math.round(value);
     }
 
     /**
@@ -646,11 +389,6 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
     }
 
     public double get(int index) {
-        return data.getDouble(index);
-    }
-
-    @Override
-    public double getDouble(int index) {
         return data.getDouble(index);
     }
 
@@ -671,69 +409,12 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
         }
     }
 
-    // TODO(lwhite): Reconsider the implementation of this functionality to allow user to provide a specific max error.
-    // TODO(lwhite): continued: Also see section in Effective Java on doubleing point comparisons.
-    Selection isCloseTo(float target) {
-        Selection results = new BitmapBackedSelection();
-        int i = 0;
-        for (double f : data) {
-            if (Double.compare(f, target) == 0) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
-    }
-
-    Selection isCloseTo(double target) {
-        Selection results = new BitmapBackedSelection();
-        int i = 0;
-        for (double f : data) {
-            if (Double.compare(f, 0.0) == 0) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
-    }
-
-    public Selection isPositive() {
-        return select(isPositive);
-    }
-
-    public Selection isZero() {
-        return select(isZero);
-    }
-
-    public Selection isNegative() {
-        return select(isNegative);
-    }
-
-    public Selection isNonNegative() {
-        return select(isNonNegative);
-    }
-
     public double[] asDoubleArray() {
         double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = data.getDouble(i);
         }
         return output;
-    }
-
-    public String print() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(title());
-        for (double aData : data) {
-            builder.append(String.valueOf(aData));
-            builder.append('\n');
-        }
-        return builder.toString();
-    }
-
-    @Override
-    public String toString() {
-        return "Double column: " + name();
     }
 
     @Override
@@ -750,7 +431,16 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
         return data.iterator();
     }
 
-    public Selection select(DoublePredicate predicate) {
+    @Override
+    public NumberColumn select(Filter filter) {
+        return (NumberColumn) subset(filter.apply(this));
+    }
+
+    public NumberColumn select(Selection selection) {
+        return (NumberColumn) subset(selection);
+    }
+
+    public Selection eval(DoublePredicate predicate) {
         Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
             double next = data.getDouble(idx);
@@ -761,7 +451,17 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
         return bitmap;
     }
 
-    public Selection select(DoubleBiPredicate predicate, double value) {
+    public Selection eval(DoubleBiPredicate predicate, NumberColumn otherColumn) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), otherColumn.get(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    public Selection eval(DoubleBiPredicate predicate, double value) {
         Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
             double next = data.getDouble(idx);
@@ -772,7 +472,42 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
         return bitmap;
     }
 
-    DoubleSet asSet() {
+    public Selection eval(DoubleRangePredicate predicate, double rangeStart, double rangeEnd) {
+        Selection bitmap = new BitmapBackedSelection();
+        for (int idx = 0; idx < data.size(); idx++) {
+            double next = data.getDouble(idx);
+            if (predicate.test(next, rangeStart, rangeEnd)) {
+                bitmap.add(idx);
+            }
+        }
+        return bitmap;
+    }
+
+    @Override
+    public Selection isIn(double... doubles) {
+        return selectIsIn(doubles);
+    }
+
+    private Selection selectIsIn(double... doubles) {
+        Selection results = new BitmapBackedSelection();
+        DoubleRBTreeSet doubleSet = new DoubleRBTreeSet(doubles);
+        for (int i = 0; i < size(); i++) {
+            if (doubleSet.contains(get(i))) {
+                results.add(i);
+            }
+        }
+        return results;
+    }
+
+    @Override
+    public Selection isNotIn(double... doubles) {
+        Selection results = new BitmapBackedSelection();
+        results.addRange(0, size());
+        results.andNot(selectIsIn(doubles));
+        return results;
+    }
+
+    public DoubleSet asSet() {
         return new DoubleOpenHashSet(data);
     }
 
@@ -782,7 +517,7 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
 
     @Override
     public int byteSize() {
-        return BYTE_SIZE;
+        return type().byteSize();
     }
 
     /**
@@ -790,66 +525,32 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, Nume
      */
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(BYTE_SIZE).putDouble(get(rowNumber)).array();
+        return ByteBuffer.allocate(byteSize()).putDouble(get(rowNumber)).array();
     }
 
     @Override
-    public NumberColumn difference() {
-        NumberColumn returnValue = new NumberColumn(this.name(), this.size());
-        if (data.isEmpty()) {
-            return returnValue;
+    public int[] asIntArray() {  // TODO: Need to figure out how to handle NaN -> Maybe just use a list with nulls?
+        int[] result = new int[size()];
+        for (int i = 0; i < size(); i++) {
+            result[i] = roundInt(i);
         }
-        returnValue.append(NumberColumn.MISSING_VALUE);
-        for (int current = 1; current < data.size(); current++) {
-            returnValue.append(subtract(get(current), get(current - 1)));
-        }
-        return returnValue;
+        return result;
     }
 
-    /**
-     * Returns a new column with a cumulative sum calculated
-     */
-    public NumberColumn cumSum() {
-        double total = 0.0;
-        NumberColumn newColumn = new NumberColumn(name() + "[cumSum]", size());
-        for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                total += value;
-                newColumn.append(total);
+    @Override
+    public IntSet asIntegerSet() {
+        IntSet ints = new IntOpenHashSet();
+        for (double d : this) {
+            if (!isMissing(d)) {
+                ints.add((int) Math.round(d));
             }
         }
-        return newColumn;
+        return ints;
     }
 
-    /**
-     * Returns a new column with a cumulative product calculated
-     */
-    public NumberColumn cumProd() {
-        double total = 1.0;
-        NumberColumn newColumn = new NumberColumn(name() + "[cumProd]", size());
-        for (double value : this) {
-            if (isMissing(value)) {
-                newColumn.append(MISSING_VALUE);
-            } else {
-                total *= value;
-                newColumn.append(total);
-            }
-        }
-        return newColumn;
-    }
-
-    /**
-     * Returns a new column with a percent change calculated
-     */
-    public NumberColumn pctChange() {
-        NumberColumn newColumn = new NumberColumn(name() + "[pctChange]", size());
-        newColumn.append(MISSING_VALUE);
-        for (int i = 1; i < size(); i++) {
-            newColumn.append(get(i) / get(i - 1) - 1);
-        }
-        return newColumn;
+    @Override
+    public DoubleList dataInternal() {
+        return data.clone();
     }
 
 }

@@ -14,50 +14,70 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntCollection;
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntListIterator;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.string.CategoryColumnUtils;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.StringBiPredicate;
-import tech.tablesaw.filtering.StringPredicate;
-import tech.tablesaw.columns.string.filters.CategoryFilters;
+import tech.tablesaw.columns.string.StringColumnFormatter;
+import tech.tablesaw.columns.string.StringColumnReference;
+import tech.tablesaw.columns.string.StringFilters;
+import tech.tablesaw.columns.string.StringMapUtils;
+import tech.tablesaw.columns.string.StringReduceUtils;
+import tech.tablesaw.filtering.Filter;
+import tech.tablesaw.filtering.predicates.StringBiPredicate;
+import tech.tablesaw.filtering.predicates.StringIntBiPredicate;
+import tech.tablesaw.filtering.predicates.StringPredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.util.selection.BitmapBackedSelection;
 import tech.tablesaw.util.selection.Selection;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static tech.tablesaw.api.ColumnType.*;
 
 /**
- * A column that contains String values. They are assumed to be 'categorical' rather than free-form filters, so are
+ * A column that contains String values. They are assumed to be 'categorical' rather than free-form text, so are
  * stored in an encoding that takes advantage of the expected repetition of string values.
  * <p>
  * Because the MISSING_VALUE for this column type is an empty string, there is little or no need for special handling
  * of missing values in this class's methods.
  */
 public class StringColumn extends AbstractColumn
-        implements CategoryFilters, CategoryColumnUtils, IntConvertibleColumn, Iterable<String> {
+        implements StringFilters, StringMapUtils, StringReduceUtils, IntConvertibleColumn {
 
-    public static final String MISSING_VALUE = (String) ColumnType.CATEGORY.getMissingValue();
-    private static final int BYTE_SIZE = 4;
-    private static int DEFAULT_ARRAY_SIZE = 128;
+    public final StringColumnReference column = new StringColumnReference(this.name());
 
-    private int id = 0;
+    public static final String MISSING_VALUE = (String) STRING.getMissingValue();
+
+    private final AtomicInteger nextIndex = new AtomicInteger(1);
 
     // holds a key for each row in the table. the key can be used to lookup the backing string value
     private IntArrayList values;
 
     // a bidirectional map of keys to backing string values.
-    private DictionaryMap lookupTable = new DictionaryMap();
+    private final DictionaryMap lookupTable = new DictionaryMap();
 
-    public final IntComparator rowComparator = new IntComparator() {
+    private StringColumnFormatter printFormatter = new StringColumnFormatter();
+
+    private final IntComparator rowComparator = new IntComparator() {
 
         @Override
         public int compare(int i, int i1) {
@@ -65,60 +85,44 @@ public class StringColumn extends AbstractColumn
             String f2 = get(i1);
             return f1.compareTo(f2);
         }
-
-        @Override
-        public int compare(Integer i, Integer i1) {
-            return compare((int) i, (int) i1);
-        }
     };
+
     private final IntComparator reverseDictionarySortComparator = new IntComparator() {
         @Override
         public int compare(int i, int i1) {
             return -lookupTable.get(i).compareTo(lookupTable.get(i1));
         }
-
-        @Override
-        public int compare(Integer o1, Integer o2) {
-            return compare((int) o1, (int) o2);
-        }
     };
-    private IntComparator dictionarySortComparator = new IntComparator() {
+
+    private final IntComparator dictionarySortComparator = new IntComparator() {
         @Override
         public int compare(int i, int i1) {
             return lookupTable.get(i).compareTo(lookupTable.get(i1));
         }
-
-        @Override
-        public int compare(Integer o1, Integer o2) {
-            return compare((int) o1, (int) o2);
-        }
     };
 
-    public StringColumn(String name) {
-        super(name);
-        values = new IntArrayList(DEFAULT_ARRAY_SIZE);
+    public static StringColumn create(String name) {
+        return create(name, DEFAULT_ARRAY_SIZE);
     }
 
-    public StringColumn(String name, String[] categories) {
-        this(name, Arrays.asList(categories));
+    public static StringColumn create(String name, String[] strings) {
+        return create(name, Arrays.asList(strings));
     }
 
-    public StringColumn(String name, List<String> categories) {
-        super(name);
-        values = new IntArrayList(categories.size());
-        for (String string : categories) {
+    public static StringColumn create(String name, List<String> strings) {
+        return new StringColumn(name, strings);
+    }
+
+    public static StringColumn create(String name, int size) {
+        return new StringColumn(name, new ArrayList<>(size));
+    }
+
+    private StringColumn(String name, List<String> strings) {
+        super(STRING, name);
+        values = new IntArrayList(strings.size());
+        for (String string : strings) {
             append(string);
         }
-    }
-
-    public StringColumn(ColumnMetadata metadata) {
-        super(metadata);
-        values = new IntArrayList(DEFAULT_ARRAY_SIZE);
-    }
-
-    public StringColumn(String name, int size) {
-        super(name);
-        values = new IntArrayList(size);
     }
 
     public static String convert(String stringValue) {
@@ -130,36 +134,50 @@ public class StringColumn extends AbstractColumn
 
     @Override
     public ColumnType type() {
-        return ColumnType.CATEGORY;
+        return STRING;
+    }
+
+    public void setPrintFormatter(StringColumnFormatter formatter) {
+        Preconditions.checkNotNull(formatter);
+        this.printFormatter = formatter;
+    }
+
+    public StringColumnFormatter getPrintFormatter() {
+        return printFormatter;
     }
 
     @Override
     public String getString(int row) {
-        return get(row);
+        return printFormatter.format(get(row));
+    }
+
+    @Override
+    public String getUnformattedString(int row) {
+        return String.valueOf(get(row));
     }
 
     @Override
     public StringColumn emptyCopy() {
-        StringColumn copy = new StringColumn(name());
-        copy.setComment(comment());
-        return copy;
+        return create(name());
     }
 
     @Override
     public StringColumn emptyCopy(int rowSize) {
-        StringColumn copy = new StringColumn(name(), rowSize);
-        copy.setComment(comment());
-        return copy;
+        return create(name(), rowSize);
     }
 
     @Override
     public void sortAscending() {
-        IntArrays.parallelQuickSort(values.elements(), dictionarySortComparator);
+        int[] elements = values.toIntArray();
+        IntArrays.parallelQuickSort(elements, dictionarySortComparator);
+        this.values = new IntArrayList(elements);
     }
 
     @Override
     public void sortDescending() {
-        IntArrays.parallelQuickSort(values.elements(), reverseDictionarySortComparator);
+        int[] elements = values.toIntArray();
+        IntArrays.parallelQuickSort(elements, reverseDictionarySortComparator);
+        this.values = new IntArrayList(elements);
     }
 
     /**
@@ -213,8 +231,8 @@ public class StringColumn extends AbstractColumn
      */
     public Table countByCategory() {
         Table t = new Table("Column: " + name());
-        StringColumn categories = new StringColumn("Category");
-        IntColumn counts = new IntColumn("Count");
+        StringColumn categories = create("Category");
+        NumberColumn counts = NumberColumn.create("Count");
 
         Int2IntMap valueToCount = new Int2IntOpenHashMap();
 
@@ -244,18 +262,39 @@ public class StringColumn extends AbstractColumn
         lookupTable.clear();
     }
 
-    public Selection isEqualTo(StringColumn other) {
-        Selection results = new BitmapBackedSelection();
-        int i = 0;
-        Iterator<String> iterator = other.iterator();
-        for (String next : this) {
-            if (next.equals(iterator.next())) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
+    public StringColumn lead(int n) {
+        StringColumn column = lag(-n);
+        column.setName(name() + " lead(" + n + ")");
+        return column;
     }
+
+    public StringColumn lag(int n) {
+
+        StringColumn copy = emptyCopy(size());
+        copy.setName(name() + " lag(" + n + ")");
+
+        if (n >= 0) {
+            for (int m = 0; m < n; m++) {
+                copy.appendCell(MISSING_VALUE);
+            }
+            for (int i = 0; i < size(); i++) {
+                if (i + n >= size()) {
+                    break;
+                }
+                copy.appendCell(get(i));
+            }
+        } else {
+            for (int i = -n; i < size(); i++) {
+                copy.appendCell(get(i));
+            }
+            for (int m = 0; m > n; m--) {
+                copy.appendCell(MISSING_VALUE);
+            }
+        }
+
+        return copy;
+    }
+
 
     /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
@@ -275,15 +314,10 @@ public class StringColumn extends AbstractColumn
         if (stringValue == null) {
             stringValue = MISSING_VALUE;
         }
-        boolean b = lookupTable.contains(stringValue);
-        int valueId;
-        if (!b) {
-// TODO(lwhite): synchronize id() or column-level saveTable lock so we can increment id safely without atomic integer
-// objects
-            valueId = id++;
+        int valueId = lookupTable.get(stringValue);
+        if (valueId <= 0) {
+            valueId = nextIndex.getAndIncrement();
             lookupTable.put(valueId, stringValue);
-        } else {
-            valueId = lookupTable.get(stringValue);
         }
         values.set(rowIndex, valueId);
     }
@@ -327,26 +361,10 @@ public class StringColumn extends AbstractColumn
         return bottom;
     }
 
-    /**
-     * @deprecated Use append(String value) instead
-     */
-    public void add(String stringValue) {
-        addValue(convert(stringValue));
-    }
-
-    /**
-     * Puts Strings directly into the backing data structure.
-     * Do not use
-     * This method is unsafe, and will be removed in a future release without replacement
-     */
-    public void UnsafePutToDictionary(int key, String value) {
-        lookupTable.put(key, value);
-    }
-
     private void addValue(String value) {
         int key = lookupTable.get(value);
-        if (key < 0) {
-            key = id++;
+        if (key <= 0) {
+            key = nextIndex.getAndIncrement();
             lookupTable.put(key, value);
         }
         values.add(key);
@@ -355,9 +373,9 @@ public class StringColumn extends AbstractColumn
     /**
      * Initializes this Column with the given values for performance
      */
-    public void initializeWith(IntArrayList list, DictionaryMap map) {
+    public void initializeWith(IntArrayList list, StringColumn old) {
         for (int key : list) {
-            add(map.get(key));
+            append(old.lookupTable.get(key));
         }
     }
 
@@ -365,10 +383,10 @@ public class StringColumn extends AbstractColumn
      * Returns true if this column contains a cell with the given string, and false otherwise
      *
      * @param aString the value to look for
-     * @return true if contains, false otherwhise
+     * @return true if contains, false otherwise
      */
     public boolean contains(String aString) {
-        return values.indexOf(dictionaryMap().get(aString)) >= 0;
+        return firstIndexOf(aString) >= 0;
     }
 
     /**
@@ -392,7 +410,7 @@ public class StringColumn extends AbstractColumn
      */
     public void addAll(List<String> stringValues) {
         for (String stringValue : stringValues) {
-            add(stringValue);
+            append(stringValue);
         }
     }
 
@@ -410,6 +428,7 @@ public class StringColumn extends AbstractColumn
     public boolean isEmpty() {
         return values.isEmpty();
     }
+
 
     public Selection isEqualTo(String string) {
         Selection results = new BitmapBackedSelection();
@@ -437,7 +456,7 @@ public class StringColumn extends AbstractColumn
 
         // createFromCsv the necessary columns
         for (Int2ObjectMap.Entry<String> entry : lookupTable.keyToValueMap().int2ObjectEntrySet()) {
-            BooleanColumn column = new BooleanColumn(entry.getValue());
+            BooleanColumn column = BooleanColumn.create(entry.getValue());
             results.add(column);
         }
 
@@ -469,7 +488,7 @@ public class StringColumn extends AbstractColumn
     @Override
     public StringColumn unique() {
         List<String> strings = new ArrayList<>(lookupTable.categories());
-        return new StringColumn(name() + " Unique values", strings);
+        return StringColumn.create(name() + " Unique values", strings);
     }
 
     /**
@@ -482,171 +501,43 @@ public class StringColumn extends AbstractColumn
     }
 
 
-    public IntColumn asIntColumn() {
-        IntColumn intColumn = new IntColumn(this.name() + ": codes", size());
+    public NumberColumn asNumberColumn() {
+        NumberColumn numberColumn = NumberColumn.create(this.name() + ": codes", size());
         IntArrayList data = data();
         for (int i = 0; i < size(); i++) {
-            intColumn.append(data.getInt(i));
+            numberColumn.append(data.getInt(i));
         }
-        return intColumn;
+        return numberColumn;
     }
 
-    /**
-     * @deprecated This is an implementation detail that should not be public. Going away soon.
-     */
-    @Deprecated
-    public DictionaryMap dictionaryMap() {
-        return lookupTable;
+    public StringColumn select(Selection selection) {
+        return (StringColumn) subset(selection);
+    }
+
+    public StringColumn select(Filter filter) {
+        return select(filter.apply(this));
+    }
+
+    public StringColumn selectWhere(StringPredicate predicate) {
+        return (StringColumn) subset(eval(predicate));
+    }
+
+    public StringColumn selectWhere(StringBiPredicate predicate, StringColumn otherColumn) {
+        return (StringColumn) subset(eval(predicate, otherColumn));
+    }
+
+    public StringColumn selectWhere(StringBiPredicate predicate, String value) {
+        return (StringColumn) subset(eval(predicate, value));
+    }
+
+    public StringColumn selectWhere(StringIntBiPredicate predicate, int value) {
+        return (StringColumn) subset(eval(predicate, value));
     }
 
     @Override
-    public String toString() {
-        return "Category column: " + name();
-    }
-
-    /**
-     * Returns the raw indexes that this column contains.
-     *
-     * @return indexes as int[]
-     */
-    public int[] indexes() {
-        int[] rowIndexes = new int[size()];
-        for (int i = 0; i < size(); i++) {
-            rowIndexes[i] = i;
-        }
-        return rowIndexes;
-    }
-
-    /**
-     * Return a copy of this column with the given string appended
-     *
-     * @param append the column to append
-     * @return the new column
-     */
-    public StringColumn appendString(StringColumn append) {
-        StringColumn newColumn = new StringColumn(name() + "[column appended]", this.size());
-        for (int r = 0; r < size(); r++) {
-            newColumn.add(get(r) + append.get(r));
-        }
-        return newColumn;
-    }
-
-    /**
-     * Return a copy of this column with the given string appended
-     *
-     * @param append the string to append
-     * @return the new column
-     */
-    public StringColumn appendString(String append) {
-        StringColumn newColumn = new StringColumn(name() + "[append]", this.size());
-        for (int r = 0; r < size(); r++) {
-            newColumn.add(get(r) + append);
-        }
-        return newColumn;
-    }
-
-    /**
-     * Creates a new column, replacing each string in this column with a new string formed by
-     * replacing any substring that matches the regex
-     *
-     * @param regexArray  the regex array to replace
-     * @param replacement the replacement array
-     * @return the new column
-     */
-    public StringColumn replaceAll(String[] regexArray, String replacement) {
-
-        StringColumn newColumn = new StringColumn(name() + "[repl]", this.size());
-
-        for (int r = 0; r < size(); r++) {
-            String value = get(r);
-            for (String regex : regexArray) {
-                value = value.replaceAll(regex, replacement);
-            }
-            newColumn.add(value);
-        }
-        return newColumn;
-    }
-
-    public StringColumn tokenizeAndSort(String separator) {
-        StringColumn newColumn = new StringColumn(name() + "[sorted]", this.size());
-
-        for (int r = 0; r < size(); r++) {
-            String value = get(r);
-
-            Splitter splitter = Splitter.on(separator);
-            splitter = splitter.trimResults();
-            splitter = splitter.omitEmptyStrings();
-            List<String> tokens =
-                    new ArrayList<>(splitter.splitToList(value));
-            Collections.sort(tokens);
-            value = String.join(" ", tokens);
-            newColumn.add(value);
-        }
-        return newColumn;
-    }
-
-    /**
-     * Splits on Whitespace and returns the lexicographically sorted result.
-     *
-     * @return a {@link StringColumn}
-     */
-    public StringColumn tokenizeAndSort() {
-        StringColumn newColumn = new StringColumn(name() + "[sorted]", this.size());
-
-        for (int r = 0; r < size(); r++) {
-            String value = get(r);
-            Splitter splitter = Splitter.on(CharMatcher.whitespace());
-            splitter = splitter.trimResults();
-            splitter = splitter.omitEmptyStrings();
-            List<String> tokens = new ArrayList<>(splitter.splitToList(value));
-            Collections.sort(tokens);
-            value = String.join(" ", tokens);
-            newColumn.add(value);
-        }
-        return newColumn;
-    }
-
-    public StringColumn tokenizeAndRemoveDuplicates() {
-        StringColumn newColumn = new StringColumn(name() + "[without duplicates]", this.size());
-
-        for (int r = 0; r < size(); r++) {
-            String value = get(r);
-
-            Splitter splitter = Splitter.on(CharMatcher.whitespace());
-            splitter = splitter.trimResults();
-            splitter = splitter.omitEmptyStrings();
-            List<String> tokens = new ArrayList<>(splitter.splitToList(value));
-
-            value = String.join(" ", new HashSet<>(tokens));
-            newColumn.add(value);
-        }
-        return newColumn;
-    }
-
-    @Override
-    public String print() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(title());
-        for (int next : values) {
-            builder.append(get(next));
-            builder.append('\n');
-        }
-        return builder.toString();
-    }
-
-    @Override
-    public Selection isMissing() {
-        return select(isMissing);
-    }
-
-    @Override
-    public Selection isNotMissing() {
-        return select(isNotMissing);
-    }
-
-    public Selection select(StringPredicate predicate) {
+    public Selection eval(StringPredicate predicate) {
         Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < data().size(); idx++) {
+        for (int idx = 0; idx < size(); idx++) {
             if (predicate.test(get(idx))) {
                 selection.add(idx);
             }
@@ -654,9 +545,32 @@ public class StringColumn extends AbstractColumn
         return selection;
     }
 
-    public Selection select(StringBiPredicate predicate, String value) {
+    @Override
+    public Selection eval(StringBiPredicate predicate, StringColumn otherColumn) {
         Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < data().size(); idx++) {
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), otherColumn.get(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    @Override
+    public Selection eval(StringBiPredicate predicate, String value) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), value)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    @Override
+    public Selection eval(StringIntBiPredicate predicate, int value) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
             if (predicate.test(get(idx), value)) {
                 selection.add(idx);
             }
@@ -666,19 +580,19 @@ public class StringColumn extends AbstractColumn
 
     @Override
     public StringColumn copy() {
-        StringColumn newCol = new StringColumn(name(), size());
-        newCol.lookupTable = new DictionaryMap(lookupTable);
-        newCol.values.addAll(values);
-        newCol.setComment(comment());
+        StringColumn newCol = create(name(), size());
+        for (String string : this) {
+            newCol.append(string);
+        }
         return newCol;
     }
 
     @Override
     public void append(Column column) {
         Preconditions.checkArgument(column.type() == this.type());
-        StringColumn intColumn = (StringColumn) column;
-        for (int i = 0; i < intColumn.size(); i++) {
-            add(intColumn.get(i));
+        StringColumn source = (StringColumn) column;
+        for (String string : source) {
+            append(string);
         }
     }
 
@@ -698,7 +612,7 @@ public class StringColumn extends AbstractColumn
 
     @Override
     public Iterator<String> iterator() {
-        return new Iterator<String>() {
+        return new Iterator<>() {
 
             private final IntListIterator valuesIt = values.iterator();
 
@@ -714,16 +628,6 @@ public class StringColumn extends AbstractColumn
         };
     }
 
-    public StringColumn selectIf(StringPredicate predicate) {
-        StringColumn column = emptyCopy();
-        for (String next : this) {
-            if (predicate.test(next)) {
-                column.add(next);
-            }
-        }
-        return column;
-    }
-
     public Set<String> asSet() {
         return lookupTable.categories();
     }
@@ -731,17 +635,17 @@ public class StringColumn extends AbstractColumn
     /**
      * Returns the integer encoded value of each cell in this column. It can be used to lookup the mapped string in
      * the lookupTable
+     * TODO(lwhite): Should this be private?
      *
      * @return values a {@link IntArrayList}
      */
-    @Override
     public IntArrayList values() {
         return values;
     }
 
     @Override
     public int byteSize() {
-        return BYTE_SIZE;
+        return type().byteSize();
     }
 
     /**
@@ -749,18 +653,12 @@ public class StringColumn extends AbstractColumn
      */
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(4).putInt(getInt(rowNumber)).array();
+        return ByteBuffer.allocate(byteSize()).putInt(getInt(rowNumber)).array();
     }
 
-    public Selection isIn(String... strings) {
-        Selection results = new BitmapBackedSelection();
-        for (String string : strings) {
-            int key = lookupTable.get(string);
-            addValuesToSelection(results, key);
-        }
-        return results;
-    }
-
+    /**
+     * Given a key matching some string, add to the selection the index of every record that matches that key
+     */
     private void addValuesToSelection(Selection results, int key) {
         if (key >= 0) {
             int i = 0;
@@ -773,10 +671,6 @@ public class StringColumn extends AbstractColumn
         }
     }
 
-    public Selection isIn(Collection<String> strings) {
-        return isIn(strings.toArray(new String[strings.size()]));
-    }
-
     /**
      * Added for naming consistency with all other columns
      */
@@ -784,30 +678,43 @@ public class StringColumn extends AbstractColumn
         appendCell(value);
     }
 
-    public Selection isNotIn(String... strings) {
-        Selection results = new BitmapBackedSelection();
+    @Override
+    public Selection isIn(String... strings) {
+        return selectIsIn(strings);
+    }
+
+    private Selection selectIsIn(String... strings) {
+        IntArrayList keys = new IntArrayList();
         for (String string : strings) {
             int key = lookupTable.get(string);
-            if (key >= 0) {
-                int i = 0;
-                for (int next : values) {
-                    if (key != next) {
-                        results.add(i);
-                    }
-                    i++;
-                }
+            if (key > 0) {
+                keys.add(key);
             }
         }
 
+        Selection results = new BitmapBackedSelection();
+        for (int i = 0; i < values.size(); i++) {
+            if (keys.contains(values.getInt(i))) {
+                results.add(i);
+            }
+        }
         return results;
     }
 
-    public Selection isNotIn(Collection<String> strings) {
-        return isNotIn(strings.toArray(new String[strings.size()]));
+    @Override
+    public Selection isNotIn(String... strings) {
+        Selection results = new BitmapBackedSelection();
+        results.addRange(0, size());
+        results.andNot(selectIsIn(strings));
+        return results;
     }
 
     public Int2ObjectMap<String> keyToValueMap() {
         return new Int2ObjectOpenHashMap<>(lookupTable.keyToValue);
+    }
+
+    public int firstIndexOf(String value) {
+        return values.indexOf(lookupTable.get(value));
     }
 
     /**
@@ -848,7 +755,7 @@ public class StringColumn extends AbstractColumn
             return valueToKey.getInt(value);
         }
 
-        void remove(short key) {
+        void remove(int key) {
             String value = keyToValue.remove(key);
             valueToKey.removeInt(value);
         }
@@ -863,6 +770,12 @@ public class StringColumn extends AbstractColumn
             valueToKey.clear();
         }
 
+        /**
+         * Returns true if we have seen this stringValue before, and it hasn't been removed.
+         * <p>
+         * NOTE: An answer of true does not imply that the column still contains the value, only that
+         * it is in the dictionary map
+         */
         boolean contains(String stringValue) {
             return valueToKey.containsKey(stringValue);
         }

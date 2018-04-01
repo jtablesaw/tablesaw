@@ -16,6 +16,7 @@ package tech.tablesaw.columns.booleans.filters;
 
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
@@ -27,7 +28,12 @@ public class IsFalse extends ColumnFilter {
     }
 
     public Selection apply(Table relation) {
-        BooleanColumn booleanColumn = (BooleanColumn) relation.column(columnReference.getColumnName());
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
+        BooleanColumn booleanColumn = (BooleanColumn) column;
         return booleanColumn.isFalse();
     }
 }
