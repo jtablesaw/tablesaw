@@ -12,18 +12,18 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.predicates;
 
-public interface FloatBiPredicate {
+public interface StringIntBiPredicate {
 
     /**
      * Returns true if valueToTest meets the criteria of this predicate when valueToCompareAgainst is considered
      * <p>
-     * Example (to compare all the values v in a column such that v is greater than 4.0, v is the value to test and 4.0
-     * is the value to compare against
+     * Example (to compare all the values v in a column such that v = "foo", v is the value to test and "foo" is the
+     * value to compare against
      *
-     * @param valueToTest           the value you're checking. Often this is the value of a cell in a float column
-     * @param valueToCompareAgainst the value to compare against. Often this is a single value for all comparisons
+     * @param valueToTest           the value you're checking. Often this is the value of a cell in a short column
+     * @param valueToCompareAgainst the value to compare against. Often this is a single value for all comparisions
      */
-    boolean test(float valueToTest, float valueToCompareAgainst);
+    boolean test(String valueToTest, int valueToCompareAgainst);
 }

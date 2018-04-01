@@ -12,10 +12,10 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.predicates;
 
-public interface DoublePredicate {
+public interface StringPredicate {
 
-    boolean test(double i);
+    boolean test(String i);
 
 }

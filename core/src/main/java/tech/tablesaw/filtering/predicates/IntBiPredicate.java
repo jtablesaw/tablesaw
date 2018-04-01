@@ -12,9 +12,9 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.predicates;
 
-public interface LongBiPredicate {
+public interface IntBiPredicate {
 
     /**
      * Returns true if valueToTest meets the criteria of this predicate when valueToCompareAgainst is considered
@@ -25,5 +25,5 @@ public interface LongBiPredicate {
      * @param valueToTest           the value you're checking. Often this is the value of a cell in an int column
      * @param valueToCompareAgainst the value to compare against. Often this is a single value for all comparisions
      */
-    boolean test(long valueToTest, long valueToCompareAgainst);
+    boolean test(int valueToTest, int valueToCompareAgainst);
 }

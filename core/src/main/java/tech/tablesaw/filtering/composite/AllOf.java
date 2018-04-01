@@ -12,9 +12,11 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.composite;
 
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.util.selection.Selection;
 
 import java.util.ArrayList;
@@ -25,23 +27,22 @@ import java.util.List;
 /**
  * A composite filtering that only returns {@code true} if all component filters return true
  */
-public class AnyOf extends CompositeFilter {
+public class AllOf extends CompositeFilter {
 
     private final List<Filter> filterList = new ArrayList<>();
 
-    AnyOf(Collection<Filter> filters) {
-
+    private AllOf(Collection<Filter> filters) {
         this.filterList.addAll(filters);
     }
 
-    public static AnyOf anyOf(Filter... filters) {
+    public static AllOf allOf(Filter... filters) {
         List<Filter> filterList = new ArrayList<>();
         Collections.addAll(filterList, filters);
-        return new AnyOf(filterList);
+        return new AllOf(filterList);
     }
 
-    public static AnyOf anyOf(Collection<Filter> filters) {
-        return new AnyOf(filters);
+    public static AllOf allOf(Collection<Filter> filters) {
+        return new AllOf(filters);
     }
 
     public Selection apply(Table relation) {
@@ -50,7 +51,20 @@ public class AnyOf extends CompositeFilter {
             if (selection == null) {
                 selection = filter.apply(relation);
             } else {
-                selection.or(filter.apply(relation));
+                selection.and(filter.apply(relation));
+            }
+        }
+        return selection;
+    }
+
+    @Override
+    public Selection apply(Column column) {
+        Selection selection = null;
+        for (Filter filter : filterList) {
+            if (selection == null) {
+                selection = filter.apply(column);
+            } else {
+                selection.and(filter.apply(column));
             }
         }
         return selection;

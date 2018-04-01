@@ -12,10 +12,13 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.composite;
 
-public interface LongPredicate {
+import tech.tablesaw.filtering.Filter;
 
-    boolean test(long i);
+/**
+ * A superclass for filters that operate on other filters, rather than directly on columns
+ */
+abstract class CompositeFilter implements Filter {
 
 }

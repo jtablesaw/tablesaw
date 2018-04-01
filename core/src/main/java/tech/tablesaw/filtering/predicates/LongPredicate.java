@@ -12,10 +12,10 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.predicates;
 
-public interface FloatPredicate {
+public interface LongPredicate {
 
-    boolean test(float i);
+    boolean test(long i);
 
 }

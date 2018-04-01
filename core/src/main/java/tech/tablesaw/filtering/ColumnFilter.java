@@ -16,9 +16,15 @@ package tech.tablesaw.filtering;
 
 import tech.tablesaw.columns.ColumnReference;
 
-public abstract class ColumnFilter extends Filter {
+import javax.annotation.concurrent.Immutable;
 
-    final ColumnReference columnReference;
+/**
+ * A column filter applies to a single column
+ */
+@Immutable
+public abstract class ColumnFilter implements Filter {
+
+    private final ColumnReference columnReference;
 
     public ColumnFilter(ColumnReference columnReference) {
         this.columnReference = columnReference;
@@ -27,9 +33,4 @@ public abstract class ColumnFilter extends Filter {
     public ColumnReference columnReference() {
         return columnReference;
     }
-
-    public ColumnReference getColumnReference() {
-        return columnReference;
-    }
-
 }

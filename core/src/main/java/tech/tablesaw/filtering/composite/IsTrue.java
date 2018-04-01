@@ -12,9 +12,11 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.composite;
 
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.util.selection.Selection;
 
 import javax.annotation.concurrent.Immutable;
@@ -37,11 +39,14 @@ public class IsTrue extends CompositeFilter {
 
     /**
      * Returns true if the element in the given row in my {@code column} is true
-     *
-     * @param relation
      */
     @Override
     public Selection apply(Table relation) {
         return filter.apply(relation);
+    }
+
+    @Override
+    public Selection apply(Column column) {
+        return filter.apply(column);
     }
 }

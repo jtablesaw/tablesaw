@@ -30,7 +30,11 @@ public class IsMissing extends ColumnFilter {
 
     @Override
     public Selection apply(Table relation) {
-        Column column = relation.column(columnReference.getColumnName());
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
         return column.isMissing();
     }
 }

@@ -12,9 +12,11 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.composite;
 
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.util.selection.BitmapBackedSelection;
 import tech.tablesaw.util.selection.Selection;
 
@@ -44,6 +46,14 @@ public class IsFalse extends CompositeFilter {
         Selection selection = new BitmapBackedSelection();
         selection.addRange(0, relation.rowCount());
         selection.andNot(filter.apply(relation));
+        return selection;
+    }
+
+    @Override
+    public Selection apply(Column column) {
+        Selection selection = new BitmapBackedSelection();
+        selection.addRange(0, column.size());
+        selection.andNot(filter.apply(column));
         return selection;
     }
 }

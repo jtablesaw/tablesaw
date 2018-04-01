@@ -12,11 +12,12 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.predicates;
 
-/**
- * A superclass for filters that operate on other filters, rather than directly on columns
- */
-abstract class CompositeFilter extends Filter {
+import java.time.LocalDateTime;
+
+public interface LocalDateTimePredicate {
+
+    boolean test(LocalDateTime i);
 
 }

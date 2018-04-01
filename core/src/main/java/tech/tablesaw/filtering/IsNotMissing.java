@@ -28,8 +28,13 @@ public class IsNotMissing extends ColumnFilter {
         super(reference);
     }
 
+    @Override
     public Selection apply(Table relation) {
-        Column column = relation.column(columnReference.getColumnName());
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
         return column.isNotMissing();
     }
 }

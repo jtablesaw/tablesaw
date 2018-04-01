@@ -12,26 +12,12 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
-
-import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TimeColumn;
-import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.util.selection.Selection;
+package tech.tablesaw.filtering.predicates;
 
 import java.time.LocalTime;
 
-public class TimeEqualTo extends ColumnFilter {
+public interface LocalTimePredicate {
 
-    final LocalTime value;
+    boolean test(LocalTime i);
 
-    public TimeEqualTo(ColumnReference reference, LocalTime value) {
-        super(reference);
-        this.value = value;
-    }
-
-    public Selection apply(Table relation) {
-        TimeColumn dateColumn = (TimeColumn) relation.column(columnReference.getColumnName());
-        return dateColumn.isEqualTo(value);
-    }
 }

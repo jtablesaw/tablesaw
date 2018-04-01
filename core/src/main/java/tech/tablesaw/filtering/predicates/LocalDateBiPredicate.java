@@ -12,18 +12,20 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.predicates;
 
-public interface StringBiPredicate {
+import java.time.LocalDate;
+
+public interface LocalDateBiPredicate {
 
     /**
      * Returns true if valueToTest meets the criteria of this predicate when valueToCompareAgainst is considered
      * <p>
-     * Example (to compare all the values v in a column such that v = "foo", v is the value to test and "foo" is the
-     * value to compare against
+     * Example (to compare all the values v in a column such that v is greater than 4, v is the value to test and 4 is
+     * the value to compare against
      *
-     * @param valueToTest           the value you're checking. Often this is the value of a cell in a short column
+     * @param valueToTest           the value you're checking. Often this is the value of a cell in an int column
      * @param valueToCompareAgainst the value to compare against. Often this is a single value for all comparisions
      */
-    boolean test(String valueToTest, String valueToCompareAgainst);
+    boolean test(LocalDate valueToTest, LocalDate valueToCompareAgainst);
 }

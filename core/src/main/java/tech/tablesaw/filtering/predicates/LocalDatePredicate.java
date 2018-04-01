@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.predicates;
 
 import java.time.LocalDate;
 

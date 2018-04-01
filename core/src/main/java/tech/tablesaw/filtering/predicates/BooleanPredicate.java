@@ -12,12 +12,9 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering;
+package tech.tablesaw.filtering.predicates;
 
-import java.time.LocalTime;
+public interface BooleanPredicate {
 
-public interface LocalTimePredicate {
-
-    boolean test(LocalTime i);
-
+    boolean test(byte i);
 }
