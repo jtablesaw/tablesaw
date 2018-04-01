@@ -16,21 +16,23 @@ package tech.tablesaw.columns.number.filters;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class EqualTo extends ColumnFilter {
+public class IsNonNegative extends ColumnFilter {
 
-    private final double value;
-
-    public DoubleEqualTo(ColumnReference reference, double value) {
+    public IsNonNegative(ColumnReference reference) {
         super(reference);
-        this.value = value;
     }
 
     public Selection apply(Table relation) {
-        NumberColumn numberColumn = (NumberColumn) relation.column(columnReference.getColumnName());
-        return numberColumn.isEqualTo(value);
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    public Selection apply(Column column) {
+        NumberColumn numberColumn = (NumberColumn) column;
+        return numberColumn.isNonNegative();
     }
 }

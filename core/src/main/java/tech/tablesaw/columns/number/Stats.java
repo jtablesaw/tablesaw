@@ -15,7 +15,9 @@
 package tech.tablesaw.columns.number;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import tech.tablesaw.api.*;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 
 /**
  *
@@ -35,18 +37,10 @@ public class Stats {
     private double populationVariance;
     private double sumOfLogs;
     private double sumOfSquares;
-    private String name;
+    private final String name;
 
     private Stats(String name) {
         this.name = name;
-    }
-
-    public static Stats create(final FloatColumn values) {
-        SummaryStatistics summaryStatistics = new SummaryStatistics();
-        for (float f : values) {
-            summaryStatistics.addValue(f);
-        }
-        return getStats(values, summaryStatistics);
     }
 
     public static Stats create(final NumberColumn values) {
@@ -55,39 +49,6 @@ public class Stats {
             summaryStatistics.addValue(f);
         }
         return getStats(values, summaryStatistics);
-    }
-
-    public static Stats create(final IntColumn ints) {
-        FloatColumn values = new FloatColumn(ints.name(), ints.asFloatArray());
-        return create(values);
-    }
-
-    public static Stats create(final ShortColumn ints) {
-        FloatColumn values = new FloatColumn(ints.name(), ints.asFloatArray());
-        return create(values);
-    }
-
-    public static Stats create(final LongColumn ints) {
-        FloatColumn values = new FloatColumn(ints.name(), ints.asFloatArray());
-        return create(values);
-    }
-
-    private static Stats getStats(FloatColumn values, SummaryStatistics summaryStatistics) {
-        Stats stats = new Stats("Column: " + values.name());
-        stats.min = (float) summaryStatistics.getMin();
-        stats.max = (float) summaryStatistics.getMax();
-        stats.n = summaryStatistics.getN();
-        stats.sum = summaryStatistics.getSum();
-        stats.variance = summaryStatistics.getVariance();
-        stats.populationVariance = summaryStatistics.getPopulationVariance();
-        stats.quadraticMean = summaryStatistics.getQuadraticMean();
-        stats.geometricMean = summaryStatistics.getGeometricMean();
-        stats.mean = summaryStatistics.getMean();
-        stats.standardDeviation = summaryStatistics.getStandardDeviation();
-        stats.sumOfLogs = summaryStatistics.getSumOfLogs();
-        stats.sumOfSquares = summaryStatistics.getSumsq();
-        stats.secondMoment = summaryStatistics.getSecondMoment();
-        return stats;
     }
 
     private static Stats getStats(NumberColumn values, SummaryStatistics summaryStatistics) {
@@ -108,66 +69,66 @@ public class Stats {
         return stats;
     }
 
-    public float range() {
-        return (float) (max - min);
+    public double range() {
+        return (max - min);
     }
 
-    public float standardDeviation() {
-        return (float) standardDeviation;
+    public double standardDeviation() {
+        return standardDeviation;
     }
 
     public long n() {
         return n;
     }
 
-    public float mean() {
-        return (float) mean;
+    public double mean() {
+        return (sum / (double) n);
     }
 
-    public float min() {
-        return (float) min;
+    public double min() {
+        return min;
     }
 
-    public float max() {
-        return (float) max;
+    public double max() {
+        return max;
     }
 
-    public float sum() {
-        return (float) sum;
+    public double sum() {
+        return sum;
     }
 
-    public float variance() {
-        return (float) variance;
+    public double variance() {
+        return variance;
     }
 
-    public float sumOfSquares() {
-        return (float) sumOfSquares;
+    public double sumOfSquares() {
+        return sumOfSquares;
     }
 
-    public float populationVariance() {
-        return (float) populationVariance;
+    public double populationVariance() {
+        return populationVariance;
     }
 
-    public float sumOfLogs() {
-        return (float) sumOfLogs;
+    public double sumOfLogs() {
+        return sumOfLogs;
     }
 
-    public float geometricMean() {
-        return (float) geometricMean;
+    public double geometricMean() {
+        return geometricMean;
     }
 
-    public float quadraticMean() {
-        return (float) quadraticMean;
+    public double quadraticMean() {
+        return quadraticMean;
     }
 
-    public float secondMoment() {
-        return (float) secondMoment;
+    public double secondMoment() {
+        return secondMoment;
     }
 
     public Table asTable() {
         Table t = Table.create(name);
-        StringColumn measure = new StringColumn("Measure");
-        FloatColumn value = new FloatColumn("Value");
+        StringColumn measure = StringColumn.create("Measure");
+        NumberColumn value = NumberColumn.create("Value");
         t.addColumn(measure);
         t.addColumn(value);
 
@@ -201,8 +162,8 @@ public class Stats {
     public Table asTableComplete() {
         Table t = asTable();
 
-        StringColumn measure = t.categoryColumn("Measure");
-        FloatColumn value = t.floatColumn("Value");
+        StringColumn measure = t.stringColumn("Measure");
+        NumberColumn value = t.numberColumn("Value");
 
         measure.append("Sum of Squares");
         value.append(sumOfSquares());

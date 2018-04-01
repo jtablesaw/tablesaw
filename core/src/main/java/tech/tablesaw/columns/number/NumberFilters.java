@@ -14,41 +14,149 @@
 
 package tech.tablesaw.columns.number;
 
-import it.unimi.dsi.fastutil.ints.IntIterable;
+import it.unimi.dsi.fastutil.doubles.DoubleIterator;
+import it.unimi.dsi.fastutil.doubles.DoubleList;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.DoubleBiPredicate;
-import tech.tablesaw.filtering.DoublePredicate;
+import tech.tablesaw.filtering.Filter;
+import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
+import tech.tablesaw.filtering.predicates.DoublePredicate;
+import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
-/**
- * Support for built-in predicates on double column
- *
- * TODO(lwhite): Ensure each returns false when handling missing values
- */
-public interface NumberFilters extends Column, IntIterable {
+import static tech.tablesaw.columns.number.NumberPredicates.*;
 
-    DoublePredicate isZero = i -> i == 0.0f;
+public interface NumberFilters extends Column {
 
-    DoublePredicate isNegative = i -> i < 0f;
+    NumberColumn select(Filter filter);
 
-    DoublePredicate isPositive = i -> i > 0f;
+    Selection eval(DoublePredicate predicate);
 
-    DoublePredicate isNonNegative = i -> i >= 0f;
+    Selection eval(DoubleRangePredicate predicate, double rangeStart, double rangeEnd);
 
-    DoubleBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
+    Selection eval(DoubleBiPredicate predicate, NumberColumn otherColumn);
 
-    DoubleBiPredicate isGreaterThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest >=
-            valueToCompareAgainst;
+    Selection eval(DoubleBiPredicate predicate, double value);
 
-    DoubleBiPredicate isLessThan = (valueToTest, valueToCompareAgainst) -> valueToTest < valueToCompareAgainst;
+    default Selection isEqualTo(double d) {
+        return eval(isEqualTo, d);
+    }
 
-    DoubleBiPredicate isLessThanOrEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest <=
-            valueToCompareAgainst;
+    default Selection isNotEqualTo(double d) {
+        return eval(isNotEqualTo, d);
+    }
 
-    DoubleBiPredicate isEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
+    default Selection isBetweenExclusive(double start, double end) {
+        return eval(isBetweenExclusive, start, end);
+    }
 
-    DoubleBiPredicate isNotEqualTo = (valueToTest, valueToCompareAgainst) -> valueToTest != valueToCompareAgainst;
+    default Selection isBetweenInclusive(double start, double end) {
+        return eval(isBetweenInclusive, start, end);
+    }
 
-    DoublePredicate isMissing = i -> i != i;
+    default Selection isGreaterThan(double f) {
+        return eval(isGreaterThan, f);
+    }
 
-    DoublePredicate isNotMissing = i -> i == i;
+    default Selection isGreaterThanOrEqualTo(double f) {
+        return eval(isGreaterThanOrEqualTo, f);
+    }
+
+    default Selection isLessThan(double f) {
+        return eval(isLessThan, f);
+    }
+
+    default Selection isLessThanOrEqualTo(double f) {
+        return eval(isLessThanOrEqualTo, f);
+    }
+
+    Selection isIn(double... doubles);
+
+    Selection isNotIn(double... doubles);
+
+    default Selection isZero() {
+        return eval(isZero);
+    }
+
+    default Selection isPositive() {
+        return eval(isPositive);
+    }
+
+    default Selection isNegative() {
+        return eval(isNegative);
+    }
+
+    default Selection isNonNegative() {
+        return eval(isNonNegative);
+    }
+
+    // TODO(lwhite): see section in Effective Java on double point comparisons.
+    default Selection isCloseTo(double target, double margin) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        for (double val : dataInternal()) {
+            if (val > target - margin && val < target + margin) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    @Override
+    default Selection isMissing() {
+        return eval(isMissing);
+    }
+
+    @Override
+    default Selection isNotMissing() {
+        return eval(isNotMissing);
+    }
+
+    // Column filters
+
+    default Selection isGreaterThan(NumberColumn d) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        DoubleIterator doubleIterator = d.iterator();
+        for (double doubles : dataInternal()) {
+            if (doubles > doubleIterator.nextDouble()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    default Selection isEqualTo(NumberColumn d) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        DoubleIterator doubleIterator = d.iterator();
+        for (double doubles : dataInternal()) {
+            if (doubles == doubleIterator.nextDouble()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    default Selection isLessThan(NumberColumn d) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        DoubleIterator doubleIterator = d.iterator();
+        for (double doubles : dataInternal()) {
+            if (doubles < doubleIterator.nextDouble()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    /**
+     * Returns a clone of the internal data structure
+     */
+    DoubleList dataInternal();
 }

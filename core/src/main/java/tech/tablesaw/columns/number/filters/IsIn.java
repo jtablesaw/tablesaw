@@ -16,21 +16,38 @@ package tech.tablesaw.columns.number.filters;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class GreaterThan extends ColumnFilter {
+import java.util.List;
 
-    private final double value;
+/**
+ * Implements EqualTo testing for Number Columns
+ */
+public class IsIn extends ColumnFilter {
 
-    public DoubleGreaterThan(ColumnReference reference, double value) {
+    private final double[] doubles;
+
+    public IsIn(ColumnReference reference, List<Double> values) {
         super(reference);
-        this.value = value;
+        doubles = values.stream().mapToDouble(value -> value).toArray();
     }
 
+    public IsIn(ColumnReference reference, double... values) {
+        super(reference);
+        this.doubles = values;
+    }
+
+    @Override
     public Selection apply(Table relation) {
-        NumberColumn numberColumn = (NumberColumn) relation.column(columnReference.getColumnName());
-        return numberColumn.isGreaterThan(value);
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
+        NumberColumn numberColumn = (NumberColumn) column;
+        return numberColumn.isIn(doubles);
     }
 }

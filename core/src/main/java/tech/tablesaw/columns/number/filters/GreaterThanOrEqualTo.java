@@ -16,6 +16,7 @@ package tech.tablesaw.columns.number.filters;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
@@ -24,13 +25,17 @@ public class GreaterThanOrEqualTo extends ColumnFilter {
 
     private final double value;
 
-    public DoubleGreaterThanOrEqualTo(ColumnReference reference, double value) {
+    public GreaterThanOrEqualTo(ColumnReference reference, double value) {
         super(reference);
         this.value = value;
     }
 
     public Selection apply(Table relation) {
-        NumberColumn numberColumn = (NumberColumn) relation.column(columnReference.getColumnName());
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    public Selection apply(Column column) {
+        NumberColumn numberColumn = (NumberColumn) column;
         return numberColumn.isGreaterThanOrEqualTo(value);
     }
 }

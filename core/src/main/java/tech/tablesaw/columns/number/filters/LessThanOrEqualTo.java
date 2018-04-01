@@ -16,21 +16,28 @@ package tech.tablesaw.columns.number.filters;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class LessThan extends ColumnFilter {
+public class LessThanOrEqualTo extends ColumnFilter {
 
     private final double value;
 
-    public DoubleLessThan(ColumnReference reference, double value) {
+    public LessThanOrEqualTo(ColumnReference reference, double value) {
         super(reference);
         this.value = value;
     }
 
+    @Override
     public Selection apply(Table relation) {
-        NumberColumn numberColumn = (NumberColumn) relation.column(columnReference.getColumnName());
-        return numberColumn.isLessThan(value);
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
+        NumberColumn numberColumn = (NumberColumn) column;
+        return numberColumn.isLessThanOrEqualTo(value);
     }
 }
