@@ -18,29 +18,26 @@ import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.markers.SeriesMarkers;
-
-import tech.tablesaw.api.NumericColumn;
-
-import static tech.tablesaw.plotting.xchart.XchartDefaults.*;
+import tech.tablesaw.api.NumberColumn;
 
 /**
  *
  */
 public class XchartQuantile {
 
-    public static void show(String chartTitle, NumericColumn yColumn) {
+    public static void show(String chartTitle, NumberColumn yColumn) {
         double[] x = new double[yColumn.size()];
 
         for (int i = 0; i < x.length; i++) {
             x[i] = i / (float) x.length;
         }
 
-        NumericColumn copy = (NumericColumn) yColumn.copy();
+        NumberColumn copy = yColumn.copy();
         copy.sortAscending();
-        show(chartTitle, x, copy, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        show(chartTitle, x, copy, XchartDefaults.DEFAULT_WIDTH, XchartDefaults.DEFAULT_HEIGHT);
     }
 
-    public static void show(String chartTitle, double[] xData, NumericColumn yColumn, int width, int height) {
+    public static void show(String chartTitle, double[] xData, NumberColumn yColumn, int width, int height) {
         double[] yData = yColumn.asDoubleArray();
 
         // Create Chart
@@ -53,6 +50,6 @@ public class XchartQuantile {
 
         XYSeries series = chart.addSeries("Ranked: " + yColumn.name(), xData, yData);
         series.setMarker(SeriesMarkers.CIRCLE);
-        new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
+        new SwingWrapper<>(chart).displayChart(XchartDefaults.WINDOW_TITLE);
     }
 }

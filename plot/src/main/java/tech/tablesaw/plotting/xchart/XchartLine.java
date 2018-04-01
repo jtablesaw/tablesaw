@@ -18,39 +18,38 @@ import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.markers.SeriesMarkers;
-
-import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.table.TemporaryView;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.ViewGroup;
 import tech.tablesaw.util.DoubleArrays;
 
 import java.util.Arrays;
 
-import static tech.tablesaw.plotting.xchart.XchartDefaults.DEFAULT_HEIGHT;
-import static tech.tablesaw.plotting.xchart.XchartDefaults.DEFAULT_WIDTH;
+import static tech.tablesaw.plotting.xchart.XchartDefaults.*;
 
 /**
  *
  */
 public class XchartLine {
 
-    private static final String WINDOW_TITLE = "Tablesaw";
+    private static final String WINDOW_TITLE = "Airframe";
 
-    public static void show(String chartTitle, NumericColumn yColumn) {
+    public static void show(String chartTitle, NumberColumn yColumn) {
         double[] x = DoubleArrays.toN(yColumn.size());
         show(chartTitle, x, yColumn, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
-    public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, int markerSize) {
+    public static void show(String chartTitle, NumberColumn xColumn, NumberColumn yColumn, int markerSize) {
         show(chartTitle, xColumn, yColumn, DEFAULT_WIDTH, DEFAULT_HEIGHT, markerSize);
     }
 
-    public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn) {
+    public static void show(String chartTitle, NumberColumn xColumn, NumberColumn yColumn) {
         int markerSize = 2;
         show(chartTitle, xColumn, yColumn, DEFAULT_WIDTH, DEFAULT_HEIGHT, markerSize);
     }
 
-    public static void show(String chartTitle, NumericColumn xColumn, NumericColumn yColumn, ViewGroup group) {
+    public static void show(String chartTitle, NumberColumn xColumn, NumberColumn yColumn, ViewGroup group) {
         XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         chart.setTitle(chartTitle);
         chart.setXAxisTitle(xColumn.name());
@@ -61,17 +60,17 @@ public class XchartLine {
 
         chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
 
-        for (TemporaryView view : group) {
-            double[] xData = view.numericColumn(xColumn.name()).asDoubleArray();
-            double[] yData = view.numericColumn(yColumn.name()).asDoubleArray();
+        for (TableSlice view : group) {
+            double[] xData = view.numberColumn(xColumn.name()).asDoubleArray();
+            double[] yData = view.numberColumn(yColumn.name()).asDoubleArray();
             chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
         }
         new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
     }
 
     public static void show(String chartTitle,
-                            NumericColumn xColumn,
-                            NumericColumn yColumn,
+                            NumberColumn xColumn,
+                            NumberColumn yColumn,
                             ViewGroup group,
                             int markerSize) {
         XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -84,17 +83,17 @@ public class XchartLine {
 
         chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Scatter);
 
-        for (TemporaryView view : group) {
-            double[] xData = view.numericColumn(xColumn.name()).asDoubleArray();
-            double[] yData = view.numericColumn(yColumn.name()).asDoubleArray();
+        for (Table view : group.asTableList()) {
+            double[] xData = view.numberColumn(xColumn.name()).asDoubleArray();
+            double[] yData = view.numberColumn(yColumn.name()).asDoubleArray();
             chart.addSeries(view.name(), Arrays.copyOf(xData, xData.length), Arrays.copyOf(yData, yData.length));
         }
         new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
     }
 
     public static void show(String chartTitle,
-                            NumericColumn xColumn,
-                            NumericColumn yColumn,
+                            NumberColumn xColumn,
+                            NumberColumn yColumn,
                             int width,
                             int height,
                             int markerSize) {
@@ -115,7 +114,7 @@ public class XchartLine {
         new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
     }
 
-    public static void show(String chartTitle, double[] xData, NumericColumn yColumn, int width, int height) {
+    public static void show(String chartTitle, double[] xData, NumberColumn yColumn, int width, int height) {
         double[] yData = yColumn.asDoubleArray();
 
         // Create Chart
@@ -135,7 +134,7 @@ public class XchartLine {
      * Displays a line chart with the first numeric column used for the x axis, and the others as
      * series to plot against it
      */
-    public static void show(String chartTitle, NumericColumn x, NumericColumn ... ySeries) {
+    public static void show(String chartTitle, NumberColumn x, NumberColumn... ySeries) {
 
         XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         chart.setTitle(chartTitle);
@@ -144,7 +143,7 @@ public class XchartLine {
         chart.getStyler().setMarkerSize(1);
         chart.getStyler().setDefaultSeriesRenderStyle(XYSeries.XYSeriesRenderStyle.Line);
 
-        for (NumericColumn y : ySeries) {
+        for (NumberColumn y : ySeries) {
             chart.addSeries(y.name(), x.asDoubleArray(), y.asDoubleArray());
         }
         new SwingWrapper<>(chart)

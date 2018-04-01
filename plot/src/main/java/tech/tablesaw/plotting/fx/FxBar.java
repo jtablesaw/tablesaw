@@ -18,15 +18,12 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  *
@@ -34,61 +31,44 @@ import java.util.List;
 public class FxBar extends FxBuilder {
 
     public static BarChart<String, Number> chart(String title, Table table, String categoryColumnName, String
-            numericColumnName) {
+            numberColumnName) {
 
-        CategoryColumn categoryColumn = table.categoryColumn(categoryColumnName);
-        NumericColumn numericColumn = table.nCol(numericColumnName);
+        StringColumn stringColumn = table.stringColumn(categoryColumnName);
+        NumberColumn numberColumn = table.nCol(numberColumnName);
 
-        return chart(title, categoryColumn, numericColumn);
+        return chart(title, stringColumn, numberColumn);
     }
 
-    public static BarChart<String, Number> chart(String title, CategoryColumn categoryColumn, NumericColumn
-            numericColumn) {
+    public static BarChart<String, Number> chart(String title, StringColumn stringColumn, NumberColumn
+            numberColumn) {
 
-        final CategoryAxis categoryAxis = getCategoryAxis(categoryColumn);
-        final NumberAxis numberAxis = getNumberAxis(numericColumn);
+        final CategoryAxis categoryAxis = getCategoryAxis(stringColumn);
+        final NumberAxis numberAxis = getNumberAxis(numberColumn);
 
         final BarChart<String, Number> barChart = getBarChart(title, categoryAxis, numberAxis);
-        List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
+        List<XYChart.Data<String, Number>> data = new ArrayList<>(stringColumn.size());
 
-        for (int i = 0; i < categoryColumn.size(); i++) {
-            data.add(new XYChart.Data<>(categoryColumn.get(i), numericColumn.getDouble(i)));
+        for (int i = 0; i < stringColumn.size(); i++) {
+            data.add(new XYChart.Data<>(stringColumn.get(i), numberColumn.get(i)));
         }
 
-        barChart.getData().add(getSeries(numericColumn, data));
+        barChart.getData().add(getSeries(numberColumn, data));
         return barChart;
     }
 
-    public static BarChart<String, Number> chart(String title, ShortColumn categoryColumn, NumericColumn
-            numericColumn) {
+    public static BarChart<String, Number> chart(String title, NumberColumn categoryColumn, NumberColumn numberColumn) {
 
         final CategoryAxis categoryAxis = getCategoryAxis(categoryColumn);
-        final NumberAxis numberAxis = getNumberAxis(numericColumn);
+        final NumberAxis numberAxis = getNumberAxis(numberColumn);
 
         final BarChart<String, Number> barChart = getBarChart(title, categoryAxis, numberAxis);
         List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
 
         for (int i = 0; i < categoryColumn.size(); i++) {
-            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getDouble(i)));
+            data.add(new XYChart.Data<>(categoryColumn.getString(i), numberColumn.get(i)));
         }
 
-        barChart.getData().add(getSeries(numericColumn, data));
-        return barChart;
-    }
-
-    public static BarChart<String, Number> chart(String title, IntColumn categoryColumn, NumericColumn numericColumn) {
-
-        final CategoryAxis categoryAxis = getCategoryAxis(categoryColumn);
-        final NumberAxis numberAxis = getNumberAxis(numericColumn);
-
-        final BarChart<String, Number> barChart = getBarChart(title, categoryAxis, numberAxis);
-        List<XYChart.Data<String, Number>> data = new ArrayList<>(categoryColumn.size());
-
-        for (int i = 0; i < categoryColumn.size(); i++) {
-            data.add(new XYChart.Data<>(categoryColumn.getString(i), numericColumn.getDouble(i)));
-        }
-
-        barChart.getData().add(getSeries(numericColumn, data));
+        barChart.getData().add(getSeries(numberColumn, data));
         return barChart;
     }
 }

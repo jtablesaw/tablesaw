@@ -20,14 +20,13 @@ import org.knowm.xchart.style.Styler;
 import org.knowm.xchart.style.Styler.ToolTipType;
 import org.knowm.xchart.style.Theme;
 import org.knowm.xchart.style.markers.Marker;
-
 import tech.tablesaw.plotting.StandardColors;
 
 import java.awt.*;
 
 public class TablesawTheme implements Theme {
 
-    GGPlot2Theme ggPlot2Theme = new GGPlot2Theme();
+    private GGPlot2Theme ggPlot2Theme = new GGPlot2Theme();
 
     @Override
     public Color getChartBackgroundColor() {

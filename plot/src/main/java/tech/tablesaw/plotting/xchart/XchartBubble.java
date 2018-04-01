@@ -13,12 +13,11 @@
  */
 package tech.tablesaw.plotting.xchart;
 
-import javax.swing.JFrame;
 import org.knowm.xchart.BubbleChart;
 import org.knowm.xchart.BubbleChartBuilder;
 import org.knowm.xchart.SwingWrapper;
 
-import static tech.tablesaw.plotting.xchart.XchartDefaults.*;
+import javax.swing.*;
 
 /**
  *
@@ -29,7 +28,7 @@ public final class XchartBubble {
     private XchartBubble(){}
     
     public static JFrame show(String chartTitle, double[] xData, String xLabel, double[] yData, String yLabel, double [] bubbleData) {
-        return show(chartTitle, xData, xLabel, yData, yLabel, bubbleData, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        return show(chartTitle, xData, xLabel, yData, yLabel, bubbleData, XchartDefaults.DEFAULT_WIDTH, XchartDefaults.DEFAULT_HEIGHT);
     }
 
     public static JFrame show(String chartTitle, double[] xData, String xLabel, double[] yData, String yLabel, double [] bubbleData, int width, int height) {
@@ -38,12 +37,12 @@ public final class XchartBubble {
                 .xAxisTitle(xLabel).yAxisTitle(yLabel).build();
         chart.getStyler().setTheme(new TablesawTheme());
 
-        chart.addSeries(SERIES, xData, yData, bubbleData);
+        chart.addSeries(XchartDefaults.SERIES, xData, yData, bubbleData);
         
         return display(chart);
     }
     
     private static JFrame display(BubbleChart chart) {
-        return new SwingWrapper<>(chart).displayChart(WINDOW_TITLE);
+        return new SwingWrapper<>(chart).displayChart(XchartDefaults.WINDOW_TITLE);
     }
 }
