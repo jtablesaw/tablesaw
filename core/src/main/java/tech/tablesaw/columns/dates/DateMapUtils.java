@@ -17,48 +17,136 @@ package tech.tablesaw.columns.dates;
 import com.google.common.base.Preconditions;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.DateColumnUtils;
-import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.columns.times.PackedLocalTime;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 
-import static tech.tablesaw.api.DateColumn.MISSING_VALUE;
+import static tech.tablesaw.api.DateColumn.*;
 
 /**
  * An interface for mapping operations unique to Date columns
  */
-public interface DateMapUtils extends DateColumnUtils {
+public interface DateMapUtils extends Column {
 
     static String dateColumnName(Column column1, int value, TemporalUnit unit) {
         return column1.name() + ": " + value + " " + unit.toString() + "(s)";
     }
 
-    default FloatColumn differenceInDays(DateColumn column2) {
-        DateColumn column1 = (DateColumn) this;
-        return difference(column1, column2, ChronoUnit.DAYS);
+    default NumberColumn daysUntil(DateColumn column2) {
+        return timeUntil(column2, ChronoUnit.DAYS);
     }
 
-    default FloatColumn differenceInWeeks(DateColumn column2) {
-        DateColumn column1 = (DateColumn) this;
-        return difference(column1, column2, ChronoUnit.WEEKS);
+    default NumberColumn weeksUntil(DateColumn column2) {
+        return timeUntil(column2, ChronoUnit.WEEKS);
     }
 
-    default FloatColumn differenceInMonths(DateColumn column2) {
-        DateColumn column1 = (DateColumn) this;
-        return difference(column1, column2, ChronoUnit.MONTHS);
+    default NumberColumn monthsUntil(DateColumn column2) {
+        return timeUntil(column2, ChronoUnit.MONTHS);
     }
 
-    default FloatColumn differenceInYears(DateColumn column2) {
-        DateColumn column1 = (DateColumn) this;
-        return difference(column1, column2, ChronoUnit.YEARS);
+    default NumberColumn yearsUntil(DateColumn column2) {
+        return timeUntil(column2, ChronoUnit.YEARS);
+    }
+
+    default NumberColumn dayOfMonth() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " day of month");
+        for (int r = 0; r < this.size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (DateColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
+            } else {
+                newColumn.append(PackedLocalDate.getDayOfMonth(c1));
+            }
+        }
+        return newColumn;
+    }
+
+    default NumberColumn dayOfYear() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " day of year");
+        for (int r = 0; r < this.size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (DateColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
+            } else {
+                newColumn.append((short) PackedLocalDate.getDayOfYear(c1));
+            }
+        }
+        return newColumn;
+    }
+
+    default NumberColumn monthValue() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " month");
+
+        for (int r = 0; r < this.size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (DateColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
+            } else {
+                newColumn.append(PackedLocalDate.getMonthValue(c1));
+            }
+        }
+        return newColumn;
+    }
+
+    default StringColumn month() {
+        StringColumn newColumn = StringColumn.create(this.name() + " month");
+
+        for (int r = 0; r < this.size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (DateColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
+            } else {
+                newColumn.append(PackedLocalDate.getMonth(c1).name());
+            }
+        }
+        return newColumn;
+    }
+
+    default NumberColumn year() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " year");
+        for (int r = 0; r < this.size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (DateColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
+            } else {
+                newColumn.append(PackedLocalDate.getYear(c1));
+            }
+        }
+        return newColumn;
+    }
+
+
+    default NumberColumn dayOfWeekValue() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " day of week", this.size());
+        for (int r = 0; r < this.size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (DateColumn.isMissing(c1)) {
+                newColumn.set(r, NumberColumn.MISSING_VALUE);
+            } else {
+                newColumn.append((short) PackedLocalDate.getDayOfWeek(c1).getValue());
+            }
+        }
+        return newColumn;
+    }
+
+    default StringColumn dayOfWeek() {
+        StringColumn newColumn = StringColumn.create(this.name() + " day of week");
+        for (int r = 0; r < this.size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (DateColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
+            } else {
+                newColumn.append(PackedLocalDate.getDayOfWeek(c1).toString());
+            }
+        }
+        return newColumn;
     }
 
     /**
@@ -67,18 +155,28 @@ public interface DateMapUtils extends DateColumnUtils {
      * <p>
      * Missing values in either result in a Missing Value for the new column
      */
-    default FloatColumn difference(DateColumn column1, DateColumn column2, ChronoUnit unit) {
+    default NumberColumn timeUntil(DateColumn end, ChronoUnit unit) {
 
-        FloatColumn newColumn = new FloatColumn(column1.name() + " - " + column2.name());
-        for (int r = 0; r < column1.size(); r++) {
-            int c1 = column1.getIntInternal(r);
-            int c2 = column2.getIntInternal(r);
-            if (c1 == FloatColumn.MISSING_VALUE || c2 == FloatColumn.MISSING_VALUE) {
-                newColumn.append(FloatColumn.MISSING_VALUE);
+        NumberColumn newColumn = NumberColumn.create(name() + " - " + end.name());
+        for (int r = 0; r < size(); r++) {
+            int c1 = getIntInternal(r);
+            int c2 = end.getIntInternal(r);
+            if (DateColumn.isMissing(c1) || DateColumn.isMissing(c2)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
-                LocalDate value1 = PackedLocalDate.asLocalDate(c1);
-                LocalDate value2 = PackedLocalDate.asLocalDate(c2);
-                newColumn.append(unit.between(value1, value2));
+                switch (unit) {
+                    case DAYS:
+                        newColumn.append(PackedLocalDate.daysUntil(c2, c1));
+                        break;
+                    case WEEKS:
+                        newColumn.append(PackedLocalDate.weeksUntil(c2, c1));
+                        break;
+                    default:   //TODO implement in PackedLocalDate
+                        LocalDate value1 = PackedLocalDate.asLocalDate(c1);
+                        LocalDate value2 = PackedLocalDate.asLocalDate(c2);
+                        newColumn.append(unit.between(value1, value2));
+                        break;
+                }
             }
         }
         return newColumn;
@@ -119,40 +217,29 @@ public interface DateMapUtils extends DateColumnUtils {
         return plusMonths(-months);
     }
 
-    default DateColumn plus(int value, TemporalUnit unit) {
+    default DateColumn plus(int value, ChronoUnit unit) {
 
-        DateColumn newColumn = new DateColumn(dateColumnName(this, value, unit));
+        DateColumn newColumn = DateColumn.create(dateColumnName(this, value, unit));
         DateColumn column1 = (DateColumn) this;
 
         for (int r = 0; r < column1.size(); r++) {
-            LocalDate c1 = column1.get(r);
-            if (c1 == null) {
-                newColumn.append(c1);
+            int packedDate = column1.getPackedDate(r);
+            if (packedDate == MISSING_VALUE) {
+                newColumn.appendInternal(MISSING_VALUE);
             } else {
-                newColumn.append(c1.plus(value, unit));
+                newColumn.appendInternal(PackedLocalDate.plus(value, unit, packedDate));
             }
         }
         return newColumn;
     }
 
     // misc functions
-
-    default DateColumn minus(int value, TemporalUnit unit) {
-        DateColumn column1 = (DateColumn) this;
-        DateColumn newColumn = new DateColumn(dateColumnName(column1, value, unit));
-        for (int r = 0; r < column1.size(); r++) {
-            LocalDate c1 = column1.get(r);
-            if (c1 == null) {
-                newColumn.append(c1);
-            } else {
-                newColumn.append(c1.minus(value, unit));
-            }
-        }
-        return newColumn;
+    default DateColumn minus(int value, ChronoUnit unit) {
+        return plus(-value, unit);
     }
 
     default DateTimeColumn atStartOfDay() {
-        DateTimeColumn newColumn = new DateTimeColumn(this.name() + " " + " start");
+        DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + " start");
         for (int r = 0; r < this.size(); r++) {
             LocalDate c1 = this.get(r);
             if (c1 == null) {
@@ -165,15 +252,15 @@ public interface DateMapUtils extends DateColumnUtils {
     }
 
     /**
-     * Returns a DateTime column where each value consists of the filters from this column combined with the corresponding
-     * filters from the other column
+     * Returns a DateTime column where each value consists of the dates from this column combined with the corresponding
+     * times from the other column
      */
     default DateTimeColumn atTime(LocalTime time) {
         Preconditions.checkNotNull(time);
-        DateTimeColumn newColumn = new DateTimeColumn(this.name() + " " + time.toString());
+        DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + time.toString());
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (c1 == MISSING_VALUE) {
+            if (DateColumn.isMissing(c1)) {
                 newColumn.appendInternal(DateTimeColumn.MISSING_VALUE);
             } else {
                 LocalDate value1 = PackedLocalDate.asLocalDate(c1);
@@ -184,19 +271,18 @@ public interface DateMapUtils extends DateColumnUtils {
     }
 
     /**
-     * Returns a DateTime column where each value consists of the filters from this column combined with the corresponding
-     * filters from the other column
+     * Returns a DateTime column where each value consists of the dates from this column combined with the corresponding
+     * times from the other column
      */
     default DateTimeColumn atTime(TimeColumn timeColumn) {
-        DateTimeColumn newColumn = new DateTimeColumn(this.name() + " " + timeColumn.name());
+        DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + timeColumn.name());
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             int c2 = timeColumn.getIntInternal(r);
-            if (c1 == MISSING_VALUE || c2 == TimeColumn.MISSING_VALUE) {
+            if (DateColumn.isMissing(c1) || DateColumn.isMissing(c2)) {
                 newColumn.appendInternal(DateTimeColumn.MISSING_VALUE);
             } else {
-                LocalDate value1 = PackedLocalDate.asLocalDate(c1);
-                newColumn.appendInternal(PackedLocalDateTime.pack(value1, PackedLocalTime.asLocalTime(c2)));
+                newColumn.appendInternal(PackedLocalDateTime.create(c1, c2));
             }
         }
         return newColumn;

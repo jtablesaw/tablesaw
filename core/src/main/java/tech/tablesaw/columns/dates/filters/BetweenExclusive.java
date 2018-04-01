@@ -16,26 +16,35 @@ package tech.tablesaw.columns.dates.filters;
 
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-import javax.annotation.concurrent.Immutable;
+import java.time.LocalDate;
 
-@Immutable
-public class LocalDateIsOnOrBefore extends ColumnFilter {
+public class BetweenExclusive extends ColumnFilter {
+    private final LocalDate low;
+    private final LocalDate high;
 
-    private final int value;
-
-    public LocalDateIsOnOrBefore(ColumnReference reference, int value) {
+    public BetweenExclusive(ColumnReference reference, LocalDate lowValue, LocalDate highValue) {
         super(reference);
-        this.value = value;
+        this.low = lowValue;
+        this.high = highValue;
+    }
+
+    public Selection apply(Table relation) {
+        return apply(relation.column(columnReference().getColumnName()));
     }
 
     @Override
-    public Selection apply(Table relation) {
-
-        DateColumn dateColumn = (DateColumn) relation.column(columnReference().getColumnName());
-        return dateColumn.isOnOrBefore(value);
+    public Selection apply(Column column) {
+        DateColumn dateColumn = (DateColumn) column;
+        int packed1 = PackedLocalDate.pack(low);
+        Selection matches = dateColumn.eval(PackedLocalDate::isAfter, packed1);
+        int packed = PackedLocalDate.pack(high);
+        matches.and(dateColumn.eval(PackedLocalDate::isBefore, packed));
+        return matches;
     }
 }

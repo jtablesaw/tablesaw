@@ -16,23 +16,32 @@ package tech.tablesaw.columns.dates.filters;
 
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class LocalDateIsBefore extends ColumnFilter {
+import javax.annotation.concurrent.Immutable;
+
+@Immutable
+public class IsOnOrAfter extends ColumnFilter {
 
     private final int value;
 
-    public LocalDateIsBefore(ColumnReference reference, int value) {
+    public IsOnOrAfter(ColumnReference reference, int value) {
         super(reference);
         this.value = value;
     }
 
     @Override
     public Selection apply(Table relation) {
+        return apply(relation.column(columnReference().getColumnName()));
+    }
 
-        DateColumn dateColumn = (DateColumn) relation.column(columnReference().getColumnName());
-        return dateColumn.isBefore(value);
+    @Override
+    public Selection apply(Column column) {
+        DateColumn dateColumn = (DateColumn) column;
+        return dateColumn.eval(PackedLocalDate::isOnOrAfter, value);
     }
 }

@@ -22,7 +22,19 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.chrono.IsoChronology;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
+
+import static java.time.DayOfWeek.*;
+import static java.time.Month.*;
+import static java.time.temporal.ChronoField.*;
+import static tech.tablesaw.api.NumberColumn.*;
+import static tech.tablesaw.columns.DateAndTimePredicates.*;
+import static tech.tablesaw.columns.DateAndTimePredicates.isEqualTo;
+import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThan;
+import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThanOrEqualTo;
+import static tech.tablesaw.columns.DateAndTimePredicates.isLessThan;
+import static tech.tablesaw.columns.DateAndTimePredicates.isLessThanOrEqualTo;
 
 /**
  * A short localdate packed into a single int value. It uses a short for year so the range is about +-30,000 years
@@ -57,14 +69,14 @@ public class PackedLocalDate {
     }
 
     public static LocalDate asLocalDate(int date) {
-        if (date == Integer.MIN_VALUE) {
+        if (date == MISSING_VALUE) {
             return null;
         }
 
         return LocalDate.of(
-                (short) getYear(date),
-                (byte) getMonthValue(date),
-                (byte) getDayOfMonth(date));
+                getYear(date),
+                getMonthValue(date),
+                getDayOfMonth(date));
     }
 
     public static byte getMonthValue(int date) {
@@ -91,6 +103,16 @@ public class PackedLocalDate {
                 byte2,
                 m,
                 d);
+    }
+
+    public static int pack(int yr, int m, int d) {
+        byte byte1 = (byte) ((yr >> 8) & 0xff);
+        byte byte2 = (byte) yr;
+        return Ints.fromBytes(
+                byte1,
+                byte2,
+                (byte) m,
+                (byte) d);
     }
 
     public static String toDateString(int date) {
@@ -135,8 +157,8 @@ public class PackedLocalDate {
      * Returns the epoch day in a form consistent with the java standard
      */
     public static long toEpochDay(int packedDate) {
-        long y = PackedLocalDate.getYear(packedDate);
-        long m = PackedLocalDate.getMonthValue(packedDate);
+        long y = getYear(packedDate);
+        long m = getMonthValue(packedDate);
         long total = 0;
         total += 365 * y;
         if (y >= 0) {
@@ -156,8 +178,7 @@ public class PackedLocalDate {
     }
 
     public static DayOfWeek getDayOfWeek(int packedDate) {
-        //TODO(lwhite): This is throwing an exception java.lang.NoSuchMethodError even tho the jdk version seems correct
-        int dow0 = (int) Math.floorMod(toEpochDay(packedDate) + 3, 7);
+        int dow0 = Math.floorMod(toEpochDay(packedDate) + 3, 7);
         return DayOfWeek.of(dow0 + 1);
     }
 
@@ -201,54 +222,56 @@ public class PackedLocalDate {
     }
 
     public static boolean isAfter(int packedDate, int value) {
-        return packedDate > value;
+        return isGreaterThan.test(packedDate, value);
+    }
+
+    public static boolean isEqualTo(int packedDate, int value) {
+        return isEqualTo.test(packedDate, value);
     }
 
     public static boolean isBefore(int packedDate, int value) {
-        return packedDate < value;
+        return isLessThan.test(packedDate, value);
     }
 
     public static boolean isOnOrBefore(int packedDate, int value) {
-        return packedDate <= value;
+        return isLessThanOrEqualTo.test(packedDate, value);
     }
 
     public static boolean isOnOrAfter(int packedDate, int value) {
-        return packedDate >= value;
+        return isGreaterThanOrEqualTo.test(packedDate, value);
+    }
+
+    public static boolean isDayOfWeek(int packedDate, DayOfWeek dayOfWeek) {
+        DayOfWeek dow = getDayOfWeek(packedDate);
+        return dayOfWeek == dow;
     }
 
     public static boolean isSunday(int packedDate) {
-        DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
-        return dayOfWeek == DayOfWeek.SUNDAY;
+        return isDayOfWeek(packedDate, DayOfWeek.SUNDAY);
     }
 
     public static boolean isMonday(int packedDate) {
-        DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
-        return dayOfWeek == DayOfWeek.MONDAY;
+        return isDayOfWeek(packedDate, DayOfWeek.MONDAY);
     }
 
     public static boolean isTuesday(int packedDate) {
-        DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
-        return dayOfWeek == DayOfWeek.TUESDAY;
+        return isDayOfWeek(packedDate, DayOfWeek.TUESDAY);
     }
 
     public static boolean isWednesday(int packedDate) {
-        DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
-        return dayOfWeek == DayOfWeek.WEDNESDAY;
+        return isDayOfWeek(packedDate, DayOfWeek.WEDNESDAY);
     }
 
     public static boolean isThursday(int packedDate) {
-        DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
-        return dayOfWeek == DayOfWeek.THURSDAY;
+        return isDayOfWeek(packedDate, THURSDAY);
     }
 
     public static boolean isFriday(int packedDate) {
-        DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
-        return dayOfWeek == DayOfWeek.FRIDAY;
+        return isDayOfWeek(packedDate, FRIDAY);
     }
 
     public static boolean isSaturday(int packedDate) {
-        DayOfWeek dayOfWeek = getDayOfWeek(packedDate);
-        return dayOfWeek == DayOfWeek.SATURDAY;
+        return isDayOfWeek(packedDate, SATURDAY);
     }
 
     public static boolean isFirstDayOfMonth(int packedDate) {
@@ -256,55 +279,159 @@ public class PackedLocalDate {
     }
 
     public static boolean isInJanuary(int packedDate) {
-        return getMonth(packedDate) == Month.JANUARY;
+        return getMonth(packedDate) == JANUARY;
     }
 
     public static boolean isInFebruary(int packedDate) {
-        return getMonth(packedDate) == Month.FEBRUARY;
+        return getMonth(packedDate) == FEBRUARY;
     }
 
     public static boolean isInMarch(int packedDate) {
-        return getMonth(packedDate) == Month.MARCH;
+        return getMonth(packedDate) == MARCH;
     }
 
     public static boolean isInApril(int packedDate) {
-        return getMonth(packedDate) == Month.APRIL;
+        return getMonth(packedDate) == APRIL;
     }
 
     public static boolean isInMay(int packedDate) {
-        return getMonth(packedDate) == Month.MAY;
+        return getMonth(packedDate) == MAY;
     }
 
     public static boolean isInJune(int packedDate) {
-        return getMonth(packedDate) == Month.JUNE;
+        return getMonth(packedDate) == JUNE;
     }
 
     public static boolean isInJuly(int packedDate) {
-        return getMonth(packedDate) == Month.JULY;
+        return getMonth(packedDate) == JULY;
     }
 
     public static boolean isInAugust(int packedDate) {
-        return getMonth(packedDate) == Month.AUGUST;
+        return getMonth(packedDate) == AUGUST;
     }
 
     public static boolean isInSeptember(int packedDate) {
-        return getMonth(packedDate) == Month.SEPTEMBER;
+        return getMonth(packedDate) == SEPTEMBER;
     }
 
     public static boolean isInOctober(int packedDate) {
-        return getMonth(packedDate) == Month.OCTOBER;
+        return getMonth(packedDate) == OCTOBER;
     }
 
     public static boolean isInNovember(int packedDate) {
-        return getMonth(packedDate) == Month.NOVEMBER;
+        return getMonth(packedDate) == NOVEMBER;
     }
 
     public static boolean isInDecember(int packedDate) {
-        return getMonth(packedDate) == Month.DECEMBER;
+        return getMonth(packedDate) == DECEMBER;
     }
 
     public static boolean isLastDayOfMonth(int packedDate) {
         return getDayOfMonth(packedDate) == lengthOfMonth(packedDate);
+    }
+
+    public static int withDayOfMonth(int dayOfMonth, int packedDate) {
+        byte d = (byte) dayOfMonth;
+        byte m = getMonthValue(packedDate);
+        short y = getYear(packedDate);
+        return pack(y, m, d);
+    }
+
+    public static int withMonth(int month, int packedDate) {
+        byte day = getDayOfMonth(packedDate);
+        byte _month = (byte) month;
+        short year = getYear(packedDate);
+        return pack(year, _month, day);
+    }
+
+    public static int withYear(int year, int packedDate) {
+        byte day = getDayOfMonth(packedDate);
+        byte month = getMonthValue(packedDate);
+        short _year = (short) year;
+        return pack(_year, month, day);
+    }
+
+    public static int plusYears(int yearsToAdd, int packedDate) {
+        if (yearsToAdd == 0) {
+            return packedDate;
+        }
+        byte d = getDayOfMonth(packedDate);
+        byte m = getMonthValue(packedDate);
+        short y = getYear(packedDate);
+
+        int newYear = YEAR.checkValidIntValue(y + yearsToAdd);
+        return resolvePreviousValid(newYear, m, d);
+    }
+
+    public static int minusYears(int years, int packedDate) {
+        return plusYears(-years, packedDate);
+    }
+
+    public static int plusMonths(int months, int packedDate) {
+        if (months == 0) {
+            return packedDate;
+        }
+
+        byte d = getDayOfMonth(packedDate);
+        byte m = getMonthValue(packedDate);
+        short y = getYear(packedDate);
+
+        //TODO REMOVE THIS PLAY STUFF
+        LocalDate localDate = LocalDate.now();
+        localDate.plusMonths(4);
+
+        // TODO now good stuff again
+        long monthCount = y * 12L + (m - 1);
+        long calcMonths = monthCount + months;
+        int newYear = YEAR.checkValidIntValue(Math.floorDiv(calcMonths, 12));
+        int newMonth = Math.floorMod(calcMonths, 12) + 1;
+        return resolvePreviousValid(newYear, newMonth, d);
+    }
+
+    public static int minusMonths(int months, int packedDate) {
+        return plusMonths(-months, packedDate);
+    }
+
+    public static int plusWeeks(int valueToAdd, int packedDate) {
+        return plusDays(valueToAdd * 7, packedDate);
+    }
+
+    public static int minusWeeks(int valueToSubtract, int packedDate) {
+        return minusDays(valueToSubtract * 7, packedDate);
+    }
+
+    public static int plusDays(int days, int packedDate) {
+        if (days == 0) {
+            return packedDate;
+        }
+
+        byte d = getDayOfMonth(packedDate);
+        byte m = getMonthValue(packedDate);
+        short y = getYear(packedDate);
+
+        long dom = d + days;
+        if (dom > 0) {
+            if (dom <= 28) {
+                return pack(y, m, (byte) dom);
+            } else if (dom <= 59) { // 59th Jan is 28th Feb, 59th Feb is 31st Mar
+                long monthLen = lengthOfMonth(packedDate);
+                if (dom <= monthLen) {
+                    return pack(y, m, (byte) dom);
+                } else if (m < 12) {
+                    return pack(y, (byte) (m + 1), (byte) (dom - monthLen));
+                } else {
+                    YEAR.checkValidValue(y + 1);
+                    return pack((short) (y + 1), (byte) 1, (byte) (dom - monthLen));
+                }
+            }
+        }
+
+        long mjDay = Math.addExact(toEpochDay(packedDate), days);
+        return ofEpochDay(mjDay);
+    }
+
+    public static int minusDays(int days, int packedDate) {
+        return plusDays(-days, packedDate);
     }
 
     public static boolean isInYear(int next, int year) {
@@ -314,4 +441,75 @@ public class PackedLocalDate {
     public static int lengthOfYear(int packedDate) {
         return (isLeapYear(packedDate) ? 366 : 365);
     }
+
+    private static int resolvePreviousValid(int year, int month, int day) {
+        switch (month) {
+            case 2:
+                day = Math.min(day, IsoChronology.INSTANCE.isLeapYear(year) ? 29 : 28);
+                break;
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                day = Math.min(day, 30);
+                break;
+        }
+        return pack((short) year, (byte) month, (byte) day);
+    }
+
+    private static int ofEpochDay(long epochDay) {
+        EPOCH_DAY.checkValidValue(epochDay);
+        long zeroDay = epochDay + DAYS_0000_TO_1970;
+        // find the march-based year
+        zeroDay -= 60;  // adjust to 0000-03-01 so leap day is at end of four year cycle
+        long adjust = 0;
+        if (zeroDay < 0) {
+            // adjust negative years to positive for calculation
+            long adjustCycles = (zeroDay + 1) / DAYS_PER_CYCLE - 1;
+            adjust = adjustCycles * 400;
+            zeroDay += -adjustCycles * DAYS_PER_CYCLE;
+        }
+        long yearEst = (400 * zeroDay + 591) / DAYS_PER_CYCLE;
+        long doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
+        if (doyEst < 0) {
+            // fix estimate
+            yearEst--;
+            doyEst = zeroDay - (365 * yearEst + yearEst / 4 - yearEst / 100 + yearEst / 400);
+        }
+        yearEst += adjust;  // reset any negative year
+        int marchDoy0 = (int) doyEst;
+
+        // convert march-based values back to january-based
+        int marchMonth0 = (marchDoy0 * 5 + 2) / 153;
+        int month = (marchMonth0 + 2) % 12 + 1;
+        int dom = marchDoy0 - (marchMonth0 * 306 + 5) / 10 + 1;
+        yearEst += marchMonth0 / 10;
+
+        // check year now we are certain it is correct
+        int year = YEAR.checkValidIntValue(yearEst);
+        return pack((short) year, (byte) month, (byte) dom);
+    }
+
+    public static int plus(int valueToAdd, ChronoUnit unit, int packedDate) {
+        switch (unit) {
+            case YEARS: return plusYears(valueToAdd, packedDate);
+            case MONTHS: return plusMonths(valueToAdd, packedDate);
+            case WEEKS: return plusWeeks(valueToAdd, packedDate);
+            case DAYS: return plusDays(valueToAdd, packedDate);
+            default:throw new RuntimeException("Unsupported Temporal Unit");
+        }
+    }
+
+    public static int minus(int valueToAdd, ChronoUnit unit, int packedDate) {
+        return plus(-valueToAdd, unit, packedDate);
+    }
+
+    public static int daysUntil(int packedDateEnd, int packedDateStart) {
+        return (int) (toEpochDay(packedDateEnd) - toEpochDay(packedDateStart));
+    }
+
+    public static int weeksUntil(int packedDateEnd, int packedDateStart) {
+        return (int) (toEpochDay(packedDateEnd) - toEpochDay(packedDateStart))/7;
+    }
+
 }

@@ -16,26 +16,29 @@ package tech.tablesaw.columns.dates.filters;
 
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-import javax.annotation.concurrent.Immutable;
+import java.time.LocalDate;
 
-@Immutable
-public class LocalDateIsAfter extends ColumnFilter {
+public class EqualTo extends ColumnFilter {
 
-    private final int value;
+    private final LocalDate value;
 
-    public LocalDateIsAfter(ColumnReference reference, int value) {
+    public EqualTo(ColumnReference reference, LocalDate value) {
         super(reference);
         this.value = value;
     }
 
-    @Override
     public Selection apply(Table relation) {
+        return apply(relation.column(columnReference().getColumnName()));
+    }
 
-        DateColumn dateColumn = (DateColumn) relation.column(columnReference().getColumnName());
-        return dateColumn.isAfter(value);
+    @Override
+    public Selection apply(Column column) {
+        DateColumn dateColumn = (DateColumn) column;
+        return dateColumn.isEqualTo(value);
     }
 }
