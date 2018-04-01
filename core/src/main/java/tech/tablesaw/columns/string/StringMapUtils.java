@@ -14,12 +14,19 @@
 
 package tech.tablesaw.columns.string;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.columns.Column;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * String utility functions. Each function takes one or more String columns as input and produces
@@ -28,14 +35,14 @@ import tech.tablesaw.columns.Column;
 public interface StringMapUtils extends Column {
 
     default StringColumn upperCase() {
-        StringColumn newColumn = new StringColumn(this.name() + "[ucase]");
+        StringColumn newColumn = StringColumn.create(this.name() + "[ucase]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
             if (value == null) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
-                newColumn.add(value.toUpperCase());
+                newColumn.append(value.toUpperCase());
             }
         }
         return newColumn;
@@ -43,7 +50,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn lowerCase() {
 
-        StringColumn newColumn = new StringColumn(name() + "[lcase]");
+        StringColumn newColumn = StringColumn.create(name() + "[lcase]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -54,7 +61,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn trim() {
 
-        StringColumn newColumn = new StringColumn(name() + "[trim]");
+        StringColumn newColumn = StringColumn.create(name() + "[trim]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -65,7 +72,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn replaceAll(String regex, String replacement) {
 
-        StringColumn newColumn = new StringColumn(name() + "[repl]");
+        StringColumn newColumn = StringColumn.create(name() + "[repl]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -76,7 +83,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn replaceFirst(String regex, String replacement) {
 
-        StringColumn newColumn = new StringColumn(name() + "[repl]");
+        StringColumn newColumn = StringColumn.create(name() + "[repl]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -87,7 +94,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn substring(int start, int end) {
 
-        StringColumn newColumn = new StringColumn(name() + "[sub]");
+        StringColumn newColumn = StringColumn.create(name() + "[sub]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -99,7 +106,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn substring(int start) {
 
-        StringColumn newColumn = new StringColumn(name() + "[sub]");
+        StringColumn newColumn = StringColumn.create(name() + "[sub]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -110,7 +117,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn abbreviate(int maxWidth) {
 
-        StringColumn newColumn = new StringColumn(name() + "[abbr]");
+        StringColumn newColumn = StringColumn.create(name() + "[abbr]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -121,7 +128,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn padEnd(int minLength, char padChar) {
 
-        StringColumn newColumn = new StringColumn(name() + "[pad]");
+        StringColumn newColumn = StringColumn.create(name() + "[pad]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -132,7 +139,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn padStart(int minLength, char padChar) {
 
-        StringColumn newColumn = new StringColumn(name() + "[pad]");
+        StringColumn newColumn = StringColumn.create(name() + "[pad]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -143,7 +150,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn commonPrefix(Column column2) {
 
-        StringColumn newColumn = new StringColumn(name() + column2.name() + "[prefix]");
+        StringColumn newColumn = StringColumn.create(name() + column2.name() + "[prefix]");
 
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
@@ -155,7 +162,7 @@ public interface StringMapUtils extends Column {
 
     default StringColumn commonSuffix(Column column2) {
 
-        StringColumn newColumn = new StringColumn(name() + column2.name() + "[suffix]");
+        StringColumn newColumn = StringColumn.create(name() + column2.name() + "[suffix]");
 
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
@@ -170,7 +177,7 @@ public interface StringMapUtils extends Column {
      */
     default Column distance(Column column2) {
 
-        FloatColumn newColumn = new FloatColumn(name() + column2.name() + "[distance]");
+        NumberColumn newColumn = NumberColumn.create(name() + column2.name() + "[distance]");
 
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
@@ -182,13 +189,119 @@ public interface StringMapUtils extends Column {
 
     default StringColumn join(Column column2, String delimiter) {
 
-        StringColumn newColumn = new StringColumn(name() + column2.name() + "[join]");
+        StringColumn newColumn = StringColumn.create(name() + column2.name() + "[join]");
 
         for (int r = 0; r < size(); r++) {
             String[] values = new String[2];
             values[0] = getString(r);
             values[1] = column2.getString(r);
             newColumn.append(StringUtils.join(values, delimiter));
+        }
+        return newColumn;
+    }
+
+    /**
+     * Return a copy of this column with the given string appended
+     *
+     * @param append the column to append
+     * @return the new column
+     */
+    default StringColumn concatenate(StringColumn append) {
+        StringColumn newColumn = StringColumn.create(name() + "[column appended]", this.size());
+        for (int r = 0; r < size(); r++) {
+            newColumn.append(getString(r) + append.get(r));
+        }
+        return newColumn;
+    }
+
+    /**
+     * Return a copy of this column with the given string appended to each element
+     *
+     * @param append the string to append
+     * @return the new column
+     */
+    default StringColumn concatenate(String append) {
+        StringColumn newColumn = StringColumn.create(name() + "[append]", this.size());
+        for (int r = 0; r < size(); r++) {
+            newColumn.append(getString(r) + append);
+        }
+        return newColumn;
+    }
+
+    /**
+     * Creates a new column, replacing each string in this column with a new string formed by
+     * replacing any substring that matches the regex
+     *
+     * @param regexArray  the regex array to replace
+     * @param replacement the replacement array
+     * @return the new column
+     */
+    default StringColumn replaceAll(String[] regexArray, String replacement) {
+
+        StringColumn newColumn = StringColumn.create(name() + "[repl]", this.size());
+
+        for (int r = 0; r < size(); r++) {
+            String value = getString(r);
+            for (String regex : regexArray) {
+                value = value.replaceAll(regex, replacement);
+            }
+            newColumn.append(value);
+        }
+        return newColumn;
+    }
+
+    default StringColumn tokenizeAndSort(String separator) {
+        StringColumn newColumn = StringColumn.create(name() + "[sorted]", this.size());
+
+        for (int r = 0; r < size(); r++) {
+            String value = getString(r);
+
+            Splitter splitter = Splitter.on(separator);
+            splitter = splitter.trimResults();
+            splitter = splitter.omitEmptyStrings();
+            List<String> tokens =
+                    new ArrayList<>(splitter.splitToList(value));
+            Collections.sort(tokens);
+            value = String.join(" ", tokens);
+            newColumn.append(value);
+        }
+        return newColumn;
+    }
+
+    /**
+     * Splits on Whitespace and returns the lexicographically sorted result.
+     *
+     * @return a {@link StringColumn}
+     */
+    default StringColumn tokenizeAndSort() {
+        StringColumn newColumn = StringColumn.create(name() + "[sorted]", this.size());
+
+        for (int r = 0; r < size(); r++) {
+            String value = getString(r);
+            Splitter splitter = Splitter.on(CharMatcher.whitespace());
+            splitter = splitter.trimResults();
+            splitter = splitter.omitEmptyStrings();
+            List<String> tokens = new ArrayList<>(splitter.splitToList(value));
+            Collections.sort(tokens);
+            value = String.join(" ", tokens);
+            newColumn.append(value);
+        }
+        return newColumn;
+    }
+
+    default StringColumn tokenizeAndRemoveDuplicates() {
+        StringColumn newColumn = StringColumn.create(name() + "[without duplicates]", this.size());
+
+        for (int r = 0; r < size(); r++) {
+            String value = getString(r);
+
+            Splitter splitter = Splitter.on(CharMatcher.whitespace());
+            splitter = splitter.trimResults();
+            splitter = splitter.omitEmptyStrings();
+            List<String> tokens = new ArrayList<>(splitter.splitToList(value));
+
+            value = String.join(" ", new HashSet<>(tokens));
+            newColumn.append(value);
         }
         return newColumn;
     }

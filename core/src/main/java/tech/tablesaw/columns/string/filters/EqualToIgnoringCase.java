@@ -17,29 +17,35 @@ package tech.tablesaw.columns.string.filters;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.string.StringColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
 import javax.annotation.concurrent.Immutable;
 
+import static tech.tablesaw.columns.string.StringPredicates.*;
+
 /**
- * A filtering that selects cells which end with the given filters
+ * A filtering that selects cells whose contents equal the given text ignoring case
  */
 @Immutable
-public class TextEndsWith extends ColumnFilter {
+public class EqualToIgnoringCase extends ColumnFilter {
 
-    private String string;
+    private final String string;
 
-    public TextEndsWith(ColumnReference reference, String string) {
+    public EqualToIgnoringCase(StringColumnReference reference, String string) {
         super(reference);
         this.string = string;
     }
 
     @Override
     public Selection apply(Table relation) {
-        Column column = relation.column(columnReference().getColumnName());
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
         StringColumn textColumn = (StringColumn) column;
-        return textColumn.endsWith(string);
+        return textColumn.eval(isEqualToIgnoringCase, string);
     }
 }

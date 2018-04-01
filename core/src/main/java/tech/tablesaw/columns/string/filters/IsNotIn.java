@@ -17,29 +17,36 @@ package tech.tablesaw.columns.string.filters;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.string.StringColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-import javax.annotation.concurrent.Immutable;
+import java.util.Collection;
 
 /**
- * A filtering that selects cells in which the string value is in the given array of strings
+ * Implements NotEqualTo testing for Category and Text Columns
  */
-@Immutable
-public class TextIsIn extends ColumnFilter {
+public class IsNotIn extends ColumnFilter {
 
-    private String[] strings;
+    private final String[] filter;
 
-    public TextIsIn(ColumnReference reference, String... strings) {
+    public IsNotIn(StringColumnReference reference, Collection<String> strings) {
         super(reference);
-        this.strings = strings;
+        this.filter = strings.toArray(new String[strings.size()]);
+    }
+
+    public IsNotIn(StringColumnReference reference, String... strings) {
+        super(reference);
+        this.filter = strings;
+    }
+
+    public Selection apply(Table relation) {
+        return apply(relation.column(columnReference().getColumnName()));
     }
 
     @Override
-    public Selection apply(Table relation) {
-        Column column = relation.column(columnReference().getColumnName());
-        StringColumn textColumn = (StringColumn) column;
-        return textColumn.isIn(strings);
+    public Selection apply(Column column) {
+        StringColumn stringColumn = (StringColumn) column;
+        return stringColumn.isNotIn(filter);
     }
 }

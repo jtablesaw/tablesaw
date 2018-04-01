@@ -14,29 +14,42 @@
 
 package tech.tablesaw.columns.string.filters;
 
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.string.StringColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-import javax.annotation.concurrent.Immutable;
-
 /**
- * A filtering that selects cells in which all filters is alphanumeric
+ * Implements EqualTo testing for Category and Text Columns
  */
-@Immutable
-public class TextIsAlphaNumeric extends ColumnFilter {
+public class EqualTo extends ColumnFilter {
 
-    public TextIsAlphaNumeric(ColumnReference reference) {
+    private final String value;
+
+    public EqualTo(StringColumnReference reference, String value) {
         super(reference);
+        this.value = value;
     }
 
     @Override
     public Selection apply(Table relation) {
-        Column column = relation.column(columnReference().getColumnName());
-        StringColumn textColumn = (StringColumn) column;
-        return textColumn.isAlphaNumeric();
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
+        ColumnType type = column.type();
+        switch (type) {
+            case STRING: {
+                StringColumn stringColumn = (StringColumn) column;
+                return stringColumn.isEqualTo(value);
+            }
+            default:
+                throw new UnsupportedOperationException(
+                        String.format("ColumnType %s does not support equalTo on a String value", type));
+        }
     }
 }

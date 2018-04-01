@@ -17,26 +17,35 @@ package tech.tablesaw.columns.string.filters;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.string.StringColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
 import javax.annotation.concurrent.Immutable;
 
+import static tech.tablesaw.columns.string.StringPredicates.*;
+
 /**
- * A filtering that selects cells in which all filters is numeric
+ * A filtering that selects cells which end with the given text
  */
 @Immutable
-public class TextIsNumeric extends ColumnFilter {
+public class EndsWith extends ColumnFilter {
 
-    public TextIsNumeric(ColumnReference reference) {
+    private final String string;
+
+    public EndsWith(StringColumnReference reference, String string) {
         super(reference);
+        this.string = string;
     }
 
     @Override
     public Selection apply(Table relation) {
-        Column column = relation.column(columnReference().getColumnName());
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
         StringColumn textColumn = (StringColumn) column;
-        return textColumn.isNumeric();
+        return textColumn.eval(endsWith, string);
     }
 }

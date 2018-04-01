@@ -14,33 +14,39 @@
 
 package tech.tablesaw.columns.string.filters;
 
-
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.string.StringColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-import javax.annotation.concurrent.Immutable;
+import java.util.Collection;
 
 /**
- * A filtering that selects cells whose length equals the given length
+ * Implements EqualTo testing for Category and Text Columns
  */
-@Immutable
-public class TextHasLengthEqualTo extends ColumnFilter {
+public class IsIn extends ColumnFilter {
 
-    private int length;
+    private final String[] filters;
 
-    public TextHasLengthEqualTo(ColumnReference reference, int length) {
+    public IsIn(StringColumnReference reference, Collection<String> strings) {
         super(reference);
-        this.length = length;
+        this.filters = strings.toArray(new String[strings.size()]);
+    }
+
+    public IsIn(StringColumnReference reference, String... strings) {
+        super(reference);
+        this.filters = strings;
+    }
+
+    public Selection apply(Table relation) {
+        return apply(relation.column(columnReference().getColumnName()));
     }
 
     @Override
-    public Selection apply(Table relation) {
-        Column column = relation.column(columnReference().getColumnName());
-        StringColumn textColumn = (StringColumn) column;
-        return textColumn.hasLengthEqualTo(length);
+    public Selection apply(Column column) {
+        StringColumn stringColumn = (StringColumn) column;
+        return stringColumn.isIn(filters);
     }
 }

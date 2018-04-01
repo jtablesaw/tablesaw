@@ -17,29 +17,35 @@ package tech.tablesaw.columns.string.filters;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.string.StringColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
 import javax.annotation.concurrent.Immutable;
 
+import static tech.tablesaw.columns.string.StringPredicates.*;
+
 /**
- * A filtering that selects cells which start with the given string
+ * A filtering that selects cells in which all text is shorter than the given length
  */
 @Immutable
-public class TextStartsWith extends ColumnFilter {
+public class IsShorterThan extends ColumnFilter {
 
-    private String string;
+    private final int length;
 
-    public TextStartsWith(ColumnReference reference, String string) {
+    public IsShorterThan(StringColumnReference reference, int length) {
         super(reference);
-        this.string = string;
+        this.length = length;
     }
 
     @Override
     public Selection apply(Table relation) {
-        Column column = relation.column(columnReference().getColumnName());
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
         StringColumn textColumn = (StringColumn) column;
-        return textColumn.startsWith(string);
+        return textColumn.eval(isShorterThan, length);
     }
 }

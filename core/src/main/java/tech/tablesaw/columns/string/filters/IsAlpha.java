@@ -17,29 +17,32 @@ package tech.tablesaw.columns.string.filters;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.string.StringColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
 import javax.annotation.concurrent.Immutable;
 
+import static tech.tablesaw.columns.string.StringPredicates.*;
+
 /**
- * A filtering that selects cells in which all filters is longer than the given length
+ * A filtering that selects cells in which all text are letters
  */
 @Immutable
-public class TextIsLongerThan extends ColumnFilter {
+public class IsAlpha extends ColumnFilter {
 
-    private int length;
-
-    public TextIsLongerThan(ColumnReference reference, int length) {
+    public IsAlpha(StringColumnReference reference) {
         super(reference);
-        this.length = length;
     }
 
     @Override
     public Selection apply(Table relation) {
-        Column column = relation.column(columnReference().getColumnName());
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
         StringColumn textColumn = (StringColumn) column;
-        return textColumn.isLongerThan(length);
+        return textColumn.eval(isAlpha);
     }
 }

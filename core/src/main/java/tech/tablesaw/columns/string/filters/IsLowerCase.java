@@ -17,29 +17,32 @@ package tech.tablesaw.columns.string.filters;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.string.StringColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
 import javax.annotation.concurrent.Immutable;
 
+import static tech.tablesaw.columns.string.StringPredicates.*;
+
 /**
- * A filtering that selects cells which contain the given filters
+ * A filtering that selects cells in which all text is lowercase
  */
 @Immutable
-public class TextContains extends ColumnFilter {
+public class IsLowerCase extends ColumnFilter {
 
-    private String string;
-
-    public TextContains(ColumnReference reference, String string) {
+    public IsLowerCase(StringColumnReference reference) {
         super(reference);
-        this.string = string;
     }
 
     @Override
     public Selection apply(Table relation) {
-        Column column = relation.column(columnReference().getColumnName());
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
         StringColumn textColumn = (StringColumn) column;
-        return textColumn.stringContains(string);
+        return textColumn.eval(isLowerCase);
     }
 }
