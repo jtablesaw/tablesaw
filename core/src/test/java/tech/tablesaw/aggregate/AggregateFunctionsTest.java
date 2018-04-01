@@ -16,7 +16,6 @@ package tech.tablesaw.aggregate;
 
 import tech.tablesaw.table.SelectionViewGroup;
 import tech.tablesaw.table.StandardViewGroup;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.CategoricalColumn;
@@ -42,7 +41,7 @@ public class AggregateFunctionsTest {
         ViewGroup group = StandardViewGroup.create(table, byColumn);
         Table result = group.aggregate("approval", mean, stdDev);
         assertEquals(3, result.columnCount());
-        Assert.assertEquals("who", result.column(0).name());
+        assertEquals("who", result.column(0).name());
         assertEquals(6, result.rowCount());
         assertEquals("65.671875", result.get(0, 1));
         assertEquals("10.648876067826901", result.get(0, 2));
@@ -71,7 +70,7 @@ public class AggregateFunctionsTest {
         ViewGroup group = StandardViewGroup.create(table, byColumn1, byColumn2);
         Table result = group.aggregate("approval", mean, sum);
         assertEquals(4, result.columnCount());
-        Assert.assertEquals("who", result.column(0).name());
+        assertEquals("who", result.column(0).name());
         assertEquals(323, result.rowCount());
         assertEquals("46.0", result.get(0, 2));
     }

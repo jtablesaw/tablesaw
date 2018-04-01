@@ -14,17 +14,12 @@
 
 package tech.tablesaw.api;
 
-import tech.tablesaw.util.selection.Selection;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.columns.dates.PackedLocalDate;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import static tech.tablesaw.columns.dates.PackedLocalDate.*;
 import static org.junit.Assert.assertEquals;

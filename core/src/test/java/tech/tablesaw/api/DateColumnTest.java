@@ -1,6 +1,5 @@
 package tech.tablesaw.api;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -108,8 +107,8 @@ public class DateColumnTest {
         Table summary = column1.summary();
         assertEquals(4, summary.rowCount());
         assertEquals(2, summary.columnCount());
-        Assert.assertEquals("Measure", summary.column(0).name());
-        Assert.assertEquals("Value", summary.column(1).name());
+        assertEquals("Measure", summary.column(0).name());
+        assertEquals("Value", summary.column(1).name());
     }
 
     @Test

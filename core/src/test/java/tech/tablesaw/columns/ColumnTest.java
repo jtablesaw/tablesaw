@@ -94,6 +94,6 @@ public class ColumnTest {
     @Test
     public void testType() {
         Column c = table.numberColumn("approval");
-        Assert.assertEquals(ColumnType.NUMBER, c.type());
+        assertEquals(ColumnType.NUMBER, c.type());
     }
 }

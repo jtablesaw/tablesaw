@@ -28,7 +28,6 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
 import tech.tablesaw.columns.datetimes.DateTimeMapUtils;
-import tech.tablesaw.columns.datetimes.DateTimePredicates;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.filtering.predicates.LocalDateTimePredicate;
 import tech.tablesaw.filtering.predicates.LongBiPredicate;
@@ -537,12 +536,12 @@ public class DateTimeColumn extends AbstractColumn
 
     public Selection isEqualTo(LocalDateTime value) {
         long packed = PackedLocalDateTime.pack(value);
-        return eval(DateTimePredicates.isEqualTo, packed);
+        return eval(isEqualTo, packed);
     }
 
     public Selection isNotEqualTo(LocalDateTime value) {
         long packed = PackedLocalDateTime.pack(value);
-        return eval(DateTimePredicates.isNotEqualTo, packed);
+        return eval(isNotEqualTo, packed);
     }
 
     public Selection isEqualTo(DateTimeColumn column) {
@@ -559,35 +558,35 @@ public class DateTimeColumn extends AbstractColumn
     }
 
     public Selection isAfter(LocalDateTime value) {
-        return eval(DateTimePredicates.isGreaterThan, PackedLocalDateTime.pack(value));
+        return eval(isGreaterThan, PackedLocalDateTime.pack(value));
     }
 
     public Selection isAfter(Long packedDateTime) {
-        return eval(DateTimePredicates.isGreaterThan, packedDateTime);
+        return eval(isGreaterThan, packedDateTime);
     }
 
     public Selection isOnOrAfter(long value) {
-        return eval(DateTimePredicates.isGreaterThanOrEqualTo, value);
+        return eval(isGreaterThanOrEqualTo, value);
     }
 
     public Selection isOnOrAfter(LocalDateTime value) {
-        return eval(DateTimePredicates.isGreaterThanOrEqualTo, PackedLocalDateTime.pack(value));
+        return eval(isGreaterThanOrEqualTo, PackedLocalDateTime.pack(value));
     }
 
     public Selection isBefore(LocalDateTime value) {
-        return eval(DateTimePredicates.isLessThan, PackedLocalDateTime.pack(value));
+        return eval(isLessThan, PackedLocalDateTime.pack(value));
     }
 
     public Selection isBefore(Long packedDateTime) {
-        return eval(DateTimePredicates.isLessThan, packedDateTime);
+        return eval(isLessThan, packedDateTime);
     }
 
     public Selection isOnOrBefore(long value) {
-        return eval(DateTimePredicates.isLessThanOrEqualTo, value);
+        return eval(isLessThanOrEqualTo, value);
     }
 
     public Selection isOnOrBefore(LocalDateTime value) {
-        return eval(DateTimePredicates.isLessThanOrEqualTo, PackedLocalDateTime.pack(value));
+        return eval(isLessThanOrEqualTo, PackedLocalDateTime.pack(value));
     }
 
     public Selection isAfter(DateTimeColumn column) {
