@@ -82,7 +82,7 @@ public class Stats {
     }
 
     public double mean() {
-        return (sum / (double) n);
+        return mean;
     }
 
     public double min() {

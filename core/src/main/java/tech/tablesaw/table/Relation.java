@@ -323,7 +323,7 @@ public abstract class Relation {
         return (DateTimeColumn) column(columnName);
     }
 
-    public double[][] asColumnMatrix() {
+    private double[][] asColumnMatrix() {
         return columnsOfType(ColumnType.NUMBER).stream()
                 .map(Column::asDoubleArray).toArray(double[][]::new);
     }
