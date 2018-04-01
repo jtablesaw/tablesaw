@@ -4,15 +4,11 @@ Columns
 Tablesaw is all about tables, of course, but you will often want to work with an individual column or vector of data. We show how to do that here. Here is the list of currently available column types:
 
 * Boolean
-* Category (Strings from a finite set)
-* Float (4 byte floating point)
-* Double (8 byte floating point)
-* Integer (4 byte int)
+* String 
+* Number (8 byte floating point)
 * Local Date
 * Local DateTime
 * Local Time
-* LongInt (8 byte int)
-* ShortInt (2 byte int)
 
 All column types support a common, standard set of operations, as well as a number of type specific operations. 
 We'll begin by looking at the common operations. 
@@ -52,20 +48,21 @@ Columns do all the things you expect, here’s an incomplete list of standard op
     summary()
     sortAscending()
     sortDescending()
-    append(Column)                         // Appends the data in other column to this one
+    append(value)                   // Appends a single value 
+    append(Column)                  // Appends the data in other column to this one
 
 These operations are available on nearly all column types, including date columns. Each operates on an entire column. To operate on the values of a column, you have two choices. You can work with individual values, or use column-wise operations to work with all the values in a column in the same way. To work with individual values, you can just iterate over the column:
 
-    List<LocalDate> weekLater = new ArrayList<>();
+    DateColumn weekLater = DateColumn.create("Week Later");
     for (LocalDate date: dates) {
-       weekLater.add(date.plusDays(7));
+       weekLater.append(date.plusDays(7));
     }
 
 Just about anything you can do with an individual LocalDate you can do with an entire DateColumn, using column-wise operations. For example, the above loop could be written as:
 
-    DateColumn dc = dates.plusDays(7);
+    DateColumn weekLater = dates.plusDays(7);
 
-with the difference being that the result is a new DateColumn, rather than a List. This is an example of a mapping function. You can see the full list of date mapping functions in the interface DateMapUtils, most of the methods deal with adding and subtracting units of time (days, weeks, months, etc), and calculating the column-wise differences between two date columns.
+This is an example of a mapping function. You can see the full list of date mapping functions in the interface DateMapUtils, most of the methods deal with adding and subtracting units of time (days, weeks, months, etc), and calculating the column-wise differences between two date columns.
 
 ### Filtering
 
@@ -122,6 +119,15 @@ This code creates a splitter that groups dates by month. First we get a Splitter
 ### Cleaning data
 
 ### Correcting values
+
+The easiest way to correct values is using setIf(). 
+
+### Formatting 
+
+You can print data as individual values, columns or tables. The output format can be controlled by setting a type
+ specific formatter on a column. For example, to change how numbers are displayed you can call setPrintFormatter()
+ on a NumberColumn, passing in a NumberColumnFormatter. Each formatter serves two functions, displaying true values and handling of 
+ missing ones. NumberColumnFormatter has several pre-configured options, including printing as currency or percents.
 
 
 See the Tables documentation for how to add and remove columns

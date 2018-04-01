@@ -3,7 +3,7 @@ Map functions
 
 A map is a function that when applied to one or more columns, produces a new Column with the same number of elements.
 
-Map functions come in three forms: Unary, Binary and n-ary.
+One way to think about them, is based on how many columns are involved in the function. 
 
 ## Unary
 
@@ -11,17 +11,21 @@ Unary map functions operate on a single column, the method receiver. For example
 
     StringColumn column = columnA.upperCase();
     
-produces a new column that contains the values in columnA, but converted to upperCase.
+produces a new column that contains the values in columnA, but converted to upper case.
 
 While unary mappers operate only on a single Column, they may have an additional parameter (or parameters) that are not Columns, for example:
 
     StringColumn column = columnA.substring(startingPosition);
+    
+    // or
+    
+    StringColumn column1 = columnA.startsWith("foo");
 
 ## Binary
 
 Binary mappers operate on two columns. In the example below, the result produced is a new column that contains the row-wise sums of the values in the receiver (columnB) and the parameter (columnC):
 
-    FloatColumn column = columnB.add(columnC);
+    NumberColumn column = columnB.add(columnC);
 
 ## n-Ary:
 

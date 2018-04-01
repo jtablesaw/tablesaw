@@ -58,7 +58,7 @@ Sometimes you have a file with columns that you’re not interested in. You can 
 
 Tablesaw has a predefined set of strings that it interprets as missing data when reading from a CSV file. These are: “NaN”,  “*”, “NA”, “null” and, of course, the empty string “”.
 
-When one of these strings is encountered, it is replaced by a type-specific missing indicator inside tablesaw.  See the documentation on Missing Data for more information.
+When one of these strings is encountered, it is replaced by a type-specific missing indicator inside Tablesaw.  See the documentation on Missing Data for more information.
 
 Note that currently, there is no way to specify different missing value strings. This is a recognized deficiency captured in this issue.
 
@@ -73,7 +73,7 @@ It can be used to read local files, but also files read across the net, in S3, e
 ### Loading a CSV from a Website:
 
     ColumnType[] types = {SHORT_INT, FLOAT, SHORT_INT};
-    String location = "https://raw.githubusercontent.com/lwhite1/tablesaw/master/data/BushApproval.csv";
+    String location = "https://raw.githubusercontent.com/lwhite1/Tablesaw/master/data/BushApproval.csv";
     Table table;
     try (InputStream input = new URL(location).openStream()) {
       table = Table.csv(CsvReadOptions.bulider(input, "bush").columnTypes(types)));
