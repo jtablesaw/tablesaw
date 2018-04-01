@@ -63,7 +63,7 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.12.1-SNAPSHOT</version>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.github.twosigma</groupId>
