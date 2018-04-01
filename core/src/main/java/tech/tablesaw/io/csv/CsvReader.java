@@ -144,7 +144,7 @@ public class CsvReader {
 
             cleanNames(headerRow);
             for (int x = 0; x < types.length; x++) {
-                if (types[x] != ColumnType.SKIP) {
+                if (types[x] != SKIP) {
                     String columnName = headerRow.get(x);
                     if (Strings.isNullOrEmpty(columnName)) {
                         columnName = "Column " + table.columnCount();
@@ -228,7 +228,7 @@ public class CsvReader {
 
             table = Table.create(file.getName());
             for (int x = 0; x < types.length; x++) {
-                if (types[x] != ColumnType.SKIP) {
+                if (types[x] != SKIP) {
                     Column newColumn = TypeUtils.newColumn(headerRow.get(x).trim(), types[x]);
                     table.addColumn(newColumn);
                 }
@@ -327,7 +327,7 @@ public class CsvReader {
     private static String[] selectColumnNames(List<String> names, ColumnType types[]) {
         List<String> header = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
-            if (types[i] != ColumnType.SKIP) {
+            if (types[i] != SKIP) {
                 header.add(names.get(i).trim());
             }
         }
@@ -458,11 +458,11 @@ public class CsvReader {
             if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {
                 continue;
             }
-            if (typeCandidates.contains(ColumnType.LOCAL_DATE_TIME) && !isLocalDateTime.test(s)) {
-                typeCandidates.remove(ColumnType.LOCAL_DATE_TIME);
+            if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime.test(s)) {
+                typeCandidates.remove(LOCAL_DATE_TIME);
             }
-            if (typeCandidates.contains(ColumnType.LOCAL_TIME) && !isLocalTime.test(s)) {
-                typeCandidates.remove(ColumnType.LOCAL_TIME);
+            if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime.test(s)) {
+                typeCandidates.remove(LOCAL_TIME);
             }
             if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate.test(s)) {
                 typeCandidates.remove(LOCAL_DATE);
@@ -484,7 +484,7 @@ public class CsvReader {
      */
     private static ColumnType selectType(List<ColumnType> typeCandidates) {
         if (typeCandidates.isEmpty()) {
-            return ColumnType.STRING;
+            return STRING;
         } else {
             return typeCandidates.get(0);
         }

@@ -147,8 +147,8 @@ public class TimeColumnTest {
         column1.appendCell("11:30:00");
         column1.appendCell("14:00:00");
         column1.appendCell("18:15:30");
-        column1.appendInternal(PackedLocalTime.of(12,0, 0));
-        column1.appendInternal(PackedLocalTime.of(12,0, 0));
+        column1.appendInternal(of(12,0, 0));
+        column1.appendInternal(of(12,0, 0));
         Set<LocalTime> set = column1.asSet();
         assertEquals(column1.size(), set.size() + 1);
     }
