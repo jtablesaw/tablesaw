@@ -23,7 +23,7 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;

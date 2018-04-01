@@ -20,17 +20,17 @@ import it.unimi.dsi.fastutil.ints.*;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.IntColumnUtils;
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
-import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.filtering.IntBiPredicate;
 import tech.tablesaw.filtering.IntPredicate;
 import tech.tablesaw.filtering.LocalDatePredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.mapping.DateMapUtils;
+import tech.tablesaw.columns.dates.DateMapUtils;
 import tech.tablesaw.store.ColumnMetadata;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.ReverseIntComparator;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.sorting.comparators.DescendingIntComparator;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
@@ -80,7 +80,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils, Categori
         }
     };
     /**
-     * The formatter chosen to parse dates for this particular column
+     * The formatter chosen to parse filters for this particular column
      */
     private DateTimeFormatter selectedFormatter;
 
@@ -466,7 +466,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils, Categori
     }
 
     /**
-     * Returns a table of dates and the number of observations of those dates
+     * Returns a table of filters and the number of observations of those filters
      *
      * @return the summary table
      */
@@ -722,7 +722,7 @@ public class DateColumn extends AbstractColumn implements DateMapUtils, Categori
     public List<LocalDate> top(int n) {
         List<LocalDate> top = new ArrayList<>();
         int[] values = data.toIntArray();
-        IntArrays.parallelQuickSort(values, ReverseIntComparator.instance());
+        IntArrays.parallelQuickSort(values, DescendingIntComparator.instance());
         for (int i = 0; i < n && i < values.length; i++) {
             top.add(PackedLocalDate.asLocalDate(values[i]));
         }

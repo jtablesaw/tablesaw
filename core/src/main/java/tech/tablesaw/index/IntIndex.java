@@ -21,8 +21,8 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.TimeColumn;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 
 /**

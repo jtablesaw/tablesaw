@@ -19,7 +19,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.table.RollingColumn;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 /**
  * The general interface for columns.

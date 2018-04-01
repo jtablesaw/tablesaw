@@ -15,16 +15,16 @@
 package tech.tablesaw.columns;
 
 import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.filtering.*;
 import tech.tablesaw.filtering.columnbased.ColumnEqualTo;
 import tech.tablesaw.filtering.columnbased.ColumnGreaterThan;
 import tech.tablesaw.filtering.columnbased.ColumnLessThan;
-import tech.tablesaw.filtering.dates.LocalDateIsAfter;
-import tech.tablesaw.filtering.dates.LocalDateIsBefore;
-import tech.tablesaw.filtering.datetimes.*;
-import tech.tablesaw.filtering.text.*;
-import tech.tablesaw.filtering.times.*;
+import tech.tablesaw.columns.dates.filters.LocalDateIsAfter;
+import tech.tablesaw.columns.dates.filters.LocalDateIsBefore;
+import tech.tablesaw.columns.datetimes.filters.*;
+import tech.tablesaw.columns.string.filters.*;
+import tech.tablesaw.columns.times.filters.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

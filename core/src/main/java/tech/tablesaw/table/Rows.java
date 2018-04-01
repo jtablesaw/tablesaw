@@ -16,7 +16,7 @@ package tech.tablesaw.table;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.*;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 import javax.annotation.concurrent.Immutable;
 

@@ -20,7 +20,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;

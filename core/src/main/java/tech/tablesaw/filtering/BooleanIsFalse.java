@@ -17,7 +17,7 @@ package tech.tablesaw.filtering;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 public class BooleanIsFalse extends ColumnFilter {
 

@@ -20,8 +20,8 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 /**
  * An index for eight-byte long and long backed columns (datetime)

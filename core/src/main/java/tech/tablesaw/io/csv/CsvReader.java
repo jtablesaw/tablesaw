@@ -374,7 +374,7 @@ public class CsvReader {
     }
 
     /**
-     * Estimates and returns the type for each column in the delimited text file {@code file}
+     * Estimates and returns the type for each column in the delimited filters file {@code file}
      * <p>
      * The type is determined by checking a sample of the data in the file. Because only a sample of the data is
      * checked,

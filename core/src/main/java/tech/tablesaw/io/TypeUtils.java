@@ -50,8 +50,8 @@ public final class TypeUtils {
     public static final List<String> FALSE_STRINGS_FOR_DETECTION =
             Arrays.asList("F", "f", "N", "n", "FALSE", "false", "False");
 
-    // Formats that we accept in parsing dates from strings
-    // TODO: Add more types, especially dates with month names spelled-out fully.
+    // Formats that we accept in parsing filters from strings
+    // TODO: Add more types, especially filters with month names spelled-out fully.
     private static final DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private static final DateTimeFormatter dtf3 = DateTimeFormatter.ofPattern("MM-dd-yyyy");

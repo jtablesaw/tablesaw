@@ -17,7 +17,7 @@ package tech.tablesaw.table;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 /**
  * A table projection, i.e. the subset of columns in a table that should be returned in a query

@@ -56,10 +56,10 @@ public class ViewGroupTest {
 
         ViewGroup group = new ViewGroup(table, table.categoricalColumn("who"));
         assertEquals(6, group.size());
-        List<TemporaryView> viewList = group.getSubTables();
+        List<TableSlice> viewList = group.getSubTables();
 
         int count = 0;
-        for (TemporaryView view : viewList) {
+        for (TableSlice view : viewList) {
             count += view.rowCount();
         }
         assertEquals(table.rowCount(), count);
@@ -70,10 +70,10 @@ public class ViewGroupTest {
         ViewGroup group = new ViewGroup(table,
                 table.categoricalColumn("who"),
                 table.categoricalColumn("approval"));
-        List<TemporaryView> viewList = group.getSubTables();
+        List<TableSlice> viewList = group.getSubTables();
 
         int count = 0;
-        for (TemporaryView view : viewList) {
+        for (TableSlice view : viewList) {
             count += view.rowCount();
         }
         assertEquals(table.rowCount(), count);
@@ -86,7 +86,7 @@ public class ViewGroupTest {
         table.addColumn(month);
         String[] splitColumnNames = {table.column(2).name(), "month"};
         ViewGroup tableGroup = ViewGroup.create(table, splitColumnNames);
-        List<TemporaryView> tables = tableGroup.getSubTables();
+        List<TableSlice> tables = tableGroup.getSubTables();
         Table t = table.sum("approval").by(splitColumnNames);
 
         // compare the sum of the original column with the sum of the sums of the group table

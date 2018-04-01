@@ -21,18 +21,18 @@ import it.unimi.dsi.fastutil.longs.*;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.LongColumnUtils;
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
-import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.filtering.LocalDateTimePredicate;
 import tech.tablesaw.filtering.LongBiPredicate;
 import tech.tablesaw.filtering.LongPredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.io.TypeUtils.DateTimeConverter;
-import tech.tablesaw.mapping.DateTimeMapUtils;
+import tech.tablesaw.columns.datetimes.DateTimeMapUtils;
 import tech.tablesaw.store.ColumnMetadata;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.ReverseLongComparator;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.sorting.comparators.DescendingLongComparator;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
@@ -870,7 +870,7 @@ public class DateTimeColumn extends AbstractColumn implements DateTimeMapUtils, 
     public List<LocalDateTime> top(int n) {
         List<LocalDateTime> top = new ArrayList<>();
         long[] values = data.toLongArray();
-        LongArrays.parallelQuickSort(values, ReverseLongComparator.instance());
+        LongArrays.parallelQuickSort(values, DescendingLongComparator.instance());
         for (int i = 0; i < n && i < values.length; i++) {
             top.add(PackedLocalDateTime.asLocalDateTime(values[i]));
         }

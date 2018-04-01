@@ -17,7 +17,7 @@ package tech.tablesaw.filtering;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 public class IntNotEqualTo extends ColumnFilter {
 

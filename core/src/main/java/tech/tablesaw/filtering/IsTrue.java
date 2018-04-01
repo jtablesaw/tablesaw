@@ -15,7 +15,7 @@
 package tech.tablesaw.filtering;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 import javax.annotation.concurrent.Immutable;
 

@@ -15,7 +15,7 @@
 package tech.tablesaw.filtering;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 /**
  * A predicate applied to a Relation, to return a subset of the rows in that table

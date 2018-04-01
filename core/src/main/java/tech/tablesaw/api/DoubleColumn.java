@@ -25,9 +25,9 @@ import tech.tablesaw.filtering.DoubleBiPredicate;
 import tech.tablesaw.filtering.DoublePredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.store.ColumnMetadata;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.Selection;
-import tech.tablesaw.util.Stats;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.columns.number.Stats;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.columns.DoubleColumnUtils.*;
+import static tech.tablesaw.columns.number.NumberFilters.*;
 
 /**
  * A column in a base table that contains double precision floating point values

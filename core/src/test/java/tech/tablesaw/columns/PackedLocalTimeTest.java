@@ -15,8 +15,8 @@
 package tech.tablesaw.columns;
 
 import org.junit.Test;
-import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
-import tech.tablesaw.columns.packeddata.PackedLocalTime;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.times.PackedLocalTime;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoField;

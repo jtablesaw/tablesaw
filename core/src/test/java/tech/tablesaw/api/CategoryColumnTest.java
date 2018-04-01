@@ -17,7 +17,7 @@ package tech.tablesaw.api;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.TestDataUtil;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.util.List;
 

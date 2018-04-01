@@ -19,7 +19,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 public class IntIsIn extends ColumnFilter {
 

@@ -19,16 +19,16 @@ import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.*;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.packeddata.PackedLocalTime;
+import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.filtering.IntBiPredicate;
 import tech.tablesaw.filtering.IntPredicate;
 import tech.tablesaw.filtering.LocalTimePredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.mapping.TimeMapUtils;
+import tech.tablesaw.columns.times.TimeMapUtils;
 import tech.tablesaw.store.ColumnMetadata;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.ReverseIntComparator;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.sorting.comparators.DescendingIntComparator;
+import tech.tablesaw.util.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.time.LocalTime;
@@ -58,7 +58,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         }
     };
     /**
-     * The formatter chosen to parse times for this particular column
+     * The formatter chosen to parse filters for this particular column
      */
     private DateTimeFormatter selectedFormatter;
 
@@ -454,7 +454,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     public List<LocalTime> top(int n) {
         List<LocalTime> top = new ArrayList<>();
         int[] values = data.toIntArray();
-        IntArrays.parallelQuickSort(values, ReverseIntComparator.instance());
+        IntArrays.parallelQuickSort(values, DescendingIntComparator.instance());
         for (int i = 0; i < n && i < values.length; i++) {
             top.add(PackedLocalTime.asLocalTime(values[i]));
         }

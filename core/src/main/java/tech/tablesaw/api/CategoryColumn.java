@@ -22,21 +22,21 @@ import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.CategoryColumnUtils;
+import tech.tablesaw.columns.string.CategoryColumnUtils;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.StringBiPredicate;
 import tech.tablesaw.filtering.StringPredicate;
-import tech.tablesaw.filtering.text.CategoryFilters;
+import tech.tablesaw.columns.string.filters.CategoryFilters;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.store.ColumnMetadata;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.util.*;
 
 /**
- * A column that contains String values. They are assumed to be 'categorical' rather than free-form text, so are
+ * A column that contains String values. They are assumed to be 'categorical' rather than free-form filters, so are
  * stored in an encoding that takes advantage of the expected repetition of string values.
  * <p>
  * Because the MISSING_VALUE for this column type is an empty string, there is little or no need for special handling

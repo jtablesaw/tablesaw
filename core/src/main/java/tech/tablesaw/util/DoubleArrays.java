@@ -16,7 +16,7 @@ package tech.tablesaw.util;
 
 import com.google.common.base.Preconditions;
 import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.table.TemporaryView;
+import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.ViewGroup;
 
 /**
@@ -52,7 +52,7 @@ public class DoubleArrays {
 
         double[][] allVals = new double[viewCount][];
         for (int viewNumber = 0; viewNumber < viewCount; viewNumber++) {
-            TemporaryView view = views.get(viewNumber);
+            TableSlice view = views.get(viewNumber);
             allVals[viewNumber] = new double[view.rowCount()];
             NumericColumn numericColumn = view.numericColumn(columnNumber);
             for (int r = 0; r < view.rowCount(); r++) {

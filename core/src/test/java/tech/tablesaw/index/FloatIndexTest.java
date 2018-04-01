@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.FloatColumnUtils;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 import static org.junit.Assert.assertEquals;
 

@@ -27,8 +27,8 @@ import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -38,7 +38,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.*;
 /**
  * A group of tables formed by performing splitting operations on an original table
  */
-public class ViewGroup implements Iterable<TemporaryView> {
+public class ViewGroup implements Iterable<TableSlice> {
 
     private static final String SPLIT_STRING = "~~~";
     private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
@@ -46,7 +46,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
 
     private final Table sourceTable;
 
-    private final List<TemporaryView> subTables = new ArrayList<>();
+    private final List<TableSlice> subTables = new ArrayList<>();
 
     // the name(s) of the column(s) we're splitting the table on
     private final String[] splitColumnNames;
@@ -96,7 +96,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
 
         byte[] currentKey = null;
         String currentStringKey = null;
-        TemporaryView view;
+        TableSlice view;
 
         Selection selection = new BitmapBackedSelection();
 
@@ -122,7 +122,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
             }
             if (!Arrays.equals(newKey, currentKey)) {
                 currentKey = newKey;
-                view = new TemporaryView(sourceTable, selection);
+                view = new TableSlice(sourceTable, selection);
                 view.setName(currentStringKey);
                 currentStringKey = newStringKey;
                 addViewToSubTables(view);
@@ -133,7 +133,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
             }
         }
         if (!selection.isEmpty()) {
-            view = new TemporaryView(sourceTable, selection);
+            view = new TableSlice(sourceTable, selection);
             view.setName(currentStringKey);
             addViewToSubTables(view);
         }
@@ -151,22 +151,22 @@ public class ViewGroup implements Iterable<TemporaryView> {
 
     private void splitOnSelection(String nameTemplate, List<Selection> selections) {
         for (int i = 0; i < selections.size(); i++ ) {
-            TemporaryView view = new TemporaryView(sourceTable, selections.get(i));
+            TableSlice view = new TableSlice(sourceTable, selections.get(i));
             String name = nameTemplate + ": " + i + 1;
             view.setName(name);
             subTables.add(view);
         }
     }
 
-    private void addViewToSubTables(TemporaryView view) {
+    private void addViewToSubTables(TableSlice view) {
         subTables.add(view);
     }
 
-    public List<TemporaryView> getSubTables() {
+    public List<TableSlice> getSubTables() {
         return subTables;
     }
 
-    public TemporaryView get(int i) {
+    public TableSlice get(int i) {
         return subTables.get(i);
     }
 
@@ -384,7 +384,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
             for (AggregateFunction function : entry.getValue()) {
                 String colName = aggregateColumnName(columnName, function.functionName());
                 DoubleColumn resultColumn = new DoubleColumn(colName, subTables.size());
-                for (TemporaryView subTable : subTables) {
+                for (TableSlice subTable : subTables) {
                     double result = subTable.reduce(columnName, function);
                     if (functionCount == 0) {
                         groupColumn.append(subTable.name());
@@ -415,7 +415,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
 
             String colName = aggregateColumnName(columnName, function.functionName());
             DoubleColumn resultColumn = new DoubleColumn(colName, subTables.size());
-            for (TemporaryView subTable : subTables) {
+            for (TableSlice subTable : subTables) {
                 double result = subTable.reduce(columnName, function);
                 groupColumn.append(subTable.name());
                 resultColumn.append(result);
@@ -431,7 +431,7 @@ public class ViewGroup implements Iterable<TemporaryView> {
      * @return an Iterator.
      */
     @Override
-    public Iterator<TemporaryView> iterator() {
+    public Iterator<TableSlice> iterator() {
         return subTables.iterator();
     }
 

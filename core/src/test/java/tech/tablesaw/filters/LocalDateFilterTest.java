@@ -19,8 +19,8 @@ import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.filtering.datetimes.*;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.columns.datetimes.filters.*;
+import tech.tablesaw.util.selection.Selection;
 
 import java.time.LocalDate;
 

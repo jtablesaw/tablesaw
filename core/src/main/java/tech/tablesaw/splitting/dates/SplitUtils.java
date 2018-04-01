@@ -14,7 +14,7 @@
 
 package tech.tablesaw.splitting.dates;
 
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

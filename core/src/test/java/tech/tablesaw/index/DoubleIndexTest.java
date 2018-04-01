@@ -18,8 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.DoubleColumnUtils;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.columns.number.NumberFilters;
+import tech.tablesaw.util.selection.Selection;
 
 import static org.junit.Assert.assertEquals;
 import static tech.tablesaw.io.csv.CsvReadOptions.builder;
@@ -50,35 +50,35 @@ public class DoubleIndexTest {
 
     @Test
     public void testGet() {
-        Selection fromCol = table.doubleColumn("stop_lat").select(DoubleColumnUtils.isEqualTo, 30.330425);
+        Selection fromCol = table.doubleColumn("stop_lat").select(NumberFilters.isEqualTo, 30.330425);
         Selection fromIdx = index.get(30.330425);
         assertEquals(fromCol, fromIdx);
     }
 
     @Test
     public void testGTE() {
-        Selection fromCol = table.doubleColumn("stop_lat").select(DoubleColumnUtils.isGreaterThanOrEqualTo, 30.330425);
+        Selection fromCol = table.doubleColumn("stop_lat").select(NumberFilters.isGreaterThanOrEqualTo, 30.330425);
         Selection fromIdx = index.atLeast(30.330425);
         assertEquals(fromCol, fromIdx);
     }
 
     @Test
     public void testLTE() {
-        Selection fromCol = table.doubleColumn("stop_lat").select(DoubleColumnUtils.isLessThanOrEqualTo, 30.330425);
+        Selection fromCol = table.doubleColumn("stop_lat").select(NumberFilters.isLessThanOrEqualTo, 30.330425);
         Selection fromIdx = index.atMost(30.330425);
         assertEquals(fromCol, fromIdx);
     }
 
     @Test
     public void testLT() {
-        Selection fromCol = table.doubleColumn("stop_lat").select(DoubleColumnUtils.isLessThan, 30.330425);
+        Selection fromCol = table.doubleColumn("stop_lat").select(NumberFilters.isLessThan, 30.330425);
         Selection fromIdx = index.lessThan(30.330425);
         assertEquals(fromCol, fromIdx);
     }
 
     @Test
     public void testGT() {
-        Selection fromCol = table.doubleColumn("stop_lat").select(DoubleColumnUtils.isGreaterThan, 30.330425);
+        Selection fromCol = table.doubleColumn("stop_lat").select(NumberFilters.isGreaterThan, 30.330425);
         Selection fromIdx = index.greaterThan(30.330425);
         assertEquals(fromCol, fromIdx);
     }

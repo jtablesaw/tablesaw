@@ -25,8 +25,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.util.Selection;
-import tech.tablesaw.util.Stats;
+import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.columns.number.Stats;
 
 import java.util.concurrent.TimeUnit;
 

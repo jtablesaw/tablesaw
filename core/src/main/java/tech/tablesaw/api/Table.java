@@ -34,10 +34,10 @@ import tech.tablesaw.table.Projection;
 import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
 import tech.tablesaw.table.ViewGroup;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.IntComparatorChain;
-import tech.tablesaw.util.ReversingIntComparator;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.sorting.comparators.IntComparatorChain;
+import tech.tablesaw.sorting.comparators.ReversingIntComparator;
+import tech.tablesaw.util.selection.Selection;
 
 import java.io.IOException;
 import java.util.*;

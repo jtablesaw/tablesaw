@@ -24,17 +24,17 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.BooleanPredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.mapping.BooleanMapUtils;
+import tech.tablesaw.columns.booleans.BooleanMapUtils;
 import tech.tablesaw.store.ColumnMetadata;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
-import static tech.tablesaw.columns.BooleanColumnUtils.isMissing;
-import static tech.tablesaw.columns.BooleanColumnUtils.isNotMissing;
+import static tech.tablesaw.columns.booleans.BooleanColumnUtils.isMissing;
+import static tech.tablesaw.columns.booleans.BooleanColumnUtils.isNotMissing;
 
 /**
  * A column in a base table that contains float values

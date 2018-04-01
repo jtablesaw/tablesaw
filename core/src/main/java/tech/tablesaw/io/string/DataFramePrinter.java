@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import java.util.stream.IntStream;
 
 /**
- * A class that can pretty print a DataFrame to text for visualization in a console
+ * A class that can pretty print a DataFrame to filters for visualization in a console
  * <p>
  * Based off of https://github.com/zavtech/morpheus-core/blob/master/src/main/java/com/zavtech/morpheus/reference/XDataFramePrinter.java
  * under Apache 2 license

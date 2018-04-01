@@ -23,8 +23,8 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
-import tech.tablesaw.table.TemporaryView;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.ViewGroup;
 
 import java.io.IOException;
@@ -88,10 +88,10 @@ public class TimeDependentFilteringTest {
         ViewGroup patients = ViewGroup.create(t, "patient");
 
         // Create a list of patient sub-tables to work with TODO(lwhite): Build the copy-on-write to ViewGroups to avoid
-        CopyOnWriteArrayList<TemporaryView> patientTables = new CopyOnWriteArrayList<>(patients.getSubTables());
+        CopyOnWriteArrayList<TableSlice> patientTables = new CopyOnWriteArrayList<>(patients.getSubTables());
 
         // Apply the independent temporal event filtering to the patient subtables and remove any that don't pass
-        for (TemporaryView patientTable : patients) {
+        for (TableSlice patientTable : patients) {
             CategoryColumn concepts = patientTable.categoryColumn("concept");
             int patientId = Integer.parseInt(patientTable.name());
             if (!concepts.contains(conceptZ)
@@ -105,8 +105,8 @@ public class TimeDependentFilteringTest {
 
         List<IndependentResult> independentResults = new ArrayList<>();
 
-        // Working with the filtered patient tables, calculate the event dates for the independent events
-        for (TemporaryView patientTable : patientTables) {
+        // Working with the filtered patient tables, calculate the event filters for the independent events
+        for (TableSlice patientTable : patientTables) {
             IndependentResult result = new IndependentResult();
             List<LocalDate> eventDates = new ArrayList<>();
 

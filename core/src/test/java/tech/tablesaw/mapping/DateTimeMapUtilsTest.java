@@ -18,7 +18,7 @@ import org.junit.Test;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.columns.packeddata.PackedLocalDateTime;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

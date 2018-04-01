@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
 import tech.tablesaw.api.CategoryColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.util.Collection;
 import java.util.Set;

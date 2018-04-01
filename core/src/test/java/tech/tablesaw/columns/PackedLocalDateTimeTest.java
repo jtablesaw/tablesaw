@@ -15,15 +15,15 @@
 package tech.tablesaw.columns;
 
 import org.junit.Test;
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
-import tech.tablesaw.columns.packeddata.PackedLocalTime;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.times.PackedLocalTime;
 
 import java.time.*;
 import java.time.temporal.ChronoField;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static tech.tablesaw.columns.packeddata.PackedLocalDateTime.*;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
 
 public class PackedLocalDateTimeTest {
 

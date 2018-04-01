@@ -16,8 +16,8 @@ package tech.tablesaw.index;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.CategoryColumn;
-import tech.tablesaw.util.BitmapBackedSelection;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.util.HashMap;
 import java.util.Map;

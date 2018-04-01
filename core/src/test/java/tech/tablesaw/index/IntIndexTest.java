@@ -18,11 +18,11 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.DateColumnUtils;
+import tech.tablesaw.columns.dates.DateColumnUtils;
 import tech.tablesaw.columns.IntColumnUtils;
-import tech.tablesaw.columns.packeddata.PackedLocalDate;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.util.Selection;
+import tech.tablesaw.util.selection.Selection;
 
 import java.time.LocalDate;
 

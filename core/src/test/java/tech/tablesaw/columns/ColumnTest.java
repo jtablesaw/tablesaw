@@ -44,7 +44,7 @@ public class ColumnTest {
 
     @Test
     public void testFirst() throws Exception {
-        // test with dates
+        // test with filters
         DateColumn first = (DateColumn) table.dateColumn("date").first(3);
         assertEquals(LocalDate.parse("2004-02-04"), first.get(0));
         assertEquals(LocalDate.parse("2004-01-21"), first.get(1));
@@ -66,7 +66,7 @@ public class ColumnTest {
     @Test
     public void testLast() throws Exception {
 
-        // test with dates
+        // test with filters
         DateColumn last = (DateColumn) table.dateColumn("date").last(3);
         assertEquals(LocalDate.parse("2001-03-27"), last.get(0));
         assertEquals(LocalDate.parse("2001-02-27"), last.get(1));
