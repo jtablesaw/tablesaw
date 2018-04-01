@@ -3,7 +3,7 @@ package tech.tablesaw.joining;
 import org.junit.Test;
 import tech.tablesaw.api.Table;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class DataFrameJoinerTest {
 
@@ -41,6 +41,29 @@ public class DataFrameJoinerTest {
                     + "\"Horse\",Hay\n"
                     + "\"Goat\",Anything\n",
             "Ainmal Feed");
+
+    private static final Table DOUBLE_INDEXED_PEOPLE = Table.read().csv(
+            "ID,Name\n"
+                    + "1.0,Bob\n"
+                    + "2.0,James\n"
+                    + "3.0,David\n"
+                    + "4.0,Samantha\n",
+            "People");
+
+    private static final Table DOUBLE_INDEXED_DOGS = Table.read().csv(
+            "ID,Dog Name\n"
+                    + "1.0,Spot\n"
+                    + "3.0,Fido\n"
+                    + "4.0,Sasha\n",
+            "Dogs");
+
+    @Test
+    public void innerJoinWithDoubles() {
+        Table joined = DOUBLE_INDEXED_PEOPLE.join("ID").inner(DOUBLE_INDEXED_DOGS, "ID");
+        assertEquals(3, joined.columnCount());
+        assertEquals(3, joined.rowCount());
+        System.out.println(joined);
+    }
 
     @Test
     public void innerJoin() {

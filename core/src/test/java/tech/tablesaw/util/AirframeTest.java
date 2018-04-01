@@ -12,25 +12,15 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.columns;
-
-import org.junit.Test;
-import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.store.ColumnMetadata;
-
-import static org.junit.Assert.assertEquals;
+package tech.tablesaw.util;
 
 /**
  *
  */
-public class ColumnMetadataTest {
+public abstract class AirframeTest {
 
-    private final Column d = new FloatColumn("Float col1");
-
-    @Test
-    public void testToFromJson() {
-        String meta = d.metadata();
-        ColumnMetadata d2 = ColumnMetadata.fromJson(meta);
-        assertEquals(d2, ColumnMetadata.fromJson(meta));
+    protected static void out(Object obj) {
+        System.out.println(String.valueOf(obj));
     }
+
 }

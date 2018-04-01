@@ -14,7 +14,6 @@
 
 package tech.tablesaw.util.selection;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.roaringbitmap.RoaringBitmap;
 
@@ -26,7 +25,8 @@ public class BitmapBackedSelection implements Selection {
      * Returns a selection initialized from 0 to the given size, which cane be used for
      * queries that exclude certain items, by first selecting the items to exclude,
      * then flipping the bits.
-     * @param size  The size    The end point, exclusive
+     *
+     * @param size The size    The end point, exclusive
      */
     public BitmapBackedSelection(int size) {
         this.bitmap = new RoaringBitmap();
@@ -58,6 +58,11 @@ public class BitmapBackedSelection implements Selection {
     }
 
     @Override
+    public String toString() {
+        return "Selection of size: " + bitmap.getCardinality();
+    }
+
+    @Override
     public int size() {
         return bitmap.getCardinality();
     }
@@ -70,11 +75,6 @@ public class BitmapBackedSelection implements Selection {
     @Override
     public RoaringBitmap toBitmap() {
         return bitmap.clone();
-    }
-
-    @Override
-    public IntArrayList toIntArrayList() {
-        return new IntArrayList(bitmap.toArray());
     }
 
     /**
@@ -124,7 +124,7 @@ public class BitmapBackedSelection implements Selection {
      */
     @Override
     public void addRange(int start, int end) {
-        bitmap.add(start, end);
+        bitmap.add((long) start, end);
     }
 
     @Override
@@ -167,11 +167,6 @@ public class BitmapBackedSelection implements Selection {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
-            }
-
-            @Override
-            public Integer next() {
-                return iterator.next();
             }
         };
     }

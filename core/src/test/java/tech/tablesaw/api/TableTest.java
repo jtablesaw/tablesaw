@@ -14,10 +14,13 @@
 
 package tech.tablesaw.api;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.*;
@@ -33,27 +36,13 @@ public class TableTest {
     private static final Random RANDOM = new Random();
 
     private Table table;
-    private FloatColumn floatColumn = new FloatColumn("f1");
-    private NumberColumn numberColumn = new NumberColumn("d1");
+    private NumberColumn f1 = NumberColumn.create("f1");
+    private NumberColumn numberColumn = NumberColumn.create("d1");
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         table = Table.create("t");
-        table.addColumn(floatColumn);
-    }
-
-    @Test
-    public void testGetAndRemoveColumn() throws Exception {
-        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        assertTrue(table.columnNames().contains("Width"));
-
-        Column c = table.getAndRemoveColumn("Width");
-
-        assertNotNull(c);
-        assertFalse(table.columnNames().contains("Width"));
-
-        Column c1 = table.getAndRemoveColumn(0);
-        assertNotNull(c1);
+        table.addColumn(f1);
     }
 
     @Test
@@ -62,43 +51,140 @@ public class TableTest {
         Table result = table.summarize("Injuries", mean, stdDev).by("State");
         assertEquals(49, result.rowCount());
         assertEquals(3, result.columnCount());
-        assertEquals("4.580805569368455", result.column(1).getString(0));
+        Assert.assertEquals("4.580805569368455", result.column(1).getString(0));
     }
 
     @Test
-    public void testColumn() throws Exception {
+    public void testColumn() {
         Column column1 = table.column(0);
         assertNotNull(column1);
     }
 
     @Test
-    public void testFullCopy() throws Exception {
+    public void printEmptyTable() {
+        Table t = Table.create("Test");
+        assertEquals("Test\n\n", t.print());
+
+        Column c = StringColumn.create("SC");
+        t.addColumn(c);
+        assertEquals(" Test \n SC  |\n------", t.print());
+    }
+
+    @Test
+    public void testFullCopy() {
         numberColumn.append(2.23424);
         Table t = Table.create("test");
         t.addColumn(numberColumn);
         Table c = t.fullCopy();
-        NumberColumn doubles = c.doubleColumn(0);
+        NumberColumn doubles = c.numberColumn(0);
         assertNotNull(doubles);
         assertEquals(1, doubles.size());
     }
 
     @Test
-    public void testColumnCount() throws Exception {
+    public void testColumnCount() {
         assertEquals(0, Table.create("t").columnCount());
         assertEquals(1, table.columnCount());
     }
 
     @Test
     public void testSampleSplit() throws Exception {
-        Table t = Table.read().csv("../data/BushApproval.csv");
+        Table t = Table.read().csv("../data/bush.csv");
         Table[] results = t.sampleSplit(.75);
         assertEquals(t.rowCount(), results[0].rowCount() + results[1].rowCount());
     }
 
     @Test
-    public void testRowCount() throws Exception {
+    public void testDoWithEachRow() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv").first(10);
+        System.out.println(t.print());
+        Table.Doable doable = new Table.Doable() {
+
+            @Override
+            public void doWithRow(Row row) {
+                if (row.getRowNumber() < 5) {
+                    System.out.println("On "
+                            + row.getPackedDate("date")
+                            + ", his approval sucks: "
+                            + row.getDouble("approval"));
+                }
+            }
+        };
+
+        t.doWithEachRow(doable);
+    }
+
+    @Test
+    public void testCollectFromEachRow() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+
+        Table.Collectable collectable = new Table.Collectable(StringColumn.create("stringz")) {
+
+            @Override
+            void collectFromRow(Row row) {
+                ((StringColumn) column())
+                        .append(row.getString("who") + " can't predict "
+                        + row.getDouble("approval"));
+            }
+        };
+
+        Column result = t.collectFromEachRow(collectable);
+        assertEquals("fox can't predict 53.0", (result.getString(0)));
+        assertEquals("fox can't predict 53.0", (result.getString(1)));
+    }
+
+    @Test
+    public void testPairs() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+        PairChild pairs = new PairChild();
+        t.doWithRowPairs(pairs);
+        System.out.println(pairs.runningAverage);
+    }
+
+    @Test
+    public void testRolllWithNrows() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+
+        Table.MultiRowDoable multiRowDoable = rows -> {
+            int sum = 0;
+            for (Row row : rows) {
+                sum += row.getDouble("approval");
+            }
+            System.out.println("Running avg = " + sum / (double) rows.length);
+        };
+        t.rollWithNrows(multiRowDoable,2);
+    }
+
+    private class PairChild implements Table.Pairs {
+
+        List<Double> runningAverage = new ArrayList<>();
+
+        @Override
+        public void doWithPair(Row row1, Row row2) {
+            double r1  = row1.getDouble("approval");
+            double r2  = row2.getDouble("approval");
+            runningAverage.add((r1 + r2) / 2.0);
+        }
+
+        public List<Double> result() {return runningAverage;}
+    }
+    @Test
+    public void testStepWithNrows() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+
+        Table.MultiRowDoable multiRowDoable = rows -> {
+            int sum = 0;
+            for (Row row : rows) {
+                sum += row.getDouble("approval");
+            }
+        };
+        t.stepWithNrows(multiRowDoable,10);
+    }
+
+    @Test
+    public void testRowCount() {
         assertEquals(0, table.rowCount());
-        FloatColumn floatColumn = this.floatColumn;
+        NumberColumn floatColumn = this.f1;
         floatColumn.append(2f);
         assertEquals(1, table.rowCount());
         floatColumn.append(2.2342f);
@@ -106,70 +192,70 @@ public class TableTest {
     }
 
     @Test
-    public void testAppend() throws Exception {
+    public void testAppend() {
         int appendedRows = appendRandomlyGeneratedColumn(table);
-        assertTableColumnSize(table, floatColumn, appendedRows);
+        assertTableColumnSize(table, f1, appendedRows);
     }
 
     @Test
-    public void testAppendEmptyTable() throws Exception {
+    public void testAppendEmptyTable() {
         appendEmptyColumn(table);
         assertTrue(table.isEmpty());
     }
 
     @Test
-    public void testAppendToNonEmptyTable() throws Exception {
-        populateColumn(floatColumn);
+    public void testAppendToNonEmptyTable() {
+        populateColumn(f1);
         assertFalse(table.isEmpty());
         int initialSize = table.rowCount();
         int appendedRows = appendRandomlyGeneratedColumn(table);
-        assertTableColumnSize(table, floatColumn, initialSize + appendedRows);
+        assertTableColumnSize(table, f1, initialSize + appendedRows);
     }
 
     @Test
-    public void testAppendEmptyTableToNonEmptyTable() throws Exception {
-        populateColumn(floatColumn);
+    public void testAppendEmptyTableToNonEmptyTable() {
+        populateColumn(f1);
         assertFalse(table.isEmpty());
         int initialSize = table.rowCount();
         appendEmptyColumn(table);
-        assertTableColumnSize(table, floatColumn, initialSize);
+        assertTableColumnSize(table, f1, initialSize);
     }
 
     @Test
-    public void testAppendMultipleColumns() throws Exception {
-        FloatColumn column = new FloatColumn("e1");
+    public void testAppendMultipleColumns() {
+        NumberColumn column = NumberColumn.create("e1");
         table.addColumn(column);
-        FloatColumn first = floatColumn.emptyCopy();
-        FloatColumn second = column.emptyCopy();
+        NumberColumn first = f1.emptyCopy();
+        NumberColumn second = column.emptyCopy();
         int firstColumnSize = populateColumn(first);
         int secondColumnSize = populateColumn(second);
         Table tableToAppend = Table.create("populated", first, second);
         table.append(tableToAppend);
-        assertTableColumnSize(table, floatColumn, firstColumnSize);
+        assertTableColumnSize(table, f1, firstColumnSize);
         assertTableColumnSize(table, column, secondColumnSize);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testAppendNull() throws Exception {
+    public void testAppendNull() {
         table.append(null);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testAppendTableWithNonExistingColumns() throws Exception {
+    public void testAppendTableWithNonExistingColumns() {
         Table tableToAppend = Table.create("wrong", numberColumn);
         table.append(tableToAppend);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testAppendTableWithAnotherColumnName() throws Exception {
-        FloatColumn column = new FloatColumn("42");
+    public void testAppendTableWithAnotherColumnName() {
+        NumberColumn column = NumberColumn.create("42");
         Table tableToAppend = Table.create("wrong", column);
         table.append(tableToAppend);
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testAppendTableWithDifferentShape() throws Exception {
-        FloatColumn column = new FloatColumn("e1");
+    public void testAppendTableWithDifferentShape() {
+        NumberColumn column = NumberColumn.create("e1");
         table.addColumn(column);
         Table tableToAppend = Table.create("different", column);
         assertTrue(table.columns().size() == 2);
@@ -178,10 +264,10 @@ public class TableTest {
     }
 
     @Test
-    public void testReplaceColumn() throws Exception {
-        FloatColumn first = new FloatColumn("c1", new float[]{1, 2, 3, 4, 5});
-        FloatColumn second = new FloatColumn("c2", new float[]{6, 7, 8, 9, 10});
-        FloatColumn replacement = new FloatColumn("c2", new float[]{10, 20, 30, 40, 50});
+    public void testReplaceColumn() {
+        NumberColumn first = NumberColumn.create("c1", new double[]{1, 2, 3, 4, 5});
+        NumberColumn second = NumberColumn.create("c2", new double[]{6, 7, 8, 9, 10});
+        NumberColumn replacement = NumberColumn.create("c2", new double[]{10, 20, 30, 40, 50});
 
         Table t = Table.create("populated", first, second);
 
@@ -194,13 +280,13 @@ public class TableTest {
     }
 
     private int appendRandomlyGeneratedColumn(Table table) {
-        FloatColumn column = floatColumn.emptyCopy();
+        NumberColumn column = f1.emptyCopy();
         populateColumn(column);
         return appendColumn(table, column);
     }
 
     private void appendEmptyColumn(Table table) {
-        FloatColumn column = floatColumn.emptyCopy();
+        NumberColumn column = f1.emptyCopy();
         appendColumn(table, column);
     }
 
@@ -215,7 +301,7 @@ public class TableTest {
         assertEquals(expected, actual);
     }
 
-    private int populateColumn(FloatColumn floatColumn) {
+    private int populateColumn(NumberColumn floatColumn) {
         int rowsCount = RANDOM.nextInt(ROWS_BOUNDARY);
         for (int i = 0; i < rowsCount; i++) {
             floatColumn.append(RANDOM.nextFloat());
@@ -225,10 +311,10 @@ public class TableTest {
     }
 
     @Test
-    public void testAsMatrix() throws Exception {
-        NumberColumn first = new NumberColumn("c1", new double[]{1l, 2l, 3l, 4l, 5l});
-        NumberColumn second = new NumberColumn("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
-        NumberColumn third = new NumberColumn("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
+    public void testAsMatrix() {
+        NumberColumn first = NumberColumn.create("c1", new double[]{1l, 2l, 3l, 4l, 5l});
+        NumberColumn second = NumberColumn.create("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
+        NumberColumn third = NumberColumn.create("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
 
         Table t = Table.create("table", first, second, third);
         double[][] matrix = t.asMatrix();

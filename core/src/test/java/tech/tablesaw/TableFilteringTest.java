@@ -16,17 +16,15 @@ package tech.tablesaw;
 
 import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static tech.tablesaw.api.QueryHelper.*;
 
 /**
@@ -34,31 +32,34 @@ import static tech.tablesaw.api.QueryHelper.*;
  */
 public class TableFilteringTest {
 
-    private final ColumnType[] types = {
-            ColumnType.LOCAL_DATE,     // date of poll
-            ColumnType.INTEGER,        // approval rating (pct)
-            ColumnType.CATEGORY             // polling org
-    };
-
     private Table table;
 
     @Before
     public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv").columnTypes(types));
+        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
     }
 
     @Test
     public void testFilter1() {
-        Table result = table.selectWhere(column("approval").isLessThan(70));
-        IntColumn a = result.intColumn("approval");
-        for (int v : a) {
+        Table result = table.selectWhere(numberColumn("approval").isLessThan(70));
+        NumberColumn a = result.numberColumn("approval");
+        for (double v : a) {
             assertTrue(v < 70);
         }
     }
 
     @Test
+    public void testReject() {
+        Table result = table.rejectWhere(numberColumn("approval").isLessThan(70));
+        NumberColumn a = result.numberColumn("approval");
+        for (double v : a) {
+            assertFalse(v < 70);
+        }
+    }
+
+    @Test
     public void testFilter2() {
-        Table result = table.selectWhere(column("date").isInApril());
+        Table result = table.selectWhere(dateColumn("date").isInApril());
         DateColumn d = result.dateColumn("date");
         for (LocalDate v : d) {
             assertTrue(PackedLocalDate.isInApril(PackedLocalDate.pack(v)));
@@ -68,11 +69,12 @@ public class TableFilteringTest {
     @Test
     public void testFilter3() {
         Table result = table.selectWhere(
-                both(column("date").isInApril(),
-                        column("approval").isGreaterThan(70)));
+                and(
+                        dateColumn("date").isInApril(),
+                        numberColumn("approval").isGreaterThan(70)));
 
         DateColumn dates = result.dateColumn("date");
-        IntColumn approval = result.intColumn("approval");
+        NumberColumn approval = result.numberColumn("approval");
         for (int row : result) {
             assertTrue(PackedLocalDate.isInApril(dates.getIntInternal(row)));
             assertTrue(approval.get(row) > 70);
@@ -84,8 +86,9 @@ public class TableFilteringTest {
         Table result =
                 table.select("who", "approval")
                         .where(
-                                and(column("date").isInApril(),
-                                        column("approval").isGreaterThan(70)));
+                                and(
+                                        dateColumn("date").isInApril(),
+                                        numberColumn("approval").isGreaterThan(70)));
         assertEquals(2, result.columnCount());
         assertTrue(result.columnNames().contains("who"));
         assertTrue(result.columnNames().contains("approval"));

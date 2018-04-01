@@ -333,7 +333,7 @@ public class NanoBench {
                         .append(" ms\t")
                         .append("total: ").append(integerFormat.format(finalTotal)).append(" s\t").append("   tps: ")
                         .append(integerFormat.format(finalTps)).append("\t").append("running: ").append(count).append
-                        (" filters");
+                        (" times");
                 count = 0;
                 timeUsed = 0;
                 if (!state.getLabel().equals("_warmup_")) {

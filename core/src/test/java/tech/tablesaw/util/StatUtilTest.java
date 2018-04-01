@@ -15,11 +15,11 @@
 package tech.tablesaw.util;
 
 import org.junit.Test;
-import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.NumberColumn;
 
 import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -29,10 +29,10 @@ public class StatUtilTest {
     @Test
     public void testSum() {
         Random random = new Random();
-        float sum = 0.0f;
-        FloatColumn column = new FloatColumn("c1");
+        double sum = 0.0f;
+        NumberColumn column = NumberColumn.create("c1");
         for (int i = 0; i < 100; i++) {
-            float f = random.nextFloat();
+            double f = random.nextDouble();
             column.append(f);
             sum += f;
         }
@@ -42,10 +42,10 @@ public class StatUtilTest {
     @Test
     public void testMin() {
         Random random = new Random();
-        float min = Float.MAX_VALUE;
-        FloatColumn column = new FloatColumn("c1");
+        double min = Double.MAX_VALUE;
+        NumberColumn column = NumberColumn.create("c1");
         for (int i = 0; i < 100; i++) {
-            float f = random.nextFloat();
+            double f = random.nextDouble();
             column.append(f);
             if (min > f) {
                 min = f;
@@ -57,10 +57,10 @@ public class StatUtilTest {
     @Test
     public void testMax() {
         Random random = new Random();
-        float max = Float.MIN_VALUE;
-        FloatColumn column = new FloatColumn("c1");
+        double max = Double.MIN_VALUE;
+        NumberColumn column = NumberColumn.create("c1");
         for (int i = 0; i < 100; i++) {
-            float f = random.nextFloat();
+            double f = random.nextDouble();
             column.append(f);
             if (max < f) {
                 max = f;

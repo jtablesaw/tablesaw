@@ -14,18 +14,22 @@
 
 package tech.tablesaw.api;
 
+import tech.tablesaw.columns.string.StringColumnFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.TestDataUtil;
 import tech.tablesaw.util.selection.Selection;
 
 import java.util.List;
+import java.util.function.Function;
 
+import static tech.tablesaw.api.QueryHelper.and;
+import static tech.tablesaw.columns.string.StringPredicates.isEqualToIgnoringCase;
 import static org.junit.Assert.*;
 
 public class StringColumnTest {
 
-    private StringColumn column = new StringColumn("testing");
+    private final StringColumn column = StringColumn.create("testing");
 
     @Before
     public void setUp() {
@@ -43,13 +47,49 @@ public class StringColumnTest {
     }
 
     @Test
+    public void lag() {
+        StringColumn c1 = column.lag(1);
+        Table t = Table.create("Test");
+        t.addColumn(column, c1);
+        assertEquals("", c1.get(0));
+        assertEquals("Value 1", c1.get(1));
+        assertEquals("Value 2", c1.get(2));
+    }
+
+    @Test
+    public void lag2() {
+        StringColumn c1 = column.lag(-1);
+        Table t = Table.create("Test");
+        t.addColumn(column, c1);
+        assertEquals("Value 2", c1.get(0));
+        assertEquals("Value 3", c1.get(1));
+        assertEquals("", c1.get(3));
+    }
+
+    @Test
+    public void lead() {
+        StringColumn c1 = column.lead(1);
+        Table t = Table.create("Test");
+        t.addColumn(column, c1);
+        assertEquals("Value 2", c1.get(0));
+        assertEquals("Value 3", c1.get(1));
+        assertEquals("", c1.get(3));
+    }
+
+    @Test
+    public void testSelectWhere() {
+        StringColumn result = column.select(column.equalsIgnoreCase("VALUE 1"));
+        assertEquals(1, result.size());
+    }
+
+    @Test
     public void testDefaultReturnValue() {
-        assertEquals(-1, column.dictionaryMap().get("test"));
+        assertEquals(-1, column.firstIndexOf("test"));
     }
 
     @Test
     public void testType() {
-        assertEquals(ColumnType.CATEGORY, column.type());
+        assertEquals(ColumnType.STRING, column.type());
     }
 
     @Test
@@ -70,41 +110,66 @@ public class StringColumnTest {
 
     @Test
     public void testToString() {
-        assertEquals("Category column: testing", column.toString());
+        assertEquals("String column: testing", column.toString());
     }
 
     @Test
     public void testMax() {
-        StringColumn stringColumn = new StringColumn("US States");
+        StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
         assertTrue("Wyoming".equals(stringColumn.top(5).get(0)));
     }
 
     @Test
     public void testMin() {
-        StringColumn stringColumn = new StringColumn("US States");
+        StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
         assertTrue("Alabama".equals(stringColumn.bottom(5).get(0)));
     }
 
     @Test
     public void testStartsWith() {
-        StringColumn stringColumn = new StringColumn("US States");
+        StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
-        Selection selection = stringColumn.startsWith("A");
-        assertEquals("Alabama", stringColumn.get(selection.get(0)));
-        assertEquals("Alaska", stringColumn.get(selection.get(1)));
-        assertEquals("Arizona", stringColumn.get(selection.get(2)));
-        assertEquals("Arkansas", stringColumn.get(selection.get(3)));
 
-        selection = stringColumn.startsWith("T");
-        assertEquals("Tennessee", stringColumn.get(selection.get(0)));
-        assertEquals("Texas", stringColumn.get(selection.get(1)));
+        StringColumn selection = stringColumn.select(stringColumn.startsWith("A"));
+        assertEquals("Alabama", selection.get(0));
+        assertEquals("Alaska", selection.get(1));
+        assertEquals("Arizona", selection.get(2));
+        assertEquals("Arkansas", selection.get(3));
+
+        selection = stringColumn.select(stringColumn.startsWith("T"));
+        assertEquals("Tennessee", selection.get(0));
+        assertEquals("Texas", selection.get(1));
+    }
+
+    @Test
+    public void testFormattedPrinting() {
+        StringColumn stringColumn = StringColumn.create("US States");
+        stringColumn.addAll(TestDataUtil.usStates());
+
+        Function<String, String> formatter = s -> String.format("[[%s]]", s);
+
+        stringColumn.setPrintFormatter(new StringColumnFormatter(formatter));
+        assertEquals("[[Alabama]]", stringColumn.getString(0));
+    }
+
+    @Test
+    public void testSelectWithFilter() {
+        StringColumn stringColumn = StringColumn.create("US States");
+        stringColumn.addAll(TestDataUtil.usStates());
+
+        StringColumn selection = stringColumn.select(
+                and(stringColumn.startsWith("A"),
+                    stringColumn.containsString("kan")));
+
+        assertEquals(1, selection.size());
+        assertEquals("Arkansas", selection.getString(0));
     }
 
     @Test
     public void testIsNotEqualTo() {
-        StringColumn stringColumn = new StringColumn("US States");
+        StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
 
         Selection selection = stringColumn.isNotEqualTo("Alabama");
@@ -115,8 +180,42 @@ public class StringColumnTest {
     }
 
     @Test
+    public void testColumnEqualIgnoringCase() {
+        StringColumn other = column.copy();
+        other.set(1, "Some other thing");
+        other.set(2, other.get(2).toUpperCase());
+        assertFalse(other.contains("Value 3"));
+        assertTrue(other.contains("Value 1"));
+        assertFalse(other.contains("Value 2"));
+        assertTrue(other.contains("Some other thing"));
+        assertTrue(other.contains("VALUE 3"));
+        assertTrue(other.contains("Value 4"));
+        assertTrue("Value 3".equalsIgnoreCase("VALUE 3"));
+        assertEquals(4, other.size());
+        StringColumn result = (StringColumn) column.subset(column.eval(isEqualToIgnoringCase, other));
+        assertEquals(3, result.size());
+        System.out.println(result);
+    }
+
+    @Test
+    public void testIsEqualTo() {
+        StringColumn stringColumn = StringColumn.create("US States");
+        stringColumn.addAll(TestDataUtil.usStates());
+        stringColumn.append("Alabama");  // so we have two entries
+        Selection selection = stringColumn.isEqualTo("Alabama");
+        StringColumn result = (StringColumn) stringColumn.subset(selection);
+
+        assertEquals(2, result.size());
+        assertTrue(result.contains("Alabama"));
+
+        StringColumn result2 = stringColumn.textIsEqualTo("Alabama");
+        assertEquals(2, result2.size());
+        assertTrue(result2.contains("Alabama"));
+    }
+
+    @Test
     public void testIsNotEqualTo2() {
-        StringColumn stringColumn = new StringColumn("US States");
+        StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
 
         Selection selection2 = stringColumn.isNotEqualTo("Yugoslavia");
@@ -127,17 +226,28 @@ public class StringColumnTest {
 
     @Test
     public void testIsIn() {
-        StringColumn stringColumn = new StringColumn("US States");
+        StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
-        Selection selection = stringColumn.isIn("Alabama", "Texas");
-        assertEquals("Alabama", stringColumn.get(selection.get(0)));
-        assertEquals("Texas", stringColumn.get(selection.get(1)));
+        StringColumn selection = stringColumn.select(stringColumn.isIn("Alabama", "Texas"));
+        assertEquals("Alabama", selection.get(0));
+        assertEquals("Texas", selection.get(1));
         assertEquals(2, selection.size());
     }
 
     @Test
+    public void testIsNotIn() {
+        StringColumn stringColumn = StringColumn.create("US States");
+        stringColumn.addAll(TestDataUtil.usStates());
+        StringColumn selection = stringColumn.select(stringColumn.isNotIn("Alabama", "Texas"));
+        assertEquals("Alaska", selection.get(0));
+        assertEquals("Arizona", selection.get(1));
+        assertEquals("Arkansas", selection.get(2));
+        assertEquals(49, selection.size());
+    }
+
+    @Test
     public void testToList() {
-        StringColumn stringColumn = new StringColumn("US States");
+        StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
         List<String> states = stringColumn.asList();
         assertEquals(51, states.size()); //includes Wash. DC

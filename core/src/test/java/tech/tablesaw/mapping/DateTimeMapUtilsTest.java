@@ -16,27 +16,26 @@ package tech.tablesaw.mapping;
 
 import org.junit.Test;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Tests for DateTimeMapUtils
  */
 public class DateTimeMapUtilsTest {
 
-    private DateTimeColumn startCol = new DateTimeColumn("start");
-    private DateTimeColumn stopCol = new DateTimeColumn("stop");
+    private DateTimeColumn startCol = DateTimeColumn.create("start");
+    private DateTimeColumn stopCol = DateTimeColumn.create("stop");
     private LocalDateTime start = LocalDateTime.now();
 
 
     @Test
-    public void testDifferenceInMilliseconds() throws Exception {
+    public void testDifferenceInMilliseconds() {
         long pStart = PackedLocalDateTime.pack(start);
         LocalDateTime stop = start.plus(100_000L, ChronoUnit.MILLIS);
         long pStop = PackedLocalDateTime.pack(stop);
@@ -45,70 +44,70 @@ public class DateTimeMapUtilsTest {
         stopCol.add(stop);
 
         assertEquals(100_000L, startCol.difference(pStart, pStop, ChronoUnit.MILLIS));
-        LongColumn result = startCol.differenceInMilliseconds(stopCol);
-        assertEquals(100_000L, result.firstElement());
+        NumberColumn result = startCol.differenceInMilliseconds(stopCol);
+        assertEquals(100_000L, result.firstElement(),0.01);
     }
 
     @Test
-    public void testDifferenceInSeconds() throws Exception {
+    public void testDifferenceInSeconds() {
         LocalDateTime stop = start.plus(100_000L, ChronoUnit.SECONDS);
 
         startCol.add(start);
         stopCol.add(stop);
 
-        LongColumn result = startCol.differenceInSeconds(stopCol);
-        assertEquals(100_000L, result.firstElement());
+        NumberColumn result = startCol.differenceInSeconds(stopCol);
+        assertEquals(100_000L, result.firstElement(), 0.01);
     }
 
     @Test
-    public void testDifferenceInMinutes() throws Exception {
+    public void testDifferenceInMinutes() {
         LocalDateTime stop = start.plus(100_000L, ChronoUnit.MINUTES);
 
         startCol.add(start);
         stopCol.add(stop);
 
-        LongColumn result = startCol.differenceInMinutes(stopCol);
-        assertEquals(100_000L, result.firstElement());
+        NumberColumn result = startCol.differenceInMinutes(stopCol);
+        assertEquals(100_000L, result.firstElement(), 0.01);
     }
 
     @Test
-    public void testDifferenceInHours() throws Exception {
+    public void testDifferenceInHours() {
         LocalDateTime stop = start.plus(100_000L, ChronoUnit.HOURS);
 
         startCol.add(start);
         stopCol.add(stop);
 
-        LongColumn result = startCol.differenceInHours(stopCol);
-        assertEquals(100_000L, result.firstElement());
+        NumberColumn result = startCol.differenceInHours(stopCol);
+        assertEquals(100_000L, result.firstElement(), 0.01);
 
     }
 
     @Test
-    public void testDifferenceInDays() throws Exception {
+    public void testDifferenceInDays() {
         LocalDateTime stop = start.plus(100_000L, ChronoUnit.DAYS);
 
         startCol.add(start);
         stopCol.add(stop);
 
-        LongColumn result = startCol.differenceInDays(stopCol);
-        assertEquals(100_000L, result.firstElement());
+        NumberColumn result = startCol.differenceInDays(stopCol);
+        assertEquals(100_000L, result.firstElement(), 0.01);
     }
 
     @Test
-    public void testDifferenceInYears() throws Exception {
+    public void testDifferenceInYears() {
 
         LocalDateTime stop = start.plus(10_000L, ChronoUnit.YEARS);
         startCol.add(start);
         stopCol.add(stop);
 
-        LongColumn result = startCol.differenceInYears(stopCol);
-        assertEquals(10_000L, result.firstElement());
+        NumberColumn result = startCol.differenceInYears(stopCol);
+        assertEquals(10_000L, result.firstElement(), 0.01);
     }
 
     @Test
-    public void testHour() throws Exception {
+    public void testHour() {
         startCol.add(LocalDateTime.of(1984, 12, 12, 7, 30));
-        ShortColumn hour = startCol.hour();
-        assertEquals(7, hour.firstElement());
+        NumberColumn hour = startCol.hour();
+        assertEquals(7, hour.firstElement(), 0001);
     }
 }

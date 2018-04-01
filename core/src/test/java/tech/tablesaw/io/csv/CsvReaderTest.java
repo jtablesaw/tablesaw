@@ -17,7 +17,7 @@ package tech.tablesaw.io.csv;
 import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 
 import java.io.File;
@@ -34,8 +34,8 @@ import static tech.tablesaw.api.ColumnType.*;
  */
 public class CsvReaderTest {
 
-    private final ColumnType[] bus_types = {SHORT_INT, CATEGORY, CATEGORY, FLOAT, FLOAT};
-    private final ColumnType[] bus_types_with_SKIP = {SHORT_INT, CATEGORY, SKIP, FLOAT, FLOAT};
+    private final ColumnType[] bus_types = {NUMBER, STRING, STRING, NUMBER, NUMBER};
+    private final ColumnType[] bus_types_with_SKIP = {NUMBER, STRING, SKIP, NUMBER, NUMBER};
 
     @Test
     public void testWithBusData() throws Exception {
@@ -79,9 +79,9 @@ public class CsvReaderTest {
     @Test
     public void testWithBushData() throws Exception {
         // Read the CSV file
-        ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};
+        ColumnType[] types = {LOCAL_DATE, NUMBER, STRING};
         Table table = Table.read().csv(
-                CsvReadOptions.builder("../data/BushApproval.csv")
+                CsvReadOptions.builder("../data/bush.csv")
                         .columnTypes(types));
 
         assertEquals(323, table.rowCount());
@@ -94,7 +94,7 @@ public class CsvReaderTest {
     public void testBushDataWithoutSamplingForTypeDetection() throws Exception {
         // Read the CSV file
         Table table = Table.read().csv(CsvReadOptions
-                .builder("../data/BushApproval.csv")
+                .builder("../data/bush.csv")
                 .sample(false));
 
         assertEquals(323, table.rowCount());
@@ -115,27 +115,27 @@ public class CsvReaderTest {
     public void testPrintStructure() throws Exception {
         String output =
                 "ColumnType[] columnTypes = {\n" +
-                        "LOCAL_DATE, // 0     date        \n" +
-                        "SHORT_INT,  // 1     approval    \n" +
-                        "CATEGORY,   // 2     who         \n" +
+                        "LOCAL_DATE, // 0.0   date        \n" +
+                        "NUMBER,     // 1.0   approval    \n" +
+                        "STRING,     // 2.0   who         \n" +
                         "}\n";
-        assertEquals(output, CsvReader.printColumnTypes("../data/BushApproval.csv", true, ','));
+        assertEquals(output, CsvReader.printColumnTypes("../data/bush.csv", true, ','));
     }
 
     @Test
     public void testDataTypeDetection2() throws Exception {
-        InputStream stream = new FileInputStream(new File("../data/BushApproval.csv"));
+        InputStream stream = new FileInputStream(new File("../data/bush.csv"));
         ColumnType[] columnTypes = CsvReader.detectColumnTypes(stream, true, ',', false);
         assertEquals(LOCAL_DATE, columnTypes[0]);
-        assertEquals(SHORT_INT, columnTypes[1]);
-        assertEquals(CATEGORY, columnTypes[2]);
+        assertEquals(NUMBER, columnTypes[1]);
+        assertEquals(STRING, columnTypes[2]);
     }
 
     @Ignore
     @Test
     public void testLoadFromUrl() throws Exception {
-        ColumnType[] types = {LOCAL_DATE, SHORT_INT, CATEGORY};
-        String location = "https://raw.githubusercontent.com/jtablesaw/tablesaw/master/data/BushApproval.csv";
+        ColumnType[] types = {LOCAL_DATE, NUMBER, STRING};
+        String location = "https://raw.githubusercontent.com/jAirframe/Airframe/master/data/bush.csv";
         Table table;
         try (InputStream input = new URL(location).openStream()) {
             table = Table.read().csv(CsvReadOptions
@@ -161,7 +161,7 @@ public class CsvReaderTest {
     public void testReadFailure() throws Exception {
         Table table1 = Table.read().csv("../data/read_failure_test.csv");
         table1.structure(); // just make sure the import completed
-        ShortColumn test = table1.shortColumn("Test");
+        NumberColumn test = table1.numberColumn("Test");
         //TODO(lwhite): Better tests
         assertNotNull(test.summary());
     }
@@ -170,7 +170,7 @@ public class CsvReaderTest {
     public void testReadFailure2() throws Exception {
         Table table1 = Table.read().csv("../data/read_failure_test2.csv");
         table1.structure(); // just make sure the import completed
-        ShortColumn test = table1.shortColumn("Test");
+        NumberColumn test = table1.numberColumn("Test");
 
         //TODO(lwhite): Better tests
         assertNotNull(test.summary());

@@ -20,6 +20,7 @@ import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.table.StandardViewGroup;
 import tech.tablesaw.table.ViewGroup;
 
 public class HtmlTableWriterTest {
@@ -28,14 +29,14 @@ public class HtmlTableWriterTest {
 
     @Before
     public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/BushApproval.csv"));
+        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
     }
 
     @Test
     public void testWrite() {
         CategoricalColumn byColumn = table.categoricalColumn("who");
-        ViewGroup group = new ViewGroup(table, byColumn);
-        Table result = group.agg("approval", AggregateFunctions.mean);
+        ViewGroup group = StandardViewGroup.create(table, byColumn);
+        Table result = group.aggregate("approval", AggregateFunctions.mean);
         HtmlTableWriter.write(result);
     }
 }

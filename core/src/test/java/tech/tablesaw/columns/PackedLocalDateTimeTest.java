@@ -92,7 +92,7 @@ public class PackedLocalDateTimeTest {
     @Test
     public void testGetSecondOfDay() {
         LocalDateTime now = LocalDateTime.now();
-        assertEquals(now.get(ChronoField.SECOND_OF_DAY), getSecondOfDay(pack(now)));
+        assertEquals(now.get(ChronoField.SECOND_OF_DAY), getSecondOfDay(pack(now)), 0.0001);
     }
 
     @Test
