@@ -15,44 +15,26 @@
 package tech.tablesaw.columns;
 
 import org.apache.commons.lang3.StringUtils;
-import tech.tablesaw.store.ColumnMetadata;
-
-import java.util.UUID;
+import tech.tablesaw.api.ColumnType;
 
 /**
  * Partial implementation of the {@link Column} interface
  */
 public abstract class AbstractColumn implements Column {
 
-    private String id;
+    protected static final int DEFAULT_ARRAY_SIZE = 128;
 
     private String name;
 
-    private String comment;
+    private final ColumnType type;
 
-    public AbstractColumn(String name) {
+    public AbstractColumn(ColumnType type, String name) {
+        this.type = type;
         setName(name);
-        this.comment = "";
-        this.id = UUID.randomUUID().toString();
-    }
-
-    public AbstractColumn(ColumnMetadata metadata) {
-        setName(metadata.getName());
-        this.comment = "";
-        this.id = metadata.getId();
     }
 
     public String name() {
         return name;
-    }
-
-    public String id() {
-        return id;
-    }
-
-    @Override
-    public String metadata() {
-        return columnMetadata().toJson();
     }
 
     @Override
@@ -62,21 +44,6 @@ public abstract class AbstractColumn implements Column {
     }
 
     public abstract void appendCell(String stringvalue);
-
-    @Override
-    public String comment() {
-        return comment;
-    }
-
-    @Override
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    @Override
-    public ColumnMetadata columnMetadata() {
-        return new ColumnMetadata(this);
-    }
 
     /**
      * Returns the width of the column in characters, for printing
@@ -92,7 +59,25 @@ public abstract class AbstractColumn implements Column {
     }
 
     @Override
-    public Column difference() {
-        throw new UnsupportedOperationException("difference() method not supported for all data types");
+    public ColumnType type() {
+        return type;
     }
+
+    @Override
+    public String toString() {
+        return type().getPrinterFriendlyName() + " column: " + name();
+    }
+
+    @Override
+    public String print() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(title());
+        for (int i = 0; i < size(); i++) {
+            builder.append(getString(i));
+            builder.append('\n');
+        }
+        return builder.toString();
+    }
+
+
 }

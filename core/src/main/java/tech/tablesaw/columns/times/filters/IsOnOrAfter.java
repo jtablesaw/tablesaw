@@ -14,43 +14,44 @@
 
 package tech.tablesaw.columns.times.filters;
 
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
-public class IsBeforeNoon extends ColumnFilter {
+import javax.annotation.concurrent.Immutable;
+import java.time.LocalTime;
 
-    public IsBeforeNoon(ColumnReference reference) {
+@Immutable
+public class IsOnOrAfter extends ColumnFilter {
+
+    private final int value;
+
+    public IsOnOrAfter(ColumnReference reference, int value) {
         super(reference);
+        this.value = value;
+    }
+
+    public IsOnOrAfter(ColumnReference reference, LocalTime value) {
+        super(reference);
+        if (value == null) {
+            this.value = TimeColumn.MISSING_VALUE;
+        } else {
+            this.value = PackedLocalTime.pack(value);
+        }
     }
 
     @Override
     public Selection apply(Table relation) {
-        String name = columnReference().getColumnName();
-        Column column = relation.column(name);
-        return apply(column);
+        return apply(relation.column(columnReference().getColumnName()));
     }
 
     @Override
     public Selection apply(Column column) {
-        ColumnType type = column.type();
-        switch (type) {
-            case LOCAL_TIME:
-                TimeColumn timeColumn = (TimeColumn) column;
-                return timeColumn.select(PackedLocalTime::AM);
-            case LOCAL_DATE_TIME:
-                DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
-                return dateTimeColumn.eval(PackedLocalDateTime::AM);
-            default:
-                throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "
-                        + "isBeforeNoon() ");
-        }
+        TimeColumn timeColumn = (TimeColumn) column;
+        return timeColumn.eval(PackedLocalTime::isOnOrAfter, value);
     }
 }

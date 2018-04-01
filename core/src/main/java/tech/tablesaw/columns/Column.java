@@ -17,7 +17,6 @@ package tech.tablesaw.columns;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.store.ColumnMetadata;
 import tech.tablesaw.table.RollingColumn;
 import tech.tablesaw.util.selection.Selection;
 
@@ -62,19 +61,32 @@ public interface Column {
      */
     Column unique();
 
+    /*
+     */
+
+    /**
+     * Returns a column of the same type as the receiver, containing the receivers values offset -n
+     * For example if you lead a column containing 2, 3, 4 by 1, you get a column containing 3, 4, NA.
+     */
+
+    default Column lead(int n) {
+        return lag(-n);
+    }
+
+    /**
+     * Returns a column of the same type and size as the receiver, containing the receivers values offset by n.
+     * <p>
+     * For example if you lag a column containing 2, 3, 4 by 1, you get a column containing NA, 2, 3
+     */
+
+    Column lag(int n);
+
     /**
      * Returns the column's name.
      *
      * @return name as String
      */
     String name();
-
-    /**
-     * Returns true if this column is suitable to use as the grouping column for aggregation and cross-tabulation
-     */
-    default boolean isCategorical() {
-        return type().isCategorical();
-    }
 
     /**
      * Sets the columns name to the given string
@@ -136,31 +148,7 @@ public interface Column {
 
     void appendCell(String stringValue);
 
-    /**
-     * Returns a unique string that identifies this column.
-     *
-     * @return the unique identifier as string.
-     */
-    String id();
-
-    /**
-     * Returns a String containing the column's metadata in json format.
-     *
-     * @return metadata as String
-     */
-    String metadata();
-
-    ColumnMetadata columnMetadata();
-
     IntComparator rowComparator();
-
-    default String first() {
-        return getString(0);
-    }
-
-    default String last() {
-        return getString(size() - 1);
-    }
 
     void append(Column column);
 
@@ -168,7 +156,7 @@ public interface Column {
         Column col = emptyCopy();
         int rows = Math.min(numRows, size());
         for (int i = 0; i < rows; i++) {
-            col.appendCell(getString(i));
+            col.appendCell(getUnformattedString(i));
         }
         return col;
     }
@@ -177,20 +165,19 @@ public interface Column {
         Column col = emptyCopy();
         int rows = Math.min(numRows, size());
         for (int i = size() - rows; i < size(); i++) {
-            col.appendCell(getString(i));
+            col.appendCell(getUnformattedString(i));
         }
         return col;
     }
 
+    /**
+     * TODO(lwhite): Print n from the top and bottom, like a table;
+     */
     String print();
 
     default String title() {
         return "Column: " + name() + '\n';
     }
-
-    String comment();
-
-    void setComment(String comment);
 
     default double[] asDoubleArray() {
         throw new UnsupportedOperationException("Method toDoubleArray() is not supported on non-numeric columns");
@@ -217,18 +204,9 @@ public interface Column {
      */
     byte[] asBytes(int rowNumber);
 
-    /**
-     * Returns a new column of the same type as the receiver, such that the values in the new column
-     * contain the difference between each cell in the original and it's predecessor.
-     * The Missing Value Indicator is used for the first cell in the new column.
-     * (e.g. IntColumn.MISSING_VALUE)
-     *
-     * @return a {@link Column}
-     */
-    Column difference();
-
     default RollingColumn rolling(int windowSize) {
         return new RollingColumn(this, windowSize);
     }
 
+    String getUnformattedString(int r);
 }

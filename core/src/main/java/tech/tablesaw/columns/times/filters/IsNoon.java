@@ -20,6 +20,8 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
@@ -31,17 +33,21 @@ public class IsNoon extends ColumnFilter {
 
     @Override
     public Selection apply(Table relation) {
-
         String name = columnReference().getColumnName();
         Column column = relation.column(name);
+        return apply(column);
+    }
+
+    @Override
+    public Selection apply(Column column) {
         ColumnType type = column.type();
         switch (type) {
             case LOCAL_TIME:
-                TimeColumn timeColumn = relation.timeColumn(name);
-                return timeColumn.isNoon();
+                TimeColumn timeColumn = (TimeColumn) column;
+                return timeColumn.select(PackedLocalTime::isNoon);
             case LOCAL_DATE_TIME:
-                DateTimeColumn dateTimeColumn = relation.dateTimeColumn(name);
-                return dateTimeColumn.isNoon();
+                DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
+                return dateTimeColumn.eval(PackedLocalDateTime::isNoon);
             default:
                 throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "
                         + "isNoon() ");

@@ -16,7 +16,9 @@ package tech.tablesaw.columns.times.filters;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
@@ -24,15 +26,21 @@ import java.time.LocalTime;
 
 public class IsBefore extends ColumnFilter {
 
-    private LocalTime value;
+    private final LocalTime value;
 
     public IsBefore(ColumnReference reference, LocalTime value) {
         super(reference);
         this.value = value;
     }
 
+    @Override
     public Selection apply(Table relation) {
-        TimeColumn timeColumn = (TimeColumn) relation.column(columnReference().getColumnName());
-        return timeColumn.isBefore(value);
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
+        TimeColumn timeColumn = (TimeColumn) column;
+        return timeColumn.select(PackedLocalTime::isBefore, PackedLocalTime.pack(value));
     }
 }

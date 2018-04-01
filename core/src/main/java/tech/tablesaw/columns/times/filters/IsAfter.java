@@ -16,7 +16,9 @@ package tech.tablesaw.columns.times.filters;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.util.selection.Selection;
 
@@ -31,8 +33,14 @@ public class IsAfter extends ColumnFilter {
         this.value = value;
     }
 
+    @Override
     public Selection apply(Table relation) {
-        TimeColumn timeColumn = (TimeColumn) relation.column(columnReference().getColumnName());
-        return timeColumn.isAfter(value);
+        return apply(relation.column(columnReference().getColumnName()));
+    }
+
+    @Override
+    public Selection apply(Column column) {
+        TimeColumn timeColumn = (TimeColumn) column;
+        return timeColumn.select(PackedLocalTime::isAfter, PackedLocalTime.pack(value));
     }
 }

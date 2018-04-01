@@ -14,46 +14,159 @@
 
 package tech.tablesaw.columns.times;
 
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.TimeColumn;
-import tech.tablesaw.columns.times.TimeFilters;
-import tech.tablesaw.columns.times.PackedLocalTime;
+import tech.tablesaw.columns.Column;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.UnsupportedTemporalTypeException;
 
-public interface TimeMapUtils extends TimeFilters {
+import static java.time.temporal.ChronoUnit.*;
+import static tech.tablesaw.api.TimeColumn.*;
 
-    default LongColumn differenceInMilliseconds(TimeColumn column2) {
-        return difference(column2, ChronoUnit.MILLIS);
+public interface TimeMapUtils extends Column {
+
+    default NumberColumn differenceInMilliseconds(TimeColumn column2) {
+        return difference(column2, MILLIS);
     }
 
-    default LongColumn differenceInSeconds(TimeColumn column2) {
-        return difference(column2, ChronoUnit.SECONDS);
+    default NumberColumn differenceInSeconds(TimeColumn column2) {
+        return difference(column2, SECONDS);
     }
 
-    default LongColumn differenceInMinutes(TimeColumn column2) {
-        return difference(column2, ChronoUnit.MINUTES);
+    default NumberColumn differenceInMinutes(TimeColumn column2) {
+        return difference(column2, MINUTES);
     }
 
-    default LongColumn differenceInHours(TimeColumn column2) {
-        return difference(column2, ChronoUnit.HOURS);
+    default NumberColumn differenceInHours(TimeColumn column2) {
+        return difference(column2, HOURS);
     }
 
-    default LongColumn difference(TimeColumn column2, ChronoUnit unit) {
-        LongColumn newColumn = new LongColumn(name() + " - " + column2.name());
+
+    default TimeColumn lead(int n) {
+        TimeColumn column = lag(-n);
+        column.setName(name() + " lead(" + n + ")");
+        return column;
+    }
+
+    TimeColumn lag(int n);
+
+    default NumberColumn difference(TimeColumn column2, ChronoUnit unit) {
+        NumberColumn newColumn = NumberColumn.create(name() + " - " + column2.name());
 
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
             int c2 = column2.getIntInternal(r);
-            if (c1 == TimeColumn.MISSING_VALUE || c2 == TimeColumn.MISSING_VALUE) {
-                newColumn.append(IntColumn.MISSING_VALUE);
+            if (TimeColumn.isMissing(c1) || TimeColumn.isMissing(c2)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
-                newColumn.append(difference(c1, c2, unit));
+                newColumn.append((int) difference(c1, c2, unit));
             }
         }
+        return newColumn;
+    }
+
+    default TimeColumn plus(int time, ChronoUnit unit) {
+        TimeColumn newColumn = TimeColumn.create("");
+        String timeUnitString = "";
+        for (int r = 0; r < size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (TimeColumn.isMissing(c1)) {
+                newColumn.appendInternal(MISSING_VALUE);
+            } else {
+                switch (unit) {
+                    case HOURS:
+                        newColumn.appendInternal(PackedLocalTime.plusHours(time, c1));
+                        timeUnitString = "hours";
+                        break;
+                    case MINUTES:
+                        newColumn.appendInternal(PackedLocalTime.plusMinutes(time, c1));
+                        timeUnitString = "minutes";
+                        break;
+                    case SECONDS:
+                        newColumn.appendInternal(PackedLocalTime.plusSeconds(time, c1));
+                        timeUnitString = "seconds";
+                        break;
+                    case MILLIS:
+                        newColumn.appendInternal(PackedLocalTime.plusMilliseconds(time, c1));
+                        timeUnitString = "ms";
+                        break;
+                    default:
+                        throw new UnsupportedTemporalTypeException("Type " + unit + " is not currently supported");
+
+                }
+            }
+        }
+        newColumn.setName(name() + " + " + time + " " + timeUnitString + "(s)");
+        return newColumn;
+    }
+
+    default TimeColumn minus(int time, ChronoUnit unit) {
+        TimeColumn newColumn = TimeColumn.create("");
+        String timeUnitString = "";
+        for (int r = 0; r < size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (TimeColumn.isMissing(c1)) {
+                newColumn.appendInternal(MISSING_VALUE);
+            } else {
+                switch (unit) {
+                    case HOURS:
+                        newColumn.appendInternal(PackedLocalTime.minusHours(time, c1));
+                        timeUnitString = "hours";
+                        break;
+                    case MINUTES:
+                        newColumn.appendInternal(PackedLocalTime.minusMinutes(time, c1));
+                        timeUnitString = "minutes";
+                        break;
+                    case SECONDS:
+                        newColumn.appendInternal(PackedLocalTime.minusSeconds(time, c1));
+                        timeUnitString = "seconds";
+                        break;
+                    case MILLIS:
+                        newColumn.appendInternal(PackedLocalTime.minusMilliseconds(time, c1));
+                        timeUnitString = "ms";
+                        break;
+                    default:
+                        throw new UnsupportedTemporalTypeException("Type " + unit + " is not currently supported");
+                }
+            }
+        }
+        newColumn.setName(name() + " - " + time + " " + timeUnitString + "(s)");
+        return newColumn;
+    }
+
+    default TimeColumn with(int time, ChronoUnit unit) {
+        TimeColumn newColumn = TimeColumn.create("");
+        String timeUnitString = "";
+        for (int r = 0; r < size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (TimeColumn.isMissing(c1)) {
+                newColumn.appendInternal(MISSING_VALUE);
+            } else {
+                switch (unit) {
+                    case HOURS:
+                        newColumn.appendInternal(PackedLocalTime.withHour(time, c1));
+                        timeUnitString = "hours";
+                        break;
+                    case MINUTES:
+                        newColumn.appendInternal(PackedLocalTime.withMinute(time, c1));
+                        timeUnitString = "minutes";
+                        break;
+                    case SECONDS:
+                        newColumn.appendInternal(PackedLocalTime.withSecond(time, c1));
+                        timeUnitString = "seconds";
+                        break;
+                    case MILLIS:
+                        newColumn.appendInternal(PackedLocalTime.withMillisecond(time, c1));
+                        timeUnitString = "ms";
+                        break;
+                    default:
+                        throw new UnsupportedTemporalTypeException("Type " + unit + " is not currently supported");
+                }
+            }
+        }
+        newColumn.setName(name() + " with " + time + " " + timeUnitString + "(s)");
         return newColumn;
     }
 
@@ -63,40 +176,140 @@ public interface TimeMapUtils extends TimeFilters {
         return unit.between(value1, value2);
     }
 
-    default ShortColumn hour() {
-        ShortColumn newColumn = new ShortColumn(name() + "[" + "hour" + "]");
+    default TimeColumn withHour(int hours) {
+        return with(hours, HOURS);
+    }
+
+    default TimeColumn plusHours(int hours) {
+        return plus(hours, HOURS);
+    }
+
+    default TimeColumn withMinute(int minutes) {
+        return with(minutes, MINUTES);
+    }
+
+    default TimeColumn plusMinutes(int minutes) {
+        return plus(minutes, MINUTES);
+    }
+
+    default TimeColumn withSecond(int seconds) {
+        return with(seconds, SECONDS);
+    }
+
+    default TimeColumn plusSeconds(int seconds) {
+        return plus(seconds, SECONDS);
+    }
+
+    default TimeColumn withMillisecond(int millis) {
+        return with(millis, MILLIS);
+    }
+
+    default TimeColumn plusMilliseconds(int millis) {
+        return plus(millis, MILLIS);
+    }
+
+    default TimeColumn minusHours(int hours) {
+        return minus(hours, HOURS);
+    }
+
+    default TimeColumn minusMinutes(int minutes) {
+        return minus(minutes, MINUTES);
+    }
+
+    default TimeColumn minusSeconds(int seconds) {
+        return minus(seconds, SECONDS);
+    }
+
+    default TimeColumn minusMilliseconds(int millis) {
+        return minus(millis, MILLIS);
+    }
+
+    default TimeColumn truncatedTo(ChronoUnit unit) {
+        TimeColumn newColumn = TimeColumn.create("");
+        for (int r = 0; r < size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (TimeColumn.isMissing(c1)) {
+                newColumn.appendInternal(MISSING_VALUE);
+            } else {
+                newColumn.appendInternal(PackedLocalTime.truncatedTo(unit, c1));
+            }
+        }
+        return newColumn;
+    }
+
+    default NumberColumn hour() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "hour" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
-            if (c1 != TimeColumn.MISSING_VALUE) {
+            if (!TimeColumn.isMissing(c1)) {
                 newColumn.append(PackedLocalTime.getHour(c1));
             } else {
-                newColumn.append(ShortColumn.MISSING_VALUE);
+                newColumn.append(NumberColumn.MISSING_VALUE);
             }
         }
         return newColumn;
     }
 
-    default IntColumn minuteOfDay() {
-        IntColumn newColumn = new IntColumn(name() + "[" + "minute-of-day" + "]");
+    default NumberColumn minute() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "minute" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
-            if (c1 != TimeColumn.MISSING_VALUE) {
+            if (!TimeColumn.isMissing(c1)) {
+                newColumn.append(PackedLocalTime.getMinute(c1));
+            } else {
+                newColumn.append(NumberColumn.MISSING_VALUE);
+            }
+        }
+        return newColumn;
+    }
+
+    default NumberColumn second() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "second" + "]");
+        for (int r = 0; r < size(); r++) {
+            int c1 = getIntInternal(r);
+            if (!TimeColumn.isMissing(c1)) {
+                newColumn.append(PackedLocalTime.getSecond(c1));
+            } else {
+                newColumn.append(NumberColumn.MISSING_VALUE);
+            }
+        }
+        return newColumn;
+    }
+
+    default NumberColumn milliseconds() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "ms" + "]");
+        for (int r = 0; r < size(); r++) {
+            int c1 = getIntInternal(r);
+            if (!TimeColumn.isMissing(c1)) {
+                newColumn.append(PackedLocalTime.getMilliseconds(c1));
+            } else {
+                newColumn.append(NumberColumn.MISSING_VALUE);
+            }
+        }
+        return newColumn;
+    }
+
+    default NumberColumn minuteOfDay() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "minute-of-day" + "]");
+        for (int r = 0; r < size(); r++) {
+            int c1 = getIntInternal(r);
+            if (!TimeColumn.isMissing(c1)) {
                 newColumn.append(PackedLocalTime.getMinuteOfDay(c1));
             } else {
-                newColumn.append(IntColumn.MISSING_VALUE);
+                newColumn.append(NumberColumn.MISSING_VALUE);
             }
         }
         return newColumn;
     }
 
-    default IntColumn secondOfDay() {
-        IntColumn newColumn = new IntColumn(name() + "[" + "second-of-day" + "]");
+    default NumberColumn secondOfDay() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "second-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
-            if (c1 != TimeColumn.MISSING_VALUE) {
+            if (!TimeColumn.isMissing(c1)) {
                 newColumn.append(PackedLocalTime.getSecondOfDay(c1));
             } else {
-                newColumn.append(IntColumn.MISSING_VALUE);
+                newColumn.append(NumberColumn.MISSING_VALUE);
             }
         }
         return newColumn;
