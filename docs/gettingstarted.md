@@ -87,7 +87,7 @@ All the data is in the Tablesaw *data* folder. The code is taken from the Tornad
 
 Here we read a csv file of tornado data. Tablesaw infers the column types by sampling the data.
 
-    Table tornadoes = Table.createFromCSV("../data/tornadoes_1950-2014.csv");
+    Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
 
 Note that the file is addressed relative to the current working directory. You may have to change it for your code. 
 

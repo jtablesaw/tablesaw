@@ -1,6 +1,6 @@
 # Tablesaw Documentation
 
-* [Introductory Tutorial](https://jtablesaw.wordpress.com/an-introduction/)
+* [Introductory Tutorial](https://jtablesaw.github.io/tablesaw/gettingstarted)
 * [User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc)
 * [Javadoc](https://jtablesaw.github.io/tablesaw/apidocs/index)
 * [Contributor's Guide](https://jtablesaw.github.io/tablesaw/contributing)
