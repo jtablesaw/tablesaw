@@ -61,7 +61,7 @@ import static tech.tablesaw.api.ColumnType.*;
  * of missing values in this class's methods.
  */
 public class StringColumn extends AbstractColumn
-        implements StringFilters, StringMapUtils, StringReduceUtils, IntConvertibleColumn {
+        implements CategoricalColumn, StringFilters, StringMapUtils, StringReduceUtils {
 
     public final StringColumnReference column = new StringColumnReference(this.name());
 
@@ -215,11 +215,6 @@ public class StringColumn extends AbstractColumn
             strings.add(category);
         }
         return strings;
-    }
-
-    @Override
-    public int[] asIntArray() {
-        return data().toIntArray();
     }
 
     @Override
