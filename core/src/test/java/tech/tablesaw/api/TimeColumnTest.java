@@ -15,7 +15,6 @@
 package tech.tablesaw.api;
 
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.util.selection.Selection;
 import org.junit.Before;
 import org.junit.Test;

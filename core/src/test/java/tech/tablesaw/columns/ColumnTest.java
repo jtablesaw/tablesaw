@@ -15,7 +15,6 @@
 package tech.tablesaw.columns;
 
 import tech.tablesaw.api.*;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.io.csv.CsvReadOptions;

@@ -867,7 +867,6 @@ public class Table extends Relation implements IntIterable {
         return new DataFrameJoiner(this, columnName);
     }
 
-    @SuppressWarnings("NullableProblems")
     @Override
     public IntIterator iterator() {
 

@@ -26,7 +26,6 @@ public class Row implements Iterator<Row> {
     public Row(Table table) {
         this.table = table;
         rowNumber = -1;
-        Map<String, Column> map = new HashMap<>();
         for (Column column : table.columns()) {
 
             if (column instanceof DateColumn) {

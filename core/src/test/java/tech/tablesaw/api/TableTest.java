@@ -166,19 +166,6 @@ public class TableTest {
             runningAverage.add((r1 + r2) / 2.0);
         }
 
-        public List<Double> result() {return runningAverage;}
-    }
-    @Test
-    public void testStepWithNrows() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv");
-
-        Table.MultiRowDoable multiRowDoable = rows -> {
-            int sum = 0;
-            for (Row row : rows) {
-                sum += row.getDouble("approval");
-            }
-        };
-        t.stepWithNrows(multiRowDoable,10);
     }
 
     @Test

@@ -24,6 +24,8 @@ import java.util.List;
 
 public class IntComparatorChain implements IntComparator, Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private final List<IntComparator> comparatorChain;
     private BitSet orderingBits;
     private boolean isLocked;
