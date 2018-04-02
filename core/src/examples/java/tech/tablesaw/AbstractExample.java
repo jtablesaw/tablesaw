@@ -12,15 +12,18 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.util;
+package tech.tablesaw;
 
 /**
- *
+ * A helper class for writing example code
  */
-public abstract class Example {
+public abstract class AbstractExample {
 
     protected static void out(Object obj) {
         System.out.println(String.valueOf(obj));
+    }
+    protected static void out() {
+        System.out.println("");
     }
 
 }

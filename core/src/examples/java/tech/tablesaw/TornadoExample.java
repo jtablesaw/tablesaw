@@ -12,12 +12,11 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.examples;
+package tech.tablesaw;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.plot.Scatter;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
@@ -27,7 +26,7 @@ import static tech.tablesaw.api.QueryHelper.*;
 /**
  * Usage example using a Tornado dataset
  */
-public class TornadoExample {
+public class TornadoExample extends AbstractExample {
 
     // column types for the tornado table
     private static final ColumnType[] COLUMN_TYPES_OLD = {
@@ -102,7 +101,6 @@ public class TornadoExample {
         out(tornadoes.first(3));
 
         tornadoes = tornadoes.selectWhere(numberColumn("Start Lat").isGreaterThan(20f));
-        Scatter.show("US Tornadoes 1950-2014", tornadoes.nCol("Start Lon"), tornadoes.nCol("Start Lat"));
 
         out();
         out("Extact month from the date and make it a separate column");
@@ -145,17 +143,8 @@ public class TornadoExample {
         injuriesByScaleState.setName("Median injuries by Tornado Scale and State");
         out(injuriesByScaleState);
 
-
         out();
         out("Writing the revised table to a new csv file");
         tornadoes.write().csv("../data/rev_tornadoes_1950-2014.csv");
-    }
-
-    private static void out(Object obj) {
-        System.out.println(String.valueOf(obj));
-    }
-
-    private static void out() {
-        System.out.println("");
     }
 }

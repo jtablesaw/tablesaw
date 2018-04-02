@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.examples;
+package tech.tablesaw;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
@@ -22,16 +22,15 @@ import static tech.tablesaw.aggregate.AggregateFunctions.median;
 import static tech.tablesaw.api.QueryHelper.*;
 
 /**
- * Usage example using a Tornado dataset
+ * Usage example using a process data set
  */
-public class ServiceExample {
+public class OperationsExample extends AbstractExample {
 
     public static void main(String[] args) throws Exception {
 
         Table ops = Table.create("../data/operations.csv");
 
         out(ops.structure());
-
         out(ops);
 
         DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start"));
@@ -63,9 +62,4 @@ public class ServiceExample {
 
         durationByFacilityAndShift.write().csv("/tmp/durationByFacilityAndShift.csv");
     }
-
-    private static void out(Object obj) {
-        System.out.println(String.valueOf(obj));
-    }
-
 }

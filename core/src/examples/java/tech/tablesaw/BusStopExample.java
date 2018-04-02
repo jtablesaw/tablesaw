@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.integration;
+package tech.tablesaw;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.QueryHelper;
@@ -23,7 +23,7 @@ import tech.tablesaw.io.csv.CsvWriter;
 /**
  * Some example code using the API
  */
-public class ExamplesTest {
+public class BusStopExample {
 
     public static void main(String[] args) throws Exception {
 
