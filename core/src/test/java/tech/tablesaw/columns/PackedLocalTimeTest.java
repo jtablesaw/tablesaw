@@ -15,6 +15,9 @@
 package tech.tablesaw.columns;
 
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableList;
+
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 
 import java.time.LocalTime;
@@ -33,7 +36,7 @@ public class PackedLocalTimeTest {
 
     @Test
     public void testTruncatedTo() {
-        List<LocalTime> times = List.of(
+        List<LocalTime> times = ImmutableList.of(
                 LocalTime.of(5, 11, 24),
                 LocalTime.of(21, 11, 24),
                 LocalTime.MIDNIGHT,

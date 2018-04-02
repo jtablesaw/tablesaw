@@ -1,6 +1,6 @@
 language: java
 jdk:
-- oraclejdk9
+- oraclejdk8
 
 before_install:
   - sudo apt-get install jq

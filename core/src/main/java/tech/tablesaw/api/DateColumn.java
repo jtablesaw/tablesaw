@@ -601,7 +601,7 @@ public class DateColumn extends AbstractColumn implements DateFilters,
     @Override
     public Iterator<LocalDate> iterator() {
 
-        return new Iterator<>() {
+        return new Iterator<LocalDate>() {
 
             final IntIterator intIterator = intIterator();
 
