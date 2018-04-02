@@ -7,13 +7,11 @@ Tablesaw
 
 ### Overview
 
-__Tablesaw__ is the shortest path to data science in Java. It includes a dataframe, an embedded column-store, and hundreds of methods to transform, summarize, or filter data similar to the Pandas dataframe and R data frame. If you work with data in Java, it will probably save you time and effort.
+__Tablesaw__ is a Java dataframe similar to Pandas in Python, and the R data frame. If you work with data in Java, it may save you time and effort.
 
-Tablesaw also supports descriptive statistics, data visualization, and machine learning. And it scales: You can munge a 1/2 billion rows on a laptop and over 2 billion records on a server. 
+Tablesaw also supports descriptive statistics and data visualization. 
 
-There are other, more elaborate platforms for data science in Java. They're designed to work with vast amounts of data, and  require a huge stack and a vast amount of effort.
-
-You can include tablesaw-core, which is the dataframe library itself, with: 
+You can use tablesaw-core, which is the dataframe library itself, by adding a dependency: 
 
     <dependency>
         <groupId>tech.tablesaw</groupId>
@@ -21,12 +19,13 @@ You can include tablesaw-core, which is the dataframe library itself, with:
         <version>0.11.6</version>
     </dependency>
 
-You may also add dependencies for `tablesaw-plot` to use the plotting capability and `tablesaw-smile` to use the [Smile](https://github.com/haifengl/smile) machine learning integration.
+You can also add a dependency for `tablesaw-plot` to use the plotting capability.
+
+* We also recommend trying Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html), which lets you experiment with Tablesaw in a more interactive manner. Get started by [installing BeakerX](http://beakerx.com/documentation) and trying [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
 
 ### Documentation and support:
 
 * Please see our documentation page: https://jtablesaw.github.io/tablesaw/ 
-* We also recommend trying Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html), which lets you experiment with Tablesaw in a more interactive manner. Get started by [installing BeakerX](http://beakerx.com/documentation) and trying [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
 
 ### Tablesaw features: 
 
@@ -36,7 +35,6 @@ You may also add dependencies for `tablesaw-plot` to use the plotting capability
 * Add and remove columns
 * Sort, Group, Filter 
 * Map/Reduce operations
-* Store tables in a fast, compressed columnar storage format
 
 #### Statistics 
 * Descriptive stats: mean, min, max, median, sum, product, standard deviation, variance, percentiles, geometric mean, skewness, kurtosis, etc.
