@@ -324,11 +324,6 @@ public abstract class Relation {
         return (DateTimeColumn) column(columnName);
     }
 
-    private double[][] asColumnMatrix() {
-        return columnsOfType(ColumnType.NUMBER).stream()
-                .map(Column::asDoubleArray).toArray(double[][]::new);
-    }
-
     public double[][] asMatrix() {
         return DoubleArrays.to2dArray(columns());
     }
