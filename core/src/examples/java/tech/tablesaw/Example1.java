@@ -16,7 +16,7 @@ package tech.tablesaw;
 
 import tech.tablesaw.api.*;
 import tech.tablesaw.aggregate.CrossTab;
-import tech.tablesaw.columns.number.NumberColumnFormatter;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.util.selection.Selection;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.range;

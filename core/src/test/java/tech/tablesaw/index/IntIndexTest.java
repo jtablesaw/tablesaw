@@ -15,7 +15,7 @@
 package tech.tablesaw.index;
 
 import tech.tablesaw.columns.DateAndTimePredicates;
-import tech.tablesaw.columns.number.NumberPredicates;
+import tech.tablesaw.columns.numbers.NumberPredicates;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
@@ -26,7 +26,7 @@ import tech.tablesaw.util.selection.Selection;
 
 import java.time.LocalDate;
 
-import static tech.tablesaw.columns.number.NumberPredicates.isEqualTo;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isEqualTo;
 import static org.junit.Assert.assertEquals;
 
 /**

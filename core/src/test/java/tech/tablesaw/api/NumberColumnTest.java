@@ -17,7 +17,7 @@ package tech.tablesaw.api;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import tech.tablesaw.columns.number.NumberColumnFormatter;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.filtering.Filter;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;

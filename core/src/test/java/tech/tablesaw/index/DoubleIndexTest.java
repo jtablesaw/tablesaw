@@ -20,7 +20,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.util.selection.Selection;
-import tech.tablesaw.columns.number.NumberPredicates;
+import tech.tablesaw.columns.numbers.NumberPredicates;
 
 import static org.junit.Assert.assertEquals;
 
