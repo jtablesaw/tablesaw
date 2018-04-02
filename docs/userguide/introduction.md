@@ -15,7 +15,6 @@ while rows can contain a variety of types. Tablesaw provide these operations:
 * Combining tables
 * Descriptive statistics
 * Plotting data
-* Creating Machine learning models directly from the dataframe. 
 
 ### Looking ahead
 In the rest of this User Guide we discuss each class of dataframe operation, as well as the visualization and machine learning 

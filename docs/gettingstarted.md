@@ -174,11 +174,6 @@ Total 44 27253 20009 9067 2580 670 68 59691
 Write the new CSV file to disk
 
 tornadoes.write().csv("data/rev_tornadoes_1950-2014.csv");
-Read and write data using Tablesaw’s “.saw” format
 
-Once you’ve imported data you can use Tablesaw’s own disk format to save it. In .saw format, reads and writes are an order of magnitude faster than optimized CSV operations.
-
-String dbName = tornadoes.save("/tmp/tablesaw/testdata");
-Table tornadoes = Table.readTable(dbName);
 And that’s it for the introduction. Stay tuned for more info about advanced features.
 
