@@ -578,6 +578,21 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         return data().contains(date);
     }
 
+
+    @Override
+    public double[] asDoubleArray() {
+        double[] doubles = new double[size()];
+        for (int i = 0; i < size(); i++) {
+            doubles[i] = data.getInt(i);
+        }
+        return doubles;
+    }
+
+    @Override
+    public double getDouble(int i) {
+        return getIntInternal(i);
+    }
+
     @Override
     public int byteSize() {
         return type().byteSize();

@@ -398,6 +398,20 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     }
 
     @Override
+    public double getDouble(int i) {
+        return getIntInternal(i);
+    }
+
+    @Override
+    public double[] asDoubleArray() {
+        double[] doubles = new double[data.size()];
+        for (int i = 0; i < size(); i++) {
+            doubles[i] = data.getInt(i);
+        }
+        return doubles;
+    }
+
+    @Override
     public String toString() {
         return "LocalTime column: " + name();
     }

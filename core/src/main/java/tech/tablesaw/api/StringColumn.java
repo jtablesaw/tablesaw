@@ -471,7 +471,11 @@ public class StringColumn extends AbstractColumn
         return results;
     }
 
-    public int getInt(int rowNumber) {
+    /**
+     * Returns the int key for the string at rowNumber. The key will be the same for all records with the same string,
+     * and different if the string is different
+     */
+    private int getInt(int rowNumber) {
         return values.getInt(rowNumber);
     }
 
@@ -649,6 +653,20 @@ public class StringColumn extends AbstractColumn
     @Override
     public byte[] asBytes(int rowNumber) {
         return ByteBuffer.allocate(byteSize()).putInt(getInt(rowNumber)).array();
+    }
+
+    @Override
+    public double getDouble(int i) {
+        return getInt(i);
+    }
+
+    @Override
+    public double[] asDoubleArray() {
+        double[] doubles = new double[values.size()];
+        for (int i = 0; i < size(); i++) {
+            doubles[i] = values.getInt(i);
+        }
+        return doubles;
     }
 
     /**

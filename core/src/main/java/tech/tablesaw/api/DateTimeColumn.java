@@ -969,6 +969,20 @@ public class DateTimeColumn extends AbstractColumn
         return ByteBuffer.allocate(byteSize()).putLong(getPackedDateTime(rowNumber)).array();
     }
 
+    @Override
+    public double getDouble(int i) {
+        return getPackedDateTime(i);
+    }
+
+    @Override
+    public double[] asDoubleArray() {
+        double[] doubles = new double[size()];
+        for (int i = 0; i < size(); i++) {
+            doubles[i] = data.getLong(i);
+        }
+        return doubles;
+    }
+
     /**
      * Returns an iterator over elements of type {@code T}.
      *

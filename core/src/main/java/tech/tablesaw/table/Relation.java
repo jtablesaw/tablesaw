@@ -25,6 +25,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.string.DataFramePrinter;
+import tech.tablesaw.util.DoubleArrays;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -329,14 +330,7 @@ public abstract class Relation {
     }
 
     public double[][] asMatrix() {
-        double[][] columnMatrix = asColumnMatrix();
-        double[][] result = new double[columnMatrix[0].length][columnMatrix.length];
-        for (int i = 0; i < columnMatrix.length; i++) {
-            for (int j = 0; j < columnMatrix[0].length; j++) {
-                result[j][i] = columnMatrix[i][j];
-            }
-        }
-        return result;
+        return DoubleArrays.to2dArray(columns());
     }
 
     public String getUnformatted(int r1, int c) {

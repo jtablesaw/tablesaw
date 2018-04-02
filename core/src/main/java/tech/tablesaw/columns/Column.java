@@ -112,6 +112,16 @@ public interface Column {
     String getString(int row);
 
     /**
+     * Returns a double representation of the value at the given row. The nature of the returned value is column-specific.
+     * The double returned MAY be the actual value (for Number columns) but is more likely a number that maps to the column
+     * value in some way. 
+     *
+     * @param row The index of the row.
+     * @return value as String
+     */
+    double getDouble(int row);
+
+    /**
      * Returns a copy of the receiver with no data. The column name and type are the same.
      *
      * @return a empty copy of {@link Column}
@@ -180,7 +190,7 @@ public interface Column {
     }
 
     default double[] asDoubleArray() {
-        throw new UnsupportedOperationException("Method toDoubleArray() is not supported on non-numeric columns");
+        throw new UnsupportedOperationException("Method asDoubleArray() is not supported on non-numeric columns");
     }
 
     int columnWidth();

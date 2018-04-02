@@ -419,6 +419,20 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     @Override
+    public double getDouble(int row) {
+        return getByte(row);
+    }
+
+    @Override
+    public double[] asDoubleArray() {
+        double[] doubles = new double[data.size()];
+        for (int i = 0; i < size(); i++) {
+            doubles[i] = data.getByte(i);
+        }
+        return doubles;
+    }
+
+    @Override
     public IntComparator rowComparator() {
         return comparator;
     }
@@ -430,14 +444,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         for (int i = 0; i < booleanColumn.size(); i++) {
             append(booleanColumn.get(i));
         }
-    }
-
-    public double[] asDoubleArray() {
-        double[] output = new double[data.size()];
-        for (int i = 0; i < data.size(); i++) {
-            output[i] = data.getByte(i);
-        }
-        return output;
     }
 
     @Override

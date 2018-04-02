@@ -278,6 +278,11 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
     }
 
     @Override
+    public double getDouble(int row) {
+        return get(row);
+    }
+
+    @Override
     public String getUnformattedString(int row) {
         return String.valueOf(get(row));
     }
