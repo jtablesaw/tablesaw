@@ -16,66 +16,18 @@ package tech.tablesaw;
 
 import tech.tablesaw.api.*;
 import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.selection.Selection;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.api.ColumnType.*;
 import static tech.tablesaw.api.QueryHelper.*;
 
 /**
- * Usage example using a Tornado dataset
+ * Usage example using a Tornado data set
  */
 public class TornadoExample extends AbstractExample {
 
-    // column types for the tornado table
-    private static final ColumnType[] COLUMN_TYPES_OLD = {
-            NUMBER,     // number by year
-            NUMBER,     // year
-            NUMBER,     // month
-            NUMBER,     // day
-            LOCAL_DATE,  // date
-            LOCAL_TIME,  // time
-            STRING,    // tz
-            STRING,    // st
-            STRING,    // state fips
-            NUMBER,     // state torn number
-            NUMBER,     // scale
-            NUMBER,     // injuries
-            NUMBER,     // fatalities
-            NUMBER,       // loss
-            NUMBER,   // crop loss
-            NUMBER,   // St. Lat
-            NUMBER,   // St. Lon
-            NUMBER,   // End Lat
-            NUMBER,   // End Lon
-            NUMBER,   // length
-            NUMBER,   // width
-            NUMBER,   // NS
-            NUMBER,   // SN
-            NUMBER,   // SG
-            STRING,  // Count FIPS 1-4
-            STRING,
-            STRING,
-            STRING};
-
     public static void main(String[] args) throws Exception {
 
-        Table tornadoes = Table.read().csv(CsvReadOptions
-            .builder("../data/1950-2014_torn.csv")
-            .columnTypes(COLUMN_TYPES_OLD));
-        assert (tornadoes != null);
-
-        out(tornadoes.structure());
-        out();
-
-        tornadoes.removeColumns("Number", "Year", "Month", "Day", "Zone", "State FIPS", "Loss", "Crop Loss",
-            "End Lat", "End Lon", "NS", "SN", "SG", "FIPS 1", "FIPS 2", "FIPS 3", "FIPS 4");
-
-        tornadoes.write().csv("../data/tornadoes_1950-2014.csv");
-
-        //tornadoes = Table.createFromCsv(COLUMN_TYPES, "../data/tornadoes_1950-2014.csv");
-        tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
+        Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
         assert (tornadoes != null);
 
         out(tornadoes.structure());
@@ -143,10 +95,7 @@ public class TornadoExample extends AbstractExample {
         injuriesByScaleState.setName("Median injuries by Tornado Scale and State");
         out(injuriesByScaleState);
 
-        // Average days between tornados in the summer
-
-        // summer approximated as june, july, august
-        Selection selection = tornadoes.dateColumn("Date").month().isIn("JUNE", "JULY", "AUGUST");
+        // Average days between tornadoes in the summer
 
         // alternate, somewhat more precise approach
         DateColumn date = tornadoes.dateColumn("Date");

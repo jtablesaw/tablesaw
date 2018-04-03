@@ -49,7 +49,7 @@ nc.get(2);
 ```
 which returns 3.0.
 
-As you may expect, operations that work on numbers in standard Java, work on number columns in Tablesaw. To multiply every value in this column by 4, we use the __multiply()__ method, which returns a new column of the same size as the original.
+As you may expect, operations that work on numbers in standard Java, work on number columns in Tablesaw. To multiply every value in this column by 4, we use the *multiply()* method, which returns a new column of the same size as the original.
 
 ```java
 NumberColumn nc2 = nc.multiply(4);
@@ -63,9 +63,9 @@ Column: Test * 4.0
 12.0
 16.0
 ```
-For brevity, output will be shown indented by one tab from now on, without otherwise calling it out.
+For brevity, output will be shown indented by one tab beneath the code that produced it. For clarity, we omit the calls to *out(anObject)*, which simply calls System.out.println() on the object.
 
-Generally, Tablesaw will provide a name for columns created this way. If you don't like the name, you can change it by calling __setName("new name")__ on the column.
+Generally, Tablesaw will provide a name for columns created this way. If you don't like the name, you can change it by calling *setName("new name")* on the column.
 
 ### Tables
 As described above, a table is a named collection of columns. All columns in the table must be the same size, although missing values are allowed.
