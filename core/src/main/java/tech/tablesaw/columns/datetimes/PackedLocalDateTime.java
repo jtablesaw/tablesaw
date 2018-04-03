@@ -401,4 +401,29 @@ public class PackedLocalDateTime {
     public int lengthOfYear(long packedDateTime) {
         return (isLeapYear(packedDateTime) ? 366 : 365);
     }
+
+    public static int daysUntil(long packedDateTimeEnd, long packedDateTimeStart) {
+        return (int) (PackedLocalDate.toEpochDay(date(packedDateTimeEnd))
+                - PackedLocalDate.toEpochDay(date(packedDateTimeStart)));
+    }
+
+    public static int weeksUntil(long packedDateTimeEnd, long packedDateStart) {
+        return daysUntil(packedDateTimeEnd, packedDateStart)/7;
+    }
+
+    public static int monthsUntil(long packedDateTimeEnd, long packedDateStart) {
+
+        int start = getMonthInternal(packedDateStart) * 32 + getDayOfMonth(packedDateStart);
+        int end = getMonthInternal(packedDateTimeEnd) * 32 + getDayOfMonth(packedDateTimeEnd);
+        return (end - start) / 32;
+    }
+
+    public static int yearsUntil(long packedDateEnd, long packedDateStart) {
+        return monthsUntil(packedDateEnd, packedDateStart)/12;
+    }
+
+    private static int getMonthInternal(long packedDateTime) {
+        return (getYear(packedDateTime) * 12 + getMonthValue(packedDateTime) - 1);
+    }
+
 }

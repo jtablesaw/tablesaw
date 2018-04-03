@@ -17,9 +17,13 @@ package tech.tablesaw.columns.datetimes;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.UnsupportedTemporalTypeException;
+
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
 
 public interface DateTimeMapUtils extends Column {
 
@@ -63,8 +67,8 @@ public interface DateTimeMapUtils extends Column {
     }
 
     default long difference(long packedLocalDateTime1, long packedLocalDateTime2, ChronoUnit unit) {
-        LocalDateTime value1 = PackedLocalDateTime.asLocalDateTime(packedLocalDateTime1);
-        LocalDateTime value2 = PackedLocalDateTime.asLocalDateTime(packedLocalDateTime2);
+        LocalDateTime value1 = asLocalDateTime(packedLocalDateTime1);
+        LocalDateTime value2 = asLocalDateTime(packedLocalDateTime2);
         return unit.between(value1, value2);
     }
 
@@ -73,7 +77,7 @@ public interface DateTimeMapUtils extends Column {
         for (int r = 0; r < size(); r++) {
             long c1 = getLongInternal(r);
             if (c1 != DateTimeColumn.MISSING_VALUE) {
-                newColumn.append(PackedLocalDateTime.getHour(c1));
+                newColumn.append(getHour(c1));
             } else {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             }
@@ -86,7 +90,7 @@ public interface DateTimeMapUtils extends Column {
         for (int r = 0; r < size(); r++) {
             long c1 = getLongInternal(r);
             if (c1 != DateTimeColumn.MISSING_VALUE) {
-                newColumn.append((short) PackedLocalDateTime.getMinuteOfDay(c1));
+                newColumn.append((short) getMinuteOfDay(c1));
             } else {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             }
@@ -99,7 +103,7 @@ public interface DateTimeMapUtils extends Column {
         for (int r = 0; r < size(); r++) {
             long c1 = getLongInternal(r);
             if (c1 != DateTimeColumn.MISSING_VALUE) {
-                newColumn.append(PackedLocalDateTime.getSecondOfDay(c1));
+                newColumn.append(getSecondOfDay(c1));
             } else {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             }
@@ -107,7 +111,55 @@ public interface DateTimeMapUtils extends Column {
         return newColumn;
     }
 
+    /**
+     * Returns a column containing integers representing the nth group (0-based) that a date falls into.
+     *
+     * Example:     When Unit = ChronoUnit.DAY and n = 5, we form 5 day groups. a Date that is 2 days after the start
+     * is assigned to the first ("0") group. A day 7 days after the start is assigned to the second ("1") group.
+     *
+     * @param unit  A ChronoUnit greater than or equal to a day
+     * @param n     The number of units in each group.
+     * @param start The starting point of the first group; group boundaries are offsets from this point
+     */
+    default NumberColumn timeWindow(ChronoUnit unit, int n, LocalDateTime start) {
+        String newColumnName = "" +  n + " " + unit.toString() + " window [" + name() + "]";
+        long packedStartDate = pack(start);
+        NumberColumn numberColumn = NumberColumn.create(newColumnName, size());
+        for (int i = 0; i < size(); i++) {
+            long packedDate = getLongInternal(i);
+            int result = 0;
+            switch (unit) {
+
+                // TODO(lwhite): Add support for hours and minutes
+
+                case DAYS:
+                    result = daysUntil(packedDate, packedStartDate) / n;
+                    numberColumn.append(result); break;
+                case WEEKS:
+                    result = weeksUntil(packedDate, packedStartDate) / n;
+                    numberColumn.append(result); break;
+                case MONTHS:
+                    result = monthsUntil(packedDate, packedStartDate) / n;
+                    numberColumn.append(result); break;
+                case YEARS:
+                    result = yearsUntil(packedDate, packedStartDate) / n;
+                    numberColumn.append(result); break;
+                default:
+                    throw new UnsupportedTemporalTypeException("The ChronoUnit " + unit + " is not supported for timeWindows on dates");
+            }
+        }
+        numberColumn.setPrintFormatter(NumberColumnFormatter.ints());
+        return numberColumn;
+    }
+
+
+    default NumberColumn timeWindow(ChronoUnit unit, int n) {
+        return timeWindow(unit, n, min());
+    }
+
     LocalDateTime get(int r);
 
     long getLongInternal(int r);
+
+    LocalDateTime min();
 }
