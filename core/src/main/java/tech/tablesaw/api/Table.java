@@ -854,6 +854,10 @@ public class Table extends Relation implements IntIterable {
         return new SummaryFunction(this, numericColumnName, function);
     }
 
+    public SummaryFunction summarize(NumberColumn numberColumn, AggregateFunction... function) {
+        return new SummaryFunction(this, numberColumn, function);
+    }
+
     /**
      * Returns a table containing two columns, the grouping column, and a column named "Count" that contains
      * the counts for each grouping column value
