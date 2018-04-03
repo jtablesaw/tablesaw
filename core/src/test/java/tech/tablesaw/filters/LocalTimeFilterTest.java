@@ -20,7 +20,8 @@ import tech.tablesaw.columns.times.TimeColumnReference;
 import tech.tablesaw.columns.times.filters.IsAfterNoon;
 import tech.tablesaw.columns.times.filters.IsBeforeNoon;
 import tech.tablesaw.columns.times.filters.IsMidnight;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
+
 import org.junit.Before;
 import org.junit.Test;
 

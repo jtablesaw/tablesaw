@@ -19,7 +19,7 @@ import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 import tech.tablesaw.columns.numbers.NumberPredicates;
 
 import static org.junit.Assert.assertEquals;

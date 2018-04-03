@@ -15,8 +15,8 @@
 package tech.tablesaw.table;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 import java.util.ArrayList;
 import java.util.List;

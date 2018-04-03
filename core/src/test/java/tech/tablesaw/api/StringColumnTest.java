@@ -15,10 +15,11 @@
 package tech.tablesaw.api;
 
 import tech.tablesaw.columns.strings.StringColumnFormatter;
+import tech.tablesaw.selection.Selection;
+
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.TestDataUtil;
-import tech.tablesaw.util.selection.Selection;
 
 import java.util.List;
 import java.util.function.Function;

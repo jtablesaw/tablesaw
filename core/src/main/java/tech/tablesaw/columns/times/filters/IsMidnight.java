@@ -23,7 +23,7 @@ import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.filtering.ColumnFilter;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 public class IsMidnight extends ColumnFilter {
 

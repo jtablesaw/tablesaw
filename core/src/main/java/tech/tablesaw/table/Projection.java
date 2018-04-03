@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 import java.util.List;
 import java.util.stream.Collectors;

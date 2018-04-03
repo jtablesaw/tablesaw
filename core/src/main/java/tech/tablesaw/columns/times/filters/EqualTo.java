@@ -19,7 +19,7 @@ import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 import java.time.LocalTime;
 

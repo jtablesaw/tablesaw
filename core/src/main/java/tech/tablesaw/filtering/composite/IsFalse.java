@@ -17,8 +17,8 @@ package tech.tablesaw.filtering.composite;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 import javax.annotation.concurrent.Immutable;
 

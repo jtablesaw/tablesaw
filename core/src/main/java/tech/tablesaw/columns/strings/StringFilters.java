@@ -36,7 +36,7 @@ import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.StringBiPredicate;
 import tech.tablesaw.filtering.predicates.StringIntBiPredicate;
 import tech.tablesaw.filtering.predicates.StringPredicate;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 import java.util.Collection;
 

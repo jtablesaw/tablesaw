@@ -19,8 +19,8 @@ import it.unimi.dsi.fastutil.doubles.Double2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.doubles.Double2ObjectSortedMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 /**
  * An index for double-precision 64-bit IEEE 754 floating point columns.

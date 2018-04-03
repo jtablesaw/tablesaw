@@ -16,7 +16,7 @@ package tech.tablesaw.api.plot;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.plotting.xchart.XchartLine;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.BitmapBackedSelection;
 
 /**
  * A control chart

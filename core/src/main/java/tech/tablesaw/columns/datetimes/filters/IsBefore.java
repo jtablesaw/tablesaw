@@ -21,7 +21,7 @@ import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.columns.datetimes.DateTimePredicates;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.filtering.ColumnFilter;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

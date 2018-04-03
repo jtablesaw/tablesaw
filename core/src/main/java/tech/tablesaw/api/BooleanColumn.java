@@ -33,8 +33,8 @@ import tech.tablesaw.columns.booleans.BooleanFormatter;
 import tech.tablesaw.columns.booleans.BooleanMapUtils;
 import tech.tablesaw.filtering.predicates.BooleanPredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 import java.util.Iterator;
 import java.util.List;

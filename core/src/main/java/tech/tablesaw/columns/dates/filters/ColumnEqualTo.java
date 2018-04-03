@@ -18,7 +18,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.TwoColumnFilter;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 import static tech.tablesaw.columns.DateAndTimePredicates.*;
 

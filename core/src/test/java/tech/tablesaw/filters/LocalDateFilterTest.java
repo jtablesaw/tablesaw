@@ -25,7 +25,7 @@ import tech.tablesaw.columns.datetimes.filters.IsInMarch;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.datetimes.filters.IsInYear;
 import tech.tablesaw.columns.datetimes.filters.IsLastDayOfTheMonth;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 

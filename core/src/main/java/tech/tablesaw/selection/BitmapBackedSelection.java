@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.util.selection;
+package tech.tablesaw.selection;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.roaringbitmap.RoaringBitmap;

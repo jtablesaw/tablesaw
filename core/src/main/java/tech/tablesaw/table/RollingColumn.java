@@ -5,8 +5,8 @@ import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 /**
  * Does a calculation on a rolling basis (e.g. mean for last 20 days)

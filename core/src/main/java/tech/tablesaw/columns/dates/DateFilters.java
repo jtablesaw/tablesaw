@@ -8,8 +8,8 @@ import tech.tablesaw.columns.DateAndTimePredicates;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.filtering.predicates.IntPredicate;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 

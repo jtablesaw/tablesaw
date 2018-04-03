@@ -15,7 +15,8 @@
 package tech.tablesaw.api;
 
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
+
 import org.junit.Before;
 import org.junit.Test;
 

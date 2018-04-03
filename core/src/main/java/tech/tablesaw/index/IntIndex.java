@@ -22,8 +22,8 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.times.PackedLocalTime;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -20,7 +20,7 @@ import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.datetimes.DateTimePredicates;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 import static org.junit.Assert.assertEquals;
 

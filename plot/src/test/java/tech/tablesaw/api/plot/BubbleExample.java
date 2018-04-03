@@ -15,7 +15,7 @@ package tech.tablesaw.api.plot;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 import java.io.IOException;
 

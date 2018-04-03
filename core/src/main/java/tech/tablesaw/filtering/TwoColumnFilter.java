@@ -18,7 +18,7 @@ import com.google.common.base.Preconditions;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 /**
  * A two-column filter is based on the relationship between two columns of the same type

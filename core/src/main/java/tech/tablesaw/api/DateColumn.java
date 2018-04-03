@@ -33,9 +33,9 @@ import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.filtering.predicates.IntPredicate;
 import tech.tablesaw.filtering.predicates.LocalDatePredicate;
 import tech.tablesaw.io.TypeUtils;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDate;

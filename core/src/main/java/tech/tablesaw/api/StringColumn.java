@@ -39,8 +39,8 @@ import tech.tablesaw.filtering.predicates.StringBiPredicate;
 import tech.tablesaw.filtering.predicates.StringIntBiPredicate;
 import tech.tablesaw.filtering.predicates.StringPredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;

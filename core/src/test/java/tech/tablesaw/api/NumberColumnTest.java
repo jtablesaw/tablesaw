@@ -19,13 +19,14 @@ import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.filtering.Filter;
+import tech.tablesaw.selection.Selection;
+
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.util.selection.Selection;
 
 import java.util.ArrayList;
 import java.util.List;

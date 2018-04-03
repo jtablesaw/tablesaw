@@ -7,7 +7,7 @@ import org.junit.rules.ExpectedException;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 import static org.junit.Assert.*;
 import static tech.tablesaw.aggregate.AggregateFunctions.*;

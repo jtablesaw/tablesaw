@@ -11,7 +11,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.index.CategoryIndex;
 import tech.tablesaw.index.IntIndex;
 import tech.tablesaw.index.LongIndex;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 public class DataFrameJoiner {
 

@@ -2,7 +2,7 @@ package tech.tablesaw.filtering;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 public interface Filter {
 

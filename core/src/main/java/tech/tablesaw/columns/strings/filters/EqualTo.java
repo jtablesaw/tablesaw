@@ -20,7 +20,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.StringColumnReference;
 import tech.tablesaw.filtering.ColumnFilter;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 /**
  * Implements EqualTo testing for Category and Text Columns

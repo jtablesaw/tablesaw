@@ -40,8 +40,8 @@ import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoublePredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.text.NumberFormat;

@@ -30,6 +30,8 @@ import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
 import tech.tablesaw.joining.DataFrameJoiner;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.Sort;
 import tech.tablesaw.sorting.comparators.IntComparatorChain;
 import tech.tablesaw.sorting.comparators.ReversingIntComparator;
@@ -38,8 +40,6 @@ import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
 import tech.tablesaw.table.StandardViewGroup;
 import tech.tablesaw.table.ViewGroup;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
 
 import java.util.ArrayList;
 import java.util.Arrays;

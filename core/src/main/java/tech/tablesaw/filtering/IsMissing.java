@@ -17,7 +17,7 @@ package tech.tablesaw.filtering;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.Selection;
 
 /**
  * A filtering that matches all missing values in a column

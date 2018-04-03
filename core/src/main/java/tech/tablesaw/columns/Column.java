@@ -17,8 +17,8 @@ package tech.tablesaw.columns;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
-import tech.tablesaw.util.selection.Selection;
 
 /**
  * The general interface for columns.

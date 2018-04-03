@@ -21,8 +21,8 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.util.selection.BitmapBackedSelection;
-import tech.tablesaw.util.selection.Selection;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDateTime;
 
