@@ -25,9 +25,11 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.string.DataFramePrinter;
+import tech.tablesaw.sorting.comparators.DescendingIntegerComparator;
 import tech.tablesaw.util.DoubleArrays;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,8 +50,12 @@ public abstract class Relation {
         return rowCount() + " rows X " + columnCount() + " cols";
     }
 
-    public Relation removeColumn(int columnIndex) {
-        removeColumns(column(columnIndex));
+    public Relation removeColumns(int ... columnIndexes) {
+        Arrays.sort(Arrays.stream(columnIndexes).boxed().toArray( Integer[]::new ),
+                DescendingIntegerComparator.instance());
+        for (int i : columnIndexes) {
+            removeColumns(column(i));
+        }
         return this;
     }
 
@@ -330,5 +336,9 @@ public abstract class Relation {
 
     public String getUnformatted(int r1, int c) {
         return null;
+    }
+
+    public boolean containsColumn(CategoricalColumn column) {
+        return columns().contains(column);
     }
 }
