@@ -22,6 +22,7 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -259,6 +260,7 @@ public interface DateMapUtils extends Column {
                     throw new UnsupportedTemporalTypeException("The ChronoUnit " + unit + " is not supported for timeWindows on dates");
             }
         }
+        numberColumn.setPrintFormatter(NumberColumnFormatter.ints());
         return numberColumn;
     }
 
