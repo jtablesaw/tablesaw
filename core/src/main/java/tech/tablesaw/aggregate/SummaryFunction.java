@@ -14,6 +14,7 @@
 
 package tech.tablesaw.aggregate;
 
+import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.table.SelectionViewGroup;
 import tech.tablesaw.table.StandardViewGroup;
@@ -44,6 +45,11 @@ public class SummaryFunction {
 
     public Table by(String... columnNames) {
         ViewGroup group = StandardViewGroup.create(original(), columnNames);
+        return group.aggregate(summarizedColumnName(), function);
+    }
+
+    public Table by(CategoricalColumn... columns) {
+        ViewGroup group = StandardViewGroup.create(original(), columns);
         return group.aggregate(summarizedColumnName(), function);
     }
 

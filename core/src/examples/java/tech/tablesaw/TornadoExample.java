@@ -14,10 +14,9 @@
 
 package tech.tablesaw;
 
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
+import tech.tablesaw.api.*;
 import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.selection.Selection;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.api.ColumnType.*;
@@ -142,6 +141,25 @@ public class TornadoExample extends AbstractExample {
         Table injuriesByScaleState = tornadoes.summarize("Injuries", median).by("Scale", "State");
         injuriesByScaleState.setName("Median injuries by Tornado Scale and State");
         out(injuriesByScaleState);
+
+        // Average days between tornados in the summer
+
+        // summer approximated as june, july, august
+        Selection selection = tornadoes.dateColumn("Date").month().isIn("JUNE", "JULY", "AUGUST");
+        Table summer = tornadoes.selectWhere(selection);
+        summer = summer.sortAscendingOn("Date", "Time");
+        summer.addColumn(summer.dateColumn("Date").lag(1));
+
+        DateColumn date = summer.dateColumn("Date");
+        DateColumn laggedDate = summer.dateColumn("Date lag(1)");
+
+        NumberColumn delta = laggedDate.daysUntil(date);
+        summer.addColumn(delta);
+
+        Table summary = summer.summarize(delta.name(), mean).by(date.year());
+        out(summary);
+
+        out(summer.first(4));
 
         out();
         out("Writing the revised table to a new csv file");

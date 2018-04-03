@@ -20,6 +20,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -40,6 +41,8 @@ public class ViewGroup implements Iterable<TableSlice> {
     private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
 
     private final List<TableSlice> subTables = new ArrayList<>();
+
+    final List<CategoricalColumn> columnsToRemove = new ArrayList<>();
 
     private final String[] splitColumnNames;
 
@@ -124,7 +127,12 @@ public class ViewGroup implements Iterable<TableSlice> {
     public Table aggregate(String colName1, AggregateFunction... func1) {
         ArrayListMultimap<String, AggregateFunction> map = ArrayListMultimap.create();
         map.putAll(colName1, Lists.newArrayList(func1));
-        return aggregate(map);
+        Table result = aggregate(map);
+        for (CategoricalColumn column : columnsToRemove) {
+            result.removeColumns(column);
+        }
+        return result;
+
     }
 
     /**
@@ -155,7 +163,11 @@ public class ViewGroup implements Iterable<TableSlice> {
                 functionCount++;
             }
         }
-        return splitGroupingColumn(groupTable);
+        Table result = splitGroupingColumn(groupTable);
+        for (CategoricalColumn column : columnsToRemove) {
+            result.removeColumns(column);
+        }
+        return result;
     }
 
     /**

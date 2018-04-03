@@ -21,6 +21,7 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,9 +30,15 @@ import java.util.List;
  */
 public class StandardViewGroup extends ViewGroup {
 
-
     private StandardViewGroup(Table original, CategoricalColumn... columns) {
         super(original, splitColumnNames(columns));
+
+        for (CategoricalColumn column: columns) {
+            if (!original.containsColumn(column)) {
+                columnsToRemove.add(column);
+                getSourceTable().addColumn(column);
+            }
+        }
         setSourceTable(getSourceTable().sortOn(getSplitColumnNames()));
         splitOn(getSplitColumnNames());
     }
