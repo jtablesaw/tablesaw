@@ -416,4 +416,16 @@ public class PackedLocalTime {
     public static boolean PM(int packedTime) {
         return packedTime >= NOON;
     }
+
+    public static int hoursUntil(int packedTimeEnd, int packedTimeStart) {
+        return secondsUntil(packedTimeEnd, packedTimeStart) / 3600;
+    }
+
+    public static int minutesUntil(int packedTimeEnd, int packedTimeStart) {
+        return secondsUntil(packedTimeEnd, packedTimeStart) / 60;
+    }
+
+    public static int secondsUntil(int packedTimeEnd, int packedTimeStart) {
+        return (int) (getSecondOfDay(packedTimeEnd) - getSecondOfDay(packedTimeStart));
+    }
 }

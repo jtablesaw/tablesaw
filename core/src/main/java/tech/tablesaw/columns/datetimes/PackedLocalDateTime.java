@@ -402,6 +402,8 @@ public class PackedLocalDateTime {
         return (isLeapYear(packedDateTime) ? 366 : 365);
     }
 
+    // TODO: Need to add hoursUntil(), minutesUntil()
+
     public static int daysUntil(long packedDateTimeEnd, long packedDateTimeStart) {
         return (int) (PackedLocalDate.toEpochDay(date(packedDateTimeEnd))
                 - PackedLocalDate.toEpochDay(date(packedDateTimeStart)));
@@ -425,5 +427,4 @@ public class PackedLocalDateTime {
     private static int getMonthInternal(long packedDateTime) {
         return (getYear(packedDateTime) * 12 + getMonthValue(packedDateTime) - 1);
     }
-
 }

@@ -17,6 +17,7 @@ package tech.tablesaw.columns.times;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -315,7 +316,50 @@ public interface TimeMapUtils extends Column {
         return newColumn;
     }
 
+    /**
+     * Returns a column containing integers representing the nth group (0-based) that a date falls into.
+     *
+     * Example:     When Unit = ChronoUnit.DAY and n = 5, we form 5 day groups. a Date that is 2 days after the start
+     * is assigned to the first ("0") group. A day 7 days after the start is assigned to the second ("1") group.
+     *
+     * @param unit  A ChronoUnit greater than or equal to a day
+     * @param n     The number of units in each group.
+     * @param start The starting point of the first group; group boundaries are offsets from this point
+     */
+    default NumberColumn timeWindow(ChronoUnit unit, int n, LocalTime start) {
+        String newColumnName = "" +  n + " " + unit.toString() + " window [" + name() + "]";
+
+        int packedStartTime = PackedLocalTime.pack(start);
+        NumberColumn numberColumn = NumberColumn.create(newColumnName, size());
+        for (int i = 0; i < size(); i++) {
+            int packedTime = getIntInternal(i);
+            int result;
+            switch (unit) {
+
+                case HOURS:
+                    result = PackedLocalTime.hoursUntil(packedTime, packedStartTime) / n;
+                    numberColumn.append(result); break;
+                case MINUTES:
+                    result = PackedLocalTime.minutesUntil(packedTime, packedStartTime) / n;
+                    numberColumn.append(result); break;
+                case SECONDS:
+                    result = PackedLocalTime.secondsUntil(packedTime, packedStartTime) / n;
+                    numberColumn.append(result); break;
+                default:
+                    throw new UnsupportedTemporalTypeException("The ChronoUnit " + unit + " is not supported for timeWindows on times");
+            }
+        }
+        numberColumn.setPrintFormatter(NumberColumnFormatter.ints());
+        return numberColumn;
+    }
+
+    default NumberColumn timeWindow(ChronoUnit unit, int n) {
+        return timeWindow(unit, n, min());
+    }
+
     LocalTime get(int r);
 
     int getIntInternal(int r);
+
+    LocalTime min();
 }

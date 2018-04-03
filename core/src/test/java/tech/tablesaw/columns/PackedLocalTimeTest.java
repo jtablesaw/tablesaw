@@ -228,6 +228,36 @@ public class PackedLocalTimeTest {
     }
 
     @Test
+    public void testSecondsUntil() {
+        LocalTime localTime = LocalTime.of(5, 11, 33, 811*1_000_000);
+        LocalTime localTime2 = localTime.plusHours(20);
+
+        int packedTime = pack(localTime);
+        int packedTime2 = pack(localTime2);
+        assertEquals(localTime.until(localTime2,SECONDS), secondsUntil(packedTime2, packedTime));
+    }
+
+    @Test
+    public void testMinutesUntil() {
+        LocalTime localTime = LocalTime.of(5, 11, 33, 811*1_000_000);
+        LocalTime localTime2 = localTime.plusHours(20);
+
+        int packedTime = pack(localTime);
+        int packedTime2 = pack(localTime2);
+        assertEquals(localTime.until(localTime2, MINUTES), minutesUntil(packedTime2, packedTime));
+    }
+
+    @Test
+    public void testHoursUntil() {
+        LocalTime localTime = LocalTime.of(5, 11, 33, 811*1_000_000);
+        LocalTime localTime2 = localTime.plusHours(20);
+
+        int packedTime = pack(localTime);
+        int packedTime2 = pack(localTime2);
+        assertEquals(localTime.until(localTime2, HOURS), hoursUntil(packedTime2, packedTime));
+    }
+
+    @Test
     public void testPack() {
         LocalTime time = LocalTime.now();
         int packed = pack(time);
