@@ -241,7 +241,7 @@ public interface DateMapUtils extends Column {
         NumberColumn numberColumn = NumberColumn.create(newColumnName, size());
         for (int i = 0; i < size(); i++) {
             int packedDate = getIntInternal(i);
-            int result = 0;
+            int result;
             switch (unit) {
 
                 case DAYS:
@@ -263,7 +263,6 @@ public interface DateMapUtils extends Column {
         numberColumn.setPrintFormatter(NumberColumnFormatter.ints());
         return numberColumn;
     }
-
 
     default NumberColumn timeWindow(ChronoUnit unit, int n) {
         return timeWindow(unit, n, min());

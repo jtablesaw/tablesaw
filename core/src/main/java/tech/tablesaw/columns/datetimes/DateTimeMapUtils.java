@@ -127,7 +127,7 @@ public interface DateTimeMapUtils extends Column {
         NumberColumn numberColumn = NumberColumn.create(newColumnName, size());
         for (int i = 0; i < size(); i++) {
             long packedDate = getLongInternal(i);
-            int result = 0;
+            int result;
             switch (unit) {
 
                 // TODO(lwhite): Add support for hours and minutes
@@ -151,7 +151,6 @@ public interface DateTimeMapUtils extends Column {
         numberColumn.setPrintFormatter(NumberColumnFormatter.ints());
         return numberColumn;
     }
-
 
     default NumberColumn timeWindow(ChronoUnit unit, int n) {
         return timeWindow(unit, n, min());
