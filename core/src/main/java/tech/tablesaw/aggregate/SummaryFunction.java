@@ -53,13 +53,6 @@ public class SummaryFunction {
         return group.aggregate(summarizedColumnName(), function);
     }
 
-/*
-    public Table by(Splitter splitter) {
-        ViewGroup group = ViewGroup.create(original(), splitter);
-        return group.aggregate(summarizedColumnName(), function);
-    }
-*/
-
     public Table by(String groupNameTemplate, int step) {
         ViewGroup group = SelectionViewGroup.create(original(), groupNameTemplate, step);
         return group.aggregate(summarizedColumnName(), function);
