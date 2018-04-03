@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.time.temporal.UnsupportedTemporalTypeException;
 
 import static tech.tablesaw.api.DateColumn.*;
 
@@ -217,6 +218,44 @@ public interface DateMapUtils extends Column {
         return plusMonths(-months);
     }
 
+    /**
+     * Returns a column containing integers representing the nth group (0-based) that a date falls into.
+     *
+     * Example:     When Unit = ChronoUnit.DAY and n = 5, we form 5 day groups. a Date that is 2 days after the min is
+     * assigned to the 0th group. A day 7 days after the minimum, is assigned to the second (1) group.
+     *
+     * @param unit  A ChronoUnit greater than or equal to a day
+     * @param n     The number of units in each group.
+     */
+    default NumberColumn timeWindow(ChronoUnit unit, int n) {
+        String newColumnName = "" +  n + " " + unit.toString() + " window [" + name() + "]";
+        LocalDate start = min();
+        int packedStartDate = PackedLocalDate.pack(start);
+        NumberColumn numberColumn = NumberColumn.create(newColumnName, size());
+        for (int i = 0; i < size(); i++) {
+            int packedDate = getIntInternal(i);
+            int result = 0;
+            switch (unit) {
+
+                case DAYS:
+                    result = PackedLocalDate.daysUntil(packedDate, packedStartDate) / n;
+                    numberColumn.append(result); break;
+                case WEEKS:
+                    result = PackedLocalDate.weeksUntil(packedDate, packedStartDate) / n;
+                    numberColumn.append(result); break;
+                case MONTHS:
+                    result = PackedLocalDate.monthsUntil(packedDate, packedStartDate) / n;
+                    numberColumn.append(result); break;
+                case YEARS:
+                    result = PackedLocalDate.yearsUntil(packedDate, packedStartDate) / n;
+                    numberColumn.append(result); break;
+                default:
+                    throw new UnsupportedTemporalTypeException("The ChronoUnit " + unit + " is not supported for timeWindows on dates");
+            }
+        }
+        return numberColumn;
+    }
+
     default DateColumn plus(int value, ChronoUnit unit) {
 
         DateColumn newColumn = DateColumn.create(dateColumnName(this, value, unit));
@@ -291,4 +330,7 @@ public interface DateMapUtils extends Column {
     int getIntInternal(int r);
 
     LocalDate get(int index);
+
+    LocalDate min();
+    LocalDate max();
 }

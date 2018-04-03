@@ -511,4 +511,18 @@ public class PackedLocalDate {
         return (int) (toEpochDay(packedDateEnd) - toEpochDay(packedDateStart))/7;
     }
 
+    public static int monthsUntil(int packedDateEnd, int packedDateStart) {
+
+        int start = getMonthInternal(packedDateStart) * 32 + getDayOfMonth(packedDateStart);
+        int end = getMonthInternal(packedDateEnd) * 32 + getDayOfMonth(packedDateEnd);
+        return (end - start) / 32;
+    }
+
+    public static int yearsUntil(int packedDateEnd, int packedDateStart) {
+        return monthsUntil(packedDateEnd, packedDateStart)/12;
+    }
+
+    private static int getMonthInternal(int packedDate) {
+        return (getYear(packedDate) * 12 + getMonthValue(packedDate) - 1);
+    }
 }

@@ -34,6 +34,40 @@ public class DateColumnMapTest {
     }
 
     @Test
+    public void testTimeWindow() {
+        int day1 = pack(2011, 12,31);
+        int day2 = pack(2012, 1,1);
+        int day3 = pack(2012, 1,9);
+        int day4 = pack(2012, 1,15);
+        int day5 = pack(2012, 2,15);
+
+        column1.appendInternal(day1);
+        column1.appendInternal(day2);
+        column1.appendInternal(day3);
+        column1.appendInternal(day4);
+        column1.appendInternal(day5);
+
+        NumberColumn group = column1.timeWindow(ChronoUnit.DAYS, 7);
+        assertEquals(0, group.get(0), 0.001);
+        assertEquals(0, group.get(1), 0.001);
+        assertEquals(1, group.get(2), 0.001);
+        assertEquals(2, group.get(3), 0.001);
+
+        NumberColumn group2 = column1.timeWindow(ChronoUnit.WEEKS, 1);
+        assertEquals(0, group2.get(0), 0.001);
+        assertEquals(0, group2.get(1), 0.001);
+        assertEquals(1, group2.get(2), 0.001);
+        assertEquals(2, group2.get(3), 0.001);
+
+        NumberColumn group3 = column1.timeWindow(ChronoUnit.MONTHS, 1);
+        assertEquals(0, group3.get(0), 0.001);
+        assertEquals(0, group3.get(1), 0.001);
+        assertEquals(0, group3.get(2), 0.001);
+        assertEquals(0, group3.get(3), 0.001);
+        assertEquals(1, group3.get(4), 0.001);
+    }
+
+    @Test
     public void testDayOfWeek() {
         int day1 = pack(2018, 3, 30);
         column1.appendInternal(day1);
