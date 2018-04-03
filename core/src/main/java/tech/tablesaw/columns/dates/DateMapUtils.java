@@ -172,7 +172,13 @@ public interface DateMapUtils extends Column {
                     case WEEKS:
                         newColumn.append(PackedLocalDate.weeksUntil(c2, c1));
                         break;
-                    default:   //TODO implement in PackedLocalDate
+                    case MONTHS:
+                        newColumn.append(PackedLocalDate.monthsUntil(c2, c1));
+                        break;
+                    case YEARS:
+                        newColumn.append(PackedLocalDate.yearsUntil(c2, c1));
+                        break;
+                    default:  // handle decades, etc. 
                         LocalDate value1 = PackedLocalDate.asLocalDate(c1);
                         LocalDate value2 = PackedLocalDate.asLocalDate(c2);
                         newColumn.append(unit.between(value1, value2));
@@ -221,15 +227,15 @@ public interface DateMapUtils extends Column {
     /**
      * Returns a column containing integers representing the nth group (0-based) that a date falls into.
      *
-     * Example:     When Unit = ChronoUnit.DAY and n = 5, we form 5 day groups. a Date that is 2 days after the min is
-     * assigned to the 0th group. A day 7 days after the minimum, is assigned to the second (1) group.
+     * Example:     When Unit = ChronoUnit.DAY and n = 5, we form 5 day groups. a Date that is 2 days after the start
+     * is assigned to the first ("0") group. A day 7 days after the start is assigned to the second ("1") group.
      *
      * @param unit  A ChronoUnit greater than or equal to a day
      * @param n     The number of units in each group.
+     * @param start The starting point of the first group; group boundaries are offsets from this point
      */
-    default NumberColumn timeWindow(ChronoUnit unit, int n) {
+    default NumberColumn timeWindow(ChronoUnit unit, int n, LocalDate start) {
         String newColumnName = "" +  n + " " + unit.toString() + " window [" + name() + "]";
-        LocalDate start = min();
         int packedStartDate = PackedLocalDate.pack(start);
         NumberColumn numberColumn = NumberColumn.create(newColumnName, size());
         for (int i = 0; i < size(); i++) {
@@ -254,6 +260,11 @@ public interface DateMapUtils extends Column {
             }
         }
         return numberColumn;
+    }
+
+
+    default NumberColumn timeWindow(ChronoUnit unit, int n) {
+        return timeWindow(unit, n, min());
     }
 
     default DateColumn plus(int value, ChronoUnit unit) {
