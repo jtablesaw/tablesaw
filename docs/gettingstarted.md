@@ -1,4 +1,7 @@
+
+
 # Getting started with Tablesaw
+
 Tablesaw is a fairly large library. In this section, we touch on a few basic ideas and common operations.
 
 ## Setup
@@ -258,11 +261,61 @@ CrossTab.counts(t, t.stringColumn("State"), t.shortColumn("Scale"));
 
 ### Putting it all together
 
-Now that you've seen the pieces, we can put a few together. Lets say you want to know how frequently Tornadoes occur in the summer. Here is how you might approach that:
+Now that you've seen the pieces, we can put them together to perform a more complex data analysis. Lets say we want to know how frequently Tornadoes occur in the summer. Here''s one way to approach that:
 
 Let's start by getting only those tornadoes that occured in the summer. 
 
+```java
+DateColumn date = tornadoes.dateColumn("Date");
 
+Filter summerFilter =
+                anyOf( 	// from June 21st, through September 22nd       
+                        both(date.month().isEqualTo("JUNE"), 
+                            date.dayOfMonth().isGreaterThanOrEqualTo(21)),
+    					date.month().isIn("JULY", "AUGUST"),
+                        both(date.month().isEqualTo("SEPTEMBER"),
+                            date.dayOfMonth().isLessThan(22)));
+
+Table summer = tornadoes.selectWhere(summerFilter);
+```
+
+To get the frequency, we calculate the difference in days between successive tornadoes. The *lag()* method creates a column where every value equals the previous value (the prior row) of the source column. Then we can simply get the difference in days between the two dates. DateColumn has a method *daysUntil()* that does this.  It returns a NumberColumn that we'll call "delta". 
+
+```java
+summer = summer.sortAscendingOn("Date", "Time");
+summer.addColumn(summer.dateColumn("Date").lag(1));
+
+DateColumn summerDate = summer.dateColumn("Date");
+DateColumn laggedDate = summer.dateColumn("Date lag(1)");
+
+NumberColumn delta = laggedDate.daysUntil(summerDate);
+summer.addColumn(delta);
+```
+
+Now we simply caculate the mean of the delta column. Splitting on year keeps us from inadvertently including the time between the last tornado of one summer and the first tornado of the next.
+
+```java
+Table summary = summer.summarize(delta.name(), mean, count).by(summerDate.year());
+```
+
+Printing summary gives us the answer by year. 
+
+```
+     Date year  |  Mean [Date lag(1) - Date]  |  Count [Date lag(1) - Date]  |
+    --------------------------------------------------------------------------
+        1950.0  |         1.9782608695652173  |                        47.0  |
+        1951.0  |          4.684210526315789  |                        76.0  |
+        1952.0  |          5.707692307692312  |                        65.0  |
+        1953.0  |          4.805194805194803  |                        77.0  |
+...
+```
+
+To get a number for the entire period, we can take the average of the annual means. 
+
+```
+summary.nCol(1).mean();
+>>	Average days between tornadoes in the summer: 1.761269943549373
+```
 
 
 

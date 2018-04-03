@@ -15,6 +15,7 @@
 package tech.tablesaw;
 
 import tech.tablesaw.api.*;
+import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
 
@@ -146,22 +147,41 @@ public class TornadoExample extends AbstractExample {
 
         // summer approximated as june, july, august
         Selection selection = tornadoes.dateColumn("Date").month().isIn("JUNE", "JULY", "AUGUST");
-        Table summer = tornadoes.selectWhere(selection);
+
+        // alternate, somewhat more precise approach
+        DateColumn date = tornadoes.dateColumn("Date");
+
+        Filter summerFilter =
+                anyOf(
+                        date.month().isIn("JULY", "AUGUST"),
+                        both(date.month().isEqualTo("JUNE"),
+                            date.dayOfMonth().isGreaterThanOrEqualTo(21)),
+                        both(date.month().isEqualTo("SEPTEMBER"),
+                            date.dayOfMonth().isLessThanOrEqualTo(22)));
+
+        //Table summer = tornadoes.selectWhere(selection);
+        Table summer = tornadoes.selectWhere(summerFilter);
         summer = summer.sortAscendingOn("Date", "Time");
         summer.addColumn(summer.dateColumn("Date").lag(1));
 
-        DateColumn date = summer.dateColumn("Date");
+        // calculate the difference between a date and the prior date using the lagged column
+        DateColumn summerDate = summer.dateColumn("Date");
         DateColumn laggedDate = summer.dateColumn("Date lag(1)");
-
-        NumberColumn delta = laggedDate.daysUntil(date);
+        NumberColumn delta = laggedDate.daysUntil(summerDate);  // the lagged date is earlier
         summer.addColumn(delta);
-
-        Table summary = summer.summarize(delta.name(), mean).by(date.year());
-        out(summary);
 
         out(summer.first(4));
 
+        // now we can summarize by year so we don't inadvertently include differences between multiple years
+        Table summary = summer.summarize(delta, mean, count).by(summerDate.year());
+        out(summary);
+
+        // taking the mean of the annual means gives us an approximate answer
+        // we could also use the count value calculated above to get a weighted average
+        out(summary.nCol(1).mean());
+
         out();
+
         out("Writing the revised table to a new csv file");
         tornadoes.write().csv("../data/rev_tornadoes_1950-2014.csv");
     }
