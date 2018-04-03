@@ -15,6 +15,7 @@
 package tech.tablesaw.aggregate;
 
 import tech.tablesaw.api.CategoricalColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.table.SelectionViewGroup;
 import tech.tablesaw.table.StandardViewGroup;
@@ -32,6 +33,12 @@ public class SummaryFunction {
     public SummaryFunction(Table original, String summarizedColumnName, AggregateFunction... function) {
         this.original = original;
         this.summarizedColumnName = summarizedColumnName;
+        this.function = function;
+    }
+
+    public SummaryFunction(Table original, NumberColumn numberColumn, AggregateFunction... function) {
+        this.original = original;
+        this.summarizedColumnName = numberColumn.name();
         this.function = function;
     }
 
