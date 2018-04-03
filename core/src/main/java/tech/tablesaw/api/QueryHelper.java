@@ -37,7 +37,7 @@ import java.util.List;
 public class QueryHelper {
 
     /**
-     * Returns a column reference for a Stringolumn with the given name. It will be resolved at query time by associating
+     * Returns a column reference for a String column with the given name. It will be resolved at query time by associating
      * it with a table. At construction time, the columnType is unknown, so the user has to pick the
      * correct type.
      */
