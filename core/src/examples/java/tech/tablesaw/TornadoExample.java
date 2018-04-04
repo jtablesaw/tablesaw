@@ -18,8 +18,8 @@ import tech.tablesaw.api.*;
 import tech.tablesaw.filtering.Filter;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.filtering.composite.AllOf.*;
-import static tech.tablesaw.filtering.composite.AnyOf.anyOf;
+import static tech.tablesaw.table.Relation.anyOf;
+import static tech.tablesaw.table.Relation.both;
 
 /**
  * Usage example using a Tornado data set
