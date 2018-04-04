@@ -16,6 +16,7 @@ package tech.tablesaw.columns.datetimes;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
+import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.times.PackedLocalTime;
 
@@ -178,6 +179,17 @@ public class PackedLocalDateTime {
     public static DayOfWeek getDayOfWeek(long packedDateTime) {
         int date = PackedLocalDateTime.date(packedDateTime);
         return PackedLocalDate.getDayOfWeek(date);
+    }
+
+    /**
+     * Returns the quarter of the year of the given date as an int from 1 to 4, or -1, if the argument is the
+     * MISSING_VALUE for DateTimeColumn
+     */
+    public static int getQuarter(long packedDate) {
+        if (packedDate == DateTimeColumn.MISSING_VALUE) {
+            return -1;
+        }
+        return PackedLocalDate.getQuarter(date(packedDate));
     }
 
     public static boolean isInQ1(long packedDateTime) {

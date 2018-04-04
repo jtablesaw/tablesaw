@@ -14,12 +14,15 @@
 
 package tech.tablesaw.columns.datetimes;
 
+import com.google.common.base.Strings;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
@@ -110,6 +113,195 @@ public interface DateTimeMapUtils extends Column {
         }
         return newColumn;
     }
+
+    /**
+     * Returns a StringColumn containing the name of the month for each date/time in this column
+     */
+    default StringColumn month() {
+        StringColumn newColumn = StringColumn.create(this.name() + " month");
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
+            } else {
+                newColumn.append(Month.of(PackedLocalDateTime.getMonthValue(c1)).name());
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a StringColumn with the year and quarter from this column concatenated into a String that will sort
+     * lexicographically in temporal order.
+     * <p>
+     * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
+     * you want monthly data but your source data is more than a year long and you don't want months from different
+     * years aggregated together).
+     */
+    default StringColumn yearQuarter() {
+        StringColumn newColumn = StringColumn.create(this.name() + " year & quarter");
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
+            } else {
+                String yq = String.valueOf(PackedLocalDateTime.getYear(c1));
+                yq = yq + "-" + Strings.padStart(
+                        String.valueOf(PackedLocalDateTime.getQuarter(c1)), 2, '0');
+                newColumn.append(yq);
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a StringColumn with the year and month from this column concatenated into a String that will sort
+     * lexicographically in temporal order.
+     * <p>
+     * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
+     * you want monthly data but your source data is more than a year long and you don't want months from different
+     * years aggregated together).
+     */
+    default StringColumn yearMonth() {
+        StringColumn newColumn = StringColumn.create(this.name() + " year & month");
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
+            } else {
+                String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
+                ym = ym + "-" + Strings.padStart(
+                        String.valueOf(PackedLocalDateTime.getMonthValue(c1)), 2, '0');
+                newColumn.append(ym);
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a StringColumn with the year and day-of-year derived from this column concatenated into a String
+     * that will sort lexicographically in temporal order.
+     * <p>
+     * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
+     * you want monthly data but your source data is more than a year long and you don't want months from different
+     * years aggregated together).
+     */
+    default StringColumn yearDay() {
+        StringColumn newColumn = StringColumn.create(this.name() + " year & month");
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
+            } else {
+                String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
+                ym = ym + "-" + Strings.padStart(
+                        String.valueOf(PackedLocalDateTime.getDayOfYear(c1)), 3, '0');
+                newColumn.append(ym);
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a StringColumn with the year and week-of-year derived from this column concatenated into a String
+     * that will sort lexicographically in temporal order.
+     * <p>
+     * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
+     * you want monthly data but your source data is more than a year long and you don't want months from different
+     * years aggregated together).
+     */
+    default StringColumn hourMinute() {
+        StringColumn newColumn = StringColumn.create(this.name() + " hour & minute");
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
+            } else {
+                String hm = Strings.padStart(String.valueOf(PackedLocalDateTime.getHour(c1)), 2, '0');
+                hm = hm + "-" + Strings.padStart(
+                        String.valueOf(PackedLocalDateTime.getMinute(c1)), 2, '0');
+                newColumn.append(hm);
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a StringColumn with the year and week-of-year derived from this column concatenated into a String
+     * that will sort lexicographically in temporal order.
+     * <p>
+     * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
+     * you want monthly data but your source data is more than a year long and you don't want months from different
+     * years aggregated together).
+     */
+    default StringColumn yearWeek() {
+        StringColumn newColumn = StringColumn.create(this.name() + " year & month");
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
+            } else {
+                String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
+                ym = ym + "-" + Strings.padStart(
+                        String.valueOf(PackedLocalDateTime.getWeekOfYear(c1)), 2, '0');
+                newColumn.append(ym);
+            }
+        }
+        return newColumn;
+    }
+
+    default StringColumn dayOfWeek() {
+        StringColumn newColumn = StringColumn.create(this.name() + " day of week", this.size());
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
+            } else {
+                newColumn.append(PackedLocalDateTime.getDayOfWeek(c1).toString());
+            }
+        }
+        return newColumn;
+    }
+
+    default NumberColumn dayOfWeekValue() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " day of week", this.size());
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
+            } else {
+                newColumn.append((short) PackedLocalDateTime.getDayOfWeek(c1).getValue());
+            }
+        }
+        return newColumn;
+    }
+
+    default NumberColumn dayOfYear() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " day of year", this.size());
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
+            } else {
+                newColumn.append((short) PackedLocalDateTime.getDayOfYear(c1));
+            }
+        }
+        return newColumn;
+    }
+
+    default NumberColumn dayOfMonth() {
+        NumberColumn newColumn = NumberColumn.create(this.name() + " day of month");
+        for (int r = 0; r < this.size(); r++) {
+            long c1 = this.getLongInternal(r);
+            if (DateTimeColumn.isMissing(c1)) {
+                newColumn.append(NumberColumn.MISSING_VALUE);
+            } else {
+                newColumn.append(PackedLocalDateTime.getDayOfMonth(c1));
+            }
+        }
+        return newColumn;
+    }
+
 
     /**
      * Returns a column containing integers representing the nth group (0-based) that a date falls into.

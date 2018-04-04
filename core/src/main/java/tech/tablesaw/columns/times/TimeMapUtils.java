@@ -14,7 +14,9 @@
 
 package tech.tablesaw.columns.times;
 
+import com.google.common.base.Strings;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -351,6 +353,28 @@ public interface TimeMapUtils extends Column {
         }
         numberColumn.setPrintFormatter(NumberColumnFormatter.ints());
         return numberColumn;
+    }
+
+    /**
+     * Returns a StringColumn with the hour and minute-of-hour derived from this column concatenated into a String
+     * that will sort lexicographically in temporal order.
+     * <p>
+     * This simplifies the production of plots and tables that aggregate values into standard temporal units
+     */
+    default StringColumn hourMinute() {
+        StringColumn newColumn = StringColumn.create(this.name() + " hour & minute");
+        for (int r = 0; r < this.size(); r++) {
+            int c1 = this.getIntInternal(r);
+            if (TimeColumn.isMissing(c1)) {
+                newColumn.append(StringColumn.MISSING_VALUE);
+            } else {
+                String hm = Strings.padStart(String.valueOf(PackedLocalTime.getHour(c1)), 2, '0');
+                hm = hm + "-" + Strings.padStart(
+                        String.valueOf(PackedLocalTime.getMinute(c1)), 2, '0');
+                newColumn.append(hm);
+            }
+        }
+        return newColumn;
     }
 
     default NumberColumn timeWindow(ChronoUnit unit, int n) {

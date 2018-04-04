@@ -16,14 +16,15 @@ package tech.tablesaw.columns.dates;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
+import tech.tablesaw.api.DateColumn;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.Date;
+import java.util.Locale;
 
 import static java.time.DayOfWeek.*;
 import static java.time.Month.*;
@@ -181,7 +182,14 @@ public class PackedLocalDate {
         return DayOfWeek.of(dow0 + 1);
     }
 
+    /**
+     * Returns the quarter of the year of the given date as an int from 1 to 4, or -1, if the argument is the
+     * MISSING_VALUE for DateColumn
+     */
     public static int getQuarter(int packedDate) {
+        if (packedDate == DateColumn.MISSING_VALUE) {
+            return -1;
+        }
         Month month = getMonth(packedDate);
         switch (month) {
             case JANUARY:
@@ -198,10 +206,9 @@ public class PackedLocalDate {
                 return 3;
             case OCTOBER:
             case NOVEMBER:
-            case DECEMBER:
+            default:  // must be december
                 return 4;
         }
-        throw new IllegalStateException("Failed to extract quarter from packedDate");
     }
 
     public static boolean isInQ1(int packedDate) {
@@ -454,6 +461,12 @@ public class PackedLocalDate {
                 break;
         }
         return pack((short) year, (byte) month, (byte) day);
+    }
+
+    public static int getWeekOfYear(int packedDateTime) {
+        LocalDate date = asLocalDate(packedDateTime);
+        TemporalField woy = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+        return date.get(woy);
     }
 
     private static int ofEpochDay(long epochDay) {
