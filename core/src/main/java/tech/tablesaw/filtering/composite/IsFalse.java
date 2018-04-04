@@ -26,7 +26,7 @@ import javax.annotation.concurrent.Immutable;
  * A boolean filtering, returns true if the filtering it wraps returns false, and vice-versa.
  */
 @Immutable
-public class IsFalse extends CompositeFilter {
+public class IsFalse implements Filter {
 
     private final Filter filter;
 

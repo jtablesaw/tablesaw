@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * A composite filtering that only returns {@code true} if all component filters return true
  */
-public class AllOf extends CompositeFilter {
+public class AllOf implements Filter {
 
     private final List<Filter> filterList = new ArrayList<>();
 

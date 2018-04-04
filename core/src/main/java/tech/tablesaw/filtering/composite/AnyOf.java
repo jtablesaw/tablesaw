@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * A composite filtering that only returns {@code true} if all component filters return true
  */
-public class AnyOf extends CompositeFilter {
+public class AnyOf implements Filter {
 
     private final List<Filter> filterList = new ArrayList<>();
 
@@ -40,11 +40,6 @@ public class AnyOf extends CompositeFilter {
     public static AnyOf anyOf(Filter... filters) {
         List<Filter> filterList = new ArrayList<>();
         Collections.addAll(filterList, filters);
-        return new AnyOf(filterList);
-    }
-
-    public static AnyOf either(Filter filter1, Filter filter2) {
-        List<Filter> filterList = Lists.newArrayList(filter1, filter2);
         return new AnyOf(filterList);
     }
 

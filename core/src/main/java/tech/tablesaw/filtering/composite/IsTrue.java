@@ -25,7 +25,7 @@ import javax.annotation.concurrent.Immutable;
  * A boolean filtering. For symmetry with IsFalse
  */
 @Immutable
-public class IsTrue extends CompositeFilter {
+public class IsTrue implements Filter {
 
     private final Filter filter;
 
