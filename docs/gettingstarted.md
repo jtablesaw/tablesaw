@@ -295,7 +295,7 @@ summer.addColumn(delta);
 Now we simply caculate the mean of the delta column. Splitting on year keeps us from inadvertently including the time between the last tornado of one summer and the first tornado of the next.
 
 ```java
-Table summary = summer.summarize(delta.name(), mean, count).by(summerDate.year());
+Table summary = summer.summarize(delta, mean, count).by(summerDate.year());
 ```
 
 Printing summary gives us the answer by year. 
