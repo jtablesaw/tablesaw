@@ -37,16 +37,8 @@ public class IsTrue implements Filter {
         return new IsTrue(filter);
     }
 
-    /**
-     * Returns true if the element in the given row in my {@code column} is true
-     */
     @Override
-    public Selection apply(Table relation) {
-        return filter.apply(relation);
-    }
-
-    @Override
-    public Selection apply(Column column) {
-        return filter.apply(column);
+    public Selection apply(int size) {
+        return filter.apply(size);
     }
 }

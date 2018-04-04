@@ -623,7 +623,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
 
     @Override
     public TimeColumn select(Filter filter) {
-        return (TimeColumn) subset(filter.apply(this));
+        return (TimeColumn) subset(filter.apply(size()));
     }
 
 }

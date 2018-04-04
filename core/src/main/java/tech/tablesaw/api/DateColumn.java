@@ -529,7 +529,7 @@ public class DateColumn extends AbstractColumn implements DateFilters,
 
     @Override
     public DateColumn select(Filter filter) {
-        return (DateColumn) subset(filter.apply(this));
+        return (DateColumn) subset(filter.apply(size()));
     }
 
     public Selection eval(IntPredicate predicate) {

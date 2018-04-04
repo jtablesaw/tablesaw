@@ -14,9 +14,6 @@
 
 package tech.tablesaw.filtering.composite;
 
-import com.google.common.collect.Lists;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.selection.Selection;
 
@@ -47,26 +44,14 @@ public class AnyOf implements Filter {
         return new AnyOf(filters);
     }
 
-    public Selection apply(Table relation) {
-        Selection selection = null;
-        for (Filter filter : filterList) {
-            if (selection == null) {
-                selection = filter.apply(relation);
-            } else {
-                selection.or(filter.apply(relation));
-            }
-        }
-        return selection;
-    }
-
     @Override
-    public Selection apply(Column column) {
+    public Selection apply(int size) {
         Selection selection = null;
         for (Filter filter : filterList) {
             if (selection == null) {
-                selection = filter.apply(column);
+                selection = filter.apply(size);
             } else {
-                selection.or(filter.apply(column));
+                selection.or(filter.apply(size));
             }
         }
         return selection;

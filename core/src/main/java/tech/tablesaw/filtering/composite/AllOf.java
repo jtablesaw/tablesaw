@@ -51,26 +51,14 @@ public class AllOf implements Filter {
         return new AllOf(filters);
     }
 
-    public Selection apply(Table relation) {
-        Selection selection = null;
-        for (Filter filter : filterList) {
-            if (selection == null) {
-                selection = filter.apply(relation);
-            } else {
-                selection.and(filter.apply(relation));
-            }
-        }
-        return selection;
-    }
-
     @Override
-    public Selection apply(Column column) {
+    public Selection apply(int size) {
         Selection selection = null;
         for (Filter filter : filterList) {
             if (selection == null) {
-                selection = filter.apply(column);
+                selection = filter.apply(size);
             } else {
-                selection.and(filter.apply(column));
+                selection.and(filter.apply(size));
             }
         }
         return selection;

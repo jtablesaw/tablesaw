@@ -43,7 +43,7 @@ public class Projection extends Relation {
     public Table where(Filter filter) {
         Table projectedTable = Table.create(table.name(), columns);
         Table newTable = projectedTable.emptyCopy();
-        Selection map = filter.apply(table);
+        Selection map = filter.apply(projectedTable.rowCount());
         Rows.copyRowsToTable(map, projectedTable, newTable);
         return newTable;
     }

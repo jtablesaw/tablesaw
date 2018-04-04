@@ -16,7 +16,6 @@ package tech.tablesaw.selection;
 
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import org.roaringbitmap.RoaringBitmap;
-import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 
@@ -141,12 +140,7 @@ public interface Selection extends IntIterable, Filter {
     void flip();
 
     @Override
-    default Selection apply(Table relation) {
-        return this;
-    }
-
-    @Override
-    default Selection apply(Column column) {
+    default Selection apply(int size) {
         return this;
     }
 }
