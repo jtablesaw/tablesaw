@@ -14,6 +14,7 @@
 
 package tech.tablesaw.filtering.composite;
 
+import com.google.common.collect.Lists;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
@@ -38,6 +39,11 @@ public class AllOf extends CompositeFilter {
     public static AllOf allOf(Filter... filters) {
         List<Filter> filterList = new ArrayList<>();
         Collections.addAll(filterList, filters);
+        return new AllOf(filterList);
+    }
+
+    public static AllOf both(Filter filter1, Filter filter2) {
+        List<Filter> filterList = Lists.newArrayList(filter1, filter2);
         return new AllOf(filterList);
     }
 
