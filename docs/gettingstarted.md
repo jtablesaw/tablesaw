@@ -70,7 +70,7 @@ Generally, Tablesaw will provide a name for columns created this way. If you don
 ### Tables
 As described above, a table is a named collection of columns. All columns in the table must be the same size, although missing values are allowed.
 
-## A brief tutorial: Tornado Warning
+## A brief tutorial: Tornadoes 
 
 To give a better sense of how Tablesaw works, we’ll use a tornado data set from NOAA. Here’s what we’ll cover:
 
