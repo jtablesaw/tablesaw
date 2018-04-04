@@ -1,7 +1,11 @@
 Columns
 =======
 
-Tablesaw is all about tables, of course, but you will often want to work with an individual column or vector of data. We show how to do that here. Here is the list of currently available column types:
+Tablesaw is all about tables, of course, but tables are made of columns, and you often need to work with a single column.
+ A column is a vector of data, all of a single type. Some elements of the vector may be missing, and it's important to
+  deal with those. We show how to do that here. 
+  
+Here are the supported column types:
 
 * Boolean
 * String 
@@ -10,7 +14,7 @@ Tablesaw is all about tables, of course, but you will often want to work with an
 * Local DateTime
 * Local Time
 
-All column types support a common, standard set of operations, as well as a number of type specific operations. 
+All column types support a common set of operations, and a set specific to its type. 
 We'll begin by looking at the common operations. 
 
 #### Create a Column
@@ -51,7 +55,8 @@ Columns do all the things you expect, here’s an incomplete list of standard op
     append(value)                   // Appends a single value 
     append(Column)                  // Appends the data in other column to this one
 
-These operations are available on nearly all column types, including date columns. Each operates on an entire column. To operate on the values of a column, you have two choices. You can work with individual values, or use column-wise operations to work with all the values in a column in the same way. To work with individual values, you can just iterate over the column:
+These operations are available on nearly all column types, including date columns. Each operates on an entire column. 
+To operate on the values of a column, you have two choices. You can work with individual values, or use column-wise operations to work with all the values in a column in the same way. To work with individual values, you can just iterate over the column:
 
     DateColumn weekLater = DateColumn.create("Week Later");
     for (LocalDate date: dates) {
