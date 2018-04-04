@@ -16,6 +16,8 @@ package tech.tablesaw.api;
 
 import org.junit.Before;
 import org.junit.Test;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -32,12 +34,25 @@ import static org.junit.Assert.assertTrue;
 public class DateFiltersTest {
 
     private DateColumn column1;
+    private DateColumn localDateColumn = DateColumn.create("testing");
+
 
     @Before
     public void setUp() {
         Table table = Table.create("Test");
         column1 = DateColumn.create("Game date", Locale.ENGLISH);
         table.addColumn(column1);
+
+        localDateColumn.append(LocalDate.of(2016, 2, 28)); // sunday
+        localDateColumn.append(LocalDate.of(2016, 2, 29)); // monday
+        localDateColumn.append(LocalDate.of(2016, 3, 1));  // tues
+        localDateColumn.append(LocalDate.of(2016, 3, 2));  // weds
+        localDateColumn.append(LocalDate.of(2016, 3, 3));  // thurs
+        localDateColumn.append(LocalDate.of(2016, 4, 1));
+        localDateColumn.append(LocalDate.of(2016, 4, 2));
+        localDateColumn.append(LocalDate.of(2016, 3, 4));   // fri
+        localDateColumn.append(LocalDate.of(2016, 3, 5));   // sat
+
     }
 
     @Test
@@ -157,6 +172,15 @@ public class DateFiltersTest {
     }
 
     @Test
+    public void testIsLastDayOfTheMonth() {
+        Selection selection = localDateColumn.isLastDayOfMonth();
+        assertFalse(selection.contains(0));
+        assertTrue(selection.contains(1));
+        assertFalse(selection.contains(2));
+    }
+
+
+    @Test
     public void testIsInYear() {
         LocalDate date = LocalDate.of(2015, 1, 25);
         int packed = pack(date);
@@ -188,5 +212,41 @@ public class DateFiltersTest {
         assertTrue(dateColumn.isFirstDayOfMonth().contains(1));
         assertFalse(dateColumn.isLastDayOfMonth().contains(1));
         assertFalse(dateColumn.isFirstDayOfMonth().contains(0));
+    }
+
+    @Test
+    public void testComparison3() {
+        LocalDate date = LocalDate.of(2015, 1, 25);
+        int packed = pack(date);
+
+        DateColumn dateColumn = DateColumn.create("test");
+
+        int before = minusDays(1, packed);
+        int equal = packed;
+        int after = plusDays(1, packed);
+
+        LocalDate beforeDate = PackedLocalDate.asLocalDate(before);
+        LocalDate afterDate = PackedLocalDate.asLocalDate(after);
+
+        dateColumn.appendInternal(before);
+        dateColumn.appendInternal(equal);
+        dateColumn.appendInternal(after);
+
+        NumberColumn index = NumberColumn.indexColumn("index", dateColumn.size(), 0);
+        Table t = Table.create("test", dateColumn, index);
+
+        assertTrue(t.selectWhere(dateColumn.isBefore(packed)).nCol("index").contains(0));
+        assertTrue(t.selectWhere(dateColumn.isEqualTo(packed)).nCol("index").contains(1));
+        assertTrue(t.selectWhere(dateColumn.isAfter(packed)).nCol("index").contains(2));
+        assertTrue(t.selectWhere(dateColumn
+                .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(1));
+        assertTrue(t.selectWhere(dateColumn
+                .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(2));
+        assertTrue(t.selectWhere(dateColumn
+                .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(0));
+        assertFalse(t.selectWhere(dateColumn
+                .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(2));
+        assertFalse(t.selectWhere(dateColumn
+                .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(0));
     }
 }

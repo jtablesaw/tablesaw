@@ -17,9 +17,10 @@ package tech.tablesaw;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.filtering.composite.AnyOf;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.median;
-import static tech.tablesaw.api.QueryHelper.*;
+import static tech.tablesaw.filtering.composite.AnyOf.*;
 
 /**
  * Usage example using a process data set
@@ -50,10 +51,10 @@ public class OperationsExample extends AbstractExample {
         out(ops);
 
         Table q2_429_assembly = ops.selectWhere(
-                and
-                        (dateColumn("date").isInQ2(),
-                                (stringColumn("SKU").startsWith("429")),
-                                (stringColumn("Operation").isEqualTo("Assembly"))));
+                anyOf
+                        (ops.dateColumn("date").isInQ2(),
+                                (ops.stringColumn("SKU").startsWith("429")),
+                                (ops.stringColumn("Operation").isEqualTo("Assembly"))));
 
         Table durationByFacilityAndShift = q2_429_assembly.summarize("Duration", median)
                 .by("Facility", "Shift");

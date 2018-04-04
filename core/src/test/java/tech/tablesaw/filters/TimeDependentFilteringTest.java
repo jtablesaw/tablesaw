@@ -21,7 +21,7 @@ import com.google.common.collect.TreeRangeSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.columns.strings.StringColumnReference;
+import tech.tablesaw.filtering.composite.AllOf;
 import tech.tablesaw.table.StandardViewGroup;
 import tech.tablesaw.table.TableSlice;
 import org.apache.commons.lang3.RandomUtils;
@@ -41,7 +41,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.out;
-import static tech.tablesaw.api.QueryHelper.*;
 
 /**
  * Tests manipulation of large (but not big) data sets
@@ -79,11 +78,11 @@ public class TimeDependentFilteringTest {
         // temporal dependency range constraint
         Range<Integer> daysConstraint = Range.closed(0, 0);
 
-        StringColumnReference concept = stringColumn("concept");
+        StringColumn concept = t.stringColumn("concept");
 
         //Non-temporal clause
         Table nt = t.selectWhere(
-                and(concept.isEqualTo(conceptA),
+                AllOf.both(concept.isEqualTo(conceptA),
                         (concept.isNotEqualTo(conceptB))));
 
         NumberColumn ntPatients = nt.numberColumn("patient");
@@ -122,7 +121,6 @@ public class TimeDependentFilteringTest {
                     eventDates.add(dates.get(row));
                 }
             }
-
 
             if (independentConstraintFilter == DependencyFilter.FIRST) {
                 if (eventDates.isEmpty()) {

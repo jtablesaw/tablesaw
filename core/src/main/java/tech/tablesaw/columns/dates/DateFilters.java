@@ -181,4 +181,17 @@ public interface DateFilters extends Column {
     }
 
     IntArrayList data();
+
+    default Selection isBetweenExcluding(LocalDate beforeDate, LocalDate afterDate) {
+        Selection selection = isAfter(beforeDate);
+        selection.and(isBefore(afterDate));
+        return selection;
+    }
+
+    default Selection isBetweenIncluding(LocalDate beforeDate, LocalDate afterDate) {
+        Selection selection = isOnOrAfter(beforeDate);
+        selection.and(isOnOrBefore(afterDate));
+        return selection;
+    }
+
 }

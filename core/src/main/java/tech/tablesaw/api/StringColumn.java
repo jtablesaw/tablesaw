@@ -30,7 +30,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
-import tech.tablesaw.columns.strings.StringColumnReference;
 import tech.tablesaw.columns.strings.StringFilters;
 import tech.tablesaw.columns.strings.StringMapUtils;
 import tech.tablesaw.columns.strings.StringReduceUtils;
@@ -62,8 +61,6 @@ import static tech.tablesaw.api.ColumnType.*;
  */
 public class StringColumn extends AbstractColumn
         implements CategoricalColumn, StringFilters, StringMapUtils, StringReduceUtils {
-
-    public final StringColumnReference column = new StringColumnReference(this.name());
 
     public static final String MISSING_VALUE = (String) STRING.getMissingValue();
 

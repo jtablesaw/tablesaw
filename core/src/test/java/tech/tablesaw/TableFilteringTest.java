@@ -25,7 +25,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 import java.time.LocalDate;
 
 import static org.junit.Assert.*;
-import static tech.tablesaw.api.QueryHelper.*;
+import static tech.tablesaw.filtering.composite.AllOf.both;
 
 /**
  * Tests for filtering on the T class
@@ -41,7 +41,7 @@ public class TableFilteringTest {
 
     @Test
     public void testFilter1() {
-        Table result = table.selectWhere(numberColumn("approval").isLessThan(70));
+        Table result = table.selectWhere(table.numberColumn("approval").isLessThan(70));
         NumberColumn a = result.numberColumn("approval");
         for (double v : a) {
             assertTrue(v < 70);
@@ -50,7 +50,7 @@ public class TableFilteringTest {
 
     @Test
     public void testReject() {
-        Table result = table.rejectWhere(numberColumn("approval").isLessThan(70));
+        Table result = table.rejectWhere(table.numberColumn("approval").isLessThan(70));
         NumberColumn a = result.numberColumn("approval");
         for (double v : a) {
             assertFalse(v < 70);
@@ -59,7 +59,7 @@ public class TableFilteringTest {
 
     @Test
     public void testFilter2() {
-        Table result = table.selectWhere(dateColumn("date").isInApril());
+        Table result = table.selectWhere(table.dateColumn("date").isInApril());
         DateColumn d = result.dateColumn("date");
         for (LocalDate v : d) {
             assertTrue(PackedLocalDate.isInApril(PackedLocalDate.pack(v)));
@@ -69,9 +69,9 @@ public class TableFilteringTest {
     @Test
     public void testFilter3() {
         Table result = table.selectWhere(
-                and(
-                        dateColumn("date").isInApril(),
-                        numberColumn("approval").isGreaterThan(70)));
+                both(
+                        table.dateColumn("date").isInApril(),
+                        table.numberColumn("approval").isGreaterThan(70)));
 
         DateColumn dates = result.dateColumn("date");
         NumberColumn approval = result.numberColumn("approval");
@@ -86,9 +86,9 @@ public class TableFilteringTest {
         Table result =
                 table.select("who", "approval")
                         .where(
-                                and(
-                                        dateColumn("date").isInApril(),
-                                        numberColumn("approval").isGreaterThan(70)));
+                                both(
+                                        table.dateColumn("date").isInApril(),
+                                        table.numberColumn("approval").isGreaterThan(70)));
         assertEquals(2, result.columnCount());
         assertTrue(result.columnNames().contains("who"));
         assertTrue(result.columnNames().contains("approval"));

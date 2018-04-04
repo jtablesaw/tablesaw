@@ -14,6 +14,7 @@
 
 package tech.tablesaw.filtering.composite;
 
+import com.google.common.collect.Lists;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
@@ -39,6 +40,11 @@ public class AnyOf extends CompositeFilter {
     public static AnyOf anyOf(Filter... filters) {
         List<Filter> filterList = new ArrayList<>();
         Collections.addAll(filterList, filters);
+        return new AnyOf(filterList);
+    }
+
+    public static AnyOf either(Filter filter1, Filter filter2) {
+        List<Filter> filterList = Lists.newArrayList(filter1, filter2);
         return new AnyOf(filterList);
     }
 

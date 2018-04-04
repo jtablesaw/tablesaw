@@ -16,22 +16,6 @@ package tech.tablesaw.columns.strings;
 
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.filters.ColumnEqualTo;
-import tech.tablesaw.columns.strings.filters.ColumnEqualToIgnoringCase;
-import tech.tablesaw.columns.strings.filters.ColumnNotEqualTo;
-import tech.tablesaw.columns.strings.filters.ContainsString;
-import tech.tablesaw.columns.strings.filters.EndsWith;
-import tech.tablesaw.columns.strings.filters.EqualToIgnoringCase;
-import tech.tablesaw.columns.strings.filters.HasLengthEqualTo;
-import tech.tablesaw.columns.strings.filters.IsAlpha;
-import tech.tablesaw.columns.strings.filters.IsAlphaNumeric;
-import tech.tablesaw.columns.strings.filters.IsLongerThan;
-import tech.tablesaw.columns.strings.filters.IsLowerCase;
-import tech.tablesaw.columns.strings.filters.IsNumeric;
-import tech.tablesaw.columns.strings.filters.IsShorterThan;
-import tech.tablesaw.columns.strings.filters.IsUpperCase;
-import tech.tablesaw.columns.strings.filters.MatchesRegex;
-import tech.tablesaw.columns.strings.filters.StartsWith;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.StringBiPredicate;
 import tech.tablesaw.filtering.predicates.StringIntBiPredicate;
@@ -55,7 +39,7 @@ public interface StringFilters extends Column {
     Selection eval(StringBiPredicate predicate, StringColumn otherColumn);
 
     default Selection equalsIgnoreCase(String string) {
-        return new EqualToIgnoringCase(new StringColumnReference(this.name()), string).apply(this);
+        return eval(isEqualToIgnoringCase, string);
     }
 
     default StringColumn textEqualsIgnoreCase(String string) {
@@ -63,7 +47,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection startsWith(String string) {
-        return new StartsWith(new StringColumnReference(this.name()), string).apply(this);
+        return eval(startsWith, string);
     }
 
     default StringColumn textStartsWith(String string) {
@@ -71,7 +55,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection endsWith(String string) {
-        return new EndsWith(new StringColumnReference(this.name()), string).apply(this);
+        return eval(endsWith, string);
     }
 
     default StringColumn textEndsWith(String string) {
@@ -79,7 +63,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection containsString(String string) {
-        return new ContainsString(new StringColumnReference(this.name()), string).apply(this);
+        return eval(stringContains, string);
     }
 
     default StringColumn textContainsString(String string) {
@@ -87,7 +71,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection matchesRegex(String string) {
-        return new MatchesRegex(new StringColumnReference(this.name()), string).apply(this);
+        return eval(matchesRegex, string);
     }
 
     default StringColumn textMatchesRegex(String string) {
@@ -95,7 +79,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection isAlpha() {
-        return new IsAlpha(new StringColumnReference(this.name())).apply(this);
+        return eval(isAlpha);
     }
 
     default StringColumn textIsAlpha() {
@@ -103,7 +87,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection isNumeric() {
-        return new IsNumeric(new StringColumnReference(this.name())).apply(this);
+        return eval(isNumeric);
     }
 
     default StringColumn textIsNumeric() {
@@ -111,7 +95,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection isAlphaNumeric() {
-        return new IsAlphaNumeric(new StringColumnReference(this.name())).apply(this);
+        return eval(isAlphaNumeric);
     }
 
     default StringColumn textIsAlphaNumeric() {
@@ -119,7 +103,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection isUpperCase() {
-        return new IsUpperCase(new StringColumnReference(this.name())).apply(this);
+        return eval(isUpperCase);
     }
 
     default StringColumn textIsUpperCase() {
@@ -127,7 +111,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection isLowerCase() {
-        return new IsLowerCase(new StringColumnReference(this.name())).apply(this);
+        return eval(isLowerCase);
     }
 
     default StringColumn textIsLowerCase() {
@@ -135,7 +119,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection lengthEquals(int stringLength) {
-        return new HasLengthEqualTo(new StringColumnReference(this.name()), stringLength).apply(this);
+        return eval(hasEqualLengthTo, stringLength);
     }
 
     default StringColumn textLengthEquals(int stringLength) {
@@ -143,7 +127,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection isShorterThan(int stringLength) {
-        return new IsShorterThan(new StringColumnReference(this.name()), stringLength).apply(this);
+        return eval(isShorterThan, stringLength);
     }
 
     default StringColumn textIsShorterThan(int stringLength) {
@@ -151,7 +135,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection isLongerThan(int stringLength) {
-        return new IsLongerThan(new StringColumnReference(this.name()), stringLength).apply(this);
+        return eval(isLongerThan, stringLength);
     }
 
     default StringColumn textIsLongerThan(int stringLength) {
@@ -180,7 +164,7 @@ public interface StringFilters extends Column {
 
     // Column Methods
     default Selection isEqualTo(StringColumn other) {
-        return new ColumnEqualTo(other).apply(this);
+        return eval(isEqualTo, other);
     }
 
     default StringColumn textIsEqualTo(StringColumn other) {
@@ -188,7 +172,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection isNotEqualTo(StringColumn other) {
-        return new ColumnNotEqualTo(other).apply(this);
+        return eval(isNotEqualTo, other);
     }
 
     default StringColumn texIstNotEqualTo(StringColumn other) {
@@ -196,7 +180,7 @@ public interface StringFilters extends Column {
     }
 
     default Selection equalsIgnoreCase(StringColumn other) {
-        return new ColumnEqualToIgnoringCase(other).apply(this);
+        return eval(String::equalsIgnoreCase, other);
     }
 
     default StringColumn textEqualsIgnoreCase(StringColumn other) {
