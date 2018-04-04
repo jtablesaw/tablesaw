@@ -4,17 +4,11 @@ tech.tablesaw.api.plot
 tech.tablesaw.beakerx
 tech.tablesaw.columns
 tech.tablesaw.columns.booleans
-tech.tablesaw.columns.booleans.filters
 tech.tablesaw.columns.dates
-tech.tablesaw.columns.dates.filters
 tech.tablesaw.columns.datetimes
-tech.tablesaw.columns.datetimes.filters
 tech.tablesaw.columns.numbers
-tech.tablesaw.columns.numbers.filters
 tech.tablesaw.columns.strings
-tech.tablesaw.columns.strings.filters
 tech.tablesaw.columns.times
-tech.tablesaw.columns.times.filters
 tech.tablesaw.filtering
 tech.tablesaw.filtering.composite
 tech.tablesaw.filtering.predicates
@@ -32,7 +26,5 @@ tech.tablesaw.plotting.xchart
 tech.tablesaw.selection
 tech.tablesaw.sorting
 tech.tablesaw.sorting.comparators
-tech.tablesaw.splitting
-tech.tablesaw.splitting.dates
 tech.tablesaw.table
 tech.tablesaw.util
