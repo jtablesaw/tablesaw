@@ -14,7 +14,9 @@
 
 package tech.tablesaw.filters;
 
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.dates.DateColumnReference;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.datetimes.filters.IsInApril;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +30,16 @@ import tech.tablesaw.columns.datetimes.filters.IsLastDayOfTheMonth;
 import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
+import java.time.Month;
 
 import static org.junit.Assert.*;
+import static tech.tablesaw.api.QueryHelper.dateColumn;
+import static tech.tablesaw.columns.dates.PackedLocalDate.minusDays;
+import static tech.tablesaw.columns.dates.PackedLocalDate.pack;
+import static tech.tablesaw.columns.dates.PackedLocalDate.plusDays;
 
 
-public class LocalDateFilterTest {
+public class DateTableFiltersTest {
 
     private DateColumn localDateColumn = DateColumn.create("testing");
     private Table table = Table.create("test");
@@ -129,4 +136,75 @@ public class LocalDateFilterTest {
         assertFalse(selection.contains(1));
         assertFalse(selection.contains(2));
     }
+
+    @Test
+    public void testGetMonthValue() {
+        LocalDate date = LocalDate.of(2015, 1, 25);
+        Month[] months = Month.values();
+
+        DateColumn dateColumn = DateColumn.create("test");
+        for (int i = 0, monthsLength = months.length; i < monthsLength; i++) {
+            dateColumn.append(date);
+            date = date.plusMonths(1);
+        }
+        Table t = Table.create("Test");
+        t.addColumn(dateColumn);
+        NumberColumn index = NumberColumn.indexColumn("index", t.rowCount(), 0);
+        t.addColumn(index);
+
+        assertTrue(t.selectWhere(dateColumn.isInJanuary()).numberColumn("index").contains(0.0));
+        assertTrue(t.selectWhere(dateColumn.isInFebruary()).numberColumn("index").contains(1.0));
+        assertTrue(t.selectWhere(dateColumn.isInMarch()).numberColumn("index").contains(2.0));
+        assertTrue(t.selectWhere(dateColumn.isInApril()).numberColumn("index").contains(3.0));
+        assertTrue(t.selectWhere(dateColumn.isInMay()).numberColumn("index").contains(4.0));
+        assertTrue(t.selectWhere(dateColumn.isInJune()).numberColumn("index").contains(5.0));
+        assertTrue(t.selectWhere(dateColumn.isInJuly()).numberColumn("index").contains(6.0));
+        assertTrue(t.selectWhere(dateColumn.isInAugust()).numberColumn("index").contains(7.0));
+        assertTrue(t.selectWhere(dateColumn.isInSeptember()).numberColumn("index").contains(8.0));
+        assertTrue(t.selectWhere(dateColumn.isInOctober()).numberColumn("index").contains(9.0));
+        assertTrue(t.selectWhere(dateColumn.isInNovember()).numberColumn("index").contains(10.0));
+        assertTrue(t.selectWhere(dateColumn.isInDecember()).numberColumn("index").contains(11.0));
+
+        assertTrue(t.selectWhere(dateColumn.isInQ1()).nCol("index").contains(2));
+        assertTrue(t.selectWhere(dateColumn.isInQ2()).nCol("index").contains(4));
+        assertTrue(t.selectWhere(dateColumn.isInQ3()).nCol("index").contains(8));
+        assertTrue(t.selectWhere(dateColumn.isInQ4()).nCol("index").contains(11));
+    }
+
+    @Test
+    public void testComparison() {
+        LocalDate date = LocalDate.of(2015, 1, 25);
+        int packed = pack(date);
+
+        DateColumn dateColumn = DateColumn.create("test");
+
+        int before = minusDays(1, packed);
+        int equal = packed;
+        int after = plusDays(1, packed);
+
+        LocalDate beforeDate = PackedLocalDate.asLocalDate(before);
+        LocalDate afterDate = PackedLocalDate.asLocalDate(after);
+
+        dateColumn.appendInternal(before);
+        dateColumn.appendInternal(equal);
+        dateColumn.appendInternal(after);
+
+        NumberColumn index = NumberColumn.indexColumn("index", dateColumn.size(), 0);
+        Table t = Table.create("test", dateColumn, index);
+
+        assertTrue(t.selectWhere(dateColumn.isBefore(packed)).nCol("index").contains(0));
+        assertTrue(t.selectWhere(dateColumn.isEqualTo(packed)).nCol("index").contains(1));
+        assertTrue(t.selectWhere(dateColumn.isAfter(packed)).nCol("index").contains(2));
+        assertTrue(t.selectWhere(dateColumn("test")
+                .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(1));
+        assertTrue(t.selectWhere(dateColumn("test")
+                .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(2));
+        assertTrue(t.selectWhere(dateColumn("test")
+                .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(0));
+        assertFalse(t.selectWhere(dateColumn("test")
+                .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(2));
+        assertFalse(t.selectWhere(dateColumn("test")
+                .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(0));
+    }
+
 }
