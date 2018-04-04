@@ -16,7 +16,6 @@ package tech.tablesaw.selection;
 
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import org.roaringbitmap.RoaringBitmap;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 
 import java.util.List;
