@@ -10,4 +10,4 @@ before_install:
   - "sh -e /etc/init.d/xvfb start"
 install: mvn install -DskipTests -Dgpg.skip
 script: mvn -B verify
-after_success: java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter --language Java --coverageReport aggregate/target/site/jacoco-aggregate/jacoco.xml
+after_success: java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter report --language Java --coverage-report aggregate/target/site/jacoco-aggregate/jacoco.xml
