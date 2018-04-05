@@ -126,7 +126,7 @@ public class TableSlice extends Relation implements IntIterable {
             newMap.add(row);
             count++;
         }
-        return table.selectWhere(newMap);
+        return table.select(newMap);
     }
 
     @Override

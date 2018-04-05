@@ -124,7 +124,7 @@ public class NumberColumnTest {
         }
 
         Filter filter = QueryHelper.numberColumn("Test").isIn(inValues);
-        Table result = t.selectWhere(filter);
+        Table result = t.select(filter);
         assertNotNull(result);
     }
 

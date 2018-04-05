@@ -441,7 +441,7 @@ public class StringColumn extends AbstractColumn
 
     /**
      * Returns a list of boolean columns suitable for use as dummy variables in, for example, regression analysis,
-     * selectWhere a column of categorical data must be encoded as a list of columns, such that each column represents
+     * select a column of categorical data must be encoded as a list of columns, such that each column represents
      * a single category and indicates whether it is present (1) or not present (0)
      *
      * @return a list of {@link BooleanColumn}

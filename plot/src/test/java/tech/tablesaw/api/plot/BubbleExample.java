@@ -26,7 +26,7 @@ public class BubbleExample {
 
     public static void main(String[] args) throws IOException {
         Table marketShare = Table.read().csv("../data/market_share.csv");
-        Table sub = marketShare.selectWhere(Selection.withRange(0, 4));
+        Table sub = marketShare.select(Selection.withRange(0, 4));
         NumberColumn x = sub.nCol("Products");
         NumberColumn y = sub.nCol("Sales");
         NumberColumn data = sub.nCol("Market_Share");

@@ -32,7 +32,7 @@ public class TornadoExample extends AbstractExample {
         assert (tornadoes != null);
 
         out(tornadoes.structure());
-        out(tornadoes.structure().selectWhere(stringColumn("Column Type").isEqualTo("NUMBER")));
+        out(tornadoes.structure().select(stringColumn("Column Type").isEqualTo("NUMBER")));
 
         tornadoes.setName("tornadoes");
 
@@ -53,7 +53,7 @@ public class TornadoExample extends AbstractExample {
         out("Use first(3) to view the first 3 rows:");
         out(tornadoes.first(3));
 
-        tornadoes = tornadoes.selectWhere(numberColumn("Start Lat").isGreaterThan(20f));
+        tornadoes = tornadoes.select(numberColumn("Start Lat").isGreaterThan(20f));
 
         out();
         out("Extact month from the date and make it a separate column");
@@ -66,7 +66,7 @@ public class TornadoExample extends AbstractExample {
 
         out();
         out("Filtering: Tornadoes where there were fatalities");
-        Table fatal = tornadoes.selectWhere(numberColumn("Fatalities").isGreaterThan(0));
+        Table fatal = tornadoes.select(numberColumn("Fatalities").isGreaterThan(0));
         out(fatal.shape());
 
         out();
@@ -109,8 +109,8 @@ public class TornadoExample extends AbstractExample {
                         both(date.month().isEqualTo("SEPTEMBER"),
                             date.dayOfMonth().isLessThanOrEqualTo(22)));
 
-        //Table summer = tornadoes.selectWhere(selection);
-        Table summer = tornadoes.selectWhere(summerFilter);
+        //Table summer = tornadoes.select(selection);
+        Table summer = tornadoes.select(summerFilter);
         summer = summer.sortAscendingOn("Date", "Time");
         summer.addColumn(summer.dateColumn("Date").lag(1));
 

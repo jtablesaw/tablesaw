@@ -19,7 +19,7 @@ public class QueryHelperTest {
 
     @Test
     public void test1() {
-        Table result = t.selectWhere(
+        Table result = t.select(
                 and(
                         stringColumn("who").startsWith("f"),
                         dateColumn("date").isInYear(2002),
@@ -32,11 +32,11 @@ public class QueryHelperTest {
 
     @Test
     public void test3() {
-        Table result = t.selectWhere(
+        Table result = t.select(
                         stringColumn("who").isIn("fox"));
         assertTrue(result.get(0, "who").equals("fox"));
 
-        result = t.selectWhere(
+        result = t.select(
                         stringColumn("who").isNotIn("fox", "zogby"));
         assertFalse(result.get(0, "who").startsWith("f"));
 
@@ -45,7 +45,7 @@ public class QueryHelperTest {
 
     @Test
     public void test2() {
-        Table result = t.selectWhere(
+        Table result = t.select(
                 t.stringColumn("who").startsWith("f"));
 
         assertTrue(result.get(0, "who").startsWith("f"));

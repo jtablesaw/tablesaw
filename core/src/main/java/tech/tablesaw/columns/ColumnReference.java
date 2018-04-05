@@ -24,13 +24,13 @@ import tech.tablesaw.filtering.IsNotMissing;
  * <p>
  * Basically, it lets you write a query like this:
  * <p>
- * table.selectWhere(column("foo").isEqualTo("Bar"));
+ * table.select(column("foo").isEqualTo("Bar"));
  * <p>
  * In that example, column() is a static method that returns a ColumnReference for a column named "foo".
  * The method isEqualTo(), is implemented on ColumnReference in a way that it can be applied to potentially, multiple
  * column types, although in this case, it only makes sense for CategoryColumns since the argument is a string.
  * <p>
- * When selectWhere() isExecuted, it supplies the table to the ColumnReference. The ColumnReference uses the table
+ * When select() isExecuted, it supplies the table to the ColumnReference. The ColumnReference uses the table
  * and columnName to get access to the right column, and then fulfils its role by ensuring that the filtering
  * "isEqualTo("Bar") is applied to all the cells in the column.
  */

@@ -49,7 +49,7 @@ public class OperationsExample extends AbstractExample {
 
         out(ops);
 
-        Table q2_429_assembly = ops.selectWhere(
+        Table q2_429_assembly = ops.select(
                 and
                         (dateColumn("date").isInQ2(),
                                 (stringColumn("SKU").startsWith("429")),
