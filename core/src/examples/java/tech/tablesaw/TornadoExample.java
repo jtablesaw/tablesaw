@@ -18,6 +18,7 @@ import tech.tablesaw.api.*;
 import tech.tablesaw.filtering.Filter;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.api.QueryHelper.stringColumn;
 import static tech.tablesaw.table.Relation.anyOf;
 import static tech.tablesaw.table.Relation.both;
 
@@ -32,7 +33,7 @@ public class TornadoExample extends AbstractExample {
         assert (tornadoes != null);
 
         out(tornadoes.structure());
-        out(tornadoes.structure().selectWhere(tornadoes.stringColumn("Column Type").isEqualTo("NUMBER")));
+        out(tornadoes.structure().selectWhere(stringColumn("Column Type").isEqualTo("NUMBER")));
 
         tornadoes.setName("tornadoes");
 
