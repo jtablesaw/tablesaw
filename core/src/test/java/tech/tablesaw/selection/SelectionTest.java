@@ -47,11 +47,7 @@ public class SelectionTest {
         int[] expected = {42, 53, 111};
         assertArrayEquals(expected, selection.toArray());
     }
-
-    @Test
-    public void toBitmapInternal() {
-    }
-
+    
     @Test
     public void add() {
         Selection selection = Selection.with(42, 53, 111);
@@ -157,13 +153,5 @@ public class SelectionTest {
         assertTrue(selection.contains(0));
         assertTrue(selection.contains(110));
         assertTrue(selection.contains(112));
-    }
-
-    @Test
-    public void applyColumn() {
-    }
-
-    @Test
-    public void applyTable() {
     }
 }
