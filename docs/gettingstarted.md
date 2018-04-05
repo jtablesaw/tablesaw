@@ -145,13 +145,20 @@ Table summary = table.summarize("sales", mean, median)
 
 which says "return the mean and median sales by day of week."
 
+> **Key point**: Tables are usually split based on columns, but the columns can be calculated on the fly
+
+#### Chaining table operations
+
+Consider the case where you filter a table and want to filter the result. For example, 
+
+```java
+double average = t.selectWhere(t.stringColumn("foo")
+	.startsWith("bar"))
+     .selectWhere(stringColumn("bam").endsWith("bas"))
+      .nCol("age").mean();
+```
 
 
-> **Key point**: Groups are based on columns, but the columns can be calculated on the fly
-
-
-
-Map operations
 
 [^1]: The method shown does not actually "produce" any output For that you would call *System.out.println()*. For brevity, output will be shown going forward indented by one tab beneath the code that produced it.
 
