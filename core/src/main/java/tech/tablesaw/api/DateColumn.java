@@ -382,7 +382,7 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         return data.getInt(index);
     }
 
-    public int getPackedDate(int index) {
+    int getPackedDate(int index) {
         return getIntInternal(index);
     }
 

@@ -332,6 +332,28 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return count;
     }
 
+    /**
+     * Returns true if the column contains any true values, and false otherwise
+     */
+    public boolean any() {
+        return countTrue() > 0;
+    }
+
+    /**
+     * Returns true if the column contains only true values, and false otherwise. If there are any missing values
+     * it returns false.
+     */
+    public boolean all() {
+        return countTrue() == size();
+    }
+
+    /**
+     * Returns true if the column contains no true values, and false otherwise
+     */
+    public boolean none() {
+        return countTrue() == 0;
+    }
+
     public Selection isFalse() {
         Selection results = new BitmapBackedSelection();
         int i = 0;

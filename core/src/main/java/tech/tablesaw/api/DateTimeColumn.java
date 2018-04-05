@@ -39,7 +39,6 @@ import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -51,7 +50,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
 import static tech.tablesaw.columns.datetimes.DateTimePredicates.*;
 
 /**
@@ -313,7 +312,7 @@ public class DateTimeColumn extends AbstractColumn
         return data.getLong(index);
     }
 
-    public long getPackedDateTime(int index) {
+    long getPackedDateTime(int index) {
         return getLongInternal(index);
     }
 

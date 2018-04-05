@@ -354,7 +354,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return data.getInt(index);
     }
 
-    public int getPackedTime(int index) {
+    int getPackedTime(int index) {
         return getIntInternal(index);
     }
 

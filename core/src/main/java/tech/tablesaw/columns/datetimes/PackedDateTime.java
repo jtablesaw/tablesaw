@@ -24,10 +24,10 @@ public class PackedDateTime {
     }
 
     public long getPackedValue() {
-        return dateTimeColumn.getPackedDateTime(index);
+        return dateTimeColumn.getLongInternal(index);
     }
 
     public LocalDateTime asLocalDateTime() {
-        return PackedLocalDateTime.asLocalDateTime(dateTimeColumn.getPackedDateTime(index));
+        return PackedLocalDateTime.asLocalDateTime(dateTimeColumn.getLongInternal(index));
     }
 }

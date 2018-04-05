@@ -16,14 +16,14 @@ package tech.tablesaw.api.plot;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotting.smile.SmileBox;
-import tech.tablesaw.table.ViewGroup;
+import tech.tablesaw.table.TableSliceGroup;
 
 /**
  *
  */
 public class Box {
 
-    public static void show(String title, ViewGroup groups, int columnIndex) {
+    public static void show(String title, TableSliceGroup groups, int columnIndex) {
         SmileBox.show(title, groups, columnIndex);
     }
 

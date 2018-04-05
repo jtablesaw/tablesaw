@@ -18,7 +18,7 @@ import com.google.common.base.Preconditions;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.TableSlice;
-import tech.tablesaw.table.ViewGroup;
+import tech.tablesaw.table.TableSliceGroup;
 
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class DoubleArrays {
         return to2dArray(columnList.toArray(new Column[columnList.size()]));
     }
 
-    public static double[][] to2dArray(ViewGroup views, int columnNumber) {
+    public static double[][] to2dArray(TableSliceGroup views, int columnNumber) {
 
         int viewCount = views.size();
 

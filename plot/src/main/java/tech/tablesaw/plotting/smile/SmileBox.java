@@ -18,7 +18,7 @@ import smile.plot.BoxPlot;
 import smile.plot.PlotCanvas;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.table.TableSlice;
-import tech.tablesaw.table.ViewGroup;
+import tech.tablesaw.table.TableSliceGroup;
 import tech.tablesaw.util.DoubleArrays;
 
 import javax.swing.*;
@@ -30,7 +30,7 @@ import static tech.tablesaw.plotting.smile.SmilePlotUtils.*;
  */
 public class SmileBox {
 
-    public static void show(String title, ViewGroup data, int columnIndex) {
+    public static void show(String title, TableSliceGroup data, int columnIndex) {
 
         PlotCanvas canvas = create(title, data, columnIndex);
         JFrame frame = getjFrame(600, 400);
@@ -46,7 +46,7 @@ public class SmileBox {
         frame.setVisible(true);
     }
 
-    public static PlotCanvas create(String plotTitle, ViewGroup groups, int columnNumber) {
+    public static PlotCanvas create(String plotTitle, TableSliceGroup groups, int columnNumber) {
         double[][] dataArray = DoubleArrays.to2dArray(groups, columnNumber);
         String[] grounpNames = groupNames(groups);
         PlotCanvas canvas = BoxPlot.plot(dataArray, grounpNames);
@@ -58,7 +58,7 @@ public class SmileBox {
 
     public static PlotCanvas create(String plotTitle, Table table, String summaryColumnName, String
             groupingColumnName) {
-        ViewGroup groups = table.splitOn(table.categoricalColumn(groupingColumnName));
+        TableSliceGroup groups = table.splitOn(table.categoricalColumn(groupingColumnName));
         int columnNumber = table.columnIndex(summaryColumnName);
         double[][] dataArray = DoubleArrays.to2dArray(groups, columnNumber);
         String[] grounpNames = groupNames(groups);
@@ -69,7 +69,7 @@ public class SmileBox {
         return canvas;
     }
 
-    private static String[] groupNames(ViewGroup groups) {
+    private static String[] groupNames(TableSliceGroup groups) {
         String[] result = new String[groups.size()];
         for (int i = 0; i < groups.size(); i++) {
             TableSlice view = groups.get(i);

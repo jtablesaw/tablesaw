@@ -24,7 +24,7 @@ public class PackedTime {
     }
 
     public int getPackedValue() {
-        return timeColumn.getPackedTime(index);
+        return timeColumn.getIntInternal(index);
     }
 
     public LocalTime asLocalTime() {

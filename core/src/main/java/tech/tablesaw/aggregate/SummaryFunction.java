@@ -17,9 +17,9 @@ package tech.tablesaw.aggregate;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.table.SelectionViewGroup;
-import tech.tablesaw.table.StandardViewGroup;
-import tech.tablesaw.table.ViewGroup;
+import tech.tablesaw.table.SelectionTableSliceGroup;
+import tech.tablesaw.table.StandardTableSliceGroup;
+import tech.tablesaw.table.TableSliceGroup;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,17 +51,17 @@ public class SummaryFunction {
     }
 
     public Table by(String... columnNames) {
-        ViewGroup group = StandardViewGroup.create(original(), columnNames);
+        TableSliceGroup group = StandardTableSliceGroup.create(original(), columnNames);
         return group.aggregate(summarizedColumnName(), function);
     }
 
     public Table by(CategoricalColumn... columns) {
-        ViewGroup group = StandardViewGroup.create(original(), columns);
+        TableSliceGroup group = StandardTableSliceGroup.create(original(), columns);
         return group.aggregate(summarizedColumnName(), function);
     }
 
     public Table by(String groupNameTemplate, int step) {
-        ViewGroup group = SelectionViewGroup.create(original(), groupNameTemplate, step);
+        TableSliceGroup group = SelectionTableSliceGroup.create(original(), groupNameTemplate, step);
         return group.aggregate(summarizedColumnName(), function);
     }
 

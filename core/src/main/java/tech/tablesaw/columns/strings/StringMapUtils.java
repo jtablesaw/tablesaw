@@ -203,13 +203,17 @@ public interface StringMapUtils extends Column {
     /**
      * Return a copy of this column with the given string appended
      *
-     * @param append the column to append
+     * @param columns the column to append
      * @return the new column
      */
-    default StringColumn concatenate(StringColumn append) {
+    default StringColumn concatenate(String separator, StringColumn ... columns) {
         StringColumn newColumn = StringColumn.create(name() + "[column appended]", this.size());
         for (int r = 0; r < size(); r++) {
-            newColumn.append(getString(r) + append.get(r));
+            String result = getString(r);
+            for (StringColumn stringColumn : columns) {
+                result = result + separator + stringColumn.get(r);
+            }
+            newColumn.append(result);
         }
         return newColumn;
     }

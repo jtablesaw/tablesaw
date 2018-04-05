@@ -22,12 +22,12 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.*;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnReference;
-import tech.tablesaw.table.StandardViewGroup;
+import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSlice;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.table.ViewGroup;
+import tech.tablesaw.table.TableSliceGroup;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -86,7 +86,7 @@ public class TimeDependentFilteringTest {
         NumberColumn ntPatients = nt.numberColumn("patient");
 
         // Group the original table by patient id
-        ViewGroup patients = StandardViewGroup.create(t, "patient");
+        TableSliceGroup patients = StandardTableSliceGroup.create(t, "patient");
 
         // Create a list of patient sub-tables to work with TODO(lwhite): Build the copy-on-write to ViewGroups to avoid
         CopyOnWriteArrayList<TableSlice> patientTables = new CopyOnWriteArrayList<>(patients.getSubTables());

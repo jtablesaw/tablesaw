@@ -370,7 +370,7 @@ public interface DateMapUtils extends Column {
         DateColumn column1 = (DateColumn) this;
 
         for (int r = 0; r < column1.size(); r++) {
-            int packedDate = column1.getPackedDate(r);
+            int packedDate = column1.getIntInternal(r);
             if (packedDate == MISSING_VALUE) {
                 newColumn.appendInternal(MISSING_VALUE);
             } else {

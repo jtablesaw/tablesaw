@@ -21,7 +21,7 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.table.TableSlice;
-import tech.tablesaw.table.ViewGroup;
+import tech.tablesaw.table.TableSliceGroup;
 import tech.tablesaw.util.DoubleArrays;
 
 import java.util.Arrays;
@@ -47,7 +47,7 @@ public class XchartScatter {
         show(chartTitle, xColumn, yColumn, DEFAULT_WIDTH, DEFAULT_HEIGHT, markerSize);
     }
 
-    public static void show(String chartTitle, NumberColumn xColumn, NumberColumn yColumn, ViewGroup group) {
+    public static void show(String chartTitle, NumberColumn xColumn, NumberColumn yColumn, TableSliceGroup group) {
         XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         chart.setTitle(chartTitle);
         chart.setXAxisTitle(xColumn.name());
@@ -70,7 +70,7 @@ public class XchartScatter {
     public static void show(String chartTitle,
                             NumberColumn xColumn,
                             NumberColumn yColumn,
-                            ViewGroup group,
+                            TableSliceGroup group,
                             int markerSize) {
         XYChart chart = new XYChart(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         chart.setTitle(chartTitle);

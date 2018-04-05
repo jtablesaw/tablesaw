@@ -26,19 +26,19 @@ public class PackedDate {
     }
 
     public int getPackedValue() {
-        return dateColumn.getPackedDate(index);
+        return dateColumn.getIntInternal(index);
     }
 
     public LocalDate asLocalDate() {
-        return PackedLocalDate.asLocalDate(dateColumn.getPackedDate(index));
+        return PackedLocalDate.asLocalDate(dateColumn.getIntInternal(index));
     }
 
     public byte getMonthValue() {
-        return PackedLocalDate.getMonthValue(dateColumn.getPackedDate(index));
+        return PackedLocalDate.getMonthValue(dateColumn.getIntInternal(index));
     }
 
     public String toDateString() {
-        return PackedLocalDate.toDateString(dateColumn.getPackedDate(index));
+        return PackedLocalDate.toDateString(dateColumn.getIntInternal(index));
     }
 
     public String toString() {
@@ -46,158 +46,158 @@ public class PackedDate {
     }
 
     public int getDayOfYear() {
-        return PackedLocalDate.getDayOfYear(dateColumn.getPackedDate(index));
+        return PackedLocalDate.getDayOfYear(dateColumn.getIntInternal(index));
     }
 
     public boolean isLeapYear() {
-        return PackedLocalDate.isLeapYear(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isLeapYear(dateColumn.getIntInternal(index));
     }
 
     public Month getMonth() {
-        return PackedLocalDate.getMonth(dateColumn.getPackedDate(index));
+        return PackedLocalDate.getMonth(dateColumn.getIntInternal(index));
     }
 
     public int lengthOfMonth() {
-        return PackedLocalDate.lengthOfMonth(dateColumn.getPackedDate(index));
+        return PackedLocalDate.lengthOfMonth(dateColumn.getIntInternal(index));
     }
 
     public long toEpochDay() {
-        return PackedLocalDate.toEpochDay(dateColumn.getPackedDate(index));
+        return PackedLocalDate.toEpochDay(dateColumn.getIntInternal(index));
     }
 
     public DayOfWeek getDayOfWeek() {
-        return PackedLocalDate.getDayOfWeek(dateColumn.getPackedDate(index));
+        return PackedLocalDate.getDayOfWeek(dateColumn.getIntInternal(index));
     }
 
     public int getQuarter() {
-        return PackedLocalDate.getQuarter(dateColumn.getPackedDate(index));
+        return PackedLocalDate.getQuarter(dateColumn.getIntInternal(index));
     }
 
     public boolean isinQ1() {
-        return PackedLocalDate.isInQ1(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInQ1(dateColumn.getIntInternal(index));
     }
 
     public boolean isinQ2() {
-        return PackedLocalDate.isInQ2(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInQ2(dateColumn.getIntInternal(index));
     }
 
     public boolean isInQ3() {
-        return PackedLocalDate.isInQ3(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInQ3(dateColumn.getIntInternal(index));
     }
 
     public boolean isInQ4() {
-        return PackedLocalDate.isInQ4(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInQ4(dateColumn.getIntInternal(index));
     }
 
     public boolean isAfter(LocalDate date) {
-        return PackedLocalDate.isAfter(dateColumn.getPackedDate(index), PackedLocalDate.pack(date));
+        return PackedLocalDate.isAfter(dateColumn.getIntInternal(index), PackedLocalDate.pack(date));
     }
 
     public boolean isBefore(LocalDate date) {
-        return PackedLocalDate.isBefore(dateColumn.getPackedDate(index), PackedLocalDate.pack(date));
+        return PackedLocalDate.isBefore(dateColumn.getIntInternal(index), PackedLocalDate.pack(date));
     }
 
     public boolean isOnOrAfter(LocalDate date) {
-        return PackedLocalDate.isOnOrAfter(dateColumn.getPackedDate(index), PackedLocalDate.pack(date));
+        return PackedLocalDate.isOnOrAfter(dateColumn.getIntInternal(index), PackedLocalDate.pack(date));
     }
 
     public boolean isOnOrBefore(LocalDate date) {
-        return PackedLocalDate.isOnOrBefore(dateColumn.getPackedDate(index), PackedLocalDate.pack(date));
+        return PackedLocalDate.isOnOrBefore(dateColumn.getIntInternal(index), PackedLocalDate.pack(date));
     }
 
     public boolean isSunday() {
-        return PackedLocalDate.isSunday(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isSunday(dateColumn.getIntInternal(index));
     }
 
     public boolean isMonday() {
-        return PackedLocalDate.isMonday(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isMonday(dateColumn.getIntInternal(index));
     }
 
     public boolean isTuesday() {
-        return PackedLocalDate.isTuesday(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isTuesday(dateColumn.getIntInternal(index));
     }
 
     public boolean isWednesday() {
-        return PackedLocalDate.isWednesday(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isWednesday(dateColumn.getIntInternal(index));
     }
 
     public boolean isThursday() {
-        return PackedLocalDate.isThursday(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isThursday(dateColumn.getIntInternal(index));
     }
 
     public boolean isFriday() {
-        return PackedLocalDate.isFriday(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isFriday(dateColumn.getIntInternal(index));
     }
 
     public boolean isSaturday() {
-        return PackedLocalDate.isSaturday(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isSaturday(dateColumn.getIntInternal(index));
     }
 
     public boolean isFirstDayOfMonth() {
-        return PackedLocalDate.isFirstDayOfMonth(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isFirstDayOfMonth(dateColumn.getIntInternal(index));
     }
 
     public boolean isLastDayOfMonth() {
-        return PackedLocalDate.isLastDayOfMonth(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isLastDayOfMonth(dateColumn.getIntInternal(index));
     }
 
     public boolean isInYear(int year) {
-        return PackedLocalDate.isInYear(dateColumn.getPackedDate(index), year);
+        return PackedLocalDate.isInYear(dateColumn.getIntInternal(index), year);
     }
 
     public int lengthOfYear() {
-        return PackedLocalDate.lengthOfYear(dateColumn.getPackedDate(index));
+        return PackedLocalDate.lengthOfYear(dateColumn.getIntInternal(index));
     }
 
     public boolean isInJanuary() {
-        return PackedLocalDate.isInJanuary(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInJanuary(dateColumn.getIntInternal(index));
     }
 
     public boolean isInFebruary() {
-        return PackedLocalDate.isInFebruary(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInFebruary(dateColumn.getIntInternal(index));
     }
 
     public boolean isInMarch() {
-        return PackedLocalDate.isInMarch(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInMarch(dateColumn.getIntInternal(index));
     }
 
     public boolean isInApril() {
-        return PackedLocalDate.isInApril(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInApril(dateColumn.getIntInternal(index));
     }
 
     public boolean isInMay() {
-        return PackedLocalDate.isInMay(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInMay(dateColumn.getIntInternal(index));
     }
 
     public boolean isInJune() {
-        return PackedLocalDate.isInJune(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInJune(dateColumn.getIntInternal(index));
     }
 
     public boolean isInJuly() {
-        return PackedLocalDate.isInJuly(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInJuly(dateColumn.getIntInternal(index));
     }
 
     public boolean isInAugust() {
-        return PackedLocalDate.isInAugust(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInAugust(dateColumn.getIntInternal(index));
     }
 
     public boolean isInSeptember() {
-        return PackedLocalDate.isInSeptember(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInSeptember(dateColumn.getIntInternal(index));
     }
 
     public boolean isInOctober() {
-        return PackedLocalDate.isInOctober(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInOctober(dateColumn.getIntInternal(index));
     }
 
     public boolean isInNovember() {
-        return PackedLocalDate.isInNovember(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInNovember(dateColumn.getIntInternal(index));
     }
 
     public boolean isInDecember() {
-        return PackedLocalDate.isInDecember(dateColumn.getPackedDate(index));
+        return PackedLocalDate.isInDecember(dateColumn.getIntInternal(index));
     }
 
     public int getYear() {
-        return PackedLocalDate.getYear(dateColumn.getPackedDate(index));
+        return PackedLocalDate.getYear(dateColumn.getIntInternal(index));
     }
 }

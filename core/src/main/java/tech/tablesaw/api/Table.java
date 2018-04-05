@@ -38,8 +38,8 @@ import tech.tablesaw.sorting.comparators.ReversingIntComparator;
 import tech.tablesaw.table.Projection;
 import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
-import tech.tablesaw.table.StandardViewGroup;
-import tech.tablesaw.table.ViewGroup;
+import tech.tablesaw.table.StandardTableSliceGroup;
+import tech.tablesaw.table.TableSliceGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -760,15 +760,15 @@ public class Table extends Relation implements IntIterable {
     /**
      * The first stage of a split-apply-combine operation
      */
-    public ViewGroup splitOn(String... columns) {
+    public TableSliceGroup splitOn(String... columns) {
         return splitOn(categoricalColumns(columns).toArray(new CategoricalColumn[columns.length]));
     }
 
     /**
      * The first stage of a split-apply-combine operation
      */
-    public ViewGroup splitOn(CategoricalColumn... columns) {
-        return StandardViewGroup.create(this, columns);
+    public TableSliceGroup splitOn(CategoricalColumn... columns) {
+        return StandardTableSliceGroup.create(this, columns);
     }
 
     public String printHtml() {

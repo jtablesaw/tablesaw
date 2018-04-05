@@ -20,8 +20,8 @@ import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.table.StandardViewGroup;
-import tech.tablesaw.table.ViewGroup;
+import tech.tablesaw.table.StandardTableSliceGroup;
+import tech.tablesaw.table.TableSliceGroup;
 
 public class HtmlTableWriterTest {
 
@@ -35,7 +35,7 @@ public class HtmlTableWriterTest {
     @Test
     public void testWrite() {
         CategoricalColumn byColumn = table.categoricalColumn("who");
-        ViewGroup group = StandardViewGroup.create(table, byColumn);
+        TableSliceGroup group = StandardTableSliceGroup.create(table, byColumn);
         Table result = group.aggregate("approval", AggregateFunctions.mean);
         HtmlTableWriter.write(result);
     }
