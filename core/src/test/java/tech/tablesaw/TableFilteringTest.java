@@ -26,6 +26,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 import java.time.LocalDate;
 
 import static org.junit.Assert.*;
+import static tech.tablesaw.api.QueryHelper.*;
 
 /**
  * Tests for filtering on the T class
@@ -41,7 +42,7 @@ public class TableFilteringTest {
 
     @Test
     public void testFilter1() {
-        Table result = table.selectWhere(table.numberColumn("approval").isLessThan(70));
+        Table result = table.selectWhere(numberColumn("approval").isLessThan(70));
         NumberColumn a = result.numberColumn("approval");
         for (double v : a) {
             assertTrue(v < 70);
@@ -50,7 +51,7 @@ public class TableFilteringTest {
 
     @Test
     public void testReject() {
-        Table result = table.rejectWhere(table.numberColumn("approval").isLessThan(70));
+        Table result = table.rejectWhere(numberColumn("approval").isLessThan(70));
         NumberColumn a = result.numberColumn("approval");
         for (double v : a) {
             assertFalse(v < 70);
@@ -59,7 +60,7 @@ public class TableFilteringTest {
 
     @Test
     public void testFilter2() {
-        Table result = table.selectWhere(table.dateColumn("date").isInApril());
+        Table result = table.selectWhere(dateColumn("date").isInApril());
         DateColumn d = result.dateColumn("date");
         for (LocalDate v : d) {
             assertTrue(PackedLocalDate.isInApril(PackedLocalDate.pack(v)));

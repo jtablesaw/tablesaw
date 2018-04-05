@@ -24,16 +24,11 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.filtering.composite.AllOf;
-import tech.tablesaw.filtering.composite.AnyOf;
-import tech.tablesaw.filtering.composite.IsFalse;
 import tech.tablesaw.io.string.DataFramePrinter;
 import tech.tablesaw.sorting.comparators.DescendingIntegerComparator;
 import tech.tablesaw.util.DoubleArrays;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -346,39 +341,4 @@ public abstract class Relation {
     public boolean containsColumn(CategoricalColumn column) {
         return columns().contains(column);
     }
-
-    public static Filter both(Filter a, Filter b) {
-        List<Filter> filterList = new ArrayList<>();
-        filterList.add(a);
-        filterList.add(b);
-        return AllOf.allOf(filterList);
-    }
-
-    public static Filter allOf(Filter... filters) {
-        return AllOf.allOf(filters);
-    }
-
-    public static Filter and(Filter... filters) {
-        return AllOf.allOf(filters);
-    }
-
-    public static Filter not(Filter filter) {
-        return IsFalse.isFalse(filter);
-    }
-
-    public static Filter either(Filter a, Filter b) {
-        List<Filter> filterList = new ArrayList<>();
-        filterList.add(a);
-        filterList.add(b);
-        return AnyOf.anyOf(filterList);
-    }
-
-    public static Filter anyOf(Filter... filters) {
-        return AnyOf.anyOf(filters);
-    }
-
-    public static Filter or(Filter... filters) {
-        return AnyOf.anyOf(filters);
-    }
-
 }

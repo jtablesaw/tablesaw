@@ -14,7 +14,6 @@
 
 package tech.tablesaw.filtering.composite;
 
-import com.google.common.collect.Lists;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;

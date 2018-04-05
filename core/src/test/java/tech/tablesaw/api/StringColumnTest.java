@@ -24,6 +24,7 @@ import tech.tablesaw.TestDataUtil;
 import java.util.List;
 import java.util.function.Function;
 
+import static tech.tablesaw.api.QueryHelper.both;
 import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 import static org.junit.Assert.*;
 
@@ -160,7 +161,7 @@ public class StringColumnTest {
         stringColumn.addAll(TestDataUtil.usStates());
 
         StringColumn selection = stringColumn.select(
-                QueryHelper.both(stringColumn.startsWith("A"),
+                both(stringColumn.startsWith("A"),
                     stringColumn.containsString("kan")));
 
         assertEquals(1, selection.size());
@@ -208,7 +209,7 @@ public class StringColumnTest {
         assertEquals(2, result.size());
         assertTrue(result.contains("Alabama"));
 
-        StringColumn result2 = stringColumn.select(stringColumn.isEqualTo("Alabama"));
+        StringColumn result2 = stringColumn.textIsEqualTo("Alabama");
         assertEquals(2, result2.size());
         assertTrue(result2.contains("Alabama"));
     }

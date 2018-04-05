@@ -19,8 +19,7 @@ import tech.tablesaw.filtering.Filter;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.api.QueryHelper.stringColumn;
-import static tech.tablesaw.table.Relation.anyOf;
-import static tech.tablesaw.table.Relation.both;
+import static tech.tablesaw.api.QueryHelper.*;
 
 /**
  * Usage example using a Tornado data set
@@ -54,7 +53,7 @@ public class TornadoExample extends AbstractExample {
         out("Use first(3) to view the first 3 rows:");
         out(tornadoes.first(3));
 
-        tornadoes = tornadoes.selectWhere(tornadoes.numberColumn("Start Lat").isGreaterThan(20f));
+        tornadoes = tornadoes.selectWhere(numberColumn("Start Lat").isGreaterThan(20f));
 
         out();
         out("Extact month from the date and make it a separate column");
@@ -67,7 +66,7 @@ public class TornadoExample extends AbstractExample {
 
         out();
         out("Filtering: Tornadoes where there were fatalities");
-        Table fatal = tornadoes.selectWhere(tornadoes.numberColumn("Fatalities").isGreaterThan(0));
+        Table fatal = tornadoes.selectWhere(numberColumn("Fatalities").isGreaterThan(0));
         out(fatal.shape());
 
         out();
@@ -106,7 +105,7 @@ public class TornadoExample extends AbstractExample {
                 anyOf(
                         date.month().isIn("JULY", "AUGUST"),
                         both(date.month().isEqualTo("JUNE"),
-                                date.dayOfMonth().isGreaterThanOrEqualTo(21)),
+                            date.dayOfMonth().isGreaterThanOrEqualTo(21)),
                         both(date.month().isEqualTo("SEPTEMBER"),
                             date.dayOfMonth().isLessThanOrEqualTo(22)));
 

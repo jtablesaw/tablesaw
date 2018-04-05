@@ -16,9 +16,6 @@ package tech.tablesaw.columns;
 
 import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.filtering.Filter;
-
-import java.time.LocalDate;
 
 /**
  * Partial implementation of the {@link Column} interface
@@ -81,4 +78,6 @@ public abstract class AbstractColumn implements Column {
         }
         return builder.toString();
     }
+
+
 }

@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api.plot;
 
+import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
@@ -25,7 +26,7 @@ public class ParetoExample {
 
     public static void main(String[] args) throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        table = table.selectWhere(table.numberColumn("Fatalities").isGreaterThan(3));
+        table = table.selectWhere(QueryHelper.numberColumn("Fatalities").isGreaterThan(3));
         Pareto.show("Tornado Fatalities by State", table.summarize("fatalities", sum).by("State"));
     }
 }
