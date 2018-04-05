@@ -3,7 +3,6 @@ package tech.tablesaw.columns.times;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.filtering.predicates.IntPredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -13,7 +12,7 @@ import java.time.LocalTime;
 
 public interface TimeFilters extends Column {
 
-    TimeColumn select(Filter filter);
+    TimeColumn select(Selection selection);
 
     default Selection eval(IntPredicate predicate) {
         Selection selection = new BitmapBackedSelection();

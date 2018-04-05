@@ -28,7 +28,6 @@ import tech.tablesaw.columns.dates.DateColumnFormatter;
 import tech.tablesaw.columns.dates.DateFilters;
 import tech.tablesaw.columns.dates.DateMapUtils;
 import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.filtering.predicates.IntPredicate;
 import tech.tablesaw.filtering.predicates.LocalDatePredicate;
@@ -516,8 +515,8 @@ public class DateColumn extends AbstractColumn implements DateFilters,
     }
 
     @Override
-    public DateColumn select(Filter filter) {
-        return (DateColumn) subset(filter.apply(this));
+    public DateColumn select(Selection selection) {
+        return (DateColumn) subset(selection);
     }
 
     /**

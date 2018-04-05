@@ -28,9 +28,6 @@ import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.columns.times.TimeColumnFormatter;
 import tech.tablesaw.columns.times.TimeFilters;
 import tech.tablesaw.columns.times.TimeMapUtils;
-import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.filtering.predicates.IntPredicate;
-import tech.tablesaw.filtering.predicates.LocalTimePredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -415,35 +412,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return "LocalTime column: " + name();
     }
 
-    public TimeColumn selectIf(LocalTimePredicate predicate) {
-        TimeColumn column = emptyCopy();
-        IntIterator iterator = intIterator();
-        while (iterator.hasNext()) {
-            int next = iterator.nextInt();
-            if (predicate.test(PackedLocalTime.asLocalTime(next))) {
-                column.appendInternal(next);
-            }
-        }
-        return column;
-    }
-
-    /**
-     * This version operates on predicates that treat the given IntPredicate as operating on a packed local time
-     * This is much more efficient that using a LocalTimePredicate, but requires that the developer understand the
-     * semantics of packedLocalTimes
-     */
-    public TimeColumn selectIf(IntPredicate predicate) {
-        TimeColumn column = emptyCopy();
-        IntIterator iterator = intIterator();
-        while (iterator.hasNext()) {
-            int next = iterator.nextInt();
-            if (predicate.test(next)) {
-                column.appendInternal(next);
-            }
-        }
-        return column;
-    }
-
     @Override
     public void append(Column column) {
         Preconditions.checkArgument(column.type() == this.type());
@@ -599,8 +567,8 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     }
 
     @Override
-    public TimeColumn select(Filter filter) {
-        return (TimeColumn) subset(filter.apply(this));
+    public TimeColumn select(Selection selection) {
+        return (TimeColumn) subset(selection);
     }
 
 }

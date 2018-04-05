@@ -517,7 +517,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     public BooleanColumn select(Selection selection) {
         return (BooleanColumn) subset(selection);
     }
-    
+
     public Selection eval(BooleanPredicate predicate) {
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {

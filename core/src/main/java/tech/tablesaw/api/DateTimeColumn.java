@@ -117,6 +117,10 @@ public class DateTimeColumn extends AbstractColumn
         this.locale = locale;
     }
 
+    public DateTimeColumn select(Selection selection) {
+        return (DateTimeColumn) subset(selection);
+    }
+
     public void setPrintFormatter(DateTimeFormatter dateTimeFormatter, String missingValueString) {
         Preconditions.checkNotNull(dateTimeFormatter);
         Preconditions.checkNotNull(missingValueString);

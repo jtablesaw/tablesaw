@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.DateAndTimePredicates;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.filtering.predicates.IntPredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -13,11 +12,11 @@ import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 
-import static tech.tablesaw.columns.DateAndTimePredicates.*;
+import static tech.tablesaw.columns.DateAndTimePredicates.isEqualTo;
 
 public interface DateFilters extends Column {
 
-    DateColumn select(Filter filter);
+    DateColumn select(Selection selection);
 
     Selection eval(IntPredicate predicate);
 
