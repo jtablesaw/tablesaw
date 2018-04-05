@@ -39,7 +39,7 @@ public class BetweenExclusive extends ColumnFilter {
     public Selection apply(Column column) {
         NumberColumn numberColumn = (NumberColumn) column;
         Selection matches = numberColumn.isGreaterThan(low);
-        matches.toBitmap().and(numberColumn.isLessThan(high).toBitmap());
+        matches.and(numberColumn.isLessThan(high));
         return matches;
     }
 }

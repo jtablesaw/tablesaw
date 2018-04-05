@@ -45,16 +45,13 @@ public class BitmapBackedSelection implements Selection {
         this.bitmap.remove(start, end);
     }
 
-    public void add(long start, long end) {
-        this.bitmap.add(start, end);
-    }
-
     public void flip() {
         this.bitmap.flip((long) 0, bitmap.getCardinality());
     }
 
-    public void add(int i) {
+    public Selection add(int i) {
         bitmap.add(i);
+        return this;
     }
 
     @Override
@@ -73,7 +70,7 @@ public class BitmapBackedSelection implements Selection {
     }
 
     @Override
-    public RoaringBitmap toBitmap() {
+    public RoaringBitmap toBitmapInternal() {
         return bitmap.clone();
     }
 
@@ -81,24 +78,24 @@ public class BitmapBackedSelection implements Selection {
      * Intersects the receiver and {@code otherSelection}, updating the receiver
      */
     @Override
-    public void and(Selection otherSelection) {
-        bitmap.and(otherSelection.toBitmap());
+    public Selection and(Selection otherSelection) {
+        bitmap.and(otherSelection.toBitmapInternal());
+        return this;
     }
 
     /**
      * Implements the union of the receiver and {@code otherSelection}, updating the receiver
      */
     @Override
-    public void or(Selection otherSelection) {
-        bitmap.or(otherSelection.toBitmap());
+    public Selection or(Selection otherSelection) {
+        bitmap.or(otherSelection.toBitmapInternal());
+        return this;
     }
 
-    /**
-     * Implements the set difference operation between the receiver and {@code otherSelection}, updating the receiver
-     */
     @Override
-    public void andNot(Selection otherSelection) {
-        bitmap.andNot(otherSelection.toBitmap());
+    public Selection andNot(Selection otherSelection) {
+        bitmap.andNot(otherSelection.toBitmapInternal());
+        return this;
     }
 
     @Override
@@ -123,8 +120,9 @@ public class BitmapBackedSelection implements Selection {
      * @param end   exclusive ending of range
      */
     @Override
-    public void addRange(int start, int end) {
+    public Selection addRange(int start, int end) {
         bitmap.add((long) start, end);
+        return this;
     }
 
     @Override
@@ -147,6 +145,9 @@ public class BitmapBackedSelection implements Selection {
         return bitmap.hashCode();
     }
 
+    /**
+     * Returns a fastUtil intIterator that wraps a bitmap intIterator
+     */
     @Override
     public IntIterator iterator() {
 

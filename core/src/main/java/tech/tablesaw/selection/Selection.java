@@ -94,35 +94,15 @@ public interface Selection extends IntIterable, Filter {
 
     int[] toArray();
 
-    RoaringBitmap toBitmap();
+    /**
+     * Returns a bitmap that represents the state of this selection
+     */
+    RoaringBitmap toBitmapInternal();
 
     /**
      * Adds the given integer to the Selection if it is not already present, and does nothing otherwise
      */
-    void add(int i);
-
-    int size();
-
-    /**
-     * Intersects the receiver and {@code otherSelection}, updating the receiver
-     */
-    void and(Selection otherSelection);
-
-    /**
-     * Implements the union of the receiver and {@code otherSelection}, updating the receiver
-     */
-    void or(Selection otherSelection);
-
-    /**
-     * Implements the set difference operation between the receiver and {@code otherSelection}, updating the receiver
-     */
-    void andNot(Selection otherSelection);
-
-    boolean isEmpty();
-
-    void clear();
-
-    boolean contains(int i);
+    Selection add(int i);
 
     /**
      * Adds to the current bitmap all integers in [rangeStart,rangeEnd)
@@ -130,13 +110,34 @@ public interface Selection extends IntIterable, Filter {
      * @param start inclusive beginning of range
      * @param end   exclusive ending of range
      */
-    void addRange(int start, int end);
+    Selection addRange(int start, int end);
+
+    int size();
+
+    /**
+     * Returns the intersection of the receiver and {@code otherSelection}, after updating the receiver
+     */
+    Selection and(Selection otherSelection);
+
+    /**
+     * Returns the union of the receiver and {@code otherSelection}, after updating the receiver
+     */
+    Selection or(Selection otherSelection);
+
+    /**
+     * Implements the set difference operation between the receiver and {@code otherSelection}, after updating the receiver
+     */
+    Selection andNot(Selection otherSelection);
+
+    boolean isEmpty();
+
+    void clear();
+
+    boolean contains(int i);
 
     int get(int i);
 
     void remove(long start, long end);
-
-    void add(long start, long end);
 
     void flip();
 

@@ -128,6 +128,19 @@ public class NumberColumnTest {
         assertNotNull(result);
     }
 
+    @Test
+    public void testBetweenExclusive() {
+        int[] originalValues = new int[]{32, 42, 40, 57, 52, -2};
+
+        NumberColumn initial = NumberColumn.create("Test", originalValues);
+        Table t = Table.create("t", initial);
+
+        Filter filter = QueryHelper.numberColumn("Test").isBetweenExclusive(42, 57);
+        Table result = t.selectWhere(filter);
+        assertEquals(1, result.rowCount());
+        assertEquals("52.0", result.get(0, "Test"));
+    }
+
     @Ignore
     @Test
     public void testSort1() {
