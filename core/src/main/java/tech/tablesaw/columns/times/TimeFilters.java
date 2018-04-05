@@ -12,7 +12,7 @@ import java.time.LocalTime;
 
 public interface TimeFilters extends Column {
 
-    TimeColumn select(Selection selection);
+    TimeColumn selectWhere(Selection selection);
 
     default Selection eval(IntPredicate predicate) {
         Selection selection = new BitmapBackedSelection();

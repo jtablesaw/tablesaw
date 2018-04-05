@@ -26,7 +26,7 @@ public class ParetoExample {
 
     public static void main(String[] args) throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        table = table.select(QueryHelper.numberColumn("Fatalities").isGreaterThan(3));
+        table = table.selectWhere(QueryHelper.numberColumn("Fatalities").isGreaterThan(3));
         Pareto.show("Tornado Fatalities by State", table.summarize("fatalities", sum).by("State"));
     }
 }

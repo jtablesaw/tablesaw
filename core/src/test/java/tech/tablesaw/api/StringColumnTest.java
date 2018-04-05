@@ -79,7 +79,7 @@ public class StringColumnTest {
 
     @Test
     public void testSelectWhere() {
-        StringColumn result = column.select(column.equalsIgnoreCase("VALUE 1"));
+        StringColumn result = column.selectWhere(column.equalsIgnoreCase("VALUE 1"));
         assertEquals(1, result.size());
     }
 
@@ -133,13 +133,13 @@ public class StringColumnTest {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
 
-        StringColumn selection = stringColumn.select(stringColumn.startsWith("A"));
+        StringColumn selection = stringColumn.selectWhere(stringColumn.startsWith("A"));
         assertEquals("Alabama", selection.get(0));
         assertEquals("Alaska", selection.get(1));
         assertEquals("Arizona", selection.get(2));
         assertEquals("Arkansas", selection.get(3));
 
-        selection = stringColumn.select(stringColumn.startsWith("T"));
+        selection = stringColumn.selectWhere(stringColumn.startsWith("T"));
         assertEquals("Tennessee", selection.get(0));
         assertEquals("Texas", selection.get(1));
     }
@@ -160,7 +160,7 @@ public class StringColumnTest {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
 
-        StringColumn selection = stringColumn.select(
+        StringColumn selection = stringColumn.selectWhere(
                 both(stringColumn.startsWith("A"),
                     stringColumn.containsString("kan")));
 
@@ -211,7 +211,7 @@ public class StringColumnTest {
 
         Selection result2 = stringColumn.isEqualTo("Alabama");
         assertEquals(2, result2.size());
-        stringColumn = stringColumn.select(result2);
+        stringColumn = stringColumn.selectWhere(result2);
         assertTrue(stringColumn.contains("Alabama"));
     }
 
@@ -230,7 +230,7 @@ public class StringColumnTest {
     public void testIsIn() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
-        StringColumn selection = stringColumn.select(stringColumn.isIn("Alabama", "Texas"));
+        StringColumn selection = stringColumn.selectWhere(stringColumn.isIn("Alabama", "Texas"));
         assertEquals("Alabama", selection.get(0));
         assertEquals("Texas", selection.get(1));
         assertEquals(2, selection.size());
@@ -240,7 +240,7 @@ public class StringColumnTest {
     public void testIsNotIn() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
-        StringColumn selection = stringColumn.select(stringColumn.isNotIn("Alabama", "Texas"));
+        StringColumn selection = stringColumn.selectWhere(stringColumn.isNotIn("Alabama", "Texas"));
         assertEquals("Alaska", selection.get(0));
         assertEquals("Arizona", selection.get(1));
         assertEquals("Arkansas", selection.get(2));

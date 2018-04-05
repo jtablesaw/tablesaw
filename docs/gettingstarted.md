@@ -60,7 +60,8 @@ Because columns are so important, Tablesaw makes them easy to work with. Many op
 ```java
 NumberColumn nc2 = nc.multiply(4);
 ```
-producing: 
+producing: [^1] 
+
 ```java
 Column: Test * 4.0
 4.0
@@ -68,8 +69,6 @@ Column: Test * 4.0
 12.0
 16.0
 ```
-<!--For clarity, we omit the calls to *out(anObject)*, which simply calls System.out.println() on the object. For brevity, output will be shown indented by one tab beneath the code that produced it.--> 
-
 There are so many columnar operations in Tablesaw that, as a general rule, if you find yourself writing a for loop to process a column or table, you may be missing something. 
 
 Generally, Tablesaw will provide a name for columns created this way. If you don't like the name, you can change it by calling *setName("new name")* on the column.
@@ -121,15 +120,42 @@ Sometimes you want to summarize by group, rather than across the entire column o
 ### Tables
 As described above, a table is a named collection of columns. All columns in the table must be the same size, although missing values are allowed. A table can contain any combination of column types.
 
+Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes in the form of a table.
+
 Tables also use selections to perform filtering. 
-
-
 
 #### Groups in tables
 
-Tables can be split to prepare for calculating subtotals. The method *splitOn(CategoricalColumns)* and *splitOn(CategoricalColumnNames)* both return an object called TableSlices. A TableSlice is, effective, a window into a backing table. TableSliceGroup is a collection of these windows, each of which looks and feels like its own table. 
+Tables can be "sliced" for calculating subtotals. The method *splitOn(CategoricalColumns)* and *splitOn(CategoricalColumnNames)* both return an object called TableSliceGroup. A TableSlice is, effectively, a window into a backing table. TableSliceGroup is a collection of these windows, each of which looks and feels like its own table. 
+
+For the most part, tables are sliced according to the value of a column or columns. For example, if you have a string column called "province", and another called "status," there will be a slice for each combination of provence and status in the table. 
+
+The usual way to calculate values is  to use the *summarize()* method: 
+
+```java
+Table summary = table.summarize("sales", mean, sum, min, max).by("province", "status");
+```
+
+It's important to recognize, that the column need not exist when summarize is invoked. Any map function can be used in the *by()* statement to group on calculated values. A common use case is in handling dates. You can summarize sales by day-of-week, as follows:
+
+```java
+Table summary = table.summarize("sales", mean, median)
+     .by(table.dateColumn("sales date").dayOfWeek());
+```
+
+which says "return the mean and median sales by day of week."
+
+
+
+> **Key point**: Groups are based on columns, but the columns can be calculated on the fly
+
+
 
 Map operations
+
+[^1]: The method shown does not actually "produce" any output For that you would call *System.out.println()*. For brevity, output will be shown going forward indented by one tab beneath the code that produced it.
+
+
 
 
 

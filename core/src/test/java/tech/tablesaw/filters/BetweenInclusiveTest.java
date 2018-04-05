@@ -13,7 +13,7 @@ public class BetweenInclusiveTest {
     public void apply() throws Exception {
         Table bush = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
 
-        Table result = bush.select(QueryHelper.numberColumn("approval").isBetweenInclusive(0, 49));
+        Table result = bush.selectWhere(QueryHelper.numberColumn("approval").isBetweenInclusive(0, 49));
         assertEquals(10, result.rowCount());
     }
 }

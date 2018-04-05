@@ -44,7 +44,7 @@ import static tech.tablesaw.columns.strings.StringPredicates.*;
 
 public interface StringFilters extends Column {
 
-    StringColumn select(Filter filter);
+    StringColumn selectWhere(Filter filter);
 
     Selection eval(StringPredicate predicate);
 

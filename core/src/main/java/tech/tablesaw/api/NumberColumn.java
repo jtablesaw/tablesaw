@@ -437,11 +437,11 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
     }
 
     @Override
-    public NumberColumn select(Filter filter) {
+    public NumberColumn selectWhere(Filter filter) {
         return (NumberColumn) subset(filter.apply(this));
     }
 
-    public NumberColumn select(Selection selection) {
+    public NumberColumn selectWhere(Selection selection) {
         return (NumberColumn) subset(selection);
     }
 

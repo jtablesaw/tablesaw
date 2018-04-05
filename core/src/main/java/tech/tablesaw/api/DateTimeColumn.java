@@ -117,7 +117,7 @@ public class DateTimeColumn extends AbstractColumn
         this.locale = locale;
     }
 
-    public DateTimeColumn select(Selection selection) {
+    public DateTimeColumn selectWhere(Selection selection) {
         return (DateTimeColumn) subset(selection);
     }
 

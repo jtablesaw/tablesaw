@@ -16,7 +16,7 @@ import static tech.tablesaw.columns.DateAndTimePredicates.isEqualTo;
 
 public interface DateFilters extends Column {
 
-    DateColumn select(Selection selection);
+    DateColumn selectWhere(Selection selection);
 
     Selection eval(IntPredicate predicate);
 

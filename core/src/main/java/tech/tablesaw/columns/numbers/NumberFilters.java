@@ -29,7 +29,7 @@ import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
 public interface NumberFilters extends Column {
 
-    NumberColumn select(Filter filter);
+    NumberColumn selectWhere(Filter filter);
 
     Selection eval(DoublePredicate predicate);
 

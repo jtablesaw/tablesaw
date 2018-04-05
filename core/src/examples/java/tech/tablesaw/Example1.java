@@ -87,11 +87,11 @@ public class Example1 {
         //Querying
         //NOTE: we need a static import of QueryHelper for this section. See the imports above
 
-        Table highRatings = table1.select(QueryHelper.numberColumn("approval").isGreaterThan(80));
+        Table highRatings = table1.selectWhere(QueryHelper.numberColumn("approval").isGreaterThan(80));
         highRatings.setName("Approval ratings over 80%");
         out(highRatings);
 
-        Table Q3 = table1.select(date.isInQ3());
+        Table Q3 = table1.selectWhere(date.isInQ3());
         Q3.setName("3rd Quarter ratings");
         out(Q3);
 

@@ -79,7 +79,7 @@ public class TimeDependentFilteringTest {
         StringColumnReference concept = stringColumn("concept");
 
         //Non-temporal clause
-        Table nt = t.select(
+        Table nt = t.selectWhere(
                 both(concept.isEqualTo(conceptA),
                         (concept.isNotEqualTo(conceptB))));
 

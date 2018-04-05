@@ -454,8 +454,8 @@ public class Table extends Relation implements IntIterable {
             table1Selection.add(table1Record);
         }
         table2Selection.andNot(table1Selection);
-        tables[0] = select(table1Selection);
-        tables[1] = select(table2Selection);
+        tables[0] = selectWhere(table1Selection);
+        tables[1] = selectWhere(table2Selection);
         return tables;
     }
 
@@ -474,7 +474,7 @@ public class Table extends Relation implements IntIterable {
         for (int selectedRecord : selectedRecords) {
             table1Selection.add(selectedRecord);
         }
-        return select(table1Selection);
+        return selectWhere(table1Selection);
     }
 
     /**
@@ -734,7 +734,7 @@ public class Table extends Relation implements IntIterable {
         }
     }
 
-    public Table select(Selection selection) {
+    public Table selectWhere(Selection selection) {
         Table newTable = this.emptyCopy(selection.size());
         Rows.copyRowsToTable(selection, this, newTable);
         return newTable;
@@ -749,8 +749,8 @@ public class Table extends Relation implements IntIterable {
         return newTable;
     }
 
-    public Table select(Filter filter) {
-        return select(filter.apply(this));
+    public Table selectWhere(Filter filter) {
+        return selectWhere(filter.apply(this));
     }
 
     public Table rejectWhere(Filter filter) {
