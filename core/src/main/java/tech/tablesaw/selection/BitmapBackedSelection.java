@@ -41,16 +41,21 @@ public class BitmapBackedSelection implements Selection {
         this.bitmap = new RoaringBitmap();
     }
 
-    public void remove(long start, long end) {
+    @Override
+    public Selection removeRange(long start, long end) {
         this.bitmap.remove(start, end);
+        return this;
     }
 
-    public void flip() {
-        this.bitmap.flip((long) 0, bitmap.getCardinality());
+    @Override
+    public Selection flip(int rangeStart, int rangeEnd) {
+        this.bitmap.flip((long) rangeStart, rangeEnd);
+        return this;
     }
 
-    public Selection add(int i) {
-        bitmap.add(i);
+    @Override
+    public Selection add(int... ints) {
+        bitmap.add(ints);
         return this;
     }
 
@@ -104,8 +109,9 @@ public class BitmapBackedSelection implements Selection {
     }
 
     @Override
-    public void clear() {
+    public Selection clear() {
         bitmap.clear();
+        return this;
     }
 
     @Override

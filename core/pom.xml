@@ -124,7 +124,7 @@
         <dependency>
             <groupId>org.roaringbitmap</groupId>
             <artifactId>RoaringBitmap</artifactId>
-            <version>0.6.51</version>
+            <version>0.7.9</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>

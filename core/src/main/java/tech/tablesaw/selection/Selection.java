@@ -14,42 +14,17 @@
 
 package tech.tablesaw.selection;
 
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import org.roaringbitmap.RoaringBitmap;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 
-import java.util.List;
-
 /**
  * A selection maintains an ordered set of ints that can be used to eval rows from a table or column
  */
 public interface Selection extends IntIterable, Filter {
-
-    static Selection with(List<Integer> indexes) {
-        BitmapBackedSelection selection = new BitmapBackedSelection();
-        for (Integer i : indexes) {
-            selection.add(i);
-        }
-        return selection;
-    }
-
-    /**
-     * Returns a selection of tableSize, where the records in the input indexes are to be removed
-     * <p>
-     * Tablesize should be
-     *
-     * @param indexes   The indexes to be received
-     * @param tableSize The size of the source table before selection
-     * @return Selection
-     */
-    static Selection without(int tableSize, List<Integer> indexes) {
-        Selection selection = Selection.withRange(0, tableSize);
-        Selection exclusion = Selection.with(indexes);
-        selection.andNot(exclusion);
-        return selection;
-    }
 
     static Selection with(int... rows) {
         BitmapBackedSelection selection = new BitmapBackedSelection();
@@ -59,35 +34,19 @@ public interface Selection extends IntIterable, Filter {
         return selection;
     }
 
-    static Selection without(int tableSize, int... rows) {
-        Selection selection = Selection.withRange(0, tableSize);
-        Selection exclusion = Selection.with(rows);
-        selection.andNot(exclusion);
-        return selection;
-    }
-
     static Selection withRange(int start, int end) {
         BitmapBackedSelection selection = new BitmapBackedSelection();
         selection.addRange(start, end);
         return selection;
     }
 
-    static Selection withoutRange(int tableSize, int start, int end) {
-        Selection selection = Selection.withRange(0, tableSize);
-        Selection exclusion = Selection.withRange(start, end);
-        selection.andNot(exclusion);
-        return selection;
-    }
-
-    static Selection withRow(int row) {
-        BitmapBackedSelection selection = new BitmapBackedSelection();
-        selection.add(row);
-        return selection;
-    }
-
-    static Selection withoutRow(int tableSize, int row) {
-        Selection selection = Selection.withRange(0, tableSize);
-        Selection exclusion = Selection.with(row);
+    static Selection withoutRange(int totalRangeStart, int totalRangeEnd, int excludedRangeStart, int excludedRangeEnd) {
+        Preconditions.checkArgument(excludedRangeStart >= totalRangeStart);
+        Preconditions.checkArgument(excludedRangeEnd <= totalRangeEnd);
+        Preconditions.checkArgument(totalRangeEnd >= totalRangeStart);
+        Preconditions.checkArgument(excludedRangeEnd >= excludedRangeStart);
+        Selection selection = Selection.withRange(totalRangeStart, totalRangeEnd);
+        Selection exclusion = Selection.withRange(excludedRangeStart, excludedRangeEnd);
         selection.andNot(exclusion);
         return selection;
     }
@@ -100,9 +59,9 @@ public interface Selection extends IntIterable, Filter {
     RoaringBitmap toBitmapInternal();
 
     /**
-     * Adds the given integer to the Selection if it is not already present, and does nothing otherwise
+     * Adds the given integers to the Selection if it is not already present, and does nothing otherwise
      */
-    Selection add(int i);
+    Selection add(int... ints);
 
     /**
      * Adds to the current bitmap all integers in [rangeStart,rangeEnd)
@@ -111,6 +70,8 @@ public interface Selection extends IntIterable, Filter {
      * @param end   exclusive ending of range
      */
     Selection addRange(int start, int end);
+
+    Selection removeRange(long start, long end);
 
     int size();
 
@@ -131,15 +92,22 @@ public interface Selection extends IntIterable, Filter {
 
     boolean isEmpty();
 
-    void clear();
+    Selection clear();
 
     boolean contains(int i);
 
+    /**
+     * Returns the value of the ith element. For example, if there are three ints {4, 32, 71} in the selection,
+     * get(0) returns 4, get(1) returns 32, and get(2) returns 71
+     *
+     * It can be useful if you need to iterate over the data, although there is also an iterator
+     */
     int get(int i);
 
-    void remove(long start, long end);
-
-    void flip();
+    /**
+     * Returns a selection with the bits from this selection flipped over the given range
+     */
+    Selection flip(int rangeStart, int rangeEnd);
 
     @Override
     default Selection apply(Table relation) {

@@ -89,19 +89,29 @@ nc.isLessThan(3);
 
 This operation returns a *Selection*. You can think of selections as a bitmap of the same size as the original column or table. The method above returns a selection that, effectively, contains 1, 1, 0, 0, since the first two values in the column are less than three, and the last two are not. 
 
-In this case, what you probably wanted was not a Selection object, but a new NumberColumn that contains only the values that passed the filter. To get this, you use the *select(aSelection)* method:
+In this case, what you probably wanted was not a Selection object, but a new NumberColumn that contains only the values that passed the filter. To get this, you use the *selectWhere(aSelection)* method:
 
 ```java
-NumberColumn filtered = nc.select(nc.isLessThan(3));
+NumberColumn filtered = nc.selectWhere(nc.isLessThan(3));
 ```
 
-This extra step is required because it allows us to combine filters. For example: 
+This extra step is a necessary evil. It's a bit tedious, but it lets us combine filters. For example: 
 
 ```java
-NumberColumn filtered = nc.select(nc.isLessThan(3).and(nc.isOdd());
+NumberColumn filtered = nc.selectWhere(nc.isLessThan(3).and(nc.isOdd());
 ```
 
 If the methods returned columns, the couldn't be combined in the same way. 
+
+##### Selecting by index
+
+These examples show how to select using predicates. You can also use a selection to retrieve the value at a specific index, or indexes. All of the following are supported:
+
+```
+selectWhere(Selection.with())
+```
+
+
 
 #### Map functions
 
