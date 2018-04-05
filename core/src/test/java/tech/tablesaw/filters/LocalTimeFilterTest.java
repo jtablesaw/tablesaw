@@ -86,7 +86,7 @@ public class LocalTimeFilterTest {
     }
 
     @Test
-    public void testIsMidnight_IsNoon() {
+    public void testIsMidnightIsNoon() {
         TimeColumnReference reference = new TimeColumnReference("testing");
         IsMidnight isMidnight = reference.isMidnight();
         Selection selection = isMidnight.apply(table);
@@ -94,8 +94,12 @@ public class LocalTimeFilterTest {
         assertFalse(selection.contains(1));
         assertFalse(selection.contains(2));
         assertTrue(selection.contains(3));
+    }
 
-        selection = reference.isNoon().apply(table);
+    @Test
+    public void testIsNoon() {
+        TimeColumnReference reference = new TimeColumnReference("testing");
+        Selection selection = reference.isNoon().apply(table);
         assertFalse(selection.contains(0));
         assertTrue(selection.contains(1));
         assertFalse(selection.contains(2));
@@ -103,14 +107,17 @@ public class LocalTimeFilterTest {
     }
 
     @Test
-    public void testIsMidnight2_IsNoon() {
+    public void testIsMidnight2() {
         Selection selection = localTimeColumn.isMidnight();
         assertFalse(selection.contains(0));
         assertFalse(selection.contains(1));
         assertFalse(selection.contains(2));
         assertTrue(selection.contains(3));
+    }
 
-        selection = localTimeColumn.isNoon();
+    @Test
+    public void testIsNoon2() {
+        Selection selection = localTimeColumn.isNoon();
         assertFalse(selection.contains(0));
         assertTrue(selection.contains(1));
         assertFalse(selection.contains(2));
