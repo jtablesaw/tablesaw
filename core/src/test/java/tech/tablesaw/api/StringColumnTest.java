@@ -209,9 +209,10 @@ public class StringColumnTest {
         assertEquals(2, result.size());
         assertTrue(result.contains("Alabama"));
 
-        StringColumn result2 = stringColumn.textIsEqualTo("Alabama");
+        Selection result2 = stringColumn.isEqualTo("Alabama");
         assertEquals(2, result2.size());
-        assertTrue(result2.contains("Alabama"));
+        stringColumn = stringColumn.select(result2);
+        assertTrue(stringColumn.contains("Alabama"));
     }
 
     @Test
