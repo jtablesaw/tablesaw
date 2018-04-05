@@ -85,7 +85,7 @@ public class TableFilteringTest {
     @Test
     public void testFilter4() {
         Table result =
-                table.select("who", "approval")
+                table.project("who", "approval")
                         .where(
                                 QueryHelper.both(
                                         table.dateColumn("date").isInApril(),

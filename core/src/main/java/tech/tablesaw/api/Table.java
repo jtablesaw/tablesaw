@@ -809,7 +809,7 @@ public class Table extends Relation implements IntIterable {
         return temp;
     }
 
-    public Projection select(String... columnName) {
+    public Projection project(String... columnName) {
         return new Projection(this, columnName);
     }
 
