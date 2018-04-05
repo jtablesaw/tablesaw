@@ -44,7 +44,7 @@ public class IsAfterNoon extends ColumnFilter {
         switch (type) {
             case LOCAL_TIME:
                 TimeColumn timeColumn = (TimeColumn) column;
-                return timeColumn.select(PackedLocalTime::PM);
+                return timeColumn.eval(PackedLocalTime::PM);
             case LOCAL_DATE_TIME:
                 DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
                 return dateTimeColumn.eval(PackedLocalDateTime::PM);

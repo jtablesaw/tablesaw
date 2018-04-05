@@ -29,7 +29,6 @@ import tech.tablesaw.columns.times.TimeColumnFormatter;
 import tech.tablesaw.columns.times.TimeFilters;
 import tech.tablesaw.columns.times.TimeMapUtils;
 import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.filtering.predicates.IntPredicate;
 import tech.tablesaw.filtering.predicates.LocalTimePredicate;
 import tech.tablesaw.io.TypeUtils;
@@ -49,7 +48,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
 import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 /**
@@ -538,28 +537,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return data.iterator();
     }
 
-    public Selection select(IntPredicate predicate) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < data.size(); idx++) {
-            int next = data.getInt(idx);
-            if (predicate.test(next)) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-    public Selection select(IntBiPredicate predicate, int value) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < data.size(); idx++) {
-            int next = data.getInt(idx);
-            if (predicate.test(next, value)) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
     Set<LocalTime> asSet() {
         Set<LocalTime> times = new HashSet<>();
         TimeColumn unique = unique();
@@ -576,12 +553,12 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
 
     @Override
     public Selection isMissing() {
-        return select(isMissing);
+        return eval(isMissing);
     }
 
     @Override
     public Selection isNotMissing() {
-        return select(isNotMissing);
+        return eval(isNotMissing);
     }
 
     @Override

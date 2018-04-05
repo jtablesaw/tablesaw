@@ -41,6 +41,6 @@ public class IsBefore extends ColumnFilter {
     @Override
     public Selection apply(Column column) {
         TimeColumn timeColumn = (TimeColumn) column;
-        return timeColumn.select(PackedLocalTime::isBefore, PackedLocalTime.pack(value));
+        return timeColumn.eval(PackedLocalTime::isBefore, PackedLocalTime.pack(value));
     }
 }

@@ -470,12 +470,12 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
 
     @Override
     public Selection isMissing() {  //TODO
-        return select(BooleanColumnUtils.isMissing);
+        return eval(BooleanColumnUtils.isMissing);
     }
 
     @Override
     public Selection isNotMissing() { //TODO
-        return select(BooleanColumnUtils.isNotMissing);
+        return eval(BooleanColumnUtils.isNotMissing);
     }
 
     public Iterator<Boolean> iterator() {
@@ -514,7 +514,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return result;
     }
 
-    public Selection select(BooleanPredicate predicate) {
+    public BooleanColumn select(Selection selection) {
+        return (BooleanColumn) subset(selection);
+    }
+    
+    public Selection eval(BooleanPredicate predicate) {
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
             byte next = data.getByte(idx);

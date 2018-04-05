@@ -44,7 +44,7 @@ public class IsNoon extends ColumnFilter {
         switch (type) {
             case LOCAL_TIME:
                 TimeColumn timeColumn = (TimeColumn) column;
-                return timeColumn.select(PackedLocalTime::isNoon);
+                return timeColumn.eval(PackedLocalTime::isNoon);
             case LOCAL_DATE_TIME:
                 DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
                 return dateTimeColumn.eval(PackedLocalDateTime::isNoon);

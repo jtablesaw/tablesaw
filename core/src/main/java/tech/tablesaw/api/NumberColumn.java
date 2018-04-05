@@ -490,10 +490,6 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
 
     @Override
     public Selection isIn(double... doubles) {
-        return selectIsIn(doubles);
-    }
-
-    private Selection selectIsIn(double... doubles) {
         Selection results = new BitmapBackedSelection();
         DoubleRBTreeSet doubleSet = new DoubleRBTreeSet(doubles);
         for (int i = 0; i < size(); i++) {
@@ -508,7 +504,7 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
     public Selection isNotIn(double... doubles) {
         Selection results = new BitmapBackedSelection();
         results.addRange(0, size());
-        results.andNot(selectIsIn(doubles));
+        results.andNot(isIn(doubles));
         return results;
     }
 

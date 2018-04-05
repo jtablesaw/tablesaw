@@ -452,33 +452,21 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         }
     }
 
-    public DateColumn select(LocalDatePredicate predicate) {
-        DateColumn column = emptyCopy();
-        IntIterator iterator = intIterator();
-        while (iterator.hasNext()) {
-            int next = iterator.nextInt();
-            if (predicate.test(PackedLocalDate.asLocalDate(next))) {
-                column.appendInternal(next);
-            }
-        }
-        return column;
-    }
-
     /**
-     * This version operates on predicates that treat the given IntPredicate as operating on a packed local time
-     * This is much more efficient that using a LocalTimePredicate, but requires that the developer understand the
-     * semantics of packedLocalTimes
+     * Returns a selection formed by applying the given predicate
+     *
+     * Prefer using an IntPredicate where the int is a PackedDate, as this version creates a date object
+     * for each value in the column
      */
-    public DateColumn select(IntPredicate predicate) {
-        DateColumn column = emptyCopy();
-        IntIterator iterator = intIterator();
-        while (iterator.hasNext()) {
-            int next = iterator.nextInt();
-            if (predicate.test(next)) {
-                column.appendInternal(next);
+    public Selection eval(LocalDatePredicate predicate) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < data.size(); idx++) {
+            int next = data.getInt(idx);
+            if (predicate.test(get(next))) {
+                selection.add(idx);
             }
         }
-        return column;
+        return selection;
     }
 
     /**
@@ -532,6 +520,11 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         return (DateColumn) subset(filter.apply(this));
     }
 
+    /**
+     * This version operates on predicates that treat the given IntPredicate as operating on a packed local time
+     * This is much more efficient that using a LocalTimePredicate, but requires that the developer understand the
+     * semantics of packedLocalTimes
+     */
     public Selection eval(IntPredicate predicate) {
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {

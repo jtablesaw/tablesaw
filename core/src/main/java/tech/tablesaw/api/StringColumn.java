@@ -517,22 +517,6 @@ public class StringColumn extends AbstractColumn
         return select(filter.apply(this));
     }
 
-    public StringColumn selectWhere(StringPredicate predicate) {
-        return (StringColumn) subset(eval(predicate));
-    }
-
-    public StringColumn selectWhere(StringBiPredicate predicate, StringColumn otherColumn) {
-        return (StringColumn) subset(eval(predicate, otherColumn));
-    }
-
-    public StringColumn selectWhere(StringBiPredicate predicate, String value) {
-        return (StringColumn) subset(eval(predicate, value));
-    }
-
-    public StringColumn selectWhere(StringIntBiPredicate predicate, int value) {
-        return (StringColumn) subset(eval(predicate, value));
-    }
-
     @Override
     public Selection eval(StringPredicate predicate) {
         Selection selection = new BitmapBackedSelection();

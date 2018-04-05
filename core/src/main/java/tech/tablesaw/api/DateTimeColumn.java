@@ -29,7 +29,6 @@ import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
 import tech.tablesaw.columns.datetimes.DateTimeMapUtils;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.filtering.predicates.LocalDateTimePredicate;
 import tech.tablesaw.filtering.predicates.LongBiPredicate;
 import tech.tablesaw.filtering.predicates.LongPredicate;
 import tech.tablesaw.io.TypeUtils;
@@ -591,30 +590,6 @@ public class DateTimeColumn extends AbstractColumn
             }
         }
         return newColumn;
-    }
-
-    public DateTimeColumn selectIf(LocalDateTimePredicate predicate) {
-        DateTimeColumn column = emptyCopy();
-        LongIterator iterator = longIterator();
-        while (iterator.hasNext()) {
-            long next = iterator.nextLong();
-            if (predicate.test(PackedLocalDateTime.asLocalDateTime(next))) {
-                column.appendInternal(next);
-            }
-        }
-        return column;
-    }
-
-    public DateTimeColumn selectIf(LongPredicate predicate) {
-        DateTimeColumn column = emptyCopy();
-        LongIterator iterator = longIterator();
-        while (iterator.hasNext()) {
-            long next = iterator.nextLong();
-            if (predicate.test(next)) {
-                column.appendInternal(next);
-            }
-        }
-        return column;
     }
 
     public Selection isMonday() {
