@@ -19,16 +19,12 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.filtering.composite.AllOf;
 import tech.tablesaw.table.StandardViewGroup;
 import tech.tablesaw.table.TableSlice;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.table.ViewGroup;
 
@@ -82,7 +78,7 @@ public class TimeDependentFilteringTest {
 
         //Non-temporal clause
         Table nt = t.selectWhere(
-                AllOf.both(concept.isEqualTo(conceptA),
+                QueryHelper.both(concept.isEqualTo(conceptA),
                         (concept.isNotEqualTo(conceptB))));
 
         NumberColumn ntPatients = nt.numberColumn("patient");

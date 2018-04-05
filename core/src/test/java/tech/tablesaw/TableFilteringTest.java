@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -25,7 +26,6 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 import java.time.LocalDate;
 
 import static org.junit.Assert.*;
-import static tech.tablesaw.filtering.composite.AllOf.both;
 
 /**
  * Tests for filtering on the T class
@@ -69,7 +69,7 @@ public class TableFilteringTest {
     @Test
     public void testFilter3() {
         Table result = table.selectWhere(
-                both(
+                QueryHelper.both(
                         table.dateColumn("date").isInApril(),
                         table.numberColumn("approval").isGreaterThan(70)));
 
@@ -86,7 +86,7 @@ public class TableFilteringTest {
         Table result =
                 table.select("who", "approval")
                         .where(
-                                both(
+                                QueryHelper.both(
                                         table.dateColumn("date").isInApril(),
                                         table.numberColumn("approval").isGreaterThan(70)));
         assertEquals(2, result.columnCount());

@@ -12,41 +12,29 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filtering.composite;
+package tech.tablesaw.filtering;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.Filter;
+import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.selection.Selection;
 
-import javax.annotation.concurrent.Immutable;
-
 /**
- * A boolean filtering. For symmetry with IsFalse
+ * A filtering that matches all non-missing values in a column
  */
-@Immutable
-public class IsTrue implements Filter {
+public class IsNotMissing extends ColumnFilter {
 
-    private final Filter filter;
-
-    private IsTrue(Filter filter) {
-        this.filter = filter;
+    public IsNotMissing(ColumnReference reference) {
+        super(reference);
     }
 
-    public static IsTrue isTrue(Filter filter) {
-        return new IsTrue(filter);
-    }
-
-    /**
-     * Returns true if the element in the given row in my {@code column} is true
-     */
     @Override
     public Selection apply(Table relation) {
-        return filter.apply(relation);
+        return apply(relation.column(columnReference().getColumnName()));
     }
 
     @Override
     public Selection apply(Column column) {
-        return filter.apply(column);
+        return column.isNotMissing();
     }
 }

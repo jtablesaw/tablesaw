@@ -511,7 +511,7 @@ public class StringColumn extends AbstractColumn
     }
 
     public StringColumn select(Filter filter) {
-        return select(filter.apply(size()));
+        return select(filter.apply(this));
     }
 
     public StringColumn selectWhere(StringPredicate predicate) {

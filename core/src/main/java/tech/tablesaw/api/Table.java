@@ -750,11 +750,11 @@ public class Table extends Relation implements IntIterable {
     }
 
     public Table selectWhere(Filter filter) {
-        return selectWhere(filter.apply(rowCount()));
+        return selectWhere(filter.apply(this));
     }
 
     public Table rejectWhere(Filter filter) {
-        return rejectWhere(filter.apply(rowCount()));
+        return rejectWhere(filter.apply(this));
     }
 
     /**

@@ -26,7 +26,6 @@ import java.util.function.Function;
 
 import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 import static org.junit.Assert.*;
-import static tech.tablesaw.filtering.composite.AllOf.both;
 
 public class StringColumnTest {
 
@@ -161,7 +160,7 @@ public class StringColumnTest {
         stringColumn.addAll(TestDataUtil.usStates());
 
         StringColumn selection = stringColumn.select(
-                both(stringColumn.startsWith("A"),
+                QueryHelper.both(stringColumn.startsWith("A"),
                     stringColumn.containsString("kan")));
 
         assertEquals(1, selection.size());

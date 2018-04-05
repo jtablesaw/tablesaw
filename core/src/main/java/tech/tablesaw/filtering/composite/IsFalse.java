@@ -14,6 +14,8 @@
 
 package tech.tablesaw.filtering.composite;
 
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -36,11 +38,22 @@ public class IsFalse implements Filter {
         return new IsFalse(filter);
     }
 
+    /**
+     * Returns true if the element in the given row in my {@code column} is true
+     */
     @Override
-    public Selection apply(int size) {
+    public Selection apply(Table relation) {
         Selection selection = new BitmapBackedSelection();
-        selection.addRange(0, size);
-        selection.andNot(filter.apply(size));
+        selection.addRange(0, relation.rowCount());
+        selection.andNot(filter.apply(relation));
+        return selection;
+    }
+
+    @Override
+    public Selection apply(Column column) {
+        Selection selection = new BitmapBackedSelection();
+        selection.addRange(0, column.size());
+        selection.andNot(filter.apply(column));
         return selection;
     }
 }
