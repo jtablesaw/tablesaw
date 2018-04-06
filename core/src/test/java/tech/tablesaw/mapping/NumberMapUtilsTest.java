@@ -4,9 +4,9 @@ import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class NumberMapUtilsTest {
 
@@ -216,5 +216,59 @@ public class NumberMapUtilsTest {
         for (int i = 0; i < doubles.size(); i++) {
             assertEquals(doubles.get(i), revert.get(i), 0.01);
         }
+    }
+
+    @Test
+    public void testLog1p() {
+        NumberColumn doubles = NumberColumn.create("doubles", 100);
+        for (int i = 0; i < 100; i++) {
+            doubles.append(RandomUtils.nextDouble(0, 10_000));
+        }
+        NumberColumn newDoubles = doubles.log1p();
+        assertFalse(newDoubles.isEmpty());
+    }
+
+    @Test
+    public void testAbs() {
+        double[] values = {4.4, -1.9, -1.5, 2.3, 0.0};
+        NumberColumn doubles = NumberColumn.create("doubles", values);
+        NumberColumn newDoubles = doubles.abs();
+        assertEquals(4.4, newDoubles.get(0), 0.0001);
+        assertEquals(1.9, newDoubles.get(1), 0.0001);
+        assertEquals(1.5, newDoubles.get(2), 0.0001);
+        assertEquals(2.3, newDoubles.get(3), 0.0001);
+        assertEquals(0, newDoubles.get(4), 0.0001);
+
+    }
+
+
+    @Test
+    public void testRound() {
+        NumberColumn doubles = NumberColumn.create("doubles", 100);
+        for (int i = 0; i < 100; i++) {
+            doubles.append(RandomUtils.nextDouble(0, 10_000));
+        }
+        Column newDoubles = doubles.round();
+        assertFalse(newDoubles.isEmpty());
+    }
+
+    @Test
+    public void testLogN() {
+        NumberColumn doubles = NumberColumn.create("doubles", 100);
+        for (int i = 0; i < 100; i++) {
+            doubles.append(RandomUtils.nextDouble(0, 10_000));
+        }
+        Column newDoubles = doubles.logN();
+        assertFalse(newDoubles.isEmpty());
+    }
+
+    @Test
+    public void testLog10() {
+        NumberColumn doubles = NumberColumn.create("doubles", 100);
+        for (int i = 0; i < 100; i++) {
+            doubles.append(RandomUtils.nextDouble(0, 10_000));
+        }
+        Column newDoubles = doubles.log10();
+        assertFalse(newDoubles.isEmpty());
     }
 }

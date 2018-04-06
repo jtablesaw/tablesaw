@@ -17,19 +17,16 @@ package tech.tablesaw.api;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import org.junit.Ignore;
+import org.junit.Test;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.selection.Selection;
-
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.math3.random.RandomDataGenerator;
-import org.apache.commons.math3.stat.StatUtils;
-import org.junit.Ignore;
-import org.junit.Test;
-import tech.tablesaw.columns.Column;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -313,26 +310,6 @@ public class NumberColumnTest {
     }
 
     @Test
-    public void testIsEqualTo() {
-        Table table = Table.create("t");
-        NumberColumn numberColumn = NumberColumn.create("test", 1_000_000);
-        double[] doubles = new double[1_000_000];
-        table.addColumn(numberColumn);
-        for (int i = 0; i < 1_000_000; i++) {
-            double d = Math.random();
-            numberColumn.append(d);
-            doubles[i] = d;
-        }
-        Selection results;
-        RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
-        for (int i = 0; i < 100; i++) { // pick a hundred values at random and see if we can find them
-            double aDouble = doubles[randomDataGenerator.nextInt(0, 999_999)];
-            results = numberColumn.isEqualTo(aDouble);
-            assertEquals(aDouble, numberColumn.get(results.iterator().nextInt()), .001);
-        }
-    }
-
-    @Test
     public void testMaxAndMin() {
         NumberColumn doubles = NumberColumn.create("doubles", 100);
         for (int i = 0; i < 100; i++) {
@@ -350,56 +327,6 @@ public class NumberColumnTest {
         }
         // the smallest item in the max set is >= the largest in the min set
         assertTrue(StatUtils.min(doublesA) >= StatUtils.max(doublesB));
-    }
-
-    @Test
-    public void testRound() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.round();
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void testLogN() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.logN();
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void testLog10() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.log10();
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void testLog1p() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.log1p();
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void testAbs() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.abs();
-        assertFalse(newDoubles.isEmpty());
     }
 
     @Test
