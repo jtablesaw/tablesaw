@@ -25,8 +25,8 @@ import tech.tablesaw.columns.Column;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * String utility functions. Each function takes one or more String columns as input and produces
@@ -95,7 +95,6 @@ public interface StringMapUtils extends Column {
     default StringColumn substring(int start, int end) {
 
         StringColumn newColumn = StringColumn.create(name() + "[sub]");
-
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
             newColumn.append(value.substring(start, end));
@@ -103,7 +102,10 @@ public interface StringMapUtils extends Column {
         return newColumn;
     }
 
-
+    /**
+     * Returns a column containing the substrings from start to the end of the input
+     * @throws java.lang.StringIndexOutOfBoundsException if any string in the column is shorter than start
+     */
     default StringColumn substring(int start) {
 
         StringColumn newColumn = StringColumn.create(name() + "[sub]");
@@ -115,13 +117,25 @@ public interface StringMapUtils extends Column {
         return newColumn;
     }
 
+    /**
+     * Abbreviates a String using ellipses. This will turn
+     * "Now is the time for all good men" into "Now is the time for..."
+     * @param maxWidth  the maximum width of the resulting strings, including the elipses.
+     */
     default StringColumn abbreviate(int maxWidth) {
-
         StringColumn newColumn = StringColumn.create(name() + "[abbr]");
-
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
             newColumn.append(StringUtils.abbreviate(value, maxWidth));
+        }
+        return newColumn;
+    }
+
+    default StringColumn format(String formatString) {
+
+        StringColumn newColumn = StringColumn.create(name() + "[formatted]");
+        for (int r = 0; r < size(); r++) {
+            newColumn.append(String.format(formatString, getString(r)));
         }
         return newColumn;
     }
@@ -175,7 +189,7 @@ public interface StringMapUtils extends Column {
     /**
      * Returns a column containing the levenshtein distance between the two given string columns
      */
-    default Column distance(Column column2) {
+    default NumberColumn distance(Column column2) {
 
         NumberColumn newColumn = NumberColumn.create(name() + column2.name() + "[distance]");
 
@@ -187,26 +201,13 @@ public interface StringMapUtils extends Column {
         return newColumn;
     }
 
-    default StringColumn join(Column column2, String delimiter) {
-
-        StringColumn newColumn = StringColumn.create(name() + column2.name() + "[joining]");
-
-        for (int r = 0; r < size(); r++) {
-            String[] values = new String[2];
-            values[0] = getString(r);
-            values[1] = column2.getString(r);
-            newColumn.append(StringUtils.join(values, delimiter));
-        }
-        return newColumn;
-    }
-
     /**
      * Return a copy of this column with the given string appended
      *
      * @param columns the column to append
      * @return the new column
      */
-    default StringColumn concatenate(String separator, StringColumn ... columns) {
+    default StringColumn join(String separator, StringColumn ... columns) {
         StringColumn newColumn = StringColumn.create(name() + "[column appended]", this.size());
         for (int r = 0; r < size(); r++) {
             String result = getString(r);
@@ -266,7 +267,7 @@ public interface StringMapUtils extends Column {
             List<String> tokens =
                     new ArrayList<>(splitter.splitToList(value));
             Collections.sort(tokens);
-            value = String.join(" ", tokens);
+            value = String.join(separator, tokens);
             newColumn.append(value);
         }
         return newColumn;
@@ -293,19 +294,19 @@ public interface StringMapUtils extends Column {
         return newColumn;
     }
 
-    default StringColumn tokenizeAndRemoveDuplicates() {
+    default StringColumn tokenizeAndRemoveDuplicates(String separator) {
         StringColumn newColumn = StringColumn.create(name() + "[without duplicates]", this.size());
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
 
-            Splitter splitter = Splitter.on(CharMatcher.whitespace());
+            Splitter splitter = Splitter.on(separator);
             splitter = splitter.trimResults();
             splitter = splitter.omitEmptyStrings();
             List<String> tokens = new ArrayList<>(splitter.splitToList(value));
 
-            value = String.join(" ", new HashSet<>(tokens));
-            newColumn.append(value);
+            String result = tokens.stream().distinct().collect(Collectors.joining(separator));
+            newColumn.append(result);
         }
         return newColumn;
     }
