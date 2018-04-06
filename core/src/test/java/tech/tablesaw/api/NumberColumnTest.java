@@ -211,36 +211,6 @@ public class NumberColumnTest {
     }
 
     @Test
-    public void lag() {
-        NumberColumn n1 = NumberColumn.indexColumn("index", 4, 0);
-        NumberColumn n2 = n1.lag(-2);
-        Table t = Table.create("tst");
-        t.addColumn(n1, n2);
-        assertEquals("            tst            \n" +
-                " index  |  index lag(-2)  |\n" +
-                "---------------------------\n" +
-                "     0  |              2  |\n" +
-                "     1  |              3  |\n" +
-                "     2  |                 |\n" +
-                "     3  |                 |", t.print());
-    }
-
-    @Test
-    public void lead() {
-        NumberColumn n1 = NumberColumn.indexColumn("index", 4, 0);
-        NumberColumn n2 = n1.lead(1);
-        Table t = Table.create("tst");
-        t.addColumn(n1, n2);
-        assertEquals("            tst            \n" +
-                " index  |  index lead(1)  |\n" +
-                "---------------------------\n" +
-                "     0  |              1  |\n" +
-                "     1  |              2  |\n" +
-                "     2  |              3  |\n" +
-                "     3  |                 |", t.print());
-    }
-
-    @Test
     public void testNumberFormat1() {
         NumberColumn numberColumn = NumberColumn.create("test");
         numberColumn.append(48392.2932);
@@ -532,42 +502,6 @@ public class NumberColumnTest {
         assertEquals(size, doubles.size());
         doubles.clear();
         assertEquals(0, doubles.size());
-    }
-
-    @Test
-    public void testNeg() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.neg();
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void tesMod() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        NumberColumn otherDoubles = NumberColumn.create("otherDoubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-            otherDoubles.append(doubles.get(i) - 1.0f);
-        }
-        Column newDoubles = doubles.remainder(otherDoubles);
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void testSquareAndSqrt() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-
-        NumberColumn newDoubles = doubles.square();
-        NumberColumn revert = newDoubles.sqrt();
-        for (int i = 0; i < doubles.size(); i++) {
-            assertEquals(doubles.get(i), revert.get(i), 0.01);
-        }
     }
 
     @Test

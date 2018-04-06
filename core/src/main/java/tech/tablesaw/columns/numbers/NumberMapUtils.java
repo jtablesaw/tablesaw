@@ -23,6 +23,10 @@ import static tech.tablesaw.api.NumberColumn.*;
 
 public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterable {
 
+    /**
+     * Returns a transformation of the data in this column such that the result has a mean of 0, and a
+     * standard deviation of 1
+     */
     default NumberColumn normalize() {
         double[] result = StatUtils.normalize(asDoubleArray());
         return create(name() + " normalized", result);
@@ -172,6 +176,9 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
         return val1 / val2;
     }
 
+    /**
+     * Returns the result of subtracting val2 from val1, after handling missing values
+     */
     default double subtract(double val1, double val2) {
         if (NumberColumn.isMissing(val1) || NumberColumn.isMissing(val2)) {
             return MISSING_VALUE;
