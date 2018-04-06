@@ -2,6 +2,7 @@ package tech.tablesaw.filters;
 
 import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.columns.numbers.NumberColumnReference;
 import tech.tablesaw.selection.Selection;
 
 import static org.junit.Assert.assertEquals;
@@ -99,40 +100,14 @@ public class NumberFiltersTest {
     }
 
     @Test
-    public void testIsLessThanOrEqualTo1() {
-        double[] values = {4, 0, -0.00001, 5.0};
-        double[] values2 = {4, 11, -3.00001, 5.1};
-        NumberColumn doubles = NumberColumn.create("doubles", values);
-        NumberColumn doubles2 = NumberColumn.create("doubles2", values2);
-        Selection selection = doubles.isLessThanOrEqualTo(doubles2);
-        assertEquals(0, selection.get(0));
-        assertEquals(1, selection.get(1));
-        assertEquals(3, selection.get(2));
-        assertEquals(3, selection.size());
-    }
-
-    @Test
     public void testIsGreaterThan() {
         double[] values = {4, 0, -0.00001, 5.0};
-        double[] values2 = {4, 11, -3.00001, 5.1};
         NumberColumn doubles = NumberColumn.create("doubles", values);
-        NumberColumn doubles2 = NumberColumn.create("doubles2", values2);
-        Selection selection = doubles.isGreaterThan(doubles2);
-        assertEquals(2, selection.get(0));
-        assertEquals(1, selection.size());
-    }
-
-    @Test
-    public void testIsGreaterThanOrEqualTo1() {
-        double[] values = {4, 0, -0.00001, 5.0, 4.44443};
-        double[] values2 = {4, 11, -3.00001, 5.1, 4.44443};
-        NumberColumn doubles = NumberColumn.create("doubles", values);
-        NumberColumn doubles2 = NumberColumn.create("doubles2", values2);
-        Selection selection = doubles.isGreaterThanOrEqualTo(doubles2);
+        NumberColumnReference reference = new NumberColumnReference(doubles.name());
+        Selection selection = reference.isGreaterThan(0).apply(doubles);
         assertEquals(0, selection.get(0));
-        assertEquals(2, selection.get(1));
-        assertEquals(4, selection.get(2));
-        assertEquals(3, selection.size());
+        assertEquals(3, selection.get(1));
+        assertEquals(2, selection.size());
     }
 
     @Test
@@ -153,7 +128,8 @@ public class NumberFiltersTest {
         double[] values2 = {4, 11, -3.00001, 5.1, 4.44443};
         NumberColumn doubles = NumberColumn.create("doubles", values);
         NumberColumn doubles2 = NumberColumn.create("doubles2", values2);
-        Selection selection = doubles.isNotEqualTo(doubles2);
+        NumberColumnReference reference = new NumberColumnReference(doubles.name());
+        Selection selection = reference.isNotEqualTo(doubles2).apply(doubles);
         assertEquals(1, selection.get(0));
         assertEquals(2, selection.get(1));
         assertEquals(3, selection.get(2));
