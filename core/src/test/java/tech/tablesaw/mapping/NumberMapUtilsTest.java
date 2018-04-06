@@ -169,15 +169,26 @@ public class NumberMapUtilsTest {
     }
 
     @Test
+    public void testRoundInt() {
+        double[] values = {4.4, 1.9, 1.5, 2.3, 2.0};
+        NumberColumn doubles = NumberColumn.create("doubles", values);
+        NumberColumn newDoubles = doubles.roundInt();
+        assertEquals(4, newDoubles.get(0), 0.0001);
+        assertEquals(2, newDoubles.get(1), 0.0001);
+        assertEquals(2, newDoubles.get(2), 0.0001);
+        assertEquals(2, newDoubles.get(3), 0.0001);
+        assertEquals(2, newDoubles.get(4), 0.0001);
+    }
+
+    @Test
     public void testMod() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        NumberColumn otherDoubles = NumberColumn.create("otherDoubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-            otherDoubles.append(doubles.get(i) - 1.0f);
-        }
+        double[] values = {4, 1, 1, 2, 2};
+        double[] values2 = {4, 1, 1, 2, 2};
+        NumberColumn doubles = NumberColumn.create("doubles", values);
+        NumberColumn otherDoubles = NumberColumn.create("otherDoubles", values2);
+
         NumberColumn newDoubles = doubles.remainder(otherDoubles);
-        assertFalse(newDoubles.isEmpty());
+        assertEquals(0, newDoubles.get(0), 0.001);
     }
 
     @Test
@@ -194,4 +205,16 @@ public class NumberMapUtilsTest {
         }
     }
 
+    @Test
+    public void testCubeAndCbrt() {
+        NumberColumn doubles = NumberColumn.create("doubles", 100);
+        for (int i = 0; i < 100; i++) {
+            doubles.append(RandomUtils.nextDouble(0, 10_000));
+        }
+        NumberColumn newDoubles = doubles.cube();
+        NumberColumn revert = newDoubles.cubeRoot();
+        for (int i = 0; i < doubles.size(); i++) {
+            assertEquals(doubles.get(i), revert.get(i), 0.01);
+        }
+    }
 }
