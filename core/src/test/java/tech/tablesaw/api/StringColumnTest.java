@@ -254,4 +254,210 @@ public class StringColumnTest {
         List<String> states = stringColumn.asList();
         assertEquals(51, states.size()); //includes Wash. DC
     }
+
+    @Test
+    public void testFormatting() {
+        String[] names = {"John White", "George Victor"};
+        StringColumn nameColumn = StringColumn.create("names", names);
+        StringColumn formatted = nameColumn.format("Name: %s");
+        assertEquals("Name: John White", formatted.get(0));
+    }
+
+    @Test
+    public void testDistance() {
+        String[] words = {"canary", "banana", "island", "reggae"};
+        String[] words2 = {"cancel", "bananas", "islander", "calypso"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn word2Column = StringColumn.create("words2", words2);
+        NumberColumn distance = wordColumn.distance(word2Column);
+        assertEquals(distance.get(0), 3, 0.0001);
+        assertEquals(distance.get(3), 7, 0.0001);
+    }
+
+    @Test
+    public void testCommonSuffix() {
+        String[] words = {"running", "icecube", "regular", "reggae"};
+        String[] words2 = {"rowing", "cube", "premium", "place"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn word2Column = StringColumn.create("words2", words2);
+        StringColumn suffix = wordColumn.commonSuffix(word2Column);
+        assertEquals(suffix.get(0), "ing");
+        assertEquals(suffix.get(1), "cube");
+        assertEquals(suffix.get(3), "e");
+    }
+
+    @Test
+    public void testCommonPrefix() {
+        String[] words = {"running", "icecube", "back"};
+        String[] words2 = {"rowing", "iceland", "backup"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn word2Column = StringColumn.create("words2", words2);
+        StringColumn result = wordColumn.commonPrefix(word2Column);
+        assertEquals(result.get(0), "r");
+        assertEquals(result.get(1), "ice");
+        assertEquals(result.get(2), "back");
+    }
+
+    @Test
+    public void testPadStart() {
+        String[] words = {"running", "icecube", "back"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.padStart(8, ' ');
+        assertEquals(result.get(0), " running");
+        assertEquals(result.get(1), " icecube");
+        assertEquals(result.get(2), "    back");
+    }
+
+    @Test
+    public void testPadEnd() {
+        String[] words = {"running", "icecube", "back"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.padEnd(8, 'X');
+        assertEquals(result.get(0), "runningX");
+        assertEquals(result.get(1), "icecubeX");
+        assertEquals(result.get(2), "backXXXX");
+    }
+
+    @Test
+    public void testSubstring() {
+        String[] words = {"running", "icecube", "back"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.substring(3);
+        assertEquals(result.get(0), "ning");
+        assertEquals(result.get(1), "cube");
+        assertEquals(result.get(2), "k");
+    }
+
+    @Test
+    public void testSubstring2() {
+        String[] words = {"running", "icecube", "back"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.substring(1,3);
+        assertEquals(result.get(0), "un");
+        assertEquals(result.get(1), "ce");
+        assertEquals(result.get(2), "ac");
+    }
+
+    @Test
+    public void testReplaceFirst() {
+        String[] words = {"running", "run run run"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.replaceFirst("run","walk");
+        assertEquals(result.get(0), "walkning");
+        assertEquals(result.get(1), "walk run run");
+    }
+
+    @Test
+    public void testReplaceAll() {
+        String[] words = {"running", "run run run"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.replaceAll("run","walk");
+        assertEquals(result.get(0), "walkning");
+        assertEquals(result.get(1), "walk walk walk");
+    }
+
+    @Test
+    public void testReplaceAll2() {
+        String[] words = {"running", "run run run"};
+        String[] regex = {"n", "g"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.replaceAll(regex,"XX");
+        assertEquals(result.get(0), "ruXXXXiXXXX");
+        assertEquals(result.get(1), "ruXX ruXX ruXX");
+    }
+
+    @Test
+    public void testJoin() {
+        String[] words = {"running", "run"};
+        String[] words2 = {"walking", "walk"};
+        String[] words3 = {"swimming", "swim"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn wordColumn2 = StringColumn.create("words2", words2);
+        StringColumn wordColumn3 = StringColumn.create("words3", words3);
+        StringColumn result = wordColumn.join("--", wordColumn2, wordColumn3);
+        assertEquals(result.get(0), "running--walking--swimming");
+        assertEquals(result.get(1), "run--walk--swim");
+    }
+
+    @Test
+    public void testTrim() {
+        String[] words = {" running ", " run run run "};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.trim();
+        assertEquals(result.get(0), "running");
+        assertEquals(result.get(1), "run run run");
+    }
+
+    @Test
+    public void testUpperCase() {
+        String[] words = {"running", "run run run"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.upperCase();
+        assertEquals(result.get(0), "RUNNING");
+        assertEquals(result.get(1), "RUN RUN RUN");
+    }
+
+    @Test
+    public void testLowerCase() {
+        String[] words = {"RUNNING", "RUN RUN RUN"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.lowerCase();
+        assertEquals(result.get(0), "running");
+        assertEquals(result.get(1), "run run run");
+    }
+
+    @Test
+    public void testAbbreviate() {
+        String[] words = {"running", "Stop Breaking Down", "Backwards Writing"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.abbreviate(10);
+        assertEquals(result.get(0), "running");
+        assertEquals(result.get(1), "Stop Br...");
+        assertEquals(result.get(2), "Backwar...");
+    }
+
+    @Test
+    public void tokenizeAndSort() {
+        String[] words = {"Stop Breaking Down", "Backwards Writing"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.tokenizeAndSort();
+        assertEquals(result.get(0), "Breaking Down Stop");
+        assertEquals(result.get(1), "Backwards Writing");
+    }
+
+    @Test
+    public void tokenizeAndSort1() {
+        String[] words = {"Stop,Breaking,Down", "Writing Backwards"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.tokenizeAndSort(",");
+        assertEquals(result.get(0), "Breaking,Down,Stop");
+        assertEquals(result.get(1), "Writing Backwards");
+    }
+
+    @Test
+    public void tokenizeAndRemoveDuplicates() {
+        String[] words = {"Stop Breaking Stop Down", "walk run run"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.tokenizeAndRemoveDuplicates(" ");
+        assertEquals("Stop Breaking Down", result.get(0));
+        assertEquals("walk run", result.get(1));
+    }
+
+    @Test
+    public void chainMaps() {
+        String[] words = {"Stop Breaking Stop Down", "walk run run"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.tokenizeAndRemoveDuplicates(" ").tokenizeAndSort();
+        assertEquals("Breaking Down Stop", result.get(0));
+        assertEquals("run walk", result.get(1));
+    }
+
+    @Test
+    public void chainMaps1() {
+        String[] words = {"foo", "bar"};
+        StringColumn wordColumn = StringColumn.create("words", words);
+        StringColumn result = wordColumn.concatenate(" bam");
+        assertEquals("foo bam", result.get(0));
+        assertEquals("bar bam", result.get(1));
+    }
 }
