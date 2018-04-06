@@ -27,12 +27,10 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
+import tech.tablesaw.columns.datetimes.DateTimeFilters;
 import tech.tablesaw.columns.datetimes.DateTimeMapUtils;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.filtering.predicates.LongBiPredicate;
-import tech.tablesaw.filtering.predicates.LongPredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
@@ -50,13 +48,12 @@ import java.util.Locale;
 import java.util.Set;
 
 import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.*;
 
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
 public class DateTimeColumn extends AbstractColumn
-        implements DateTimeMapUtils, Iterable<LocalDateTime> {
+        implements DateTimeMapUtils, DateTimeFilters, Iterable<LocalDateTime> {
 
     public static final long MISSING_VALUE = (Long) ColumnType.LOCAL_DATE_TIME.getMissingValue();
 
@@ -251,7 +248,6 @@ public class DateTimeColumn extends AbstractColumn
         data.clear();
     }
 
-
     @Override
     public void sortAscending() {
         Arrays.parallelSort(data.elements());
@@ -399,87 +395,6 @@ public class DateTimeColumn extends AbstractColumn
         }
     }
 
-    public Selection isEqualTo(LocalDateTime value) {
-        long packed = PackedLocalDateTime.pack(value);
-        return eval(isEqualTo, packed);
-    }
-
-    public Selection isNotEqualTo(LocalDateTime value) {
-        long packed = PackedLocalDateTime.pack(value);
-        return eval(isNotEqualTo, packed);
-    }
-
-    public Selection isEqualTo(DateTimeColumn column) {
-        Selection results = new BitmapBackedSelection();
-        int i = 0;
-        LongIterator intIterator = column.longIterator();
-        for (long next : data) {
-            if (next == intIterator.nextLong()) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
-    }
-
-    public Selection isAfter(LocalDateTime value) {
-        return eval(isGreaterThan, PackedLocalDateTime.pack(value));
-    }
-
-    public Selection isAfter(Long packedDateTime) {
-        return eval(isGreaterThan, packedDateTime);
-    }
-
-    public Selection isOnOrAfter(long value) {
-        return eval(isGreaterThanOrEqualTo, value);
-    }
-
-    public Selection isOnOrAfter(LocalDateTime value) {
-        return eval(isGreaterThanOrEqualTo, PackedLocalDateTime.pack(value));
-    }
-
-    public Selection isBefore(LocalDateTime value) {
-        return eval(isLessThan, PackedLocalDateTime.pack(value));
-    }
-
-    public Selection isBefore(Long packedDateTime) {
-        return eval(isLessThan, packedDateTime);
-    }
-
-    public Selection isOnOrBefore(long value) {
-        return eval(isLessThanOrEqualTo, value);
-    }
-
-    public Selection isOnOrBefore(LocalDateTime value) {
-        return eval(isLessThanOrEqualTo, PackedLocalDateTime.pack(value));
-    }
-
-    public Selection isAfter(DateTimeColumn column) {
-        Selection results = new BitmapBackedSelection();
-        int i = 0;
-        LongIterator intIterator = column.longIterator();
-        for (long next : data) {
-            if (next > intIterator.nextLong()) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
-    }
-
-    public Selection isBefore(DateTimeColumn column) {
-        Selection results = new BitmapBackedSelection();
-        int i = 0;
-        LongIterator intIterator = column.longIterator();
-        for (long next : data) {
-            if (next < intIterator.nextLong()) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
-    }
-
     /**
      * Returns the count of missing values in this column
      */
@@ -524,16 +439,6 @@ public class DateTimeColumn extends AbstractColumn
             output[i] = PackedLocalDateTime.asLocalDateTime(data.getLong(i)).toInstant(offset).toEpochMilli();
         }
         return output;
-    }
-
-    @Override
-    public Selection isMissing() {
-        return eval(isMissing);
-    }
-
-    @Override
-    public Selection isNotMissing() {
-        return eval(isNotMissing);
     }
 
     @Override
@@ -596,150 +501,12 @@ public class DateTimeColumn extends AbstractColumn
         return newColumn;
     }
 
-    public Selection isMonday() {
-        return eval(PackedLocalDateTime::isMonday);
-    }
-
-    public Selection isTuesday() {
-        return eval(PackedLocalDateTime::isTuesday);
-    }
-
-    public Selection isWednesday() {
-        return eval(PackedLocalDateTime::isWednesday);
-    }
-
-    public Selection isThursday() {
-        return eval(PackedLocalDateTime::isThursday);
-    }
-
-    public Selection isFriday() {
-        return eval(PackedLocalDateTime::isFriday);
-    }
-
-    public Selection isSaturday() {
-        return eval(PackedLocalDateTime::isSaturday);
-    }
-
-    public Selection isSunday() {
-        return eval(PackedLocalDateTime::isSunday);
-    }
-
-    public Selection isInJanuary() {
-        return eval(PackedLocalDateTime::isInJanuary);
-    }
-
-    public Selection isInFebruary() {
-        return eval(PackedLocalDateTime::isInFebruary);
-    }
-
-    public Selection isInMarch() {
-        return eval(PackedLocalDateTime::isInMarch);
-    }
-
-    public Selection isInApril() {
-        return eval(PackedLocalDateTime::isInApril);
-    }
-
-    public Selection isInMay() {
-        return eval(PackedLocalDateTime::isInMay);
-    }
-
-    public Selection isInJune() {
-        return eval(PackedLocalDateTime::isInJune);
-    }
-
-    public Selection isInJuly() {
-        return eval(PackedLocalDateTime::isInJuly);
-    }
-
-    public Selection isInAugust() {
-        return eval(PackedLocalDateTime::isInAugust);
-    }
-
-    public Selection isInSeptember() {
-        return eval(PackedLocalDateTime::isInSeptember);
-    }
-
-    public Selection isInOctober() {
-        return eval(PackedLocalDateTime::isInOctober);
-    }
-
-    public Selection isInNovember() {
-        return eval(PackedLocalDateTime::isInNovember);
-    }
-
-    public Selection isInDecember() {
-        return eval(PackedLocalDateTime::isInDecember);
-    }
-
-    public Selection isFirstDayOfMonth() {
-        return eval(PackedLocalDateTime::isFirstDayOfMonth);
-    }
-
-    public Selection isLastDayOfMonth() {
-        return eval(PackedLocalDateTime::isLastDayOfMonth);
-    }
-
-    public Selection isInQ1() {
-        return eval(PackedLocalDateTime::isInQ1);
-    }
-
-    public Selection isInQ2() {
-        return eval(PackedLocalDateTime::isInQ2);
-    }
-
-    public Selection isInQ3() {
-        return eval(PackedLocalDateTime::isInQ3);
-    }
-
-    public Selection isInQ4() {
-        return eval(PackedLocalDateTime::isInQ4);
-    }
-
-    public Selection isNoon() {
-        return eval(PackedLocalDateTime::isNoon);
-    }
-
-    public Selection isMidnight() {
-        return eval(PackedLocalDateTime::isMidnight);
-    }
-
-    public Selection isBeforeNoon() {
-        return eval(PackedLocalDateTime::AM);
-    }
-
-    public Selection isAfterNoon() {
-        return eval(PackedLocalDateTime::PM);
-    }
-
-    public Selection eval(LongPredicate predicate) {
-        Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < data.size(); idx++) {
-            long next = data.getLong(idx);
-            if (predicate.test(next)) {
-                bitmap.add(idx);
-            }
-        }
-        return bitmap;
-    }
-
     public void set(int index, long value) {
         data.set(index, value);
     }
 
     public void set(int index, LocalDateTime value) {
         data.set(index, PackedLocalDateTime.pack(value));
-    }
-
-    public Selection eval(LongBiPredicate predicate, long value) {
-        Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < data.size(); idx++) {
-            long next = data.getLong(idx);
-            if (predicate.test(next, value)) {
-                bitmap.add(idx);
-            }
-        }
-        return bitmap;
     }
 
     /**
@@ -787,15 +554,6 @@ public class DateTimeColumn extends AbstractColumn
             times.add(localDateTime);
         }
         return times;
-    }
-
-    public Selection isInYear(int year) {
-        return eval(i -> PackedLocalDateTime.isInYear(i, year));
-    }
-
-    public boolean contains(LocalDateTime dateTime) {
-        long dt = PackedLocalDateTime.pack(dateTime);
-        return data().contains(dt);
     }
 
     public int byteSize() {
