@@ -242,10 +242,6 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
         return column;
     }
 
-    public DoubleArrayList data() {
-        return data;
-    }
-
     public double firstElement() {
         if (size() > 0) {
             return data.getDouble(0);
