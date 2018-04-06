@@ -2,6 +2,9 @@ package tech.tablesaw.columns.numbers;
 
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
@@ -102,6 +105,39 @@ public interface NumberReduceUtils extends Column {
 
     default double skewness() {
         return skewness.agg(this.asDoubleArray());
+    }
+
+    /**
+     * Returns the pearson's correlation between the receiver and the otherColumn
+     **/
+    default double pearsons(NumberColumn otherColumn) {
+
+        double[] x = asDoubleArray();
+        double[] y = otherColumn.asDoubleArray();
+
+        return new PearsonsCorrelation().correlation(x, y);
+    }
+
+    /**
+     * Returns the Spearman's Rank correlation between the receiver and the otherColumn
+     **/
+    default double spearmans(NumberColumn otherColumn) {
+
+        double[] x = asDoubleArray();
+        double[] y = otherColumn.asDoubleArray();
+
+        return new SpearmansCorrelation().correlation(x, y);
+    }
+
+    /**
+     * Returns the Kendall's Tau Rank correlation between the receiver and the otherColumn
+     **/
+    default double kendalls(NumberColumn otherColumn) {
+
+        double[] x = asDoubleArray();
+        double[] y = otherColumn.asDoubleArray();
+
+        return new KendallsCorrelation().correlation(x, y);
     }
 
     /**
