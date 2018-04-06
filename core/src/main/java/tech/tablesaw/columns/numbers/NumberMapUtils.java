@@ -370,6 +370,5 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
         return newColumn;
     }
 
-
     double get(int i);
 }

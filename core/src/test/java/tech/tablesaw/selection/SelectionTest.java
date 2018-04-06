@@ -47,7 +47,7 @@ public class SelectionTest {
         int[] expected = {42, 53, 111};
         assertArrayEquals(expected, selection.toArray());
     }
-    
+
     @Test
     public void add() {
         Selection selection = Selection.with(42, 53, 111);
