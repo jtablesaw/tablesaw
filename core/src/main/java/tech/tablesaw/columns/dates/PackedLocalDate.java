@@ -253,19 +253,19 @@ public class PackedLocalDate {
     }
 
     public static boolean isSunday(int packedDate) {
-        return isDayOfWeek(packedDate, DayOfWeek.SUNDAY);
+        return isDayOfWeek(packedDate, SUNDAY);
     }
 
     public static boolean isMonday(int packedDate) {
-        return isDayOfWeek(packedDate, DayOfWeek.MONDAY);
+        return isDayOfWeek(packedDate, MONDAY);
     }
 
     public static boolean isTuesday(int packedDate) {
-        return isDayOfWeek(packedDate, DayOfWeek.TUESDAY);
+        return isDayOfWeek(packedDate, TUESDAY);
     }
 
     public static boolean isWednesday(int packedDate) {
-        return isDayOfWeek(packedDate, DayOfWeek.WEDNESDAY);
+        return isDayOfWeek(packedDate, WEDNESDAY);
     }
 
     public static boolean isThursday(int packedDate) {

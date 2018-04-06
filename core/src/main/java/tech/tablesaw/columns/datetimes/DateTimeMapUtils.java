@@ -124,7 +124,7 @@ public interface DateTimeMapUtils extends Column {
             if (DateTimeColumn.isMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
-                newColumn.append(Month.of(PackedLocalDateTime.getMonthValue(c1)).name());
+                newColumn.append(Month.of(getMonthValue(c1)).name());
             }
         }
         return newColumn;
@@ -145,9 +145,9 @@ public interface DateTimeMapUtils extends Column {
             if (DateTimeColumn.isMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
-                String yq = String.valueOf(PackedLocalDateTime.getYear(c1));
+                String yq = String.valueOf(getYear(c1));
                 yq = yq + "-" + Strings.padStart(
-                        String.valueOf(PackedLocalDateTime.getQuarter(c1)), 2, '0');
+                        String.valueOf(getQuarter(c1)), 2, '0');
                 newColumn.append(yq);
             }
         }
@@ -169,9 +169,9 @@ public interface DateTimeMapUtils extends Column {
             if (DateTimeColumn.isMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
-                String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
+                String ym = String.valueOf(getYear(c1));
                 ym = ym + "-" + Strings.padStart(
-                        String.valueOf(PackedLocalDateTime.getMonthValue(c1)), 2, '0');
+                        String.valueOf(getMonthValue(c1)), 2, '0');
                 newColumn.append(ym);
             }
         }
@@ -193,9 +193,9 @@ public interface DateTimeMapUtils extends Column {
             if (DateTimeColumn.isMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
-                String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
+                String ym = String.valueOf(getYear(c1));
                 ym = ym + "-" + Strings.padStart(
-                        String.valueOf(PackedLocalDateTime.getDayOfYear(c1)), 3, '0');
+                        String.valueOf(getDayOfYear(c1)), 3, '0');
                 newColumn.append(ym);
             }
         }
@@ -217,9 +217,9 @@ public interface DateTimeMapUtils extends Column {
             if (DateTimeColumn.isMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
-                String hm = Strings.padStart(String.valueOf(PackedLocalDateTime.getHour(c1)), 2, '0');
+                String hm = Strings.padStart(String.valueOf(getHour(c1)), 2, '0');
                 hm = hm + "-" + Strings.padStart(
-                        String.valueOf(PackedLocalDateTime.getMinute(c1)), 2, '0');
+                        String.valueOf(getMinute(c1)), 2, '0');
                 newColumn.append(hm);
             }
         }
@@ -241,9 +241,9 @@ public interface DateTimeMapUtils extends Column {
             if (DateTimeColumn.isMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
-                String ym = String.valueOf(PackedLocalDateTime.getYear(c1));
+                String ym = String.valueOf(getYear(c1));
                 ym = ym + "-" + Strings.padStart(
-                        String.valueOf(PackedLocalDateTime.getWeekOfYear(c1)), 2, '0');
+                        String.valueOf(getWeekOfYear(c1)), 2, '0');
                 newColumn.append(ym);
             }
         }
@@ -257,7 +257,7 @@ public interface DateTimeMapUtils extends Column {
             if (DateTimeColumn.isMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
-                newColumn.append(PackedLocalDateTime.getDayOfWeek(c1).toString());
+                newColumn.append(getDayOfWeek(c1).toString());
             }
         }
         return newColumn;
@@ -270,7 +270,7 @@ public interface DateTimeMapUtils extends Column {
             if (DateTimeColumn.isMissing(c1)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
-                newColumn.append((short) PackedLocalDateTime.getDayOfWeek(c1).getValue());
+                newColumn.append((short) getDayOfWeek(c1).getValue());
             }
         }
         return newColumn;
@@ -283,7 +283,7 @@ public interface DateTimeMapUtils extends Column {
             if (DateTimeColumn.isMissing(c1)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
-                newColumn.append((short) PackedLocalDateTime.getDayOfYear(c1));
+                newColumn.append((short) getDayOfYear(c1));
             }
         }
         return newColumn;
@@ -296,12 +296,11 @@ public interface DateTimeMapUtils extends Column {
             if (DateTimeColumn.isMissing(c1)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
-                newColumn.append(PackedLocalDateTime.getDayOfMonth(c1));
+                newColumn.append(getDayOfMonth(c1));
             }
         }
         return newColumn;
     }
-
 
     /**
      * Returns a column containing integers representing the nth group (0-based) that a date falls into.

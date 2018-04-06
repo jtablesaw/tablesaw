@@ -38,9 +38,6 @@ public class BetweenInclusive extends ColumnFilter {
 
     public Selection apply(Column column) {
         NumberColumn numberColumn = (NumberColumn) column;
-        Selection matches = numberColumn.isGreaterThanOrEqualTo(low);
-        Selection highMatches = numberColumn.isLessThanOrEqualTo(high);
-        matches.and(highMatches);
-        return matches;
+        return numberColumn.isBetweenInclusive(low, high);
     }
 }

@@ -129,6 +129,19 @@ public interface NumberFilters extends Column {
         return results;
     }
 
+    default Selection isGreaterThanOrEqualTo(NumberColumn d) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        DoubleIterator doubleIterator = d.iterator();
+        for (double doubles : dataInternal()) {
+            if (doubles >= doubleIterator.nextDouble()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
     default Selection isEqualTo(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
         int i = 0;
@@ -142,12 +155,38 @@ public interface NumberFilters extends Column {
         return results;
     }
 
+    default Selection isNotEqualTo(NumberColumn d) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        DoubleIterator doubleIterator = d.iterator();
+        for (double doubles : dataInternal()) {
+            if (doubles != doubleIterator.nextDouble()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
     default Selection isLessThan(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
         int i = 0;
         DoubleIterator doubleIterator = d.iterator();
         for (double doubles : dataInternal()) {
             if (doubles < doubleIterator.nextDouble()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    default Selection isLessThanOrEqualTo(NumberColumn d) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        DoubleIterator doubleIterator = d.iterator();
+        for (double doubles : dataInternal()) {
+            if (doubles <= doubleIterator.nextDouble()) {
                 results.add(i);
             }
             i++;

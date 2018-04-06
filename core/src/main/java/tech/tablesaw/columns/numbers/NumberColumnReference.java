@@ -14,9 +14,13 @@
 
 package tech.tablesaw.columns.numbers;
 
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.columns.numbers.filters.BetweenExclusive;
 import tech.tablesaw.columns.numbers.filters.BetweenInclusive;
+import tech.tablesaw.columns.numbers.filters.ColumnEqualTo;
+import tech.tablesaw.columns.numbers.filters.ColumnGreaterThan;
+import tech.tablesaw.columns.numbers.filters.ColumnLessThan;
 import tech.tablesaw.columns.numbers.filters.EqualTo;
 import tech.tablesaw.columns.numbers.filters.GreaterThan;
 import tech.tablesaw.columns.numbers.filters.GreaterThanOrEqualTo;
@@ -33,6 +37,8 @@ import tech.tablesaw.columns.numbers.filters.NotEqualTo;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.IsMissing;
 import tech.tablesaw.filtering.IsNotMissing;
+import tech.tablesaw.filtering.composite.AnyOf;
+import tech.tablesaw.filtering.composite.IsFalse;
 
 /**
  * A reference to a column that can be used in evaluating query predicates. It is a key part of having a fluent API
@@ -58,6 +64,34 @@ public class NumberColumnReference extends ColumnReference {
 
     public Filter isEqualTo(double value) {
         return new EqualTo(this, value);
+    }
+
+    public Filter isEqualTo(NumberColumn value) {
+        return new ColumnEqualTo(this, value);
+    }
+
+    public Filter isGreaterThan(NumberColumn value) {
+        return new ColumnGreaterThan(this, value);
+    }
+
+    public Filter isGreaterThanOrEqualTo(NumberColumn value) {
+        return AnyOf.anyOf(
+                isGreaterThan(value),
+                isEqualTo(value));
+    }
+
+    public Filter isLessThan(NumberColumn value) {
+        return new ColumnLessThan(this, value);
+    }
+
+    public Filter isLessThanOrEqualTo(NumberColumn value) {
+        return AnyOf.anyOf(
+                isLessThan(value),
+                isEqualTo(value));
+    }
+
+    public Filter isNotEqualTo(NumberColumn value) {
+        return IsFalse.isFalse(isEqualTo(value));
     }
 
     public Filter isNotEqualTo(double value) {

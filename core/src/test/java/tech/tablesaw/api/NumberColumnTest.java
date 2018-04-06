@@ -17,19 +17,16 @@ package tech.tablesaw.api;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import org.junit.Ignore;
+import org.junit.Test;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.selection.Selection;
-
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.math3.random.RandomDataGenerator;
-import org.apache.commons.math3.stat.StatUtils;
-import org.junit.Ignore;
-import org.junit.Test;
-import tech.tablesaw.columns.Column;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -211,36 +208,6 @@ public class NumberColumnTest {
     }
 
     @Test
-    public void lag() {
-        NumberColumn n1 = NumberColumn.indexColumn("index", 4, 0);
-        NumberColumn n2 = n1.lag(-2);
-        Table t = Table.create("tst");
-        t.addColumn(n1, n2);
-        assertEquals("            tst            \n" +
-                " index  |  index lag(-2)  |\n" +
-                "---------------------------\n" +
-                "     0  |              2  |\n" +
-                "     1  |              3  |\n" +
-                "     2  |                 |\n" +
-                "     3  |                 |", t.print());
-    }
-
-    @Test
-    public void lead() {
-        NumberColumn n1 = NumberColumn.indexColumn("index", 4, 0);
-        NumberColumn n2 = n1.lead(1);
-        Table t = Table.create("tst");
-        t.addColumn(n1, n2);
-        assertEquals("            tst            \n" +
-                " index  |  index lead(1)  |\n" +
-                "---------------------------\n" +
-                "     0  |              1  |\n" +
-                "     1  |              2  |\n" +
-                "     2  |              3  |\n" +
-                "     3  |                 |", t.print());
-    }
-
-    @Test
     public void testNumberFormat1() {
         NumberColumn numberColumn = NumberColumn.create("test");
         numberColumn.append(48392.2932);
@@ -343,26 +310,6 @@ public class NumberColumnTest {
     }
 
     @Test
-    public void testIsEqualTo() {
-        Table table = Table.create("t");
-        NumberColumn numberColumn = NumberColumn.create("test", 1_000_000);
-        double[] doubles = new double[1_000_000];
-        table.addColumn(numberColumn);
-        for (int i = 0; i < 1_000_000; i++) {
-            double d = Math.random();
-            numberColumn.append(d);
-            doubles[i] = d;
-        }
-        Selection results;
-        RandomDataGenerator randomDataGenerator = new RandomDataGenerator();
-        for (int i = 0; i < 100; i++) { // pick a hundred values at random and see if we can find them
-            double aDouble = doubles[randomDataGenerator.nextInt(0, 999_999)];
-            results = numberColumn.isEqualTo(aDouble);
-            assertEquals(aDouble, numberColumn.get(results.iterator().nextInt()), .001);
-        }
-    }
-
-    @Test
     public void testMaxAndMin() {
         NumberColumn doubles = NumberColumn.create("doubles", 100);
         for (int i = 0; i < 100; i++) {
@@ -380,56 +327,6 @@ public class NumberColumnTest {
         }
         // the smallest item in the max set is >= the largest in the min set
         assertTrue(StatUtils.min(doublesA) >= StatUtils.max(doublesB));
-    }
-
-    @Test
-    public void testRound() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.round();
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void testLogN() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.logN();
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void testLog10() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.log10();
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void testLog1p() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.log1p();
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void testAbs() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.abs();
-        assertFalse(newDoubles.isEmpty());
     }
 
     @Test
@@ -535,58 +432,9 @@ public class NumberColumnTest {
     }
 
     @Test
-    public void testNeg() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        Column newDoubles = doubles.neg();
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void tesMod() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        NumberColumn otherDoubles = NumberColumn.create("otherDoubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-            otherDoubles.append(doubles.get(i) - 1.0f);
-        }
-        Column newDoubles = doubles.remainder(otherDoubles);
-        assertFalse(newDoubles.isEmpty());
-    }
-
-    @Test
-    public void testSquareAndSqrt() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-
-        NumberColumn newDoubles = doubles.square();
-        NumberColumn revert = newDoubles.sqrt();
-        for (int i = 0; i < doubles.size(); i++) {
-            assertEquals(doubles.get(i), revert.get(i), 0.01);
-        }
-    }
-
-    @Test
     public void testType() {
         NumberColumn doubles = NumberColumn.create("doubles", 100);
         assertEquals(ColumnType.NUMBER, doubles.type());
-    }
-
-    @Test
-    public void testCubeAndCbrt() {
-        NumberColumn doubles = NumberColumn.create("doubles", 100);
-        for (int i = 0; i < 100; i++) {
-            doubles.append(RandomUtils.nextDouble(0, 10_000));
-        }
-        NumberColumn newDoubles = doubles.cube();
-        NumberColumn revert = newDoubles.cubeRoot();
-        for (int i = 0; i < doubles.size(); i++) {
-            assertEquals(doubles.get(i), revert.get(i), 0.01);
-        }
     }
 
     @Test

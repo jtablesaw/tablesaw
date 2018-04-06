@@ -38,8 +38,6 @@ public class BetweenExclusive extends ColumnFilter {
 
     public Selection apply(Column column) {
         NumberColumn numberColumn = (NumberColumn) column;
-        Selection matches = numberColumn.isGreaterThan(low);
-        matches.and(numberColumn.isLessThan(high));
-        return matches;
+        return numberColumn.isBetweenExclusive(low, high);
     }
 }
