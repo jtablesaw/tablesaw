@@ -29,7 +29,7 @@ public interface NumberReduceUtils extends Column {
 
     // Reduce functions applied to the whole column
     default double sum() {
-        return sum.agg(this.asDoubleArray());
+        return sum.agg(asDoubleArray());
     }
 
     default double product() {
@@ -41,70 +41,70 @@ public interface NumberReduceUtils extends Column {
     }
 
     default double median() {
-        return median.agg(this.asDoubleArray());
+        return median.agg(asDoubleArray());
     }
 
     default double quartile1() {
-        return quartile1.agg(this.asDoubleArray());
+        return quartile1.agg(asDoubleArray());
     }
 
     default double quartile3() {
-        return quartile3.agg(this.asDoubleArray());
+        return quartile3.agg(asDoubleArray());
     }
 
     default double percentile(double percentile) {
-        return AggregateFunctions.percentile(this.asDoubleArray(), percentile);
+        return AggregateFunctions.percentile(asDoubleArray(), percentile);
     }
 
     default double range() {
-        return range.agg(this.asDoubleArray());
+        return range.agg(asDoubleArray());
     }
 
     default double max() {
-        return max.agg(this.asDoubleArray());
+        return max.agg(asDoubleArray());
     }
 
     default double min() {
-        return min.agg(this.asDoubleArray());
+        return min.agg(asDoubleArray());
     }
 
     default double variance() {
-        return variance.agg(this.asDoubleArray());
+        return variance.agg(asDoubleArray());
     }
 
     default double populationVariance() {
-        return populationVariance.agg(this.asDoubleArray());
+        return populationVariance.agg(asDoubleArray());
     }
 
     default double standardDeviation() {
-        return stdDev.agg(this.asDoubleArray());
+        return stdDev.agg(asDoubleArray());
     }
 
     default double sumOfLogs() {
-        return sumOfLogs.agg(this.asDoubleArray());
+        return sumOfLogs.agg(asDoubleArray());
     }
 
     default double sumOfSquares() {
-        return sumOfSquares.agg(this.asDoubleArray());
+        return sumOfSquares.agg(asDoubleArray());
     }
 
     default double geometricMean() {
-        return geometricMean.agg(this.asDoubleArray());
+        return geometricMean.agg(asDoubleArray());
     }
 
     /**
      * Returns the quadraticMean, aka the root-mean-square, for all values in this column
      */
     default double quadraticMean() {
-        return quadraticMean.agg(this.asDoubleArray());
+        return quadraticMean.agg(asDoubleArray());
     }
 
     default double kurtosis() {
-        return kurtosis.agg(this.asDoubleArray());
+        return kurtosis.agg(asDoubleArray());
     }
 
     default double skewness() {
-        return skewness.agg(this.asDoubleArray());
+        return skewness.agg(asDoubleArray());
     }
 
     /**
