@@ -2,6 +2,7 @@ package tech.tablesaw.columns.numbers;
 
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
+import org.apache.commons.math3.exception.NotANumberException;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
@@ -120,6 +121,9 @@ public interface NumberReduceUtils extends Column {
 
     /**
      * Returns the Spearman's Rank correlation between the receiver and the otherColumn
+     * @param otherColumn  A NumberColumn with no missing values
+     * @throws NotANumberException if either column contains any missing values
+     *
      **/
     default double spearmans(NumberColumn otherColumn) {
 

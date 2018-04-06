@@ -17,6 +17,9 @@ package tech.tablesaw.api;
 import com.google.common.base.Stopwatch;
 import io.codearte.jfairy.Fairy;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.selection.Selection;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.Double.NaN;
 import static org.junit.Assert.*;
 
 /**
@@ -126,6 +130,36 @@ public class NumberColumnTest {
         Filter filter = QueryHelper.numberColumn("Test").isIn(inValues);
         Table result = t.selectWhere(filter);
         assertNotNull(result);
+    }
+
+    @Test
+    public void testCorrelation() {
+        double[] x = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        double[] y = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+        NumberColumn xCol = NumberColumn.create("x", x);
+        NumberColumn yCol = NumberColumn.create("y", y);
+
+        double resultP = xCol.pearsons(yCol);
+        double resultS = xCol.spearmans(yCol);
+        double resultK = xCol.kendalls(yCol);
+        assertEquals(new PearsonsCorrelation().correlation(x, y), resultP, 0.0001);
+        assertEquals(new SpearmansCorrelation().correlation(x, y), resultS, 0.0001);
+        assertEquals(new KendallsCorrelation().correlation(x, y), resultK, 0.0001);
+    }
+
+    @Test
+    public void testCorrelation2() {
+        double[] x = new double[]{1, 2, 3, 4, 5, 6, 7, NaN, 9, 10};
+        double[] y = new double[]{1, 2, 3, NaN, 5, 6, 7, 8, 9, 10};
+
+        NumberColumn xCol = NumberColumn.create("x", x);
+        NumberColumn yCol = NumberColumn.create("y", y);
+
+        double resultP = xCol.pearsons(yCol);
+        double resultK = xCol.kendalls(yCol);
+        assertEquals(new PearsonsCorrelation().correlation(x, y), resultP, 0.0001);
+        assertEquals(new KendallsCorrelation().correlation(x, y), resultK, 0.0001);
     }
 
     @Test
