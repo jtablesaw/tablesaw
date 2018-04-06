@@ -20,6 +20,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
@@ -68,6 +69,60 @@ public class TableFilteringTest {
         NumberColumn a = result.numberColumn("approval");
         for (double v : a) {
             assertFalse(v < 70);
+        }
+    }
+
+    @Test
+    public void testSelectRange() {
+        Table result = table.selectRange(20, 30);
+        assertEquals(10, result.rowCount());
+        for (Column c: result.columns()) {
+            for (int r = 0; r < result.rowCount(); r++) {
+                assertEquals(table.get(r+20, c.name()), result.get(r, c.name()));
+            }
+        }
+    }
+
+    @Test
+    public void testSelectRows() {
+        Table result = table.selectRows(20, 30);
+        assertEquals(2, result.rowCount());
+        for (Column c: result.columns()) {
+            assertEquals(table.get(20, c.name()), result.get(0, c.name()));
+            assertEquals(table.get(30, c.name()), result.get(1, c.name()));
+        }
+    }
+
+    @Test
+    public void testSampleRows() {
+        Table result = table.selectSample(20);
+        assertEquals(20, result.rowCount());
+    }
+
+    @Test
+    public void testSampleProportion() {
+        Table result = table.selectSample(.1);
+        assertEquals(32, result.rowCount());
+    }
+
+    @Test
+    public void testRejectRows() {
+        Table result = table.rejectRows(20, 30);
+        assertEquals(table.rowCount() - 2, result.rowCount());
+        for (Column c: result.columns()) {
+            assertEquals(table.get(21, c.name()), result.get(20, c.name()));
+            assertEquals(table.get(32, c.name()), result.get(30, c.name()));
+        }
+    }
+
+    @Test
+    public void testRejectRange() {
+        Table result = table.rejectRange(20, 30);
+        assertEquals(table.rowCount() - 10, result.rowCount());
+        for (Column c: result.columns()) {
+            for (int r = 30; r < result.rowCount(); r++) {
+                assertEquals(result.get(r, c.name()), table.get(r + 10, c.name()));
+            }
         }
     }
 

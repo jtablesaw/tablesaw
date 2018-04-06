@@ -16,6 +16,7 @@ package tech.tablesaw.api;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -465,16 +466,32 @@ public class Table extends Relation implements IntIterable {
      *
      * @param proportion The proportion to go in the sample
      */
-    public Table sample(double proportion) {
+    public Table selectSample(double proportion) {
+        Preconditions.checkArgument(proportion <= 1 && proportion >= 0,
+                "The sample proportion must be between 0 and 1");
 
-        int tableCount = (int) Math.round(rowCount() * proportion);
+        int tableSize = (int) Math.round(rowCount() * proportion);
+        return selectWhere(selectNRows(tableSize));
+    }
 
+    /**
+     * Returns a table consisting of randomly selected records from this table
+     *
+     * @param nRows The number of rows to go in the sample
+     */
+    public Table selectSample(int nRows) {
+        Preconditions.checkArgument(nRows > 0 && nRows < rowCount(),
+                "The number of rows sampled must be greater than 0 and less than the number of rows in the table.");
+        return selectWhere(selectNRows(nRows));
+    }
+
+    private Selection selectNRows(int tableCount) {
         Selection table1Selection = new BitmapBackedSelection();
         int[] selectedRecords = generateUniformBitmap(tableCount, rowCount());
         for (int selectedRecord : selectedRecords) {
             table1Selection.add(selectedRecord);
         }
-        return selectWhere(table1Selection);
+        return table1Selection;
     }
 
     /**
@@ -732,6 +749,28 @@ public class Table extends Relation implements IntIterable {
                     throw new IllegalStateException("Unhandled column type updating columns");
             }
         }
+    }
+
+    public Table selectRows(int... rowNumbers) {
+        Preconditions.checkArgument(Ints.max(rowNumbers) <= rowCount());
+        return selectWhere(Selection.with(rowNumbers));
+    }
+
+    public Table rejectRows(int... rowNumbers) {
+        Preconditions.checkArgument(Ints.max(rowNumbers) <= rowCount());
+        Selection selection = Selection.withRange(0, rowCount())
+                .andNot(Selection.with(rowNumbers));
+        return selectWhere(selection);
+    }
+
+    public Table selectRange(int rowStart, int rowEnd) {
+        Preconditions.checkArgument(rowEnd <= rowCount());
+        return selectWhere(Selection.withRange(rowStart, rowEnd));
+    }
+
+    public Table rejectRange(int rowStart, int rowEnd) {
+        Preconditions.checkArgument(rowEnd <= rowCount());
+        return selectWhere(Selection.withoutRange(0, rowCount(), rowStart, rowEnd));
     }
 
     public Table selectWhere(Selection selection) {
