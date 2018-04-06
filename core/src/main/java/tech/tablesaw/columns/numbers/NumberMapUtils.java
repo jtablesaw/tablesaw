@@ -23,8 +23,9 @@ import static tech.tablesaw.api.NumberColumn.*;
 
 public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterable {
 
-    default double[] normalize(double[] data) {
-        return StatUtils.normalize(data);
+    default NumberColumn normalize() {
+        double[] result = StatUtils.normalize(asDoubleArray());
+        return create(name() + " normalized", result);
     }
 
     /**
@@ -32,13 +33,13 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      * elements
      */
     default NumberColumn asRatio() {
-        NumberColumn pctColumn = NumberColumn.create(name() + " percents");
+        NumberColumn pctColumn = create(name() + " percents");
         double total = sum();
         for (double next : this) {
             if (total != 0) {
                 pctColumn.append((float) next / total);
             } else {
-                pctColumn.append(NumberColumn.MISSING_VALUE);
+                pctColumn.append(MISSING_VALUE);
             }
         }
         return pctColumn;
@@ -49,7 +50,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      * elements
      */
     default NumberColumn asPercent() {
-        NumberColumn pctColumn = NumberColumn.create(name() + " percents");
+        NumberColumn pctColumn = create(name() + " percents");
         double total = sum();
         for (double next : this) {
             if (total != 0) {
@@ -67,7 +68,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        NumberColumn result = NumberColumn.create(name() + " - " + column2.name(), col1Size);
+        NumberColumn result = create(name() + " - " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
             result.append(subtract(get(r), column2.get(r)));
         }
@@ -80,7 +81,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        NumberColumn result = NumberColumn.create(name() + " + " + column2.name(), col1Size);
+        NumberColumn result = create(name() + " + " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
             result.append(add(get(r), column2.get(r)));
         }
@@ -93,7 +94,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        NumberColumn result = NumberColumn.create(name() + " * " + column2.name(), col1Size);
+        NumberColumn result = create(name() + " * " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
             result.append(multiply(get(r), column2.get(r)));
         }
@@ -106,7 +107,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        NumberColumn result = NumberColumn.create(name() + " / " + column2.name(), col1Size);
+        NumberColumn result = create(name() + " / " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
             result.append(divide(get(r), column2.get(r)));
         }
@@ -115,7 +116,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
 
     default NumberColumn add(Number value) {
         double val = value.doubleValue();
-        NumberColumn result = NumberColumn.create(name() + " + " + val);
+        NumberColumn result = create(name() + " + " + val);
         for (int i = 0; i < size(); i++) {
             result.append(add(get(i), val));
         }
@@ -125,7 +126,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
 
     default NumberColumn subtract(Number value) {
         double val = value.doubleValue();
-        NumberColumn result = NumberColumn.create(name() + " - " + val);
+        NumberColumn result = create(name() + " - " + val);
         for (int i = 0; i < size(); i++) {
             result.append(subtract(get(i), val));
         }
@@ -134,7 +135,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
 
     default NumberColumn divide(Number value) {
         double val = value.doubleValue();
-        NumberColumn result = NumberColumn.create(name() + " / " + val);
+        NumberColumn result = create(name() + " / " + val);
         for (int i = 0; i < size(); i++) {
             result.append(divide(get(i), val));
         }
@@ -143,7 +144,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
 
     default NumberColumn multiply(Number value) {
         double val = value.doubleValue();
-        NumberColumn result = NumberColumn.create(name() + " * " + val);
+        NumberColumn result = create(name() + " * " + val);
         for (int i = 0; i < size(); i++) {
             result.append(multiply(get(i), val));
         }
@@ -182,7 +183,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      * Returns a doubleColumn with the square of each value in this column
      */
     default NumberColumn square() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[sq]", size());
+        NumberColumn newColumn = create(name() + "[sq]", size());
         for (double value : this) {
             newColumn.append(value * value);
         }
@@ -190,7 +191,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
     }
 
     default NumberColumn sqrt() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[sqrt]", size());
+        NumberColumn newColumn = create(name() + "[sqrt]", size());
         for (double value : this) {
             newColumn.append(Math.sqrt(value));
         }
@@ -198,7 +199,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
     }
 
     default NumberColumn cubeRoot() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[cbrt]", size());
+        NumberColumn newColumn = create(name() + "[cbrt]", size());
         for (double value : this) {
             newColumn.append(Math.cbrt(value));
         }
@@ -206,7 +207,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
     }
 
     default NumberColumn cube() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[cb]", size());
+        NumberColumn newColumn = create(name() + "[cb]", size());
         for (double value : this) {
             newColumn.append(value * value * value);
         }
@@ -215,7 +216,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
 
 
     default NumberColumn remainder(NumberColumn column2) {
-        NumberColumn result = NumberColumn.create(name() + " % " + column2.name(), size());
+        NumberColumn result = create(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             double val1 = get(r);
             double val2 = column2.get(r);
@@ -229,10 +230,10 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
     }
 
     /**
-     * Returns the natural log of the values in this column as a NumberColumn.create
+     * Returns the natural log of the values in this column as a NumberColumn.
      */
     default NumberColumn logN() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[logN]", size());
+        NumberColumn newColumn = create(name() + "[logN]", size());
 
         for (double value : this) {
             newColumn.append(Math.log(value));
@@ -241,10 +242,10 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
     }
 
     /**
-     * Returns the base 10 log of the values in this column as a NumberColumn.create
+     * Returns the base 10 log of the values in this column as a NumberColumn.
      */
     default NumberColumn log10() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[log10]", size());
+        NumberColumn newColumn = create(name() + "[log10]", size());
 
         for (double value : this) {
             newColumn.append(Math.log10(value));
@@ -257,7 +258,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      * values don't return -Infinity
      */
     default NumberColumn log1p() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[1og1p]", size());
+        NumberColumn newColumn = create(name() + "[1og1p]", size());
         for (double value : this) {
             newColumn.append(Math.log1p(value));
         }
@@ -265,7 +266,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
     }
 
     default NumberColumn round() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[rounded]", size());
+        NumberColumn newColumn = create(name() + "[rounded]", size());
         for (double value : this) {
             newColumn.append(Math.round(value));
         }
@@ -278,7 +279,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      * @throws ClassCastException if the returned value will not fit in an int
      */
     default NumberColumn roundInt() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[rounded]", size());
+        NumberColumn newColumn = create(name() + "[rounded]", size());
         for (double value : this) {
             newColumn.append((int) Math.round(value));
         }
@@ -290,7 +291,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      * Returns a doubleColumn with the absolute value of each value in this column
      */
     default NumberColumn abs() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[abs]", size());
+        NumberColumn newColumn = create(name() + "[abs]", size());
         for (double value : this) {
             newColumn.append(Math.abs(value));
         }
@@ -305,7 +306,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      * 0     returns  0
      */
     default NumberColumn neg() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[neg]", size());
+        NumberColumn newColumn = create(name() + "[neg]", size());
         for (double value : this) {
             newColumn.append(value * -1);
         }
@@ -313,7 +314,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
     }
 
     default NumberColumn difference() {
-        NumberColumn returnValue = NumberColumn.create(this.name(), this.size());
+        NumberColumn returnValue = create(this.name(), this.size());
         if (isEmpty()) {
             return returnValue;
         }
@@ -329,7 +330,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      */
     default NumberColumn cumSum() {
         double total = 0.0;
-        NumberColumn newColumn = NumberColumn.create(name() + "[cumSum]", size());
+        NumberColumn newColumn = create(name() + "[cumSum]", size());
         for (double value : this) {
             if (NumberColumn.isMissing(value)) {
                 newColumn.append(MISSING_VALUE);
@@ -346,7 +347,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      */
     default NumberColumn cumProd() {
         double total = 1.0;
-        NumberColumn newColumn = NumberColumn.create(name() + "[cumProd]", size());
+        NumberColumn newColumn = create(name() + "[cumProd]", size());
         for (double value : this) {
             if (NumberColumn.isMissing(value)) {
                 newColumn.append(MISSING_VALUE);
@@ -362,7 +363,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      * Returns a new column with a percent change calculated
      */
     default NumberColumn pctChange() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[pctChange]", size());
+        NumberColumn newColumn = create(name() + "[pctChange]", size());
         newColumn.append(MISSING_VALUE);
         for (int i = 1; i < size(); i++) {
             newColumn.append(get(i) / get(i - 1) - 1);
