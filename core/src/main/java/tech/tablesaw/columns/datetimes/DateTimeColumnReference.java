@@ -48,7 +48,7 @@ import tech.tablesaw.columns.datetimes.filters.IsTuesday;
 import tech.tablesaw.columns.datetimes.filters.IsWednesday;
 import tech.tablesaw.columns.datetimes.filters.NotEqualTo;
 import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.filtering.composite.AnyOf;
+import tech.tablesaw.filtering.composite.AllOf;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -84,11 +84,11 @@ public class DateTimeColumnReference extends ColumnReference {
     }
 
     public Filter isBetweenExcluding(LocalDateTime lowValue, LocalDateTime highValue) {
-        return AnyOf.anyOf(isAfter(lowValue), isBefore(highValue));
+        return AllOf.allOf(isAfter(lowValue), isBefore(highValue));
     }
 
     public Filter isBetweenIncluding(LocalDateTime lowValue, LocalDateTime highValue) {
-        return AnyOf.anyOf(isOnOrAfter(lowValue), isOnOrBefore(highValue));
+        return AllOf.allOf(isOnOrAfter(lowValue), isOnOrBefore(highValue));
     }
 
     public EqualTo isEqualTo(LocalDateTime value) {

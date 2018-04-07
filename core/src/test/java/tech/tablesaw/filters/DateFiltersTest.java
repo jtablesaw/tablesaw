@@ -18,7 +18,6 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
@@ -123,8 +122,8 @@ public class DateFiltersTest {
         int before = minusDays(1, packed);
         int after = plusDays(1, packed);
 
-        LocalDate beforeDate = PackedLocalDate.asLocalDate(before);
-        LocalDate afterDate = PackedLocalDate.asLocalDate(after);
+        LocalDate beforeDate = asLocalDate(before);
+        LocalDate afterDate = asLocalDate(after);
 
         dateColumn.appendInternal(before);
         dateColumn.appendInternal(packed);

@@ -146,24 +146,29 @@ public class DateTimeTableFiltersTest {
         LocalDateTime beforeDate = date.minusDays(1);
         LocalDateTime afterDate = date.plusDays(1);
 
-        dateTimeColumn.append(date);
         dateTimeColumn.append(beforeDate);
+        dateTimeColumn.append(date);
         dateTimeColumn.append(afterDate);
 
         NumberColumn index = NumberColumn.indexColumn("index", dateTimeColumn.size(), 0);
         Table t = Table.create("test", dateTimeColumn, index);
-        
+
         assertTrue(t.selectWhere(dateTimeColumn("test").isBefore(date)).nCol("index").contains(0));
         assertTrue(t.selectWhere(dateTimeColumn("test").isEqualTo(date)).nCol("index").contains(1));
         assertTrue(t.selectWhere(dateTimeColumn("test").isAfter(date)).nCol("index").contains(2));
+
         assertTrue(t.selectWhere(dateTimeColumn("test")
                 .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(1));
+
         assertTrue(t.selectWhere(dateTimeColumn("test")
                 .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(2));
+
         assertTrue(t.selectWhere(dateTimeColumn("test")
                 .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(0));
+
         assertFalse(t.selectWhere(dateTimeColumn("test")
                 .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(2));
+
         assertFalse(t.selectWhere(dateTimeColumn("test")
                 .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(0));
     }

@@ -147,14 +147,13 @@ public class DateTableFiltersTest {
         DateColumn dateColumn = DateColumn.create("test");
 
         int before = minusDays(1, packed);
-        int equal = packed;
         int after = plusDays(1, packed);
 
         LocalDate beforeDate = PackedLocalDate.asLocalDate(before);
         LocalDate afterDate = PackedLocalDate.asLocalDate(after);
 
         dateColumn.appendInternal(before);
-        dateColumn.appendInternal(equal);
+        dateColumn.appendInternal(packed);
         dateColumn.appendInternal(after);
 
         NumberColumn index = NumberColumn.indexColumn("index", dateColumn.size(), 0);
