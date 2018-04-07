@@ -343,7 +343,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     public double proportionTrue() {
         double n = size() - countMissing();
         double trueCount = countTrue();
-        return trueCount / size();
+        return trueCount / n;
     }
 
     /**
