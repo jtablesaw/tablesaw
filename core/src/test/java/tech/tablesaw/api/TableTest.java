@@ -143,7 +143,7 @@ public class TableTest {
 
     @Test
     public void testRolllWithNrows() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv");
+        Table t = Table.read().csv("../data/bush.csv").first(10);
 
         Table.MultiRowDoable multiRowDoable = rows -> {
             int sum = 0;
