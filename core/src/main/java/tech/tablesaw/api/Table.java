@@ -854,7 +854,6 @@ public class Table extends Relation implements IntIterable {
     public Table rejectRowsWithMissingValues() {
 
         Table temp = emptyCopy();
-
         for (int row = 0; row < rowCount(); row++) {
             boolean add = true;
             for (int col = 0; col < columnCount(); col++) {
@@ -881,6 +880,14 @@ public class Table extends Relation implements IntIterable {
     @Override
     public Table removeColumns(Column... columns) {
         columnList.removeAll(Arrays.asList(columns));
+        return this;
+    }
+
+    /**
+     * Removes the given columns with missing values
+     */
+    public Table removeColumnsWithMissingValues() {
+        removeColumns(columnList.stream().filter(x -> x.countMissing() > 0).toArray(Column[]::new));
         return this;
     }
 
