@@ -439,4 +439,18 @@ public class PackedLocalDateTime {
     private static int getMonthInternal(long packedDateTime) {
         return (getYear(packedDateTime) * 12 + getMonthValue(packedDateTime) - 1);
     }
+
+    public static boolean isEqualTo(long packedDateTime, long value) {
+        return DateTimePredicates.isEqualTo.test(packedDateTime, value);
+    }
+
+    public static boolean isOnOrAfter(long valueToTest, long valueToTestAgainst) {
+        return isAfter(valueToTest, valueToTestAgainst)
+                || isEqualTo(valueToTest, valueToTestAgainst);
+    }
+
+    public static boolean isOnOrBefore(long valueToTest, long valueToTestAgainst) {
+        return isBefore(valueToTest, valueToTestAgainst)
+                || isEqualTo(valueToTest, valueToTestAgainst);
+    }
 }

@@ -48,6 +48,7 @@ import tech.tablesaw.columns.datetimes.filters.IsTuesday;
 import tech.tablesaw.columns.datetimes.filters.IsWednesday;
 import tech.tablesaw.columns.datetimes.filters.NotEqualTo;
 import tech.tablesaw.filtering.Filter;
+import tech.tablesaw.filtering.composite.AnyOf;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -74,141 +75,147 @@ public class DateTimeColumnReference extends ColumnReference {
         super(column);
     }
 
-    public Filter isBefore(LocalDateTime value) {
+    public IsBefore isBefore(LocalDateTime value) {
         return new IsBefore(this, value);
     }
 
-    public Filter isBefore(LocalDate value) {
+    public IsBefore isBefore(LocalDate value) {
         return new IsBefore(this, value);
     }
 
-    public Filter isEqualTo(LocalDateTime value) {
+    public Filter isBetweenExcluding(LocalDateTime lowValue, LocalDateTime highValue) {
+        return AnyOf.anyOf(isAfter(lowValue), isBefore(highValue));
+    }
+
+    public Filter isBetweenIncluding(LocalDateTime lowValue, LocalDateTime highValue) {
+        return AnyOf.anyOf(isOnOrAfter(lowValue), isOnOrBefore(highValue));
+    }
+
+    public EqualTo isEqualTo(LocalDateTime value) {
         return new EqualTo(this, value);
     }
 
-    public Filter isNotEqualTo(LocalDateTime value) {
+    public NotEqualTo isNotEqualTo(LocalDateTime value) {
         return new NotEqualTo(this, value);
     }
 
-    public Filter isOnOrBefore(LocalDateTime value) {
+    public IsOnOrBefore isOnOrBefore(LocalDateTime value) {
         return new IsOnOrBefore(this, value);
     }
 
-    public Filter isAfter(LocalDateTime value) {
+    public IsAfter isAfter(LocalDateTime value) {
         return new IsAfter(this, value);
     }
 
-    public Filter isAfter(LocalDate value) {
+    public IsAfter isAfter(LocalDate value) {
         return new IsAfter(this, value);
     }
 
-    public Filter isOnOrAfter(LocalDateTime value) {
+    public IsOnOrAfter isOnOrAfter(LocalDateTime value) {
         return new IsOnOrAfter(this, value);
     }
 
-    public Filter isSunday() {
+    public IsSunday isSunday() {
         return new IsSunday(this);
     }
 
-    public Filter isMonday() {
+    public IsMonday isMonday() {
         return new IsMonday(this);
     }
 
-    public Filter isTuesday() {
+    public IsTuesday isTuesday() {
         return new IsTuesday(this);
     }
 
-    public Filter isWednesday() {
+    public IsWednesday isWednesday() {
         return new IsWednesday(this);
     }
 
-    public Filter isThursday() {
+    public IsThursday isThursday() {
         return new IsThursday(this);
     }
 
-    public Filter isFriday() {
+    public IsFriday isFriday() {
         return new IsFriday(this);
     }
 
-    public Filter isSaturday() {
+    public IsSaturday isSaturday() {
         return new IsSaturday(this);
     }
 
-    public Filter isInJanuary() {
+    public IsInJanuary isInJanuary() {
         return new IsInJanuary(this);
     }
 
-    public Filter isInFebruary() {
+    public IsInFebruary isInFebruary() {
         return new IsInFebruary(this);
     }
 
-    public Filter isInMarch() {
+    public IsInMarch isInMarch() {
         return new IsInMarch(this);
     }
 
-    public Filter isInApril() {
+    public IsInApril isInApril() {
         return new IsInApril(this);
     }
 
-    public Filter isInMay() {
+    public IsInMay isInMay() {
         return new IsInMay(this);
     }
 
-    public Filter isInJune() {
+    public IsInJune isInJune() {
         return new IsInJune(this);
     }
 
-    public Filter isInJuly() {
+    public IsInJuly isInJuly() {
         return new IsInJuly(this);
     }
 
-    public Filter isInAugust() {
+    public IsInAugust isInAugust() {
         return new IsInAugust(this);
     }
 
-    public Filter isInSeptember() {
+    public IsInSeptember isInSeptember() {
         return new IsInSeptember(this);
     }
 
-    public Filter isInOctober() {
+    public IsInOctober isInOctober() {
         return new IsInOctober(this);
     }
 
-    public Filter isInNovember() {
+    public IsInNovember isInNovember() {
         return new IsInNovember(this);
     }
 
-    public Filter isInDecember() {
+    public IsInDecember isInDecember() {
         return new IsInDecember(this);
     }
 
-    public Filter isInQ1() {
+    public IsInQ1 isInQ1() {
         return new IsInQ1(this);
     }
 
-    public Filter isInQ2() {
+    public IsInQ2 isInQ2() {
         return new IsInQ2(this);
     }
 
-    public Filter isInQ3() {
+    public IsInQ3 isInQ3() {
         return new IsInQ3(this);
     }
 
-    public Filter isInQ4() {
+    public IsInQ4 isInQ4() {
         return new IsInQ4(this);
     }
 
-    public Filter isFirstDayOfMonth() {
+    public IsFirstDayOfTheMonth isFirstDayOfMonth() {
         return new IsFirstDayOfTheMonth(this);
     }
 
-    public Filter isLastDayOfMonth() {
+    public IsLastDayOfTheMonth isLastDayOfMonth() {
         return new IsLastDayOfTheMonth(this);
     }
 
-    public Filter isInYear(int year) {
+    public IsInYear isInYear(int year) {
         return new IsInYear(this, year);
     }
-
-
 }

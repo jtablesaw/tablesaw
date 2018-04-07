@@ -14,17 +14,14 @@
 
 package tech.tablesaw.filters;
 
-import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.columns.dates.DateColumnReference;
-import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.columns.datetimes.filters.IsInApril;
 import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.datetimes.filters.IsFirstDayOfTheMonth;
-import tech.tablesaw.columns.datetimes.filters.IsInFebruary;
-import tech.tablesaw.columns.datetimes.filters.IsInMarch;
 import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.dates.DateColumnReference;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.datetimes.filters.IsFirstDayOfTheMonth;
 import tech.tablesaw.columns.datetimes.filters.IsInYear;
 import tech.tablesaw.columns.datetimes.filters.IsLastDayOfTheMonth;
 import tech.tablesaw.selection.Selection;
@@ -33,10 +30,8 @@ import java.time.LocalDate;
 import java.time.Month;
 
 import static org.junit.Assert.*;
-import static tech.tablesaw.api.QueryHelper.dateColumn;
-import static tech.tablesaw.columns.dates.PackedLocalDate.minusDays;
-import static tech.tablesaw.columns.dates.PackedLocalDate.pack;
-import static tech.tablesaw.columns.dates.PackedLocalDate.plusDays;
+import static tech.tablesaw.api.QueryHelper.*;
+import static tech.tablesaw.columns.dates.PackedLocalDate.*;
 
 
 public class DateTableFiltersTest {
@@ -74,33 +69,6 @@ public class DateTableFiltersTest {
         assertFalse(selection.contains(5));
         assertFalse(selection.contains(6));
         assertFalse(selection.contains(7));
-    }
-
-    @Test
-    public void testIsFebruary() {
-        IsInFebruary isFebruary = reference.isInFebruary();
-        Selection selection = isFebruary.apply(table);
-        assertTrue(selection.contains(0));
-        assertTrue(selection.contains(1));
-        assertFalse(selection.contains(2));
-    }
-
-    @Test
-    public void testIsMarch() {
-        IsInMarch result = reference.isInMarch();
-        Selection selection = result.apply(table);
-        assertFalse(selection.contains(0));
-        assertFalse(selection.contains(1));
-        assertTrue(selection.contains(2));
-    }
-
-    @Test
-    public void testIsApril() {
-        IsInApril result = reference.isInApril();
-        Selection selection = result.apply(table);
-        assertFalse(selection.contains(0));
-        assertTrue(selection.contains(5));
-        assertTrue(selection.contains(6));
     }
 
     @Test
@@ -152,23 +120,23 @@ public class DateTableFiltersTest {
         NumberColumn index = NumberColumn.indexColumn("index", t.rowCount(), 0);
         t.addColumn(index);
 
-        assertTrue(t.selectWhere(dateColumn.isInJanuary()).numberColumn("index").contains(0.0));
-        assertTrue(t.selectWhere(dateColumn.isInFebruary()).numberColumn("index").contains(1.0));
-        assertTrue(t.selectWhere(dateColumn.isInMarch()).numberColumn("index").contains(2.0));
-        assertTrue(t.selectWhere(dateColumn.isInApril()).numberColumn("index").contains(3.0));
-        assertTrue(t.selectWhere(dateColumn.isInMay()).numberColumn("index").contains(4.0));
-        assertTrue(t.selectWhere(dateColumn.isInJune()).numberColumn("index").contains(5.0));
-        assertTrue(t.selectWhere(dateColumn.isInJuly()).numberColumn("index").contains(6.0));
-        assertTrue(t.selectWhere(dateColumn.isInAugust()).numberColumn("index").contains(7.0));
-        assertTrue(t.selectWhere(dateColumn.isInSeptember()).numberColumn("index").contains(8.0));
-        assertTrue(t.selectWhere(dateColumn.isInOctober()).numberColumn("index").contains(9.0));
-        assertTrue(t.selectWhere(dateColumn.isInNovember()).numberColumn("index").contains(10.0));
-        assertTrue(t.selectWhere(dateColumn.isInDecember()).numberColumn("index").contains(11.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInJanuary()).numberColumn("index").contains(0.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInFebruary()).numberColumn("index").contains(1.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInMarch()).numberColumn("index").contains(2.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInApril()).numberColumn("index").contains(3.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInMay()).numberColumn("index").contains(4.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInJune()).numberColumn("index").contains(5.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInJuly()).numberColumn("index").contains(6.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInAugust()).numberColumn("index").contains(7.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInSeptember()).numberColumn("index").contains(8.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInOctober()).numberColumn("index").contains(9.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInNovember()).numberColumn("index").contains(10.0));
+        assertTrue(t.selectWhere(dateColumn("test").isInDecember()).numberColumn("index").contains(11.0));
 
-        assertTrue(t.selectWhere(dateColumn.isInQ1()).nCol("index").contains(2));
-        assertTrue(t.selectWhere(dateColumn.isInQ2()).nCol("index").contains(4));
-        assertTrue(t.selectWhere(dateColumn.isInQ3()).nCol("index").contains(8));
-        assertTrue(t.selectWhere(dateColumn.isInQ4()).nCol("index").contains(11));
+        assertTrue(t.selectWhere(dateColumn("test").isInQ1()).nCol("index").contains(2));
+        assertTrue(t.selectWhere(dateColumn("test").isInQ2()).nCol("index").contains(4));
+        assertTrue(t.selectWhere(dateColumn("test").isInQ3()).nCol("index").contains(8));
+        assertTrue(t.selectWhere(dateColumn("test").isInQ4()).nCol("index").contains(11));
     }
 
     @Test

@@ -18,6 +18,11 @@ import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.filtering.predicates.IntPredicate;
 
+/**
+ * Predicates for test DateColumn values and/or TimeColumn values
+ *
+ * NOTE: These are not for testing DateTimeColumnValues, which are in the class DateTimePredicates
+ */
 public class DateAndTimePredicates {
 
     public final static IntPredicate isMissing = i -> i == TimeColumn.MISSING_VALUE;

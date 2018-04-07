@@ -239,6 +239,24 @@ public interface DateTimeFilters extends Column {
         return data().contains(dt);
     }
 
+    default Selection isBetweenExcluding(LocalDateTime lowValue, LocalDateTime highValue) {
+        return isBetweenExcluding(PackedLocalDateTime.pack(lowValue), PackedLocalDateTime.pack(highValue));
+    }
+
+    default Selection isBetweenIncluding(LocalDateTime lowValue, LocalDateTime highValue) {
+        return isBetweenIncluding(PackedLocalDateTime.pack(lowValue), PackedLocalDateTime.pack(highValue));
+    }
+
+    default Selection isBetweenExcluding(long lowPackedDateTime, long highPackedDateTime) {
+        return eval(PackedLocalDateTime::isAfter, lowPackedDateTime)
+                .and(eval(PackedLocalDateTime::isBefore, highPackedDateTime));
+    }
+
+    default Selection isBetweenIncluding(long lowPackedDateTime, long highPackedDateTime) {
+        return eval(PackedLocalDateTime::isOnOrAfter, lowPackedDateTime)
+                .and(eval(PackedLocalDateTime::isOnOrBefore, highPackedDateTime));
+    }
+
     default Selection isInYear(int year) {
         return eval(i -> PackedLocalDateTime.isInYear(i, year));
     }
