@@ -170,7 +170,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         Table table = Table.create(name());
 
         BooleanColumn booleanColumn = create("Value");
-        NumberColumn countColumn = NumberColumn.create("Count");
+        NumberColumn countColumn = DoubleColumn.create("Count");
         table.addColumn(booleanColumn);
         table.addColumn(countColumn);
 
@@ -553,7 +553,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     public NumberColumn asNumberColumn() {
-        NumberColumn numberColumn = NumberColumn.create(this.name() + ": ints", size());
+        NumberColumn numberColumn = DoubleColumn.create(this.name() + ": ints", size());
         ByteArrayList data = data();
         for (int i = 0; i < size(); i++) {
             numberColumn.append(data.getByte(i));

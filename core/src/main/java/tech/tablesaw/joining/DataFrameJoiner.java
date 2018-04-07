@@ -3,6 +3,7 @@ package tech.tablesaw.joining;
 import com.google.common.collect.Streams;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -72,7 +73,7 @@ public class DataFrameJoiner {
                 table2Rows.removeColumns(col2Name);
                 crossProduct(result, table1Rows, table2Rows);
             }
-        } else if (column instanceof NumberColumn) {
+        } else if (column instanceof DoubleColumn) {
             LongIndex index = new LongIndex(table2.numberColumn(col2Name));
             NumberColumn col1 = (NumberColumn) column;
             for (int i = 0; i < col1.size(); i++) {

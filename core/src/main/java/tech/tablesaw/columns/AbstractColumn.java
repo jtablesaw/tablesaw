@@ -22,7 +22,7 @@ import tech.tablesaw.api.ColumnType;
  */
 public abstract class AbstractColumn implements Column {
 
-    protected static final int DEFAULT_ARRAY_SIZE = 128;
+    public static final int DEFAULT_ARRAY_SIZE = 128;
 
     private String name;
 

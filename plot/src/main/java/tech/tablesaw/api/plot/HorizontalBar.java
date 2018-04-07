@@ -18,6 +18,7 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -66,7 +67,7 @@ public class HorizontalBar extends FxPlot {
                 if (table.column(0) instanceof StringColumn) {
                     initAndShowGUI(title, table.stringColumn(0), table.nCol(1), 640, 480);
                 }
-                if (table.column(0) instanceof NumberColumn) {
+                if (table.column(0) instanceof DoubleColumn) {
                     initAndShowGUI(title, table.numberColumn(0), table.nCol(1), 640, 480);
                 }
             } catch (Exception e) {

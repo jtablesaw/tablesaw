@@ -362,7 +362,7 @@ public class DateTimeColumn extends AbstractColumn
     }
 
     public NumberColumn monthNumber() {
-        NumberColumn newColumn = NumberColumn.create(this.name() + " month");
+        NumberColumn newColumn = DoubleColumn.create(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getPackedDateTime(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
@@ -375,7 +375,7 @@ public class DateTimeColumn extends AbstractColumn
     }
 
     public NumberColumn year() {
-        NumberColumn newColumn = NumberColumn.create(this.name() + " year");
+        NumberColumn newColumn = DoubleColumn.create(this.name() + " year");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getPackedDateTime(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
@@ -494,7 +494,7 @@ public class DateTimeColumn extends AbstractColumn
     }
 
     public NumberColumn minuteOfDay() {
-        NumberColumn newColumn = NumberColumn.create(this.name() + " minute of day");
+        NumberColumn newColumn = DoubleColumn.create(this.name() + " minute of day");
         for (int r = 0; r < this.size(); r++) {
             long c1 = getPackedDateTime(r);
             if (c1 == DateTimeColumn.MISSING_VALUE) {

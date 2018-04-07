@@ -17,6 +17,7 @@ package tech.tablesaw;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.StringColumn;
@@ -79,7 +80,7 @@ public class TableFilteringTest {
         String[] values = {"a", "b", "", "d"};
         double[] values2 = {1, Double.NaN, 3, 4};
         StringColumn sc = StringColumn.create("s", values);
-        NumberColumn nc = NumberColumn.create("n", values2);
+        NumberColumn nc = DoubleColumn.create("n", values2);
         Table test = Table.create("test", sc, nc);
         Table result = test.rejectRowsWithMissingValues();
         assertEquals(2, result.rowCount());

@@ -143,8 +143,8 @@ public class TimeDependentFilteringTest {
         t = Table.create("Observations");
         StringColumn conceptId = StringColumn.create("concept");
         DateColumn date = DateColumn.create("date");
-        NumberColumn value = NumberColumn.create("value");
-        NumberColumn patientId = NumberColumn.create("patient");
+        NumberColumn value =  DoubleColumn.create("value");
+        NumberColumn patientId =  DoubleColumn.create("patient");
         patientId.setPrintFormatter(NumberColumnFormatter.ints());
 
         t.addColumn(conceptId);

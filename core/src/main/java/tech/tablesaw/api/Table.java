@@ -816,7 +816,7 @@ public class Table extends Relation implements IntIterable {
 
     public Table structure() {
         Table t = new Table("Structure of " + name());
-        NumberColumn index = NumberColumn.create("Index", columnCount());
+        NumberColumn index = DoubleColumn.create("Index", columnCount());
         StringColumn columnName = StringColumn.create("Column Name", columnCount());
         StringColumn columnType = StringColumn.create("Column Type", columnCount());
         t.addColumn(index);

@@ -30,7 +30,7 @@ public class Row implements Iterator<Row> {
 
             if (column instanceof DateColumn) {
                 dateColumnMap.put(column.name(), new PackedDate((DateColumn) column));
-            } else if (column instanceof NumberColumn) {
+            } else if (column instanceof DoubleColumn) {
                 numberColumnMap.put(column.name(), (NumberColumn) column);
             } else if (column instanceof StringColumn) {
                 categoryColumnMap.put(column.name(), (StringColumn) column);

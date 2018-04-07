@@ -21,7 +21,7 @@ import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
@@ -250,7 +250,7 @@ public final class TypeUtils {
             case LOCAL_DATE_TIME:
                 return DateTimeColumn.create(name);
             case NUMBER:
-                return NumberColumn.create(name);
+                return DoubleColumn.create(name);
             case BOOLEAN:
                 return BooleanColumn.create(name);
             case STRING:

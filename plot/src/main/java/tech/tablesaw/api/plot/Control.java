@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api.plot;
 
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.plotting.xchart.XchartLine;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -42,10 +43,10 @@ public class Control {
     }
 
     public static void show(String name, NumberColumn data, double avg, double controlLimit) {
-        NumberColumn index = NumberColumn.create("Observations");
-        NumberColumn mean = NumberColumn.create("Mean");
-        NumberColumn ucl = NumberColumn.create("UCL");
-        NumberColumn lcl = NumberColumn.create("LCL");
+        NumberColumn index =  DoubleColumn.create("Observations");
+        NumberColumn mean =  DoubleColumn.create("Mean");
+        NumberColumn ucl =  DoubleColumn.create("UCL");
+        NumberColumn lcl =  DoubleColumn.create("LCL");
 
         for (int i = 0; i < data.size(); i++) {
             index.append(i + 1);

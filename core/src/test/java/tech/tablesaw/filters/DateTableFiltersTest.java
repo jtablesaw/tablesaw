@@ -17,6 +17,7 @@ package tech.tablesaw.filters;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.dates.DateColumnReference;
@@ -117,7 +118,7 @@ public class DateTableFiltersTest {
         }
         Table t = Table.create("Test");
         t.addColumn(dateColumn);
-        NumberColumn index = NumberColumn.indexColumn("index", t.rowCount(), 0);
+        NumberColumn index = DoubleColumn.indexColumn("index", t.rowCount(), 0);
         t.addColumn(index);
 
         assertTrue(t.selectWhere(dateColumn("test").isInJanuary()).numberColumn("index").contains(0.0));
@@ -156,7 +157,7 @@ public class DateTableFiltersTest {
         dateColumn.appendInternal(packed);
         dateColumn.appendInternal(after);
 
-        NumberColumn index = NumberColumn.indexColumn("index", dateColumn.size(), 0);
+        NumberColumn index = DoubleColumn.indexColumn("index", dateColumn.size(), 0);
         Table t = Table.create("test", dateColumn, index);
 
         assertTrue(t.selectWhere(dateColumn.isBefore(packed)).nCol("index").contains(0));

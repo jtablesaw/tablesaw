@@ -21,6 +21,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.CategoricalColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -151,7 +152,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
             int functionCount = 0;
             for (AggregateFunction function : entry.getValue()) {
                 String colName = aggregateColumnName(columnName, function.functionName());
-                NumberColumn resultColumn = NumberColumn.create(colName, getSubTables().size());
+                NumberColumn resultColumn = DoubleColumn.create(colName, getSubTables().size());
                 for (TableSlice subTable : getSubTables()) {
                     double result = subTable.reduce(columnName, function);
                     if (functionCount == 0) {

@@ -36,8 +36,8 @@ public class TableTest {
     private static final Random RANDOM = new Random();
 
     private Table table;
-    private NumberColumn f1 = NumberColumn.create("f1");
-    private NumberColumn numberColumn = NumberColumn.create("d1");
+    private NumberColumn f1 =  DoubleColumn.create("f1");
+    private NumberColumn numberColumn =  DoubleColumn.create("d1");
 
     @Before
     public void setUp() {
@@ -210,7 +210,7 @@ public class TableTest {
 
     @Test
     public void testAppendMultipleColumns() {
-        NumberColumn column = NumberColumn.create("e1");
+        NumberColumn column =  DoubleColumn.create("e1");
         table.addColumn(column);
         NumberColumn first = f1.emptyCopy();
         NumberColumn second = column.emptyCopy();
@@ -235,14 +235,14 @@ public class TableTest {
 
     @Test(expected = IllegalStateException.class)
     public void testAppendTableWithAnotherColumnName() {
-        NumberColumn column = NumberColumn.create("42");
+        NumberColumn column =  DoubleColumn.create("42");
         Table tableToAppend = Table.create("wrong", column);
         table.append(tableToAppend);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testAppendTableWithDifferentShape() {
-        NumberColumn column = NumberColumn.create("e1");
+        NumberColumn column =  DoubleColumn.create("e1");
         table.addColumn(column);
         Table tableToAppend = Table.create("different", column);
         assertTrue(table.columns().size() == 2);
@@ -252,9 +252,9 @@ public class TableTest {
 
     @Test
     public void testReplaceColumn() {
-        NumberColumn first = NumberColumn.create("c1", new double[]{1, 2, 3, 4, 5});
-        NumberColumn second = NumberColumn.create("c2", new double[]{6, 7, 8, 9, 10});
-        NumberColumn replacement = NumberColumn.create("c2", new double[]{10, 20, 30, 40, 50});
+        NumberColumn first =  DoubleColumn.create("c1", new double[]{1, 2, 3, 4, 5});
+        NumberColumn second =  DoubleColumn.create("c2", new double[]{6, 7, 8, 9, 10});
+        NumberColumn replacement =  DoubleColumn.create("c2", new double[]{10, 20, 30, 40, 50});
 
         Table t = Table.create("populated", first, second);
 
@@ -299,9 +299,9 @@ public class TableTest {
 
     @Test
     public void testAsMatrix() {
-        NumberColumn first = NumberColumn.create("c1", new double[]{1l, 2l, 3l, 4l, 5l});
-        NumberColumn second = NumberColumn.create("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
-        NumberColumn third = NumberColumn.create("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
+        NumberColumn first =  DoubleColumn.create("c1", new double[]{1l, 2l, 3l, 4l, 5l});
+        NumberColumn second =  DoubleColumn.create("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
+        NumberColumn third =  DoubleColumn.create("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
 
         Table t = Table.create("table", first, second, third);
         double[][] matrix = t.asMatrix();

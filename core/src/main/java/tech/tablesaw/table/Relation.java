@@ -19,6 +19,7 @@ import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -208,10 +209,10 @@ public abstract class Relation {
                 .append(" variables (cols)");
 
         Table structure = Table.create(nameBuilder.toString());
-        structure.addColumn(NumberColumn.create("Index"));
+        structure.addColumn(DoubleColumn.create("Index"));
         structure.addColumn(StringColumn.create("Column Name"));
         structure.addColumn(StringColumn.create("Type"));
-        structure.addColumn(NumberColumn.create("Unique Values"));
+        structure.addColumn(DoubleColumn.create("Unique Values"));
         structure.addColumn(StringColumn.create("First"));
         structure.addColumn(StringColumn.create("Last"));
 

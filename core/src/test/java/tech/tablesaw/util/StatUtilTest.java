@@ -15,6 +15,7 @@
 package tech.tablesaw.util;
 
 import org.junit.Test;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 
 import java.util.Random;
@@ -30,7 +31,7 @@ public class StatUtilTest {
     public void testSum() {
         Random random = new Random();
         double sum = 0.0f;
-        NumberColumn column = NumberColumn.create("c1");
+        NumberColumn column =  DoubleColumn.create("c1");
         for (int i = 0; i < 100; i++) {
             double f = random.nextDouble();
             column.append(f);
@@ -43,7 +44,7 @@ public class StatUtilTest {
     public void testMin() {
         Random random = new Random();
         double min = Double.MAX_VALUE;
-        NumberColumn column = NumberColumn.create("c1");
+        NumberColumn column =  DoubleColumn.create("c1");
         for (int i = 0; i < 100; i++) {
             double f = random.nextDouble();
             column.append(f);
@@ -58,7 +59,7 @@ public class StatUtilTest {
     public void testMax() {
         Random random = new Random();
         double max = Double.MIN_VALUE;
-        NumberColumn column = NumberColumn.create("c1");
+        NumberColumn column =  DoubleColumn.create("c1");
         for (int i = 0; i < 100; i++) {
             double f = random.nextDouble();
             column.append(f);
