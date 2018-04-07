@@ -17,7 +17,8 @@ package tech.tablesaw.filters;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.Table;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
@@ -29,7 +30,6 @@ import static tech.tablesaw.columns.dates.PackedLocalDate.*;
 public class DateFiltersTest {
 
     private DateColumn localDateColumn = DateColumn.create("testing");
-    private Table table = Table.create("test");
 
     @Before
     public void setUp() {
@@ -42,18 +42,17 @@ public class DateFiltersTest {
         localDateColumn.append(LocalDate.of(2016, 4, 2));
         localDateColumn.append(LocalDate.of(2016, 3, 4));   // fri
         localDateColumn.append(LocalDate.of(2016, 3, 5));   // sat
-        table.addColumn(localDateColumn);
     }
 
     @Test
     public void testDow() {
-        assertTrue(localDateColumn.isSunday().apply(table).contains(0));
-        assertTrue(localDateColumn.isMonday().apply(table).contains(1));
-        assertTrue(localDateColumn.isTuesday().apply(table).contains(2));
-        assertTrue(localDateColumn.isWednesday().apply(table).contains(3));
-        assertTrue(localDateColumn.isThursday().apply(table).contains(4));
-        assertTrue(localDateColumn.isFriday().apply(table).contains(7));
-        assertTrue(localDateColumn.isSaturday().apply(table).contains(8));
+        assertTrue(localDateColumn.isSunday().contains(0));
+        assertTrue(localDateColumn.isMonday().contains(1));
+        assertTrue(localDateColumn.isTuesday().contains(2));
+        assertTrue(localDateColumn.isWednesday().contains(3));
+        assertTrue(localDateColumn.isThursday().contains(4));
+        assertTrue(localDateColumn.isFriday().contains(7));
+        assertTrue(localDateColumn.isSaturday().contains(8));
     }
 
     @Test
@@ -92,6 +91,16 @@ public class DateFiltersTest {
             dateColumn.append(date);
             date = date.plusMonths(1);
         }
+
+        StringColumn month = dateColumn.month();
+        NumberColumn monthValue = dateColumn.monthValue();
+
+        for (int i = 0; i < months.length; i++) {
+
+            assertEquals(months[i].name(), month.get(i).toUpperCase());
+            assertEquals(i + 1, monthValue.get(i), 0.001);
+        }
+
 
         assertTrue(dateColumn.isInJanuary().contains(0));
         assertTrue(dateColumn.isInFebruary().contains(1));
