@@ -21,7 +21,7 @@ public interface NumberReduceUtils extends Column {
     default int countUnique() {
         DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
-            if (!NumberColumn.isMissing(get(i))) {
+            if (!NumberColumn.valueIsMissing(get(i))) {
                 doubles.add(get(i));
             }
         }
@@ -151,7 +151,7 @@ public interface NumberReduceUtils extends Column {
     default int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (NumberColumn.isMissing(get(i))) {
+            if (NumberColumn.valueIsMissing(get(i))) {
                 count++;
             }
         }

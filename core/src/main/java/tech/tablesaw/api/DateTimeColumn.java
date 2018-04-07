@@ -76,8 +76,13 @@ public class DateTimeColumn extends AbstractColumn
 
     private Locale locale;
 
-    public static boolean isMissing(long value) {
+    public static boolean valueIsMissing(long value) {
         return MISSING_VALUE == value;
+    }
+
+    @Override
+    public boolean isMissing(int rowNumber) {
+        return valueIsMissing(getLongInternal(rowNumber));
     }
 
     public static DateTimeColumn create(String name) {
@@ -331,7 +336,7 @@ public class DateTimeColumn extends AbstractColumn
         TimeColumn newColumn = TimeColumn.create(this.name() + " time");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getPackedDateTime(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.appendInternal(TimeColumn.MISSING_VALUE);
             } else {
                 newColumn.appendInternal(PackedLocalDateTime.time(c1));
@@ -347,7 +352,7 @@ public class DateTimeColumn extends AbstractColumn
         DateColumn newColumn = DateColumn.create(this.name() + " date");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getPackedDateTime(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.appendInternal(DateColumn.MISSING_VALUE);
             } else {
                 newColumn.appendInternal(PackedLocalDateTime.date(c1));
@@ -360,7 +365,7 @@ public class DateTimeColumn extends AbstractColumn
         NumberColumn newColumn = NumberColumn.create(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getPackedDateTime(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append((short) PackedLocalDateTime.getMonthValue(c1));
@@ -373,7 +378,7 @@ public class DateTimeColumn extends AbstractColumn
         NumberColumn newColumn = NumberColumn.create(this.name() + " year");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getPackedDateTime(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append(PackedLocalDate.getYear(PackedLocalDateTime.date(c1)));
@@ -387,7 +392,7 @@ public class DateTimeColumn extends AbstractColumn
      * matches the selection criteria
      * <p>
      * Example:
-     * myColumn.set(LocalDateTime.now(), myColumn.isMissing()); // no more missing values
+     * myColumn.set(LocalDateTime.now(), myColumn.valueIsMissing()); // no more missing values
      */
     public void set(LocalDateTime newValue, Selection rowSelection) {
         for (int row : rowSelection) {

@@ -78,6 +78,4 @@ public abstract class AbstractColumn implements Column {
         }
         return builder.toString();
     }
-
-
 }

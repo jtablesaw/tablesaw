@@ -83,8 +83,13 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
         }
     };
 
-    public static boolean isMissing(double value) {
+    public static boolean valueIsMissing(double value) {
         return Double.isNaN(value);
+    }
+
+    @Override
+    public boolean isMissing(int rowNumber) {
+        return valueIsMissing(get(rowNumber));
     }
 
     public void setPrintFormatter(NumberFormat format, String missingValueString) {
@@ -267,7 +272,7 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
     @Override
     public String getString(int row) {
         double value = data.getDouble(row);
-        if (isMissing(value)) {
+        if (valueIsMissing(value)) {
             return "";
         }
         return String.valueOf(printFormatter.format(value));
@@ -363,7 +368,7 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
      */
     public Integer roundInt(int i) {
         double value = get(i);
-        if (isMissing(value)) {
+        if (valueIsMissing(value)) {
             return null;
         }
         return (int) Math.round(get(i));
@@ -377,7 +382,7 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
      */
     public long getLong(int i) {
         double value = data.getDouble(i);
-        return isMissing(value) ? DateTimeColumn.MISSING_VALUE : Math.round(value);
+        return valueIsMissing(value) ? DateTimeColumn.MISSING_VALUE : Math.round(value);
     }
 
     /**
@@ -402,7 +407,7 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
      * matches the selection criteria
      * <p>
      * Example:
-     * myColumn.set(4.0, myColumn.isMissing()); // no more missing values
+     * myColumn.set(4.0, myColumn.valueIsMissing()); // no more missing values
      */
     public void set(Selection rowSelection, double newValue) {
         for (int row : rowSelection) {
@@ -538,7 +543,7 @@ public class NumberColumn extends AbstractColumn implements DoubleIterable, IntC
     public IntSet asIntegerSet() {
         IntSet ints = new IntOpenHashSet();
         for (double d : this) {
-            if (!isMissing(d)) {
+            if (!valueIsMissing(d)) {
                 ints.add((int) Math.round(d));
             }
         }

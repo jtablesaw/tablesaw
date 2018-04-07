@@ -71,8 +71,13 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         data = values;
     }
 
-    public static boolean isMissing(byte b) {
+    public static boolean valueIsMissing(byte b) {
         return b == MISSING_VALUE;
+    }
+
+    @Override
+    public boolean isMissing(int rowNumber) {
+        return valueIsMissing(getByte(rowNumber));
     }
 
     public static BooleanColumn create(String name, Selection hits, int columnSize) {
@@ -183,7 +188,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (isMissing(getByte(i))) {
+            if (valueIsMissing(getByte(i))) {
                 count++;
             }
         }
@@ -330,6 +335,15 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
             }
         }
         return count;
+    }
+
+    /**
+     * Returns the proportion of non-missing row elements that contain true
+     */
+    public double proportionTrue() {
+        double n = size() - countMissing();
+        double trueCount = countTrue();
+        return trueCount / size();
     }
 
     /**
@@ -598,5 +612,4 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
             return null;
         }
     }
-
 }

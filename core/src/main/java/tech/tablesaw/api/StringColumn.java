@@ -133,6 +133,11 @@ public class StringColumn extends AbstractColumn
     }
 
     @Override
+    public boolean isMissing(int rowNumber) {
+        return get(rowNumber).equals(MISSING_VALUE);
+    }
+
+    @Override
     public ColumnType type() {
         return STRING;
     }
@@ -297,7 +302,7 @@ public class StringColumn extends AbstractColumn
      * <p>
      * Examples:
      * myCatColumn.set("Dog", myCatColumn.isEqualTo("Cat")); // no more cats
-     * myCatColumn.set("Fox", myCatColumn.isMissing()); // no more missing values
+     * myCatColumn.set("Fox", myCatColumn.valueIsMissing()); // no more missing values
      */
     public void set(String newValue, Selection rowSelection) {
         for (int row : rowSelection) {

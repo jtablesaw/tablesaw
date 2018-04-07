@@ -82,7 +82,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         this.locale = locale;
     }
 
-    public static boolean isMissing(int i) {
+    public static boolean valueIsMissing(int i) {
         return i == MISSING_VALUE;
     }
 
@@ -130,6 +130,12 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         copy.data = new IntArrayList(dest);
         copy.setName(name() + " lag(" + n + ")");
         return copy;
+    }
+
+
+    @Override
+    public boolean isMissing(int rowNumber) {
+        return valueIsMissing(getIntInternal(rowNumber));
     }
 
     public int size() {
@@ -475,7 +481,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
      * matches the selection criteria
      * <p>
      * Example:
-     * myColumn.set(LocalTime.now(), myColumn.isMissing()); // no more missing values
+     * myColumn.set(LocalTime.now(), myColumn.valueIsMissing()); // no more missing values
      */
     public void set(LocalTime newValue, Selection rowSelection) {
         for (int row : rowSelection) {

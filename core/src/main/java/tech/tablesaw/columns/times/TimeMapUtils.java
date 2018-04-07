@@ -61,7 +61,7 @@ public interface TimeMapUtils extends Column {
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
             int c2 = column2.getIntInternal(r);
-            if (TimeColumn.isMissing(c1) || TimeColumn.isMissing(c2)) {
+            if (TimeColumn.valueIsMissing(c1) || TimeColumn.valueIsMissing(c2)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append((int) difference(c1, c2, unit));
@@ -75,7 +75,7 @@ public interface TimeMapUtils extends Column {
         String timeUnitString = "";
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (TimeColumn.isMissing(c1)) {
+            if (TimeColumn.valueIsMissing(c1)) {
                 newColumn.appendInternal(MISSING_VALUE);
             } else {
                 switch (unit) {
@@ -110,7 +110,7 @@ public interface TimeMapUtils extends Column {
         String timeUnitString = "";
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (TimeColumn.isMissing(c1)) {
+            if (TimeColumn.valueIsMissing(c1)) {
                 newColumn.appendInternal(MISSING_VALUE);
             } else {
                 switch (unit) {
@@ -144,7 +144,7 @@ public interface TimeMapUtils extends Column {
         String timeUnitString = "";
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (TimeColumn.isMissing(c1)) {
+            if (TimeColumn.valueIsMissing(c1)) {
                 newColumn.appendInternal(MISSING_VALUE);
             } else {
                 switch (unit) {
@@ -231,7 +231,7 @@ public interface TimeMapUtils extends Column {
         TimeColumn newColumn = TimeColumn.create("");
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (TimeColumn.isMissing(c1)) {
+            if (TimeColumn.valueIsMissing(c1)) {
                 newColumn.appendInternal(MISSING_VALUE);
             } else {
                 newColumn.appendInternal(PackedLocalTime.truncatedTo(unit, c1));
@@ -244,7 +244,7 @@ public interface TimeMapUtils extends Column {
         NumberColumn newColumn = NumberColumn.create(name() + "[" + "hour" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
-            if (!TimeColumn.isMissing(c1)) {
+            if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getHour(c1));
             } else {
                 newColumn.append(NumberColumn.MISSING_VALUE);
@@ -257,7 +257,7 @@ public interface TimeMapUtils extends Column {
         NumberColumn newColumn = NumberColumn.create(name() + "[" + "minute" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
-            if (!TimeColumn.isMissing(c1)) {
+            if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getMinute(c1));
             } else {
                 newColumn.append(NumberColumn.MISSING_VALUE);
@@ -270,7 +270,7 @@ public interface TimeMapUtils extends Column {
         NumberColumn newColumn = NumberColumn.create(name() + "[" + "second" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
-            if (!TimeColumn.isMissing(c1)) {
+            if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getSecond(c1));
             } else {
                 newColumn.append(NumberColumn.MISSING_VALUE);
@@ -283,7 +283,7 @@ public interface TimeMapUtils extends Column {
         NumberColumn newColumn = NumberColumn.create(name() + "[" + "ms" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
-            if (!TimeColumn.isMissing(c1)) {
+            if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getMilliseconds(c1));
             } else {
                 newColumn.append(NumberColumn.MISSING_VALUE);
@@ -296,7 +296,7 @@ public interface TimeMapUtils extends Column {
         NumberColumn newColumn = NumberColumn.create(name() + "[" + "minute-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
-            if (!TimeColumn.isMissing(c1)) {
+            if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getMinuteOfDay(c1));
             } else {
                 newColumn.append(NumberColumn.MISSING_VALUE);
@@ -309,7 +309,7 @@ public interface TimeMapUtils extends Column {
         NumberColumn newColumn = NumberColumn.create(name() + "[" + "second-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
-            if (!TimeColumn.isMissing(c1)) {
+            if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getSecondOfDay(c1));
             } else {
                 newColumn.append(NumberColumn.MISSING_VALUE);
@@ -365,7 +365,7 @@ public interface TimeMapUtils extends Column {
         StringColumn newColumn = StringColumn.create(this.name() + " hour & minute");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (TimeColumn.isMissing(c1)) {
+            if (TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 String hm = Strings.padStart(String.valueOf(PackedLocalTime.getHour(c1)), 2, '0');
