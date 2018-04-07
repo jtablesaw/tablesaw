@@ -219,4 +219,6 @@ public interface Column {
     }
 
     String getUnformattedString(int r);
+
+    boolean isMissing(int rowNumber);
 }

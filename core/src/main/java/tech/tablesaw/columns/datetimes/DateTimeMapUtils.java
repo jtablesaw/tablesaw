@@ -121,7 +121,7 @@ public interface DateTimeMapUtils extends Column {
         StringColumn newColumn = StringColumn.create(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 newColumn.append(Month.of(getMonthValue(c1)).name());
@@ -142,7 +142,7 @@ public interface DateTimeMapUtils extends Column {
         StringColumn newColumn = StringColumn.create(this.name() + " year & quarter");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 String yq = String.valueOf(getYear(c1));
@@ -166,7 +166,7 @@ public interface DateTimeMapUtils extends Column {
         StringColumn newColumn = StringColumn.create(this.name() + " year & month");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 String ym = String.valueOf(getYear(c1));
@@ -190,7 +190,7 @@ public interface DateTimeMapUtils extends Column {
         StringColumn newColumn = StringColumn.create(this.name() + " year & month");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 String ym = String.valueOf(getYear(c1));
@@ -214,7 +214,7 @@ public interface DateTimeMapUtils extends Column {
         StringColumn newColumn = StringColumn.create(this.name() + " hour & minute");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 String hm = Strings.padStart(String.valueOf(getHour(c1)), 2, '0');
@@ -238,7 +238,7 @@ public interface DateTimeMapUtils extends Column {
         StringColumn newColumn = StringColumn.create(this.name() + " year & month");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 String ym = String.valueOf(getYear(c1));
@@ -254,7 +254,7 @@ public interface DateTimeMapUtils extends Column {
         StringColumn newColumn = StringColumn.create(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(StringColumn.MISSING_VALUE);
             } else {
                 newColumn.append(getDayOfWeek(c1).toString());
@@ -267,7 +267,7 @@ public interface DateTimeMapUtils extends Column {
         NumberColumn newColumn = NumberColumn.create(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append((short) getDayOfWeek(c1).getValue());
@@ -280,7 +280,7 @@ public interface DateTimeMapUtils extends Column {
         NumberColumn newColumn = NumberColumn.create(this.name() + " day of year", this.size());
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append((short) getDayOfYear(c1));
@@ -293,7 +293,7 @@ public interface DateTimeMapUtils extends Column {
         NumberColumn newColumn = NumberColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.isMissing(c1)) {
+            if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append(getDayOfMonth(c1));

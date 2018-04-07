@@ -64,7 +64,7 @@ public class NumberColumnFormatter {
 
     public String format(double value) {
 
-        if (NumberColumn.isMissing(value)) {
+        if (NumberColumn.valueIsMissing(value)) {
             return missingString;
         }
         if (format == null) {

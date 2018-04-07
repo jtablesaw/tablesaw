@@ -19,6 +19,7 @@ import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.QueryHelper;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
@@ -70,6 +71,20 @@ public class TableFilteringTest {
         for (double v : a) {
             assertFalse(v < 70);
         }
+    }
+
+    @Test
+    public void testRejectWithMissingValues() {
+
+        String[] values = {"a", "b", "", "d"};
+        double[] values2 = {1, Double.NaN, 3, 4};
+        StringColumn sc = StringColumn.create("s", values);
+        NumberColumn nc = NumberColumn.create("n", values2);
+        Table test = Table.create("test", sc, nc);
+        Table result = test.rejectRowsWithMissingValues();
+        assertEquals(2, result.rowCount());
+        assertEquals("a", result.stringColumn("s").get(0));
+        assertEquals("d", result.stringColumn("s").get(1));
     }
 
     @Test

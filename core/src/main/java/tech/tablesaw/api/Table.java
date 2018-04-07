@@ -835,7 +835,7 @@ public class Table extends Relation implements IntIterable {
      * Returns the unique records in this table
      * Note: Uses a lot of memory for a sort
      */
-    public Table uniqueRecords() {
+    public Table rejectDuplicateRows() {
 
         Table sorted = this.sortOn(columnNames().toArray(new String[columns().size()]));
         Table temp = emptyCopy();
@@ -843,6 +843,29 @@ public class Table extends Relation implements IntIterable {
         for (int row = 0; row < rowCount(); row++) {
             if (temp.isEmpty() || !Rows.compareRows(row, sorted, temp)) {
                 Rows.appendRowToTable(row, sorted, temp);
+            }
+        }
+        return temp;
+    }
+
+    /**
+     * Returns only those records in this table that have no columns with missing values
+     */
+    public Table rejectRowsWithMissingValues() {
+
+        Table temp = emptyCopy();
+
+        for (int row = 0; row < rowCount(); row++) {
+            boolean add = true;
+            for (int col = 0; col < columnCount(); col++) {
+                Column c = column(col);
+                if (c.isMissing(row)) {
+                    add = false;
+                    break;
+                }
+            }
+            if (add) {
+                Rows.appendRowToTable(row, this, temp);
             }
         }
         return temp;

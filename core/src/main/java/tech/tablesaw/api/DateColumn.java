@@ -300,7 +300,7 @@ public class DateColumn extends AbstractColumn implements DateFilters,
      * matches the selection criteria
      * <p>
      * Example:
-     * myColumn.set(LocalDate.now(), myColumn.isMissing()); // no more missing values
+     * myColumn.set(LocalDate.now(), myColumn.valueIsMissing()); // no more missing values
      */
     public void set(LocalDate newValue, Selection rowSelection) {
         for (int row : rowSelection) {
@@ -414,7 +414,7 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         return table;
     }
 
-    public static boolean isMissing(int i) {
+    public static boolean valueIsMissing(int i) {
         return i == MISSING_VALUE;
     }
 
@@ -578,6 +578,11 @@ public class DateColumn extends AbstractColumn implements DateFilters,
             doubles[i] = data.getInt(i);
         }
         return doubles;
+    }
+
+    @Override
+    public boolean isMissing(int rowNumber) {
+        return valueIsMissing(getIntInternal(rowNumber));
     }
 
     @Override

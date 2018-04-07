@@ -156,21 +156,21 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
     }
 
     default double add(double val1, double val2) {
-        if (NumberColumn.isMissing(val1) || NumberColumn.isMissing(val2)) {
+        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
             return MISSING_VALUE;
         }
         return val1 + val2;
     }
 
     default double multiply(double val1, double val2) {
-        if (NumberColumn.isMissing(val1) || NumberColumn.isMissing(val2)) {
+        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
             return MISSING_VALUE;
         }
         return val1 * val2;
     }
 
     default double divide(double val1, double val2) {
-        if (NumberColumn.isMissing(val1) || NumberColumn.isMissing(val2)) {
+        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
             return MISSING_VALUE;
         }
         return val1 / val2;
@@ -180,7 +180,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
      * Returns the result of subtracting val2 from val1, after handling missing values
      */
     default double subtract(double val1, double val2) {
-        if (NumberColumn.isMissing(val1) || NumberColumn.isMissing(val2)) {
+        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
             return MISSING_VALUE;
         }
         return val1 - val2;
@@ -227,7 +227,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
         for (int r = 0; r < size(); r++) {
             double val1 = get(r);
             double val2 = column2.get(r);
-            if (NumberColumn.isMissing(val1) || NumberColumn.isMissing(val2)) {
+            if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
                 result.append(MISSING_VALUE);
             } else {
                 result.append(get(r) % column2.get(r));
@@ -339,7 +339,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
         double total = 0.0;
         NumberColumn newColumn = create(name() + "[cumSum]", size());
         for (double value : this) {
-            if (NumberColumn.isMissing(value)) {
+            if (NumberColumn.valueIsMissing(value)) {
                 newColumn.append(MISSING_VALUE);
             } else {
                 total += value;
@@ -356,7 +356,7 @@ public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterabl
         double total = 1.0;
         NumberColumn newColumn = create(name() + "[cumProd]", size());
         for (double value : this) {
-            if (NumberColumn.isMissing(value)) {
+            if (NumberColumn.valueIsMissing(value)) {
                 newColumn.append(MISSING_VALUE);
             } else {
                 total *= value;
