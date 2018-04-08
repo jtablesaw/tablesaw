@@ -107,7 +107,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
                 view = new TableSlice(getSourceTable(), selection);
                 view.setName(currentStringKey);
                 currentStringKey = newStringKey;
-                addViewToSubTables(view);
+                addSlice(view);
                 selection = new BitmapBackedSelection();
                 selection.add(row);
             } else {
@@ -117,7 +117,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
         if (!selection.isEmpty()) {
             view = new TableSlice(getSourceTable(), selection);
             view.setName(currentStringKey);
-            addViewToSubTables(view);
+            addSlice(view);
         }
     }
 }
