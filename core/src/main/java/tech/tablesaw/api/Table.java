@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.apache.commons.lang3.RandomUtils;
 import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.aggregate.SummaryFunction;
+import tech.tablesaw.aggregate.Summarizer;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
@@ -816,7 +816,8 @@ public class Table extends Relation implements IntIterable {
 
     public Table structure() {
         Table t = new Table("Structure of " + name());
-        NumberColumn index = DoubleColumn.create("Index", columnCount());
+        //NumberColumn index = DoubleColumn.create("Index", columnCount());
+        NumberColumn index = DoubleColumn.indexColumn("Index", columnCount(), 0);
         StringColumn columnName = StringColumn.create("Column Name", columnCount());
         StringColumn columnType = StringColumn.create("Column Type", columnCount());
         t.addColumn(index);
@@ -825,7 +826,6 @@ public class Table extends Relation implements IntIterable {
         columnName.addAll(columnNames());
         for (int i = 0; i < columnCount(); i++) {
             Column column = columnList.get(i);
-            index.append(i);
             columnType.append(column.type().name());
         }
         return t;
@@ -919,12 +919,31 @@ public class Table extends Relation implements IntIterable {
         return this;
     }
 
-    public SummaryFunction summarize(String numericColumnName, AggregateFunction... function) {
-        return new SummaryFunction(this, numericColumnName, function);
+    public Summarizer summarize(String numericColumnName, AggregateFunction... functions) {
+        return summarize(numberColumn(numericColumnName), functions);
     }
 
-    public SummaryFunction summarize(NumberColumn numberColumn, AggregateFunction... function) {
-        return new SummaryFunction(this, numberColumn, function);
+    public Summarizer summarize(String numericColumn1Name, String numericColumn2Name, AggregateFunction... functions) {
+        return summarize(numberColumn(numericColumn1Name), numberColumn(numericColumn2Name), functions);
+    }
+
+    public Summarizer summarize(NumberColumn numberColumn, AggregateFunction... function) {
+        return new Summarizer(this, numberColumn, function);
+    }
+
+    public Summarizer summarize(NumberColumn numberColumn1, NumberColumn numberColumn2,
+                                AggregateFunction... function) {
+        return new Summarizer(this, numberColumn1, numberColumn2, function);
+    }
+
+    public Summarizer summarize(NumberColumn column1, NumberColumn column2, NumberColumn column3,
+                                AggregateFunction... function) {
+        return new Summarizer(this, column1, column2, column3, function);
+    }
+
+    public Summarizer summarize(NumberColumn column1, NumberColumn column2, NumberColumn column3, NumberColumn column4,
+                                AggregateFunction... function) {
+        return new Summarizer(this, column1, column2, column3, column4, function);
     }
 
     /**

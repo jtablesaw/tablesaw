@@ -308,30 +308,6 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         }
     }
 
-    /**
-     * Returns a StringColumn with the year and month from this column concatenated into a String that will sort
-     * lexicographically in temporal order.
-     * <p>
-     * This simplifies the production of plots and tables that aggregate values into standard temporal units (e.g.,
-     * you want monthly data but your source data is more than a year long and you don't want months from different
-     * years aggregated together).
-     */
-    public StringColumn yearMonthString() {
-        StringColumn newColumn = StringColumn.create(this.name() + " year & month");
-        for (int r = 0; r < this.size(); r++) {
-            int c1 = this.getPackedDate(r);
-            if (c1 == MISSING_VALUE) {
-                newColumn.append(StringColumn.MISSING_VALUE);
-            } else {
-                String ym = String.valueOf(PackedLocalDate.getYear(c1));
-                ym = ym + "-" + Strings.padStart(
-                        String.valueOf(PackedLocalDate.getMonthValue(c1)), 2, '0');
-                newColumn.append(ym);
-            }
-        }
-        return newColumn;
-    }
-
     public LocalDate get(int index) {
         return PackedLocalDate.asLocalDate(getPackedDate(index));
     }

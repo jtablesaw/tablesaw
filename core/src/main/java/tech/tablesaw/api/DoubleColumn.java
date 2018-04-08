@@ -142,7 +142,7 @@ public class DoubleColumn extends AbstractColumn implements
     /**
      * Returns a new numeric column initialized with the given name and size. The values in the column are
      * integers beginning at startsWith and continuing through size (exclusive), monotonically increasing by 1
-     * TODO consider a generic fill funciton including steps or random samples from various distributions
+     * TODO consider a generic fill function including steps or random samples from various distributions
      */
     public static DoubleColumn indexColumn(String columnName, int size, int startsWith) {
         DoubleColumn indexColumn = DoubleColumn.create(columnName, size);

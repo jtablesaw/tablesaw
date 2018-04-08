@@ -55,7 +55,7 @@ public class TableSliceGroupTest {
 
         TableSliceGroup group = StandardTableSliceGroup.create(table, table.categoricalColumn("who"));
         assertEquals(6, group.size());
-        List<TableSlice> viewList = group.getSubTables();
+        List<TableSlice> viewList = group.getSlices();
 
         int count = 0;
         for (TableSlice view : viewList) {
@@ -69,7 +69,7 @@ public class TableSliceGroupTest {
         TableSliceGroup group = StandardTableSliceGroup.create(table,
                 table.categoricalColumn("who"),
                 table.categoricalColumn("approval"));
-        List<TableSlice> viewList = group.getSubTables();
+        List<TableSlice> viewList = group.getSlices();
 
         int count = 0;
         for (TableSlice view : viewList) {

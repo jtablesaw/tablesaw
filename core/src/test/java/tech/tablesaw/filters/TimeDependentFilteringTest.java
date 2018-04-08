@@ -89,7 +89,7 @@ public class TimeDependentFilteringTest {
         TableSliceGroup patients = StandardTableSliceGroup.create(t, "patient");
 
         // Create a list of patient sub-tables to work with TODO(lwhite): Build the copy-on-write to ViewGroups to avoid
-        CopyOnWriteArrayList<TableSlice> patientTables = new CopyOnWriteArrayList<>(patients.getSubTables());
+        CopyOnWriteArrayList<TableSlice> patientTables = new CopyOnWriteArrayList<>(patients.getSlices());
 
         // Apply the independent temporal event filtering to the patient subtables and remove any that don't pass
         for (TableSlice patientTable : patients) {

@@ -14,7 +14,6 @@
 
 package tech.tablesaw.table;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
@@ -38,25 +37,38 @@ import java.util.Map;
  */
 public class TableSliceGroup implements Iterable<TableSlice> {
 
+    // A string that is used internally as a delimiter in creating a column name from all the grouping columns
     static final String SPLIT_STRING = "~~~";
+
+    // A function that splits the group column name back into the original column names for the grouping columns
     private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
 
+    // The list of slices or views over the source table that I contain
     private final List<TableSlice> subTables = new ArrayList<>();
 
+    // Grouping columns that were calculated on the fly, rather than being in the source. We remove when we're done.
     final List<CategoricalColumn> columnsToRemove = new ArrayList<>();
 
     private final String[] splitColumnNames;
 
+    // The table that underlies all the manipulations performed here
     private Table sourceTable;
 
+    /**
+     * Returns an instance for calculating a single summary for the given table, with no sub-groupings
+     */
     protected TableSliceGroup(Table original) {
         sourceTable = original;
         splitColumnNames = new String[0];
     }
 
-    protected TableSliceGroup(Table original, String[] splitColumnNames) {
-        sourceTable = original;
-        this.splitColumnNames = splitColumnNames;
+    /**
+     * Returns an instance for calculating subgroups,
+     * one for each combination of the given groupColumnNames that appear in the source table
+     */
+    protected TableSliceGroup(Table sourceTable, String[] groupColumnNames) {
+        this.sourceTable = sourceTable;
+        this.splitColumnNames = groupColumnNames;
     }
 
     String[] getSplitColumnNames() {
@@ -71,11 +83,11 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return byteSize;
     }
 
-    void addViewToSubTables(TableSlice view) {
-        subTables.add(view);
+    void addSlice(TableSlice slice) {
+        subTables.add(slice);
     }
 
-    public List<TableSlice> getSubTables() {
+    public List<TableSlice> getSlices() {
         return subTables;
     }
 
@@ -83,11 +95,13 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return subTables.get(i);
     }
 
-    @VisibleForTesting
     public Table getSourceTable() {
         return sourceTable;
     }
 
+    /**
+     * Returns the number of slices
+     */
     public int size() {
         return subTables.size();
     }
@@ -125,15 +139,14 @@ public class TableSliceGroup implements Iterable<TableSlice> {
      * Applies the given aggregation to the given column.
      * The apply and combine steps of a split-apply-combine.
      */
-    public Table aggregate(String colName1, AggregateFunction... func1) {
-        ArrayListMultimap<String, AggregateFunction> map = ArrayListMultimap.create();
-        map.putAll(colName1, Lists.newArrayList(func1));
-        Table result = aggregate(map);
+    public Table aggregate(String colName1, AggregateFunction... functions) {
+        ArrayListMultimap<String, AggregateFunction> columnFunctionMap = ArrayListMultimap.create();
+        columnFunctionMap.putAll(colName1, Lists.newArrayList(functions));
+        Table result = aggregate(columnFunctionMap);
         for (CategoricalColumn column : columnsToRemove) {
             result.removeColumns(column);
         }
         return result;
-
     }
 
     /**
@@ -143,8 +156,8 @@ public class TableSliceGroup implements Iterable<TableSlice> {
      * @param functions map from column name to aggregation to apply on that function
      */
     public Table aggregate(ArrayListMultimap<String, AggregateFunction> functions) {
-        Preconditions.checkArgument(!getSubTables().isEmpty());
-        Table groupTable = Table.create(getSourceTable().name() + " summary");
+        Preconditions.checkArgument(!getSlices().isEmpty());
+        Table groupTable = summaryTableName(sourceTable);
         StringColumn groupColumn = StringColumn.create("Group", size());
         groupTable.addColumn(groupColumn);
         for (Map.Entry<String, Collection<AggregateFunction>> entry : functions.asMap().entrySet()) {
@@ -152,8 +165,8 @@ public class TableSliceGroup implements Iterable<TableSlice> {
             int functionCount = 0;
             for (AggregateFunction function : entry.getValue()) {
                 String colName = aggregateColumnName(columnName, function.functionName());
-                NumberColumn resultColumn = DoubleColumn.create(colName, getSubTables().size());
-                for (TableSlice subTable : getSubTables()) {
+                NumberColumn resultColumn = DoubleColumn.create(colName, getSlices().size());
+                for (TableSlice subTable : getSlices()) {
                     double result = subTable.reduce(columnName, function);
                     if (functionCount == 0) {
                         groupColumn.append(subTable.name());
@@ -171,6 +184,10 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return result;
     }
 
+    public static Table summaryTableName(Table source) {
+        return Table.create(source.name() + " summary");
+    }
+
     /**
      * Returns an iterator over elements of type {@code T}.
      *
@@ -181,10 +198,16 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return subTables.iterator();
     }
 
-    private String aggregateColumnName(String columnName, String functionName) {
+    /**
+     * Returns a column name for aggregated data based on the given source column name and function
+     */
+    public static String aggregateColumnName(String columnName, String functionName) {
         return String.format("%s [%s]", functionName, columnName);
     }
 
+    /**
+     * Returns a list of Tables created by reifying my list of slices (views) over the original table
+     */
     public List<Table> asTableList() {
         List<Table> tableList = new ArrayList<>();
         for (TableSlice view : this) {

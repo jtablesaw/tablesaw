@@ -14,19 +14,11 @@
 
 package tech.tablesaw.io.csv;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-import static tech.tablesaw.api.ColumnType.NUMBER;
-import static tech.tablesaw.api.ColumnType.SKIP;
-import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.io.csv.CsvReader.detectColumnTypes;
+import org.junit.Ignore;
+import org.junit.Test;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Table;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -37,12 +29,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.Table;
+import static java.util.Arrays.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.io.csv.CsvReader.*;
 
 /**
  * Tests for CSV Reading
@@ -218,9 +209,9 @@ public class CsvReaderTest {
     public void testPrintStructure() throws Exception {
         String output =
                 "ColumnType[] columnTypes = {\n" +
-                        "LOCAL_DATE, // 0.0   date        \n" +
-                        "NUMBER,     // 1.0   approval    \n" +
-                        "STRING,     // 2.0   who         \n" +
+                        "LOCAL_DATE, // 0     date        \n" +
+                        "NUMBER,     // 1     approval    \n" +
+                        "STRING,     // 2     who         \n" +
                         "}\n";
         assertEquals(output, CsvReader.printColumnTypes("../data/bush.csv", true, ',', Locale.getDefault()));
     }
