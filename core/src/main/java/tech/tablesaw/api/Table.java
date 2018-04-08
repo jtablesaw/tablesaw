@@ -927,6 +927,14 @@ public class Table extends Relation implements IntIterable {
         return summarize(numberColumn(numericColumn1Name), numberColumn(numericColumn2Name), functions);
     }
 
+    public Summarizer summarize(String col1Name, String col2Name, String col3Name, AggregateFunction... functions) {
+        return summarize(numberColumn(col1Name), numberColumn(col2Name), numberColumn(col3Name), functions);
+    }
+
+    public Summarizer summarize(String col1Name, String col2Name, String col3Name, String col4Name, AggregateFunction... functions) {
+        return summarize(numberColumn(col1Name), numberColumn(col2Name), numberColumn(col3Name), numberColumn(col4Name), functions);
+    }
+
     public Summarizer summarize(NumberColumn numberColumn, AggregateFunction... function) {
         return new Summarizer(this, numberColumn, function);
     }
