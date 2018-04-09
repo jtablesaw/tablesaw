@@ -58,6 +58,10 @@ public interface StringFilters extends Column {
         return new EqualToIgnoringCase(new StringColumnReference(this.name()), string).apply(this);
     }
 
+    default Selection isEmptyString() {
+        return eval(String::isEmpty);
+    }
+
     default Selection startsWith(String string) {
         return new StartsWith(new StringColumnReference(this.name()), string).apply(this);
     }

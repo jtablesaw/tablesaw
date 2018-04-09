@@ -1,4 +1,4 @@
-package tech.tablesaw.mapping;
+package tech.tablesaw.columns.booleans;
 
 import org.junit.Test;
 import tech.tablesaw.api.BooleanColumn;

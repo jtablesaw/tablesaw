@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.mapping;
+package tech.tablesaw.columns.datetimes;
 
 import org.junit.Test;
 import tech.tablesaw.api.DateTimeColumn;

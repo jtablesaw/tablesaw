@@ -26,12 +26,12 @@ import javax.annotation.concurrent.Immutable;
 import static tech.tablesaw.columns.strings.StringPredicates.*;
 
 /**
- * A filtering that selects cells in which all text is empty
+ * A filtering that selects cells in which the text is empty
  */
 @Immutable
-public class IsEmpty extends ColumnFilter {
+public class IsEmptyString extends ColumnFilter {
 
-    public IsEmpty(StringColumnReference reference) {
+    public IsEmptyString(StringColumnReference reference) {
         super(reference);
     }
 

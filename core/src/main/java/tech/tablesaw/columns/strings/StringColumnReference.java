@@ -16,9 +16,12 @@ package tech.tablesaw.columns.strings;
 
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.strings.filters.ColumnContainsString;
+import tech.tablesaw.columns.strings.filters.ColumnEndsWith;
 import tech.tablesaw.columns.strings.filters.ColumnEqualTo;
 import tech.tablesaw.columns.strings.filters.ColumnEqualToIgnoringCase;
 import tech.tablesaw.columns.strings.filters.ColumnNotEqualTo;
+import tech.tablesaw.columns.strings.filters.ColumnStartsWith;
 import tech.tablesaw.columns.strings.filters.ContainsString;
 import tech.tablesaw.columns.strings.filters.EndsWith;
 import tech.tablesaw.columns.strings.filters.EqualTo;
@@ -26,7 +29,7 @@ import tech.tablesaw.columns.strings.filters.EqualToIgnoringCase;
 import tech.tablesaw.columns.strings.filters.HasLengthEqualTo;
 import tech.tablesaw.columns.strings.filters.IsAlpha;
 import tech.tablesaw.columns.strings.filters.IsAlphaNumeric;
-import tech.tablesaw.columns.strings.filters.IsEmpty;
+import tech.tablesaw.columns.strings.filters.IsEmptyString;
 import tech.tablesaw.columns.strings.filters.IsIn;
 import tech.tablesaw.columns.strings.filters.IsLongerThan;
 import tech.tablesaw.columns.strings.filters.IsLowerCase;
@@ -97,8 +100,8 @@ public class StringColumnReference extends ColumnReference {
         return new IsNumeric(this);
     }
 
-    public Filter isEmpty() {
-        return new IsEmpty(this);
+    public Filter isEmptyString() {
+        return new IsEmptyString(this);
     }
 
     public Filter isLongerThan(int length) {
@@ -129,12 +132,24 @@ public class StringColumnReference extends ColumnReference {
         return new StartsWith(this, string);
     }
 
+    public Filter startsWith(StringColumn sc) {
+        return new ColumnStartsWith(this, sc);
+    }
+
     public Filter endsWith(String string) {
         return new EndsWith(this, string);
     }
 
+    public Filter endsWith(StringColumn sc) {
+        return new ColumnEndsWith(this, sc);
+    }
+
     public Filter containsString(String string) {
         return new ContainsString(this, string);
+    }
+
+    public Filter containsString(StringColumn sc) {
+        return new ColumnContainsString(this, sc);
     }
 
     public Filter matchesRegex(String string) {

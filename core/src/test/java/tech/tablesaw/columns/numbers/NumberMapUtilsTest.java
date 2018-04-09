@@ -1,4 +1,4 @@
-package tech.tablesaw.mapping;
+package tech.tablesaw.columns.numbers;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
