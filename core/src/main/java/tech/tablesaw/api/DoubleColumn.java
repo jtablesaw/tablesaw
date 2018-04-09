@@ -53,8 +53,7 @@ import static tech.tablesaw.api.ColumnType.*;
 /**
  * A column in a base table that contains double precision floating point values
  */
-public class DoubleColumn extends AbstractColumn implements
-        NumberColumn {
+public class DoubleColumn extends AbstractColumn implements NumberColumn {
 
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     /**
@@ -484,7 +483,8 @@ public class DoubleColumn extends AbstractColumn implements
     }
 
     @Override
-    public Selection eval(DoubleBiPredicate predicate, double value) {
+    public Selection eval(DoubleBiPredicate predicate, Number number) {
+        double value = number.doubleValue();
         Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
             double next = data.getDouble(idx);
@@ -496,15 +496,22 @@ public class DoubleColumn extends AbstractColumn implements
     }
 
     @Override
-    public Selection eval(DoubleRangePredicate predicate, double rangeStart, double rangeEnd) {
+    public Selection eval(DoubleRangePredicate predicate, Number rangeStart, Number rangeEnd) {
+        double start = rangeStart.doubleValue();
+        double end = rangeEnd.doubleValue();
         Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
             double next = data.getDouble(idx);
-            if (predicate.test(next, rangeStart, rangeEnd)) {
+            if (predicate.test(next, start, end)) {
                 bitmap.add(idx);
             }
         }
         return bitmap;
+    }
+
+    @Override
+    public Selection isIn(Number... numbers) {
+        return isIn(Arrays.stream(numbers).mapToDouble(Number::doubleValue).toArray());
     }
 
     @Override
@@ -516,6 +523,14 @@ public class DoubleColumn extends AbstractColumn implements
                 results.add(i);
             }
         }
+        return results;
+    }
+
+    @Override
+    public Selection isNotIn(Number... numbers) {
+        Selection results = new BitmapBackedSelection();
+        results.addRange(0, size());
+        results.andNot(isIn(numbers));
         return results;
     }
 

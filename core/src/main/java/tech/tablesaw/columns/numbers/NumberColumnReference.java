@@ -62,7 +62,7 @@ public class NumberColumnReference extends ColumnReference {
         super(column);
     }
 
-    public Filter isEqualTo(double value) {
+    public Filter isEqualTo(Number value) {
         return new EqualTo(this, value);
     }
 
@@ -70,8 +70,24 @@ public class NumberColumnReference extends ColumnReference {
         return new ColumnEqualTo(this, value);
     }
 
+    public Filter isEqualTo(NumberColumnReference value) {
+        return new ColumnEqualTo(this, value);
+    }
+
+    public Filter isGreaterThan(Number value) {
+        return new GreaterThan(this, value);
+    }
+
     public Filter isGreaterThan(NumberColumn value) {
         return new ColumnGreaterThan(this, value);
+    }
+
+    public Filter isGreaterThan(NumberColumnReference value) {
+        return new ColumnGreaterThan(this, value);
+    }
+
+    public Filter isGreaterThanOrEqualTo(Number value) {
+        return new GreaterThanOrEqualTo(this, value);
     }
 
     public Filter isGreaterThanOrEqualTo(NumberColumn value) {
@@ -80,8 +96,26 @@ public class NumberColumnReference extends ColumnReference {
                 isEqualTo(value));
     }
 
+    public Filter isGreaterThanOrEqualTo(NumberColumnReference value) {
+        return AnyOf.anyOf(
+                isGreaterThan(value),
+                isEqualTo(value));
+    }
+
+    public Filter isLessThan(Number value) {
+        return new LessThan(this, value);
+    }
+
     public Filter isLessThan(NumberColumn value) {
         return new ColumnLessThan(this, value);
+    }
+
+    public Filter isLessThan(NumberColumnReference value) {
+        return new ColumnLessThan(this, value);
+    }
+
+    public Filter isLessThanOrEqualTo(Number value) {
+        return new LessThanOrEqualTo(this, value);
     }
 
     public Filter isLessThanOrEqualTo(NumberColumn value) {
@@ -90,36 +124,30 @@ public class NumberColumnReference extends ColumnReference {
                 isEqualTo(value));
     }
 
+    public Filter isLessThanOrEqualTo(NumberColumnReference value) {
+        return AnyOf.anyOf(
+                isLessThan(value),
+                isEqualTo(value));
+    }
+
+    public Filter isNotEqualTo(Number value) {
+        return new NotEqualTo(this, value);
+    }
+
     public Filter isNotEqualTo(NumberColumn value) {
         return IsFalse.isFalse(isEqualTo(value));
     }
 
-    public Filter isNotEqualTo(double value) {
-        return new NotEqualTo(this, value);
+    public Filter isNotEqualTo(NumberColumnReference value) {
+        return IsFalse.isFalse(isEqualTo(value));
     }
 
-    public Filter isBetweenInclusive(double low, double high) {
+    public Filter isBetweenInclusive(Number low, Number high) {
         return new BetweenInclusive(this, low, high);
     }
 
-    public Filter isBetweenExclusive(int low, int high) {
+    public Filter isBetweenExclusive(Number low, Number high) {
         return new BetweenExclusive(this, low, high);
-    }
-
-    public Filter isGreaterThan(double value) {
-        return new GreaterThan(this, value);
-    }
-
-    public Filter isGreaterThanOrEqualTo(double value) {
-        return new GreaterThanOrEqualTo(this, value);
-    }
-
-    public Filter isLessThan(double value) {
-        return new LessThan(this, value);
-    }
-
-    public Filter isLessThanOrEqualTo(double value) {
-        return new LessThanOrEqualTo(this, value);
     }
 
     public Filter isIn(double... doubles) {

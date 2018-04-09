@@ -25,9 +25,9 @@ public class LessThanOrEqualTo extends ColumnFilter {
 
     private final double value;
 
-    public LessThanOrEqualTo(ColumnReference reference, double value) {
+    public LessThanOrEqualTo(ColumnReference reference, Number value) {
         super(reference);
-        this.value = value;
+        this.value = value.doubleValue();
     }
 
     @Override

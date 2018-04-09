@@ -33,11 +33,11 @@ public interface NumberFilters extends Column {
 
     Selection eval(DoublePredicate predicate);
 
-    Selection eval(DoubleRangePredicate predicate, double rangeStart, double rangeEnd);
+    Selection eval(DoubleRangePredicate predicate, Number rangeStart, Number rangeEnd);
 
     Selection eval(DoubleBiPredicate predicate, NumberColumn otherColumn);
 
-    Selection eval(DoubleBiPredicate predicate, double value);
+    Selection eval(DoubleBiPredicate predicate, Number value);
 
     default Selection isEqualTo(double d) {
         return eval(isEqualTo, d);
@@ -47,11 +47,11 @@ public interface NumberFilters extends Column {
         return eval(isNotEqualTo, d);
     }
 
-    default Selection isBetweenExclusive(double start, double end) {
+    default Selection isBetweenExclusive(double start, Number end) {
         return eval(isBetweenExclusive, start, end);
     }
 
-    default Selection isBetweenInclusive(double start, double end) {
+    default Selection isBetweenInclusive(double start, Number end) {
         return eval(isBetweenInclusive, start, end);
     }
 
@@ -71,9 +71,13 @@ public interface NumberFilters extends Column {
         return eval(isLessThanOrEqualTo, f);
     }
 
+    Selection isIn(Number... numbers);
+
     Selection isIn(double... doubles);
 
-    Selection isNotIn(double... doubles);
+    Selection isNotIn(Number... doubles);
+
+    Selection isNotIn(double[] doubles);
 
     default Selection isZero() {
         return eval(isZero);
@@ -92,11 +96,13 @@ public interface NumberFilters extends Column {
     }
 
     // TODO(lwhite): see section in Effective Java on double point comparisons.
-    default Selection isCloseTo(double target, double margin) {
+    default Selection isCloseTo(Number target, Number margin) {
         Selection results = new BitmapBackedSelection();
         int i = 0;
         for (double val : dataInternal()) {
-            if (val > target - margin && val < target + margin) {
+            double targetValue = target.doubleValue();
+            double marginValue = margin.doubleValue();
+            if (val > targetValue - marginValue && val < targetValue + marginValue) {
                 results.add(i);
             }
             i++;

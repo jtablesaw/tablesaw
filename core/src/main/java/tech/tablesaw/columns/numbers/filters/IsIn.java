@@ -30,9 +30,9 @@ public class IsIn extends ColumnFilter {
 
     private final double[] doubles;
 
-    public IsIn(ColumnReference reference, List<Double> values) {
+    public IsIn(ColumnReference reference, List<Number> values) {
         super(reference);
-        doubles = values.stream().mapToDouble(value -> value).toArray();
+        doubles = values.stream().mapToDouble(Number::doubleValue).toArray();
     }
 
     public IsIn(ColumnReference reference, double... values) {

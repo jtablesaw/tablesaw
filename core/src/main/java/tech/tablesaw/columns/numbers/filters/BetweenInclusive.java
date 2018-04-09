@@ -26,10 +26,10 @@ public class BetweenInclusive extends ColumnFilter {
     private final double low;
     private final double high;
 
-    public BetweenInclusive(ColumnReference reference, double lowValue, double highValue) {
+    public BetweenInclusive(ColumnReference reference, Number lowValue, Number highValue) {
         super(reference);
-        this.low = lowValue;
-        this.high = highValue;
+        this.low = lowValue.doubleValue();
+        this.high = highValue.doubleValue();
     }
 
     public Selection apply(Table relation) {

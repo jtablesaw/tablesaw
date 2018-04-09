@@ -25,9 +25,9 @@ public class EqualTo extends ColumnFilter {
 
     private final double value;
 
-    public EqualTo(ColumnReference reference, double value) {
+    public EqualTo(ColumnReference reference, Number value) {
         super(reference);
-        this.value = value;
+        this.value = value.doubleValue();
     }
 
     public Selection apply(Table relation) {

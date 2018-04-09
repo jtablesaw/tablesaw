@@ -25,9 +25,9 @@ public class GreaterThan extends ColumnFilter {
 
     private final double value;
 
-    public GreaterThan(ColumnReference reference, double value) {
+    public GreaterThan(ColumnReference reference, Number value) {
         super(reference);
-        this.value = value;
+        this.value = value.doubleValue();
     }
 
     public Selection apply(Table relation) {

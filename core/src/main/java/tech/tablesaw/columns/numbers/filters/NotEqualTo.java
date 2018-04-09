@@ -25,9 +25,9 @@ public class NotEqualTo extends ColumnFilter {
 
     private final double value;
 
-    public NotEqualTo(ColumnReference reference, double value) {
+    public NotEqualTo(ColumnReference reference, Number value) {
         super(reference);
-        this.value = value;
+        this.value = value.doubleValue();
     }
 
     @Override

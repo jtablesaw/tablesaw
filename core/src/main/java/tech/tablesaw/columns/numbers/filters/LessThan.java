@@ -25,9 +25,9 @@ public class LessThan extends ColumnFilter {
 
     private final double value;
 
-    public LessThan(ColumnReference reference, double value) {
+    public LessThan(ColumnReference reference, Number value) {
         super(reference);
-        this.value = value;
+        this.value = value.doubleValue();
     }
 
     public Selection apply(Table relation) {

@@ -25,9 +25,9 @@ public class GreaterThanOrEqualTo extends ColumnFilter {
 
     private final double value;
 
-    public GreaterThanOrEqualTo(ColumnReference reference, double value) {
+    public GreaterThanOrEqualTo(ColumnReference reference, Number value) {
         super(reference);
-        this.value = value;
+        this.value = value.doubleValue();
     }
 
     public Selection apply(Table relation) {

@@ -23,13 +23,13 @@ import tech.tablesaw.selection.Selection;
 
 public class BetweenExclusive extends ColumnFilter {
 
-    private final int low;
-    private final int high;
+    private final double low;
+    private final double high;
 
-    public BetweenExclusive(ColumnReference reference, int lowValue, int highValue) {
+    public BetweenExclusive(ColumnReference reference, Number lowValue, Number highValue) {
         super(reference);
-        this.low = lowValue;
-        this.high = highValue;
+        this.low = lowValue.doubleValue();
+        this.high = highValue.doubleValue();
     }
 
     public Selection apply(Table relation) {

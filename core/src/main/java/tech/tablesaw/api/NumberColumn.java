@@ -124,15 +124,15 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
 
     Selection eval(DoubleBiPredicate predicate, NumberColumn otherColumn);
 
-    Selection eval(DoubleBiPredicate predicate, double value);
+    Selection eval(DoubleBiPredicate predicate, Number value);
 
-    Selection eval(DoubleRangePredicate predicate, double rangeStart, double rangeEnd);
-
-    @Override
-    Selection isIn(double... doubles);
+    Selection eval(DoubleRangePredicate predicate, Number rangeStart, Number rangeEnd);
 
     @Override
-    Selection isNotIn(double... doubles);
+    Selection isIn(Number... numbers);
+
+    @Override
+    Selection isNotIn(Number... numbers);
 
     DoubleSet asSet();
 
