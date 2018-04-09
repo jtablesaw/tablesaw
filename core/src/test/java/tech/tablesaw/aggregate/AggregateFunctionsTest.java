@@ -48,10 +48,24 @@ public class AggregateFunctionsTest {
     }
 
     @Test
+    public void testGroupMean2() {
+        Table result = table.summarize("approval", mean, stdDev).apply();
+        assertEquals(2, result.columnCount());
+    }
+
+    @Test
     public void testGroupMean3() {
-        SummaryFunction function = table.summarize("approval", mean, stdDev);
+        Summarizer function = table.summarize("approval", mean, stdDev);
         Table result = function.by("Group", 10);
         assertEquals(32, result.rowCount());
+    }
+
+    @Test
+    public void testGroupMean4() {
+        table.addColumn(table.numberColumn("approval").cube());
+        table.column(3).setName("cubed");
+        Table result = table.summarize("approval", "cubed", mean, stdDev).apply();
+        assertEquals(4, result.columnCount());
     }
 
     @Test
@@ -67,11 +81,22 @@ public class AggregateFunctionsTest {
     public void test2ColumnGroupMean() {
         CategoricalColumn byColumn1 = table.stringColumn("who");
         CategoricalColumn byColumn2 = table.categoricalColumn("date");
-        TableSliceGroup group = StandardTableSliceGroup.create(table, byColumn1, byColumn2);
-        Table result = group.aggregate("approval", mean, sum);
+        Table result = table.summarize("approval", mean, sum).by(byColumn1, byColumn2);
         assertEquals(4, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(323, result.rowCount());
         assertEquals("46.0", result.get(0, 2));
+    }
+
+    @Test
+    public void testComplexSummarizing() {
+        table.addColumn(table.numberColumn("approval").cube());
+        table.column(3).setName("cubed");
+        CategoricalColumn byColumn1 = table.stringColumn("who");
+        CategoricalColumn byColumn2 = table.dateColumn("date").yearMonth();
+        Table result = table.summarize("approval", "cubed", mean, sum).by(byColumn1, byColumn2);
+        assertEquals(6, result.columnCount());
+        assertEquals("who", result.column(0).name());
+        assertEquals("date year & month", result.column(1).name());
     }
 }
