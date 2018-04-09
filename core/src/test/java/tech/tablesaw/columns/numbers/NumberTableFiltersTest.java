@@ -1,12 +1,14 @@
-package tech.tablesaw.filters;
+package tech.tablesaw.columns.numbers;
 
 import org.junit.Test;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.columns.numbers.NumberColumnReference;
+import tech.tablesaw.api.QueryHelper;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class NumberTableFiltersTest {
 
@@ -208,4 +210,12 @@ public class NumberTableFiltersTest {
         assertEquals(3, selection.get(2));
         assertEquals(3, selection.size());
     }
+
+    @Test
+    public void testIsBetweenInclusive() throws Exception {
+        Table bush = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+        Table result = bush.selectWhere(QueryHelper.numberColumn("approval").isBetweenInclusive(0, 49));
+        assertEquals(10, result.rowCount());
+    }
+
 }

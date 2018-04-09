@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filters;
+package tech.tablesaw.columns.times;
 
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.api.Table;

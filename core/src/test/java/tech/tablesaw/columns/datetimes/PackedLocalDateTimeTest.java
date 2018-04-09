@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.columns;
+package tech.tablesaw.columns.datetimes;
 
 import org.junit.Test;
 import tech.tablesaw.columns.dates.PackedLocalDate;

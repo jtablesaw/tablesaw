@@ -1,4 +1,4 @@
-package tech.tablesaw.filters;
+package tech.tablesaw.columns.numbers;
 
 import org.junit.Test;
 import tech.tablesaw.api.DoubleColumn;

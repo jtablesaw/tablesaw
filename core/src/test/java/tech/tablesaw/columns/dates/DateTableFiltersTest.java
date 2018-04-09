@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filters;
+package tech.tablesaw.columns.dates;
 
 import org.junit.Before;
 import org.junit.Test;

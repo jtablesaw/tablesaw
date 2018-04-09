@@ -12,17 +12,22 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.filters;
+package tech.tablesaw.columns.strings;
 
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 
 import static org.junit.Assert.*;
 
 public class StringFiltersTest {
 
     private StringColumn sc1 = StringColumn.create("sc1");
+
+    private Table table = Table.create("T");
+
+    private StringColumnReference reference = new StringColumnReference(sc1.name());
 
     @Before
     public void setUp() {
@@ -45,6 +50,8 @@ public class StringFiltersTest {
         sc1.append("101ers");
         sc1.append("UPPERCASE");   // 17
         sc1.append("");
+
+        table.addColumn(sc1);
     }
 
     @Test
@@ -54,20 +61,31 @@ public class StringFiltersTest {
 
     @Test
     public void testStartsWith() {
+        // test column filtering
         assertTrue(sc1.startsWith("dog").contains(9));
         assertTrue(sc1.startsWith("dog").contains(10));
+
+        // test table filtering
+        assertTrue(reference.startsWith("dog").apply(table).contains(9));
+        assertTrue(reference.startsWith("dog").apply(table).contains(10));
     }
 
     @Test
     public void testEndsWith() {
         assertTrue(sc1.endsWith("dog").contains(9));
         assertFalse(sc1.endsWith("dog").contains(10));
+
+        assertTrue(reference.endsWith("dog").apply(table).contains(9));
+        assertFalse(reference.endsWith("dog").apply(table).contains(10));
     }
 
     @Test
     public void testContainsString() {
         assertTrue(sc1.containsString("eph").contains(4));
         assertFalse(sc1.containsString("eph").contains(10));
+
+        assertTrue(reference.containsString("eph").apply(table).contains(4));
+        assertFalse(reference.containsString("eph").apply(table).contains(10));
     }
 
     @Test
@@ -76,6 +94,11 @@ public class StringFiltersTest {
         assertFalse(sc1.matchesRegex("^apple").contains(7));
         assertFalse(sc1.matchesRegex("^apple").contains(10));
         assertFalse(sc1.matchesRegex("^apple").contains(14));
+
+        assertTrue(reference.matchesRegex("^apple").apply(table).contains(0));
+        assertFalse(reference.matchesRegex("^apple").apply(table).contains(7));
+        assertFalse(reference.matchesRegex("^apple").apply(table).contains(10));
+        assertFalse(reference.matchesRegex("^apple").apply(table).contains(14));
     }
 
     @Test
@@ -83,6 +106,10 @@ public class StringFiltersTest {
         assertTrue(sc1.isAlpha().contains(4));
         assertFalse(sc1.isAlpha().contains(11));
         assertFalse(sc1.isAlpha().contains(13));
+
+        assertTrue(reference.isAlpha().apply(table).contains(4));
+        assertFalse(reference.isAlpha().apply(table).contains(11));
+        assertFalse(reference.isAlpha().apply(table).contains(13));
     }
 
     @Test
@@ -90,6 +117,10 @@ public class StringFiltersTest {
         assertFalse(sc1.isNumeric().contains(4));
         assertTrue(sc1.isNumeric().contains(11));
         assertFalse(sc1.isNumeric().contains(13));
+
+        assertFalse(reference.isNumeric().apply(table).contains(4));
+        assertTrue(reference.isNumeric().apply(table).contains(11));
+        assertFalse(reference.isNumeric().apply(table).contains(13));
     }
 
     @Test
@@ -99,6 +130,12 @@ public class StringFiltersTest {
         assertFalse(sc1.isAlphaNumeric().contains(13));
         assertFalse(sc1.isAlphaNumeric().contains(15));
         assertTrue(sc1.isAlphaNumeric().contains(16));
+
+        assertTrue(reference.isAlphaNumeric().apply(table).contains(4));
+        assertTrue(reference.isAlphaNumeric().apply(table).contains(11));
+        assertFalse(reference.isAlphaNumeric().apply(table).contains(13));
+        assertFalse(reference.isAlphaNumeric().apply(table).contains(15));
+        assertTrue(reference.isAlphaNumeric().apply(table).contains(16));
     }
 
     @Test
@@ -106,30 +143,46 @@ public class StringFiltersTest {
         assertFalse(sc1.isUpperCase().contains(4));
         assertFalse(sc1.isUpperCase().contains(13));
         assertTrue(sc1.isUpperCase().contains(17));
+
+        assertFalse(reference.isUpperCase().apply(table).contains(4));
+        assertFalse(reference.isUpperCase().apply(table).contains(13));
+        assertTrue(reference.isUpperCase().apply(table).contains(17));
     }
 
     @Test
     public void testIsLowerCase() {
         assertTrue(sc1.isLowerCase().contains(4));
         assertFalse(sc1.isLowerCase().contains(17));
+
+        assertTrue(reference.isLowerCase().apply(table).contains(4));
+        assertFalse(reference.isLowerCase().apply(table).contains(17));
     }
 
     @Test
     public void testLengthEquals() {
         assertTrue(sc1.lengthEquals(5).contains(0));
         assertFalse(sc1.lengthEquals(5).contains(8));
+
+        assertTrue(reference.lengthEquals(5).apply(table).contains(0));
+        assertFalse(reference.lengthEquals(5).apply(table).contains(8));
     }
 
     @Test
     public void testIsShorterThan() {
         assertTrue(sc1.isShorterThan(5).contains(6));
         assertFalse(sc1.isShorterThan(5).contains(0));
+
+        assertTrue(reference.isShorterThan(5).apply(table).contains(6));
+        assertFalse(reference.isShorterThan(5).apply(table).contains(0));
     }
 
     @Test
     public void testIsLongerThan() {
         assertTrue(sc1.isLongerThan(5).contains(1));
         assertFalse(sc1.isLongerThan(5).contains(0));
+
+        assertTrue(reference.isLongerThan(5).apply(table).contains(1));
+        assertFalse(reference.isLongerThan(5).apply(table).contains(0));
     }
 
     @Test
@@ -137,6 +190,10 @@ public class StringFiltersTest {
         assertTrue(sc1.isIn("diamond", "dog", "canary").contains(3));
         assertFalse(sc1.isIn("diamond", "dog", "canary").contains(8));
         assertTrue(sc1.isIn("diamond", "dog", "canary").contains(9));
+
+        assertTrue(reference.isIn("diamond", "dog", "canary").apply(table).contains(3));
+        assertFalse(reference.isIn("diamond", "dog", "canary").apply(table).contains(8));
+        assertTrue(reference.isIn("diamond", "dog", "canary").apply(table).contains(9));
     }
 
     @Test
@@ -144,22 +201,35 @@ public class StringFiltersTest {
         assertFalse(sc1.isNotIn("diamond", "dog", "canary").contains(3));
         assertTrue(sc1.isNotIn("diamond", "dog", "canary").contains(8));
         assertFalse(sc1.isNotIn("diamond", "dog", "canary").contains(9));
+
+        assertFalse(reference.isNotIn("diamond", "dog", "canary").apply(table).contains(3));
+        assertTrue(reference.isNotIn("diamond", "dog", "canary").apply(table).contains(8));
+        assertFalse(reference.isNotIn("diamond", "dog", "canary").apply(table).contains(9));
     }
     @Test
     public void testIsMissing() {
         assertFalse(sc1.isMissing().contains(3));
         assertTrue(sc1.isMissing().contains(18));
+
+        assertFalse(reference.isMissing().apply(table).contains(3));
+        assertTrue(reference.isMissing().apply(table).contains(18));
     }
 
     @Test
     public void testIsNotMissing() {
         assertTrue(sc1.isNotMissing().contains(3));
         assertFalse(sc1.isNotMissing().contains(18));
+
+        assertTrue(reference.isNotMissing().apply(table).contains(3));
+        assertFalse(reference.isNotMissing().apply(table).contains(18));
     }
 
     @Test
     public void testIsEqualTo() {
         assertTrue(sc1.isEqualTo("10").contains(12));
         assertFalse(sc1.isEqualTo("10").contains(13));
+
+        assertTrue(reference.isEqualTo("10").apply(table).contains(12));
+        assertFalse(reference.isEqualTo("10").apply(table).contains(13));
     }
 }
