@@ -40,9 +40,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
-import static com.google.common.base.Preconditions.*;
-import static tech.tablesaw.api.ColumnType.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static tech.tablesaw.api.ColumnType.BOOLEAN;
 
 /**
  * A column in a base table that contains float values
@@ -542,6 +544,26 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         for (int idx = 0; idx < data.size(); idx++) {
             byte next = data.getByte(idx);
             if (predicate.test(next)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    public Selection eval(Predicate<Boolean> predicate) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < data.size(); idx++) {
+            if (predicate.test(get(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    public Selection eval(BiPredicate<Boolean, Boolean> predicate, Boolean valueToCompare) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < data.size(); idx++) {
+            if (predicate.test(get(idx), valueToCompare)) {
                 selection.add(idx);
             }
         }

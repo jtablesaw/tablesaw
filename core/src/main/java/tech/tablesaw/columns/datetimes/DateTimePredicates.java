@@ -36,4 +36,8 @@ public class DateTimePredicates {
     public static final LongBiPredicate isEqualTo = (long valueToTest, long valueToCompareAgainst) -> valueToTest == valueToCompareAgainst;
 
     public static final LongBiPredicate isNotEqualTo = (long valueToTest, long valueToCompareAgainst) -> valueToTest != valueToCompareAgainst;
+
+    public static final LongBiPredicate isInYear = (long valueToTest, long year) -> {
+        return PackedLocalDateTime.isInYear(valueToTest, (int) year);
+    };
 }

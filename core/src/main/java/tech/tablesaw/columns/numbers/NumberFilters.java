@@ -25,6 +25,8 @@ import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+import java.util.function.BiPredicate;
+
 import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
 public interface NumberFilters extends Column {
@@ -38,6 +40,9 @@ public interface NumberFilters extends Column {
     Selection eval(DoubleBiPredicate predicate, NumberColumn otherColumn);
 
     Selection eval(DoubleBiPredicate predicate, Number value);
+
+    Selection eval(BiPredicate<Number, Number> predicate, Number value);
+
 
     default Selection isEqualTo(double d) {
         return eval(isEqualTo, d);

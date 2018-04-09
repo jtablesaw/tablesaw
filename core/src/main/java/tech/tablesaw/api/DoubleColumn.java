@@ -44,11 +44,12 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.BiPredicate;
 import java.util.function.DoubleConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.NUMBER;
 
 /**
  * A column in a base table that contains double precision floating point values
@@ -484,6 +485,19 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
 
     @Override
     public Selection eval(DoubleBiPredicate predicate, Number number) {
+        double value = number.doubleValue();
+        Selection bitmap = new BitmapBackedSelection();
+        for (int idx = 0; idx < data.size(); idx++) {
+            double next = data.getDouble(idx);
+            if (predicate.test(next, value)) {
+                bitmap.add(idx);
+            }
+        }
+        return bitmap;
+    }
+
+    @Override
+    public Selection eval(BiPredicate<Number, Number> predicate, Number number) {
         double value = number.doubleValue();
         Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {

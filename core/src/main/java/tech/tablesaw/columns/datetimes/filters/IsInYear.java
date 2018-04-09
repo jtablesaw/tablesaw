@@ -21,9 +21,10 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.filtering.ColumnFilter;
 import tech.tablesaw.selection.Selection;
+
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isInYear;
 
 public class IsInYear extends ColumnFilter {
 
@@ -50,7 +51,7 @@ public class IsInYear extends ColumnFilter {
                 return dateColumn.eval(PackedLocalDate::isInYear, year);
             case LOCAL_DATE_TIME:
                 DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
-                return dateTimeColumn.eval(i -> PackedLocalDateTime.isInYear(i, year));
+                return dateTimeColumn.eval(isInYear, year);
             default:
                 throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "
                         + "isInYear(anInt) ");

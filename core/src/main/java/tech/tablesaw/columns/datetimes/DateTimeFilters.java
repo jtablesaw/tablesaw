@@ -11,6 +11,8 @@ import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 import static tech.tablesaw.columns.datetimes.DateTimePredicates.*;
 
@@ -260,6 +262,27 @@ public interface DateTimeFilters extends Column {
         return selection;
     }
 
+    default Selection eval(BiPredicate<LocalDateTime, LocalDateTime> predicate, LocalDateTime valueToCompare) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), valueToCompare)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    default Selection eval(Predicate<LocalDateTime> predicate) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+
     default Selection isBetweenExcluding(LocalDateTime lowValue, LocalDateTime highValue) {
         return isBetweenExcluding(PackedLocalDateTime.pack(lowValue), PackedLocalDateTime.pack(highValue));
     }
@@ -279,7 +302,7 @@ public interface DateTimeFilters extends Column {
     }
 
     default Selection isInYear(int year) {
-        return eval(i -> PackedLocalDateTime.isInYear(i, year));
+        return eval(isInYear, year);
     }
 
     @Override
@@ -297,4 +320,6 @@ public interface DateTimeFilters extends Column {
     LongArrayList data();
 
     long getLongInternal(int index);
+
+    LocalDateTime get(int index);
 }

@@ -50,8 +50,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.STRING;
 
 /**
  * A column that contains String values. They are assumed to be 'categorical' rather than free-form text, so are
@@ -554,6 +556,28 @@ public class StringColumn extends AbstractColumn
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
             if (predicate.test(get(idx), value)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    @Override
+    public Selection eval(BiPredicate<String, String> predicate, String value) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), value)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    @Override
+    public Selection eval(Predicate<String> predicate) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx))) {
                 selection.add(idx);
             }
         }

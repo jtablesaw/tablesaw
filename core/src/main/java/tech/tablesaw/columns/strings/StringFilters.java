@@ -39,6 +39,8 @@ import tech.tablesaw.filtering.predicates.StringPredicate;
 import tech.tablesaw.selection.Selection;
 
 import java.util.Collection;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 import static tech.tablesaw.columns.strings.StringPredicates.*;
 
@@ -48,18 +50,22 @@ public interface StringFilters extends Column {
 
     Selection eval(StringPredicate predicate);
 
-    Selection eval(StringBiPredicate predicate, String value);
+    Selection eval(StringBiPredicate predicate, String valueToCompare);
 
-    Selection eval(StringIntBiPredicate predicate, int value);
+    Selection eval(StringIntBiPredicate predicate, int valueToCompare);
 
     Selection eval(StringBiPredicate predicate, StringColumn otherColumn);
+
+    Selection eval(BiPredicate<String, String> biPredicate, String valueToCompare);
+
+    Selection eval(Predicate<String> predicate);
 
     default Selection equalsIgnoreCase(String string) {
         return new EqualToIgnoringCase(new StringColumnReference(this.name()), string).apply(this);
     }
 
     default Selection isEmptyString() {
-        return eval(String::isEmpty);
+        return eval((StringPredicate) String::isEmpty);
     }
 
     default Selection startsWith(String string) {

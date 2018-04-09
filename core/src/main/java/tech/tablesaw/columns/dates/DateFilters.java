@@ -11,6 +11,8 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 import static tech.tablesaw.columns.DateAndTimePredicates.isEqualTo;
 
@@ -21,6 +23,10 @@ public interface DateFilters extends Column {
     Selection eval(IntPredicate predicate);
 
     Selection eval(IntBiPredicate predicate, int value);
+
+    Selection eval(BiPredicate<LocalDate, LocalDate> predicate, LocalDate valueToCompare);
+
+    Selection eval(Predicate<LocalDate> predicate);
 
     default Selection isMonday() {
         return eval(PackedLocalDate::isMonday);

@@ -47,6 +47,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
@@ -531,6 +533,26 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
             if (predicate.test(getPackedDate(idx), otherColumn.getPackedDate(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    public Selection eval(BiPredicate<LocalDate, LocalDate> predicate, LocalDate valueToCompare) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), valueToCompare)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    public Selection eval(Predicate<LocalDate> predicate) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx))) {
                 selection.add(idx);
             }
         }

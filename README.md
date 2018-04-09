@@ -5,6 +5,18 @@ Tablesaw
 [![Build Status](https://travis-ci.org/jtablesaw/tablesaw.svg?branch=master)](https://travis-ci.org/jtablesaw/tablesaw)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5029f48d00c24f1ea378b090210cf7da)](https://www.codacy.com/app/jtablesaw/tablesaw?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jtablesaw/tablesaw&amp;utm_campaign=Badge_Grade)
 
+
+
+#### A note on the next version
+
+> Version 0.20, soon to be released, includes a number of fundamental changes. It is safe to say that any existing code that uses Tablesaw will require modifications. We regret the inconvenience that results.
+>
+> Two of the biggest changes are the removal of the Smile interface, and the reduction in support for several numeric column types. In the new release we will support only double precision floating point columns. We may at some time revert those changes, but for now they let us focus on Tablesaw's core functionality in manipulating tabular datasets. 
+>
+> The new version represents a significant improvement in several dimensions. All the changes are summarized here, but it's worth mentioning a couple: 
+>
+> Overall, interfaces for tables and columns are more consistent, flexible, powerful, and robust. Test coverage is up over 50%, from 44% to 70% of lines covered. 
+
 ### Overview
 
 __Tablesaw__ is a Java dataframe similar to Pandas in Python, and the R data frame. If you work with data in Java, it may save you time and effort.

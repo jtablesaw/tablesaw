@@ -9,6 +9,8 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.time.LocalTime;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 public interface TimeFilters extends Column {
 
@@ -30,6 +32,26 @@ public interface TimeFilters extends Column {
         for (int idx = 0; idx < size(); idx++) {
             int next = data().getInt(idx);
             if (predicate.test(next, value)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    default Selection eval(BiPredicate<LocalTime, LocalTime> predicate, LocalTime valueToCompare) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), valueToCompare)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    default Selection eval(Predicate<LocalTime> predicate) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx))) {
                 selection.add(idx);
             }
         }
@@ -95,4 +117,6 @@ public interface TimeFilters extends Column {
     }
 
     IntArrayList data();
+
+    LocalTime get(int index);
 }
