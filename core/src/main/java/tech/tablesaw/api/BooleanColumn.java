@@ -243,6 +243,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     @Override
+    public void appendMissing() {
+        append(MISSING_VALUE);
+    }
+
+    @Override
     public String getString(int row) {
         return formatter.format(get(row));
     }

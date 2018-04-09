@@ -114,6 +114,11 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return new TimeColumn(name, new IntArrayList(initialSize), locale);
     }
 
+    @Override
+    public void appendMissing() {
+        appendInternal(MISSING_VALUE);
+    }
+
     public TimeColumn lag(int n) {
         int srcPos = n >= 0 ? 0 : 0 - n;
         int[] dest = new int[size()];

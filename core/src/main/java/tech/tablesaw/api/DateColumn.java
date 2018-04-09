@@ -308,6 +308,11 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         }
     }
 
+    @Override
+    public void appendMissing() {
+        appendInternal(MISSING_VALUE);
+    }
+
     /**
      * Returns a StringColumn with the year and month from this column concatenated into a String that will sort
      * lexicographically in temporal order.

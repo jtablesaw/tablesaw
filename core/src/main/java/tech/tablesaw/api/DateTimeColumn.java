@@ -474,6 +474,11 @@ public class DateTimeColumn extends AbstractColumn
         return PackedLocalDateTime.asLocalDateTime(max);
     }
 
+    @Override
+    public void appendMissing() {
+        appendInternal(MISSING_VALUE);
+    }
+
     public LocalDateTime min() {
         long min;
 

@@ -87,6 +87,11 @@ public class StringColumn extends AbstractColumn
         }
     };
 
+    @Override
+    public void appendMissing() {
+        append(MISSING_VALUE);
+    }
+
     private final IntComparator reverseDictionarySortComparator = new IntComparator() {
         @Override
         public int compare(int i, int i1) {

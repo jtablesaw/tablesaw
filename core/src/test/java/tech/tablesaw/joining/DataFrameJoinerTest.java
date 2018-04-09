@@ -29,18 +29,18 @@ public class DataFrameJoinerTest {
 
     private static final Table ANIMAL_NAMES = Table.read().csv(
             "Animal,Name\n"
-                    + "\"Pig\",Bob\n"
-                    + "\"Pig\",James\n"
-                    + "\"Horse\",David\n"
-                    + "\"Goat\",Samantha\n",
+                    + "Pig,Bob\n"
+                    + "Pig,James\n"
+                    + "Horse,David\n"
+                    + "Goat,Samantha\n",
             "Animal Names");
 
     private static final Table ANIMAL_FEED = Table.read().csv(
             "Animal,Feed\n"
-                    + "\"Pig\",Mush\n"
-                    + "\"Horse\",Hay\n"
-                    + "\"Goat\",Anything\n",
-            "Ainmal Feed");
+                    + "Pig,Mush\n"
+                    + "Horse,Hay\n"
+                    + "Goat,Anything\n",
+            "Animal Feed");
 
     private static final Table DOUBLE_INDEXED_PEOPLE = Table.read().csv(
             "ID,Name\n"
@@ -54,7 +54,8 @@ public class DataFrameJoinerTest {
             "ID,Dog Name\n"
                     + "1.0,Spot\n"
                     + "3.0,Fido\n"
-                    + "4.0,Sasha\n",
+                    + "4.0,Sasha\n"
+                    + "5.0,King\n",
             "Dogs");
 
     @Test
@@ -62,7 +63,27 @@ public class DataFrameJoinerTest {
         Table joined = DOUBLE_INDEXED_PEOPLE.join("ID").inner(DOUBLE_INDEXED_DOGS, "ID");
         assertEquals(3, joined.columnCount());
         assertEquals(3, joined.rowCount());
-        System.out.println(joined);
+    }
+
+    @Test
+    public void leftOuterJoinWithDoubles() {
+        Table joined = DOUBLE_INDEXED_PEOPLE.join("ID").leftOuter(DOUBLE_INDEXED_DOGS, "ID");
+        assertEquals(3, joined.columnCount());
+        assertEquals(4, joined.rowCount());
+    }
+
+    @Test
+    public void rightOuterJoinWithDoubles() {
+        Table joined = DOUBLE_INDEXED_PEOPLE.join("ID").rightOuter(DOUBLE_INDEXED_DOGS, "ID");
+        assertEquals(3, joined.columnCount());
+        assertEquals(4, joined.rowCount());
+    }
+
+    @Test
+    public void leftOuterJoinWithDoubles2() {
+        Table joined = DOUBLE_INDEXED_DOGS.join("ID").leftOuter(DOUBLE_INDEXED_PEOPLE, "ID");
+        assertEquals(3, joined.columnCount());
+        assertEquals(4, joined.rowCount());
     }
 
     @Test
@@ -73,8 +94,22 @@ public class DataFrameJoinerTest {
     }
 
     @Test
+    public void leftOuterJoin() {
+        Table joined = SP500.join("Date").leftOuter(ONE_YEAR, "Date");
+        assertEquals(3, joined.columnCount());
+        assertEquals(6, joined.rowCount());
+    }
+
+    @Test
     public void innerJoin_duplicateKeysFirstTable() {
         Table joined = ANIMAL_NAMES.join("Animal").inner(ANIMAL_FEED, "Animal");
+        assertEquals(3, joined.columnCount());
+        assertEquals(4, joined.rowCount());
+    }
+
+    @Test
+    public void leftOuterJoin_duplicateKeysFirstTable() {
+        Table joined = ANIMAL_NAMES.join("Animal").leftOuter(ANIMAL_FEED, "Animal");
         assertEquals(3, joined.columnCount());
         assertEquals(4, joined.rowCount());
     }
@@ -86,4 +121,10 @@ public class DataFrameJoinerTest {
         assertEquals(4, joined.rowCount());
     }
 
+    @Test
+    public void leftOuterJoin_duplicateKeysSecondTable() {
+        Table joined = ANIMAL_FEED.join("Animal").leftOuter(ANIMAL_NAMES, "Animal");
+        assertEquals(3, joined.columnCount());
+        assertEquals(4, joined.rowCount());
+    }
 }

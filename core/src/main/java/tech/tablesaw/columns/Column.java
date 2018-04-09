@@ -221,4 +221,9 @@ public interface Column {
     String getUnformattedString(int r);
 
     boolean isMissing(int rowNumber);
+
+    /**
+     * Appends a missing value appropriate to the column
+     */
+    void appendMissing();
 }

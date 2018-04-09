@@ -168,6 +168,11 @@ public class DoubleColumn extends AbstractColumn implements
     }
 
     @Override
+    public void appendMissing() {
+        append(MISSING_VALUE);
+    }
+
+    @Override
     public void setPrintFormatter(NumberColumnFormatter formatter) {
         this.printFormatter = formatter;
     }
