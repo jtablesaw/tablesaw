@@ -101,28 +101,28 @@ public class DataFrameJoinerTest {
     }
 
     @Test
-    public void innerJoin_duplicateKeysFirstTable() {
+    public void innerJoinDuplicateKeysFirstTable() {
         Table joined = ANIMAL_NAMES.join("Animal").inner(ANIMAL_FEED, "Animal");
         assertEquals(3, joined.columnCount());
         assertEquals(4, joined.rowCount());
     }
 
     @Test
-    public void leftOuterJoin_duplicateKeysFirstTable() {
+    public void leftOuterJoinDuplicateKeysFirstTable() {
         Table joined = ANIMAL_NAMES.join("Animal").leftOuter(ANIMAL_FEED, "Animal");
         assertEquals(3, joined.columnCount());
         assertEquals(4, joined.rowCount());
     }
 
     @Test
-    public void innerJoin_duplicateKeysSecondTable() {
+    public void innerJoinDuplicateKeysSecondTable() {
         Table joined = ANIMAL_FEED.join("Animal").inner(ANIMAL_NAMES, "Animal");
         assertEquals(3, joined.columnCount());
         assertEquals(4, joined.rowCount());
     }
 
     @Test
-    public void leftOuterJoin_duplicateKeysSecondTable() {
+    public void leftOuterJoinDuplicateKeysSecondTable() {
         Table joined = ANIMAL_FEED.join("Animal").leftOuter(ANIMAL_NAMES, "Animal");
         assertEquals(3, joined.columnCount());
         assertEquals(4, joined.rowCount());

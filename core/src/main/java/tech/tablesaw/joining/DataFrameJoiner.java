@@ -32,6 +32,10 @@ public class DataFrameJoiner {
      *                 rounding to integers.
      */
     public Table inner(Table table2, String col2Name) {
+        return joinInternal(table2, col2Name, false);
+    }
+
+    private Table joinInternal(Table table2, String col2Name, boolean outer) {
         Table result = emptyTableFromColumns(table, table2, col2Name);
         if (column instanceof DateColumn) {
             IntIndex index = new IntIndex(table2.dateColumn(col2Name));
@@ -41,7 +45,11 @@ public class DataFrameJoiner {
                 Table table1Rows = table.selectWhere(Selection.with(i));
                 Table table2Rows = table2.selectWhere(index.get(value));
                 table2Rows.removeColumns(col2Name);
-                crossProduct(result, table1Rows, table2Rows);
+                if (outer && table2Rows.isEmpty()) {
+                    withMissing(result, table1Rows, table2Rows);
+                } else {
+                    crossProduct(result, table1Rows, table2Rows);
+                }
             }
         } else if (column instanceof DateTimeColumn) {
             LongIndex index = new LongIndex(table2.dateTimeColumn(col2Name));
@@ -51,7 +59,11 @@ public class DataFrameJoiner {
                 Table table1Rows = table.selectWhere(Selection.with(i));
                 Table table2Rows = table2.selectWhere(index.get(value));
                 table2Rows.removeColumns(col2Name);
-                crossProduct(result, table1Rows, table2Rows);
+                if (outer && table2Rows.isEmpty()) {
+                    withMissing(result, table1Rows, table2Rows);
+                } else {
+                    crossProduct(result, table1Rows, table2Rows);
+                }
             }
         } else if (column instanceof TimeColumn) {
             IntIndex index = new IntIndex(table2.timeColumn(col2Name));
@@ -61,7 +73,11 @@ public class DataFrameJoiner {
                 Table table1Rows = table.selectWhere(Selection.with(i));
                 Table table2Rows = table2.selectWhere(index.get(value));
                 table2Rows.removeColumns(col2Name);
-                crossProduct(result, table1Rows, table2Rows);
+                if (outer && table2Rows.isEmpty()) {
+                    withMissing(result, table1Rows, table2Rows);
+                } else {
+                    crossProduct(result, table1Rows, table2Rows);
+                }
             }
         } else if (column instanceof StringColumn) {
             CategoryIndex index = new CategoryIndex(table2.stringColumn(col2Name));
@@ -71,7 +87,11 @@ public class DataFrameJoiner {
                 Table table1Rows = table.selectWhere(Selection.with(i));
                 Table table2Rows = table2.selectWhere(index.get(value));
                 table2Rows.removeColumns(col2Name);
-                crossProduct(result, table1Rows, table2Rows);
+                if (outer && table2Rows.isEmpty()) {
+                    withMissing(result, table1Rows, table2Rows);
+                } else {
+                    crossProduct(result, table1Rows, table2Rows);
+                }
             }
         } else if (column instanceof DoubleColumn) {
             LongIndex index = new LongIndex(table2.numberColumn(col2Name));
@@ -81,7 +101,11 @@ public class DataFrameJoiner {
                 Table table1Rows = table.selectWhere(Selection.with(i));
                 Table table2Rows = table2.selectWhere(index.get(value));
                 table2Rows.removeColumns(col2Name);
-                crossProduct(result, table1Rows, table2Rows);
+                if (outer && table2Rows.isEmpty()) {
+                    withMissing(result, table1Rows, table2Rows);
+                } else {
+                    crossProduct(result, table1Rows, table2Rows);
+                }
             }
         } else {
             throw new IllegalArgumentException(
@@ -100,84 +124,7 @@ public class DataFrameJoiner {
      *                 rounding to integers.
      */
     public Table leftOuter(Table table2, String col2Name) {
-        Table result = emptyTableFromColumns(table, table2, col2Name);
-        if (column instanceof DateColumn) {
-            IntIndex index = new IntIndex(table2.dateColumn(col2Name));
-            DateColumn col1 = (DateColumn) column;
-            for (int i = 0; i < col1.size(); i++) {
-                int value = col1.getIntInternal(i);
-                Table table1Rows = table.selectWhere(Selection.with(i));
-                Table table2Rows = table2.selectWhere(index.get(value));
-                table2Rows.removeColumns(col2Name);
-                if (table2Rows.isEmpty()) {
-                    withMissing(result, table1Rows, table2Rows);
-                } else {
-                    crossProduct(result, table1Rows, table2Rows);
-                }
-            }
-        } else if (column instanceof DateTimeColumn) {
-            LongIndex index = new LongIndex(table2.dateTimeColumn(col2Name));
-            DateTimeColumn col1 = (DateTimeColumn) column;
-            for (int i = 0; i < col1.size(); i++) {
-                long value = col1.getLongInternal(i);
-                Table table1Rows = table.selectWhere(Selection.with(i));
-                Table table2Rows = table2.selectWhere(index.get(value));
-                table2Rows.removeColumns(col2Name);
-                if (table2Rows.isEmpty()) {
-                    withMissing(result, table1Rows, table2Rows);
-                } else {
-                    crossProduct(result, table1Rows, table2Rows);
-                }
-            }
-        } else if (column instanceof TimeColumn) {
-            IntIndex index = new IntIndex(table2.timeColumn(col2Name));
-            TimeColumn col1 = (TimeColumn) column;
-            for (int i = 0; i < col1.size(); i++) {
-                int value = col1.getIntInternal(i);
-                Table table1Rows = table.selectWhere(Selection.with(i));
-                Table table2Rows = table2.selectWhere(index.get(value));
-                table2Rows.removeColumns(col2Name);
-                if (table2Rows.isEmpty()) {
-                    withMissing(result, table1Rows, table2Rows);
-                } else {
-                    crossProduct(result, table1Rows, table2Rows);
-                }
-            }
-        } else if (column instanceof StringColumn) {
-            CategoryIndex index = new CategoryIndex(table2.stringColumn(col2Name));
-            StringColumn col1 = (StringColumn) column;
-            for (int i = 0; i < col1.size(); i++) {
-                String value = col1.get(i);
-                Table table1Rows = table.selectWhere(Selection.with(i));
-                Table table2Rows = table2.selectWhere(index.get(value));
-                table2Rows.removeColumns(col2Name);
-                if (table2Rows.isEmpty()) {
-                    withMissing(result, table1Rows, table2Rows);
-                } else {
-                    crossProduct(result, table1Rows, table2Rows);
-                }
-            }
-        } else if (column instanceof DoubleColumn) {
-            LongIndex index = new LongIndex(table2.numberColumn(col2Name));
-            NumberColumn col1 = (NumberColumn) column;
-            for (int i = 0; i < col1.size(); i++) {
-                long value = col1.getLong(i);
-                Table table1Rows = table.selectWhere(Selection.with(i));
-                Table table2Rows = table2.selectWhere(index.get(value));
-                table2Rows.removeColumns(col2Name);
-                if (table2Rows.isEmpty()) {
-                    withMissing(result, table1Rows, table2Rows);
-                } else {
-                    crossProduct(result, table1Rows, table2Rows);
-                }
-            }
-        } else {
-            throw new IllegalArgumentException(
-                    "Joining is supported on numeric, string, and date-like columns. Column "
-                            + column.name() + " is of type " + column.type());
-        }
-
-        return result;
+        return joinInternal(table2, col2Name, true);
     }
 
     /**
