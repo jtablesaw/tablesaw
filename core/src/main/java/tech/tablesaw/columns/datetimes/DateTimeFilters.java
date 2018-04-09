@@ -9,6 +9,7 @@ import tech.tablesaw.filtering.predicates.LongPredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static tech.tablesaw.columns.datetimes.DateTimePredicates.*;
@@ -19,12 +20,12 @@ public interface DateTimeFilters extends Column {
         return eval(isGreaterThan, PackedLocalDateTime.pack(value));
     }
 
-    default Selection isAfter(Long packedDateTime) {
-        return eval(isGreaterThan, packedDateTime);
+    default Selection isAfter(LocalDate value) {
+        return isOnOrAfter(value.plusDays(1).atStartOfDay());
     }
 
-    default Selection isOnOrAfter(long value) {
-        return eval(isGreaterThanOrEqualTo, value);
+    default Selection isOnOrAfter(LocalDate value) {
+        return isOnOrAfter(value.atStartOfDay());
     }
 
     default Selection isOnOrAfter(LocalDateTime value) {
@@ -35,12 +36,12 @@ public interface DateTimeFilters extends Column {
         return eval(isLessThan, PackedLocalDateTime.pack(value));
     }
 
-    default Selection isBefore(Long packedDateTime) {
-        return eval(isLessThan, packedDateTime);
+    default Selection isBefore(LocalDate value) {
+        return isBefore(value.atStartOfDay());
     }
 
-    default Selection isOnOrBefore(long value) {
-        return eval(isLessThanOrEqualTo, value);
+    default Selection isOnOrBefore(LocalDate value) {
+        return isOnOrBefore(value.atStartOfDay());
     }
 
     default Selection isOnOrBefore(LocalDateTime value) {
@@ -94,6 +95,21 @@ public interface DateTimeFilters extends Column {
             i++;
         }
         return results;
+    }
+
+    default Selection isNotEqualTo(DateTimeColumn column) {
+        Selection results = Selection.withRange(0, size());
+        return results.andNot(isEqualTo(column));
+    }
+
+    default Selection isOnOrAfter(DateTimeColumn column) {
+        Selection results = Selection.withRange(0, size());
+        return results.andNot(isBefore(column));
+    }
+
+    default Selection isOnOrBefore(DateTimeColumn column) {
+        Selection results = Selection.withRange(0, size());
+        return results.andNot(isAfter(column));
     }
 
     default Selection isMonday() {
@@ -234,9 +250,14 @@ public interface DateTimeFilters extends Column {
         return bitmap;
     }
 
-    default boolean contains(LocalDateTime dateTime) {
-        long dt = PackedLocalDateTime.pack(dateTime);
-        return data().contains(dt);
+    default Selection eval(LongBiPredicate predicate, DateTimeColumn otherColumn) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(this.getLongInternal(idx), otherColumn.getLongInternal(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
     }
 
     default Selection isBetweenExcluding(LocalDateTime lowValue, LocalDateTime highValue) {
@@ -274,4 +295,6 @@ public interface DateTimeFilters extends Column {
     int size();
 
     LongArrayList data();
+
+    long getLongInternal(int index);
 }

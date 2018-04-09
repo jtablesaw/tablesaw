@@ -14,7 +14,12 @@
 
 package tech.tablesaw.columns.datetimes;
 
+import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.datetimes.filters.ColumnEqualTo;
+import tech.tablesaw.columns.datetimes.filters.ColumnIsAfter;
+import tech.tablesaw.columns.datetimes.filters.ColumnIsBefore;
+import tech.tablesaw.columns.datetimes.filters.ColumnNotEqualTo;
 import tech.tablesaw.columns.datetimes.filters.EqualTo;
 import tech.tablesaw.columns.datetimes.filters.IsAfter;
 import tech.tablesaw.columns.datetimes.filters.IsBefore;
@@ -53,6 +58,8 @@ import tech.tablesaw.filtering.composite.AllOf;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static tech.tablesaw.filtering.composite.IsFalse.isFalse;
+
 /**
  * A reference to a column that can be used in evaluating query predicates. It is a key part of having a fluent API
  * for querying tables.
@@ -77,6 +84,54 @@ public class DateTimeColumnReference extends ColumnReference {
 
     public IsBefore isBefore(LocalDateTime value) {
         return new IsBefore(this, value);
+    }
+
+    public ColumnIsBefore isBefore(DateTimeColumn value) {
+        return new ColumnIsBefore(this, value);
+    }
+
+    public ColumnIsBefore isBefore(DateTimeColumnReference value) {
+        return new ColumnIsBefore(this, value);
+    }
+
+    public ColumnIsAfter isAfter(DateTimeColumn value) {
+        return new ColumnIsAfter(this, value);
+    }
+
+    public ColumnIsAfter isAfter(DateTimeColumnReference value) {
+        return new ColumnIsAfter(this, value);
+    }
+
+    public ColumnEqualTo isEqualTo(DateTimeColumn value) {
+        return new ColumnEqualTo(this, value);
+    }
+
+    public ColumnEqualTo isEqualTo(DateTimeColumnReference value) {
+        return new ColumnEqualTo(this, value);
+    }
+
+    public Filter isOnOrBefore(DateTimeColumnReference value) {
+        return isFalse(new ColumnIsAfter(this, value));
+    }
+
+    public Filter isOnOrBefore(DateTimeColumn value) {
+        return isFalse(new ColumnIsAfter(this, value));
+    }
+
+    public Filter isOnOrAfter(DateTimeColumn value) {
+        return isFalse(new ColumnIsBefore(this, value));
+    }
+
+    public Filter isOnOrAfter(DateTimeColumnReference value) {
+        return isFalse(new ColumnIsBefore(this, value));
+    }
+
+    public ColumnNotEqualTo isNotEqualTo(DateTimeColumnReference value) {
+        return new ColumnNotEqualTo(this, value);
+    }
+
+    public ColumnNotEqualTo isNotEqualTo(DateTimeColumn value) {
+        return new ColumnNotEqualTo(this, value);
     }
 
     public IsBefore isBefore(LocalDate value) {

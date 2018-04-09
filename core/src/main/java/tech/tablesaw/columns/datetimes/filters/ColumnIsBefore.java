@@ -12,15 +12,15 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.columns.dates.filters;
+package tech.tablesaw.columns.datetimes.filters;
 
-import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.TwoColumnFilter;
 import tech.tablesaw.selection.Selection;
 
-import static tech.tablesaw.columns.DateAndTimePredicates.isLessThan;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isLessThan;
 
 /**
  */
@@ -30,7 +30,7 @@ public class ColumnIsBefore extends TwoColumnFilter {
         super(reference, otherColumn);
     }
 
-    public ColumnIsBefore(DateColumn columnToCompareAgainst) {
+    public ColumnIsBefore(DateTimeColumn columnToCompareAgainst) {
         super(columnToCompareAgainst);
     }
 
@@ -46,7 +46,7 @@ public class ColumnIsBefore extends TwoColumnFilter {
      */
     @Override
     public Selection apply(Column columnToFilter) {
-        DateColumn dateColumn = (DateColumn) columnToFilter;
-        return dateColumn.eval(isLessThan, (DateColumn) otherColumn());
+        DateTimeColumn dateColumn = (DateTimeColumn) columnToFilter;
+        return dateColumn.eval(isLessThan, (DateTimeColumn) otherColumn());
     }
 }

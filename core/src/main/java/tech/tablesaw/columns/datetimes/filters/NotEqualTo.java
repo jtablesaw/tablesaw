@@ -40,6 +40,6 @@ public class NotEqualTo extends ColumnFilter {
     @Override
     public Selection apply(Column column) {
         DateTimeColumn dateColumn = (DateTimeColumn) column;
-        return dateColumn.isEqualTo(value);
+        return dateColumn.isNotEqualTo(value);
     }
 }

@@ -119,6 +119,11 @@ public class DateTimeColumn extends AbstractColumn
         this.locale = locale;
     }
 
+    public boolean contains(LocalDateTime dateTime) {
+        long dt = PackedLocalDateTime.pack(dateTime);
+        return data().contains(dt);
+    }
+
     public DateTimeColumn selectWhere(Selection selection) {
         return (DateTimeColumn) subset(selection);
     }

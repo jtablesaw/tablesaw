@@ -12,29 +12,30 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.columns.dates.filters;
+package tech.tablesaw.columns.datetimes.filters;
 
-import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.TwoColumnFilter;
 import tech.tablesaw.selection.Selection;
 
-import static tech.tablesaw.columns.DateAndTimePredicates.isLessThan;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isNotEqualTo;
 
 /**
+ * A filtering that selects cells whose contents equal the given text ignoring case
  */
-public class ColumnIsBefore extends TwoColumnFilter {
+public class ColumnNotEqualTo extends TwoColumnFilter {
 
-    public ColumnIsBefore(ColumnReference reference, Column otherColumn) {
+    public ColumnNotEqualTo(ColumnReference reference, Column otherColumn) {
         super(reference, otherColumn);
     }
 
-    public ColumnIsBefore(DateColumn columnToCompareAgainst) {
+    public ColumnNotEqualTo(DateTimeColumn columnToCompareAgainst) {
         super(columnToCompareAgainst);
     }
 
-    public ColumnIsBefore(ColumnReference reference, ColumnReference columnToCompareAgainst) {
+    public ColumnNotEqualTo(ColumnReference reference, ColumnReference columnToCompareAgainst) {
         super(reference, columnToCompareAgainst);
     }
 
@@ -46,7 +47,7 @@ public class ColumnIsBefore extends TwoColumnFilter {
      */
     @Override
     public Selection apply(Column columnToFilter) {
-        DateColumn dateColumn = (DateColumn) columnToFilter;
-        return dateColumn.eval(isLessThan, (DateColumn) otherColumn());
+        DateTimeColumn dateColumn = (DateTimeColumn) columnToFilter;
+        return dateColumn.eval(isNotEqualTo, (DateTimeColumn) otherColumn());
     }
 }
