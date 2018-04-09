@@ -42,6 +42,8 @@ import tech.tablesaw.columns.strings.filters.NotEqualTo;
 import tech.tablesaw.columns.strings.filters.StartsWith;
 import tech.tablesaw.filtering.Filter;
 
+import java.util.List;
+
 /**
  * A reference to a column that can be used in evaluating query predicates. It is a key part of having a fluent API
  * for querying tables.
@@ -77,6 +79,14 @@ public class StringColumnReference extends ColumnReference {
     }
 
     public Filter isNotIn(String... strings) {
+        return new IsNotIn(this, strings);
+    }
+
+    public Filter isIn(List<String> strings) {
+        return new IsIn(this, strings);
+    }
+
+    public Filter isNotIn(List<String> strings) {
         return new IsNotIn(this, strings);
     }
 

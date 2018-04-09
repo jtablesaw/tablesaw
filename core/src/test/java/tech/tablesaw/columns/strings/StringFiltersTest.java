@@ -14,10 +14,13 @@
 
 package tech.tablesaw.columns.strings;
 
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -81,6 +84,8 @@ public class StringFiltersTest {
     @Test
     public void testEqualsIgnoreCase() {
         assertTrue(sc1.equalsIgnoreCase("APPLE").contains(0));
+
+        assertTrue(sc1.equalsIgnoreCase(sc2).apply(table).contains(0));
 
         assertTrue(ref1.equalsIgnoreCase(sc2).apply(table).contains(0));
 
@@ -224,24 +229,44 @@ public class StringFiltersTest {
 
     @Test
     public void testIsIn() {
+        List<String> candidates = Lists.newArrayList("diamond", "dog", "canary");
+
         assertTrue(sc1.isIn("diamond", "dog", "canary").contains(3));
         assertFalse(sc1.isIn("diamond", "dog", "canary").contains(8));
         assertTrue(sc1.isIn("diamond", "dog", "canary").contains(9));
 
+        assertTrue(sc1.isIn(candidates).contains(3));
+        assertFalse(sc1.isIn(candidates).contains(8));
+        assertTrue(sc1.isIn(candidates).contains(9));
+
         assertTrue(ref1.isIn("diamond", "dog", "canary").apply(table).contains(3));
         assertFalse(ref1.isIn("diamond", "dog", "canary").apply(table).contains(8));
         assertTrue(ref1.isIn("diamond", "dog", "canary").apply(table).contains(9));
+
+        assertTrue(ref1.isIn(candidates).apply(table).contains(3));
+        assertFalse(ref1.isIn(candidates).apply(table).contains(8));
+        assertTrue(ref1.isIn(candidates).apply(table).contains(9));
     }
 
     @Test
     public void testIsNotIn() {
+        List<String> candidates = Lists.newArrayList("diamond", "dog", "canary");
+
         assertFalse(sc1.isNotIn("diamond", "dog", "canary").contains(3));
         assertTrue(sc1.isNotIn("diamond", "dog", "canary").contains(8));
         assertFalse(sc1.isNotIn("diamond", "dog", "canary").contains(9));
 
+        assertFalse(sc1.isNotIn(candidates).contains(3));
+        assertTrue(sc1.isNotIn(candidates).contains(8));
+        assertFalse(sc1.isNotIn(candidates).contains(9));
+
         assertFalse(ref1.isNotIn("diamond", "dog", "canary").apply(table).contains(3));
         assertTrue(ref1.isNotIn("diamond", "dog", "canary").apply(table).contains(8));
         assertFalse(ref1.isNotIn("diamond", "dog", "canary").apply(table).contains(9));
+
+        assertFalse(ref1.isNotIn(candidates).apply(table).contains(3));
+        assertTrue(ref1.isNotIn(candidates).apply(table).contains(8));
+        assertFalse(ref1.isNotIn(candidates).apply(table).contains(9));
     }
 
     @Test
@@ -276,6 +301,9 @@ public class StringFiltersTest {
         assertTrue(sc1.isEqualTo("10").contains(12));
         assertFalse(sc1.isEqualTo("10").contains(13));
 
+        assertTrue(sc1.isEqualTo(sc2).apply(table).contains(9));
+        assertFalse(sc1.isEqualTo(sc2).apply(table).contains(0));
+
         assertTrue(ref1.isEqualTo("10").apply(table).contains(12));
         assertFalse(ref1.isEqualTo("10").apply(table).contains(13));
 
@@ -290,6 +318,9 @@ public class StringFiltersTest {
     public void testIsNotEqualTo() {
         assertFalse(sc1.isNotEqualTo("10").contains(12));
         assertTrue(sc1.isNotEqualTo("10").contains(13));
+
+        assertFalse(sc1.isNotEqualTo(sc2).contains(9));
+        assertTrue(sc1.isNotEqualTo(sc2).contains(0));
 
         assertFalse(ref1.isNotEqualTo("10").apply(table).contains(12));
         assertTrue(ref1.isNotEqualTo("10").apply(table).contains(13));
