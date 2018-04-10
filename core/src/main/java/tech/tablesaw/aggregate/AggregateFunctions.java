@@ -20,6 +20,7 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 
 /**
@@ -57,6 +58,22 @@ public class AggregateFunctions {
         @Override
         public double agg(double[] data) {
             return data.length;
+        }
+    };
+
+    /**
+     * A function that calculates the count of the values in the column param
+     */
+    public static AggregateFunction countUnique = new Reduction("Count") {
+
+        @Override
+        public double agg(NumberColumn doubles) {
+            return doubles.unique().size();
+        }
+
+        @Override
+        public double agg(double[] data) {
+            return DoubleColumn.create("temp", data).unique().size();
         }
     };
 
