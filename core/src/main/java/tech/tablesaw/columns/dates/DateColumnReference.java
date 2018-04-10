@@ -14,6 +14,7 @@
 
 package tech.tablesaw.columns.dates;
 
+import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.columns.dates.filters.BetweenExclusive;
 import tech.tablesaw.columns.dates.filters.BetweenInclusive;
@@ -90,6 +91,22 @@ public class DateColumnReference extends ColumnReference {
     }
 
     public Filter isBefore(DateColumnReference reference) {
+        return new ColumnIsBefore(this, reference);
+    }
+
+    public Filter isEqualTo(DateColumn reference) {
+        return new ColumnEqualTo(this, reference);
+    }
+
+    public Filter isNotEqualTo(DateColumn reference) {
+        return new ColumnNotEqualTo(this, reference);
+    }
+
+    public Filter isAfter(DateColumn reference) {
+        return new ColumnIsAfter(this, reference);
+    }
+
+    public Filter isBefore(DateColumn reference) {
         return new ColumnIsBefore(this, reference);
     }
 

@@ -22,7 +22,7 @@ public interface DateFilters extends Column {
 
     /**
      * Returns a selection formed by applying the given predicate
-     *
+     * <p>
      * Prefer using an IntPredicate where the int is a PackedDate, as this version creates a date object
      * for each value in the column
      */
@@ -202,6 +202,47 @@ public interface DateFilters extends Column {
         IntIterator intIterator = column.intIterator();
         for (int next : data()) {
             if (next == intIterator.nextInt()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    default Selection isNotEqualTo(DateColumn column) {
+        Selection results = Selection.withRange(0, size());
+        return results.andNot(isEqualTo(column));
+    }
+
+    default Selection isOnOrBefore(DateColumn column) {
+        Selection results = Selection.withRange(0, size());
+        return results.andNot(isAfter(column));
+    }
+
+    default Selection isOnOrAfter(DateColumn column) {
+        Selection results = Selection.withRange(0, size());
+        return results.andNot(isBefore(column));
+    }
+
+    default Selection isAfter(DateColumn column) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        IntIterator intIterator = column.intIterator();
+        for (long next : data()) {
+            if (next > intIterator.nextInt()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    default Selection isBefore(DateColumn column) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        IntIterator intIterator = column.intIterator();
+        for (long next : data()) {
+            if (next < intIterator.nextInt()) {
                 results.add(i);
             }
             i++;
