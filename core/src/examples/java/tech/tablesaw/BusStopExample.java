@@ -18,7 +18,6 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.io.csv.CsvWriter;
 
 /**
  * Some example code using the API
@@ -63,8 +62,9 @@ public class BusStopExample {
         Table filtered = table.selectWhere(QueryHelper.numberColumn("stop_id").isBetweenInclusive(524, 624));
         out(filtered.first(5));
 
+
         // Write out the new CSV file
-        CsvWriter.write(filtered, "../data/filtered_bus_stops.csv");
+        filtered.write().csv("../data/filtered_bus_stops.csv");
     }
 
     private static void out(Object o) {

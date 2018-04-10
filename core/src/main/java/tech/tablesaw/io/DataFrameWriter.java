@@ -15,6 +15,7 @@
 package tech.tablesaw.io;
 
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvWriteOptions;
 import tech.tablesaw.io.csv.CsvWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
 
@@ -32,23 +33,30 @@ public class DataFrameWriter {
     }
 
     public void csv(String file) throws IOException {
-        CsvWriter.write(table, file);
+        CsvWriteOptions options = new CsvWriteOptions.Builder(file).build();
+        CsvWriter.write(table, options);
     }
 
     public void csv(File file) throws IOException {
-        CsvWriter.write(table, file);
+        CsvWriteOptions options = new CsvWriteOptions.Builder(file).build();
+        CsvWriter.write(table, options);
+    }
+
+    public void csv(CsvWriteOptions options) throws IOException {
+        CsvWriter.write(table, options);
     }
 
     public void csv(OutputStream stream) throws IOException {
-        CsvWriter.write(table, stream);
+        CsvWriteOptions options = new CsvWriteOptions.Builder(stream).build();
+        CsvWriter.write(table, options);
     }
 
     public void csv(Writer writer) throws IOException {
-        CsvWriter.write(table, writer);
+        CsvWriteOptions options = new CsvWriteOptions.Builder(writer).build();
+        CsvWriter.write(table, options);
     }
 
     public void html(OutputStream stream) {
         HtmlTableWriter.write(table, stream);
     }
-
 }

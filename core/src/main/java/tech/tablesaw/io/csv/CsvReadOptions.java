@@ -38,7 +38,7 @@ public class CsvReadOptions {
     private final String timeFormat;
     private final Locale locale;
 
-    public CsvReadOptions(CsvReadOptions.Builder builder) {
+    CsvReadOptions(CsvReadOptions.Builder builder) {
         file = builder.file;
         reader = builder.reader;
         tableName = builder.tableName;

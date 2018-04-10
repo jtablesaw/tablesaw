@@ -69,5 +69,4 @@ public class DataFrameReader {
     public Table html(String url) throws IOException {
         return csv(new HtmlTableReader().tableToCsv(url), url);
     }
-
 }
