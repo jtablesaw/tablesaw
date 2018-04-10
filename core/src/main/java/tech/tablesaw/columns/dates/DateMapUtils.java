@@ -391,9 +391,9 @@ public interface DateMapUtils extends Column {
         for (int r = 0; r < this.size(); r++) {
             LocalDate c1 = this.get(r);
             if (c1 == null) {
-                newColumn.add(null);
+                newColumn.appendInternal(DateTimeColumn.MISSING_VALUE);
             } else {
-                newColumn.add(c1.atStartOfDay());
+                newColumn.append(c1.atStartOfDay());
             }
         }
         return newColumn;

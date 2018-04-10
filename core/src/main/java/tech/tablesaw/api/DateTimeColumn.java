@@ -25,7 +25,6 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
 import tech.tablesaw.columns.datetimes.DateTimeFilters;
 import tech.tablesaw.columns.datetimes.DateTimeMapUtils;
@@ -140,30 +139,6 @@ public class DateTimeColumn extends AbstractColumn
     }
 
     @Override
-    public void appendCell(String stringValue) {
-        if (stringValue == null) {
-            appendInternal(MISSING_VALUE);
-        } else {
-            long dateTime = convert(stringValue);
-            appendInternal(dateTime);
-        }
-    }
-
-    public void add(LocalDateTime dateTime) {
-        if (dateTime != null) {
-            final long dt = PackedLocalDateTime.pack(dateTime);
-            appendInternal(dt);
-        } else {
-            appendInternal(MISSING_VALUE);
-        }
-    }
-
-    public DateTimeColumn lead(int n) {
-        DateTimeColumn column = lag(-n);
-        column.setName(name() + " lead(" + n + ")");
-        return column;
-    }
-
     public DateTimeColumn lag(int n) {
         int srcPos = n >= 0 ? 0 : 0 - n;
         long[] dest = new long[size()];
@@ -180,6 +155,25 @@ public class DateTimeColumn extends AbstractColumn
         copy.data = new LongArrayList(dest);
         copy.setName(name() + " lag(" + n + ")");
         return copy;
+    }
+
+    @Override
+    public void appendCell(String stringValue) {
+        if (stringValue == null) {
+            appendInternal(MISSING_VALUE);
+        } else {
+            long dateTime = convert(stringValue);
+            appendInternal(dateTime);
+        }
+    }
+
+    public void append(LocalDateTime dateTime) {
+        if (dateTime != null) {
+            final long dt = PackedLocalDateTime.pack(dateTime);
+            appendInternal(dt);
+        } else {
+            appendInternal(MISSING_VALUE);
+        }
     }
 
     /**
@@ -217,10 +211,6 @@ public class DateTimeColumn extends AbstractColumn
 
     public void appendInternal(long dateTime) {
         data.add(dateTime);
-    }
-
-    public void append(LocalDateTime dateTime) {
-        data.add(PackedLocalDateTime.pack(dateTime));
     }
 
     @Override
@@ -335,64 +325,6 @@ public class DateTimeColumn extends AbstractColumn
     }
 
     /**
-     * Returns a TimeColumn containing the time portion of each dateTime in this DateTimeColumn
-     */
-    public TimeColumn time() {
-        TimeColumn newColumn = TimeColumn.create(this.name() + " time");
-        for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getPackedDateTime(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.appendInternal(TimeColumn.MISSING_VALUE);
-            } else {
-                newColumn.appendInternal(PackedLocalDateTime.time(c1));
-            }
-        }
-        return newColumn;
-    }
-
-    /**
-     * Returns a DateColumn containing the date portion of each dateTime in this DateTimeColumn
-     */
-    public DateColumn date() {
-        DateColumn newColumn = DateColumn.create(this.name() + " date");
-        for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getPackedDateTime(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.appendInternal(DateColumn.MISSING_VALUE);
-            } else {
-                newColumn.appendInternal(PackedLocalDateTime.date(c1));
-            }
-        }
-        return newColumn;
-    }
-
-    public NumberColumn monthNumber() {
-        NumberColumn newColumn = DoubleColumn.create(this.name() + " month");
-        for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getPackedDateTime(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
-            } else {
-                newColumn.append((short) PackedLocalDateTime.getMonthValue(c1));
-            }
-        }
-        return newColumn;
-    }
-
-    public NumberColumn year() {
-        NumberColumn newColumn = DoubleColumn.create(this.name() + " year");
-        for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getPackedDateTime(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
-            } else {
-                newColumn.append(PackedLocalDate.getYear(PackedLocalDateTime.date(c1)));
-            }
-        }
-        return newColumn;
-    }
-
-    /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria
      * <p>
@@ -456,7 +388,7 @@ public class DateTimeColumn extends AbstractColumn
         Preconditions.checkArgument(column.type() == this.type());
         DateTimeColumn doubleColumn = (DateTimeColumn) column;
         for (int i = 0; i < doubleColumn.size(); i++) {
-            add(doubleColumn.get(i));
+            append(doubleColumn.get(i));
         }
     }
 
@@ -501,19 +433,6 @@ public class DateTimeColumn extends AbstractColumn
             return null;
         }
         return PackedLocalDateTime.asLocalDateTime(min);
-    }
-
-    public NumberColumn minuteOfDay() {
-        NumberColumn newColumn = DoubleColumn.create(this.name() + " minute of day");
-        for (int r = 0; r < this.size(); r++) {
-            long c1 = getPackedDateTime(r);
-            if (c1 == DateTimeColumn.MISSING_VALUE) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
-            } else {
-                newColumn.append((short) PackedLocalDateTime.getMinuteOfDay(c1));
-            }
-        }
-        return newColumn;
     }
 
     public void set(int index, long value) {
@@ -620,5 +539,4 @@ public class DateTimeColumn extends AbstractColumn
             }
         };
     }
-
 }
