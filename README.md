@@ -13,7 +13,7 @@ Tablesaw
 >
 > Two of the biggest changes are the removal of the Smile interface, and the removal of support for several numeric column types. In the new release we will support only double precision floating point columns. We may at some time revert those changes, but for now they let us focus on Tablesaw's core functionality in manipulating tabular datasets. 
 >
-> The new version also represents a significant improvement in several dimensions. All the changes are summarized [here]((https://jtablesaw.github.io/tablesaw/changes_in_v_0.2.md)), but it's worth mentioning a couple: 
+> The new version also represents a significant improvement in several dimensions. All the changes are summarized [here](https://jtablesaw.github.io/tablesaw/changes_in_v_0.2.md), but it's worth mentioning a couple: 
 >
 > Overall, interfaces for tables and columns are more consistent, general, powerful, and robust. Test coverage is up from 44% to 70%.  When the release goes to Maven Central, documentation will be better, too.  Overall, this release is a big step forward for Tablesaw. We hope you agree. 
 >
