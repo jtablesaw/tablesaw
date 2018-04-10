@@ -16,7 +16,8 @@ package tech.tablesaw.columns;
 
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
-import tech.tablesaw.filtering.predicates.IntPredicate;
+
+import java.util.function.IntPredicate;
 
 /**
  * Predicates for test DateColumn values and/or TimeColumn values

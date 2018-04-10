@@ -16,72 +16,51 @@ package tech.tablesaw.columns.strings;
 
 import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.filtering.predicates.StringBiPredicate;
-import tech.tablesaw.filtering.predicates.StringIntBiPredicate;
-import tech.tablesaw.filtering.predicates.StringPredicate;
 
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class StringPredicates {
 
-    public static final StringPredicate isMissing = i -> i.equals(StringColumn.MISSING_VALUE);
+    public static final Predicate<String> isMissing = i -> i.equals(StringColumn.MISSING_VALUE);
 
-    public static final StringPredicate isNotMissing = i -> !i.equals(StringColumn.MISSING_VALUE);
+    public static final Predicate<String> isNotMissing = i -> !i.equals(StringColumn.MISSING_VALUE);
 
-    public static final StringPredicate isUpperCase = StringUtils::isAllUpperCase;
+    public static final Predicate<String> isUpperCase = StringUtils::isAllUpperCase;
 
-    public static final StringPredicate isLowerCase = StringUtils::isAllLowerCase;
+    public static final Predicate<String> isLowerCase = StringUtils::isAllLowerCase;
 
-    public static final StringBiPredicate startsWith = String::startsWith;
+    public static final BiPredicate<String, String> startsWith = String::startsWith;
 
-    public static final StringBiPredicate endsWith = String::endsWith;
+    public static final BiPredicate<String, String> endsWith = String::endsWith;
 
-    public static final StringBiPredicate stringContains = String::contains;
+    public static final BiPredicate<String, String> stringContains = String::contains;
 
-    public static final StringBiPredicate matchesRegex = (String valueToTest, String valueToCompareAgainst) -> {
+    public static final BiPredicate<String, String> matchesRegex = (String valueToTest, String valueToCompareAgainst) -> {
         Pattern p = Pattern.compile(valueToCompareAgainst);
         Matcher m = p.matcher(valueToTest);
         return (m.matches());
     };
 
-    public static final StringBiPredicate isEqualTo = String::equals;
+    public static final BiPredicate<String, String> isEqualTo = String::equals;
 
-    public static final StringBiPredicate isNotEqualTo = new StringBiPredicate() {
-        @Override
-        public boolean test(String valueToTest, String valueToCompareAgainst) {
-            return !valueToTest.equals(valueToCompareAgainst);
-        }
-    };
+    public static final BiPredicate<String, String> isNotEqualTo = (valueToTest, valueToCompareAgainst) -> !valueToTest.equals(valueToCompareAgainst);
 
-    public static final StringBiPredicate isEqualToIgnoringCase = String::equalsIgnoreCase;
+    public static final BiPredicate<String, String> isEqualToIgnoringCase = String::equalsIgnoreCase;
 
-    public static final StringPredicate isAlpha = StringUtils::isAlpha;
+    public static final Predicate<String> isAlpha = StringUtils::isAlpha;
 
-    public static final StringPredicate isAlphaNumeric = StringUtils::isAlphanumeric;
+    public static final Predicate<String> isAlphaNumeric = StringUtils::isAlphanumeric;
 
-    public static final StringPredicate isNumeric = StringUtils::isNumeric;
+    public static final Predicate<String> isNumeric = StringUtils::isNumeric;
 
-    public static final StringPredicate isEmpty = StringUtils::isEmpty;
+    public static final Predicate<String> isEmpty = StringUtils::isEmpty;
 
-    public static final StringIntBiPredicate isLongerThan = new StringIntBiPredicate() {
-        @Override
-        public boolean test(String valueToTest, int valueToCompareAgainst) {
-            return valueToTest.length() > valueToCompareAgainst;
-        }
-    };
+    public static final BiPredicate<String, Integer> isLongerThan = (valueToTest, valueToCompareAgainst) -> valueToTest.length() > valueToCompareAgainst;
 
-    public static final StringIntBiPredicate isShorterThan = new StringIntBiPredicate() {
-        @Override
-        public boolean test(String valueToTest, int valueToCompareAgainst) {
-            return valueToTest.length() < valueToCompareAgainst;
-        }
-    };
+    public static final BiPredicate<String, Integer> isShorterThan = (valueToTest, valueToCompareAgainst) -> valueToTest.length() < valueToCompareAgainst;
 
-    public static final StringIntBiPredicate hasEqualLengthTo = new StringIntBiPredicate() {
-        @Override
-        public boolean test(String valueToTest, int valueToCompareAgainst) {
-            return valueToTest.length() == valueToCompareAgainst;
-        }
-    };
+    public static final BiPredicate<String, Integer> hasEqualLengthTo = (valueToTest, valueToCompareAgainst) -> valueToTest.length() == valueToCompareAgainst;
 }

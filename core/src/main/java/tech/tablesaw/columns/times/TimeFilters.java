@@ -4,12 +4,12 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
-import tech.tablesaw.filtering.predicates.IntPredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.time.LocalTime;
 import java.util.function.BiPredicate;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 public interface TimeFilters extends Column {

@@ -5,13 +5,13 @@ import it.unimi.dsi.fastutil.longs.LongIterator;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.predicates.LongBiPredicate;
-import tech.tablesaw.filtering.predicates.LongPredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.function.BiPredicate;
+import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
 import static tech.tablesaw.columns.datetimes.DateTimePredicates.*;

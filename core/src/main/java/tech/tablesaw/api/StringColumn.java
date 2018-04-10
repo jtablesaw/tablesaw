@@ -35,9 +35,6 @@ import tech.tablesaw.columns.strings.StringFilters;
 import tech.tablesaw.columns.strings.StringMapUtils;
 import tech.tablesaw.columns.strings.StringReduceUtils;
 import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.filtering.predicates.StringBiPredicate;
-import tech.tablesaw.filtering.predicates.StringIntBiPredicate;
-import tech.tablesaw.filtering.predicates.StringPredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -50,8 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import static tech.tablesaw.api.ColumnType.STRING;
 
@@ -527,72 +522,6 @@ public class StringColumn extends AbstractColumn
 
     public StringColumn selectWhere(Filter filter) {
         return selectWhere(filter.apply(this));
-    }
-
-    @Override
-    public Selection eval(StringPredicate predicate) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(get(idx))) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-    @Override
-    public Selection eval(StringBiPredicate predicate, StringColumn otherColumn) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(get(idx), otherColumn.get(idx))) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-    @Override
-    public Selection eval(StringBiPredicate predicate, String value) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(get(idx), value)) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-    @Override
-    public Selection eval(BiPredicate<String, String> predicate, String value) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(get(idx), value)) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-    @Override
-    public Selection eval(Predicate<String> predicate) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(get(idx))) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-    @Override
-    public Selection eval(StringIntBiPredicate predicate, int value) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(get(idx), value)) {
-                selection.add(idx);
-            }
-        }
-        return selection;
     }
 
     @Override

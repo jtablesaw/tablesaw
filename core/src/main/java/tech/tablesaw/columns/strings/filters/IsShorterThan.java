@@ -31,7 +31,7 @@ import static tech.tablesaw.columns.strings.StringPredicates.*;
 @Immutable
 public class IsShorterThan extends ColumnFilter {
 
-    private final int length;
+    private final Integer length;
 
     public IsShorterThan(StringColumnReference reference, int length) {
         super(reference);

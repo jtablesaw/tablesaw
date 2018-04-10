@@ -29,8 +29,6 @@ import tech.tablesaw.columns.dates.DateFilters;
 import tech.tablesaw.columns.dates.DateMapUtils;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
-import tech.tablesaw.filtering.predicates.IntPredicate;
-import tech.tablesaw.filtering.predicates.LocalDatePredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -48,9 +46,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
-
-import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 /**
  * A column in a base table that contains float values
@@ -305,8 +302,9 @@ public class DateColumn extends AbstractColumn implements DateFilters,
      * myColumn.set(LocalDate.now(), myColumn.valueIsMissing()); // no more missing values
      */
     public void set(LocalDate newValue, Selection rowSelection) {
+        int packed = PackedLocalDate.pack(newValue);
         for (int row : rowSelection) {
-            set(row, newValue);
+            set(row, packed);
         }
     }
 
@@ -401,11 +399,6 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         return i == MISSING_VALUE;
     }
 
-    @Override
-    public Selection isMissing() {
-        return eval(isMissing);
-    }
-
     /**
      * Returns the count of missing values in this column
      */
@@ -421,34 +414,12 @@ public class DateColumn extends AbstractColumn implements DateFilters,
     }
 
     @Override
-    public Selection isNotMissing() {
-        return eval(isNotMissing);
-    }
-
-    @Override
     public void append(Column column) {
         Preconditions.checkArgument(column.type() == this.type());
         DateColumn doubleColumn = (DateColumn) column;
         for (int i = 0; i < doubleColumn.size(); i++) {
             appendInternal(doubleColumn.getPackedDate(i));
         }
-    }
-
-    /**
-     * Returns a selection formed by applying the given predicate
-     *
-     * Prefer using an IntPredicate where the int is a PackedDate, as this version creates a date object
-     * for each value in the column
-     */
-    public Selection eval(LocalDatePredicate predicate) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < data.size(); idx++) {
-            int next = data.getInt(idx);
-            if (predicate.test(get(next))) {
-                selection.add(idx);
-            }
-        }
-        return selection;
     }
 
     /**

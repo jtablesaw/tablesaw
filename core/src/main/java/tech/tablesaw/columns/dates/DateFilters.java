@@ -6,27 +6,33 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.DateAndTimePredicates;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
-import tech.tablesaw.filtering.predicates.IntPredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 import java.util.function.BiPredicate;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
-import static tech.tablesaw.columns.DateAndTimePredicates.isEqualTo;
+import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 public interface DateFilters extends Column {
 
     DateColumn selectWhere(Selection selection);
+
+    /**
+     * Returns a selection formed by applying the given predicate
+     *
+     * Prefer using an IntPredicate where the int is a PackedDate, as this version creates a date object
+     * for each value in the column
+     */
+    Selection eval(Predicate<LocalDate> predicate);
 
     Selection eval(IntPredicate predicate);
 
     Selection eval(IntBiPredicate predicate, int value);
 
     Selection eval(BiPredicate<LocalDate, LocalDate> predicate, LocalDate valueToCompare);
-
-    Selection eval(Predicate<LocalDate> predicate);
 
     default Selection isMonday() {
         return eval(PackedLocalDate::isMonday);
@@ -145,7 +151,6 @@ public interface DateFilters extends Column {
         return eval(PackedLocalDate::isBefore, value);
     }
 
-
     default Selection isBetweenExcluding(int lowValue, int highValue) {
         return eval(PackedLocalDate::isAfter, lowValue)
                 .and(eval(PackedLocalDate::isBefore, highValue));
@@ -202,6 +207,16 @@ public interface DateFilters extends Column {
             i++;
         }
         return results;
+    }
+
+    @Override
+    default Selection isMissing() {
+        return eval(isMissing);
+    }
+
+    @Override
+    default Selection isNotMissing() {
+        return eval(isNotMissing);
     }
 
     IntArrayList data();

@@ -16,7 +16,8 @@ package tech.tablesaw.columns.datetimes;
 
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.filtering.predicates.LongBiPredicate;
-import tech.tablesaw.filtering.predicates.LongPredicate;
+
+import java.util.function.LongPredicate;
 
 public class DateTimePredicates {
 

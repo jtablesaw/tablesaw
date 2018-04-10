@@ -33,9 +33,7 @@ import tech.tablesaw.columns.strings.filters.IsUpperCase;
 import tech.tablesaw.columns.strings.filters.MatchesRegex;
 import tech.tablesaw.columns.strings.filters.StartsWith;
 import tech.tablesaw.filtering.Filter;
-import tech.tablesaw.filtering.predicates.StringBiPredicate;
-import tech.tablesaw.filtering.predicates.StringIntBiPredicate;
-import tech.tablesaw.filtering.predicates.StringPredicate;
+import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.util.Collection;
@@ -48,24 +46,53 @@ public interface StringFilters extends Column {
 
     StringColumn selectWhere(Filter filter);
 
-    Selection eval(StringPredicate predicate);
+    default Selection eval(BiPredicate<String, String> predicate, StringColumn otherColumn) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), otherColumn.get(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
 
-    Selection eval(StringBiPredicate predicate, String valueToCompare);
+    default Selection eval(BiPredicate<String, String> predicate, String value) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), value)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
 
-    Selection eval(StringIntBiPredicate predicate, int valueToCompare);
 
-    Selection eval(StringBiPredicate predicate, StringColumn otherColumn);
+    default Selection eval(BiPredicate<String, Integer> predicate, Integer value) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), value)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
 
-    Selection eval(BiPredicate<String, String> biPredicate, String valueToCompare);
-
-    Selection eval(Predicate<String> predicate);
+    default Selection eval(Predicate<String> predicate) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
 
     default Selection equalsIgnoreCase(String string) {
         return new EqualToIgnoringCase(new StringColumnReference(this.name()), string).apply(this);
     }
 
     default Selection isEmptyString() {
-        return eval((StringPredicate) String::isEmpty);
+        return eval(String::isEmpty);
     }
 
     default Selection startsWith(String string) {
@@ -152,4 +179,6 @@ public interface StringFilters extends Column {
     }
 
     Selection isEqualTo(String string);
+
+    String get(int index);
 }

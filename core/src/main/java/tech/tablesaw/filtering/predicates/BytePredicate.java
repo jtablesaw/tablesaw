@@ -14,8 +14,10 @@
 
 package tech.tablesaw.filtering.predicates;
 
-public interface LongPredicate {
+/**
+ * Used in BooleanColumn to evaluate elements without casting or autoboxing
+ */
+public interface BytePredicate {
 
-    boolean test(long i);
-
+    boolean test(byte i);
 }

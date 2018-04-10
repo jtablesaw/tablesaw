@@ -15,13 +15,13 @@ import tech.tablesaw.columns.numbers.NumberReduceUtils;
 import tech.tablesaw.columns.numbers.Stats;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
-import tech.tablesaw.filtering.predicates.DoublePredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.Selection;
 
 import java.text.NumberFormat;
+import java.util.function.DoublePredicate;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.NUMBER;
 
 public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColumn, NumberMapUtils, NumberReduceUtils, NumberFilters, CategoricalColumn {
     double MISSING_VALUE = (Double) NUMBER.getMissingValue();

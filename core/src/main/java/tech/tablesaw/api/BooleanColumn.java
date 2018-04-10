@@ -31,7 +31,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.booleans.BooleanColumnUtils;
 import tech.tablesaw.columns.booleans.BooleanFormatter;
 import tech.tablesaw.columns.booleans.BooleanMapUtils;
-import tech.tablesaw.filtering.predicates.BooleanPredicate;
+import tech.tablesaw.filtering.predicates.BytePredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -539,7 +539,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return (BooleanColumn) subset(selection);
     }
 
-    public Selection eval(BooleanPredicate predicate) {
+    public Selection eval(BytePredicate predicate) {
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
             byte next = data.getByte(idx);

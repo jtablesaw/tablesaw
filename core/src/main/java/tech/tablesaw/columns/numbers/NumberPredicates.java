@@ -17,8 +17,9 @@ package tech.tablesaw.columns.numbers;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
-import tech.tablesaw.filtering.predicates.DoublePredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
+
+import java.util.function.DoublePredicate;
 
 /**
  * Support for built-in predicates on double column

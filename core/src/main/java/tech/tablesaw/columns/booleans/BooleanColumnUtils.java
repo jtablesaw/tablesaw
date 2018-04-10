@@ -17,11 +17,11 @@ package tech.tablesaw.columns.booleans;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.predicates.BooleanPredicate;
+import tech.tablesaw.filtering.predicates.BytePredicate;
 
 public interface BooleanColumnUtils extends Column, IntIterable {
 
-    BooleanPredicate isMissing = i -> i == BooleanColumn.MISSING_VALUE;
+    BytePredicate isMissing = i -> i == BooleanColumn.MISSING_VALUE;
 
-    BooleanPredicate isNotMissing = i -> i != BooleanColumn.MISSING_VALUE;
+    BytePredicate isNotMissing = i -> i != BooleanColumn.MISSING_VALUE;
 }
