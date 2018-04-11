@@ -14,6 +14,10 @@
 
 package tech.tablesaw.aggregate;
 
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.table.SelectionTableSliceGroup;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import org.junit.Before;
@@ -98,5 +102,22 @@ public class AggregateFunctionsTest {
         assertEquals(6, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals("date year & month", result.column(1).name());
+    }
+
+    @Test
+    public void testMultipleColumnTypes() {
+
+        boolean[] args = {true, false, true, false};
+        BooleanColumn booleanColumn = BooleanColumn.create("b", args);
+
+        double[] numbers = {1, 2, 3, 4};
+        NumberColumn numberColumn = DoubleColumn.create("n", numbers);
+
+        String[] strings = {"M", "F", "M", "F"};
+        StringColumn stringColumn = StringColumn.create("s", strings);
+
+        Table table = Table.create("test", booleanColumn, numberColumn);
+
+        Table result = table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation).by(stringColumn);
     }
 }

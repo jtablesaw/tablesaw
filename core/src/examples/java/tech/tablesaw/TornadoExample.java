@@ -123,7 +123,7 @@ public class TornadoExample extends AbstractExample {
         out(summer.first(4));
 
         // now we can summarize by year so we don't inadvertently include differences between multiple years
-        Table summary = summer.summarize(delta, mean, count).by(summerDate.year());
+        Table summary = summer.summarize(delta, mean, countNonMissing).by(summerDate.year());
         out(summary);
 
         // taking the mean of the annual means gives us an approximate answer

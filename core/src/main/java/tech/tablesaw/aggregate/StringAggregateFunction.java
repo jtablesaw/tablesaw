@@ -6,9 +6,9 @@ import tech.tablesaw.columns.Column;
 /**
  * A partial implementation of aggregate functions to summarize over a string column
  */
-public abstract class StringReduction extends Reduction{
+public abstract class StringAggregateFunction extends AggregateFunction {
 
-    public StringReduction(String name) {
+    public StringAggregateFunction(String name) {
         super(name);
     }
 

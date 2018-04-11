@@ -4,17 +4,17 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.Column;
 
 /**
- * A partial implementation of aggregate functions to summarize over a dateTime column
+ * A partial implementation of aggregate functions to summarize over a date column
  */
-public abstract class DateTimeReduction extends Reduction{
+public abstract class DateAggregateFunction extends AggregateFunction {
 
-    public DateTimeReduction(String name) {
+    public DateAggregateFunction(String name) {
         super(name);
     }
 
     abstract public double summarize(Column column);
 
     public boolean isCompatibleWith(ColumnType type) {
-        return type.equals(ColumnType.LOCAL_DATE_TIME);
+        return type.equals(ColumnType.LOCAL_DATE);
     }
 }

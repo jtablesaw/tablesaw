@@ -4,17 +4,17 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.Column;
 
 /**
- * A partial implementation of aggregate functions to summarize over a boolean column
+ * A partial implementation of aggregate functions to summarize over a time column
  */
-public abstract class BooleanReduction extends Reduction{
+public abstract class TimeAggregateFunction extends AggregateFunction {
 
-    public BooleanReduction(String name) {
+    public TimeAggregateFunction(String name) {
         super(name);
     }
 
     abstract public double summarize(Column column);
 
     public boolean isCompatibleWith(ColumnType type) {
-        return type.equals(ColumnType.BOOLEAN);
+        return type.equals(ColumnType.LOCAL_TIME);
     }
 }

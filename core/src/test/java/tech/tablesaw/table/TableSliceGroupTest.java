@@ -17,10 +17,10 @@ package tech.tablesaw.table;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.util.List;
@@ -32,15 +32,10 @@ import static org.junit.Assert.*;
  */
 public class TableSliceGroupTest {
 
-    private static AggregateFunction exaggerate = new AggregateFunction() {
+    private static NumericAggregateFunction exaggerate = new NumericAggregateFunction("exageration") {
 
         @Override
-        public String functionName() {
-            return "exaggeration";
-        }
-
-        @Override
-        public double summarize(NumberColumn data) {
+        public double summarize(Column data) {
             return StatUtils.max(data.asDoubleArray()) + 1000;
         }
     };
