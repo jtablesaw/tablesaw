@@ -29,7 +29,7 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import static java.time.temporal.ChronoUnit.*;
 import static tech.tablesaw.api.TimeColumn.*;
 
-public interface TimeMapUtils extends Column {
+public interface TimeMapFunctions extends Column {
 
     default NumberColumn differenceInMilliseconds(TimeColumn column2) {
         return difference(column2, MILLIS);

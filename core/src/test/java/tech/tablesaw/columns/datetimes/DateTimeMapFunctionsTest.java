@@ -32,9 +32,9 @@ import java.util.Locale;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Tests for DateTimeMapUtils
+ * Tests for DateTimeMapFunctions
  */
-public class DateTimeMapUtilsTest {
+public class DateTimeMapFunctionsTest {
 
     private DateTimeColumn startCol = DateTimeColumn.create("start");
     private DateTimeColumn stopCol = DateTimeColumn.create("stop");

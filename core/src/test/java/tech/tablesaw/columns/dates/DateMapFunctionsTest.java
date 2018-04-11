@@ -26,7 +26,7 @@ import java.util.Locale;
 
 import static org.junit.Assert.*;
 
-public class DateMapUtilsTest {
+public class DateMapFunctionsTest {
 
     private DateColumn column1;
 

@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * String utility functions. Each function takes one or more String columns as input and produces
  * another Column as output. The resulting column need not be a string column.
  */
-public interface StringMapUtils extends Column {
+public interface StringMapFunctions extends Column {
 
     default StringColumn upperCase() {
         StringColumn newColumn = StringColumn.create(this.name() + "[ucase]");

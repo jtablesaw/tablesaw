@@ -26,7 +26,7 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.DateColumnFormatter;
 import tech.tablesaw.columns.dates.DateFilters;
-import tech.tablesaw.columns.dates.DateMapUtils;
+import tech.tablesaw.columns.dates.DateMapFunctions;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.io.TypeUtils;
@@ -53,7 +53,7 @@ import java.util.function.Predicate;
  * A column in a base table that contains float values
  */
 public class DateColumn extends AbstractColumn implements DateFilters,
-        DateMapUtils, CategoricalColumn, Iterable<LocalDate> {
+        DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     public static final int MISSING_VALUE = (Integer) ColumnType.LOCAL_DATE.getMissingValue();
 

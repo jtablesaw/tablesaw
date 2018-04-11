@@ -2,14 +2,14 @@ Changes from Tablesaw 0.12.0
 
 1. Increased test coverage from 44% in core, to 72%.
 1. Removed Float, Int, Short, Long column types. An enhanced DoubleColumn is used for all numbers. 
-1. Removed TableGroup, SubTable, and NumericSummaryTable
+1. Removed TableGroup, SubTable, and NumericSummaryTable. All replaced by standard table or TableSlice and TableSliceGroup.
 1. Removed Smile integration
 1. Removed experimental time interval support
 1. Removed several index types
 1. Removed .saw file persistence
 1. Removed all deprecated methods
 1. Removed methods of limited or unclear utility 
-1. Removed Lombok dependency
+1. Removed Lombok dependency (it caused warnings in Java9 and The IDEA plugin is flakey)
 1. Removed duplicate comparator implementations 
 1. Renamed CategoryColumn to StringColumn
 1. Renamed NumericColumn interface to NumberColumn

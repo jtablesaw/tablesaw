@@ -10,7 +10,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberFilters;
-import tech.tablesaw.columns.numbers.NumberMapUtils;
+import tech.tablesaw.columns.numbers.NumberMapFunctions;
 import tech.tablesaw.columns.numbers.NumberReduceUtils;
 import tech.tablesaw.columns.numbers.Stats;
 import tech.tablesaw.filtering.Filter;
@@ -23,7 +23,7 @@ import java.util.function.DoublePredicate;
 
 import static tech.tablesaw.api.ColumnType.NUMBER;
 
-public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColumn, NumberMapUtils, NumberReduceUtils, NumberFilters, CategoricalColumn {
+public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColumn, NumberMapFunctions, NumberReduceUtils, NumberFilters, CategoricalColumn {
     double MISSING_VALUE = (Double) NUMBER.getMissingValue();
 
     static boolean valueIsMissing(double value) {

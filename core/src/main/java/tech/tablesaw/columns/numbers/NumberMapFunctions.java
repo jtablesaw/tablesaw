@@ -22,7 +22,7 @@ import tech.tablesaw.columns.Column;
 
 import static tech.tablesaw.api.NumberColumn.*;
 
-public interface NumberMapUtils extends Column, NumberReduceUtils, DoubleIterable {
+public interface NumberMapFunctions extends Column, NumberReduceUtils, DoubleIterable {
 
     /**
      * Returns a transformation of the data in this column such that the result has a mean of 0, and a

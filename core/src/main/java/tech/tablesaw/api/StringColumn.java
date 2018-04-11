@@ -32,7 +32,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnReference;
 import tech.tablesaw.columns.strings.StringFilters;
-import tech.tablesaw.columns.strings.StringMapUtils;
+import tech.tablesaw.columns.strings.StringMapFunctions;
 import tech.tablesaw.columns.strings.StringReduceUtils;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.TypeUtils;
@@ -58,7 +58,7 @@ import static tech.tablesaw.api.ColumnType.STRING;
  * of missing values in this class's methods.
  */
 public class StringColumn extends AbstractColumn
-        implements CategoricalColumn, StringFilters, StringMapUtils, StringReduceUtils {
+        implements CategoricalColumn, StringFilters, StringMapFunctions, StringReduceUtils {
 
     public final StringColumnReference column = new StringColumnReference(this.name());
 

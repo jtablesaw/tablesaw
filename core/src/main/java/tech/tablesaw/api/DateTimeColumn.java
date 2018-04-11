@@ -27,7 +27,7 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
 import tech.tablesaw.columns.datetimes.DateTimeFilters;
-import tech.tablesaw.columns.datetimes.DateTimeMapUtils;
+import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.Selection;
@@ -52,7 +52,7 @@ import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
 public class DateTimeColumn extends AbstractColumn
-        implements DateTimeMapUtils, DateTimeFilters, Iterable<LocalDateTime> {
+        implements DateTimeMapFunctions, DateTimeFilters, Iterable<LocalDateTime> {
 
     public static final long MISSING_VALUE = (Long) ColumnType.LOCAL_DATE_TIME.getMissingValue();
 

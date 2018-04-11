@@ -27,7 +27,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.columns.times.TimeColumnFormatter;
 import tech.tablesaw.columns.times.TimeFilters;
-import tech.tablesaw.columns.times.TimeMapUtils;
+import tech.tablesaw.columns.times.TimeMapFunctions;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -51,7 +51,7 @@ import static tech.tablesaw.columns.DateAndTimePredicates.*;
 /**
  * A column in a base table that contains float values
  */
-public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, TimeFilters, TimeMapUtils {
+public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, TimeFilters, TimeMapFunctions {
 
     public static final int MISSING_VALUE = (Integer) LOCAL_TIME.getMissingValue();
 

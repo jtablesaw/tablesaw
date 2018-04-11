@@ -9,7 +9,7 @@ import tech.tablesaw.columns.Column;
 
 import static org.junit.Assert.*;
 
-public class NumberMapUtilsTest {
+public class NumberMapFunctionsTest {
 
     @Test
     public void testNormalize() {
