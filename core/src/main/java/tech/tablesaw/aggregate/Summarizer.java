@@ -43,57 +43,53 @@ public class Summarizer {
     private final AggregateFunction[] reductions;
 
     /**
-     * Returns an object capable of summarizing the given numericColumn in the given sourceTable,
+     * Returns an object capable of summarizing the given column in the given sourceTable,
      * by applying the given functions
      */
-    public Summarizer(Table sourceTable, NumberColumn numericColumn, AggregateFunction... functions) {
+    public Summarizer(Table sourceTable, Column column, AggregateFunction... functions) {
         this.original = sourceTable;
-        summarizedColumns.add(numericColumn.name());
+        summarizedColumns.add(column.name());
         this.reductions = functions;
     }
 
     /**
-     * Returns an object capable of summarizing the given numericColumn in the given sourceTable,
+     * Returns an object capable of summarizing the given columns in the given sourceTable,
      * by applying the given functions
      */
-    public Summarizer(Table sourceTable, Column numericColumn1, Column numericColumn2, AggregateFunction... functions) {
+    public Summarizer(Table sourceTable, Column column1, Column column2, AggregateFunction... functions) {
         this.original = sourceTable;
-        summarizedColumns.add(numericColumn1.name());
-        summarizedColumns.add(numericColumn2.name());
+        summarizedColumns.add(column1.name());
+        summarizedColumns.add(column2.name());
         this.reductions = functions;
     }
 
     /**
-     * Returns an object capable of summarizing the given numericColumn in the given sourceTable,
+     * Returns an object capable of summarizing the given columns in the given sourceTable,
      * by applying the given functions
      */
     public Summarizer(Table sourceTable,
-                      NumberColumn numericColumn1,
-                      NumberColumn numericColumn2,
-                      NumberColumn numericColumn3,
-                      NumberColumn numericColumn4,
+                      Column column1,
+                      Column column2,
+                      Column column3,
+                      Column column4,
                       AggregateFunction... functions) {
         this.original = sourceTable;
-        summarizedColumns.add(numericColumn1.name());
-        summarizedColumns.add(numericColumn2.name());
-        summarizedColumns.add(numericColumn3.name());
-        summarizedColumns.add(numericColumn4.name());
+        summarizedColumns.add(column1.name());
+        summarizedColumns.add(column2.name());
+        summarizedColumns.add(column3.name());
+        summarizedColumns.add(column4.name());
         this.reductions = functions;
     }
 
     /**
-     * Returns an object capable of summarizing the given numericColumn in the given sourceTable,
+     * Returns an object capable of summarizing the given column2 in the given sourceTable,
      * by applying the given functions
      */
-    public Summarizer(Table sourceTable,
-                      NumberColumn numericColumn1,
-                      NumberColumn numericColumn2,
-                      NumberColumn numericColumn3,
-                      AggregateFunction... functions) {
+    public Summarizer(Table sourceTable, Column column1, Column column2, Column column3, AggregateFunction... functions) {
         this.original = sourceTable;
-        summarizedColumns.add(numericColumn1.name());
-        summarizedColumns.add(numericColumn2.name());
-        summarizedColumns.add(numericColumn3.name());
+        summarizedColumns.add(column1.name());
+        summarizedColumns.add(column2.name());
+        summarizedColumns.add(column3.name());
         this.reductions = functions;
     }
 
@@ -129,6 +125,11 @@ public class Summarizer {
         return table;
     }
 
+    /**
+     * Associates the columns to be summarized with the functions that match their type. All valid combinations are used
+     * @param group A table slice group
+     * @return      A table containing a row of summarized data for each group in the table slice group
+     */
     private Table summarize(TableSliceGroup group) {
         List<Table> results = new ArrayList<>();
 

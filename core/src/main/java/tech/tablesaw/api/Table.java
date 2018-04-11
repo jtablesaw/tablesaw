@@ -917,29 +917,24 @@ public class Table extends Relation implements IntIterable {
         return this;
     }
 
-    public Summarizer summarize(String numericColumnName, AggregateFunction... functions) {
-        return summarize(numberColumn(numericColumnName), functions);
+    public Summarizer summarize(String columName, AggregateFunction... functions) {
+        return summarize(column(columName), functions);
     }
 
     public Summarizer summarize(String numericColumn1Name, String numericColumn2Name, AggregateFunction... functions) {
-        return summarize(numberColumn(numericColumn1Name), numberColumn(numericColumn2Name), functions);
+        return summarize(column(numericColumn1Name), column(numericColumn2Name), functions);
     }
 
     public Summarizer summarize(String col1Name, String col2Name, String col3Name, AggregateFunction... functions) {
-        return summarize(numberColumn(col1Name), numberColumn(col2Name), numberColumn(col3Name), functions);
+        return summarize(column(col1Name), column(col2Name), column(col3Name), functions);
     }
 
     public Summarizer summarize(String col1Name, String col2Name, String col3Name, String col4Name, AggregateFunction... functions) {
-        return summarize(numberColumn(col1Name), numberColumn(col2Name), numberColumn(col3Name), numberColumn(col4Name), functions);
+        return summarize(column(col1Name), column(col2Name), column(col3Name), column(col4Name), functions);
     }
 
-    public Summarizer summarize(NumberColumn numberColumn, AggregateFunction... function) {
+    public Summarizer summarize(Column numberColumn, AggregateFunction... function) {
         return new Summarizer(this, numberColumn, function);
-    }
-
-    public Summarizer summarize(NumberColumn numberColumn1, NumberColumn numberColumn2,
-                                AggregateFunction... function) {
-        return new Summarizer(this, numberColumn1, numberColumn2, function);
     }
 
     public Summarizer summarize(Column numberColumn1, Column numberColumn2,
@@ -947,12 +942,12 @@ public class Table extends Relation implements IntIterable {
         return new Summarizer(this, numberColumn1, numberColumn2, function);
     }
 
-    public Summarizer summarize(NumberColumn column1, NumberColumn column2, NumberColumn column3,
+    public Summarizer summarize(Column column1, Column column2, Column column3,
                                 AggregateFunction... function) {
         return new Summarizer(this, column1, column2, column3, function);
     }
 
-    public Summarizer summarize(NumberColumn column1, NumberColumn column2, NumberColumn column3, NumberColumn column4,
+    public Summarizer summarize(Column column1, Column column2, Column column3, Column column4,
                                 AggregateFunction... function) {
         return new Summarizer(this, column1, column2, column3, column4, function);
     }
