@@ -122,7 +122,7 @@ public final class CrossTab {
         return percentTable;
     }
 
-    public static Table rowPercents(Table xTabCounts) {
+    private static Table rowPercents(Table xTabCounts) {
 
         Table pctTable = Table.create("Crosstab Row Proportions: ");
         StringColumn labels = StringColumn.create(LABEL_COLUMN_NAME);
@@ -152,7 +152,7 @@ public final class CrossTab {
         return pctTable;
     }
 
-    public static Table tablePercents(Table xTabCounts) {
+    private static Table tablePercents(Table xTabCounts) {
 
         Table pctTable = Table.create("Crosstab Table Proportions: ");
         StringColumn labels = StringColumn.create(LABEL_COLUMN_NAME);
@@ -182,7 +182,7 @@ public final class CrossTab {
         return pctTable;
     }
 
-    public static Table columnPercents(Table xTabCounts) {
+    private static Table columnPercents(Table xTabCounts) {
 
         Table pctTable = Table.create("Crosstab Column Proportions: ");
         StringColumn labels = StringColumn.create(LABEL_COLUMN_NAME);
@@ -230,6 +230,14 @@ public final class CrossTab {
     }
 
     /**
+     * Returns a table containing the column percents made from a source table, after first calculating the counts
+     * cross-tabulated from the given columns
+     */
+    public static Table columnPercents(Table table, String column1, String column2) {
+        return columnPercents(table, table.categoricalColumn(column1), table.categoricalColumn(column2));
+    }
+
+    /**
      * Returns a table containing the row percents made from a source table, after first calculating the counts
      * cross-tabulated from the given columns
      */
@@ -239,11 +247,27 @@ public final class CrossTab {
     }
 
     /**
+     * Returns a table containing the row percents made from a source table, after first calculating the counts
+     * cross-tabulated from the given columns
+     */
+    public static Table rowPercents(Table table, String column1, String column2) {
+        return rowPercents(table, table.categoricalColumn(column1), table.categoricalColumn(column2));
+    }
+
+    /**
      * Returns a table containing the table percents made from a source table, after first calculating the counts
      * cross-tabulated from the given columns
      */
     public static Table tablePercents(Table table, CategoricalColumn column1, CategoricalColumn column2) {
         Table xTabs = counts(table, column1, column2);
         return tablePercents(xTabs);
+    }
+
+    /**
+     * Returns a table containing the table percents made from a source table, after first calculating the counts
+     * cross-tabulated from the given columns
+     */
+    public static Table tablePercents(Table table, String column1, String column2) {
+        return tablePercents(table, table.categoricalColumn(column1), table.categoricalColumn(column2));
     }
 }
