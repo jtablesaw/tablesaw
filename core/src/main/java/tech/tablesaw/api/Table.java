@@ -23,6 +23,8 @@ import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.apache.commons.lang3.RandomUtils;
 import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.aggregate.Reducer;
+import tech.tablesaw.aggregate.Reduction;
 import tech.tablesaw.aggregate.Summarizer;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
@@ -940,6 +942,11 @@ public class Table extends Relation implements IntIterable {
     public Summarizer summarize(NumberColumn numberColumn1, NumberColumn numberColumn2,
                                 AggregateFunction... function) {
         return new Summarizer(this, numberColumn1, numberColumn2, function);
+    }
+
+    public Reducer summarize(Column numberColumn1, Column numberColumn2,
+                                Reduction... function) {
+        return new Reducer(this, numberColumn1, numberColumn2, function);
     }
 
     public Summarizer summarize(NumberColumn column1, NumberColumn column2, NumberColumn column3,

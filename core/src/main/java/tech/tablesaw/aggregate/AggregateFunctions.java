@@ -30,7 +30,7 @@ public class AggregateFunctions {
     /**
      * A function that returns the first item
      */
-    public static AggregateFunction first = new Reduction("First") {
+    public static AggregateFunction first = new Aggregation("First") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -41,7 +41,7 @@ public class AggregateFunctions {
     /**
      * A function that returns the last item
      */
-    public static AggregateFunction last = new Reduction("Last") {
+    public static AggregateFunction last = new Aggregation("Last") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -52,7 +52,7 @@ public class AggregateFunctions {
     /**
      * A function that calculates the count of the values in the column param
      */
-    public static AggregateFunction count = new Reduction("Count") {
+    public static AggregateFunction count = new Aggregation("Count") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -63,7 +63,7 @@ public class AggregateFunctions {
     /**
      * A function that calculates the count of the values in the column param
      */
-    public static AggregateFunction countUnique = new Reduction("Count") {
+    public static AggregateFunction countUnique = new Aggregation("Count") {
 
         @Override
         public double summarize(NumberColumn doubles) {
@@ -74,7 +74,7 @@ public class AggregateFunctions {
     /**
      * A function that calculates the mean of the values in the column param
      */
-    public static final AggregateFunction mean = new Reduction("Mean") {
+    public static final AggregateFunction mean = new Aggregation("Mean") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -85,7 +85,7 @@ public class AggregateFunctions {
     /**
      * A function that calculates the sum of the values in the column param
      */
-    public static final AggregateFunction sum = new Reduction("Sum") {
+    public static final AggregateFunction sum = new Aggregation("Sum") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -93,7 +93,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction median = new Reduction("Median") {
+    public static final AggregateFunction median = new Aggregation("Median") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -101,7 +101,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction n = new Reduction("N") {
+    public static final AggregateFunction n = new Aggregation("N") {
         //TODO: This is the same as count -> Get rid of one of them
         //TODO: Consider whether we should provide a count without missing values
         @Override
@@ -110,7 +110,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction quartile1 = new Reduction("First Quartile") {
+    public static final AggregateFunction quartile1 = new Aggregation("First Quartile") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -118,7 +118,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction quartile3 = new Reduction("Third Quartile") {
+    public static final AggregateFunction quartile3 = new Aggregation("Third Quartile") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -126,7 +126,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction percentile90 = new Reduction("90th Percentile") {
+    public static final AggregateFunction percentile90 = new Aggregation("90th Percentile") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -134,7 +134,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction percentile95 = new Reduction("95th Percentile") {
+    public static final AggregateFunction percentile95 = new Aggregation("95th Percentile") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -142,7 +142,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction percentile99 = new Reduction("99th Percentile") {
+    public static final AggregateFunction percentile99 = new Aggregation("99th Percentile") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -150,7 +150,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction range = new Reduction("Range") {
+    public static final AggregateFunction range = new Aggregation("Range") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -159,7 +159,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction min = new Reduction("Min") {
+    public static final AggregateFunction min = new Aggregation("Min") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -167,7 +167,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction max = new Reduction("Max") {
+    public static final AggregateFunction max = new Aggregation("Max") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -175,7 +175,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction product = new Reduction("Product") {
+    public static final AggregateFunction product = new Aggregation("Product") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -183,7 +183,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction geometricMean = new Reduction("Geometric Mean") {
+    public static final AggregateFunction geometricMean = new Aggregation("Geometric Mean") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -191,7 +191,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction populationVariance = new Reduction("Population Variance") {
+    public static final AggregateFunction populationVariance = new Aggregation("Population Variance") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -202,7 +202,7 @@ public class AggregateFunctions {
     /**
      * Returns the quadratic mean, aka, the root-mean-square
      */
-    public static final AggregateFunction quadraticMean = new Reduction("Quadratic Mean") {
+    public static final AggregateFunction quadraticMean = new Aggregation("Quadratic Mean") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -210,7 +210,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction kurtosis = new Reduction("Kurtosis") {
+    public static final AggregateFunction kurtosis = new Aggregation("Kurtosis") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -219,7 +219,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction skewness = new Reduction("Skewness") {
+    public static final AggregateFunction skewness = new Aggregation("Skewness") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -228,7 +228,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction sumOfSquares = new Reduction("Sum of Squares") {
+    public static final AggregateFunction sumOfSquares = new Aggregation("Sum of Squares") {
 
         @Override
         public String functionName() {
@@ -241,7 +241,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction sumOfLogs = new Reduction("Sum of Logs") {
+    public static final AggregateFunction sumOfLogs = new Aggregation("Sum of Logs") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -249,7 +249,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction variance = new Reduction("Variance") {
+    public static final AggregateFunction variance = new Aggregation("Variance") {
 
         @Override
         public double summarize(NumberColumn column) {
@@ -257,13 +257,12 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction stdDev = new Reduction("Std. Deviation") {
+    public static final AggregateFunction stdDev = new Aggregation("Std. Deviation") {
 
         @Override
         public double summarize(NumberColumn column) {
             return Math.sqrt(StatUtils.variance(removeMissing(column)));
         }
-
     };
 
     public static double percentile(double[] data, double percentile) {

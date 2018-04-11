@@ -23,7 +23,7 @@ public interface AggregateFunction {
 
     String functionName();
 
-    double summarize(NumberColumn doubles);
+    double summarize(NumberColumn column);
 
     String toString();
 }

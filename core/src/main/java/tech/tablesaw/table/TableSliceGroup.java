@@ -17,8 +17,10 @@ package tech.tablesaw.table;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.aggregate.Reduction;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
@@ -142,6 +144,25 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     public Table aggregate(String colName1, AggregateFunction... functions) {
         ArrayListMultimap<String, AggregateFunction> columnFunctionMap = ArrayListMultimap.create();
         columnFunctionMap.putAll(colName1, Lists.newArrayList(functions));
+/*
+        Table result = aggregate(columnFunctionMap);
+        for (CategoricalColumn column : columnsToRemove) {
+            result.removeColumns(column);
+        }
+        return result;
+*/
+
+        return null;
+    }
+
+    /**
+     * Applies the given aggregation to the given column.
+     * The apply and combine steps of a split-apply-combine.
+     */
+    public Table aggregate(String colName1, Reduction... functions) {
+        ArrayListMultimap<String, Reduction> columnFunctionMap = ArrayListMultimap.create();
+        columnFunctionMap.putAll(colName1, Lists.newArrayList(functions));
+
         Table result = aggregate(columnFunctionMap);
         for (CategoricalColumn column : columnsToRemove) {
             result.removeColumns(column);
@@ -155,6 +176,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
      *
      * @param functions map from column name to aggregation to apply on that function
      */
+/*
     public Table aggregate(ArrayListMultimap<String, AggregateFunction> functions) {
         Preconditions.checkArgument(!getSlices().isEmpty());
         Table groupTable = summaryTableName(sourceTable);
@@ -164,6 +186,42 @@ public class TableSliceGroup implements Iterable<TableSlice> {
             String columnName = entry.getKey();
             int functionCount = 0;
             for (AggregateFunction function : entry.getValue()) {
+                String colName = aggregateColumnName(columnName, function.functionName());
+                NumberColumn resultColumn = DoubleColumn.create(colName, getSlices().size());
+                for (TableSlice subTable : getSlices()) {
+                    double result = subTable.reduce(columnName, function);
+                    if (functionCount == 0) {
+                        groupColumn.append(subTable.name());
+                    }
+                    resultColumn.append(result);
+                }
+                groupTable.addColumn(resultColumn);
+                functionCount++;
+            }
+        }
+        Table result = splitGroupingColumn(groupTable);
+        for (CategoricalColumn column : columnsToRemove) {
+            result.removeColumns(column);
+        }
+        return result;
+    }
+*/
+
+    /**
+     * Applies the given aggregations to the given columns.
+     * The apply and combine steps of a split-apply-combine.
+     *
+     * @param functions map from column name to aggregation to apply on that function
+     */
+    public Table aggregate(ListMultimap<String, Reduction> functions) {
+        Preconditions.checkArgument(!getSlices().isEmpty());
+        Table groupTable = summaryTableName(sourceTable);
+        StringColumn groupColumn = StringColumn.create("Group", size());
+        groupTable.addColumn(groupColumn);
+        for (Map.Entry<String, Collection<Reduction>> entry : functions.asMap().entrySet()) {
+            String columnName = entry.getKey();
+            int functionCount = 0;
+            for (Reduction function : entry.getValue()) {
                 String colName = aggregateColumnName(columnName, function.functionName());
                 NumberColumn resultColumn = DoubleColumn.create(colName, getSlices().size());
                 for (TableSlice subTable : getSlices()) {
