@@ -42,8 +42,8 @@ public class DataFrameJoiner {
             DateColumn col1 = (DateColumn) column;
             for (int i = 0; i < col1.size(); i++) {
                 int value = col1.getIntInternal(i);
-                Table table1Rows = table.selectWhere(Selection.with(i));
-                Table table2Rows = table2.selectWhere(index.get(value));
+                Table table1Rows = table.where(Selection.with(i));
+                Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
                     withMissing(result, table1Rows, table2Rows);
@@ -56,8 +56,8 @@ public class DataFrameJoiner {
             DateTimeColumn col1 = (DateTimeColumn) column;
             for (int i = 0; i < col1.size(); i++) {
                 long value = col1.getLongInternal(i);
-                Table table1Rows = table.selectWhere(Selection.with(i));
-                Table table2Rows = table2.selectWhere(index.get(value));
+                Table table1Rows = table.where(Selection.with(i));
+                Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
                     withMissing(result, table1Rows, table2Rows);
@@ -70,8 +70,8 @@ public class DataFrameJoiner {
             TimeColumn col1 = (TimeColumn) column;
             for (int i = 0; i < col1.size(); i++) {
                 int value = col1.getIntInternal(i);
-                Table table1Rows = table.selectWhere(Selection.with(i));
-                Table table2Rows = table2.selectWhere(index.get(value));
+                Table table1Rows = table.where(Selection.with(i));
+                Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
                     withMissing(result, table1Rows, table2Rows);
@@ -84,8 +84,8 @@ public class DataFrameJoiner {
             StringColumn col1 = (StringColumn) column;
             for (int i = 0; i < col1.size(); i++) {
                 String value = col1.get(i);
-                Table table1Rows = table.selectWhere(Selection.with(i));
-                Table table2Rows = table2.selectWhere(index.get(value));
+                Table table1Rows = table.where(Selection.with(i));
+                Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
                     withMissing(result, table1Rows, table2Rows);
@@ -98,8 +98,8 @@ public class DataFrameJoiner {
             NumberColumn col1 = (NumberColumn) column;
             for (int i = 0; i < col1.size(); i++) {
                 long value = col1.getLong(i);
-                Table table1Rows = table.selectWhere(Selection.with(i));
-                Table table2Rows = table2.selectWhere(index.get(value));
+                Table table1Rows = table.where(Selection.with(i));
+                Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
                     withMissing(result, table1Rows, table2Rows);

@@ -125,7 +125,7 @@ public class NumberColumnTest {
         }
 
         Filter filter = QueryHelper.numberColumn("Test").isIn(inValues);
-        Table result = t.selectWhere(filter);
+        Table result = t.where(filter);
         assertNotNull(result);
     }
 
@@ -167,7 +167,7 @@ public class NumberColumnTest {
         Table t = Table.create("t", initial);
 
         Filter filter = QueryHelper.numberColumn("Test").isBetweenExclusive(42, 57);
-        Table result = t.selectWhere(filter);
+        Table result = t.where(filter);
         assertEquals(1, result.rowCount());
         assertEquals("52.0", result.get(0, "Test"));
     }

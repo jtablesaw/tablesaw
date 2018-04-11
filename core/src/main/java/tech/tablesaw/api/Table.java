@@ -14,7 +14,6 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -455,8 +454,8 @@ public class Table extends Relation implements IntIterable {
             table1Selection.add(table1Record);
         }
         table2Selection.andNot(table1Selection);
-        tables[0] = selectWhere(table1Selection);
-        tables[1] = selectWhere(table2Selection);
+        tables[0] = where(table1Selection);
+        tables[1] = where(table2Selection);
         return tables;
     }
 
@@ -466,12 +465,12 @@ public class Table extends Relation implements IntIterable {
      *
      * @param proportion The proportion to go in the sample
      */
-    public Table selectSample(double proportion) {
+    public Table sampleX(double proportion) {
         Preconditions.checkArgument(proportion <= 1 && proportion >= 0,
                 "The sample proportion must be between 0 and 1");
 
         int tableSize = (int) Math.round(rowCount() * proportion);
-        return selectWhere(selectNRows(tableSize));
+        return where(selectNRowsAtRandom(tableSize));
     }
 
     /**
@@ -479,13 +478,13 @@ public class Table extends Relation implements IntIterable {
      *
      * @param nRows The number of rows to go in the sample
      */
-    public Table selectSample(int nRows) {
+    public Table sampleN(int nRows) {
         Preconditions.checkArgument(nRows > 0 && nRows < rowCount(),
                 "The number of rows sampled must be greater than 0 and less than the number of rows in the table.");
-        return selectWhere(selectNRows(nRows));
+        return where(selectNRowsAtRandom(nRows));
     }
 
-    private Selection selectNRows(int tableCount) {
+    private Selection selectNRowsAtRandom(int tableCount) {
         Selection table1Selection = new BitmapBackedSelection();
         int[] selectedRecords = generateUniformBitmap(tableCount, rowCount());
         for (int selectedRecord : selectedRecords) {
@@ -506,20 +505,16 @@ public class Table extends Relation implements IntIterable {
      * Returns a new table containing the first {@code nrows} of data in this table
      */
     public Table first(int nRows) {
-        nRows = Math.min(nRows, rowCount());
-        Table newTable = emptyCopy(nRows);
-        Rows.head(nRows, this, newTable);
-        return newTable;
+        int newRowCount = Math.min(nRows, rowCount());
+        return inRange(0, newRowCount);
     }
 
     /**
      * Returns a new table containing the last {@code nrows} of data in this table
      */
     public Table last(int nRows) {
-        nRows = Math.min(nRows, rowCount());
-        Table newTable = emptyCopy(nRows);
-        Rows.tail(nRows, this, newTable);
-        return newTable;
+        int newRowCount = Math.min(nRows, rowCount());
+        return inRange(rowCount() - newRowCount, rowCount());
     }
 
     /**
@@ -652,8 +647,7 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns an array of ints of the same number of rows as the table
      */
-    @VisibleForTesting
-    public int[] rows() {
+    private int[] rows() {
         int[] rowIndexes = new int[rowCount()];
         for (int i = 0; i < rowCount(); i++) {
             rowIndexes[i] = i;
@@ -751,29 +745,29 @@ public class Table extends Relation implements IntIterable {
         }
     }
 
-    public Table selectRows(int... rowNumbers) {
+    public Table rows(int... rowNumbers) {
         Preconditions.checkArgument(Ints.max(rowNumbers) <= rowCount());
-        return selectWhere(Selection.with(rowNumbers));
+        return where(Selection.with(rowNumbers));
     }
 
     public Table rejectRows(int... rowNumbers) {
         Preconditions.checkArgument(Ints.max(rowNumbers) <= rowCount());
         Selection selection = Selection.withRange(0, rowCount())
                 .andNot(Selection.with(rowNumbers));
-        return selectWhere(selection);
+        return where(selection);
     }
 
-    public Table selectRange(int rowStart, int rowEnd) {
+    public Table inRange(int rowStart, int rowEnd) {
         Preconditions.checkArgument(rowEnd <= rowCount());
-        return selectWhere(Selection.withRange(rowStart, rowEnd));
+        return where(Selection.withRange(rowStart, rowEnd));
     }
 
     public Table rejectRange(int rowStart, int rowEnd) {
         Preconditions.checkArgument(rowEnd <= rowCount());
-        return selectWhere(Selection.withoutRange(0, rowCount(), rowStart, rowEnd));
+        return where(Selection.withoutRange(0, rowCount(), rowStart, rowEnd));
     }
 
-    public Table selectWhere(Selection selection) {
+    public Table where(Selection selection) {
         Table newTable = this.emptyCopy(selection.size());
         Rows.copyRowsToTable(selection, this, newTable);
         return newTable;
@@ -788,8 +782,8 @@ public class Table extends Relation implements IntIterable {
         return newTable;
     }
 
-    public Table selectWhere(Filter filter) {
-        return selectWhere(filter.apply(this));
+    public Table where(Filter filter) {
+        return where(filter.apply(this));
     }
 
     public Table rejectWhere(Filter filter) {
@@ -872,6 +866,10 @@ public class Table extends Relation implements IntIterable {
 
     public Projection project(String... columnName) {
         return new Projection(this, columnName);
+    }
+
+    public Table select(Column... columns) {
+        return new Table(this.name, columns);
     }
 
     /**

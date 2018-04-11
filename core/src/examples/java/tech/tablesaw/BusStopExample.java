@@ -59,7 +59,7 @@ public class BusStopExample {
 
         // Lets filtering out some of the rows. We're only interested in records with IDs between 524-624
 
-        Table filtered = table.selectWhere(QueryHelper.numberColumn("stop_id").isBetweenInclusive(524, 624));
+        Table filtered = table.where(QueryHelper.numberColumn("stop_id").isBetweenInclusive(524, 624));
         out(filtered.first(5));
 
 

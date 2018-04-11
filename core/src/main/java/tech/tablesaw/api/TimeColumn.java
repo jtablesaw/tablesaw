@@ -578,7 +578,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     }
 
     @Override
-    public TimeColumn selectWhere(Selection selection) {
+    public TimeColumn where(Selection selection) {
         return (TimeColumn) subset(selection);
     }
 

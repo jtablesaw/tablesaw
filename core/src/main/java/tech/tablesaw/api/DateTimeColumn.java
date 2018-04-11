@@ -123,7 +123,7 @@ public class DateTimeColumn extends AbstractColumn
         return data().contains(dt);
     }
 
-    public DateTimeColumn selectWhere(Selection selection) {
+    public DateTimeColumn where(Selection selection) {
         return (DateTimeColumn) subset(selection);
     }
 

@@ -19,6 +19,8 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -85,6 +87,30 @@ public class TableTest {
     public void testColumnCount() {
         assertEquals(0, Table.create("t").columnCount());
         assertEquals(1, table.columnCount());
+    }
+
+    @Test
+    public void testLast() throws IOException {
+        Table t = Table.read().csv("../data/bush.csv");
+        t = t.sortOn("date");
+        Table t1 = t.last(3);
+        assertEquals(3, t1.rowCount());
+        assertEquals(LocalDate.of(2004, 2, 5), t1.dateColumn(0).get(2));
+    }
+
+    @Test
+    public void testSelect1() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+        Table t1 = t.select(t.column(1), t.column(2));
+        assertEquals(2, t1.columnCount());
+    }
+
+    @Test
+    public void testSelect2() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+        Table t1 = t.select(t.column(0), t.column(1), t.column(2), t.dateColumn(0).year());
+        assertEquals(4, t1.columnCount());
+        assertEquals("date year", t1.column(3).name());
     }
 
     @Test

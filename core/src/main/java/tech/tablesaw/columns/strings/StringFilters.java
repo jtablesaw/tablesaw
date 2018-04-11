@@ -44,7 +44,7 @@ import static tech.tablesaw.columns.strings.StringPredicates.*;
 
 public interface StringFilters extends Column {
 
-    StringColumn selectWhere(Filter filter);
+    StringColumn where(Filter filter);
 
     default Selection eval(BiPredicate<String, String> predicate, StringColumn otherColumn) {
         Selection selection = new BitmapBackedSelection();

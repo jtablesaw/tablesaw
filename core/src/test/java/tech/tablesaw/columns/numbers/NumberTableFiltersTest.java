@@ -214,7 +214,7 @@ public class NumberTableFiltersTest {
     @Test
     public void testIsBetweenInclusive() throws Exception {
         Table bush = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
-        Table result = bush.selectWhere(QueryHelper.numberColumn("approval").isBetweenInclusive(0, 49));
+        Table result = bush.where(QueryHelper.numberColumn("approval").isBetweenInclusive(0, 49));
         assertEquals(10, result.rowCount());
     }
 

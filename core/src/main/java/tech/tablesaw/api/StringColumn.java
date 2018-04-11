@@ -516,12 +516,12 @@ public class StringColumn extends AbstractColumn
         return numberColumn;
     }
 
-    public StringColumn selectWhere(Selection selection) {
+    public StringColumn where(Selection selection) {
         return (StringColumn) subset(selection);
     }
 
-    public StringColumn selectWhere(Filter filter) {
-        return selectWhere(filter.apply(this));
+    public StringColumn where(Filter filter) {
+        return where(filter.apply(this));
     }
 
     @Override

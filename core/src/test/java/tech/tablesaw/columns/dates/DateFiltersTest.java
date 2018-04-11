@@ -173,23 +173,23 @@ public class DateFiltersTest {
         NumberColumn index = DoubleColumn.indexColumn("index", t.rowCount(), 0);
         t.addColumn(index);
 
-        assertTrue(t.selectWhere(dateColumn("test").isInJanuary()).numberColumn("index").contains(0.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInFebruary()).numberColumn("index").contains(1.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInMarch()).numberColumn("index").contains(2.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInApril()).numberColumn("index").contains(3.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInMay()).numberColumn("index").contains(4.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInJune()).numberColumn("index").contains(5.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInJuly()).numberColumn("index").contains(6.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInAugust()).numberColumn("index").contains(7.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInSeptember()).numberColumn("index").contains(8.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInOctober()).numberColumn("index").contains(9.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInNovember()).numberColumn("index").contains(10.0));
-        assertTrue(t.selectWhere(dateColumn("test").isInDecember()).numberColumn("index").contains(11.0));
+        assertTrue(t.where(dateColumn("test").isInJanuary()).numberColumn("index").contains(0.0));
+        assertTrue(t.where(dateColumn("test").isInFebruary()).numberColumn("index").contains(1.0));
+        assertTrue(t.where(dateColumn("test").isInMarch()).numberColumn("index").contains(2.0));
+        assertTrue(t.where(dateColumn("test").isInApril()).numberColumn("index").contains(3.0));
+        assertTrue(t.where(dateColumn("test").isInMay()).numberColumn("index").contains(4.0));
+        assertTrue(t.where(dateColumn("test").isInJune()).numberColumn("index").contains(5.0));
+        assertTrue(t.where(dateColumn("test").isInJuly()).numberColumn("index").contains(6.0));
+        assertTrue(t.where(dateColumn("test").isInAugust()).numberColumn("index").contains(7.0));
+        assertTrue(t.where(dateColumn("test").isInSeptember()).numberColumn("index").contains(8.0));
+        assertTrue(t.where(dateColumn("test").isInOctober()).numberColumn("index").contains(9.0));
+        assertTrue(t.where(dateColumn("test").isInNovember()).numberColumn("index").contains(10.0));
+        assertTrue(t.where(dateColumn("test").isInDecember()).numberColumn("index").contains(11.0));
 
-        assertTrue(t.selectWhere(dateColumn("test").isInQ1()).nCol("index").contains(2));
-        assertTrue(t.selectWhere(dateColumn("test").isInQ2()).nCol("index").contains(4));
-        assertTrue(t.selectWhere(dateColumn("test").isInQ3()).nCol("index").contains(8));
-        assertTrue(t.selectWhere(dateColumn("test").isInQ4()).nCol("index").contains(11));
+        assertTrue(t.where(dateColumn("test").isInQ1()).nCol("index").contains(2));
+        assertTrue(t.where(dateColumn("test").isInQ2()).nCol("index").contains(4));
+        assertTrue(t.where(dateColumn("test").isInQ3()).nCol("index").contains(8));
+        assertTrue(t.where(dateColumn("test").isInQ4()).nCol("index").contains(11));
     }
 
     @Test
@@ -232,18 +232,18 @@ public class DateFiltersTest {
         NumberColumn index = DoubleColumn.indexColumn("index", dateColumn.size(), 0);
         Table t = Table.create("test", dateColumn, index);
 
-        assertTrue(t.selectWhere(dateColumn.isBefore(packed)).nCol("index").contains(0));
-        assertTrue(t.selectWhere(dateColumn.isEqualTo(packed)).nCol("index").contains(1));
-        assertTrue(t.selectWhere(dateColumn.isAfter(packed)).nCol("index").contains(2));
-        assertTrue(t.selectWhere(dateColumn("test")
+        assertTrue(t.where(dateColumn.isBefore(packed)).nCol("index").contains(0));
+        assertTrue(t.where(dateColumn.isEqualTo(packed)).nCol("index").contains(1));
+        assertTrue(t.where(dateColumn.isAfter(packed)).nCol("index").contains(2));
+        assertTrue(t.where(dateColumn("test")
                 .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(1));
-        assertTrue(t.selectWhere(dateColumn("test")
+        assertTrue(t.where(dateColumn("test")
                 .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(2));
-        assertTrue(t.selectWhere(dateColumn("test")
+        assertTrue(t.where(dateColumn("test")
                 .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(0));
-        assertFalse(t.selectWhere(dateColumn("test")
+        assertFalse(t.where(dateColumn("test")
                 .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(2));
-        assertFalse(t.selectWhere(dateColumn("test")
+        assertFalse(t.where(dateColumn("test")
                 .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(0));
     }
 

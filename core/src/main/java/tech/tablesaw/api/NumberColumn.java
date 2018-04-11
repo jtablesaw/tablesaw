@@ -116,9 +116,9 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     DoubleIterator iterator();
 
     @Override
-    NumberColumn selectWhere(Filter filter);
+    NumberColumn where(Filter filter);
 
-    NumberColumn selectWhere(Selection selection);
+    NumberColumn where(Selection selection);
 
     Selection eval(DoublePredicate predicate);
 

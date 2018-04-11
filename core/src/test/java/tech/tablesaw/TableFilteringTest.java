@@ -45,7 +45,7 @@ public class TableFilteringTest {
 
     @Test
     public void testFilter1() {
-        Table result = table.selectWhere(numberColumn("approval").isLessThan(70));
+        Table result = table.where(numberColumn("approval").isLessThan(70));
         NumberColumn a = result.numberColumn("approval");
         for (double v : a) {
             assertTrue(v < 70);
@@ -90,7 +90,7 @@ public class TableFilteringTest {
 
     @Test
     public void testSelectRange() {
-        Table result = table.selectRange(20, 30);
+        Table result = table.inRange(20, 30);
         assertEquals(10, result.rowCount());
         for (Column c: result.columns()) {
             for (int r = 0; r < result.rowCount(); r++) {
@@ -101,7 +101,7 @@ public class TableFilteringTest {
 
     @Test
     public void testSelectRows() {
-        Table result = table.selectRows(20, 30);
+        Table result = table.rows(20, 30);
         assertEquals(2, result.rowCount());
         for (Column c: result.columns()) {
             assertEquals(table.get(20, c.name()), result.get(0, c.name()));
@@ -111,13 +111,13 @@ public class TableFilteringTest {
 
     @Test
     public void testSampleRows() {
-        Table result = table.selectSample(20);
+        Table result = table.sampleN(20);
         assertEquals(20, result.rowCount());
     }
 
     @Test
     public void testSampleProportion() {
-        Table result = table.selectSample(.1);
+        Table result = table.sampleX(.1);
         assertEquals(32, result.rowCount());
     }
 
@@ -144,7 +144,7 @@ public class TableFilteringTest {
 
     @Test
     public void testFilter2() {
-        Table result = table.selectWhere(dateColumn("date").isInApril());
+        Table result = table.where(dateColumn("date").isInApril());
         DateColumn d = result.dateColumn("date");
         for (LocalDate v : d) {
             assertTrue(PackedLocalDate.isInApril(PackedLocalDate.pack(v)));
@@ -153,7 +153,7 @@ public class TableFilteringTest {
 
     @Test
     public void testFilter3() {
-        Table result = table.selectWhere(
+        Table result = table.where(
                 QueryHelper.both(
                         table.dateColumn("date").isInApril(),
                         table.numberColumn("approval").isGreaterThan(70)));

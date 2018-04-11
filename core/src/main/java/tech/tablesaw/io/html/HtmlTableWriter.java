@@ -40,7 +40,7 @@ public final class HtmlTableWriter {
         builder.append(header(table.columnNames()));
         builder.append("<tbody>")
                 .append('\n');
-        for (int row : table.rows()) {
+        for (int row : table) {
             builder.append(row(row, table));
         }
         builder.append("</tbody>");

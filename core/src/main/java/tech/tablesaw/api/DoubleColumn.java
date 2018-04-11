@@ -451,12 +451,12 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public NumberColumn selectWhere(Filter filter) {
+    public NumberColumn where(Filter filter) {
         return (NumberColumn) subset(filter.apply(this));
     }
 
     @Override
-    public NumberColumn selectWhere(Selection selection) {
+    public NumberColumn where(Selection selection) {
         return (NumberColumn) subset(selection);
     }
 

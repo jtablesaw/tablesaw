@@ -18,7 +18,7 @@ import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 public interface DateFilters extends Column {
 
-    DateColumn selectWhere(Selection selection);
+    DateColumn where(Selection selection);
 
     /**
      * Returns a selection formed by applying the given predicate

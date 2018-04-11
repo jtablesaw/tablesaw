@@ -535,7 +535,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return result;
     }
 
-    public BooleanColumn selectWhere(Selection selection) {
+    public BooleanColumn where(Selection selection) {
         return (BooleanColumn) subset(selection);
     }
 

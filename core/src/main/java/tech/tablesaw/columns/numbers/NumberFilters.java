@@ -31,7 +31,7 @@ import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
 public interface NumberFilters extends Column {
 
-    NumberColumn selectWhere(Filter filter);
+    NumberColumn where(Filter filter);
 
     Selection eval(DoublePredicate predicate);
 

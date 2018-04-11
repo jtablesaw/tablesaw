@@ -126,7 +126,7 @@ public class TableSlice extends Relation implements IntIterable {
             newMap.add(row);
             count++;
         }
-        return table.selectWhere(newMap);
+        return table.where(newMap);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class TableSlice extends Relation implements IntIterable {
      */
     public double reduce(String numberColumnName, AggregateFunction function) {
         NumberColumn column = (NumberColumn) column(numberColumnName);
-        return function.agg(column.selectWhere(selection));
+        return function.agg(column.where(selection));
     }
 
     /**

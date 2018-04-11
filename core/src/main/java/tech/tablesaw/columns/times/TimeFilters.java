@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 
 public interface TimeFilters extends Column {
 
-    TimeColumn selectWhere(Selection selection);
+    TimeColumn where(Selection selection);
 
     default Selection eval(IntPredicate predicate) {
         Selection selection = new BitmapBackedSelection();

@@ -469,7 +469,7 @@ public class DateColumn extends AbstractColumn implements DateFilters,
     }
 
     @Override
-    public DateColumn selectWhere(Selection selection) {
+    public DateColumn where(Selection selection) {
         return (DateColumn) subset(selection);
     }
 

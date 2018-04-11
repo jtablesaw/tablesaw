@@ -13,6 +13,7 @@ Changes from Tablesaw 0.12.0
 1. Removed duplicate comparator implementations 
 1. Renamed CategoryColumn to StringColumn
 1. Renamed NumericColumn interface to NumberColumn
+1. Added CsvWriteOptions to allow control over file writing options
 1. Improved filtering support
     1. Standardized naming on filtering methods for tables and columns
     1. Extended table filtering to use column filter methods (e.g. "col.startsWith("foo")) in select where

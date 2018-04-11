@@ -28,7 +28,7 @@ public class HorizontalBarExample {
     public static void main(String[] args) throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
         Table t2 = table.countBy(table.stringColumn("State"));
-        t2 = t2.selectWhere(QueryHelper.numberColumn("Count").isGreaterThan(100));
+        t2 = t2.where(QueryHelper.numberColumn("Count").isGreaterThan(100));
         show("tornadoes by state", t2.stringColumn("Category"), t2.nCol("Count"));
         show("T", table.summarize("fatalities", sum).by("Scale"));
     }
