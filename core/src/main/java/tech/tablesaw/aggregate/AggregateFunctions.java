@@ -20,7 +20,6 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
 import org.apache.commons.math3.stat.descriptive.moment.Skewness;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 
 /**
@@ -34,8 +33,8 @@ public class AggregateFunctions {
     public static AggregateFunction first = new Reduction("First") {
 
         @Override
-        public double agg(double[] data) {
-            return data.length == 0 ? Float.NaN : data[0];
+        public double summarize(NumberColumn column) {
+            return column.isEmpty() ? Float.NaN : column.getDouble(0);
         }
     };
 
@@ -45,8 +44,8 @@ public class AggregateFunctions {
     public static AggregateFunction last = new Reduction("Last") {
 
         @Override
-        public double agg(double[] data) {
-            return data.length == 0 ? Float.NaN : data[data.length - 1];
+        public double summarize(NumberColumn column) {
+            return column.isEmpty() ? Float.NaN : column.getDouble(column.size() - 1);
         }
     };
 
@@ -56,8 +55,8 @@ public class AggregateFunctions {
     public static AggregateFunction count = new Reduction("Count") {
 
         @Override
-        public double agg(double[] data) {
-            return data.length;
+        public double summarize(NumberColumn column) {
+            return column.size();
         }
     };
 
@@ -67,13 +66,8 @@ public class AggregateFunctions {
     public static AggregateFunction countUnique = new Reduction("Count") {
 
         @Override
-        public double agg(NumberColumn doubles) {
+        public double summarize(NumberColumn doubles) {
             return doubles.unique().size();
-        }
-
-        @Override
-        public double agg(double[] data) {
-            return DoubleColumn.create("temp", data).unique().size();
         }
     };
 
@@ -83,8 +77,8 @@ public class AggregateFunctions {
     public static final AggregateFunction mean = new Reduction("Mean") {
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.mean(removeMissing(data));
+        public double summarize(NumberColumn column) {
+            return StatUtils.mean(removeMissing(column));
         }
     };
 
@@ -94,16 +88,16 @@ public class AggregateFunctions {
     public static final AggregateFunction sum = new Reduction("Sum") {
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.sum(removeMissing(data));
+        public double summarize(NumberColumn column) {
+            return StatUtils.sum(removeMissing(column));
         }
     };
 
     public static final AggregateFunction median = new Reduction("Median") {
 
         @Override
-        public double agg(double[] data) {
-            return percentile(data, 50.0);
+        public double summarize(NumberColumn column) {
+            return percentile(column, 50.0);
         }
     };
 
@@ -111,56 +105,56 @@ public class AggregateFunctions {
         //TODO: This is the same as count -> Get rid of one of them
         //TODO: Consider whether we should provide a count without missing values
         @Override
-        public double agg(double[] data) {
-            return data.length;
+        public double summarize(NumberColumn column) {
+            return column.size();
         }
     };
 
     public static final AggregateFunction quartile1 = new Reduction("First Quartile") {
 
         @Override
-        public double agg(double[] data) {
-            return percentile(data, 25.0);
+        public double summarize(NumberColumn column) {
+            return percentile(column, 25.0);
         }
     };
 
     public static final AggregateFunction quartile3 = new Reduction("Third Quartile") {
 
         @Override
-        public double agg(double[] data) {
-            return percentile(data, 75.0);
+        public double summarize(NumberColumn column) {
+            return percentile(column, 75.0);
         }
     };
 
     public static final AggregateFunction percentile90 = new Reduction("90th Percentile") {
 
         @Override
-        public double agg(double[] data) {
-            return percentile(data, 90.0);
+        public double summarize(NumberColumn column) {
+            return percentile(column, 90.0);
         }
     };
 
     public static final AggregateFunction percentile95 = new Reduction("95th Percentile") {
 
         @Override
-        public double agg(double[] data) {
-            return percentile(data, 95.0);
+        public double summarize(NumberColumn column) {
+            return percentile(column, 95.0);
         }
     };
 
     public static final AggregateFunction percentile99 = new Reduction("99th Percentile") {
 
         @Override
-        public double agg(double[] data) {
-            return percentile(data, 99.0);
+        public double summarize(NumberColumn column) {
+            return percentile(column, 99.0);
         }
     };
 
     public static final AggregateFunction range = new Reduction("Range") {
 
         @Override
-        public double agg(double[] data) {
-            data = removeMissing(data);
+        public double summarize(NumberColumn column) {
+            double[] data = removeMissing(column);
             return StatUtils.max(data) - StatUtils.min(data);
         }
     };
@@ -168,40 +162,40 @@ public class AggregateFunctions {
     public static final AggregateFunction min = new Reduction("Min") {
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.min(removeMissing(data));
+        public double summarize(NumberColumn column) {
+            return StatUtils.min(removeMissing(column));
         }
     };
 
     public static final AggregateFunction max = new Reduction("Max") {
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.max(removeMissing(data));
+        public double summarize(NumberColumn column) {
+            return StatUtils.max(removeMissing(column));
         }
     };
 
     public static final AggregateFunction product = new Reduction("Product") {
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.product(removeMissing(data));
+        public double summarize(NumberColumn column) {
+            return StatUtils.product(removeMissing(column));
         }
     };
 
     public static final AggregateFunction geometricMean = new Reduction("Geometric Mean") {
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.geometricMean(removeMissing(data));
+        public double summarize(NumberColumn column) {
+            return StatUtils.geometricMean(removeMissing(column));
         }
     };
 
     public static final AggregateFunction populationVariance = new Reduction("Population Variance") {
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.populationVariance(removeMissing(data));
+        public double summarize(NumberColumn column) {
+            return StatUtils.populationVariance(removeMissing(column));
         }
     };
 
@@ -211,24 +205,26 @@ public class AggregateFunctions {
     public static final AggregateFunction quadraticMean = new Reduction("Quadratic Mean") {
 
         @Override
-        public double agg(double[] data) {
-            return new DescriptiveStatistics(removeMissing(data)).getQuadraticMean();
+        public double summarize(NumberColumn column) {
+            return new DescriptiveStatistics(removeMissing(column)).getQuadraticMean();
         }
     };
 
     public static final AggregateFunction kurtosis = new Reduction("Kurtosis") {
 
         @Override
-        public double agg(double[] data) {
-            return new Kurtosis().evaluate(removeMissing(data), 0, data.length);
+        public double summarize(NumberColumn column) {
+            double[] data = removeMissing(column);
+            return new Kurtosis().evaluate(data, 0, data.length);
         }
     };
 
     public static final AggregateFunction skewness = new Reduction("Skewness") {
 
         @Override
-        public double agg(double[] data) {
-            return new Skewness().evaluate(removeMissing(data), 0, data.length);
+        public double summarize(NumberColumn column) {
+            double[] data = removeMissing(column);
+            return new Skewness().evaluate(data, 0, data.length);
         }
     };
 
@@ -240,32 +236,32 @@ public class AggregateFunctions {
         }
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.sumSq(removeMissing(data));
+        public double summarize(NumberColumn column) {
+            return StatUtils.sumSq(removeMissing(column));
         }
     };
 
     public static final AggregateFunction sumOfLogs = new Reduction("Sum of Logs") {
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.sumLog(removeMissing(data));
+        public double summarize(NumberColumn column) {
+            return StatUtils.sumLog(removeMissing(column));
         }
     };
 
     public static final AggregateFunction variance = new Reduction("Variance") {
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.variance(removeMissing(data));
+        public double summarize(NumberColumn column) {
+            return StatUtils.variance(removeMissing(column));
         }
     };
 
     public static final AggregateFunction stdDev = new Reduction("Std. Deviation") {
 
         @Override
-        public double agg(double[] data) {
-            return Math.sqrt(StatUtils.variance(removeMissing(data)));
+        public double summarize(NumberColumn column) {
+            return Math.sqrt(StatUtils.variance(removeMissing(column)));
         }
 
     };
@@ -274,6 +270,9 @@ public class AggregateFunctions {
         return StatUtils.percentile(removeMissing(data), percentile);
     }
 
+    public static double percentile(NumberColumn data, double percentile) {
+        return StatUtils.percentile(removeMissing(data), percentile);
+    }
 
     private static double[] removeMissing(double[] data) {
         DoubleList doubleArray = new DoubleArrayList();
@@ -283,6 +282,10 @@ public class AggregateFunctions {
             }
         }
         return doubleArray.toDoubleArray();
+    }
+
+    private static double[] removeMissing(NumberColumn column) {
+        return removeMissing(column.asDoubleArray());
     }
 
     private static boolean isNotMissing(double value) {

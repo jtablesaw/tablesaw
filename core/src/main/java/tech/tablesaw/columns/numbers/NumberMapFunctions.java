@@ -20,9 +20,9 @@ import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
 
-import static tech.tablesaw.api.NumberColumn.*;
+import static tech.tablesaw.api.NumberColumn.MISSING_VALUE;
 
-public interface NumberMapFunctions extends Column, NumberReduceUtils, DoubleIterable {
+public interface NumberMapFunctions extends Column, DoubleIterable {
 
     /**
      * Returns a transformation of the data in this column such that the result has a mean of 0, and a
@@ -49,6 +49,8 @@ public interface NumberMapFunctions extends Column, NumberReduceUtils, DoubleIte
         }
         return pctColumn;
     }
+
+    double sum();
 
     /**
      * Return the elements of this column as the percentages of their value relative to the sum of all

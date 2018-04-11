@@ -18,6 +18,7 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -32,14 +33,15 @@ import static org.junit.Assert.*;
 public class TableSliceGroupTest {
 
     private static AggregateFunction exaggerate = new AggregateFunction() {
+
         @Override
         public String functionName() {
             return "exaggeration";
         }
 
         @Override
-        public double agg(double[] data) {
-            return StatUtils.max(data) + 1000;
+        public double summarize(NumberColumn data) {
+            return StatUtils.max(data.asDoubleArray()) + 1000;
         }
     };
 

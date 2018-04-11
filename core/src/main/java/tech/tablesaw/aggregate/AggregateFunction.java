@@ -23,11 +23,7 @@ public interface AggregateFunction {
 
     String functionName();
 
-    double agg(double[] data);
-
-    default double agg(NumberColumn doubles) {
-        return this.agg(doubles.asDoubleArray());
-    }
+    double summarize(NumberColumn doubles);
 
     String toString();
 }

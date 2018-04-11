@@ -4,14 +4,19 @@ import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleIterable;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
+import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import org.apache.commons.math3.exception.NotANumberException;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberFilters;
 import tech.tablesaw.columns.numbers.NumberMapFunctions;
-import tech.tablesaw.columns.numbers.NumberReduceUtils;
 import tech.tablesaw.columns.numbers.Stats;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
@@ -21,9 +26,10 @@ import tech.tablesaw.selection.Selection;
 import java.text.NumberFormat;
 import java.util.function.DoublePredicate;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.api.ColumnType.NUMBER;
 
-public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColumn, NumberMapFunctions, NumberReduceUtils, NumberFilters, CategoricalColumn {
+public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColumn, NumberMapFunctions, NumberFilters, CategoricalColumn {
     double MISSING_VALUE = (Double) NUMBER.getMissingValue();
 
     static boolean valueIsMissing(double value) {
@@ -152,4 +158,148 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
 
     @Override
     DoubleList dataInternal();
+
+    /**
+     * Returns the count of missing values in this column
+     */
+    @Override
+    default int countMissing() {
+        int count = 0;
+        for (int i = 0; i < size(); i++) {
+            if (NumberColumn.valueIsMissing(get(i))) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    // Reduce functions applied to the whole column
+    default double sum() {
+        return sum.summarize(this);
+    }
+
+    default double product() {
+        return product.summarize(this);
+    }
+
+    default double mean() {
+        return mean.summarize(this);
+    }
+
+    default double median() {
+        return median.summarize(this);
+    }
+
+    default double quartile1() {
+        return quartile1.summarize(this);
+    }
+
+    default double quartile3() {
+        return quartile3.summarize(this);
+    }
+
+    default double percentile(double percentile) {
+        return AggregateFunctions.percentile(this, percentile);
+    }
+
+    default double range() {
+        return range.summarize(this);
+    }
+
+    default double max() {
+        return max.summarize(this);
+    }
+
+    default double min() {
+        return min.summarize(this);
+    }
+
+    default double variance() {
+        return variance.summarize(this);
+    }
+
+    default double populationVariance() {
+        return populationVariance.summarize(this);
+    }
+
+    default double standardDeviation() {
+        return stdDev.summarize(this);
+    }
+
+    default double sumOfLogs() {
+        return sumOfLogs.summarize(this);
+    }
+
+    default double sumOfSquares() {
+        return sumOfSquares.summarize(this);
+    }
+
+    default double geometricMean() {
+        return geometricMean.summarize(this);
+    }
+
+    /**
+     * Returns the quadraticMean, aka the root-mean-square, for all values in this column
+     */
+    default double quadraticMean() {
+        return quadraticMean.summarize(this);
+    }
+
+    default double kurtosis() {
+        return kurtosis.summarize(this);
+    }
+
+    default double skewness() {
+        return skewness.summarize(this);
+    }
+
+    /**
+     * Returns the pearson's correlation between the receiver and the otherColumn
+     **/
+    default double pearsons(NumberColumn otherColumn) {
+
+        double[] x = asDoubleArray();
+        double[] y = otherColumn.asDoubleArray();
+
+        return new PearsonsCorrelation().correlation(x, y);
+    }
+
+    /**
+     * Returns the Spearman's Rank correlation between the receiver and the otherColumn
+     * @param otherColumn  A NumberColumn with no missing values
+     * @throws NotANumberException if either column contains any missing values
+     *
+     **/
+    default double spearmans(NumberColumn otherColumn) {
+
+        double[] x = asDoubleArray();
+        double[] y = otherColumn.asDoubleArray();
+
+        return new SpearmansCorrelation().correlation(x, y);
+    }
+
+    /**
+     * Returns the Kendall's Tau Rank correlation between the receiver and the otherColumn
+     **/
+    default double kendalls(NumberColumn otherColumn) {
+
+        double[] x = asDoubleArray();
+        double[] y = otherColumn.asDoubleArray();
+
+        return new KendallsCorrelation().correlation(x, y);
+    }
+
+    /**
+     * Returns the number of unique values in this column, excluding missing values
+     */
+    @Override
+    default int countUnique() {
+        DoubleSet doubles = new DoubleOpenHashSet();
+        for (int i = 0; i < size(); i++) {
+            if (!NumberColumn.valueIsMissing(get(i))) {
+                doubles.add(get(i));
+            }
+        }
+        return doubles.size();
+    }
 }

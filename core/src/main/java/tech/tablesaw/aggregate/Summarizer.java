@@ -118,7 +118,7 @@ public class Summarizer {
         for (String columnName : summarizedColumns) {
             for (AggregateFunction function : functions) {
                 NumberColumn column = original.numberColumn(columnName);
-                double result = function.agg(column);
+                double result = function.summarize(column);
                 Column newColumn = DoubleColumn.create(TableSliceGroup.aggregateColumnName(columnName, function.functionName()));
                 ((DoubleColumn) newColumn).append(result);
                 table.addColumn(newColumn);

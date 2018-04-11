@@ -157,7 +157,7 @@ public class TableSlice extends Relation implements IntIterable {
      */
     public double reduce(String numberColumnName, AggregateFunction function) {
         NumberColumn column = (NumberColumn) column(numberColumnName);
-        return function.agg(column.where(selection));
+        return function.summarize(column.where(selection));
     }
 
     /**
