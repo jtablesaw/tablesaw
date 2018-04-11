@@ -16,6 +16,7 @@ package tech.tablesaw.aggregate;
 
 import com.google.common.collect.TreeBasedTable;
 import tech.tablesaw.api.CategoricalColumn;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
@@ -42,7 +43,7 @@ public final class CrossTab {
     public static Table counts(Table table, CategoricalColumn column1, CategoricalColumn column2) {
 
         Table t = Table.create("Crosstab Counts: " + column1.name() + " x " + column2.name());
-        t.addColumn(StringColumn.create(LABEL_COLUMN_NAME));
+        t.addColumn(column1.type().create(LABEL_COLUMN_NAME));
 
         Table temp = table.sortOn(column1.name(), column2.name());
 
@@ -93,7 +94,9 @@ public final class CrossTab {
             }
             t.numberColumn(t.columnCount() - 1).append(rowSum);
         }
-        t.column(0).appendCell("Total");
+        if (t.column(0).type().equals(ColumnType.STRING)) {
+            t.column(0).appendCell("Total");
+        }
         int grandTotal = 0;
         for (int i = 1; i < t.columnCount() - 1; i++) {
             t.numberColumn(i).append(columnTotals[i]);
