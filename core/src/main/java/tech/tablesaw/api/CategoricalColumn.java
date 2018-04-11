@@ -14,7 +14,11 @@
 
 package tech.tablesaw.api;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.columns.Column;
+
+import java.util.Map;
 
 /**
  * A column type that can be summarized, or serve as a grouping variable in cross tabs or other aggregation operations.
@@ -30,5 +34,35 @@ import tech.tablesaw.columns.Column;
  * Floating point types (float, double) and near-continuous time columns (Time and DateTime) are not included.
  */
 public interface CategoricalColumn extends Column {
+
+    default Table countByCategory() {
+
+        Table t = new Table("Column: " + name());
+        CategoricalColumn categories = (CategoricalColumn) type().create("Category");
+        NumberColumn counts = DoubleColumn.create("Count");
+
+        Object2IntMap<String> valueToCount = new Object2IntOpenHashMap<>();
+
+        for (int i = 0; i < size(); i++) {
+            String next = getString(i);
+            if (valueToCount.containsKey(next)) {
+                valueToCount.put(next, valueToCount.getInt(next) + 1);
+            } else {
+                valueToCount.put(next, 1);
+            }
+        }
+        for (Map.Entry<String, Integer> entry : valueToCount.object2IntEntrySet()) {
+            categories.appendCell(entry.getKey());
+            counts.append(entry.getValue());
+        }
+        if (countMissing() > 0) {
+            categories.appendMissing();
+            counts.append(countMissing());
+        }
+        t.addColumn(categories);
+        t.addColumn(counts);
+        return t;
+    }
+
 
 }

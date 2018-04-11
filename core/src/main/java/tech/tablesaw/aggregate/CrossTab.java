@@ -103,9 +103,8 @@ public final class CrossTab {
         return t;
     }
 
-
-    public static Table counts(Table table, String column1) {
-        return table.countBy(table.stringColumn(column1));
+    public static Table counts(Table table, String columnName) {
+        return table.countBy(table.categoricalColumn(columnName));
     }
 
     public static Table percents(Table table, String column1) {

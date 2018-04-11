@@ -28,6 +28,10 @@ import tech.tablesaw.table.RollingColumn;
  */
 public interface Column {
 
+    static Column create(String columnName, ColumnType type) {
+        return type.create(columnName);
+    }
+
     int size();
 
     Table summary();

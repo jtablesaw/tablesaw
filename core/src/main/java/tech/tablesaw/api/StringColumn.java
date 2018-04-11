@@ -231,6 +231,7 @@ public class StringColumn extends AbstractColumn
 
     /**
      */
+    @Override
     public Table countByCategory() {
         Table t = new Table("Column: " + name());
         StringColumn categories = create("Category");

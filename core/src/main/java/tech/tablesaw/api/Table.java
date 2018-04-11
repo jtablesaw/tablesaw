@@ -955,9 +955,8 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns a table containing two columns, the grouping column, and a column named "Count" that contains
      * the counts for each grouping column value
-     * Todo: extend count by category to all categorical columns
      */
-    public Table countBy(StringColumn groupingColumn) {
+    public Table countBy(CategoricalColumn groupingColumn) {
         return groupingColumn.countByCategory();
     }
 
