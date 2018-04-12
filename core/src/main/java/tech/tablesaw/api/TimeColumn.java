@@ -182,6 +182,11 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         this.printFormatter = new TimeColumnFormatter(dateTimeFormatter, missingValueString);
     }
 
+    public void setPrintFormatter(DateTimeFormatter dateTimeFormatter) {
+        Preconditions.checkNotNull(dateTimeFormatter);
+        this.printFormatter = new TimeColumnFormatter(dateTimeFormatter);
+    }
+
     @Override
     public TimeColumn emptyCopy() {
         return emptyCopy(DEFAULT_ARRAY_SIZE);

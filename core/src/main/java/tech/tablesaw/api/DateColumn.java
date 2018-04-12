@@ -154,6 +154,11 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         this.printFormatter = new DateColumnFormatter(dateTimeFormatter, missingValueString);
     }
 
+    public void setPrintFormatter(DateTimeFormatter dateTimeFormatter) {
+        Preconditions.checkNotNull(dateTimeFormatter);
+        this.printFormatter = new DateColumnFormatter(dateTimeFormatter);
+    }
+
     @Override
     public String getString(int row) {
         return printFormatter.format(getPackedDate(row));

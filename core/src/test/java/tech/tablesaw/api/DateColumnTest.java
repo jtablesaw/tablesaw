@@ -49,6 +49,21 @@ public class DateColumnTest {
     }
 
     @Test
+    public void testPrint2() {
+        column1.appendCell("2013-10-23");
+        column1.appendCell("12/23/1924");
+        column1.appendCell("12-May-2015");
+        column1.appendCell("12-Jan-2015");
+        column1.setPrintFormatter(DateTimeFormatter.ofPattern("MMM~dd~yyyy"));
+        assertEquals("Column: Game date\n" +
+                        "Oct~23~2013\n" +
+                        "Dec~23~1924\n" +
+                        "May~12~2015\n" +
+                        "Jan~12~2015\n"
+                , column1.print());
+    }
+
+    @Test
     public void testDayOfMonth() {
         column1.appendCell("2013-10-23");
         column1.appendCell("12/24/1924");

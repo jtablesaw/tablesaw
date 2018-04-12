@@ -133,6 +133,11 @@ public class DateTimeColumn extends AbstractColumn
         this.printFormatter = new DateTimeColumnFormatter(dateTimeFormatter, missingValueString);
     }
 
+    public void setPrintFormatter(DateTimeFormatter dateTimeFormatter) {
+        Preconditions.checkNotNull(dateTimeFormatter);
+        this.printFormatter = new DateTimeColumnFormatter(dateTimeFormatter);
+    }
+
     public void setPrintFormatter(DateTimeColumnFormatter formatter) {
         Preconditions.checkNotNull(formatter);
         this.printFormatter = formatter;
