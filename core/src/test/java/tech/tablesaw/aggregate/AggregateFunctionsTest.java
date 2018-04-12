@@ -14,6 +14,7 @@
 
 package tech.tablesaw.aggregate;
 
+import org.apache.commons.math3.stat.StatUtils;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
@@ -135,5 +136,37 @@ public class AggregateFunctionsTest {
         Table table = Table.create("test", booleanColumn, numberColumn, stringColumn);
         Table summarized = table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation).apply();
         System.out.println(summarized);
+    }
+
+    @Test
+    public void testBooleanFunctions() {
+        BooleanColumn c = BooleanColumn.create("test");
+        c.append(true);
+        c.appendCell("");
+        c.append(false);
+        assertEquals(1, countTrue.summarize(c), 0.0001);
+        assertEquals(1, countFalse.summarize(c), 0.0001);
+        assertEquals(0.5, proportionFalse.summarize(c), 0.0001);
+        assertEquals(0.5, proportionTrue.summarize(c), 0.0001);
+        assertEquals(1, countMissing.summarize(c), 0.0001);
+        assertEquals(3, countWithMissing.summarize(c), 0.0001);
+        assertEquals(2, countUnique.summarize(c), 0.0001);
+    }
+
+
+    @Test
+    public void testPercentileFunctions() {
+        double[] values = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        NumberColumn c = DoubleColumn.create("test", values);
+        c.appendCell("");
+
+        assertEquals(1, countMissing.summarize(c), 0.0001);
+        assertEquals(11, countWithMissing.summarize(c), 0.0001);
+
+        assertEquals(StatUtils.percentile(values, 90), percentile90.summarize(c), 0.0001);
+        assertEquals(StatUtils.percentile(values, 95), percentile95.summarize(c), 0.0001);
+        assertEquals(StatUtils.percentile(values, 99), percentile99.summarize(c), 0.0001);
+
+        assertEquals(10, countUnique.summarize(c), 0.0001);
     }
 }

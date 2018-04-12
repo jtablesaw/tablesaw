@@ -232,4 +232,6 @@ public interface Column {
     void appendMissing();
 
     Column where(Selection selection);
+
+    Column removeMissing();
 }

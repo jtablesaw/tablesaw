@@ -138,6 +138,18 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
         return Double.parseDouble(matcher.replaceAll(""));
     }
 
+    @Override
+    public DoubleColumn removeMissing() {
+        DoubleColumn noMissing = (DoubleColumn) emptyCopy();
+        DoubleIterator iterator = iterator();
+        while(iterator.hasNext()) {
+            double v = iterator.nextDouble();
+            if (!NumberColumn.valueIsMissing(v)) {
+                noMissing.append(v);
+            }
+        }
+        return noMissing;
+    }
 
     /**
      * Returns a new numeric column initialized with the given name and size. The values in the column are

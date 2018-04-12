@@ -84,6 +84,10 @@ public class StringColumn extends AbstractColumn
         }
     };
 
+    public static boolean valueIsMissing(String string) {
+        return MISSING_VALUE.equals(string);
+    }
+
     @Override
     public void appendMissing() {
         append(MISSING_VALUE);
@@ -556,6 +560,20 @@ public class StringColumn extends AbstractColumn
         }
         return count;
     }
+
+    @Override
+    public StringColumn removeMissing() {
+        StringColumn noMissing = emptyCopy();
+        Iterator<String> iterator = iterator();
+        while(iterator.hasNext()) {
+            String v = iterator.next();
+            if (valueIsMissing(v)) {
+                noMissing.append(v);
+            }
+        }
+        return noMissing;
+    }
+
 
     @Override
     public Iterator<String> iterator() {

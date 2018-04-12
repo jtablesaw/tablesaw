@@ -465,6 +465,19 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         return data.iterator();
     }
 
+    @Override
+    public DateColumn removeMissing() {
+        DateColumn noMissing = emptyCopy();
+        IntIterator iterator = intIterator();
+        while(iterator.hasNext()) {
+            int i = iterator.nextInt();
+            if (!valueIsMissing(i)) {
+                noMissing.appendInternal(i);
+            }
+        }
+        return noMissing;
+    }
+
     public List<LocalDate> asList() {
         List<LocalDate> dates = new ArrayList<>(size());
         for (LocalDate localDate : this) {

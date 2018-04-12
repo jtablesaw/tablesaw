@@ -118,6 +118,20 @@ public class DateTimeColumn extends AbstractColumn
         this.locale = locale;
     }
 
+    @Override
+    public DateTimeColumn removeMissing() {
+        DateTimeColumn noMissing = emptyCopy();
+        LongIterator iterator = longIterator();
+        while(iterator.hasNext()) {
+            long i = iterator.nextLong();
+            if (!valueIsMissing(i)) {
+                noMissing.appendInternal(i);
+            }
+        }
+        return noMissing;
+    }
+
+
     public boolean contains(LocalDateTime dateTime) {
         long dt = PackedLocalDateTime.pack(dateTime);
         return data().contains(dt);

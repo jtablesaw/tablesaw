@@ -41,13 +41,6 @@ public class AggregateFunctions {
         }
     };
 
-    public static final NumericAggregateFunction standardDeviation = new NumericAggregateFunction("Std. Deviation") {
-        @Override
-        public double summarize(Column column) {
-            return Math.sqrt(StatUtils.variance(column.asDoubleArray()));
-        }
-    };
-
     /**
      * A function that returns the first item
      */
@@ -103,13 +96,13 @@ public class AggregateFunctions {
     };
 
     /**
-     * A function that calculates the count of the values in the column param
+     * A function that returns the number of non-missing unique values in the column param
      */
     public static AggregateFunction countUnique = new AggregateFunction("Count Unique") {
 
         @Override
         public double summarize(Column doubles) {
-            return doubles.unique().size();
+            return removeMissing(doubles).unique().size();
         }
 
         @Override
@@ -315,13 +308,11 @@ public class AggregateFunctions {
         }
     };
 
-    public static double percentile(double[] data, double percentile) {
-        return StatUtils.percentile(removeMissing(data), percentile);
-    }
-
     public static double percentile(NumberColumn data, double percentile) {
         return StatUtils.percentile(removeMissing(data), percentile);
     }
+
+    public static final NumericAggregateFunction standardDeviation = stdDev;
 
     private static double[] removeMissing(double[] data) {
         DoubleList doubleArray = new DoubleArrayList();
@@ -335,6 +326,10 @@ public class AggregateFunctions {
 
     private static double[] removeMissing(NumberColumn column) {
         return removeMissing(column.asDoubleArray());
+    }
+
+    private static Column removeMissing(Column column) {
+        return column.removeMissing();
     }
 
     private static boolean isNotMissing(double value) {

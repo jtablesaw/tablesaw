@@ -23,6 +23,7 @@ import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteArrays;
 import it.unimi.dsi.fastutil.bytes.ByteComparator;
 import it.unimi.dsi.fastutil.bytes.ByteIterator;
+import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
 import it.unimi.dsi.fastutil.bytes.ByteSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -508,12 +509,12 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     @Override
-    public Selection isMissing() {  //TODO
+    public Selection isMissing() {
         return eval(BooleanColumnUtils.isMissing);
     }
 
     @Override
-    public Selection isNotMissing() { //TODO
+    public Selection isNotMissing() {
         return eval(BooleanColumnUtils.isNotMissing);
     }
 
@@ -557,6 +558,19 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return (BooleanColumn) subset(selection);
     }
 
+    @Override
+    public BooleanColumn removeMissing() {
+        BooleanColumn noMissing = emptyCopy();
+        ByteListIterator iterator = byteListIterator();
+        while(iterator.hasNext()) {
+            byte b = iterator.nextByte();
+            if (!valueIsMissing(b)) {
+                noMissing.append(b);
+            }
+        }
+        return noMissing;
+    }
+
     public Selection eval(BytePredicate predicate) {
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
@@ -586,6 +600,13 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
             }
         }
         return selection;
+    }
+
+    /**
+     * Returns a byteListIterator, which allows iteration by byte (value) and int (index)
+     */
+    private ByteListIterator byteListIterator() {
+        return data.iterator();
     }
 
     @Override

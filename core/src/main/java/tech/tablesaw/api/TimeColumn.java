@@ -162,6 +162,19 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     }
 
     @Override
+    public TimeColumn removeMissing() {
+        TimeColumn noMissing = emptyCopy();
+        IntIterator iterator = intIterator();
+        while(iterator.hasNext()) {
+            int i = iterator.nextInt();
+            if (!valueIsMissing(i)) {
+                noMissing.appendInternal(i);
+            }
+        }
+        return noMissing;
+    }
+
+    @Override
     public ColumnType type() {
         return LOCAL_TIME;
     }
