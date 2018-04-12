@@ -354,6 +354,13 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     /**
+     * Returns the proportion of non-missing row elements that contain true
+     */
+    public double proportionFalse() {
+        return 1.0 - proportionTrue();
+    }
+
+    /**
      * Returns true if the column contains any true values, and false otherwise
      */
     public boolean any() {
@@ -487,6 +494,17 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         for (int i = 0; i < booleanColumn.size(); i++) {
             append(booleanColumn.get(i));
         }
+    }
+
+    public Selection asSelection() {
+        Selection selection = new BitmapBackedSelection();
+        for (int i = 0; i < size(); i++) {
+            byte value = getByte(i);
+            if (value == 1) {
+                selection.add(i);
+            }
+        }
+        return selection;
     }
 
     @Override

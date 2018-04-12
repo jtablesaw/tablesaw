@@ -27,6 +27,20 @@ public class AggregateFunctions {
         }
     };
 
+    public static BooleanAggregateFunction proportionTrue = new BooleanAggregateFunction("Proportion True") {
+        @Override
+        public double summarize(Column column) {
+            return ((BooleanColumn) column).proportionTrue();
+        }
+    };
+
+    public static BooleanAggregateFunction proportionFalse = new BooleanAggregateFunction("Proportion False") {
+        @Override
+        public double summarize(Column column) {
+            return ((BooleanColumn) column).proportionFalse();
+        }
+    };
+
     public static final NumericAggregateFunction standardDeviation = new NumericAggregateFunction("Std. Deviation") {
         @Override
         public double summarize(Column column) {
