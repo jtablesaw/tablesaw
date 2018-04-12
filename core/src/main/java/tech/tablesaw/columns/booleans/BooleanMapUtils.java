@@ -16,6 +16,7 @@ package tech.tablesaw.columns.booleans;
 
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.selection.Selection;
 
 /**
  * An interface for mapping operations unique to Boolean columns
@@ -23,48 +24,51 @@ import tech.tablesaw.columns.Column;
 public interface BooleanMapUtils extends Column {
 
     /*
-     * TODO(lwhite): Replace this implementation with a roaring bitmap version
+     * Returns a Boolean column made by and-ing this column with the arguments
      */
     default BooleanColumn and(BooleanColumn... columns) {
-        BooleanColumn newColumn = BooleanColumn.create("");
-        BooleanColumn thisColumn = (BooleanColumn) this;
-        for (int i = 0; i < this.size(); i++) {
-            boolean booleanValue = thisColumn.get(i);
-            if (!booleanValue) {
-                newColumn.append(false);
-            } else {
-                boolean result = true;
-                for (BooleanColumn booleanColumn : columns) {
-                    result = booleanColumn.get(i);
-                    if (!result) {
-                        break;
-                    }
-                }
-                newColumn.append(result);
+        String name = name() + " and: ";
+        Selection selection = asSelection();
+        for (BooleanColumn column : columns) {
+            if (! column.name().equals(columns[0].name())) {
+                name += ", ";
             }
+            name += column.name();
+            selection.and(column.asSelection());
         }
-        return newColumn;
+        return BooleanColumn.create(name, selection, size());
     }
 
     default BooleanColumn or(BooleanColumn... columns) {
-        BooleanColumn newColumn = BooleanColumn.create("");
-        BooleanColumn thisColumn = (BooleanColumn) this;
-
-        for (int i = 0; i < this.size(); i++) {
-            boolean booleanValue = thisColumn.get(i);
-            if (booleanValue) {
-                newColumn.append(true);
-            } else {
-                boolean result = false;
-                for (BooleanColumn booleanColumn : columns) {
-                    result = booleanColumn.get(i);
-                    if (result) {
-                        break;
-                    }
-                }
-                newColumn.append(result);
+        String name = name() + " or: ";
+        Selection selection = asSelection();
+        for (BooleanColumn column : columns) {
+            if (! column.name().equals(columns[0].name())) {
+                name += ", ";
             }
+            name += column.name();
+            selection.or(column.asSelection());
         }
-        return newColumn;
+        return BooleanColumn.create(name, selection, size());
     }
+
+    /**
+     * Returns a column made by combining the receiver and each of the arguments using the operation: A andNot V.
+     * For example, the value of a cell in the result column would be true if the corresponding value in A is true and
+     * the corresponding value in B is false
+     */
+    default BooleanColumn andNot(BooleanColumn... columns) {
+        String name = name() + " and not: ";
+        Selection selection = asSelection();
+        for (BooleanColumn column : columns) {
+            if (! column.name().equals(columns[0].name())) {
+                name += ", ";
+            }
+            name += column.name();
+            selection.andNot(column.asSelection());
+        }
+        return BooleanColumn.create(name, selection, size());
+    }
+
+    Selection asSelection();
 }
