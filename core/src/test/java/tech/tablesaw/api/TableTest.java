@@ -76,10 +76,8 @@ public class TableTest {
     public void testMissingValueCounts() {
         Column c1 = StringColumn.create("SC");
         Column c2 = DoubleColumn.create("NC");
-        Column c3 = DoubleColumn.create("NC2");
-        Column c4 = DateColumn.create("DC");
-        Table t = Table.create("Test", c1, c2, c3, c4);
-        //Table t = Table.create("Test", c, c2, c3);
+        Column c3 = DateColumn.create("DC");
+        Table t = Table.create("Test", c1, c2, c3);
         System.out.println(t.missingValueCounts());
     }
 

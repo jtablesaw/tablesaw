@@ -117,7 +117,23 @@ public class AggregateFunctionsTest {
         StringColumn stringColumn = StringColumn.create("s", strings);
 
         Table table = Table.create("test", booleanColumn, numberColumn);
+        table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation).by(stringColumn);
+    }
 
-        Table result = table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation).by(stringColumn);
+    @Test
+    public void testMultipleColumnTypesWithApply() {
+
+        boolean[] args = {true, false, true, false};
+        BooleanColumn booleanColumn = BooleanColumn.create("b", args);
+
+        double[] numbers = {1, 2, 3, 4};
+        NumberColumn numberColumn = DoubleColumn.create("n", numbers);
+
+        String[] strings = {"M", "F", "M", "F"};
+        StringColumn stringColumn = StringColumn.create("s", strings);
+
+        Table table = Table.create("test", booleanColumn, numberColumn, stringColumn);
+        Table summarized = table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation).apply();
+        System.out.println(summarized);
     }
 }

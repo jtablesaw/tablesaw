@@ -122,18 +122,30 @@ public class Summarizer {
      */
     public Table apply() {
         List<Table> results = new ArrayList<>();
-        Table table = TableSliceGroup.summaryTableName(original);
-        for (String columnName : summarizedColumns) {
+        ArrayListMultimap<String, AggregateFunction> reductionMultimap = ArrayListMultimap.create();
+        for (String name: summarizedColumns) {
+            Column column = original.column(name);
+            ColumnType type = column.type();
+            for (AggregateFunction reduction : reductions) {
+                if (reduction.isCompatibleWith(type)) {
+                    reductionMultimap.put(name, reduction);
+                }
+            }
+        }
+
+        for (String name : reductionMultimap.keys()) {
+            List<AggregateFunction> reductions = reductionMultimap.get(name);
+            Table table = TableSliceGroup.summaryTableName(original);
             for (AggregateFunction function : reductions) {
-                Column column = original.column(columnName);
+                Column column = original.column(name);
                 double result = function.summarize(column);
-                Column newColumn = DoubleColumn.create(TableSliceGroup.aggregateColumnName(columnName, function.functionName()));
+                Column newColumn = DoubleColumn.create(TableSliceGroup.aggregateColumnName(name, function.functionName()));
                 ((DoubleColumn) newColumn).append(result);
                 table.addColumn(newColumn);
             }
+            results.add(table);
         }
-        Table t = combineTables(results);
-        return table;
+        return (combineTables(results));
     }
 
     /**
