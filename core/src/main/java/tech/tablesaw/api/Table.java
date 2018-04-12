@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import org.apache.commons.lang3.RandomUtils;
+import tech.tablesaw.aggregate.CrossTab;
 import tech.tablesaw.aggregate.Summarizer;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.columns.Column;
@@ -950,6 +951,46 @@ public class Table extends Relation implements IntIterable {
     public Summarizer summarize(Column column1, Column column2, Column column3, Column column4,
                                 AggregateFunction... function) {
         return new Summarizer(this, column1, column2, column3, column4, function);
+    }
+
+    /**
+     * Returns a table with n by m + 1 cells. The first column contains labels, the other cells contains the counts for every unique
+     * combination of values from the two specified columns in this table
+     */
+    public Table xTabCounts(String column1Name, String column2Name) {
+        return CrossTab.counts(this, categoricalColumn(column1Name), categoricalColumn(column2Name));
+    }
+
+    public Table xTabRowPercents(String column1Name, String column2Name) {
+        return CrossTab.rowPercents(this, column1Name, column2Name);
+    }
+
+    public Table xTabColumnPercents(String column1Name, String column2Name) {
+        return CrossTab.columnPercents(this, column1Name, column2Name);
+    }
+
+    /**
+     * Returns a table with n by m + 1 cells. The first column contains labels, the other cells contains the proportion
+     * for a unique combination of values from the two specified columns in this table
+     */
+    public Table xTabTablePercents(String column1Name, String column2Name) {
+        return CrossTab.tablePercents(this, column1Name, column2Name);
+    }
+
+    /**
+     * Returns a table with two columns, the first contains a value each unique value in the argument,
+     * and the second contains the proportion of observations having that value
+     */
+    public Table xTabPercents(String column1Name) {
+        return CrossTab.percents(this, column1Name);
+    }
+
+    /**
+     * Returns a table with two columns, the first contains a value each unique value in the argument,
+     * and the second contains the number of observations of each value
+     */
+    public Table xTabCounts(String column1Name) {
+        return CrossTab.counts(this, column1Name);
     }
 
     /**
