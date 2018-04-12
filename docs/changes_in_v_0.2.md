@@ -1,5 +1,3 @@
-
-
 ## Changes to Tablesaw in release 0.20
 
 ### Testing & Documentation
@@ -59,6 +57,15 @@
 
 1. Reading and printing formatted data
     1. Added support for formatted printing of tables and columns (esp., number and time columns)
+
+       ```java
+       dateColumn.setPrintFormatter(DateTimeFormatter.ofPattern("MMM~dd~yyyy"));
+       ```
+
+       ```Java
+       doubleColumn.setPrintFormatter(NumberColumnFormatter.ints); 
+       ```
+
     1. Added support for applying a locale for CSV file import
 
 1. Standardize column instantiation methods
