@@ -63,14 +63,23 @@
 
 1. Standardize column instantiation methods
     1. Always use a static *create()* method rather than public constructors
-    1. Standardize support for instantiating from lists and arrays
+    1. Standardize support for instantiating from lists and arrays.
 
-1. Added support for lag and lead methods on all column
+1. Added support for lag(n) and lead(n) methods on all column types. These return the receivers data offset by n positions:
 
-1. Extended PackedLocalTime and PackedLocalDate to be essentially compatible with java's LocalDate and LocalTime
+    ```Java
+    Column xLag = columnX.lag(1);
+    Column xLead = columnX.lead(1);
+    ```
+
+1. Extended PackedLocalTime and PackedLocalDate to be (approximately) functionally equivalent to Java's LocalDate and LocalTime.
 
 1. Improved Aggregation/Summarization
-    1. Simplified the CrossTab API
+    1. Simplified the CrossTab API, and made CrossTabs accessible from table objects:
+
+       ```java
+       table.xTabCounts("columnA", "columnB");
+       ```
 
     1. Support for table summaries that include non-numeric columns. For example, the code below applies *countTrue* to the boolean column and *standardDeviation* to the numeric column.
 
