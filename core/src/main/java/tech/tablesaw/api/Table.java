@@ -50,6 +50,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
+
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
  * All the data in a column has the same type: integer, float, category, etc., but a table may contain an arbitrary
@@ -276,6 +278,10 @@ public class Table extends Relation implements IntIterable {
     @Override
     public List<Column> columns() {
         return columnList;
+    }
+
+    public Column[] columnArray() {
+        return columnList.toArray(new Column[columnCount()]);
     }
 
     /**
@@ -922,6 +928,10 @@ public class Table extends Relation implements IntIterable {
         return summarize(column(columName), functions);
     }
 
+    public Summarizer summarize(List<String> columnNames, AggregateFunction... functions) {
+        return new Summarizer(this, columnNames, functions);
+    }
+
     public Summarizer summarize(String numericColumn1Name, String numericColumn2Name, AggregateFunction... functions) {
         return summarize(column(numericColumn1Name), column(numericColumn2Name), functions);
     }
@@ -1003,6 +1013,10 @@ public class Table extends Relation implements IntIterable {
 
     public DataFrameJoiner join(String columnName) {
         return new DataFrameJoiner(this, columnName);
+    }
+
+    public Table missingValueCounts() {
+        return summarize(columnNames(), countMissing).apply();
     }
 
     @Override

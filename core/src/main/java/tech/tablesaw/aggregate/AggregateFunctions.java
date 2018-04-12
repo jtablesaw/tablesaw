@@ -89,7 +89,7 @@ public class AggregateFunctions {
     /**
      * A function that calculates the count of values in the column excluding missing values
      */
-    public static AggregateFunction countMissing = new AggregateFunction("Count Missing Values") {
+    public static AggregateFunction countMissing = new AggregateFunction("Missing Values") {
 
         @Override
         public double summarize(Column column) {
@@ -105,7 +105,7 @@ public class AggregateFunctions {
     /**
      * A function that calculates the count of the values in the column param
      */
-    public static AggregateFunction countUnique = new AggregateFunction("Count") {
+    public static AggregateFunction countUnique = new AggregateFunction("Count Unique") {
 
         @Override
         public double summarize(Column doubles) {
@@ -148,7 +148,7 @@ public class AggregateFunctions {
         }
     };
 
-    public static final AggregateFunction countWithMissing = new AggregateFunction("Count including missing") {
+    public static final AggregateFunction countWithMissing = new AggregateFunction("Count (incl. missing)") {
         @Override
         public double summarize(Column column) {
             return column.size();

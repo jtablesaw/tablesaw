@@ -18,7 +18,6 @@ import com.google.common.collect.ArrayListMultimap;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.SelectionTableSliceGroup;
@@ -49,6 +48,16 @@ public class Summarizer {
     public Summarizer(Table sourceTable, Column column, AggregateFunction... functions) {
         this.original = sourceTable;
         summarizedColumns.add(column.name());
+        this.reductions = functions;
+    }
+
+    /**
+     * Returns an object capable of summarizing the given column in the given sourceTable,
+     * by applying the given functions
+     */
+    public Summarizer(Table sourceTable, List<String> columnNames, AggregateFunction... functions) {
+        this.original = sourceTable;
+        summarizedColumns.addAll(columnNames);
         this.reductions = functions;
     }
 
@@ -112,16 +121,18 @@ public class Summarizer {
      * Returns the result of applying to the functions to all the values in the appropriate column
      */
     public Table apply() {
+        List<Table> results = new ArrayList<>();
         Table table = TableSliceGroup.summaryTableName(original);
         for (String columnName : summarizedColumns) {
             for (AggregateFunction function : reductions) {
-                NumberColumn column = original.numberColumn(columnName);
+                Column column = original.column(columnName);
                 double result = function.summarize(column);
                 Column newColumn = DoubleColumn.create(TableSliceGroup.aggregateColumnName(columnName, function.functionName()));
                 ((DoubleColumn) newColumn).append(result);
                 table.addColumn(newColumn);
             }
         }
+        Table t = combineTables(results);
         return table;
     }
 
