@@ -495,12 +495,14 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return bottom;
     }
 
-    public void set(int index, int value) {
+    public TimeColumn set(int index, int value) {
         data.set(index, value);
+        return this;
     }
 
-    public void set(int index, LocalTime value) {
+    public TimeColumn set(int index, LocalTime value) {
         set(index, PackedLocalTime.pack(value));
+        return this;
     }
 
     /**
@@ -510,10 +512,11 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
      * Example:
      * myColumn.set(LocalTime.now(), myColumn.valueIsMissing()); // no more missing values
      */
-    public void set(LocalTime newValue, Selection rowSelection) {
+    public TimeColumn set(LocalTime newValue, Selection rowSelection) {
         for (int row : rowSelection) {
             set(row, newValue);
         }
+        return this;
     }
 
     /**

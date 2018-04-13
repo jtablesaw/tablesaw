@@ -312,13 +312,14 @@ public class StringColumn extends AbstractColumn
      * myCatColumn.set("Dog", myCatColumn.isEqualTo("Cat")); // no more cats
      * myCatColumn.set("Fox", myCatColumn.valueIsMissing()); // no more missing values
      */
-    public void set(String newValue, Selection rowSelection) {
+    public StringColumn set(String newValue, Selection rowSelection) {
         for (int row : rowSelection) {
             set(row, newValue);
         }
+        return this;
     }
 
-    public void set(int rowIndex, String stringValue) {
+    public StringColumn set(int rowIndex, String stringValue) {
         if (stringValue == null) {
             stringValue = MISSING_VALUE;
         }
@@ -328,6 +329,7 @@ public class StringColumn extends AbstractColumn
             lookupTable.put(valueId, stringValue);
         }
         values.set(rowIndex, valueId);
+        return this;
     }
 
     @Override

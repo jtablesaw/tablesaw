@@ -109,9 +109,9 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
 
     double get(int index);
 
-    void set(int r, double value);
+    NumberColumn set(int r, double value);
 
-    void set(Selection rowSelection, double newValue);
+    NumberColumn set(Selection rowSelection, double newValue);
 
     double[] asDoubleArray();
 

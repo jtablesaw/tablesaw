@@ -353,10 +353,11 @@ public class DateTimeColumn extends AbstractColumn
      * Example:
      * myColumn.set(LocalDateTime.now(), myColumn.valueIsMissing()); // no more missing values
      */
-    public void set(LocalDateTime newValue, Selection rowSelection) {
+    public DateTimeColumn set(LocalDateTime newValue, Selection rowSelection) {
         for (int row : rowSelection) {
             set(row, newValue);
         }
+        return this;
     }
 
     /**
@@ -458,12 +459,14 @@ public class DateTimeColumn extends AbstractColumn
         return PackedLocalDateTime.asLocalDateTime(min);
     }
 
-    public void set(int index, long value) {
+    public DateTimeColumn set(int index, long value) {
         data.set(index, value);
+        return this;
     }
 
-    public void set(int index, LocalDateTime value) {
+    public DateTimeColumn set(int index, LocalDateTime value) {
         data.set(index, PackedLocalDateTime.pack(value));
+        return this;
     }
 
     /**

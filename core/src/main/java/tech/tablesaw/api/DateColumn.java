@@ -137,12 +137,14 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         return data;
     }
 
-    public void set(int index, int value) {
+    public DateColumn set(int index, int value) {
         data.set(index, value);
+        return this;
     }
 
-    public void set(int index, LocalDate value) {
+    public DateColumn set(int index, LocalDate value) {
         data.set(index, PackedLocalDate.pack(value));
+        return this;
     }
 
     public DateColumn append(LocalDate f) {
@@ -308,11 +310,12 @@ public class DateColumn extends AbstractColumn implements DateFilters,
      * Example:
      * myColumn.set(LocalDate.now(), myColumn.valueIsMissing()); // no more missing values
      */
-    public void set(LocalDate newValue, Selection rowSelection) {
+    public DateColumn set(LocalDate newValue, Selection rowSelection) {
         int packed = PackedLocalDate.pack(newValue);
         for (int row : rowSelection) {
             set(row, packed);
         }
+        return this;
     }
 
     @Override

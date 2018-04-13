@@ -432,12 +432,13 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return data;
     }
 
-    public void set(int i, boolean b) {
+    public BooleanColumn set(int i, boolean b) {
         if (b) {
             data.set(i, BYTE_TRUE);
         } else {
             data.set(i, BYTE_FALSE);
         }
+        return this;
     }
 
     public BooleanColumn lead(int n) {
@@ -468,10 +469,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria
      **/
-    public void set(boolean newValue, Selection rowSelection) {
+    public BooleanColumn set(boolean newValue, Selection rowSelection) {
         for (int row : rowSelection) {
             set(row, newValue);
         }
+        return this;
     }
 
     @Override

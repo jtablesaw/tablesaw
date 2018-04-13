@@ -425,8 +425,9 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public void set(int r, double value) {
+    public DoubleColumn set(int r, double value) {
         data.set(r, value);
+        return this;
     }
 
     /**
@@ -437,10 +438,11 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * myColumn.set(4.0, myColumn.valueIsMissing()); // no more missing values
      */
     @Override
-    public void set(Selection rowSelection, double newValue) {
+    public DoubleColumn set(Selection rowSelection, double newValue) {
         for (int row : rowSelection) {
             set(row, newValue);
         }
+        return this;
     }
 
     @Override
