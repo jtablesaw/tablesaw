@@ -187,13 +187,14 @@ public class DateTimeColumn extends AbstractColumn
         return this;
     }
 
-    public void append(LocalDateTime dateTime) {
+    public DateTimeColumn append(LocalDateTime dateTime) {
         if (dateTime != null) {
             final long dt = PackedLocalDateTime.pack(dateTime);
             appendInternal(dt);
         } else {
             appendInternal(MISSING_VALUE);
         }
+        return this;
     }
 
     /**
@@ -229,8 +230,9 @@ public class DateTimeColumn extends AbstractColumn
         return LOCAL_DATE_TIME;
     }
 
-    public void appendInternal(long dateTime) {
+    public DateTimeColumn appendInternal(long dateTime) {
         data.add(dateTime);
+        return this;
     }
 
     @Override
@@ -432,8 +434,9 @@ public class DateTimeColumn extends AbstractColumn
     }
 
     @Override
-    public void appendMissing() {
+    public DateTimeColumn appendMissing() {
         appendInternal(MISSING_VALUE);
+        return this;
     }
 
     public LocalDateTime min() {

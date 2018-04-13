@@ -115,8 +115,9 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     }
 
     @Override
-    public void appendMissing() {
+    public TimeColumn appendMissing() {
         appendInternal(MISSING_VALUE);
+        return this;
     }
 
     public TimeColumn lag(int n) {
@@ -147,11 +148,12 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return data.size();
     }
 
-    public void appendInternal(int f) {
+    public TimeColumn appendInternal(int f) {
         data.add(f);
+        return this;
     }
 
-    public void append(LocalTime time) {
+    public TimeColumn append(LocalTime time) {
         int value;
         if (time == null) {
             value = MISSING_VALUE;
@@ -159,6 +161,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
             value = PackedLocalTime.pack(time);
         }
         appendInternal(value);
+        return this;
     }
 
     @Override

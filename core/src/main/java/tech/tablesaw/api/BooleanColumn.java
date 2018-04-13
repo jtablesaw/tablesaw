@@ -222,15 +222,16 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return BOOLEAN;
     }
 
-    public void append(boolean b) {
+    public BooleanColumn append(boolean b) {
         if (b) {
             data.add(BYTE_TRUE);
         } else {
             data.add(BYTE_FALSE);
         }
+        return this;
     }
 
-    public void append(Boolean b) {
+    public BooleanColumn append(Boolean b) {
         if (b == null) {
             data.add(MISSING_VALUE);
         }
@@ -239,15 +240,18 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         } else {
             data.add(BYTE_FALSE);
         }
+        return this;
     }
 
-    public void append(byte b) {
+    public BooleanColumn append(byte b) {
         data.add(b);
+        return this;
     }
 
     @Override
-    public void appendMissing() {
+    public BooleanColumn appendMissing() {
         append(MISSING_VALUE);
+        return this;
     }
 
     @Override

@@ -59,9 +59,9 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
 
     double firstElement();
 
-    void append(float f);
+    NumberColumn append(float f);
 
-    void append(double d);
+    NumberColumn append(double d);
 
     @Override
     String getString(int row);

@@ -127,8 +127,9 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         return ColumnType.LOCAL_DATE;
     }
 
-    public void appendInternal(int f) {
+    public DateColumn appendInternal(int f) {
         data.add(f);
+        return this;
     }
 
     @Override
@@ -144,8 +145,9 @@ public class DateColumn extends AbstractColumn implements DateFilters,
         data.set(index, PackedLocalDate.pack(value));
     }
 
-    public void append(LocalDate f) {
+    public DateColumn append(LocalDate f) {
         appendInternal(PackedLocalDate.pack(f));
+        return this;
     }
 
     public void setPrintFormatter(DateTimeFormatter dateTimeFormatter, String missingValueString) {
@@ -314,8 +316,9 @@ public class DateColumn extends AbstractColumn implements DateFilters,
     }
 
     @Override
-    public void appendMissing() {
+    public DateColumn appendMissing() {
         appendInternal(MISSING_VALUE);
+        return this;
     }
 
     public LocalDate get(int index) {

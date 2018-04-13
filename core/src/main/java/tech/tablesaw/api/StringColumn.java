@@ -89,8 +89,9 @@ public class StringColumn extends AbstractColumn
     }
 
     @Override
-    public void appendMissing() {
+    public StringColumn appendMissing() {
         append(MISSING_VALUE);
+        return this;
     }
 
     private final IntComparator reverseDictionarySortComparator = new IntComparator() {
@@ -415,10 +416,11 @@ public class StringColumn extends AbstractColumn
      *
      * @param stringValues a list of values
      */
-    public void addAll(List<String> stringValues) {
+    public StringColumn addAll(List<String> stringValues) {
         for (String stringValue : stringValues) {
             append(stringValue);
         }
+        return this;
     }
 
     @Override
@@ -654,8 +656,9 @@ public class StringColumn extends AbstractColumn
     /**
      * Added for naming consistency with all other columns
      */
-    public void append(String value) {
+    public StringColumn append(String value) {
         appendCell(value);
+        return this;
     }
 
     @Override

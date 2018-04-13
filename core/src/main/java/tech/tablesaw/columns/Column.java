@@ -229,7 +229,7 @@ public interface Column {
     /**
      * Appends a missing value appropriate to the column
      */
-    void appendMissing();
+    Column appendMissing();
 
     Column where(Selection selection);
 

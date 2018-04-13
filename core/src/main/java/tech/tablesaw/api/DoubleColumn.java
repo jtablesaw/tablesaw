@@ -180,8 +180,9 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public void appendMissing() {
+    public DoubleColumn appendMissing() {
         append(MISSING_VALUE);
+        return this;
     }
 
     @Override
@@ -273,16 +274,18 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * Adds the given float to this column
      */
     @Override
-    public void append(float f) {
+    public DoubleColumn append(float f) {
         data.add(f);
+        return this;
     }
 
     /**
      * Adds the given double to this column
      */
     @Override
-    public void append(double d) {
+    public DoubleColumn append(double d) {
         data.add(d);
+        return this;
     }
 
 
