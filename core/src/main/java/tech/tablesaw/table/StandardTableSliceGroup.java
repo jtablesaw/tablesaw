@@ -31,13 +31,6 @@ public class StandardTableSliceGroup extends TableSliceGroup {
 
     private StandardTableSliceGroup(Table original, CategoricalColumn... columns) {
         super(original, splitColumnNames(columns));
-
-        for (CategoricalColumn column: columns) {
-            if (!original.containsColumn(column)) {
-                columnsToRemove.add(column);
-                getSourceTable().addColumn(column);
-            }
-        }
         setSourceTable(getSourceTable().sortOn(getSplitColumnNames()));
         splitOn(getSplitColumnNames());
     }
@@ -56,7 +49,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
      */
     public static StandardTableSliceGroup create(Table original, String... columnsNames) {
         List<CategoricalColumn> columns = original.categoricalColumns(columnsNames);
-        return new StandardTableSliceGroup(original, columns.toArray(new CategoricalColumn[columns.size()]));
+        return new StandardTableSliceGroup(original, columns.toArray(new CategoricalColumn[0]));
     }
 
     /**

@@ -127,27 +127,27 @@ public class Summarizer {
     }
 
     public Table by(String... columnNames) {
-        TableSliceGroup group = StandardTableSliceGroup.create(original, columnNames);
         for (String columnName : columnNames) {
             if (!temp.columnNames().contains(columnName)) {
                 temp.addColumn(original.column(columnName));
             }
         }
+        TableSliceGroup group = StandardTableSliceGroup.create(temp, columnNames);
         return summarize(group);
     }
 
     public Table by(CategoricalColumn... columns) {
-        TableSliceGroup group = StandardTableSliceGroup.create(original, columns);
         for (Column c : columns) {
             if (!temp.containsColumn(c)) {
                 temp.addColumn(c);
             }
         }
+        TableSliceGroup group = StandardTableSliceGroup.create(temp, columns);
         return summarize(group);
     }
 
     public Table by(String groupNameTemplate, int step) {
-        TableSliceGroup group = SelectionTableSliceGroup.create(original, groupNameTemplate, step);
+        TableSliceGroup group = SelectionTableSliceGroup.create(temp, groupNameTemplate, step);
         return summarize(group);
     }
 
@@ -156,16 +156,7 @@ public class Summarizer {
      */
     public Table apply() {
         List<Table> results = new ArrayList<>();
-        ArrayListMultimap<String, AggregateFunction> reductionMultimap = ArrayListMultimap.create();
-        for (String name: summarizedColumns) {
-            Column column = temp.column(name);
-            ColumnType type = column.type();
-            for (AggregateFunction reduction : reductions) {
-                if (reduction.isCompatibleWith(type)) {
-                    reductionMultimap.put(name, reduction);
-                }
-            }
-        }
+        ArrayListMultimap<String, AggregateFunction> reductionMultimap = getAggregateFunctionMultimap();
 
         for (String name : reductionMultimap.keys()) {
             List<AggregateFunction> reductions = reductionMultimap.get(name);
@@ -190,6 +181,16 @@ public class Summarizer {
     private Table summarize(TableSliceGroup group) {
         List<Table> results = new ArrayList<>();
 
+        ArrayListMultimap<String, AggregateFunction> reductionMultimap = getAggregateFunctionMultimap();
+
+        for (String name : reductionMultimap.keys()) {
+            List<AggregateFunction> reductions = reductionMultimap.get(name);
+            results.add(group.aggregate(name, reductions.toArray(new AggregateFunction[0])));
+        }
+        return combineTables(results);
+    }
+
+    private ArrayListMultimap<String, AggregateFunction> getAggregateFunctionMultimap() {
         ArrayListMultimap<String, AggregateFunction> reductionMultimap = ArrayListMultimap.create();
         for (String name: summarizedColumns) {
             Column column = temp.column(name);
@@ -200,12 +201,7 @@ public class Summarizer {
                 }
             }
         }
-
-        for (String name : reductionMultimap.keys()) {
-            List<AggregateFunction> reductions = reductionMultimap.get(name);
-            results.add(group.aggregate(name, reductions.toArray(new AggregateFunction[reductions.size()])));
-        }
-        return combineTables(results);
+        return reductionMultimap;
     }
 
     private Table combineTables(List<Table> tables) {

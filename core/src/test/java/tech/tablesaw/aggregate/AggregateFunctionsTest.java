@@ -89,7 +89,6 @@ public class AggregateFunctionsTest {
         Table t = summarizer.apply();
         double avg = t.numberColumn(0).get(0);
         assertTrue(avg > 2002 && avg < 2003);
-        System.out.println(t);
     }
 
     @Test

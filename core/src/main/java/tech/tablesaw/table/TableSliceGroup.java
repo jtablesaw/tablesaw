@@ -20,7 +20,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
@@ -46,9 +45,6 @@ public class TableSliceGroup implements Iterable<TableSlice> {
 
     // The list of slices or views over the source table that I contain
     private final List<TableSlice> subTables = new ArrayList<>();
-
-    // Grouping columns that were calculated on the fly, rather than being in the source. We remove when we're done.
-    final List<CategoricalColumn> columnsToRemove = new ArrayList<>();
 
     private final String[] splitColumnNames;
 
@@ -143,12 +139,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     public Table aggregate(String colName1, AggregateFunction... functions) {
         ArrayListMultimap<String, AggregateFunction> columnFunctionMap = ArrayListMultimap.create();
         columnFunctionMap.putAll(colName1, Lists.newArrayList(functions));
-
-        Table result = aggregate(columnFunctionMap);
-        for (CategoricalColumn column : columnsToRemove) {
-            result.removeColumns(column);
-        }
-        return result;
+        return aggregate(columnFunctionMap);
     }
 
     /**
@@ -179,11 +170,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
                 functionCount++;
             }
         }
-        Table result = splitGroupingColumn(groupTable);
-        for (CategoricalColumn column : columnsToRemove) {
-            result.removeColumns(column);
-        }
-        return result;
+        return splitGroupingColumn(groupTable);
     }
 
     public static Table summaryTableName(Table source) {
