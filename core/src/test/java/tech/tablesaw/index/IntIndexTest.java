@@ -14,20 +14,19 @@
 
 package tech.tablesaw.index;
 
-import tech.tablesaw.columns.DateAndTimePredicates;
-import tech.tablesaw.columns.numbers.NumberPredicates;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.DateAndTimePredicates;
 import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.numbers.NumberPredicates;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 
-import static tech.tablesaw.columns.numbers.NumberPredicates.isEqualTo;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -53,7 +52,7 @@ public class IntIndexTest {
 
     @Test
     public void testGet() {
-        Selection fromCol = table.numberColumn("approval").eval(isEqualTo, 71);
+        Selection fromCol = table.numberColumn("approval").eval(NumberPredicates.isEqualTo, 71);
         Selection fromIdx = index.get(71);
         assertEquals(fromCol, fromIdx);
     }
@@ -64,7 +63,9 @@ public class IntIndexTest {
         int packedDate = PackedLocalDate.pack(date);
         Selection fromCol = table.dateColumn("date").eval(DateAndTimePredicates.isEqualTo, packedDate);
         Selection fromIdx = dateIndex.get(packedDate);
+        Selection fromIdx1 = dateIndex.get(date);
         assertEquals(fromCol, fromIdx);
+        assertEquals(fromCol, fromIdx1);
     }
 
     @Test
@@ -102,5 +103,37 @@ public class IntIndexTest {
         Selection fromCol = table.numberColumn("approval").eval(NumberPredicates.isGreaterThan, 71);
         Selection fromIdx = index.greaterThan(71);
         assertEquals(fromCol, fromIdx);
+    }
+
+    @Test
+    public void testGT1() {
+        LocalDate date = LocalDate.of(2002, 4, 1);
+        int value = PackedLocalDate.pack(date);
+        Selection fromCol = table.dateColumn("date").eval(DateAndTimePredicates.isGreaterThan, value);
+        Selection fromIdx = dateIndex.greaterThan(value);
+        Selection fromIdx1 = dateIndex.greaterThan(date);
+        assertEquals(fromCol, fromIdx);
+        assertEquals(fromCol, fromIdx1);
+    }
+
+    @Test
+    public void testLT1() {
+        LocalDate date = LocalDate.of(2002, 4, 1);
+        int value = PackedLocalDate.pack(date);
+        Selection fromCol = table.dateColumn("date").eval(DateAndTimePredicates.isLessThan, value);
+        Selection fromIdx = dateIndex.lessThan(value);
+        assertEquals(fromCol, fromIdx);
+    }
+
+    @Test
+    public void testAtMost() {
+        LocalDate date = LocalDate.of(2002, 4, 1);
+        int value = PackedLocalDate.pack(date);
+        Selection fromCol = table.dateColumn("date").eval(DateAndTimePredicates.isLessThanOrEqualTo, value);
+        Selection fromIdx = dateIndex.atMost(value);
+        Selection fromIdx1 = dateIndex.atMost(date);
+        assertFalse(fromIdx.isEmpty());
+        assertEquals(fromCol, fromIdx);
+        assertEquals(fromCol, fromIdx1);
     }
 }
