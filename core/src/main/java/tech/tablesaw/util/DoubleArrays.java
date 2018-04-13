@@ -27,6 +27,9 @@ import java.util.List;
  */
 public class DoubleArrays {
 
+    /**
+     * Returns a double[] initialized with the values from 0 to n-1, inclusive;
+     */
     public static double[] toN(int n) {
         double[] result = new double[n];
         for (int i = 0; i < n; i++) {
@@ -42,7 +45,6 @@ public class DoubleArrays {
 
         for (int r = 0; r < obs; r++) {
             for (int c = 0; c < columns.length; c++) {
-                allVals[r][c] = columns[c].getDouble(r);
                 allVals[r][c] = columns[c].getDouble(r);
             }
         }
