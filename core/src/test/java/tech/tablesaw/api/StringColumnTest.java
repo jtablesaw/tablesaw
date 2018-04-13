@@ -191,11 +191,9 @@ public class StringColumnTest {
         assertTrue(other.contains("Some other thing"));
         assertTrue(other.contains("VALUE 3"));
         assertTrue(other.contains("Value 4"));
-        assertTrue("Value 3".equalsIgnoreCase("VALUE 3"));
         assertEquals(4, other.size());
         StringColumn result = (StringColumn) column.subset(column.eval(isEqualToIgnoringCase, other));
         assertEquals(3, result.size());
-        System.out.println(result);
     }
 
     @Test

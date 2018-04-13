@@ -93,7 +93,7 @@ public class TableTest {
         Column c2 = DoubleColumn.create("NC");
         Column c3 = DateColumn.create("DC");
         Table t = Table.create("Test", c1, c2, c3);
-        System.out.println(t.missingValueCounts());
+        assertEquals(0, t.missingValueCounts().numberColumn(1).get(0), 0.00001);
     }
 
     @Test
@@ -147,7 +147,6 @@ public class TableTest {
     @Test
     public void testDoWithEachRow() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(10);
-        System.out.println(t.print());
         Table.Doable doable = new Table.Doable() {
 
             @Override
@@ -155,7 +154,7 @@ public class TableTest {
                 if (row.getRowNumber() < 5) {
                     System.out.println("On "
                             + row.getPackedDate("date")
-                            + ", his approval sucks: "
+                            + ", low rating: "
                             + row.getDouble("approval"));
                 }
             }

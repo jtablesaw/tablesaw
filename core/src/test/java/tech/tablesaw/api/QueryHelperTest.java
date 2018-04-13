@@ -27,7 +27,6 @@ public class QueryHelperTest {
                 )
         );
         assertTrue(result.get(0, "who").startsWith("f"));
-        System.out.println(result);
     }
 
     @Test
@@ -39,8 +38,6 @@ public class QueryHelperTest {
         result = t.where(
                         stringColumn("who").isNotIn("fox", "zogby"));
         assertFalse(result.get(0, "who").startsWith("f"));
-
-        System.out.println(result);
     }
 
     @Test

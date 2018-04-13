@@ -17,7 +17,5 @@ public class RollingColumnTest {
         NumberColumn result = DoubleColumn.create("data", data).rolling(5).mean();
         assertArrayEquals(sma5, result.asDoubleArray(), 0.000001);
         Assert.assertEquals("dataMean5", result.name());
-        System.out.println(result.print());
     }
-
 }
