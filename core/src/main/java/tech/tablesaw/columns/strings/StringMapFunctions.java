@@ -274,6 +274,75 @@ public interface StringMapFunctions extends Column {
         return newColumn;
     }
 
+    default NumberColumn countTokens(String separator) {
+        NumberColumn newColumn = DoubleColumn.create(name() + "[token count]", this.size());
+
+        for (int r = 0; r < size(); r++) {
+            String value = getString(r);
+
+            Splitter splitter = Splitter.on(separator);
+            splitter = splitter.trimResults();
+            splitter = splitter.omitEmptyStrings();
+            List<String> tokens = new ArrayList<>(splitter.splitToList(value));
+            newColumn.append(tokens.size());
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a column of arbitrary size containing each unique token in this column, where a token is defined using the
+     * given separator, and uniqueness is calculated across the entire column
+     *
+     * NOTE: Unlike other map functions, this method produces a column whose size may be different from the source,
+     * so they cannot safely be combined in a table.
+     *
+     * @param separator the delimiter used in the tokenizing operation
+     * @return          a new column
+     */
+    default StringColumn uniqueTokens(String separator) {
+        return tokens(separator).unique();
+    }
+
+    /**
+     * Returns a column of arbitrary size containing each token in this column, where a token is defined using the
+     * given separator.
+     *
+     * NOTE: Unlike other map functions, this method produces a column whose size may be different from the source,
+     * so they cannot safely be combined in a table.
+     *
+     * @param separator the delimiter used in the tokenizing operation
+     * @return          a new column
+     */
+    default StringColumn tokens(String separator) {
+        StringColumn newColumn = StringColumn.create(name() + "[token count]", this.size());
+
+        for (int r = 0; r < size(); r++) {
+            String value = getString(r);
+
+            Splitter splitter = Splitter.on(separator);
+            splitter = splitter.trimResults();
+            splitter = splitter.omitEmptyStrings();
+            List<String> tokens = new ArrayList<>(splitter.splitToList(value));
+            for (String token : tokens) {
+                newColumn.append(token);
+            }
+        }
+        return newColumn;
+    }
+
+    /**
+     * Returns a column containing the character length of each string in this column
+     * The returned column is the same size as the original
+     */
+    default NumberColumn length() {
+        NumberColumn newColumn = DoubleColumn.create(name() + "[length]", this.size());
+
+        for (int r = 0; r < size(); r++) {
+            newColumn.append(getString(r).length());
+        }
+        return newColumn;
+    }
+
     /**
      * Splits on Whitespace and returns the lexicographically sorted result.
      *
