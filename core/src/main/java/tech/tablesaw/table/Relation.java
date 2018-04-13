@@ -14,6 +14,7 @@
 
 package tech.tablesaw.table;
 
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
@@ -26,11 +27,10 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.string.DataFramePrinter;
-import tech.tablesaw.sorting.comparators.DescendingIntegerComparator;
+import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 import tech.tablesaw.util.DoubleArrays;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,8 +52,7 @@ public abstract class Relation {
     }
 
     public Relation removeColumns(int ... columnIndexes) {
-        Arrays.sort(Arrays.stream(columnIndexes).boxed().toArray( Integer[]::new ),
-                DescendingIntegerComparator.instance());
+        IntArrays.quickSort(columnIndexes, DescendingIntComparator.instance());
         for (int i : columnIndexes) {
             removeColumns(column(i));
         }

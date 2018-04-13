@@ -63,6 +63,21 @@ public class TableTest {
     }
 
     @Test
+    public void testRemoveColumns() {
+        StringColumn sc = StringColumn.create("0");
+        StringColumn sc1 = StringColumn.create("1");
+        StringColumn sc2 = StringColumn.create("2");
+        StringColumn sc3 = StringColumn.create("3");
+        Table t = Table.create("t", sc, sc1, sc2, sc3);
+        t.removeColumns(1, 3);
+        assertTrue(t.containsColumn(sc));
+        assertTrue(t.containsColumn(sc2));
+        assertFalse(t.containsColumn(sc1));
+        assertFalse(t.containsColumn(sc3));
+
+    }
+
+    @Test
     public void printEmptyTable() {
         Table t = Table.create("Test");
         assertEquals("Test\n\n", t.print());

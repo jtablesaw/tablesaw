@@ -133,13 +133,9 @@ public class IntComparatorChain implements IntComparator, Serializable {
                         break label48;
                     }
                 }
-
-                var10000 = false;
-                return var10000;
+                return false;
             }
-
-            var10000 = true;
-            return var10000;
+            return true;
         }
     }
 }
