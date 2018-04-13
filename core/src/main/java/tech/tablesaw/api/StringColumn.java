@@ -320,13 +320,14 @@ public class StringColumn extends AbstractColumn
     }
 
     public StringColumn set(int rowIndex, String stringValue) {
-        if (stringValue == null) {
-            stringValue = MISSING_VALUE;
+        String str = MISSING_VALUE;
+        if (stringValue != null) {
+            str = stringValue;
         }
-        int valueId = lookupTable.get(stringValue);
+        int valueId = lookupTable.get(str);
         if (valueId <= 0) {
             valueId = nextIndex.getAndIncrement();
-            lookupTable.put(valueId, stringValue);
+            lookupTable.put(valueId, str);
         }
         values.set(rowIndex, valueId);
         return this;
