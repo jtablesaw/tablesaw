@@ -22,6 +22,7 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -34,6 +35,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Double.NaN;
 import static org.junit.Assert.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * Unit tests for the NumberColumn class
@@ -64,6 +66,61 @@ public class NumberColumnTest {
         stopwatch.reset().start();
         numberColumn.isLessThan(.5f);
         System.out.println("Search time in ms = " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+    }
+
+    @Test
+    public void testPercentiles() {
+        NumberColumn c = DoubleColumn.indexColumn("t", 99, 1);
+        NumberColumn c2 = c.copy();
+        c2.appendCell("");
+        assertEquals(50, c.median(), 0.00001);
+        assertEquals(50, c2.median(), 0.00001);
+        assertEquals(50, median.summarize(c), 0.00001);
+
+        assertEquals(25, c.quartile1(), 0.00001);
+        assertEquals(25, c2.quartile1(), 0.00001);
+        assertEquals(25, quartile1.summarize(c), 0.00001);
+
+        assertEquals(75, c.quartile3(), 0.00001);
+        assertEquals(75, c2.quartile3(), 0.00001);
+        assertEquals(75, quartile3.summarize(c), 0.00001);
+
+        assertEquals(90, percentile90.summarize(c), 0.00001);
+
+        assertEquals(5, c2.percentile(5), 0.00001);
+        assertEquals(5, c.percentile(5), 0.00001);
+        assertEquals(5, percentile(c, 5), 0.00001);
+
+        assertEquals(95, percentile95.summarize(c), 0.00001);
+        assertEquals(99, percentile99.summarize(c), 0.00001);
+    }
+
+    @Test
+    public void testSummarize() {
+        NumberColumn c = DoubleColumn.indexColumn("t", 99, 1);
+        NumberColumn c2 = c.copy();
+        c2.appendCell("");
+        assertEquals(StatUtils.variance(c.asDoubleArray()), c2.variance(), 0.00001);
+        assertEquals(StatUtils.sumLog(c.asDoubleArray()), c2.sumOfLogs(), 0.00001);
+        assertEquals(StatUtils.sumSq(c.asDoubleArray()), c2.sumOfSquares(), 0.00001);
+        assertEquals(StatUtils.geometricMean(c.asDoubleArray()), c2.geometricMean(), 0.00001);
+        assertEquals(StatUtils.product(c.asDoubleArray()), c2.product(), 0.00001);
+        assertEquals(StatUtils.populationVariance(c.asDoubleArray()), c2.populationVariance(), 0.00001);
+        assertEquals(new DescriptiveStatistics(c.asDoubleArray()).getQuadraticMean(), c2.quadraticMean(), 0.00001);
+        assertEquals(new DescriptiveStatistics(c.asDoubleArray()).getStandardDeviation(), c2.standardDeviation(), 0.00001);
+        assertEquals(new DescriptiveStatistics(c.asDoubleArray()).getKurtosis(), c2.kurtosis(), 0.00001);
+        assertEquals(new DescriptiveStatistics(c.asDoubleArray()).getSkewness(), c2.skewness(), 0.00001);
+
+        assertEquals(StatUtils.variance(c.asDoubleArray()), c.variance(), 0.00001);
+        assertEquals(StatUtils.sumLog(c.asDoubleArray()), c.sumOfLogs(), 0.00001);
+        assertEquals(StatUtils.sumSq(c.asDoubleArray()), c.sumOfSquares(), 0.00001);
+        assertEquals(StatUtils.geometricMean(c.asDoubleArray()), c.geometricMean(), 0.00001);
+        assertEquals(StatUtils.product(c.asDoubleArray()), c.product(), 0.00001);
+        assertEquals(StatUtils.populationVariance(c.asDoubleArray()), c.populationVariance(), 0.00001);
+        assertEquals(new DescriptiveStatistics(c.asDoubleArray()).getQuadraticMean(), c.quadraticMean(), 0.00001);
+        assertEquals(new DescriptiveStatistics(c.asDoubleArray()).getStandardDeviation(), c.standardDeviation(), 0.00001);
+        assertEquals(new DescriptiveStatistics(c.asDoubleArray()).getKurtosis(), c.kurtosis(), 0.00001);
+        assertEquals(new DescriptiveStatistics(c.asDoubleArray()).getSkewness(), c.skewness(), 0.00001);
     }
 
     @Ignore

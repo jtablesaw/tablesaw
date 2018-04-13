@@ -2,7 +2,7 @@
 
 ### Testing & Documentation
 
-1. Increased test coverage from 44% in core, to 74%.
+1. Increased test coverage from 44% in core, to 76%.
 
 ### Removed:
 

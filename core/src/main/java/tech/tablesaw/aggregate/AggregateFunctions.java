@@ -296,7 +296,8 @@ public class AggregateFunctions {
 
         @Override
         public double summarize(Column column) {
-            return StatUtils.variance(removeMissing((NumberColumn) column));
+            double[] values = removeMissing((NumberColumn) column);
+            return StatUtils.variance(values);
         }
     };
 
@@ -325,7 +326,7 @@ public class AggregateFunctions {
     }
 
     private static double[] removeMissing(NumberColumn column) {
-        return removeMissing(column.asDoubleArray());
+        return column.removeMissing().asDoubleArray();
     }
 
     private static Column removeMissing(Column column) {
