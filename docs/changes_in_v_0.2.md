@@ -82,35 +82,40 @@
 1. Extended PackedLocalTime and PackedLocalDate to be (approximately) functionally equivalent to Java's LocalDate and LocalTime.
 
 1. Improved Aggregation/Summarization
-    1. Simplified the CrossTab API, and made CrossTabs accessible from table objects:
+    1. Simplified the CrossTab API, and provided methods for creating CrossTabs (aka contingency tables) in table objects:
 
        ```java
        table.xTabCounts("columnA", "columnB");
        ```
 
+    1. Support for table summaries that include summaries of columns created on the fly using mapping functions:
+
+       ```java
+       table.summarize(dateColumn.year(), max, min);
+       ```
+
     1. Support for table summaries that include non-numeric columns. For example, the code below applies *countTrue* to the boolean column and *standardDeviation* to the numeric column.
 
        ```java
-       table.summarize(booleanColumn, numberColumn, 
-                       countTrue, standardDeviation).by(stringColumn); 
+       table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation); 
        ```
 
-    1. Support summarizing by "time windows" groups of n time units (days, weeks, years, etc).
+    1. Support summarizing *by* "time windows" groups of n time units (days, weeks, years, etc).
 
        ```java
        table.summarize("quantity", mean, median).by(date.timeWindow(DAYS, 5));
        ```
 
-    1. Support summarizing by named time units (months, for example):
+    1. Support summarizing *by* named time units (months, for example):
 
        ```java
        table.summarize("quantity", mean, median).by(date.month());
        ```
 
-    1. Both of the above are examples of a more general solution: Sub totals can per calculated for groups defined by any function that returns a column: 
+    1. Both of the above are examples of a more general solution: Sub totals can per calculated for groups defined *by* any function that returns a column: 
 
        ```java
-       summarize("quantity", sumOfSquares).by(strCol.substring(4, 7));
+       table.summarize("quantity", sumOfSquares).by(strCol.substring(4, 7));
        ```
 
        ​
