@@ -38,6 +38,7 @@ import java.util.List;
 public class Summarizer {
 
     private final Table original;
+    private final Table temp;
     private final List<String> summarizedColumns = new ArrayList<>();
     private final AggregateFunction[] reductions;
 
@@ -46,6 +47,9 @@ public class Summarizer {
      * by applying the given functions
      */
     public Summarizer(Table sourceTable, Column column, AggregateFunction... functions) {
+        Table tempTable = Table.create(sourceTable.name());
+        tempTable.addColumn(column);
+        this.temp = tempTable;
         this.original = sourceTable;
         summarizedColumns.add(column.name());
         this.reductions = functions;
@@ -56,6 +60,11 @@ public class Summarizer {
      * by applying the given functions
      */
     public Summarizer(Table sourceTable, List<String> columnNames, AggregateFunction... functions) {
+        Table tempTable = Table.create(sourceTable.name());
+        for (String nm : columnNames) {
+            tempTable.addColumn(sourceTable.column(nm));
+        }
+        this.temp = tempTable;
         this.original = sourceTable;
         summarizedColumns.addAll(columnNames);
         this.reductions = functions;
@@ -66,6 +75,10 @@ public class Summarizer {
      * by applying the given functions
      */
     public Summarizer(Table sourceTable, Column column1, Column column2, AggregateFunction... functions) {
+        Table tempTable = Table.create(sourceTable.name());
+        tempTable.addColumn(column1);
+        tempTable.addColumn(column2);
+        this.temp = tempTable;
         this.original = sourceTable;
         summarizedColumns.add(column1.name());
         summarizedColumns.add(column2.name());
@@ -82,6 +95,12 @@ public class Summarizer {
                       Column column3,
                       Column column4,
                       AggregateFunction... functions) {
+        Table tempTable = Table.create(sourceTable.name());
+        tempTable.addColumn(column1);
+        tempTable.addColumn(column2);
+        tempTable.addColumn(column3);
+        tempTable.addColumn(column4);
+        this.temp = tempTable;
         this.original = sourceTable;
         summarizedColumns.add(column1.name());
         summarizedColumns.add(column2.name());
@@ -95,6 +114,11 @@ public class Summarizer {
      * by applying the given functions
      */
     public Summarizer(Table sourceTable, Column column1, Column column2, Column column3, AggregateFunction... functions) {
+        Table tempTable = Table.create(sourceTable.name());
+        tempTable.addColumn(column1);
+        tempTable.addColumn(column2);
+        tempTable.addColumn(column3);
+        this.temp = tempTable;
         this.original = sourceTable;
         summarizedColumns.add(column1.name());
         summarizedColumns.add(column2.name());
@@ -104,11 +128,21 @@ public class Summarizer {
 
     public Table by(String... columnNames) {
         TableSliceGroup group = StandardTableSliceGroup.create(original, columnNames);
+        for (String columnName : columnNames) {
+            if (!temp.columnNames().contains(columnName)) {
+                temp.addColumn(original.column(columnName));
+            }
+        }
         return summarize(group);
     }
 
     public Table by(CategoricalColumn... columns) {
         TableSliceGroup group = StandardTableSliceGroup.create(original, columns);
+        for (Column c : columns) {
+            if (!temp.containsColumn(c)) {
+                temp.addColumn(c);
+            }
+        }
         return summarize(group);
     }
 
@@ -124,7 +158,7 @@ public class Summarizer {
         List<Table> results = new ArrayList<>();
         ArrayListMultimap<String, AggregateFunction> reductionMultimap = ArrayListMultimap.create();
         for (String name: summarizedColumns) {
-            Column column = original.column(name);
+            Column column = temp.column(name);
             ColumnType type = column.type();
             for (AggregateFunction reduction : reductions) {
                 if (reduction.isCompatibleWith(type)) {
@@ -135,9 +169,9 @@ public class Summarizer {
 
         for (String name : reductionMultimap.keys()) {
             List<AggregateFunction> reductions = reductionMultimap.get(name);
-            Table table = TableSliceGroup.summaryTableName(original);
+            Table table = TableSliceGroup.summaryTableName(temp);
             for (AggregateFunction function : reductions) {
-                Column column = original.column(name);
+                Column column = temp.column(name);
                 double result = function.summarize(column);
                 Column newColumn = DoubleColumn.create(TableSliceGroup.aggregateColumnName(name, function.functionName()));
                 ((DoubleColumn) newColumn).append(result);
@@ -158,7 +192,7 @@ public class Summarizer {
 
         ArrayListMultimap<String, AggregateFunction> reductionMultimap = ArrayListMultimap.create();
         for (String name: summarizedColumns) {
-            Column column = original.column(name);
+            Column column = temp.column(name);
             ColumnType type = column.type();
             for (AggregateFunction reduction : reductions) {
                 if (reduction.isCompatibleWith(type)) {

@@ -29,6 +29,7 @@ import tech.tablesaw.table.TableSliceGroup;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 public class AggregateFunctionsTest {
@@ -80,6 +81,15 @@ public class AggregateFunctionsTest {
         assertEquals(3, result.columnCount());
         assertEquals("53.6", result.get(0, 1));
         assertEquals("2.5099800796022267", result.get(0, 2));
+    }
+
+    @Test
+    public void testSummaryWithACalculatedColumn() {
+        Summarizer summarizer = new Summarizer(table, table.dateColumn("date").year(), mean);
+        Table t = summarizer.apply();
+        double avg = t.numberColumn(0).get(0);
+        assertTrue(avg > 2002 && avg < 2003);
+        System.out.println(t);
     }
 
     @Test

@@ -338,7 +338,7 @@ public abstract class Relation {
         return null;
     }
 
-    public boolean containsColumn(CategoricalColumn column) {
+    public boolean containsColumn(Column column) {
         return columns().contains(column);
     }
 }
