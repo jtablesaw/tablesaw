@@ -372,12 +372,13 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public void appendCell(String object) {
+    public DoubleColumn appendCell(String object) {
         try {
             append(convert(object));
         } catch (NumberFormatException e) {
             throw new NumberFormatException(name() + ": " + e.getMessage());
         }
+        return this;
     }
 
     /**

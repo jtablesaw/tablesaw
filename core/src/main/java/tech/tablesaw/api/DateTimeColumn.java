@@ -177,13 +177,14 @@ public class DateTimeColumn extends AbstractColumn
     }
 
     @Override
-    public void appendCell(String stringValue) {
+    public DateTimeColumn appendCell(String stringValue) {
         if (stringValue == null) {
             appendInternal(MISSING_VALUE);
         } else {
             long dateTime = convert(stringValue);
             appendInternal(dateTime);
         }
+        return this;
     }
 
     public void append(LocalDateTime dateTime) {

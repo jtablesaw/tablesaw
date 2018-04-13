@@ -358,8 +358,9 @@ public class DateColumn extends AbstractColumn implements DateFilters,
     }
 
     @Override
-    public void appendCell(String string) {
+    public DateColumn appendCell(String string) {
         appendInternal(convert(string));
+        return this;
     }
 
     @Override

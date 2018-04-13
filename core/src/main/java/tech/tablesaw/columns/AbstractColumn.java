@@ -43,7 +43,7 @@ public abstract class AbstractColumn implements Column {
         return this;
     }
 
-    public abstract void appendCell(String stringvalue);
+    public abstract Column appendCell(String stringvalue);
 
     /**
      * Returns the width of the column in characters, for printing

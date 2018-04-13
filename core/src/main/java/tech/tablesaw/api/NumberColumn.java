@@ -98,7 +98,7 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     boolean isEmpty();
 
     @Override
-    void appendCell(String object);
+    NumberColumn appendCell(String object);
 
     Integer roundInt(int i);
 

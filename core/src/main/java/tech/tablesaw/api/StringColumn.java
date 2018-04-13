@@ -422,8 +422,9 @@ public class StringColumn extends AbstractColumn
     }
 
     @Override
-    public void appendCell(String object) {
+    public StringColumn appendCell(String object) {
         addValue(convert(object));
+        return this;
     }
 
     @Override

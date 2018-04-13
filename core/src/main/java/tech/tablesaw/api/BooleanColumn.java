@@ -290,8 +290,9 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         ByteArrays.mergeSort(data.elements(), descendingByteComparator);
     }
 
-    public void appendCell(String object) {
+    public BooleanColumn appendCell(String object) {
         append(convert(object));
+        return this;
     }
 
     /**

@@ -370,8 +370,9 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     }
 
     @Override
-    public void appendCell(String object) {
+    public TimeColumn appendCell(String object) {
         appendInternal(convert(object));
+        return this;
     }
 
     @Override

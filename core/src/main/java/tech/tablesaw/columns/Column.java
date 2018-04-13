@@ -160,7 +160,7 @@ public interface Column {
      */
     boolean isEmpty();
 
-    void appendCell(String stringValue);
+    Column appendCell(String stringValue);
 
     IntComparator rowComparator();
 
