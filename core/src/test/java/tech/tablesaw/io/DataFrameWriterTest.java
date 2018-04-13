@@ -24,7 +24,6 @@ public class DataFrameWriterTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         table.write().csv(baos);
         String output = baos.toString();
-        table.write().csv("junk.csv");
         assertEquals("v,v2\n" +
                 "1.0,1.0\n" +
                 "2.0,2.0\n" +
@@ -41,7 +40,6 @@ public class DataFrameWriterTest {
         OutputStreamWriter osw = new OutputStreamWriter(baos);
         table.write().csv(osw);
         String output = baos.toString();
-        table.write().csv("junk.csv");
         assertEquals("v,v2\n" +
                 "1.0,1.0\n" +
                 "2.0,2.0\n" +
