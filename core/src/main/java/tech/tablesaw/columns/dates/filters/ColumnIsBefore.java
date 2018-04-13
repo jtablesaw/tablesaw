@@ -42,11 +42,11 @@ public class ColumnIsBefore extends TwoColumnFilter {
      * Returns a selection formed by applying a predicate for case-neutral equality between
      * each value in the given column and the corresponding value of the column passed into the constructor.
      *
-     * @param columnToFilter The column whose results will be filtered by the operation
+     * @param columnBeingFiltered The column whose results will be filtered by the operation
      */
     @Override
-    public Selection apply(Column columnToFilter) {
-        DateColumn dateColumn = (DateColumn) columnToFilter;
+    public Selection apply(Column columnBeingFiltered) {
+        DateColumn dateColumn = (DateColumn) columnBeingFiltered;
         return dateColumn.eval(isLessThan, (DateColumn) otherColumn());
     }
 }

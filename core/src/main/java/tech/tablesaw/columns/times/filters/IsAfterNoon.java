@@ -39,14 +39,14 @@ public class IsAfterNoon extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        ColumnType type = column.type();
+    public Selection apply(Column columnBeingFiltered) {
+        ColumnType type = columnBeingFiltered.type();
         switch (type) {
             case LOCAL_TIME:
-                TimeColumn timeColumn = (TimeColumn) column;
+                TimeColumn timeColumn = (TimeColumn) columnBeingFiltered;
                 return timeColumn.eval(PackedLocalTime::PM);
             case LOCAL_DATE_TIME:
-                DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
+                DateTimeColumn dateTimeColumn = (DateTimeColumn) columnBeingFiltered;
                 return dateTimeColumn.eval(PackedLocalDateTime::PM);
             default:
                 throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "

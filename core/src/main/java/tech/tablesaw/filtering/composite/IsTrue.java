@@ -46,7 +46,7 @@ public class IsTrue implements Filter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        return filter.apply(column);
+    public Selection apply(Column columnBeingFiltered) {
+        return filter.apply(columnBeingFiltered);
     }
 }

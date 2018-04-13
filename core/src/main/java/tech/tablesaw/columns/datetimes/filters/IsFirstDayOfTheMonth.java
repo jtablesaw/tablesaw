@@ -39,15 +39,15 @@ public class IsFirstDayOfTheMonth extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
+    public Selection apply(Column columnBeingFiltered) {
 
-        ColumnType type = column.type();
+        ColumnType type = columnBeingFiltered.type();
         switch (type) {
             case LOCAL_DATE:
-                DateColumn dateColumn = (DateColumn) column;
+                DateColumn dateColumn = (DateColumn) columnBeingFiltered;
                 return dateColumn.eval(PackedLocalDate::isFirstDayOfMonth);
             case LOCAL_DATE_TIME:
-                DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
+                DateTimeColumn dateTimeColumn = (DateTimeColumn) columnBeingFiltered;
                 return dateTimeColumn.eval(PackedLocalDateTime::isFirstDayOfMonth);
             default:
                 throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "

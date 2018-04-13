@@ -135,7 +135,7 @@ public class AggregateFunctionsTest {
 
         Table table = Table.create("test", booleanColumn, numberColumn, stringColumn);
         Table summarized = table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation).apply();
-        System.out.println(summarized);
+        assertEquals(1.2909944487358056, summarized.numberColumn(1).get(0), 0.00001);
     }
 
     @Test

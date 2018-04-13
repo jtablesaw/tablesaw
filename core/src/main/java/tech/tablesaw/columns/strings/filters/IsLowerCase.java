@@ -41,8 +41,8 @@ public class IsLowerCase extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        StringColumn textColumn = (StringColumn) column;
+    public Selection apply(Column columnBeingFiltered) {
+        StringColumn textColumn = (StringColumn) columnBeingFiltered;
         return textColumn.eval(isLowerCase);
     }
 }

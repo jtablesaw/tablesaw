@@ -42,11 +42,11 @@ public class NotEqualTo extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        ColumnType type = column.type();
+    public Selection apply(Column columnBeingFiltered) {
+        ColumnType type = columnBeingFiltered.type();
         switch (type) {
             case STRING: {
-                StringColumn stringColumn = (StringColumn) column;
+                StringColumn stringColumn = (StringColumn) columnBeingFiltered;
                 Selection selection = new BitmapBackedSelection();
                 selection.addRange(0, stringColumn.size());
                 selection.andNot(stringColumn.isEqualTo(value));

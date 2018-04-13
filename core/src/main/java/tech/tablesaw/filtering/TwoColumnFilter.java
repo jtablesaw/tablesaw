@@ -75,6 +75,9 @@ public abstract class TwoColumnFilter implements Filter {
     }
 
     public Column otherColumn() {
+        Preconditions.checkNotNull(otherColumn, "Column references can only be used in multi-column filters " +
+                "when both columns are in the same table, and the apply(table) method is used.");
+
         return otherColumn;
     }
 }

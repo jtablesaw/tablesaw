@@ -34,8 +34,8 @@ public class GreaterThanOrEqualTo extends ColumnFilter {
         return apply(relation.column(columnReference().getColumnName()));
     }
 
-    public Selection apply(Column column) {
-        NumberColumn numberColumn = (NumberColumn) column;
+    public Selection apply(Column columnBeingFiltered) {
+        NumberColumn numberColumn = (NumberColumn) columnBeingFiltered;
         return numberColumn.isGreaterThanOrEqualTo(value);
     }
 }

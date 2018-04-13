@@ -46,8 +46,8 @@ public class IsNotIn extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        NumberColumn numberColumn = (NumberColumn) column;
+    public Selection apply(Column columnBeingFiltered) {
+        NumberColumn numberColumn = (NumberColumn) columnBeingFiltered;
         return numberColumn.isNotIn(doubles);
     }
 }

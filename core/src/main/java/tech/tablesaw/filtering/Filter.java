@@ -8,5 +8,11 @@ public interface Filter {
 
     Selection apply(Table relation);
 
-    Selection apply(Column column);
+    /**
+     * Returns a selection created by applying this filter (and any optional params added in extending classes) to the
+     * given column
+     * @param columnBeingFiltered
+     * @return
+     */
+    Selection apply(Column columnBeingFiltered);
 }

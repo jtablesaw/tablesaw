@@ -58,8 +58,8 @@ import tech.tablesaw.filtering.composite.IsFalse;
  */
 public class NumberColumnReference extends ColumnReference {
 
-    public NumberColumnReference(String column) {
-        super(column);
+    public NumberColumnReference(String columnName) {
+        super(columnName);
     }
 
     public Filter isEqualTo(Number value) {

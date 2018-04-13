@@ -32,8 +32,8 @@ public class IsTrue extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        BooleanColumn booleanColumn = (BooleanColumn) column;
+    public Selection apply(Column columnBeingFiltered) {
+        BooleanColumn booleanColumn = (BooleanColumn) columnBeingFiltered;
         return booleanColumn.isTrue();
     }
 }

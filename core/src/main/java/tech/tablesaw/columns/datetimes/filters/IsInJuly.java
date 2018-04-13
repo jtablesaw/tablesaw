@@ -37,14 +37,14 @@ public class IsInJuly extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        ColumnType type = column.type();
+    public Selection apply(Column columnBeingFiltered) {
+        ColumnType type = columnBeingFiltered.type();
         switch (type) {
             case LOCAL_DATE:
-                DateColumn dateColumn = (DateColumn) column;
+                DateColumn dateColumn = (DateColumn) columnBeingFiltered;
                 return dateColumn.isInJuly();
             case LOCAL_DATE_TIME:
-                DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
+                DateTimeColumn dateTimeColumn = (DateTimeColumn) columnBeingFiltered;
                 return dateTimeColumn.isInJuly();
             default:
                 throw new UnsupportedOperationException("Columns of type " + type.name() + " do not support the operation "

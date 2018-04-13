@@ -37,8 +37,8 @@ public class EqualTo extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        DateColumn dateColumn = (DateColumn) column;
+    public Selection apply(Column columnBeingFiltered) {
+        DateColumn dateColumn = (DateColumn) columnBeingFiltered;
         return dateColumn.isEqualTo(value);
     }
 }

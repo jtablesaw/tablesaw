@@ -58,13 +58,13 @@ public class AllOf implements Filter {
     }
 
     @Override
-    public Selection apply(Column column) {
+    public Selection apply(Column columnBeingFiltered) {
         Selection selection = null;
         for (Filter filter : filterList) {
             if (selection == null) {
-                selection = filter.apply(column);
+                selection = filter.apply(columnBeingFiltered);
             } else {
-                selection.and(filter.apply(column));
+                selection.and(filter.apply(columnBeingFiltered));
             }
         }
         return selection;

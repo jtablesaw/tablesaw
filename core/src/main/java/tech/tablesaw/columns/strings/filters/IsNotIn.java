@@ -45,8 +45,8 @@ public class IsNotIn extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        StringColumn stringColumn = (StringColumn) column;
+    public Selection apply(Column columnBeingFiltered) {
+        StringColumn stringColumn = (StringColumn) columnBeingFiltered;
         return stringColumn.isNotIn(filter);
     }
 }

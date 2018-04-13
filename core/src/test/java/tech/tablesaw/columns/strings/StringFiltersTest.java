@@ -17,6 +17,7 @@ package tech.tablesaw.columns.strings;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
@@ -79,6 +80,30 @@ public class StringFiltersTest {
 
         table.addColumn(sc1);
         table.addColumn(sc2);
+    }
+
+    @Test
+    public void testLength() {
+        assertEquals(5, sc1.length().get(0), 0.000001);
+    }
+
+    @Test
+    public void testUniqueTokens() {
+        String[] values = {"a", "a b", "c d 3", "b 4"};
+        StringColumn column1 = StringColumn.create("1", values);
+        StringColumn tokens = column1.tokens(" ");
+        assertEquals(8, tokens.size(), 0.0001);
+        StringColumn uniqueTokens = column1.uniqueTokens(" ");
+        assertEquals(6, uniqueTokens.size(), 0.000001);
+    }
+
+    @Test
+    public void testCountOccurrences() {
+        String[] values = {"a", "a b", "c d 3", "b 4", "a"};
+        StringColumn column1 = StringColumn.create("1", values);
+        assertEquals(0, column1.countOccurrences("v"), 0.000001);
+        assertEquals(1, column1.countOccurrences("b 4"), 0.000001);
+        assertEquals(2, column1.countOccurrences("a"), 0.000001);
     }
 
     @Test
@@ -330,5 +355,13 @@ public class StringFiltersTest {
 
         assertFalse(ref1.isNotEqualTo(ref2).apply(table).contains(9));
         assertTrue(ref1.isNotEqualTo(ref2).apply(table).contains(0));
+    }
+
+    @Test
+    public void testCountWords() {
+        final String[] words1 = {"one", "two words"};
+        final StringColumn stringColumn1 = StringColumn.create("words", words1);
+        NumberColumn nc = stringColumn1.countTokens(" ");
+        assertEquals( 3, nc.sum(), 0.00001);
     }
 }

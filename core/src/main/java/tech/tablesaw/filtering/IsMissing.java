@@ -34,7 +34,7 @@ public class IsMissing extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        return column.isMissing();
+    public Selection apply(Column columnBeingFiltered) {
+        return columnBeingFiltered.isMissing();
     }
 }

@@ -39,8 +39,8 @@ public class IsAfter extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        TimeColumn timeColumn = (TimeColumn) column;
+    public Selection apply(Column columnBeingFiltered) {
+        TimeColumn timeColumn = (TimeColumn) columnBeingFiltered;
         return timeColumn.eval(PackedLocalTime::isAfter, PackedLocalTime.pack(value));
     }
 }

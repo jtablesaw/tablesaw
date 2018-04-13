@@ -50,10 +50,10 @@ public class IsFalse implements Filter {
     }
 
     @Override
-    public Selection apply(Column column) {
+    public Selection apply(Column columnBeingFiltered) {
         Selection selection = new BitmapBackedSelection();
-        selection.addRange(0, column.size());
-        selection.andNot(filter.apply(column));
+        selection.addRange(0, columnBeingFiltered.size());
+        selection.andNot(filter.apply(columnBeingFiltered));
         return selection;
     }
 }

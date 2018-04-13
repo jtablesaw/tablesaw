@@ -40,11 +40,11 @@ public class EqualTo extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        ColumnType type = column.type();
+    public Selection apply(Column columnBeingFiltered) {
+        ColumnType type = columnBeingFiltered.type();
         switch (type) {
             case STRING: {
-                StringColumn stringColumn = (StringColumn) column;
+                StringColumn stringColumn = (StringColumn) columnBeingFiltered;
                 return stringColumn.isEqualTo(value);
             }
             default:

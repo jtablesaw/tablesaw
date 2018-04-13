@@ -20,7 +20,7 @@ import tech.tablesaw.columns.ColumnReference;
 import tech.tablesaw.filtering.TwoColumnFilter;
 import tech.tablesaw.selection.Selection;
 
-import static tech.tablesaw.columns.numbers.NumberPredicates.*;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isGreaterThan;
 
 /**
  * A filtering that selects cells whose contents equal the given text ignoring case
@@ -43,11 +43,11 @@ public class ColumnGreaterThan extends TwoColumnFilter {
      * Returns a selection formed by applying a predicate for case-neutral equality between
      * each value in the given column and the corresponding value of the column passed into the constructor.
      *
-     * @param columnToFilter The column whose results will be filtered by the operation
+     * @param columnBeingFiltered The column whose results will be filtered by the operation
      */
     @Override
-    public Selection apply(Column columnToFilter) {
-        NumberColumn numberColumn = (NumberColumn) columnToFilter;
+    public Selection apply(Column columnBeingFiltered) {
+        NumberColumn numberColumn = (NumberColumn) columnBeingFiltered;
         return numberColumn.eval(isGreaterThan, (NumberColumn) otherColumn());
     }
 }

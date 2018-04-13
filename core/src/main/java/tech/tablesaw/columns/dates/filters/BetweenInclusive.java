@@ -39,8 +39,8 @@ public class BetweenInclusive extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        DateColumn dateColumn = (DateColumn) column;
+    public Selection apply(Column columnBeingFiltered) {
+        DateColumn dateColumn = (DateColumn) columnBeingFiltered;
         int packed1 = PackedLocalDate.pack(low);
         Selection matches = dateColumn.eval(PackedLocalDate::isOnOrAfter, packed1);
         int packed = PackedLocalDate.pack(high);

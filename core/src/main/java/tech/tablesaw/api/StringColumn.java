@@ -696,6 +696,20 @@ public class StringColumn extends AbstractColumn
         return values.indexOf(lookupTable.get(value));
     }
 
+    public double countOccurrences(String value) {
+        if (!lookupTable.contains(value)) {
+            return 0;
+        }
+        int key = lookupTable.get(value);
+        int count = 0;
+        for (int k : values) {
+            if (k == key) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     /**
      * A map that supports reversible key value pairs of int-String
      */

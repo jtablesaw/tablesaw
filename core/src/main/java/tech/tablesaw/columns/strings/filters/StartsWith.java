@@ -44,8 +44,8 @@ public class StartsWith extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        StringColumn textColumn = (StringColumn) column;
+    public Selection apply(Column columnBeingFiltered) {
+        StringColumn textColumn = (StringColumn) columnBeingFiltered;
         return textColumn.eval(startsWith, string);
     }
 }

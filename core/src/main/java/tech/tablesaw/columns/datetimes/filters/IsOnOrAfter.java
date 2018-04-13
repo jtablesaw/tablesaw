@@ -48,8 +48,8 @@ public class IsOnOrAfter extends ColumnFilter {
     }
 
     @Override
-    public Selection apply(Column column) {
-        DateTimeColumn dateColumn = (DateTimeColumn) column;
+    public Selection apply(Column columnBeingFiltered) {
+        DateTimeColumn dateColumn = (DateTimeColumn) columnBeingFiltered;
         return dateColumn.eval(DateTimePredicates.isGreaterThanOrEqualTo, value);
     }
 }
