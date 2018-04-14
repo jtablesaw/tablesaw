@@ -197,7 +197,11 @@ public interface Column {
         throw new UnsupportedOperationException("Method asDoubleArray() is not supported on non-numeric columns");
     }
 
+    /**
+     * Returns the width of the column in characters, for printing
+     */
     int columnWidth();
+
 
     Selection isMissing();
 
