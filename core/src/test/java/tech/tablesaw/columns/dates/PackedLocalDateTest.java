@@ -234,6 +234,7 @@ public class PackedLocalDateTest {
                 case 9: assertTrue(isInOctober(date)); break;
                 case 10: assertTrue(isInNovember(date)); break;
                 case 11: assertTrue(isInDecember(date)); break;
+                default: throw new IllegalArgumentException("Can't have a month outside this range");
             }
             date = plusMonths(1, date);
         }

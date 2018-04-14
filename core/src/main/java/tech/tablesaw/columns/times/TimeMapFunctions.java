@@ -27,7 +27,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
 import static java.time.temporal.ChronoUnit.*;
-import static tech.tablesaw.api.TimeColumn.*;
+import static tech.tablesaw.api.TimeColumn.MISSING_VALUE;
 
 public interface TimeMapFunctions extends Column {
 
