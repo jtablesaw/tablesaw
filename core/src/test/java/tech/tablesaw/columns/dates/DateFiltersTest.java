@@ -288,15 +288,25 @@ public class DateFiltersTest {
 
         Table t = Table.create("test", dateColumn, same, before, after);
 
+        assertTrue(dateColumn.isOnOrAfter(same).contains(0));
+        assertTrue(dateColumn("test").isOnOrAfter(same).apply(t).contains(0));
+        assertTrue(dateColumn("test").isOnOrAfter(dateColumn("same")).apply(t).contains(0));
+
+        assertTrue(dateColumn.isOnOrBefore(same).contains(0));
+        assertTrue(dateColumn("test").isOnOrBefore(same).apply(t).contains(0));
+        assertTrue(dateColumn("test").isOnOrBefore(dateColumn("same")).apply(t).contains(0));
+
         assertTrue(dateColumn.isEqualTo(same).contains(0));
         assertTrue(dateColumn("test").isEqualTo(same).apply(t).contains(0));
         assertTrue(dateColumn("test").isEqualTo(dateColumn("same")).apply(t).contains(0));
 
         assertTrue(dateColumn.isBefore(after).contains(0));
+        assertFalse(dateColumn.isOnOrAfter(after).contains(0));
         assertTrue(dateColumn("test").isBefore(after).apply(t).contains(0));
         assertTrue(dateColumn("test").isBefore(dateColumn("after")).apply(t).contains(0));
 
         assertTrue(dateColumn.isAfter(before).contains(0));
+        assertFalse(dateColumn.isOnOrBefore(before).contains(0));
         assertTrue(dateColumn("test").isAfter(before).apply(t).contains(0));
         assertTrue(dateColumn("test").isAfter(dateColumn("before")).apply(t).contains(0));
 

@@ -47,6 +47,76 @@ public class LocalTimeFilterTest {
     }
 
     @Test
+    public void testColumnEquality() {
+        TimeColumn column1 = localTimeColumn.copy();
+        column1.setName("copy");
+        table.addColumn(column1);
+        Selection selection = localTimeColumn.isEqualTo(column1);
+        assertTrue(selection.contains(0));
+        TimeColumnReference reference = new TimeColumnReference("testing");
+        selection = reference.isEqualTo(column1).apply(table);
+        assertTrue(selection.contains(0));
+    }
+
+    @Test
+    public void testColumnInEquality() {
+        TimeColumn column1 = localTimeColumn.copy();
+        column1.setName("copy");
+        table.addColumn(column1);
+        Selection selection = localTimeColumn.isNotEqualTo(column1);
+        assertFalse(selection.contains(0));
+        TimeColumnReference reference = new TimeColumnReference("testing");
+        selection = reference.isNotEqualTo(column1).apply(table);
+        assertFalse(selection.contains(0));
+    }
+
+    @Test
+    public void testColumnIsBefore() {
+        TimeColumn column1 = localTimeColumn.copy();
+        column1.setName("copy");
+
+        TimeColumn before = localTimeColumn.minusHours(1);
+        TimeColumn after = localTimeColumn.plusHours(1);
+
+        table.addColumn(column1, before, after);
+
+        Selection selection = localTimeColumn.isBefore(column1);
+        assertFalse(selection.contains(0));
+        TimeColumnReference reference = new TimeColumnReference("testing");
+        selection = reference.isAfter(column1).apply(table);
+        assertFalse(selection.contains(0));
+
+        selection = localTimeColumn.isBefore(after);
+        assertTrue(selection.contains(0));
+        reference = new TimeColumnReference("testing");
+        selection = reference.isBefore(after).apply(table);
+        assertTrue(selection.contains(0));
+    }
+
+    @Test
+    public void testColumnIsAfter() {
+        TimeColumn column1 = localTimeColumn.copy();
+        column1.setName("copy");
+
+        TimeColumn before = localTimeColumn.minusHours(1);
+        TimeColumn after = localTimeColumn.plusHours(1);
+
+        table.addColumn(column1, before, after);
+
+        Selection selection = localTimeColumn.isBefore(column1);
+        assertFalse(selection.contains(0));
+        TimeColumnReference reference = new TimeColumnReference("testing");
+        selection = reference.isAfter(column1).apply(table);
+        assertFalse(selection.contains(0));
+
+        selection = localTimeColumn.isAfter(before);
+        assertTrue(selection.contains(0));
+        reference = new TimeColumnReference("testing");
+        selection = reference.isAfter(before).apply(table);
+        assertTrue(selection.contains(0));
+    }
+
+    @Test
     public void testIsAM() {
         TimeColumnReference reference = new TimeColumnReference("testing");
         IsBeforeNoon isAM = reference.isBeforeNoon();

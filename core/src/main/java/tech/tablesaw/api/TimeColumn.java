@@ -28,9 +28,7 @@ import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.columns.times.TimeColumnFormatter;
 import tech.tablesaw.columns.times.TimeFilters;
 import tech.tablesaw.columns.times.TimeMapFunctions;
-import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 
@@ -137,16 +135,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         copy.data = new IntArrayList(dest);
         copy.setName(name() + " lag(" + n + ")");
         return copy;
-    }
-
-    public Selection eval(IntBiPredicate predicate, TimeColumn otherColumn) {
-        Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(getIntInternal(idx), otherColumn.getIntInternal(idx))) {
-                selection.add(idx);
-            }
-        }
-        return selection;
     }
 
     @Override

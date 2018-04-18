@@ -13,9 +13,22 @@ import java.util.function.BiPredicate;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
+import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThan;
+import static tech.tablesaw.columns.DateAndTimePredicates.isLessThan;
+
 public interface TimeFilters extends Column {
 
     TimeColumn where(Selection selection);
+
+    default Selection eval(IntBiPredicate predicate, TimeColumn otherColumn) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(getIntInternal(idx), otherColumn.getIntInternal(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
 
     default Selection eval(IntPredicate predicate) {
         Selection selection = new BitmapBackedSelection();
@@ -58,8 +71,6 @@ public interface TimeFilters extends Column {
         }
         return selection;
     }
-
-    Selection eval(IntBiPredicate predicate, TimeColumn otherColumn);
 
     default Selection isMidnight() {
         return eval(PackedLocalTime::isMidnight);
@@ -163,7 +174,39 @@ public interface TimeFilters extends Column {
         return results;
     }
 
+    /**
+     * Returns a bitmap flagging the records for which the value in this column is before the value in the given
+     * column
+     * Columnwise isEqualTo.
+     */
+    default Selection isBefore(TimeColumn column) {
+        return eval(isLessThan, column);
+    }
+
+    /**
+     * Returns a bitmap flagging the records for which the value in this column is after the value in the given
+     * column
+     * Columnwise isEqualTo.
+     */
+    default Selection isAfter(TimeColumn column) {
+        return eval(isGreaterThan, column);
+    }
+
+    /**
+     * Returns a bitmap flagging the records for which the value in this column is NOT equal to the value in the given
+     * column
+     * Columnwise isEqualTo.
+     */
+    default Selection isNotEqualTo(TimeColumn column) {
+        return Selection.withRange(0, size()).andNot(isEqualTo(column));
+    }
+
     IntArrayList data();
 
     LocalTime get(int index);
+
+    /**
+     * Returns the packed time representation of the value at index
+     */
+    int getIntInternal(int index);
 }
