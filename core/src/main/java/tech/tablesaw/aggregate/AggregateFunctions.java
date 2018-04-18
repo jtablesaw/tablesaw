@@ -80,6 +80,11 @@ public class AggregateFunctions {
     };
 
     /**
+     * A function that calculates the count of values in the column excluding missing values. A synonym for countNonMissing
+     */
+    public static AggregateFunction count = countNonMissing;
+
+    /**
      * A function that calculates the count of values in the column excluding missing values
      */
     public static AggregateFunction countMissing = new AggregateFunction("Missing Values") {

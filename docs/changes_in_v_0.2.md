@@ -82,7 +82,13 @@
 1. Extended PackedLocalTime and PackedLocalDate to be (approximately) functionally equivalent to Java's LocalDate and LocalTime.
 
 1. Improved Aggregation/Summarization
-    1. Simplified the CrossTab API, and provided methods for creating CrossTabs (aka contingency tables) in table objects:
+    1. Support for conditional summarization using *summarizeIf()*. The code below counts the number of strings in column that end with "3". 
+
+       ```java
+       double count = column.summarizeIf(column.endsWith("3"), count);
+       ```
+
+    1. Simplified the CrossTab API, and provided methods for creating CrossTabs (a  ka contingency tables) in table objects:
 
        ```java
        table.xTabCounts("columnA", "columnB");

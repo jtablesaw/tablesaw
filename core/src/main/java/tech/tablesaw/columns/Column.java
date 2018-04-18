@@ -15,6 +15,7 @@
 package tech.tablesaw.columns;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
@@ -42,6 +43,11 @@ public interface Column {
             c.appendCell(getString(row));
         }
         return c;
+    }
+
+    default double summarizeIf(Selection selection, AggregateFunction function) {
+        Column column = where(selection);
+        return function.summarize(column);
     }
 
     /**

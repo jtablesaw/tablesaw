@@ -14,19 +14,19 @@
 
 package tech.tablesaw.api;
 
-import tech.tablesaw.columns.strings.StringColumnFormatter;
-import tech.tablesaw.selection.Selection;
-
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.TestDataUtil;
+import tech.tablesaw.columns.strings.StringColumnFormatter;
+import tech.tablesaw.selection.Selection;
 
 import java.util.List;
 import java.util.function.Function;
 
+import static org.junit.Assert.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.count;
 import static tech.tablesaw.api.QueryHelper.both;
 import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
-import static org.junit.Assert.*;
 
 public class StringColumnTest {
 
@@ -38,6 +38,17 @@ public class StringColumnTest {
         column.append("Value 2");
         column.append("Value 3");
         column.append("Value 4");
+    }
+
+    @Test
+    public void testSummarizeIf() {
+        double result = column.summarizeIf(
+                column.endsWith("3").or(column.endsWith("4")),
+                count);
+        assertEquals(2, result, 0.0);
+
+        double result2 = column.summarizeIf(column.endsWith("3"), count);
+        assertEquals(1, result2, 0.0);
     }
 
     @Test
