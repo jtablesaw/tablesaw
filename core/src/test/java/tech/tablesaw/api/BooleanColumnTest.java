@@ -39,6 +39,45 @@ public class BooleanColumnTest {
     }
 
     @Test
+    public void testAny() {
+        assertTrue(column.any());
+    }
+
+    @Test
+    public void testAll() {
+        assertFalse(column.all());
+        BooleanColumn filtered = column.where(column.isTrue());
+        assertTrue(filtered.all());
+    }
+
+    @Test
+    public void testNone() {
+        assertFalse(column.none());
+        BooleanColumn filtered = column.where(column.isFalse());
+        assertTrue(filtered.none());
+    }
+
+    @Test
+    public void testSet() {
+        assertFalse(column.none());
+        column.set(false, column.isTrue());
+        assertTrue(column.none());
+    }
+
+    @Test
+    public void testGetDouble() {
+        assertEquals(1, column.getDouble(4), 0.0);
+        assertEquals(0, column.getDouble(0), 0.0);
+    }
+
+    @Test
+    public void testAppendColumn() {
+        BooleanColumn column1 = column.copy();
+        column1.append(column);
+        assertEquals(2 * column.size(), column1.size());
+    }
+
+    @Test
     public void testPrinting() {
         column.appendCell("");
         column.setPrintFormatter(new BooleanFormatter("Yes", "No", "IDK"));
