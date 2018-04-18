@@ -28,6 +28,7 @@ import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.columns.times.TimeColumnFormatter;
 import tech.tablesaw.columns.times.TimeFilters;
 import tech.tablesaw.columns.times.TimeMapFunctions;
+import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -138,6 +139,15 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return copy;
     }
 
+    public Selection eval(IntBiPredicate predicate, TimeColumn otherColumn) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(getIntInternal(idx), otherColumn.getIntInternal(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
 
     @Override
     public boolean isMissing(int rowNumber) {
@@ -396,32 +406,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return comparator;
     }
 
-    public Selection isNotEqualTo(LocalTime value) {
-        Selection results = new BitmapBackedSelection();
-        int packedLocalTime = PackedLocalTime.pack(value);
-        int i = 0;
-        for (int next : data) {
-            if (packedLocalTime != next) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
-    }
-
-    public Selection isEqualTo(LocalTime value) {
-        Selection results = new BitmapBackedSelection();
-        int packedLocalTime = PackedLocalTime.pack(value);
-        int i = 0;
-        for (int next : data) {
-            if (packedLocalTime == next) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
-    }
-
     public IntArrayList data() {
         return data;
     }
@@ -517,24 +501,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
             set(row, newValue);
         }
         return this;
-    }
-
-    /**
-     * Returns a bitmap flagging the records for which the value in this column is equal to the value in the given
-     * column
-     * Columnwise isEqualTo.
-     */
-    public Selection isEqualTo(TimeColumn column) {
-        Selection results = new BitmapBackedSelection();
-        int i = 0;
-        IntIterator intIterator = column.intIterator();
-        for (int next : data) {
-            if (next == intIterator.nextInt()) {
-                results.add(i);
-            }
-            i++;
-        }
-        return results;
     }
 
     public IntIterator intIterator() {

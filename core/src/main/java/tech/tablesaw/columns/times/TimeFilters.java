@@ -1,6 +1,7 @@
 package tech.tablesaw.columns.times;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
@@ -58,6 +59,8 @@ public interface TimeFilters extends Column {
         return selection;
     }
 
+    Selection eval(IntBiPredicate predicate, TimeColumn otherColumn);
+
     default Selection isMidnight() {
         return eval(PackedLocalTime::isMidnight);
     }
@@ -114,6 +117,50 @@ public interface TimeFilters extends Column {
      */
     default Selection isAfterNoon() {
         return eval(PackedLocalTime::PM);
+    }
+
+    default Selection isNotEqualTo(LocalTime value) {
+        Selection results = new BitmapBackedSelection();
+        int packedLocalTime = PackedLocalTime.pack(value);
+        int i = 0;
+        for (int next : data()) {
+            if (packedLocalTime != next) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    default Selection isEqualTo(LocalTime value) {
+        Selection results = new BitmapBackedSelection();
+        int packedLocalTime = PackedLocalTime.pack(value);
+        int i = 0;
+        for (int next : data()) {
+            if (packedLocalTime == next) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
+    }
+
+    /**
+     * Returns a bitmap flagging the records for which the value in this column is equal to the value in the given
+     * column
+     * Columnwise isEqualTo.
+     */
+    default Selection isEqualTo(TimeColumn column) {
+        Selection results = new BitmapBackedSelection();
+        int i = 0;
+        IntIterator intIterator = column.intIterator();
+        for (int next : data()) {
+            if (next == intIterator.nextInt()) {
+                results.add(i);
+            }
+            i++;
+        }
+        return results;
     }
 
     IntArrayList data();

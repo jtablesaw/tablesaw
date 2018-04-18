@@ -14,7 +14,12 @@
 
 package tech.tablesaw.columns.times;
 
+import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.ColumnReference;
+import tech.tablesaw.columns.times.filters.ColumnEqualTo;
+import tech.tablesaw.columns.times.filters.ColumnIsAfter;
+import tech.tablesaw.columns.times.filters.ColumnIsBefore;
+import tech.tablesaw.columns.times.filters.ColumnNotEqualTo;
 import tech.tablesaw.columns.times.filters.EqualTo;
 import tech.tablesaw.columns.times.filters.IsAfter;
 import tech.tablesaw.columns.times.filters.IsAfterNoon;
@@ -54,6 +59,22 @@ public class TimeColumnReference extends ColumnReference {
         return new EqualTo(this, value);
     }
 
+    public ColumnEqualTo isEqualTo(TimeColumn value) {
+        return new ColumnEqualTo(this, value);
+    }
+
+    public ColumnEqualTo isEqualTo(TimeColumnReference value) {
+        return new ColumnEqualTo(this, value);
+    }
+
+    public ColumnNotEqualTo isNotEqualTo(TimeColumn value) {
+        return new ColumnNotEqualTo(this, value);
+    }
+
+    public ColumnNotEqualTo isNotEqualTo(TimeColumnReference value) {
+        return new ColumnNotEqualTo(this, value);
+    }
+
     public NotEqualTo isNotEqualTo(LocalTime value) {
         return new NotEqualTo(this, value);
     }
@@ -62,8 +83,24 @@ public class TimeColumnReference extends ColumnReference {
         return new IsBefore(this, value);
     }
 
+    public ColumnIsBefore isBefore(TimeColumn value) {
+        return new ColumnIsBefore(this, value);
+    }
+
+    public ColumnIsBefore isBefore(TimeColumnReference value) {
+        return new ColumnIsBefore(this, value);
+    }
+
     public IsAfter isAfter(LocalTime value) {
         return new IsAfter(this, value);
+    }
+
+    public ColumnIsAfter isAfter(TimeColumn value) {
+        return new ColumnIsAfter(this, value);
+    }
+
+    public ColumnIsAfter isAfter(TimeColumnReference value) {
+        return new ColumnIsAfter(this, value);
     }
 
     public IsOnOrAfter isOnOrAfter(LocalTime value) {

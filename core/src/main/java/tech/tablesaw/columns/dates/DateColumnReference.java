@@ -56,6 +56,8 @@ import tech.tablesaw.filtering.Filter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static tech.tablesaw.filtering.composite.IsFalse.isFalse;
+
 /**
  * A reference to a column that can be used in evaluating query predicates. It is a key part of having a fluent API
  * for querying tables.
@@ -94,6 +96,14 @@ public class DateColumnReference extends ColumnReference {
         return new ColumnIsBefore(this, reference);
     }
 
+    public Filter isOnOrBefore(DateColumnReference reference) {
+        return isFalse(new ColumnIsAfter(this, reference));
+    }
+
+    public Filter isOnOrBefore(DateColumn reference) {
+        return isFalse(new ColumnIsAfter(this, reference));
+    }
+
     public Filter isEqualTo(DateColumn reference) {
         return new ColumnEqualTo(this, reference);
     }
@@ -104,6 +114,14 @@ public class DateColumnReference extends ColumnReference {
 
     public Filter isAfter(DateColumn reference) {
         return new ColumnIsAfter(this, reference);
+    }
+
+    public Filter isOnOrAfter(DateColumn reference) {
+        return isFalse(new ColumnIsBefore(this, reference));
+    }
+
+    public Filter isOnOrAfter(DateColumnReference reference) {
+        return isFalse(new ColumnIsBefore(this, reference));
     }
 
     public Filter isBefore(DateColumn reference) {

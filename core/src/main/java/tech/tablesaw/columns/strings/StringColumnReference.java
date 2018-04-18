@@ -130,28 +130,12 @@ public class StringColumnReference extends ColumnReference {
         return new EqualToIgnoringCase(this, string);
     }
 
-    public Filter equalsIgnoreCase(StringColumn stringColumnToCompareAgainst) {
-        return new ColumnEqualToIgnoringCase(this, stringColumnToCompareAgainst);
-    }
-
-    public Filter equalsIgnoreCase(StringColumnReference stringColumnToCompareAgainst) {
-        return new ColumnEqualToIgnoringCase(this, stringColumnToCompareAgainst);
-    }
-
     public Filter startsWith(String string) {
         return new StartsWith(this, string);
     }
 
-    public Filter startsWith(StringColumn sc) {
-        return new ColumnStartsWith(this, sc);
-    }
-
     public Filter endsWith(String string) {
         return new EndsWith(this, string);
-    }
-
-    public Filter endsWith(StringColumn sc) {
-        return new ColumnEndsWith(this, sc);
     }
 
     public Filter containsString(String string) {
@@ -164,6 +148,22 @@ public class StringColumnReference extends ColumnReference {
 
     public Filter matchesRegex(String string) {
         return new MatchesRegex(this, string);
+    }
+
+    public Filter startsWith(StringColumn sc) {
+        return new ColumnStartsWith(this, sc);
+    }
+
+    public Filter startsWith(StringColumnReference ref) {
+        return new ColumnStartsWith(this, ref);
+    }
+
+    public Filter endsWith(StringColumn sc) {
+        return new ColumnEndsWith(this, sc);
+    }
+
+    public Filter endsWith(StringColumnReference ref) {
+        return new ColumnEndsWith(this, ref);
     }
 
     public Filter isEqualTo(StringColumn value) {
@@ -181,4 +181,13 @@ public class StringColumnReference extends ColumnReference {
     public Filter isNotEqualTo(StringColumnReference value) {
         return new ColumnNotEqualTo(this, value);
     }
+
+    public Filter equalsIgnoreCase(StringColumn stringColumnToCompareAgainst) {
+        return new ColumnEqualToIgnoringCase(this, stringColumnToCompareAgainst);
+    }
+
+    public Filter equalsIgnoreCase(StringColumnReference stringColumnToCompareAgainst) {
+        return new ColumnEqualToIgnoringCase(this, stringColumnToCompareAgainst);
+    }
+
 }
