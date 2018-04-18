@@ -21,10 +21,9 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import org.apache.commons.lang3.RandomUtils;
+import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.CrossTab;
 import tech.tablesaw.aggregate.Summarizer;
-import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
@@ -44,13 +43,13 @@ import tech.tablesaw.table.TableSliceGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
+import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
@@ -132,37 +131,6 @@ public class Table extends Relation implements IntIterable {
 
     public static DataFrameReader read() {
         return new DataFrameReader();
-    }
-
-    /**
-     * Returns an randomly generated array of ints of size N where Max is the largest possible value
-     */
-    private static int[] generateUniformBitmap(int N, int Max) {
-        if (N > Max) {
-            throw new IllegalArgumentException("Illegal arguments: N (" + N + ") greater than Max (" + Max + ")");
-        }
-
-        int[] ans = new int[N];
-        if (N == Max) {
-            for (int k = 0; k < N; ++k)
-                ans[k] = k;
-            return ans;
-        }
-
-        BitSet bs = new BitSet(Max);
-        int cardinality = 0;
-        while (cardinality < N) {
-            int v = RandomUtils.nextInt(0, Max);
-            if (!bs.get(v)) {
-                bs.set(v);
-                cardinality++;
-            }
-        }
-        int pos = 0;
-        for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1)) {
-            ans[pos++] = i;
-        }
-        return ans;
     }
 
     public DataFrameWriter write() {
@@ -456,7 +424,7 @@ public class Table extends Relation implements IntIterable {
         }
         Selection table1Selection = new BitmapBackedSelection();
 
-        int[] table1Records = generateUniformBitmap(table1Count, rowCount());
+        int[] table1Records = Selection.generateUniformBitmap(table1Count, rowCount());
         for (int table1Record : table1Records) {
             table1Selection.add(table1Record);
         }
@@ -477,7 +445,7 @@ public class Table extends Relation implements IntIterable {
                 "The sample proportion must be between 0 and 1");
 
         int tableSize = (int) Math.round(rowCount() * proportion);
-        return where(selectNRowsAtRandom(tableSize));
+        return where(selectNRowsAtRandom(tableSize, rowCount()));
     }
 
     /**
@@ -488,16 +456,7 @@ public class Table extends Relation implements IntIterable {
     public Table sampleN(int nRows) {
         Preconditions.checkArgument(nRows > 0 && nRows < rowCount(),
                 "The number of rows sampled must be greater than 0 and less than the number of rows in the table.");
-        return where(selectNRowsAtRandom(nRows));
-    }
-
-    private Selection selectNRowsAtRandom(int tableCount) {
-        Selection table1Selection = new BitmapBackedSelection();
-        int[] selectedRecords = generateUniformBitmap(tableCount, rowCount());
-        for (int selectedRecord : selectedRecords) {
-            table1Selection.add(selectedRecord);
-        }
-        return table1Selection;
+        return where(selectNRowsAtRandom(nRows, rowCount()));
     }
 
     /**

@@ -85,7 +85,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
 
     public static BooleanColumn create(String name, Selection hits, int columnSize) {
         BooleanColumn column = create(name, columnSize);
-
         checkArgument(
                 (hits.size() <= columnSize),
                 "Cannot have more true values than total values in a boolean column");

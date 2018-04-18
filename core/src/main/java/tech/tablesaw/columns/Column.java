@@ -14,12 +14,16 @@
 
 package tech.tablesaw.columns;
 
+import com.google.common.base.Preconditions;
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
+
+import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 /**
  * The general interface for columns.
@@ -173,21 +177,13 @@ public interface Column {
     void append(Column column);
 
     default Column first(int numRows) {
-        Column col = emptyCopy();
-        int rows = Math.min(numRows, size());
-        for (int i = 0; i < rows; i++) {
-            col.appendCell(getUnformattedString(i));
-        }
-        return col;
+        int newRowCount = Math.min(numRows, size());
+        return inRange(0, newRowCount);
     }
 
     default Column last(int numRows) {
-        Column col = emptyCopy();
-        int rows = Math.min(numRows, size());
-        for (int i = size() - rows; i < size(); i++) {
-            col.appendCell(getUnformattedString(i));
-        }
-        return col;
+        int newRowCount = Math.min(numRows, size());
+        return inRange(size() - newRowCount, size());
     }
 
     /**
@@ -207,6 +203,48 @@ public interface Column {
      * Returns the width of the column in characters, for printing
      */
     int columnWidth();
+
+    /**
+     * Returns a column containing the rows in this column beginning with start inclusive, and ending with end exclusive
+     */
+    default Column inRange(int start, int end) {
+        Preconditions.checkArgument(start < end);
+        Preconditions.checkArgument(end <= size());
+        return where(Selection.withRange(start, end));
+    }
+
+    /**
+     * Returns a column containing the values in this column with the given indices
+     */
+    default Column rows(int... indices) {
+        Preconditions.checkArgument(Ints.max(indices) <= size());
+        return where(Selection.with(indices));
+    }
+
+    /**
+     * Returns a column containing a random sample of the values in this column
+     * @param n the number of values to select
+     * @return  A column of the same type as the receiver
+     */
+    default Column sampleN(int n) {
+        Preconditions.checkArgument(n > 0 && n < size(),
+                "The number of rows sampled must be greater than 0 and less than the number of rows in the table.");
+        return where(Selection.selectNRowsAtRandom(n, size()));
+    }
+
+    /**
+     * Returns a table consisting of randomly selected values from this column. The sample size is based on the
+     * given proportion of the total number of cells in this column
+     *
+     * @param proportion The proportion to go in the sample
+     */
+    default Column sampleX(double proportion) {
+        Preconditions.checkArgument(proportion <= 1 && proportion >= 0,
+                "The sample proportion must be between 0 and 1");
+
+        int tableSize = (int) Math.round(size() * proportion);
+        return where(selectNRowsAtRandom(tableSize, size()));
+    }
 
 
     Selection isMissing();
