@@ -757,14 +757,30 @@ public class Table extends Relation implements IntIterable {
     }
 
     /**
-     * The first stage of a split-apply-combine operation
+     * Returns a non-overlapping and exhaustive collection of "slices" over this table.
+     * Each slice is like a virtual table containing a subset of the records in this table
+     *
+     * This method is intended for advanced or unusual operations on the subtables.
+     * If you want to calculate summary statistics for each subtable, the summarize methods (e.g)
+     *
+     * table.summarize(myColumn, mean, median).by(columns)
+     *
+     * are preferred
      */
     public TableSliceGroup splitOn(String... columns) {
         return splitOn(categoricalColumns(columns).toArray(new CategoricalColumn[columns.length]));
     }
 
     /**
-     * The first stage of a split-apply-combine operation
+     * Returns a non-overlapping and exhaustive collection of "slices" over this table.
+     * Each slice is like a virtual table containing a subset of the records in this table
+     *
+     * This method is intended for advanced or unusual operations on the subtables.
+     * If you want to calculate summary statistics for each subtable, the summarize methods (e.g)
+     *
+     * table.summarize(myColumn, mean, median).by(columns)
+     *
+     * are preferred
      */
     public TableSliceGroup splitOn(CategoricalColumn... columns) {
         return StandardTableSliceGroup.create(this, columns);
