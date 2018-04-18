@@ -44,14 +44,14 @@ public enum ColumnType {
 
     public Column create(String name) {
         switch (this) {
-            case BOOLEAN: return BooleanColumn.create("name");
-            case STRING: return StringColumn.create("name");
-            case NUMBER: return DoubleColumn.create("name");
-            case LOCAL_DATE: return DateColumn.create("name");
-            case LOCAL_DATE_TIME: return DateTimeColumn.create("name");
-            case LOCAL_TIME: return TimeColumn.create("name");
+            case BOOLEAN: return BooleanColumn.create(name);
+            case STRING: return StringColumn.create(name);
+            case NUMBER: return DoubleColumn.create(name);
+            case LOCAL_DATE: return DateColumn.create(name);
+            case LOCAL_DATE_TIME: return DateTimeColumn.create(name);
+            case LOCAL_TIME: return TimeColumn.create(name);
         }
-        throw new UnsupportedOperationException("Column type " + this.name() + " doesn't support column cration");
+        throw new UnsupportedOperationException("Column type " + this.name() + " doesn't support column creation");
     }
 
     public Comparable<?> getMissingValue() {
