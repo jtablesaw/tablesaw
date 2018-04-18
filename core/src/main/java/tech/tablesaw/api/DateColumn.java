@@ -14,26 +14,6 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
-import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.DateColumnFormatter;
-import tech.tablesaw.columns.dates.DateFilters;
-import tech.tablesaw.columns.dates.DateMapFunctions;
-import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.filtering.predicates.IntBiPredicate;
-import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.selection.BitmapBackedSelection;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingIntComparator;
-
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -46,13 +26,37 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.dates.DateColumnFormatter;
+import tech.tablesaw.columns.dates.DateFillers;
+import tech.tablesaw.columns.dates.DateFilters;
+import tech.tablesaw.columns.dates.DateMapFunctions;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.filtering.predicates.IntBiPredicate;
+import tech.tablesaw.io.TypeUtils;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 
 /**
  * A column in a base table that contains float values
  */
-public class DateColumn extends AbstractColumn implements DateFilters,
+public class DateColumn extends AbstractColumn implements DateFilters, DateFillers<DateColumn>,
         DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     public static final int MISSING_VALUE = (Integer) ColumnType.LOCAL_DATE.getMissingValue();
@@ -620,4 +624,80 @@ public class DateColumn extends AbstractColumn implements DateFilters,
             }
         };
     }
+    
+    // fillWith methods
+    
+    private DateColumn fillWith(int count, Iterator<LocalDate> iterator, Consumer<LocalDate> acceptor) {
+	    	for (int r = 0; r < count; r++) {
+	    		if (! iterator.hasNext()) {
+	    			break;
+	    		}
+	    		acceptor.accept(iterator.next());
+	    	}
+	    	return this;
+    }
+    
+	@Override
+	public DateColumn fillWith(Iterator<LocalDate> iterator) {
+		final int[] r = new int[1];
+		fillWith(size(), iterator, date -> set(r[0]++, date));
+		return this;
+	}
+
+	public static DateColumn createWith(String name, int size, Iterator<LocalDate> iterator) {
+        final DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
+        column.fillWith(size, iterator, column::append);
+        return column;
+	}
+	
+	private DateColumn fillWith(int count, Iterable<LocalDate> iterable, Consumer<LocalDate> acceptor) {
+		Iterator<LocalDate> iterator = null;
+		for (int r = 0; r < count; r++) {
+			if (iterator == null || (! iterator.hasNext())) {
+				iterator = iterable.iterator();
+				if (! iterator.hasNext()) {
+					break;
+				}
+			}
+			acceptor.accept(iterator.next());
+		}
+		return this;
+	}
+	
+	@Override
+	public DateColumn fillWith(Iterable<LocalDate> iterable) {
+		final int[] r = new int[1];
+		fillWith(size(), iterable, date -> set(r[0]++, date));
+		return this;
+	}
+
+	public static DateColumn createWith(String name, int size, Iterable<LocalDate> iterable) {
+        final DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
+        column.fillWith(size, iterable, column::append);
+		return column;
+	}
+	
+	private DateColumn fillWith(int count, Supplier<LocalDate> supplier, Consumer<LocalDate> acceptor) {
+		for (int r = 0; r < count; r++) {
+			try {
+				acceptor.accept(supplier.get());
+			} catch (Exception e) {
+				break;
+			}
+		}
+		return this;
+	}
+
+	@Override
+	public DateColumn fillWith(Supplier<LocalDate> supplier) {
+		final int[] r = new int[1];
+		fillWith(size(), supplier, date -> set(r[0]++, date));
+		return this;
+	}
+	
+	public static DateColumn createWith(String name, int size, Supplier<LocalDate> supplier) {
+        final DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
+        column.fillWith(size, supplier, column::append);
+        return column;
+	}
 }

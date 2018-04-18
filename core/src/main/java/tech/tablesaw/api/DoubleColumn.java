@@ -14,11 +14,27 @@
 
 package tech.tablesaw.api;
 
+import static tech.tablesaw.api.ColumnType.NUMBER;
+
+import java.nio.ByteBuffer;
+import java.text.NumberFormat;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.BiPredicate;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoublePredicate;
+import java.util.function.DoubleSupplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleArrays;
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
+import it.unimi.dsi.fastutil.doubles.DoubleIterable;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
@@ -37,19 +53,6 @@ import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import java.nio.ByteBuffer;
-import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.BiPredicate;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoublePredicate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static tech.tablesaw.api.ColumnType.NUMBER;
 
 /**
  * A column in a base table that contains double precision floating point values
@@ -616,4 +619,41 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
         return data.clone();
     }
 
+    @Override
+	public DoubleColumn fillWith(DoubleIterator iterator) {
+    		for (int r = 0; r < size(); r++) {
+    			if (! iterator.hasNext()) {
+    				break;
+    			}
+    			set(r, iterator.nextDouble());
+    		}
+    		return this;
+    }
+
+    @Override
+	public DoubleColumn fillWith(DoubleIterable iterable) {
+    		DoubleIterator iterator = null;
+    		for (int r = 0; r < size(); r++) {
+    			if (iterator == null || (! iterator.hasNext())) {
+    				iterator = iterable.iterator();
+    				if (! iterator.hasNext()) {
+    					break;
+    				}
+    			}
+    			set(r, iterator.nextDouble());
+    		}
+    		return this;
+    }
+
+    @Override
+	public DoubleColumn fillWith(final DoubleSupplier supplier) {
+		for (int r = 0; r < size(); r++) {
+			try {
+				set(r, supplier.getAsDouble());
+			} catch (Exception e) {
+				break;
+			}
+		}
+		return this;
+	}
 }

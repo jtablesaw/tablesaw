@@ -14,7 +14,20 @@
 
 package tech.tablesaw.api;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static tech.tablesaw.api.ColumnType.BOOLEAN;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
 import com.google.common.base.Strings;
+
+import it.unimi.dsi.fastutil.booleans.BooleanIterable;
+import it.unimi.dsi.fastutil.booleans.BooleanIterator;
 import it.unimi.dsi.fastutil.booleans.BooleanOpenHashSet;
 import it.unimi.dsi.fastutil.booleans.BooleanSet;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
@@ -30,6 +43,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.booleans.BooleanColumnUtils;
+import tech.tablesaw.columns.booleans.BooleanFillers;
 import tech.tablesaw.columns.booleans.BooleanFormatter;
 import tech.tablesaw.columns.booleans.BooleanMapUtils;
 import tech.tablesaw.filtering.predicates.BytePredicate;
@@ -37,20 +51,10 @@ import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static tech.tablesaw.api.ColumnType.BOOLEAN;
-
 /**
  * A column in a base table that contains float values
  */
-public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, IntConvertibleColumn {
+public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, IntConvertibleColumn, BooleanFillers<BooleanColumn>, BooleanIterable {
 
     public static final byte MISSING_VALUE = (Byte) BOOLEAN.getMissingValue();
 
@@ -518,7 +522,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return eval(BooleanColumnUtils.isNotMissing);
     }
 
-    public Iterator<Boolean> iterator() {
+    public BooleanIterator iterator() {
         return new BooleanColumnIterator(this.byteIterator());
     }
 
@@ -640,7 +644,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return Objects.hash(data);
     }
 
-    private static class BooleanColumnIterator implements Iterator<Boolean> {
+    private static class BooleanColumnIterator implements BooleanIterator {
 
         final ByteIterator iterator;
 
@@ -667,7 +671,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
          * @throws java.util.NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public Boolean next() {
+        public boolean nextBoolean() {
             byte b = iterator.nextByte();
             if (b == (byte) 0) {
                 return false;
@@ -675,7 +679,47 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
             if (b == (byte) 1) {
                 return true;
             }
-            return null;
+            return false;
         }
     }
+    
+    // fillWith methods
+    
+	@Override
+	public BooleanColumn fillWith(BooleanIterator iterator) {
+		for (int r = 0; r < size(); r++) {
+			if (! iterator.hasNext()) {
+				break;
+			}
+			set(r, iterator.nextBoolean());
+		}
+		return this;
+	}
+
+	@Override
+	public BooleanColumn fillWith(BooleanIterable iterable) {
+		BooleanIterator iterator = null;
+		for (int r = 0; r < size(); r++) {
+			if (iterator == null || (! iterator.hasNext())) {
+				iterator = iterable.iterator();
+				if (! iterator.hasNext()) {
+					break;
+				}
+			}
+			set(r, iterator.nextBoolean());
+		}
+		return this;
+	}
+
+	@Override
+	public BooleanColumn fillWith(Supplier<Boolean> supplier) {
+		for (int r = 0; r < size(); r++) {
+			try {
+				set(r, supplier.get());
+			} catch (Exception e) {
+				break;
+			}
+		}
+		return this;
+	}
 }
