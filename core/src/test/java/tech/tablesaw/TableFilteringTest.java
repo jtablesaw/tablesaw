@@ -60,14 +60,14 @@ public class TableFilteringTest {
     public void testQueryChaining() {
         Table structureWithoutDates =
                 table.structure()
-                    .rejectWhere(stringColumn("column type").equalsIgnoreCase("Local_Date"));
+                    .dropWhere(stringColumn("column type").equalsIgnoreCase("Local_Date"));
         assertEquals(2, structureWithoutDates.rowCount());
         assertFalse(structureWithoutDates.stringColumn("Column Name").contains("Date"));
     }
 
     @Test
     public void testReject() {
-        Table result = table.rejectWhere(numberColumn("approval").isLessThan(70));
+        Table result = table.dropWhere(numberColumn("approval").isLessThan(70));
         NumberColumn a = result.numberColumn("approval");
         for (double v : a) {
             assertFalse(v < 70);
@@ -82,7 +82,7 @@ public class TableFilteringTest {
         StringColumn sc = StringColumn.create("s", values);
         NumberColumn nc = DoubleColumn.create("n", values2);
         Table test = Table.create("test", sc, nc);
-        Table result = test.rejectRowsWithMissingValues();
+        Table result = test.dropRowsWithMissingValues();
         assertEquals(2, result.rowCount());
         assertEquals("a", result.stringColumn("s").get(0));
         assertEquals("d", result.stringColumn("s").get(1));
@@ -123,7 +123,7 @@ public class TableFilteringTest {
 
     @Test
     public void testRejectRows() {
-        Table result = table.rejectRows(20, 30);
+        Table result = table.dropRows(20, 30);
         assertEquals(table.rowCount() - 2, result.rowCount());
         for (Column c: result.columns()) {
             assertEquals(table.get(21, c.name()), result.get(20, c.name()));
@@ -133,7 +133,7 @@ public class TableFilteringTest {
 
     @Test
     public void testRejectRange() {
-        Table result = table.rejectRange(20, 30);
+        Table result = table.dropRange(20, 30);
         assertEquals(table.rowCount() - 10, result.rowCount());
         for (Column c: result.columns()) {
             for (int r = 30; r < result.rowCount(); r++) {

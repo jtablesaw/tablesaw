@@ -34,9 +34,23 @@
        table.select(dateCol, dateCol.year()).where(nCol("quantity").isPositive());
        ```
 
-    1. Standardized naming on filtering methods for tables and columns
+    1. Standardized naming on queries for tables and columns:
 
-    1. Added support for using Java 8 predicates to filter columns
+       ```java
+       Column c1 = col.where(col.isLessThan(4));
+       Table  t1 = tab.where(col.isLessThan(4));
+       ```
+
+    1. Added several filtering methods to columns: 
+
+       ```java
+       Column c1 = col.inRange(int start, int end);
+       Column c2 = col.rows(int… rows);
+       Column c3 = col.sampleX(double proportion);
+       Column c4 = col.sampleN(int nRows);
+       ```
+
+       Added support for using Java 8 predicates to filter columns
 
     1. Extended table filtering to support direct use of column filter methods (e.g. *col.startsWith("foo")*) in table where clauses
 

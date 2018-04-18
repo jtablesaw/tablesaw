@@ -716,7 +716,7 @@ public class Table extends Relation implements IntIterable {
         return where(Selection.with(rowNumbers));
     }
 
-    public Table rejectRows(int... rowNumbers) {
+    public Table dropRows(int... rowNumbers) {
         Preconditions.checkArgument(Ints.max(rowNumbers) <= rowCount());
         Selection selection = Selection.withRange(0, rowCount())
                 .andNot(Selection.with(rowNumbers));
@@ -728,7 +728,7 @@ public class Table extends Relation implements IntIterable {
         return where(Selection.withRange(rowStart, rowEnd));
     }
 
-    public Table rejectRange(int rowStart, int rowEnd) {
+    public Table dropRange(int rowStart, int rowEnd) {
         Preconditions.checkArgument(rowEnd <= rowCount());
         return where(Selection.withoutRange(0, rowCount(), rowStart, rowEnd));
     }
@@ -739,7 +739,7 @@ public class Table extends Relation implements IntIterable {
         return newTable;
     }
 
-    public Table rejectWhere(Selection selection) {
+    public Table dropWhere(Selection selection) {
         Selection opposite = new BitmapBackedSelection();
         opposite.addRange(0, rowCount());
         opposite.andNot(selection);
@@ -752,8 +752,8 @@ public class Table extends Relation implements IntIterable {
         return where(filter.apply(this));
     }
 
-    public Table rejectWhere(Filter filter) {
-        return rejectWhere(filter.apply(this));
+    public Table dropWhere(Filter filter) {
+        return dropWhere(filter.apply(this));
     }
 
     /**
@@ -795,7 +795,7 @@ public class Table extends Relation implements IntIterable {
      * Returns the unique records in this table
      * Note: Uses a lot of memory for a sort
      */
-    public Table rejectDuplicateRows() {
+    public Table dropDuplicateRows() {
 
         Table sorted = this.sortOn(columnNames().toArray(new String[columns().size()]));
         Table temp = emptyCopy();
@@ -811,7 +811,7 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns only those records in this table that have no columns with missing values
      */
-    public Table rejectRowsWithMissingValues() {
+    public Table dropRowsWithMissingValues() {
 
         Table temp = emptyCopy();
         for (int row = 0; row < rowCount(); row++) {
