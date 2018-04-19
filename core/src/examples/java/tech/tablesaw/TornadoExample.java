@@ -56,7 +56,7 @@ public class TornadoExample extends AbstractExample {
         tornadoes = tornadoes.where(numberColumn("Start Lat").isGreaterThan(20f));
 
         out();
-        out("Extact month from the date and make it a separate column");
+        out("Extract month from the date and make it a separate column");
         StringColumn month = tornadoes.dateColumn("Date").month();
         out(month.summary());
 
@@ -91,10 +91,18 @@ public class TornadoExample extends AbstractExample {
         injuriesByScale.setName("Median injuries by Tornado Scale");
         out(injuriesByScale);
 
+        injuriesByScale = tornadoes.summarize("Injuries", mean).by("Scale");
+        injuriesByScale.setName("Average injuries by Tornado Scale");
+        out(injuriesByScale);
+
         //TODO(lwhite): Provide a param for title of the new table (or auto-generate a better one).
         Table injuriesByScaleState = tornadoes.summarize("Injuries", median).by("Scale", "State");
         injuriesByScaleState.setName("Median injuries by Tornado Scale and State");
         out(injuriesByScaleState);
+
+        Table injuriesByScaleState2 = tornadoes.summarize("Injuries", sum).by("State", "Scale");
+        injuriesByScaleState2.setName("Total injuries by Tornado Scale and State");
+        out(injuriesByScaleState2);
 
         // Average days between tornadoes in the summer
 

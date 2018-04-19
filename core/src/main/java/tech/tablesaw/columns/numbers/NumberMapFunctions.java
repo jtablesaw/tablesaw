@@ -15,7 +15,9 @@
 package tech.tablesaw.columns.numbers;
 
 import it.unimi.dsi.fastutil.doubles.DoubleIterable;
+import org.apache.commons.math3.random.EmpiricalDistribution;
 import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
@@ -379,6 +381,18 @@ public interface NumberMapFunctions extends Column, DoubleIterable {
             newColumn.append(get(i) / get(i - 1) - 1);
         }
         return newColumn;
+    }
+
+    default NumberColumn bin(int binCount) {
+
+        double[] histogram = new double[binCount];
+        EmpiricalDistribution distribution = new EmpiricalDistribution(binCount);
+        distribution.load(asDoubleArray());
+        int k = 0;
+        for(SummaryStatistics stats: distribution.getBinStats()) {
+            histogram[k++] = stats.getN();
+        }
+        return DoubleColumn.create(name() + "[binned]", histogram);
     }
 
     double get(int i);

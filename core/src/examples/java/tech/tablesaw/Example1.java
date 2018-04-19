@@ -19,7 +19,7 @@ import tech.tablesaw.aggregate.CrossTab;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.Selection;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.range;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * Example code for:
@@ -112,6 +112,9 @@ public class Example1 {
         // Summarizing
         Table summary = table1.summarize("approval", range).by("who");
         out(summary);
+
+        Table summary2 = table1.summarize("approval", mean, max, min).apply();
+        out(summary2);
 
         StringColumn month = date.month();
         table1.addColumns(month);
