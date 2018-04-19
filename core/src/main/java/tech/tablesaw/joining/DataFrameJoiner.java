@@ -140,11 +140,11 @@ public class DataFrameJoiner {
         // reverse the columns
         Table result = Table.create(leftOuter.name());
         for (String name : table.columnNames()) {
-            result.addColumn(leftOuter.column(name));
+            result.addColumns(leftOuter.column(name));
         }
         for (String name : table2.columnNames()) {
             if (! result.columnNames().contains(name)) {
-                result.addColumn(leftOuter.column(name));
+                result.addColumns(leftOuter.column(name));
             }
         }
         return result;

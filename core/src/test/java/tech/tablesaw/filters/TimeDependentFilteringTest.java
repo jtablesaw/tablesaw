@@ -147,10 +147,10 @@ public class TimeDependentFilteringTest {
         NumberColumn patientId =  DoubleColumn.create("patient");
         patientId.setPrintFormatter(NumberColumnFormatter.ints());
 
-        t.addColumn(conceptId);
-        t.addColumn(date);
-        t.addColumn(value);
-        t.addColumn(patientId);
+        t.addColumns(conceptId);
+        t.addColumns(date);
+        t.addColumns(value);
+        t.addColumns(patientId);
         return t;
     }
 

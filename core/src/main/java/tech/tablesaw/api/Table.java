@@ -33,6 +33,7 @@ import tech.tablesaw.joining.DataFrameJoiner;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.Sort;
+import tech.tablesaw.sorting.SortUtils;
 import tech.tablesaw.sorting.comparators.IntComparatorChain;
 import tech.tablesaw.sorting.comparators.ReversingIntComparator;
 import tech.tablesaw.table.Projection;
@@ -43,9 +44,7 @@ import tech.tablesaw.table.TableSliceGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
@@ -85,7 +84,7 @@ public class Table extends Relation implements IntIterable {
     protected Table(String name, Column... columns) {
         this(name);
         for (Column column : columns) {
-            this.addColumn(column);
+            this.addColumns(column);
         }
     }
 
@@ -141,7 +140,7 @@ public class Table extends Relation implements IntIterable {
      * Adds the given column to this table
      */
     @Override
-    public Table addColumn(Column... cols) {
+    public Table addColumns(Column... cols) {
         for (Column c : cols) {
             validateColumn(c);
             columnList.add(c);
@@ -371,10 +370,10 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns a table with the same columns as this table
      */
-    public Table fullCopy() {
+    public Table copy() {
         Table copy = new Table(name);
         for (Column column : columnList) {
-            copy.addColumn(column.emptyCopy());
+            copy.addColumns(column.emptyCopy());
         }
 
         IntArrayList integers = new IntArrayList();
@@ -390,7 +389,7 @@ public class Table extends Relation implements IntIterable {
     public Table emptyCopy() {
         Table copy = new Table(name);
         for (Column column : columnList) {
-            copy.addColumn(column.emptyCopy());
+            copy.addColumns(column.emptyCopy());
         }
         return copy;
     }
@@ -401,7 +400,7 @@ public class Table extends Relation implements IntIterable {
     public Table emptyCopy(int rowSize) {
         Table copy = new Table(name);
         for (Column column : columnList) {
-            copy.addColumn(column.emptyCopy(rowSize));
+            copy.addColumns(column.emptyCopy(rowSize));
         }
         return copy;
     }
@@ -564,37 +563,11 @@ public class Table extends Relation implements IntIterable {
     public Table sortOn(Sort key) {
         Preconditions.checkArgument(!key.isEmpty());
         if (key.size() == 1) {
-            IntComparator comparator = getComparator(key);
+            IntComparator comparator = SortUtils.getComparator(this, key);
             return sortOn(comparator);
         }
-        IntComparatorChain chain = getChain(key);
+        IntComparatorChain chain = SortUtils.getChain(this, key);
         return sortOn(chain);
-    }
-
-    /**
-     * Returns a comparator that can be used to sort the records in this table according to the given sort key
-     */
-    private IntComparator getComparator(Sort key) {
-        Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
-        Map.Entry<String, Sort.Order> sort = entries.next();
-        return rowComparator(sort.getKey(), sort.getValue());
-    }
-
-    /**
-     * Returns a comparator chain for sorting according to the given key
-     */
-    private IntComparatorChain getChain(Sort key) {
-        Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
-        Map.Entry<String, Sort.Order> sort = entries.next();
-
-        IntComparator comparator = rowComparator(sort.getKey(), sort.getValue());
-
-        IntComparatorChain chain = new IntComparatorChain(comparator);
-        while (entries.hasNext()) {
-            sort = entries.next();
-            chain.addComparator(rowComparator(sort.getKey(), sort.getValue()));
-        }
-        return chain;
     }
 
     /**
@@ -796,9 +769,9 @@ public class Table extends Relation implements IntIterable {
         NumberColumn index = DoubleColumn.indexColumn("Index", columnCount(), 0);
         StringColumn columnName = StringColumn.create("Column Name", columnCount());
         StringColumn columnType = StringColumn.create("Column Type", columnCount());
-        t.addColumn(index);
-        t.addColumn(columnName);
-        t.addColumn(columnType);
+        t.addColumns(index);
+        t.addColumns(columnName);
+        t.addColumns(columnType);
         columnName.addAll(columnNames());
         for (int i = 0; i < columnCount(); i++) {
             Column column = columnList.get(i);
@@ -895,6 +868,20 @@ public class Table extends Relation implements IntIterable {
         for (Column column : columnList) {
             Column columnToAppend = tableToAppend.column(column.name());
             column.append(columnToAppend);
+        }
+        return this;
+    }
+
+    /**
+     * Add all the columns of tableToConcatenate to this table
+     * Note: The columns in the result must have unique names, when compared case insensitive
+     * Note: Both tables must have the same number of rows
+     * @param tableToConcatenate    The table containing the columns to be added
+     * @return                      This table
+     */
+    public Table concat(Table tableToConcatenate) {
+        for (Column column : tableToConcatenate.columns()) {
+            this.addColumns(column);
         }
         return this;
     }

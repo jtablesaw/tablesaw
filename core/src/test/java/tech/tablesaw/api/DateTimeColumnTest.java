@@ -30,7 +30,7 @@ public class DateTimeColumnTest {
     public void setUp() {
         Table table = Table.create("Test");
         column1 = DateTimeColumn.create("Game date");
-        table.addColumn(column1);
+        table.addColumns(column1);
     }
 
     @Test
@@ -71,7 +71,7 @@ public class DateTimeColumnTest {
     @Test
     public void testAfter() {
         Table t = Table.create("test");
-        t.addColumn(column1);
+        t.addColumns(column1);
         column1.appendCell("2015-12-03T10:15:30");
         column1.appendCell("2015-01-03T10:15:30");
         Table result = t.where(QueryHelper.dateTimeColumn("Game date")

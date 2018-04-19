@@ -78,8 +78,8 @@ public class StringFiltersTest {
         sc2.append("UPPERCASE");   // 17
         sc2.append("");
 
-        table.addColumn(sc1);
-        table.addColumn(sc2);
+        table.addColumns(sc1);
+        table.addColumns(sc2);
     }
 
     @Test

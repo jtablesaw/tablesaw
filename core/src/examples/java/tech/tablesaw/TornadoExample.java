@@ -112,13 +112,13 @@ public class TornadoExample extends AbstractExample {
         //Table summer = tornadoes.select(selection);
         Table summer = tornadoes.where(summerFilter);
         summer = summer.sortAscendingOn("Date", "Time");
-        summer.addColumn(summer.dateColumn("Date").lag(1));
+        summer.addColumns(summer.dateColumn("Date").lag(1));
 
         // calculate the difference between a date and the prior date using the lagged column
         DateColumn summerDate = summer.dateColumn("Date");
         DateColumn laggedDate = summer.dateColumn("Date lag(1)");
         NumberColumn delta = laggedDate.daysUntil(summerDate);  // the lagged date is earlier
-        summer.addColumn(delta);
+        summer.addColumns(delta);
 
         out(summer.first(4));
 

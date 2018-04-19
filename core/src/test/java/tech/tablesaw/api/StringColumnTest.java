@@ -62,7 +62,7 @@ public class StringColumnTest {
     public void lag() {
         StringColumn c1 = column.lag(1);
         Table t = Table.create("Test");
-        t.addColumn(column, c1);
+        t.addColumns(column, c1);
         assertEquals("", c1.get(0));
         assertEquals("Value 1", c1.get(1));
         assertEquals("Value 2", c1.get(2));
@@ -72,7 +72,7 @@ public class StringColumnTest {
     public void lag2() {
         StringColumn c1 = column.lag(-1);
         Table t = Table.create("Test");
-        t.addColumn(column, c1);
+        t.addColumns(column, c1);
         assertEquals("Value 2", c1.get(0));
         assertEquals("Value 3", c1.get(1));
         assertEquals("", c1.get(3));
@@ -82,7 +82,7 @@ public class StringColumnTest {
     public void lead() {
         StringColumn c1 = column.lead(1);
         Table t = Table.create("Test");
-        t.addColumn(column, c1);
+        t.addColumns(column, c1);
         assertEquals("Value 2", c1.get(0));
         assertEquals("Value 3", c1.get(1));
         assertEquals("", c1.get(3));

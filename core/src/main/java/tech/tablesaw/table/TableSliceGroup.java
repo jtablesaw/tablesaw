@@ -152,7 +152,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         Preconditions.checkArgument(!getSlices().isEmpty());
         Table groupTable = summaryTableName(sourceTable);
         StringColumn groupColumn = StringColumn.create("Group", size());
-        groupTable.addColumn(groupColumn);
+        groupTable.addColumns(groupColumn);
         for (Map.Entry<String, Collection<AggregateFunction>> entry : functions.asMap().entrySet()) {
             String columnName = entry.getKey();
             int functionCount = 0;
@@ -166,7 +166,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
                     }
                     resultColumn.append(result);
                 }
-                groupTable.addColumn(resultColumn);
+                groupTable.addColumns(resultColumn);
                 functionCount++;
             }
         }

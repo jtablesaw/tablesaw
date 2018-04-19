@@ -49,7 +49,7 @@ public class Projection extends Relation {
     }
 
     @Override
-    public Relation addColumn(Column... cols) {
+    public Relation addColumns(Column... cols) {
         throw new UnsupportedOperationException("Projections do not support updates.");
     }
 
@@ -65,7 +65,7 @@ public class Projection extends Relation {
 
     @Override
     public Table first(int nRows) {
-        return table.fullCopy().retainColumns(columns).first(nRows);
+        return table.copy().retainColumns(columns).first(nRows);
     }
 
     @Override

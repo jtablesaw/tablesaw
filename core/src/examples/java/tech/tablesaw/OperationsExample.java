@@ -44,7 +44,7 @@ public class OperationsExample extends AbstractExample {
 
         // Calc duration
         NumberColumn duration = start.differenceInSeconds(end);
-        ops.addColumn(duration);
+        ops.addColumns(duration);
         duration.setName("Duration");
 
         out(ops);

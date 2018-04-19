@@ -37,7 +37,7 @@ public class LongIndexTest {
         table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
         DateTimeColumn midnights = table.dateColumn("date").atStartOfDay();
         midnights.setName("Midnights");
-        table.addColumn(midnights);
+        table.addColumns(midnights);
         index = new LongIndex(table.dateTimeColumn("Midnights"));
     }
 

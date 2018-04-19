@@ -130,8 +130,8 @@ public class Stats {
         Table t = Table.create(name);
         StringColumn measure = StringColumn.create("Measure");
         NumberColumn value = DoubleColumn.create("Value");
-        t.addColumn(measure);
-        t.addColumn(value);
+        t.addColumns(measure);
+        t.addColumns(value);
 
         measure.append("n");
         value.append(n);

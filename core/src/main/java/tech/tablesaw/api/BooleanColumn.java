@@ -173,8 +173,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
 
         BooleanColumn booleanColumn = create("Value");
         NumberColumn countColumn = DoubleColumn.create("Count");
-        table.addColumn(booleanColumn);
-        table.addColumn(countColumn);
+        table.addColumns(booleanColumn);
+        table.addColumns(countColumn);
 
         for (Map.Entry<Byte, Integer> entry : counts.byte2IntEntrySet()) {
             booleanColumn.append(entry.getKey());

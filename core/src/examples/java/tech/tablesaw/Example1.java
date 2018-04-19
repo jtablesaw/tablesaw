@@ -114,7 +114,7 @@ public class Example1 {
         out(summary);
 
         StringColumn month = date.month();
-        table1.addColumn(month);
+        table1.addColumns(month);
 
         StringColumn who = table1.stringColumn("who");
 

@@ -259,8 +259,8 @@ public class StringColumn extends AbstractColumn
             categories.append("* missing values");
             counts.append(countMissing());
         }
-        t.addColumn(categories);
-        t.addColumn(counts);
+        t.addColumns(categories);
+        t.addColumns(counts);
         return t;
     }
 

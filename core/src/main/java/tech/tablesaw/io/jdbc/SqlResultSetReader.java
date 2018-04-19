@@ -80,7 +80,7 @@ public class SqlResultSetReader {
                     "No column type found for %s as specified for column %s", metaData.getColumnType(i), name);
 
             Column newColumn = TypeUtils.newColumn(name, type);
-            table.addColumn(newColumn);
+            table.addColumns(newColumn);
         }
 
         // Add the rows

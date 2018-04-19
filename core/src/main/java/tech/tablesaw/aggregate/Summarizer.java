@@ -48,7 +48,7 @@ public class Summarizer {
      */
     public Summarizer(Table sourceTable, Column column, AggregateFunction... functions) {
         Table tempTable = Table.create(sourceTable.name());
-        tempTable.addColumn(column);
+        tempTable.addColumns(column);
         this.temp = tempTable;
         this.original = sourceTable;
         summarizedColumns.add(column.name());
@@ -62,7 +62,7 @@ public class Summarizer {
     public Summarizer(Table sourceTable, List<String> columnNames, AggregateFunction... functions) {
         Table tempTable = Table.create(sourceTable.name());
         for (String nm : columnNames) {
-            tempTable.addColumn(sourceTable.column(nm));
+            tempTable.addColumns(sourceTable.column(nm));
         }
         this.temp = tempTable;
         this.original = sourceTable;
@@ -76,8 +76,8 @@ public class Summarizer {
      */
     public Summarizer(Table sourceTable, Column column1, Column column2, AggregateFunction... functions) {
         Table tempTable = Table.create(sourceTable.name());
-        tempTable.addColumn(column1);
-        tempTable.addColumn(column2);
+        tempTable.addColumns(column1);
+        tempTable.addColumns(column2);
         this.temp = tempTable;
         this.original = sourceTable;
         summarizedColumns.add(column1.name());
@@ -96,10 +96,10 @@ public class Summarizer {
                       Column column4,
                       AggregateFunction... functions) {
         Table tempTable = Table.create(sourceTable.name());
-        tempTable.addColumn(column1);
-        tempTable.addColumn(column2);
-        tempTable.addColumn(column3);
-        tempTable.addColumn(column4);
+        tempTable.addColumns(column1);
+        tempTable.addColumns(column2);
+        tempTable.addColumns(column3);
+        tempTable.addColumns(column4);
         this.temp = tempTable;
         this.original = sourceTable;
         summarizedColumns.add(column1.name());
@@ -115,9 +115,9 @@ public class Summarizer {
      */
     public Summarizer(Table sourceTable, Column column1, Column column2, Column column3, AggregateFunction... functions) {
         Table tempTable = Table.create(sourceTable.name());
-        tempTable.addColumn(column1);
-        tempTable.addColumn(column2);
-        tempTable.addColumn(column3);
+        tempTable.addColumns(column1);
+        tempTable.addColumns(column2);
+        tempTable.addColumns(column3);
         this.temp = tempTable;
         this.original = sourceTable;
         summarizedColumns.add(column1.name());
@@ -129,7 +129,7 @@ public class Summarizer {
     public Table by(String... columnNames) {
         for (String columnName : columnNames) {
             if (!temp.columnNames().contains(columnName)) {
-                temp.addColumn(original.column(columnName));
+                temp.addColumns(original.column(columnName));
             }
         }
         TableSliceGroup group = StandardTableSliceGroup.create(temp, columnNames);
@@ -139,7 +139,7 @@ public class Summarizer {
     public Table by(CategoricalColumn... columns) {
         for (Column c : columns) {
             if (!temp.containsColumn(c)) {
-                temp.addColumn(c);
+                temp.addColumns(c);
             }
         }
         TableSliceGroup group = StandardTableSliceGroup.create(temp, columns);
@@ -166,7 +166,7 @@ public class Summarizer {
                 double result = function.summarize(column);
                 Column newColumn = DoubleColumn.create(TableSliceGroup.aggregateColumnName(name, function.functionName()));
                 ((DoubleColumn) newColumn).append(result);
-                table.addColumn(newColumn);
+                table.addColumns(newColumn);
             }
             results.add(table);
         }
@@ -216,7 +216,7 @@ public class Summarizer {
             } else {
                 for (Column column : table.columns()) {
                     if (!result.columnNames().contains(column.name())) {
-                        result.addColumn(column);
+                        result.addColumns(column);
                     }
                 }
             }

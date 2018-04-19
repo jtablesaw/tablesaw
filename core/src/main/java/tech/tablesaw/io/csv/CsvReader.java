@@ -152,7 +152,7 @@ public class CsvReader {
                         columnName = "Column " + table.columnCount();
                     }
                     Column newColumn = TypeUtils.newColumn(columnName, types[x]);
-                    table.addColumn(newColumn);
+                    table.addColumns(newColumn);
                 }
             }
             int[] columnIndexes = new int[columnNames.length];
@@ -232,7 +232,7 @@ public class CsvReader {
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != SKIP) {
                     Column newColumn = TypeUtils.newColumn(headerRow.get(x).trim(), types[x]);
-                    table.addColumn(newColumn);
+                    table.addColumns(newColumn);
                 }
             }
             int[] columnIndexes = new int[columnNames.length];

@@ -92,8 +92,8 @@ public class TableSliceTest {
     public void addColumn() {
         TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
         thrown.expect(UnsupportedOperationException.class);
-        thrown.expectMessage("Class TableSlice does not support the addColumn operation");
-        slice.addColumn(StringColumn.create("test"));
+        thrown.expectMessage("Class TableSlice does not support the addColumns operation");
+        slice.addColumns(StringColumn.create("test"));
     }
 
     @Test

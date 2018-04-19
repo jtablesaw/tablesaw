@@ -43,14 +43,14 @@ public class LocalTimeFilterTest {
         localTimeColumn.appendInternal(of(12, 0, 0));
         localTimeColumn.appendInternal(of(20, 3, 1));
         localTimeColumn.appendInternal(pack(LocalTime.MIDNIGHT));
-        table.addColumn(localTimeColumn);
+        table.addColumns(localTimeColumn);
     }
 
     @Test
     public void testColumnEquality() {
         TimeColumn column1 = localTimeColumn.copy();
         column1.setName("copy");
-        table.addColumn(column1);
+        table.addColumns(column1);
         Selection selection = localTimeColumn.isEqualTo(column1);
         assertTrue(selection.contains(0));
         TimeColumnReference reference = new TimeColumnReference("testing");
@@ -62,7 +62,7 @@ public class LocalTimeFilterTest {
     public void testColumnInEquality() {
         TimeColumn column1 = localTimeColumn.copy();
         column1.setName("copy");
-        table.addColumn(column1);
+        table.addColumns(column1);
         Selection selection = localTimeColumn.isNotEqualTo(column1);
         assertFalse(selection.contains(0));
         TimeColumnReference reference = new TimeColumnReference("testing");
@@ -78,7 +78,7 @@ public class LocalTimeFilterTest {
         TimeColumn before = localTimeColumn.minusHours(1);
         TimeColumn after = localTimeColumn.plusHours(1);
 
-        table.addColumn(column1, before, after);
+        table.addColumns(column1, before, after);
 
         Selection selection = localTimeColumn.isBefore(column1);
         assertFalse(selection.contains(0));
@@ -101,7 +101,7 @@ public class LocalTimeFilterTest {
         TimeColumn before = localTimeColumn.minusHours(1);
         TimeColumn after = localTimeColumn.plusHours(1);
 
-        table.addColumn(column1, before, after);
+        table.addColumns(column1, before, after);
 
         Selection selection = localTimeColumn.isBefore(column1);
         assertFalse(selection.contains(0));
@@ -196,7 +196,7 @@ public class LocalTimeFilterTest {
     @Test
     public void testAfter() {
         Table t = Table.create("test");
-        t.addColumn(column1);
+        t.addColumns(column1);
         column1.appendCell("05:15:30");
         column1.appendCell("10:15:30");
         Table result = t.where(timeColumn("Game time")
@@ -216,7 +216,7 @@ public class LocalTimeFilterTest {
     @Test
     public void testEqual() {
         Table t = Table.create("test");
-        t.addColumn(column1);
+        t.addColumns(column1);
         fillColumn();
         Table result = t.where(timeColumn("Game time")
                 .isEqualTo(LocalTime.of(7, 4, 2, 0)));
@@ -227,7 +227,7 @@ public class LocalTimeFilterTest {
     @Test
     public void testNotEqual() {
         Table t = Table.create("test");
-        t.addColumn(column1);
+        t.addColumns(column1);
         fillColumn();
         Table result = t.where(timeColumn("Game time")
                 .isNotEqualTo(LocalTime.of(7, 4, 2, 0)));
@@ -256,7 +256,7 @@ public class LocalTimeFilterTest {
     @Test
     public void testBefore() {
         Table t = Table.create("test");
-        t.addColumn(column1);
+        t.addColumns(column1);
         column1.appendCell("05:15:30");
         column1.appendCell("10:15:30");
         Table result = t.where(timeColumn("Game time")
@@ -277,7 +277,7 @@ public class LocalTimeFilterTest {
     @Test
     public void testOnOrAfter() {
         Table t = Table.create("test");
-        t.addColumn(column1);
+        t.addColumns(column1);
         fillColumn();
         Table result = t.where(timeColumn("Game time")
                 .isOnOrAfter(LocalTime.of(7, 4, 2, 0)));
@@ -287,7 +287,7 @@ public class LocalTimeFilterTest {
     @Test
     public void testOnOrBefore() {
         Table t = Table.create("test");
-        t.addColumn(column1);
+        t.addColumns(column1);
         fillColumn();
         Table result = t.where(timeColumn("Game time")
                 .isOnOrBefore(LocalTime.of(7, 4, 2, 0)));

@@ -59,8 +59,8 @@ public interface CategoricalColumn extends Column {
             categories.appendMissing();
             counts.append(countMissing());
         }
-        t.addColumn(categories);
-        t.addColumn(counts);
+        t.addColumns(categories);
+        t.addColumns(counts);
         return t;
     }
 

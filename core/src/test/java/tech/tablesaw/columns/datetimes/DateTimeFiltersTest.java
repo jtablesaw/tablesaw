@@ -49,7 +49,7 @@ public class DateTimeFiltersTest {
         localDateTimeColumn.append(LocalDate.of(2016, 4, 2).atStartOfDay());
         localDateTimeColumn.append(LocalDate.of(2016, 3, 4).atStartOfDay());   // fri
         localDateTimeColumn.append(LocalDate.of(2016, 3, 5).atStartOfDay());   // sat
-        table.addColumn(localDateTimeColumn);
+        table.addColumns(localDateTimeColumn);
     }
 
     @Test
@@ -191,9 +191,9 @@ public class DateTimeFiltersTest {
         assertTrue(dateTimeColumn.isInQ4().contains(11));
 
         Table t = Table.create("Test");
-        t.addColumn(dateTimeColumn);
+        t.addColumns(dateTimeColumn);
         NumberColumn index = DoubleColumn.indexColumn("index", t.rowCount(), 0);
-        t.addColumn(index);
+        t.addColumns(index);
 
         assertTrue(t.where(dateTimeColumn("test").isInJanuary()).numberColumn("index").contains(0.0));
         assertTrue(t.where(dateTimeColumn("test").isInFebruary()).numberColumn("index").contains(1.0));

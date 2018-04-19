@@ -68,7 +68,7 @@ public class AggregateFunctionsTest {
 
     @Test
     public void testGroupMean4() {
-        table.addColumn(table.numberColumn("approval").cube());
+        table.addColumns(table.numberColumn("approval").cube());
         table.column(3).setName("cubed");
         Table result = table.summarize("approval", "cubed", mean, stdDev).apply();
         assertEquals(4, result.columnCount());
@@ -104,7 +104,7 @@ public class AggregateFunctionsTest {
 
     @Test
     public void testComplexSummarizing() {
-        table.addColumn(table.numberColumn("approval").cube());
+        table.addColumns(table.numberColumn("approval").cube());
         table.column(3).setName("cubed");
         CategoricalColumn byColumn1 = table.stringColumn("who");
         CategoricalColumn byColumn2 = table.dateColumn("date").yearMonth();

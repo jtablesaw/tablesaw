@@ -38,7 +38,7 @@ public class TimeColumnTest {
     public void setUp() {
         Table table = Table.create("Test");
         column1 = TimeColumn.create("Game time");
-        table.addColumn(column1);
+        table.addColumns(column1);
     }
 
     @Test
@@ -227,7 +227,7 @@ public class TimeColumnTest {
         fillLargerColumn();
         TimeColumn column2 = column1.lag(2);
         Table t = Table.create("t");
-        t.addColumn(column1, column2);
+        t.addColumns(column1, column2);
         for (int i = 0; i < column1.size() - 2; i++) {
             assertEquals(column2.getIntInternal(i+2), column1.getIntInternal(i));
         }
@@ -238,7 +238,7 @@ public class TimeColumnTest {
         fillLargerColumn();
         TimeColumn column2 = column1.lead(2);
         Table t = Table.create("t");
-        t.addColumn(column1, column2);
+        t.addColumns(column1, column2);
         for (int i = 0; i < column1.size() - 2; i++) {
             assertEquals(column2.getIntInternal(i), column1.getIntInternal(i + 2));
         }

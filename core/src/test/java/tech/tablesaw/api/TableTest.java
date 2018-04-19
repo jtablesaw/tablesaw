@@ -44,7 +44,7 @@ public class TableTest {
     @Before
     public void setUp() {
         table = Table.create("t");
-        table.addColumn(f1);
+        table.addColumns(f1);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class TableTest {
         assertEquals("Test\n\n", t.print());
 
         Column c1 = StringColumn.create("SC");
-        t.addColumn(c1);
+        t.addColumns(c1);
         assertEquals(" Test \n SC  |\n------", t.print());
     }
 
@@ -100,8 +100,8 @@ public class TableTest {
     public void testFullCopy() {
         numberColumn.append(2.23424);
         Table t = Table.create("test");
-        t.addColumn(numberColumn);
-        Table c = t.fullCopy();
+        t.addColumns(numberColumn);
+        Table c = t.copy();
         NumberColumn doubles = c.numberColumn(0);
         assertNotNull(doubles);
         assertEquals(1, doubles.size());
@@ -260,7 +260,7 @@ public class TableTest {
     @Test
     public void testAppendMultipleColumns() {
         NumberColumn column =  DoubleColumn.create("e1");
-        table.addColumn(column);
+        table.addColumns(column);
         NumberColumn first = f1.emptyCopy();
         NumberColumn second = column.emptyCopy();
         int firstColumnSize = populateColumn(first);
@@ -292,7 +292,7 @@ public class TableTest {
     @Test(expected = IllegalStateException.class)
     public void testAppendTableWithDifferentShape() {
         NumberColumn column =  DoubleColumn.create("e1");
-        table.addColumn(column);
+        table.addColumns(column);
         Table tableToAppend = Table.create("different", column);
         assertTrue(table.columns().size() == 2);
         assertTrue(tableToAppend.columns().size() == 1);

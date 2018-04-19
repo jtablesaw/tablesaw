@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  */
 public abstract class Relation {
 
-    public abstract Relation addColumn(Column... cols);
+    public abstract Relation addColumns(Column... cols);
 
     public abstract Relation setName(String name);
 
@@ -208,12 +208,12 @@ public abstract class Relation {
                 .append(" variables (cols)");
 
         Table structure = Table.create(nameBuilder.toString());
-        structure.addColumn(DoubleColumn.create("Index"));
-        structure.addColumn(StringColumn.create("Column Name"));
-        structure.addColumn(StringColumn.create("Type"));
-        structure.addColumn(DoubleColumn.create("Unique Values"));
-        structure.addColumn(StringColumn.create("First"));
-        structure.addColumn(StringColumn.create("Last"));
+        structure.addColumns(DoubleColumn.create("Index"));
+        structure.addColumns(StringColumn.create("Column Name"));
+        structure.addColumns(StringColumn.create("Type"));
+        structure.addColumns(DoubleColumn.create("Unique Values"));
+        structure.addColumns(StringColumn.create("First"));
+        structure.addColumns(StringColumn.create("Last"));
 
         for (Column column : columns()) {
             structure.numberColumn("Index").append(columnIndex(column));

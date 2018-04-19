@@ -51,7 +51,7 @@ public class DateFiltersTest {
         localDateColumn.append(LocalDate.of(2016, 4, 2));
         localDateColumn.append(LocalDate.of(2016, 3, 4));   // fri
         localDateColumn.append(LocalDate.of(2016, 3, 5));   // sat
-        table.addColumn(localDateColumn);
+        table.addColumns(localDateColumn);
     }
 
     @Test
@@ -169,9 +169,9 @@ public class DateFiltersTest {
         assertTrue(dateColumn.isInQ4().contains(11));
 
         Table t = Table.create("Test");
-        t.addColumn(dateColumn);
+        t.addColumns(dateColumn);
         NumberColumn index = DoubleColumn.indexColumn("index", t.rowCount(), 0);
-        t.addColumn(index);
+        t.addColumns(index);
 
         assertTrue(t.where(dateColumn("test").isInJanuary()).numberColumn("index").contains(0.0));
         assertTrue(t.where(dateColumn("test").isInFebruary()).numberColumn("index").contains(1.0));

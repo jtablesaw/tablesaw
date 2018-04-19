@@ -52,8 +52,8 @@ public class NumberColumnTest {
         Table table = Table.create("t");
         NumberColumn numberColumn = DoubleColumn.create("test", 100_000_000);
         //BooleanColumn booleanColumn = BooleanColumn.create("bools", 1_000_000_000);
-        table.addColumn(numberColumn);
-        //table.addColumn(booleanColumn);
+        table.addColumns(numberColumn);
+        //table.addColumns(booleanColumn);
         for (int i = 0; i < 100_000_000; i++) {
             numberColumn.append(Math.random());
           //  booleanColumn.append(fairy.baseProducer().trueOrFalse());
@@ -248,7 +248,7 @@ public class NumberColumnTest {
         int size = 1_000_000;
         Table table = Table.create("t");
         NumberColumn numberColumn =  DoubleColumn.create("test", size);
-        table.addColumn(numberColumn);
+        table.addColumns(numberColumn);
         for (int i = 0; i < size; i++) {
             numberColumn.append(Math.random());
         }
@@ -317,7 +317,7 @@ public class NumberColumnTest {
         int size = 1_000_000;
         Table table = Table.create("t");
         NumberColumn numberColumn =  DoubleColumn.create("test", size);
-        table.addColumn(numberColumn);
+        table.addColumns(numberColumn);
         for (int i = 0; i < size; i++) {
             numberColumn.append(Math.random());
         }

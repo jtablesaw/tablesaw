@@ -106,8 +106,8 @@ public class TableSlice extends Relation implements IntIterable {
     }
 
     @Override
-    public TableSlice addColumn(Column... column) {
-        throw new UnsupportedOperationException("Class TableSlice does not support the addColumn operation");
+    public TableSlice addColumns(Column... column) {
+        throw new UnsupportedOperationException("Class TableSlice does not support the addColumns operation");
     }
 
     @Override
@@ -137,7 +137,7 @@ public class TableSlice extends Relation implements IntIterable {
     public Table asTable() {
         Table table = Table.create(this.name());
         for (Column column : columns()) {
-            table.addColumn(column.subset(selection));
+            table.addColumns(column.subset(selection));
         }
         return table;
     }

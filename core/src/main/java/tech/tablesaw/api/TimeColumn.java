@@ -291,8 +291,8 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         Table table = Table.create("Column: " + name());
         StringColumn measure = StringColumn.create("Measure");
         StringColumn value = StringColumn.create("Value");
-        table.addColumn(measure);
-        table.addColumn(value);
+        table.addColumns(measure);
+        table.addColumns(value);
 
         measure.append("Count");
         value.append(String.valueOf(size()));

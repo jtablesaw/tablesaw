@@ -34,7 +34,7 @@ public class DateMapFunctionsTest {
     public void setUp() {
         Table table = Table.create("Test");
         column1 = DateColumn.create("Game date", Locale.ENGLISH);
-        table.addColumn(column1);
+        table.addColumns(column1);
     }
 
     @Test
