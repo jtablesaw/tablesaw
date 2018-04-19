@@ -57,7 +57,7 @@ import tech.tablesaw.sorting.comparators.DescendingIntComparator;
  * A column in a base table that contains float values
  */
 public class DateColumn extends AbstractColumn implements DateFilters, DateFillers<DateColumn>,
-        DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
+DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     public static final int MISSING_VALUE = (Integer) ColumnType.LOCAL_DATE.getMissingValue();
 
@@ -624,80 +624,80 @@ public class DateColumn extends AbstractColumn implements DateFilters, DateFille
             }
         };
     }
-    
-    // fillWith methods
-    
-    private DateColumn fillWith(int count, Iterator<LocalDate> iterator, Consumer<LocalDate> acceptor) {
-	    	for (int r = 0; r < count; r++) {
-	    		if (! iterator.hasNext()) {
-	    			break;
-	    		}
-	    		acceptor.accept(iterator.next());
-	    	}
-	    	return this;
-    }
-    
-	@Override
-	public DateColumn fillWith(Iterator<LocalDate> iterator) {
-		final int[] r = new int[1];
-		fillWith(size(), iterator, date -> set(r[0]++, date));
-		return this;
-	}
 
-	public static DateColumn createWith(String name, int size, Iterator<LocalDate> iterator) {
-        final DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
+    // fillWith methods
+
+    private DateColumn fillWith(int count, Iterator<LocalDate> iterator, Consumer<LocalDate> acceptor) {
+        for (int r = 0; r < count; r++) {
+            if (!iterator.hasNext()) {
+                break;
+            }
+            acceptor.accept(iterator.next());
+        }
+        return this;
+    }
+
+    @Override
+    public DateColumn fillWith(Iterator<LocalDate> iterator) {
+        int[] r = new int[1];
+        fillWith(size(), iterator, date -> set(r[0]++, date));
+        return this;
+    }
+
+    public static DateColumn createWith(String name, int size, Iterator<LocalDate> iterator) {
+        DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
         column.fillWith(size, iterator, column::append);
         return column;
-	}
-	
-	private DateColumn fillWith(int count, Iterable<LocalDate> iterable, Consumer<LocalDate> acceptor) {
-		Iterator<LocalDate> iterator = null;
-		for (int r = 0; r < count; r++) {
-			if (iterator == null || (! iterator.hasNext())) {
-				iterator = iterable.iterator();
-				if (! iterator.hasNext()) {
-					break;
-				}
-			}
-			acceptor.accept(iterator.next());
-		}
-		return this;
-	}
-	
-	@Override
-	public DateColumn fillWith(Iterable<LocalDate> iterable) {
-		final int[] r = new int[1];
-		fillWith(size(), iterable, date -> set(r[0]++, date));
-		return this;
-	}
+    }
 
-	public static DateColumn createWith(String name, int size, Iterable<LocalDate> iterable) {
-        final DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
+    private DateColumn fillWith(int count, Iterable<LocalDate> iterable, Consumer<LocalDate> acceptor) {
+        Iterator<LocalDate> iterator = null;
+        for (int r = 0; r < count; r++) {
+            if (iterator == null || (!iterator.hasNext())) {
+                iterator = iterable.iterator();
+                if (!iterator.hasNext()) {
+                    break;
+                }
+            }
+            acceptor.accept(iterator.next());
+        }
+        return this;
+    }
+
+    @Override
+    public DateColumn fillWith(Iterable<LocalDate> iterable) {
+        int[] r = new int[1];
+        fillWith(size(), iterable, date -> set(r[0]++, date));
+        return this;
+    }
+
+    public static DateColumn createWith(String name, int size, Iterable<LocalDate> iterable) {
+        DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
         column.fillWith(size, iterable, column::append);
-		return column;
-	}
-	
-	private DateColumn fillWith(int count, Supplier<LocalDate> supplier, Consumer<LocalDate> acceptor) {
-		for (int r = 0; r < count; r++) {
-			try {
-				acceptor.accept(supplier.get());
-			} catch (Exception e) {
-				break;
-			}
-		}
-		return this;
-	}
+        return column;
+    }
 
-	@Override
-	public DateColumn fillWith(Supplier<LocalDate> supplier) {
-		final int[] r = new int[1];
-		fillWith(size(), supplier, date -> set(r[0]++, date));
-		return this;
-	}
-	
-	public static DateColumn createWith(String name, int size, Supplier<LocalDate> supplier) {
-        final DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
+    private DateColumn fillWith(int count, Supplier<LocalDate> supplier, Consumer<LocalDate> acceptor) {
+        for (int r = 0; r < count; r++) {
+            try {
+                acceptor.accept(supplier.get());
+            } catch (Exception e) {
+                break;
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public DateColumn fillWith(Supplier<LocalDate> supplier) {
+        int[] r = new int[1];
+        fillWith(size(), supplier, date -> set(r[0]++, date));
+        return this;
+    }
+
+    public static DateColumn createWith(String name, int size, Supplier<LocalDate> supplier) {
+        DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
         column.fillWith(size, supplier, column::append);
         return column;
-	}
+    }
 }

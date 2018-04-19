@@ -682,44 +682,44 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
             return false;
         }
     }
-    
+
     // fillWith methods
-    
-	@Override
-	public BooleanColumn fillWith(BooleanIterator iterator) {
-		for (int r = 0; r < size(); r++) {
-			if (! iterator.hasNext()) {
-				break;
-			}
-			set(r, iterator.nextBoolean());
-		}
-		return this;
-	}
 
-	@Override
-	public BooleanColumn fillWith(BooleanIterable iterable) {
-		BooleanIterator iterator = null;
-		for (int r = 0; r < size(); r++) {
-			if (iterator == null || (! iterator.hasNext())) {
-				iterator = iterable.iterator();
-				if (! iterator.hasNext()) {
-					break;
-				}
-			}
-			set(r, iterator.nextBoolean());
-		}
-		return this;
-	}
+    @Override
+    public BooleanColumn fillWith(BooleanIterator iterator) {
+        for (int r = 0; r < size(); r++) {
+            if (!iterator.hasNext()) {
+                break;
+            }
+            set(r, iterator.nextBoolean());
+        }
+        return this;
+    }
 
-	@Override
-	public BooleanColumn fillWith(Supplier<Boolean> supplier) {
-		for (int r = 0; r < size(); r++) {
-			try {
-				set(r, supplier.get());
-			} catch (Exception e) {
-				break;
-			}
-		}
-		return this;
-	}
+    @Override
+    public BooleanColumn fillWith(BooleanIterable iterable) {
+        BooleanIterator iterator = null;
+        for (int r = 0; r < size(); r++) {
+            if (iterator == null || (!iterator.hasNext())) {
+                iterator = iterable.iterator();
+                if (!iterator.hasNext()) {
+                    break;
+                }
+            }
+            set(r, iterator.nextBoolean());
+        }
+        return this;
+    }
+
+    @Override
+    public BooleanColumn fillWith(Supplier<Boolean> supplier) {
+        for (int r = 0; r < size(); r++) {
+            try {
+                set(r, supplier.get());
+            } catch (Exception e) {
+                break;
+            }
+        }
+        return this;
+    }
 }

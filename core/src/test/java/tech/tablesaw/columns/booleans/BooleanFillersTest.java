@@ -10,14 +10,14 @@ import it.unimi.dsi.fastutil.booleans.BooleanIterable;
 
 public class BooleanFillersTest {
 
-	protected void testValues(BooleanIterable booleans, boolean... expected) {
-		int num = 0;
-		for (boolean value : booleans) {
-			assertEquals(expected[num], value);
-			num++;
-		}
-		assertEquals(expected.length, num);
-	}
+    protected void testValues(BooleanIterable booleans, boolean... expected) {
+        int num = 0;
+        for (boolean value : booleans) {
+            assertEquals(expected[num], value);
+            num++;
+        }
+        assertEquals(expected.length, num);
+    }
 
     @Test
     public void test() {

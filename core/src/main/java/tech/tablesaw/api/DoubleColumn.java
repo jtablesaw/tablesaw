@@ -73,55 +73,56 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
 
     private final IntComparator comparator = new IntComparator() {
 
-        public int compare(int r1, int r2) {
-            double f1 = data.getDouble(r1);
-            double f2 = data.getDouble(r2);
+        @Override
+        public int compare(final int r1, final int r2) {
+            final double f1 = data.getDouble(r1);
+            final double f2 = data.getDouble(r2);
             return Double.compare(f1, f2);
         }
     };
 
-    public static DoubleColumn create(String name, int initialSize) {
+    public static DoubleColumn create(final String name, final int initialSize) {
         return new DoubleColumn(name, new DoubleArrayList(initialSize));
     }
 
-    public static DoubleColumn create(String name, double[] arr) {
+    public static DoubleColumn create(final String name, final double[] arr) {
         return new DoubleColumn(name, new DoubleArrayList(arr));
     }
 
-    public static DoubleColumn create(String name, float[] arr) {
-        double[] doubles = new double[arr.length];
+    public static DoubleColumn create(final String name, final float[] arr) {
+        final double[] doubles = new double[arr.length];
         for (int i = 0; i < arr.length; i++) {
             doubles[i] = arr[i];
         }
         return new DoubleColumn(name, new DoubleArrayList(doubles));
     }
 
-    public static DoubleColumn create(String name, int[] arr) {
-        double[] doubles = new double[arr.length];
+    public static DoubleColumn create(final String name, final int[] arr) {
+        final double[] doubles = new double[arr.length];
         for (int i = 0; i < arr.length; i++) {
             doubles[i] = arr[i];
         }
         return new DoubleColumn(name, new DoubleArrayList(doubles));
     }
 
-    public static DoubleColumn create(String name, long[] arr) {
-        double[] doubles = new double[arr.length];
+    public static DoubleColumn create(final String name, final long[] arr) {
+        final double[] doubles = new double[arr.length];
         for (int i = 0; i < arr.length; i++) {
             doubles[i] = arr[i];
         }
         return new DoubleColumn(name, new DoubleArrayList(doubles));
     }
 
-    public static DoubleColumn create(String name, List<Number> numberList) {
-        double[] doubles = new double[numberList.size()];
+    public static DoubleColumn create(final String name, final List<Number> numberList) {
+        final double[] doubles = new double[numberList.size()];
         for (int i = 0; i < numberList.size(); i++) {
             doubles[i] = numberList.get(i).doubleValue();
         }
         return new DoubleColumn(name, new DoubleArrayList(doubles));
     }
 
-    public static DoubleColumn create(String name, Number[] numbers) {
-        double[] doubles = new double[numbers.length];
+    public static DoubleColumn create(final String name, final Number[] numbers) {
+        final double[] doubles = new double[numbers.length];
         for (int i = 0; i < numbers.length; i++) {
             doubles[i] = numbers[i].doubleValue();
         }
@@ -133,20 +134,20 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * <p>
      * We remove any commas before parsing
      */
-    public static double convert(String stringValue) {
+    public static double convert(final String stringValue) {
         if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
             return MISSING_VALUE;
         }
-        Matcher matcher = DoubleColumn.COMMA_PATTERN.matcher(stringValue);
+        final Matcher matcher = DoubleColumn.COMMA_PATTERN.matcher(stringValue);
         return Double.parseDouble(matcher.replaceAll(""));
     }
 
     @Override
     public DoubleColumn removeMissing() {
-        DoubleColumn noMissing = (DoubleColumn) emptyCopy();
-        DoubleIterator iterator = iterator();
+        final DoubleColumn noMissing = (DoubleColumn) emptyCopy();
+        final DoubleIterator iterator = iterator();
         while(iterator.hasNext()) {
-            double v = iterator.nextDouble();
+            final double v = iterator.nextDouble();
             if (!NumberColumn.valueIsMissing(v)) {
                 noMissing.append(v);
             }
@@ -159,8 +160,8 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * integers beginning at startsWith and continuing through size (exclusive), monotonically increasing by 1
      * TODO consider a generic fill function including steps or random samples from various distributions
      */
-    public static DoubleColumn indexColumn(String columnName, int size, int startsWith) {
-        DoubleColumn indexColumn = DoubleColumn.create(columnName, size);
+    public static DoubleColumn indexColumn(final String columnName, final int size, final int startsWith) {
+        final DoubleColumn indexColumn = DoubleColumn.create(columnName, size);
         for (int i = 0; i < size; i++) {
             indexColumn.append(i + startsWith);
         }
@@ -168,17 +169,17 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
         return indexColumn;
     }
 
-    public static DoubleColumn create(String columnName) {
+    public static DoubleColumn create(final String columnName) {
         return create(columnName, DEFAULT_ARRAY_SIZE);
     }
 
     @Override
-    public boolean isMissing(int rowNumber) {
+    public boolean isMissing(final int rowNumber) {
         return NumberColumn.valueIsMissing(get(rowNumber));
     }
 
     @Override
-    public void setPrintFormatter(NumberFormat format, String missingValueString) {
+    public void setPrintFormatter(final NumberFormat format, final String missingValueString) {
         this.printFormatter = new NumberColumnFormatter(format, missingValueString);
     }
 
@@ -188,11 +189,11 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public void setPrintFormatter(NumberColumnFormatter formatter) {
+    public void setPrintFormatter(final NumberColumnFormatter formatter) {
         this.printFormatter = formatter;
     }
 
-    private DoubleColumn(String name, DoubleArrayList data) {
+    private DoubleColumn(final String name, final DoubleArrayList data) {
         super(NUMBER, name);
         this.data = data;
     }
@@ -221,9 +222,9 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * @return A list, possibly empty, of the largest observations
      */
     @Override
-    public DoubleArrayList top(int n) {
-        DoubleArrayList top = new DoubleArrayList();
-        double[] values = data.toDoubleArray();
+    public DoubleArrayList top(final int n) {
+        final DoubleArrayList top = new DoubleArrayList();
+        final double[] values = data.toDoubleArray();
         DoubleArrays.parallelQuickSort(values, descendingComparator);
         for (int i = 0; i < n && i < values.length; i++) {
             top.add(values[i]);
@@ -240,9 +241,9 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * @return A list, possibly empty, of the smallest n observations
      */
     @Override
-    public DoubleArrayList bottom(int n) {
-        DoubleArrayList bottom = new DoubleArrayList();
-        double[] values = data.toDoubleArray();
+    public DoubleArrayList bottom(final int n) {
+        final DoubleArrayList bottom = new DoubleArrayList();
+        final double[] values = data.toDoubleArray();
         DoubleArrays.parallelQuickSort(values);
         for (int i = 0; i < n && i < values.length; i++) {
             bottom.add(values[i]);
@@ -255,11 +256,11 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      */
     @Override
     public Column unique() {
-        DoubleSet doubles = new DoubleOpenHashSet();
+        final DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
             doubles.add(data.getDouble(i));
         }
-        DoubleColumn column = DoubleColumn.create(name() + " Unique values", doubles.size());
+        final DoubleColumn column = DoubleColumn.create(name() + " Unique values", doubles.size());
         doubles.forEach((DoubleConsumer) column::append);
         return column;
     }
@@ -276,7 +277,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * Adds the given float to this column
      */
     @Override
-    public void append(float f) {
+    public void append(final float f) {
         data.add(f);
     }
 
@@ -284,14 +285,14 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * Adds the given double to this column
      */
     @Override
-    public void append(double d) {
+    public void append(final double d) {
         data.add(d);
     }
 
 
     @Override
-    public String getString(int row) {
-        double value = data.getDouble(row);
+    public String getString(final int row) {
+        final double value = data.getDouble(row);
         if (NumberColumn.valueIsMissing(value)) {
             return "";
         }
@@ -299,12 +300,12 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public double getDouble(int row) {
+    public double getDouble(final int row) {
         return get(row);
     }
 
     @Override
-    public String getUnformattedString(int row) {
+    public String getUnformattedString(final int row) {
         return String.valueOf(get(row));
     }
 
@@ -314,26 +315,26 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public DoubleColumn emptyCopy(int rowSize) {
-        DoubleColumn column = DoubleColumn.create(name(), rowSize);
+    public DoubleColumn emptyCopy(final int rowSize) {
+        final DoubleColumn column = DoubleColumn.create(name(), rowSize);
         column.setPrintFormatter(printFormatter);
         column.locale = locale;
         return column;
     }
 
     @Override
-    public NumberColumn lead(int n) {
-        NumberColumn numberColumn = lag(-n);
+    public NumberColumn lead(final int n) {
+        final NumberColumn numberColumn = lag(-n);
         numberColumn.setName(name() + " lead(" + n + ")");
         return numberColumn;
     }
 
     @Override
-    public NumberColumn lag(int n) {
-        int srcPos = n >= 0 ? 0 : 0 - n;
-        double[] dest = new double[size()];
-        int destPos = n <= 0 ? 0 : n;
-        int length = n >= 0 ? size() - n : size() + n;
+    public NumberColumn lag(final int n) {
+        final int srcPos = n >= 0 ? 0 : 0 - n;
+        final double[] dest = new double[size()];
+        final int destPos = n <= 0 ? 0 : n;
+        final int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
             dest[i] = MISSING_VALUE;
@@ -341,7 +342,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
 
         System.arraycopy(data.toDoubleArray(), srcPos, dest, destPos, length);
 
-        DoubleColumn copy = emptyCopy(size());
+        final DoubleColumn copy = emptyCopy(size());
         copy.data = new DoubleArrayList(dest);
         copy.setName(name() + " lag(" + n + ")");
         return copy;
@@ -349,7 +350,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
 
     @Override
     public NumberColumn copy() {
-        DoubleColumn column = emptyCopy(size());
+        final DoubleColumn column = emptyCopy(size());
         column.data = data.clone();
         return column;
     }
@@ -375,10 +376,10 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public void appendCell(String object) {
+    public void appendCell(final String object) {
         try {
             append(convert(object));
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             throw new NumberFormatException(name() + ": " + e.getMessage());
         }
     }
@@ -389,8 +390,8 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * @throws ClassCastException if the returned value will not fit in an int
      */
     @Override
-    public Integer roundInt(int i) {
-        double value = get(i);
+    public Integer roundInt(final int i) {
+        final double value = get(i);
         if (NumberColumn.valueIsMissing(value)) {
             return null;
         }
@@ -404,8 +405,8 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * @return the value at i, rounded to the nearest integer
      */
     @Override
-    public long getLong(int i) {
-        double value = data.getDouble(i);
+    public long getLong(final int i) {
+        final double value = data.getDouble(i);
         return NumberColumn.valueIsMissing(value) ? DateTimeColumn.MISSING_VALUE : Math.round(value);
     }
 
@@ -419,12 +420,12 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public double get(int index) {
+    public double get(final int index) {
         return data.getDouble(index);
     }
 
     @Override
-    public void set(int r, double value) {
+    public void set(final int r, final double value) {
         data.set(r, value);
     }
 
@@ -436,15 +437,15 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * myColumn.set(4.0, myColumn.valueIsMissing()); // no more missing values
      */
     @Override
-    public void set(Selection rowSelection, double newValue) {
-        for (int row : rowSelection) {
+    public void set(final Selection rowSelection, final double newValue) {
+        for (final int row : rowSelection) {
             set(row, newValue);
         }
     }
 
     @Override
     public double[] asDoubleArray() {
-        double[] output = new double[data.size()];
+        final double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = data.getDouble(i);
         }
@@ -452,9 +453,9 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public void append(Column column) {
+    public void append(final Column column) {
         Preconditions.checkArgument(column.type() == this.type());
-        NumberColumn numberColumn = (NumberColumn) column;
+        final NumberColumn numberColumn = (NumberColumn) column;
         for (int i = 0; i < numberColumn.size(); i++) {
             append(numberColumn.get(i));
         }
@@ -466,20 +467,20 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public NumberColumn where(Filter filter) {
+    public NumberColumn where(final Filter filter) {
         return (NumberColumn) subset(filter.apply(this));
     }
 
     @Override
-    public NumberColumn where(Selection selection) {
+    public NumberColumn where(final Selection selection) {
         return (NumberColumn) subset(selection);
     }
 
     @Override
-    public Selection eval(DoublePredicate predicate) {
-        Selection bitmap = new BitmapBackedSelection();
+    public Selection eval(final DoublePredicate predicate) {
+        final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
-            double next = data.getDouble(idx);
+            final double next = data.getDouble(idx);
             if (predicate.test(next)) {
                 bitmap.add(idx);
             }
@@ -488,8 +489,8 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public Selection eval(DoubleBiPredicate predicate, NumberColumn otherColumn) {
-        Selection selection = new BitmapBackedSelection();
+    public Selection eval(final DoubleBiPredicate predicate, final NumberColumn otherColumn) {
+        final Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
             if (predicate.test(get(idx), otherColumn.get(idx))) {
                 selection.add(idx);
@@ -499,11 +500,11 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public Selection eval(DoubleBiPredicate predicate, Number number) {
-        double value = number.doubleValue();
-        Selection bitmap = new BitmapBackedSelection();
+    public Selection eval(final DoubleBiPredicate predicate, final Number number) {
+        final double value = number.doubleValue();
+        final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
-            double next = data.getDouble(idx);
+            final double next = data.getDouble(idx);
             if (predicate.test(next, value)) {
                 bitmap.add(idx);
             }
@@ -512,11 +513,11 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public Selection eval(BiPredicate<Number, Number> predicate, Number number) {
-        double value = number.doubleValue();
-        Selection bitmap = new BitmapBackedSelection();
+    public Selection eval(final BiPredicate<Number, Number> predicate, final Number number) {
+        final double value = number.doubleValue();
+        final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
-            double next = data.getDouble(idx);
+            final double next = data.getDouble(idx);
             if (predicate.test(next, value)) {
                 bitmap.add(idx);
             }
@@ -525,12 +526,12 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public Selection eval(DoubleRangePredicate predicate, Number rangeStart, Number rangeEnd) {
-        double start = rangeStart.doubleValue();
-        double end = rangeEnd.doubleValue();
-        Selection bitmap = new BitmapBackedSelection();
+    public Selection eval(final DoubleRangePredicate predicate, final Number rangeStart, final Number rangeEnd) {
+        final double start = rangeStart.doubleValue();
+        final double end = rangeEnd.doubleValue();
+        final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
-            double next = data.getDouble(idx);
+            final double next = data.getDouble(idx);
             if (predicate.test(next, start, end)) {
                 bitmap.add(idx);
             }
@@ -539,14 +540,14 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public Selection isIn(Number... numbers) {
+    public Selection isIn(final Number... numbers) {
         return isIn(Arrays.stream(numbers).mapToDouble(Number::doubleValue).toArray());
     }
 
     @Override
-    public Selection isIn(double... doubles) {
-        Selection results = new BitmapBackedSelection();
-        DoubleRBTreeSet doubleSet = new DoubleRBTreeSet(doubles);
+    public Selection isIn(final double... doubles) {
+        final Selection results = new BitmapBackedSelection();
+        final DoubleRBTreeSet doubleSet = new DoubleRBTreeSet(doubles);
         for (int i = 0; i < size(); i++) {
             if (doubleSet.contains(get(i))) {
                 results.add(i);
@@ -556,16 +557,16 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public Selection isNotIn(Number... numbers) {
-        Selection results = new BitmapBackedSelection();
+    public Selection isNotIn(final Number... numbers) {
+        final Selection results = new BitmapBackedSelection();
         results.addRange(0, size());
         results.andNot(isIn(numbers));
         return results;
     }
 
     @Override
-    public Selection isNotIn(double... doubles) {
-        Selection results = new BitmapBackedSelection();
+    public Selection isNotIn(final double... doubles) {
+        final Selection results = new BitmapBackedSelection();
         results.addRange(0, size());
         results.andNot(isIn(doubles));
         return results;
@@ -577,7 +578,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public boolean contains(double value) {
+    public boolean contains(final double value) {
         return data.contains(value);
     }
 
@@ -590,13 +591,13 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * Returns the contents of the cell at rowNumber as a byte[]
      */
     @Override
-    public byte[] asBytes(int rowNumber) {
+    public byte[] asBytes(final int rowNumber) {
         return ByteBuffer.allocate(byteSize()).putDouble(get(rowNumber)).array();
     }
 
     @Override
     public int[] asIntArray() {  // TODO: Need to figure out how to handle NaN -> Maybe just use a list with nulls?
-        int[] result = new int[size()];
+        final int[] result = new int[size()];
         for (int i = 0; i < size(); i++) {
             result[i] = roundInt(i);
         }
@@ -605,8 +606,8 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
 
     @Override
     public IntSet asIntegerSet() {
-        IntSet ints = new IntOpenHashSet();
-        for (double d : this) {
+        final IntSet ints = new IntOpenHashSet();
+        for (final double d : this) {
             if (!NumberColumn.valueIsMissing(d)) {
                 ints.add((int) Math.round(d));
             }
@@ -619,41 +620,43 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
         return data.clone();
     }
 
+    // fillWith methods
+
     @Override
-	public DoubleColumn fillWith(DoubleIterator iterator) {
-    		for (int r = 0; r < size(); r++) {
-    			if (! iterator.hasNext()) {
-    				break;
-    			}
-    			set(r, iterator.nextDouble());
-    		}
-    		return this;
+    public DoubleColumn fillWith(final DoubleIterator iterator) {
+        for (int r = 0; r < size(); r++) {
+            if (!iterator.hasNext()) {
+                break;
+            }
+            set(r, iterator.nextDouble());
+        }
+        return this;
     }
 
     @Override
-	public DoubleColumn fillWith(DoubleIterable iterable) {
-    		DoubleIterator iterator = null;
-    		for (int r = 0; r < size(); r++) {
-    			if (iterator == null || (! iterator.hasNext())) {
-    				iterator = iterable.iterator();
-    				if (! iterator.hasNext()) {
-    					break;
-    				}
-    			}
-    			set(r, iterator.nextDouble());
-    		}
-    		return this;
+    public DoubleColumn fillWith(final DoubleIterable iterable) {
+        DoubleIterator iterator = null;
+        for (int r = 0; r < size(); r++) {
+            if (iterator == null || (!iterator.hasNext())) {
+                iterator = iterable.iterator();
+                if (!iterator.hasNext()) {
+                    break;
+                }
+            }
+            set(r, iterator.nextDouble());
+        }
+        return this;
     }
 
     @Override
-	public DoubleColumn fillWith(final DoubleSupplier supplier) {
-		for (int r = 0; r < size(); r++) {
-			try {
-				set(r, supplier.getAsDouble());
-			} catch (Exception e) {
-				break;
-			}
-		}
-		return this;
-	}
+    public DoubleColumn fillWith(final DoubleSupplier supplier) {
+        for (int r = 0; r < size(); r++) {
+            try {
+                set(r, supplier.getAsDouble());
+            } catch (final Exception e) {
+                break;
+            }
+        }
+        return this;
+    }
 }

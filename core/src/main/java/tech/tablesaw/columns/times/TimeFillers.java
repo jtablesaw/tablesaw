@@ -20,11 +20,11 @@ import java.util.function.Supplier;
 
 public interface TimeFillers<T> {
 
-	T fillWith(Iterator<LocalTime> iterator);
-	
-	default T fillWith(Iterable<LocalTime> iterable) {
-		return fillWith(iterable.iterator());
-	}
+    T fillWith(Iterator<LocalTime> iterator);
 
-	T fillWith(Supplier<LocalTime> iterator);
+    default T fillWith(Iterable<LocalTime> iterable) {
+        return fillWith(iterable.iterator());
+    }
+
+    T fillWith(Supplier<LocalTime> iterator);
 }

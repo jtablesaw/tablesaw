@@ -21,11 +21,11 @@ import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 
 public interface NumberFillers<T> {
 
-	T fillWith(DoubleIterator iterator);
+    T fillWith(DoubleIterator iterator);
 
-	default T fillWith(final DoubleIterable iterable) {
-		return fillWith(iterable.iterator());
-	}
+    default T fillWith(final DoubleIterable iterable) {
+        return fillWith(iterable.iterator());
+    }
 
-	T fillWith(final DoubleSupplier supplier);
+    T fillWith(final DoubleSupplier supplier);
 }
