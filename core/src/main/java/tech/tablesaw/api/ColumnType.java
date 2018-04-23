@@ -50,6 +50,7 @@ public enum ColumnType {
             case LOCAL_DATE: return DateColumn.create(name);
             case LOCAL_DATE_TIME: return DateTimeColumn.create(name);
             case LOCAL_TIME: return TimeColumn.create(name);
+            case SKIP: throw new IllegalArgumentException("Cannot create column of type SKIP");
         }
         throw new UnsupportedOperationException("Column type " + this.name() + " doesn't support column creation");
     }

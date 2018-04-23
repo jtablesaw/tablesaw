@@ -111,11 +111,8 @@ public class IntComparatorChain implements IntComparator, Serializable {
         } else if (!object.getClass().equals(this.getClass())) {
             return false;
         } else {
-            boolean var10000;
-            label48:
-            {
-                label32:
-                {
+            label48: {
+                label32: {
                     IntComparatorChain chain = (IntComparatorChain) object;
                     if (null == this.orderingBits) {
                         if (null != chain.orderingBits) {
