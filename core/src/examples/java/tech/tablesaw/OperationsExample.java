@@ -17,7 +17,7 @@ package tech.tablesaw;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.VRow;
+import tech.tablesaw.api.Row;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.median;
 import static tech.tablesaw.api.QueryHelper.*;
@@ -37,13 +37,13 @@ public class OperationsExample extends AbstractExample {
         DateTimeColumn start = ops.dateColumn("Date").atTime(ops.timeColumn("Start"));
         DateTimeColumn end = ops.dateColumn("Date").atTime(ops.timeColumn("End"));
 
-        for (VRow row : ops) {
+        for (Row row : ops) {
             if (row.getTime("End").isBefore(row.getTime("Start"))) {
                 end.get(row.getRowNumber()).plusDays(1);
             }
         }
 
-        for (VRow row : ops) {
+        for (Row row : ops) {
             if (row.getTime("End").isBefore(row.getTime("Start"))) {
                 end.get(row.getRowNumber()).plusDays(1);
             }

@@ -151,7 +151,7 @@ public class TableTest {
         Table.Doable doable = new Table.Doable() {
 
             @Override
-            public void doWithRow(VRow row) {
+            public void doWithRow(Row row) {
                 if (row.getRowNumber() < 5) {
                     System.out.println("On "
                             + row.getPackedDate("date")
@@ -167,9 +167,9 @@ public class TableTest {
     @Test
     public void testDoWithEachRow2() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(10);
-        Consumer<VRow> doable = new Consumer<VRow>() {
+        Consumer<Row> doable = new Consumer<Row>() {
             @Override
-            public void accept(VRow row) {
+            public void accept(Row row) {
                 if (row.getRowNumber() < 5) {
                     System.out.println("On "
                             + row.getPackedDate("date")
@@ -190,7 +190,7 @@ public class TableTest {
         Table.Collectable collectable = new Table.Collectable(StringColumn.create("stringz")) {
 
             @Override
-            void collectFromRow(VRow row) {
+            void collectFromRow(Row row) {
                 ((StringColumn) column())
                         .append(row.getString("who") + " can't predict "
                         + row.getDouble("approval"));
@@ -205,7 +205,7 @@ public class TableTest {
     @Test
     public void testVRowToString() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
-        for (VRow row : t) {
+        for (Row row : t) {
             if (row.getRowNumber() < 1) {
                 assertEquals("             bush.csv              \n" +
                         "    date     |  approval  |  who  |\n" +
@@ -229,7 +229,7 @@ public class TableTest {
 
         Table.MultiRowDoable multiRowDoable = rows -> {
             int sum = 0;
-            for (VRow row : rows) {
+            for (Row row : rows) {
                 sum += row.getDouble("approval");
             }
             System.out.println("Running avg = " + sum / (double) rows.length);
@@ -242,7 +242,7 @@ public class TableTest {
         List<Double> runningAverage = new ArrayList<>();
 
         @Override
-        public void doWithPair(VRow row1, VRow row2) {
+        public void doWithPair(Row row1, Row row2) {
             double r1  = row1.getDouble("approval");
             double r2  = row2.getDouble("approval");
             runningAverage.add((r1 + r2) / 2.0);
@@ -399,9 +399,9 @@ public class TableTest {
     public void testRowSort() throws Exception {
         Table bush = Table.read().csv("../data/bush.csv");
 
-        Comparator<VRow> rowComparator = new Comparator<VRow>() {
+        Comparator<Row> rowComparator = new Comparator<Row>() {
             @Override
-            public int compare(VRow o1, VRow o2) {
+            public int compare(Row o1, Row o2) {
                 return Double.compare(o1.getDouble("approval"), (o2.getDouble("approval")));
             }
         };
@@ -418,7 +418,7 @@ public class TableTest {
     public void testIterable() throws Exception {
         Table bush = Table.read().csv("../data/bush.csv");
         int rowNumber = 0;
-        for (VRow row : bush.first(10)) {
+        for (Row row : bush.first(10)) {
             assertEquals(row.getRowNumber(), rowNumber++);
         }
     }
