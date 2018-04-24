@@ -14,24 +14,7 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparator;
-import it.unimi.dsi.fastutil.longs.LongIterator;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
-import tech.tablesaw.columns.datetimes.DateTimeFilters;
-import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.io.TypeUtils;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingLongComparator;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
 
 import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
@@ -45,14 +28,35 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrays;
+import it.unimi.dsi.fastutil.longs.LongComparator;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
+import tech.tablesaw.columns.datetimes.DateTimeFillers;
+import tech.tablesaw.columns.datetimes.DateTimeFilters;
+import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.io.TypeUtils;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
 public class DateTimeColumn extends AbstractColumn
-        implements DateTimeMapFunctions, DateTimeFilters, Iterable<LocalDateTime> {
+implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn>, Iterable<LocalDateTime> {
 
     public static final long MISSING_VALUE = (Long) ColumnType.LOCAL_DATE_TIME.getMissingValue();
 
@@ -564,5 +568,81 @@ public class DateTimeColumn extends AbstractColumn
                 return PackedLocalDateTime.asLocalDateTime(longIterator.nextLong());
             }
         };
+    }
+
+    // fillWith methods
+
+    private DateTimeColumn fillWith(int count, Iterator<LocalDateTime> iterator, Consumer<LocalDateTime> acceptor) {
+        for (int r = 0; r < count; r++) {
+            if (!iterator.hasNext()) {
+                break;
+            }
+            acceptor.accept(iterator.next());
+        }
+        return this;
+    }
+
+    @Override
+    public DateTimeColumn fillWith(Iterator<LocalDateTime> iterator) {
+        int[] r = new int[1];
+        fillWith(size(), iterator, date -> set(r[0]++, date));
+        return this;
+    }
+
+    public static DateTimeColumn createWith(String name, int size, Iterator<LocalDateTime> iterator) {
+        DateTimeColumn column = create(name, size, Locale.getDefault());
+        column.fillWith(size, iterator, column::append);
+        return column;
+    }
+
+    private DateTimeColumn fillWith(int count, Iterable<LocalDateTime> iterable, Consumer<LocalDateTime> acceptor) {
+        Iterator<LocalDateTime> iterator = null;
+        for (int r = 0; r < count; r++) {
+            if (iterator == null || (!iterator.hasNext())) {
+                iterator = iterable.iterator();
+                if (!iterator.hasNext()) {
+                    break;
+                }
+            }
+            acceptor.accept(iterator.next());
+        }
+        return this;
+    }
+
+    @Override
+    public DateTimeColumn fillWith(Iterable<LocalDateTime> iterable) {
+        int[] r = new int[1];
+        fillWith(size(), iterable, date -> set(r[0]++, date));
+        return this;
+    }
+
+    public static DateTimeColumn createWith(String name, int size, Iterable<LocalDateTime> iterable) {
+        DateTimeColumn column = create(name, size, Locale.getDefault());
+        column.fillWith(size, iterable, column::append);
+        return column;
+    }
+
+    private DateTimeColumn fillWith(int count, Supplier<LocalDateTime> supplier, Consumer<LocalDateTime> acceptor) {
+        for (int r = 0; r < count; r++) {
+            try {
+                acceptor.accept(supplier.get());
+            } catch (Exception e) {
+                break;
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public DateTimeColumn fillWith(Supplier<LocalDateTime> supplier) {
+        int[] r = new int[1];
+        fillWith(size(), supplier, date -> set(r[0]++, date));
+        return this;
+    }
+
+    public static DateTimeColumn createWith(String name, int size, Supplier<LocalDateTime> supplier) {
+        DateTimeColumn column = create(name, size, Locale.getDefault());
+        column.fillWith(size, supplier, column::append);
+        return column;
     }
 }
