@@ -16,6 +16,7 @@ package tech.tablesaw.columns.times;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
+import tech.tablesaw.api.TimeColumn;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -312,6 +313,10 @@ public class PackedLocalTime {
     }
 
     public static int pack(LocalTime time) {
+        if (time == null) {
+            return TimeColumn.MISSING_VALUE;
+        }
+
         byte hour = (byte) time.getHour();
         byte minute = (byte) time.getMinute();
         char millis = (char) (time.getNano() / 1_000_000.0);

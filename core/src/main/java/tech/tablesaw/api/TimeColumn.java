@@ -14,27 +14,8 @@
 
 package tech.tablesaw.api;
 
-import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
-import static tech.tablesaw.columns.DateAndTimePredicates.isMissing;
-import static tech.tablesaw.columns.DateAndTimePredicates.isNotMissing;
-
-import java.nio.ByteBuffer;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -51,6 +32,23 @@ import tech.tablesaw.columns.times.TimeMapFunctions;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
+
+import java.nio.ByteBuffer;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
+import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 /**
  * A column in a base table that contains float values
@@ -585,12 +583,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return this;
     }
 
-    public static TimeColumn createWith(String name, int size, Iterator<LocalTime> iterator) {
-        TimeColumn column = create(name, size, Locale.getDefault());
-        column.fillWith(size, iterator, column::append);
-        return column;
-    }
-
     private TimeColumn fillWith(int count, Iterable<LocalTime> iterable, Consumer<LocalTime> acceptor) {
         Iterator<LocalTime> iterator = null;
         for (int r = 0; r < count; r++) {
@@ -612,12 +604,6 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         return this;
     }
 
-    public static TimeColumn createWith(String name, int size, Iterable<LocalTime> iterable) {
-        TimeColumn column = create(name, size, Locale.getDefault());
-        column.fillWith(size, iterable, column::append);
-        return column;
-    }
-
     private TimeColumn fillWith(int count, Supplier<LocalTime> supplier, Consumer<LocalTime> acceptor) {
         for (int r = 0; r < count; r++) {
             try {
@@ -634,11 +620,5 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
         int[] r = new int[1];
         fillWith(size(), supplier, date -> set(r[0]++, date));
         return this;
-    }
-
-    public static TimeColumn createWith(String name, int size, Supplier<LocalTime> supplier) {
-        TimeColumn column = create(name, size, Locale.getDefault());
-        column.fillWith(size, supplier, column::append);
-        return column;
     }
 }

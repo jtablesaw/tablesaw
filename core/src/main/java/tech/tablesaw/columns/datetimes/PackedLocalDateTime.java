@@ -89,18 +89,27 @@ public class PackedLocalDateTime {
     }
 
     public static long pack(LocalDate date, LocalTime time) {
+        if (date == null || time == null) {
+            return DateTimeColumn.MISSING_VALUE;
+        }
         int d = PackedLocalDate.pack(date);
         int t = PackedLocalTime.pack(time);
         return (((long) d) << 32) | (t & 0xffffffffL);
     }
 
     public static long pack(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return DateTimeColumn.MISSING_VALUE;
+        }
         LocalDate date = dateTime.toLocalDate();
         LocalTime time = dateTime.toLocalTime();
         return (pack(date, time));
     }
 
     public static long pack(Date date) {
+        if (date == null) {
+            return DateTimeColumn.MISSING_VALUE;
+        }
         return pack(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     }
 

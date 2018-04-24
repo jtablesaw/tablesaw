@@ -14,26 +14,8 @@
 
 package tech.tablesaw.api;
 
-import java.nio.ByteBuffer;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -52,6 +34,23 @@ import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
+
+import java.nio.ByteBuffer;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * A column in a base table that contains float values
@@ -651,12 +650,6 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return this;
     }
 
-    public static DateColumn createWith(String name, int size, Iterator<LocalDate> iterator) {
-        DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
-        column.fillWith(size, iterator, column::append);
-        return column;
-    }
-
     private DateColumn fillWith(int count, Iterable<LocalDate> iterable, Consumer<LocalDate> acceptor) {
         Iterator<LocalDate> iterator = null;
         for (int r = 0; r < count; r++) {
@@ -678,12 +671,6 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return this;
     }
 
-    public static DateColumn createWith(String name, int size, Iterable<LocalDate> iterable) {
-        DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
-        column.fillWith(size, iterable, column::append);
-        return column;
-    }
-
     private DateColumn fillWith(int count, Supplier<LocalDate> supplier, Consumer<LocalDate> acceptor) {
         for (int r = 0; r < count; r++) {
             try {
@@ -700,11 +687,5 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         int[] r = new int[1];
         fillWith(size(), supplier, date -> set(r[0]++, date));
         return this;
-    }
-
-    public static DateColumn createWith(String name, int size, Supplier<LocalDate> supplier) {
-        DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
-        column.fillWith(size, supplier, column::append);
-        return column;
     }
 }

@@ -85,6 +85,9 @@ public class PackedLocalDate {
     }
 
     public static int pack(LocalDate date) {
+        if (date == null) {
+            return DateColumn.MISSING_VALUE;
+        }
         return pack(
                 (short) date.getYear(),
                 (byte) date.getMonthValue(),

@@ -22,6 +22,13 @@ public class DateColumnTest {
     }
 
     @Test
+    public void testCreate1() {
+        LocalDate[] dates = new LocalDate[5];
+        DateColumn column = DateColumn.create("Game date", dates);
+        assertEquals(DateColumn.MISSING_VALUE, column.getIntInternal(0));
+    }
+
+    @Test
     public void testAddCell() {
         column1.appendCell("2013-10-23");
         column1.appendCell("12/23/1924");
