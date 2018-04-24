@@ -33,7 +33,6 @@ import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.Sort;
 import tech.tablesaw.sorting.SortUtils;
 import tech.tablesaw.sorting.comparators.IntComparatorChain;
-import tech.tablesaw.sorting.comparators.ReversingIntComparator;
 import tech.tablesaw.table.Projection;
 import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
@@ -640,23 +639,6 @@ public class Table extends Relation implements Iterable<Row> {
             rowIndexes[i] = i;
         }
         return rowIndexes;
-    }
-
-    /**
-     * Returns a comparator for the column matching the specified name
-     *
-     * @param columnName The name of the column to sort
-     * @param order      Specifies whether the sort should be in ascending or descending order
-     */
-    private IntComparator rowComparator(String columnName, Sort.Order order) {
-        Column column = this.column(columnName);
-        IntComparator rowComparator = column.rowComparator();
-
-        if (order == Sort.Order.DESCEND) {
-            return ReversingIntComparator.reverse(rowComparator);
-        } else {
-            return rowComparator;
-        }
     }
 
     /**
