@@ -1,19 +1,88 @@
 # Filters
 
-Filters select a subset of the rows in a table. The Table class provides filter operations that return a Table like the original, but having only the rows that pass the filter criteria.
+## where()
+
+Filters select a subset of the rows in a table. Given a filter, a table will (usually) return a table like itself, but having only the rows that pass the filter criteria.
 
 The main methods for applying filters are:
 
 ```java
-Table t = table.selectWhere(aFilter);
+table.where(aSelection)
 ```
 
 which includes all rows for which the filter returns true. And
 
 ```java
-Table t = table.rejectWhere(aFilter);
+table.dropWhere(aSelection)
 ```
-which excludes all rows for which the filter returns true. The syntax is designed to be "_fluent_"; to read as much like a natural language as possible.
+which excludes all rows for which the filter returns true. 
+
+Before digging too deep into table filters, though, we should look *Selections*, and at the column filters table filters build on.
+
+## Selections
+
+Both columns and tables are filtered using *selections*. A selection is a bitmap (like a boolean array) with an entry for each element in the column. For any given element, if the corresponding bitmap entry is "true", the element is included in the result.  
+
+Often there's a method on the column that provides the selection you want. StringColumn, for example,  has a method called *startsWith(aString)*, which returns a selection, while DateColumn supports *inJanuary()*. 
+
+Selections are readily combined, using *and()*, *or()*, and *andNot()*. 
+
+## Column Filters 
+
+As mentioned, columns have many methods that return selections. The method *isInJanuary()* is implemented on both DateColumn and DateTimeColumn, and works as follows:
+
+```java
+Selection selection = dateColumn.isInJanuary();
+DateColumn januaries = dateColumn.where(selection);
+```
+
+Since it's often the filtered column you want, you may inline the call:
+
+```java
+DateColumn januaries = dateColumn.where(dateColumn.isInJanuary());
+```
+
+This begs the question, why not just have isInJanuary() return a filtered column?  There are three reasons. The first is that selections are easier to combine.  You can, for example, get only the dates from January that  were also on Monday.  
+
+```Java
+dateColumn.where(dateColumn.isInJanuary().and(dateColumn.isMonday()))
+```
+
+or, all the dates in January, and all the Mondays:
+
+```Java
+dateColumn.where(dateColumn.isInJanuary().or(dateColumn.isMonday()))
+```
+
+or, all the dates in January that were not Mondays:
+
+```java
+dateColumn.where(dateColumn.isInJanuary().or(dateColumn.isMonday()))
+```
+
+The second reason for returning selections is that the column methods that return selections can be used to filter tables. Given a Table t, with a StringColumn sc, you can filter the table using the column method as shown below:
+
+```java
+Table t1 = t.where(sc.startsWith("Foo"));
+```
+
+In fact, the general approach to filtering table rests on column filters, using the logical operators *and()*, *or()*, and *andNot()* to combine them into complex, multi-column queries:
+
+Table t1 = t.where();
+
+Finally, you can combine these "where clauses" with methods that filter by index. For example:
+
+```java
+Table t1 = t.where(Selection.withRange(100, 300).and(sc.startsWith("Foo")));
+```
+
+first selects the rows in the range 100 to 300, and then intersects that result with the query `sc.startsWIth("Foo")`.
+
+Writing your own Column Filters
+
+
+
+## ColumnReferences and method chaining 
 
 The usual way to create a filter is to use a ColumnReference. A ColumnReference refers to a column in the target table, and implements a large number of built-in filters. To create one, you will generally do a static import of the method QueryHelper.column. The process is shown below:
 
@@ -67,8 +136,9 @@ public class LocalDateIsAfter implements Filter {
     }
 
     @Override
-    public RoaringBitmap apply(Table relation) { 
-        DateColumn dateColumn = (DateColumn) relation.column(columnReference().getColumnName());
+    public Selection apply(Table table) { 
+        DateColumn dateColumn = 
+            (DateColumn) table.column(columnReference().getColumnName());
         return dateColumn.isAfter(value);
   }
 }

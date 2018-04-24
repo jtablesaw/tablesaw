@@ -54,7 +54,7 @@ public final class CrossTab {
         String a;
         String b;
 
-        for (int row : temp) {
+        for (int row = 0; row < table.rowCount(); row++) {
             a = temp.column(colIndex1).getString(row);
             b = temp.column(colIndex2).getString(row);
             Integer cellValue = gTable.get(a, b);

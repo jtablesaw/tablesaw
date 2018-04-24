@@ -12,18 +12,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Row implements Iterator<Row> {
+public class VRow implements Iterator<VRow> {
 
     private int rowNumber;
     private final Table table;
     private final Map<String, PackedDate> dateColumnMap = new HashMap<>();
     private final Map<String, NumberColumn> numberColumnMap = new HashMap<>();
-    private final Map<String, StringColumn> categoryColumnMap = new HashMap<>();
+    private final Map<String, StringColumn> stringColumnMap = new HashMap<>();
     private final Map<String, BooleanColumn> booleanColumnMap = new HashMap<>();
     private final Map<String, PackedDateTime> dateTimeColumnMap = new HashMap<>();
     private final Map<String, PackedTime> timeColumnMap = new HashMap<>();
 
-    public Row(Table table) {
+    public VRow(Table table) {
         this.table = table;
         rowNumber = -1;
         for (Column column : table.columns()) {
@@ -33,7 +33,7 @@ public class Row implements Iterator<Row> {
             } else if (column instanceof DoubleColumn) {
                 numberColumnMap.put(column.name(), (NumberColumn) column);
             } else if (column instanceof StringColumn) {
-                categoryColumnMap.put(column.name(), (StringColumn) column);
+                stringColumnMap.put(column.name(), (StringColumn) column);
             } else if (column instanceof BooleanColumn) {
                 booleanColumnMap.put(column.name(), (BooleanColumn) column);
             } else if (column instanceof DateTimeColumn) {
@@ -52,7 +52,7 @@ public class Row implements Iterator<Row> {
     }
 
     @Override
-    public Row next() {
+    public VRow next() {
         rowNumber++;
         return this;
     }
@@ -62,10 +62,10 @@ public class Row implements Iterator<Row> {
     }
 
     public String getString(String columnName) {
-        return categoryColumnMap.get(columnName).get(rowNumber);
+        return stringColumnMap.get(columnName).get(rowNumber);
     }
 
-    public LocalDate getLocalDate(String columnName) {
+    public LocalDate getDate(String columnName) {
         return getPackedDate(columnName).asLocalDate();
     }
 
@@ -73,11 +73,11 @@ public class Row implements Iterator<Row> {
         return dateColumnMap.get(columnName).get(rowNumber);
     }
 
-    public LocalTime getLocalTime(String columnName) {
+    public LocalTime getTime(String columnName) {
         return getPackedTime(columnName).asLocalTime();
     }
 
-    public LocalDateTime getLocalDateTime(String columnName) {
+    public LocalDateTime getDateTime(String columnName) {
         return getPackedDateTime(columnName).asLocalDateTime();
     }
 
@@ -99,5 +99,15 @@ public class Row implements Iterator<Row> {
 
     public int getRowNumber() {
         return rowNumber;
+    }
+
+    @Override
+    public String toString() {
+        Table t = table.emptyCopy();
+        if (getRowNumber() == -1) {
+            return "";
+        }
+        t.addRow(this);
+        return t.print();
     }
 }

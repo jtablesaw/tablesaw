@@ -19,8 +19,6 @@ import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterable;
-import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.CrossTab;
 import tech.tablesaw.aggregate.Summarizer;
@@ -44,7 +42,10 @@ import tech.tablesaw.table.TableSliceGroup;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
@@ -57,7 +58,7 @@ import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
  * <p>
  * Tables are the main data-type and primary focus of Airframe.
  */
-public class Table extends Relation implements IntIterable {
+public class Table extends Relation implements Iterable<VRow> {
 
     /**
      * The columns that hold the data in this table
@@ -174,6 +175,37 @@ public class Table extends Relation implements IntIterable {
         columnList.add(index, column);
         return this;
     }
+
+/*
+    public Stream<VRow> stream() {
+
+        Spliterator<VRow> spliterator = new Spliterator<VRow>() {
+            VRow row = new VRow(Table.this);
+
+            @Override
+            public boolean tryAdvance(Consumer<? super VRow> action) {
+                action.accept(row.next());
+                return row.hasNext();
+            }
+
+            @Override
+            public Spliterator<VRow> trySplit() {
+                return null;
+            }
+
+            @Override
+            public long estimateSize() {
+                return rowCount();
+            }
+
+            @Override
+            public int characteristics() {
+                return 0;
+            }
+        };
+        return StreamSupport.stream(spliterator, false);
+    }
+*/
 
     /**
      * Replaces an existing column (by index) in this table with the given new column
@@ -573,7 +605,7 @@ public class Table extends Relation implements IntIterable {
     /**
      * Returns a copy of this table sorted using the given comparator
      */
-    public Table sortOn(IntComparator rowComparator) {
+    private Table sortOn(IntComparator rowComparator) {
         Table newTable = emptyCopy(rowCount());
 
         int[] newRows = rows();
@@ -581,6 +613,22 @@ public class Table extends Relation implements IntIterable {
 
         Rows.copyRowsToTable(IntArrayList.wrap(newRows), this, newTable);
         return newTable;
+    }
+
+    /**
+     * Returns a copy of this table sorted using the given comparator
+     */
+    public Table sortOn(Comparator<VRow> rowComparator) {
+        VRow row1 = new VRow(this);
+        VRow row2 = new VRow(this);
+        return sortOn(new IntComparator() {
+            @Override
+            public int compare(int k1, int k2) {
+                row1.at(k1);
+                row2.at(k2);
+                return rowComparator.compare(row1, row2);
+            }
+        });
     }
 
     /**
@@ -649,7 +697,7 @@ public class Table extends Relation implements IntIterable {
         }
     }
 
-    public void addRow(Row row) {
+    public void addRow(VRow row) {
         //TODO Implement
         for (Column column : columns()) {
             ColumnType type = column.type();
@@ -982,25 +1030,20 @@ public class Table extends Relation implements IntIterable {
     }
 
     @Override
-    public IntIterator iterator() {
+    public Iterator<VRow> iterator() {
 
-        return new IntIterator() {
+        return new Iterator<VRow>() {
 
-            private int i = 0;
-
-            @Override
-            public int nextInt() {
-                return i++;
-            }
+            final private VRow row = new VRow(Table.this);
 
             @Override
-            public int skip(int k) {
-                return i + k;
+            public VRow next() {
+                return row.next();
             }
 
             @Override
             public boolean hasNext() {
-                return i < rowCount();
+                return row.hasNext();
             }
         };
     }
@@ -1009,9 +1052,19 @@ public class Table extends Relation implements IntIterable {
      * Applies the function in {@code doable} to every row in the table
      */
     public void doWithEachRow(Doable doable) {
-        Row row = new Row(this);
+        VRow row = new VRow(this);
         while (row.hasNext()) {
             doable.doWithRow(row.next());
+        }
+    }
+
+    /**
+     * Applies the function in {@code doable} to every row in the table
+     */
+    public void doWithEachRow(Consumer<VRow> doable) {
+        VRow row = new VRow(this);
+        while (row.hasNext()) {
+            doable.accept(row.next());
         }
     }
 
@@ -1019,8 +1072,8 @@ public class Table extends Relation implements IntIterable {
      * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
      */
     public void doWithRowPairs(Pairs pairs) {
-        Row row1 = new Row(this);
-        Row row2 = new Row(this);
+        VRow row1 = new VRow(this);
+        VRow row2 = new VRow(this);
         if (!isEmpty()) {
             int max = rowCount();
             for (int i = 1; i < max; i++) {
@@ -1036,9 +1089,9 @@ public class Table extends Relation implements IntIterable {
      */
     public void rollWithNrows(MultiRowDoable rowz, int n) {
         if (!isEmpty()) {
-            Row[] rows = new Row[n];
+            VRow[] rows = new VRow[n];
             for (int i = 0; i < n; i++) {
-                rows[i] = new Row(this);
+                rows[i] = new VRow(this);
             }
 
             int max = rowCount() - (n - 2);
@@ -1056,9 +1109,9 @@ public class Table extends Relation implements IntIterable {
      */
     public void stepWithNrows(MultiRowDoable rowz, int n) {
         if (!isEmpty()) {
-            Row[] rows = new Row[n];
+            VRow[] rows = new VRow[n];
             for (int i = 0; i < n; i++) {
-                rows[i] = new Row(this);
+                rows[i] = new VRow(this);
             }
 
             int max = rowCount() - n;
@@ -1075,19 +1128,20 @@ public class Table extends Relation implements IntIterable {
      * Applies the function in {@code collectable} to every row in the table
      */
     public Column collectFromEachRow(Collectable collectable) {
-        Row row = new Row(this);
+        VRow row = new VRow(this);
         while (row.hasNext()) {
             collectable.collectFromRow(row.next());
         }
         return collectable.column();
     }
 
+
     interface MultiRowDoable {
-        void doWithNrows(Row[] rows);
+        void doWithNrows(VRow[] rows);
     }
 
     interface Pairs {
-        void doWithPair(Row row1, Row row2);
+        void doWithPair(VRow row1, VRow row2);
     }
 
     /**
@@ -1096,7 +1150,7 @@ public class Table extends Relation implements IntIterable {
      */
     static abstract class Doable {
 
-        public abstract void doWithRow(Row row);
+        public abstract void doWithRow(VRow row);
     }
 
     /**
@@ -1116,6 +1170,6 @@ public class Table extends Relation implements IntIterable {
             return column;
         }
 
-        abstract void collectFromRow(Row row);
+        abstract void collectFromRow(VRow row);
     }
 }

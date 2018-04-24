@@ -13,7 +13,7 @@ public class CrossTabTest {
         Table counts = CrossTab.counts(bush, "who");
         Table pcts = CrossTab.percents(bush, "who");
         double sum = counts.numberColumn("Count").sum();
-        for (int row : pcts) {
+        for (int row = 0; row < pcts.rowCount(); row++) {
             assertEquals(counts.numberColumn("Count").get(row) / sum,
                     pcts.numberColumn(1).get(row),
                     0.01);
@@ -26,7 +26,7 @@ public class CrossTabTest {
         Table counts = CrossTab.counts(bush, "date");
         Table pcts = CrossTab.percents(bush, "date");
         double sum = counts.numberColumn("Count").sum();
-        for (int row : pcts) {
+        for (int row = 0; row < pcts.rowCount(); row++) {
             assertEquals(counts.numberColumn("Count").get(row) / sum,
                     pcts.numberColumn(1).get(row),
                     0.01);

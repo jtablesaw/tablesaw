@@ -19,7 +19,7 @@ import org.junit.ComparisonFailure;
 import org.junit.Test;
 import tech.tablesaw.api.Table;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Verify sorting functions

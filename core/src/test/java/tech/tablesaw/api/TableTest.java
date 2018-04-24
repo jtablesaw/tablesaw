@@ -22,12 +22,13 @@ import tech.tablesaw.columns.Column;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 
 import static org.junit.Assert.*;
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * Tests for Table
@@ -150,7 +151,7 @@ public class TableTest {
         Table.Doable doable = new Table.Doable() {
 
             @Override
-            public void doWithRow(Row row) {
+            public void doWithRow(VRow row) {
                 if (row.getRowNumber() < 5) {
                     System.out.println("On "
                             + row.getPackedDate("date")
@@ -164,13 +165,32 @@ public class TableTest {
     }
 
     @Test
+    public void testDoWithEachRow2() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv").first(10);
+        Consumer<VRow> doable = new Consumer<VRow>() {
+            @Override
+            public void accept(VRow row) {
+                if (row.getRowNumber() < 5) {
+                    System.out.println("On "
+                            + row.getPackedDate("date")
+                            + ", low rating: "
+                            + row.getDouble("approval"));
+                }
+
+            }
+        };
+
+        t.doWithEachRow(doable);
+    }
+
+    @Test
     public void testCollectFromEachRow() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
 
         Table.Collectable collectable = new Table.Collectable(StringColumn.create("stringz")) {
 
             @Override
-            void collectFromRow(Row row) {
+            void collectFromRow(VRow row) {
                 ((StringColumn) column())
                         .append(row.getString("who") + " can't predict "
                         + row.getDouble("approval"));
@@ -180,6 +200,19 @@ public class TableTest {
         Column result = t.collectFromEachRow(collectable);
         assertEquals("fox can't predict 53.0", (result.getString(0)));
         assertEquals("fox can't predict 53.0", (result.getString(1)));
+    }
+
+    @Test
+    public void testVRowToString() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+        for (VRow row : t) {
+            if (row.getRowNumber() < 1) {
+                assertEquals("             bush.csv              \n" +
+                        "    date     |  approval  |  who  |\n" +
+                        "-----------------------------------\n" +
+                        " 2004-02-04  |      53.0  |  fox  |", row.toString());
+            }
+        }
     }
 
     @Test
@@ -196,7 +229,7 @@ public class TableTest {
 
         Table.MultiRowDoable multiRowDoable = rows -> {
             int sum = 0;
-            for (Row row : rows) {
+            for (VRow row : rows) {
                 sum += row.getDouble("approval");
             }
             System.out.println("Running avg = " + sum / (double) rows.length);
@@ -209,7 +242,7 @@ public class TableTest {
         List<Double> runningAverage = new ArrayList<>();
 
         @Override
-        public void doWithPair(Row row1, Row row2) {
+        public void doWithPair(VRow row1, VRow row2) {
             double r1  = row1.getDouble("approval");
             double r2  = row2.getDouble("approval");
             runningAverage.add((r1 + r2) / 2.0);
@@ -362,4 +395,31 @@ public class TableTest {
         assertArrayEquals(new double[]{5.0, 10.0, 50.0}, matrix[4], 0.0000001);
     }
 
+    @Test
+    public void testRowSort() throws Exception {
+        Table bush = Table.read().csv("../data/bush.csv");
+
+        Comparator<VRow> rowComparator = new Comparator<VRow>() {
+            @Override
+            public int compare(VRow o1, VRow o2) {
+                return Double.compare(o1.getDouble("approval"), (o2.getDouble("approval")));
+            }
+        };
+
+        Table sorted = bush.sortOn(rowComparator);
+        for (int i = 0; i < bush.rowCount() - 2; i++) {
+            assertTrue(
+                    sorted.nCol("approval").get(i) <=
+                    sorted.nCol("approval").get(i));
+        }
+    }
+
+    @Test
+    public void testIterable() throws Exception {
+        Table bush = Table.read().csv("../data/bush.csv");
+        int rowNumber = 0;
+        for (VRow row : bush.first(10)) {
+            assertEquals(row.getRowNumber(), rowNumber++);
+        }
+    }
 }
