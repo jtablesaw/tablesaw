@@ -4,12 +4,15 @@ tech.tablesaw.api.plot
 tech.tablesaw.beakerx
 tech.tablesaw.columns
 tech.tablesaw.columns.booleans
+tech.tablesaw.columns.booleans.fillers
 tech.tablesaw.columns.booleans.filters
 tech.tablesaw.columns.dates
 tech.tablesaw.columns.dates.filters
 tech.tablesaw.columns.datetimes
+tech.tablesaw.columns.datetimes.fillers
 tech.tablesaw.columns.datetimes.filters
 tech.tablesaw.columns.numbers
+tech.tablesaw.columns.numbers.fillers
 tech.tablesaw.columns.numbers.filters
 tech.tablesaw.columns.strings
 tech.tablesaw.columns.strings.filters
