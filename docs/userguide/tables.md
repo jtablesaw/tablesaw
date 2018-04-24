@@ -68,7 +68,6 @@ There are a number of ways to get familiar with a new dataset. Here are some of 
         3     State No     INTEGER     
         4     Scale        INTEGER 
 
-
 table.shape() returns the table’s size in rows and columns:
 
     59945 rows X 10 cols
