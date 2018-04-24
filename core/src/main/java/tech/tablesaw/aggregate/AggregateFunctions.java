@@ -1,7 +1,5 @@
 package tech.tablesaw.aggregate;
 
-import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.doubles.DoubleList;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.moment.Kurtosis;
@@ -320,26 +318,12 @@ public class AggregateFunctions {
 
     public static final NumericAggregateFunction standardDeviation = stdDev;
 
-    private static double[] removeMissing(double[] data) {
-        DoubleList doubleArray = new DoubleArrayList();
-        for (double d : data) {
-            if (isNotMissing(d)) {
-                doubleArray.add(d);
-            }
-        }
-        return doubleArray.toDoubleArray();
-    }
-
     private static double[] removeMissing(NumberColumn column) {
         return column.removeMissing().asDoubleArray();
     }
 
     private static Column removeMissing(Column column) {
         return column.removeMissing();
-    }
-
-    private static boolean isNotMissing(double value) {
-        return !Double.isNaN(value);
     }
 
     // TODO(lwhite): These are two column reductions. We need a class for that

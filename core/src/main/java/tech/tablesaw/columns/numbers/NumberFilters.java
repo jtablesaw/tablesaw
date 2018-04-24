@@ -82,7 +82,7 @@ public interface NumberFilters extends Column {
 
     Selection isNotIn(Number... doubles);
 
-    Selection isNotIn(double[] doubles);
+    Selection isNotIn(double... doubles);
 
     default Selection isZero() {
         return eval(isZero);
