@@ -25,6 +25,10 @@
 
 ### Enhancements:
 
+1. Numerous bug fixes
+
+1. Added filler methods for each column.
+
 1. Added CsvWriteOptions to allow greater control over file writing
 
 1. Improved filtering support
