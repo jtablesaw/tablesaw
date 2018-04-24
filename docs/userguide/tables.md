@@ -159,13 +159,11 @@ Tables can be combined in one of several ways.  The most basic is to append the 
 Table result = t.append(t2);
 ```
 
-You can concatenate two tables, adding the columns of one to the other.  This is only possible if the two tables have the same number of rows.
+You can concatenate two tables, adding the columns of one to the other by using the *concat()* method.  The method returns the receiver rather than a new table. Two tables can be concatenated only if they have the same number of rows.
 
 ```java
-
+t.concat(t2)
 ```
-
-
 
 ### Joining Tables
 
@@ -219,7 +217,7 @@ The summarize() method and its variants let you specify the columns to summarize
 Table summary = t.summarize("age", "weight", mean, median, standardDeviation).apply()
 ```
 
-Summarize returns a Summary
+Summarize returns a Summarizer object. 
 
 The apply() method sent to summary above returns the result of applying the function to the table, and combining the results into a new table.  It computes one summary for the original table.
 
