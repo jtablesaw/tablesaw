@@ -45,6 +45,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
@@ -910,6 +911,8 @@ public class Table extends Relation implements Iterable<Row> {
      * @return                      This table
      */
     public Table concat(Table tableToConcatenate) {
+        Preconditions.checkArgument(tableToConcatenate.rowCount() == this.rowCount(),
+                "Both tables must have the same number of rows to concatenate them.");
         for (Column column : tableToConcatenate.columns()) {
             this.addColumns(column);
         }
@@ -1031,19 +1034,9 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
-     * Applies the function in {@code doable} to every row in the table
+     * Applies the operation in {@code doable} to every row in the table
      */
-    public void doWithEachRow(Doable doable) {
-        Row row = new Row(this);
-        while (row.hasNext()) {
-            doable.doWithRow(row.next());
-        }
-    }
-
-    /**
-     * Applies the function in {@code doable} to every row in the table
-     */
-    public void doWithEachRow(Consumer<Row> doable) {
+    public void doWithRows(Consumer<Row> doable) {
         Row row = new Row(this);
         while (row.hasNext()) {
             doable.accept(row.next());
@@ -1051,9 +1044,42 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
+     * Applies the predicate to each row, and return true if any row returns true
+     */
+    public boolean detect(Predicate<Row> predicate) {
+        Row row = new Row(this);
+        while (row.hasNext()) {
+            if (predicate.test(row)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Applies the operation in {@code doable} to every row in the table
+     */
+    public void stepWithRows(Consumer<Row[]> rowConsumer, int n) {
+        if (!isEmpty()) {
+            Row[] rows = new Row[n];
+            for (int i = 0; i < n; i++) {
+                rows[i] = new Row(this);
+            }
+
+            int max = rowCount() - n;
+            for (int i = 0; i <= max; i++) {
+                for (int r = 0; r < n; r++) {
+                    rows[r].at(i + r);
+                }
+                rowConsumer.accept(rows);
+            }
+        }
+    }
+
+    /**
      * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
      */
-    public void doWithRowPairs(Pairs pairs) {
+    public void doWithRows(Pairs pairs) {
         Row row1 = new Row(this);
         Row row2 = new Row(this);
         if (!isEmpty()) {
@@ -1069,7 +1095,24 @@ public class Table extends Relation implements Iterable<Row> {
     /**
      * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
      */
-    public void rollWithNrows(MultiRowDoable rowz, int n) {
+    public void doWithRowPairs(Consumer<RowPair> pairConsumer) {
+        Row row1 = new Row(this);
+        Row row2 = new Row(this);
+        RowPair pair = new RowPair(row1, row2);
+        if (!isEmpty()) {
+            int max = rowCount();
+            for (int i = 1; i < max; i++) {
+                row1.at(i - 1);
+                row2.at(i);
+                pairConsumer.accept(pair);
+            }
+        }
+    }
+
+    /**
+     * Applies the function in {@code pairs} to each group of contiguous rows of size n in the table
+     */
+    public void rollWithRows(Consumer<Row[]> rowConsumer, int n) {
         if (!isEmpty()) {
             Row[] rows = new Row[n];
             for (int i = 0; i < n; i++) {
@@ -1081,75 +1124,112 @@ public class Table extends Relation implements Iterable<Row> {
                 for (int r = 0; r < n; r++) {
                     rows[r].at(i + r - 1);
                 }
-                rowz.doWithNrows(rows);
+                rowConsumer.accept(rows);
             }
         }
     }
 
     /**
-     * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
+     * Applies the function in {@code columnCollector} to every row in the table and returns a column containing each result
      */
-    public void stepWithNrows(MultiRowDoable rowz, int n) {
-        if (!isEmpty()) {
-            Row[] rows = new Row[n];
-            for (int i = 0; i < n; i++) {
-                rows[i] = new Row(this);
-            }
-
-            int max = rowCount() - n;
-            for (int i = 0; i <= max; i++) {
-                for (int r = 0; r < n; r++) {
-                    rows[r].at(i + r);
-                }
-                rowz.doWithNrows(rows);
-            }
-        }
-    }
-
-    /**
-     * Applies the function in {@code collectable} to every row in the table
-     */
-    public Column collectFromEachRow(Collectable collectable) {
+    public Column collectFromEachRow(ColumnCollector columnCollector) {
         Row row = new Row(this);
         while (row.hasNext()) {
-            collectable.collectFromRow(row.next());
+            columnCollector.collectFromRow(row.next());
         }
-        return collectable.column();
+        return columnCollector.column();
     }
 
+    /**
+     * Applies the function in {@code collector} to every row in the table and returns a column containing each result
+     */
+    public Table collectFromEachRow(TableCollector collector) {
+        Row row = new Row(this);
+        while (row.hasNext()) {
+            collector.collectFromRow(row.next());
+        }
+        return collector.table();
+    }
 
-    interface MultiRowDoable {
-        void doWithNrows(Row[] rows);
+    public static class RowPair {
+        private final Row first;
+        private final Row second;
+
+        public RowPair(Row first, Row second) {
+            this.first = first;
+            this.second = second;
+        }
+
+        public Row getFirst() {
+            return first;
+        }
+
+        public Row getSecond() {
+            return second;
+        }
     }
 
     interface Pairs {
+
         void doWithPair(Row row1, Row row2);
+
+        /**
+         * Returns an object containing the results of applying doWithPair() to the rows in a table.
+         *
+         * The default implementation throws an exception, to be used if the operation produces only side effects
+         */
+        default Object getResult() {
+            throw new UnsupportedOperationException("This Pairs function returns no results");
+        }
     }
 
     /**
      * A function object that can be used to enumerate a table and perform operations on each row,
-     * without explicit loops
-     */
-    static abstract class Doable {
-
-        public abstract void doWithRow(Row row);
-    }
-
-    /**
-     * A function object that can be used to enumerate a table and perform operations on each row,
-     * without explicit loops. {@code Collectable} fills the given column with the results, so the column
+     * without explicit loops. {@code ColumnCollector} fills the given column with the results, so the column
      * must be of the correct type for whatever results are produced in the collectWithRow operation.
+     *
+     * Usage:
+     *
+     * The example code shows how to create a ColumnCollector for a StringColumn and use it to collect
+     * strings that combine data from multiple columns and boilerplate text
+     *
+     *         Table.ColumnCollector columnCollector = new Table.ColumnCollector(StringColumn.create("s")) {
+     *
+     *             @Override
+     *             void collectFromRow(Row row) {
+     *                 ((StringColumn) column())
+     *                         .append(row.getString("who") + " can't predict "
+     *                         + row.getDouble("approval"));
+     *             }
+     *         };
+     *
      */
-    static abstract class Collectable {
+    static abstract class ColumnCollector {
 
         private final Column column;
 
-        public Collectable(Column column) {
+        public ColumnCollector(Column column) {
             this.column = column;
         }
 
         public Column column() {
             return column;
+        }
+
+        abstract void collectFromRow(Row row);
+    }
+
+
+    static abstract class TableCollector {
+
+        private final Table table;
+
+        public TableCollector(Table table) {
+            this.table = table;
+        }
+
+        public Table table() {
+            return table;
         }
 
         abstract void collectFromRow(Row row);

@@ -148,46 +148,22 @@ public class TableTest {
     @Test
     public void testDoWithEachRow() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(10);
-        Table.Doable doable = new Table.Doable() {
-
-            @Override
-            public void doWithRow(Row row) {
-                if (row.getRowNumber() < 5) {
-                    System.out.println("On "
-                            + row.getPackedDate("date")
-                            + ", low rating: "
-                            + row.getDouble("approval"));
-                }
+        Consumer<Row> doable = row -> {
+            if (row.getRowNumber() < 5) {
+                System.out.println("On "
+                        + row.getPackedDate("date")
+                        + ", low rating: "
+                        + row.getDouble("approval"));
             }
         };
-
-        t.doWithEachRow(doable);
-    }
-
-    @Test
-    public void testDoWithEachRow2() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv").first(10);
-        Consumer<Row> doable = new Consumer<Row>() {
-            @Override
-            public void accept(Row row) {
-                if (row.getRowNumber() < 5) {
-                    System.out.println("On "
-                            + row.getPackedDate("date")
-                            + ", low rating: "
-                            + row.getDouble("approval"));
-                }
-
-            }
-        };
-
-        t.doWithEachRow(doable);
+        t.doWithRows(doable);
     }
 
     @Test
     public void testCollectFromEachRow() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
 
-        Table.Collectable collectable = new Table.Collectable(StringColumn.create("stringz")) {
+        Table.ColumnCollector columnCollector = new Table.ColumnCollector(StringColumn.create("stringz")) {
 
             @Override
             void collectFromRow(Row row) {
@@ -197,13 +173,34 @@ public class TableTest {
             }
         };
 
-        Column result = t.collectFromEachRow(collectable);
-        assertEquals("fox can't predict 53.0", (result.getString(0)));
-        assertEquals("fox can't predict 53.0", (result.getString(1)));
+        Column result = t.collectFromEachRow(columnCollector);
+        assertEquals("fox can't predict 53.0", result.getString(0));
+        assertEquals("fox can't predict 53.0", result.getString(1));
     }
 
     @Test
-    public void testVRowToString() throws Exception {
+    public void testCollectFromEachRow2() throws Exception {
+        String columnName = "stringz";
+        Table t = Table.read().csv("../data/bush.csv");
+
+        Table resultTable = Table.create("result", StringColumn.create(columnName));
+        Table.TableCollector columnCollector = new Table.TableCollector(resultTable) {
+
+            @Override
+            void collectFromRow(Row row) {
+                table().stringColumn(columnName)
+                        .append(row.getString("who") + " reported "
+                        + row.getDouble("approval"));
+            }
+        };
+
+        Table result = t.collectFromEachRow(columnCollector);
+        assertEquals("fox can't predict 53.0", result.stringColumn(columnName).get(0));
+        assertEquals("fox can't predict 53.0", result.stringColumn(columnName).get(0));
+    }
+
+    @Test
+    public void testRowToString() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
         for (Row row : t) {
             if (row.getRowNumber() < 1) {
@@ -219,22 +216,48 @@ public class TableTest {
     public void testPairs() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
         PairChild pairs = new PairChild();
-        t.doWithRowPairs(pairs);
+        t.doWithRows(pairs);
         System.out.println(pairs.runningAverage);
     }
 
     @Test
-    public void testRolllWithNrows() throws Exception {
+    public void testPairs2() throws Exception {
+
+        Table t = Table.read().csv("../data/bush.csv");
+
+        Table.Pairs runningAvg =  new Table.Pairs() {
+
+            private List<Double> values = new ArrayList<>();
+
+            @Override
+            public void doWithPair(Row row1, Row row2) {
+                double r1  = row1.getDouble("approval");
+                double r2  = row2.getDouble("approval");
+                values.add((r1 + r2) / 2.0);
+            }
+
+            @Override
+            public List<Double> getResult() {
+                return values;
+            }
+        };
+
+        t.doWithRows(runningAvg);
+        System.out.println(runningAvg.getResult());
+    }
+
+    @Test
+    public void testRollWithNrows2() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(10);
 
-        Table.MultiRowDoable multiRowDoable = rows -> {
+        Consumer<Row[]> rowConsumer = rows -> {
             int sum = 0;
             for (Row row : rows) {
                 sum += row.getDouble("approval");
             }
             System.out.println("Running avg = " + sum / (double) rows.length);
         };
-        t.rollWithNrows(multiRowDoable,2);
+        t.rollWithRows(rowConsumer,2);
     }
 
     private class PairChild implements Table.Pairs {
@@ -247,7 +270,6 @@ public class TableTest {
             double r2  = row2.getDouble("approval");
             runningAverage.add((r1 + r2) / 2.0);
         }
-
     }
 
     @Test
@@ -327,8 +349,8 @@ public class TableTest {
         NumberColumn column =  DoubleColumn.create("e1");
         table.addColumns(column);
         Table tableToAppend = Table.create("different", column);
-        assertTrue(table.columns().size() == 2);
-        assertTrue(tableToAppend.columns().size() == 1);
+        assertEquals(2, table.columns().size());
+        assertEquals(1, tableToAppend.columns().size());
         table.append(tableToAppend);
     }
 
@@ -341,11 +363,11 @@ public class TableTest {
         Table t = Table.create("populated", first, second);
 
         int colIndex = t.columnIndex(second);
-        assertTrue(t.column("c2") == second);
+        assertSame(t.column("c2"), second);
         t.replaceColumn("c2", replacement);
-        assertTrue(t.column("c1") == first);
-        assertTrue(t.column("c2") == replacement);
-        assertTrue(t.columnIndex(replacement) == colIndex);
+        assertSame(t.column("c1"), first);
+        assertSame(t.column("c2"), replacement);
+        assertEquals(t.columnIndex(replacement), colIndex);
     }
 
     private int appendRandomlyGeneratedColumn(Table table) {
@@ -375,13 +397,13 @@ public class TableTest {
         for (int i = 0; i < rowsCount; i++) {
             floatColumn.append(RANDOM.nextFloat());
         }
-        assertTrue(floatColumn.size() == rowsCount);
+        assertEquals(floatColumn.size(), rowsCount);
         return rowsCount;
     }
 
     @Test
     public void testAsMatrix() {
-        NumberColumn first =  DoubleColumn.create("c1", new double[]{1l, 2l, 3l, 4l, 5l});
+        NumberColumn first =  DoubleColumn.create("c1", new double[]{1L, 2L, 3L, 4L, 5L});
         NumberColumn second =  DoubleColumn.create("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
         NumberColumn third =  DoubleColumn.create("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
 
@@ -399,18 +421,12 @@ public class TableTest {
     public void testRowSort() throws Exception {
         Table bush = Table.read().csv("../data/bush.csv");
 
-        Comparator<Row> rowComparator = new Comparator<Row>() {
-            @Override
-            public int compare(Row o1, Row o2) {
-                return Double.compare(o1.getDouble("approval"), (o2.getDouble("approval")));
-            }
-        };
+        Comparator<Row> rowComparator = Comparator.comparingDouble(o -> o.getDouble("approval"));
 
         Table sorted = bush.sortOn(rowComparator);
+        NumberColumn approval = sorted.nCol("approval");
         for (int i = 0; i < bush.rowCount() - 2; i++) {
-            assertTrue(
-                    sorted.nCol("approval").get(i) <=
-                    sorted.nCol("approval").get(i));
+            assertTrue(approval.get(i) <= approval.get(i + 1));
         }
     }
 

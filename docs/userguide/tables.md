@@ -135,7 +135,7 @@ Columns can also be selected by index or name:
 t.columns("column1", "column2");
 ```
 
-Often you want just one column, which you can get using *t.column(“column name”)*.
+Often you want just one column, which you can get using *t.column(“columnName”)*.
 
 Since Tablesaw columns are typed, you often need to cast the returned column to something more specific. For example:
 
@@ -148,8 +148,6 @@ as a convenience, tables have column accessors that are type specific: The do th
 ```java
 DoubleColumn dc = t.doubleColumn();
 ```
-
-
 
 ## Combining Tables
 
@@ -193,15 +191,27 @@ You can also select by range:
 t.inRange(start, end)
 ```
 
+You can also select a random sample of data. See the section on filters for more detail.
+
 
 
 ### Filter by predicate
+
+Complex queries can be created by forming expressions that produce a *Selection*, which effectively turns the query result into an object that can be used to filter by index. 
 
 ```
 t.where()
 ```
 
+The method where() takes either a Filter or Selection as a parameter. Filters allow a more fluent form of composition.  
 
+### Combining row and column filters
+
+Given a list of columns as arguments, the *select()* statement returns a table containing only those columns, by chaning *select()* and *where()*, you get something that looks a lot like a sql statement that returns a subset of the data in the original table.
+
+```java
+Table subset = t.select("columnA", "columnB").where(t.nCol("columnC").isGreaterThan(4));
+```
 
 See filter for more info.
 
@@ -231,7 +241,7 @@ By takes a list of columns that are used to group the data. The example below ca
 Table result = t.summarize("delay", mean).by("airport");
 ```
 
-### Cross Tabs
+### Cross Tabs 
 
 Cross tabs (or cross-tabulations) are like groups, but return the data in a layout that faciliates interpretation. A cross tab in Tablesaw takes two grouping columns and returns the number of observations for each combination of the two columns. They can also produce the proportions, and subtotals by row or column. 
 
@@ -247,9 +257,11 @@ The *sortOn()* method lets you combine descending and ascending sorts in the sam
 t.sortOn("-column1", "column2")
 ```
 
-
-
 ## Rows
+
+There are no real rows in Tablesaw. Data is organized in columns. The closest you get to an actual row is a table with one line. However, rows are useful abstractions in tabular data, so we provide a kind of virtual row that may be useful for table operations. 
+
+### What we mean by a "virtual row"
 
 
 
