@@ -359,7 +359,7 @@ public class CsvReader {
      * corrected and
      * used to explicitly specify the correct column types.
      */
-    protected static ColumnType[] detectColumnTypes(InputStream stream, boolean header, char delimiter, boolean useSampling, Locale locale)
+    public static ColumnType[] detectColumnTypes(InputStream stream, boolean header, char delimiter, boolean useSampling, Locale locale)
             throws IOException {
 
         int linesToSkip = header ? 1 : 0;
