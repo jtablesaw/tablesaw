@@ -125,7 +125,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
             }
             for (int col = 0; col < newColumns.size(); col++) {
                 Column c = newColumns.get(col);
-                groupTable.addColumn(col, c);
+                groupTable.insertColumn(col, c);
             }
             groupTable.removeColumns("Group");
         }

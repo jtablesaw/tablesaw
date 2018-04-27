@@ -170,42 +170,11 @@ public class Table extends Relation implements Iterable<Row> {
      * @param index  Zero-based index into the column list
      * @param column Column to be added
      */
-    public Table addColumn(int index, Column column) {
+    public Table insertColumn(int index, Column column) {
         validateColumn(column);
         columnList.add(index, column);
         return this;
     }
-
-/*
-    public Stream<Row> stream() {
-
-        Spliterator<Row> spliterator = new Spliterator<Row>() {
-            Row row = new Row(Table.this);
-
-            @Override
-            public boolean tryAdvance(Consumer<? super Row> action) {
-                action.accept(row.next());
-                return row.hasNext();
-            }
-
-            @Override
-            public Spliterator<Row> trySplit() {
-                return null;
-            }
-
-            @Override
-            public long estimateSize() {
-                return rowCount();
-            }
-
-            @Override
-            public int characteristics() {
-                return 0;
-            }
-        };
-        return StreamSupport.stream(spliterator, false);
-    }
-*/
 
     /**
      * Replaces an existing column (by index) in this table with the given new column
@@ -215,7 +184,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public Table replaceColumn(int colIndex, Column newColumn) {
         removeColumns(column(colIndex));
-        addColumn(colIndex, newColumn);
+        insertColumn(colIndex, newColumn);
         return this;
     }
 
@@ -856,6 +825,10 @@ public class Table extends Relation implements Iterable<Row> {
 
     public Table select(Column... columns) {
         return new Table(this.name, columns);
+    }
+
+    public Table select(String... columnNames) {
+        return Table.create(this.name, columns(columnNames).toArray(new Column[0]));
     }
 
     /**

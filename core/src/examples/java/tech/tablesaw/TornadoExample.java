@@ -61,7 +61,7 @@ public class TornadoExample extends AbstractExample {
         out(month.summary());
 
         out("Add the month column to the table");
-        tornadoes.addColumn(2, month);
+        tornadoes.insertColumn(2, month);
         out(tornadoes.columnNames());
 
         out();

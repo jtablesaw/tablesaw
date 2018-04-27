@@ -195,8 +195,8 @@ public class TableTest {
         };
 
         Table result = t.collectFromEachRow(columnCollector);
-        assertEquals("fox can't predict 53.0", result.stringColumn(columnName).get(0));
-        assertEquals("fox can't predict 53.0", result.stringColumn(columnName).get(0));
+        assertEquals("fox reported 53.0", result.stringColumn(columnName).get(0));
+        assertEquals("fox reported 53.0", result.stringColumn(columnName).get(0));
     }
 
     @Test
