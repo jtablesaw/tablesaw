@@ -272,6 +272,30 @@ public abstract class Relation {
         return (NumberColumn) column(columnName);
     }
 
+    public StringColumn[] stringColumns() {
+        return columns().stream().filter(e->e.type() == ColumnType.STRING).toArray(StringColumn[]::new);
+    }
+
+    public NumberColumn[] numberColumns() {
+        return columns().stream().filter(e->e.type() == ColumnType.NUMBER).toArray(NumberColumn[]::new);
+    }
+
+    public BooleanColumn[] booleanColumns() {
+        return columns().stream().filter(e->e.type() == ColumnType.BOOLEAN).toArray(BooleanColumn[]::new);
+    }
+
+    public DateColumn[] dateColumns() {
+        return columns().stream().filter(e->e.type() == ColumnType.LOCAL_DATE).toArray(DateColumn[]::new);
+    }
+
+    public DateTimeColumn[] dateTimeColumns() {
+        return columns().stream().filter(e->e.type() == ColumnType.LOCAL_DATE_TIME).toArray(DateTimeColumn[]::new);
+    }
+
+    public TimeColumn[] timeColumns() {
+        return columns().stream().filter(e->e.type() == ColumnType.LOCAL_TIME).toArray(TimeColumn[]::new);
+    }
+
     public CategoricalColumn categoricalColumn(String columnName) {
         return (CategoricalColumn) column(columnName);
     }
