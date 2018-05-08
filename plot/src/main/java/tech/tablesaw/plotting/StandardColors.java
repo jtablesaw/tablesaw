@@ -14,22 +14,27 @@
 
 package tech.tablesaw.plotting;
 
+import java.awt.Color;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Range;
-import com.opencsv.CSVReader;
+import com.univocity.parsers.csv.CsvParser;
+import com.univocity.parsers.csv.CsvParserSettings;
 
-import javax.annotation.Nullable;
-import java.awt.*;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import tech.tablesaw.io.csv.CsvReaderAdapter;
+import tech.tablesaw.io.csv.UnivocityReaderCsvWrapper;
 
 /**
  *
@@ -50,27 +55,27 @@ public class StandardColors {
 
         InputStream resourceAsStream = StandardColors.class.getResourceAsStream("/colors.txt");
 
-        String[] nextLine;
-        try (CSVReader reader = new CSVReader(new InputStreamReader(resourceAsStream))) {
-            // Add the rows
-            while ((nextLine = reader.readNext()) != null) {
-                for (String colorData : nextLine) {
-                    String[] colorSplit = colorData.trim().split(" ");
-                    String vHue = colorSplit[0];
-                    String valueChroma = colorSplit[1];
-                    String[] valueAndChroma = valueChroma.split("/");
-                    int vValue = Integer.parseInt(valueAndChroma[0]);
-                    int vChroma = Integer.parseInt(valueAndChroma[1]);
-                    String vHex = colorSplit[2];
+        CsvParserSettings settings = new CsvParserSettings();
+        CsvParser csvParser = new CsvParser(settings);
+        CsvReaderAdapter reader = new UnivocityReaderCsvWrapper(csvParser.iterate(resourceAsStream));
 
-                    StandardColor color = new StandardColor(vHue, vChroma, vValue, vHex);
-                    if (!color.hue().equals(Hue.Neutral)) {
-                        standards.put(color.hue(), color);
-                    }
+        String[] nextLine;
+        // Add the rows
+        while ((nextLine = reader.readNext()) != null) {
+            for (String colorData : nextLine) {
+                String[] colorSplit = colorData.trim().split(" ");
+                String vHue = colorSplit[0];
+                String valueChroma = colorSplit[1];
+                String[] valueAndChroma = valueChroma.split("/");
+                int vValue = Integer.parseInt(valueAndChroma[0]);
+                int vChroma = Integer.parseInt(valueAndChroma[1]);
+                String vHex = colorSplit[2];
+
+                StandardColor color = new StandardColor(vHue, vChroma, vValue, vHex);
+                if (!color.hue().equals(Hue.Neutral)) {
+                    standards.put(color.hue(), color);
                 }
             }
-        } catch (IOException e) {
-            throw new UncheckedIOException("Unable to read predefined colors file", e);
         }
         return standards;
     }
@@ -80,28 +85,28 @@ public class StandardColors {
         ArrayList<StandardColor> neutrals = new ArrayList<>();
 
         InputStream resourceAsStream = StandardColors.class.getResourceAsStream("/colors.txt");
+        
+        CsvParserSettings settings = new CsvParserSettings();
+        CsvParser csvParser = new CsvParser(settings);
+        CsvReaderAdapter reader = new UnivocityReaderCsvWrapper(csvParser.iterate(resourceAsStream));
 
         String[] nextLine;
-        try (CSVReader reader = new CSVReader(new InputStreamReader(resourceAsStream))) {
-            // Add the rows
-            while ((nextLine = reader.readNext()) != null) {
-                for (String colorData : nextLine) {
-                    String[] colorSplit = colorData.trim().split(" ");
-                    String vHue = colorSplit[0];
-                    String valueChroma = colorSplit[1];
-                    String[] valueAndChroma = valueChroma.split("/");
-                    int vValue = Integer.parseInt(valueAndChroma[0]);
-                    int vChroma = Integer.parseInt(valueAndChroma[1]);
-                    String vHex = colorSplit[2];
+        // Add the rows
+        while ((nextLine = reader.readNext()) != null) {
+            for (String colorData : nextLine) {
+                String[] colorSplit = colorData.trim().split(" ");
+                String vHue = colorSplit[0];
+                String valueChroma = colorSplit[1];
+                String[] valueAndChroma = valueChroma.split("/");
+                int vValue = Integer.parseInt(valueAndChroma[0]);
+                int vChroma = Integer.parseInt(valueAndChroma[1]);
+                String vHex = colorSplit[2];
 
-                    StandardColor color = new StandardColor(vHue, vChroma, vValue, vHex);
-                    if (color.hue().equals(Hue.Neutral)) {
-                        neutrals.add(color);
-                    }
+                StandardColor color = new StandardColor(vHue, vChroma, vValue, vHex);
+                if (color.hue().equals(Hue.Neutral)) {
+                    neutrals.add(color);
                 }
             }
-        } catch (IOException ex) {
-            throw new IllegalStateException("Unable to read predefined colors file", ex);
         }
         return neutrals;
     }

@@ -101,11 +101,7 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.6</version>
         </dependency>
-        <dependency>
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>4.1</version>
-        </dependency>
+		
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
