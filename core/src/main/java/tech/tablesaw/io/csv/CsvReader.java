@@ -17,10 +17,6 @@ package tech.tablesaw.io.csv;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
-import com.opencsv.CSVParser;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
 import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
@@ -123,65 +119,65 @@ public class CsvReader {
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
 
-        CSVParser csvParser = new CSVParserBuilder()
-                .withSeparator(options.separator())
-                .build();
+        CsvReaderAdapter reader = CsvReaderAdapter.createWithOptions(ubis, options.separator());
+        
+//        CSVParser csvParser = new CSVParserBuilder()
+//                .withSeparator(options.separator())
+//                .build();
 
-        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis)).withCSVParser(csvParser).build()) {
-            Table table = Table.create(options.tableName());
+        Table table = Table.create(options.tableName());
 
-            String[] headerNames;
-            if (options.header()) {
-                headerNames = reader.readNext();
-                if (headerNames == null) {
-                    return table;
-                }
-            } else {
-                headerNames = makeColumnNames(types);
+        String[] headerNames;
+        if (options.header()) {
+            headerNames = reader.readNext();
+            if (headerNames == null) {
+                return table;
             }
-
-            List<String> headerRow = Lists.newArrayList(headerNames);
-
-            String[] columnNames = selectColumnNames(headerRow, types);
-
-            cleanNames(headerRow);
-            for (int x = 0; x < types.length; x++) {
-                if (types[x] != SKIP) {
-                    String columnName = headerRow.get(x);
-                    if (Strings.isNullOrEmpty(columnName)) {
-                        columnName = "Column " + table.columnCount();
-                    }
-                    Column newColumn = TypeUtils.newColumn(columnName, types[x]);
-                    table.addColumn(newColumn);
-                }
-            }
-            int[] columnIndexes = new int[columnNames.length];
-            for (int i = 0; i < columnIndexes.length; i++) {
-                // get the index in the original table, which includes skipped fields
-                columnIndexes[i] = headerRow.indexOf(columnNames[i]);
-            }
-
-            long rowNumber = options.header() ? 1L : 0L;
-            String[] nextLine;
-
-            // Add the rows
-            while ((nextLine = reader.readNext()) != null) {
-                // for each column that we're including (not skipping)
-                int cellIndex = 0;
-                for (int columnIndex : columnIndexes) {
-                    Column column = table.column(cellIndex);
-                    try {
-                        column.appendCell(nextLine[columnIndex]);
-                    } catch (Exception e) {
-                        throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
-                    }
-                    cellIndex++;
-                }
-                rowNumber++;
-            }
-
-            return table;
+        } else {
+            headerNames = makeColumnNames(types);
         }
+
+        List<String> headerRow = Lists.newArrayList(headerNames);
+
+        String[] columnNames = selectColumnNames(headerRow, types);
+
+        cleanNames(headerRow);
+        for (int x = 0; x < types.length; x++) {
+            if (types[x] != SKIP) {
+                String columnName = headerRow.get(x);
+                if (Strings.isNullOrEmpty(columnName)) {
+                    columnName = "Column " + table.columnCount();
+                }
+                Column newColumn = TypeUtils.newColumn(columnName, types[x]);
+                table.addColumn(newColumn);
+            }
+        }
+        int[] columnIndexes = new int[columnNames.length];
+        for (int i = 0; i < columnIndexes.length; i++) {
+            // get the index in the original table, which includes skipped fields
+            columnIndexes[i] = headerRow.indexOf(columnNames[i]);
+        }
+
+        long rowNumber = options.header() ? 1L : 0L;
+        String[] nextLine;
+
+        // Add the rows
+        while ((nextLine = reader.readNext()) != null) {
+            // for each column that we're including (not skipping)
+            int cellIndex = 0;
+            for (int columnIndex : columnIndexes) {
+                Column column = table.column(cellIndex);
+                try {
+                    column.appendCell(nextLine[columnIndex]);
+                } catch (Exception e) {
+                    throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
+                }
+                cellIndex++;
+            }
+            rowNumber++;
+        }
+
+        return table;
     }
 
     private static void cleanNames(List<String> headerRow) {
@@ -210,36 +206,32 @@ public class CsvReader {
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(fis);
         ubis.skipBOM();
 
-        Reader reader = new InputStreamReader(ubis);
-        BufferedReader streamReader = new BufferedReader(reader);
-
         Table table;
-        CSVParser csvParser = new CSVParserBuilder()
-                .withSeparator(columnSeparator)
-                .build();
-        try (CSVReader csvReader = new CSVReaderBuilder(streamReader).withCSVParser(csvParser).build()) {
+        CsvReaderAdapter csvReader = CsvReaderAdapter.createWithOptions(ubis, columnSeparator);
+        
+//        CSVParser csvParser = new CSVParserBuilder()
+//                .withSeparator(columnSeparator)
+//                .build();
+        String[] columnNames;
+        List<String> headerRow;
 
-            String[] columnNames;
-            List<String> headerRow;
+        String[] headerNames =
+                header ? csvReader.readNext() : makeColumnNames(types);
 
-            String[] headerNames =
-                    header ? csvReader.readNext() : makeColumnNames(types);
+        headerRow = Lists.newArrayList(headerNames);
+        columnNames = selectColumnNames(headerRow, types);
 
-            headerRow = Lists.newArrayList(headerNames);
-            columnNames = selectColumnNames(headerRow, types);
-
-            table = Table.create(file.getName());
-            for (int x = 0; x < types.length; x++) {
-                if (types[x] != SKIP) {
-                    Column newColumn = TypeUtils.newColumn(headerRow.get(x).trim(), types[x]);
-                    table.addColumn(newColumn);
-                }
+        table = Table.create(file.getName());
+        for (int x = 0; x < types.length; x++) {
+            if (types[x] != SKIP) {
+                Column newColumn = TypeUtils.newColumn(headerRow.get(x).trim(), types[x]);
+                table.addColumn(newColumn);
             }
-            int[] columnIndexes = new int[columnNames.length];
-            for (int i = 0; i < columnIndexes.length; i++) {
-                // get the index in the original table, which includes skipped fields
-                columnIndexes[i] = headerRow.indexOf(columnNames[i]);
-            }
+        }
+        int[] columnIndexes = new int[columnNames.length];
+        for (int i = 0; i < columnIndexes.length; i++) {
+            // get the index in the original table, which includes skipped fields
+            columnIndexes[i] = headerRow.indexOf(columnNames[i]);
         }
         return table;
     }
@@ -376,38 +368,37 @@ public class CsvReader {
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
 
-        CSVParser csvParser = new CSVParserBuilder()
-                .withSeparator(delimiter)
-                .build();
-        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis))
-                .withCSVParser(csvParser)
-                .withSkipLines(linesToSkip)
-                .build()) {
-            String[] nextLine;
-            int nextRow = 0;
-            while ((nextLine = reader.readNext()) != null) {
-                // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
-                if (rowCount == 0) {
-                    for (int i = 0; i < nextLine.length; i++) {
-                        columnData.add(new ArrayList<>());
-                    }
+        CsvReaderAdapter reader = CsvReaderAdapter.createWithOptions(ubis, delimiter);
+//        CSVParser csvParser = new CSVParserBuilder()
+//                .withSeparator(delimiter)
+//                .build();
+        
+        reader.skipLines(linesToSkip);
+        
+        String[] nextLine;
+        int nextRow = 0;
+        while ((nextLine = reader.readNext()) != null) {
+            // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
+            if (rowCount == 0) {
+                for (int i = 0; i < nextLine.length; i++) {
+                    columnData.add(new ArrayList<>());
                 }
-                int columnNumber = 0;
-                if (rowCount == nextRow) {
-                    for (String field : nextLine) {
-                        columnData.get(columnNumber).add(field);
-                        columnNumber++;
-                    }
-                }
-                if (rowCount == nextRow) {
-                    if (useSampling) {
-                        nextRow = nextRow(nextRow);
-                    } else {
-                        nextRow = nextRowWithoutSampling(nextRow);
-                    }
-                }
-                rowCount++;
             }
+            int columnNumber = 0;
+            if (rowCount == nextRow) {
+                for (String field : nextLine) {
+                    columnData.get(columnNumber).add(field);
+                    columnNumber++;
+                }
+            }
+            if (rowCount == nextRow) {
+                if (useSampling) {
+                    nextRow = nextRow(nextRow);
+                } else {
+                    nextRow = nextRowWithoutSampling(nextRow);
+                }
+            }
+            rowCount++;
         }
 
         // now detect

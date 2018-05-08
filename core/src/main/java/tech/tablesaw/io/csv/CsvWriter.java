@@ -14,7 +14,6 @@
 
 package tech.tablesaw.io.csv;
 
-import com.opencsv.CSVWriter;
 import tech.tablesaw.api.Table;
 
 import javax.annotation.concurrent.Immutable;
@@ -38,27 +37,27 @@ final public class CsvWriter {
      */
     public static void write(Table table, CsvWriteOptions options) throws IOException {
 
-        try (CSVWriter csvWriter = new CSVWriter(options.writer(),
-                        options.separator(),
-                        options.quoteChar(),
-                        options.escapeChar(),
-                        options.lineEnd())) {
-
-            if (options.header()) {
-                String[] header = new String[table.columnCount()];
-                for (int c = 0; c < table.columnCount(); c++) {
-                    header[c] = table.column(c).name();
-                }
-                csvWriter.writeNext(header);
+        CsvWriterAdapter csvWriter = CsvWriterAdapter.create(
+            options.writer(),
+            options.separator(),
+            options.quoteChar(),
+            options.escapeChar(),
+            options.lineEnd());
+        
+        if (options.header()) {
+            String[] header = new String[table.columnCount()];
+            for (int c = 0; c < table.columnCount(); c++) {
+                header[c] = table.column(c).name();
             }
-            for (int r = 0; r < table.rowCount(); r++) {
-                String[] entries = new String[table.columnCount()];
-                for (int c = 0; c < table.columnCount(); c++) {
-                    table.get(r, c);
-                    entries[c] = table.get(r, c);
-                }
-                csvWriter.writeNext(entries);
+            csvWriter.writeNext(header);
+        }
+        for (int r = 0; r < table.rowCount(); r++) {
+            String[] entries = new String[table.columnCount()];
+            for (int c = 0; c < table.columnCount(); c++) {
+                table.get(r, c);
+                entries[c] = table.get(r, c);
             }
+            csvWriter.writeNext(entries);
         }
     }
 }
