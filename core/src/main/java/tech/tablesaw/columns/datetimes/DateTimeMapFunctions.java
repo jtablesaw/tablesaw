@@ -380,7 +380,7 @@ public interface DateTimeMapFunctions extends Column {
      * Example:     When Unit = ChronoUnit.DAY and n = 5, we form 5 day groups. a Date that is 2 days after the start
      * is assigned to the first ("0") group. A day 7 days after the start is assigned to the second ("1") group.
      *
-     * @param unit  A ChronoUnit greater than or equal to a day
+     * @param unit  A ChronoUnit greater than or equal to a minute
      * @param n     The number of units in each group.
      * @param start The starting point of the first group; group boundaries are offsets from this point
      */
@@ -390,10 +390,15 @@ public interface DateTimeMapFunctions extends Column {
         NumberColumn numberColumn = DoubleColumn.create(newColumnName, size());
         for (int i = 0; i < size(); i++) {
             long packedDate = getLongInternal(i);
-            int result;
+            long result;
             switch (unit) {
 
-                // TODO(lwhite): Add support for hours and minutes
+                case MINUTES:
+                    result = minutesUntil(packedDate, packedStartDate) / n;
+                    numberColumn.append(result); break;
+                case HOURS:
+                    result = hoursUntil(packedDate, packedStartDate) / n;
+                    numberColumn.append(result); break;
                 case DAYS:
                     result = daysUntil(packedDate, packedStartDate) / n;
                     numberColumn.append(result); break;

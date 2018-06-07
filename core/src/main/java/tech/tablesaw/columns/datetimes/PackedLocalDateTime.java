@@ -30,12 +30,13 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Date;
 import java.util.Locale;
 
-import static tech.tablesaw.api.DateTimeColumn.*;
+import static tech.tablesaw.api.DateTimeColumn.MISSING_VALUE;
 
 /*
  * TODO(lwhite): Extend missing-value handling on predicates to DateColumn and TimeColumn
@@ -423,7 +424,15 @@ public class PackedLocalDateTime {
         return (isLeapYear(packedDateTime) ? 366 : 365);
     }
 
-    // TODO: Need to add hoursUntil(), minutesUntil()
+    // TODO: packed support for minutesUntil and hoursUnit. These implementations are inefficient
+    public static long minutesUntil(long packedDateTimeEnd, long packedDateTimeStart) {
+        return ChronoUnit.MINUTES.between(asLocalDateTime(packedDateTimeStart),
+                        asLocalDateTime(packedDateTimeEnd));
+    }
+
+    public static long hoursUntil(long packedDateTimeEnd, long packedDateTimeStart) {
+        return ChronoUnit.HOURS.between(asLocalDateTime(packedDateTimeStart), asLocalDateTime(packedDateTimeEnd));
+    }
 
     public static int daysUntil(long packedDateTimeEnd, long packedDateTimeStart) {
         return (int) (PackedLocalDate.toEpochDay(date(packedDateTimeEnd))
