@@ -66,7 +66,7 @@ public interface DateTimeMapFunctions extends Column {
             long c1 = this.getLongInternal(r);
             long c2 = column2.getLongInternal(r);
             if (c1 == MISSING_VALUE || c2 == MISSING_VALUE) {
-                newColumn.append(MISSING_VALUE);
+                newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 newColumn.append(difference(c1, c2, unit));
             }
