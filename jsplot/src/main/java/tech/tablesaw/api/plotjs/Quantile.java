@@ -15,10 +15,6 @@
 package tech.tablesaw.api.plotjs;
 
 import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.plotly.Plot;
-import tech.tablesaw.plotly.components.Figure;
-import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.components.LayoutBuilder;
 
 /**
  *
@@ -37,16 +33,7 @@ public class Quantile extends JsPlot {
         show(chartTitle, x, copy);
     }
 
-    public static void show(String chartTitle, double[] x, NumberColumn yColumn) {
+    public static void show(String chartTitle, double[] xData, NumberColumn yColumn) {
 
-        double[] y = yColumn.asDoubleArray();
-        Layout layout = new LayoutBuilder().title(chartTitle).build();
-
-        tech.tablesaw.plotly.traces.Scatter trace = tech.tablesaw.plotly.traces.Scatter.builder(x, y)
-                .mode(tech.tablesaw.plotly.traces.Scatter.Mode.MARKERS)
-                .build();
-
-        Figure figure = new Figure(layout, trace);
-        Plot.plot(figure, "target", outputFile());
     }
 }
