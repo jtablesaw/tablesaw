@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api.plot;
 
+import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
@@ -26,7 +27,8 @@ import tech.tablesaw.plotly.traces.ScatterTrace;
  */
 public class LinePlotExample {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void test1() throws Exception {
         Table baseball = Table.read().csv("../data/boston-robberies.csv");
         NumberColumn x = baseball.nCol("Record");
         NumberColumn y = baseball.nCol("Robberies");

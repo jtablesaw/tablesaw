@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api.plot;
 
+import org.junit.Test;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
@@ -26,7 +27,8 @@ import tech.tablesaw.plotly.traces.BoxTrace;
  */
 public class BoxExample {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void test1() throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
 
         Layout layout = Layout.builder().title("Tornado Injuries by Scale").build();

@@ -29,7 +29,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.count;
 public class HorizontalBarExample {
 
     @Test
-    public void testVericalBar() throws Exception {
+    public void testVerticalBar() throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
         Table s = table.summarize("fatalities", count).by("State");
 
