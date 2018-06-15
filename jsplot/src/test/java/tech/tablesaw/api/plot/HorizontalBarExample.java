@@ -14,23 +14,36 @@
 
 package tech.tablesaw.api.plot;
 
-import tech.tablesaw.api.QueryHelper;
+import org.junit.Test;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.plotjs.HorizontalBar;
+import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.traces.BarTrace;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import static tech.tablesaw.aggregate.AggregateFunctions.count;
 
 /**
  *
  */
 public class HorizontalBarExample {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void testVericalBar() throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        Table t2 = table.countBy(table.stringColumn("State"));
-        t2 = t2.where(QueryHelper.numberColumn("Count").isGreaterThan(100));
+        Table s = table.summarize("fatalities", count).by("State");
 
-        HorizontalBar.show("tornadoes by state", t2.stringColumn("Category"), t2.nCol("Count"));
-        HorizontalBar.show("T", table.summarize("fatalities", sum).by("Scale"));
+        BarTrace trace = BarTrace.builder(
+                s.categoricalColumn(0),
+                s.numberColumn(1))
+                .orientation(BarTrace.Orientation.HORIZONTAL)
+                .build();
+        Layout layout = Layout.builder()
+                .title("Tornadoes by state")
+                .height(600)
+                .width(800)
+                .build();
+        Plot.show(new Figure(layout, trace));
     }
+
 }

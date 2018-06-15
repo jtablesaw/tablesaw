@@ -15,8 +15,10 @@
 package tech.tablesaw.api.plot;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.plotjs.Box;
-
+import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.traces.BoxTrace;
 
 /**
  * Basic sample box plot. It shows the distribution of the number of people injured in tornadoes, broken out
@@ -26,6 +28,12 @@ public class BoxExample {
 
     public static void main(String[] args) throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        Box.show("Tornado Injuries by Scale", table, "injuries", "scale");
+
+        Layout layout = Layout.builder().title("Tornado Injuries by Scale").build();
+
+        BoxTrace trace = BoxTrace.builder(
+                table.categoricalColumn("scale"),
+                table.nCol("injuries")).build();
+        Plot.show(new Figure(layout, trace));
     }
 }

@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api.plot;
 
+import org.junit.Test;
 import tech.tablesaw.api.Table;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
@@ -23,10 +24,11 @@ import static tech.tablesaw.api.plotjs.TableView.*;
  *
  */
 public class TableViewExample {
-    public static void main(String[] args) throws Exception {
+
+    @Test
+    public void test1() throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
         show("Tornadoes Data", table);
         show("Tornado Fatalities" , table.summarize("fatalities", sum).by("Scale"));
-
     }
 }

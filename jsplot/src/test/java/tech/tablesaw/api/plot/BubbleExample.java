@@ -13,6 +13,7 @@
  */
 package tech.tablesaw.api.plot;
 
+import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.plotjs.Bubble;
@@ -25,7 +26,8 @@ import java.io.IOException;
  */
 public class BubbleExample {
 
-    public static void main(String[] args) throws IOException {
+    @Test
+    public void test1() throws IOException {
         Table marketShare = Table.read().csv("../data/market_share.csv");
         Table sub = marketShare.where(Selection.withRange(0, 4));
         NumberColumn x = sub.nCol("Products");
@@ -33,5 +35,4 @@ public class BubbleExample {
         NumberColumn data = sub.nCol("Market_Share");
         Bubble.show("Market Share", x, y, data);
     }
-
 }

@@ -14,23 +14,29 @@
 
 package tech.tablesaw.api.plot;
 
+import org.junit.Test;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.plotjs.Pie;
-
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.traces.PieTrace;
 
 /**
  * Basic sample pie chart
  */
 public class PieExample {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void test1() throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
 
-        Table t2 = table.countBy(table.stringColumn("State"));
-        Pie.show("tornadoes by state", t2.stringColumn("Category"), t2.numberColumn("Count"));
+        Table t2 = table.countBy(table.numberColumn("Scale"));
 
-        Pie.show("Sum of fatalities by State", table.summarize("fatalities", sum).by("State"));
-        Pie.show("Average fatalities by scale", table.summarize("fatalities", mean).by("Scale"));
+        PieTrace trace = PieTrace.builder(
+                t2.numberColumn("Category"),
+                t2.numberColumn("Count")).build();
+        Layout layout = Layout.builder().title("Total fatalities by scale").build();
+
+        Plot.show(new Figure(layout, trace));
     }
 }

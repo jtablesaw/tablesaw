@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api.plot;
 
+import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.plotjs.Quantile;
@@ -23,7 +24,8 @@ import tech.tablesaw.api.plotjs.Quantile;
  */
 public class QuantileExample {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void test1() throws Exception {
         Table baseball = Table.read().csv("../data/baseball.csv");
         NumberColumn x = baseball.nCol("BA");
         Quantile.show("Distribution of team batting averages", x);

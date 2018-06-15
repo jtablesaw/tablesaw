@@ -14,18 +14,29 @@
 
 package tech.tablesaw.api.plot;
 
+import org.junit.Test;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.traces.BarTrace;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.api.plotjs.Bar.show;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
 /**
  * Basic sample vertical bar chart
  */
 public class BarExample {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void testVericalBar() throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        show("Tornado Fatalities", table.summarize("fatalities", sum).by("Scale"));
+        Table s = table.summarize("fatalities", sum).by("Scale");
+
+        BarTrace trace = BarTrace.builder(
+                s.categoricalColumn(0),
+                s.numberColumn(1)).build();
+        Layout layout = Layout.builder().title("Tornado Fatalities").build();
+        Plot.show(new Figure(layout, trace));
     }
 }

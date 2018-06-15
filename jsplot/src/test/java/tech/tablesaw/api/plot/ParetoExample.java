@@ -14,20 +14,33 @@
 
 package tech.tablesaw.api.plot;
 
+import org.junit.Test;
 import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.plotjs.Pareto;
+import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.traces.BarTrace;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
 /**
  *
  */
 public class ParetoExample {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void test1() throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
         table = table.where(QueryHelper.numberColumn("Fatalities").isGreaterThan(3));
-        Pareto.show("Tornado Fatalities by State", table.summarize("fatalities", sum).by("State"));
+        Table t2 = table.summarize("fatalities", sum).by("State");
+
+        t2 = t2.sortDescendingOn(t2.column(1).name());
+        Layout layout = Layout.builder().title("Tornado Fatalities by State").build();
+        BarTrace trace = BarTrace.builder(
+                t2.categoricalColumn(0),
+                t2.numberColumn(1))
+                .build();
+        Plot.show(new Figure(layout, trace));
     }
 }

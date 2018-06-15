@@ -14,25 +14,52 @@
 
 package tech.tablesaw.api.plot;
 
+import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.plotjs.Scatter;
+import tech.tablesaw.api.plotjs.ScatterPlot;
+import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.traces.ScatterTrace;
+
+import java.nio.file.Paths;
 
 /**
  *
  */
 public class ScatterplotExample {
 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public void testPlot() throws Exception {
         Table baseball = Table.read().csv("../data/baseball.csv");
         NumberColumn x = baseball.nCol("BA");
         NumberColumn y = baseball.nCol("W");
-        Scatter.show(x, y);
-        Scatter.show(x.asDoubleArray(), "x axis", y.asDoubleArray(), "y axis");
+        //ScatterPlot.show(x, y);
+        Layout layout = Layout.builder().title("Wins vs BA").build();
+        ScatterPlot.show(layout, x, y);
 
+/*
         Scatter.show("Regular season wins by year",
                 baseball.numberColumn("W"),
                 baseball.numberColumn("Year"),
                 baseball.splitOn(baseball.categoricalColumn("Playoffs")));
+*/
+
+    }
+
+    @Test
+    public void testPlot1() throws Exception {
+        Table baseball = Table.read().csv("../data/baseball.csv");
+        NumberColumn x = baseball.nCol("BA");
+        NumberColumn y = baseball.nCol("W");
+
+        Layout layout = Layout.builder().title("Wins vs BA").build();
+        ScatterTrace trace = ScatterTrace.builder(x, y)
+                .mode(ScatterTrace.Mode.MARKERS)
+                .build();
+        Plot.show(new Figure(layout, trace),
+                "target",
+                Paths.get("testoutput","output.html").toFile());
     }
 }
