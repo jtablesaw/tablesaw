@@ -16,7 +16,11 @@ package tech.tablesaw.api.plot;
 import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.plotjs.Bubble;
+import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.components.Marker;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.selection.Selection;
 
 import java.io.IOException;
@@ -33,6 +37,14 @@ public class BubbleExample {
         NumberColumn x = sub.nCol("Products");
         NumberColumn y = sub.nCol("Sales");
         NumberColumn data = sub.nCol("Market_Share");
-        Bubble.show("Market Share", x, y, data);
+
+        Layout layout = Layout.builder().title("Market Share").build();
+        Marker marker = Marker.builder().size(data).build();
+        ScatterTrace trace = ScatterTrace
+                .builder(x, y)
+                .marker(marker)
+                .build();
+
+        Plot.show(new Figure(layout, trace));
     }
 }
