@@ -137,7 +137,7 @@ public class CsvReadOptions {
 
         private File file;
         private Reader reader;
-        private String tableName;
+        private String tableName = "";
         private boolean header = true;
         private char separator = ',';
         private boolean sample = true;
@@ -149,6 +149,7 @@ public class CsvReadOptions {
 
         public Builder file(File file) {
             this.file = file;
+            this.tableName = file.getName();
             return this;
         }
 
