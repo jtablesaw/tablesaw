@@ -1,0 +1,28 @@
+var {{variableName}} =
+    {
+        x: {{x | raw}},
+{% if y is not null %}
+        y: {{y | raw}},
+{% endif %}
+{% if z is not null %}
+        z: {{z | raw}},
+{% endif %}
+        showlegend: {{showLegend}},
+{% if hoverlabel is not null %}
+        hoverlabel: {{hoverlabel | raw }},
+{% endif %}
+{% if marker is not null %}
+        marker: {{marker | raw }},
+{% endif %}
+{% if text is not null %}
+        text: {{text | raw }},
+{% endif %}
+{% if mode is not null %}
+        mode: '{{mode}}',
+{% endif %}
+{% if orientation is not null %}
+        orientation: '{{orientation}}',
+{% endif %}
+        type: '{{type}}',
+        name: '{{name}}',
+};
