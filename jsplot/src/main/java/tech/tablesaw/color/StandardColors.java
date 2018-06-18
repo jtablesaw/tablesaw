@@ -22,7 +22,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Range;
 import com.opencsv.CSVReader;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
@@ -251,7 +250,6 @@ public class StandardColors {
         return colors;
     }
 
-    @Nullable
     static Color color(Hue hue, int chroma, int value) {
         Collection<StandardColor> options = colorMap.get(hue);
         for (StandardColor standardColor : options) {
