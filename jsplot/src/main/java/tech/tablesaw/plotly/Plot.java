@@ -45,10 +45,10 @@ public class Plot {
         show(figure, DEFAULT_DIV_NAME, outputFile);
     }
 
-    public static File defaultFile() {
+    private static File defaultFile() {
         Path path = Paths.get(DEFAULT_OUTPUT_FOLDER, DEFAULT_OUTPUT_FILE);
         try {
-            Files.createDirectories(path);
+            Files.createDirectories(path.getParent());
         } catch (IOException e){
             e.printStackTrace();
         }

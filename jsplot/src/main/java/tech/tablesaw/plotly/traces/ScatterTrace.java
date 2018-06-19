@@ -5,6 +5,7 @@ import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.plotly.components.HoverLabel;
+import tech.tablesaw.plotly.components.Line;
 import tech.tablesaw.plotly.components.Marker;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class ScatterTrace extends AbstractTrace {
     private final HoverLabel hoverLabel;
     private final boolean showLegend;
     private final Marker marker;
+    private final Line line;
 
     public static ScatterBuilder builder(double[] x, double[] y) {
         return new ScatterBuilder(x, y);
@@ -41,6 +43,7 @@ public class ScatterTrace extends AbstractTrace {
         this.marker = builder.marker;
         this.hoverLabel = builder.hoverLabel();
         this.showLegend = builder.showLegend();
+        this.line = builder.line;
     }
 
     private Map<String, Object> getContext(int i) {
@@ -54,6 +57,9 @@ public class ScatterTrace extends AbstractTrace {
         context.put("showlegend", showLegend);
         if (hoverLabel != null) {
             context.put("hoverlabel", hoverLabel.asJavascript());
+        }
+        if (line != null) {
+            context.put("line", line.asJavascript());
         }
         if (text != null) {
             context.put("text", dataAsString(text));
@@ -101,11 +107,12 @@ public class ScatterTrace extends AbstractTrace {
     public static class ScatterBuilder extends TraceBuilder {
 
         private String type = "scatter";
-        Mode mode = Mode.MARKERS;
-        double[] x;
-        double[] y;
-        String[] text;
-        Marker marker;
+        private Mode mode = Mode.MARKERS;
+        private double[] x;
+        private double[] y;
+        private String[] text;
+        private Marker marker;
+        private Line line;
 
         private ScatterBuilder(double[] x, double[] y) {
             this.x = x;
@@ -119,6 +126,11 @@ public class ScatterTrace extends AbstractTrace {
 
         public ScatterBuilder mode(Mode mode) {
             this.mode = mode;
+            return this;
+        }
+
+        public ScatterBuilder line(Line line) {
+            this.line = line;
             return this;
         }
 

@@ -69,7 +69,6 @@ public class Font extends Component {
         return writer.toString();
     }
 
-
     private Map<String, Object> getContext() {
         Map<String, Object> context = new HashMap<>();
         context.put("size", size);
