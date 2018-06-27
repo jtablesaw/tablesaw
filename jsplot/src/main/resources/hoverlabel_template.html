@@ -1,0 +1,8 @@
+{
+    namelength: {{nameLength}},
+    {% if font is not null %}
+        font: {{font.asJavascript() | raw}},
+    {% endif %}
+    bgcolor: '{{bgColor}}',
+    bordercolor: '{{borderColor}}',
+}

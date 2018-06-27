@@ -1,0 +1,23 @@
+{
+    size: {{size}},
+{% if color is not null %}
+    color: {{color | raw}},
+{% endif %}
+{% if colorScale is not null %}
+    colorscale: '{{colorScale | raw}}',
+{% endif %}
+{% if cMax is not null %}
+    cmax: {{cMax | raw}},
+{% endif %}
+{% if cMIn is not null %}
+    cmin: {{cMin | raw}},
+{% endif %}
+{% if symbol is not null %}
+    symbol: '{{symbol | raw}}',
+{% endif %}
+    cauto: {{cAuto}},
+    autocolorscale: {{autoColorScale}},
+    showscale: {{showScale}},
+    reversescale: {{reverseScale}},
+    opacity: {{opacity}},
+}

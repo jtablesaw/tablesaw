@@ -149,6 +149,7 @@ public class CsvReadOptions {
 
         public Builder file(File file) {
             this.file = file;
+            this.tableName = file.getName();
             return this;
         }
 

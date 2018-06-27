@@ -1,0 +1,9 @@
+var {{variableName}} =
+    {
+        labels: {{labels | raw}},
+{% if values is not null %}
+        values: {{values | raw}},
+{% endif %}
+        type: '{{type}}',
+        name: '{{name}}',
+ }
