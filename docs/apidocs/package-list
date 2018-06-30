@@ -1,7 +1,5 @@
 tech.tablesaw.aggregate
 tech.tablesaw.api
-tech.tablesaw.api.plot
-tech.tablesaw.beakerx
 tech.tablesaw.columns
 tech.tablesaw.columns.booleans
 tech.tablesaw.columns.booleans.fillers
@@ -28,10 +26,6 @@ tech.tablesaw.io.html
 tech.tablesaw.io.jdbc
 tech.tablesaw.io.string
 tech.tablesaw.joining
-tech.tablesaw.plotting
-tech.tablesaw.plotting.fx
-tech.tablesaw.plotting.smile
-tech.tablesaw.plotting.xchart
 tech.tablesaw.selection
 tech.tablesaw.sorting
 tech.tablesaw.sorting.comparators
