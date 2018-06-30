@@ -60,6 +60,11 @@ import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
  */
 public class Table extends Relation implements Iterable<Row> {
 
+    // for building queries
+    public Filter and(Filter... filters) { return QueryHelper.and(filters); }
+    public Filter or(Filter... filters) { return QueryHelper.or(filters); }
+    public Filter not(Filter filter) { return QueryHelper.not(filter); }
+
     /**
      * The columns that hold the data in this table
      */
