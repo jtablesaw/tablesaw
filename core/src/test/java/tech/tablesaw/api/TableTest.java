@@ -160,46 +160,6 @@ public class TableTest {
     }
 
     @Test
-    public void testCollectFromEachRow() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv");
-
-        Table.ColumnCollector columnCollector = new Table.ColumnCollector(StringColumn.create("stringz")) {
-
-            @Override
-            void collectFromRow(Row row) {
-                ((StringColumn) column())
-                        .append(row.getString("who") + " can't predict "
-                        + row.getDouble("approval"));
-            }
-        };
-
-        Column result = t.collectFromEachRow(columnCollector);
-        assertEquals("fox can't predict 53.0", result.getString(0));
-        assertEquals("fox can't predict 53.0", result.getString(1));
-    }
-
-    @Test
-    public void testCollectFromEachRow2() throws Exception {
-        String columnName = "stringz";
-        Table t = Table.read().csv("../data/bush.csv");
-
-        Table resultTable = Table.create("result", StringColumn.create(columnName));
-        Table.TableCollector columnCollector = new Table.TableCollector(resultTable) {
-
-            @Override
-            void collectFromRow(Row row) {
-                table().stringColumn(columnName)
-                        .append(row.getString("who") + " reported "
-                        + row.getDouble("approval"));
-            }
-        };
-
-        Table result = t.collectFromEachRow(columnCollector);
-        assertEquals("fox reported 53.0", result.stringColumn(columnName).get(0));
-        assertEquals("fox reported 53.0", result.stringColumn(columnName).get(0));
-    }
-
-    @Test
     public void testRowToString() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
         for (Row row : t) {
