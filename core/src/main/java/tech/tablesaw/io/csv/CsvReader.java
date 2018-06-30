@@ -40,6 +40,7 @@ import java.io.Reader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,15 +76,47 @@ public class CsvReader {
             return false;
         }
     };
-    private static final Predicate<String> isLocalTime = s -> {
+
+    private static boolean isLocalDate(String s, DateTimeFormatter dateTimeFormatter) {
         try {
-            LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER);
+            if (dateTimeFormatter == null) {
+                LocalDate.parse(s, TypeUtils.DATE_FORMATTER);
+                return true;
+            } else {
+                LocalDate.parse(s, dateTimeFormatter);
+                return true;
+            }
+        } catch (DateTimeParseException e) {
+            // it's all part of the plan
+            return false;
+        }
+    };
+
+    private static final BiPredicate<String, Locale> isLocalTime = (s, locale) -> {
+        try {
+            LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER.withLocale(locale));
             return true;
         } catch (DateTimeParseException e) {
             // it's all part of the plan
             return false;
         }
     };
+
+    private static boolean isLocalTime(String s, DateTimeFormatter formatter) {
+        try {
+            if (formatter == null) {
+                LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER);
+                return true;
+            } else {
+                LocalDate.parse(s, formatter);
+                return true;
+            }
+        } catch (DateTimeParseException e) {
+            // it's all part of the plan
+            return false;
+        }
+    };
+
     private static final BiPredicate<String, Locale> isLocalDateTime = (s, locale) -> {
         try {
             LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER.withLocale(locale));
@@ -94,11 +127,25 @@ public class CsvReader {
         }
     };
 
+    private static boolean isLocalDateTime(String s, DateTimeFormatter formatter) {
+        try {
+            if (formatter == null) {
+                LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER);
+                return true;
+            } else {
+                LocalDate.parse(s, formatter);
+                return true;
+            }
+        } catch (DateTimeParseException e) {
+            // it's all part of the plan
+            return false;
+        }
+    };
+
     /**
      * Private constructor to prevent instantiation
      */
-    private CsvReader() {
-    }
+    private CsvReader() {}
 
     public static Table read(CsvReadOptions options) throws IOException {
 
@@ -112,7 +159,7 @@ public class CsvReader {
             InputStream detectTypesStream = options.reader() != null
                     ? new ByteArrayInputStream(bytes)
                     : new FileInputStream(options.file());
-            types = detectColumnTypes(detectTypesStream, options.header(), options.separator(), options.sample(), options.locale());
+            types = detectColumnTypes(detectTypesStream, options);
         }
 
         // All other read methods end up here, make sure we don't have leading Unicode BOM
@@ -179,7 +226,6 @@ public class CsvReader {
                 }
                 rowNumber++;
             }
-
             return table;
         }
     }
@@ -253,7 +299,13 @@ public class CsvReader {
         File file = new File(csvFileName);
         InputStream stream = new FileInputStream(file);
 
-        ColumnType[] types = detectColumnTypes(stream, header, delimiter, false, locale);
+        CsvReadOptions options = CsvReadOptions.builder(stream, "")
+                .separator(delimiter)
+                .header(header)
+                .locale(locale)
+                .sample(false)
+                .build();
+        ColumnType[] types = detectColumnTypes(stream, options);
         Table t = headerOnly(types, header, delimiter, file);
         return t.structure();
     }
@@ -359,8 +411,13 @@ public class CsvReader {
      * corrected and
      * used to explicitly specify the correct column types.
      */
-    public static ColumnType[] detectColumnTypes(InputStream stream, boolean header, char delimiter, boolean useSampling, Locale locale)
+    public static ColumnType[] detectColumnTypes(InputStream stream, CsvReadOptions options)
             throws IOException {
+
+        boolean header = options.header();
+        char delimiter = options.separator();
+        boolean useSampling = options.sample();
+        Locale locale = options.locale();
 
         int linesToSkip = header ? 1 : 0;
 
@@ -412,7 +469,7 @@ public class CsvReader {
 
         // now detect
         for (List<String> valuesList : columnData) {
-            ColumnType detectedType = detectType(valuesList, locale);
+            ColumnType detectedType = detectType(valuesList, options);
             columnTypes.add(detectedType);
         }
         return columnTypes.toArray(new ColumnType[columnTypes.size()]);
@@ -447,7 +504,16 @@ public class CsvReader {
         return nextRow + 10_000_000;
     }
 
-    private static ColumnType detectType(List<String> valuesList, Locale locale) {
+    /**
+     * Returns a predicted ColumnType derived by analyzing the given list of undifferentiated strings read from a
+     * column in the file and applying the given Locale and options
+     */
+    private static ColumnType detectType(List<String> valuesList, CsvReadOptions options) {
+
+        Locale locale = options.locale();
+        DateTimeFormatter dateFormatter = options.dateFormatter();
+        DateTimeFormatter timeFormatter = options.timeFormatter();
+        DateTimeFormatter dateTimeFormatter = options.dateTimeFormatter();
 
         // Types to choose from. When more than one would work, we pick the first of the options
         ColumnType[] typeArray
@@ -460,14 +526,32 @@ public class CsvReader {
             if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {
                 continue;
             }
-            if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime.test(s, locale)) {
-                typeCandidates.remove(LOCAL_DATE_TIME);
+            if (dateTimeFormatter != null) {
+                if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime(s, dateTimeFormatter)) {
+                    typeCandidates.remove(LOCAL_DATE_TIME);
+                }
+            } else {
+                if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime.test(s, locale)) {
+                    typeCandidates.remove(LOCAL_DATE_TIME);
+                }
             }
-            if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime.test(s)) {
-                typeCandidates.remove(LOCAL_TIME);
+            if (timeFormatter != null) {
+                if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime(s, options.timeFormatter())) {
+                    typeCandidates.remove(LOCAL_TIME);
+                }
+            } else {
+                if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime.test(s, locale)) {
+                    typeCandidates.remove(LOCAL_TIME);
+                }
             }
-            if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate.test(s, locale)) {
-                typeCandidates.remove(LOCAL_DATE);
+            if (dateFormatter != null) {
+                if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate(s, options.dateFormatter())) {
+                    typeCandidates.remove(LOCAL_DATE);
+                }
+            } else {
+                if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate.test(s, locale)) {
+                    typeCandidates.remove(LOCAL_DATE);
+                }
             }
             if (typeCandidates.contains(BOOLEAN) && !isBoolean.test(s)) {
                 typeCandidates.remove(BOOLEAN);

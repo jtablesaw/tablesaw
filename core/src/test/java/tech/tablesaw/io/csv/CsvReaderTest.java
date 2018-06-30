@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -113,7 +114,14 @@ public class CsvReaderTest {
     @Test
     public void testDataTypeDetection() throws Exception {
         InputStream stream = new FileInputStream(new File("../data/bus_stop_test.csv"));
-        ColumnType[] columnTypes = detectColumnTypes(stream, true, ',', false, Locale.getDefault());
+        CsvReadOptions options = CsvReadOptions.builder(stream, "")
+                .header(true)
+                .separator(',')
+                .sample(false)
+                .locale(Locale.getDefault())
+                .build();
+
+        ColumnType[] columnTypes = detectColumnTypes(stream, options);
         assertTrue(Arrays.equals(bus_types, columnTypes));
     }
     
@@ -133,10 +141,16 @@ public class CsvReaderTest {
         final char delimiter = ',';
         final boolean useSampling = true;
 
-        final List<ColumnType> actual = asList(detectColumnTypes(stream, header, delimiter, useSampling, Locale.ENGLISH));
+        CsvReadOptions options = CsvReadOptions.builder(stream, "")
+                .header(header)
+                .separator(delimiter)
+                .sample(useSampling)
+                .locale(Locale.ENGLISH)
+                .build();
 
-        assertThat(actual, is(equalTo(asList(LOCAL_DATE))));
+        final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
 
+        assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE))));
     }
     
     @Test
@@ -155,9 +169,16 @@ public class CsvReaderTest {
         final char delimiter = ',';
         final boolean useSampling = true;
 
-        final List<ColumnType> actual = asList(detectColumnTypes(stream, header, delimiter, useSampling, Locale.ENGLISH));
+        CsvReadOptions options = CsvReadOptions.builder(stream, "")
+                .header(header)
+                .separator(delimiter)
+                .sample(useSampling)
+                .locale(Locale.ENGLISH)
+                .build();
 
-        assertThat(actual, is(equalTo(asList(LOCAL_DATE_TIME))));
+        final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
+
+        assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE_TIME))));
 
     }
 
@@ -177,10 +198,16 @@ public class CsvReaderTest {
         final char delimiter = ',';
         final boolean useSampling = true;
 
-        final List<ColumnType> actual = asList(detectColumnTypes(stream, header, delimiter, useSampling, Locale.FRENCH));
+        CsvReadOptions options = CsvReadOptions.builder(stream, "")
+                .header(header)
+                .separator(delimiter)
+                .sample(useSampling)
+                .locale(Locale.FRENCH)
+                .build();
 
-        assertThat(actual, is(equalTo(asList(LOCAL_DATE))));
+        final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
 
+        assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE))));
     }
 
     @Test
@@ -199,9 +226,16 @@ public class CsvReaderTest {
         final char delimiter = ',';
         final boolean useSampling = true;
 
-        final List<ColumnType> actual = asList(detectColumnTypes(stream, header, delimiter, useSampling, Locale.FRENCH));
+        CsvReadOptions options = CsvReadOptions.builder(stream, "")
+                .header(header)
+                .separator(delimiter)
+                .sample(useSampling)
+                .locale(Locale.FRENCH)
+                .build();
 
-        assertThat(actual, is(equalTo(asList(LOCAL_DATE_TIME))));
+        final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
+
+        assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE_TIME))));
 
     }
 
@@ -219,7 +253,14 @@ public class CsvReaderTest {
     @Test
     public void testDataTypeDetection2() throws Exception {
         InputStream stream = new FileInputStream(new File("../data/bush.csv"));
-        ColumnType[] columnTypes = detectColumnTypes(stream, true, ',', false, Locale.getDefault());
+        CsvReadOptions options = CsvReadOptions.builder(stream, "")
+                .header(true)
+                .separator(',')
+                .sample(false)
+                .locale(Locale.getDefault())
+                .build();
+
+        ColumnType[] columnTypes = detectColumnTypes(stream, options);
         assertEquals(LOCAL_DATE, columnTypes[0]);
         assertEquals(NUMBER, columnTypes[1]);
         assertEquals(STRING, columnTypes[2]);
@@ -275,7 +316,7 @@ public class CsvReaderTest {
         Table table1 = Table.read().csv(CsvReadOptions
                 .builder("../data/empty_file.csv")
                 .header(true));
-        assertEquals("0 rows X 0 cols", table1.shape().toString());
+        assertEquals("0 rows X 0 cols", table1.shape());
     }
 
     @Test
@@ -283,7 +324,7 @@ public class CsvReaderTest {
         Table table1 = Table.read().csv(CsvReadOptions
                 .builder("../data/empty_file.csv")
                 .header(false));
-        assertEquals("0 rows X 0 cols", table1.shape().toString());
+        assertEquals("0 rows X 0 cols", table1.shape());
     }
 
 }
