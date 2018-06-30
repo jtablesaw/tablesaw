@@ -58,6 +58,8 @@
 
     1. Extended table filtering to support direct use of column filter methods (e.g. *col.startsWith("foo")*) in table where clauses
 
+    1. Added And, Or, and Not filters to Table API so users don't need to use/know-about QueryHelper for most queries
+
     1. Added support for chaining "selections" so filters can be readily combined
 
        ```java
@@ -86,6 +88,8 @@
 
     1. Added support for applying a locale for CSV file import
 
+    1. Added support for applying DateTimeFormatters to read specific date/time formats from CSV files.
+
 1. Standardize column instantiation methods
     1. Always use a static *create()* method rather than public constructors
     1. Standardize support for instantiating from lists and arrays.
@@ -99,47 +103,51 @@
 
 1. Extended PackedLocalTime and PackedLocalDate to be (approximately) functionally equivalent to Java's LocalDate and LocalTime.
 
+1. Added initial support for javascript-based plotting using Plot.ly
+
 1. Improved Aggregation/Summarization
-    1. Support for conditional summarization using *summarizeIf()*. The code below counts the number of strings in column that end with "3". 
 
-       ```java
-       double count = column.summarizeIf(column.endsWith("3"), count);
-       ```
+     1. Support for conditional summarization using *summarizeIf()*. The code below counts the number of strings in column that end with "3". 
 
-    1. Simplified the CrossTab API, and provided methods for creating CrossTabs (a  ka contingency tables) in table objects:
+        ```java
+        double count = column.summarizeIf(column.endsWith("3"), count);
+        ```
 
-       ```java
-       table.xTabCounts("columnA", "columnB");
-       ```
+     1. Simplified the CrossTab API, and provided methods for creating CrossTabs (a  ka contingency tables) in table objects:
 
-    1. Support for table summaries that include summaries of columns created on the fly using mapping functions:
+        ```java
+        table.xTabCounts("columnA", "columnB");
+        ```
 
-       ```java
-       table.summarize(dateColumn.year(), max, min);
-       ```
+     1. Support for table summaries that include summaries of columns created on the fly using mapping functions:
 
-    1. Support for table summaries that include non-numeric columns. For example, the code below applies *countTrue* to the boolean column and *standardDeviation* to the numeric column.
+        ```java
+        table.summarize(dateColumn.year(), max, min);
+        ```
 
-       ```java
-       table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation); 
-       ```
+     1. Support for table summaries that include non-numeric columns. For example, the code below applies *countTrue* to the boolean column and *standardDeviation* to the numeric column.
 
-    1. Support summarizing *by* "time windows" groups of n time units (days, weeks, years, etc).
+        ```java
+        table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation); 
+        ```
 
-       ```java
-       table.summarize("quantity", mean, median).by(date.timeWindow(DAYS, 5));
-       ```
+     1. Support summarizing *by* "time windows" groups of n time units (days, weeks, years, etc).
 
-    1. Support summarizing *by* named time units (months, for example):
+        ```java
+        table.summarize("quantity", mean, median).by(date.timeWindow(DAYS, 5));
+        ```
 
-       ```java
-       table.summarize("quantity", mean, median).by(date.month());
-       ```
+     1. Support summarizing *by* named time units (months, for example):
 
-    1. Both of the above are examples of a more general solution: Sub totals can per calculated for groups defined *by* any function that returns a column: 
+        ```java
+        table.summarize("quantity", mean, median).by(date.month());
+        ```
 
-       ```java
-       table.summarize("quantity", sumOfSquares).by(strCol.substring(4, 7));
-       ```
+     1. Both of the above are examples of a more general solution: Sub totals can per calculated for groups defined *by* any function that returns a column: 
 
-       ​
+        ```java
+        table.summarize("quantity", sumOfSquares).by(strCol.substring(4, 7));
+        ```
+
+        
+

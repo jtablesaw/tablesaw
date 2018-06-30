@@ -420,7 +420,7 @@ public class PackedLocalDateTime {
         return pack(LocalDateTime.ofInstant(instant, zoneId));
     }
 
-    public int lengthOfYear(long packedDateTime) {
+    public static int lengthOfYear(long packedDateTime) {
         return (isLeapYear(packedDateTime) ? 366 : 365);
     }
 
