@@ -25,29 +25,7 @@ in this way. If you don't find in the library a function that does exactly what 
 With tables, the most common use of the analogous "table-wise" operations is for SQL-like operations. However, tables also support arbitrary operations on individual rows and on collections of contiguous rows. 
 
 
-
-## Collecting results
-
-### ColumnCollector
-
-ColumnCollector is a function object that returns a column containing one element for each row in the source table. The column can be of any type.
-
-```
-
-```
-
-TableCollector
-
-Detect
-
-
-
-Inject
-
-
-
-## Performing arbitrary opeations on Rows
-
+## Performing arbitrary operations on Rows
 
 
 ## Window functions on Tables

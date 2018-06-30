@@ -12,6 +12,7 @@ CoffeeDB/
 
 testfolder/
 test_col_test
+testoutput/
 
 # IntelliJ
 *.iml
