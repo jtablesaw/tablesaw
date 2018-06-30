@@ -14,6 +14,7 @@
 
 package tech.tablesaw.plotly;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
@@ -25,6 +26,7 @@ import tech.tablesaw.plotly.traces.ScatterTrace;
 /**
  *
  */
+@Ignore
 public class LinePlotExample {
 
     @Test

@@ -13,12 +13,14 @@
  */
 package tech.tablesaw.plotly;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Marker;
+import tech.tablesaw.plotly.components.Symbol;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.selection.Selection;
 
@@ -27,7 +29,13 @@ import java.io.IOException;
 /**
  *
  */
+@Ignore
 public class BubbleExample {
+
+    private final double[] x = {1, 2, 3, 4, 5, 6};
+    private final double[] y = {0, 1, 6, 14, 25, 39};
+    private final double[] size = {10, 33, 21, 40, 28, 16};
+
 
     @Test
     public void test1() throws IOException {
@@ -45,5 +53,31 @@ public class BubbleExample {
                 .build();
 
         Plot.show(new Figure(layout, trace));
+    }
+
+    @Test
+    void testAsJavascript() {
+        ScatterTrace trace = ScatterTrace.builder(x, y)
+                .marker(Marker.builder().size(size).build())
+                .build();
+        System.out.println(trace.asJavascript(1));
+    }
+
+    @Test
+    void showScatter() {
+
+        ScatterTrace trace = ScatterTrace.builder(x, y)
+                .mode(ScatterTrace.Mode.MARKERS)
+                .marker(
+                        Marker.builder()
+                                .size(size)
+                                .colorScale(Marker.Palette.CIVIDIS)
+                                .opacity(.5)
+                                .showScale(true)
+                                .symbol(Symbol.DIAMOND_TALL)
+                                .build())
+                .build();
+
+        Plot.show( new Figure(trace));
     }
 }

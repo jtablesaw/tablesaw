@@ -14,6 +14,7 @@
 
 package tech.tablesaw.plotly;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
@@ -25,6 +26,29 @@ import tech.tablesaw.plotly.traces.BoxTrace;
  * by the scale of the Tornado.
  */
 public class BoxExample {
+
+    private final Object[] x = {"sheep", "cows", "fish", "tree sloths", "sheep", "cows", "fish", "tree sloths", "sheep", "cows", "fish", "tree sloths"};
+    private final double[] y = {1, 4, 9, 16, 3, 6, 8, 8, 2, 4, 7, 11};
+
+    @Ignore
+    @Test
+    public void testAsJavascript() {
+        BoxTrace trace =
+                BoxTrace.builder(x, y)
+                        .build();
+
+        System.out.println(trace.asJavascript(1));
+    }
+
+    @Ignore
+    @Test
+    public void show() {
+
+        BoxTrace trace = BoxTrace.builder(x, y).build();
+
+        Figure figure = new Figure(trace);
+        Plot.show(figure, "target");
+    }
 
     @Test
     public void test1() throws Exception {

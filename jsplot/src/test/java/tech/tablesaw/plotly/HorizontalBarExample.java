@@ -44,5 +44,4 @@ public class HorizontalBarExample {
                 .build();
         Plot.show(new Figure(layout, trace));
     }
-
 }

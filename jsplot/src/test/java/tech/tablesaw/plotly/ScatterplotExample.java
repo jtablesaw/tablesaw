@@ -25,6 +25,7 @@ import tech.tablesaw.plotly.traces.Trace;
 /**
  *
  */
+
 public class ScatterplotExample {
 
     @Test
