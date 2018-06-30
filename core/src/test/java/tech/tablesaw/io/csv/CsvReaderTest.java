@@ -236,7 +236,31 @@ public class CsvReaderTest {
         final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
 
         assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE_TIME))));
+    }
 
+    @Test
+    public void testDateWithFormatter() throws Exception {
+
+        final InputStream stream = new ByteArrayInputStream((
+              "Date\n"
+            + "2014.10.03\n"
+            + "2014.07.04\n"
+            + "2014.11.23\n"
+            + "2014.12.03\n").getBytes());
+
+        final boolean header = true;
+        final char delimiter = ',';
+        final boolean useSampling = true;
+
+        CsvReadOptions options = CsvReadOptions.builder(stream, "")
+                .header(header)
+                .separator(delimiter)
+                .sample(useSampling)
+                .dateFormat("yyyy.MM.dd")
+                .build();
+
+        final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
+        assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE))));
     }
 
     @Test
