@@ -1107,28 +1107,6 @@ public class Table extends Relation implements Iterable<Row> {
         }
     }
 
-    /**
-     * Applies the function in {@code columnCollector} to every row in the table and returns a column containing each result
-     */
-    public Column collectFromEachRow(ColumnCollector columnCollector) {
-        Row row = new Row(this);
-        while (row.hasNext()) {
-            columnCollector.collectFromRow(row.next());
-        }
-        return columnCollector.column();
-    }
-
-    /**
-     * Applies the function in {@code collector} to every row in the table and returns a column containing each result
-     */
-    public Table collectFromEachRow(TableCollector collector) {
-        Row row = new Row(this);
-        while (row.hasNext()) {
-            collector.collectFromRow(row.next());
-        }
-        return collector.table();
-    }
-
     public static class RowPair {
         private final Row first;
         private final Row second;
@@ -1159,57 +1137,5 @@ public class Table extends Relation implements Iterable<Row> {
         default Object getResult() {
             throw new UnsupportedOperationException("This Pairs function returns no results");
         }
-    }
-
-    /**
-     * A function object that can be used to enumerate a table and perform operations on each row,
-     * without explicit loops. {@code ColumnCollector} fills the given column with the results, so the column
-     * must be of the correct type for whatever results are produced in the collectWithRow operation.
-     *
-     * Usage:
-     *
-     * The example code shows how to create a ColumnCollector for a StringColumn and use it to collect
-     * strings that combine data from multiple columns and boilerplate text
-     *
-     *         Table.ColumnCollector columnCollector = new Table.ColumnCollector(StringColumn.create("s")) {
-     *
-     *             @Override
-     *             void collectFromRow(Row row) {
-     *                 ((StringColumn) column())
-     *                         .append(row.getString("who") + " can't predict "
-     *                         + row.getDouble("approval"));
-     *             }
-     *         };
-     *
-     */
-    static abstract class ColumnCollector {
-
-        private final Column column;
-
-        public ColumnCollector(Column column) {
-            this.column = column;
-        }
-
-        public Column column() {
-            return column;
-        }
-
-        abstract void collectFromRow(Row row);
-    }
-
-
-    static abstract class TableCollector {
-
-        private final Table table;
-
-        public TableCollector(Table table) {
-            this.table = table;
-        }
-
-        public Table table() {
-            return table;
-        }
-
-        abstract void collectFromRow(Row row);
     }
 }

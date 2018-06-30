@@ -1,6 +1,6 @@
-# Plotting 
+# JavaScript Plots 
 
-We're retiring the existing plotting code in Tablesaw. It will be deprecated in the .20 release. For doing quick, basic, exploratory visualizations the plotting library served its purpose, but it fell far short of what the best visualization tools provide. Unfortunately, none of those tools are written in Java. 
+We're retiring the existing plotting code in Tablesaw. It will be deprecated in the .20.1 release. For doing quick, basic, exploratory visualizations the plotting library served its purpose, but it fell far short of what the best visualization tools provide. Unfortunately, none of those tools are written in Java. 
 
 And so, we're switching to a new framework, which provides a Java wrapper around the Plot.ly open source Javascript visualization library. The advantages are huge; these are among the most important:
 
@@ -148,8 +148,3 @@ Axis yAxis = Axis.builder().tickSettings(ticks).build();
 // etc. 
 ```
 
-## Rendering specific kinds of plots
-
-Initially, we provide support for Scatters (including Line Plots and Bubble Plots), Boxes, Bars (horizontal and vertical), Pies, and Histograms. Partial support is available for 3D Scatters, and 2D Histograms, 
-
-See the examples package for code creating various types of plots. Many more are possible, but have yet to be 'wrapped'.

@@ -103,7 +103,7 @@
 
 1. Extended PackedLocalTime and PackedLocalDate to be (approximately) functionally equivalent to Java's LocalDate and LocalTime.
 
-1. Added initial support for javascript-based plotting using Plot.ly
+1. Added initial support for JavaScript-based plotting using Plot.ly. See [this page](https://jtablesaw.github.io/tablesaw/Plotting.md) for more information. 
 
 1. Improved Aggregation/Summarization
 

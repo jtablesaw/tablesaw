@@ -7,15 +7,15 @@ Tablesaw
 
 
 
-#### A note on the next version
+#### A note on the new version
 
-> Version 0.20, soon to be released, includes a number of fundamental changes. It is safe to say that any existing code that uses Tablesaw will require modifications. We regret the inconvenience that results.
+> Version 0.20 includes a number of fundamental changes. Any existing code using older versions of Tablesaw will require modifications. We regret the inconvenience that results.
 >
-> Two of the biggest changes are the removal of the Smile interface, and the removal of support for several numeric column types. In the new release we will support only double precision floating point columns. We may at some time revert those changes, but for now they let us focus on Tablesaw's core functionality in manipulating tabular datasets. 
+> The biggest change is the removal of support for several numeric column types. We now support only double precision floating point columns. We may revert those changes in the future, but for now they let us achieve greater quality and stability. 
 >
-> The new version also represents a significant improvement in several dimensions. All the changes are summarized [here](https://jtablesaw.github.io/tablesaw/changes_in_v_0.2), but it's worth mentioning a couple: 
+> The new version also represents a significant improvement in several dimensions. The changes are summarized [here](https://jtablesaw.github.io/tablesaw/changes_in_v_0.2), but it's worth mentioning a couple: 
 >
-> Overall, interfaces for tables and columns are more consistent, general, powerful, and robust. Test coverage is up from 44% to 70%.  When the release goes to Maven Central, documentation will be better, too.  Overall, this release is a big step forward for Tablesaw. We hope you agree. 
+> Overall, interfaces for tables and columns are more consistent, general, powerful, and robust. Test coverage is up from 44% to nearly 70%.  Documentation is a little better, too, although it still has great room for improvement.  Overall, this is a big step forward for Tablesaw. 
 >
 > Thank you. 
 
@@ -30,10 +30,10 @@ You can use tablesaw-core, which is the dataframe library itself, by adding a de
     <dependency>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-core</artifactId>
-        <version>0.11.6</version>
+        <version>0.12</version>
     </dependency>
 
-You can also add a dependency for `tablesaw-plot` to use the plotting capability.
+You can also add a dependency for `tablesaw-plot` to use the plotting capability. Experimental support for plots built on Plot.ly (which is itself built on D3) is also included, but this will be a bumpy ride for another minor release or two.
 
 * We also recommend trying Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html), which lets you experiment with Tablesaw in a more interactive manner. Get started by [installing BeakerX](http://beakerx.com/documentation) and trying [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
 
