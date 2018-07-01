@@ -35,7 +35,7 @@ To create a column of numbers you can use one of its *create()* methods:
 
 ```java
 double[] numbers = {1, 2, 3, 4};
-NumberColumn nc = NumberColumn.create("Test", numbers);
+NumberColumn nc = DoubleColumn.create("Test", numbers);
 out(nc.print());
 
 ```
@@ -81,24 +81,24 @@ There is a price for this frugality. When you work with primitives, you forgo so
 
 ### Selections
 
-Before going on to tables, we should talk about selections. Selections are used to filter both tables and columns. Often they work behind the scenes, but sometimes you work with the directly.  For example, lets go back to our NumberColumn containing the values {1, 2, 3, 4}. You can filter that column by sending it a message. For example: 
+Before going on to tables, we should talk about selections. *Selections* are used to filter both tables and columns. Often they work behind the scenes, but sometimes you use them directly.  For example, consider our NumberColumn containing the values {1, 2, 3, 4}. You can filter that column by sending it a message. For example: 
 
 ```java
 nc.isLessThan(3);
 ```
 
-This operation returns a *Selection*. You can think of selections as a bitmap of the same size as the original column or table. The method above returns a selection that, effectively, contains 1, 1, 0, 0, since the first two values in the column are less than three, and the last two are not. 
+This operation returns a *Selection*. Logically, it's a bitmap of the same size as the original column or table. The method above, effectively, returns 1, 1, 0, 0, since the first two values in the column are less than three, and the last two are not. 
 
-In this case, what you probably wanted was not a Selection object, but a new NumberColumn that contains only the values that passed the filter. To get this, you use the *selectWhere(aSelection)* method:
+What you probably wanted was not a Selection object, but a new NumberColumn that contains only the values that passed the filter. To get this, you use the *where(aSelection)* method:
 
 ```java
-NumberColumn filtered = nc.selectWhere(nc.isLessThan(3));
+NumberColumn filtered = nc.where(nc.isLessThan(3));
 ```
 
 This extra step is a necessary evil. It's a bit tedious, but it lets us combine filters. For example: 
 
 ```java
-NumberColumn filtered = nc.selectWhere(nc.isLessThan(3).and(nc.isOdd());
+NumberColumn filtered = nc.where(nc.isLessThan(3).and(nc.isOdd());
 ```
 
 If the methods returned columns, the couldn't be combined in the same way. 
@@ -107,15 +107,22 @@ If the methods returned columns, the couldn't be combined in the same way.
 
 These examples show how to select using predicates. You can also use a selection to retrieve the value at a specific index, or indexes. All of the following are supported:
 
+```java
+nc.where(Selection.with(4, 42));  				// returns two rows with the given indexes
+nc.where(Selection.selectNRowsAtRandom(500));
+nc.where(Selection.withRange(10, 110));
+nc.where(Selection.withoutRange(10, 50));
 ```
-selectWhere(Selection.with())
-```
-
-
 
 #### Map functions
 
-There is nothing special about map operations; they're simply methods on columns that return new Columns as their result. You've already seen one: The column *multiply(aNumber)* operation above is a map function.
+There is nothing special about map operations; they're simply methods on columns that return new Columns as their result. You've already seen one: The column *multiply(aNumber)* operation above is a map function. To multiple two columns, use:
+
+```java
+nc1.multiply(nc2);
+```
+
+In this case, each value in column nc1 is multiplied by the corresponding value in nc2, rather than by a scalar constant as in the example above.
 
 #### Reduce functions: Summarizing a column 
 
