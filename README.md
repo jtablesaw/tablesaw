@@ -25,8 +25,8 @@ Beyond tablesaw-core:
 
 - You can add a dependency for `tablesaw-plot` to use the plotting capability. 
 - Experimental support for JavaScript plots built on Plot.ly (which is itself built on D3) is also included, but this will be a bumpy ride for another minor release or two. Add a dependency for ```tablesaw-jsplot```.
+- We also recommend trying Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html), which lets you experiment with Tablesaw in a more interactive manner. Get started by [installing BeakerX](http://beakerx.com/documentation) and trying [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
 
-* We also recommend trying Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html), which lets you experiment with Tablesaw in a more interactive manner. Get started by [installing BeakerX](http://beakerx.com/documentation) and trying [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
 * Finally, the [jtablesaw smile project](https://github.com/jtablesaw/smile) contains integration code to make it trivial to use the excellent Java machine learning library [Smile](https://github.com/haifengl/smile) with tablesaw. 
 
 ### Documentation and support:
