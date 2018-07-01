@@ -79,6 +79,8 @@ Many Java programs and programmers work exclusively with Objects, rather than pr
 
 There is a price for this frugality. When you work with primitives, you forgo some common java capabilities, like the use of standard Java 8 predicates. While Java thoughtfully provides some specialized predicate interfaces (e.g. *IntPredicate*), they don't provide any primitive *BiPredicate* implementations. Without an IntBiPredicate, we can't implement operations like a < b. So we were left to roll our own. You can find them in the package *tech.tablesaw.filtering.predicates*. 
 
+For that reason, the syntax for Tablesaw may sometimes seem a bit odd relative to typical Java, but it doesn't take long to learn. 
+
 ### Selections
 
 Before going on to tables, we should talk about selections. *Selections* are used to filter both tables and columns. Often they work behind the scenes, but sometimes you use them directly.  For example, consider our NumberColumn containing the values {1, 2, 3, 4}. You can filter that column by sending it a message. For example: 
@@ -126,22 +128,30 @@ In this case, each value in column nc1 is multiplied by the corresponding value 
 
 #### Reduce functions: Summarizing a column 
 
-Sometimes you want to derive a value that summarizes in some sense the data in a column. Aggregate functions do just that. All columns support some aggregate functions: *min*() and *max*(), for example, plus *count()*, *countUnique()*, and *countMissing()*.  
+Sometimes you want to derive a value that summarizes in some sense the data in a column. For tables, aggregate functions do just that. All columns support some aggregate functions: *min*() and *max*(), for example, plus *count()*, *countUnique()*, and *countMissing()*.  These are described below. 
 
-NumberColumn supports many kinds, as you would expect: *sum*, *count*, *range*, *variance*, *sumOfLogs*, and many others. Boolean columns supports relatively few: *all()*, which return *true* if all of the values in the column are *true*. The functions *any()*, and *none()*,  returns true if any or none the values in the column are *true*, respectively. The functions *countTrue()*, and *countFalse()* are also available.
+NumberColumn supports aggregation directly. Many functions are available: *sum*, *count*, *range*, *variance*, *sumOfLogs*, and many others. Boolean columns supports relatively few: *all()*, which return *true* if all of the values in the column are *true*. The functions *any()*, and *none()*,  returns true if any or none the values in the column are *true*, respectively. The functions *countTrue()*, and *countFalse()* are also available.
 
-#### Groups
+To calculate the standard deviation of a column, you would call:
 
-Sometimes you want to summarize by group, rather than across the entire column of values.  
+```java
+nc.standardDeviation();			// returns the standard deviation of all values
+```
+
+When we discuss tables below, we'll show how to summarize a column to create sub-totals by the values in one or more grouping columns.
 
 ### Tables
 As described above, a table is a named collection of columns. All columns in the table must be the same size, although missing values are allowed. A table can contain any combination of column types.
 
-Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes in the form of a table.
+Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of a table where one column contains the column names, etc.
+
+#### Filtering tables
 
 Tables also use selections to perform filtering. 
 
-#### Groups in tables
+#### Summarizing tables
+
+##### Groups
 
 Tables can be "sliced" for calculating subtotals. The method *splitOn(CategoricalColumns)* and *splitOn(CategoricalColumnNames)* both return an object called TableSliceGroup. A TableSlice is, effectively, a window into a backing table. TableSliceGroup is a collection of these windows, each of which looks and feels like its own table. 
 
