@@ -7,22 +7,11 @@ Tablesaw
 
 
 
-#### A note on the new version
-
-> Version 0.20 includes some fundamental changes. Any existing code using older versions of Tablesaw will require modifications. We regret the inconvenience.
->
-> The biggest change is the removal of support for several numeric column types. We now support only double precision floating point columns. We may revert those changes in the future, but for now they let us achieve greater quality and stability. The effort to provide full support for multiple numeric columns is considerable. 
->
-> The new version also represents a significant improvement in several dimensions. The changes are summarized [here](https://jtablesaw.github.io/tablesaw/changes_in_v_0.2), but it's worth mentioning a couple: 
->
-> Overall, interfaces for tables and columns are more consistent, general, powerful, and robust. Test coverage is up from 44% to nearly 70%. Documentation is a little better, too, although it still has great room for improvement. Overall, this is a big step forward for Tablesaw.  
->
-
 ### Overview
 
 __Tablesaw__ is a Java dataframe similar to Pandas in Python, and the R data frame. If you work with data in Java, it may save you time and effort.
 
-Tablesaw also supports descriptive statistics and data visualization. 
+Tablesaw also supports descriptive statistics and data visualization. It integrates well with the Java machine learning library, Smile. 
 
 You can use tablesaw-core, which is the dataframe library itself, by adding a dependency: 
 
@@ -69,3 +58,15 @@ Here's an example where we use [XChart](https://github.com/timmolter/XChart) to 
 ![Alt text](https://jtablesaw.files.wordpress.com/2016/07/tornados3.png?w=809)
 
 If you see something that can be improved, please let us know.
+
+#### A note on the new version
+
+> Version 0.20 includes some fundamental changes. Any existing code using older versions of Tablesaw will require modifications. We regret the inconvenience.
+>
+> The biggest change is the removal of support for several numeric column types. We now support only double precision floating point columns. We may revert those changes in the future, but for now they let us achieve greater quality and stability. The effort to provide full support for multiple numeric columns is considerable. 
+>
+> The new version also represents a significant improvement in several dimensions. The changes are summarized [here](https://jtablesaw.github.io/tablesaw/changes_in_v_0.2), but it's worth mentioning a couple: 
+>
+> Overall, interfaces for tables and columns are more consistent, general, powerful, and robust. Test coverage is up from 44% to nearly 70%. Documentation is a little better, too, although it still has great room for improvement. Overall, this is a big step forward for Tablesaw.  
+
+### 
