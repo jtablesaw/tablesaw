@@ -6,7 +6,7 @@
     <parent>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-parent</artifactId>
-        <version>0.20.0-SNAPSHOT</version>
+        <version>0.20.0</version>
     </parent>
 
     <artifactId>tablesaw-core</artifactId>
