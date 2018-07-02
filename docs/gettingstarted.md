@@ -16,7 +16,6 @@ Second, you need to add the dependency to your pom file. It's available on Maven
     <artifactId>tablesaw-core</artifactId>
     <version>LATEST</version>
 </dependency>
-
 ````
 
 That's it for setup. On to design
@@ -143,11 +142,50 @@ When we discuss tables below, we'll show how to summarize a column to create sub
 ### Tables
 As described above, a table is a named collection of columns. All columns in the table must be the same size, although missing values are allowed. A table can contain any combination of column types.
 
-Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of a table where one column contains the column names, etc.
+Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of a table where one column contains the column names, etc.  The structure() method is one of several that are great for getting to know your table. 
 
-#### Filtering tables
+```java
+Table structure = myTable.structure();
 
-Tables also use selections to perform filtering. 
+String shape = myTable.shape();
+
+Table head = myTable.first(10);
+Table tail = myTable.last(5);
+```
+
+
+
+#### Filtering tables with selections
+
+Tables also use selections to perform filtering. The basic approach is similar.
+
+```java
+Table t = Table.create("test").addColumns(nc1, nc2);
+Table result = t.where(nc1.isGreaterThan(4));
+```
+
+Note that the *where()* method for tables also takes a selection as its argument. The result is a new table like the original, except that it only contains the rows where the value in the *nc1* column is > 4.
+
+##### Combining filters into complex queries
+
+Query filters can be combined using the logical operations *and*, *or*, and *not*. These are implemented on the table class. The *not()* method takes a single selection as its argument, while *and()* and *or()* take a comma separated list of them. The rather contrived code below shows all three logical operators combined.
+
+```java
+Table result = t.where(
+	t.and(nc1.isGreaterThan(4),
+         t.or(t.not(nc2.isLessThanOrEqualTo(5)),
+         		nc2.isEven()));
+```
+
+##### Selecting columns in a query statement 
+
+If you don't need all the columns from the filtered table in the result, you can limit columns as well as rows, using *select().where()*.
+
+```java
+Table result = t.select(nc1).where(nc2.isEven());
+```
+
+ The *select()* method takes a column or array of columns as arguments. 
 
 #### Summarizing tables
 
@@ -187,7 +225,7 @@ double average = t.selectWhere(t.stringColumn("foo")
 
 
 
-[^1]: The method shown does not actually "produce" any output For that you would call *System.out.println()*. For brevity, output will be shown going forward indented by one tab beneath the code that produced it.
+[^1]: The method shown does not actually "produce" any output For that you would call *System.out.println()*. For brevity, this "faux" output will be shown indented by one tab beneath the code that produced it.
 
 
 
