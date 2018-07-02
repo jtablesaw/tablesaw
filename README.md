@@ -15,11 +15,13 @@ Tablesaw also supports descriptive statistics and data visualization. It integra
 
 You can use tablesaw-core, which is the dataframe library itself, by adding a dependency: 
 
-    <dependency>
-        <groupId>tech.tablesaw</groupId>
-        <artifactId>tablesaw-core</artifactId>
-        <version>0.20.0</version>
-    </dependency>
+```xml
+<dependency>
+    <groupId>tech.tablesaw</groupId>
+    <artifactId>tablesaw-core</artifactId>
+    <version>0.21.0</version>
+</dependency>
+```
 
 Beyond tablesaw-core:
 
