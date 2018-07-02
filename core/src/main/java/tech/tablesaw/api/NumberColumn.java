@@ -21,6 +21,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.variance;
 import static tech.tablesaw.api.ColumnType.NUMBER;
 
 import java.text.NumberFormat;
+import java.time.ZoneOffset;
 import java.util.function.DoublePredicate;
 
 import org.apache.commons.math3.exception.NotANumberException;
@@ -271,6 +272,16 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     default double skewness() {
         return skewness.summarize(this);
     }
+
+    /**
+     * Returns a DateTimeColumn where each value is the LocalDateTime represented by the values in this column
+     *
+     * The values in this column must be longs that represent the time in milliseconds from the epoch as in standard
+     * Java date/time calculations
+     * @param offset    The ZoneOffset to use in the calculation
+     * @return          A column of LocalDateTime values
+     */
+    DateTimeColumn asDateTimes(ZoneOffset offset);
 
     /**
      * Returns the pearson's correlation between the receiver and the otherColumn

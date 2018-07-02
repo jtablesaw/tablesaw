@@ -41,6 +41,9 @@ import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.text.NumberFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -624,6 +627,18 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     public DoubleList dataInternal() {
         return data.clone();
     }
+
+    @Override
+    public DateTimeColumn asDateTimes(ZoneOffset offset) {
+        DateTimeColumn column = DateTimeColumn.create(name() + ": date time");
+        for (double d : this) {
+            LocalDateTime dateTime =
+                    Instant.ofEpochMilli((long) d).atZone(offset).toLocalDateTime();
+            column.append(dateTime);
+        }
+        return column;
+    }
+
 
     // fillWith methods
 

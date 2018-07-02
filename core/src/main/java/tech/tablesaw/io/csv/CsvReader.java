@@ -23,7 +23,10 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.io.UnicodeBOMInputStream;
@@ -90,7 +93,7 @@ public class CsvReader {
             // it's all part of the plan
             return false;
         }
-    };
+    }
 
     private static final BiPredicate<String, Locale> isLocalTime = (s, locale) -> {
         try {
@@ -199,6 +202,9 @@ public class CsvReader {
                         columnName = "Column " + table.columnCount();
                     }
                     Column newColumn = TypeUtils.newColumn(columnName, types[x]);
+                    addFormatter(newColumn, options);
+
+
                     table.addColumns(newColumn);
                 }
             }
@@ -227,6 +233,19 @@ public class CsvReader {
                 rowNumber++;
             }
             return table;
+        }
+    }
+
+    private static void addFormatter(Column newColumn, CsvReadOptions options) {
+        switch (newColumn.type()) {
+            case LOCAL_DATE_TIME :
+                ((DateTimeColumn) newColumn).setFormatter(options.dateTimeFormatter());
+                return;
+            case LOCAL_DATE:
+                ((DateColumn) newColumn).setFormatter(options.dateFormatter());
+                return;
+            case LOCAL_TIME :
+                ((TimeColumn) newColumn).setFormatter(options.timeFormatter());
         }
     }
 

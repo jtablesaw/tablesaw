@@ -17,6 +17,9 @@ package tech.tablesaw.io.csv;
 import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 
@@ -25,6 +28,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -124,7 +131,16 @@ public class CsvReaderTest {
         ColumnType[] columnTypes = detectColumnTypes(stream, options);
         assertTrue(Arrays.equals(bus_types, columnTypes));
     }
-    
+
+    @Test
+    public void testMillis() {
+
+        long[] times = {1530486314124L, 1530488214124L};
+        DoubleColumn d = DoubleColumn.create("times", times);
+        DateTimeColumn column = d.asDateTimes(ZoneOffset.UTC);
+        assertEquals(1530486314124L, column.get(0).toInstant(ZoneOffset.UTC).toEpochMilli());
+    }
+
     @Test
     public void testLocalDateDetectionEnglish() throws Exception {
 
@@ -261,6 +277,25 @@ public class CsvReaderTest {
 
         final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
         assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE))));
+    }
+
+    @Test
+    public void testDateWithFormatter2() throws Exception {
+
+        final boolean header = false;
+        final char delimiter = ',';
+        final boolean useSampling = true;
+
+        CsvReadOptions options = CsvReadOptions.builder("../data/date_format_test.txt")
+                .header(header)
+                .separator(delimiter)
+                .sample(useSampling)
+                .dateFormat("yyyy.MM.dd")
+                .build();
+
+        final Table table = Table.read().csv(options);
+        DateColumn date = table.dateColumn(0);
+        assertNotNull(date.firstElement());
     }
 
     @Test

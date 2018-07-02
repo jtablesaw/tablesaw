@@ -82,6 +82,10 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
      */
     private DateTimeFormatter selectedFormatter;
 
+    public void setFormatter(DateTimeFormatter formatter) {
+        this.selectedFormatter = formatter;
+    }
+
     public static DateColumn create(String name) {
         return create(name, DEFAULT_ARRAY_SIZE, Locale.getDefault());
     }

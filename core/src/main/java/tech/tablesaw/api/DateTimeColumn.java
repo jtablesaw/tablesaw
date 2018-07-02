@@ -72,7 +72,11 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
     /**
      * The formatter chosen to parse date-time strings for this particular column
      */
-    private TypeUtils.DateTimeConverter selectedFormatter;
+    private DateTimeFormatter selectedFormatter;
+
+    public void setFormatter(DateTimeFormatter formatter) {
+        this.selectedFormatter = formatter;
+    }
 
     private DateTimeColumnFormatter printFormatter = new DateTimeColumnFormatter();
 
@@ -216,7 +220,7 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
         if (selectedFormatter == null) {
             selectedFormatter = TypeUtils.getDateTimeFormatter(value);
         }
-        LocalDateTime datetime = selectedFormatter.convert(value);
+        LocalDateTime datetime = LocalDateTime.parse(value, selectedFormatter);
         return PackedLocalDateTime.pack(datetime);
     }
 

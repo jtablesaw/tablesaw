@@ -68,6 +68,10 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
      */
     private DateTimeFormatter selectedFormatter;
 
+    public void setFormatter(DateTimeFormatter formatter) {
+        this.selectedFormatter = formatter;
+    }
+
     private TimeColumnFormatter printFormatter = new TimeColumnFormatter();
 
     private IntArrayList data;
