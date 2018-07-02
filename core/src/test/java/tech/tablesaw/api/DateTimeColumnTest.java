@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -56,14 +57,17 @@ public class DateTimeColumnTest {
     @Test
     public void testConvertMillisSinceEpoch() {
         long millis = 1503952123189L;
-        column1.appendCell(Long.toString(millis));
-        assertEquals(1, column1.size());
-        assertEquals(2017, column1.get(0).getYear());
-        assertEquals(8, column1.get(0).getMonthValue());
-        assertEquals(28, column1.get(0).getDayOfMonth());
-        assertEquals(20, column1.get(0).getHour());
+        DoubleColumn dc = DoubleColumn.create("test");
+        dc.appendCell(Long.toString(millis));
+        DateTimeColumn column2 = dc.asDateTimes(ZoneOffset.UTC);
 
-        long[] millisArr = column1.asEpochMillisArray();
+        assertEquals(1, column2.size());
+        assertEquals(2017, column2.get(0).getYear());
+        assertEquals(8, column2.get(0).getMonthValue());
+        assertEquals(28, column2.get(0).getDayOfMonth());
+        assertEquals(20, column2.get(0).getHour());
+
+        long[] millisArr = column2.asEpochMillisArray();
         assertEquals(1, millisArr.length);
         assertEquals(millis, millisArr[0]);
     }
