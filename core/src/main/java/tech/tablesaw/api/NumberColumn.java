@@ -1,34 +1,5 @@
 package tech.tablesaw.api;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.geometricMean;
-import static tech.tablesaw.aggregate.AggregateFunctions.kurtosis;
-import static tech.tablesaw.aggregate.AggregateFunctions.max;
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.median;
-import static tech.tablesaw.aggregate.AggregateFunctions.min;
-import static tech.tablesaw.aggregate.AggregateFunctions.populationVariance;
-import static tech.tablesaw.aggregate.AggregateFunctions.product;
-import static tech.tablesaw.aggregate.AggregateFunctions.quadraticMean;
-import static tech.tablesaw.aggregate.AggregateFunctions.quartile1;
-import static tech.tablesaw.aggregate.AggregateFunctions.quartile3;
-import static tech.tablesaw.aggregate.AggregateFunctions.range;
-import static tech.tablesaw.aggregate.AggregateFunctions.skewness;
-import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
-import static tech.tablesaw.aggregate.AggregateFunctions.sum;
-import static tech.tablesaw.aggregate.AggregateFunctions.sumOfLogs;
-import static tech.tablesaw.aggregate.AggregateFunctions.sumOfSquares;
-import static tech.tablesaw.aggregate.AggregateFunctions.variance;
-import static tech.tablesaw.api.ColumnType.NUMBER;
-
-import java.text.NumberFormat;
-import java.time.ZoneOffset;
-import java.util.function.DoublePredicate;
-
-import org.apache.commons.math3.exception.NotANumberException;
-import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
-import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
-
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleIterable;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
@@ -37,6 +8,10 @@ import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import org.apache.commons.math3.exception.NotANumberException;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -48,6 +23,13 @@ import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.Selection;
+
+import java.text.NumberFormat;
+import java.time.ZoneOffset;
+import java.util.function.DoublePredicate;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.api.ColumnType.NUMBER;
 
 public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColumn, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
     double MISSING_VALUE = (Double) NUMBER.getMissingValue();
@@ -178,6 +160,9 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
 
     @Override
     DoubleList dataInternal();
+
+    @Override
+    NumberColumn appendMissing();
 
     /**
      * Returns the count of missing values in this column
