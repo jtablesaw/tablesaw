@@ -618,6 +618,9 @@ public class Table extends Relation implements Iterable<Row> {
 
     /**
      * Adds a single row to this table from sourceTable, copying every column in sourceTable
+     *
+     * @param rowIndex      The row in sourceTable to add to this table
+     * @param sourceTable   A table with the same column structure as this table
      */
     public void addRow(int rowIndex, Table sourceTable) {
         for (int i = 0; i < columnCount(); i++) {
@@ -1089,6 +1092,7 @@ public class Table extends Relation implements Iterable<Row> {
 
     /**
      * Applies the function in {@code pairs} to each group of contiguous rows of size n in the table
+     * This can be used, for example, to calculate a running average of in rows
      */
     public void rollWithRows(Consumer<Row[]> rowConsumer, int n) {
         if (!isEmpty()) {
