@@ -7,7 +7,7 @@
     <version>0.21.0</version>
     <name>Tablesaw</name>
     <description>High-performance Java Dataframe</description>
-    <url>https://jtablesaw.wordpress.com</url>
+    <url>https://github.com/jtablesaw/tablesaw</url>
     <scm>
         <connection>scm:git:git@github.com:jtablesaw/tablesaw.git</connection>
         <developerConnection>scm:git:git@github.com:jtablesaw/tablesaw.git</developerConnection>
