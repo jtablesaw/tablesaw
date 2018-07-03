@@ -1,21 +1,23 @@
 # JavaScript Plots 
 
-We're retiring the existing plotting code in Tablesaw. It will be deprecated in the .20.1 release. For doing quick, basic, exploratory visualizations the plotting library served its purpose, but it fell far short of what the best visualization tools provide. Unfortunately, none of those tools are written in Java. 
+We're retiring the existing plotting code in Tablesaw. It will soon be deprecated. For doing quick, basic, exploratory visualizations it served its purpose, but it fell far short of what the best visualization tools provide. Unfortunately, none of those tools are written in Java. 
 
-And so, we're switching to a new framework, which provides a Java wrapper around the Plot.ly open source Javascript visualization library. The advantages are huge; these are among the most important:
+And so we're switching to a new framework, which provides a Java wrapper around the Plot.ly open source JavaScript visualization library. The advantages are huge; these are among the most important:
 
 - It supports a much greater range of visualization types, including time-series, geographic maps, heat maps, 2D histograms, Contour plots, 3D scatterplots, etc. 
 - It provides a single, consistent API. With the current approach built on several different tools, this was not possible. 
-- It provides a single, consistent, and professional appearance to the rendered plots. 
+- It provides a single, consistent, and professional appearance to the rendered plots. Again, using multiple Java libraries made this impossible. 
 - Each chart renders with the same set of interactive tools for saving, printing, selecting points, zooming, etc. 
 - The range of supported customizations is enormous, including, fonts, legends, custom axis, spikes, hover effects, and on, and on...
 - And, of course, you can use the output in a Web page.
 
 The approach we've taken is to provide a Java wrapper that makes it easier to construct plots, using builders and type safe enums where possible to minimize spelling and other issues. We've also ensured that you can render Tablesaw columns without manually converting them to primitive types.  
 
-### Working in the UI
+Please be aware that we don't support the entire plot.ly API. We do, however, support a large portion of it. 
 
-The one advantage of the old approach is that you could create graphs easily in your IDE. We've retained this benefit by including a method for rendering plots without a servlet engine or web server. To do this, we write an output html file to disk, and use your default browser to load it on the desktop. 
+### Visualizing data while working in your IDE
+
+The one advantage of the old approach is that you could create graphs easily in your IDE. We've retained this benefit by including a method to render plots without a servlet engine or web server. To do this, we write an output html file to disk, and use your default browser to load it on the desktop. 
 
 ## Creating Plots
 
@@ -37,13 +39,13 @@ Not so bad, right?
 
 ## Rendering in a Web page
 
-The call to Plot.show() above opens your local browser on the plot. If you prefer to serve your plots with an engine like Jetty, or in a Web framework like Spark Java, you can.  Call the *asJavascript()* method on your *figure*. This returns the JavaScript as a String. Send it where you will. 
+The call to Plot.show() above opens your local browser on the plot. If you prefer to serve your plots with an engine like Jetty, or in a Web framework like Spark Java, you can call the *asJavascript()* method on your *figure*. This returns the JavaScript code as a String. Send it where you will. 
 
 ## Some details
 
 ### Layouts
 
-A layout controls the appearance of a figure. A simple default layout is supplied if you don't provide one. To create one, call Layout.builder(), and then supply the builder with the options you want. I could easily spend weeks documenting Layout. This should get you started. 
+A layout controls the appearance of a figure. A simple default layout is supplied if you don't provide one. To create one, call Layout.builder(), and then supply the builder with the options you want. I could easily spend weeks documenting Layout, but his should get you started. When you need more information, you can use the Plot.ly documentation.
 
 #### Basics
 
@@ -57,6 +59,15 @@ Layout layout = Layout.builder()
 		.build();
 ```
 
+To use this layout, we again construct a figure and (for interactive use) show it:
+
+```java
+Trace trace = ScatterTrace.builder(colX, colY).build();
+Plot.show(new Figure(layout, trace));
+```
+
+This would show the same plot as above, but with a title and different dimensions.
+
 Other simple options include setting **background colors** and **margins**.
 
 ```java
@@ -66,7 +77,7 @@ Layout layout = Layout.builder()
 		.build();
 ```
 
-These attributes change the background color of the plot and the surrounding area (paper). Colors can be specified by name or as hex strings.
+These attributes change the background color of the plot and the surrounding area (paper). Colors can be specified by name or as hex strings. Hex strings, of course, will let specify colors that aren't so jarring as a blue plot on a red background.
 
 #### Fonts
 
@@ -84,7 +95,7 @@ Layout layout = Layout.builder()
 		.build();
 ```
 
-The same approach is used to set fonts where text is displayed, such as a in a legend, an axis title, for hover text, or in a tick label. 
+The same approach we use here to format the plot title is used to set fonts anywhere text is displayed, such as a in a legend, an axis title, for hover text, or in a tick label. 
 
 #### Axes
 
@@ -148,3 +159,90 @@ Axis yAxis = Axis.builder().tickSettings(ticks).build();
 // etc. 
 ```
 
+## Some sample plots
+
+### Scatters
+
+```java
+double[] x = {1, 2, 3, 4, 5, 6};
+double[] y = {0, 1, 6, 14, 25, 39};
+String[] labels = {"a", "b", "c", "d", "e", "f"};
+
+ScatterTrace trace = ScatterTrace.builder(x, y)
+        .text(labels)
+        .build();
+        
+Plot.show(new Figure(trace));
+```
+
+### Line Plots
+
+You can make the example above a line plot by adding a *mode* to the trace.
+
+```Java
+ScatterTrace trace = ScatterTrace.builder(x, y)
+    .mode(ScatterTrace.Mode.LINE)
+    .text(labels)
+    .build();
+```
+
+
+
+### Histograms
+
+```java
+double[] y = {1, 4, 9, 16, 11, 4, -1, 20, 4, 7, 9, 12, 8, 6};
+
+HistogramTrace trace = HistogramTrace.builder(y).build();
+Plot.show(new Figure(trace));
+```
+
+Note that you can overlay two histograms by adding another trace:
+
+```Java
+double[] y1 = {1, 4, 9, 16, 11, 4, -1, 20, 4, 7, 9, 12, 8, 6};
+double[] y2 = {3, 11, 19, 14, 11, 14, 5, 24, -4, 10, 15, 6, 5, 18};
+
+HistogramTrace trace1 = HistogramTrace.builder(y1).build();
+HistogramTrace trace2 = HistogramTrace.builder(y1).build();
+
+Plot.show(new Figure(trace1, trace2));
+```
+
+### 2-D Histograms
+
+
+
+### 3-D Scatters
+
+
+
+### Bar plots
+
+```java
+Object[] x = {"sheep", "cows", "fish", "tree sloths"};
+double[] y = {1, 4, 9, 16};
+
+BarTrace trace = BarTrace.builder(x, y).build();
+Plot.show(new Figure(trace));
+```
+
+To render the above plot horizontally, we modify the trace slightly:
+
+```
+BarTrace trace = BarTrace.builder(x, y)
+	.orientation(BarTrace.Orientation.HORIZONTAL)
+	.build();
+```
+
+### Box plots
+
+```JavaScript
+Object[] x = {"sheep", "cows", "fish", "tree sloths", 
+	"sheep", "cows", "fish", "tree sloths", 
+	"sheep", "cows", "fish", "tree sloths"};
+double[] y = {1, 4, 9, 16, 3, 6, 8, 8, 2, 4, 7, 11};
+
+BoxTrace trace = BoxTrace.builder(x, y).build();
+Plot.show(new Figure(trace));
+```

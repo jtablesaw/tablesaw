@@ -9,11 +9,19 @@ You can also load data from a relational database using a JDBC ResultSet. This o
 
 ## CSV files
 
-As shown above, the easiest way to load data from a CSV file on disk is:
+As shown above, the easiest way to load data from a CSV file on disk is to use ```Table t = Table.read().csv(aFileName);```
 
-This method supplies defaults for everything but the filename. We assume that columns are separated by commas, and that the file has a single header row, which will be used to create column names. The method with all the option you can specify is:
+This method supplies defaults for everything but the filename. We assume that columns are separated by commas, and that the file has a single header row, which we use to create column names. The method with all the option you can specify is:
 
-    Table t1 = Table.read().csv(CsvReadOptionsBuilder options);
+    CsvReadOptionsBuilder builder = 
+    	CsvReadOptions.builder()
+    		.separator('\t)			// table is tab-delimited
+    		.header(false)			// no header
+    		.dateFormat("yyyy.MM.dd")
+    
+    CsvReadOptions options = builder.build();
+    
+    Table t1 = Table.read().csv(options);
 
 The _header_ option indicates whether or not there’s a one-line header row at the top of the file. If *header* is false, we treat all the rows as data.
 
@@ -31,8 +39,8 @@ You can also specify the types explicitly, by passing an array of ColumnType obj
     Table t = Table.read().csv(CsvReadOptions
         .builder("myFile.csv")
         .columnTypes(types));
-    
-This has some advantages. First, it reduces the loading time. Second, it gives you complete control over the types for your columns. In some cases, you must specify the column type, because Tablesaw can’t always guess correctly. For example, if a file has times encoded as HHmm so that noon appears as ‘1200’, it’s impossible to know that we want the time 12:00 and not the short integer 1,200. It’s also possible that the data set includes rare values that are missed in the guessing process.
+
+This has some advantages. First, it reduces the loading time as the system does not need to infer the column types. Second, it gives you complete control over the types for your columns. In some cases, you must specify the column type, because Tablesaw can’t always guess correctly. For example, if a file has times encoded as HHmm so that noon appears as ‘1200’, it’s impossible to know that we want the time 12:00 and not the short integer 1,200. It’s also possible that the data set includes rare values that are missed in the guessing process.
 
 ### Getting the guessed column types
 
@@ -72,30 +80,38 @@ It can be used to read local files, but also files read across the net, in S3, e
 
 ### Loading a CSV from a Website:
 
-    ColumnType[] types = {SHORT_INT, FLOAT, SHORT_INT};
-    String location = "https://raw.githubusercontent.com/lwhite1/Tablesaw/master/data/BushApproval.csv";
-    Table table;
-    try (InputStream input = new URL(location).openStream()) {
-      table = Table.csv(CsvReadOptions.bulider(input, "bush").columnTypes(types)));
-    }
+```java
+ColumnType[] types = {SHORT_INT, FLOAT, SHORT_INT};
+String location = "https://raw.githubusercontent.com/tech/Tablesaw/master/data/BushApproval.csv";
+Table table;
+try (InputStream input = new URL(location).openStream()) {
+  table = Table.csv(CsvReadOptions.builder(input, "bush")
+  					.columnTypes(types)));
+}
+```
 
 ### Loading a CSV from S3:
 
-    ColumnTypes[] types = {SHORT_INT, FLOAT, SHORT_INT};
-    S3Object object = s3Client.getObject(new GetObjectRequest(bucketName, key));
-    InputStream stream = object.getObjectContent();
-    Table t = Table.csv(CsvReadOptions.bulider(stream, "bush").columnTypes(types)));
+```Java
+ColumnTypes[] types = {SHORT_INT, FLOAT, SHORT_INT};
+S3Object object = s3Client
+	.getObject(new GetObjectRequest(bucketName, key));
+
+InputStream stream = object.getObjectContent();
+Table t = Table.csv(CsvReadOptions.builder(stream, "bush")
+                    .columnTypes(types)));
+```
 
 ### Loading from Database ResultSets
 It's equally easy to create a table from the results of a database query. In this case, you never need to specify the column types, because they are inferred from the database column types. 
 
     Table t = Table.read().db(ResultSet resultSet, String tableName);
-    
+
 Here’s a more complete example that  includes the JDBC setup:
 
     String DB_URL = "jdbc:derby:CoffeeDB;create=true";
     Connection conn = DriverManager.getConnection(DB_URL);
-
+    
     Table customer = null; 
     try (Statement stmt = conn.createStatement()) {
       String sql = "SELECT * FROM Customer";

@@ -22,7 +22,7 @@ public class ScatterTest {
     private final double[] x = {1, 2, 3, 4, 5, 6};
     private final double[] y = {0, 1, 6, 14, 25, 39};
 
-    private final String[] labels = {"a", "b", "c", "d"};
+    private final String[] labels = {"a", "b", "c", "d", "e", "f"};
 
     @Test
     public void testAsJavascript() {
