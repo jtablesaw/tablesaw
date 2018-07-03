@@ -20,9 +20,9 @@ Second, you need to add the dependency to your pom file. It's available on Maven
 
 That's it for setup. On to design
 
-## The Tao 
+## Tables and Columns (all the way down) 
 
-As you would expect, Tablesaw is all about tables, and tables are made of columns. That's where we'll start.
+As you would expect, Tablesaw is all about tables, and tables are made of columns. We'll start with columns.
 
 ### Columns
 
@@ -115,15 +115,38 @@ nc.where(Selection.withRange(10, 110));
 nc.where(Selection.withoutRange(10, 50));
 ```
 
+Obviously, if you have several columns of the same size (i.e. length) as you would in a table of data, you can make a selection with one column and use it to filter another:
+
+```java
+NumberColumn result = firstColumn.where(someOtherColumn.startsWith("foo"));
+```
+
 #### Map functions
 
-There is nothing special about map operations; they're simply methods on columns that return new Columns as their result. You've already seen one: The column *multiply(aNumber)* operation above is a map function. To multiple two columns, use:
+There is nothing special about map operations; they're simply methods on columns that return new Columns as their result. You've already seen one: The column *multiply(aNumber)* method above is a map function. To multiple two columns, use:
 
 ```java
 nc1.multiply(nc2);
 ```
 
 In this case, each value in column nc1 is multiplied by the corresponding value in nc2, rather than by a scalar constant as in the example above.
+
+There are many map functions built-in for the various column types. Here are some examples for StringColumn:
+
+```java
+s = aStringColumn.upperCase();
+s = s.replaceFirst("foo", "bar")
+s = s.substring(3, 10);
+s = s.padEnd(4, 'x');						// put 4 x chars at the end of each string
+
+// this returns the common prefix of each row in two columns
+y = s.commonPrefix(anotherStringColumn);
+
+// this returns a measure of the similarity (levenshtein distance) between two columns
+nc = s.distance(anotherStringColumn);
+```
+
+There are many others. 
 
 #### Reduce functions: Summarizing a column 
 
@@ -142,15 +165,151 @@ When we discuss tables below, we'll show how to summarize a column to create sub
 ### Tables
 As described above, a table is a named collection of columns. All columns in the table must be the same size, although missing values are allowed. A table can contain any combination of column types.
 
-Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of a table where one column contains the column names, etc.  The structure() method is one of several that are great for getting to know your table. 
+#### Creating Tables
+
+You can create a table in code. For example:
 
 ```java
-Table structure = myTable.structure();
+String[] animals = {"bear", "cat", "giraffe"};
+double[] cuteness = {90.1, 84.3, 99.7};
 
-String shape = myTable.shape();
+Table cuteAnimals = Table.create("Cute Animals)
+	.addColumns(
+		StringColumn.create("Animal types", animals),
+		DoubleColumn.create("rating", cuteness));
+```
 
-Table head = myTable.first(10);
-Table tail = myTable.last(5);
+More frequently, you will load a table from a CSV or other delimited text file. 
+
+```java
+Table x = Table.read().csv("testing.csv");
+```
+
+Tablesaw does a pretty good job at guessing the column types for many data sets, but you can specify them    if it guesses wrong, or to improve performance. Numerous other options are available, such as specifying whether or not there's a header, using a non-standard delimiter, and so on. These are described in the section on IO.
+
+The IO section also shows how you can read data from a database.  
+
+#### Exploring Tables
+
+Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of a table where one column contains the column names, etc.  The structure() method is one of several that are great for getting to know your table. Here are some examples.
+
+```java
+Table structure = bushTable.structure();
+
+>	          Structure of bush.csv          
+	 Index  |  Column Name  |  Column Type  |
+	-----------------------------------------
+	     0  |         date  |   LOCAL_DATE  |
+	     1  |     approval  |       NUMBER  |
+	     2  |          who  |       STRING  |
+
+String shape = bushTable.shape();
+>	323 rows X 3 cols
+
+Table head = bushTable.first(3);
+>	             bush.csv              
+	    date     |  approval  |  who  |
+	-----------------------------------
+	 2004-02-04  |      53.0  |  fox  |
+	 2004-01-21  |      53.0  |  fox  |
+	 2004-01-07  |      58.0  |  fox  |
+                     
+Table tail = myTable.last(3);
+> etc.
+```
+
+Table's toString() method returns a String representation like those shown above. It returns a limited number of rows by default, but you can also use *table.printAll()*, or *table.print(n)* to get the output you want.
+
+Of course, this is just the beginning of exploratory data analysis. You can also use numeric and visual tools to explore your data. These facilities are described in the documentation on statistics and plotting, respectively.
+
+#### Working with a table's columns
+
+Often you'll want to work with specific columns in a table. Here are some useful methods:
+
+```java
+table.columnNames();  			// returns all column names
+table.column("Foo");			// returns the column named 'Foo' if it's in the table.
+table.column(0);				// returns the first column in the table;
+
+// removing columns
+table.removeColumns("Foo");			// keep everything but foo
+table.retainColumns("Foo", "Bar");  // only keep foo and bar
+table.removeColumnsWithMissingValues();
+
+// adding columns
+table.addColumns(column1, column2, column3);
+```
+
+There are other relevant operations in Table. See the API documentation on Table for the full details on all of its functionality.
+
+####  Working with rows
+
+As with columns, many options exist for working with tables in row-wise fashion. Here are some useful ones:
+
+```java
+Table result = table.dropDuplicateRows();
+result = table.dropRowsWithMissingValues();
+table.addRow(43, sourceTable);	// adds row 43 from sourceTable to the receiver
+table.sample(200);				// select 200 rows at random from table 
+int[] indexes = table.rows();	// returns an int array from 0 to table.rowCount()
+```
+
+You can also perform arbitrary operations on each row in the table.  One way is to just iterate over the rows and work with each column separately:
+
+```java
+for (Row row : table) {
+    System.out.println(column1.get(row.rowNumber())); // etc.
+}
+```
+
+There are better ways, however. Another approach lets you skip the iteration and just provide a Consumer for each row.
+
+```java
+// Create a consumer as an object or lambda (show below)
+Consumer<Row> doable = row -> {
+    if (row.getRowNumber() < 5) {
+        System.out.println("On "
+                           + row.getDate("date")
+                           + ": "
+                           + row.getDouble("approval"));
+    }
+};
+// apply the lambda
+table.doWithRows(doable);
+```
+
+If you need to process more than one row at a time, there are several methods to help. 
+
+```java
+// work with a sliding window of rows
+// for example 0, 1, and 2, then 1, 2, and 3. etc.
+table.rollWithRows(consumer, 3);		
+
+// work with a shifting window of rows
+// for example rows 0 through 4, then 5 through 9, etc.
+table.stepWithRows(consumer, 5);		
+
+table.doWithRowPairs(Pairs)	// easy syntax for working with each pair of rows
+```
+
+
+
+#### Sorting
+
+To sort a table, you can just use the sort() function and give it a column name (or two):
+
+```java
+Table sorted = table.sort("foo", "bar", "bam");
+```
+
+The above code sorts in ascending order by default.  Other options are shown below:
+
+```java
+sorted = table.sortDescending("foo");
+sorted = table.sortAscending("bar"); 	// just like sort(), but makes order explicit.
+
+/* sort on foo ascending, then bar descending. Note the minus sign preceding the name of column bar. */
+sorted = table.sort("foo", "-bar");		 
 ```
 
 
