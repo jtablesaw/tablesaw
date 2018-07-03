@@ -197,16 +197,21 @@ HistogramTrace trace = HistogramTrace.builder(y).build();
 Plot.show(new Figure(trace));
 ```
 
-Note that you can overlay two histograms by adding another trace:
+Note that you can overlay two histograms by adding another trace, setting opacity, and providing a simple layout:
 
 ```Java
-double[] y1 = {1, 4, 9, 16, 11, 4, -1, 20, 4, 7, 9, 12, 8, 6};
+double[] y1 = {1, 4, 9, 16, 11, 4, 0, 20, 4, 7, 9, 12, 8, 6, 28, 12};
 double[] y2 = {3, 11, 19, 14, 11, 14, 5, 24, -4, 10, 15, 6, 5, 18};
 
-HistogramTrace trace1 = HistogramTrace.builder(y1).build();
-HistogramTrace trace2 = HistogramTrace.builder(y1).build();
+HistogramTrace trace1 = 	
+    HistogramTrace.builder(y1).opacity(.75).build();
+HistogramTrace trace2 =
+    HistogramTrace.builder(y2).opacity(.75).build();
 
-Plot.show(new Figure(trace1, trace2));
+Layout layout  = Layout.builder()
+    .barMode(Layout.BarMode.OVERLAY)
+    .build();
+Plot.show(new Figure(layout, trace1, trace2));
 ```
 
 ### 2-D Histograms

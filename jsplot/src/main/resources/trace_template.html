@@ -26,6 +26,10 @@ line: {{line | raw }},
 {% if orientation is not null %}
 orientation: '{{orientation}}',
 {% endif %}
+{% if opacity is not null %}
+opacity: '{{opacity}}',
+{% endif %}
+
 type: '{{type}}',
 name: '{{name}}',
 };

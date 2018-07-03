@@ -36,6 +36,27 @@ public class Layout {
     }
 
     /**
+     * Determines the mode of hover interactions.
+     */
+    public enum BarMode {
+        STACK("stack"),
+        GROUP("group"),
+        OVERLAY("overlay"),
+        RELATIVE("relative");
+
+        private String value;
+
+        BarMode(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
+    /**
      * Determines the mode of drag interactions.
      * "select" and "lasso" apply only to scatter traces with markers or text.
      * "orbit" and "turntable" apply only to 3D scenes.
@@ -146,6 +167,8 @@ public class Layout {
 
     private Axis yAxis;
 
+    private BarMode barMode;
+
     private Layout(LayoutBuilder builder) {
         this.title = builder.title;
         this.autoSize = builder.autoSize;
@@ -164,6 +187,7 @@ public class Layout {
         this.paperBgColor = builder.paperBgColor;
         this.plotBgColor = builder.plotBgColor;
         this.showLegend = builder.showLegend;
+        this.barMode = builder.barMode;
     }
 
     public String asJavascript() {
@@ -197,6 +221,8 @@ public class Layout {
         context.put("showlegend", showLegend);
         context.put("plotbgcolor", plotBgColor);
         context.put("paperbgcolor", paperBgColor);
+
+        context.put("barMode", barMode);
 
         if (xAxis != null) {
             context.put("xAxis", xAxis);
@@ -299,6 +325,8 @@ public class Layout {
 
         Axis yAxis;
 
+        BarMode barMode = BarMode.GROUP;
+
         public Layout build() {
             return new Layout(this);
         }
@@ -312,6 +340,11 @@ public class Layout {
 
         public LayoutBuilder titleFont(Font titleFont) {
             this.titleFont = titleFont;
+            return this;
+        }
+
+        public LayoutBuilder barMode(BarMode barMode) {
+            this.barMode = barMode;
             return this;
         }
 

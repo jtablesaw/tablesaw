@@ -94,8 +94,8 @@ try (InputStream input = new URL(location).openStream()) {
 
 ```Java
 ColumnTypes[] types = {SHORT_INT, FLOAT, SHORT_INT};
-S3Object object = s3Client
-	.getObject(new GetObjectRequest(bucketName, key));
+S3Object object = 
+    s3Client.getObject(new GetObjectRequest(bucketName, key));
 
 InputStream stream = object.getObjectContent();
 Table t = Table.csv(CsvReadOptions.builder(stream, "bush")

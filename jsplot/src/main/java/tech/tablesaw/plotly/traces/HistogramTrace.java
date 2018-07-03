@@ -13,6 +13,7 @@ import java.util.Map;
 public class HistogramTrace extends AbstractTrace {
 
     private double[] x;
+    private double opacity;
 
     public static HistogramBuilder builder(double[] values) {
         return new HistogramBuilder(values);
@@ -25,6 +26,7 @@ public class HistogramTrace extends AbstractTrace {
     private HistogramTrace(HistogramBuilder builder) {
         super(builder);
         this.x = builder.x;
+        this.opacity = builder.opacity;
     }
 
     @Override
@@ -46,6 +48,7 @@ public class HistogramTrace extends AbstractTrace {
         Map<String, Object> context = super.getContext();
         context.put("variableName", "trace" + i);
         context.put("x", Utils.dataAsString(x));
+        context.put("opacity", opacity);
         return context;
     }
 
@@ -79,6 +82,11 @@ public class HistogramTrace extends AbstractTrace {
 
         public HistogramBuilder histNorm(String histNorm) {
             this.histNorm = histNorm;
+            return this;
+        }
+
+        public HistogramBuilder opacity(double opacity) {
+            super.opacity(opacity);
             return this;
         }
 
