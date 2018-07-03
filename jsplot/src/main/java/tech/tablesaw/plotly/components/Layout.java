@@ -36,7 +36,14 @@ public class Layout {
     }
 
     /**
-     * Determines the mode of hover interactions.
+     * Determines the display mode for bars when you have multiple bar traces. This also applies to histogram bars.
+     * Group is the default.
+     *
+     * With "stack", the bars are stacked on top of one another.
+     * With "relative", the bars are stacked on top of one another, but with negative values below the axis,
+     * positive values above.
+     * With "group", the bars are plotted next to one another centered around the shared location.
+     * With "overlay", the bars are plotted over one another, provide an "opacity" to see through the overlaid bars.
      */
     public enum BarMode {
         STACK("stack"),

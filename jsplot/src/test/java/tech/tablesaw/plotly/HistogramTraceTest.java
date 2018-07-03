@@ -20,7 +20,6 @@ public class HistogramTraceTest {
 
     @Test
     public void show() {
-
         Layout layout = Layout.builder().barMode(Layout.BarMode.OVERLAY).build();
         HistogramTrace trace1 = HistogramTrace.builder(y1).opacity(.75).build();
         HistogramTrace trace2 = HistogramTrace.builder(y2).opacity(.75).build();
