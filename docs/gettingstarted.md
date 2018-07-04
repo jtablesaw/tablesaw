@@ -233,8 +233,7 @@ Often you'll want to work with specific columns in a table. Here are some useful
 
 ```java
 table.columnNames();  			// returns all column names
-table.column("Foo");			// returns the column named 'Foo' if it's in the table.
-table.column(0);				// returns the first column in the table;
+List<Column> = table.columns(); // returns all the columns in the table
 
 // removing columns
 table.removeColumns("Foo");			// keep everything but foo
@@ -245,7 +244,34 @@ table.removeColumnsWithMissingValues();
 table.addColumns(column1, column2, column3);
 ```
 
-There are other relevant operations in Table. See the API documentation on Table for the full details on all of its functionality.
+##### Getting specific column types from a table
+
+Columns can be retrieved from tables by name or position. The simplest method *column()* returns a object of type Column. This may be good enough, but often you want to get a column of a specific type. For example, you would need to cast the value returned to a NumberColumn to use its values in a scatter plot. 
+
+```java
+Column nc = table.column("Foo"); // returns the column named 'Foo' if it's in the table.
+// or 
+Column nc = table.column(0);  // returns the first column
+
+// To work with a NumberColumn you can cast the return value
+NumberColumn nc = (NumberColumn) table.column(0); 
+// Now you can do some numeric stuff with the column nc
+```
+
+Table also supports methods that return columns of the desired type directly:
+
+```Java
+NumberColumn nc = table.numberColumn(0); 
+DateColumn dc = table.dateColumn("start date");
+```
+
+If you want all the columns of specific type, you can get those as well. The method columnsOfType(aColumnType) returns them as a List, but you still have to cast the results. For example, to format all columns as ints when you print them, you could do this. 
+
+```Java
+table.columnOfType(ColumnType.NUMBER).forEach(x ->                                               		((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
+```
+
+> **Key point:** You may want a specific kind of column to work with. Either use the standard *column()* method and cast the result or use one of the type specific methods (like *numberColumn()*) that handle the cast for you. There are also methods or getting columns of a specific type. 
 
 ####  Working with rows
 
@@ -254,12 +280,18 @@ As with columns, many options exist for working with tables in row-wise fashion.
 ```java
 Table result = table.dropDuplicateRows();
 result = table.dropRowsWithMissingValues();
+
+// drop rows using Selections
+result = table.dropWhere(table.numberColumn(0).isLessThan(100));
+
+// add rows
 table.addRow(43, sourceTable);	// adds row 43 from sourceTable to the receiver
+
+// sampling
 table.sample(200);				// select 200 rows at random from table 
-int[] indexes = table.rows();	// returns an int array from 0 to table.rowCount()
 ```
 
-You can also perform arbitrary operations on each row in the table.  One way is to just iterate over the rows and work with each column separately:
+You can also perform arbitrary operations on each row in the table.  One way is to just iterate over the rows and work with each column individually, using Row::rowNumber() as the index:
 
 ```java
 for (Row row : table) {
