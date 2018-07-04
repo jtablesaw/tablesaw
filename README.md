@@ -34,15 +34,17 @@ Beyond tablesaw-core:
 ### Documentation and support:
 
 * Please see our documentation page: https://jtablesaw.github.io/tablesaw/ 
+* Jump right in with this guide:  https://jtablesaw.github.io/tablesaw/gettingstarted 
 
 ### Tablesaw features: 
 
 #### Data processing & transformation
 * Import data from RDBMS and CSV files, local or remote (http, S3, etc.)
-* Combine files
-* Add and remove columns
+* Combine tables by appending or joining
+* Add and remove columns or rows
 * Sort, Group, Filter 
 * Map/Reduce operations
+* Handle missing values
 
 #### Statistics 
 * Descriptive stats: mean, min, max, median, sum, product, standard deviation, variance, percentiles, geometric mean, skewness, kurtosis, etc.
@@ -60,15 +62,3 @@ Here's an example where we use [XChart](https://github.com/timmolter/XChart) to 
 ![Alt text](https://jtablesaw.files.wordpress.com/2016/07/tornados3.png?w=809)
 
 If you see something that can be improved, please let us know.
-
-#### A note on the new version
-
-> Version 0.20 includes some fundamental changes. Any existing code using older versions of Tablesaw will require modifications. We regret the inconvenience.
->
-> The biggest change is the removal of support for several numeric column types. We now support only double precision floating point columns. We may revert those changes in the future, but for now they let us achieve greater quality and stability. The effort to provide full support for multiple numeric columns is considerable. 
->
-> The new version also represents a significant improvement in several dimensions. The changes are summarized [here](https://jtablesaw.github.io/tablesaw/changes_in_v_0.2), but it's worth mentioning a couple: 
->
-> Overall, interfaces for tables and columns are more consistent, general, powerful, and robust. Test coverage is up from 44% to nearly 70%. Documentation is a little better, too, although it still has great room for improvement. Overall, this is a big step forward for Tablesaw.  
-
-### 

@@ -40,27 +40,35 @@ You can also specify the types explicitly, by passing an array of ColumnType obj
         .builder("myFile.csv")
         .columnTypes(types));
 
-This has some advantages. First, it reduces the loading time as the system does not need to infer the column types. Second, it gives you complete control over the types for your columns. In some cases, you must specify the column type, because Tablesaw can’t always guess correctly. For example, if a file has times encoded as HHmm so that noon appears as ‘1200’, it’s impossible to know that we want the time 12:00 and not the short integer 1,200. It’s also possible that the data set includes rare values that are missed in the guessing process.
+This has some advantages. First, it reduces the loading time as the system does not need to infer the column types. Second, it gives you complete control over the types for your columns. In some cases, you must specify the column type, because Tablesaw can’t always guess correctly. For example, if a file has times encoded as HHmm so that noon appears as ‘1200’, it’s impossible to infer that this is the time 12:00 and not the integer 1,200. It’s also possible that the data set includes rare values that are missed in the guessing process: when looking at column types we consider a sample of data to avoid having to read the entire file twice.
 
-### Getting the guessed column types
+#### Getting the guessed column types
 
-If the table has many columns, it can be tedious to build the column type array by hand. To help, CsvReader has a method that will guess the ColumnTypes without loading the file and return them in the form of a String that resembles a Java array literal.
+If the table has many columns, it can be tedious to build the column type array by hand. To help, CsvReader has a method that returns the inferred ColumnTypes in the form of a String in the form of a String that resembles a Java array literal. This method can be used even if reading the file fails.
 
-    CsvReader.printColumnTypes("data/BushApproval.csv", true, ','));
+```java
+CsvReader.printColumnTypes("data/BushApproval.csv", true, ','));
+> ColumnType[] columnTypes = {
+  LOCAL_DATE, // 0 date 
+  SHORT_INT,  // 1 approval 
+  CATEGORY,   // 2 who 
+}
+```
 
-which returns a string that includes the types for each column, their position in the  table, and the name derived from the header:
+Note that the returned String is a legal array literal you can paste into Java code: the types are comma separated, and the index position and the column name would be interpreted as comments. You can edit it to fix whatever column types are incorrect, paste it into your code.
 
-    ColumnType[] columnTypes = {
-      LOCAL_DATE, // 0 date 
-      SHORT_INT, // 1 approval 
-      CATEGORY, // 2 who 
-    }
-
-Note that this String is a legal array literal: the types are comma separated, and the index position and the column name would be interpreted as comments if you paste the output into java code. You can edit it, paste it into your code, and use it directly.
-
-Skipping columns during import
+#### Skipping columns during import
 
 Sometimes you have a file with columns that you’re not interested in. You can ignore those columns during the import process by using the special “SKIP” column type as shown below:
+
+```Java
+ColumnType[] types = {SKIP, INTEGER, FLOAT, FLOAT, SKIP};
+Table t = Table.read().csv(CsvReadOptions
+    .builder("myFile.csv")
+    .columnTypes(types));
+```
+
+In this example, the first and last columns are not loaded.
 
 ### Missing data
 
@@ -68,13 +76,15 @@ Tablesaw has a predefined set of strings that it interprets as missing data when
 
 When one of these strings is encountered, it is replaced by a type-specific missing indicator inside Tablesaw.  See the documentation on Missing Data for more information.
 
-Note that currently, there is no way to specify different missing value strings. This is a recognized deficiency captured in this issue.
+Note that currently, there is no way to specify different missing value strings if your file has an unusual one (e.g. "-") . This is a recognized deficiency.  A workaround is to delete the value in the cell before trying to load it.
 
 ### Using the Stream API
 
 All the examples above attempt to streamline the loading process when you have a CSV file stored on your file system. A more flexible way to load a CSV is using the Stream interface, which takes a java.io.InputStream as a parameter.
 
-    Table.read().csv(InputStream stream, String tableName
+```java
+Table.read().csv(InputStream stream, String tableName);
+```
 
 It can be used to read local files, but also files read across the net, in S3, etc. Here are examples using HTTP and S3. Here’s some examples.
 
@@ -82,7 +92,8 @@ It can be used to read local files, but also files read across the net, in S3, e
 
 ```java
 ColumnType[] types = {SHORT_INT, FLOAT, SHORT_INT};
-String location = "https://raw.githubusercontent.com/tech/Tablesaw/master/data/BushApproval.csv";
+String location = 
+    "https://raw.githubusercontent.com/jtablesaw/tablesaw/master/data/bush.csv";
 Table table;
 try (InputStream input = new URL(location).openStream()) {
   table = Table.csv(CsvReadOptions.builder(input, "bush")

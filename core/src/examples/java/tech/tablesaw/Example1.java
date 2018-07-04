@@ -118,6 +118,7 @@ public class Example1 {
 
         StringColumn month = date.month();
         table1.addColumns(month);
+        month.setName("month");
 
         StringColumn who = table1.stringColumn("who");
 
@@ -125,9 +126,9 @@ public class Example1 {
         xtab.columnsOfType(ColumnType.NUMBER).forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
         out(xtab);
 
-        Table percents = CrossTab.tablePercents(table1, month, who);
+        Table percents = table1.xTabTablePercents("month", "who");
         percents.columnsOfType(ColumnType.NUMBER)
-                .forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.fixedWithGrouping(3)));
+                .forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
         out(percents);
 
         out(table1.project("who", "approval").first(10));

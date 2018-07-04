@@ -1,8 +1,6 @@
-
-
 # Getting started with Tablesaw
 
-Java is a great language, but it wasn't designed for data analysis. Tablesaw makes it easy to do data analysis in Java, but to accomplish that, we did things a little differently than you might expect. After we get you up and running, we tell you everything you need to know to use Tablesaw happily and productively.
+Java is a great language, but it wasn't designed for data analysis. Tablesaw makes it easy to do data analysis in Java, but to accomplish that, we did things a little differently than you might expect. After you're up and running, we'll tell you what you need to know to use Tablesaw happily and productively.
 
 ## Setup
 
@@ -28,7 +26,7 @@ As you would expect, Tablesaw is all about tables, and tables are made of column
 
 A column is a named, one-dimensional collection of data. All data in a column must be of the same type. 
 
-Currently, Tablesaw supports columns for Strings, double-precision floating point numbers, booleans, LocalDates, LocalTimes, and LocalDateTimes. The date and time types are based on the java.time classes introduced in Java 8.
+Currently, Tablesaw supports columns for Strings, doubles, booleans, LocalDates, LocalTimes, and LocalDateTimes. The date and time types are based on the java.time classes introduced in Java 8.
 
 To create a column of numbers you can use one of its *create()* methods:
 
@@ -36,7 +34,6 @@ To create a column of numbers you can use one of its *create()* methods:
 double[] numbers = {1, 2, 3, 4};
 NumberColumn nc = DoubleColumn.create("Test", numbers);
 out(nc.print());
-
 ```
 which produces: 
 ```java
@@ -54,7 +51,7 @@ which returns 3.0.
 
 #### Array Operations
 
-Because columns are so important, Tablesaw makes them easy to work with. Many operations that work on numbers in standard Java, for example, work on columns of numbers in Tablesaw. To multiply every value in a column by 4, we use the *multiply()* method, which returns a new column of the same size as the original.
+Tablesaw makes columns easy to work with. Many operations that work on numbers in standard Java, for example, work on *columns* of numbers in Tablesaw. To multiply every value in a column by 4, we use the *multiply()* method, which returns a new column of the same size as the original.
 
 ```java
 NumberColumn nc2 = nc.multiply(4);
@@ -74,7 +71,7 @@ Generally, Tablesaw will provide a name for columns created this way. If you don
 
 #### Objects and Primitives
 
-Many Java programs and programmers work exclusively with Objects, rather than primitives. In Tablesaw, we use primitives whenever possible because they use so much less memory than their boxed alternatives.  A Byte object, for example, uses as much memory as a primitive double, even though bytes have a range of only 256 values. 
+Many Java programs and programmers work exclusively with Objects, rather than primitives. In Tablesaw, we use primitives whenever possible because they use *so much* less memory than their boxed alternatives.  A Byte object, for example, uses as much memory as a primitive double, even though bytes have a range of only 256 values. 
 
 There is a price for this frugality. When you work with primitives, you forgo some common java capabilities, like the use of standard Java 8 predicates. While Java thoughtfully provides some specialized predicate interfaces (e.g. *IntPredicate*), they don't provide any primitive *BiPredicate* implementations. Without an IntBiPredicate, we can't implement operations like a < b. So we were left to roll our own. You can find them in the package *tech.tablesaw.filtering.predicates*. 
 
@@ -179,19 +176,23 @@ Table cuteAnimals = Table.create("Cute Animals)
 		DoubleColumn.create("rating", cuteness));
 ```
 
+#### Importing data
+
 More frequently, you will load a table from a CSV or other delimited text file. 
 
 ```java
 Table x = Table.read().csv("testing.csv");
 ```
 
-Tablesaw does a pretty good job at guessing the column types for many data sets, but you can specify them    if it guesses wrong, or to improve performance. Numerous other options are available, such as specifying whether or not there's a header, using a non-standard delimiter, and so on. These are described in the section on IO.
+Tablesaw does a pretty good job at guessing the column types for many data sets, but you can specify them    if it guesses wrong, or to improve performance. Numerous other options are available, such as specifying whether or not there's a header, using a non-standard delimiter, and so on. 
 
-The IO section also shows how you can read data from a database.  
+***Note:*** Getting data loaded is sometimes the hardest part of data analysis. Advanced options for loading data are described in the section on [Importing Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data).
+
+The IO section also shows how you can read data from a database or a stream. The latter is useful for reading data from a Web site or an S3 bucket.  
 
 #### Exploring Tables
 
-Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of a table where one column contains the column names, etc.  The structure() method is one of several that are great for getting to know your table. Here are some examples.
+Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of another table where one column contains the column names, etc.  The structure() method is one of several that are great for getting to know your table. Here are some examples.
 
 ```java
 Table structure = bushTable.structure();
@@ -292,8 +293,6 @@ table.stepWithRows(consumer, 5);
 table.doWithRowPairs(Pairs)	// easy syntax for working with each pair of rows
 ```
 
-
-
 #### Sorting
 
 To sort a table, you can just use the sort() function and give it a column name (or two):
@@ -311,8 +310,6 @@ sorted = table.sortAscending("bar"); 	// just like sort(), but makes order expli
 /* sort on foo ascending, then bar descending. Note the minus sign preceding the name of column bar. */
 sorted = table.sort("foo", "-bar");		 
 ```
-
-
 
 #### Filtering tables with selections
 
@@ -371,6 +368,40 @@ which says "return the mean and median sales by day of week."
 
 > **Key point**: Tables are usually split based on columns, but the columns can be calculated on the fly
 
+##### Cross-Tabulations (AKA contingency tables)
+
+If you're only interested in how the frequently observations appear in different categories, you can use cross-tabulations. In the example below we show the table percents, but you can also get row and column percents and raw counts.
+
+```Java
+Table percents = table.xTabTablePercents("month", "who");
+
+// make table print as percents with no decimals instead of the raw doubles it holds
+percents.columnsOfType(ColumnType.NUMBER)
+    .forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
+System.out.println(percents);
+```
+The formatted output is shown below.
+```
+                                  Crosstab Table Proportions:                               
+ [labels]   |  fox  |  gallup  |  newsweek  |  time.cnn  |  upenn  |  zogby  |  total  |
+----------------------------------------------------------------------------------------
+     APRIL  |   2%  |      3%  |        1%  |        0%  |     0%  |     1%  |     7%  |
+    AUGUST  |   1%  |      2%  |        1%  |        0%  |     0%  |     1%  |     5%  |
+  DECEMBER  |   1%  |      3%  |        1%  |        1%  |     1%  |     2%  |     8%  |
+  FEBRUARY  |   2%  |      3%  |        1%  |        1%  |     0%  |     1%  |     9%  |
+   JANUARY  |   2%  |      4%  |        2%  |        1%  |     2%  |     2%  |    13%  |
+      JULY  |   2%  |      3%  |        1%  |        1%  |     0%  |     1%  |     8%  |
+      JUNE  |   2%  |      3%  |        0%  |        0%  |     0%  |     1%  |     7%  |
+     MARCH  |   2%  |      4%  |        1%  |        1%  |     0%  |     2%  |     9%  |
+       MAY  |   1%  |      3%  |        2%  |        1%  |     0%  |     0%  |     7%  |
+  NOVEMBER  |   1%  |      3%  |        2%  |        1%  |     0%  |     0%  |     7%  |
+   OCTOBER  |   2%  |      3%  |        2%  |        1%  |     0%  |     1%  |    10%  |
+ SEPTEMBER  |   2%  |      3%  |        2%  |        1%  |     0%  |     1%  |     9%  |
+     Total  |  20%  |     37%  |       17%  |        9%  |     3%  |    14%  |   100%  |
+```
+
+
+
 #### Chaining table operations
 
 Consider the case where you filter a table and want to filter the result. For example, 
@@ -382,7 +413,9 @@ double average = t.selectWhere(t.stringColumn("foo")
       .nCol("age").mean();
 ```
 
+## Conclusion
 
+We've covered a lot of ground. To learn more, please take a look at the [User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc) or API documentation ([Java Docs](https://jtablesaw.github.io/tablesaw/apidocs/index)).
 
 [^1]: The method shown does not actually "produce" any output For that you would call *System.out.println()*. For brevity, this "faux" output will be shown indented by one tab beneath the code that produced it.
 
