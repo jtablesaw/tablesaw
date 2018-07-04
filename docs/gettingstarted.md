@@ -120,7 +120,7 @@ NumberColumn result = firstColumn.where(someOtherColumn.startsWith("foo"));
 
 > **Key point:** Note the StringColumn method *startsWith(aString)*. There are many such column-type specific methods that can be used in building queries. For StringColumn, these methods are defined in the tech.tablesaw.columns.strings.StringFilters interface. It also includes endsWith(), isEmpty(), isAlpha(), containsString()[^2]. Each column has a similar set of filter operations. They can all be found in their filter interfaces located in sub-folders of tech.tablesaw.columns (e.g. tech.tablesaw.columns.dates.DateFilters). 
 
-####Map functions
+#### Map functions
 
 There is nothing special about map operations; they're simply methods on columns that return new Columns as their result. You've already seen one: The column *multiply(aNumber)* method above is a map function. To multiple two columns, use:
 
