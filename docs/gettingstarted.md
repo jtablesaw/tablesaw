@@ -35,7 +35,7 @@ double[] numbers = {1, 2, 3, 4};
 NumberColumn nc = DoubleColumn.create("Test", numbers);
 out(nc.print());
 ```
-which produces: 
+which produces: [^1]
 ```java
 Column: Test
 1.0
@@ -85,7 +85,7 @@ Before going on to tables, we should talk about selections. *Selections* are use
 nc.isLessThan(3);
 ```
 
-This operation returns a *Selection*. Logically, it's a bitmap of the same size as the original column or table. The method above, effectively, returns 1, 1, 0, 0, since the first two values in the column are less than three, and the last two are not. 
+This operation returns a *Selection*. Logically, it's a bitmap of the same size as the original column. The method above, effectively, returns 1, 1, 0, 0, since the first two values in the column are less than three, and the last two are not. 
 
 What you probably wanted was not a Selection object, but a new NumberColumn that contains only the values that passed the filter. To get this, you use the *where(aSelection)* method:
 
@@ -93,23 +93,23 @@ What you probably wanted was not a Selection object, but a new NumberColumn that
 NumberColumn filtered = nc.where(nc.isLessThan(3));
 ```
 
-This extra step is a necessary evil. It's a bit tedious, but it lets us combine filters. For example: 
+This extra step is a necessary evil, as it lets us combine filters. For example: 
 
 ```java
 NumberColumn filtered = nc.where(nc.isLessThan(3).and(nc.isOdd());
 ```
 
-If the methods returned columns, the couldn't be combined in the same way. 
+If the methods returned columns directly, they couldn't be combined this way. 
 
 ##### Selecting by index
 
 These examples show how to select using predicates. You can also use a selection to retrieve the value at a specific index, or indexes. All of the following are supported:
 
 ```java
-nc.where(Selection.with(4, 42));  				// returns two rows with the given indexes
-nc.where(Selection.selectNRowsAtRandom(500));
-nc.where(Selection.withRange(10, 110));
-nc.where(Selection.withoutRange(10, 50));
+nc.where(Selection.with(0, 2));  			// returns 2 rows with the given indexes
+nc.where(Selection.selectNRowsAtRandom(2)); // returns 2 randomly selected rows
+nc.where(Selection.withRange(1, 3));		// returns rows 1-3 inclusive
+nc.where(Selection.withoutRange(1, 3));		// returns row 0
 ```
 
 Obviously, if you have several columns of the same size (i.e. length) as you would in a table of data, you can make a selection with one column and use it to filter another:
@@ -118,7 +118,9 @@ Obviously, if you have several columns of the same size (i.e. length) as you wou
 NumberColumn result = firstColumn.where(someOtherColumn.startsWith("foo"));
 ```
 
-#### Map functions
+> **Key point:** Note the StringColumn method *startsWith(aString)*. There are many such column-type specific methods that can be used in building queries. For StringColumn, these methods are defined in the tech.tablesaw.columns.strings.StringFilters interface. It also includes endsWith(), isEmpty(), isAlpha(), containsString()[^2]. Each column has a similar set of filter operations. They can all be found in their filter interfaces located in sub-folders of tech.tablesaw.columns (e.g. tech.tablesaw.columns.dates.DateFilters). 
+
+####Map functions
 
 There is nothing special about map operations; they're simply methods on columns that return new Columns as their result. You've already seen one: The column *multiply(aNumber)* method above is a map function. To multiple two columns, use:
 
@@ -134,7 +136,7 @@ There are many map functions built-in for the various column types. Here are som
 s = aStringColumn.upperCase();
 s = s.replaceFirst("foo", "bar")
 s = s.substring(3, 10);
-s = s.padEnd(4, 'x');						// put 4 x chars at the end of each string
+s = s.padEnd(4, 'x');				// put 4 x chars at the end of each string
 
 // this returns the common prefix of each row in two columns
 y = s.commonPrefix(anotherStringColumn);
@@ -143,19 +145,21 @@ y = s.commonPrefix(anotherStringColumn);
 nc = s.distance(anotherStringColumn);
 ```
 
-There are many others. 
+> **Key point:** Every column type has a set of map operations like *multiply(aNumber)*. For StringColumn, these methods are defined in the *tech.tablesaw.columns.strings.StringMapFunctions* interface. It includes many methods in addition to those shown above. Each column has a similar set of map operations. They can all be found in their filter interfaces located in the sub-folders of tech.tablesaw.columns (e.g. *tech.tablesaw.columns.dates.DateMapFunctions*).  
+>
 
-#### Reduce functions: Summarizing a column 
+#### Reduce (aggregate) functions: Summarizing a column 
 
-Sometimes you want to derive a value that summarizes in some sense the data in a column. For tables, aggregate functions do just that. All columns support some aggregate functions: *min*() and *max*(), for example, plus *count()*, *countUnique()*, and *countMissing()*.  These are described below. 
+Sometimes you want to derive a value that summarizes in some sense the data in a column. Aggregate functions do just that. Each such function scan all the values in a column and returns a single scalar value as a result.  All columns support some aggregate functions: *min*() and *max*(), for example, plus *count()*, *countUnique()*, and *countMissing()*. Some column types support type-specific functions. BooleanColumn, for example, supports *all()*, which returns *true* if all of the values in the column are *true*. The functions *any()*, and *none()*,  return true if any or none the values in the column are true, respectively. The functions *countTrue()*, and *countFalse()* are also available.
 
-NumberColumn supports aggregation directly. Many functions are available: *sum*, *count*, *range*, *variance*, *sumOfLogs*, and many others. Boolean columns supports relatively few: *all()*, which return *true* if all of the values in the column are *true*. The functions *any()*, and *none()*,  returns true if any or none the values in the column are *true*, respectively. The functions *countTrue()*, and *countFalse()* are also available.
-
-To calculate the standard deviation of a column, you would call:
+For example, to calculate the standard deviation of the values in a column, you would call:
 
 ```java
 nc.standardDeviation();			// returns the standard deviation of all values
 ```
+
+> **Key point:** NumberColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and many others. These are defined in the NumberColumn class. 
+>
 
 When we discuss tables below, we'll show how to summarize a column to create sub-totals by the values in one or more grouping columns.
 
@@ -418,6 +422,7 @@ double average = t.selectWhere(t.stringColumn("foo")
 We've covered a lot of ground. To learn more, please take a look at the [User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc) or API documentation ([Java Docs](https://jtablesaw.github.io/tablesaw/apidocs/index)).
 
 [^1]: The method shown does not actually "produce" any output For that you would call *System.out.println()*. For brevity, this "faux" output will be shown indented by one tab beneath the code that produced it.
+[^2]: Note that containsString(String subString) is different from contains(). The first method looks at each string in the column to see if it conains the substring. The second method looks at every row in the column and returns true if any matches the entire string. In other words, contains is like contains as defined on List<String>. , etc.
 
 
 
