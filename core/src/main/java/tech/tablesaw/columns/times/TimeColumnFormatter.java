@@ -31,7 +31,7 @@ public class TimeColumnFormatter {
             return missingString;
         }
         if (format == null) {
-            return PackedLocalTime.toShortTimeString(value);
+            return toShortTimeString(value);
         }
         LocalTime time = asLocalTime(value);
         return format.format(time);

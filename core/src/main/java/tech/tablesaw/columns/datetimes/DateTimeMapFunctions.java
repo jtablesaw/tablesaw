@@ -152,7 +152,7 @@ public interface DateTimeMapFunctions extends Column {
             if (DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
-                newColumn.append((short) PackedLocalDateTime.getMonthValue(c1));
+                newColumn.append((short) getMonthValue(c1));
             }
         }
         return newColumn;
@@ -424,14 +424,13 @@ public interface DateTimeMapFunctions extends Column {
         for (int r = 0; r < size(); r++) {
             long c1 = getLongInternal(r);
             if (!DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(PackedLocalDateTime.getMinute(c1));
+                newColumn.append(getMinute(c1));
             } else {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             }
         }
         return newColumn;
     }
-
 
     default NumberColumn timeWindow(ChronoUnit unit, int n) {
         return timeWindow(unit, n, min());

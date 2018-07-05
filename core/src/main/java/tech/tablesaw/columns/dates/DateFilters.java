@@ -180,7 +180,7 @@ public interface DateFilters extends Column {
 
     default Selection isOnOrAfter(LocalDate value) {
         int packed = PackedLocalDate.pack(value);
-        return eval(DateAndTimePredicates.isGreaterThanOrEqualTo, packed);
+        return eval(isGreaterThanOrEqualTo, packed);
     }
 
     default Selection isEqualTo(LocalDate value) {

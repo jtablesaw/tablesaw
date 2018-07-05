@@ -229,7 +229,7 @@ public interface Column {
     default Column sampleN(int n) {
         Preconditions.checkArgument(n > 0 && n < size(),
                 "The number of rows sampled must be greater than 0 and less than the number of rows in the table.");
-        return where(Selection.selectNRowsAtRandom(n, size()));
+        return where(selectNRowsAtRandom(n, size()));
     }
 
     /**

@@ -260,7 +260,7 @@ public interface DateMapFunctions extends Column {
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             int c2 = end.getIntInternal(r);
-            if (DateColumn.valueIsMissing(c1) || DateColumn.valueIsMissing(c2)) {
+            if (valueIsMissing(c1) || valueIsMissing(c2)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
                 switch (unit) {
