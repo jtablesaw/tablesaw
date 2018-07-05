@@ -35,8 +35,6 @@ You can load a table from a CSV file by providing the file name.
 
 This simple method supplies default values for a number of parameters like the type of the separator character (a comma). It also attempts to infer the types for each column. If the inferred types are incorrect, you can specify the types at import time. See [Importing data](https://jTablesaw.github.io/Tablesaw/userguide/importing_data) for other options and more detail.    
 
-
-
 ## Displaying data
 
 The simplest way to display a table is to call "print()" on it, which return a formatted String representation.
@@ -165,7 +163,7 @@ t.concat(t2)
 
 ### Joining Tables
 
-
+Tablesaw supports inner and outer joins between tables.
 
 
 
@@ -182,16 +180,36 @@ One of the most useful operations is filtering.
 You can select rows by specifying the index (zero-based):
 
  ```java
-t.inRows(i...)
+t.rows(i...)
  ```
 
 You can also select by range:
 
-```
+```Java
 t.inRange(start, end)
 ```
 
-You can also select a random sample of data. See the section on filters for more detail.
+You can also select a random sample of data. See the section on Sampling for more detail.
+
+### Sampling
+
+The line below returns a table containing 50 randomly sampled rows from table t.
+
+```Java
+Table sample = t.sampleN(50); 
+```
+
+Alternately, you can specify the sample size as a proportion of the table size using sampleX(aDouble):
+
+```Java
+Table sample = t.sampleX(.40);
+```
+
+You can also divide the table in two, assigning rows randomly to each, and return both sub-tables in an array. The code below puts ~ 1/3 of the rows in the results[0], and the other 2/3rds in results[1].  This is handy for separating data into a training and test subsets  for machine learning applications. 
+
+```Java
+Table[] results = Table.sampleSplit(.333);
+```
 
 
 
@@ -213,7 +231,20 @@ Given a list of columns as arguments, the *select()* statement returns a table c
 Table subset = t.select("columnA", "columnB").where(t.nCol("columnC").isGreaterThan(4));
 ```
 
-See filter for more info.
+#### Chaining table filter operations
+
+Consider the case where you filter a table and want to filter the result. For example, 
+
+```java
+double average = 
+	t.selectWhere(t.stringColumn("foo").startsWith("bar"))
+		.selectWhere(stringColumn("bam").endsWith("bas"))
+			.nCol("age").mean();
+```
+
+If you tried to do this with standard Java method dereferencing, you would get stuck.  The second select clause cannot call stringColumn on the table returned from the first clause, because it doesn't exist before the first clause executes, and so there is no variable (e.g. table2) referring to that table to use in the statement ```table2.stringColumn("bam")`` .
+
+The method above uses the class QueryHelper. QueryHelper's stringColumn() method is a static method that returns an instance of ColumnReference. The actual column referred to by the ColumnReference is left unknown until the first clause has returned it's result table. That table then returns a column matching the given name ( "bam" in the example above). 
 
 ## Reduce
 
@@ -224,7 +255,8 @@ There are numerous ways to summarize the data in a table.
 The summarize() method and its variants let you specify the columns to summarize.
 
 ```java
-Table summary = t.summarize("age", "weight", mean, median, standardDeviation).apply()
+Table summary = 
+    t.summarize("age", "weight", mean, median, range).apply();
 ```
 
 Summarize returns a Summarizer object. 

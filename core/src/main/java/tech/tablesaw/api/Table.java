@@ -1030,7 +1030,7 @@ public class Table extends Relation implements Iterable<Row> {
     public boolean detect(Predicate<Row> predicate) {
         Row row = new Row(this);
         while (row.hasNext()) {
-            if (predicate.test(row)) {
+            if (predicate.test(row.next())) {
                 return true;
             }
         }

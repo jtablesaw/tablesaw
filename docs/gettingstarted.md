@@ -18,7 +18,7 @@ Second, you need to add the dependency to your pom file. It's available on Maven
 
 That's it for setup. On to design
 
-## Tables and Columns (all the way down) 
+## Tables and Columns 
 
 As you would expect, Tablesaw is all about tables, and tables are made of columns. We'll start with columns.
 
@@ -434,19 +434,6 @@ The formatted output is shown below.
    OCTOBER  |   2%  |      3%  |        2%  |        1%  |     0%  |     1%  |    10%  |
  SEPTEMBER  |   2%  |      3%  |        2%  |        1%  |     0%  |     1%  |     9%  |
      Total  |  20%  |     37%  |       17%  |        9%  |     3%  |    14%  |   100%  |
-```
-
-
-
-#### Chaining table operations
-
-Consider the case where you filter a table and want to filter the result. For example, 
-
-```java
-double average = t.selectWhere(t.stringColumn("foo")
-	.startsWith("bar"))
-     .selectWhere(stringColumn("bam").endsWith("bas"))
-      .nCol("age").mean();
 ```
 
 ## Conclusion

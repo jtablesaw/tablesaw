@@ -18,6 +18,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.dates.PackedDate;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -26,6 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static org.junit.Assert.*;
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
@@ -157,6 +160,31 @@ public class TableTest {
             }
         };
         t.doWithRows(doable);
+    }
+
+    @Test
+    public void testDoWithEachRow2() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+        LocalDate dateTarget = LocalDate.of(2002, 1, 1);
+        double ratingTarget = 75;
+        Consumer<Row> doable = row -> {
+            if (row.getPackedDate("date").isAfter(dateTarget)
+                    && row.getInt("approval") > ratingTarget) {
+                System.out.println("got one on " + row.getPackedDate("date"));
+            }
+        };
+        t.doWithRows(doable);
+    }
+
+    @Test
+    public void testDetect() throws Exception {
+        Table t = Table.read().csv("../data/bush.csv");
+        LocalDate dateTarget = LocalDate.of(2002, 1, 1);
+        double ratingTarget = 75;
+        Predicate<Row> doable = row ->
+                (row.getPackedDate("date").isAfter(dateTarget)
+                && row.getInt("approval") > ratingTarget);
+        System.out.println(t.detect(doable));
     }
 
     @Test
