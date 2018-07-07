@@ -219,18 +219,24 @@ public class CsvReader {
 
             // Add the rows
             while ((nextLine = reader.readNext()) != null) {
-                // for each column that we're including (not skipping)
-                int cellIndex = 0;
-                for (int columnIndex : columnIndexes) {
-                    Column column = table.column(cellIndex);
-                    try {
-                        column.appendCell(nextLine[columnIndex]);
-                    } catch (Exception e) {
-                        throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
+                if (nextLine.length != columnIndexes.length) {
+                    System.err.println("Warning: Invalid CSV file. Row "
+                            + rowNumber
+                            + " is not the expected size. Continuing.");
+                } else {
+                    // for each column that we're including (not skipping)
+                    int cellIndex = 0;
+                    for (int columnIndex : columnIndexes) {
+                        Column column = table.column(cellIndex);
+                        try {
+                            column.appendCell(nextLine[columnIndex]);
+                        } catch (Exception e) {
+                            throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
+                        }
+                        cellIndex++;
                     }
-                    cellIndex++;
+                    rowNumber++;
                 }
-                rowNumber++;
             }
             return table;
         }
