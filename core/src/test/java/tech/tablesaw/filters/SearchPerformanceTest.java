@@ -19,18 +19,15 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeSet;
 import com.google.common.collect.TreeRangeSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.text.RandomStringGenerator;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.api.*;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnReference;
+import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSlice;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.text.RandomStringGenerator;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.table.TableSliceGroup;
 
 import java.io.IOException;
@@ -42,13 +39,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.out;
-import static tech.tablesaw.api.QueryHelper.both;
-import static tech.tablesaw.api.QueryHelper.stringColumn;
+import static tech.tablesaw.api.QueryHelper.*;
 
 /**
  * Tests manipulation of large (but not big) data sets
  */
-public class TimeDependentFilteringTest {
+public class SearchPerformanceTest {
 
     private static final int CONCEPT_COUNT = 10;
     private static final int PATIENT_COUNT = 10_000;
@@ -61,7 +57,7 @@ public class TimeDependentFilteringTest {
 
     public static void main(String[] args) throws Exception {
 
-        int numberOfRecordsInTable = 100_000_000;
+        int numberOfRecordsInTable = 5_000_000;
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         Table t = defineSchema();
@@ -69,77 +65,35 @@ public class TimeDependentFilteringTest {
 
         t.setName("Observations");
 
-        // non temporal constraints
-        String conceptA = t.stringColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
-        String conceptB = t.stringColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
+        DateColumn dates = t.dateColumn("date");
+        NumberColumn values = t.numberColumn("value");
+        NumberColumn patients = t.numberColumn("patient");
 
-        // independent temporal constraints
-        String conceptZ = t.stringColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
-        String conceptD = t.stringColumn("concept").get(RandomUtils.nextInt(0, t.rowCount()));
-        DependencyFilter independentConstraintFilter = DependencyFilter.FIRST;
+        System.out.println(t.structure());
+        System.out.println(dates.summary());
+        System.out.println(values.summary());
+        System.out.println(patients.summary());
 
-        // temporal dependency range constraint
-        Range<Integer> daysConstraint = Range.closed(0, 0);
+        stopwatch.reset();
+        stopwatch.start();
+        Selection d = dates.isAfter(LocalDate.of(2010, 01,01));
 
-        StringColumnReference concept = stringColumn("concept");
+        Selection v = values.isGreaterThan(60_000);
+        Selection p = patients.isGreaterThan(1_500_000_000);
+        Selection and = d.and(v).or(p);
+        stopwatch.stop();
+        System.out.println("Search time " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+        System.out.println("d size " + d.size());
+        System.out.println("v size " + v.size());
+        System.out.println("p size " + p.size());
+        System.out.println("and size " + and.size());
 
-        //Non-temporal clause
-        Table nt = t.where(
-                both(concept.isEqualTo(conceptA),
-                        (concept.isNotEqualTo(conceptB))));
-
-        NumberColumn ntPatients = nt.numberColumn("patient");
-
-        // Group the original table by patient id
-        TableSliceGroup patients = StandardTableSliceGroup.create(t, "patient");
-
-        // Create a list of patient sub-tables to work with TODO(lwhite): Build the copy-on-write to ViewGroups to avoid
-        CopyOnWriteArrayList<TableSlice> patientTables = new CopyOnWriteArrayList<>(patients.getSlices());
-
-        // Apply the independent temporal event filtering to the patient subtables and remove any that don't pass
-        for (TableSlice patientTable : patients) {
-            StringColumn concepts = patientTable.stringColumn("concept");
-            double patientId = Double.parseDouble(patientTable.name());
-            if (!concepts.contains(conceptZ)
-                    || concepts.contains(conceptD)) {
-                patientTables.remove(patientTable);
-            } else if (!ntPatients.contains(patientId)) {      // filtering out the non-temporal now constraints for
-                // efficiency
-                patientTables.remove(patientTable);
-            }
-        }
-
-        List<IndependentResult> independentResults = new ArrayList<>();
-
-        // Working with the filtered patient tables, calculate the event dates for the independent events
-        for (TableSlice patientTable : patientTables) {
-            IndependentResult result = new IndependentResult();
-            List<LocalDate> eventDates = new ArrayList<>();
-
-            // iterate an individual table and find the rows where concept matches the target concept
-            for (int row : patientTable) {
-                StringColumn concepts = patientTable.stringColumn("concept");
-                DateColumn dates = patientTable.dateColumn("date");
-                if (concepts.get(row).equals(conceptZ)) {
-                    eventDates.add(dates.get(row));
-                }
-            }
-
-
-            if (independentConstraintFilter == DependencyFilter.FIRST) {
-                if (eventDates.isEmpty()) {
-                    // this is an error
-                    System.out.println(patientTable.name());
-                } else {  //Get the first event for the current patient and createFromCsv a date range around it
-                    LocalDate date = eventDates.get(0);
-                    result.addRange(Range.closed(date.minusDays(daysConstraint.lowerEndpoint()),
-                            date.plusDays(daysConstraint.upperEndpoint())));
-                } //TODO handle last and any cases
-            }
-            independentResults.add(result);
-        }
-
-
+        stopwatch.reset();
+        stopwatch.start();
+        int i = and.get(0);
+        System.out.println(t.rows(i));
+        stopwatch.stop();
+        System.out.println("get first row time " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
         System.out.println("Done");
     }
 
@@ -216,7 +170,6 @@ public class TimeDependentFilteringTest {
 
     private static class IndependentResult {
         RangeSet<LocalDate> dateRanges = TreeRangeSet.create();
-
         void addRange(Range<LocalDate> dateRange) {
             dateRanges.add(dateRange);
         }
