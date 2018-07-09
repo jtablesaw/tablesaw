@@ -463,8 +463,7 @@ public class PackedLocalDateTime {
     }
 
     public static boolean isOnOrAfter(long valueToTest, long valueToTestAgainst) {
-        return isAfter(valueToTest, valueToTestAgainst)
-                || isEqualTo(valueToTest, valueToTestAgainst);
+        return valueToTest >= valueToTestAgainst;
     }
 
     public static boolean isOnOrBefore(long valueToTest, long valueToTestAgainst) {

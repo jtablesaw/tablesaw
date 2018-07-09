@@ -23,7 +23,7 @@ public class Row implements Iterator<Row> {
     private final Map<String, PackedDateTime> dateTimeColumnMap = new HashMap<>();
     private final Map<String, PackedTime> timeColumnMap = new HashMap<>();
 
-    Row(Table table) {
+    public Row(Table table) {
         this.table = table;
         rowNumber = -1;
         for (Column column : table.columns()) {

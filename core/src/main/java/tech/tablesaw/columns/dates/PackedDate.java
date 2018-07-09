@@ -93,16 +93,32 @@ public class PackedDate {
         return PackedLocalDate.isAfter(dateColumn.getIntInternal(index), PackedLocalDate.pack(date));
     }
 
+    public boolean isAfter(int packedDate) {
+        return PackedLocalDate.isAfter(dateColumn.getIntInternal(index), packedDate);
+    }
+
     public boolean isBefore(LocalDate date) {
         return PackedLocalDate.isBefore(dateColumn.getIntInternal(index), PackedLocalDate.pack(date));
+    }
+
+    public boolean isBefore(int packedDate) {
+        return PackedLocalDate.isBefore(dateColumn.getIntInternal(index), packedDate);
     }
 
     public boolean isOnOrAfter(LocalDate date) {
         return PackedLocalDate.isOnOrAfter(dateColumn.getIntInternal(index), PackedLocalDate.pack(date));
     }
 
+    public boolean isOnOrAfter(int packedDate) {
+        return PackedLocalDate.isOnOrAfter(dateColumn.getIntInternal(index), packedDate);
+    }
+
     public boolean isOnOrBefore(LocalDate date) {
         return PackedLocalDate.isOnOrBefore(dateColumn.getIntInternal(index), PackedLocalDate.pack(date));
+    }
+
+    public boolean isOnOrBefore(int packedDate) {
+        return PackedLocalDate.isOnOrBefore(dateColumn.getIntInternal(index), packedDate);
     }
 
     public boolean isSunday() {
