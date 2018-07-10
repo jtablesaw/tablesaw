@@ -22,6 +22,7 @@ import tech.tablesaw.columns.Column;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -66,6 +67,41 @@ public class TableTest {
     }
 
     @Test
+    public void testRowWiseAddition() {
+        double[] a = {3, 4, 5};
+        double[] b = {3, 4, 5};
+        double[] c = {3, 4, 5};
+        Table t = Table.create("test",
+                DoubleColumn.create("a", a),
+                DoubleColumn.create("b", b),
+                DoubleColumn.create("c", c));
+
+        NumberColumn n =
+                t.numberColumn(0)
+                .add(t.numberColumn(1))
+                .add(t.numberColumn(2));
+
+        System.out.println(n.print());
+        System.out.println(Arrays.toString(n.asDoubleArray()));
+    }
+
+    @Test
+    public void testRowWiseAddition2() {
+        double[] a = {3, 4, 5};
+        double[] b = {3, 4, 5};
+        double[] c = {3, 4, 5};
+        Table t = Table.create("test",
+                DoubleColumn.create("a", a),
+                DoubleColumn.create("b", b),
+                DoubleColumn.create("c", c));
+
+        NumberColumn n = sum(t.numberColumns());
+
+        System.out.println(n.print());
+        System.out.println(Arrays.toString(n.asDoubleArray()));
+    }
+
+    @Test
     public void testRemoveColumns() {
         StringColumn sc = StringColumn.create("0");
         StringColumn sc1 = StringColumn.create("1");
@@ -77,7 +113,6 @@ public class TableTest {
         assertTrue(t.containsColumn(sc2));
         assertFalse(t.containsColumn(sc1));
         assertFalse(t.containsColumn(sc3));
-
     }
 
     @Test
@@ -426,5 +461,18 @@ public class TableTest {
         for (Row row : bush.first(10)) {
             assertEquals(row.getRowNumber(), rowNumber++);
         }
+    }
+
+    private NumberColumn sum(NumberColumn ... columns) {
+        int size = columns[0].size();
+        NumberColumn result = DoubleColumn.create("sum", size);
+        for (int r = 0; r < size; r++) {
+            double sum = 0;
+            for (NumberColumn nc : columns) {
+                sum += nc.get(r);
+            }
+            result.append(sum);
+        }
+        return result;
     }
 }
