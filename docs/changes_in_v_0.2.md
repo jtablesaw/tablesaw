@@ -1,4 +1,4 @@
-## Changes to Tablesaw in release 0.20
+## Changes to Tablesaw in release 0.21
 
 ### Testing & Documentation
 
@@ -148,6 +148,3 @@
         ```java
         table.summarize("quantity", sumOfSquares).by(strCol.substring(4, 7));
         ```
-
-        
-
