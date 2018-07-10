@@ -11,3 +11,4 @@ Tablesaw User Guide
 * [Sorting](https://jtablesaw.github.io/tablesaw/userguide/sorting)
 * [Mapping](https://jtablesaw.github.io/tablesaw/userguide/mapping)
 * [Reducing](https://jtablesaw.github.io/tablesaw/userguide/reducing)
+* [CrossTabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs)
