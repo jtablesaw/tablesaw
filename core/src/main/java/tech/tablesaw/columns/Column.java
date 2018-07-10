@@ -195,9 +195,7 @@ public interface Column {
         return "Column: " + name() + '\n';
     }
 
-    default double[] asDoubleArray() {
-        throw new UnsupportedOperationException("Method asDoubleArray() is not supported on non-numeric columns");
-    }
+    double[] asDoubleArray();
 
     /**
      * Returns the width of the column in characters, for printing

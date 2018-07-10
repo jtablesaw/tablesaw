@@ -26,11 +26,12 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.conversion.TableConverter;
 import tech.tablesaw.io.string.DataFramePrinter;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
-import tech.tablesaw.util.DoubleArrays;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,7 +52,7 @@ public abstract class Relation {
         return rowCount() + " rows X " + columnCount() + " cols";
     }
 
-    public Relation removeColumns(int ... columnIndexes) {
+    public Relation removeColumns(int... columnIndexes) {
         IntArrays.quickSort(columnIndexes, DescendingIntComparator.instance());
         for (int i : columnIndexes) {
             removeColumns(column(i));
@@ -129,6 +130,28 @@ public abstract class Relation {
      * Returns a list of all the columns in the relation
      */
     public abstract List<Column> columns();
+
+    /**
+     * Returns the columns whose names are given in the input array
+     */
+    public List<Column> columns(String... columnName) {
+        List<Column> cols = new ArrayList<>(columnName.length);
+        for (int i = 0; i < columnName.length; i++) {
+            cols.add(column(columnName[i]));
+        }
+        return cols;
+    }
+
+    /**
+     * Returns the columns whose indices are given in the input array
+     */
+    public List<Column> columns(int... columnIndices) {
+        List<Column> cols = new ArrayList<>(columnIndices.length);
+        for (int i : columnIndices) {
+            cols.add(column(i));
+        }
+        return cols;
+    }
 
     /**
      * Returns the index of the given column
@@ -354,8 +377,8 @@ public abstract class Relation {
         return (DateTimeColumn) column(columnName);
     }
 
-    public double[][] asMatrix() {
-        return DoubleArrays.to2dArray(columns());
+    public TableConverter as() {
+        return new TableConverter(this);
     }
 
     public String getUnformatted(int r1, int c) {

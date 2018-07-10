@@ -260,17 +260,6 @@ public class Table extends Relation implements Iterable<Row> {
     /**
      * Returns only the columns whose names are given in the input array
      */
-    public List<Column> columns(String... columnNames) {
-        List<Column> columns = new ArrayList<>();
-        for (String columnName : columnNames) {
-            columns.add(column(columnName));
-        }
-        return columns;
-    }
-
-    /**
-     * Returns only the columns whose names are given in the input array
-     */
     public List<CategoricalColumn> categoricalColumns(String... columnNames) {
         List<CategoricalColumn> columns = new ArrayList<>();
         for (String columnName : columnNames) {
