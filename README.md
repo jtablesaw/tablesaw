@@ -59,6 +59,8 @@ Beyond tablesaw-core:
 * Pareto Charts
 
 Here's an example where we use [XChart](https://github.com/timmolter/XChart) to map the locations of tornadoes: 
-![Alt text](https://jtablesaw.files.wordpress.com/2016/07/tornados3.png?w=809)
+https://jtablesaw.github.io/tablesaw/userguide/images/tornado.scatter.png
+
+ 
 
 If you see something that can be improved, please let us know.
