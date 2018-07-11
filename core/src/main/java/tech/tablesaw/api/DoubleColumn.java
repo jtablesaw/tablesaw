@@ -612,7 +612,6 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
         return result;
     }
 
-    @Override
     public IntSet asIntegerSet() {
         final IntSet ints = new IntOpenHashSet();
         for (final double d : this) {

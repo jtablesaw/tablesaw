@@ -33,7 +33,6 @@ import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.Sort;
 import tech.tablesaw.sorting.SortUtils;
 import tech.tablesaw.sorting.comparators.IntComparatorChain;
-import tech.tablesaw.table.Projection;
 import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
 import tech.tablesaw.table.StandardTableSliceGroup;
@@ -825,10 +824,6 @@ public class Table extends Relation implements Iterable<Row> {
             }
         }
         return temp;
-    }
-
-    public Projection project(String... columnName) {
-        return new Projection(this, columnName);
     }
 
     public Table select(Column... columns) {

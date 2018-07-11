@@ -131,7 +131,6 @@ public class Example1 {
                 .forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
         out(percents);
 
-        out(table1.project("who", "approval").first(10));
         out(table1.retainColumns("who", "approval").first(10));
 
         out(table1.countBy(who).sortDescendingOn("Count").first(3));

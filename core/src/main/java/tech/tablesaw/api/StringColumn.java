@@ -66,7 +66,7 @@ public class StringColumn extends AbstractColumn
 
     private final AtomicInteger nextIndex = new AtomicInteger(1);
 
-    // holds a key for each row in the table. the key can be used to lookup the backing string value
+    // holds a key for each element in the column. the key can be used to lookup the backing string value
     private IntArrayList values;
 
     // a bidirectional map of keys to backing string values.
@@ -262,6 +262,11 @@ public class StringColumn extends AbstractColumn
         t.addColumns(categories);
         t.addColumns(counts);
         return t;
+    }
+
+    @Override
+    public int[] asIntArray() {
+        return data().toArray(new int[size()]);
     }
 
     @Override

@@ -169,7 +169,7 @@ public class TableFilteringTest {
     @Test
     public void testFilter4() {
         Table result =
-                table.project("who", "approval")
+                table.retainColumns("who", "approval")
                         .where(
                                 QueryHelper.both(
                                         table.dateColumn("date").isInApril(),

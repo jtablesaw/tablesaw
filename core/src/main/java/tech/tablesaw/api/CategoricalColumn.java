@@ -23,15 +23,18 @@ import java.util.Map;
 /**
  * A column type that can be summarized, or serve as a grouping variable in cross tabs or other aggregation operations.
  * <p>
- * The column data is discrete.
+ * The column data is generally discrete, however NumberColumn implements CategoricalColumn so that it can be used to
+ * summarize when it contains ints. If you use it to summarize over a large range of floating point numbers, you
+ * will likely run out of memory.
  * <p>
  * Supporting subtypes include:
  * - StringColumn
  * - BooleanColumn
  * - DateColumn,
- * - others
+ * - etc
  * <p>
- * Floating point types (float, double) and near-continuous time columns (Time and DateTime) are not included.
+ * DateTimeColumn is not included. TimeColumn can be converted to ints without loss of data, so it does implement this
+ * interface
  */
 public interface CategoricalColumn extends Column {
 
@@ -64,5 +67,6 @@ public interface CategoricalColumn extends Column {
         return t;
     }
 
+    int[] asIntArray();
 
 }

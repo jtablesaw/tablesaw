@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import org.apache.commons.math3.exception.NotANumberException;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
@@ -31,7 +30,7 @@ import java.util.function.DoublePredicate;
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.api.ColumnType.NUMBER;
 
-public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColumn, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
+public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
     double MISSING_VALUE = (Double) NUMBER.getMissingValue();
 
     static boolean valueIsMissing(double value) {
@@ -154,9 +153,6 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
 
     @Override
     int[] asIntArray();
-
-    @Override
-    IntSet asIntegerSet();
 
     @Override
     DoubleList dataInternal();
