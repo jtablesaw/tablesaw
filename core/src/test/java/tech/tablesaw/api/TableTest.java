@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api;
 
+import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,6 @@ import tech.tablesaw.columns.Column;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -81,8 +81,8 @@ public class TableTest {
                 .add(t.numberColumn(1))
                 .add(t.numberColumn(2));
 
-        System.out.println(n.print());
-        System.out.println(Arrays.toString(n.asDoubleArray()));
+        //System.out.println(n.print());
+        //System.out.println(Arrays.toString(n.asDoubleArray()));
     }
 
     @Test
@@ -97,8 +97,8 @@ public class TableTest {
 
         NumberColumn n = sum(t.numberColumns());
 
-        System.out.println(n.print());
-        System.out.println(Arrays.toString(n.asDoubleArray()));
+        //System.out.println(n.print());
+        //System.out.println(Arrays.toString(n.asDoubleArray()));
     }
 
     @Test
@@ -185,12 +185,12 @@ public class TableTest {
     @Test
     public void testDoWithEachRow() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(10);
+        Double[] ratingsArray = {53.0, 58.0};
+        List<Double> ratings = Lists.asList(52.0, ratingsArray);
+
         Consumer<Row> doable = row -> {
             if (row.getRowNumber() < 5) {
-                System.out.println("On "
-                        + row.getPackedDate("date")
-                        + ", low rating: "
-                        + row.getDouble("approval"));
+                assertTrue(ratings.contains(row.getDouble("approval")));
             }
         };
         t.doWithRows(doable);
@@ -241,7 +241,7 @@ public class TableTest {
         Table t = Table.read().csv("../data/bush.csv");
         PairChild pairs = new PairChild();
         t.doWithRows(pairs);
-        System.out.println(pairs.runningAverage);
+        //System.out.println(pairs.runningAverage);
     }
 
     @Test
@@ -267,7 +267,7 @@ public class TableTest {
         };
 
         t.doWithRows(runningAvg);
-        System.out.println(runningAvg.getResult());
+        //System.out.println(runningAvg.getResult());
     }
 
     @Test
@@ -279,7 +279,7 @@ public class TableTest {
             for (Row row : rows) {
                 sum += row.getDouble("approval");
             }
-            System.out.println("Running avg = " + sum / (double) rows.length);
+            //System.out.println("Running avg = " + sum / (double) rows.length);
         };
         t.rollWithRows(rowConsumer,2);
     }

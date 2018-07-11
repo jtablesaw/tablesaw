@@ -1,10 +1,12 @@
 package tech.tablesaw.components;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Margin;
 
+@Ignore
 public class LayoutTest {
 
     @Test

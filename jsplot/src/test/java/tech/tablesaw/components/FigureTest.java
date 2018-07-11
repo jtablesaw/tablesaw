@@ -14,6 +14,7 @@ import tech.tablesaw.plotly.traces.Trace;
 import java.io.File;
 import java.nio.file.Paths;
 
+@Ignore
 public class FigureTest {
 
     private String divName = "target";
@@ -63,7 +64,6 @@ public class FigureTest {
         System.out.println(figure.asJavascript(divName));
     }
 
-    @Ignore
     @Test
     public void show2()  {
         Trace trace = ScatterTrace.builder(x, y)
@@ -94,7 +94,6 @@ public class FigureTest {
         Plot.show(figure, divName, outputFile);
     }
 
-    @Ignore
     @Test
     public void show()  {
         Trace trace = ScatterTrace.builder(x, y).build();

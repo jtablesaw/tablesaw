@@ -5,12 +5,12 @@ import org.junit.Test;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.traces.BoxTrace;
 
+@Ignore
 public class BoxTest {
 
     private final Object[] x = {"sheep", "cows", "fish", "tree sloths", "sheep", "cows", "fish", "tree sloths", "sheep", "cows", "fish", "tree sloths"};
     private final double[] y = {1, 4, 9, 16, 3, 6, 8, 8, 2, 4, 7, 11};
 
-    @Ignore
     @Test
     public void testAsJavascript() {
         BoxTrace trace =
@@ -20,7 +20,6 @@ public class BoxTest {
         System.out.println(trace.asJavascript(1));
     }
 
-    @Ignore
     @Test
     public void show() {
 
