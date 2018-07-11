@@ -14,28 +14,30 @@
 
 package tech.tablesaw.plotly;
 
-import org.junit.Test;
+import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.PieTrace;
+import tech.tablesaw.plotly.traces.BarTrace;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
 /**
- * Basic sample pie chart
+ *
  */
-public class PieExample {
+public class ParetoExample {
 
-    @Test
-    public void test1() throws Exception {
+    public static void main(String[] args) throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
+        table = table.where(QueryHelper.numberColumn("Fatalities").isGreaterThan(3));
+        Table t2 = table.summarize("fatalities", sum).by("State");
 
-        Table t2 = table.countBy(table.numberColumn("Scale"));
-
-        PieTrace trace = PieTrace.builder(
-                t2.numberColumn("Category"),
-                t2.numberColumn("Count")).build();
-        Layout layout = Layout.builder().title("Total fatalities by scale").build();
-
+        t2 = t2.sortDescendingOn(t2.column(1).name());
+        Layout layout = Layout.builder().title("Tornado Fatalities by State").build();
+        BarTrace trace = BarTrace.builder(
+                t2.categoricalColumn(0),
+                t2.numberColumn(1))
+                .build();
         Plot.show(new Figure(layout, trace));
     }
 }

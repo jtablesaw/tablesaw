@@ -14,7 +14,6 @@
 
 package tech.tablesaw.plotly;
 
-import org.junit.Test;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
@@ -27,8 +26,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.count;
  */
 public class HorizontalBarExample {
 
-    @Test
-    public void testVerticalBar() throws Exception {
+    public static void main(String[] args) throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
         Table s = table.summarize("fatalities", count).by("State");
 

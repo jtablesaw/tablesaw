@@ -14,35 +14,36 @@
 
 package tech.tablesaw.plotly;
 
-import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.components.Line;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 
 /**
  *
  */
-public class QuantileExample {
+public class LinePlotExampleWithSmoothing {
 
-    @Test
-    public void test1() throws Exception {
-        Table baseball = Table.read().csv("../data/baseball.csv");
-        NumberColumn xCol = baseball.nCol("BA");
+    public static void main(String[] args) throws Exception {
+        Table robberies = Table.read().csv("../data/boston-robberies.csv");
+        NumberColumn x = robberies.nCol("Record");
+        NumberColumn y = robberies.nCol("Robberies");
 
-        double[] x = new double[xCol.size()];
+        Layout layout = Layout.builder()
+                .title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975")
+                .build();
 
-        for (int i = 0; i < x.length; i++) {
-            x[i] = i / (float) x.length;
-        }
+        ScatterTrace trace = ScatterTrace.builder(x, y)
+                .mode(ScatterTrace.Mode.LINE)
+                .line(Line.builder()
+                        .shape(Line.Shape.SPLINE)
+                        .smoothing(1.2f)
+                        .build())
+                .build();
 
-        NumberColumn copy = xCol.copy();
-        copy.sortAscending();
-
-        ScatterTrace trace = ScatterTrace.builder(x, copy.asDoubleArray()).build();
-
-        Layout layout = Layout.builder().title("Distribution of team batting averages").build();
         Plot.show(new Figure(layout, trace));
+
     }
 }

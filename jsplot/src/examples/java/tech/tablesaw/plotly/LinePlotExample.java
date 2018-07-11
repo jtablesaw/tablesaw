@@ -14,32 +14,29 @@
 
 package tech.tablesaw.plotly;
 
-import org.junit.Test;
-import tech.tablesaw.api.QueryHelper;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.BarTrace;
-
-import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 /**
  *
  */
-public class ParetoExample {
+public class LinePlotExample {
 
-    @Test
-    public void test1() throws Exception {
-        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        table = table.where(QueryHelper.numberColumn("Fatalities").isGreaterThan(3));
-        Table t2 = table.summarize("fatalities", sum).by("State");
+    public static void main(String[] args) throws Exception {
+        Table robberies = Table.read().csv("../data/boston-robberies.csv");
+        NumberColumn x = robberies.nCol("Record");
+        NumberColumn y = robberies.nCol("Robberies");
 
-        t2 = t2.sortDescendingOn(t2.column(1).name());
-        Layout layout = Layout.builder().title("Tornado Fatalities by State").build();
-        BarTrace trace = BarTrace.builder(
-                t2.categoricalColumn(0),
-                t2.numberColumn(1))
+        Layout layout = Layout.builder()
+                .title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975")
+                .build();
+        ScatterTrace trace = ScatterTrace.builder(x, y)
+                .mode(ScatterTrace.Mode.LINE)
                 .build();
         Plot.show(new Figure(layout, trace));
+
     }
 }
