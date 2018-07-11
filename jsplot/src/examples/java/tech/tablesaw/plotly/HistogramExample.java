@@ -14,7 +14,6 @@
 
 package tech.tablesaw.plotly;
 
-import org.junit.Test;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
@@ -25,8 +24,7 @@ import tech.tablesaw.plotly.traces.HistogramTrace;
  */
 public class HistogramExample {
 
-    @Test
-    public void test1() throws Exception {
+    public static void main(String[] args) throws Exception {
         Table baseball = Table.read().csv("../data/baseball.csv");
 
         Layout layout = Layout.builder().title("Distribution of team batting averages").build();
