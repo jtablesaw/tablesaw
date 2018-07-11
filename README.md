@@ -58,9 +58,8 @@ Beyond tablesaw-core:
 * Quantile Plots
 * Pareto Charts
 
-Here's an example where we use [XChart](https://github.com/timmolter/XChart) to map the locations of tornadoes: 
-https://jtablesaw.github.io/tablesaw/userguide/images/tornado.scatter.png
+Here's an example where we use JavaScript plotting support to map the locations of tornadoes: 
 
- 
+![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/tornado.scatter.png) 
 
 If you see something that can be improved, please let us know.
