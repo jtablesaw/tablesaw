@@ -14,27 +14,26 @@
 
 package tech.tablesaw.plotly;
 
-import org.junit.Test;
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.ScatterTrace;
-import tech.tablesaw.plotly.traces.Trace;
+import tech.tablesaw.plotly.traces.BarTrace;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
 /**
- *
+ * Basic sample vertical bar chart
  */
+public class BarExample {
 
-public class ScatterplotExample {
+    public static void main(String[] args) throws Exception {
+        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
+        Table s = table.summarize("fatalities", sum).by("Scale");
 
-    @Test
-    public void testPlot() throws Exception {
-        Table baseball = Table.read().csv("../data/baseball.csv");
-        NumberColumn x = baseball.nCol("BA");
-        NumberColumn y = baseball.nCol("W");
-        Layout layout = Layout.builder().title("Wins vs BA").build();
-        Trace trace = ScatterTrace.builder(x, y).build();
+        BarTrace trace = BarTrace.builder(
+                s.categoricalColumn(0),
+                s.numberColumn(1)).build();
+        Layout layout = Layout.builder().title("Tornado Fatalities").build();
         Plot.show(new Figure(layout, trace));
     }
 }
