@@ -252,28 +252,18 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testDateWithFormatter() throws Exception {
+    public void testWithMissingValue() throws Exception {
 
-        final InputStream stream = new ByteArrayInputStream((
-              "Date\n"
-            + "2014.10.03\n"
-            + "2014.07.04\n"
-            + "2014.11.23\n"
-            + "2014.12.03\n").getBytes());
-
-        final boolean header = true;
-        final char delimiter = ',';
-        final boolean useSampling = true;
-
-        CsvReadOptions options = CsvReadOptions.builder(stream, "")
-                .header(header)
-                .separator(delimiter)
-                .sample(useSampling)
+        CsvReadOptions options = CsvReadOptions.builder("../data/missing_values.csv")
                 .dateFormat("yyyy.MM.dd")
+                .header(true)
+                .missingValueIndicator("-")
                 .build();
 
-        final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
-        assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE))));
+        Table t = Table.read().csv(options);
+        assertEquals(t.stringColumn(0).countMissing(), 1);
+        assertEquals(t.numberColumn(1).countMissing(), 1);
+        assertEquals(t.numberColumn(2).countMissing(), 1);
     }
 
     @Test
@@ -334,6 +324,7 @@ public class CsvReaderTest {
                     .columnTypes(types));
         }
         assertNotNull(table);
+        assertEquals(3, table.columnCount());
     }
 
     @Test

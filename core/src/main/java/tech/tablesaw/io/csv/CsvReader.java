@@ -228,7 +228,12 @@ public class CsvReader {
                     for (int columnIndex : columnIndexes) {
                         Column column = table.column(cellIndex);
                         try {
-                            column.appendCell(nextLine[columnIndex]);
+                            String value = nextLine[columnIndex];
+                            if (value.equals(options.missingValueIndicator())) {
+                                column.appendCell("");
+                            } else {
+                                column.appendCell(value);
+                            }
                         } catch (Exception e) {
                             throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
                         }
@@ -547,7 +552,7 @@ public class CsvReader {
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
         for (String s : valuesList) {
-            if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {
+            if (isMissing(s, options)) {
                 continue;
             }
             if (dateTimeFormatter != null) {
@@ -585,6 +590,22 @@ public class CsvReader {
             }
         }
         return selectType(typeCandidates);
+    }
+
+    /**
+     * Returns true if the given string indicates a missing value
+     *
+     * If the given string is empty, it's missing, otherwise if a missing value indicator is provided and the string
+     * matches, it's missing. If no missing value indicator is provided, a default missing values list is used.
+     */
+    private static boolean isMissing(String s, CsvReadOptions options) {
+        String missingValueIndicator = options.missingValueIndicator();
+        if (options.missingValueIndicator() != null) {
+            return missingValueIndicator.equals(s) || Strings.isNullOrEmpty(s);
+        }
+
+        return Strings.isNullOrEmpty(s)
+                || TypeUtils.MISSING_INDICATORS.contains(s);
     }
 
     /**

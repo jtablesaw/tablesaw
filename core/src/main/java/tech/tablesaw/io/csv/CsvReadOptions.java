@@ -37,6 +37,7 @@ public class CsvReadOptions {
     private final String dateTimeFormat;
     private final String timeFormat;
     private final Locale locale;
+    private final String missingValueIndicator;
 
     private CsvReadOptions(CsvReadOptions.Builder builder) {
         file = builder.file;
@@ -49,6 +50,7 @@ public class CsvReadOptions {
         dateFormat = builder.dateFormat;
         timeFormat = builder.timeFormat;
         dateTimeFormat = builder.dateTimeFormat;
+        missingValueIndicator = builder.missingValueIndicator;
 
         if (builder.locale == null) {
             locale = Locale.getDefault();
@@ -108,6 +110,10 @@ public class CsvReadOptions {
         return sample;
     }
 
+    public String missingValueIndicator() {
+        return missingValueIndicator;
+    }
+
     public Locale locale() {
         return locale;
     }
@@ -146,6 +152,7 @@ public class CsvReadOptions {
         private String timeFormat;
         private String dateTimeFormat;
         private Locale locale;
+        private String missingValueIndicator;
 
         public Builder file(File file) {
             this.file = file;
@@ -180,6 +187,11 @@ public class CsvReadOptions {
 
         public Builder header(boolean header) {
             this.header = header;
+            return this;
+        }
+
+        public Builder missingValueIndicator(String missingValueIndicator) {
+            this.missingValueIndicator = missingValueIndicator;
             return this;
         }
 
