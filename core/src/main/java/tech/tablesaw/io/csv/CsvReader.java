@@ -203,8 +203,6 @@ public class CsvReader {
                     }
                     Column newColumn = TypeUtils.newColumn(columnName, types[x]);
                     addFormatter(newColumn, options);
-
-
                     table.addColumns(newColumn);
                 }
             }
@@ -219,7 +217,8 @@ public class CsvReader {
 
             // Add the rows
             while ((nextLine = reader.readNext()) != null) {
-                if (nextLine.length != columnIndexes.length) {
+
+                if (nextLine.length != types.length) {
                     System.err.println("Warning: Invalid CSV file. Row "
                             + rowNumber
                             + " is not the expected size. Continuing.");
@@ -235,8 +234,8 @@ public class CsvReader {
                         }
                         cellIndex++;
                     }
-                    rowNumber++;
                 }
+                rowNumber++;
             }
             return table;
         }

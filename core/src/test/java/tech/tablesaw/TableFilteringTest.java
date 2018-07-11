@@ -169,11 +169,10 @@ public class TableFilteringTest {
     @Test
     public void testFilter4() {
         Table result =
-                table.retainColumns("who", "approval")
-                        .where(
-                                QueryHelper.both(
+                table.where(QueryHelper.both(
                                         table.dateColumn("date").isInApril(),
-                                        table.numberColumn("approval").isGreaterThan(70)));
+                                        table.numberColumn("approval").isGreaterThan(70)))
+                    .retainColumns("who", "approval");
         assertEquals(2, result.columnCount());
         assertTrue(result.columnNames().contains("who"));
         assertTrue(result.columnNames().contains("approval"));

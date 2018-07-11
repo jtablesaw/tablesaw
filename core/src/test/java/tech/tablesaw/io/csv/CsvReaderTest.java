@@ -28,20 +28,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static tech.tablesaw.api.ColumnType.*;
-import static tech.tablesaw.io.csv.CsvReader.*;
+import static tech.tablesaw.io.csv.CsvReader.detectColumnTypes;
 
 /**
  * Tests for CSV Reading
@@ -353,6 +350,7 @@ public class CsvReaderTest {
 
     @Test
     public void testReadFailure() throws Exception {
+        // TODO (lwhite): These tests don't fail. What was their intent?
         Table table1 = Table.read().csv("../data/read_failure_test.csv");
         table1.structure(); // just make sure the import completed
         NumberColumn test = table1.numberColumn("Test");
