@@ -233,7 +233,7 @@ public class TickSettings {
         private boolean separateThousands;
 
         private TickSettingsBuilder() {}
-        
+
         /**
          * @param tickValues    Sets the values at which ticks on this axis appear. Only has an effect if `tickmode`
          *                      is set to "array". Used with `ticktext`.
