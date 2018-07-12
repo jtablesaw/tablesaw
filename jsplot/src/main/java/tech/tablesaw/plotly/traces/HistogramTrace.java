@@ -14,6 +14,10 @@ public class HistogramTrace extends AbstractTrace {
 
     private double[] x;
     private double opacity;
+    private int nBinsX;
+    private int nBinsY;
+    private boolean autoBinX;
+    private boolean autoBinY;
 
     public static HistogramBuilder builder(double[] values) {
         return new HistogramBuilder(values);
@@ -26,6 +30,10 @@ public class HistogramTrace extends AbstractTrace {
     private HistogramTrace(HistogramBuilder builder) {
         super(builder);
         this.x = builder.x;
+        this.nBinsX = builder.nBinsX;
+        this.nBinsY = builder.nBinsY;
+        this.autoBinX = builder.autoBinX;
+        this.autoBinX = builder.autoBinY;
         this.opacity = builder.opacity;
     }
 
@@ -49,13 +57,20 @@ public class HistogramTrace extends AbstractTrace {
         context.put("variableName", "trace" + i);
         context.put("x", Utils.dataAsString(x));
         context.put("opacity", opacity);
+        context.put("nBinsX", nBinsX);
+        context.put("nBinsY", nBinsY);
+        context.put("autoBinX", autoBinX);
+        context.put("autoBinY", autoBinY);
         return context;
     }
 
     public static class HistogramBuilder extends TraceBuilder {
 
         String type = "histogram";
-        int bins;
+        int nBinsX;
+        int nBinsY;
+        boolean autoBinX;
+        boolean autoBinY;
         String barMode;
         String histFunction;
         String histNorm;
@@ -65,13 +80,39 @@ public class HistogramTrace extends AbstractTrace {
             this.x = values;
         }
 
-        public HistogramBuilder setBins(int bins) {
-            this.bins = bins;
+        /**
+         * Specifies the maximum number of desired bins. This value will be used in an algorithm that will decide
+         * the optimal bin size such that the histogram best visualizes the distribution of the data.
+         */
+        public HistogramBuilder nBinsX(int bins) {
+            this.nBinsX = bins;
+            return this;
+        }
+
+        public HistogramBuilder nBinsY(int bins) {
+            this.nBinsY = bins;
             return this;
         }
 
         public HistogramBuilder barMode(String barMode) {
             this.barMode = barMode;
+            return this;
+        }
+
+        /**
+         * Determines whether or not the x axis bin attributes are picked by an algorithm.
+         * Note that this should be set to False if you want to manually set the number of bins using the attributes
+         * in xbins.
+         *
+         * Note also that this should be true (default) to use nbinsx to suggest a bin count
+         */
+        public HistogramBuilder autoBinX(boolean autoBinX) {
+            this.autoBinX = autoBinX;
+            return this;
+        }
+
+        public HistogramBuilder autoBinY(boolean autoBinY) {
+            this.autoBinY = autoBinY;
             return this;
         }
 
