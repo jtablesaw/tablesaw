@@ -432,7 +432,7 @@ public class TableTest {
         NumberColumn third =  DoubleColumn.create("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
 
         Table t = Table.create("table", first, second, third);
-        double[][] matrix = t.asMatrix();
+        double[][] matrix = t.as().doubleMatrix();
         assertEquals(5, matrix.length);
         assertArrayEquals(new double[]{1.0, 6.0, 10.0}, matrix[0], 0.0000001);
         assertArrayEquals(new double[]{2.0, 7.0, 20.0}, matrix[1], 0.0000001);
