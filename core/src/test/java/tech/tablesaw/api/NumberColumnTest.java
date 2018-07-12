@@ -15,7 +15,7 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Stopwatch;
-import io.codearte.jfairy.Fairy;
+import com.devskiller.jfairy.Fairy;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.math3.stat.StatUtils;
