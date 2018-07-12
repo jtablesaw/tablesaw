@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.DateAndTimePredicates;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;

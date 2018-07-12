@@ -111,19 +111,6 @@ public class SearchPerformanceTest {
         return rowNumber;
     }
 
-    private static int getRowNumberSimple(Table t, LocalDateTime testDate, double testLow, double testHigh) {
-        int rowNumber = -1;
-        long testPackedDateTime = PackedLocalDateTime.pack(testDate);  // packing saves time
-        for (Row row : t) {
-            if (row.getPackedDateTime("date").isOnOrAfter(testPackedDateTime)
-                    && (row.getDouble("lowValue") > testLow
-                    || row.getDouble("highValue") > testHigh)) {
-                return row.getRowNumber();
-            }
-        }
-        return rowNumber;
-    }
-
     private static Table defineSchema() {
         Table t;
         t = Table.create("Observations");
