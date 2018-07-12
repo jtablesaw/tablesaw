@@ -218,16 +218,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.github.haifengl</groupId>
-                <artifactId>smile-core</artifactId>
-                <version>1.4.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.haifengl</groupId>
-                <artifactId>smile-plot</artifactId>
-                <version>1.4.0</version>
-            </dependency>
-            <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.12</version>

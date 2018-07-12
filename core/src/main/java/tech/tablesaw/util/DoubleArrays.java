@@ -14,6 +14,10 @@
 
 package tech.tablesaw.util;
 
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.table.TableSlice;
+import tech.tablesaw.table.TableSliceGroup;
+
 /**
  * Utility functions for creating 2D double arrays from columns and other arrays
  */
@@ -29,5 +33,21 @@ public class DoubleArrays {
         }
         return result;
     }
+    
+    public static double[][] to2dArray(TableSliceGroup views, int columnNumber) {      
+       
+        int viewCount = views.size();  
+       
+        double[][] allVals = new double[viewCount][];  
+        for (int viewNumber = 0; viewNumber < viewCount; viewNumber++) {       
+            TableSlice view = views.get(viewNumber);   
+            allVals[viewNumber] = new double[view.rowCount()]; 
+            NumberColumn numberColumn = view.numberColumn(columnNumber);       
+            for (int r = 0; r < view.rowCount(); r++) {        
+                allVals[viewNumber][r] = numberColumn.get(r);  
+            }  
+        }      
+        return allVals;        
+    }    
 
 }

@@ -60,11 +60,12 @@
     <dependency>
       <groupId>com.github.haifengl</groupId>
       <artifactId>smile-plot</artifactId>
+      <version>1.5.1</version>
     </dependency>
     <dependency>
       <groupId>org.knowm.xchart</groupId>
       <artifactId>xchart</artifactId>
-      <version>3.5.0</version>
+      <version>3.5.2</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
