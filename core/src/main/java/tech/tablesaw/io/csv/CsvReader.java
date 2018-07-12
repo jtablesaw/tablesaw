@@ -256,6 +256,9 @@ public class CsvReader {
                 return;
             case LOCAL_TIME :
                 ((TimeColumn) newColumn).setFormatter(options.timeFormatter());
+                return;
+            default:
+                return;
         }
     }
 
@@ -446,7 +449,6 @@ public class CsvReader {
         boolean header = options.header();
         char delimiter = options.separator();
         boolean useSampling = options.sample();
-        Locale locale = options.locale();
 
         int linesToSkip = header ? 1 : 0;
 
