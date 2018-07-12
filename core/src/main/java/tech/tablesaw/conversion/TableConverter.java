@@ -10,7 +10,7 @@ import tech.tablesaw.table.Relation;
 public class TableConverter {
 
   private final Relation table;
-  
+
   public TableConverter(Relation table) {
     this.table = table;
   }
@@ -38,7 +38,7 @@ public class TableConverter {
   public float[][] floatMatrix(String... columnNames) {
     return floatMatrix(table.columns(columnNames));
   }
-  
+
   public int[][] intMatrix() {
     return intMatrix(table.columns());
   }

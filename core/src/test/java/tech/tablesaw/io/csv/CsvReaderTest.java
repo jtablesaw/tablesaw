@@ -165,7 +165,7 @@ public class CsvReaderTest {
 
         assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE))));
     }
-    
+
     @Test
     public void testLocalDateTimeDetectionEnglish() throws Exception {
 
@@ -206,7 +206,7 @@ public class CsvReaderTest {
             + "\"août 1, 2017\"\n"
             + "\"juil. 1, 2017\"\n"
             + "\"juin 1, 2017\"\n").getBytes());
-        
+
         final boolean header = true;
         final char delimiter = ',';
         final boolean useSampling = true;
