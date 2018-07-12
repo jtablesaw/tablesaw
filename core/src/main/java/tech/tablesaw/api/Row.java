@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class Row implements Iterator<Row> {
@@ -49,6 +50,13 @@ public class Row implements Iterator<Row> {
     @Override
     public boolean hasNext() {
         return rowNumber < table.rowCount() - 1;
+    }
+
+    /**
+     * Returns a list containing the names of each column in the row
+     */
+    public List<String> columnNames() {
+        return table.columnNames();
     }
 
     @Override
