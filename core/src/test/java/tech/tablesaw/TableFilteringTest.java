@@ -49,7 +49,7 @@ public class TableFilteringTest {
             assertTrue(v < 70);
         }
     }
-    
+
     @Test
     public void testReject() {
         Table result = table.dropWhere(table.numberColumn("approval").isLessThan(70));

@@ -3,6 +3,8 @@ package tech.tablesaw.columns.numbers;
 import org.junit.Test;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
 
 import static java.lang.Double.NaN;
@@ -88,20 +90,19 @@ public class NumberFiltersTest {
         assertEquals(2, selection1.size());
     }
 
+
     @Test
     public void testIsLessThanOrEqualTo() {
         double[] values = {4, 0, -0.00001};
         double[] otherValues = {4, -1.3, 0.00001, NaN};
 
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-
         Selection selection = doubles.isLessThanOrEqualTo(0.0);
         assertEquals(1, selection.get(0));
         assertEquals(2, selection.get(1));
         assertEquals(2, selection.size());
 
         NumberColumn others = DoubleColumn.create("others", otherValues);
-
         Selection selection1 = doubles.isLessThanOrEqualTo(others);
         assertEquals(0, selection1.get(0));
         assertEquals(2, selection1.get(1));
@@ -169,5 +170,42 @@ public class NumberFiltersTest {
         assertEquals(2, selection1.get(1));
         assertEquals(3, selection1.get(2));
         assertEquals(3, selection1.size());
+    }
+
+    @Test
+    public void testIsMissing() {
+        double[] values = {4, 1, Double.NaN, 2, 2};
+        NumberColumn doubles =  DoubleColumn.create("doubles", values);
+        Selection selection = doubles.isMissing();
+        assertEquals(2, selection.get(0));
+        assertEquals(1, selection.size());
+    }
+
+    @Test
+    public void testIsNotMissing() {
+        double[] values = {4, 1, Double.NaN, 2, 2};
+        NumberColumn doubles =  DoubleColumn.create("doubles", values);
+        Selection selection = doubles.isNotMissing();
+        assertEquals(0, selection.get(0));
+        assertEquals(1, selection.get(1));
+        assertEquals(4, selection.size());
+    }
+
+    @Test
+    public void testNotIn() {
+        double[] values = {4, 1, Double.NaN, 2, 2};
+        NumberColumn doubles =  DoubleColumn.create("doubles", values);
+        double[] comparison = {1, 2};
+        Selection selection = doubles.isNotIn(comparison);
+        assertEquals(0, selection.get(0));
+        assertEquals(2, selection.get(1));
+        assertEquals(2, selection.size());
+    }
+
+    @Test
+    public void testIsBetweenInclusive() throws Exception {
+        Table bush = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+        Table result = bush.where(bush.numberColumn("approval").isBetweenInclusive(0, 49));
+        assertEquals(10, result.rowCount());
     }
 }
