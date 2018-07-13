@@ -78,7 +78,7 @@ public class DateTimeColumnTest {
         t.addColumns(column1);
         column1.appendCell("2015-12-03T10:15:30");
         column1.appendCell("2015-01-03T10:15:30");
-        Table result = t.where(QueryHelper.dateTimeColumn("Game date")
+        Table result = t.where(t.dateTimeColumn("Game date")
                 .isAfter(LocalDateTime.of(2015, 2, 2, 0, 0)));
         assertEquals(result.rowCount(), 1);
     }

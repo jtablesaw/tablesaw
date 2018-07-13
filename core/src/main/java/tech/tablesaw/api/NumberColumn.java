@@ -18,7 +18,6 @@ import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.NumberFilters;
 import tech.tablesaw.columns.numbers.NumberMapFunctions;
 import tech.tablesaw.columns.numbers.Stats;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.Selection;
@@ -121,9 +120,6 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
 
     @Override
     DoubleIterator iterator();
-
-    @Override
-    NumberColumn where(Filter filter);
 
     NumberColumn where(Selection selection);
 

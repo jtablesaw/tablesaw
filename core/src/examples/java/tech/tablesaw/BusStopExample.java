@@ -15,7 +15,6 @@
 package tech.tablesaw;
 
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
@@ -59,7 +58,7 @@ public class BusStopExample {
 
         // Lets filtering out some of the rows. We're only interested in records with IDs between 524-624
 
-        Table filtered = table.where(QueryHelper.numberColumn("stop_id").isBetweenInclusive(524, 624));
+        Table filtered = table.where(table.numberColumn("stop_id").isBetweenInclusive(524, 624));
         out(filtered.first(5));
 
 

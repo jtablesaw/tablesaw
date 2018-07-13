@@ -3,7 +3,6 @@ package tech.tablesaw.columns.numbers;
 import org.junit.Test;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
@@ -16,8 +15,7 @@ public class NumberTableFiltersTest {
     public void testIsEqualTo() {
         double[] values = {4, 1, 1, 2, 2};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isEqualTo(1.0).apply(doubles);
+        Selection selection = doubles.isEqualTo(1.0);
         assertEquals(1, selection.get(0));
         assertEquals(2, selection.get(1));
         assertEquals(2, selection.size());
@@ -27,8 +25,7 @@ public class NumberTableFiltersTest {
     public void testIsMissing() {
         double[] values = {4, 1, Double.NaN, 2, 2};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isMissing().apply(doubles);
+        Selection selection = doubles.isMissing();
         assertEquals(2, selection.get(0));
         assertEquals(1, selection.size());
     }
@@ -38,8 +35,7 @@ public class NumberTableFiltersTest {
         double[] values = {4, 1, Double.NaN, 2, 2};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
         double[] comparison = {1, 2};
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isNotIn(comparison).apply(doubles);
+        Selection selection = doubles.isNotIn(comparison);
         assertEquals(0, selection.get(0));
         assertEquals(2, selection.get(1));
         assertEquals(2, selection.size());
@@ -49,8 +45,7 @@ public class NumberTableFiltersTest {
     public void testIsNotMissing() {
         double[] values = {4, 1, Double.NaN, 2, 2};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isNotMissing().apply(doubles);
+        Selection selection = doubles.isNotMissing();
         assertEquals(0, selection.get(0));
         assertEquals(1, selection.get(1));
         assertEquals(4, selection.size());
@@ -60,8 +55,7 @@ public class NumberTableFiltersTest {
     public void testIsNotEqualTo() {
         double[] values = {4, 1, 1, 2, 2};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isNotEqualTo(1.0).apply(doubles);
+        Selection selection = doubles.isNotEqualTo(1.0);
         assertEquals(0, selection.get(0));
         assertEquals(3, selection.get(1));
         assertEquals(4, selection.get(2));
@@ -72,8 +66,7 @@ public class NumberTableFiltersTest {
     public void testIsZero() {
         double[] values = {4, 0, -1};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isZero().apply(doubles);
+        Selection selection = doubles.isZero();
         assertEquals(1, selection.get(0));
         assertEquals(1, selection.size());
     }
@@ -82,8 +75,7 @@ public class NumberTableFiltersTest {
     public void testIsPositive() {
         double[] values = {4, 0, -1};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isPositive().apply(doubles);
+        Selection selection = doubles.isPositive();
         assertEquals(0, selection.get(0));
         assertEquals(1, selection.size());
     }
@@ -92,8 +84,7 @@ public class NumberTableFiltersTest {
     public void testIsNegative() {
         double[] values = {4, 0, -0.00001};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isNegative().apply(doubles);
+        Selection selection = doubles.isNegative();
         assertEquals(2, selection.get(0));
         assertEquals(1, selection.size());
     }
@@ -102,8 +93,7 @@ public class NumberTableFiltersTest {
     public void testIsNonNegative() {
         double[] values = {4, 0, -0.00001};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isNonNegative().apply(doubles);
+        Selection selection = doubles.isNonNegative();
         assertEquals(0, selection.get(0));
         assertEquals(1, selection.get(1));
         assertEquals(2, selection.size());
@@ -113,8 +103,7 @@ public class NumberTableFiltersTest {
     public void testIsGreaterThanOrEqualTo() {
         double[] values = {4, 0, -0.00001};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isGreaterThanOrEqualTo(0.0).apply(doubles);
+        Selection selection = doubles.isGreaterThanOrEqualTo(0.0);
         assertEquals(0, selection.get(0));
         assertEquals(1, selection.get(1));
         assertEquals(2, selection.size());
@@ -124,8 +113,7 @@ public class NumberTableFiltersTest {
     public void testIsLessThanOrEqualTo() {
         double[] values = {4, 0, -0.00001};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isLessThanOrEqualTo(0.0).apply(doubles);
+        Selection selection = doubles.isLessThanOrEqualTo(0.0);
         assertEquals(1, selection.get(0));
         assertEquals(2, selection.get(1));
         assertEquals(2, selection.size());
@@ -137,8 +125,7 @@ public class NumberTableFiltersTest {
         double[] values2 = {4, 11, -3.00001, 5.1};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
         NumberColumn doubles2 =  DoubleColumn.create("doubles2", values2);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isLessThan(doubles2).apply(doubles);
+        Selection selection = doubles.isLessThan(doubles2);
         assertEquals(1, selection.get(0));
         assertEquals(3, selection.get(1));
         assertEquals(2, selection.size());
@@ -150,8 +137,7 @@ public class NumberTableFiltersTest {
         double[] values2 = {4, 11, -3.00001, 5.1};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
         NumberColumn doubles2 =  DoubleColumn.create("doubles2", values2);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isLessThanOrEqualTo(doubles2).apply(doubles);
+        Selection selection = doubles.isLessThanOrEqualTo(doubles2);
         assertEquals(0, selection.get(0));
         assertEquals(1, selection.get(1));
         assertEquals(3, selection.get(2));
@@ -164,8 +150,7 @@ public class NumberTableFiltersTest {
         double[] values2 = {4, 11, -3.00001, 5.1};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
         NumberColumn doubles2 =  DoubleColumn.create("doubles2", values2);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isGreaterThan(doubles2).apply(doubles);
+        Selection selection = doubles.isGreaterThan(doubles2);
         assertEquals(2, selection.get(0));
         assertEquals(1, selection.size());
     }
@@ -177,8 +162,7 @@ public class NumberTableFiltersTest {
         double[] values2 = {4, 11, -3.00001, 5.1, 4.44443};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
         NumberColumn doubles2 =  DoubleColumn.create("doubles2", values2);
-        NumberColumnReference reference = new NumberColumnReference(doubles.name());
-        Selection selection = reference.isGreaterThanOrEqualTo(doubles2).apply(doubles);
+        Selection selection = doubles.isGreaterThanOrEqualTo(doubles2);
         assertEquals(0, selection.get(0));
         assertEquals(2, selection.get(1));
         assertEquals(4, selection.get(2));
@@ -191,8 +175,7 @@ public class NumberTableFiltersTest {
         double[] values2 = {4, 11, -3.00001, 5.1, 4.44443};
         NumberColumn doubles =  DoubleColumn.create("doubles", values);
         NumberColumn doubles2 =  DoubleColumn.create("doubles2", values2);
-        NumberColumnReference reference = new NumberColumnReference("doubles");
-        Selection selection = reference.isEqualTo(doubles2).apply(doubles);
+        Selection selection = doubles.isEqualTo(doubles2);
         assertEquals(0, selection.get(0));
         assertEquals(4, selection.get(1));
         assertEquals(2, selection.size());
@@ -214,7 +197,7 @@ public class NumberTableFiltersTest {
     @Test
     public void testIsBetweenInclusive() throws Exception {
         Table bush = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
-        Table result = bush.where(QueryHelper.numberColumn("approval").isBetweenInclusive(0, 49));
+        Table result = bush.where(bush.numberColumn("approval").isBetweenInclusive(0, 49));
         assertEquals(10, result.rowCount());
     }
 

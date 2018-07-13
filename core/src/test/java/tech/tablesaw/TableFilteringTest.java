@@ -19,7 +19,6 @@ import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -29,7 +28,6 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 import java.time.LocalDate;
 
 import static org.junit.Assert.*;
-import static tech.tablesaw.api.QueryHelper.*;
 
 /**
  * Tests for filtering on the T class
@@ -45,7 +43,7 @@ public class TableFilteringTest {
 
     @Test
     public void testFilter1() {
-        Table result = table.where(numberColumn("approval").isLessThan(70));
+        Table result = table.where(table.numberColumn("approval").isLessThan(70));
         NumberColumn a = result.numberColumn("approval");
         for (double v : a) {
             assertTrue(v < 70);
@@ -60,14 +58,14 @@ public class TableFilteringTest {
     public void testQueryChaining() {
         Table structureWithoutDates =
                 table.structure()
-                    .dropWhere(stringColumn("column type").equalsIgnoreCase("Local_Date"));
+                    .dropWhere(table.stringColumn("column type").equalsIgnoreCase("Local_Date"));
         assertEquals(2, structureWithoutDates.rowCount());
         assertFalse(structureWithoutDates.stringColumn("Column Name").contains("Date"));
     }
 
     @Test
     public void testReject() {
-        Table result = table.dropWhere(numberColumn("approval").isLessThan(70));
+        Table result = table.dropWhere(table.numberColumn("approval").isLessThan(70));
         NumberColumn a = result.numberColumn("approval");
         for (double v : a) {
             assertFalse(v < 70);
@@ -144,7 +142,7 @@ public class TableFilteringTest {
 
     @Test
     public void testFilter2() {
-        Table result = table.where(dateColumn("date").isInApril());
+        Table result = table.where(table.dateColumn("date").isInApril());
         DateColumn d = result.dateColumn("date");
         for (LocalDate v : d) {
             assertTrue(PackedLocalDate.isInApril(PackedLocalDate.pack(v)));
@@ -154,8 +152,7 @@ public class TableFilteringTest {
     @Test
     public void testFilter3() {
         Table result = table.where(
-                QueryHelper.both(
-                        table.dateColumn("date").isInApril(),
+                table.dateColumn("date").isInApril().and(
                         table.numberColumn("approval").isGreaterThan(70)));
 
         DateColumn dates = result.dateColumn("date");
@@ -169,8 +166,8 @@ public class TableFilteringTest {
     @Test
     public void testFilter4() {
         Table result =
-                table.where(QueryHelper.both(
-                                        table.dateColumn("date").isInApril(),
+                table.where(
+                        table.dateColumn("date").isInApril().and(
                                         table.numberColumn("approval").isGreaterThan(70)))
                     .retainColumns("who", "approval");
         assertEquals(2, result.columnCount());

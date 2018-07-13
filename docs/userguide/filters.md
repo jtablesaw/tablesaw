@@ -93,10 +93,10 @@ ColumnReference statusRef = column("Status");
 Table filtered = aTable.selectWhere(statusRef.isEqualTo("Ok"));
 ```
 
-In general, though, you’ll create the reference directly in the selectWhere() call
+In general, though, you’ll create the reference directly in the where() call
 
 ```java
-Table filtered = aTable.selectWhere(stringColumn("Status").isEqualTo("Ok"));
+Table filtered = aTable.where(stringColumn("Status").isEqualTo("Ok"));
 ```
 
 In the expression above, isEqualTo(“Ok”) is invoked on the new columnReference and returns a filter to be be used in the table method selectWhere(aFilter).

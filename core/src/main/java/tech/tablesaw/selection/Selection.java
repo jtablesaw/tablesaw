@@ -18,16 +18,13 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import org.apache.commons.lang3.RandomUtils;
 import org.roaringbitmap.RoaringBitmap;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.Filter;
 
 import java.util.BitSet;
 
 /**
  * A selection maintains an ordered set of ints that can be used to eval rows from a table or column
  */
-public interface Selection extends IntIterable, Filter {
+public interface Selection extends IntIterable {
 
     static Selection with(int... rows) {
         BitmapBackedSelection selection = new BitmapBackedSelection();
@@ -112,20 +109,10 @@ public interface Selection extends IntIterable, Filter {
      */
     Selection flip(int rangeStart, int rangeEnd);
 
-    @Override
-    default Selection apply(Table relation) {
-        return this;
-    }
-
-    @Override
-    default Selection apply(Column columnBeingFiltered) {
-        return this;
-    }
-
     /**
      * Returns an randomly generated array of ints of size N where Max is the largest possible value
      */
-    public static int[] generateUniformBitmap(int N, int Max) {
+    static int[] generateUniformBitmap(int N, int Max) {
         if (N > Max) {
             throw new IllegalArgumentException("Illegal arguments: N (" + N + ") greater than Max (" + Max + ")");
         }
@@ -153,7 +140,7 @@ public interface Selection extends IntIterable, Filter {
         return ans;
     }
 
-    public static Selection selectNRowsAtRandom(int n, int max) {
+    static Selection selectNRowsAtRandom(int n, int max) {
         Selection selection = new BitmapBackedSelection();
         int[] selectedRecords = Selection.generateUniformBitmap(n, max);
         for (int selectedRecord : selectedRecords) {
@@ -161,5 +148,4 @@ public interface Selection extends IntIterable, Filter {
         }
         return selection;
     }
-
 }

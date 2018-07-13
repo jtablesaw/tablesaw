@@ -16,9 +16,6 @@ package tech.tablesaw.columns.times;
 
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.times.filters.IsAfterNoon;
-import tech.tablesaw.columns.times.filters.IsBeforeNoon;
-import tech.tablesaw.columns.times.filters.IsMidnight;
 import tech.tablesaw.selection.Selection;
 
 import org.junit.Before;
@@ -26,7 +23,6 @@ import org.junit.Test;
 
 import java.time.LocalTime;
 
-import static tech.tablesaw.api.QueryHelper.*;
 import static tech.tablesaw.columns.times.PackedLocalTime.*;
 import static org.junit.Assert.*;
 
@@ -53,8 +49,7 @@ public class LocalTimeFilterTest {
         table.addColumns(column1);
         Selection selection = localTimeColumn.isEqualTo(column1);
         assertTrue(selection.contains(0));
-        TimeColumnReference reference = new TimeColumnReference("testing");
-        selection = reference.isEqualTo(column1).apply(table);
+        selection = localTimeColumn.isEqualTo(column1);
         assertTrue(selection.contains(0));
     }
 
@@ -65,8 +60,7 @@ public class LocalTimeFilterTest {
         table.addColumns(column1);
         Selection selection = localTimeColumn.isNotEqualTo(column1);
         assertFalse(selection.contains(0));
-        TimeColumnReference reference = new TimeColumnReference("testing");
-        selection = reference.isNotEqualTo(column1).apply(table);
+        selection = localTimeColumn.isNotEqualTo(column1);
         assertFalse(selection.contains(0));
     }
 
@@ -82,14 +76,12 @@ public class LocalTimeFilterTest {
 
         Selection selection = localTimeColumn.isBefore(column1);
         assertFalse(selection.contains(0));
-        TimeColumnReference reference = new TimeColumnReference("testing");
-        selection = reference.isAfter(column1).apply(table);
+        selection = localTimeColumn.isAfter(column1);
         assertFalse(selection.contains(0));
 
         selection = localTimeColumn.isBefore(after);
         assertTrue(selection.contains(0));
-        reference = new TimeColumnReference("testing");
-        selection = reference.isBefore(after).apply(table);
+        selection = localTimeColumn.isBefore(after);
         assertTrue(selection.contains(0));
     }
 
@@ -105,22 +97,18 @@ public class LocalTimeFilterTest {
 
         Selection selection = localTimeColumn.isBefore(column1);
         assertFalse(selection.contains(0));
-        TimeColumnReference reference = new TimeColumnReference("testing");
-        selection = reference.isAfter(column1).apply(table);
+        selection = localTimeColumn.isAfter(column1);
         assertFalse(selection.contains(0));
 
         selection = localTimeColumn.isAfter(before);
         assertTrue(selection.contains(0));
-        reference = new TimeColumnReference("testing");
-        selection = reference.isAfter(before).apply(table);
+        selection = localTimeColumn.isAfter(before);
         assertTrue(selection.contains(0));
     }
 
     @Test
     public void testIsAM() {
-        TimeColumnReference reference = new TimeColumnReference("testing");
-        IsBeforeNoon isAM = reference.isBeforeNoon();
-        Selection selection = isAM.apply(table);
+        Selection selection = localTimeColumn.isBeforeNoon();
         assertTrue(selection.contains(0));
         assertFalse(selection.contains(1));
         assertFalse(selection.contains(2));
@@ -138,9 +126,7 @@ public class LocalTimeFilterTest {
 
     @Test
     public void testIsPM() {
-        TimeColumnReference reference = new TimeColumnReference("testing");
-        IsAfterNoon isPM = reference.isAfterNoon();
-        Selection selection = isPM.apply(table);
+        Selection selection = localTimeColumn.isAfterNoon();
         assertFalse(selection.contains(0));
         assertTrue(selection.contains(1));
         assertTrue(selection.contains(2));
@@ -156,9 +142,7 @@ public class LocalTimeFilterTest {
 
     @Test
     public void testIsMidnightIsNoon() {
-        TimeColumnReference reference = new TimeColumnReference("testing");
-        IsMidnight isMidnight = reference.isMidnight();
-        Selection selection = isMidnight.apply(table);
+        Selection selection = localTimeColumn.isMidnight();
         assertFalse(selection.contains(0));
         assertFalse(selection.contains(1));
         assertFalse(selection.contains(2));
@@ -167,8 +151,7 @@ public class LocalTimeFilterTest {
 
     @Test
     public void testIsNoon() {
-        TimeColumnReference reference = new TimeColumnReference("testing");
-        Selection selection = reference.isNoon().apply(table);
+        Selection selection = localTimeColumn.isNoon();
         assertFalse(selection.contains(0));
         assertTrue(selection.contains(1));
         assertFalse(selection.contains(2));
@@ -199,7 +182,7 @@ public class LocalTimeFilterTest {
         t.addColumns(column1);
         column1.appendCell("05:15:30");
         column1.appendCell("10:15:30");
-        Table result = t.where(timeColumn("Game time")
+        Table result = t.where(t.timeColumn("Game time")
                 .isAfter(LocalTime.of(7, 4, 2, 0)));
         assertEquals(result.rowCount(), 1);
     }
@@ -218,7 +201,7 @@ public class LocalTimeFilterTest {
         Table t = Table.create("test");
         t.addColumns(column1);
         fillColumn();
-        Table result = t.where(timeColumn("Game time")
+        Table result = t.where(t.timeColumn("Game time")
                 .isEqualTo(LocalTime.of(7, 4, 2, 0)));
         assertEquals(result.rowCount(), 1);
         assertEquals(result.get(0, 0), toShortTimeString(pack(LocalTime.of(7, 4, 2))));
@@ -229,7 +212,7 @@ public class LocalTimeFilterTest {
         Table t = Table.create("test");
         t.addColumns(column1);
         fillColumn();
-        Table result = t.where(timeColumn("Game time")
+        Table result = t.where(t.timeColumn("Game time")
                 .isNotEqualTo(LocalTime.of(7, 4, 2, 0)));
         assertEquals(result.rowCount(), 1);
         assertNotEquals(result.get(0, 0), toShortTimeString(pack(LocalTime.of(7, 4, 2))));
@@ -259,7 +242,7 @@ public class LocalTimeFilterTest {
         t.addColumns(column1);
         column1.appendCell("05:15:30");
         column1.appendCell("10:15:30");
-        Table result = t.where(timeColumn("Game time")
+        Table result = t.where(t.timeColumn("Game time")
                 .isBefore(LocalTime.of(7, 4, 2, 0)));
         assertEquals(result.rowCount(), 1);
         assertEquals(LocalTime.of(5, 15, 30), column1.get(0));
@@ -279,7 +262,7 @@ public class LocalTimeFilterTest {
         Table t = Table.create("test");
         t.addColumns(column1);
         fillColumn();
-        Table result = t.where(timeColumn("Game time")
+        Table result = t.where(t.timeColumn("Game time")
                 .isOnOrAfter(LocalTime.of(7, 4, 2, 0)));
         assertEquals(result.rowCount(), 2);
     }
@@ -289,7 +272,7 @@ public class LocalTimeFilterTest {
         Table t = Table.create("test");
         t.addColumns(column1);
         fillColumn();
-        Table result = t.where(timeColumn("Game time")
+        Table result = t.where(t.timeColumn("Game time")
                 .isOnOrBefore(LocalTime.of(7, 4, 2, 0)));
         assertEquals(result.rowCount(), 1);
         assertEquals(result.get(0, 0), toShortTimeString(pack(LocalTime.of(7, 4, 2))));

@@ -23,7 +23,6 @@ import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.CrossTab;
 import tech.tablesaw.aggregate.Summarizer;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
@@ -58,11 +57,6 @@ import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
  * Tables are the main data-type and primary focus of Airframe.
  */
 public class Table extends Relation implements Iterable<Row> {
-
-    // for building queries
-    public Filter and(Filter... filters) { return QueryHelper.and(filters); }
-    public Filter or(Filter... filters) { return QueryHelper.or(filters); }
-    public Filter not(Filter filter) { return QueryHelper.not(filter); }
 
     /**
      * The columns that hold the data in this table
@@ -715,14 +709,6 @@ public class Table extends Relation implements Iterable<Row> {
         Table newTable = this.emptyCopy(opposite.size());
         Rows.copyRowsToTable(opposite, this, newTable);
         return newTable;
-    }
-
-    public Table where(Filter filter) {
-        return where(filter.apply(this));
-    }
-
-    public Table dropWhere(Filter filter) {
-        return dropWhere(filter.apply(this));
     }
 
     /**
