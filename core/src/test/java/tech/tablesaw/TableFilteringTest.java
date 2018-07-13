@@ -49,20 +49,7 @@ public class TableFilteringTest {
             assertTrue(v < 70);
         }
     }
-
-    /**
-     * Tests that you can reference a column in a table that is returned by query, without creating a variable for the
-     * intermediate table
-     */
-    @Test
-    public void testQueryChaining() {
-        Table structureWithoutDates =
-                table.structure()
-                    .dropWhere(table.stringColumn("column type").equalsIgnoreCase("Local_Date"));
-        assertEquals(2, structureWithoutDates.rowCount());
-        assertFalse(structureWithoutDates.stringColumn("Column Name").contains("Date"));
-    }
-
+    
     @Test
     public void testReject() {
         Table result = table.dropWhere(table.numberColumn("approval").isLessThan(70));
