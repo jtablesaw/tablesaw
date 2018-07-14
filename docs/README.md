@@ -1,6 +1,6 @@
 # Tablesaw Documentation
 
-* [Introductory Tutorial](https://jtablesaw.github.io/tablesaw/gettingstarted)
+* [Introductory Tutorial](https://jtablesaw.github.io/tablesaw/gettingstarted) If you haven't used Tablesaw, or are having trouble 'getting it', you should definitely start here. It covers most everything you need to begin using it productively. 
 * [User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc)
 * [Javadoc](https://jtablesaw.github.io/tablesaw/apidocs/index)
 * [Contributor's Guide](https://jtablesaw.github.io/tablesaw/contributing)

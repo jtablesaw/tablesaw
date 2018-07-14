@@ -87,7 +87,7 @@ nc.isLessThan(3);
 
 This operation returns a *Selection*. Logically, it's a bitmap of the same size as the original column. The method above, effectively, returns 1, 1, 0, 0, since the first two values in the column are less than three, and the last two are not. 
 
-What you probably wanted was not a Selection object, but a new NumberColumn that contains only the values that passed the filter. To get this, you use the *where(aSelection)* method:
+What you probably wanted was not a Selection object, but a new NumberColumn that contains only the values that passed the filter. To get this, you use the *where(aSelection)* method to apply the selection:
 
 ```java
 NumberColumn filtered = nc.where(nc.isLessThan(3));
@@ -99,14 +99,14 @@ This extra step is a necessary evil, as it lets us combine filters. For example:
 NumberColumn filtered = nc.where(nc.isLessThan(3).and(nc.isOdd());
 ```
 
-If the methods returned columns directly, they couldn't be combined this way. 
+If the methods returned columns directly, they couldn't be combined this way.  It also lets us use the same method for filtering both tables and columns, as you'll see below.
 
 ##### Selecting by index
 
 These examples show how to select using predicates. You can also use a selection to retrieve the value at a specific index, or indexes. All of the following are supported:
 
 ```java
-nc.where(Selection.with(0, 2));  			// returns 2 rows with the given indexes
+nc.where(Selection.with(0, 2));  	// returns 2 rows with the given indexes
 nc.where(Selection.selectNRowsAtRandom(2)); // returns 2 randomly selected rows
 nc.where(Selection.withRange(1, 3));		// returns rows 1-3 inclusive
 nc.where(Selection.withoutRange(1, 3));		// returns row 0

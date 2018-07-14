@@ -11,7 +11,7 @@ Tablesaw
 
 __Tablesaw__ is a Java dataframe similar to Pandas in Python, and the R data frame. If you work with data in Java, it may save you time and effort.
 
-Tablesaw also supports descriptive statistics and data visualization. It integrates well with the Java machine learning library, Smile. 
+Tablesaw also supports descriptive statistics and data visualization, and integrates well with the Java machine learning library, Smile. 
 
 You can use tablesaw-core, which is the dataframe library itself, by adding a dependency: 
 
@@ -33,8 +33,11 @@ Beyond tablesaw-core:
 
 ### Documentation and support:
 
-* Please see our documentation page: https://jtablesaw.github.io/tablesaw/ 
-* Jump right in with this guide:  https://jtablesaw.github.io/tablesaw/gettingstarted 
+* Start here:  https://jtablesaw.github.io/tablesaw/gettingstarted
+
+* Then see our documentation page: https://jtablesaw.github.io/tablesaw/ 
+
+And *always* feel free to ask questions here on the [issues tab](https://github.com/jtablesaw/tablesaw/issues). 
 
 ### Tablesaw features: 
 
