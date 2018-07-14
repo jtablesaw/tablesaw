@@ -73,7 +73,7 @@ That’s all there is to it. Note that when we use *by()*, we no longer need to 
 
     avgInjuries.setName("Average injuries by Tornado Scale");
     avgInjuries.print();
-
+    
     Average injuries by Tornado Scale 
      Scale  |    Mean [Injuries]     |
     ----------------------------------
@@ -175,7 +175,7 @@ In this example, a standard map function (*length()*) creates a NumberColumn con
 
 ## Conditional Summarization
 
- Another hand tool is to summarize only that data that passes some test.  For example, you could extract the common suffixes between two columns of String data, and then count the number that are longer than two characters. This can be done using the *summarizeIf()* method as follows:
+Another useful facility is to summarize only that data that passes some test.  For example, you could extract the common suffixes between two columns of String data, and then count the number that are longer than two characters. This can be done using the *summarizeIf()* method as follows:
 
 ```java
 t.summarizeIf(c1.suffix(c2).length().isGreaterThan(2), count())

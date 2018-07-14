@@ -77,6 +77,8 @@ Many Java programs and programmers work exclusively with Objects, rather than pr
 
 There is a price for this frugality. When you work with primitives, you forgo some common java capabilities, like the use of standard Java 8 predicates. While Java thoughtfully provides some specialized predicate interfaces (e.g. *IntPredicate*), they don't provide any primitive *BiPredicate* implementations, nor do their primitive interfaces cover all primitive types. Without an IntBiPredicate, we can't implement operations like a < b. So we were left to roll our own. You can find them in the package *tech.tablesaw.filtering.predicates*. They work like the standard objects. 
 
+This just covers the most basic information about columns. You can find more in the section on [Columns](https://jtablesaw.github.io/tablesaw/userguide/columns), or in the Javadocs for the [api package](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/package-summary.html) and the [columns package](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/columns/package-summary.html).
+
 ### Selections
 
 Before going on to tables, we should talk about *selections*. *Selections* are used to filter both tables and columns. Often they work behind the scenes, but you can use them directly. For example, consider our NumberColumn containing the values {1, 2, 3, 4}. You can filter that column by sending it a message. For example: 
@@ -195,9 +197,7 @@ Table x = Table.read().csv("testing.csv");
 
 Tablesaw does a pretty good job at guessing the column types for many data sets, but you can specify them    if it guesses wrong, or to improve performance. Numerous other options are available, such as specifying whether or not there's a header, using a non-standard delimiter, supplying a custom missing value indicator, and so on. 
 
-***Note:*** Getting data loaded is sometimes the hardest part of data analysis. Advanced options for loading data are described in the section on [Importing Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data).
-
-The IO section also shows how you can read data from a database, a stream, or an HTML table. The stream interfaces lets you read data from a Web site or an S3 bucket.  
+***Note:*** Getting data loaded is sometimes the hardest part of data analysis. Advanced options for loading data are described in the documentation on [Importing Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data). That section also shows how you can read data from a database, a stream, or an HTML table. The stream interfaces lets you read data from a Web site or an S3 bucket.  
 
 #### Exploring Tables
 
@@ -230,7 +230,7 @@ Table tail = myTable.last(3);
 
 Table's *toString()* method returns a String representation like those shown above. It returns a limited number of rows by default, but you can also use *table.printAll()*, or *table.print(n)* to get the output you want.
 
-Of course, this is just the beginning of exploratory data analysis. You can also use numeric and visual tools to explore your data. These facilities are described in the documentation on statistics and plotting, respectively.
+Of course, this is just the beginning of exploratory data analysis. You can also use numeric and visual tools to explore your data. These facilities are described in the documentation on statistics and [plotting](https://jtablesaw.github.io/tablesaw/userguide/jsplots), respectively.
 
 #### Working with a table's columns
 
@@ -344,6 +344,8 @@ table.stepWithRows(consumer, 5);
 table.doWithRowPairs(Pairs)	// easy syntax for working with each pair of rows
 ```
 
+See [Rows](https://jtablesaw.github.io/tablesaw/userguide/rows) for more information and other options. 
+
 #### Sorting
 
 To sort a table, you can just use the sort() function and give it a column name (or two):
@@ -361,6 +363,8 @@ sorted = table.sortAscending("bar"); 	// just like sort(), but makes order expli
 /* sort on foo ascending, then bar descending. Note the minus sign preceding the name of column bar. */
 sorted = table.sort("foo", "-bar");		 
 ```
+
+See [Sorting](https://jtablesaw.github.io/tablesaw/userguide/sorting) for more information and other options. 
 
 #### Filtering tables with selections
 
@@ -419,6 +423,8 @@ which says "return the mean and median sales by day of week."
 
 > **Key point**: Tables are usually split based on columns, but the columns can be calculated on the fly
 
+See the documentation on [Summarizing](https://jtablesaw.github.io/tablesaw/userguide/reducing) data, and the classes in the [aggregate package](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/aggregate/package-summary.html) for more detail.
+
 ##### Cross-Tabulations (AKA contingency tables)
 
 If you're only interested in how the frequently observations appear in different categories, you can use cross-tabulations. In the example below we show the table percents, but you can also get row and column percents and raw counts.
@@ -450,6 +456,8 @@ The formatted output is shown below.
  SEPTEMBER  |   2%  |      3%  |        2%  |        1%  |     0%  |     1%  |     9%  |
      Total  |  20%  |     37%  |       17%  |        9%  |     3%  |    14%  |   100%  |
 ```
+
+See the section on [Cross Tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs), and the JavaDocs for the [CrostTab](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/aggregate/CrossTab.html) class. 
 
 ## Conclusion
 

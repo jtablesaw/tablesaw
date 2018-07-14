@@ -1,8 +1,8 @@
-# JavaScript Plots 
+# Plotting
 
-We're retiring the existing plotting code in Tablesaw. It will soon be deprecated. For doing quick, basic, exploratory visualizations it served its purpose, but it fell far short of what the best visualization tools provide. Unfortunately, none of those tools are written in Java. 
+The original plotting code in Tablesaw will soon be deprecated. For doing quick, basic, exploratory visualizations it served its purpose, but it fell far short of what the best visualization tools provide. Unfortunately, none of those tools are written in Java. 
 
-And so we're switching to a new framework, which provides a Java wrapper around the Plot.ly open source JavaScript visualization library. The advantages are huge; these are among the most important:
+This section describes the new framework, which provides a Java wrapper around the Plot.ly open source JavaScript visualization library. The advantages are huge; these are among the most important:
 
 - It supports a much greater range of visualization types, including time-series, geographic maps, heat maps, 2D histograms, Contour plots, 3D scatterplots, etc. 
 - It provides a single, consistent API. With the current approach built on several different tools, this was not possible. 

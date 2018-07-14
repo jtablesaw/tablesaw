@@ -35,9 +35,15 @@ double[] values = {1, 2, 3, 7, 9.44242, 11};
 DoubleColumn column = DoubleColumn.create("my numbers", values);
 ```
 
-Once you have a column, 
+Once you have a column, you can add it to a table using the addColumns() method on Table.
+
+```Java
+table.addColumns(column);
+```
 
 #### Add an element to the end of the column
+
+You can add data to columns as shown below, but  if your column is part of a table, you must take care to ensure that each column has the same number of elements.
 
     DateColumn.append(LocalDate.of(2016, 2, 28));
 
@@ -116,7 +122,15 @@ There are numerous built-in date predicates. For example:
     DateColumn filtered = dates.isInQ2();
     DateColumn filtered = dates.isLastDayOfTheMonth();
 
-You can find a full list in the JavaDoc for DateColumn.
+Perhaps not surprisingly, there's already one provided to select elements that are after a specific date: 
+
+```java
+DateColumn filtered = dates.isAfter(LocalDate.of(2016, 2, 28));
+```
+
+The built-in method in this case is preferable as it has been optimized. But you *can* write your own if you need something not already provided.
+
+You can find a full list in the JavaDoc for [DateColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/DateColumn.html).
 
 ### Grouping
 
@@ -140,20 +154,30 @@ This code creates a splitter that groups dates by month. First we get a Splitter
 
 ### Aggregating
 
-### Cleaning data
 
-### Correcting values
 
-The easiest way to correct values is using setIf(). 
+### Changing and correcting values
+
+The easiest way to correct values is using `set(aSelection, aNewValue)`. Each column implements an appropriate variation of this method. DoubleColumn, for example, has a version that takes a double as the second argument. You can use a built-in method like one of those discussed above to provide the selection.
+
+```Java
+doubleColumn.set(doubleColumn.isGreaterThan(100), 100);
+```
+
+This would set any value above 100 to equal 100 exactly. This approach can be very helpful for dealing with missing data, which you might want to set to an average value for example. 
+
+```Java
+double avg = doubleColumn.mean();
+doubleColumn.set(doubleColumn.isMissing(), avg)
+```
+
+NOTE: When working with missing values, always test with the isMissing() method, rather than test using the column type's MISSING_VALUE constant. For doubles, MISSING_VALUE returns Double.NaN, and since Double.NaN does not equal Double.NaN, a test like `doubleValue == MISSING_VALUE` will fail to detect missing values.
 
 ### Formatting 
 
-You can print data as individual values, columns or tables. The output format can be controlled by setting a type
- specific formatter on a column. For example, to change how numbers are displayed you can call setPrintFormatter()
- on a NumberColumn, passing in a NumberColumnFormatter. Each formatter serves two functions, displaying true values and handling of 
- missing ones. NumberColumnFormatter has several pre-configured options, including printing as currency or percents.
+You can print data as individual values, columns or tables. The output format can be controlled by setting a type-specific formatter on a column. For example, to change how numbers are displayed you can call setPrintFormatter() on a NumberColumn, passing in a NumberColumnFormatter. Each formatter serves two functions, displaying true values and handling of  missing ones. NumberColumnFormatter has several pre-configured options, including printing as currency or percents.
 
 
-See the Tables documentation for how to add and remove columns
+See the [Table](https://jtablesaw.github.io/tablesaw/userguide/tables) documentation for how to add and remove columns
 
  
