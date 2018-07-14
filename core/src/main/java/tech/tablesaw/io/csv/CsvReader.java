@@ -203,8 +203,6 @@ public class CsvReader {
                     }
                     Column newColumn = TypeUtils.newColumn(columnName, types[x]);
                     addFormatter(newColumn, options);
-
-
                     table.addColumns(newColumn);
                 }
             }
@@ -219,7 +217,8 @@ public class CsvReader {
 
             // Add the rows
             while ((nextLine = reader.readNext()) != null) {
-                if (nextLine.length != columnIndexes.length) {
+
+                if (nextLine.length != types.length) {
                     System.err.println("Warning: Invalid CSV file. Row "
                             + rowNumber
                             + " is not the expected size. Continuing.");
@@ -229,14 +228,19 @@ public class CsvReader {
                     for (int columnIndex : columnIndexes) {
                         Column column = table.column(cellIndex);
                         try {
-                            column.appendCell(nextLine[columnIndex]);
+                            String value = nextLine[columnIndex];
+                            if (value.equals(options.missingValueIndicator())) {
+                                column.appendCell("");
+                            } else {
+                                column.appendCell(value);
+                            }
                         } catch (Exception e) {
                             throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
                         }
                         cellIndex++;
                     }
-                    rowNumber++;
                 }
+                rowNumber++;
             }
             return table;
         }
@@ -252,6 +256,9 @@ public class CsvReader {
                 return;
             case LOCAL_TIME :
                 ((TimeColumn) newColumn).setFormatter(options.timeFormatter());
+                return;
+            default:
+                return;
         }
     }
 
@@ -442,7 +449,6 @@ public class CsvReader {
         boolean header = options.header();
         char delimiter = options.separator();
         boolean useSampling = options.sample();
-        Locale locale = options.locale();
 
         int linesToSkip = header ? 1 : 0;
 
@@ -548,7 +554,7 @@ public class CsvReader {
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
         for (String s : valuesList) {
-            if (Strings.isNullOrEmpty(s) || TypeUtils.MISSING_INDICATORS.contains(s)) {
+            if (isMissing(s, options)) {
                 continue;
             }
             if (dateTimeFormatter != null) {
@@ -586,6 +592,22 @@ public class CsvReader {
             }
         }
         return selectType(typeCandidates);
+    }
+
+    /**
+     * Returns true if the given string indicates a missing value
+     *
+     * If the given string is empty, it's missing, otherwise if a missing value indicator is provided and the string
+     * matches, it's missing. If no missing value indicator is provided, a default missing values list is used.
+     */
+    private static boolean isMissing(String s, CsvReadOptions options) {
+        String missingValueIndicator = options.missingValueIndicator();
+        if (options.missingValueIndicator() != null) {
+            return missingValueIndicator.equals(s) || Strings.isNullOrEmpty(s);
+        }
+
+        return Strings.isNullOrEmpty(s)
+                || TypeUtils.MISSING_INDICATORS.contains(s);
     }
 
     /**

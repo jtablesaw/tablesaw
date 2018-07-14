@@ -30,11 +30,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
-import tech.tablesaw.columns.strings.StringColumnReference;
 import tech.tablesaw.columns.strings.StringFilters;
 import tech.tablesaw.columns.strings.StringMapFunctions;
 import tech.tablesaw.columns.strings.StringReduceUtils;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -60,13 +58,11 @@ import static tech.tablesaw.api.ColumnType.STRING;
 public class StringColumn extends AbstractColumn
         implements CategoricalColumn, StringFilters, StringMapFunctions, StringReduceUtils {
 
-    public final StringColumnReference column = new StringColumnReference(this.name());
-
     public static final String MISSING_VALUE = (String) STRING.getMissingValue();
 
     private final AtomicInteger nextIndex = new AtomicInteger(1);
 
-    // holds a key for each row in the table. the key can be used to lookup the backing string value
+    // holds a key for each element in the column. the key can be used to lookup the backing string value
     private IntArrayList values;
 
     // a bidirectional map of keys to backing string values.
@@ -262,6 +258,11 @@ public class StringColumn extends AbstractColumn
         t.addColumns(categories);
         t.addColumns(counts);
         return t;
+    }
+
+    @Override
+    public int[] asIntArray() {
+        return data().toArray(new int[size()]);
     }
 
     @Override
@@ -529,10 +530,6 @@ public class StringColumn extends AbstractColumn
 
     public StringColumn where(Selection selection) {
         return (StringColumn) subset(selection);
-    }
-
-    public StringColumn where(Filter filter) {
-        return where(filter.apply(this));
     }
 
     @Override

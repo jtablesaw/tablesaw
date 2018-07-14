@@ -137,7 +137,7 @@ public class TableSlice extends Relation implements IntIterable {
     public Table asTable() {
         Table table = Table.create(this.name());
         for (Column column : columns()) {
-            table.addColumns(column.subset(selection));
+            table.addColumns(column.where(selection));
         }
         return table;
     }

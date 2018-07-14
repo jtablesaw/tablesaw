@@ -15,31 +15,27 @@
 package tech.tablesaw.filters;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.collect.Range;
-import com.google.common.collect.RangeSet;
-import com.google.common.collect.TreeRangeSet;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import tech.tablesaw.api.*;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.columns.strings.StringColumnReference;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.table.StandardTableSliceGroup;
-import tech.tablesaw.table.TableSlice;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
-import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.table.TableSliceGroup;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Row;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.index.LongIndex;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.out;
-import static tech.tablesaw.api.QueryHelper.*;
 
 /**
  * Tests manipulation of large (but not big) data sets
@@ -47,131 +43,127 @@ import static tech.tablesaw.api.QueryHelper.*;
 public class SearchPerformanceTest {
 
     private static final int CONCEPT_COUNT = 10;
-    private static final int PATIENT_COUNT = 10_000;
 
     // pools to get random test data from
     private static List<String> concepts = new ArrayList<>(CONCEPT_COUNT);
-    private static IntArrayList patientIds = new IntArrayList(PATIENT_COUNT);
-    private static int size = 60 * 365;
-    private static IntArrayList dates = new IntArrayList(size);
+    private static LongArrayList dates = new LongArrayList(5_000_000);
+
+    private static int numberOfRecordsInTable = 5_000_000;
+    private static LongIndex dateIndex;
 
     public static void main(String[] args) throws Exception {
 
-        int numberOfRecordsInTable = 5_000_000;
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         Table t = defineSchema();
-        generateTestData(t, numberOfRecordsInTable, stopwatch);
 
+        generateTestData(t, numberOfRecordsInTable, stopwatch);
+        t = t.sortAscendingOn("date");
+
+        dateIndex = new LongIndex(t.dateTimeColumn("date"));
         t.setName("Observations");
 
-        DateColumn dates = t.dateColumn("date");
-        NumberColumn values = t.numberColumn("value");
-        NumberColumn patients = t.numberColumn("patient");
+        DateTimeColumn dates = t.dateTimeColumn("date");
+        NumberColumn lowValues = t.numberColumn("lowValue");
+        NumberColumn highValues = t.numberColumn("highValue");
 
         System.out.println(t.structure());
         System.out.println(dates.summary());
-        System.out.println(values.summary());
-        System.out.println(patients.summary());
+        System.out.println(lowValues.summary());
+        System.out.println(highValues.summary());
+
+        LocalDateTime testDateTime = LocalDate.of(2010, 1, 1).atStartOfDay();
+        double testLowValue = 500;
+        double testHighValue = 999_500;
 
         stopwatch.reset();
         stopwatch.start();
-        Selection d = dates.isAfter(LocalDate.of(2010, 01,01));
 
-        Selection v = values.isGreaterThan(60_000);
-        Selection p = patients.isGreaterThan(1_500_000_000);
-        Selection and = d.and(v).or(p);
-        stopwatch.stop();
-        System.out.println("Search time " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
-        System.out.println("d size " + d.size());
-        System.out.println("v size " + v.size());
-        System.out.println("p size " + p.size());
-        System.out.println("and size " + and.size());
+        int count = 0;
+        for (int i = 0; i < 1000; i++) {
+            testDateTime = testDateTime.plusDays(2);
+            int rowNumber = getRowNumber(t, testDateTime, testLowValue, testHighValue);
+            if (rowNumber >= 0) {
+                count++;
+            }
+        }
 
-        stopwatch.reset();
-        stopwatch.start();
-        int i = and.get(0);
-        System.out.println(t.rows(i));
         stopwatch.stop();
-        System.out.println("get first row time " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
+        System.out.println("using rows with an index. found " + count + " in "  + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
         System.out.println("Done");
+    }
+
+    private static int getRowNumber(Table t, LocalDateTime testDate, double testLow, double testHigh) {
+        int rowNumber = -1;
+        long testPackedDateTime = PackedLocalDateTime.pack(testDate);  // packing saves time
+        Row row = new Row(t);
+        row.at(dateIndex.get(testPackedDateTime).get(0));
+        while (row.hasNext()) {
+            row.next();
+            if (row.getPackedDateTime("date").isOnOrAfter(testPackedDateTime)) {
+                if (row.getDouble("lowValue") <= testLow
+                        || row.getDouble("highValue") >= testHigh) {
+                    rowNumber = row.getRowNumber();
+                    break;
+                }
+            }
+        }
+        return rowNumber;
     }
 
     private static Table defineSchema() {
         Table t;
         t = Table.create("Observations");
         StringColumn conceptId = StringColumn.create("concept");
-        DateColumn date = DateColumn.create("date");
-        NumberColumn value =  DoubleColumn.create("value");
-        NumberColumn patientId =  DoubleColumn.create("patient");
-        patientId.setPrintFormatter(NumberColumnFormatter.ints());
+        DateTimeColumn date = DateTimeColumn.create("date");
+        NumberColumn lowValues = DoubleColumn.create("lowValue");
+        NumberColumn highValues = DoubleColumn.create("highValue");
+        highValues.setPrintFormatter(NumberColumnFormatter.ints());
+        lowValues.setPrintFormatter(NumberColumnFormatter.ints());
 
         t.addColumns(conceptId);
         t.addColumns(date);
-        t.addColumns(value);
-        t.addColumns(patientId);
+        t.addColumns(lowValues);
+        t.addColumns(highValues);
         return t;
     }
 
     private static void generateTestData(Table t, int numberOfRecordsInTable, Stopwatch stopwatch) throws IOException {
         stopwatch.reset().start();
         out.println("Generating test data");
-        generateData(numberOfRecordsInTable, t);
+        LocalDateTime startDateTime = LocalDateTime.of(2008, 1, 1, 0, 0, 0);
+        generateData(numberOfRecordsInTable, startDateTime, t);
         out.println("Time to generate "
                 + numberOfRecordsInTable + " records: "
                 + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
     }
 
-    private static void generateData(int observationCount, Table table) {
+    private static void generateData(int observationCount, LocalDateTime dateTime, Table table) {
         // createFromCsv pools of random values
 
         RandomStringGenerator generator = new RandomStringGenerator.Builder()
                 .withinRange(32, 127).build();
+
         while (concepts.size() <= CONCEPT_COUNT) {
             concepts.add(generator.generate(30));
         }
 
-        while (patientIds.size() <= PATIENT_COUNT) {
-            patientIds.add(RandomUtils.nextInt(0, 2_000_000_000));
+        while (dates.size() <= numberOfRecordsInTable) {
+            dateTime = dateTime.plusMinutes(1);
+            dates.add(PackedLocalDateTime.pack(dateTime));
         }
 
-        while (dates.size() <= size) {
-            dates.add(PackedLocalDate.pack(randomDate()));
-        }
-
-        DateColumn dateColumn = table.dateColumn("date");
+        DateTimeColumn dateColumn = table.dateTimeColumn("date");
         StringColumn conceptColumn = table.stringColumn("concept");
-        NumberColumn valueColumn = table.numberColumn("value");
-        NumberColumn patientColumn = table.numberColumn("patient");
+        NumberColumn lowValues = table.numberColumn("lowValue");
+        NumberColumn highValues = table.numberColumn("highValue");
 
         // sample from the pools to write the data
         for (int i = 0; i < observationCount; i++) {
-            dateColumn.appendInternal(dates.getInt(RandomUtils.nextInt(0, dates.size())));
+            dateColumn.appendInternal(dates.getLong(i));
             conceptColumn.append(concepts.get(RandomUtils.nextInt(0, concepts.size())));
-            valueColumn.append(RandomUtils.nextDouble(0f, 100_000f));
-            patientColumn.append(patientIds.getInt(RandomUtils.nextInt(0, patientIds.size())));
-        }
-    }
-
-    // TODO(lwhite): Put this in a Test utils class
-    private static LocalDate randomDate() {
-        Random random = new Random();
-        int minDay = (int) LocalDate.of(2000, 1, 1).toEpochDay();
-        int maxDay = (int) LocalDate.of(2016, 1, 1).toEpochDay();
-        long randomDay = minDay + random.nextInt(maxDay - minDay);
-        return LocalDate.ofEpochDay(randomDay);
-    }
-
-    private enum DependencyFilter {
-        FIRST,
-        LAST,
-        ANY
-    }
-
-    private static class IndependentResult {
-        RangeSet<LocalDate> dateRanges = TreeRangeSet.create();
-        void addRange(Range<LocalDate> dateRange) {
-            dateRanges.add(dateRange);
+            lowValues.append(RandomUtils.nextDouble(0, 1_000_000));
+            highValues.append(RandomUtils.nextDouble(0, 1_000_000));
         }
     }
 }

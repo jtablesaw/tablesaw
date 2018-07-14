@@ -25,7 +25,6 @@ import java.util.function.Function;
 
 import static org.junit.Assert.*;
 import static tech.tablesaw.aggregate.AggregateFunctions.count;
-import static tech.tablesaw.api.QueryHelper.both;
 import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 
 public class StringColumnTest {
@@ -129,14 +128,14 @@ public class StringColumnTest {
     public void testMax() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
-        assertTrue("Wyoming".equals(stringColumn.top(5).get(0)));
+        assertEquals("Wyoming", stringColumn.top(5).get(0));
     }
 
     @Test
     public void testMin() {
         StringColumn stringColumn = StringColumn.create("US States");
         stringColumn.addAll(TestDataUtil.usStates());
-        assertTrue("Alabama".equals(stringColumn.bottom(5).get(0)));
+        assertEquals("Alabama", stringColumn.bottom(5).get(0));
     }
 
     @Test
@@ -172,8 +171,8 @@ public class StringColumnTest {
         stringColumn.addAll(TestDataUtil.usStates());
 
         StringColumn selection = stringColumn.where(
-                both(stringColumn.startsWith("A"),
-                    stringColumn.containsString("kan")));
+                stringColumn.startsWith("A")
+                    .and(stringColumn.containsString("kan")));
 
         assertEquals(1, selection.size());
         assertEquals("Arkansas", selection.getString(0));

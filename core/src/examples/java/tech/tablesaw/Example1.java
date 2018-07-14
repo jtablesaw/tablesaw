@@ -87,7 +87,7 @@ public class Example1 {
         //Querying
         //NOTE: we need a static import of QueryHelper for this section. See the imports above
 
-        Table highRatings = table1.where(QueryHelper.numberColumn("approval").isGreaterThan(80));
+        Table highRatings = table1.where(table1.numberColumn("approval").isGreaterThan(80));
         highRatings.setName("Approval ratings over 80%");
         out(highRatings);
 
@@ -131,7 +131,6 @@ public class Example1 {
                 .forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
         out(percents);
 
-        out(table1.project("who", "approval").first(10));
         out(table1.retainColumns("who", "approval").first(10));
 
         out(table1.countBy(who).sortDescendingOn("Count").first(3));

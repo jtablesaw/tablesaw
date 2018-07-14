@@ -24,9 +24,9 @@ import javax.swing.*;
  * Renders bubble plots.
  */
 public final class XchartBubble {
-    
+
     private XchartBubble(){}
-    
+
     public static JFrame show(String chartTitle, double[] xData, String xLabel, double[] yData, String yLabel, double [] bubbleData) {
         return show(chartTitle, xData, xLabel, yData, yLabel, bubbleData, XchartDefaults.DEFAULT_WIDTH, XchartDefaults.DEFAULT_HEIGHT);
     }
@@ -38,10 +38,10 @@ public final class XchartBubble {
         chart.getStyler().setTheme(new TablesawTheme());
 
         chart.addSeries(XchartDefaults.SERIES, xData, yData, bubbleData);
-        
+
         return display(chart);
     }
-    
+
     private static JFrame display(BubbleChart chart) {
         return new SwingWrapper<>(chart).displayChart(XchartDefaults.WINDOW_TITLE);
     }

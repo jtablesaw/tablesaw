@@ -18,7 +18,10 @@ import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 import tech.tablesaw.api.DateColumn;
 
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.ZoneId;
 import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalField;
@@ -29,12 +32,8 @@ import java.util.Locale;
 import static java.time.DayOfWeek.*;
 import static java.time.Month.*;
 import static java.time.temporal.ChronoField.*;
-import static tech.tablesaw.api.NumberColumn.*;
-import static tech.tablesaw.columns.DateAndTimePredicates.isEqualTo;
-import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThan;
-import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThanOrEqualTo;
-import static tech.tablesaw.columns.DateAndTimePredicates.isLessThan;
-import static tech.tablesaw.columns.DateAndTimePredicates.isLessThanOrEqualTo;
+import static tech.tablesaw.api.NumberColumn.MISSING_VALUE;
+import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 /**
  * A short localdate packed into a single int value. It uses a short for year so the range is about +-30,000 years
@@ -231,7 +230,8 @@ public class PackedLocalDate {
     }
 
     public static boolean isAfter(int packedDate, int value) {
-        return isGreaterThan.test(packedDate, value);
+        return packedDate > value;
+        //return isGreaterThan.test(packedDate, value);
     }
 
     public static boolean isEqualTo(int packedDate, int value) {

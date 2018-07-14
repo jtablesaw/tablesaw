@@ -14,12 +14,13 @@
 
 package tech.tablesaw;
 
-import tech.tablesaw.api.*;
-import tech.tablesaw.filtering.Filter;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.api.QueryHelper.stringColumn;
-import static tech.tablesaw.api.QueryHelper.*;
 
 /**
  * Usage example using a Tornado data set
@@ -32,7 +33,8 @@ public class TornadoExample extends AbstractExample {
         assert (tornadoes != null);
 
         out(tornadoes.structure());
-        out(tornadoes.structure().where(stringColumn("Column Type").isEqualTo("NUMBER")));
+        out(tornadoes.structure().where(
+                tornadoes.stringColumn("Column Type").isEqualTo("NUMBER")));
 
         tornadoes.setName("tornadoes");
 
@@ -53,7 +55,7 @@ public class TornadoExample extends AbstractExample {
         out("Use first(3) to view the first 3 rows:");
         out(tornadoes.first(3));
 
-        tornadoes = tornadoes.where(numberColumn("Start Lat").isGreaterThan(20f));
+        tornadoes = tornadoes.where(tornadoes.numberColumn("Start Lat").isGreaterThan(20f));
 
         out();
         out("Extract month from the date and make it a separate column");
@@ -66,7 +68,7 @@ public class TornadoExample extends AbstractExample {
 
         out();
         out("Filtering: Tornadoes where there were fatalities");
-        Table fatal = tornadoes.where(numberColumn("Fatalities").isGreaterThan(0));
+        Table fatal = tornadoes.where(tornadoes.numberColumn("Fatalities").isGreaterThan(0));
         out(fatal.shape());
 
         out();
@@ -109,13 +111,12 @@ public class TornadoExample extends AbstractExample {
         // alternate, somewhat more precise approach
         DateColumn date = tornadoes.dateColumn("Date");
 
-        Filter summerFilter =
-                anyOf(
-                        date.month().isIn("JULY", "AUGUST"),
-                        both(date.month().isEqualTo("JUNE"),
-                            date.dayOfMonth().isGreaterThanOrEqualTo(21)),
-                        both(date.month().isEqualTo("SEPTEMBER"),
-                            date.dayOfMonth().isLessThanOrEqualTo(22)));
+        Selection summerFilter =
+                  date.month().isIn("JULY", "AUGUST")
+                        .or(date.month().isEqualTo("JUNE")
+                            .and(date.dayOfMonth().isGreaterThanOrEqualTo(21)))
+                        .or(date.month().isEqualTo("SEPTEMBER")
+                            .and(date.dayOfMonth().isLessThanOrEqualTo(22)));
 
         //Table summer = tornadoes.select(selection);
         Table summer = tornadoes.where(summerFilter);

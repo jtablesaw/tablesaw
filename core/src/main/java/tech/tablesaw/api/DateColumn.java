@@ -692,4 +692,9 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         fillWith(size(), supplier, date -> set(r[0]++, date));
         return this;
     }
+
+    @Override
+    public int[] asIntArray() {
+        return data.toArray(new int[size()]);
+    }
 }

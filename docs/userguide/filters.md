@@ -1,8 +1,8 @@
-# Filtering with Selections
-
-Filters select a subset of the rows in a column or table. Given a filter, a table will (usually) return a table like itself, but having only the rows that pass the filter criteria.
+# Filters
 
 ## where()
+
+Filters select a subset of the rows in a table. Given a filter, a table will (usually) return a table like itself, but having only the rows that pass the filter criteria.
 
 The main methods for applying filters are:
 
@@ -232,6 +232,7 @@ between(Comparable a, Comparable b)
 isIn(List aList)
 isMissing()
 isNotMissing()
+
 ```
 #### Logical and Compound Filters
 

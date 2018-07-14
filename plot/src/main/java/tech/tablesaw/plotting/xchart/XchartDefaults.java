@@ -20,12 +20,12 @@ package tech.tablesaw.plotting.xchart;
 final class XchartDefaults {
 
     static final String WINDOW_TITLE = "Tablesaw";
-    
+
     static final String SERIES = "series 1";
-    
+
     static final int DEFAULT_WIDTH = 600;
-    
+
     static final int DEFAULT_HEIGHT = 400;
-    
+
     private XchartDefaults(){}
 }

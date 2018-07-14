@@ -276,7 +276,7 @@ public interface DateMapFunctions extends Column {
                     case YEARS:
                         newColumn.append(PackedLocalDate.yearsUntil(c2, c1));
                         break;
-                    default:  // handle decades, etc. 
+                    default:  // handle decades, etc.
                         LocalDate value1 = PackedLocalDate.asLocalDate(c1);
                         LocalDate value2 = PackedLocalDate.asLocalDate(c2);
                         newColumn.append(unit.between(value1, value2));

@@ -1,6 +1,8 @@
 # Getting started with Tablesaw
 
-Java is a great language, but it wasn't designed for data analysis. Tablesaw makes it easy to do data analysis in Java, but to accomplish that, we did things a little differently than you might expect. After you're up and running, we'll tell you what you need to know to use Tablesaw happily and productively.
+Java is a great language, but it wasn't designed for data analysis. Tablesaw makes it easy to do data analysis in Java. 
+
+Once you're up and running, this tutorial will tell you what you need to know to use Tablesaw.
 
 ## Setup
 
@@ -24,11 +26,11 @@ As you would expect, Tablesaw is all about tables, and tables are made of column
 
 ### Columns
 
-A column is a named, one-dimensional collection of data. All data in a column must be of the same type. 
+A column is a named, one-dimensional collection of data. It may or may not be part of a table. All data in a column must be of the same type. 
 
-Currently, Tablesaw supports columns for Strings, doubles, booleans, LocalDates, LocalTimes, and LocalDateTimes. The date and time types are based on the java.time classes introduced in Java 8.
+Tablesaw supports columns for Strings, doubles, booleans, LocalDates, LocalTimes, and LocalDateTimes. The date and time columns are comparable with the java.time classes introduced in Java 8.
 
-To create a column of numbers you can use one of its *create()* methods:
+To create a column you can use one of its static *create()* methods:
 
 ```java
 double[] numbers = {1, 2, 3, 4};
@@ -51,7 +53,7 @@ which returns 3.0.
 
 #### Array Operations
 
-Tablesaw makes columns easy to work with. Many operations that work on numbers in standard Java, for example, work on *columns* of numbers in Tablesaw. To multiply every value in a column by 4, we use the *multiply()* method, which returns a new column of the same size as the original.
+Tablesaw makes columns easy to work with. Operations that work on numbers in standard Java, for example, often work on *columns* of numbers in Tablesaw. To multiply every value in a column by 4, we use the *multiply()* method, which returns a new column like the original.
 
 ```java
 NumberColumn nc2 = nc.multiply(4);
@@ -65,21 +67,19 @@ Column: Test * 4.0
 12.0
 16.0
 ```
-There are so many columnar operations in Tablesaw that, as a general rule, if you find yourself writing a for loop to process a column or table, you may be missing something. 
+As you can see, the values are 4x the values in the original. The new column's name is made by combining the original "Test" and the operation (* 4). You can change it if you like using *setName(aString)*.
 
-Generally, Tablesaw will provide a name for columns created this way. If you don't like the name, you can change it by calling *setName("new name")* on the column.
+There are so many columnar operations in Tablesaw that, as a general rule, if you find yourself writing a for loop to process a column or table, you may be missing something. 
 
 #### Objects and Primitives
 
-Many Java programs and programmers work exclusively with Objects, rather than primitives. In Tablesaw, we use primitives whenever possible because they use *so much* less memory than their boxed alternatives.  A Byte object, for example, uses as much memory as a primitive double, even though bytes have a range of only 256 values. 
+Many Java programs and programmers work exclusively with Objects, rather than primitives. In Tablesaw, we use primitives whenever possible because they use  *much* less memory than their boxed alternatives.  A Byte object, for example, uses as much memory as a primitive double, even though bytes have a range of only 256 values. 
 
-There is a price for this frugality. When you work with primitives, you forgo some common java capabilities, like the use of standard Java 8 predicates. While Java thoughtfully provides some specialized predicate interfaces (e.g. *IntPredicate*), they don't provide any primitive *BiPredicate* implementations. Without an IntBiPredicate, we can't implement operations like a < b. So we were left to roll our own. You can find them in the package *tech.tablesaw.filtering.predicates*. 
-
-For that reason, the syntax for Tablesaw may sometimes seem a bit odd relative to typical Java, but it doesn't take long to learn. 
+There is a price for this frugality. When you work with primitives, you forgo some common java capabilities, like the use of standard Java 8 predicates. While Java thoughtfully provides some specialized predicate interfaces (e.g. *IntPredicate*), they don't provide any primitive *BiPredicate* implementations, nor do their primitive interfaces cover all primitive types. Without an IntBiPredicate, we can't implement operations like a < b. So we were left to roll our own. You can find them in the package *tech.tablesaw.filtering.predicates*. They work like the standard objects. 
 
 ### Selections
 
-Before going on to tables, we should talk about selections. *Selections* are used to filter both tables and columns. Often they work behind the scenes, but sometimes you use them directly.  For example, consider our NumberColumn containing the values {1, 2, 3, 4}. You can filter that column by sending it a message. For example: 
+Before going on to tables, we should talk about *selections*. *Selections* are used to filter both tables and columns. Often they work behind the scenes, but you can use them directly. For example, consider our NumberColumn containing the values {1, 2, 3, 4}. You can filter that column by sending it a message. For example: 
 
 ```java
 nc.isLessThan(3);
@@ -91,9 +91,12 @@ What you probably wanted was not a Selection object, but a new NumberColumn that
 
 ```java
 NumberColumn filtered = nc.where(nc.isLessThan(3));
+> Column: Test < 3.0
+1.0
+2.0
 ```
 
-This extra step is a necessary evil, as it lets us combine filters. For example: 
+Doing this in two steps provides many benefits. For one, it lets us combine filters. For example: 
 
 ```java
 NumberColumn filtered = nc.where(nc.isLessThan(3).and(nc.isOdd());
@@ -112,27 +115,28 @@ nc.where(Selection.withRange(1, 3));		// returns rows 1-3 inclusive
 nc.where(Selection.withoutRange(1, 3));		// returns row 0
 ```
 
-Obviously, if you have several columns of the same size (i.e. length) as you would in a table of data, you can make a selection with one column and use it to filter another:
+If you have several columns of the same length as you would in a table of data, you can make a selection with one column and use it to filter another:
 
 ```java
 NumberColumn result = firstColumn.where(someOtherColumn.startsWith("foo"));
 ```
 
-> **Key point:** Note the StringColumn method *startsWith(aString)*. There are many such column-type specific methods that can be used in building queries. For StringColumn, these methods are defined in the tech.tablesaw.columns.strings.StringFilters interface. It also includes endsWith(), isEmpty(), isAlpha(), containsString()[^2]. Each column has a similar set of filter operations. They can all be found in their filter interfaces located in sub-folders of tech.tablesaw.columns (e.g. tech.tablesaw.columns.dates.DateFilters). 
+> **Key point:** Note the methods *startsWith(aString)*, *isLessThan(aNumber)*, and *isOdd()*. These were predefined for your use. There are many such methods that can be used in building queries. For StringColumn, they're defined in the [tech.tablesaw.columns.strings.StringFilters interface](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/columns/strings/StringFilters.html). It also includes *endsWith()*, *isEmpty()*, *isAlpha()*, *containsString()*[^2], etc. Each column has a similar set of filter operations. They can all be found in the filter interfaces located in sub-folders of tech.tablesaw.columns (e.g. tech.tablesaw.columns.dates.DateFilters). 
 
 #### Map functions
 
-There is nothing special about map operations; they're simply methods on columns that return new Columns as their result. You've already seen one: The column *multiply(aNumber)* method above is a map function. To multiple two columns, use:
+Map functions are methods defined on columns that return other new Columns as their result. You've already seen one: The column *multiply(aNumber)* method above is a map function with a scalar argument. To multiple the values in two columns, use *multiply(aNumberColumn)*:
 
 ```java
-nc1.multiply(nc2);
+NumberColumn newColumn = nc1.multiply(nc2);
 ```
 
-In this case, each value in column nc1 is multiplied by the corresponding value in nc2, rather than by a scalar constant as in the example above.
+Each value in column nc1 is multiplied by the corresponding value in nc2, rather than by a scalar value in the earlier example.
 
 There are many map functions built-in for the various column types. Here are some examples for StringColumn:
 
 ```java
+StringColumn s;
 s = aStringColumn.upperCase();
 s = s.replaceFirst("foo", "bar")
 s = s.substring(3, 10);
@@ -144,31 +148,32 @@ y = s.commonPrefix(anotherStringColumn);
 // this returns a measure of the similarity (levenshtein distance) between two columns
 nc = s.distance(anotherStringColumn);
 ```
+As you can see, for many String methods that return a new String. StringColumn provides an equivilent map method that returns a new StringColumn. It also includes other helpful methods found in Guava's String library and in the Apache Commons String library.
 
-> **Key point:** Every column type has a set of map operations like *multiply(aNumber)*. For StringColumn, these methods are defined in the *tech.tablesaw.columns.strings.StringMapFunctions* interface. It includes many methods in addition to those shown above. Each column has a similar set of map operations. They can all be found in their filter interfaces located in the sub-folders of tech.tablesaw.columns (e.g. *tech.tablesaw.columns.dates.DateMapFunctions*).  
+> **Key point:** Every column type has a set of map operations like *multiply(aNumber)*. For StringColumn, these methods are defined in the [*tech.tablesaw.columns.strings.StringMapFunctions*](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/columns/strings/StringFilters.html) interface. It includes many methods beyond those shown above. Methods for all column types can all be found in their filter interfaces located in the sub-folders of tech.tablesaw.columns (e.g. [*tech.tablesaw.columns.dates.DateMapFunctions*](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/columns/strings/StringFilters.html), which provides date methods like *plusDays(anInt)*, *year()*, and *month()*).  
 >
 
 #### Reduce (aggregate) functions: Summarizing a column 
 
-Sometimes you want to derive a value that summarizes in some sense the data in a column. Aggregate functions do just that. Each such function scan all the values in a column and returns a single scalar value as a result.  All columns support some aggregate functions: *min*() and *max*(), for example, plus *count()*, *countUnique()*, and *countMissing()*. Some column types support type-specific functions. BooleanColumn, for example, supports *all()*, which returns *true* if all of the values in the column are *true*. The functions *any()*, and *none()*,  return true if any or none the values in the column are true, respectively. The functions *countTrue()*, and *countFalse()* are also available.
+Sometimes you want to derive a singly value that summarizes in some sense the data in a column. Aggregate functions do just that. Each such function scan all the values in a column and returns a single scalar value as a result.  All columns support some aggregate functions: *min*() and *max*(), for example, plus *count()*, *countUnique()*, and *countMissing()*. Some also support type-specific functions. BooleanColumn, for example, supports *all()*, which returns *true* if all of the values in the column are *true*. The functions *any()*, and *none()*,  return true if any or none the values in the column are true, respectively. The functions *countTrue()*, and *countFalse()* are also available.
 
-For example, to calculate the standard deviation of the values in a column, you would call:
+NumberColumn has many more aggregate functions. For example, to calculate the standard deviation of the values in a column, you would call:
 
 ```java
-nc.standardDeviation();			// returns the standard deviation of all values
+double stdDev = nc.standardDeviation();	
 ```
 
-> **Key point:** NumberColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and many others. These are defined in the NumberColumn class. 
+> **Key point:** NumberColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and so on. These are defined in the [NumberColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/NumberColumn.html) class. 
 >
 
-When we discuss tables below, we'll show how to summarize a column to create sub-totals by the values in one or more grouping columns.
+When we discuss tables below, we'll show how to calculate sub-totals in one or more numeric columns by the values in one or more grouping columns.
 
 ### Tables
-As described above, a table is a named collection of columns. All columns in the table must be the same size, although missing values are allowed. A table can contain any combination of column types.
+A table is a named collection of columns. All columns in the table must have the same number of elements, although missing values are allowed. A table can contain any combination of column types.
 
 #### Creating Tables
 
-You can create a table in code. For example:
+You can create a table in code. Here we create a table and add two new columns to it:
 
 ```java
 String[] animals = {"bear", "cat", "giraffe"};
@@ -188,15 +193,15 @@ More frequently, you will load a table from a CSV or other delimited text file.
 Table x = Table.read().csv("testing.csv");
 ```
 
-Tablesaw does a pretty good job at guessing the column types for many data sets, but you can specify them    if it guesses wrong, or to improve performance. Numerous other options are available, such as specifying whether or not there's a header, using a non-standard delimiter, and so on. 
+Tablesaw does a pretty good job at guessing the column types for many data sets, but you can specify them    if it guesses wrong, or to improve performance. Numerous other options are available, such as specifying whether or not there's a header, using a non-standard delimiter, supplying a custom missing value indicator, and so on. 
 
 ***Note:*** Getting data loaded is sometimes the hardest part of data analysis. Advanced options for loading data are described in the section on [Importing Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data).
 
-The IO section also shows how you can read data from a database or a stream. The latter is useful for reading data from a Web site or an S3 bucket.  
+The IO section also shows how you can read data from a database, a stream, or an HTML table. The stream interfaces lets you read data from a Web site or an S3 bucket.  
 
 #### Exploring Tables
 
-Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of another table where one column contains the column names, etc.  The structure() method is one of several that are great for getting to know your table. Here are some examples.
+Because Tablesaw excels at manipulating tables, we use them whenever we can.  When you ask tablesaw for the structure of a table, the answer comes back in the form of another table where one column contains the column names, etc.  The structure() method is one of several that help you to know a new data set. Here are some examples.
 
 ```java
 Table structure = bushTable.structure();
@@ -223,26 +228,36 @@ Table tail = myTable.last(3);
 > etc.
 ```
 
-Table's toString() method returns a String representation like those shown above. It returns a limited number of rows by default, but you can also use *table.printAll()*, or *table.print(n)* to get the output you want.
+Table's *toString()* method returns a String representation like those shown above. It returns a limited number of rows by default, but you can also use *table.printAll()*, or *table.print(n)* to get the output you want.
 
 Of course, this is just the beginning of exploratory data analysis. You can also use numeric and visual tools to explore your data. These facilities are described in the documentation on statistics and plotting, respectively.
 
 #### Working with a table's columns
 
-Often you'll want to work with specific columns in a table. Here are some useful methods:
+Often you'll work with specific columns in a table. Here are some useful methods:
 
 ```java
 table.columnNames();  			// returns all column names
 List<Column> = table.columns(); // returns all the columns in the table
 
 // removing columns
-table.removeColumns("Foo");			// keep everything but foo
+table.removeColumns("Foo");			// keep everything but "foo"
 table.retainColumns("Foo", "Bar");  // only keep foo and bar
 table.removeColumnsWithMissingValues();
 
 // adding columns
 table.addColumns(column1, column2, column3);
 ```
+
+In tablesaw, column names are case-insensitive. You get the same column if you ask for any of these:
+
+```java
+t.column("FOO");
+t.column("foo");
+t.column("foO");
+```
+
+remembering column names is enough of a burden without having to remember exactly which characters are capitalized. 
 
 ##### Getting specific column types from a table
 

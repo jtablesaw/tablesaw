@@ -21,16 +21,12 @@ import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.datetimes.filters.IsFirstDayOfTheMonth;
-import tech.tablesaw.columns.datetimes.filters.IsInYear;
-import tech.tablesaw.columns.datetimes.filters.IsLastDayOfTheMonth;
 import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 import java.time.Month;
 
 import static org.junit.Assert.*;
-import static tech.tablesaw.api.QueryHelper.dateColumn;
 import static tech.tablesaw.columns.dates.PackedLocalDate.*;
 
 
@@ -38,7 +34,6 @@ public class DateFiltersTest {
 
     private DateColumn localDateColumn = DateColumn.create("testing");
     private Table table = Table.create("test");
-    private DateColumnReference reference = new DateColumnReference("testing");
 
     @Before
     public void setUp() {
@@ -64,33 +59,11 @@ public class DateFiltersTest {
         assertTrue(localDateColumn.isThursday().contains(4));
         assertTrue(localDateColumn.isFriday().contains(7));
         assertTrue(localDateColumn.isSaturday().contains(8));
-
-        Selection selection = reference.isSunday().apply(table);
-        assertTrue(reference.isSunday().apply(table).contains(0));
-        assertTrue(reference.isMonday().apply(table).contains(1));
-        assertTrue(reference.isTuesday().apply(table).contains(2));
-        assertTrue(reference.isWednesday().apply(table).contains(3));
-        assertTrue(reference.isThursday().apply(table).contains(4));
-        assertTrue(reference.isFriday().apply(table).contains(7));
-        assertTrue(reference.isSaturday().apply(table).contains(8));
-        assertFalse(selection.contains(3));
-        assertFalse(selection.contains(4));
-        assertFalse(selection.contains(5));
-        assertFalse(selection.contains(6));
-        assertFalse(selection.contains(7));
     }
 
     @Test
     public void testIsFirstDayOfTheMonth() {
         Selection selection = localDateColumn.isFirstDayOfMonth();
-        assertFalse(selection.contains(0));
-        assertFalse(selection.contains(1));
-        assertTrue(selection.contains(2));
-        assertTrue(selection.contains(5));
-        assertFalse(selection.contains(6));
-
-        IsFirstDayOfTheMonth result = reference.isFirstDayOfMonth();
-        selection = result.apply(table);
         assertFalse(selection.contains(0));
         assertFalse(selection.contains(1));
         assertTrue(selection.contains(2));
@@ -104,12 +77,6 @@ public class DateFiltersTest {
         assertFalse(selection.contains(0));
         assertTrue(selection.contains(1));
         assertFalse(selection.contains(2));
-
-        IsLastDayOfTheMonth result = reference.isLastDayOfMonth();
-        selection = result.apply(table);
-        assertFalse(selection.contains(0));
-        assertTrue(selection.contains(1));
-        assertFalse(selection.contains(2));
     }
 
     @Test
@@ -119,13 +86,7 @@ public class DateFiltersTest {
         assertTrue(selection.contains(1));
         assertTrue(selection.contains(2));
 
-        IsInYear result = reference.isInYear(2016);
-        selection = result.apply(table);
-        assertTrue(selection.contains(0));
-        assertTrue(selection.contains(1));
-        assertTrue(selection.contains(2));
-        result = new IsInYear(reference, 2015);
-        selection = result.apply(table);
+        selection = localDateColumn.isInYear(2015);
         assertFalse(selection.contains(0));
         assertFalse(selection.contains(1));
         assertFalse(selection.contains(2));
@@ -173,23 +134,23 @@ public class DateFiltersTest {
         NumberColumn index = DoubleColumn.indexColumn("index", t.rowCount(), 0);
         t.addColumns(index);
 
-        assertTrue(t.where(dateColumn("test").isInJanuary()).numberColumn("index").contains(0.0));
-        assertTrue(t.where(dateColumn("test").isInFebruary()).numberColumn("index").contains(1.0));
-        assertTrue(t.where(dateColumn("test").isInMarch()).numberColumn("index").contains(2.0));
-        assertTrue(t.where(dateColumn("test").isInApril()).numberColumn("index").contains(3.0));
-        assertTrue(t.where(dateColumn("test").isInMay()).numberColumn("index").contains(4.0));
-        assertTrue(t.where(dateColumn("test").isInJune()).numberColumn("index").contains(5.0));
-        assertTrue(t.where(dateColumn("test").isInJuly()).numberColumn("index").contains(6.0));
-        assertTrue(t.where(dateColumn("test").isInAugust()).numberColumn("index").contains(7.0));
-        assertTrue(t.where(dateColumn("test").isInSeptember()).numberColumn("index").contains(8.0));
-        assertTrue(t.where(dateColumn("test").isInOctober()).numberColumn("index").contains(9.0));
-        assertTrue(t.where(dateColumn("test").isInNovember()).numberColumn("index").contains(10.0));
-        assertTrue(t.where(dateColumn("test").isInDecember()).numberColumn("index").contains(11.0));
+        assertTrue(t.where(t.dateColumn("test").isInJanuary()).numberColumn("index").contains(0.0));
+        assertTrue(t.where(t.dateColumn("test").isInFebruary()).numberColumn("index").contains(1.0));
+        assertTrue(t.where(t.dateColumn("test").isInMarch()).numberColumn("index").contains(2.0));
+        assertTrue(t.where(t.dateColumn("test").isInApril()).numberColumn("index").contains(3.0));
+        assertTrue(t.where(t.dateColumn("test").isInMay()).numberColumn("index").contains(4.0));
+        assertTrue(t.where(t.dateColumn("test").isInJune()).numberColumn("index").contains(5.0));
+        assertTrue(t.where(t.dateColumn("test").isInJuly()).numberColumn("index").contains(6.0));
+        assertTrue(t.where(t.dateColumn("test").isInAugust()).numberColumn("index").contains(7.0));
+        assertTrue(t.where(t.dateColumn("test").isInSeptember()).numberColumn("index").contains(8.0));
+        assertTrue(t.where(t.dateColumn("test").isInOctober()).numberColumn("index").contains(9.0));
+        assertTrue(t.where(t.dateColumn("test").isInNovember()).numberColumn("index").contains(10.0));
+        assertTrue(t.where(t.dateColumn("test").isInDecember()).numberColumn("index").contains(11.0));
 
-        assertTrue(t.where(dateColumn("test").isInQ1()).nCol("index").contains(2));
-        assertTrue(t.where(dateColumn("test").isInQ2()).nCol("index").contains(4));
-        assertTrue(t.where(dateColumn("test").isInQ3()).nCol("index").contains(8));
-        assertTrue(t.where(dateColumn("test").isInQ4()).nCol("index").contains(11));
+        assertTrue(t.where(t.dateColumn("test").isInQ1()).nCol("index").contains(2));
+        assertTrue(t.where(t.dateColumn("test").isInQ2()).nCol("index").contains(4));
+        assertTrue(t.where(t.dateColumn("test").isInQ3()).nCol("index").contains(8));
+        assertTrue(t.where(t.dateColumn("test").isInQ4()).nCol("index").contains(11));
     }
 
     @Test
@@ -235,15 +196,15 @@ public class DateFiltersTest {
         assertTrue(t.where(dateColumn.isBefore(packed)).nCol("index").contains(0));
         assertTrue(t.where(dateColumn.isEqualTo(packed)).nCol("index").contains(1));
         assertTrue(t.where(dateColumn.isAfter(packed)).nCol("index").contains(2));
-        assertTrue(t.where(dateColumn("test")
+        assertTrue(t.where(t.dateColumn("test")
                 .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(1));
-        assertTrue(t.where(dateColumn("test")
+        assertTrue(t.where(t.dateColumn("test")
                 .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(2));
-        assertTrue(t.where(dateColumn("test")
+        assertTrue(t.where(t.dateColumn("test")
                 .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(0));
-        assertFalse(t.where(dateColumn("test")
+        assertFalse(t.where(t.dateColumn("test")
                 .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(2));
-        assertFalse(t.where(dateColumn("test")
+        assertFalse(t.where(t.dateColumn("test")
                 .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(0));
     }
 
@@ -289,30 +250,30 @@ public class DateFiltersTest {
         Table t = Table.create("test", dateColumn, same, before, after);
 
         assertTrue(dateColumn.isOnOrAfter(same).contains(0));
-        assertTrue(dateColumn("test").isOnOrAfter(same).apply(t).contains(0));
-        assertTrue(dateColumn("test").isOnOrAfter(dateColumn("same")).apply(t).contains(0));
+        assertTrue(t.dateColumn("test").isOnOrAfter(same).contains(0));
+        assertTrue(t.dateColumn("test").isOnOrAfter(t.dateColumn("same")).contains(0));
 
         assertTrue(dateColumn.isOnOrBefore(same).contains(0));
-        assertTrue(dateColumn("test").isOnOrBefore(same).apply(t).contains(0));
-        assertTrue(dateColumn("test").isOnOrBefore(dateColumn("same")).apply(t).contains(0));
+        assertTrue(t.dateColumn("test").isOnOrBefore(same).contains(0));
+        assertTrue(t.dateColumn("test").isOnOrBefore(t.dateColumn("same")).contains(0));
 
         assertTrue(dateColumn.isEqualTo(same).contains(0));
-        assertTrue(dateColumn("test").isEqualTo(same).apply(t).contains(0));
-        assertTrue(dateColumn("test").isEqualTo(dateColumn("same")).apply(t).contains(0));
+        assertTrue(t.dateColumn("test").isEqualTo(same).contains(0));
+        assertTrue(t.dateColumn("test").isEqualTo(t.dateColumn("same")).contains(0));
 
         assertTrue(dateColumn.isBefore(after).contains(0));
         assertFalse(dateColumn.isOnOrAfter(after).contains(0));
-        assertTrue(dateColumn("test").isBefore(after).apply(t).contains(0));
-        assertTrue(dateColumn("test").isBefore(dateColumn("after")).apply(t).contains(0));
+        assertTrue(t.dateColumn("test").isBefore(after).contains(0));
+        assertTrue(t.dateColumn("test").isBefore(t.dateColumn("after")).contains(0));
 
         assertTrue(dateColumn.isAfter(before).contains(0));
         assertFalse(dateColumn.isOnOrBefore(before).contains(0));
-        assertTrue(dateColumn("test").isAfter(before).apply(t).contains(0));
-        assertTrue(dateColumn("test").isAfter(dateColumn("before")).apply(t).contains(0));
+        assertTrue(t.dateColumn("test").isAfter(before).contains(0));
+        assertTrue(t.dateColumn("test").isAfter(t.dateColumn("before")).contains(0));
 
         assertFalse(dateColumn.isNotEqualTo(same).contains(0));
-        assertFalse(dateColumn("test").isNotEqualTo(same).apply(t).contains(0));
-        assertFalse(dateColumn("test").isNotEqualTo(dateColumn("same")).apply(t).contains(0));
+        assertFalse(t.dateColumn("test").isNotEqualTo(same).contains(0));
+        assertFalse(t.dateColumn("test").isNotEqualTo(t.dateColumn("same")).contains(0));
 
         assertTrue(dateColumn.isOnOrBefore(same).contains(0));
         assertTrue(dateColumn.isOnOrBefore(after).contains(0));
@@ -325,40 +286,40 @@ public class DateFiltersTest {
         assertTrue(dateColumn.isNotEqualTo(after).contains(0));
 
 /*
-        assertTrue(dateColumn("test")
-                .isOnOrAfter(dateColumn("same")).apply(t).contains(0));
-        assertTrue(dateColumn("test")
-                .isOnOrAfter(same).apply(t).contains(0));
+        assertTrue(t.dateColumn("test")
+                .isOnOrAfter(t.dateColumn("same")).contains(0));
+        assertTrue(t.dateColumn("test")
+                .isOnOrAfter(same).contains(0));
 
-        assertFalse(dateColumn("test")
-                .isOnOrAfter(dateColumn("after")).apply(t).contains(0));
-        assertFalse(dateColumn("test")
-                .isOnOrAfter(after).apply(t).contains(0));
+        assertFalse(t.dateColumn("test")
+                .isOnOrAfter(t.dateColumn("after")).contains(0));
+        assertFalse(t.dateColumn("test")
+                .isOnOrAfter(after).contains(0));
 
-        assertTrue(dateColumn("test")
-                .isOnOrBefore(dateColumn("same")).apply(t).contains(0));
-        assertTrue(dateColumn("test")
-                .isOnOrBefore(same).apply(t).contains(0));
+        assertTrue(t.dateColumn("test")
+                .isOnOrBefore(t.dateColumn("same")).contains(0));
+        assertTrue(t.dateColumn("test")
+                .isOnOrBefore(same).contains(0));
 
-        assertTrue(dateColumn("test")
-                .isOnOrBefore(dateColumn("after")).apply(t).contains(0));
-        assertTrue(dateColumn("test")
-                .isOnOrBefore(after).apply(t).contains(0));
+        assertTrue(t.dateColumn("test")
+                .isOnOrBefore(t.dateColumn("after")).contains(0));
+        assertTrue(t.dateColumn("test")
+                .isOnOrBefore(after).contains(0));
 
-        assertFalse(dateColumn("test")
-                .isOnOrBefore(dateColumn("before")).apply(t).contains(0));
-        assertFalse(dateColumn("test")
-                .isOnOrBefore(before).apply(t).contains(0));
+        assertFalse(t.dateColumn("test")
+                .isOnOrBefore(t.dateColumn("before")).contains(0));
+        assertFalse(t.dateColumn("test")
+                .isOnOrBefore(before).contains(0));
 */
 
-        assertTrue(dateColumn("test")
-                .isNotEqualTo(dateColumn("before")).apply(t).contains(0));
-        assertTrue(dateColumn("test")
-                .isNotEqualTo(before).apply(t).contains(0));
-        assertFalse(dateColumn("test")
-                .isNotEqualTo(dateColumn("same")).apply(t).contains(0));
-        assertFalse(dateColumn("test")
-                .isNotEqualTo(same).apply(t).contains(0));
+        assertTrue(t.dateColumn("test")
+                .isNotEqualTo(t.dateColumn("before")).contains(0));
+        assertTrue(t.dateColumn("test")
+                .isNotEqualTo(before).contains(0));
+        assertFalse(t.dateColumn("test")
+                .isNotEqualTo(t.dateColumn("same")).contains(0));
+        assertFalse(t.dateColumn("test")
+                .isNotEqualTo(same).contains(0));
 
     }
 }

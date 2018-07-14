@@ -23,7 +23,6 @@ import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.CrossTab;
 import tech.tablesaw.aggregate.Summarizer;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
@@ -33,7 +32,6 @@ import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.Sort;
 import tech.tablesaw.sorting.SortUtils;
 import tech.tablesaw.sorting.comparators.IntComparatorChain;
-import tech.tablesaw.table.Projection;
 import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
 import tech.tablesaw.table.StandardTableSliceGroup;
@@ -59,11 +57,6 @@ import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
  * Tables are the main data-type and primary focus of Airframe.
  */
 public class Table extends Relation implements Iterable<Row> {
-
-    // for building queries
-    public Filter and(Filter... filters) { return QueryHelper.and(filters); }
-    public Filter or(Filter... filters) { return QueryHelper.or(filters); }
-    public Filter not(Filter filter) { return QueryHelper.not(filter); }
 
     /**
      * The columns that hold the data in this table
@@ -255,17 +248,6 @@ public class Table extends Relation implements Iterable<Row> {
 
     public Column[] columnArray() {
         return columnList.toArray(new Column[columnCount()]);
-    }
-
-    /**
-     * Returns only the columns whose names are given in the input array
-     */
-    public List<Column> columns(String... columnNames) {
-        List<Column> columns = new ArrayList<>();
-        for (String columnName : columnNames) {
-            columns.add(column(columnName));
-        }
-        return columns;
     }
 
     /**
@@ -729,14 +711,6 @@ public class Table extends Relation implements Iterable<Row> {
         return newTable;
     }
 
-    public Table where(Filter filter) {
-        return where(filter.apply(this));
-    }
-
-    public Table dropWhere(Filter filter) {
-        return dropWhere(filter.apply(this));
-    }
-
     /**
      * Returns a non-overlapping and exhaustive collection of "slices" over this table.
      * Each slice is like a virtual table containing a subset of the records in this table
@@ -825,10 +799,6 @@ public class Table extends Relation implements Iterable<Row> {
             }
         }
         return temp;
-    }
-
-    public Projection project(String... columnName) {
-        return new Projection(this, columnName);
     }
 
     public Table select(Column... columns) {

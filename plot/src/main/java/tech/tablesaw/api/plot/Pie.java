@@ -41,7 +41,7 @@ public class Pie extends FxPlot {
             }
         });
     }
-    
+
     public static void show(String title, NumberColumn categoryColumn, NumberColumn numberColumn) throws Exception {
 
         SwingUtilities.invokeLater(() -> {

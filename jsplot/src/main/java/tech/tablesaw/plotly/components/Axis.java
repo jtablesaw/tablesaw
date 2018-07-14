@@ -393,6 +393,24 @@ public class Axis extends Component {
             return this;
         }
 
+        /**
+         * Sets the range of this axis. If the axis `type` is "log", then you must take the log of your desired
+         * range (e.g. to set the range from 1 to 100, set the range from 0 to 2).
+         *
+         * If the axis `type` is "date", it should be date strings, like date data,
+         * though Date objects and unix milliseconds will be accepted and converted to strings.
+         * If the axis `type` is "category", it should be numbers, using the scale where each category is assigned
+         * a serial number from zero in the order it appears.
+         */
+        public AxisBuilder range(Object low, Object high) {
+            Object[] range = new Object[2];
+            range[0] = low;
+            range[1] = high;
+            this.range = range;
+            this.autoRange = AutoRange.FALSE;
+            return this;
+        }
+
         public AxisBuilder constrain(Constrain constrain) {
             this.constrain = constrain;
             return this;

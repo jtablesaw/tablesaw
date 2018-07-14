@@ -5,7 +5,7 @@
   <parent>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.22.0-SNAPSHOT</version>
+    <version>0.22.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>tablesaw-plot</artifactId>
@@ -55,16 +55,17 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.21.0</version>
+      <version>0.22.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.github.haifengl</groupId>
       <artifactId>smile-plot</artifactId>
+      <version>1.5.1</version>
     </dependency>
     <dependency>
       <groupId>org.knowm.xchart</groupId>
       <artifactId>xchart</artifactId>
-      <version>3.5.0</version>
+      <version>3.5.2</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

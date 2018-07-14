@@ -54,7 +54,7 @@ import static tech.tablesaw.api.ColumnType.BOOLEAN;
 /**
  * A column in a base table that contains float values
  */
-public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, IntConvertibleColumn,
+public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, CategoricalColumn,
         BooleanFillers<BooleanColumn>, Iterable<Boolean> {
 
     public static final byte MISSING_VALUE = (Byte) BOOLEAN.getMissingValue();

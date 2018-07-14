@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class Row implements Iterator<Row> {
@@ -23,7 +24,7 @@ public class Row implements Iterator<Row> {
     private final Map<String, PackedDateTime> dateTimeColumnMap = new HashMap<>();
     private final Map<String, PackedTime> timeColumnMap = new HashMap<>();
 
-    Row(Table table) {
+    public Row(Table table) {
         this.table = table;
         rowNumber = -1;
         for (Column column : table.columns()) {
@@ -49,6 +50,17 @@ public class Row implements Iterator<Row> {
     @Override
     public boolean hasNext() {
         return rowNumber < table.rowCount() - 1;
+    }
+
+    /**
+     * Returns a list containing the names of each column in the row
+     */
+    public List<String> columnNames() {
+        return table.columnNames();
+    }
+
+    public int columnCount() {
+        return table.columnCount();
     }
 
     @Override
@@ -95,6 +107,46 @@ public class Row implements Iterator<Row> {
 
     public boolean getBoolean(String columnName) {
         return booleanColumnMap.get(columnName).get(rowNumber);
+    }
+
+    public double getDouble(int columnIndex) {
+        return numberColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+    }
+
+    public int getInt(int columnIndex) {
+        return (int) numberColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+    }
+
+    public String getString(int columnIndex) {
+        return stringColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+    }
+
+    public LocalDate getDate(int columnIndex) {
+        return getPackedDate(columnNames().get(columnIndex)).asLocalDate();
+    }
+
+    public PackedDate getPackedDate(int columnIndex) {
+        return dateColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+    }
+
+    public LocalTime getTime(int columnIndex) {
+        return getPackedTime(columnNames().get(columnIndex)).asLocalTime();
+    }
+
+    public LocalDateTime getDateTime(int columnIndex) {
+        return getPackedDateTime(columnNames().get(columnIndex)).asLocalDateTime();
+    }
+
+    public PackedTime getPackedTime(int columnIndex) {
+        return timeColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+    }
+
+    public PackedDateTime getPackedDateTime(int columnIndex) {
+        return dateTimeColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+    }
+
+    public boolean getBoolean(int columnIndex) {
+        return booleanColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
     }
 
     public void at(int rowNumber) {

@@ -128,7 +128,7 @@ public interface Column {
     /**
      * Returns a double representation of the value at the given row. The nature of the returned value is column-specific.
      * The double returned MAY be the actual value (for Number columns) but is more likely a number that maps to the column
-     * value in some way. 
+     * value in some way.
      *
      * @param row The index of the row.
      * @return value as String
@@ -195,9 +195,7 @@ public interface Column {
         return "Column: " + name() + '\n';
     }
 
-    default double[] asDoubleArray() {
-        throw new UnsupportedOperationException("Method asDoubleArray() is not supported on non-numeric columns");
-    }
+    double[] asDoubleArray();
 
     /**
      * Returns the width of the column in characters, for printing

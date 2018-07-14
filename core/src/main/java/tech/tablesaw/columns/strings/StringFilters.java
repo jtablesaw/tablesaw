@@ -16,23 +16,6 @@ package tech.tablesaw.columns.strings;
 
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.filters.ColumnEqualTo;
-import tech.tablesaw.columns.strings.filters.ColumnEqualToIgnoringCase;
-import tech.tablesaw.columns.strings.filters.ColumnNotEqualTo;
-import tech.tablesaw.columns.strings.filters.ContainsString;
-import tech.tablesaw.columns.strings.filters.EndsWith;
-import tech.tablesaw.columns.strings.filters.EqualToIgnoringCase;
-import tech.tablesaw.columns.strings.filters.HasLengthEqualTo;
-import tech.tablesaw.columns.strings.filters.IsAlpha;
-import tech.tablesaw.columns.strings.filters.IsAlphaNumeric;
-import tech.tablesaw.columns.strings.filters.IsLongerThan;
-import tech.tablesaw.columns.strings.filters.IsLowerCase;
-import tech.tablesaw.columns.strings.filters.IsNumeric;
-import tech.tablesaw.columns.strings.filters.IsShorterThan;
-import tech.tablesaw.columns.strings.filters.IsUpperCase;
-import tech.tablesaw.columns.strings.filters.MatchesRegex;
-import tech.tablesaw.columns.strings.filters.StartsWith;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -43,8 +26,6 @@ import java.util.function.Predicate;
 import static tech.tablesaw.columns.strings.StringPredicates.*;
 
 public interface StringFilters extends Column {
-
-    StringColumn where(Filter filter);
 
     default Selection eval(BiPredicate<String, String> predicate, StringColumn otherColumn) {
         Selection selection = new BitmapBackedSelection();
@@ -88,84 +69,88 @@ public interface StringFilters extends Column {
     }
 
     default Selection equalsIgnoreCase(String string) {
-        return new EqualToIgnoringCase(new StringColumnReference(this.name()), string).apply(this);
+        return eval(isEqualToIgnoringCase, string);
     }
 
     default Selection isEmptyString() {
-        return eval(String::isEmpty);
+        return eval(isEmpty);
     }
 
     default Selection startsWith(String string) {
-        return new StartsWith(new StringColumnReference(this.name()), string).apply(this);
+        return eval(startsWith, string);
     }
 
     default Selection endsWith(String string) {
-        return new EndsWith(new StringColumnReference(this.name()), string).apply(this);
+        return eval(endsWith, string);
     }
 
     default Selection containsString(String string) {
-        return new ContainsString(new StringColumnReference(this.name()), string).apply(this);
+        return eval(stringContains, string);
     }
 
     default Selection matchesRegex(String string) {
-        return new MatchesRegex(new StringColumnReference(this.name()), string).apply(this);
+        return eval(matchesRegex, string);
     }
 
     default Selection isAlpha() {
-        return new IsAlpha(new StringColumnReference(this.name())).apply(this);
+        return eval(isAlpha);
     }
 
     default Selection isNumeric() {
-        return new IsNumeric(new StringColumnReference(this.name())).apply(this);
+        return eval(isNumeric);
     }
 
     default Selection isAlphaNumeric() {
-        return new IsAlphaNumeric(new StringColumnReference(this.name())).apply(this);
+        return eval(isAlphaNumeric);
     }
 
     default Selection isUpperCase() {
-        return new IsUpperCase(new StringColumnReference(this.name())).apply(this);
+        return eval(isUpperCase);
     }
 
     default Selection isLowerCase() {
-        return new IsLowerCase(new StringColumnReference(this.name())).apply(this);
+        return eval(isLowerCase);
     }
 
     default Selection lengthEquals(int stringLength) {
-        return new HasLengthEqualTo(new StringColumnReference(this.name()), stringLength).apply(this);
+        return eval(hasEqualLengthTo, stringLength);
     }
 
     default Selection isShorterThan(int stringLength) {
-        return new IsShorterThan(new StringColumnReference(this.name()), stringLength).apply(this);
+        return eval(isShorterThan, stringLength);
     }
 
     default Selection isLongerThan(int stringLength) {
-        return new IsLongerThan(new StringColumnReference(this.name()), stringLength).apply(this);
+        return eval(isLongerThan, stringLength);
     }
 
     Selection isIn(String... strings);
 
     default Selection isIn(Collection<String> strings) {
-        return isIn(strings.toArray(new String[strings.size()]));
+        return isIn(strings.toArray(new String[0]));
     }
 
     Selection isNotIn(String... strings);
 
     default Selection isNotIn(Collection<String> strings) {
-        return isNotIn(strings.toArray(new String[strings.size()]));
+        return isNotIn(strings.toArray(new String[0]));
     }
 
     // Column Methods
     default Selection isEqualTo(StringColumn other) {
-        return new ColumnEqualTo(other).apply(this);
+        return eval(isEqualTo, other);
     }
 
     default Selection isNotEqualTo(StringColumn other) {
-        return new ColumnNotEqualTo(other).apply(this);
+        return eval(isNotEqualTo, other);
     }
 
     default Selection equalsIgnoreCase(StringColumn other) {
-        return new ColumnEqualToIgnoringCase(other).apply(this);
+        return eval(isEqualToIgnoringCase, other);
+    }
+
+    default Selection startsWith(StringColumn other) {
+        return eval(startsWith, other);
     }
 
     @Override

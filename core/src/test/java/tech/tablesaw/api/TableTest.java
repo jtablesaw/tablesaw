@@ -14,6 +14,7 @@
 
 package tech.tablesaw.api;
 
+import com.google.common.collect.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,6 +67,41 @@ public class TableTest {
     }
 
     @Test
+    public void testRowWiseAddition() {
+        double[] a = {3, 4, 5};
+        double[] b = {3, 4, 5};
+        double[] c = {3, 4, 5};
+        Table t = Table.create("test",
+                DoubleColumn.create("a", a),
+                DoubleColumn.create("b", b),
+                DoubleColumn.create("c", c));
+
+        NumberColumn n =
+                t.numberColumn(0)
+                .add(t.numberColumn(1))
+                .add(t.numberColumn(2));
+
+        //System.out.println(n.print());
+        //System.out.println(Arrays.toString(n.asDoubleArray()));
+    }
+
+    @Test
+    public void testRowWiseAddition2() {
+        double[] a = {3, 4, 5};
+        double[] b = {3, 4, 5};
+        double[] c = {3, 4, 5};
+        Table t = Table.create("test",
+                DoubleColumn.create("a", a),
+                DoubleColumn.create("b", b),
+                DoubleColumn.create("c", c));
+
+        NumberColumn n = sum(t.numberColumns());
+
+        //System.out.println(n.print());
+        //System.out.println(Arrays.toString(n.asDoubleArray()));
+    }
+
+    @Test
     public void testRemoveColumns() {
         StringColumn sc = StringColumn.create("0");
         StringColumn sc1 = StringColumn.create("1");
@@ -77,7 +113,6 @@ public class TableTest {
         assertTrue(t.containsColumn(sc2));
         assertFalse(t.containsColumn(sc1));
         assertFalse(t.containsColumn(sc3));
-
     }
 
     @Test
@@ -150,12 +185,12 @@ public class TableTest {
     @Test
     public void testDoWithEachRow() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(10);
+        Double[] ratingsArray = {53.0, 58.0};
+        List<Double> ratings = Lists.asList(52.0, ratingsArray);
+
         Consumer<Row> doable = row -> {
             if (row.getRowNumber() < 5) {
-                System.out.println("On "
-                        + row.getPackedDate("date")
-                        + ", low rating: "
-                        + row.getDouble("approval"));
+                assertTrue(ratings.contains(row.getDouble("approval")));
             }
         };
         t.doWithRows(doable);
@@ -206,7 +241,7 @@ public class TableTest {
         Table t = Table.read().csv("../data/bush.csv");
         PairChild pairs = new PairChild();
         t.doWithRows(pairs);
-        System.out.println(pairs.runningAverage);
+        //System.out.println(pairs.runningAverage);
     }
 
     @Test
@@ -232,7 +267,7 @@ public class TableTest {
         };
 
         t.doWithRows(runningAvg);
-        System.out.println(runningAvg.getResult());
+        //System.out.println(runningAvg.getResult());
     }
 
     @Test
@@ -244,7 +279,7 @@ public class TableTest {
             for (Row row : rows) {
                 sum += row.getDouble("approval");
             }
-            System.out.println("Running avg = " + sum / (double) rows.length);
+            //System.out.println("Running avg = " + sum / (double) rows.length);
         };
         t.rollWithRows(rowConsumer,2);
     }
@@ -397,7 +432,7 @@ public class TableTest {
         NumberColumn third =  DoubleColumn.create("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
 
         Table t = Table.create("table", first, second, third);
-        double[][] matrix = t.asMatrix();
+        double[][] matrix = t.as().doubleMatrix();
         assertEquals(5, matrix.length);
         assertArrayEquals(new double[]{1.0, 6.0, 10.0}, matrix[0], 0.0000001);
         assertArrayEquals(new double[]{2.0, 7.0, 20.0}, matrix[1], 0.0000001);
@@ -426,5 +461,18 @@ public class TableTest {
         for (Row row : bush.first(10)) {
             assertEquals(row.getRowNumber(), rowNumber++);
         }
+    }
+
+    private NumberColumn sum(NumberColumn ... columns) {
+        int size = columns[0].size();
+        NumberColumn result = DoubleColumn.create("sum", size);
+        for (int r = 0; r < size; r++) {
+            double sum = 0;
+            for (NumberColumn nc : columns) {
+                sum += nc.get(r);
+            }
+            result.append(sum);
+        }
+        return result;
     }
 }

@@ -15,7 +15,7 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Stopwatch;
-import io.codearte.jfairy.Fairy;
+import com.devskiller.jfairy.Fairy;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.math3.stat.StatUtils;
@@ -26,7 +26,6 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.selection.Selection;
 
 import java.util.ArrayList;
@@ -181,7 +180,7 @@ public class NumberColumnTest {
             initial.append(value);
         }
 
-        Filter filter = QueryHelper.numberColumn("Test").isIn(inValues);
+        Selection filter = t.numberColumn("Test").isIn(inValues);
         Table result = t.where(filter);
         assertNotNull(result);
     }
@@ -223,7 +222,7 @@ public class NumberColumnTest {
         NumberColumn initial =  DoubleColumn.create("Test", originalValues);
         Table t = Table.create("t", initial);
 
-        Filter filter = QueryHelper.numberColumn("Test").isBetweenExclusive(42, 57);
+        Selection filter = t.numberColumn("Test").isBetweenExclusive(42, 57);
         Table result = t.where(filter);
         assertEquals(1, result.rowCount());
         assertEquals("52.0", result.get(0, "Test"));

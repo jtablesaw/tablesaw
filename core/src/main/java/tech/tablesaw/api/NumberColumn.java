@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntSet;
 import org.apache.commons.math3.exception.NotANumberException;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
@@ -19,7 +18,6 @@ import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.NumberFilters;
 import tech.tablesaw.columns.numbers.NumberMapFunctions;
 import tech.tablesaw.columns.numbers.Stats;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.Selection;
@@ -31,7 +29,7 @@ import java.util.function.DoublePredicate;
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.api.ColumnType.NUMBER;
 
-public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColumn, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
+public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
     double MISSING_VALUE = (Double) NUMBER.getMissingValue();
 
     static boolean valueIsMissing(double value) {
@@ -123,9 +121,6 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     @Override
     DoubleIterator iterator();
 
-    @Override
-    NumberColumn where(Filter filter);
-
     NumberColumn where(Selection selection);
 
     Selection eval(DoublePredicate predicate);
@@ -154,9 +149,6 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
 
     @Override
     int[] asIntArray();
-
-    @Override
-    IntSet asIntegerSet();
 
     @Override
     DoubleList dataInternal();

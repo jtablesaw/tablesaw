@@ -14,21 +14,15 @@
 
 package tech.tablesaw.util;
 
-import com.google.common.collect.Lists;
-import org.junit.Test;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.table.TableSliceGroup;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import static org.junit.Assert.assertTrue;
 
-/**
- *
- */
+import java.util.Arrays;
+
+import org.junit.Test;
+
+import tech.tablesaw.api.Table;
+import tech.tablesaw.table.TableSliceGroup;
+
 public class DoubleArraysTest {
 
     @Test
@@ -45,40 +39,4 @@ public class DoubleArraysTest {
         assertTrue(Arrays.equals(array, DoubleArrays.toN(3)));
     }
 
-    @Test
-    public void testTo2DArray2() {
-        double[] array1 = {0, 1, 2};
-        double[] array2 = {0, 1, 2};
-
-        double[][] expected = {{0.0, 0.0}, {1.0, 1.0}, {2.0, 2.0}};
-        double[][] results = DoubleArrays.to2dArray(array1, array2);
-        assertTrue(Arrays.deepEquals(expected, results));
-    }
-
-    @Test
-    public void testTo2DArray3() {
-        double[] array1 = {0, 1, 2};
-        double[] array2 = {0, 1, 2};
-
-        DoubleColumn c1 = DoubleColumn.create("1", array1);
-        DoubleColumn c2 = DoubleColumn.create("2", array2);
-
-        double[][] expected = {{0.0, 0.0}, {1.0, 1.0}, {2.0, 2.0}};
-        double[][] results = DoubleArrays.to2dArray(c1, c2);
-        assertTrue(Arrays.deepEquals(expected, results));
-    }
-
-    @Test
-    public void testTo2DArray4() {
-        double[] array1 = {0, 1, 2};
-        double[] array2 = {0, 1, 2};
-
-        DoubleColumn c1 = DoubleColumn.create("1", array1);
-        DoubleColumn c2 = DoubleColumn.create("2", array2);
-        ArrayList<Column> columnArrayList = Lists.newArrayList(c1, c2);
-
-        double[][] expected = {{0.0, 0.0}, {1.0, 1.0}, {2.0, 2.0}};
-        double[][] results = DoubleArrays.to2dArray(columnArrayList);
-        assertTrue(Arrays.deepEquals(expected, results));
-    }
 }
