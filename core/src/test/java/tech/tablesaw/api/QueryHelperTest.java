@@ -3,10 +3,7 @@ package tech.tablesaw.api;
 import org.junit.Before;
 import org.junit.Test;
 
-import static tech.tablesaw.api.QueryHelper.*;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class QueryHelperTest {
 
@@ -20,10 +17,9 @@ public class QueryHelperTest {
     @Test
     public void test1() {
         Table result = t.where(
-                and(
-                        stringColumn("who").startsWith("f"),
-                        dateColumn("date").isInYear(2002),
-                        numberColumn("approval").isLessThan(75)
+                        t.stringColumn("who").startsWith("f")
+                                .and(t.dateColumn("date").isInYear(2002)
+                                        .and(t.numberColumn("approval").isLessThan(75))
                 )
         );
         assertTrue(result.get(0, "who").startsWith("f"));
@@ -31,12 +27,10 @@ public class QueryHelperTest {
 
     @Test
     public void test3() {
-        Table result = t.where(
-                        stringColumn("who").isIn("fox"));
-        assertTrue(result.get(0, "who").equals("fox"));
+        Table result = t.where(t.stringColumn("who").isIn("fox"));
+        assertEquals("fox", result.get(0, "who"));
 
-        result = t.where(
-                        stringColumn("who").isNotIn("fox", "zogby"));
+        result = t.where(t.stringColumn("who").isNotIn("fox", "zogby"));
         assertFalse(result.get(0, "who").startsWith("f"));
     }
 

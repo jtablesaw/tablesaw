@@ -32,7 +32,6 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.Stats;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.io.TypeUtils;
@@ -472,11 +471,6 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     @Override
     public DoubleIterator iterator() {
         return data.iterator();
-    }
-
-    @Override
-    public NumberColumn where(final Filter filter) {
-        return (NumberColumn) subset(filter.apply(this));
     }
 
     @Override

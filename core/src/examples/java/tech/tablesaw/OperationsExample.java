@@ -20,7 +20,6 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.Row;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.median;
-import static tech.tablesaw.api.QueryHelper.*;
 
 /**
  * Usage example using a process data set
@@ -57,10 +56,9 @@ public class OperationsExample extends AbstractExample {
         out(ops);
 
         Table q2_429_assembly = ops.where(
-                and
-                        (dateColumn("date").isInQ2(),
-                                (stringColumn("SKU").startsWith("429")),
-                                (stringColumn("Operation").isEqualTo("Assembly"))));
+                        (ops.dateColumn("date").isInQ2()
+                                .and((ops.stringColumn("SKU").startsWith("429")))
+                                .and((ops.stringColumn("Operation").isEqualTo("Assembly")))));
 
         Table durationByFacilityAndShift = q2_429_assembly.summarize("Duration", median)
                 .by("Facility", "Shift");

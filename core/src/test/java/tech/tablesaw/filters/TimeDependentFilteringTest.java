@@ -28,7 +28,6 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.columns.strings.StringColumnReference;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.TableSliceGroup;
@@ -42,8 +41,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.out;
-import static tech.tablesaw.api.QueryHelper.both;
-import static tech.tablesaw.api.QueryHelper.stringColumn;
 
 /**
  * Tests manipulation of large (but not big) data sets
@@ -81,12 +78,10 @@ public class TimeDependentFilteringTest {
         // temporal dependency range constraint
         Range<Integer> daysConstraint = Range.closed(0, 0);
 
-        StringColumnReference concept = stringColumn("concept");
+        StringColumn concept = t.stringColumn("concept");
 
         //Non-temporal clause
-        Table nt = t.where(
-                both(concept.isEqualTo(conceptA),
-                        (concept.isNotEqualTo(conceptB))));
+        Table nt = t.where(concept.isEqualTo(conceptA).and(concept.isNotEqualTo(conceptB)));
 
         NumberColumn ntPatients = nt.numberColumn("patient");
 

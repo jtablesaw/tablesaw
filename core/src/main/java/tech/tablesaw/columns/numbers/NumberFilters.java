@@ -18,7 +18,6 @@ import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.Filter;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -30,8 +29,6 @@ import java.util.function.DoublePredicate;
 import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
 public interface NumberFilters extends Column {
-
-    NumberColumn where(Filter filter);
 
     Selection eval(DoublePredicate predicate);
 

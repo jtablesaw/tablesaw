@@ -14,7 +14,6 @@
 
 package tech.tablesaw.plotly;
 
-import tech.tablesaw.api.QueryHelper;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
@@ -29,7 +28,7 @@ public class ParetoExample {
 
     public static void main(String[] args) throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        table = table.where(QueryHelper.numberColumn("Fatalities").isGreaterThan(3));
+        table = table.where(table.numberColumn("Fatalities").isGreaterThan(3));
         Table t2 = table.summarize("fatalities", sum).by("State");
 
         t2 = t2.sortDescendingOn(t2.column(1).name());
