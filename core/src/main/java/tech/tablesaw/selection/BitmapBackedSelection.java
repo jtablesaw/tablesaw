@@ -15,7 +15,13 @@
 package tech.tablesaw.selection;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
+
+import java.util.BitSet;
+
+import org.apache.commons.lang3.RandomUtils;
 import org.roaringbitmap.RoaringBitmap;
+
+import com.google.common.base.Preconditions;
 
 public class BitmapBackedSelection implements Selection {
 
@@ -74,9 +80,15 @@ public class BitmapBackedSelection implements Selection {
         return bitmap.toArray();
     }
 
-    @Override
-    public RoaringBitmap toBitmapInternal() {
-        return bitmap.clone();
+    private RoaringBitmap toBitmap(Selection otherSelection) {
+        if (otherSelection instanceof BitmapBackedSelection) {
+            return ((BitmapBackedSelection) otherSelection).bitmap.clone();
+        }
+        RoaringBitmap bits = new RoaringBitmap();
+        for (int i : otherSelection) {
+          bits.add(i);
+        }
+        return bits;
     }
 
     /**
@@ -84,7 +96,7 @@ public class BitmapBackedSelection implements Selection {
      */
     @Override
     public Selection and(Selection otherSelection) {
-        bitmap.and(otherSelection.toBitmapInternal());
+        bitmap.and(toBitmap(otherSelection));
         return this;
     }
 
@@ -93,13 +105,13 @@ public class BitmapBackedSelection implements Selection {
      */
     @Override
     public Selection or(Selection otherSelection) {
-        bitmap.or(otherSelection.toBitmapInternal());
+        bitmap.or(toBitmap(otherSelection));
         return this;
     }
 
     @Override
     public Selection andNot(Selection otherSelection) {
-        bitmap.andNot(otherSelection.toBitmapInternal());
+        bitmap.andNot(toBitmap(otherSelection));
         return this;
     }
 
@@ -177,4 +189,66 @@ public class BitmapBackedSelection implements Selection {
             }
         };
     }
+
+    static Selection with(int... rows) {
+        BitmapBackedSelection selection = new BitmapBackedSelection();
+        for (int i : rows) {
+            selection.add(i);
+        }
+        return selection;
+    }
+
+    static Selection withRange(int start, int end) {
+        BitmapBackedSelection selection = new BitmapBackedSelection();
+        selection.addRange(start, end);
+        return selection;
+    }
+
+    static Selection withoutRange(int totalRangeStart, int totalRangeEnd, int excludedRangeStart, int excludedRangeEnd) {
+        Preconditions.checkArgument(excludedRangeStart >= totalRangeStart);
+        Preconditions.checkArgument(excludedRangeEnd <= totalRangeEnd);
+        Preconditions.checkArgument(totalRangeEnd >= totalRangeStart);
+        Preconditions.checkArgument(excludedRangeEnd >= excludedRangeStart);
+        Selection selection = Selection.withRange(totalRangeStart, totalRangeEnd);
+        Selection exclusion = Selection.withRange(excludedRangeStart, excludedRangeEnd);
+        selection.andNot(exclusion);
+        return selection;
+    }
+
+    /**
+     * Returns an randomly generated selection of size N where Max is the largest possible value
+     */
+    static Selection selectNRowsAtRandom(int n, int max) {
+        Selection selection = new BitmapBackedSelection();
+        if (n > max) {
+            throw new IllegalArgumentException("Illegal arguments: N (" + n + ") greater than Max (" + max + ")");
+        }
+
+        int[] rows = new int[n];
+        if (n == max) {
+            for (int k = 0; k < n; ++k) {
+                selection.add(k);
+            }
+            return selection;
+        }
+
+        BitSet bs = new BitSet(max);
+        int cardinality = 0;
+        while (cardinality < n) {
+            int v = RandomUtils.nextInt(0, max);
+            if (!bs.get(v)) {
+                bs.set(v);
+                cardinality++;
+            }
+        }
+        int pos = 0;
+        for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1)) {
+            rows[pos++] = i;
+        }
+        for (int row : rows) {
+            selection.add(row);
+        }
+        return selection;
+    }
+
 }
