@@ -473,7 +473,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, Ca
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria
      **/
-    public BooleanColumn set(boolean newValue, Selection rowSelection) {
+    public BooleanColumn set(Selection rowSelection, boolean newValue) {
         for (int row : rowSelection) {
             set(row, newValue);
         }

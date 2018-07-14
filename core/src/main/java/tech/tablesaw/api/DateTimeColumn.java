@@ -358,9 +358,9 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
      * matches the selection criteria
      * <p>
      * Example:
-     * myColumn.set(LocalDateTime.now(), myColumn.valueIsMissing()); // no more missing values
+     * myColumn.set(myColumn.valueIsMissing(), LocalDateTime.now()); // no more missing values
      */
-    public DateTimeColumn set(LocalDateTime newValue, Selection rowSelection) {
+    public DateTimeColumn set(Selection rowSelection, LocalDateTime newValue) {
         for (int row : rowSelection) {
             set(row, newValue);
         }

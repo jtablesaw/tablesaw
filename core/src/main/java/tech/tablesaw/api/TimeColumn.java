@@ -489,9 +489,9 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
      * matches the selection criteria
      * <p>
      * Example:
-     * myColumn.set(LocalTime.now(), myColumn.valueIsMissing()); // no more missing values
+     * myColumn.set(myColumn.valueIsMissing(), LocalTime.now()); // no more missing values
      */
-    public TimeColumn set(LocalTime newValue, Selection rowSelection) {
+    public TimeColumn set(Selection rowSelection, LocalTime newValue) {
         for (int row : rowSelection) {
             set(row, newValue);
         }

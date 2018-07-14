@@ -315,9 +315,9 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
      * matches the selection criteria
      * <p>
      * Example:
-     * myColumn.set(LocalDate.now(), myColumn.valueIsMissing()); // no more missing values
+     * myColumn.set(myColumn.valueIsMissing(), LocalDate.now()); // no more missing values
      */
-    public DateColumn set(LocalDate newValue, Selection rowSelection) {
+    public DateColumn set(Selection rowSelection, LocalDate newValue) {
         int packed = PackedLocalDate.pack(newValue);
         for (int row : rowSelection) {
             set(row, packed);

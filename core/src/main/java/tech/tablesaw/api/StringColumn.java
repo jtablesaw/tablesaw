@@ -310,10 +310,10 @@ public class StringColumn extends AbstractColumn
      * matches the selection criteria
      * <p>
      * Examples:
-     * myCatColumn.set("Dog", myCatColumn.isEqualTo("Cat")); // no more cats
-     * myCatColumn.set("Fox", myCatColumn.valueIsMissing()); // no more missing values
+     * myCatColumn.set(myCatColumn.isEqualTo("Cat"), "Dog"); // no more cats
+     * myCatColumn.set(myCatColumn.valueIsMissing(), "Fox"); // no more missing values
      */
-    public StringColumn set(String newValue, Selection rowSelection) {
+    public StringColumn set(Selection rowSelection, String newValue) {
         for (int row : rowSelection) {
             set(row, newValue);
         }

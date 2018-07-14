@@ -52,7 +52,7 @@ public class StringColumnTest {
 
     @Test
     public void testConditionalSet() {
-        column.set("no Value", column.isEqualTo("Value 4"));
+        column.set(column.isEqualTo("Value 4"), "no Value");
         assertTrue(column.contains("no Value"));
         assertFalse(column.contains("Value 4"));
     }

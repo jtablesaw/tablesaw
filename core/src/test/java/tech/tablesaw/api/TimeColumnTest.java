@@ -134,7 +134,7 @@ public class TimeColumnTest {
         column1.appendCell("11:30:00");
         column1.appendCell("14:00:00");
         column1.appendCell("18:15:30");
-        column1.set(LocalTime.NOON, column1.isBeforeNoon());
+        column1.set(column1.isBeforeNoon(), LocalTime.NOON);
         assertEquals(LocalTime.NOON, column1.get(0));
         assertEquals(LocalTime.NOON, column1.get(1));
         assertNotEquals(LocalTime.NOON, column1.get(2));

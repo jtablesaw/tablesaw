@@ -60,7 +60,7 @@ public class BooleanColumnTest {
     @Test
     public void testSet() {
         assertFalse(column.none());
-        column.set(false, column.isTrue());
+        column.set(column.isTrue(), false);
         assertTrue(column.none());
     }
 
