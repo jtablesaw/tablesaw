@@ -110,24 +110,26 @@ public interface Selection extends IntIterable {
     Selection flip(int rangeStart, int rangeEnd);
 
     /**
-     * Returns an randomly generated array of ints of size N where Max is the largest possible value
+     * Returns an randomly generated selection of size N where Max is the largest possible value
      */
-    static int[] generateUniformBitmap(int N, int Max) {
-        if (N > Max) {
-            throw new IllegalArgumentException("Illegal arguments: N (" + N + ") greater than Max (" + Max + ")");
+    static Selection selectNRowsAtRandom(int n, int max) {
+        Selection selection = new BitmapBackedSelection();
+        if (n > max) {
+            throw new IllegalArgumentException("Illegal arguments: N (" + n + ") greater than Max (" + max + ")");
         }
 
-        int[] ans = new int[N];
-        if (N == Max) {
-            for (int k = 0; k < N; ++k)
-                ans[k] = k;
-            return ans;
+        int[] rows = new int[n];
+        if (n == max) {
+            for (int k = 0; k < n; ++k) {
+                selection.add(k);
+            }
+            return selection;
         }
 
-        BitSet bs = new BitSet(Max);
+        BitSet bs = new BitSet(max);
         int cardinality = 0;
-        while (cardinality < N) {
-            int v = RandomUtils.nextInt(0, Max);
+        while (cardinality < n) {
+            int v = RandomUtils.nextInt(0, max);
             if (!bs.get(v)) {
                 bs.set(v);
                 cardinality++;
@@ -135,16 +137,10 @@ public interface Selection extends IntIterable {
         }
         int pos = 0;
         for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1)) {
-            ans[pos++] = i;
+            rows[pos++] = i;
         }
-        return ans;
-    }
-
-    static Selection selectNRowsAtRandom(int n, int max) {
-        Selection selection = new BitmapBackedSelection();
-        int[] selectedRecords = Selection.generateUniformBitmap(n, max);
-        for (int selectedRecord : selectedRecords) {
-            selection.add(selectedRecord);
+        for (int row : rows) {
+            selection.add(row);
         }
         return selection;
     }
