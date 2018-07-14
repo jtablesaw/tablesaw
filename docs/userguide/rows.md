@@ -14,28 +14,18 @@ This is not super convenient, however.
 
 ## Sorting a table using row comparison
 
-To provide a slightly easier interface, we have provided a VRow class. VRow, i.e., "virtual row") makes it easier to do things like sort using a comparator.
+To provide a slightly easier interface, we have provided a *Row* class. Row makes it easier to do things like sort using a comparator.
 
 ## Simplified Iteration 
 
 You can also use them for iteration with somewhat less boilerplate code:
 ```java
-for (VRow row : aTable) { 
+for (Row row : aTable) { 
     String s = row.getString("s");			       
     LocalDate d = row.getDate("d");
     System.out.println(s + " happened on " + d);   
 }
 ```
-
-
-
-Another use-case is implementing table-functions on 
-
-```
-
-```
-
-
 
 
 

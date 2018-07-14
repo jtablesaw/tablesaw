@@ -35,7 +35,7 @@ Here's what you need to know about selections.
 3. Columns have many built-in selection methods
 4. Any operation that returns an appropriately-sized bitmap can be used
 5. You can write your own selection methods
-6. Selections are readily combined, using *and()*, *or()*, and *andNot()*. 
+6. Selections are readily combined, using their *and()*, *or()*, and *andNot()*. 
 
 Lets take a look at each of these.
 
@@ -167,54 +167,71 @@ Here’s an example. We write a filter that only selects prime numbers:
 
 ```
 
-## ColumnReferences and method chaining
-
-The usual way to create a filter is to use a ColumnReference. A ColumnReference refers to a column in the target table, and implements a large number of built-in filters. To create one, you will generally do a static import of the method QueryHelper.column. The process is shown below:
-
-```java
-import static com.github.lwhite1.Tablesaw.api.QueryHelper.column;
-    
-ColumnReference statusRef = column("Status");
-Table filtered = aTable.selectWhere(statusRef.isEqualTo("Ok"));
-```
-
-In general, though, you’ll create the reference directly in the selectWhere() call
-
-```java
-Table filtered = aTable.selectWhere(stringColumn("Status").isEqualTo("Ok"));
-```
-
-In the expression above, isEqualTo(“Ok”) is invoked on the new columnReference and returns a filter to be be used in the table method selectWhere(aFilter).
-
-
-
 ## Combining filters
 
 You can combine filters to query a table on the values in multiple columns.
 
 ```java
- Table filtered = aTable.selectWhere(
-         both(
-            column("Status").isEqualTo("Ok"),
-            column("Age").isGreaterThan(21)));
+ Table filtered = aTable.where(
+            aTable.stringColumn("Status").isEqualTo("Ok")
+     			.and(aTable.numberColumn("Age").isGreaterThan(21)));
 ```
+
+### Filter by index
+
+You can select rows by specifying the index (zero-based):
+
+```java
+t.rows(i...)
+```
+
+You can also select by range:
+
+```java
+t.inRange(start, end)
+```
+
+You can also select a random sample of data. See the section on Sampling for more detail.
+
+### Sampling
+
+The line below returns a table containing 50 randomly sampled rows from table t.
+
+```java
+Table sample = t.sampleN(50); 
+```
+
+Alternately, you can specify the sample size as a proportion of the table size using sampleX(aDouble):
+
+```java
+Table sample = t.sampleX(.40);
+```
+
+You can also divide the table in two, assigning rows randomly to each, and return both sub-tables in an array. The code below puts ~ 1/3 of the rows in the results[0], and the other 2/3rds in results[1].  This is handy for separating data into a training and test subsets  for machine learning applications. 
+
+```java
+Table[] results = Table.sampleSplit(.333);
+```
+
+
 
 ## Excluding some columns from the result
 
 You may want to exclude some of the columns in the original from the new table. To do this, you could simply execute the queries as above, and then eliminate columns from the new table as a separate step:
 
 ```java
-filtered = aTable.selectWhere(column("Status").isEqualTo("Ok"));
+filtered = aTable.where(aTable.stringColumn("Status").isEqualTo("Ok"));
 filtered = filtered.removeColumns("startDate", "value");
 ```
 
 Alternately, you could specify the desired subset of columns as part of the query:
 
 ```java
-Table filtered = aTable.select("name", "status").where(column("Status").isEqualTo("Ok"));
+Table filtered = aTable.select("name","status")
+    .where(aTable.stringColumn("Status").isEqualTo("Ok"));
 ```
 
-Assuming the original table had four columns: name, startDate, value, and status, these two approaches would produce the same result.
+Given a list of columns as arguments, the *select()* statement returns a table containing only those columns. By chaning *select()* and *where()*, you get something that looks a lot like a sql statement that returns a subset of the data in the original table. 
 
 ## Current list of provided column filters 
 
@@ -234,19 +251,6 @@ isMissing()
 isNotMissing()
 
 ```
-#### Logical and Compound Filters
-
-```
-is(Filter filter)
-isNot(Filter filter)
-anyOf(List filters)
-allOf(List filters)
-noneOf(List filters)
-both(Filter a, Filter b)
-either(Filter a, Filter b)
-neither(Filter a, Filter b)
-```
-
 #### String Filters
 
 ```
@@ -302,9 +306,8 @@ PM()
 ```
 
 #### DateTime Filters
-```
-All of the filters provided for Dates and Times
-```
+
+All of the filters provided for Dates and Times are available for DateTimeColumns.
 
 #### Boolean (column) filters
 ```

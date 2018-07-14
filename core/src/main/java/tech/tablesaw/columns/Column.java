@@ -244,7 +244,6 @@ public interface Column {
         return where(selectNRowsAtRandom(tableSize, size()));
     }
 
-
     Selection isMissing();
 
     Selection isNotMissing();

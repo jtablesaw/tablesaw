@@ -52,28 +52,29 @@ Save a column as a CSV
 Columns do all the things you expect, here’s an incomplete list of standard operations:
 
 ```Java
-size()                          // returns the number of elements
-isEmpty()                       // returns true if column has no data; false otherwise
-first() and last()              // returns the first and last elements, respectively
-first(n) and last(n)            // returns the first and last n elements
-max() and min()                 // returns the largest and smallest elements
-top(n) and bottom(n)            // returns the n largest and smallest elements
-name()                          // returns the name of the column
-type()                          // returns the ColumnType, e.g. LOCAL_DATE
-print()                         // returns a String representation of the column
-copy()						 	// returns a deep copy of the column
-emptyCopy()						// returns a column of the same type and name, but no data
-unique()
-countUnique()
-asSet()
-summary()
-void sortAscending()			// sorts the column in ascending order 
-void sortDescending()			// sorts the column in ascending order 
-Column append(value)            // Appends a single value 
-append(Column)                  // Appends the data in other column to this one
+size()                  // returns the number of elements
+isEmpty()               // returns true if column has no data; false otherwise
+first() and last()      // returns the first and last elements, respectively
+first(n) and last(n)    // returns the first and last n elements
+max() and min()         // returns the largest and smallest elements
+top(n) and bottom(n)    // returns the n largest and smallest elements
+name()                  // returns the name of the column
+type()                  // returns the ColumnType, e.g. LOCAL_DATE
+print()                 // returns a String representation of the column
+copy()					// returns a deep copy of the column
+emptyCopy()				// returns a column of the same type and name, but no data
+unique()				// returns a column of only the unique values
+countUnique()			// returns the number of unique values
+asSet()                 // returns the unique values as a java Set
+summary()				// returns a type specific summary of the data
+void sortAscending()	// sorts the column in ascending order 
+void sortDescending()	// sorts the column in ascending order 
+Column append(value)    // Appends a single value 
+append(otherColumn)     // Appends the data in other column to this one
 ```
 
 These operations are available on nearly all column types, including date columns. Each operates on an entire column. 
+
 To operate on the values of a column, you have two choices. You can work with individual values, or use column-wise operations to work with all the values in a column in the same way. To work with individual values, you can just iterate over the column:
 
     DateColumn weekLater = DateColumn.create("Week Later");

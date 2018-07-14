@@ -173,78 +173,15 @@ Tablesaw supports inner and outer joins between tables.
 
 ## Filter
 
-One of the most useful operations is filtering. 
-
-### Filter by index
-
-You can select rows by specifying the index (zero-based):
-
- ```java
-t.rows(i...)
- ```
-
-You can also select by range:
+One of the most useful operations is filtering. Queries are created by forming expressions that produce a *Selection*, which effectively turns the query result into an object that can be used to filter by index. For example, the code below
 
 ```Java
-t.inRange(start, end)
+Table result = t.where(t.stringColumn("Foo").startsWith("A"));
 ```
 
-You can also select a random sample of data. See the section on Sampling for more detail.
+This would produce a table containing every row in t where the value in the column named "Foo" contains a string that starts with "A".
 
-### Sampling
-
-The line below returns a table containing 50 randomly sampled rows from table t.
-
-```Java
-Table sample = t.sampleN(50); 
-```
-
-Alternately, you can specify the sample size as a proportion of the table size using sampleX(aDouble):
-
-```Java
-Table sample = t.sampleX(.40);
-```
-
-You can also divide the table in two, assigning rows randomly to each, and return both sub-tables in an array. The code below puts ~ 1/3 of the rows in the results[0], and the other 2/3rds in results[1].  This is handy for separating data into a training and test subsets  for machine learning applications. 
-
-```Java
-Table[] results = Table.sampleSplit(.333);
-```
-
-
-
-### Filter by predicate
-
-Complex queries can be created by forming expressions that produce a *Selection*, which effectively turns the query result into an object that can be used to filter by index. 
-
-```
-t.where()
-```
-
-The method where() takes either a Filter or Selection as a parameter. Filters allow a more fluent form of composition.  
-
-### Combining row and column filters
-
-Given a list of columns as arguments, the *select()* statement returns a table containing only those columns, by chaning *select()* and *where()*, you get something that looks a lot like a sql statement that returns a subset of the data in the original table.
-
-```java
-Table subset = t.select("columnA", "columnB").where(t.nCol("columnC").isGreaterThan(4));
-```
-
-#### Chaining table filter operations
-
-Consider the case where you filter a table and want to filter the result. For example, 
-
-```java
-double average = 
-	t.selectWhere(t.stringColumn("foo").startsWith("bar"))
-		.selectWhere(stringColumn("bam").endsWith("bas"))
-			.nCol("age").mean();
-```
-
-If you tried to do this with standard Java method dereferencing, you would get stuck.  The second select clause cannot call stringColumn on the table returned from the first clause, because it doesn't exist before the first clause executes, and so there is no variable (e.g. table2) referring to that table to use in the statement ```table2.stringColumn("bam")`` .
-
-The method above uses the class QueryHelper. QueryHelper's stringColumn() method is a static method that returns an instance of ColumnReference. The actual column referred to by the ColumnReference is left unknown until the first clause has returned it's result table. That table then returns a column matching the given name ( "bam" in the example above). 
+Filters are covered in detail in the section on [Filtering](https://jtablesaw.github.io/tablesaw/userguide/filters).   
 
 ## Reduce
 
@@ -277,17 +214,17 @@ Table result = t.summarize("delay", mean).by("airport");
 
 Cross tabs (or cross-tabulations) are like groups, but return the data in a layout that faciliates interpretation. A cross tab in Tablesaw takes two grouping columns and returns the number of observations for each combination of the two columns. They can also produce the proportions, and subtotals by row or column. 
 
+Cross Tabs are covered in detail in the section on [CrossTabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs). 
+
 ## Sort
 
+Table can be sorted on any combination of columns, in any combination of ascending or descending order, or by supplying a comparator for complete flexibility. A simple example is shown below.
+
  ```java
-t.sortDescending("column1",,,)
+t.sortDescending("column1","column2");
  ```
 
-The *sortOn()* method lets you combine descending and ascending sorts in the same operation. Descending sorts are specified by putting a "-" in front of the column name.
-
-```java
-t.sortOn("-column1", "column2")
-```
+Sorting is covered in detail in the section on [Sorting](https://jtablesaw.github.io/tablesaw/userguide/sorting). 
 
 ## Rows
 
@@ -295,7 +232,9 @@ There are no real rows in Tablesaw. Data is organized in columns. The closest yo
 
 ### What we mean by a "virtual row"
 
+A row in tablesaw is an iterable object that references a table and contains an index pointer. It lets you step through the table without copying any data or converting any data from its internal representation into something more familiar - unless you ask it to. This makes it possible work with a table a row or two at a time, without incurring any memory overhead, and with the minimal CPU use. 
 
+Row handling is covered in detail in the section on [Rows](https://jtablesaw.github.io/tablesaw/userguide/rows), and in the section on [table processing without loops](https://jtablesaw.github.io/tablesaw/userguide/Table processing without loops). 
 
 ## Export
 
