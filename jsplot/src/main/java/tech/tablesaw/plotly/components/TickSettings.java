@@ -275,7 +275,7 @@ public class TickSettings {
         /**
          * Specifies the maximum number of ticks for the particular axis. The actual number of ticks will be chosen
          * automatically to be less than or equal to `nticks`. Has an effect only if `tickmode` is set to "auto".
-         * @param nTicks    an int >= 0
+         * @param nTicks a non-negative int
          * @return  this builder
          */
         public TickSettings.TickSettingsBuilder nTicks(int nTicks) {
