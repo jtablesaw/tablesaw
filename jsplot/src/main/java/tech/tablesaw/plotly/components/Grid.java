@@ -135,7 +135,7 @@ public class Grid extends Component {
          * Horizontal space between grid cells, expressed as a fraction of the total width available to one cell.
          * Defaults to 0.1 for coupled-axes grids and 0.2 for independent grids.
          *
-         * @param xGap  a double >= 0 && <= 1
+         * @param xGap  a double &gt;= 0 &amp;&amp; &lt;= 1
          * @return  this GridBuilder
          */
         public GridBuilder xGap(double xGap) {
@@ -148,7 +148,7 @@ public class Grid extends Component {
          * Vertical space between grid cells, expressed as a fraction of the total height available to one cell.
          * Defaults to 0.1 for coupled-axes grids and 0.3 for independent grids.
          *
-         * @param yGap  a double >= 0 && <= 1
+         * @param yGap  a double &gt;= 0 &amp;&amp; &lt;= 1
          * @return  this GridBuilder
          */
         public GridBuilder yGap(double yGap) {
