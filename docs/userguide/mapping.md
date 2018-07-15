@@ -1,3 +1,5 @@
+[Contents](https://jtablesaw.github.io/tablesaw/userguide/toc)
+
 Map functions
 =============
 
@@ -10,7 +12,7 @@ One way to think about them, is based on how many columns are involved in the fu
 Unary map functions operate on a single column, the method receiver. For example:
 
     StringColumn column = columnA.upperCase();
-    
+
 produces a new column that contains the values in columnA, but converted to upper case.
 
 While unary mappers operate only on a single Column, they may have an additional parameter (or parameters) that are not Columns, for example:
@@ -104,13 +106,13 @@ The new Column is not added to the original columns table by default. To add it,
     sqrt()
     cube()
     cubeRoot()
-    
+
 #### Binary
 
     subtract(RealColumn column)
     divideBy(RealColumn column)
     mod(RealColumn column)
-    
+
 #### n-Ary
 
     add(RealColumn[] columns)

@@ -1,3 +1,5 @@
+[Contents](https://jtablesaw.github.io/tablesaw/userguide/toc)
+
 # Rows
 
 For efficiency reasons, Tablesaw is column-oriented, but sometimes it's important to work on rows, rather than individual columns. Generally speaking, you can do this, by iterating the indexes on the table and getting values from the columns it contains:

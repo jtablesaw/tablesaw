@@ -1,5 +1,8 @@
+[Contents](https://jtablesaw.github.io/tablesaw/userguide/toc)
+
 Tables
 ======
+
 Tables are the primary data-type and general focus of Tablesaw. Here we’ll provide an overview of the operations they provide. Coverage of most of the topics below is introductory. They often will have their own section of the User Guide where they are examined more fully. For still more detail, see the JavaDoc for tech.Tablesaw.api.Table.
 
 ## Tables "all the way down"

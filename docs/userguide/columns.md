@@ -1,3 +1,5 @@
+[Contents](https://jtablesaw.github.io/tablesaw/userguide/toc)
+
 Columns
 =======
 

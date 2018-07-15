@@ -1,3 +1,5 @@
+[Contents](https://jtablesaw.github.io/tablesaw/userguide/toc)
+
 # Table processing without loops
 
 Tablesaw has long supported column-wise operations that allow you process all the data in a column in a single operation, without an explicit loop. For example, they support 

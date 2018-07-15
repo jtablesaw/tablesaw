@@ -1,3 +1,5 @@
+[Contents](https://jtablesaw.github.io/tablesaw/userguide/toc)
+
 # Visualization
 
 Tablesaw provides data visualization in pure Java. 

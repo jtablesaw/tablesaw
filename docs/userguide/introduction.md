@@ -1,6 +1,8 @@
+[Contents](https://jtablesaw.github.io/tablesaw/userguide/toc)
+
 # Introduction
 
-Tablesaw combines tools for working with tables and columns with the ability to create statistical models and visualizations. 
+Tablesaw combines tools for working with tables and columns with the ability to create statistical models and visualizations. In other words, it's a data frame, with added features. 
 
 ### What's a dataframe?
 A dataframe is an in-memory, tabular data structure in which each column holds a single datatype, while rows can contain a variety of types. Tablesaw provide these operations:
@@ -13,7 +15,8 @@ A dataframe is an in-memory, tabular data structure in which each column holds a
 * Summarizing columns or tables (reducing)
 * Combining tables by appending or joining
 * Calculating descriptive statistics
+* Adding, updating, and removing rows
 * Plotting data
 
 ### Looking ahead
-In the rest of this User Guide we discuss each class of dataframe operation, as well as the visualization capabilities we offer. 
+In the rest of this User Guide we discuss each category of dataframe operation, as well as the visualization capabilities Tablesaw offers. If you haven't already tried it, we strongly recommend the [Getting Started with Tablesaw](https://jtablesaw.github.io/tablesaw/getting_started) as the best way to see how it all fits together.  
