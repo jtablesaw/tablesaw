@@ -218,10 +218,17 @@ public class CsvReader {
             // Add the rows
             while ((nextLine = reader.readNext()) != null) {
 
-                if (nextLine.length != types.length) {
-                    System.err.println("Warning: Invalid CSV file. Row "
-                            + rowNumber
-                            + " is not the expected size. Continuing.");
+                if (nextLine.length < types.length) {
+                    if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
+                        System.err.println("Warning: Invalid CSV file. Row "
+                                + rowNumber
+                                + " is empty. Continuing.");
+                    } else {
+                        Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " is too short.");
+                        throw new AddCellToColumnException(e, 0, rowNumber, columnNames, nextLine);
+                    }
+                } else if (nextLine.length > types.length) {
+                    throw new RuntimeException("Row number " + rowNumber + " is too long.");
                 } else {
                     // for each column that we're including (not skipping)
                     int cellIndex = 0;
@@ -476,10 +483,21 @@ public class CsvReader {
             while ((nextLine = reader.readNext()) != null) {
                 // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
                 if (rowCount == 0) {
-                    for (int i = 0; i < nextLine.length; i++) {
+                    for (String aNextLine : nextLine) {
                         columnData.add(new ArrayList<>());
                     }
                 }
+/*
+                if (nextLine.length < columnData.size()) {
+                    if (nextLine.length > 1 && Strings.isNullOrEmpty(nextLine[0])) {
+                        // empty line
+                    } else {
+                        throw new IndexOutOfBoundsException("Row number " + nextRow + " is too short.");
+                    }
+                } else if (nextLine.length > columnData.size()) {
+                    throw new RuntimeException("Row number " + nextRow + " is too long.");
+                }
+*/
                 int columnNumber = 0;
                 if (rowCount == nextRow) {
                     for (String field : nextLine) {

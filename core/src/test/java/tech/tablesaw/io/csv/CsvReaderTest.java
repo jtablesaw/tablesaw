@@ -15,7 +15,9 @@
 package tech.tablesaw.io.csv;
 
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
@@ -325,6 +327,26 @@ public class CsvReaderTest {
         }
         assertNotNull(table);
         assertEquals(3, table.columnCount());
+    }
+
+    @Rule
+    public ExpectedException thrown= ExpectedException.none();
+    @Test
+    public void testEmptyRow() throws Exception {
+        Table.read().csv("../data/empty_row.csv");
+        // Note: tried capturing std err output and asserting on it, but it failed when running as mvn target
+    }
+
+    @Test
+    public void testShortRow() throws Exception {
+        thrown.expect(AddCellToColumnException.class);
+        Table.read().csv("../data/short_row.csv");
+    }
+
+    @Test
+    public void testLongRow() throws Exception {
+        thrown.expect(RuntimeException.class);
+        Table.read().csv("../data/long_row.csv");
     }
 
     @Test
