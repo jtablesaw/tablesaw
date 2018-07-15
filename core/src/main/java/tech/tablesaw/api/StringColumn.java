@@ -304,7 +304,6 @@ public class StringColumn extends AbstractColumn
         return copy;
     }
 
-
     /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
      * matches the selection criteria

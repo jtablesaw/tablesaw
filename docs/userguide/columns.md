@@ -70,14 +70,13 @@ Your other option is to create a new column without the offending data elements.
 Columns do all the things you expect, here’s an incomplete list of standard operations:
 
 ```Java
+name()                  // returns the name of the column
+type()                  // returns the ColumnType, e.g. LOCAL_DATE
 size()                  // returns the number of elements
 isEmpty()               // returns true if column has no data; false otherwise
-first() and last()      // returns the first and last elements, respectively
 first(n) and last(n)    // returns the first and last n elements
 max() and min()         // returns the largest and smallest elements
 top(n) and bottom(n)    // returns the n largest and smallest elements
-name()                  // returns the name of the column
-type()                  // returns the ColumnType, e.g. LOCAL_DATE
 print()                 // returns a String representation of the column
 copy()					// returns a deep copy of the column
 emptyCopy()				// returns a column of the same type and name, but no data
@@ -87,103 +86,105 @@ asSet()                 // returns the unique values as a java Set
 summary()				// returns a type specific summary of the data
 void sortAscending()	// sorts the column in ascending order 
 void sortDescending()	// sorts the column in ascending order 
-Column append(value)    // Appends a single value 
+append(value)    		// appends a single value to the column
+appendCell(string) 		// converts the string to the correct type and appends the result    
 append(otherColumn)     // Appends the data in other column to this one
+removeMissing()			// returns a column with all missing values removed    
 ```
 
-These operations are available on nearly all column types, including date columns. Each operates on an entire column. 
+These operations are available on nearly all column types. Each operates on an entire column. 
 
 To operate on the values of a column, you have two choices. You can work with individual values, or use column-wise operations to work with all the values in a column in the same way. To work with individual values, you can just iterate over the column:
 
-    DateColumn weekLater = DateColumn.create("Week Later");
-    for (LocalDate date: dates) {
-       weekLater.append(date.plusDays(7));
-    }
+```Java
+DateColumn weekLater = DateColumn.create("Week Later");
+for (LocalDate date: dates) {
+   weekLater.append(date.plusDays(7));
+}
+```
 
 Just about anything you can do with an individual LocalDate you can do with an entire DateColumn, using column-wise operations. For example, the above loop could be written as:
 
-    DateColumn weekLater = dates.plusDays(7);
+```Java
+DateColumn weekLater = dates.plusDays(7);
+```
 
-This is an example of a mapping function. You can see the full list of date mapping functions in the interface DateMapUtils, most of the methods deal with adding and subtracting units of time (days, weeks, months, etc), and calculating the column-wise differences between two date columns.
+This is an example of a mapping function. You can find the date mapping functions in the interface [DateMapFunctions](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/columns/dates/DateMapFunctions.html). Many of the methods there deal with adding and subtracting units of time (days, weeks, months, etc), and calculating the column-wise differences between two date columns. Others provide access to elements of a date. The method *month()*, for example, returns a StringColumn containing the month for a given date. The methods *year()*, *dayOfWeek()*, *dayOfMonth()*, etc. function similarly.
+
+Other columns have similar mapping functions. 
 
 ### Filtering
 
-You can filter two ways. The first is with the built-in predicates, like IsMonday()
+You can filter two ways. The first is with the built-in predicates, like IsMonday(). See the end of this post for a full list of the built-in predicates for LocalDateColumn.
 
-See the end of this post for a full list of the built-in predicates for LocalDateColumn.
+#### Writing Predicates for filtering columns
 
-You can filter a date column using #selectIf(IntPredicate).  For example, if you want only those dates after February 28, 2016.
+You can write a Predicate class to filter a date column using  ```where(Predicate<LocalDate>)```.  For example, if you want all the leap days in a column, you could create this Java 8 predicate.
 
-    LocalDatePredicate after_2_28 = new LocalDatePredicate() {
-      LocalDate date = LocalDate.of(2016, 2, 28);
-      @Override
-      public boolean test(LocalDate i) {
-        return i.isAfter(date);
-      }
-    };
+```Java
+LocalDatePredicate leapDays = new Predicate<LocalDate>() {
+  int dayOfMonth = 29;
+  int monthValue = 2;
+  @Override
+  public boolean test(LocalDate i) {
+    return i.getDayOfMonth() == dayOfMonth && i.getMonthValue() = 2;
+  }
+};
+```
 
 which you can use as:
 
-    DateColumn filtered = dates.selectIf(after_2_28);
+    DateColumn filtered = dates.where(dates.eval(leapDays);
+
+In the line above, the call to *dates.eval(aPredicate)* returns a Selection object holding the position of every element in the column that passes the predicate's *test()* method. The surrounding call to *where(aSelection)*, applies that selection to the column and returns a new column with all the passing values. 
 
 #### Built-in Date Predicates
 
 There are numerous built-in date predicates. For example:
 
-    DateColumn filtered = dates.isMonday();
-    DateColumn filtered = dates.isInQ2();
-    DateColumn filtered = dates.isLastDayOfTheMonth();
+```Java
+DateColumn filtered = dates.isMonday();
+DateColumn filtered = dates.isInQ2();
+DateColumn filtered = dates.isLastDayOfTheMonth();
+```
 
-Perhaps not surprisingly, there's already one provided to select elements that are after a specific date: 
+Perhaps not surprisingly, there are a number that find specific dates or date ranges: 
 
 ```java
-DateColumn filtered = dates.isAfter(LocalDate.of(2016, 2, 28));
+LocalDate date1 = LocalDate.of(2016, 2, 20);
+LocalDate date2 = LocalDate.of(2016, 4, 29);
+DateColumn filtered = dates.isEqualTo(date1);
+DateColumn filtered = dates.isAfter(date1);
+DateColumn filtered = dates.isOnOrAfter(date1);
+DateColumn filtered = dates.isBetweenIncluding(date1, date2);
 ```
 
 The built-in method in this case is preferable as it has been optimized. But you *can* write your own if you need something not already provided.
 
 You can find a full list in the JavaDoc for [DateColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/DateColumn.html).
 
-### Grouping
+#### Using filters to conditionally edit data
 
-This code creates a splitter that groups dates by month. First we get a Splitter to divide the data.
+The section on editing values above assumes you've identified the specific values you want to change. Often with large datasets, you know you want to change some values, without knowing where they are, or even how many are in the dataset. The easiest way to perform a bulk update of values meeting some condition is with `set(aSelection, aNewValue)`. Each column implements an appropriate variation of this method. DoubleColumn, for example, has a version that takes a double as the second argument, and StringColumn has a version that takes a string. 
 
-    LocalDateSplitter monthSplitter = new LocalDateSplitter() {
-    
-      @Override
-      public String groupKey(LocalDate date) {
-        return groupKey(PackedLocalDate.pack(date));
-      }
-    
-      @Override
-      public String groupKey(int packedLocalDate) {
-        return PackedLocalDate.getMonth(packedLocalDate).toString();
-      }
-    };
-    LocalDateColumnGroup group 
-        = new LocalDateColumnGroup(column, monthSplitter);
-    List<LocalDateColumn> columns = group.getSubColumns();
+You can use a built-in filter method like those discussed above to provide the selection. Here's one example:
 
-### Aggregating
-
-
-
-### Changing and correcting values
-
-The easiest way to correct values is using `set(aSelection, aNewValue)`. Each column implements an appropriate variation of this method. DoubleColumn, for example, has a version that takes a double as the second argument. You can use a built-in method like one of those discussed above to provide the selection.
-
-```Java
+```java
 doubleColumn.set(doubleColumn.isGreaterThan(100), 100);
 ```
 
 This would set any value above 100 to equal 100 exactly. This approach can be very helpful for dealing with missing data, which you might want to set to an average value for example. 
 
-```Java
+```java
 double avg = doubleColumn.mean();
 doubleColumn.set(doubleColumn.isMissing(), avg)
 ```
 
 NOTE: When working with missing values, always test with the isMissing() method, rather than test using the column type's MISSING_VALUE constant. For doubles, MISSING_VALUE returns Double.NaN, and since Double.NaN does not equal Double.NaN, a test like `doubleValue == MISSING_VALUE` will fail to detect missing values.
+
+### Aggregating
+
+
 
 ### Formatting 
 
