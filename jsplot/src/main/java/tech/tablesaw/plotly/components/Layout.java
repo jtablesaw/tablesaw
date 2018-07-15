@@ -224,6 +224,8 @@ public class Layout {
         if (margin != null) {
             context.put("margin", margin);
         }
+        context.put("decimalSeparator", decimalSeparator);
+        context.put("thousandsSeparator", thousandsSeparator);
         context.put("dragmode", dragMode);
         context.put("showlegend", showLegend);
         context.put("plotbgcolor", plotBgColor);
