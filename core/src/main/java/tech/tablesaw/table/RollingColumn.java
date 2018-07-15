@@ -26,8 +26,20 @@ public class RollingColumn {
         return calc(AggregateFunctions.mean);
     }
 
-    public NumberColumn sum(String resultColName) {
+    public NumberColumn median() {
+        return calc(AggregateFunctions.median);
+    }
+
+    public NumberColumn geometricMean() {
+        return calc(AggregateFunctions.geometricMean);
+    }
+
+    public NumberColumn sum() {
         return calc(AggregateFunctions.sum);
+    }
+
+    public NumberColumn pctChange() {
+        return calc(AggregateFunctions.pctChange);
     }
 
     private String generateNewColumnName(AggregateFunction function) {

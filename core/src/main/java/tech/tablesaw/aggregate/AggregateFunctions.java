@@ -46,7 +46,7 @@ public class AggregateFunctions {
 
         @Override
         public double summarize(Column column) {
-            return column.isEmpty() ? Float.NaN : column.getDouble(0);
+            return column.isEmpty() ? NumberColumn.MISSING_VALUE : column.getDouble(0);
         }
     };
 
@@ -57,10 +57,32 @@ public class AggregateFunctions {
 
         @Override
         public double summarize(Column column) {
-            return column.isEmpty() ? Float.NaN : column.getDouble(column.size() - 1);
+            return column.isEmpty() ? NumberColumn.MISSING_VALUE : column.getDouble(column.size() - 1);
         }
     };
 
+    /**
+     * A function that returns the difference between the last and first items
+     */
+    public static NumericAggregateFunction change = new NumericAggregateFunction("Change") {
+
+        @Override
+        public double summarize(Column column) {
+            return column.size() < 2 ? NumberColumn.MISSING_VALUE : column.getDouble(column.size() - 1) - column.getDouble(0);
+        }
+    };
+
+    /**
+     * A function that returns the difference between the last and first items
+     */
+    public static NumericAggregateFunction pctChange = new NumericAggregateFunction("Percent Change") {
+
+        @Override
+        public double summarize(Column column) {
+            return column.size() < 2 ? NumberColumn.MISSING_VALUE : (column.getDouble(column.size() - 1) - column.getDouble(0)) / column.getDouble(0);
+        }
+    };    
+ 
     /**
      * A function that calculates the count of values in the column excluding missing values
      */
