@@ -13,6 +13,8 @@ __Tablesaw__ is a Java dataframe similar to Pandas in Python, and the R data fra
 
 Tablesaw also supports descriptive statistics and data visualization, and integrates well with the Java machine learning library, Smile. 
 
+### Installing
+
 You can use tablesaw-core, which is the dataframe library itself, by adding a dependency: 
 
 ```xml
@@ -23,13 +25,8 @@ You can use tablesaw-core, which is the dataframe library itself, by adding a de
 </dependency>
 ```
 
-Beyond tablesaw-core:
-
 - You can add a dependency for `tablesaw-plot` to use the plotting capability. 
 - Experimental support for JavaScript plots built on Plot.ly (which is itself built on D3) is also included, but this will be a bumpy ride for another minor release or two. Add a dependency for ```tablesaw-jsplot```.
-- We also recommend trying Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html), which lets you experiment with Tablesaw in a more interactive manner. Get started by [installing BeakerX](http://beakerx.com/documentation) and trying [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
-
-* Finally, the [jtablesaw smile project](https://github.com/jtablesaw/smile) contains integration code to make it trivial to use the excellent Java machine learning library [Smile](https://github.com/haifengl/smile) with tablesaw. 
 
 ### Documentation and support:
 
@@ -64,5 +61,13 @@ And *always* feel free to ask questions here on the [issues tab](https://github.
 Here's an example where we use JavaScript plotting support to map the locations of tornadoes: 
 
 ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/tornado.scatter.png) 
+
+### Integrations
+
+- We recommend trying Tablesaw inside [Jupyter notebooks](http://arogozhnikov.github.io/2016/09/10/jupyter-features.html), which lets you experiment with Tablesaw in a more interactive manner. Get started by [installing BeakerX](http://beakerx.com/documentation) and trying [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb)
+- You may utilize Tablesaw with many machine learning libraries. To see an example of using Tablesaw with [Smile](https://haifengl.github.io/smile/) check out [the sample Tablesaw Jupyter notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb) 
+- You may use [quandl4j-tablesaw](http://quandl4j.org) if you'd like to load financial and economic data from [Quandl](https://www.quandl.com) into Tablesaw. This is demonstrated in [the sample Tablesaw notebook](https://github.com/twosigma/beakerx/blob/master/doc/groovy/Tablesaw.ipynb) as well
+
+### Suggestions
 
 If you see something that can be improved, please let us know.
