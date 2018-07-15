@@ -430,7 +430,7 @@ public class Axis extends Component {
          * For example, if this value is 10, then every unit on this axis spans 10 times the number of pixels
          * as a unit on the linked axis. Use this for example to create an elevation profile where the vertical
          * scale is exaggerated a fixed amount with respect to the horizontal.
-         * @param scaleRatio    a number >= 1
+         * @param scaleRatio    a number &gt;= 1
          * @return  this AxisBuilder
          */
         public AxisBuilder scaleRatio(double scaleRatio) {
