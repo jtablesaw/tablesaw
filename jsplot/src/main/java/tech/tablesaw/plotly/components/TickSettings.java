@@ -6,6 +6,7 @@ import tech.tablesaw.plotly.Utils;
 import java.util.Map;
 
 import static tech.tablesaw.plotly.components.TickSettings.DisplayRules.ALL;
+import static tech.tablesaw.plotly.components.TickSettings.ExponentFormat.B;
 
 public class TickSettings {
 
@@ -186,6 +187,21 @@ public class TickSettings {
         if (tickText != null) {
             context.put("tickText", Utils.dataAsString(tickText));
         }
+        if (nTicks != 0) {
+            context.put("nTicks", nTicks);
+        }
+        if (dTick != null) {
+            context.put("dTick", dTick);
+        }
+        if (tick0 != null) {
+            context.put("tick0", tick0);
+        }
+        if (showExponent != ALL) {
+            context.put("showExponent", showExponent);
+        }
+        if (exponentFormat != B) {
+            context.put("exponentFormat", exponentFormat);
+        }
         if (tickValues != null) {
             context.put("tickValues", Utils.dataAsString(tickValues));
         }
@@ -207,7 +223,7 @@ public class TickSettings {
     public static class TickSettingsBuilder {
 
         private DisplayRules showExponent = ALL;
-        private ExponentFormat exponentFormat;
+        private ExponentFormat exponentFormat = B;
         private Object tick0;
         private Object dTick;
 
@@ -256,6 +272,12 @@ public class TickSettings {
             return this;
         }
 
+        /**
+         * Specifies the maximum number of ticks for the particular axis. The actual number of ticks will be chosen
+         * automatically to be less than or equal to `nticks`. Has an effect only if `tickmode` is set to "auto".
+         * @param nTicks    an int >= 0
+         * @return  this builder
+         */
         public TickSettings.TickSettingsBuilder nTicks(int nTicks) {
             Preconditions.checkArgument(nTicks >= 0);
             this.nTicks = nTicks;

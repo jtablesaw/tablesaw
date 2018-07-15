@@ -16,25 +16,41 @@
     tickfont: {{tickFont | raw}},
 {% endif %}
 
-    {% if tickText is not null %}
-        ticktext: {{tickText | raw}},
-    {% endif %}
-    {% if tickValues is not null %}
-        tickvals: {{tickValues}},
-    {% endif %}
+{% if tickText is not null %}
+    ticktext: {{tickText | raw}},
+{% endif %}
+{% if tickValues is not null %}
+    tickvals: {{tickValues}},
+{% endif %}
 
-    {% if autoRange is not null %}
-        autorange: '{{autoRange}}',
-    {% endif %}
+{% if dTick is not null %}
+    dtick: '{{dTick}}',
+{% endif %}
+{% if nTicks is not null %}
+    nticks: '{{nTicks}}',
+{% endif %}
+{% if tick0 is not null %}
+    tick0: '{{tick0}}',
+{% endif %}
+{% if showExponent is not null %}
+    showExponent: '{{showExponent}}',
+{% endif %}
+{% if exponentFormat is not null %}
+    exponentformat: '{{exponentFormat}}',
+{% endif %}
 
-    {% if showSpikes is not null %}
-        showspike: {{showSpikes}},
-        spikemode: '{{spikeMode}}',
-        spikethickness: {{spikeThickness}},
-        spikesnap: '{{spikeSnap}}',
-        spikecolor: '{{spikeColor}}',
-        spikedash: '{{spikeDash}}',
-    {% endif %}
+{% if autoRange is not null %}
+    autorange: '{{autoRange}}',
+{% endif %}
+
+{% if showSpikes is not null %}
+    showspike: {{showSpikes}},
+    spikemode: '{{spikeMode}}',
+    spikethickness: {{spikeThickness}},
+    spikesnap: '{{spikeSnap}}',
+    spikecolor: '{{spikeColor}}',
+    spikedash: '{{spikeDash}}',
+{% endif %}
 
     linecolor: '{{lineColor}}',
     linewidth: {{lineWidth}},
