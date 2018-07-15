@@ -179,6 +179,6 @@ try (Statement stmt = conn.createStatement()) {
 
 ## Working with HTML Tables
 
-Tablesaw supports converting data from well-formed HTML tables into CSV files, when there is a single table on a page. See the Javadoc for [HtmlTableReader](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/io/html/HtmlTableReader.html) for more info.
+Tablesaw supports converting data from well-formed HTML tables into CSV files, when there is a single table on a page. See the Javadoc for [HtmlTableReader](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/io/html/HtmlTableReader.html) for more info.
 
 That covers the major ways to get data into a Tablesaw data set. 
