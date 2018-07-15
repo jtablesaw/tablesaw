@@ -25,6 +25,19 @@ public class DataFrameJoiner {
     }
 
     /**
+     * Joins to the given tables assuming that they have a column of the name we're joining on
+     *
+     * @param tables The tables to join with
+     */
+    public Table inner(Table... tables) {
+        Table joined = table;
+        for (Table table2 : tables) {
+          joined = inner(table2, column.name());
+        }
+        return joined;
+    }
+
+    /**
      * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
      *
      * @param table2   The table to join with
@@ -117,6 +130,19 @@ public class DataFrameJoiner {
     }
 
     /**
+     * Joins to the given tables assuming that they have a column of the name we're joining on
+     *
+     * @param tables The tables to join with
+     */
+    public Table leftOuter(Table... tables) {
+        Table joined = table;
+        for (Table table2 : tables) {
+          joined = leftOuter(table2, column.name());
+        }
+        return joined;
+    }    
+
+    /**
      * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
      *
      * @param table2   The table to join with
@@ -126,6 +152,19 @@ public class DataFrameJoiner {
     public Table leftOuter(Table table2, String col2Name) {
         return joinInternal(table2, col2Name, true);
     }
+
+    /**
+     * Joins to the given tables assuming that they have a column of the name we're joining on
+     *
+     * @param tables The tables to join with
+     */
+    public Table rightOuter(Table... tables) {
+        Table joined = table;
+        for (Table table2 : tables) {
+          joined = rightOuter(table2, column.name());
+        }
+        return joined;
+    }    
 
     /**
      * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
