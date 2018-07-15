@@ -254,7 +254,11 @@ public class Axis extends Component {
             context.put("range", Utils.dataAsString(range));
         }
         context.put("fixedRange", fixedRange);
-
+        context.put("scaleRatio", scaleRatio);
+        context.put("constrain", constrain);
+        if (constrainToward != null) {
+            context.put("constrainToward", constrainToward);
+        }
         if (spikes != null) {
             spikes.updateContext(context);
         }
@@ -277,9 +281,9 @@ public class Axis extends Component {
 
     public static class AxisBuilder {
 
-        Constrain constrain;
+        Constrain constrain = Constrain.RANGE;
         ConstrainToward constrainToward;
-        double scaleRatio;
+        double scaleRatio = 1.0;
 
         Font titleFont;
         String title = "";
@@ -421,7 +425,16 @@ public class Axis extends Component {
             return this;
         }
 
+        /**
+         * If this axis is linked to another by `scaleanchor`, this determines the pixel to unit scale ratio.
+         * For example, if this value is 10, then every unit on this axis spans 10 times the number of pixels
+         * as a unit on the linked axis. Use this for example to create an elevation profile where the vertical
+         * scale is exaggerated a fixed amount with respect to the horizontal.
+         * @param scaleRatio    a number >= 1
+         * @return  this AxisBuilder
+         */
         public AxisBuilder scaleRatio(double scaleRatio) {
+            Preconditions.checkArgument(scaleRatio >= 1.0);
             this.scaleRatio = scaleRatio;
             return this;
         }

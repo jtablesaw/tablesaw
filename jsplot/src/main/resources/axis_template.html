@@ -48,5 +48,10 @@
     zerolinewidth: {{zeroLineWidth}},
     zeroline: {{zeroLine}},
 
+    scaleratio: '{{scaleRatio}}',
+    constrain: '{{constrain}}',
+{% if constrainToward is not null %}
+    constraintoward: '{{constrainToward}}',
+{% endif %}
     type: '{{type}}',
     visible: {{visible}}}
