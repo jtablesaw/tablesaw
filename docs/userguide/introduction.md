@@ -19,4 +19,4 @@ A dataframe is an in-memory, tabular data structure in which each column holds a
 * Plotting data
 
 ### Looking ahead
-In the rest of this User Guide we discuss each category of dataframe operation, as well as the visualization capabilities Tablesaw offers. If you haven't already tried it, we strongly recommend the [Getting Started with Tablesaw](https://jtablesaw.github.io/tablesaw/getting_started) as the best way to see how it all fits together.  
+In the rest of this User Guide we discuss each category of dataframe operation, as well as the visualization capabilities Tablesaw offers. If you haven't already tried it, we strongly recommend the [Getting Started with Tablesaw](https://jtablesaw.github.io/tablesaw/gettingstarted) as the best way to see how it all fits together.  

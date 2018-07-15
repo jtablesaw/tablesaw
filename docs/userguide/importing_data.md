@@ -41,7 +41,9 @@ When the table is created, it is given a default name based on the name of the f
 
 ### Column types
 
-With all these methods, Tablesaw looks at the data in each column in the file and takes a wild guess at the type. Actually, it looks at a *sample* of the data and applies some heuristics. If nothing else seems to fit, the column is read as a StringColumn. Usually, it gets it right, but sometimes it needs a little help. 
+With all these methods, Tablesaw looks at the data in each column in the file and takes a wild guess at the type. Actually, it looks at a *sample* of the data and applies some heuristics. Of course, it’s possible that the data set includes rare values that are missed in the type inference sample. If that happens, you can set the option ```sample(false)``` to consider all the data when performing type inference. 
+
+If nothing else seems to fit, the column is read as a StringColumn. Usually, Tablesaw gets it right, but sometimes it needs a little help. 
 
 #### Specifying the datatypes for each column
 
@@ -56,11 +58,11 @@ Table t = Table.read().csv(CsvReadOptions
 
 If that seems like a lot of work, it does have some advantages.
 
-First, it reduces the loading time as the system does not need to infer the column types. Inference means taking a first pass over a sample of the data and trying different parses, so it takes some time. The amount of time saved can be noticeable if the file is large. It’s also possible that the data set includes rare values that are missed in the type inference sample. If that happens, you can set the option ```sample(false)``` to consider all the data when performing type inference,
+First, it reduces the loading time as the system does not need to infer the column types, which takes some time. The amount of time saved can be noticeable if the file is large.
 
 Second, it gives you complete control over the types for your columns. 
 
-In some cases, you must specify the column type, because Tablesaw can’t always guess correctly. For example, if a file has times encoded as HHmm so that noon appears as ‘1200’, it’s impossible to infer that this means 12:00 noon, and not the integer 1,200.  
+In some cases, you *must* specify the column type, because Tablesaw can’t guess correctly. For example, if a file has times encoded as HHmm so that noon appears as ‘1200’, it’s impossible to infer that this means 12:00 noon, and not the integer 1,200.  
 
 #### A shortcut: Getting the guessed column types
 
@@ -120,9 +122,7 @@ Table t = Table.read().csv(CsvReadOptions
     .dateTimeFormat("yyyy.MM.dd::HH:mm:ss");
 ```
 
-
-
-### Using the Stream API
+## Using the Stream API
 
 All the examples above attempt to streamline the loading process when you have a CSV file stored on your file system. A more flexible way to load a CSV is using the Stream interface, which takes a java.io.InputStream as a parameter.
 
@@ -130,7 +130,7 @@ All the examples above attempt to streamline the loading process when you have a
 Table.read().csv(InputStream stream, String tableName);
 ```
 
-It can be used to read local files, but also files read across the net, in S3, etc. Here are examples using HTTP and S3. Here’s some examples.
+It can be used to read local files, but also files read across the net, in S3, etc. Here’s some examples of how it can be used.
 
 ### Loading a CSV from a Website:
 
@@ -157,7 +157,7 @@ Table t = Table.csv(CsvReadOptions.builder(stream, "bush")
                     .columnTypes(types)));
 ```
 
-### Loading from Database ResultSets
+## Working with Databases
 It's equally easy to create a table from the results of a database query. In this case, you never need to specify the column types, because they are inferred from the database column types. 
 
     Table t = Table.read().db(ResultSet resultSet, String tableName);
@@ -177,4 +177,8 @@ try (Statement stmt = conn.createStatement()) {
 }
 ```
 
+## Working with HTML Tables
 
+Tablesaw supports converting data from well-formed HTML tables into CSV files, when there is a single table on a page. See the Javadoc for [HtmlTableReader](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/io/html/HtmlTableReader.html) for more info.
+
+That covers the major ways to get data into a Tablesaw data set. 

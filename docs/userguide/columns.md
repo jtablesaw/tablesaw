@@ -3,34 +3,34 @@
 Columns
 =======
 
-Tablesaw is all about tables and tables are made of columns. To truly understand your data, you'll often need to work with a single column. Tablesaw provides a large collection of tools for that, and we'll cover the basics here. Each column type also has its own section that goes into greater detail. 
+Tablesaw is all about tables and tables are made of columns. You'll often need to work with individual columns and Tablesaw provides a large collection of tools for that. We'll cover the basics here. 
 
-Let's start with a definition. A column is a named vector of data, all of a single type. Some elements may be missing, and it's important to deal with those. We show how to do that in a little bit. 
+Let's start with a definition. A column is a named vector of data, all of a single type. Some elements may be missing, and it's important to deal with those. We cover that later. 
 
-Here are the supported column types:
+Here are the supported column types. All of the concrete column types are in the api package. For the details on each kind see the appropriate Javadoc files. 
 
-* Boolean, or true and false values
-* String, as in "Hello, World," or "RN183-15F";
-* Number 
-* Date: A "local date". That is, a date without a timezone. April 10, 2018, for example.
-* DateTime: A local date and time combined. April 10, 2018 at 9:07.
-* Time: A local time, like 12:47:03
+* [BooleanColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/BooleanColumn.html), which holds true and false values
+* [StringColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/StringColumn.html), as in "Hello, World," or "RN183-15F", "charlie@gmail.com";
+* [NumberColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/NumberColumn.html): an interface for numeric data types.   
+* [DateColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/DateColumn.html): A "local date". That is, a date without a timezone. April 10, 2018, for example.
+* [DateTimeColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/DateTimeColumn.html): A local date and time combined. April 10, 2018 at 9:07.
+* [TimeColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/TimeColumn.html): A local time, like 12:47:03
 
-There is currently one specific type of number column, called DoubleColumn. As you'd expect, it holds 8-byte floating point numbers. 
+There is currently one concrete type of NumberColumn, called [DoubleColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/DoubleColumn.html). As you'd expect, it holds 8-byte floating point numbers, but is used also for integer types. 
 
 We'll begin by looking at the operations that are common to all column types. 
 
 #### Create a Column
 
-Columns are usually created by calling one of the static create() methods defined on the class. For example, you can create an empty date column as follows:
+Columns are usually created by importing a data file. They can also be instantiated by calling one of the static create() methods defined on the appropriate class. For example, you can create an empty DateColumn as follows:
 
 ```Java
 DateColumn column = DateColumn.create("test");
 ```
 
-The new column has the name "test", and a ColumnType of LOCAL_DATE. Names are important. We often refer to a column by its name, so we don't have to declare a variable to access it. All the columns within a given table must have unique names. You can always get the name of a column by calling *name()*, and its type by calling *type()*.
+The new column has the name "test", and a ColumnType of LOCAL_DATE. Names are important. We often ask a table for a column by name. All the columns within a given table must have unique names. You can always get the name of a column by calling *name()*, and its type by calling *type()*.
 
-To create a column with data, you will generally read the data from a file or database, but you can also initialize the column with an array:
+To create a column with data, you can initialize the column with an array:
 
 ```Java
 double[] values = {1, 2, 3, 7, 9.44242, 11};
@@ -43,17 +43,27 @@ Once you have a column, you can add it to a table using the addColumns() method 
 table.addColumns(column);
 ```
 
-#### Add an element to the end of the column
+#### Adding, editing, and removing data
 
 You can add data to columns as shown below, but  if your column is part of a table, you must take care to ensure that each column has the same number of elements.
 
-    DateColumn.append(LocalDate.of(2016, 2, 28));
+```Java
+DateColumn.append(LocalDate.of(2016, 2, 28));
+```
 
-#### Column IO
+To change the value of an element in a column you can use the *set(index, value)* method. This will replace the existing value at the given position with the new value.
 
-Generally, you will save data as table, but you may also want to save just a single column. You can do this using
+```Java
+numberColumn.set(4, 123.2);
+```
 
-Save a column as a CSV
+Normally, you don't remove data from a column in the normal sense. To remove elements from the middle of column would cause problems if the column is part of a table. However, if you do want to get rid of some elements you have two choices. The first is to set the value to missing as shown below.
+
+```Java
+numberColumn.set(4, NumberColumn.MISSING_VALUE);
+```
+
+Your other option is to create a new column without the offending data elements. This is done with filters as described below.
 
 ### Other common operations:
 
@@ -98,7 +108,7 @@ This is an example of a mapping function. You can see the full list of date mapp
 
 ### Filtering
 
-You can filter two ways. The first is with the built-in predicates, like IsMonday
+You can filter two ways. The first is with the built-in predicates, like IsMonday()
 
 See the end of this post for a full list of the built-in predicates for LocalDateColumn.
 

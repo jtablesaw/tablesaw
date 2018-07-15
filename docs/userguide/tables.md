@@ -3,7 +3,7 @@
 Tables
 ======
 
-Tables are the primary data-type and general focus of Tablesaw. Here we’ll provide an overview of the operations they provide. Coverage of most of the topics below is introductory. They often will have their own section of the User Guide where they are examined more fully. For still more detail, see the JavaDoc for tech.Tablesaw.api.Table.
+Tables are the primary data-type and general focus of Tablesaw. Here we’ll provide an overview of the operations they provide. Coverage of most of the topics below is introductory. They often will have their own section of the User Guide where they are examined more fully. For still more detail, see the JavaDoc for tech.tablesaw.api.Table.
 
 ## Tables "all the way down"
 Tablesaw has a huge number of methods for creating, querying, manipulating, displaying, and saving tables, so it makes sense that we use tables widely, and that many operations on tables return other tables. For example, when you ask a table to describe its structure, it returns a new table that contains the column names, types, and order. 

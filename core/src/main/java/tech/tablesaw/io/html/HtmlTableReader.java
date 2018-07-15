@@ -34,5 +34,4 @@ public class HtmlTableReader {
             return stringWriter.toString();
         }
     }
-
 }
