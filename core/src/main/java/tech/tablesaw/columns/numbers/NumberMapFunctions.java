@@ -192,13 +192,22 @@ public interface NumberMapFunctions extends Column, DoubleIterable {
     }
 
     /**
+     * Returns a doubleColumn with the exponential power of each value in this column
+     */
+    default NumberColumn power(double power) {
+        NumberColumn newColumn = DoubleColumn.create(name() + "[pow]", size());
+        for (double value : this) {
+            newColumn.append(Math.pow(value, power));
+        }
+        return newColumn;
+    }    
+
+    /**
      * Returns a doubleColumn with the square of each value in this column
      */
     default NumberColumn square() {
-        NumberColumn newColumn = DoubleColumn.create(name() + "[sq]", size());
-        for (double value : this) {
-            newColumn.append(value * value);
-        }
+        NumberColumn newColumn = power(2);
+        newColumn.setName(name() + "[sq]");
         return newColumn;
     }
 
@@ -219,10 +228,8 @@ public interface NumberMapFunctions extends Column, DoubleIterable {
     }
 
     default NumberColumn cube() {
-        NumberColumn newColumn = DoubleColumn.create(name() + "[cb]", size());
-        for (double value : this) {
-            newColumn.append(value * value * value);
-        }
+        NumberColumn newColumn = power(3);
+        newColumn.setName(name() + "[cb]");
         return newColumn;
     }
 

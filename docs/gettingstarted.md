@@ -77,7 +77,7 @@ Many Java programs and programmers work exclusively with Objects, rather than pr
 
 There is a price for this frugality. When you work with primitives, you forgo some common java capabilities, like the use of standard Java 8 predicates. While Java thoughtfully provides some specialized predicate interfaces (e.g. *IntPredicate*), they don't provide any primitive *BiPredicate* implementations, nor do their primitive interfaces cover all primitive types. Without an IntBiPredicate, we can't implement operations like a < b. So we were left to roll our own. You can find them in the package *tech.tablesaw.filtering.predicates*. They work like the standard objects. 
 
-This just covers the most basic information about columns. You can find more in the section on [Columns](https://jtablesaw.github.io/tablesaw/userguide/columns), or in the Javadocs for the [api package](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/package-summary.html) and the [columns package](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/columns/package-summary.html).
+This just covers the most basic information about columns. You can find more in the section on [Columns](https://jtablesaw.github.io/tablesaw/userguide/columns), or in the Javadocs for the [api package](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/package-summary.html) and the [columns package](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/columns/package-summary.html).
 
 ### Selections
 
