@@ -9,14 +9,14 @@ Let's start with a definition. A column is a named vector of data, all of a sing
 
 Here are the supported column types. All of the concrete column types are in the api package. For the details on each kind see the appropriate Javadoc files. 
 
-* [BooleanColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/BooleanColumn.html), which holds true and false values
-* [StringColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/StringColumn.html), as in "Hello, World," or "RN183-15F", "charlie@gmail.com";
-* [NumberColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/NumberColumn.html): an interface for numeric data types.   
-* [DateColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/DateColumn.html): A "local date". That is, a date without a timezone. April 10, 2018, for example.
-* [DateTimeColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/DateTimeColumn.html): A local date and time combined. April 10, 2018 at 9:07.
-* [TimeColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/TimeColumn.html): A local time, like 12:47:03
+* [BooleanColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/BooleanColumn.html), which holds true and false values
+* [StringColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/StringColumn.html), as in "Hello, World," or "RN183-15F", "charlie@gmail.com";
+* [NumberColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/NumberColumn.html): an interface for numeric data types.   
+* [DateColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/DateColumn.html): A "local date". That is, a date without a timezone. April 10, 2018, for example.
+* [DateTimeColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/DateTimeColumn.html): A local date and time combined. April 10, 2018 at 9:07.
+* [TimeColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/TimeColumn.html): A local time, like 12:47:03
 
-There is currently one concrete type of NumberColumn, called [DoubleColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/DoubleColumn.html). As you'd expect, it holds 8-byte floating point numbers, but is used also for integer types. 
+There is currently one concrete type of NumberColumn, called [DoubleColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/DoubleColumn.html). As you'd expect, it holds 8-byte floating point numbers, but is used also for integer types. 
 
 We'll begin by looking at the operations that are common to all column types. 
 
@@ -161,7 +161,7 @@ DateColumn filtered = dates.isBetweenIncluding(date1, date2);
 
 The built-in method in this case is preferable as it has been optimized. But you *can* write your own if you need something not already provided.
 
-You can find a full list in the JavaDoc for [DateColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/DateColumn.html).
+You can find a full list in the JavaDoc for [DateColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/DateColumn.html).
 
 #### Using filters to conditionally edit data
 

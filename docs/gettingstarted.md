@@ -123,7 +123,7 @@ If you have several columns of the same length as you would in a table of data, 
 NumberColumn result = firstColumn.where(someOtherColumn.startsWith("foo"));
 ```
 
-> **Key point:** Note the methods *startsWith(aString)*, *isLessThan(aNumber)*, and *isOdd()*. These were predefined for your use. There are many such methods that can be used in building queries. For StringColumn, they're defined in the [tech.tablesaw.columns.strings.StringFilters interface](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/columns/strings/StringFilters.html). It also includes *endsWith()*, *isEmpty()*, *isAlpha()*, *containsString()*[^2], etc. Each column has a similar set of filter operations. They can all be found in the filter interfaces located in sub-folders of tech.tablesaw.columns (e.g. tech.tablesaw.columns.dates.DateFilters). 
+> **Key point:** Note the methods *startsWith(aString)*, *isLessThan(aNumber)*, and *isOdd()*. These were predefined for your use. There are many such methods that can be used in building queries. For StringColumn, they're defined in the [tech.tablesaw.columns.strings.StringFilters interface](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/columns/strings/StringFilters.html). It also includes *endsWith()*, *isEmpty()*, *isAlpha()*, *containsString()*[^2], etc. Each column has a similar set of filter operations. They can all be found in the filter interfaces located in sub-folders of tech.tablesaw.columns (e.g. tech.tablesaw.columns.dates.DateFilters). 
 
 #### Map functions
 
@@ -152,7 +152,7 @@ nc = s.distance(anotherStringColumn);
 ```
 As you can see, for many String methods that return a new String. StringColumn provides an equivilent map method that returns a new StringColumn. It also includes other helpful methods found in Guava's String library and in the Apache Commons String library.
 
-> **Key point:** Every column type has a set of map operations like *multiply(aNumber)*. For StringColumn, these methods are defined in the [*tech.tablesaw.columns.strings.StringMapFunctions*](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/columns/strings/StringFilters.html) interface. It includes many methods beyond those shown above. Methods for all column types can all be found in their filter interfaces located in the sub-folders of tech.tablesaw.columns (e.g. [*tech.tablesaw.columns.dates.DateMapFunctions*](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/columns/strings/StringFilters.html), which provides date methods like *plusDays(anInt)*, *year()*, and *month()*).  
+> **Key point:** Every column type has a set of map operations like *multiply(aNumber)*. For StringColumn, these methods are defined in the [*tech.tablesaw.columns.strings.StringMapFunctions*](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/columns/strings/StringFilters.html) interface. It includes many methods beyond those shown above. Methods for all column types can all be found in their filter interfaces located in the sub-folders of tech.tablesaw.columns (e.g. [*tech.tablesaw.columns.dates.DateMapFunctions*](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/columns/strings/StringFilters.html), which provides date methods like *plusDays(anInt)*, *year()*, and *month()*).  
 >
 
 #### Reduce (aggregate) functions: Summarizing a column 
@@ -165,7 +165,7 @@ NumberColumn has many more aggregate functions. For example, to calculate the st
 double stdDev = nc.standardDeviation();	
 ```
 
-> **Key point:** NumberColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and so on. These are defined in the [NumberColumn](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/api/NumberColumn.html) class. 
+> **Key point:** NumberColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and so on. These are defined in the [NumberColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/NumberColumn.html) class. 
 >
 
 When we discuss tables below, we'll show how to calculate sub-totals in one or more numeric columns by the values in one or more grouping columns.
@@ -423,7 +423,7 @@ which says "return the mean and median sales by day of week."
 
 > **Key point**: Tables are usually split based on columns, but the columns can be calculated on the fly
 
-See the documentation on [Summarizing](https://jtablesaw.github.io/tablesaw/userguide/reducing) data, and the classes in the [aggregate package](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/aggregate/package-summary.html) for more detail.
+See the documentation on [Summarizing](https://jtablesaw.github.io/tablesaw/userguide/reducing) data, and the classes in the [aggregate package](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/aggregate/package-summary.html) for more detail.
 
 ##### Cross-Tabulations (AKA contingency tables)
 
@@ -457,11 +457,11 @@ The formatted output is shown below.
      Total  |  20%  |     37%  |       17%  |        9%  |     3%  |    14%  |   100%  |
 ```
 
-See the section on [Cross Tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs), and the JavaDocs for the [CrostTab](https://jtablesaw.github.io/tablesaw/apidocs/tech/tablesaw/aggregate/CrossTab.html) class. 
+See the section on [Cross Tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs), and the JavaDocs for the [CrostTab](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/aggregate/CrossTab.html) class. 
 
 ## Conclusion
 
-We've covered a lot of ground. To learn more, please take a look at the [User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc) or API documentation ([Java Docs](https://jtablesaw.github.io/tablesaw/apidocs/index)).
+We've covered a lot of ground. To learn more, please take a look at the [User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc) or API documentation ([Java Docs](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/index)).
 
 [^1]: The method shown does not actually "produce" any output For that you would call *System.out.println()*. For brevity, this "faux" output will be shown indented by one tab beneath the code that produced it.
 [^2]: Note that containsString(String subString) is different from contains(). The first method looks at each string in the column to see if it conains the substring. The second method looks at every row in the column and returns true if any matches the entire string. In other words, contains is like contains as defined on List<String>. , etc.

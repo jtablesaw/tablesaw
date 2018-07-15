@@ -75,14 +75,10 @@ public interface Column {
      */
     Column unique();
 
-    /*
-     */
-
     /**
      * Returns a column of the same type as the receiver, containing the receivers values offset -n
      * For example if you lead a column containing 2, 3, 4 by 1, you get a column containing 3, 4, NA.
      */
-
     default Column lead(int n) {
         return lag(-n);
     }
@@ -92,7 +88,6 @@ public interface Column {
      * <p>
      * For example if you lag a column containing 2, 3, 4 by 1, you get a column containing NA, 2, 3
      */
-
     Column lag(int n);
 
     /**
