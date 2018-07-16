@@ -10,7 +10,10 @@ import tech.tablesaw.table.TableSliceGroup;
 
 import java.util.List;
 
-public class Scatterplot {
+public class ScatterPlot {
+
+    private static int HEIGHT = 600;
+    private static int WIDTH = 800;
 
     public static void show(String title, Table table, String xCol, String yCol, String groupCol) {
 
@@ -18,8 +21,8 @@ public class Scatterplot {
 
         Layout layout = Layout.builder()
                 .title(title)
-                .height(600)
-                .width(800)
+                .height(HEIGHT)
+                .width(WIDTH)
                 .xAxis(Axis.builder()
                         .title(xCol)
                         .build())
@@ -44,8 +47,8 @@ public class Scatterplot {
 
         Layout layout = Layout.builder()
                 .title(title)
-                .height(600)
-                .width(800)
+                .height(HEIGHT)
+                .width(WIDTH)
                 .xAxis(Axis.builder()
                         .title(xCol)
                         .build())
@@ -66,8 +69,8 @@ public class Scatterplot {
 
         Layout layout = Layout.builder()
                 .title(title)
-                .height(600)
-                .width(800)
+                .height(HEIGHT)
+                .width(WIDTH)
                 .xAxis(Axis.builder()
                         .title(xTitle)
                         .build())
