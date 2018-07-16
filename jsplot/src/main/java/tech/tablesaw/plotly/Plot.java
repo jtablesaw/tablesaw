@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 /**
  * Displays plots in a development setting, by exporting a file containing the HTML and Javascript, and then opening
@@ -18,6 +19,7 @@ public class Plot {
 
     private static final String DEFAULT_DIV_NAME = "target";
     private static final String DEFAULT_OUTPUT_FILE = "output.html";
+    private static final String DEFAULT_OUTPUT_FILE_NAME = "output";
     private static final String DEFAULT_OUTPUT_FOLDER = "testoutput";
 
     public static void show(Figure figure, String divName, File outputFile) {
@@ -38,7 +40,7 @@ public class Plot {
     }
 
     public static void show(Figure figure) {
-        show(figure, defaultFile());
+        show(figure, randomFile());
     }
 
     public static void show(Figure figure, File outputFile) {
@@ -53,5 +55,19 @@ public class Plot {
             e.printStackTrace();
         }
         return path.toFile();
+    }
+
+    private static File randomFile() {
+        Path path = Paths.get(DEFAULT_OUTPUT_FOLDER, randomizedFileName());
+        try {
+            Files.createDirectories(path.getParent());
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return path.toFile();
+    }
+
+    private static String randomizedFileName() {
+        return DEFAULT_OUTPUT_FILE_NAME + UUID.randomUUID().toString() + ".html";
     }
 }
