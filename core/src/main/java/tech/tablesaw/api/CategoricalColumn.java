@@ -14,11 +14,13 @@
 
 package tech.tablesaw.api;
 
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.columns.Column;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A column type that can be summarized, or serve as a grouping variable in cross tabs or other aggregation operations.
@@ -69,4 +71,7 @@ public interface CategoricalColumn extends Column {
 
     int[] asIntArray();
 
+    default Set<Integer> asIntegerSet() {
+        return new IntOpenHashSet(asIntArray());
+    }
 }
