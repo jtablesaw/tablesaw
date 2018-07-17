@@ -96,6 +96,8 @@ public final class CrossTab {
         }
         if (t.column(0).type().equals(ColumnType.STRING)) {
             t.column(0).appendCell("Total");
+        } else {
+            t.column(0).appendCell("");
         }
         int grandTotal = 0;
         for (int i = 1; i < t.columnCount() - 1; i++) {

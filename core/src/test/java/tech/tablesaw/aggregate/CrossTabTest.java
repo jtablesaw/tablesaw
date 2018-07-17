@@ -1,9 +1,13 @@
 package tech.tablesaw.aggregate;
 
 import org.junit.Test;
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CrossTabTest {
 
@@ -31,6 +35,28 @@ public class CrossTabTest {
                     pcts.numberColumn(1).get(row),
                     0.01);
         }
+    }
+
+    @Test
+    public void testCounts3() throws Exception {
+        Table bush = Table.read().csv("../data/bush.csv");
+        NumberColumn month = bush.dateColumn("date").monthValue();
+        month.setName("month");
+        BooleanColumn seventyPlus =
+                BooleanColumn.create("70",
+                        bush.numberColumn("approval").isGreaterThanOrEqualTo(70),
+                bush.rowCount());
+        seventyPlus.setName("seventyPlus");
+        bush.addColumns(month, seventyPlus);
+
+        Table counts = bush.xTabCounts("month", "seventyPlus" );
+        for (Row row : counts) {
+            assertEquals(
+                    counts.numberColumn("total").get(row.getRowNumber()),
+                    row.getInt("true") + row.getInt("false"),
+                    0.01);
+        }
+        assertTrue(counts.numberColumn("[labels]").isMissing(counts.rowCount() -1 ));
     }
 
     @Test
