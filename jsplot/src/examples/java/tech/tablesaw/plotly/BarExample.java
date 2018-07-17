@@ -14,9 +14,9 @@
 
 package tech.tablesaw.plotly;
 
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.plotly.components.Figure;
-import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.api.BarPlot;
 import tech.tablesaw.plotly.traces.BarTrace;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
@@ -28,12 +28,13 @@ public class BarExample {
 
     public static void main(String[] args) throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        Table s = table.summarize("fatalities", sum).by("Scale");
+        NumberColumn logNInjuries = table.numberColumn("injuries").add(1).logN();
+        logNInjuries.setName("log injuries");
+        table.addColumns(logNInjuries);
 
-        BarTrace trace = BarTrace.builder(
-                s.categoricalColumn(0),
-                s.numberColumn(1)).build();
-        Layout layout = Layout.builder().title("Tornado Fatalities").build();
-        Plot.show(new Figure(layout, trace));
+        Table s = table.summarize("fatalities", "log injuries", sum).by("Scale");
+        System.out.println(s);
+
+        BarPlot.show(BarTrace.Orientation.HORIZONTAL,"Tornado Fatalities", s,"scale","Sum [Fatalities]", "Sum [log injuries]");
     }
 }

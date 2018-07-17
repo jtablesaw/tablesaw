@@ -109,6 +109,21 @@ public class BarTrace extends AbstractTrace {
             return this;
         }
 
+        public BarBuilder opacity(double opacity) {
+            super.opacity(opacity);
+            return this;
+        }
+
+        public BarBuilder name(String name) {
+            super.name(name);
+            return this;
+        }
+
+        public BarBuilder showLegend(boolean b) {
+            super.showLegend(b);
+            return this;
+        }
+
         @Override
         protected String getType() {
             return type;

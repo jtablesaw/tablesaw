@@ -12,8 +12,8 @@ import java.util.List;
 
 public class ScatterPlot {
 
-    private static int HEIGHT = 600;
-    private static int WIDTH = 800;
+    private static final int HEIGHT = 600;
+    private static final int WIDTH = 800;
 
     public static void show(String title, Table table, String xCol, String yCol, String groupCol) {
 
@@ -23,6 +23,7 @@ public class ScatterPlot {
                 .title(title)
                 .height(HEIGHT)
                 .width(WIDTH)
+                .showLegend(true)
                 .xAxis(Axis.builder()
                         .title(xCol)
                         .build())
@@ -31,12 +32,14 @@ public class ScatterPlot {
                         .build())
                 .build();
 
-        ScatterTrace[] traces  = new ScatterTrace[2];
+        ScatterTrace[] traces  = new ScatterTrace[tables.size()];
         for (int i = 0; i < tables.size(); i++) {
             List<Table> tableList = tables.asTableList();
             traces[i] = ScatterTrace.builder(
                     tableList.get(i).numberColumn(xCol),
                     tableList.get(i).numberColumn(yCol))
+                    .showLegend(true)
+                    .name(tableList.get(i).name())
                     .build();
         }
         Figure figure = new Figure(layout, traces);

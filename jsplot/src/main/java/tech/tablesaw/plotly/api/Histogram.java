@@ -8,8 +8,8 @@ import tech.tablesaw.plotly.traces.HistogramTrace;
 
 public class Histogram {
 
-    private static int HEIGHT = 600;
-    private static int WIDTH = 800;
+    private static final int HEIGHT = 600;
+    private static final int WIDTH = 800;
 
     public static void show(String title, double[] data) {
         Layout layout = Layout.builder()
@@ -18,8 +18,7 @@ public class Histogram {
                 .width(WIDTH)
                 .build();
 
-        HistogramTrace trace = HistogramTrace.builder(data)
-                .build();
+        HistogramTrace trace = HistogramTrace.builder(data).build();
 
         Plot.show(new Figure(layout, trace));
     }
@@ -31,8 +30,7 @@ public class Histogram {
                 .width(WIDTH)
                 .build();
 
-        HistogramTrace trace = HistogramTrace.builder(data)
-                .build();
+        HistogramTrace trace = HistogramTrace.builder(data).build();
 
         Plot.show(new Figure(layout, trace));
     }

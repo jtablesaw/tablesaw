@@ -33,7 +33,7 @@ public class HistogramTrace extends AbstractTrace {
         this.nBinsX = builder.nBinsX;
         this.nBinsY = builder.nBinsY;
         this.autoBinX = builder.autoBinX;
-        this.autoBinX = builder.autoBinY;
+        this.autoBinY = builder.autoBinY;
         this.opacity = builder.opacity;
     }
 
@@ -128,6 +128,16 @@ public class HistogramTrace extends AbstractTrace {
 
         public HistogramBuilder opacity(double opacity) {
             super.opacity(opacity);
+            return this;
+        }
+
+        public HistogramBuilder showLegend(boolean b) {
+            super.showLegend(b);
+            return this;
+        }
+
+        public HistogramBuilder name(String name) {
+            super.name(name);
             return this;
         }
 

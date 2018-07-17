@@ -35,6 +35,7 @@ public class HorizontalBarExample {
                 s.numberColumn(1))
                 .orientation(BarTrace.Orientation.HORIZONTAL)
                 .build();
+
         Layout layout = Layout.builder()
                 .title("Tornadoes by state")
                 .height(600)
