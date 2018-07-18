@@ -1,11 +1,15 @@
 package tech.tablesaw.conversion;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Preconditions;
 
+import smile.data.Attribute;
+import smile.data.AttributeDataset;
+import smile.data.NumericAttribute;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.Relation;
-
-import java.util.List;
 
 public class TableConverter {
 
@@ -89,4 +93,39 @@ public class TableConverter {
         }
         return allVals;
     }
+
+    public AttributeDataset smileDataset(String responseColName) {
+        return smileDataset(
+            table.column(responseColName),
+            table.columns().stream().filter(c -> !c.name().equals(responseColName)).collect(Collectors.toList()));
+    }  
+
+    public AttributeDataset smileDataset(int responseColIndex, int... variablesColIndices) {
+        return smileDataset(table.column(responseColIndex), table.columns(variablesColIndices));
+    }  
+
+    public AttributeDataset smileDataset(String responseColName, String... variablesColNames) {
+        return smileDataset(table.column(responseColName), table.columns(variablesColNames));
+    }
+
+    private AttributeDataset smileDataset(Column responseCol, List<Column> variableCols) {
+        AttributeDataset data = new AttributeDataset(table.name(),
+            variableCols.stream().map(c -> colToAttribute(c)).toArray(Attribute[]::new),
+            colToAttribute(responseCol));
+        for (int i = 0; i < responseCol.size(); i++) {
+            final int r = i;
+            double[] x = variableCols.stream().mapToDouble(c -> c.getDouble(r)).toArray();
+            data.add(x, responseCol.getDouble(r));
+        }
+        return data;
+    }
+
+    /**
+     * We convert all columns to NumericAttribute. Smile's AttributeDataset only stores data as double.
+     * While Smile defines NominalAttribute and DateAttribute they appear to be little used.
+     */
+    private Attribute colToAttribute(Column col) {
+        return new NumericAttribute(col.name());
+    }
+
 }
