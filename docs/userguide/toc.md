@@ -20,4 +20,8 @@ Tablesaw User Guide
 
 * [Plotting & Visualization](https://jtablesaw.github.io/tablesaw/userguide/jsplots)
 
+* Machine Learning
+
+  * [Linear Regression with Smile and Tablesaw: Moneyball Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball Linear regression)
+
   
