@@ -37,7 +37,7 @@ Teams that made the playoffs are shown as yellow points.  If you draw a vertic
 
 > **Aside: Visualization**
 >
-> The plots in this post were produced using Tablesaw's new plotting capabilities. We've created a wrapper for much of the amazing [Plot.ly](https://github.com/plotly) open-source JavaScript plotting library. The plots can be used interactively in an IDE or delivered from a server. This is an area of active development so support for advanced features will continue to be added.  
+> The plots in this post were produced using Tablesaw's new plotting capabilities. We've created a wrapper for much of the amazing [Plot.ly](https://github.com/plotly) open-source JavaScript plotting library. The plots can be used interactively in an IDE or delivered from a server. This is an area of active development. Support for advanced features continue to be added.  
 
 At this point we continue developing our model, but for those interested, this next section shows how to use cross-tabs to quantify how teams with 95+ wins have faired in getting to the playoffs. 
 
@@ -83,12 +83,16 @@ runDifference.setName("Run Difference");
 Now lets see if Run Difference is correlated with Wins. We use a scatter plot again:
 
 ```Java
-Scatter.show("Run Difference x Wins", moneyball, "Run Difference","W");
+ScatterPlot.show("Run Difference x Wins", moneyball, "Run Difference","W");
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/run diff vs wins.png)
 
-Our plot shows a strong linear relation between the two. Let's create our first predictive model using linear regression, with runDifference as the sole explanatory variable. Here we use Smile's OLS (Ordinary Least Squares) regression model.
+Our plot shows a strong linear relation between the two. 
+
+### Modeling with OLS (Ordinary Least Squares) Regression
+
+Let's create our first predictive model using linear regression, with runDifference as the sole explanatory variable. Here we use Smile's OLS (Ordinary Least Squares) regression model.
 
 ```Java
 OLS winsModel = train(wins, runDifference);
@@ -113,6 +117,8 @@ Multiple R-squared: 0.8808,    Adjusted R-squared: 0.8807
 F-statistic: 6650.9926 on 1 and 900 DF,  p-value: 0.000
 ```
 
+#### Interpreting the model
+
 If you're new to regression, here are some take-aways from the output:
 
 - The R-squared of .88 can be interpreted to mean that roughly 88% of the variance in Wins can be explained by the Run Difference variable. The rest is determined by some combination of other variables and pure chance.
@@ -129,6 +135,8 @@ Of course, this model is not simply descriptive. We can use it to make predict
   ```
 
 In this case, expectedWins is 95.2 when we outscore opponents by 135 runs.
+
+#### Modeling Runs Scored
 
 It's time to go deeper again and see how we can model Runs Scored and Runs Allowed. The approach the A's took was to model Runs Scored using team On-base percent (OBP) and team Slugging Average (SLG). In Tablesaw, we write:
 
@@ -159,7 +167,7 @@ Once again the first parameter takes a Tablesaw column containing the values we
 
 Again we have a model with excellent explanatory power with an R-squared of 92. Now we'll check the model visually to see if it violates any assumptions. Our residuals should be normally distributed. We can use a histogram to verify:
 
-```
+```java
 Histogram.show(runsScored2.residuals());
 ```
 
@@ -170,16 +178,21 @@ It looks great.  It's also important to plot the predicted (or "fitted") value
 Our Scatter class can create this plot directly from the model:
 
 ```java
-Scatter.showFittedVsResidual(runsScored2);
+double[] fitted = runsScored2.fitted();
+double[] resids = runsScored2.residuals();
+
+ScatterPlot.show("Runs Scored from OBP and SLG", "Fitted", fitted, "Residuals", resids);
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/runs scored model.png)
 
 Again, the plot looks good.
 
-Lets review.  We've created a model of baseball that predicts entry into the playoffs based on batting stats, with the influence of the variables as:
+Let's review.  We've created a model of baseball that predicts entry into the playoffs based on batting stats, with the influence of the variables as:
 
 SLG &amp; OBP -&gt; Runs Scored -&gt; Run Difference -&gt; Regular Season Wins
+
+#### Modeling Runs Allowed
 
 Of course, we haven't modeled the Runs Allowed side of Run Difference. We could use pitching and field stats to do this, but the A's cleverly used the same two variables (SLG and OBP), but now looked at how their opponent's performed against the A's. We could do the same as these data are encoded in the dataset as OOBP and OSLG.
 
@@ -193,8 +206,8 @@ Residuals:
 Coefficients:
             Estimate        Std. Error        t value        Pr(>|t|)
 Intercept  -837.3779           60.2554       -13.8971          0.0000 ***
-Var 1	   2913.5995          291.9710         9.9791          0.0000 ***
-Var 2	   1514.2860          175.4281         8.6319          0.0000 ***
+OOBP	   2913.5995          291.9710         9.9791          0.0000 ***
+OSLG	   1514.2860          175.4281         8.6319          0.0000 ***
 ---------------------------------------------------------------------
 Significance codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -203,7 +216,7 @@ Multiple R-squared: 0.9073,    Adjusted R-squared: 0.9052
 F-statistic: 425.8225 on 2 and 87 DF,  p-value: 1.162e-45
 ```
 
-This model also looks good, but you'd want to look at the plots again, and do other checking as well. Checking the predictive variables for colinearity is always good. 
+This model also looks good, but you'd want to look at the plots again, and do other checking as well. Checking the predictive variables for collinearity is always good. 
 
 Finally, we can tie this all together and see how well wins is predicted when we consider both offensive and defensive stats. 
 
@@ -215,14 +228,33 @@ OLS winsFinal = train(moneyball2.nCol("W"),
                 moneyball2.nCol("SLG"));
 ```
 
-The output isn't shown, but we get an R squared of .89. Again this is quite good. The A's in 2001
+The output isn't shown, but we get an R squared of .89. Again this is quite good. 
 
-0.345  |  0.308  |  0.439  |   0.38
+### The A's in 2001
 
-winsFinal.predict()
+For fun, I decided to see what the model predicts for the 2001 A's. First, I got the independent variables for the A's in that year. 
+
+```java
+Table AsIn2001 = moneyball.select("year", "OOBP", "OBP", "OSLG", "SLG")
+        .where(moneyball.stringColumn("team").equalsIgnoreCase("OAK")
+                .and(moneyball.numberColumn("year").isEqualTo(2001)));
+                
+>                    baseball.csv                   
+  Year   |  OOBP   |   OBP   |  OSLG  |   SLG   |
+-------------------------------------------------
+ 2001.0  |  0.308  |  0.345  |  0.38  |  0.439  |
+```
+Now we get the prediction:
+
+```java
+double[][] values = new double [][] {{0.308, 0.345, .38, 0.439}};
+double[] value = winsFinal.predict(values);
+```
+
+The model predicted that the 2001 A's would win 102 games given their slugging and On-Base stats. They won 103. 
 
 ## Recap
 
 We used regression to build predictive models, and visualizations to check our assumptions and validate our models.
 
-The next step would involve predicting how the current team will perform using historical data, and considering the available talent to see who can bring up the team's average OBP or SLG numbers, or reduce the opponent values of the same stats. They can create scenarios where they consider various trades and expected salary costs. Taking it to that level requires individual player stats that aren't in our dataset, so we'll leave it here, but I hope this post has shown how Tablesaw and Smile makes regression analysis in Java easy and practical.
+The next step would involve predicting how the current team will perform using historical data, and find available talent who could increase the team's average OBP or SLG numbers, or reduce the opponent values of the same stats. Taking it to that level requires individual player stats that aren't in our dataset, so we'll leave it here, but I hope this post has shown how Tablesaw and Smile work together to make regression analysis in Java easy and practical.
