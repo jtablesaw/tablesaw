@@ -1,6 +1,6 @@
 # Moneyball: Linear regression
 
-Linear regression analysis has been called the "Hello World" of machine learning, because it's widely used and easy to understand. It's also very powerful. We'll walk through the modeling process here using Smile and Tablesaw. [Smile](https://github.com/haifengl/smile) is a fantastic machine learning library in Java and [Tablesaw](https://github.com/jtablesaw/tablesaw/) is data manipulation library like pandas. 
+Linear regression analysis has been called the "Hello World" of machine learning, because it's widely used and easy to understand. It's also very powerful. We'll walk through the modeling process here using Smile and Tablesaw. [Smile](https://github.com/haifengl/smile) is a fantastic Java machine learning library  and [Tablesaw](https://github.com/jtablesaw/tablesaw/) is data wrangling library like pandas. 
 
 One of the best known applications of regression comes from the book <a href="https://www.amazon.com/dp/B000RH0C8G/ref=dp-kindle-redirect?_encoding=UTF8&amp;btkr=1">Moneyball</a>, which describes the innovative use of data science at the Oakland A's baseball team. My analysis is based on a lecture given in the EdX course: <a href="https://www.edx.org/course/analytics-edge-mitx-15-071x-2">MITx: 15.071x The Analytics Edge</a>.  If you're new to data analytics, I would *strongly* recommend this course.
 
@@ -74,8 +74,10 @@ Unfortunately, you can't directly control the number of games you win. We need t
 To check this assumption we compute Run Difference as Runs Scored - Runs Allowed:
 
 ```java
-IntColumn runDifference = 
-    moneyball.numberColumn("RS").subtract(moneyball.numberColumn("RA"));
+NumberColumn RS = moneyball.numberColumn("RS");
+NumberColumn RA = moneyball.numberColumn("RA");
+
+NumberColumn runDifference = RS.subtract(RA);
 moneyball.addColumn(runDifference);
 runDifference.setName("Run Difference");
 ```
@@ -95,7 +97,7 @@ Our plot shows a strong linear relation between the two.
 Let's create our first predictive model using linear regression, with runDifference as the sole explanatory variable. Here we use Smile's OLS (Ordinary Least Squares) regression model.
 
 ```Java
-OLS winsModel = train(wins, runDifference);
+OLS winsModel = new OLS(new TableConverter(wins, runDifference);
 ```
 
 If we print our "winsModel", it produces the output below:
@@ -106,9 +108,9 @@ Residuals:
 	  -14.2662	   -2.6511	    0.1282	    2.9365	   11.6570
 
 Coefficients:
-            Estimate        Std. Error        t value        Pr(>|t|)
-Intercept    80.8814            0.1312       616.6747          0.0000 ***
-Var 1	      0.1058            0.0013        81.5536          0.0000 ***
+            		Estimate        Std. Error        t value        Pr(>|t|)
+Intercept    		80.8814            0.1312       616.6747          0.0000 ***
+Run Difference	     0.1058            0.0013        81.5536          0.0000 ***
 ---------------------------------------------------------------------
 Significance codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -125,24 +127,23 @@ If you're new to regression, here are some take-aways from the output:
 - The estimate for the Intercept is the average wins independent of Run Difference. In baseball, we have a 162 game season so we expect this value to be about 81, as it is.
 - The estimate for the RD variable of .1, suggests that an increase of 10 in Run Difference, should produce about 1 additional win over the course of the season.
 
-Of course, this model is not simply descriptive. We can use it to make predictions. In the code below, we predict how many games we will win if we score 135 more runs than our opponents.  To do this, we pass an array of doubles, one for each explanatory variable in our model, to the predict() method. In this case, there's just one variable - run difference.
+Of course, this model is not simply descriptive. We can use it to make predictions. In the code below, we predict how many games we will win if we score 135 more runs than our opponents.  To do this, we pass an array of doubles, one for each explanatory variable in our model, to the predict() method. In this case, there's just one variable: run difference.
 
 - ```Java
-  double[] runDifference = new double[1];
-  runDifference[0] = 135;
+  double[] runDifference = {135};
   double expectedWins = winsModel.predict(runDifference);
-  > Predicted wins when Run Difference is 135: 95.159733753496
+  > 95.159733753496
   ```
 
-In this case, expectedWins is 95.2 when we outscore opponents by 135 runs.
+We'd expect 95 wins when we outscore opponents by 135 runs.
 
 #### Modeling Runs Scored
 
 It's time to go deeper again and see how we can model Runs Scored and Runs Allowed. The approach the A's took was to model Runs Scored using team On-base percent (OBP) and team Slugging Average (SLG). In Tablesaw, we write:
 
 ```java
-OLS runsScored2 = 
-    train(moneyball.nCol("RS"), moneyball.nCol("OBP"), moneyball.nCol("SLG"));
+OLS runsScored = 
+    new OLS(new TableConverter(moneyball).smileDataset("RS", "OBP", "SLG"));
 ```
 
 
@@ -197,7 +198,10 @@ SLG &amp; OBP -&gt; Runs Scored -&gt; Run Difference -&gt; Regular Season Wins
 Of course, we haven't modeled the Runs Allowed side of Run Difference. We could use pitching and field stats to do this, but the A's cleverly used the same two variables (SLG and OBP), but now looked at how their opponent's performed against the A's. We could do the same as these data are encoded in the dataset as OOBP and OSLG.
 
 ```java
-Linear Model:
+OLS runsAllowed = 
+    new OLS(new TableConverter(moneyball).smileDataset("RA", "OOBP", "OSLG"));
+
+> Linear Model:
 
 Residuals:
 	       Min	        1Q	    Median	        3Q	       Max
@@ -221,11 +225,9 @@ This model also looks good, but you'd want to look at the plots again, and do ot
 Finally, we can tie this all together and see how well wins is predicted when we consider both offensive and defensive stats. 
 
 ```java
-OLS winsFinal = train(moneyball2.nCol("W"),
-                moneyball2.nCol("OOBP"),
-                moneyball2.nCol("OBP"),
-                moneyball2.nCol("OSLG"),
-                moneyball2.nCol("SLG"));
+OLS winsFinal = 
+    new OLS(new TableConverter(moneyball)
+            .smileDataset("W", "OOBP", "OBP", "OSLG", "SLG"));
 ```
 
 The output isn't shown, but we get an R squared of .89. Again this is quite good. 
@@ -235,9 +237,12 @@ The output isn't shown, but we get an R squared of .89. Again this is quite good
 For fun, I decided to see what the model predicts for the 2001 A's. First, I got the independent variables for the A's in that year. 
 
 ```java
+StringColumn team = moneyball.stringColumn("team");
+NumberColumn year = moneyball.numberColumn("year");
+
 Table AsIn2001 = moneyball.select("year", "OOBP", "OBP", "OSLG", "SLG")
-        .where(moneyball.stringColumn("team").equalsIgnoreCase("OAK")
-                .and(moneyball.numberColumn("year").isEqualTo(2001)));
+                .where(team.isEqualTo("OAK")
+                        .and(year.isEqualTo(2001)));
                 
 >                    baseball.csv                   
   Year   |  OOBP   |   OBP   |  OSLG  |   SLG   |
