@@ -14,10 +14,10 @@ import tech.tablesaw.selection.Selection;
  */
 public class RollingColumn {
 
-    private final Column column;
+    private final Column<?> column;
     private final int window;
 
-    public RollingColumn(Column column, int window) {
+    public RollingColumn(Column<?> column, int window) {
         this.column = column;
         this.window = window;
     }
@@ -48,7 +48,7 @@ public class RollingColumn {
         for (int origColIndex = 0; origColIndex < column.size() - window + 1; origColIndex++) {
             Selection selection = new BitmapBackedSelection();
             selection.addRange(origColIndex, origColIndex + window);
-            Column windowedColumn = column.subset(selection);
+            Column<?> windowedColumn = column.subset(selection);
             double calc;
             if (windowedColumn instanceof DoubleColumn) {
                 calc = function.summarize((NumberColumn) windowedColumn);

@@ -47,14 +47,14 @@ public class TableSlice extends Relation implements IntIterable {
     }
 
     @Override
-    public Column column(int columnIndex) {
+    public Column<?> column(int columnIndex) {
         return table.column(columnIndex).subset(selection);
     }
 
     /**
      * Returns the entire column of the source table, unfiltered
      */
-    private Column entireColumn(int columnIndex) {
+    private Column<?> entireColumn(int columnIndex) {
         return table.column(columnIndex);
     }
 
@@ -69,8 +69,8 @@ public class TableSlice extends Relation implements IntIterable {
     }
 
     @Override
-    public List<Column> columns() {
-        List<Column> columns = new ArrayList<>();
+    public List<Column<?>> columns() {
+        List<Column<?>> columns = new ArrayList<>();
         for (int i = 0; i < columnCount(); i++) {
             columns.add(entireColumn(i));
         }
@@ -78,7 +78,7 @@ public class TableSlice extends Relation implements IntIterable {
     }
 
     @Override
-    public int columnIndex(Column column) {
+    public int columnIndex(Column<?> column) {
         return table.columnIndex(column);
     }
 
@@ -106,12 +106,12 @@ public class TableSlice extends Relation implements IntIterable {
     }
 
     @Override
-    public TableSlice addColumn(Column... column) {
+    public TableSlice addColumn(Column<?>... column) {
         throw new UnsupportedOperationException("Class TableSlice does not support the addColumn operation");
     }
 
     @Override
-    public TableSlice removeColumns(Column... columns) {
+    public TableSlice removeColumns(Column<?>... columns) {
         throw new UnsupportedOperationException("Class TableSlice does not support the removeColumns operation");
     }
 
@@ -136,7 +136,7 @@ public class TableSlice extends Relation implements IntIterable {
 
     public Table asTable() {
         Table table = Table.create(this.name());
-        for (Column column : columns()) {
+        for (Column<?> column : columns()) {
             table.addColumn(column.subset(selection));
         }
         return table;
@@ -155,7 +155,7 @@ public class TableSlice extends Relation implements IntIterable {
      * @throws IllegalArgumentException if numberColumnName doesn't name a numeric column in this table
      */
     public double reduce(String numberColumnName, AggregateFunction function) {
-        Column column = column(numberColumnName);
+        Column<?> column = column(numberColumnName);
         return function.summarize(column.where(selection));
     }
 

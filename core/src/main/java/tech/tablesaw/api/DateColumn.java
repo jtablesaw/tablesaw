@@ -56,8 +56,8 @@ import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 /**
  * A column in a base table that contains float values
  */
-public class DateColumn extends AbstractColumn implements DateFilters, DateFillers<DateColumn>,
-DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
+public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters, DateFillers<DateColumn>,
+DateMapFunctions, CategoricalColumn<LocalDate> {
 
     public static final int MISSING_VALUE = (Integer) ColumnType.LOCAL_DATE.getMissingValue();
 
@@ -71,8 +71,8 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     private IntArrayList data;
 
     private final IntComparator comparator = (r1, r2) -> {
-        int f1 = getIntInternal(r1);
-        int f2 = getIntInternal(r2);
+        final int f1 = getIntInternal(r1);
+        final int f2 = getIntInternal(r2);
         return Integer.compare(f1, f2);
     };
 
@@ -83,39 +83,39 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
      */
     private DateTimeFormatter selectedFormatter;
 
-    public static DateColumn create(String name) {
+    public static DateColumn create(final String name) {
         return create(name, DEFAULT_ARRAY_SIZE, Locale.getDefault());
     }
 
-    public static DateColumn create(String name, Locale locale) {
+    public static DateColumn create(final String name, final Locale locale) {
         return create(name, DEFAULT_ARRAY_SIZE, locale);
     }
 
-    public static DateColumn create(String name, int initialSize, Locale locale) {
+    public static DateColumn create(final String name, final int initialSize, final Locale locale) {
         return new DateColumn(name, new IntArrayList(initialSize), locale);
     }
 
-    public static DateColumn create(String name, int initialSize) {
+    public static DateColumn create(final String name, final int initialSize) {
         return create(name, initialSize, Locale.getDefault());
     }
 
-    public static DateColumn create(String name, List<LocalDate> data) {
-        DateColumn column = new DateColumn(name, new IntArrayList(data.size()), Locale.getDefault());
-        for (LocalDate date : data) {
+    public static DateColumn create(final String name, final List<LocalDate> data) {
+        final DateColumn column = new DateColumn(name, new IntArrayList(data.size()), Locale.getDefault());
+        for (final LocalDate date : data) {
             column.append(date);
         }
         return column;
     }
 
-    public static DateColumn create(String name, LocalDate[] data) {
-        DateColumn column = new DateColumn(name, new IntArrayList(data.length), Locale.getDefault());
-        for (LocalDate date : data) {
+    public static DateColumn create(final String name, final LocalDate[] data) {
+        final DateColumn column = new DateColumn(name, new IntArrayList(data.length), Locale.getDefault());
+        for (final LocalDate date : data) {
             column.append(date);
         }
         return column;
     }
 
-    private DateColumn(String name, IntArrayList data, Locale locale) {
+    private DateColumn(final String name, final IntArrayList data, final Locale locale) {
         super(ColumnType.LOCAL_DATE, name);
         this.data = data;
         this.locale = locale;
@@ -131,7 +131,7 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return ColumnType.LOCAL_DATE;
     }
 
-    public void appendInternal(int f) {
+    public void appendInternal(final int f) {
         data.add(f);
     }
 
@@ -140,36 +140,36 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return data;
     }
 
-    public void set(int index, int value) {
+    public void set(final int index, final int value) {
         data.set(index, value);
     }
 
-    public void set(int index, LocalDate value) {
+    public void set(final int index, final LocalDate value) {
         data.set(index, PackedLocalDate.pack(value));
     }
 
-    public void append(LocalDate f) {
+    public void append(final LocalDate f) {
         appendInternal(PackedLocalDate.pack(f));
     }
 
-    public void setPrintFormatter(DateTimeFormatter dateTimeFormatter, String missingValueString) {
+    public void setPrintFormatter(final DateTimeFormatter dateTimeFormatter, final String missingValueString) {
         Preconditions.checkNotNull(dateTimeFormatter);
         Preconditions.checkNotNull(missingValueString);
         this.printFormatter = new DateColumnFormatter(dateTimeFormatter, missingValueString);
     }
 
-    public void setPrintFormatter(DateTimeFormatter dateTimeFormatter) {
+    public void setPrintFormatter(final DateTimeFormatter dateTimeFormatter) {
         Preconditions.checkNotNull(dateTimeFormatter);
         this.printFormatter = new DateColumnFormatter(dateTimeFormatter);
     }
 
     @Override
-    public String getString(int row) {
+    public String getString(final int row) {
         return printFormatter.format(getPackedDate(row));
     }
 
     @Override
-    public String getUnformattedString(int row) {
+    public String getUnformattedString(final int row) {
         return PackedLocalDate.toDateString(getPackedDate(row));
     }
 
@@ -179,8 +179,8 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     @Override
-    public DateColumn emptyCopy(int rowSize) {
-        DateColumn copy = create(name(), rowSize, locale);
+    public DateColumn emptyCopy(final int rowSize) {
+        final DateColumn copy = create(name(), rowSize, locale);
         copy.printFormatter = printFormatter;
         copy.selectedFormatter = selectedFormatter;
         return copy;
@@ -188,7 +188,7 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     @Override
     public DateColumn copy() {
-        DateColumn copy = emptyCopy(data.size());
+        final DateColumn copy = emptyCopy(data.size());
         copy.data = data.clone();
         return copy;
     }
@@ -198,17 +198,17 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         data.clear();
     }
 
-    public DateColumn lead(int n) {
-        DateColumn column = lag(-n);
+    public DateColumn lead(final int n) {
+        final DateColumn column = lag(-n);
         column.setName(name() + " lead(" + n + ")");
         return column;
     }
 
-    public DateColumn lag(int n) {
-        int srcPos = n >= 0 ? 0 : 0 - n;
-        int[] dest = new int[size()];
-        int destPos = n <= 0 ? 0 : n;
-        int length = n >= 0 ? size() - n : size() + n;
+    public DateColumn lag(final int n) {
+        final int srcPos = n >= 0 ? 0 : 0 - n;
+        final int[] dest = new int[size()];
+        final int destPos = n <= 0 ? 0 : n;
+        final int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
             dest[i] = MISSING_VALUE;
@@ -216,7 +216,7 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
         System.arraycopy(data.toIntArray(), srcPos, dest, destPos, length);
 
-        DateColumn copy = emptyCopy(size());
+        final DateColumn copy = emptyCopy(size());
         copy.data = new IntArrayList(dest);
         copy.setName(name() + " lag(" + n + ")");
         return copy;
@@ -234,7 +234,7 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     @Override
     public int countUnique() {
-        IntSet ints = new IntOpenHashSet(size());
+        final IntSet ints = new IntOpenHashSet(size());
         for (int i = 0; i < size(); i++) {
             ints.add(data.getInt(i));
         }
@@ -243,11 +243,11 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     @Override
     public DateColumn unique() {
-        IntSet ints = new IntOpenHashSet(data.size());
+        final IntSet ints = new IntOpenHashSet(data.size());
         for (int i = 0; i < size(); i++) {
             ints.add(data.getInt(i));
         }
-        DateColumn copy = emptyCopy(ints.size());
+        final DateColumn copy = emptyCopy(ints.size());
         copy.setName(name() + " Unique values");
         copy.data = IntArrayList.wrap(ints.toIntArray());
         return copy;
@@ -260,13 +260,14 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return PackedLocalDate.asLocalDate(getPackedDate(0));
     }
 
+    @Override
     public LocalDate max() {
         if (isEmpty()) {
             return null;
         }
 
         Integer max = null;
-        for (int aData : data) {
+        for (final int aData : data) {
             if (DateColumn.MISSING_VALUE != aData) {
                 if (max == null) {
                     max = aData;
@@ -282,13 +283,14 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return PackedLocalDate.asLocalDate(max);
     }
 
+    @Override
     public LocalDate min() {
         if (isEmpty()) {
             return null;
         }
 
         Integer min = null;
-        for (int aData : data) {
+        for (final int aData : data) {
             if (DateColumn.MISSING_VALUE != aData) {
                 if (min == null) {
                     min = aData;
@@ -310,9 +312,9 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
      * Example:
      * myColumn.set(LocalDate.now(), myColumn.valueIsMissing()); // no more missing values
      */
-    public void set(LocalDate newValue, Selection rowSelection) {
-        int packed = PackedLocalDate.pack(newValue);
-        for (int row : rowSelection) {
+    public void set(final LocalDate newValue, final Selection rowSelection) {
+        final int packed = PackedLocalDate.pack(newValue);
+        for (final int row : rowSelection) {
             set(row, packed);
         }
     }
@@ -322,7 +324,8 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         appendInternal(MISSING_VALUE);
     }
 
-    public LocalDate get(int index) {
+    @Override
+    public LocalDate get(final int index) {
         return PackedLocalDate.asLocalDate(getPackedDate(index));
     }
 
@@ -342,11 +345,11 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
      * @param value A string representation of a date
      * @throws DateTimeParseException if no parser can be found for the date format
      */
-    public int convert(String value) {
+    public int convert(final String value) {
         if (Strings.isNullOrEmpty(value) || TypeUtils.MISSING_INDICATORS.contains(value) || value.equals("-1")) {
             return (Integer) ColumnType.LOCAL_DATE.getMissingValue();
         }
-        String paddedValue = Strings.padStart(value, 4, '0');
+        final String paddedValue = Strings.padStart(value, 4, '0');
 
         if (selectedFormatter == null) {
             selectedFormatter = TypeUtils.getDateFormatter(paddedValue).withLocale(locale);
@@ -354,7 +357,7 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         LocalDate date;
         try {
             date = LocalDate.parse(paddedValue, selectedFormatter);
-        } catch (DateTimeParseException e) {
+        } catch (final DateTimeParseException e) {
             selectedFormatter = TypeUtils.DATE_FORMATTER.withLocale(locale);
             date = LocalDate.parse(paddedValue, selectedFormatter);
         }
@@ -362,16 +365,16 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     @Override
-    public void appendCell(String string) {
+    public void appendCell(final String string) {
         appendInternal(convert(string));
     }
 
     @Override
-    public int getIntInternal(int index) {
+    public int getIntInternal(final int index) {
         return data.getInt(index);
     }
 
-    int getPackedDate(int index) {
+    int getPackedDate(final int index) {
         return getIntInternal(index);
     }
 
@@ -383,9 +386,9 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     @Override
     public Table summary() {
 
-        Table table = Table.create("Column: " + name());
-        StringColumn measure = StringColumn.create("Measure");
-        StringColumn value = StringColumn.create("Value");
+        final Table table = Table.create("Column: " + name());
+        final StringColumn measure = StringColumn.create("Measure");
+        final StringColumn value = StringColumn.create("Value");
         table.addColumn(measure);
         table.addColumn(value);
 
@@ -404,7 +407,7 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return table;
     }
 
-    public static boolean valueIsMissing(int i) {
+    public static boolean valueIsMissing(final int i) {
         return i == MISSING_VALUE;
     }
 
@@ -423,11 +426,11 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     @Override
-    public void append(Column column) {
+    public void append(final Column<LocalDate> column) {
         Preconditions.checkArgument(column.type() == this.type());
-        DateColumn doubleColumn = (DateColumn) column;
-        for (int i = 0; i < doubleColumn.size(); i++) {
-            appendInternal(doubleColumn.getPackedDate(i));
+        final DateColumn dateColumn = (DateColumn) column;
+        for (int i = 0; i < column.size(); i++) {
+            appendInternal(dateColumn.getPackedDate(i));
         }
     }
 
@@ -438,9 +441,9 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
      *          number of observations in the column
      * @return A list, possibly empty, of the largest observations
      */
-    public List<LocalDate> top(int n) {
-        List<LocalDate> top = new ArrayList<>();
-        int[] values = data.toIntArray();
+    public List<LocalDate> top(final int n) {
+        final List<LocalDate> top = new ArrayList<>();
+        final int[] values = data.toIntArray();
         IntArrays.parallelQuickSort(values, DescendingIntComparator.instance());
         for (int i = 0; i < n && i < values.length; i++) {
             top.add(PackedLocalDate.asLocalDate(values[i]));
@@ -455,9 +458,9 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
      *          number of observations in the column
      * @return A list, possibly empty, of the smallest n observations
      */
-    public List<LocalDate> bottom(int n) {
-        List<LocalDate> bottom = new ArrayList<>();
-        int[] values = data.toIntArray();
+    public List<LocalDate> bottom(final int n) {
+        final List<LocalDate> bottom = new ArrayList<>();
+        final int[] values = data.toIntArray();
         IntArrays.parallelQuickSort(values);
         for (int i = 0; i < n && i < values.length; i++) {
             bottom.add(PackedLocalDate.asLocalDate(values[i]));
@@ -471,10 +474,10 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     @Override
     public DateColumn removeMissing() {
-        DateColumn noMissing = emptyCopy();
-        IntIterator iterator = intIterator();
+        final DateColumn noMissing = emptyCopy();
+        final IntIterator iterator = intIterator();
         while(iterator.hasNext()) {
-            int i = iterator.nextInt();
+            final int i = iterator.nextInt();
             if (!valueIsMissing(i)) {
                 noMissing.appendInternal(i);
             }
@@ -483,15 +486,15 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     public List<LocalDate> asList() {
-        List<LocalDate> dates = new ArrayList<>(size());
-        for (LocalDate localDate : this) {
+        final List<LocalDate> dates = new ArrayList<>(size());
+        for (final LocalDate localDate : this) {
             dates.add(localDate);
         }
         return dates;
     }
 
     @Override
-    public DateColumn where(Selection selection) {
+    public DateColumn where(final Selection selection) {
         return (DateColumn) subset(selection);
     }
 
@@ -500,10 +503,11 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
      * This is much more efficient that using a LocalTimePredicate, but requires that the developer understand the
      * semantics of packedLocalTimes
      */
-    public Selection eval(IntPredicate predicate) {
-        Selection selection = new BitmapBackedSelection();
+    @Override
+    public Selection eval(final IntPredicate predicate) {
+        final Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
-            int next = data.getInt(idx);
+            final int next = data.getInt(idx);
             if (predicate.test(next)) {
                 selection.add(idx);
             }
@@ -511,10 +515,11 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return selection;
     }
 
-    public Selection eval(IntBiPredicate predicate, int value) {
-        Selection selection = new BitmapBackedSelection();
+    @Override
+    public Selection eval(final IntBiPredicate predicate, final int value) {
+        final Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
-            int next = data.getInt(idx);
+            final int next = data.getInt(idx);
             if (predicate.test(next, value)) {
                 selection.add(idx);
             }
@@ -522,8 +527,8 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return selection;
     }
 
-    public Selection eval(IntBiPredicate predicate, DateColumn otherColumn) {
-        Selection selection = new BitmapBackedSelection();
+    public Selection eval(final IntBiPredicate predicate, final DateColumn otherColumn) {
+        final Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
             if (predicate.test(getPackedDate(idx), otherColumn.getPackedDate(idx))) {
                 selection.add(idx);
@@ -532,8 +537,9 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return selection;
     }
 
-    public Selection eval(BiPredicate<LocalDate, LocalDate> predicate, LocalDate valueToCompare) {
-        Selection selection = new BitmapBackedSelection();
+    @Override
+    public Selection eval(final BiPredicate<LocalDate, LocalDate> predicate, final LocalDate valueToCompare) {
+        final Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
             if (predicate.test(get(idx), valueToCompare)) {
                 selection.add(idx);
@@ -542,8 +548,9 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return selection;
     }
 
-    public Selection eval(Predicate<LocalDate> predicate) {
-        Selection selection = new BitmapBackedSelection();
+    @Override
+    public Selection eval(final Predicate<LocalDate> predicate) {
+        final Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
             if (predicate.test(get(idx))) {
                 selection.add(idx);
@@ -553,23 +560,23 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     public Set<LocalDate> asSet() {
-        Set<LocalDate> dates = new HashSet<>();
-        DateColumn unique = unique();
-        for (LocalDate d : unique) {
+        final Set<LocalDate> dates = new HashSet<>();
+        final DateColumn unique = unique();
+        for (final LocalDate d : unique) {
             dates.add(d);
         }
         return dates;
     }
 
-    public boolean contains(LocalDate localDate) {
-        int date = PackedLocalDate.pack(localDate);
+    public boolean contains(final LocalDate localDate) {
+        final int date = PackedLocalDate.pack(localDate);
         return data().contains(date);
     }
 
 
     @Override
     public double[] asDoubleArray() {
-        double[] doubles = new double[size()];
+        final double[] doubles = new double[size()];
         for (int i = 0; i < size(); i++) {
             doubles[i] = data.getInt(i);
         }
@@ -577,12 +584,12 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     @Override
-    public boolean isMissing(int rowNumber) {
+    public boolean isMissing(final int rowNumber) {
         return valueIsMissing(getIntInternal(rowNumber));
     }
 
     @Override
-    public double getDouble(int i) {
+    public double getDouble(final int i) {
         return getIntInternal(i);
     }
 
@@ -597,7 +604,7 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
      * @param rowNumber the number of the row as int
      */
     @Override
-    public byte[] asBytes(int rowNumber) {
+    public byte[] asBytes(final int rowNumber) {
         return ByteBuffer.allocate(byteSize()).putInt(getPackedDate(rowNumber)).array();
     }
 
@@ -627,7 +634,7 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     // fillWith methods
 
-    private DateColumn fillWith(int count, Iterator<LocalDate> iterator, Consumer<LocalDate> acceptor) {
+    private DateColumn fillWith(final int count, final Iterator<LocalDate> iterator, final Consumer<LocalDate> acceptor) {
         for (int r = 0; r < count; r++) {
             if (!iterator.hasNext()) {
                 break;
@@ -638,19 +645,19 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     @Override
-    public DateColumn fillWith(Iterator<LocalDate> iterator) {
-        int[] r = new int[1];
+    public DateColumn fillWith(final Iterator<LocalDate> iterator) {
+        final int[] r = new int[1];
         fillWith(size(), iterator, date -> set(r[0]++, date));
         return this;
     }
 
-    public static DateColumn createWith(String name, int size, Iterator<LocalDate> iterator) {
-        DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
+    public static DateColumn createWith(final String name, final int size, final Iterator<LocalDate> iterator) {
+        final DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
         column.fillWith(size, iterator, column::append);
         return column;
     }
 
-    private DateColumn fillWith(int count, Iterable<LocalDate> iterable, Consumer<LocalDate> acceptor) {
+    private DateColumn fillWith(final int count, final Iterable<LocalDate> iterable, final Consumer<LocalDate> acceptor) {
         Iterator<LocalDate> iterator = null;
         for (int r = 0; r < count; r++) {
             if (iterator == null || (!iterator.hasNext())) {
@@ -665,23 +672,23 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     @Override
-    public DateColumn fillWith(Iterable<LocalDate> iterable) {
-        int[] r = new int[1];
+    public DateColumn fillWith(final Iterable<LocalDate> iterable) {
+        final int[] r = new int[1];
         fillWith(size(), iterable, date -> set(r[0]++, date));
         return this;
     }
 
-    public static DateColumn createWith(String name, int size, Iterable<LocalDate> iterable) {
-        DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
+    public static DateColumn createWith(final String name, final int size, final Iterable<LocalDate> iterable) {
+        final DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
         column.fillWith(size, iterable, column::append);
         return column;
     }
 
-    private DateColumn fillWith(int count, Supplier<LocalDate> supplier, Consumer<LocalDate> acceptor) {
+    private DateColumn fillWith(final int count, final Supplier<LocalDate> supplier, final Consumer<LocalDate> acceptor) {
         for (int r = 0; r < count; r++) {
             try {
                 acceptor.accept(supplier.get());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 break;
             }
         }
@@ -689,14 +696,14 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     @Override
-    public DateColumn fillWith(Supplier<LocalDate> supplier) {
-        int[] r = new int[1];
+    public DateColumn fillWith(final Supplier<LocalDate> supplier) {
+        final int[] r = new int[1];
         fillWith(size(), supplier, date -> set(r[0]++, date));
         return this;
     }
 
-    public static DateColumn createWith(String name, int size, Supplier<LocalDate> supplier) {
-        DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
+    public static DateColumn createWith(final String name, final int size, final Supplier<LocalDate> supplier) {
+        final DateColumn column = new DateColumn(name, new IntArrayList(size), Locale.getDefault());
         column.fillWith(size, supplier, column::append);
         return column;
     }

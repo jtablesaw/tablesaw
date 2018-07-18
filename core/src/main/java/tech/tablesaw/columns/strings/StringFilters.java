@@ -42,7 +42,7 @@ import java.util.function.Predicate;
 
 import static tech.tablesaw.columns.strings.StringPredicates.*;
 
-public interface StringFilters extends Column {
+public interface StringFilters extends Column<String> {
 
     StringColumn where(Filter filter);
 

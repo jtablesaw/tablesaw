@@ -15,12 +15,13 @@
 package tech.tablesaw.columns;
 
 import org.apache.commons.lang3.StringUtils;
+
 import tech.tablesaw.api.ColumnType;
 
 /**
  * Partial implementation of the {@link Column} interface
  */
-public abstract class AbstractColumn implements Column {
+public abstract class AbstractColumn<T> implements Column<T> {
 
     public static final int DEFAULT_ARRAY_SIZE = 128;
 
@@ -28,21 +29,23 @@ public abstract class AbstractColumn implements Column {
 
     private final ColumnType type;
 
-    public AbstractColumn(ColumnType type, String name) {
+    public AbstractColumn(final ColumnType type, final String name) {
         this.type = type;
         setName(name);
     }
 
+    @Override
     public String name() {
         return name;
     }
 
     @Override
-    public Column setName(String name) {
+    public Column<T> setName(final String name) {
         this.name = name.trim();
         return this;
     }
 
+    @Override
     public abstract void appendCell(String stringvalue);
 
     /**
@@ -70,7 +73,7 @@ public abstract class AbstractColumn implements Column {
 
     @Override
     public String print() {
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         builder.append(title());
         for (int i = 0; i < size(); i++) {
             builder.append(getString(i));

@@ -55,8 +55,8 @@ import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
-public class DateTimeColumn extends AbstractColumn
-implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn>, Iterable<LocalDateTime> {
+public class DateTimeColumn extends AbstractColumn<LocalDateTime>
+implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn> {
 
     public static final long MISSING_VALUE = (Long) ColumnType.LOCAL_DATE_TIME.getMissingValue();
 
@@ -407,7 +407,7 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
     }
 
     @Override
-    public void append(Column column) {
+    public void append(Column<LocalDateTime> column) {
         Preconditions.checkArgument(column.type() == this.type());
         DateTimeColumn doubleColumn = (DateTimeColumn) column;
         for (int i = 0; i < doubleColumn.size(); i++) {

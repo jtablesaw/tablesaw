@@ -57,8 +57,8 @@ import static tech.tablesaw.api.ColumnType.STRING;
  * Because the MISSING_VALUE for this column type is an empty string, there is little or no need for special handling
  * of missing values in this class's methods.
  */
-public class StringColumn extends AbstractColumn
-        implements CategoricalColumn, StringFilters, StringMapFunctions, StringReduceUtils {
+public class StringColumn extends AbstractColumn<String>
+        implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
     public final StringColumnReference column = new StringColumnReference(this.name());
 
@@ -539,7 +539,7 @@ public class StringColumn extends AbstractColumn
     }
 
     @Override
-    public void append(Column column) {
+    public void append(Column<String> column) {
         Preconditions.checkArgument(column.type() == this.type());
         StringColumn source = (StringColumn) column;
         for (String string : source) {

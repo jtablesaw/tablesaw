@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 
 import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
-public interface DateFilters extends Column {
+public interface DateFilters extends Column<LocalDate> {
 
     DateColumn where(Selection selection);
 

@@ -6,13 +6,11 @@ import static tech.tablesaw.columns.booleans.fillers.BooleanIterable.bits;
 
 import org.junit.Test;
 
-import it.unimi.dsi.fastutil.booleans.BooleanIterable;
-
 public class BooleanFillersTest {
 
-    protected void testValues(BooleanIterable booleans, boolean... expected) {
+    protected void testValues(final Iterable<Boolean> booleans, final boolean... expected) {
         int num = 0;
-        for (boolean value : booleans) {
+        for (final boolean value : booleans) {
             assertEquals(expected[num], value);
             num++;
         }

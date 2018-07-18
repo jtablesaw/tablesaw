@@ -58,7 +58,7 @@ public class TableTest {
 
     @Test
     public void testColumn() {
-        Column column1 = table.column(0);
+        Column<?> column1 = table.column(0);
         assertNotNull(column1);
     }
 
@@ -67,16 +67,16 @@ public class TableTest {
         Table t = Table.create("Test");
         assertEquals("Test\n\n", t.print());
 
-        Column c1 = StringColumn.create("SC");
+        Column<?> c1 = StringColumn.create("SC");
         t.addColumn(c1);
         assertEquals(" Test \n SC  |\n------", t.print());
     }
 
     @Test
     public void testMissingValueCounts() {
-        Column c1 = StringColumn.create("SC");
-        Column c2 = DoubleColumn.create("NC");
-        Column c3 = DateColumn.create("DC");
+        Column<?> c1 = StringColumn.create("SC");
+        Column<?> c2 = DoubleColumn.create("NC");
+        Column<?> c3 = DateColumn.create("DC");
         Table t = Table.create("Test", c1, c2, c3);
         System.out.println(t.missingValueCounts());
     }
@@ -163,7 +163,7 @@ public class TableTest {
             }
         };
 
-        Column result = t.collectFromEachRow(collectable);
+        Column<?> result = t.collectFromEachRow(collectable);
         assertEquals("fox can't predict 53.0", (result.getString(0)));
         assertEquals("fox can't predict 53.0", (result.getString(1)));
     }
@@ -312,13 +312,13 @@ public class TableTest {
         appendColumn(table, column);
     }
 
-    private int appendColumn(Table table, Column column) {
+    private int appendColumn(Table table, Column<?> column) {
         Table tableToAppend = Table.create("populated", column);
         table.append(tableToAppend);
         return column.size();
     }
 
-    private void assertTableColumnSize(Table table, Column column, int expected) {
+    private void assertTableColumnSize(Table table, Column<?> column, int expected) {
         int actual = table.column(column.name()).size();
         assertEquals(expected, actual);
     }

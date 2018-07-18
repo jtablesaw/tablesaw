@@ -115,7 +115,7 @@ public interface Selection extends IntIterable, Filter {
     }
 
     @Override
-    default Selection apply(Column column) {
+    default Selection apply(Column<?> column) {
         return this;
     }
 }

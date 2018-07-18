@@ -33,7 +33,7 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 import static tech.tablesaw.api.DateTimeColumn.MISSING_VALUE;
 import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
 
-public interface DateTimeMapFunctions extends Column {
+public interface DateTimeMapFunctions extends Column<LocalDateTime> {
 
     default NumberColumn differenceInMilliseconds(DateTimeColumn column2) {
         return difference(column2, ChronoUnit.MILLIS);

@@ -57,7 +57,7 @@ import tech.tablesaw.selection.Selection;
 /**
  * A column in a base table that contains double precision floating point values
  */
-public class DoubleColumn extends AbstractColumn implements NumberColumn {
+public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn {
 
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     /**
@@ -255,7 +255,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * TODO(lwhite): Ensure proper handling of missing values. They should not end up in the result set
      */
     @Override
-    public Column unique() {
+    public Column<Double> unique() {
         final DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
             doubles.add(data.getDouble(i));
@@ -285,10 +285,17 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * Adds the given double to this column
      */
     @Override
+    public void append(final Double d) {
+        data.add(d != null ? d.doubleValue() : MISSING_VALUE);
+    }
+
+    /**
+     * Adds the given double to this column
+     */
+    @Override
     public void append(final double d) {
         data.add(d);
     }
-
 
     @Override
     public String getString(final int row) {
@@ -420,8 +427,13 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public double get(final int index) {
+    public Double get(final int index) {
         return data.getDouble(index);
+    }
+
+    @Override
+    public void set(final int r, final Double value) {
+        data.set(r, (value != null ? value : MISSING_VALUE));
     }
 
     @Override
@@ -453,7 +465,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public void append(final Column column) {
+    public void append(final Column<Double> column) {
         Preconditions.checkArgument(column.type() == this.type());
         final NumberColumn numberColumn = (NumberColumn) column;
         for (int i = 0; i < numberColumn.size(); i++) {
@@ -549,7 +561,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
         final Selection results = new BitmapBackedSelection();
         final DoubleRBTreeSet doubleSet = new DoubleRBTreeSet(doubles);
         for (int i = 0; i < size(); i++) {
-            if (doubleSet.contains(get(i))) {
+            if (doubleSet.contains(get(i).doubleValue())) {
                 results.add(i);
             }
         }

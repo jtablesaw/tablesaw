@@ -21,7 +21,7 @@ import tech.tablesaw.selection.Selection;
 /**
  * An interface for mapping operations unique to Boolean columns
  */
-public interface BooleanMapUtils extends Column {
+public interface BooleanMapUtils extends Column<Boolean> {
 
     /*
      * Returns a Boolean column made by and-ing this column with the arguments

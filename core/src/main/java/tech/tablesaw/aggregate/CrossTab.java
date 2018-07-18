@@ -40,7 +40,7 @@ public final class CrossTab {
      * @param column2 Another column in {@code table}
      * @return A table containing the cross-tabs
      */
-    public static Table counts(Table table, CategoricalColumn column1, CategoricalColumn column2) {
+    public static Table counts(Table table, CategoricalColumn<?> column1, CategoricalColumn<?> column2) {
 
         Table t = Table.create("Crosstab Counts: " + column1.name() + " x " + column2.name());
         t.addColumn(column1.type().create(LABEL_COLUMN_NAME));
@@ -137,18 +137,18 @@ public final class CrossTab {
         }
 
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
-            Column column = xTabCounts.column(i);
+            Column<?> column = xTabCounts.column(i);
             pctTable.addColumn(DoubleColumn.create(column.name()));
         }
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
-            float rowTotal = (float) xTabCounts.numberColumn(xTabCounts.columnCount() - 1).get(i);
+            float rowTotal = xTabCounts.numberColumn(xTabCounts.columnCount() - 1).get(i).floatValue();
 
             for (int c = 1; c < xTabCounts.columnCount(); c++) {
                 if (rowTotal == 0) {
                     pctTable.numberColumn(c).append(Float.NaN);
                 } else {
-                    pctTable.numberColumn(c).append((float) xTabCounts.numberColumn(c).get(i) / rowTotal);
+                    pctTable.numberColumn(c).append(xTabCounts.numberColumn(c).get(i).floatValue() / rowTotal);
                 }
             }
         }
@@ -169,7 +169,7 @@ public final class CrossTab {
         }
 
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
-            Column column = xTabCounts.column(i);
+            Column<?> column = xTabCounts.column(i);
             pctTable.addColumn(DoubleColumn.create(column.name()));
         }
 
@@ -178,7 +178,7 @@ public final class CrossTab {
                 if (grandTotal == 0) {
                     pctTable.numberColumn(c).append(Float.NaN);
                 } else {
-                    pctTable.numberColumn(c).append((float) xTabCounts.numberColumn(c).get(i) / grandTotal);
+                    pctTable.numberColumn(c).append(xTabCounts.numberColumn(c).get(i).floatValue() / grandTotal);
                 }
             }
         }
@@ -199,7 +199,7 @@ public final class CrossTab {
 
         // create the new cols
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
-            Column column = xTabCounts.column(i);
+            Column<?> column = xTabCounts.column(i);
             pctTable.addColumn(DoubleColumn.create(column.name()));
         }
 
@@ -216,7 +216,7 @@ public final class CrossTab {
                 if (columnTotals[c - 1] == 0) {
                     pctTable.numberColumn(c).append(Float.NaN);
                 } else {
-                    pctTable.numberColumn(c).append((float) xTabCounts.numberColumn(c).get(i) / columnTotals[c - 1]);
+                    pctTable.numberColumn(c).append(xTabCounts.numberColumn(c).get(i).floatValue() / columnTotals[c - 1]);
                 }
             }
         }
@@ -227,7 +227,7 @@ public final class CrossTab {
      * Returns a table containing the column percents made from a source table, after first calculating the counts
      * cross-tabulated from the given columns
      */
-    public static Table columnPercents(Table table, CategoricalColumn column1, CategoricalColumn column2) {
+    public static Table columnPercents(Table table, CategoricalColumn<?> column1, CategoricalColumn<?> column2) {
         Table xTabs = counts(table, column1, column2);
         return columnPercents(xTabs);
     }
@@ -244,7 +244,7 @@ public final class CrossTab {
      * Returns a table containing the row percents made from a source table, after first calculating the counts
      * cross-tabulated from the given columns
      */
-    public static Table rowPercents(Table table, CategoricalColumn column1, CategoricalColumn column2) {
+    public static Table rowPercents(Table table, CategoricalColumn<?> column1, CategoricalColumn<?> column2) {
         Table xTabs = counts(table, column1, column2);
         return rowPercents(xTabs);
     }
@@ -261,7 +261,7 @@ public final class CrossTab {
      * Returns a table containing the table percents made from a source table, after first calculating the counts
      * cross-tabulated from the given columns
      */
-    public static Table tablePercents(Table table, CategoricalColumn column1, CategoricalColumn column2) {
+    public static Table tablePercents(Table table, CategoricalColumn<?> column1, CategoricalColumn<?> column2) {
         Table xTabs = counts(table, column1, column2);
         return tablePercents(xTabs);
     }

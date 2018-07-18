@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * String utility functions. Each function takes one or more String columns as input and produces
  * another Column as output. The resulting column need not be a string column.
  */
-public interface StringMapFunctions extends Column {
+public interface StringMapFunctions extends Column<String> {
 
     default StringColumn upperCase() {
         StringColumn newColumn = StringColumn.create(this.name() + "[ucase]");
@@ -163,7 +163,7 @@ public interface StringMapFunctions extends Column {
         return newColumn;
     }
 
-    default StringColumn commonPrefix(Column column2) {
+    default StringColumn commonPrefix(Column<?> column2) {
 
         StringColumn newColumn = StringColumn.create(name() + column2.name() + "[prefix]");
 
@@ -175,7 +175,7 @@ public interface StringMapFunctions extends Column {
         return newColumn;
     }
 
-    default StringColumn commonSuffix(Column column2) {
+    default StringColumn commonSuffix(Column<?> column2) {
 
         StringColumn newColumn = StringColumn.create(name() + column2.name() + "[suffix]");
 
@@ -190,7 +190,7 @@ public interface StringMapFunctions extends Column {
     /**
      * Returns a column containing the levenshtein distance between the two given string columns
      */
-    default NumberColumn distance(Column column2) {
+    default NumberColumn distance(Column<?> column2) {
 
         NumberColumn newColumn = DoubleColumn.create(name() + column2.name() + "[distance]");
 

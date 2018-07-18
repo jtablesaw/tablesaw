@@ -17,6 +17,7 @@ package tech.tablesaw.api;
 import static com.google.common.base.Preconditions.checkArgument;
 import static tech.tablesaw.api.ColumnType.BOOLEAN;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,8 +27,6 @@ import java.util.function.Supplier;
 
 import com.google.common.base.Strings;
 
-import it.unimi.dsi.fastutil.booleans.BooleanIterable;
-import it.unimi.dsi.fastutil.booleans.BooleanIterator;
 import it.unimi.dsi.fastutil.booleans.BooleanOpenHashSet;
 import it.unimi.dsi.fastutil.booleans.BooleanSet;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
@@ -54,7 +53,7 @@ import tech.tablesaw.selection.Selection;
 /**
  * A column in a base table that contains float values
  */
-public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, IntConvertibleColumn, BooleanFillers<BooleanColumn>, BooleanIterable {
+public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMapUtils, IntConvertibleColumn<Boolean>, BooleanFillers<BooleanColumn> {
 
     public static final byte MISSING_VALUE = (Byte) BOOLEAN.getMissingValue();
 
@@ -439,6 +438,21 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         }
     }
 
+    public void set(int i, Boolean b) {
+        if (b == null) {
+            data.set(i, MISSING_VALUE);
+        }
+        else if (b) {
+            data.set(i, BYTE_TRUE);
+        } else {
+            data.set(i, BYTE_FALSE);
+        }
+    }
+
+    public void set(int i, byte b) {
+        data.set(i, b);
+    }
+
     public BooleanColumn lead(int n) {
         BooleanColumn column = lag(-n);
         column.setName(name() + " lead(" + n + ")");
@@ -493,11 +507,10 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
     }
 
     @Override
-    public void append(Column column) {
+    public void append(Column<Boolean> column) {
         checkArgument(column.type() == this.type());
-        BooleanColumn booleanColumn = (BooleanColumn) column;
-        for (int i = 0; i < booleanColumn.size(); i++) {
-            append(booleanColumn.get(i));
+        for (int i = 0; i < column.size(); i++) {
+            append(column.get(i));
         }
     }
 
@@ -522,7 +535,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return eval(BooleanColumnUtils.isNotMissing);
     }
 
-    public BooleanIterator iterator() {
+    public Iterator<Boolean> iterator() {
         return new BooleanColumnIterator(this.byteIterator());
     }
 
@@ -644,7 +657,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
         return Objects.hash(data);
     }
 
-    private static class BooleanColumnIterator implements BooleanIterator {
+    private static class BooleanColumnIterator implements Iterator<Boolean> {
 
         final ByteIterator iterator;
 
@@ -671,7 +684,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
          * @throws java.util.NoSuchElementException if the iteration has no more elements
          */
         @Override
-        public boolean nextBoolean() {
+        public Boolean next() {
             byte b = iterator.nextByte();
             if (b == (byte) 0) {
                 return false;
@@ -679,26 +692,26 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
             if (b == (byte) 1) {
                 return true;
             }
-            return false;
+            return null;
         }
     }
 
     // fillWith methods
 
     @Override
-    public BooleanColumn fillWith(BooleanIterator iterator) {
+    public BooleanColumn fillWith(Iterator<Boolean> iterator) {
         for (int r = 0; r < size(); r++) {
             if (!iterator.hasNext()) {
                 break;
             }
-            set(r, iterator.nextBoolean());
+            set(r, iterator.next());
         }
         return this;
     }
 
     @Override
-    public BooleanColumn fillWith(BooleanIterable iterable) {
-        BooleanIterator iterator = null;
+    public BooleanColumn fillWith(Iterable<Boolean> iterable) {
+        Iterator<Boolean> iterator = null;
         for (int r = 0; r < size(); r++) {
             if (iterator == null || (!iterator.hasNext())) {
                 iterator = iterable.iterator();
@@ -706,7 +719,7 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, In
                     break;
                 }
             }
-            set(r, iterator.nextBoolean());
+            set(r, iterator.next());
         }
         return this;
     }

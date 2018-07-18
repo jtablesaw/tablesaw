@@ -12,7 +12,7 @@ import java.util.function.BiPredicate;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
-public interface TimeFilters extends Column {
+public interface TimeFilters extends Column<LocalTime> {
 
     TimeColumn where(Selection selection);
 

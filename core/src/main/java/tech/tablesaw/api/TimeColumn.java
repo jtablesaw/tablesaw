@@ -56,7 +56,7 @@ import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 /**
  * A column in a base table that contains float values
  */
-public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, TimeFilters, TimeFillers<TimeColumn>, TimeMapFunctions {
+public class TimeColumn extends AbstractColumn<LocalTime> implements TimeFilters, TimeFillers<TimeColumn>, TimeMapFunctions {
 
     public static final int MISSING_VALUE = (Integer) LOCAL_TIME.getMissingValue();
 
@@ -447,7 +447,7 @@ public class TimeColumn extends AbstractColumn implements Iterable<LocalTime>, T
     }
 
     @Override
-    public void append(Column column) {
+    public void append(Column<LocalTime> column) {
         Preconditions.checkArgument(column.type() == this.type());
         TimeColumn intColumn = (TimeColumn) column;
         for (int i = 0; i < intColumn.size(); i++) {

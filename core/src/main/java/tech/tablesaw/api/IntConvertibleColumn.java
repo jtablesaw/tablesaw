@@ -18,7 +18,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 import java.util.Set;
 
-public interface IntConvertibleColumn extends CategoricalColumn {
+public interface IntConvertibleColumn<T> extends CategoricalColumn<T> {
 
     int[] asIntArray();
 

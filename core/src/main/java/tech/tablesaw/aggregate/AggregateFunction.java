@@ -14,7 +14,7 @@ public abstract class AggregateFunction {
         this.name = name;
     }
 
-    abstract public double summarize(Column column);
+    abstract public double summarize(Column<?> column);
 
     public String functionName() {
         return name;

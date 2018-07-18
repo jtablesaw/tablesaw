@@ -29,7 +29,7 @@ import java.util.function.DoublePredicate;
 
 import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
-public interface NumberFilters extends Column {
+public interface NumberFilters extends Column<Double> {
 
     NumberColumn where(Filter filter);
 

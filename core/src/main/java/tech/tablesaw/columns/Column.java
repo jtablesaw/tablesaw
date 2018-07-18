@@ -14,6 +14,8 @@
 
 package tech.tablesaw.columns;
 
+import java.util.Comparator;
+
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
@@ -26,19 +28,19 @@ import tech.tablesaw.table.RollingColumn;
  * Columns can either exist on their own or be a part of a table. All the data in a single column is of a particular
  * type.
  */
-public interface Column {
+public interface Column<T> extends Iterable<T>, Comparator<T> {
 
-    static Column create(String columnName, ColumnType type) {
-        return type.create(columnName);
+    static <T> Column<T> create(final String columnName, final ColumnType type) {
+        return (Column<T>) type.create(columnName);
     }
 
     int size();
 
     Table summary();
 
-    default Column subset(Selection rows) {
-        Column c = this.emptyCopy();
-        for (int row : rows) {
+    default Column<T> subset(final Selection rows) {
+        final Column<T> c = this.emptyCopy();
+        for (final int row : rows) {
             c.appendCell(getString(row));
         }
         return c;
@@ -63,7 +65,7 @@ public interface Column {
      *
      * @return a {@link Column}
      */
-    Column unique();
+    Column<T> unique();
 
     /*
      */
@@ -73,7 +75,7 @@ public interface Column {
      * For example if you lead a column containing 2, 3, 4 by 1, you get a column containing 3, 4, NA.
      */
 
-    default Column lead(int n) {
+    default Column<T> lead(final int n) {
         return lag(-n);
     }
 
@@ -83,7 +85,7 @@ public interface Column {
      * For example if you lag a column containing 2, 3, 4 by 1, you get a column containing NA, 2, 3
      */
 
-    Column lag(int n);
+    Column<T> lag(int n);
 
     /**
      * Returns the column's name.
@@ -98,7 +100,7 @@ public interface Column {
      * @param name The new name MUST be unique for any table containing this column
      * @return this Column to allow method chaining
      */
-    Column setName(String name);
+    Column<T> setName(String name);
 
     /**
      * Returns this column's ColumnType
@@ -106,6 +108,8 @@ public interface Column {
      * @return {@link ColumnType}
      */
     ColumnType type();
+
+    T get(int row);
 
     /**
      * Returns a string representation of the value at the given row.
@@ -118,7 +122,7 @@ public interface Column {
     /**
      * Returns a double representation of the value at the given row. The nature of the returned value is column-specific.
      * The double returned MAY be the actual value (for Number columns) but is more likely a number that maps to the column
-     * value in some way. 
+     * value in some way.
      *
      * @param row The index of the row.
      * @return value as String
@@ -130,14 +134,14 @@ public interface Column {
      *
      * @return a empty copy of {@link Column}
      */
-    Column emptyCopy();
+    Column<T> emptyCopy();
 
     /**
      * Returns a deep copy of the receiver
      *
      * @return a {@link Column}
      */
-    Column copy();
+    Column<T> copy();
 
     /**
      * Returns an empty copy of the receiver, with its internal storage initialized to the given row size.
@@ -145,7 +149,7 @@ public interface Column {
      * @param rowSize the initial row size
      * @return a {@link Column}
      */
-    Column emptyCopy(int rowSize);
+    Column<T> emptyCopy(int rowSize);
 
     void clear();
 
@@ -164,20 +168,24 @@ public interface Column {
 
     IntComparator rowComparator();
 
-    void append(Column column);
+    void set(int row, T value);
 
-    default Column first(int numRows) {
-        Column col = emptyCopy();
-        int rows = Math.min(numRows, size());
+    void append(T value);
+
+    void append(Column<T> column);
+
+    default Column<T> first(final int numRows) {
+        final Column<T> col = emptyCopy();
+        final int rows = Math.min(numRows, size());
         for (int i = 0; i < rows; i++) {
             col.appendCell(getUnformattedString(i));
         }
         return col;
     }
 
-    default Column last(int numRows) {
-        Column col = emptyCopy();
-        int rows = Math.min(numRows, size());
+    default Column<T> last(final int numRows) {
+        final Column<T> col = emptyCopy();
+        final int rows = Math.min(numRows, size());
         for (int i = size() - rows; i < size(); i++) {
             col.appendCell(getUnformattedString(i));
         }
@@ -218,7 +226,7 @@ public interface Column {
      */
     byte[] asBytes(int rowNumber);
 
-    default RollingColumn rolling(int windowSize) {
+    default RollingColumn rolling(final int windowSize) {
         return new RollingColumn(this, windowSize);
     }
 
@@ -231,7 +239,7 @@ public interface Column {
      */
     void appendMissing();
 
-    Column where(Selection selection);
+    Column<T> where(Selection selection);
 
-    Column removeMissing();
+    Column<T> removeMissing();
 }

@@ -8,5 +8,5 @@ public interface Filter {
 
     Selection apply(Table relation);
 
-    Selection apply(Column column);
+    Selection apply(Column<?> column);
 }

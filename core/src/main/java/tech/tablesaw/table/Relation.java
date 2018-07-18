@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  */
 public abstract class Relation {
 
-    public abstract Relation addColumn(Column... cols);
+    public abstract Relation addColumn(Column<?>... cols);
 
     public abstract Relation setName(String name);
 
@@ -63,10 +63,10 @@ public abstract class Relation {
     /**
      * Removes the given columns from the receiver
      */
-    public abstract Relation removeColumns(Column... columns);
+    public abstract Relation removeColumns(Column<?>... columns);
 
     public Relation removeColumns(String... columnName) {
-        Column[] cols = new Column[columnName.length];
+        Column<?>[] cols = new Column[columnName.length];
         for (int i = 0; i < columnName.length; i++) {
             cols[i] = column(columnName[i]);
         }
@@ -74,7 +74,7 @@ public abstract class Relation {
         return this;
     }
 
-    public List<Column> columnsOfType(ColumnType type) {
+    public List<Column<?>> columnsOfType(ColumnType type) {
         return columns().stream()
                 .filter(column -> column.type() == type)
                 .collect(Collectors.toList());
@@ -98,8 +98,8 @@ public abstract class Relation {
     /**
      * Returns the column with the given columnName, ignoring case
      */
-    public Column column(String columnName) {
-        for (Column column : columns()) {
+    public Column<?> column(String columnName) {
+        for (Column<?> column : columns()) {
             String name = column.name().trim();
             if (name.equalsIgnoreCase(columnName)) {
                 return column;
@@ -114,7 +114,7 @@ public abstract class Relation {
      * @param columnIndex an integer at least 0 and less than number of columns in the relation
      * @return the column at the given index
      */
-    public abstract Column column(int columnIndex);
+    public abstract Column<?> column(int columnIndex);
 
     /**
      * Returns the number of columns in the relation
@@ -129,12 +129,12 @@ public abstract class Relation {
     /**
      * Returns a list of all the columns in the relation
      */
-    public abstract List<Column> columns();
+    public abstract List<Column<?>> columns();
 
     /**
      * Returns the index of the given column
      */
-    public abstract int columnIndex(Column col);
+    public abstract int columnIndex(Column<?> col);
 
     /**
      * Returns a String representing the value found at column index c and row index r
@@ -216,7 +216,7 @@ public abstract class Relation {
         structure.addColumn(StringColumn.create("First"));
         structure.addColumn(StringColumn.create("Last"));
 
-        for (Column column : columns()) {
+        for (Column<?> column : columns()) {
             structure.numberColumn("Index").append(columnIndex(column));
             structure.stringColumn("Column Name").append(column.name());
             structure.stringColumn("Type").append(column.type().name());
@@ -233,7 +233,7 @@ public abstract class Relation {
                 .append("Table summary for: ")
                 .append(name())
                 .append("\n");
-        for (Column column : columns()) {
+        for (Column<?> column : columns()) {
             builder.append(column.summary().print());
             builder.append("\n");
         }
@@ -250,7 +250,7 @@ public abstract class Relation {
     }
 
     public NumberColumn numberColumn(int columnIndex) {
-        Column c = column(columnIndex);
+        Column<?> c = column(columnIndex);
         if (c.type() == ColumnType.STRING) {
             StringColumn stringColumn = (StringColumn) c;
             return stringColumn.asNumberColumn();
@@ -262,7 +262,7 @@ public abstract class Relation {
     }
 
     public NumberColumn numberColumn(String columnName) {
-        Column c = column(columnName);
+        Column<?> c = column(columnName);
         if (c.type() == ColumnType.STRING) {
             StringColumn stringColumn = (StringColumn) c;
             return stringColumn.asNumberColumn();
@@ -273,12 +273,12 @@ public abstract class Relation {
         return (NumberColumn) column(columnName);
     }
 
-    public CategoricalColumn categoricalColumn(String columnName) {
-        return (CategoricalColumn) column(columnName);
+    public CategoricalColumn<?> categoricalColumn(String columnName) {
+        return (CategoricalColumn<?>) column(columnName);
     }
 
-    public CategoricalColumn categoricalColumn(int columnNumber) {
-        return (CategoricalColumn) column(columnNumber);
+    public CategoricalColumn<?> categoricalColumn(int columnNumber) {
+        return (CategoricalColumn<?>) column(columnNumber);
     }
 
     /**
@@ -339,7 +339,7 @@ public abstract class Relation {
         return null;
     }
 
-    public boolean containsColumn(CategoricalColumn column) {
+    public boolean containsColumn(CategoricalColumn<?> column) {
         return columns().contains(column);
     }
 }

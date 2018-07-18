@@ -48,7 +48,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     private final List<TableSlice> subTables = new ArrayList<>();
 
     // Grouping columns that were calculated on the fly, rather than being in the source. We remove when we're done.
-    final List<CategoricalColumn> columnsToRemove = new ArrayList<>();
+    final List<CategoricalColumn<?>> columnsToRemove = new ArrayList<>();
 
     private final String[] splitColumnNames;
 
@@ -76,9 +76,9 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return splitColumnNames;
     }
 
-    int getByteSize(List<Column> columns) {
+    int getByteSize(List<Column<?>> columns) {
         int byteSize = 0;
-        for (Column c : columns) {
+        for (Column<?> c : columns) {
             byteSize += c.byteSize();
         }
         return byteSize;
@@ -114,10 +114,10 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     private Table splitGroupingColumn(Table groupTable) {
 
         if (splitColumnNames.length > 0) {
-            List<Column> newColumns = new ArrayList<>();
-            List<Column> columns = sourceTable.columns(splitColumnNames);
-            for (Column column : columns) {
-                Column newColumn = column.emptyCopy();
+            List<Column<?>> newColumns = new ArrayList<>();
+            List<Column<?>> columns = sourceTable.columns(splitColumnNames);
+            for (Column<?> column : columns) {
+                Column<?> newColumn = column.emptyCopy();
                 newColumns.add(newColumn);
             }
             // iterate through the rows in the table and split each of the grouping columns into multiple columns
@@ -128,7 +128,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
                 }
             }
             for (int col = 0; col < newColumns.size(); col++) {
-                Column c = newColumns.get(col);
+                Column<?> c = newColumns.get(col);
                 groupTable.addColumn(col, c);
             }
             groupTable.removeColumns("Group");
@@ -145,7 +145,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         columnFunctionMap.putAll(colName1, Lists.newArrayList(functions));
 
         Table result = aggregate(columnFunctionMap);
-        for (CategoricalColumn column : columnsToRemove) {
+        for (CategoricalColumn<?> column : columnsToRemove) {
             result.removeColumns(column);
         }
         return result;
@@ -180,7 +180,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
             }
         }
         Table result = splitGroupingColumn(groupTable);
-        for (CategoricalColumn column : columnsToRemove) {
+        for (CategoricalColumn<?> column : columnsToRemove) {
             result.removeColumns(column);
         }
         return result;

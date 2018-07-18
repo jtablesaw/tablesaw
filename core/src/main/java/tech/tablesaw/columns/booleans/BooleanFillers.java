@@ -14,16 +14,14 @@
 
 package tech.tablesaw.columns.booleans;
 
+import java.util.Iterator;
 import java.util.function.Supplier;
-
-import it.unimi.dsi.fastutil.booleans.BooleanIterable;
-import it.unimi.dsi.fastutil.booleans.BooleanIterator;
 
 public interface BooleanFillers<T> {
 
-    T fillWith(BooleanIterator iterator);
+    T fillWith(Iterator<Boolean> iterator);
 
-    default T fillWith(final BooleanIterable iterable) {
+    default T fillWith(final Iterable<Boolean> iterable) {
         return fillWith(iterable.iterator());
     }
 

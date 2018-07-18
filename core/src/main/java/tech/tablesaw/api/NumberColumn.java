@@ -48,10 +48,10 @@ import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.Selection;
 
-public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColumn, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
+public interface NumberColumn extends DoubleIterable, IntConvertibleColumn<Double>, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn> {
     double MISSING_VALUE = (Double) NUMBER.getMissingValue();
 
-    static boolean valueIsMissing(double value) {
+    static boolean valueIsMissing(final double value) {
         return Double.isNaN(value);
     }
 
@@ -62,6 +62,7 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
 
     void setPrintFormatter(NumberColumnFormatter formatter);
 
+    @Override
     int size();
 
     @Override
@@ -74,7 +75,7 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     DoubleArrayList bottom(int n);
 
     @Override
-    Column unique();
+    Column<Double> unique();
 
     double firstElement();
 
@@ -97,8 +98,10 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     @Override
     NumberColumn emptyCopy(int rowSize);
 
+    @Override
     NumberColumn lead(int n);
 
+    @Override
     NumberColumn lag(int n);
 
     @Override
@@ -126,16 +129,18 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     @Override
     IntComparator rowComparator();
 
-    double get(int index);
+    @Override
+    Double get(int index);
 
     void set(int r, double value);
 
     void set(Selection rowSelection, double newValue);
 
+    @Override
     double[] asDoubleArray();
 
     @Override
-    void append(Column column);
+    void append(Column<Double> column);
 
     @Override
     DoubleIterator iterator();
@@ -143,14 +148,19 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     @Override
     NumberColumn where(Filter filter);
 
+    @Override
     NumberColumn where(Selection selection);
 
+    @Override
     Selection eval(DoublePredicate predicate);
 
+    @Override
     Selection eval(DoubleBiPredicate predicate, NumberColumn otherColumn);
 
+    @Override
     Selection eval(DoubleBiPredicate predicate, Number value);
 
+    @Override
     Selection eval(DoubleRangePredicate predicate, Number rangeStart, Number rangeEnd);
 
     @Override
@@ -193,6 +203,7 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     }
 
     // Reduce functions applied to the whole column
+    @Override
     default double sum() {
         return sum.summarize(this);
     }
@@ -217,7 +228,7 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
         return quartile3.summarize(this);
     }
 
-    default double percentile(double percentile) {
+    default double percentile(final double percentile) {
         return AggregateFunctions.percentile(this, percentile);
     }
 
@@ -275,10 +286,10 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     /**
      * Returns the pearson's correlation between the receiver and the otherColumn
      **/
-    default double pearsons(NumberColumn otherColumn) {
+    default double pearsons(final NumberColumn otherColumn) {
 
-        double[] x = asDoubleArray();
-        double[] y = otherColumn.asDoubleArray();
+        final double[] x = asDoubleArray();
+        final double[] y = otherColumn.asDoubleArray();
 
         return new PearsonsCorrelation().correlation(x, y);
     }
@@ -289,10 +300,10 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
      * @throws NotANumberException if either column contains any missing values
      *
      **/
-    default double spearmans(NumberColumn otherColumn) {
+    default double spearmans(final NumberColumn otherColumn) {
 
-        double[] x = asDoubleArray();
-        double[] y = otherColumn.asDoubleArray();
+        final double[] x = asDoubleArray();
+        final double[] y = otherColumn.asDoubleArray();
 
         return new SpearmansCorrelation().correlation(x, y);
     }
@@ -300,10 +311,10 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
     /**
      * Returns the Kendall's Tau Rank correlation between the receiver and the otherColumn
      **/
-    default double kendalls(NumberColumn otherColumn) {
+    default double kendalls(final NumberColumn otherColumn) {
 
-        double[] x = asDoubleArray();
-        double[] y = otherColumn.asDoubleArray();
+        final double[] x = asDoubleArray();
+        final double[] y = otherColumn.asDoubleArray();
 
         return new KendallsCorrelation().correlation(x, y);
     }
@@ -313,7 +324,7 @@ public interface NumberColumn extends Column, DoubleIterable, IntConvertibleColu
      */
     @Override
     default int countUnique() {
-        DoubleSet doubles = new DoubleOpenHashSet();
+        final DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
             if (!NumberColumn.valueIsMissing(get(i))) {
                 doubles.add(get(i));

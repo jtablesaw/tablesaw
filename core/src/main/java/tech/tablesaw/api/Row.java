@@ -26,7 +26,7 @@ public class Row implements Iterator<Row> {
     public Row(Table table) {
         this.table = table;
         rowNumber = -1;
-        for (Column column : table.columns()) {
+        for (Column<?> column : table.columns()) {
 
             if (column instanceof DateColumn) {
                 dateColumnMap.put(column.name(), new PackedDate((DateColumn) column));

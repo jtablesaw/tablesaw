@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class Projection extends Relation {
 
     private final Table table;
-    private final Column[] columns;
+    private final Column<?>[] columns;
 
     public Projection(Table table, String[] columnNames) {
         this.table = table;
@@ -49,7 +49,7 @@ public class Projection extends Relation {
     }
 
     @Override
-    public Relation addColumn(Column... cols) {
+    public Relation addColumn(Column<?>... cols) {
         throw new UnsupportedOperationException("Projections do not support updates.");
     }
 
@@ -59,7 +59,7 @@ public class Projection extends Relation {
     }
 
     @Override
-    public Relation removeColumns(Column... columns) {
+    public Relation removeColumns(Column<?>... columns) {
         throw new UnsupportedOperationException("Projections do not support updates.");
     }
 
@@ -69,7 +69,7 @@ public class Projection extends Relation {
     }
 
     @Override
-    public Column column(int columnIndex) {
+    public Column<?> column(int columnIndex) {
         return columns[columnIndex];
     }
 
@@ -84,12 +84,12 @@ public class Projection extends Relation {
     }
 
     @Override
-    public List<Column> columns() {
+    public List<Column<?>> columns() {
         return Lists.newArrayList(columns);
     }
 
     @Override
-    public int columnIndex(Column col) {
+    public int columnIndex(Column<?> col) {
         return columns().indexOf(col);
     }
 

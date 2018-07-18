@@ -14,19 +14,18 @@
 
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.ints.IntIterable;
+import java.util.function.DoublePredicate;
+
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
-
-import java.util.function.DoublePredicate;
 
 /**
  * Support for built-in predicates on double column
  * <p>
  * TODO(lwhite): Ensure each returns false when handling missing values
  */
-public interface NumberPredicates extends Column, IntIterable {
+public interface NumberPredicates extends Column<Double> {
 
     DoublePredicate isZero = i -> i == 0.0;
 
