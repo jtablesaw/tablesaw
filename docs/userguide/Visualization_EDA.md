@@ -51,7 +51,7 @@ Pareto.show("Tornado Fatalities by State", fatalities1, "state", "sum[fatalities
 
 Understanding the distribution of data within a column is often essential. Tablesaw provides several ways.  The most common is the Histogram, which is shown below.
 
-![Histogram of Injuries for level 5 tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/tornado_box.png)
+![Histogram of Injuries for level 5 tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/histogram.png)
 
 This plot shows the distribution of injury counts for the most powerful tornadoes. To produce it, we simply filter the table to include only level 5, and call Histogram.show();
 
