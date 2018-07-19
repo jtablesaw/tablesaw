@@ -2,7 +2,9 @@
 
 # Visualization for Exploratory Data Analysis
 
-In [Part 1 of this series](https://dzone.com/articles/learn-data-science-with-java-and-tablesaw), we introduced [Tablesaw](https://github.com/jtablesaw/tablesaw), a platform for data science in Java and showed how Tablesaw can be used to filter and transform datasets, and produce cross-tabulations. Now we turn to visualization.
+In [Part 1 of this series](https://dzone.com/articles/learn-data-science-with-java-and-tablesaw), we introduced [Tablesaw](https://github.com/jtablesaw/tablesaw), a platform for data science in Java and showed how Tablesaw can be used to filter and transform datasets, and produce cross-tabulations. Now we turn to visualization. For this discussion, we'll use a Tornado dataset from NOAA.
+
+
 
 While Tablesaw is capable of creating publication-quality graphics. The visualization we discuss here helps you see what’s going on in the data while you’re doing your analysis. This process is called Exploratory Data Analysis, a discipline established by the brilliant statistician [John Tukey](https://en.wikipedia.org/wiki/John_Tukey). Among Tukey's other exploits, he coined the term "bit" to mean the smallest unit of data. 
 
@@ -49,7 +51,7 @@ Pareto.show("Tornado Fatalities by State", fatalities1, "state", "sum[fatalities
 
 Understanding the distribution of data within a column is often essential. Tablesaw provides several ways.  The most common is the Histogram, which is shown below.
 
-
+![Histogram of Injuries for level 5 tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/tornado_box.png)
 
 This plot shows the distribution of injury counts for the most powerful tornadoes. To produce it, we simply filter the table to include only level 5, and call Histogram.show();
 
@@ -59,8 +61,6 @@ Table level5 = tornadoes.where(scale.isEqualTo(5));
 
 Histogram.show("Distribution of injuries for Level 5", level5, "injuries");
 ```
-
-
 
 #### Distributions of sub-groups
 
@@ -73,3 +73,4 @@ BoxPlot.show("Tornado Injuries by Scale", tornadoes, "injuries", "scale");
 ```
 
 ### Multivariate Data: Scatter Plots, Bubble Plots, Line Plots
+

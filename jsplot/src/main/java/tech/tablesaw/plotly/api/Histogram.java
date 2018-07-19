@@ -1,6 +1,7 @@
 package tech.tablesaw.plotly.api;
 
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
@@ -33,5 +34,9 @@ public class Histogram {
         HistogramTrace trace = HistogramTrace.builder(data).build();
 
         Plot.show(new Figure(layout, trace));
+    }
+
+    public static void show(String title, Table table, String numericColumName) {
+        show(title, table.numberColumn(numericColumName));
     }
 }

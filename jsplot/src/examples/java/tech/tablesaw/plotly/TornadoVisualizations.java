@@ -23,6 +23,7 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.api.BarPlot;
 import tech.tablesaw.plotly.api.BoxPlot;
+import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.ParetoPlot;
 import tech.tablesaw.selection.Selection;
 
@@ -62,6 +63,11 @@ public class TornadoVisualizations extends AbstractExample {
                 fatalities2,
                 "state",
                 "sum [fatalities]");
+
+        // distributions
+        Table level5 = tornadoes.where(scale.isEqualTo(5));
+
+        Histogram.show("Distribution of injuries for Level 5", level5, "injuries");
 
         BoxPlot.show("Tornado Injuries by Scale", tornadoes,"scale", "injuries");
 

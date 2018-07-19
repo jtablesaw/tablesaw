@@ -18,7 +18,10 @@ Tablesaw User Guide
     * [Creating cross-tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs)
   * [Working with Rows](https://jtablesaw.github.io/tablesaw/userguide/rows)
 
-* [Plotting & Visualization](https://jtablesaw.github.io/tablesaw/userguide/jsplots)
+* Plotting and Visualization
+
+  * [Simply plots for Exploratory Data Analysis](https://jtablesaw.github.io/tablesaw/userguide/Visualization_EDA)
+  * [Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/jsplots)
 
 * Machine Learning
 
