@@ -1,6 +1,6 @@
 [Contents](https://jtablesaw.github.io/tablesaw/userguide/toc)
 
-# Plotting
+# Creating custom visualizations
 
 The original plotting code in Tablesaw will soon be deprecated. For doing quick, basic, exploratory visualizations it served its purpose, but it fell far short of what the best visualization tools provide. Unfortunately, none of those tools are written in Java. 
 

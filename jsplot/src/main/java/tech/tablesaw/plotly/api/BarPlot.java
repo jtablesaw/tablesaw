@@ -10,8 +10,8 @@ import tech.tablesaw.plotly.traces.Trace;
 
 public class BarPlot {
 
-    private static final int HEIGHT = 600;
-    private static final int WIDTH = 800;
+    private static final int HEIGHT = 700;
+    private static final int WIDTH = 900;
 
     public static void show(Orientation orientation, String title, Table table, String groupColName, String numberColName) {
 
@@ -27,6 +27,14 @@ public class BarPlot {
                 .orientation(orientation)
                 .build();
         Plot.show(new Figure(layout, trace));
+    }
+
+    public static void showHorizontal(String title, Table table, String groupColName, String numberColName) {
+        show(Orientation.HORIZONTAL, title, table, groupColName, numberColName);
+    }
+
+    public static void showVertical(String title, Table table, String groupColName, String numberColName) {
+        show(Orientation.VERTICAL, title, table, groupColName, numberColName);
     }
 
     public static void show(Orientation orientation, String title, Table table, String groupColName, String... numberColNames) {
@@ -52,6 +60,5 @@ public class BarPlot {
             traces[i] = trace;
         }
         Plot.show(new Figure(layout, traces));
-
     }
 }
