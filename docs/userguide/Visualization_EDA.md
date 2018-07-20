@@ -68,15 +68,13 @@ In our upcoming section on advanced plotting features, we'll cover how to create
 
 Pie plots are simultaneously widely criticized and ubiquitous. As a general rule, bar plots are easier to interpret, and so, generally, are to be preferred. We'd be remiss, however to not provide support. This example shows a pie plot that displays the same data as the first bar plot above:
 
-<<INSERT PLOT>>
+![Pie chart of Fatalities by State](https://jtablesaw.github.io/tablesaw/userguide/images/eda/pie.png)
 
 Here's the code:
 
 ```java
-PiePlot.show("fatalities by scale", fatalities1, "scale", "sum [fatalities]");
+PiePlot.show("fatalities by scale", fatalities1, "scale", "sum [fatalities]"); 
 ```
-
- 
 
 #### Pareto Plots
 

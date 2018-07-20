@@ -4,6 +4,7 @@ import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.Utils;
 
 import java.io.IOException;
@@ -15,11 +16,13 @@ public class PieTrace extends AbstractTrace {
 
     private Object[] x;
     private double[] y;
+    private Object[] labels;
 
     private PieTrace(PieBuilder builder) {
         super(builder);
         this.x = builder.x;
         this.y = builder.y;
+        this.labels = builder.labels;
     }
 
     @Override
@@ -41,7 +44,9 @@ public class PieTrace extends AbstractTrace {
         Map<String, Object> context = super.getContext();
         context.put("variableName", "trace" + i);
         context.put("values", Utils.dataAsString(y));
-        context.put("labels", Utils.dataAsString(x));
+        if (labels != null) {
+            context.put("labels", Utils.dataAsString(labels));
+        }
         return context;
     }
 
@@ -58,6 +63,7 @@ public class PieTrace extends AbstractTrace {
         private String type = "pie";
         Object[] x;
         double[] y;
+        Object[] labels;
 
         private PieBuilder(Object[] x, double[] y) {
             this.x = x;
@@ -72,5 +78,19 @@ public class PieTrace extends AbstractTrace {
         protected String getType() {
             return type;
         }
+
+        public PieTrace.PieBuilder showLegend(boolean b) {
+            super.showLegend(b);
+            return this;
+        }
+
+        /**
+         * Sets the sector labels. If `labels` entries are duplicated, we sum associated `values` or simply count occurrences if `values` is not provided. For other array attributes (including color) we use the first non-empty entry among all occurrences of the label.
+         */
+        public PieTrace.PieBuilder labels(Column labels) {
+            this.labels = labels.asObjectArray();
+            return this;
+        }
+
     }
 }

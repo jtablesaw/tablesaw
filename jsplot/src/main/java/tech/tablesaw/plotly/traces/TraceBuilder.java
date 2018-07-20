@@ -80,10 +80,10 @@ public abstract class TraceBuilder {
         return showLegend;
     }
 
-    static String[] columnToStringArray(Column numberColumn) {
-        String[] x = new String[numberColumn.size()];
-        for (int i = 0; i < numberColumn.size(); i++) {
-            x[i] = numberColumn.getString(i);
+    static String[] columnToStringArray(Column column) {
+        String[] x = new String[column.size()];
+        for (int i = 0; i < column.size(); i++) {
+            x[i] = column.getString(i);
         }
         return x;
     }

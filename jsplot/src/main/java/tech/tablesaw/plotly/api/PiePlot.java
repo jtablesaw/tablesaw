@@ -22,6 +22,8 @@ public class PiePlot {
         PieTrace trace = PieTrace.builder(
                 table.categoricalColumn(groupColName),
                 table.numberColumn(numberColName))
+                .showLegend(true)
+                .labels(table.column(groupColName))
                 .build();
         Plot.show(new Figure(layout, trace));
     }

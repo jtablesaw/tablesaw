@@ -25,14 +25,14 @@ You can use tablesaw-core, which is the dataframe library itself, by adding a de
 </dependency>
 ```
 
-- You can add a dependency for `tablesaw-plot` to use the plotting capability. 
-- Experimental support for JavaScript plots built on Plot.ly (which is itself built on D3) is also included, but this will be a bumpy ride for another minor release or two. Add a dependency for ```tablesaw-jsplot```.
+- You can add a dependency for `tablesaw-jsplot` to use the new plotting library. This library is built on the Plot.ly JavaScript library (which is itself built on D3). Documentation can be found in the [Tablesaw user guide](https://jtablesaw.github.io/tablesaw/userguide/Introduction to Plotting).
+- The older ```tablesaw-plot``` library is now deprecated. In the near future it will be moved from the main tablesaw repo to a separate repo.
 
 ### Documentation and support:
 
 * Start here:  https://jtablesaw.github.io/tablesaw/gettingstarted
 
-* Then see our documentation page: https://jtablesaw.github.io/tablesaw/ 
+* Then see our documentation page: https://jtablesaw.github.io/tablesaw/ and [user-guide](https://jtablesaw.github.io/tablesaw/userguide/toc).
 
 And *always* feel free to ask questions here on the [issues tab](https://github.com/jtablesaw/tablesaw/issues). 
 
@@ -50,12 +50,15 @@ And *always* feel free to ask questions here on the [issues tab](https://github.
 * Descriptive stats: mean, min, max, median, sum, product, standard deviation, variance, percentiles, geometric mean, skewness, kurtosis, etc.
 
 #### Visualization
+
+Tablesaw has replaced it's original plotting API with a new library based on the Plot.ly JavaScript plotting library. The new library is far more powerful and flexible than the old (now deprecated version).
+
 * Scatter plots
+* Time Series Plots
 * Line plots
 * Vertical and Horizontal Bar charts
 * Histograms 
 * Box plots
-* Quantile Plots
 * Pareto Charts
 
 Here's an example where we use JavaScript plotting support to map the locations of tornadoes: 

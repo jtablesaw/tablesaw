@@ -20,8 +20,8 @@ Tablesaw User Guide
 
 * Plotting and Visualization
 
-  * Introduction
-  * [Simple plots for Exploratory Data Analysis](https://jtablesaw.github.io/tablesaw/userguide/Visualization_EDA)
+  * [Introduction](https://jtablesaw.github.io/tablesaw/userguide/Introduction_to_Plotting)
+  * [Simple plotting API](https://jtablesaw.github.io/tablesaw/userguide/Visualization_EDA)
   * [Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/jsplots)
 
 * Machine Learning
