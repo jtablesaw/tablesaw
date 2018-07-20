@@ -4,7 +4,7 @@
 
 ## Creating Plots
 
-To take advantage of plot.ly's power, we had to sacrifice some of the simplicity of the older interface. Creating a plot now requires a few steps:
+To take full advantage of plot.ly's power requires a few steps:
 
 - Create a *layout* to define the overall appearance of the plot (optional, but generally useful)
 - Create one or more *traces*, that represent the data to plot. In a multi-series plot, each series gets its own trace.
