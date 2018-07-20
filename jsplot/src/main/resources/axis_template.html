@@ -1,9 +1,8 @@
 {
     title: '{{title}}',
-    {% if titleFont is not null %}
+{% if titleFont is not null %}
         titlefont: {{titleFont.asJavascript() | raw}},
-    {% endif %}
-
+{% endif %}
 {% if tickMode is not null %}
     tickmode: '{{tickMode}}',
     tickcolor: '{{tickColor}}',
@@ -11,18 +10,15 @@
     tickwidth: {{tickWidth}},
     showticklabels: {{showTickLabels}},
 {% endif %}
-
 {% if tickFont is not null %}
     tickfont: {{tickFont | raw}},
 {% endif %}
-
 {% if tickText is not null %}
     ticktext: {{tickText | raw}},
 {% endif %}
 {% if tickValues is not null %}
     tickvals: {{tickValues}},
 {% endif %}
-
 {% if dTick is not null %}
     dtick: '{{dTick}}',
 {% endif %}
@@ -38,11 +34,9 @@
 {% if exponentFormat is not null %}
     exponentformat: '{{exponentFormat}}',
 {% endif %}
-
 {% if autoRange is not null %}
     autorange: '{{autoRange}}',
 {% endif %}
-
 {% if showSpikes is not null %}
     showspike: {{showSpikes}},
     spikemode: '{{spikeMode}}',
@@ -51,7 +45,6 @@
     spikecolor: '{{spikeColor}}',
     spikedash: '{{spikeDash}}',
 {% endif %}
-
     linecolor: '{{lineColor}}',
     linewidth: {{lineWidth}},
     showline: {{showLine}},

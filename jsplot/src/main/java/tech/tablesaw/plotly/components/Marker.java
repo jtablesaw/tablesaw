@@ -111,7 +111,7 @@ public class Marker extends Component {
 
     public static class MarkerBuilder {
 
-        double[] size;
+        double[] size = {6};
         String color;
         Palette colorScalePalette;
         boolean cAuto = true;

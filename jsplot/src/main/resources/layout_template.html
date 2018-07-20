@@ -1,34 +1,33 @@
 var layout = {
     title: '{{title}}',
-    {% if titlefont is not null %}
+{% if titlefont is not null %}
     titlefont: {{titlefont | raw}},
-    {% endif %}
+{% endif %}
     height: {{height}},
     width: {{width}},
     showlegend: {{showlegend}},
     autosize: {{autosize}},
     plot_bgcolor: '{{plotbgcolor}}',
     paper_bgcolor: '{{paperbgcolor}}',
-    {% if font is not null %}
+{% if font is not null %}
     font: {{font | raw}},
-    {% endif %}
-    {% if margin is not null %}
+{% endif %}
+{% if margin is not null %}
     margin: {{margin | raw}},
-    {% endif %}
-    {% if hoverMode is not null %}
+{% endif %}
+{% if hoverMode is not null %}
     hovermode: '{{hoverMode}}',
-    {% endif %}
+{% endif %}
     hoverdistance: {{hoverdistance}},
-
-    {% if xAxis is not null %}
+{% if xAxis is not null %}
     xaxis: {{xAxis | raw}},
-    {% endif %}
-    {% if yAxis is not null %}
+{% endif %}
+{% if yAxis is not null %}
     yaxis: {{yAxis | raw}},
-    {% endif %}
-    {% if dragmode is not null %}
+{% endif %}
+{% if dragmode is not null %}
     dragmode: '{{dragmode}}',
-    {% endif %}
+{% endif %}
 
     decimalseparator: '{{decimalSeparator}}',
     thousandsseparator: '{{thousandsSeparator}}',

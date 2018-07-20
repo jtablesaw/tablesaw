@@ -158,6 +158,10 @@ public class Axis extends Component {
         }
     }
 
+    private static final String DEFAULT_COLOR = "#444";
+    private static final String DEFAULT_LINE_COLOR = "#444";
+    private static final String DEFAULT_LINE_WIDTH = "#444";
+
     private final String title;
     private final boolean visible;
     private final String color;

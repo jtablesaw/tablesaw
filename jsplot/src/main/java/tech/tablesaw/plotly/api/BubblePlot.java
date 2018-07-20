@@ -11,16 +11,14 @@ import tech.tablesaw.table.TableSliceGroup;
 
 import java.util.List;
 
-public class ScatterPlot {
+public class BubblePlot {
 
     private static final int HEIGHT = 600;
     private static final int WIDTH = 800;
-    private static final double OPACITY = .75;
 
-    public static void show(String title, Table table, String xCol, String yCol, String groupCol) {
+    public static void show(String title, Table table, String xCol, String yCol, String sizeColumn, String groupCol) {
 
         TableSliceGroup tables = table.splitOn(table.categoricalColumn(groupCol));
-
         Layout layout = Layout.builder()
                 .title(title)
                 .height(HEIGHT)
@@ -35,9 +33,12 @@ public class ScatterPlot {
                 .build();
 
         ScatterTrace[] traces  = new ScatterTrace[tables.size()];
-        Marker marker = Marker.builder().opacity(OPACITY).build();
         for (int i = 0; i < tables.size(); i++) {
             List<Table> tableList = tables.asTableList();
+            Marker marker = Marker.builder()
+                    .size(tableList.get(i).numberColumn(sizeColumn))
+                    .opacity(.75)
+                    .build();
             traces[i] = ScatterTrace.builder(
                     tableList.get(i).numberColumn(xCol),
                     tableList.get(i).numberColumn(yCol))
@@ -50,7 +51,7 @@ public class ScatterPlot {
         Plot.show(figure);
     }
 
-    public static void show(String title, Table table, String xCol, String yCol) {
+    public static void show(String title, Table table, String xCol, String yCol, String sizeColumn) {
 
         Layout layout = Layout.builder()
                 .title(title)
@@ -64,9 +65,15 @@ public class ScatterPlot {
                         .build())
                 .build();
 
+        Marker marker = Marker.builder()
+                .size(table.numberColumn(sizeColumn))
+                .opacity(.75)
+                .build();
+
         ScatterTrace trace = ScatterTrace.builder(
                 table.numberColumn(xCol),
                 table.numberColumn(yCol))
+                .marker(marker)
                 .build();
         Figure figure = new Figure(layout, trace);
         Plot.show(figure);
