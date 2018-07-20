@@ -672,4 +672,14 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
         }
         return this;
     }
+
+    @Override
+    public Object[] asObjectArray() {
+        final Double[] output = new Double[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            output[i] = data.getDouble(i);
+        }
+        return output;
+
+    }
 }

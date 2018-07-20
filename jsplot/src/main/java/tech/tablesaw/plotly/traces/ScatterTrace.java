@@ -3,7 +3,10 @@ package tech.tablesaw.plotly.traces;
 import com.google.common.base.Preconditions;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.plotly.components.HoverLabel;
 import tech.tablesaw.plotly.components.Line;
 import tech.tablesaw.plotly.components.Marker;
@@ -18,7 +21,7 @@ import static tech.tablesaw.plotly.Utils.dataAsString;
 public class ScatterTrace extends AbstractTrace {
 
     private final double[] y;
-    private final double[] x;
+    private final Object[] x;
     private final String[] text;
     private final Mode mode;
     private final HoverLabel hoverLabel;
@@ -31,6 +34,18 @@ public class ScatterTrace extends AbstractTrace {
     }
 
     public static ScatterBuilder builder(NumberColumn x, NumberColumn y) {
+        return new ScatterBuilder(x, y);
+    }
+
+    public static ScatterBuilder builder(DateColumn x, NumberColumn y) {
+        return new ScatterBuilder(x, y);
+    }
+
+    public static ScatterBuilder builder(DateTimeColumn x, NumberColumn y) {
+        return new ScatterBuilder(x, y);
+    }
+
+    public static ScatterBuilder builder(TimeColumn x, NumberColumn y) {
         return new ScatterBuilder(x, y);
     }
 
@@ -108,19 +123,38 @@ public class ScatterTrace extends AbstractTrace {
 
         private String type = "scatter";
         private Mode mode = Mode.MARKERS;
-        private double[] x;
+        private Object[] x;
         private double[] y;
         private String[] text;
         private Marker marker;
         private Line line;
 
         private ScatterBuilder(double[] x, double[] y) {
-            this.x = x;
+            Double[] x1 = new Double[x.length];
+            for (int i = 0; i < x1.length; i++) {
+                x1[i] = x[i];
+            }
+            this.x = x1;
             this.y = y;
         }
 
         private ScatterBuilder(NumberColumn x, NumberColumn y) {
-            this.x = x.asDoubleArray();
+            this.x = x.asObjectArray();
+            this.y = y.asDoubleArray();
+        }
+
+        private ScatterBuilder(DateColumn x, NumberColumn y) {
+            this.x = x.asObjectArray();
+            this.y = y.asDoubleArray();
+        }
+
+        private ScatterBuilder(DateTimeColumn x, NumberColumn y) {
+            this.x = x.asObjectArray();
+            this.y = y.asDoubleArray();
+        }
+
+        private ScatterBuilder(TimeColumn x, NumberColumn y) {
+            this.x = x.asObjectArray();
             this.y = y.asDoubleArray();
         }
 

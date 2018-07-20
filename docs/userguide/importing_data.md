@@ -157,7 +157,21 @@ Table t = Table.csv(CsvReadOptions.builder(stream, "bush")
                     .columnTypes(types)));
 ```
 
+### Handling alternate encodings
+
+By default, we assume a UTF-8 encoding for your files. If your files use another encoding, the loading process is slightly different. You need to open a reader on a FileInputStream that was constructed with the correct encoding. Here's an example. 
+
+```Java
+// file has a latin-1 encoding so, special sauce
+InputStreamReader reader = new InputStreamReader(
+			new FileInputStream("somefile.csv"), Charset.forName("ISO-8859-1"));
+
+Table restaurants = Table.read()
+		.csv(CsvReadOptions.builder(reader, "restaurants"));
+```
+
 ## Working with Databases
+
 It's equally easy to create a table from the results of a database query. In this case, you never need to specify the column types, because they are inferred from the database column types. 
 
     Table t = Table.read().db(ResultSet resultSet, String tableName);

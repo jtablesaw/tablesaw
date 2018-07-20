@@ -630,4 +630,13 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
         fillWith(size(), supplier, date -> set(r[0]++, date));
         return this;
     }
+
+    @Override
+    public Object[] asObjectArray() {
+        final LocalDateTime[] output = new LocalDateTime[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            output[i] = get(i);
+        }
+        return output;
+    }
 }

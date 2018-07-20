@@ -581,6 +581,15 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
     }
 
     @Override
+    public Object[] asObjectArray() {
+        final LocalTime[] output = new LocalTime[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            output[i] = get(i);
+        }
+        return output;
+    }
+
+    @Override
     public TimeColumn fillWith(Iterator<LocalTime> iterator) {
         int[] r = new int[1];
         fillWith(size(), iterator, date -> set(r[0]++, date));

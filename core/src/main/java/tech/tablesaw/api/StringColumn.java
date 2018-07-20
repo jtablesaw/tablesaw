@@ -713,6 +713,16 @@ public class StringColumn extends AbstractColumn
         return count;
     }
 
+    @Override
+    public Object[] asObjectArray() {
+        final String[] output = new String[values().size()];
+        for (int i = 0; i < values().size(); i++) {
+            output[i] = get(i);
+        }
+        return output;
+
+    }
+
     /**
      * A map that supports reversible key value pairs of int-String
      */

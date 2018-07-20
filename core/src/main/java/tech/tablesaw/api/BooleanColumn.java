@@ -729,4 +729,13 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, Ca
         }
         return this;
     }
+
+    @Override
+    public Object[] asObjectArray() {
+        final Boolean[] output = new Boolean[data.size()];
+        for (int i = 0; i < data.size(); i++) {
+            output[i] = get(i);
+        }
+        return output;
+    }
 }

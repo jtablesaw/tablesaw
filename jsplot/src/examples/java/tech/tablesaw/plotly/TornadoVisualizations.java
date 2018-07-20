@@ -15,7 +15,6 @@
 package tech.tablesaw.plotly;
 
 import tech.tablesaw.AbstractExample;
-import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
@@ -25,6 +24,7 @@ import tech.tablesaw.plotly.api.BarPlot;
 import tech.tablesaw.plotly.api.BoxPlot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.ParetoPlot;
+import tech.tablesaw.plotly.api.PiePlot;
 import tech.tablesaw.selection.Selection;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
@@ -48,7 +48,7 @@ public class TornadoVisualizations extends AbstractExample {
 
         scale.set(scale.isEqualTo(-9), DoubleColumn.MISSING_VALUE);
 
-        Table fatalities1 = tornadoes.summarize("fatalities", AggregateFunctions.sum).by("scale");
+        Table fatalities1 = tornadoes.summarize("fatalities", sum).by("scale");
 
         BarPlot.showHorizontal(
                 "fatalities by scale",
@@ -56,7 +56,9 @@ public class TornadoVisualizations extends AbstractExample {
                 "scale",
                 "sum [fatalities]");
 
-        Table fatalities2 = tornadoes.summarize("fatalities", AggregateFunctions.sum).by("state");
+        PiePlot.show("fatalities by scale", fatalities1, "scale", "sum [fatalities]");
+
+        Table fatalities2 = tornadoes.summarize("fatalities", sum).by("state");
 
         ParetoPlot.showVertical(
                 "Tornado Fatalities by State",
@@ -64,12 +66,16 @@ public class TornadoVisualizations extends AbstractExample {
                 "state",
                 "sum [fatalities]");
 
+        Table injuries1 = tornadoes.summarize("injuries", mean).by("scale");
+        BarPlot.showHorizontal("Tornado Injuries by Scale", injuries1, "scale", "mean [injuries]");
+        out(injuries1);
+
         // distributions
         Table level5 = tornadoes.where(scale.isEqualTo(5));
 
         Histogram.show("Distribution of injuries for Level 5", level5, "injuries");
 
-        BoxPlot.show("Tornado Injuries by Scale", tornadoes,"scale", "injuries");
+        BoxPlot.show("Average number of tornado injuries by scale", tornadoes,"scale", "injuries");
 
         out();
         out("Extract month from the date and make it a separate column");

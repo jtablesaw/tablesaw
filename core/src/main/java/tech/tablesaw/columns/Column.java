@@ -41,6 +41,8 @@ public interface Column {
 
     Table summary();
 
+    Object[] asObjectArray();
+
     default Column subset(Selection rows) {
         Column c = this.emptyCopy();
         for (int row : rows) {
