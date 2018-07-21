@@ -138,7 +138,6 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
         return noMissing;
     }
 
-
     public boolean contains(LocalDateTime dateTime) {
         long dt = PackedLocalDateTime.pack(dateTime);
         return data().contains(dt);
@@ -217,11 +216,18 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
             return MISSING_VALUE;
         }
         value = Strings.padStart(value, 4, '0');
+        LocalDateTime dateTime = parseDateTime(value);
+        return PackedLocalDateTime.pack(dateTime);
+    }
+
+    private LocalDateTime parseDateTime(String value) {
         if (selectedFormatter == null) {
-            selectedFormatter = TypeUtils.getDateTimeFormatter(value);
+            setFormatter(TypeUtils.getDateTimeFormatter(value));
         }
-        LocalDateTime datetime = LocalDateTime.parse(value, selectedFormatter);
-        return PackedLocalDateTime.pack(datetime);
+        if (! TypeUtils.canParse(selectedFormatter, value)) {
+            setFormatter(TypeUtils.getDateTimeFormatter(value));
+        }
+        return LocalDateTime.parse(value, selectedFormatter);
     }
 
     public int size() {
@@ -260,7 +266,7 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
     @Override
     public DateTimeColumn emptyCopy(int rowSize) {
         DateTimeColumn column = create(name(), rowSize, locale);
-        column.selectedFormatter = selectedFormatter;
+        column.setFormatter(selectedFormatter);
         column.setPrintFormatter(printFormatter);
         return column;
     }
