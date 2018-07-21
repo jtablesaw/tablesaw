@@ -51,6 +51,11 @@ public class TableSlice extends Relation implements IntIterable {
         return table.column(columnIndex).subset(selection);
     }
 
+    @Override
+    public Column column(String columnName) {
+        return table.column(columnName).subset(selection);
+    }
+
     /**
      * Returns the entire column of the source table, unfiltered
      */
