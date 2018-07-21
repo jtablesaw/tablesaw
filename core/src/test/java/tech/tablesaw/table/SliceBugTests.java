@@ -19,6 +19,34 @@ import java.util.Arrays;
 
 public class SliceBugTests {
 
+    private final Integer[] observations = new Integer[]{10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 10};
+
+    private final LocalDateTime[] timestamps = new LocalDateTime[]{
+            LocalDateTime.of(2018, 1, 1, 13, 1, 1),
+            LocalDateTime.of(2018, 1, 1, 13, 1, 2),
+            LocalDateTime.of(2018, 1, 1, 13, 1, 2),
+            LocalDateTime.of(2018, 1, 1, 13, 1, 3),
+            LocalDateTime.of(2018, 1, 1, 13, 1, 3),
+            LocalDateTime.of(2018, 1, 1, 13, 1, 4),
+            LocalDateTime.of(2018, 1, 1, 13, 1, 5),
+            LocalDateTime.of(2018, 1, 1, 13, 1, 6),
+            LocalDateTime.of(2018, 1, 1, 13, 1, 6),
+            LocalDateTime.of(2018, 1, 1, 13, 1, 7)
+    };
+    
+    private final String[] categories = new String[]{
+            "Australia",
+            "Australia",
+            "Australia",
+            "Germany",
+            "USA",
+            "Finland",
+            "Finland",
+            "Japan",
+            "Japan",
+            "Chile"
+    };
+
 
     @Test
     public void sliceColumnIsSameWhenRetrievedWithNameOrIndex() {
@@ -93,44 +121,4 @@ public class SliceBugTests {
 
         return Table.create("table_from_arrays", countries, timestamp, values);
     }
-
-    private Integer[] observations = new Integer[]{
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            10
-    };
-    private LocalDateTime[] timestamps = new LocalDateTime[]{
-            LocalDateTime.of(2018, 1, 1, 13, 1, 1),
-            LocalDateTime.of(2018, 1, 1, 13, 1, 2),
-            LocalDateTime.of(2018, 1, 1, 13, 1, 2),
-            LocalDateTime.of(2018, 1, 1, 13, 1, 3),
-            LocalDateTime.of(2018, 1, 1, 13, 1, 3),
-            LocalDateTime.of(2018, 1, 1, 13, 1, 4),
-            LocalDateTime.of(2018, 1, 1, 13, 1, 5),
-            LocalDateTime.of(2018, 1, 1, 13, 1, 6),
-            LocalDateTime.of(2018, 1, 1, 13, 1, 6),
-            LocalDateTime.of(2018, 1, 1, 13, 1, 7)
-    };
-    private String[] categories = new String[]{
-            "Australia",
-            "Australia",
-            "Australia",
-            "Germany",
-            "USA",
-            "Finland",
-            "Finland",
-            "Japan",
-            "Japan",
-            "Chile"
-    };
-
-
 }
