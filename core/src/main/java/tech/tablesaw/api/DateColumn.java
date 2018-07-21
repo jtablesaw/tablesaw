@@ -360,14 +360,25 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         if (selectedFormatter == null) {
             selectedFormatter = TypeUtils.getDateFormatter(paddedValue).withLocale(locale);
         }
+        LocalDate date = parseDate(paddedValue);
+        return PackedLocalDate.pack(date);
+    }
+
+    private LocalDate parseDate(String value) {
+        if (selectedFormatter == null) {
+            setFormatter(TypeUtils.getDateFormatter(value));
+        }
+        if (! TypeUtils.canParse(selectedFormatter, value)) {
+            setFormatter(TypeUtils.getDateFormatter(value));
+        }
         LocalDate date;
         try {
-            date = LocalDate.parse(paddedValue, selectedFormatter);
+            date = LocalDate.parse(value, selectedFormatter);
         } catch (DateTimeParseException e) {
             selectedFormatter = TypeUtils.DATE_FORMATTER.withLocale(locale);
-            date = LocalDate.parse(paddedValue, selectedFormatter);
+            date = LocalDate.parse(value, selectedFormatter);
         }
-        return PackedLocalDate.pack(date);
+        return date;
     }
 
     @Override
