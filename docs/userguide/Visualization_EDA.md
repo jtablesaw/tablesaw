@@ -4,8 +4,6 @@
 
 In [Part 1 of this series](https://dzone.com/articles/learn-data-science-with-java-and-tablesaw), we introduced [Tablesaw](https://github.com/jtablesaw/tablesaw), a platform for data science in Java and showed how Tablesaw can be used to filter and transform datasets, and produce cross-tabulations. Now we turn to visualization. For this discussion, we'll use a Tornado dataset from NOAA.
 
-
-
 While Tablesaw is capable of creating publication-quality graphics. The visualization we discuss here helps you see what’s going on in the data while you’re doing your analysis. This process is called Exploratory Data Analysis, a discipline established by the brilliant statistician [John Tukey](https://en.wikipedia.org/wiki/John_Tukey). Among Tukey's other exploits, he coined the term "bit" to mean the smallest unit of data. 
 
 Here we focus on the most common, and most useful, plot types:

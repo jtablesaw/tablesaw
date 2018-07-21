@@ -367,15 +367,27 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
         if (selectedFormatter == null) {
             selectedFormatter = TypeUtils.getTimeFormatter(value);
         }
+        LocalTime time = parseTime(value);
+        return PackedLocalTime.pack(time);
+    }
+
+    private LocalTime parseTime(String value) {
+        if (selectedFormatter == null) {
+            setFormatter(TypeUtils.getTimeFormatter(value));
+        }
+        if (! TypeUtils.canParse(selectedFormatter, value)) {
+            setFormatter(TypeUtils.getTimeFormatter(value));
+        }
         LocalTime time;
         try {
             time = LocalTime.parse(value, selectedFormatter);
         } catch (DateTimeParseException e) {
-            selectedFormatter = TypeUtils.TIME_FORMATTER;
+            selectedFormatter = TypeUtils.TIME_FORMATTER.withLocale(locale);
             time = LocalTime.parse(value, selectedFormatter);
         }
-        return PackedLocalTime.pack(time);
+        return time;
     }
+
 
     @Override
     public TimeColumn appendCell(String object) {

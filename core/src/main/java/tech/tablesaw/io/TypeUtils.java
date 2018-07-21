@@ -299,7 +299,7 @@ public final class TypeUtils {
         throw new IllegalArgumentException("Could not find datetime parser for " + dateTimeValue);
     }
 
-    private static boolean canParse(DateTimeFormatter formatter, String dateTimeValue) {
+    public static boolean canParse(DateTimeFormatter formatter, String dateTimeValue) {
         try {
             formatter.parse(dateTimeValue);
             return true;

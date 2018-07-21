@@ -51,6 +51,11 @@ public class TableSlice extends Relation implements IntIterable {
         return table.column(columnIndex).subset(selection);
     }
 
+    @Override
+    public Column column(String columnName) {
+        return table.column(columnName).subset(selection);
+    }
+
     /**
      * Returns the entire column of the source table, unfiltered
      */
@@ -155,7 +160,7 @@ public class TableSlice extends Relation implements IntIterable {
      * @throws IllegalArgumentException if numberColumnName doesn't name a numeric column in this table
      */
     public double reduce(String numberColumnName, AggregateFunction function) {
-        Column column = column(numberColumnName);
+        Column column = table.column(numberColumnName);
         return function.summarize(column.where(selection));
     }
 

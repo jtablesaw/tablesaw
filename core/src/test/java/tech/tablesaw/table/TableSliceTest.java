@@ -26,9 +26,13 @@ public class TableSliceTest {
 
     @Test
     public void column() {
-        TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
+        TableSlice slice = new TableSlice(source, Selection.withRange(0, 4));
         assertEquals(source.column(1).name(), slice.column(1).name());
+        assertTrue(source.rowCount() > slice.column(1).size());
         assertEquals(source.column("date").name(), slice.column("date").name());
+        assertTrue(source.rowCount() > slice.column("date").size());
+        assertEquals(slice.column(1).size(), slice.column("date").size());
+        assertEquals(4, slice.column("date").size());
     }
 
     @Test
@@ -135,7 +139,8 @@ public class TableSliceTest {
     }
 
     @Test
-    public void reduce() {
+    public void reduce() throws Exception {
+        source = Table.read().csv("../data/bush.csv");
         TableSlice slice = new TableSlice(source, Selection.with(2));
         assertEquals(58.0, slice.reduce("approval", sum), 0.0001);
     }
