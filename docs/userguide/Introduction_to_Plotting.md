@@ -25,24 +25,24 @@ There are two ways to work with plotting. You can use the predefined "canned" pl
 
 ### Pre-defined ("Canned") plots 
 
-The api package contains simplified interfaces for producing a number of common plot types. The goal for these plots is that they can be created and displayed in one or two lines of code. Here's an example bubble plot and the code that produced it. The first line merely selects the subset of data to display and isn't required for plotting.
+The api package contains simplified interfaces for producing a number of common plot types. The goal for these plots is that they can be created and displayed in one or two lines of code. Here's an example bubble plot: 
+
+![bubbleplot](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_bubble.png)
+
+And here's the code to create and display it:
 
 ```java
-Table champagne = 
-    wines.where(
-    	wines.stringColumn("wine type").isEqualTo("Champagne & Sparkling")
-    		.and(wines.stringColumn("region").isEqualTo("California")));
-
 BubblePlot.show("Average retail price for champagnes by year and rating",
-                champagne,
-                "highest pro score",
-                "year",
-                "Mean Retail");
+                champagne,					// table name
+                "highest pro score",		// x variable column name
+                "year",						// y variable column name
+                "Mean Retail"				// bubble size
+               );
 ```
 
 ### Custom visualizations 
 
-Custom visualizations are assembled using "figures", "traces", and "layouts". 
+Custom visualizations are assembled using "figures", "traces", and "layouts". Custom visualizations are described [here](https://jtablesaw.github.io/tablesaw/userguide/Visualization_custom). 
 
 ## Ways of working 
 
