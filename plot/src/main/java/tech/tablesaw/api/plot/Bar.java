@@ -27,6 +27,7 @@ import tech.tablesaw.plotting.fx.FxPlot;
 
 import javax.swing.*;
 
+@Deprecated
 public class Bar extends FxPlot {
 
     private static final String WINDOW_TITLE = "Tablesaw";

@@ -20,6 +20,7 @@ import tech.tablesaw.plotting.xchart.XchartLine;
 /**
  * Displays a line chart
  */
+@Deprecated
 public class Line {
 
     public static void show(String chartTitle, NumberColumn x, NumberColumn y) {

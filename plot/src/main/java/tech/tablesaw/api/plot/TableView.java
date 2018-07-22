@@ -26,6 +26,7 @@ import javax.swing.*;
 /**
  *
  */
+@Deprecated
 public class TableView extends FxPlot {
 
     private static final String WINDOW_TITLE = "Tablesaw";

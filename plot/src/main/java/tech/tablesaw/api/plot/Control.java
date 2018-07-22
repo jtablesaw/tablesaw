@@ -24,6 +24,7 @@ import tech.tablesaw.selection.BitmapBackedSelection;
  * Displays the data column in sequence, with upper and lower control lines set by default
  * at + or - 3 standard deviations from the mean
  */
+@Deprecated
 public class Control {
 
     public static void show(String name, NumberColumn data) {

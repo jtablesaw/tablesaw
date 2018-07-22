@@ -20,6 +20,7 @@ import tech.tablesaw.plotting.smile.SmileHistogram;
 /**
  *
  */
+@Deprecated
 public class Histogram {
 
     public static void show(NumberColumn x) {

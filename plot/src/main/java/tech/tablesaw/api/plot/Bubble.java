@@ -20,6 +20,7 @@ import tech.tablesaw.plotting.xchart.XchartBubble;
  *
  * API to render a bubble plot.
  */
+@Deprecated
 public final class Bubble {
 
     private static final String DEFAULT_CHART_TITLE = "";
