@@ -8,8 +8,9 @@ While Tablesaw is capable of creating publication-quality graphics. The visualiz
 
 Here we focus on the most common, and most useful, plot types:
 
-- Bar plots
-- Pareto plots
+- Bar charts
+- Pie charts
+- Pareto charts
 - Histograms
 - Box plots
 - Scatter plots
@@ -105,33 +106,9 @@ Comparing distributions of sub-groups is also really useful.  The box plot is id
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/tornado_box.png)
 
-
+Here is the code:
 
 ```java
 BoxPlot.show("Tornado Injuries by Scale", tornadoes, "injuries", "scale");
-```
-
-### Multivariate Data: Scatter Plots, Bubble Plots, Line Plots
-
-We'll leave the tornadoes behind now and look at a restaurant dataset.
-
-```Java
-Table restaurants = Table.read().csv("zomato.csv");
-```
-
-### Time Series
-
-You can create time series plots easily. The x axis adjusts the scale according to the size of the display area and the number of points displayed. Here's an example:
-
-
-
-
-
-```Java
-Table bush = Table.read().csv("bush.csv");
-bush = bush.where(bush.stringColumn("who").equalsIgnoreCase("fox"));
-DateColumn x = bush.dateColumn("date");
-NumberColumn y = bush.nCol("approval");
-TimeSeriesPlot.show("Fox approval ratings","date", x, "rating", y);
 ```
 
