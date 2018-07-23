@@ -5,11 +5,7 @@
   <parent>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-<<<<<<< HEAD
-    <version>0.23.4</version>
-=======
     <version>0.24.1-SNAPSHOT</version>
->>>>>>> cd67d97c14371e28b92b7ae790d3f25ca74788d7
   </parent>
 
   <!--
@@ -56,38 +52,22 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-<<<<<<< HEAD
-      <version>0.23.4</version>
-=======
       <version>0.24.1-SNAPSHOT</version>
->>>>>>> cd67d97c14371e28b92b7ae790d3f25ca74788d7
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-plot</artifactId>
-<<<<<<< HEAD
-      <version>0.23.4</version>
-=======
       <version>0.24.1-SNAPSHOT</version>
->>>>>>> cd67d97c14371e28b92b7ae790d3f25ca74788d7
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-jsplot</artifactId>
-<<<<<<< HEAD
-      <version>0.23.4</version>
-=======
       <version>0.24.1-SNAPSHOT</version>
->>>>>>> cd67d97c14371e28b92b7ae790d3f25ca74788d7
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-beakerx</artifactId>
-<<<<<<< HEAD
-      <version>0.23.4</version>
-=======
       <version>0.24.1-SNAPSHOT</version>
->>>>>>> cd67d97c14371e28b92b7ae790d3f25ca74788d7
     </dependency>
   </dependencies>
 </project>
