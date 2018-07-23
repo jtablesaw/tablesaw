@@ -28,6 +28,7 @@ import tech.tablesaw.plotting.fx.FxPlot;
 
 import javax.swing.*;
 
+@Deprecated
 public class Pareto extends FxBuilder {
 
     private static final String WINDOW_TITLE = "Tablesaw";

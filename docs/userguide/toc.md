@@ -22,7 +22,7 @@ Tablesaw User Guide
 
   * [Introduction](https://jtablesaw.github.io/tablesaw/userguide/Introduction_to_Plotting)
   * [Simple plotting API](https://jtablesaw.github.io/tablesaw/userguide/Visualization_EDA)
-  * [Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/jsplots)
+  * [Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/Visualization_custom)
 
 * Machine Learning
 

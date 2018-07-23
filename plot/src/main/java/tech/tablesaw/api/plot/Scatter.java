@@ -21,6 +21,7 @@ import tech.tablesaw.table.TableSliceGroup;
 /**
  *
  */
+@Deprecated
 public class Scatter {
 
     public static void show(NumberColumn x, NumberColumn y) {

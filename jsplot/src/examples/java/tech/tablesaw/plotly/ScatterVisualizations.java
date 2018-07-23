@@ -42,17 +42,19 @@ public class ScatterVisualizations extends AbstractExample {
         }
         california.addColumns(nhps, year);
 
-        Table champagne = california
-                .where(california.stringColumn("wine type").isEqualTo("Champagne & Sparkling"));
+        Table champagne =
+                wines.where(
+                        wines.stringColumn("wine type").isEqualTo("Champagne & Sparkling")
+                            .and(wines.stringColumn("region").isEqualTo("California")));
 
-        BubblePlot.show("Champagne prices and ratings",
+        BubblePlot.show("Average retail price for champagnes by year and rating",
                 champagne,
                 "highest pro score",
                 "year",
                 "Mean Retail"
         );
 
-        BubblePlot.show("Champagne prices and ratings",
+        BubblePlot.show("Average retail price for champagnes by year and rating",
                 champagne,
                 "highest pro score",
                 "year",

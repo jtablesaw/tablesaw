@@ -20,6 +20,7 @@ import tech.tablesaw.plotting.xchart.XchartQuantile;
 /**
  *
  */
+@Deprecated
 public class Quantile {
 
     public static void show(String chartTitle, NumberColumn yColumn) {

@@ -21,6 +21,7 @@ import tech.tablesaw.table.TableSliceGroup;
 /**
  *
  */
+@Deprecated
 public class Box {
 
     public static void show(String title, TableSliceGroup groups, int columnIndex) {

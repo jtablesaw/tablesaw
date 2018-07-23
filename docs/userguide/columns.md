@@ -182,11 +182,7 @@ doubleColumn.set(doubleColumn.isMissing(), avg)
 
 NOTE: When working with missing values, always test with the isMissing() method, rather than test using the column type's MISSING_VALUE constant. For doubles, MISSING_VALUE returns Double.NaN, and since Double.NaN does not equal Double.NaN, a test like `doubleValue == MISSING_VALUE` will fail to detect missing values.
 
-### Aggregating
-
-
-
-### Formatting 
+### Formatting data 
 
 You can print data as individual values, columns or tables. The output format can be controlled by setting a type-specific formatter on a column. For example, to change how numbers are displayed you can call setPrintFormatter() on a NumberColumn, passing in a NumberColumnFormatter. Each formatter serves two functions, displaying true values and handling of  missing ones. NumberColumnFormatter has several pre-configured options, including printing as currency or percents.
 
