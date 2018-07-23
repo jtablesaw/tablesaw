@@ -12,6 +12,20 @@ import java.util.Map;
 
 public class Layout {
 
+    private final static String DEFAULT_TITLE = "";
+    private final static String DEFAULT_PAPER_BG_COLOR = "#fff";
+    private final static String DEFAULT_PLOT_BG_COLOR = "#fff";
+    private final static String DEFAULT_DECIMAL_SEPARATOR = ".";
+    private final static String DEFAULT_THOUSANDS_SEPARATOR = ",";
+    private final static boolean DEFAULT_AUTO_SIZE = false;
+    private final static boolean DEFAULT_SHOW_LEGEND = false;
+    private final static HoverMode DEFAULT_HOVER_MODE = HoverMode.FALSE;
+    private final static DragMode DEFAULT_DRAG_MODE = DragMode.ZOOM;
+    private final static int DEFAULT_HOVER_DISTANCE = 20;
+    private final static BarMode DEFAULT_BAR_MODE = BarMode.GROUP;
+    private final static Font DEFAULT_TITLE_FONT = Font.builder().build();
+    private final static Font DEFAULT_FONT = Font.builder().build();
+
     private final PebbleEngine engine = TemplateUtils.getNewEngine();
 
     /**
@@ -210,28 +224,26 @@ public class Layout {
         return writer.toString();
     }
 
-
     protected Map<String, Object> getContext() {
         Map<String, Object> context = new HashMap<>();
-        context.put("title", title);
-        context.put("titlefont", titleFont);
+        if (!title.equals(DEFAULT_TITLE)) context.put("title", title);
+        if(!titleFont.equals(DEFAULT_TITLE_FONT)) context.put("titlefont", titleFont);
         context.put("width", width);
         context.put("height", height);
-        context.put("font", font);
-        context.put("autosize", autoSize);
-        context.put("hoverdistance", hoverDistance);
-        context.put("hoverMode", hoverMode);
+        if(!font.equals(DEFAULT_FONT)) context.put("font", font);
+        if(!autoSize == DEFAULT_AUTO_SIZE) context.put("autosize", autoSize);
+        if(hoverDistance != DEFAULT_HOVER_DISTANCE) context.put("hoverdistance", hoverDistance);
+        if (!hoverMode.equals(DEFAULT_HOVER_MODE)) context.put("hoverMode", hoverMode);
         if (margin != null) {
             context.put("margin", margin);
         }
-        context.put("decimalSeparator", decimalSeparator);
-        context.put("thousandsSeparator", thousandsSeparator);
-        context.put("dragmode", dragMode);
-        context.put("showlegend", showLegend);
-        context.put("plotbgcolor", plotBgColor);
-        context.put("paperbgcolor", paperBgColor);
-
-        context.put("barMode", barMode);
+        if (!decimalSeparator.equals(DEFAULT_DECIMAL_SEPARATOR)) context.put("decimalSeparator", decimalSeparator);
+        if (!thousandsSeparator.equals(DEFAULT_THOUSANDS_SEPARATOR)) context.put("thousandsSeparator", thousandsSeparator);
+        if(!dragMode.equals(DEFAULT_DRAG_MODE)) context.put("dragmode", dragMode);
+        if (!showLegend == DEFAULT_SHOW_LEGEND) context.put("showlegend", showLegend);
+        if (!plotBgColor.equals(DEFAULT_PLOT_BG_COLOR)) context.put("plotbgcolor", plotBgColor);
+        if (!paperBgColor.equals(DEFAULT_PAPER_BG_COLOR))context.put("paperbgcolor", paperBgColor);
+        if (!barMode.equals(DEFAULT_BAR_MODE)) context.put("barMode", barMode);
 
         if (xAxis != null) {
             context.put("xAxis", xAxis);
@@ -251,7 +263,7 @@ public class Layout {
         /**
          * The global font
          */
-        Font font = Font.builder().build();
+        Font font = DEFAULT_FONT;
 
         /*
          * The plot title
@@ -261,7 +273,7 @@ public class Layout {
         /**
          * Sets the title font
          */
-        Font titleFont = font;
+        Font titleFont = DEFAULT_TITLE_FONT;
 
         /**
          * Determines whether or not a layout width or height that has been left undefined by the user
@@ -288,38 +300,38 @@ public class Layout {
         /**
          * Sets the color of paper where the graph is drawn.
          */
-        String paperBgColor = "#fff";
+        String paperBgColor = DEFAULT_PAPER_BG_COLOR;
 
         /**
          * Sets the color of plotting area in-between x and y axes.
          */
-        String plotBgColor = "#fff";
+        String plotBgColor = DEFAULT_PLOT_BG_COLOR;
 
         /**
          * Sets the decimal. For example, "." puts a '.' before decimals
          */
-        String decimalSeparator = ".";
+        String decimalSeparator = DEFAULT_DECIMAL_SEPARATOR;
 
         /**
          * Sets the separator. For example, a " " puts a space between thousands.
          */
-        String thousandsSeparator = ",";
+        String thousandsSeparator = DEFAULT_THOUSANDS_SEPARATOR;
 
         /**
          * Determines whether or not a legend is drawn.
          */
-        boolean showLegend = false;
+        boolean showLegend = DEFAULT_SHOW_LEGEND;
 
         /**
          * Determines the mode of hover interactions.
          */
-        HoverMode hoverMode = HoverMode.FALSE;
+        HoverMode hoverMode = DEFAULT_HOVER_MODE;
 
         /**
          * Determines the mode of drag interactions. "select" and "lasso" apply only to scatter traces with markers or text.
          * "orbit" and "turntable" apply only to 3D scenes.
          */
-        DragMode dragMode = DragMode.ZOOM;
+        DragMode dragMode = DEFAULT_DRAG_MODE;
 
         /**
          * Sets the default distance (in pixels) to look for data to add hover labels
@@ -328,13 +340,13 @@ public class Layout {
          * hovering is on inside the area and off outside, but these objects will not supersede hover on point-like
          * objects in case of conflict.
          */
-        int hoverDistance = 20; // greater than or equal to -1
+        int hoverDistance = DEFAULT_HOVER_DISTANCE; // greater than or equal to -1
 
         Axis xAxis;
 
         Axis yAxis;
 
-        BarMode barMode = BarMode.GROUP;
+        BarMode barMode = DEFAULT_BAR_MODE;
 
         public Layout build() {
             return new Layout(this);

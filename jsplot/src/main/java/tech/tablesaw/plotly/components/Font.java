@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Font extends Component {
 
@@ -106,5 +107,21 @@ public class Font extends Component {
         public Font build() {
             return new Font(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Font font = (Font) o;
+        return size == font.size &&
+                fontFamily == font.fontFamily &&
+                Objects.equals(color, font.color);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(fontFamily, size, color);
     }
 }

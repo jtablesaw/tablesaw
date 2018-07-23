@@ -45,22 +45,46 @@
     spikecolor: '{{spikeColor}}',
     spikedash: '{{spikeDash}}',
 {% endif %}
+{% if lineColor is not null %}
     linecolor: '{{lineColor}}',
+{% endif %}
+{% if lineWidth is not null %}
     linewidth: {{lineWidth}},
+{% endif %}
+{% if showLine is not null %}
     showline: {{showLine}},
-
+{% endif %}
+{% if gridColor is not null %}
     gridcolor: '{{gridColor}}',
+{% endif %}
+{% if gridWidth is not null %}
     gridwidth: {{gridWidth}},
+{% endif %}
+{% if showGrid is not null %}
     showgrid: {{showGrid}},
-
+{% endif %}
+{% if zeroLineColor is not null %}
     zerolinecolor: '{{zeroLineColor}}',
+{% endif %}
+{% if zeroLineWidth is not null %}
     zerolinewidth: {{zeroLineWidth}},
+{% endif %}
+{% if zeroLine is not null %}
     zeroline: {{zeroLine}},
-
+{% endif %}
+{% if scaleRatio is not null %}
     scaleratio: '{{scaleRatio}}',
+{% endif %}
+{% if constrain is not null %}
     constrain: '{{constrain}}',
+{% endif %}
 {% if constrainToward is not null %}
     constraintoward: '{{constrainToward}}',
 {% endif %}
+{% if type is not null %}
     type: '{{type}}',
-    visible: {{visible}}}
+{% endif %}
+{% if visible is not null %}
+    visible: {{visible}}
+{% endif %}
+    }

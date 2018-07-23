@@ -159,8 +159,22 @@ public class Axis extends Component {
     }
 
     private static final String DEFAULT_COLOR = "#444";
+    private static final String DEFAULT_ZERO_LINE_COLOR = "#444";
     private static final String DEFAULT_LINE_COLOR = "#444";
-    private static final String DEFAULT_LINE_WIDTH = "#444";
+    private static final String DEFAULT_GRID_COLOR = "#eee";
+    private static final int DEFAULT_LINE_WIDTH = 1;
+
+    private static final int DEFAULT_ZERO_LINE_WIDTH = 1;
+    private static final int DEFAULT_GRID_WIDTH = 1;
+    private static final boolean DEFAULT_SHOW_LINE = true;
+    private static final boolean DEFAULT_SHOW_GRID = true;
+    private static final boolean DEFAULT_ZERO_LINE = false;
+    private static final double DEFAULT_SCALE_RATIO = 1.0;
+    private static final Constrain DEFAULT_CONSTRAIN_RANGE = Constrain.RANGE;
+
+    private static final AutoRange DEFAULT_AUTO_RANGE = AutoRange.TRUE;
+    private static final Type DEFAULT_TYPE = Type.DEFAULT;
+    private static final boolean DEFAULT_VISIBLE = true;
 
     private final String title;
     private final boolean visible;
@@ -246,20 +260,20 @@ public class Axis extends Component {
         Map<String, Object> context = new HashMap<>();
         context.put("title", title);
         context.put("titleFont", titleFont);
-        context.put("visible", visible);
-        context.put("type", type);
-        context.put("color", color);
+        if(visible != DEFAULT_VISIBLE) context.put("visible", visible);
+        if(!type.equals(DEFAULT_TYPE)) context.put("type", type);
+        if(!color.equals(DEFAULT_COLOR)) context.put("color", color);
         if (font != null) {
             context.put("font", font);
         }
-        context.put("autoRange", autoRange);
+        if (!autoRange.equals(DEFAULT_AUTO_RANGE)) context.put("autoRange", autoRange);
         context.put("rangeMode", rangeMode);
         if (range != null) {
             context.put("range", Utils.dataAsString(range));
         }
         context.put("fixedRange", fixedRange);
-        context.put("scaleRatio", scaleRatio);
-        context.put("constrain", constrain);
+        if(scaleRatio != DEFAULT_SCALE_RATIO) context.put("scaleRatio", scaleRatio);
+        if(!constrain.equals(DEFAULT_CONSTRAIN_RANGE)) context.put("constrain", constrain);
         if (constrainToward != null) {
             context.put("constrainToward", constrainToward);
         }
@@ -271,33 +285,33 @@ public class Axis extends Component {
             tickSettings.updateContext(context);
         }
 
-        context.put("gridWidth", gridWidth);
-        context.put("lineWidth", lineWidth);
-        context.put("zeroLineWidth", zeroLineWidth);
-        context.put("lineColor", lineColor);
-        context.put("zeroLineColor", zeroLineColor);
-        context.put("gridColor", gridColor);
-        context.put("showLine", showLine);
-        context.put("zeroLine", zeroLine);
-        context.put("showGrid", showGrid);
+        if(gridWidth != DEFAULT_GRID_WIDTH) context.put("gridWidth", gridWidth);
+        if(lineWidth != DEFAULT_LINE_WIDTH) context.put("lineWidth", lineWidth);
+        if(zeroLineWidth != DEFAULT_ZERO_LINE_WIDTH) context.put("zeroLineWidth", zeroLineWidth);
+        if(!lineColor.equals(DEFAULT_LINE_COLOR)) context.put("lineColor", lineColor);
+        if(!zeroLineColor.equals(DEFAULT_ZERO_LINE_COLOR)) context.put("zeroLineColor", zeroLineColor);
+        if(!gridColor.equals(DEFAULT_GRID_COLOR)) context.put("gridColor", gridColor);
+        if(showLine != DEFAULT_SHOW_LINE) context.put("showLine", showLine);
+        if(zeroLine != DEFAULT_ZERO_LINE) context.put("zeroLine", zeroLine);
+        if(showGrid != DEFAULT_SHOW_GRID) context.put("showGrid", showGrid);
         return context;
     }
 
     public static class AxisBuilder {
 
-        Constrain constrain = Constrain.RANGE;
+        Constrain constrain = DEFAULT_CONSTRAIN_RANGE;
         ConstrainToward constrainToward;
-        double scaleRatio = 1.0;
+        double scaleRatio = DEFAULT_SCALE_RATIO;
 
         Font titleFont;
         String title = "";
-        boolean visible = true;
-        String color = "#444";
+        boolean visible = DEFAULT_VISIBLE;
+        String color = DEFAULT_COLOR;
         Font font;
 
-        Type type = Type.DEFAULT;
+        Type type = DEFAULT_TYPE;
         RangeMode rangeMode = RangeMode.NORMAL;
-        AutoRange autoRange = TRUE;
+        AutoRange autoRange = DEFAULT_AUTO_RANGE;
         Object[] range;
         boolean fixedRange = true;  // true means the axis cannot be zoomed
 
@@ -305,17 +319,17 @@ public class Axis extends Component {
 
         Spikes spikes = null;
 
-        boolean showLine = true;
-        String lineColor = "#444";
-        int lineWidth = 1;
+        boolean showLine = DEFAULT_SHOW_LINE;
+        String lineColor = DEFAULT_LINE_COLOR;
+        int lineWidth = DEFAULT_LINE_WIDTH;
 
-        boolean zeroLine = false;
-        String zeroLineColor = "#444";
-        int zeroLineWidth = 1;
+        boolean zeroLine = DEFAULT_ZERO_LINE;
+        String zeroLineColor = DEFAULT_ZERO_LINE_COLOR;
+        int zeroLineWidth = DEFAULT_ZERO_LINE_WIDTH;
 
-        boolean showGrid = true;
-        String gridColor = "#eee";
-        int gridWidth = 1;
+        boolean showGrid = DEFAULT_SHOW_GRID;
+        String gridColor = DEFAULT_GRID_COLOR;
+        int gridWidth = DEFAULT_GRID_WIDTH;
 
         private AxisBuilder() {}
 
