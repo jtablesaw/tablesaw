@@ -35,10 +35,12 @@ public class BubblePlot {
         ScatterTrace[] traces  = new ScatterTrace[tables.size()];
         for (int i = 0; i < tables.size(); i++) {
             List<Table> tableList = tables.asTableList();
+
             Marker marker = Marker.builder()
                     .size(tableList.get(i).numberColumn(sizeColumn))
-                    .opacity(.75)
+                    //.opacity(.75)
                     .build();
+
             traces[i] = ScatterTrace.builder(
                     tableList.get(i).numberColumn(xCol),
                     tableList.get(i).numberColumn(yCol))
@@ -67,7 +69,7 @@ public class BubblePlot {
 
         Marker marker = Marker.builder()
                 .size(table.numberColumn(sizeColumn))
-                .opacity(.75)
+                //.opacity(.75)
                 .build();
 
         ScatterTrace trace = ScatterTrace.builder(

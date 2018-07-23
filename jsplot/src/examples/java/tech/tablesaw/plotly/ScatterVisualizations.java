@@ -45,7 +45,8 @@ public class ScatterVisualizations extends AbstractExample {
         Table champagne =
                 wines.where(
                         wines.stringColumn("wine type").isEqualTo("Champagne & Sparkling")
-                            .and(wines.stringColumn("region").isEqualTo("California")));
+                            .and(wines.stringColumn("region").isEqualTo("California"))
+                            );
 
         BubblePlot.show("Average retail price for champagnes by year and rating",
                 champagne,
@@ -64,7 +65,12 @@ public class ScatterVisualizations extends AbstractExample {
 
         ScatterPlot.show("Wine prices and ratings", california, "Mean Retail", "highest pro score", "wine type");
 
-        Scatter3DPlot.show("", champagne, "year", "highest pro score", "mean retail", "appellation");
+        Scatter3DPlot.show("Champagne (prices, ratings, year, appellation) ",
+                champagne,
+                "year",
+                "highest pro score",
+                "mean retail",
+                "appellation");
 
     }
 }

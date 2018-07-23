@@ -30,6 +30,9 @@ public class Scatter3DPlot {
                 .yAxis(Axis.builder()
                         .title(yCol)
                         .build())
+                .zAxis(Axis.builder()
+                        .title(zCol)
+                        .build())
                 .build();
 
         Scatter3DTrace[] traces  = new Scatter3DTrace[tables.size()];
@@ -58,6 +61,9 @@ public class Scatter3DPlot {
                         .build())
                 .yAxis(Axis.builder()
                         .title(yCol)
+                        .build())
+                .zAxis(Axis.builder()
+                        .title(zCol)
                         .build())
                 .build();
 

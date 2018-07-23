@@ -188,6 +188,8 @@ public class Layout {
 
     private Axis yAxis;
 
+    private Axis zAxis;
+
     private BarMode barMode;
 
     private Layout(LayoutBuilder builder) {
@@ -205,6 +207,7 @@ public class Layout {
         this.width = builder.width;
         this.xAxis = builder.xAxis;
         this.yAxis = builder.yAxis;
+        this.zAxis = builder.zAxis;
         this.paperBgColor = builder.paperBgColor;
         this.plotBgColor = builder.plotBgColor;
         this.showLegend = builder.showLegend;
@@ -214,7 +217,6 @@ public class Layout {
     public String asJavascript() {
         Writer writer = new StringWriter();
         PebbleTemplate compiledTemplate;
-
         try {
             compiledTemplate = engine.getTemplate("layout_template.html");
             compiledTemplate.evaluate(writer, getContext());
@@ -250,6 +252,9 @@ public class Layout {
         }
         if (yAxis != null) {
             context.put("yAxis", yAxis);
+        }
+        if (zAxis != null) {
+            context.put("zAxis", yAxis);
         }
         return context;
     }
@@ -346,6 +351,8 @@ public class Layout {
 
         Axis yAxis;
 
+        Axis zAxis;
+
         BarMode barMode = DEFAULT_BAR_MODE;
 
         public Layout build() {
@@ -405,6 +412,11 @@ public class Layout {
 
         public LayoutBuilder yAxis(Axis axis) {
             this.yAxis = axis;
+            return this;
+        }
+
+        public LayoutBuilder zAxis(Axis axis) {
+            this.zAxis = axis;
             return this;
         }
 

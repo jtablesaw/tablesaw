@@ -14,6 +14,10 @@ import java.util.Map;
 
 public abstract class AbstractTrace implements Trace {
 
+    static final double DEFAULT_OPACITY = 1.0;
+    static final Visibility DEFAULT_VISIBILITY = Visibility.TRUE;
+    static final boolean DEFAULT_SHOW_LEGEND = false;
+
     protected final PebbleEngine engine = TemplateUtils.getNewEngine();
 
     public enum Visibility {
@@ -89,12 +93,12 @@ public abstract class AbstractTrace implements Trace {
         Map<String, Object> context = new HashMap<>();
         context.put("type", type);
         context.put("name", name);
-        context.put("showLegend", showLegend);
+        if(showLegend != DEFAULT_SHOW_LEGEND) context.put("showLegend", showLegend);
         context.put("legendGroup", legendGroup);
-        context.put("visible", visible);
+        if(!visible.equals(DEFAULT_VISIBILITY)) context.put("visible", visible);
         context.put("ids", ids);
         context.put("hoverLable", hoverLabel);
-        context.put("opacity", opacity);
+        if(opacity != DEFAULT_OPACITY) context.put("opacity", opacity);
         return context;
     }
 

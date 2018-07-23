@@ -37,6 +37,9 @@ var layout = {
 {% if yAxis is not null %}
     yaxis: {{yAxis | raw}},
 {% endif %}
+{% if zAxis is not null %}
+    zaxis: {{zAxis | raw}},
+{% endif %}
 {% if dragmode is not null %}
     dragmode: '{{dragmode}}',
 {% endif %}

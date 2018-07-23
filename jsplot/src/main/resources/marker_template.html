@@ -1,5 +1,7 @@
 {
+{% if size is not null %}
     size: {{size}},
+{% endif %}
 {% if color is not null %}
     color: {{color | raw}},
 {% endif %}
@@ -7,17 +9,27 @@
     colorscale: '{{colorScale | raw}}',
 {% endif %}
 {% if cMax is not null %}
-    cmax: {{cMax | raw}},
+    cmax: {{cMax}},
 {% endif %}
-{% if cMIn is not null %}
-    cmin: {{cMin | raw}},
+{% if cMin is not null %}
+    cmin: {{cMin}},
 {% endif %}
 {% if symbol is not null %}
     symbol: '{{symbol | raw}}',
 {% endif %}
+{% if cAuto is not null %}
     cauto: {{cAuto}},
+{% endif %}
+{% if autoColorScale is not null %}
     autocolorscale: {{autoColorScale}},
+{% endif %}
+{% if showScale is not null %}
     showscale: {{showScale}},
+{% endif %}
+{% if reverseScale is not null %}
     reversescale: {{reverseScale}},
+{% endif %}
+{% if opacity is not null %}
     opacity: {{opacity}},
+{% endif %}
 }

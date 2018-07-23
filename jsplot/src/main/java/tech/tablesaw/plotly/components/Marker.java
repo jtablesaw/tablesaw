@@ -12,7 +12,25 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static tech.tablesaw.plotly.components.Marker.SizeMode.DIAMETER;
+
 public class Marker extends Component {
+
+    public enum SizeMode {
+        AREA("area"),
+        DIAMETER("diameter");
+
+        private String value;
+
+        SizeMode(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
 
     /**
      * Predefined palettes
@@ -49,8 +67,15 @@ public class Marker extends Component {
     }
 }
 
+    private static final boolean DEFAULT_C_AUTO = true;
+    private static final boolean DEFAULT_AUTO_COLOR_SCALE = true;
+    private static final boolean DEFAULT_SHOW_SCALE = false;
+    private static final boolean DEFAULT_REVERSE_SCALE = false;
+    private static final double DEFAULT_OPACITY = 1.0;
+    private static final SizeMode DEFAULT_SIZE_MODE = DIAMETER;
+
     private final double[] size;
-    private final String color;
+    private final String[] color;
     private final Palette colorScalePalette;
     private final boolean cAuto;
     private final double cMin;
@@ -96,15 +121,18 @@ public class Marker extends Component {
     private Map<String, Object> getContext() {
         Map<String, Object> context = new HashMap<>();
         context.put("size", size.length == 1? size[0]: Utils.dataAsString(size));
+        //context.put("size", Utils.dataAsString(size));
         context.put("color", color);
         context.put("colorScale", colorScalePalette);
-        context.put("cAuto", cAuto);
-        context.put("cMin", cMin);
-        context.put("cMax", cMax);
-        context.put("autoColorScale", autoColorScale);
-        context.put("showScale",showScale);
-        context.put("reverseScale", reverseScale);
-        context.put("opacity", opacity);
+        if(cAuto != DEFAULT_C_AUTO) context.put("cAuto", cAuto);
+        if (color != null && color.length > 1) {
+            context.put("cMin", cMin);
+            context.put("cMax", cMax);
+        }
+        if (autoColorScale != DEFAULT_AUTO_COLOR_SCALE) context.put("autoColorScale", autoColorScale);
+        if (showScale != DEFAULT_SHOW_SCALE) context.put("showScale",showScale);
+        if (reverseScale != DEFAULT_REVERSE_SCALE) context.put("reverseScale", reverseScale);
+        if (opacity != DEFAULT_OPACITY) context.put("opacity", opacity);
         context.put("symbol", symbol);
         return context;
     }
@@ -112,15 +140,15 @@ public class Marker extends Component {
     public static class MarkerBuilder {
 
         double[] size = {6};
-        String color;
+        String[] color;
         Palette colorScalePalette;
-        boolean cAuto = true;
+        boolean cAuto = DEFAULT_C_AUTO;
         double cMin;
         double cMax;
-        boolean autoColorScale = true;
-        boolean showScale = false;
-        boolean reverseScale = false;
-        double opacity = 1;
+        boolean autoColorScale = DEFAULT_AUTO_COLOR_SCALE;
+        boolean showScale = DEFAULT_SHOW_SCALE;
+        boolean reverseScale = DEFAULT_REVERSE_SCALE;
+        double opacity = DEFAULT_OPACITY;
         Symbol symbol;
 
         public MarkerBuilder size(double ... size) {
@@ -220,6 +248,14 @@ public class Marker extends Component {
          * Sets the marker color to a single value
          */
         public MarkerBuilder color(String color) {
+            this.color = new String[1];
+            this.color[0] = color;
+            return this;
+        }
+        /**
+         * Sets the marker color to an array of color values
+         */
+        public MarkerBuilder color(String[] color) {
             this.color = color;
             return this;
         }
