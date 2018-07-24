@@ -5,6 +5,7 @@ import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.components.Scene;
 import tech.tablesaw.plotly.traces.Scatter3DTrace;
 import tech.tablesaw.table.TableSliceGroup;
 
@@ -24,14 +25,16 @@ public class Scatter3DPlot {
                 .height(HEIGHT)
                 .width(WIDTH)
                 .showLegend(true)
-                .xAxis(Axis.builder()
-                        .title(xCol)
-                        .build())
-                .yAxis(Axis.builder()
-                        .title(yCol)
-                        .build())
-                .zAxis(Axis.builder()
-                        .title(zCol)
+                .scene(Scene.sceneBuilder()
+                        .xAxis(Axis.builder()
+                                .title(xCol)
+                                .build())
+                        .yAxis(Axis.builder()
+                                .title(yCol)
+                                .build())
+                        .zAxis(Axis.builder()
+                                .title(zCol)
+                                .build())
                         .build())
                 .build();
 
@@ -56,14 +59,16 @@ public class Scatter3DPlot {
                 .title(title)
                 .height(HEIGHT)
                 .width(WIDTH)
-                .xAxis(Axis.builder()
-                        .title(xCol)
-                        .build())
-                .yAxis(Axis.builder()
-                        .title(yCol)
-                        .build())
-                .zAxis(Axis.builder()
-                        .title(zCol)
+                .scene(Scene.sceneBuilder()
+                        .xAxis(Axis.builder()
+                                .title(xCol)
+                                .build())
+                        .yAxis(Axis.builder()
+                                .title(yCol)
+                                .build())
+                        .zAxis(Axis.builder()
+                                .title(zCol)
+                                .build())
                         .build())
                 .build();
 

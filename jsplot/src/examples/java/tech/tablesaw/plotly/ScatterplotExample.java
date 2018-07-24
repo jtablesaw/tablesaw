@@ -16,6 +16,7 @@ package tech.tablesaw.plotly;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.ScatterTrace;
@@ -24,14 +25,16 @@ import tech.tablesaw.plotly.traces.Trace;
 /**
  *
  */
-
 public class ScatterplotExample {
 
     public static void main(String[] args) throws Exception {
         Table baseball = Table.read().csv("../data/baseball.csv");
         NumberColumn x = baseball.nCol("BA");
         NumberColumn y = baseball.nCol("W");
-        Layout layout = Layout.builder().title("Wins vs BA").build();
+        Layout layout = Layout.builder().title("Wins vs BA")
+                .xAxis(Axis.builder().title("Batting Average").build())
+                .yAxis(Axis.builder().title("Wins").build())
+                .build();
         Trace trace = ScatterTrace.builder(x, y).build();
         Plot.show(new Figure(layout, trace));
     }

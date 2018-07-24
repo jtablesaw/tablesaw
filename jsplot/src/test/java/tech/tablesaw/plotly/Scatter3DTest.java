@@ -2,7 +2,9 @@ package tech.tablesaw.plotly;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.Scatter3DTrace;
 
 @Ignore
@@ -31,7 +33,11 @@ public class Scatter3DTest {
                 .text(labels)
                 .build();
 
-        Plot.show( new Figure(trace));
+        Layout layout = Layout.builder()
+                .xAxis(Axis.builder().title("x title").build())
+                .build();
+
+        Plot.show(new Figure(layout, trace));
     }
 
     @Test
@@ -40,8 +46,11 @@ public class Scatter3DTest {
         Scatter3DTrace trace = Scatter3DTrace.builder(x, y, z)
                 .mode(Scatter3DTrace.Mode.LINE_AND_MARKERS)
                 .build();
+        Layout layout = Layout.builder()
+                .xAxis(Axis.builder().title("x title").build())
+                .build();
 
-        Plot.show(new Figure(trace));
+        Plot.show(new Figure(layout, trace));
     }
 
     @Test

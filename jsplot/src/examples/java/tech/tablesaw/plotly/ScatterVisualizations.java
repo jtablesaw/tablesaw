@@ -72,5 +72,11 @@ public class ScatterVisualizations extends AbstractExample {
                 "mean retail",
                 "appellation");
 
+        Scatter3DPlot.show("Champagne (prices, ratings, year, appellation) ",
+                champagne,
+                "year",
+                "highest pro score",
+                "mean retail");
+
     }
 }

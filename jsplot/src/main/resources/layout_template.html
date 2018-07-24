@@ -31,6 +31,9 @@ var layout = {
 {% if hoverdistance is not null %}
     hoverdistance: {{hoverdistance}},
 {% endif %}
+{% if scene is not null %}
+    scene: {{scene | raw}},
+{% endif %}
 {% if xAxis is not null %}
     xaxis: {{xAxis | raw}},
 {% endif %}

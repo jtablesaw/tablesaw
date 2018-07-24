@@ -27,6 +27,7 @@ public class Layout {
     private final static Font DEFAULT_FONT = Font.builder().build();
 
     private final PebbleEngine engine = TemplateUtils.getNewEngine();
+    private final Scene scene;
 
     /**
      * Determines the mode of hover interactions.
@@ -212,6 +213,7 @@ public class Layout {
         this.plotBgColor = builder.plotBgColor;
         this.showLegend = builder.showLegend;
         this.barMode = builder.barMode;
+        this.scene = builder.scene;
     }
 
     public String asJavascript() {
@@ -246,6 +248,7 @@ public class Layout {
         if (!plotBgColor.equals(DEFAULT_PLOT_BG_COLOR)) context.put("plotbgcolor", plotBgColor);
         if (!paperBgColor.equals(DEFAULT_PAPER_BG_COLOR))context.put("paperbgcolor", paperBgColor);
         if (!barMode.equals(DEFAULT_BAR_MODE)) context.put("barMode", barMode);
+        if (scene != null) context.put("scene", scene);
 
         if (xAxis != null) {
             context.put("xAxis", xAxis);
@@ -253,8 +256,8 @@ public class Layout {
         if (yAxis != null) {
             context.put("yAxis", yAxis);
         }
-        if (zAxis != null) {
-            context.put("zAxis", yAxis);
+        if (zAxis != null) {  // TODO: remove? It's in scene for 3d scatters at least.
+            context.put("zAxis", zAxis);
         }
         return context;
     }
@@ -355,6 +358,8 @@ public class Layout {
 
         BarMode barMode = DEFAULT_BAR_MODE;
 
+        private Scene scene;
+
         public Layout build() {
             return new Layout(this);
         }
@@ -378,6 +383,11 @@ public class Layout {
 
         public LayoutBuilder margin(Margin margin) {
             this.margin = margin;
+            return this;
+        }
+
+        public LayoutBuilder scene(Scene scene) {
+            this.scene = scene;
             return this;
         }
 
