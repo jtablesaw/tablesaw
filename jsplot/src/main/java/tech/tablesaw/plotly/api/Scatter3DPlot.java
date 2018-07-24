@@ -5,7 +5,7 @@ import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.components.Scene;
+import tech.tablesaw.plotly.components.threeD.Scene;
 import tech.tablesaw.plotly.traces.Scatter3DTrace;
 import tech.tablesaw.table.TableSliceGroup;
 

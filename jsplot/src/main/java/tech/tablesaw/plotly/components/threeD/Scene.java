@@ -1,7 +1,9 @@
-package tech.tablesaw.plotly.components;
+package tech.tablesaw.plotly.components.threeD;
 
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import tech.tablesaw.plotly.components.Axis;
+import tech.tablesaw.plotly.components.Component;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -17,10 +19,13 @@ public class Scene extends Component {
 
     private final Axis zAxis;
 
+    private final Camera camera;
+
     private Scene(SceneBuilder builder) {
         this.xAxis = builder.xAxis;
         this.yAxis = builder.yAxis;
         this.zAxis = builder.zAxis;
+        this.camera = builder.camera;
     }
 
     protected Map<String, Object> getContext() {
@@ -34,6 +39,9 @@ public class Scene extends Component {
         if (zAxis != null) {
             context.put("zAxis", zAxis);
         }
+        if (camera != null) {
+            context.put("camera", camera);
+        }
         return context;
     }
 
@@ -42,7 +50,7 @@ public class Scene extends Component {
     }
 
     @Override
-    String asJavascript() {
+    public String asJavascript() {
         Writer writer = new StringWriter();
         PebbleTemplate compiledTemplate;
         try {
@@ -57,11 +65,13 @@ public class Scene extends Component {
 
     public static class SceneBuilder {
 
-        Axis xAxis;
+        private Axis xAxis;
 
-        Axis yAxis;
+        private Axis yAxis;
 
-        Axis zAxis;
+        private Axis zAxis;
+
+        private Camera camera;
 
         public SceneBuilder xAxis(Axis axis) {
             this.xAxis = axis;
@@ -75,6 +85,11 @@ public class Scene extends Component {
 
         public SceneBuilder zAxis(Axis axis) {
             this.zAxis = axis;
+            return this;
+        }
+
+        public SceneBuilder camera(Camera camera) {
+            this.camera = camera;
             return this;
         }
 

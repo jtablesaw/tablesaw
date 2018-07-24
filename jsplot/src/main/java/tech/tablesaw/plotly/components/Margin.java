@@ -55,7 +55,7 @@ public class Margin extends Component {
         this.autoExpand = builder.autoExpand;
     }
 
-    String asJavascript() {
+    public String asJavascript() {
         Writer writer = new StringWriter();
         PebbleTemplate compiledTemplate;
 

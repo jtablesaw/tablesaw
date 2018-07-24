@@ -105,7 +105,7 @@ public class Marker extends Component {
     }
 
     @Override
-    String asJavascript() {
+    public String asJavascript() {
         Writer writer = new StringWriter();
         PebbleTemplate compiledTemplate;
 

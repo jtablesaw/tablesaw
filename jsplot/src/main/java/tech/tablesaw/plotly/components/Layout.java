@@ -3,6 +3,7 @@ package tech.tablesaw.plotly.components;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import tech.tablesaw.plotly.components.threeD.Scene;
 
 import java.io.IOException;
 import java.io.StringWriter;
