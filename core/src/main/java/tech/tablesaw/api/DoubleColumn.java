@@ -136,7 +136,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * We remove any commas before parsing
      */
     public static double convert(final String stringValue) {
-        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
+        if (Strings.isNullOrEmpty(stringValue.trim()) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
             return MISSING_VALUE;
         }
         final Matcher matcher = DoubleColumn.COMMA_PATTERN.matcher(stringValue);
