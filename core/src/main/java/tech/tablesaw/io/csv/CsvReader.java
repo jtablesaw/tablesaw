@@ -487,17 +487,6 @@ public class CsvReader {
                         columnData.add(new ArrayList<>());
                     }
                 }
-/*
-                if (nextLine.length < columnData.size()) {
-                    if (nextLine.length > 1 && Strings.isNullOrEmpty(nextLine[0])) {
-                        // empty line
-                    } else {
-                        throw new IndexOutOfBoundsException("Row number " + nextRow + " is too short.");
-                    }
-                } else if (nextLine.length > columnData.size()) {
-                    throw new RuntimeException("Row number " + nextRow + " is too long.");
-                }
-*/
                 int columnNumber = 0;
                 if (rowCount == nextRow) {
                     for (String field : nextLine) {
