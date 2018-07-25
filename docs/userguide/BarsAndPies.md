@@ -84,31 +84,3 @@ Pareto.show("Tornado Fatalities by State", fatalities1, "state", "sum[fatalities
 ```
 
 ![Pareto of Fatalities by State](https://jtablesaw.github.io/tablesaw/userguide/images/eda/tornado_pareto.png)
-
-### Distributions
-
-Understanding the distribution of data within a column is often essential. Tablesaw provides several ways.  The most common is the Histogram, which is shown below.
-
-![Histogram of Injuries for level 5 tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/histogram.png)
-
-This plot shows the distribution of injury counts for the most powerful tornadoes. To produce it, we simply filter the table to include only level 5, and call Histogram.show();
-
-```Java
-NumberColumn scale = tornadoes.numberColumn("scale");
-Table level5 = tornadoes.where(scale.isEqualTo(5));
-
-Histogram.show("Distribution of injuries for Level 5", level5, "injuries");
-```
-
-#### Distributions of sub-groups
-
-Comparing distributions of sub-groups is also really useful.  The box plot is ideal for that:  
-
-![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/tornado_box.png)
-
-Here is the code:
-
-```java
-BoxPlot.show("Tornado Injuries by Scale", tornadoes, "injuries", "scale");
-```
-
