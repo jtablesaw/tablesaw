@@ -19,7 +19,7 @@ public class CsvWriteOptions {
     private final char escapechar;
     private final String lineEnd;
 
-    CsvWriteOptions(Builder builder) {
+    private CsvWriteOptions(Builder builder) {
         this.writer = builder.writer;
         this.header = builder.header;
         this.separator = builder.separator;
@@ -52,6 +52,14 @@ public class CsvWriteOptions {
         return lineEnd;
     }
 
+    public static Builder builder(File file) {
+        return new Builder(file);
+    }
+
+    public static Builder builder(String fileName) {
+        return builder(new File(fileName));
+    }
+
     public static class Builder {
 
         private Writer writer;
@@ -66,8 +74,13 @@ public class CsvWriteOptions {
             this.writer = new FileWriter(file);
         }
 
-        public Builder(File file) throws IOException {
-            this.writer = new FileWriter(file);
+        public Builder(File file) {
+            try {
+                this.writer = new FileWriter(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
         }
 
         public Builder(Writer writer) {
