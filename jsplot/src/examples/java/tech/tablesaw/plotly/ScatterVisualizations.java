@@ -40,6 +40,21 @@ public class ScatterVisualizations extends AbstractExample {
                 "appellation");
 
         Scatter3DPlot.show("Average retail price for champagnes by vintage and rating",
+                champagne,
+                "highest pro score",
+                "vintage",
+                "Mean Retail",
+                "appellation");
+
+        Scatter3DPlot.show("Highest & lowest retail price for champagnes by vintage and rating",
+                champagne,
+                "highest pro score",
+                "vintage",
+                "highest retail",
+                "lowest retail",
+                "appellation");
+
+        Scatter3DPlot.show("Average retail price for champagnes by vintage and rating",
                 champagne,				    // table
                 "highest pro score",  	// x
                 "vintage", 			// y
@@ -59,6 +74,5 @@ public class ScatterVisualizations extends AbstractExample {
                 "vintage",
                 "highest pro score",
                 "mean retail");
-
     }
 }

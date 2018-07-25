@@ -56,4 +56,46 @@ Scatter3DPlot.show("Average retail price for champagnes by vintage and rating",
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_simple_3dScatter.png)
 
-We can't show it here, but these plots are rotatable in 3D space, as well as supporting panning and zooming like 2D plots.
+We can't show it here, but these plots are rotatable in 3D space, as well as supporting panning and zooming like 2D plots. Hovering produces a label, and draws a box connecting the highlighted point to the three axes. 
+
+We can add a categorical variable to either the Bubble or the 3D scatter. First we'll show the bubble version.
+
+```Java
+BubblePlot.show("Average retail price for champagnes by vintage and rating",
+                champagne,
+                "highest pro score",
+                "vintage",
+                "Mean Retail",
+                "appellation");
+```
+
+The grouping column is added to the end of the method. The result is shown below.
+
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_bubble_with_groups.png)
+
+Let's see the same four variables using a 3D scatter. First the code, and then the plot:
+
+```Java
+Scatter3DPlot.show("Average retail price for champagnes by vintage and rating",
+                champagne,
+                "highest pro score",
+                "vintage",
+                "Mean Retail",
+                "appellation");
+```
+
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_category_3dScatter.png)
+
+Finally, we take one step further, adding another numeric variable to the categorical 3D scatter plot above. As with the 2D scatter, we use point size for the new numeric variable. 
+
+```Java
+Scatter3DPlot.show("Highest & lowest retail price for champagnes by vintage and rating",
+                champagne,
+                "highest pro score",
+                "vintage",
+                "highest retail",
+                "lowest retail",
+                "appellation");
+```
+
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_bubble_3d.png)

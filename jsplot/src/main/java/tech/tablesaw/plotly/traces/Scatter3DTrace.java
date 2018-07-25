@@ -5,6 +5,7 @@ import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.plotly.components.HoverLabel;
+import tech.tablesaw.plotly.components.Marker;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -22,6 +23,7 @@ public class Scatter3DTrace extends AbstractTrace {
     private final Mode mode;
     private final HoverLabel hoverLabel;
     private final boolean showLegend;
+    private final Marker marker;
 
     public static Scatter3DBuilder builder(double[] x, double[] y, double[] z) {
         return new Scatter3DBuilder(x, y, z);
@@ -40,6 +42,7 @@ public class Scatter3DTrace extends AbstractTrace {
         this.text = builder.text;
         this.hoverLabel = builder.hoverLabel();
         this.showLegend = builder.showLegend();
+        this.marker = builder.marker;
     }
 
     private Map<String, Object> getContext(int i) {
@@ -51,6 +54,7 @@ public class Scatter3DTrace extends AbstractTrace {
         context.put("x", dataAsString(x));
         context.put("z", dataAsString(z));
         context.put("showlegend", showLegend);
+        if (marker != null) context.put("marker", marker);
         if (hoverLabel != null) {
             context.put("hoverlabel", hoverLabel.asJavascript());
         }
@@ -105,6 +109,7 @@ public class Scatter3DTrace extends AbstractTrace {
         double[] y;
         double[] z;
         String[] text;
+        Marker marker;
 
         private Scatter3DBuilder(double[] x, double[] y, double[] z) {
             this.x = x;
@@ -152,6 +157,11 @@ public class Scatter3DTrace extends AbstractTrace {
 
         public Scatter3DBuilder legendGroup(String group) {
             return (Scatter3DBuilder) super.legendGroup(group);
+        }
+
+        public Scatter3DBuilder marker(Marker marker) {
+            this.marker = marker;
+            return this;
         }
 
         public Scatter3DBuilder showLegend(boolean showLegend) {
