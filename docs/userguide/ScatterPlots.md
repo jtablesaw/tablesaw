@@ -1,22 +1,59 @@
-### Multivariate Data: Scatter Plots, Bubble Plots, Line Plots
+# 2D and 3D Scatter Plots and Bubble Plots
 
-We'll leave the tornadoes behind now and look at a restaurant dataset.
+Scatter plots are among the most ubiquitous and most useful visualization options. We will use a wine dataset to demonstrate, starting with a simple scatter plotting California champagne vintages against prices. You can show complex relationships between up to five variables (four numeric and one categorical).
 
-```java
-Table restaurants = Table.read().csv("zomato.csv");
-```
-
-### Time Series
-
-You can create time series plots easily. The x axis adjusts the scale according to the size of the display area and the number of points displayed. Here's an example:
-
-
+First we get our dataset and filter it.
 
 ```java
-Table bush = Table.read().csv("bush.csv");
-bush = bush.where(bush.stringColumn("who").equalsIgnoreCase("fox"));
-DateColumn x = bush.dateColumn("date");
-NumberColumn y = bush.nCol("approval");
-TimeSeriesPlot.show("Fox approval ratings","date", x, "rating", y);
+Table restaurants = Table.read().csv("wine_test.csv");
+
+Table champagne =
+    wines.where(
+    	wines.stringColumn("wine type").isEqualTo("Champagne & Sparkling")
+    		.and(wines.stringColumn("region").isEqualTo("California")));
 ```
 
+The plotting code is straightforward. This line creates and displays the plot.
+
+```Java
+ScatterPlot.show("Champagne prices by vintage", champagne, "mean retail", "vintage");
+```
+
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_simple_scatter.png)
+
+Adding a categorical column to the plot produces a series for each category.
+
+```Java
+ScatterPlot.show(
+    "Wine prices and ratings", wines, "Mean Retail", "highest pro score", "wine type");
+```
+
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_category_scatter.png)
+
+To plot three numeric variables we can use a bubble plot or a 3D scatter. First we'll use the bubble 
+
+```Java
+BubblePlot.show("Average retail price for champagnes by vintage and rating",
+                champagne,				// table
+                "highest pro score",  	// x
+                "vintage", 				// y
+                "Mean Retail"); 		// bubble size
+```
+
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_simple_bubble.png)
+
+The size of the bubble is given by the last column "mean retail." By default, values are mapped to the diameter of the bubble, but it's possible to use area when creating a custom scatter plot.  
+
+To represent the same data in a 3D Scatter, you would use the Scatter3DPlot instead of BubblePlot. The rest is the same. The bubble size variable is represented on the z axis now:
+
+```Java
+Scatter3DPlot.show("Average retail price for champagnes by vintage and rating",
+                champagne,				// table
+                "highest pro score",  	// x
+                "vintage", 				// y
+                "Mean Retail"); 		// z 
+```
+
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_simple_3dScatter.png)
+
+We can't show it here, but these plots are rotatable in 3D space, as well as supporting panning and zooming like 2D plots.

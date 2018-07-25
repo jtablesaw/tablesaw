@@ -17,36 +17,46 @@ public class ScatterVisualizations extends AbstractExample {
         out(wines.column("region").unique().print());
         out(wines.column("wine type").unique().print());
 
+        wines.column("year").setName("vintage");
+
         Table champagne =
                 wines.where(
                         wines.stringColumn("wine type").isEqualTo("Champagne & Sparkling")
                             .and(wines.stringColumn("region").isEqualTo("California")));
 
-        BubblePlot.show("Average retail price for champagnes by year and rating",
+        ScatterPlot.show("Champagne prices by vintage", champagne, "mean retail", "vintage");
+
+        BubblePlot.show("Average retail price for champagnes by vintage and rating",
                 champagne,
                 "highest pro score",
-                "year",
+                "vintage",
                 "Mean Retail");
 
-        BubblePlot.show("Average retail price for champagnes by year and rating",
+        BubblePlot.show("Average retail price for champagnes by vintage and rating",
                 champagne,
                 "highest pro score",
-                "year",
+                "vintage",
                 "Mean Retail",
                 "appellation");
 
+        Scatter3DPlot.show("Average retail price for champagnes by vintage and rating",
+                champagne,				    // table
+                "highest pro score",  	// x
+                "vintage", 			// y
+                "Mean Retail"); 		// z
+
         ScatterPlot.show("Wine prices and ratings", wines, "Mean Retail", "highest pro score", "wine type");
 
-        Scatter3DPlot.show("Champagne (prices, ratings, year, appellation) ",
+        Scatter3DPlot.show("Champagne (prices, ratings, vintage, appellation) ",
                 champagne,
-                "year",
+                "vintage",
                 "highest pro score",
                 "mean retail",
                 "appellation");
 
-        Scatter3DPlot.show("Champagne (prices, ratings, year, appellation) ",
+        Scatter3DPlot.show("Champagne (prices, ratings, vintage, appellation) ",
                 champagne,
-                "year",
+                "vintage",
                 "highest pro score",
                 "mean retail");
 

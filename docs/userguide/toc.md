@@ -21,10 +21,10 @@ Tablesaw User Guide
 * Plotting and Visualization
 
   * [Introduction](https://jtablesaw.github.io/tablesaw/userguide/Introduction_to_Plotting)
-  * [Simple plotting API: Bars & Pies](https://jtablesaw.github.io/tablesaw/userguide/BarsAndPies)
+  * [Simple plotting API: Bars, Pareto Charts & Pies](https://jtablesaw.github.io/tablesaw/userguide/BarsAndPies)
   * Simple plotting API: Histograms and Box plots
   * [Simple plotting API: 2D and 3D Scatter plots and Bubble charts](https://jtablesaw.github.io/tablesaw/userguide/ScatterPlots)
-  * Simple plotting API: Time Series, Line Charts and Area charts
+  * [Simple plotting API: Time Series, Line Charts and Area charts](https://jtablesaw.github.io/tablesaw/userguide/TimeSeries)
   * [Writing Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/Visualization_custom)
 
 * Machine Learning
