@@ -10,16 +10,12 @@ import tech.tablesaw.plotly.traces.Trace;
 
 public class BarPlot {
 
-    private static final int HEIGHT = 700;
-    private static final int WIDTH = 900;
+    static final int HEIGHT = 700;
+    static final int WIDTH = 900;
 
     public static void show(Orientation orientation, String title, Table table, String groupColName, String numberColName) {
 
-        Layout layout = Layout.builder()
-                .title(title)
-                .height(HEIGHT)
-                .width(WIDTH)
-                .build();
+        Layout layout = standardLayout(title).build();
 
         BarTrace trace = BarTrace.builder(
                 table.categoricalColumn(groupColName),
@@ -29,20 +25,9 @@ public class BarPlot {
         Plot.show(new Figure(layout, trace));
     }
 
-    public static void showHorizontal(String title, Table table, String groupColName, String numberColName) {
-        show(Orientation.HORIZONTAL, title, table, groupColName, numberColName);
-    }
+    static void show(Orientation orientation, String title, Table table, String groupColName, String... numberColNames) {
 
-    public static void showVertical(String title, Table table, String groupColName, String numberColName) {
-        show(Orientation.VERTICAL, title, table, groupColName, numberColName);
-    }
-
-    public static void show(Orientation orientation, String title, Table table, String groupColName, String... numberColNames) {
-
-        Layout layout = Layout.builder()
-                .title(title)
-                .height(HEIGHT)
-                .width(WIDTH)
+        Layout layout = standardLayout(title)
                 .barMode(Layout.BarMode.GROUP)
                 .showLegend(true)
                 .build();
@@ -60,5 +45,12 @@ public class BarPlot {
             traces[i] = trace;
         }
         Plot.show(new Figure(layout, traces));
+    }
+
+    private static Layout.LayoutBuilder standardLayout(String title) {
+        return Layout.builder()
+                .title(title)
+                .height(HEIGHT)
+                .width(WIDTH);
     }
 }

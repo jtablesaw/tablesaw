@@ -18,9 +18,7 @@ import tech.tablesaw.AbstractExample;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.plotly.api.BarPlot;
-import tech.tablesaw.plotly.api.BoxPlot;
-import tech.tablesaw.plotly.api.Histogram;
+import tech.tablesaw.plotly.api.HorizontalBarPlot;
 import tech.tablesaw.plotly.api.ParetoPlot;
 import tech.tablesaw.plotly.api.PiePlot;
 
@@ -45,7 +43,7 @@ public class TornadoVisualizations extends AbstractExample {
 
         Table fatalities1 = tornadoes.summarize("fatalities", sum).by("scale");
 
-        BarPlot.showHorizontal(
+        HorizontalBarPlot.show(
                 "Total fatalities by scale",
                 fatalities1,
                 "scale",
@@ -55,27 +53,14 @@ public class TornadoVisualizations extends AbstractExample {
 
         Table fatalities2 = tornadoes.summarize("fatalities", sum).by("state");
 
-        ParetoPlot.showVertical(
+        ParetoPlot.show(
                 "Total Tornado Fatalities by State",
                 fatalities2,
                 "state",
                 "sum [fatalities]");
 
         Table injuries1 = tornadoes.summarize("injuries", mean).by("scale");
-        BarPlot.showHorizontal("Tornado Injuries by Scale", injuries1, "scale", "mean [injuries]");
+        HorizontalBarPlot.show("Tornado Injuries by Scale", injuries1, "scale", "mean [injuries]");
         out(injuries1);
-
-        // distributions
-        Table level5 = tornadoes.where(scale.isEqualTo(5));
-
-        out(tornadoes.numberColumn("injuries").print());
-        Histogram.show("Distribution of injuries for scale = 5", level5, "injuries");
-
-        BoxPlot.show("Average number of tornado injuries by scale", tornadoes,"scale", "injuries");
-
-        Table injuriesByScaleState2 = tornadoes.summarize("Injuries", sum).by("State", "Scale");
-        injuriesByScaleState2.setName("Total injuries by Tornado Scale and State");
-        out(injuriesByScaleState2);
-
     }
 }

@@ -21,7 +21,7 @@ You can use tablesaw-core, which is the dataframe library itself, by adding a de
 <dependency>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-core</artifactId>
-    <version>0.23.3</version>
+    <version>0.24.1</version>
 </dependency>
 ```
 

@@ -16,8 +16,7 @@ package tech.tablesaw.plotly;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.plotly.api.BarPlot;
-import tech.tablesaw.plotly.traces.BarTrace;
+import tech.tablesaw.plotly.api.HorizontalBarPlot;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
@@ -35,6 +34,6 @@ public class BarExample {
         Table s = table.summarize("fatalities", "log injuries", sum).by("Scale");
         System.out.println(s);
 
-        BarPlot.show(BarTrace.Orientation.HORIZONTAL,"Tornado Fatalities", s,"scale","Sum [Fatalities]", "Sum [log injuries]");
+        HorizontalBarPlot.show("Tornado Fatalities", s,"scale","Sum [Fatalities]", "Sum [log injuries]");
     }
 }
