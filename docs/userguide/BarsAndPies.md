@@ -1,6 +1,6 @@
 [Contents](https://jtablesaw.github.io/tablesaw/userguide/toc)
 
-# Visualization for Exploratory Data Analysis
+# Bars, Pareto charts, and Pies
 
 In [Part 1 of this series](https://dzone.com/articles/learn-data-science-with-java-and-tablesaw), we introduced [Tablesaw](https://github.com/jtablesaw/tablesaw), a platform for data science in Java and showed how Tablesaw can be used to filter and transform datasets, and produce cross-tabulations. Now we turn to visualization. For this discussion, we'll use a Tornado dataset from NOAA.
 
