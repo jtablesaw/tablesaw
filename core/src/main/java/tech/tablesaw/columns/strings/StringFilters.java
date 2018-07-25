@@ -47,7 +47,6 @@ public interface StringFilters extends Column {
         return selection;
     }
 
-
     default Selection eval(BiPredicate<String, Integer> predicate, Integer value) {
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
