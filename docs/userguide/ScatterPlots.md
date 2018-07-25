@@ -2,6 +2,8 @@
 
 Scatter plots are among the most popular and useful visualization options. We will use a wine dataset to demonstrate, starting with a simple scatter plot relating California champagne vintages and retail prices. 
 
+Yes, we *are* using a champagne dataset to demonstrate bubble charts
+
 First we get our dataset and filter it.
 
 ```java

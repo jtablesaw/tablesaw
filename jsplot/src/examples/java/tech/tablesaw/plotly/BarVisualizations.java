@@ -15,13 +15,15 @@
 package tech.tablesaw.plotly;
 
 import tech.tablesaw.AbstractExample;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.api.HorizontalBarPlot;
 import tech.tablesaw.plotly.api.ParetoPlot;
 import tech.tablesaw.plotly.api.PiePlot;
 import tech.tablesaw.plotly.api.VerticalBarPlot;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
 
 /**
  * Usage example using a Tornado data set
@@ -30,30 +32,32 @@ public class BarVisualizations extends AbstractExample {
 
     public static void main(String[] args) throws Exception {
 
-        Table football = Table.read().csv("../data/nfl_2013.csv");
-        out(football.structure().printAll());
-        football.setName("football");
+        Table murders = Table.read().csv("../data/SHR76_16.csv");
+        out(murders.structure().printAll());
+        murders.setName("murders");
+        NumberColumn victimAge = murders.numberColumn("vicAge");
+        victimAge.set(victimAge.isEqualTo(999), DoubleColumn.MISSING_VALUE);
 
-        Table offence = football.summarize("ScoreOff", sum).by("TeamName");
-
+        Table count = murders.countBy(murders.stringColumn("state"));
+        out(count.structure());
         VerticalBarPlot.show(
-                "Total points scored by team",
-                offence,
-                "teamName",
-                "sum [ScoreOff]");
+                "Total murders by state",
+                count,
+                "category",
+                "count");
 
-        PiePlot.show("Total Points Scored by scale", offence, "TeamName", "sum [ScoreOff]");
+        Table count2 = murders.countBy(murders.stringColumn("VicSex"));
 
-        Table fatalities2 = football.summarize("fatalities", sum).by("state");
+        PiePlot.show("Total murders by victim gender", count2, "category", "count");
 
         ParetoPlot.show(
-                "Total Tornado Fatalities by State",
-                fatalities2,
-                "state",
-                "sum [fatalities]");
+                "Total murders by state",
+                count,
+                "category",
+                "count");
 
-        Table injuries1 = football.summarize("injuries", mean).by("scale");
-        HorizontalBarPlot.show("Tornado Injuries by Scale", injuries1, "scale", "mean [injuries]");
-        out(injuries1);
+        Table ages = murders.summarize("vicAge", mean).by("relationship");
+        HorizontalBarPlot.show("Victim Age by relationship to offender", ages, "relationship", "mean [vicAge]");
+        out(ages);
     }
 }
