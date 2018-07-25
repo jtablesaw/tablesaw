@@ -1,9 +1,6 @@
 package tech.tablesaw.plotly;
 
 import tech.tablesaw.AbstractExample;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.api.BubblePlot;
 import tech.tablesaw.plotly.api.Scatter3DPlot;
@@ -20,50 +17,25 @@ public class ScatterVisualizations extends AbstractExample {
         out(wines.column("region").unique().print());
         out(wines.column("wine type").unique().print());
 
-        Table california = wines.where(wines.stringColumn("region").isEqualTo("California"));
-
-        StringColumn hps = california.stringColumn("highest com score");
-        StringColumn yearString = california.stringColumn("year");
-
-        hps.set(hps.isEqualTo("N.A."), "");
-        yearString.set(yearString.isEqualTo("N.A."), "");
-
-        hps.setName("highest com score string");
-        yearString.setName("year string");
-
-        NumberColumn nhps = DoubleColumn.create("highest com score");
-        NumberColumn year = DoubleColumn.create("year");
-
-        for (String s : hps) {
-            nhps.appendCell(s);
-        }
-        for (String s : yearString) {
-            year.appendCell(s);
-        }
-        california.addColumns(nhps, year);
-
         Table champagne =
                 wines.where(
                         wines.stringColumn("wine type").isEqualTo("Champagne & Sparkling")
-                            .and(wines.stringColumn("region").isEqualTo("California"))
-                            );
+                            .and(wines.stringColumn("region").isEqualTo("California")));
 
         BubblePlot.show("Average retail price for champagnes by year and rating",
                 champagne,
                 "highest pro score",
                 "year",
-                "Mean Retail"
-        );
+                "Mean Retail");
 
         BubblePlot.show("Average retail price for champagnes by year and rating",
                 champagne,
                 "highest pro score",
                 "year",
                 "Mean Retail",
-                "appellation"
-        );
+                "appellation");
 
-        ScatterPlot.show("Wine prices and ratings", california, "Mean Retail", "highest pro score", "wine type");
+        ScatterPlot.show("Wine prices and ratings", wines, "Mean Retail", "highest pro score", "wine type");
 
         Scatter3DPlot.show("Champagne (prices, ratings, year, appellation) ",
                 champagne,
