@@ -25,7 +25,7 @@ To see more than one series, we add a grouping column to the call to *TimeSeries
 TimeSeriesPlot.show("George W. Bush approval ratings", bush, "date", "approval", "who");
 ```
 
-
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/bush_time_series2.png)
 
 ## Line Charts
 
