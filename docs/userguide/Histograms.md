@@ -33,13 +33,13 @@ Histogram.show("Distribution of property sizes", property.numberColumn("sq__ft")
 
 ##2D Histograms
 
-It may be useful to look at the relationship of two distributions, you can do that with a 2D Histogram. 
+It may be useful to look at the relationship of two distributions. Ysou can do that with a 2D Histogram. 
 
 ```Java
 Histogram2D.show("Distribution of price and size", property,"price", "sq__ft");
 ```
 
-![Histogram of price and size](https://jtablesaw.github.io/tablesaw/userguide/images/eda/histogram2d.png)
+![aHistogram of price and size](https://jtablesaw.github.io/tablesaw/userguide/images/eda/histogram2d.png)
 
 ##Box plots: Comparing the distributions of sub-groups
 
