@@ -31,6 +31,12 @@ TimeSeriesPlot.show("George W. Bush approval ratings", bush, "date", "approval",
 
 
 
+```Java
+Table robberies = Table.read().csv("../data/boston-robberies.csv");
+LinePlot.show("Monthly Boston Robberies: Jan 1966-Oct 1975", 
+              robberies, "Record", "Robberies");
+```
 
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/robberies_line.png)
 
 ## Area Charts
