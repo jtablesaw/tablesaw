@@ -11,7 +11,7 @@ public class PiePlot {
     private static final int HEIGHT = 600;
     private static final int WIDTH = 800;
 
-    public static void show(String title, Table table, String groupColName, String numberColName) {
+    public static Figure create(String title, Table table, String groupColName, String numberColName) {
 
         Layout layout = Layout.builder()
                 .title(title)
@@ -25,6 +25,6 @@ public class PiePlot {
                 .showLegend(true)
                 .labels(table.column(groupColName))
                 .build();
-        Plot.show(new Figure(layout, trace));
+        return new Figure(layout, trace);
     }
 }

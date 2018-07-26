@@ -1,7 +1,5 @@
 package tech.tablesaw.plotly;
 
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.api.TimeSeriesPlot;
 
@@ -10,6 +8,6 @@ public class TimeSeriesExample {
     public static void main(String[] args) throws Exception {
         Table bush = Table.read().csv("../data/bush.csv");
         bush = bush.where(bush.stringColumn("who").equalsIgnoreCase("fox"));
-        TimeSeriesPlot.show("Fox approval ratings for George W. Bush", bush, "date", "approval");
+        Plot.show(TimeSeriesPlot.create("Fox approval ratings for George W. Bush", bush, "date", "approval"));
     }
 }

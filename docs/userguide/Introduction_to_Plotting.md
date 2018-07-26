@@ -32,13 +32,33 @@ The api package contains simplified interfaces for producing a number of common 
 And here's the code to create and display it:
 
 ```java
-BubblePlot.show("Average retail price for champagnes by year and rating",
+Plot.show(
+    BubblePlot.create("Average retail price for champagnes by year and rating",
                 champagne,					// table name
                 "highest pro score",		// x variable column name
                 "year",						// y variable column name
                 "Mean Retail"				// bubble size
-               );
+               ));
 ```
+
+In the plot simple API, rendering a bubble plot requires two steps. First, a call to BubblePlot.create() returns a Figure object: 
+
+```Java
+BubblePlot.create("Average retail price for champagnes by year and rating",
+                champagne,					// table name
+                "highest pro score",		// x variable column name
+                "year",						// y variable column name
+                "Mean Retail"				// bubble size
+               ));
+```
+
+This figure is then rendered by passing it to a *Plot.show()* method.
+
+```java
+Plot.show(aFigure);
+```
+
+This writes a generated HTML page containing the necessary JavaScript to a file on the local filesystem, and opens it in a browser window.
 
 ### Custom visualizations 
 
@@ -48,7 +68,7 @@ Custom visualizations are assembled using "figures", "traces", and "layouts". Cu
 
 ### Visualizing data while working in your IDE
 
-The one advantage of the old approach is that you could create graphs easily in your IDE by embedding them in a Java Application. This proved very useful for working interactively with datasets from within an IDE. 
+One advantage of the old approach is that you could create graphs easily from your IDE by launching a Java Application. This proved very useful for working interactively with datasets from within an IDE. 
 
 We've retained this benefit by including a method to render plots without a servlet engine or web server. To do this, we write an output html file to disk, and use your default browser to load it on the desktop. The net effect is similar to testing Web apps from within an IDE. 
 

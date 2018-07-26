@@ -3,7 +3,7 @@
 As always, we start with loading data.
 
 ```Java
-Table bush = Table.read().csv("bush.csv");
+
 ```
 
 
@@ -16,13 +16,15 @@ You can create time series plots easily. The x axis adjusts the scale according 
 
 ```java
 Table foxOnly = bush.where(bush.stringColumn("who").equalsIgnoreCase("fox"));
-TimeSeriesPlot.show("Fox approval ratings", foxOnly, "date", "approval");
+
+Plot.show(TimeSeriesPlot.create("Fox approval ratings", foxOnly, "date", "approval"));
 ```
 
 To see more than one series, we add a grouping column to the call to *TimeSeriesPlot.show().*This creates a separate line for each distinct value in that column.  Here the grouping column is "who", which holds the names of the organizations who conducted the poles. 
 
 ```Java
-TimeSeriesPlot.show("George W. Bush approval ratings", bush, "date", "approval", "who");
+Plot.show(
+    TimeSeriesPlot.create("George W. Bush approval", bush, "date", "approval", "who"));
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/bush_time_series2.png)
@@ -33,8 +35,9 @@ TimeSeriesPlot.show("George W. Bush approval ratings", bush, "date", "approval",
 
 ```Java
 Table robberies = Table.read().csv("../data/boston-robberies.csv");
-LinePlot.show("Monthly Boston Robberies: Jan 1966-Oct 1975", 
-              robberies, "Record", "Robberies");
+Plot.show(
+    LinePlot.create("Monthly Boston Robberies: Jan 1966-Oct 1975", 
+              robberies, "Record", "Robberies"));
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/robberies_line.png)
@@ -45,8 +48,9 @@ LinePlot.show("Monthly Boston Robberies: Jan 1966-Oct 1975",
 
 ```Java
 Table robberies = Table.read().csv("../data/boston-robberies.csv");
-LinePlot.show("Monthly Boston Robberies: Jan 1966-Oct 1975", 
-              robberies, "Record", "Robberies");
+Plot.show(
+    LinePlot.create("Monthly Boston Robberies: Jan 1966-Oct 1975", 
+              robberies, "Record", "Robberies"));
 ```
 
-![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/robberies_area.png)
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/robberies_line.png)

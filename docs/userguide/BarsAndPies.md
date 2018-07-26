@@ -34,11 +34,12 @@ We'll start by counting tornado-related fatalities according to the intensity of
 ```Java
 Table fatalities1 = tornadoes.summarize("fatalities", AggregateFunctions.sum).by("scale");
 
-BarPlot.showHorizontal(
+Plot.show(
+    HorizontalBarPlot.create(
                 "fatalities by scale",		// plot title
                 fatalities1,				// table
                 "scale",					// grouping column name
-                "sum [fatalities]");		// numeric column name
+                "sum [fatalities]"));		// numeric column name
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/fatalities_by_scale.png)
@@ -51,8 +52,10 @@ There are many aggregation functions defined in the class AggregationFunctions, 
 
 ```java
 Table injuries1 = tornadoes.summarize("injuries", mean).by("scale");
-BarPlot.showHorizontal("Average number of tornado injuries by scale", 
-                       injuries1, "scale", "mean [injuries]");
+
+Plot.show(
+	HorizontalBarPlot.create("Average number of tornado injuries by scale", 
+                       injuries1, "scale", "mean [injuries]"));
 ```
 
 In our upcoming section on advanced plotting features, we'll cover how to create stacked and grouped bar plots. 
@@ -74,7 +77,8 @@ Pie plots are simultaneously widely criticized and ubiquitous. As a general rule
 Here's the code:
 
 ```java
-PiePlot.show("fatalities by scale", fatalities1, "scale", "sum [fatalities]"); 
+Plot.show(
+    PiePlot.create("fatalities by scale", fatalities1, "scale", "sum [fatalities]")); 
 ```
 
 #### Pareto Plots
@@ -82,7 +86,8 @@ PiePlot.show("fatalities by scale", fatalities1, "scale", "sum [fatalities]");
 A simple variation on a bar plot is the Pareto Chart. In the plot below, fatality counts are summed by US state, and the results are sorted according to the totals in descending order. The Pareto class handles the sorting for us.  
 
 ```Java
-Pareto.show("Tornado Fatalities by State", fatalities1, "state", "sum[fatalities]");
+Plot.show(
+	Pareto.create("Tornado Fatalities by State", fatalities1, "state","sum[fatalities]"));
 ```
 
 ![Pareto of Fatalities by State](https://jtablesaw.github.io/tablesaw/userguide/images/eda/tornado_pareto.png)

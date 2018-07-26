@@ -43,24 +43,25 @@ public class TornadoVisualizations extends AbstractExample {
 
         Table fatalities1 = tornadoes.summarize("fatalities", sum).by("scale");
 
-        HorizontalBarPlot.show(
+        Plot.show(HorizontalBarPlot.create(
                 "Total fatalities by scale",
                 fatalities1,
                 "scale",
-                "sum [fatalities]");
+                "sum [fatalities]"));
 
-        PiePlot.show("Total fatalities by scale", fatalities1, "scale", "sum [fatalities]");
+        Plot.show(PiePlot.create("Total fatalities by scale", fatalities1, "scale", "sum [fatalities]"));
 
         Table fatalities2 = tornadoes.summarize("fatalities", sum).by("state");
 
-        ParetoPlot.show(
-                "Total Tornado Fatalities by State",
-                fatalities2,
-                "state",
-                "sum [fatalities]");
+        Plot.show(
+                ParetoPlot.createVertical(
+                        "Total Tornado Fatalities by State",
+                        fatalities2,
+                        "state",
+                        "sum [fatalities]"));
 
         Table injuries1 = tornadoes.summarize("injuries", mean).by("scale");
-        HorizontalBarPlot.show("Tornado Injuries by Scale", injuries1, "scale", "mean [injuries]");
+        Plot.show(HorizontalBarPlot.create("Tornado Injuries by Scale", injuries1, "scale", "mean [injuries]"));
         out(injuries1);
     }
 }

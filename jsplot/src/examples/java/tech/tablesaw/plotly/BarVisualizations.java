@@ -40,24 +40,24 @@ public class BarVisualizations extends AbstractExample {
 
         Table count = murders.countBy(murders.stringColumn("state"));
         out(count.structure());
-        VerticalBarPlot.show(
+        Plot.show(VerticalBarPlot.create(
                 "Total murders by state",
                 count,
                 "category",
-                "count");
+                "count"));
 
         Table count2 = murders.countBy(murders.stringColumn("VicSex"));
 
-        PiePlot.show("Total murders by victim gender", count2, "category", "count");
+        Plot.show(PiePlot.create("Total murders by victim gender", count2, "category", "count"));
 
-        ParetoPlot.show(
+        Plot.show(ParetoPlot.create(
                 "Total murders by state",
                 count,
                 "category",
-                "count");
+                "count"));
 
         Table ages = murders.summarize("vicAge", mean).by("relationship");
-        HorizontalBarPlot.show("Victim Age by relationship to offender", ages, "relationship", "mean [vicAge]");
+        Plot.show(HorizontalBarPlot.create("Victim Age by relationship to offender", ages, "relationship", "mean [vicAge]"));
         out(ages);
     }
 }

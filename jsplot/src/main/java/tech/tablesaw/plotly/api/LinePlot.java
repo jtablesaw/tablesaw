@@ -15,7 +15,7 @@ public class LinePlot {
     private static final int HEIGHT = 600;
     private static final int WIDTH = 800;
 
-    public static void show(String title, Table table, String xCol, String yCol, String groupCol) {
+    public static Figure create(String title, Table table, String xCol, String yCol, String groupCol) {
 
         TableSliceGroup tables = table.splitOn(table.categoricalColumn(groupCol));
 
@@ -43,11 +43,10 @@ public class LinePlot {
                     .mode(ScatterTrace.Mode.LINE)
                     .build();
         }
-        Figure figure = new Figure(layout, traces);
-        Plot.show(figure);
+        return new Figure(layout, traces);
     }
 
-    public static void show(String title, Table table, String xCol, String yCol) {
+    public static Figure create(String title, Table table, String xCol, String yCol) {
 
         Layout layout = Layout.builder()
                 .title(title)
@@ -66,11 +65,10 @@ public class LinePlot {
                 table.numberColumn(yCol))
                 .mode(ScatterTrace.Mode.LINE)
                 .build();
-        Figure figure = new Figure(layout, trace);
-        Plot.show(figure);
+        return new Figure(layout, trace);
     }
 
-    public static void show(String title, String xTitle, double[] xCol, String yTitle, double[] yCol) {
+    public static Figure create(String title, String xTitle, double[] xCol, String yTitle, double[] yCol) {
 
         Layout layout = Layout.builder()
                 .title(title)
@@ -87,7 +85,6 @@ public class LinePlot {
         ScatterTrace trace = ScatterTrace.builder(xCol, yCol)
                 .mode(ScatterTrace.Mode.LINE)
                 .build();
-        Figure figure = new Figure(layout, trace);
-        Plot.show(figure);
+        return new Figure(layout, trace);
     }
 }

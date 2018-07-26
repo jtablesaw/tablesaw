@@ -11,11 +11,7 @@ public class BoxPlot {
     private static final int HEIGHT = 600;
     private static final int WIDTH = 800;
 
-    public static void show(String title, Table table, String groupingColumn, String numericColumn) {
-        Plot.show(asFigure(title, table, groupingColumn, numericColumn));
-    }
-
-    private static Figure asFigure(String title, Table table, String groupingColumn, String numericColumn) {
+    public static Figure create(String title, Table table, String groupingColumn, String numericColumn) {
         Layout layout = Layout.builder()
                 .title(title)
                 .height(HEIGHT)

@@ -1,7 +1,6 @@
 package tech.tablesaw.plotly.api;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
@@ -17,7 +16,7 @@ public class Scatter3DPlot {
     private static final int HEIGHT = 800;
     private static final int WIDTH = 1000;
 
-    public static void show(String title, Table table, String xCol, String yCol, String zCol, String groupCol) {
+    public static Figure create(String title, Table table, String xCol, String yCol, String zCol, String groupCol) {
 
         TableSliceGroup tables = table.splitOn(table.categoricalColumn(groupCol));
 
@@ -34,11 +33,10 @@ public class Scatter3DPlot {
                     .name(tableList.get(i).name())
                     .build();
         }
-        Figure figure = new Figure(layout, traces);
-        Plot.show(figure);
+        return new Figure(layout, traces);
     }
 
-    public static void show(String title, Table table, String xCol, String yCol, String zCol) {
+    public static Figure create(String title, Table table, String xCol, String yCol, String zCol) {
 
         Layout layout = standardLayout(title, xCol, yCol, zCol, false);
 
@@ -47,11 +45,10 @@ public class Scatter3DPlot {
                 table.numberColumn(yCol),
                 table.numberColumn(zCol))
                 .build();
-        Figure figure = new Figure(layout, trace);
-        Plot.show(figure);
+        return new Figure(layout, trace);
     }
 
-    public static void show(String title, Table table, String xCol, String yCol, String zCol, String sizeColumn, String groupCol) {
+    public static Figure create(String title, Table table, String xCol, String yCol, String zCol, String sizeColumn, String groupCol) {
 
         TableSliceGroup tables = table.splitOn(table.categoricalColumn(groupCol));
 
@@ -75,8 +72,7 @@ public class Scatter3DPlot {
                     .name(tableList.get(i).name())
                     .build();
         }
-        Figure figure = new Figure(layout, traces);
-        Plot.show(figure);
+        return new Figure(layout, traces);
     }
 
     private static Layout standardLayout(String title, String xCol, String yCol, String zCol, boolean showLegend) {

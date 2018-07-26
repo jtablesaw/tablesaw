@@ -1,7 +1,6 @@
 package tech.tablesaw.plotly.api;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
@@ -17,7 +16,7 @@ public class ScatterPlot {
     private static final int WIDTH = 800;
     private static final double OPACITY = .75;
 
-    public static void show(String title, Table table, String xCol, String yCol, String groupCol) {
+    public static Figure create(String title, Table table, String xCol, String yCol, String groupCol) {
 
         TableSliceGroup tables = table.splitOn(table.categoricalColumn(groupCol));
 
@@ -46,11 +45,10 @@ public class ScatterPlot {
                     .name(tableList.get(i).name())
                     .build();
         }
-        Figure figure = new Figure(layout, traces);
-        Plot.show(figure);
+        return new Figure(layout, traces);
     }
 
-    public static void show(String title, Table table, String xCol, String yCol) {
+    public static Figure create(String title, Table table, String xCol, String yCol) {
 
         Layout layout = Layout.builder()
                 .title(title)
@@ -68,11 +66,10 @@ public class ScatterPlot {
                 table.numberColumn(xCol),
                 table.numberColumn(yCol))
                 .build();
-        Figure figure = new Figure(layout, trace);
-        Plot.show(figure);
+        return new Figure(layout, trace);
     }
 
-    public static void show(String title, String xTitle, double[] xCol, String yTitle, double[] yCol) {
+    public static Figure create(String title, String xTitle, double[] xCol, String yTitle, double[] yCol) {
 
         Layout layout = Layout.builder()
                 .title(title)
@@ -87,7 +84,6 @@ public class ScatterPlot {
                 .build();
 
         ScatterTrace trace = ScatterTrace.builder(xCol, yCol).build();
-        Figure figure = new Figure(layout, trace);
-        Plot.show(figure);
+        return new Figure(layout, trace);
     }
 }
