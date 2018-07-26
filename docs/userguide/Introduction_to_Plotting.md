@@ -56,10 +56,8 @@ We've retained this benefit by including a method to render plots without a serv
 
 You can render plots to web pages readily by getting the JavaScript from figure you want to display. All figures, traces, and layouts implement ```asJavaScript()``` which returns a String. 
 
-### Rendering output in a JavaFx
+### Rendering output in a Java UI
 
-If you want to display plots in a JavaFx UI, you can use the JavaFx WebView component. 
-
-Other browser components are available commercially. 
+Unfortunately, this isn't as easy to do as it should be. The JavaFx  WebView component is ok for very simple pages, but is too fragile handling  JavaScript and CSS-heavy pages for us to support. There are a few other browser components available commercially or as open source if you need to use Tablesaw's visualization tools, but you may be better off with JavaFx Charts or another pure Java library. 
 
 ## 

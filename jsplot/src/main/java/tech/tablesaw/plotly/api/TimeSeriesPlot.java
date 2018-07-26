@@ -26,9 +26,10 @@ public class TimeSeriesPlot {
         ScatterTrace[] traces  = new ScatterTrace[tables.size()];
         for (int i = 0; i < tables.size(); i++) {
             List<Table> tableList = tables.asTableList();
+            Table t = tableList.get(i).sortOn("date");
             traces[i] = ScatterTrace.builder(
-                    tableList.get(i).dateColumn(dateColX),
-                    tableList.get(i).numberColumn(yCol))
+                    t.dateColumn(dateColX),
+                    t.numberColumn(yCol))
                     .showLegend(true)
                     .name(tableList.get(i).name())
                     .mode(ScatterTrace.Mode.LINE)
