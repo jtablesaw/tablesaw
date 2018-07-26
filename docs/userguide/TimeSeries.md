@@ -40,3 +40,13 @@ LinePlot.show("Monthly Boston Robberies: Jan 1966-Oct 1975",
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/robberies_line.png)
 
 ## Area Charts
+
+
+
+```Java
+Table robberies = Table.read().csv("../data/boston-robberies.csv");
+LinePlot.show("Monthly Boston Robberies: Jan 1966-Oct 1975", 
+              robberies, "Record", "Robberies");
+```
+
+![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/robberies_area.png)

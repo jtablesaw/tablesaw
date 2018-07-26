@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.HoverLabel;
 
+import static tech.tablesaw.plotly.traces.ScatterTrace.DEFAULT_FILL;
+
 public abstract class TraceBuilder {
 
     AbstractTrace.Visibility visible = AbstractTrace.DEFAULT_VISIBILITY;
@@ -37,7 +39,7 @@ public abstract class TraceBuilder {
 
     HoverLabel hoverLabel;
 
-    protected TraceBuilder() {}
+    TraceBuilder() {}
 
     protected abstract String getType();
 
@@ -70,14 +72,6 @@ public abstract class TraceBuilder {
     protected TraceBuilder hoverLabel(HoverLabel hoverLabel) {
         this.hoverLabel = hoverLabel;
         return this;
-    }
-
-    public HoverLabel hoverLabel() {
-         return hoverLabel;
-    }
-
-    public boolean showLegend() {
-        return showLegend;
     }
 
     static String[] columnToStringArray(Column column) {

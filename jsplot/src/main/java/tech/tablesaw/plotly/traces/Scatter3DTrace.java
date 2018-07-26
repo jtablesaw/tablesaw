@@ -40,8 +40,8 @@ public class Scatter3DTrace extends AbstractTrace {
         this.x = builder.x;
         this.z = builder.z;
         this.text = builder.text;
-        this.hoverLabel = builder.hoverLabel();
-        this.showLegend = builder.showLegend();
+        this.hoverLabel = builder.hoverLabel;
+        this.showLegend = builder.showLegend;
         this.marker = builder.marker;
     }
 
