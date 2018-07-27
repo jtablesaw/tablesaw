@@ -53,27 +53,13 @@ And *always* feel free to ask questions here on the [issues tab](https://github.
 
 Tablesaw has replaced it's original plotting API with a new library based on the Plot.ly JavaScript plotting library. The new library is far more powerful and flexible than the old (now deprecated version).
 
-* 2D and 3D Scatter plots
-* Time Series Plots
-* Line and Area plots
-* Vertical and Horizontal Bar charts
-* Histograms and 2D Histograms
-* Box plots
-* Pareto Charts
-* Pie Charts
-* Bubble plots
+Here are a few examples of the new library in action.
 
-![](https://github.com/jtablesaw/tablesaw/blob/master/docs/userguide/images/eda/box1.png)
-
-| ![](https://github.com/jtablesaw/tablesaw/blob/master/docs/userguide/images/eda/box1.png) | ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/tornado.scatter.png) | ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/tornado.scatter.png) |
+| ![box](https://github.com/jtablesaw/tablesaw/blob/master/docs/userguide/images/eda/box1.png) | ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/run%20diff%20vs%20wins.png) | ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/tornado.scatter.png) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-|                                                              |                                                              |                                                              |
-|                                                              |                                                              |                                                              |
-|                                                              |                                                              |                                                              |
-
-Here's an example where we use JavaScript plotting support to map the locations of tornadoes: 
-
-![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/tornado.scatter.png) 
+| ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/bush_time_series2.png) | ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/fatalities_by_scale.png) | ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/histogram2.png) |
+| ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/histogram2d.png) | ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/pie.png) | ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_bubble_3d.png) |
+| ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_bubble_with_groups.png) | ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/robberies_area.png) | ![](https://jtablesaw.github.io/tablesaw/userguide/images/ml/regression/wins%20by%20year.png) |
 
 ### Integrations
 
