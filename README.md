@@ -53,13 +53,23 @@ And *always* feel free to ask questions here on the [issues tab](https://github.
 
 Tablesaw has replaced it's original plotting API with a new library based on the Plot.ly JavaScript plotting library. The new library is far more powerful and flexible than the old (now deprecated version).
 
-* Scatter plots
+* 2D and 3D Scatter plots
 * Time Series Plots
-* Line plots
+* Line and Area plots
 * Vertical and Horizontal Bar charts
-* Histograms 
+* Histograms and 2D Histograms
 * Box plots
 * Pareto Charts
+* Pie Charts
+* Bubble plots
+
+![](https://github.com/jtablesaw/tablesaw/blob/master/docs/userguide/images/eda/box1.png)
+
+| ![](https://github.com/jtablesaw/tablesaw/blob/master/docs/userguide/images/eda/box1.png) | ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/tornado.scatter.png) | ![Tornadoes](https://jtablesaw.github.io/tablesaw/userguide/images/tornado.scatter.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+|                                                              |                                                              |                                                              |
+|                                                              |                                                              |                                                              |
+|                                                              |                                                              |                                                              |
 
 Here's an example where we use JavaScript plotting support to map the locations of tornadoes: 
 
