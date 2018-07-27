@@ -9,32 +9,13 @@ Tablesaw
 
 __Tablesaw__ is a Java dataframe and visualization library. As a dataframe, it's similar to Pandas in Python, and the R data frame. If you work with data in Java, it may save you time and effort. Tablesaw also supports descriptive statistics and integrates well with the Java machine learning library, Smile. 
 
-### Installing
-
-You can use tablesaw-core, which is the dataframe library itself, by adding a dependency: 
-
-```xml
-<dependency>
-    <groupId>tech.tablesaw</groupId>
-    <artifactId>tablesaw-core</artifactId>
-    <version>0.24.1</version>
-</dependency>
-<dependency>
-    <groupId>tech.tablesaw</groupId>
-    <artifactId>tablesaw-jsplot</artifactId>
-    <version>0.24.1</version>
-</dependency>
-```
-
-- The dependency for `tablesaw-jsplot` gives you access to a new plotting library built on the Plot.ly JavaScript library (which is itself built on D3). See some examples below. 
-
 ### Tablesaw features: 
 
 #### Data processing & transformation
 * Import data from RDBMS and CSV files, local or remote (http, S3, etc.)
 * Combine tables by appending or joining
 * Add and remove columns or rows
-* Sort, Group, Filter 
+* Sort, Group, Query 
 * Map/Reduce operations
 * Handle missing values
 
@@ -51,6 +32,23 @@ Tablesaw supports data visualization by providing a wrapper for the Plot.ly Java
 #### Statistics
 
 - Descriptive stats: mean, min, max, median, sum, product, standard deviation, variance, percentiles, geometric mean, skewness, kurtosis, etc.
+
+### Getting started
+
+Add tablesaw-core and tablesaw-jsplot to your project: 
+
+```xml
+<dependency>
+    <groupId>tech.tablesaw</groupId>
+    <artifactId>tablesaw-core</artifactId>
+    <version>0.24.1</version>
+</dependency>
+<dependency>
+    <groupId>tech.tablesaw</groupId>
+    <artifactId>tablesaw-jsplot</artifactId>
+    <version>0.24.1</version>
+</dependency>
+```
 
 ### Documentation and support:
 
