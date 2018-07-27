@@ -14,10 +14,10 @@ A one dimensional histogram of property prices is shown below.
 
 ![Histogram of prices](https://jtablesaw.github.io/tablesaw/userguide/images/eda/histogram1.png)
 
-This plot shows the distribution of injury counts for the most powerful tornadoes. To produce it, we simply filter the table to include only level 5, and call Histogram.show();
+This plot shows the distribution of injury counts for the most powerful tornadoes. To produce it, we simply filter the table to include only level 5, and call *Histogram.create()*;
 
 ```Java
-Histogram.show("Distribution of prices", property.numberColumn("price"));
+Plot.show(Histogram.create("Distribution of prices", property, "price"));
 ```
 
 We also take a histogram of sizes, after setting any sizes of 0 square feet to "missing".
@@ -26,7 +26,7 @@ We also take a histogram of sizes, after setting any sizes of 0 square feet to "
 NumberColumn sqft = property.numberColumn("sq__ft");
 sqft.set(sqft.isEqualTo(0), DoubleColumn.MISSING_VALUE);
 
-Histogram.show("Distribution of property sizes", property.numberColumn("sq__ft"));
+Plot.show(Histogram.create("Distribution of property sizes", property, "sq__ft"));
 ```
 
 ![Histogram of Property sizes](https://jtablesaw.github.io/tablesaw/userguide/images/eda/histogram2.png)
@@ -36,7 +36,8 @@ Histogram.show("Distribution of property sizes", property.numberColumn("sq__ft")
 It may be useful to look at the relationship of two distributions. Ysou can do that with a 2D Histogram. 
 
 ```Java
-Histogram2D.show("Distribution of price and size", property,"price", "sq__ft");
+Plot.show(
+    Histogram2D.create("Distribution of price and size", property, "price", "sq__ft"));
 ```
 
 ![aHistogram of price and size](https://jtablesaw.github.io/tablesaw/userguide/images/eda/histogram2d.png)
@@ -50,6 +51,6 @@ Comparing distributions of sub-groups is also really useful.  The box plot is id
 And here's the code:
 
 ```java
-BoxPlot.show("Prices by property type", property, "type", "price");
+Plot.show(BoxPlot.create("Prices by property type", property, "type", "price"));
 ```
 

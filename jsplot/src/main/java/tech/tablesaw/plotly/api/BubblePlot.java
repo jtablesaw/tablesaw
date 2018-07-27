@@ -16,7 +16,7 @@ public class BubblePlot {
     private static final int HEIGHT = 600;
     private static final int WIDTH = 800;
 
-    public static void show(String title, Table table, String xCol, String yCol, String sizeColumn, String groupCol) {
+    public static Figure create(String title, Table table, String xCol, String yCol, String sizeColumn, String groupCol) {
 
         TableSliceGroup tables = table.splitOn(table.categoricalColumn(groupCol));
         Layout layout = Layout.builder()
@@ -49,11 +49,10 @@ public class BubblePlot {
                     .name(tableList.get(i).name())
                     .build();
         }
-        Figure figure = new Figure(layout, traces);
-        Plot.show(figure);
+        return new Figure(layout, traces);
     }
 
-    public static void show(String title, Table table, String xCol, String yCol, String sizeColumn) {
+    public static Figure create(String title, Table table, String xCol, String yCol, String sizeColumn) {
 
         Layout layout = Layout.builder()
                 .title(title)
@@ -77,11 +76,10 @@ public class BubblePlot {
                 table.numberColumn(yCol))
                 .marker(marker)
                 .build();
-        Figure figure = new Figure(layout, trace);
-        Plot.show(figure);
+        return new Figure(layout, trace);
     }
 
-    public static void show(String title, String xTitle, double[] xCol, String yTitle, double[] yCol) {
+    public static Figure create(String title, String xTitle, double[] xCol, String yTitle, double[] yCol) {
 
         Layout layout = Layout.builder()
                 .title(title)
@@ -96,7 +94,6 @@ public class BubblePlot {
                 .build();
 
         ScatterTrace trace = ScatterTrace.builder(xCol, yCol).build();
-        Figure figure = new Figure(layout, trace);
-        Plot.show(figure);
+        return new Figure(layout, trace);
     }
 }

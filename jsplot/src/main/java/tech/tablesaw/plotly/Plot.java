@@ -1,6 +1,7 @@
 package tech.tablesaw.plotly;
 
 import tech.tablesaw.plotly.components.Figure;
+import tech.tablesaw.plotly.components.Page;
 import tech.tablesaw.plotly.display.Browser;
 
 import java.io.File;
@@ -23,7 +24,8 @@ public class Plot {
     private static final String DEFAULT_OUTPUT_FOLDER = "testoutput";
 
     public static void show(Figure figure, String divName, File outputFile) {
-        String output = figure.asJavascript(divName);
+        Page page = Page.pageBuilder(figure, divName).build();
+        String output = page.asJavascript();
 
         try {
             try (FileWriter fileWriter = new FileWriter(outputFile)) {

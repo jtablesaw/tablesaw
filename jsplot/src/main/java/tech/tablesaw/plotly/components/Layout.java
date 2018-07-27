@@ -217,6 +217,10 @@ public class Layout {
         this.scene = builder.scene;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public String asJavascript() {
         Writer writer = new StringWriter();
         PebbleTemplate compiledTemplate;

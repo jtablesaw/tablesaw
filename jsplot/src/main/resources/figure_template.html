@@ -1,19 +1,5 @@
-<html>
-<head>
-    <title>{{title}}</title>
-<!--
-    <script src="src/main/resources/plotly-latest.min.js"></script>
--->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-</head>
-<body>
-    <div id='{{divName}}' style="width:600px;height:450px;"></div>
     <script>
-
         var {{targetName}} = document.getElementById('{{divName}}');
-        {{figure | raw }}
+        {{figure | raw}}
         {{plotFunction}}
-
     </script>
-</body>
-</html>

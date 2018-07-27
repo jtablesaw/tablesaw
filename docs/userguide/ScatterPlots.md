@@ -2,7 +2,7 @@
 
 Scatter plots are among the most popular and useful visualization options. We will use a wine dataset to demonstrate, starting with a simple scatter plot relating California champagne vintages and retail prices. 
 
-Yes, we *are* using a champagne dataset to demonstrate bubble charts
+Yes, we *are* using champagne data to demonstrate bubble charts. How could we use anything else?
 
 First we get our dataset and filter it.
 
@@ -18,7 +18,9 @@ Table champagne =
 The plotting code is straightforward. This line creates and displays the plot.
 
 ```Java
-ScatterPlot.show("Champagne prices by vintage", champagne, "mean retail", "vintage");
+Plot.show(
+    ScatterPlot.create("Champagne prices by vintage", 
+                       champagne, "mean retail", "vintage"));
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_simple_scatter.png)
@@ -30,8 +32,9 @@ This kind of plot is easy to interpret but limited in expressiveness. By modifyi
 Adding a categorical column to the plot produces a series for each category.
 
 ```Java
-ScatterPlot.show(
-    "Wine prices and ratings", wines, "Mean Retail", "highest pro score", "wine type");
+Plot.show(
+    ScatterPlot.create("Wine prices and ratings", 
+                       wines, "Mean Retail", "highest pro score", "wine type"));
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_category_scatter.png)
@@ -41,11 +44,12 @@ The legend on the right serves a dual purpose. It associates the colors with the
 To plot three numeric variables we can use a bubble plot or a 3D scatter. First we'll use the bubble 
 
 ```Java
-BubblePlot.show("Average retail price for champagnes by vintage and rating",
+Plot.show(
+    BubblePlot.create("Average retail price for champagnes by vintage and rating",
                 champagne,				// table
                 "highest pro score",  	// x
                 "vintage", 				// y
-                "Mean Retail"); 		// bubble size
+                "Mean Retail")); 		// bubble size
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_simple_bubble.png)
@@ -55,11 +59,12 @@ The size of the bubble is given by the last column "mean retail." By default, va
 To represent the same data in a 3D Scatter, you would use the Scatter3DPlot instead of BubblePlot. The rest of the code is the same. The variable represented by bubble size above is now represented on the z axis:
 
 ```Java
-Scatter3DPlot.show("Average retail price for champagnes by vintage and rating",
+Plot.show(
+    Scatter3DPlot.create("Average retail price for champagnes by vintage and rating",
                 champagne,				// table
                 "highest pro score",  	// x
                 "vintage", 				// y
-                "Mean Retail"); 		// z 
+                "Mean Retail")); 		// z 
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_simple_3dScatter.png)
@@ -71,12 +76,13 @@ We can't show it here, but these plots are rotatable in 3D space, and supporting
 We can add a categorical variable to either the Bubble or the 3D scatter. First we'll show the bubble version.
 
 ```Java
-BubblePlot.show("Average retail price for champagnes by vintage and rating",
+Plot.show(
+    BubblePlot.create("Average retail price for champagnes by vintage and rating",
                 champagne,
                 "highest pro score",
                 "vintage",
                 "Mean Retail",
-                "appellation");
+                "appellation"));
 ```
 
 The grouping column is added to the end of the method. The result is shown below.
@@ -86,12 +92,13 @@ The grouping column is added to the end of the method. The result is shown below
 Let's see the same four variables using a 3D scatter. First the code, and then the plot:
 
 ```Java
-Scatter3DPlot.show("Average retail price for champagnes by vintage and rating",
+Plot.show(
+    Scatter3DPlot.create("Average retail price for champagnes by vintage and rating",
                 champagne,
                 "highest pro score",
                 "vintage",
                 "Mean Retail",
-                "appellation");
+                "appellation"));
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_category_3dScatter.png)
@@ -101,13 +108,14 @@ Scatter3DPlot.show("Average retail price for champagnes by vintage and rating",
 Now we'll take one step further, just because we can.  Here we add another numeric variable to the categorical 3D scatter plot above. As with the 2D scatter, we use point size for the new numeric variable. 
 
 ```Java
-Scatter3DPlot.show("Highest & lowest retail price for champagnes by vintage and rating",
+Plot.show(
+    Scatter3DPlot.create("High & low retail price for champagne by vintage and rating",
                 champagne,
                 "vintage",
                 "highest pro score",
                 "highest retail",
                 "lowest retail",
-                "appellation");
+                "appellation"));
 ```
 
 ![](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_bubble_3d.png)

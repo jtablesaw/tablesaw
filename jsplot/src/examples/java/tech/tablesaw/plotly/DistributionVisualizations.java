@@ -20,12 +20,12 @@ public class DistributionVisualizations extends AbstractExample {
         sqft.set(sqft.isEqualTo(0), DoubleColumn.MISSING_VALUE);
         price.set(price.isEqualTo(0), DoubleColumn.MISSING_VALUE);
 
-        Histogram.show("Distribution of prices", property.numberColumn("price"));
+        Plot.show(Histogram.create("Distribution of prices", property.numberColumn("price")));
 
-        Histogram.show("Distribution of property sizes", property.numberColumn("sq__ft"));
+        Plot.show(Histogram.create("Distribution of property sizes", property.numberColumn("sq__ft")));
 
-        Histogram2D.show("Distribution of price and size", property,"price", "sq__ft");
+        Plot.show(Histogram2D.create("Distribution of price and size", property,"price", "sq__ft"));
 
-        BoxPlot.show("Prices by property type", property, "type", "price");
+        Plot.show(BoxPlot.create("Prices by property type", property, "type", "price"));
     }
 }

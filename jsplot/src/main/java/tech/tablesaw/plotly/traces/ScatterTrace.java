@@ -20,6 +20,32 @@ import static tech.tablesaw.plotly.Utils.dataAsString;
 
 public class ScatterTrace extends AbstractTrace {
 
+    static final Fill DEFAULT_FILL = Fill.NONE;
+
+    public static enum Fill {
+        NONE("none"),
+        TO_ZERO_Y("tozeroy"),
+        TO_ZERO_X("tozerox"),
+        TO_NEXT_Y("tonexty"),
+        TO_NEXT_X("tonextx"),
+        TO_SELF("toself"),
+        TO_NEXT("tonext");
+
+        private String value;
+
+        Fill(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+    }
+
+    private final Fill fill;
+    private final String fillColor;
     private final double[] y;
     private final Object[] x;
     private final String[] text;
@@ -56,9 +82,11 @@ public class ScatterTrace extends AbstractTrace {
         this.x = builder.x;
         this.text = builder.text;
         this.marker = builder.marker;
-        this.hoverLabel = builder.hoverLabel();
-        this.showLegend = builder.showLegend();
+        this.hoverLabel = builder.hoverLabel;
+        this.showLegend = builder.showLegend;
         this.line = builder.line;
+        this.fill = builder.fill;
+        this.fillColor = builder.fillColor;
     }
 
     private Map<String, Object> getContext(int i) {
@@ -70,6 +98,8 @@ public class ScatterTrace extends AbstractTrace {
         context.put("x", dataAsString(x));
         context.put("marker", marker);
         context.put("showlegend", showLegend);
+        if (!fill.equals(DEFAULT_FILL)) context.put("fill", fill);
+        if (fillColor != null) context.put("fillColor", fillColor);
         if (hoverLabel != null) {
             context.put("hoverlabel", hoverLabel.asJavascript());
         }
@@ -129,6 +159,23 @@ public class ScatterTrace extends AbstractTrace {
         private Marker marker;
         private Line line;
 
+        /**
+         * Sets the area to fill with a solid color. Use with `fillcolor` if not "none". "tozerox" and "tozeroy"
+         * fill to x=0 and y=0 respectively. "tonextx" and "tonexty" fill between the endpoints of this trace and the
+         * endpoints of the trace before it, connecting those endpoints with straight lines (to make a stacked area graph);
+         * if there is no trace before it, they behave like "tozerox" and "tozeroy". "toself" connects the endpoints of
+         * the trace (or each segment of the trace if it has gaps) into a closed shape. "tonext" fills the space between
+         * two traces if one completely encloses the other (eg consecutive contour lines), and behaves like "toself"
+         * if there is no trace before it. "tonext" should not be used if one trace does not enclose the other.
+         */
+        ScatterTrace.Fill fill = DEFAULT_FILL;
+
+        /**
+         * Sets the fill color. Defaults to a half-transparent variant of the line color, marker color, or marker line
+         * color, whichever is available.
+         */
+        String fillColor;
+
         private ScatterBuilder(double[] x, double[] y) {
             Double[] x1 = new Double[x.length];
             for (int i = 0; i < x1.length; i++) {
@@ -182,6 +229,17 @@ public class ScatterTrace extends AbstractTrace {
             this.text = text;
             return this;
         }
+
+        public ScatterBuilder fill(ScatterTrace.Fill fill) {
+            this.fill = fill;
+            return this;
+        }
+
+        public ScatterBuilder fillColor(String fillColor) {
+            this.fillColor = fillColor;
+            return this;
+        }
+
 
         public ScatterTrace build() {
             return new ScatterTrace(this);

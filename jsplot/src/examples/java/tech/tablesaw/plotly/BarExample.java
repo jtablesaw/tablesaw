@@ -34,6 +34,6 @@ public class BarExample {
         Table s = table.summarize("fatalities", "log injuries", sum).by("Scale");
         System.out.println(s);
 
-        HorizontalBarPlot.show("Tornado Fatalities", s,"scale","Sum [Fatalities]", "Sum [log injuries]");
+        Plot.show(HorizontalBarPlot.create("Tornado Fatalities", s,"scale","Sum [Fatalities]", "Sum [log injuries]"));
     }
 }

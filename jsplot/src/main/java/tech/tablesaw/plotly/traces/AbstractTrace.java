@@ -21,10 +21,22 @@ public abstract class AbstractTrace implements Trace {
     protected final PebbleEngine engine = TemplateUtils.getNewEngine();
 
     public enum Visibility {
-        TRUE,
-        FALSE,
-        LEGEND_ONLY
-    }
+        TRUE("True"),
+        FALSE("False"),
+        LEGEND_ONLY("legendonly");
+
+        private String value;
+
+        Visibility(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+
+        }
 
     protected final String type;
 

@@ -44,7 +44,13 @@ nbinsy: {{nBinsY}},
 autobiny: {{autoBinY}},
 {% endif %}
 {% if visible is not null %}
-visible: {{visible}},
+visible: '{{visible}}',
+{% endif %}
+{% if fill is not null %}
+fill: '{{fill}}',
+{% endif %}
+{% if fillColor is not null %}
+fillcolor: '{{fillColor}}',
 {% endif %}
 type: '{{type}}',
 name: '{{name}}',
