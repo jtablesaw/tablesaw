@@ -44,5 +44,4 @@ class CameraComponent extends Component {
         context.put("z", z);
         return context;
     }
-
 }

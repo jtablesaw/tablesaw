@@ -1,0 +1,18 @@
+<html>
+<head>
+    <title>{{figureTitle}}</title>
+<!--
+    <script src="src/main/resources/plotly-latest.min.js"></script>
+-->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+{% if targetDiv is not null %}
+    {{targetDiv | raw}}
+{% endif %}
+{% if figureScript is not null %}
+    {{figureScript | raw}}
+{% endif %}
+
+</body>
+</html>

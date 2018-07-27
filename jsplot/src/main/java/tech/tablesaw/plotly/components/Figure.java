@@ -38,6 +38,14 @@ public class Figure {
         this.layout = null;
     }
 
+    public String divString(String divName) {
+        return String.format("<div id='%s' ></div>\n", divName);
+    }
+
+    public Layout getLayout() {
+        return layout;
+    }
+
     public String asJavascript(String divName) {
         Writer writer = new StringWriter();
         PebbleTemplate compiledTemplate;
