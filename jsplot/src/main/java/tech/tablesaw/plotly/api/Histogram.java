@@ -1,11 +1,13 @@
 package tech.tablesaw.plotly.api;
 
+import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.HistogramTrace;
+import tech.tablesaw.plotly.traces.Trace;
 
 public class Histogram {
 
@@ -24,6 +26,26 @@ public class Histogram {
         Plot.show(asFigure(title, table, numericColumName));
     }
 
+    public static void show(String title, Table table, String groupCol, String... numericColumnName) {
+
+        Layout layout = standardLayout(title).build();
+        CategoricalColumn catCol = table.categoricalColumn(groupCol);
+
+        Trace[] traces = new Trace[catCol.unique().size()];
+
+        for (int i = 0; i < numericColumnName.length; i++) {
+            String name = catCol.getString(i);
+            HistogramTrace trace = HistogramTrace.builder(
+                    table.categoricalColumn(groupCol),
+                    table.numberColumn(name))
+                    .showLegend(true)
+                    .name(name)
+                    .build();
+            traces[i] = trace;
+        }
+        Plot.show(new Figure(layout, traces));
+    }
+
     private static Figure asFigure(String title, NumberColumn data) {
         return asFigure(title, data.asDoubleArray());
     }
@@ -37,11 +59,10 @@ public class Histogram {
         return new Figure(standardLayout(title), trace);
     }
 
-    private static Layout standardLayout(String title) {
+    private static Layout.LayoutBuilder standardLayout(String title) {
         return Layout.builder()
                 .title(title)
                 .height(HEIGHT)
-                .width(WIDTH)
-                .build();
+                .width(WIDTH);
     }
 }
