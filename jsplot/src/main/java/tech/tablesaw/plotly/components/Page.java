@@ -40,7 +40,7 @@ public class Page extends Component {
         Map<String, Object> context = new HashMap<>();
         context.put("figureScript", figure.asJavascript(divName));
         context.put("targetDiv", figure.divString(divName));
-        context.put("figureTitle", figure.getLayout().getTitle());
+        context.put("figureTitle", figure.getLayout() != null? figure.getLayout().getTitle() : null);
         return context;
     }
 
