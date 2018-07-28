@@ -14,8 +14,8 @@ public class TimeSeriesVisualizations {
         Table bush = Table.read().csv("../data/bush.csv");
         Table foxOnly = bush.where(bush.stringColumn("who").equalsIgnoreCase("fox"));
         Figure foxPlot = TimeSeriesPlot.create("George W. Bush approval ratings", foxOnly, "date", "approval");
+        Plot.show(foxPlot);
 
-        System.out.println(foxPlot.asJavascript("div"));
         Plot.show(TimeSeriesPlot.create("George W. Bush approval ratings", bush, "date", "approval", "who"));
 
         Table robberies = Table.read().csv("../data/boston-robberies.csv");
