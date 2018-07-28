@@ -25,8 +25,7 @@ public class Utils {
 
     public static String dataAsString(double[][] data) {
         StringBuilder builder = new StringBuilder("[");
-        for (int i = 0; i < data.length; i++) {
-            double[] row = data[i];
+        for (double[] row : data) {
             builder.append("[");
             for (double value : row) {
                 builder.append(value);
