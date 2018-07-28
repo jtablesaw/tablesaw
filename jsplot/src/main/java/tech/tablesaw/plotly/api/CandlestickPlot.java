@@ -23,7 +23,7 @@ public class CandlestickPlot {
                 .build();
 
         ScatterTrace trace = ScatterTrace.builder(
-                table.numberColumn(xCol),
+                table.dateColumn(xCol),
                 table.numberColumn(openCol),
                 table.numberColumn(highCol),
                 table.numberColumn(lowCol),
