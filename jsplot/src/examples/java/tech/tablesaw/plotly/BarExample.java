@@ -14,9 +14,12 @@
 
 package tech.tablesaw.plotly;
 
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.api.HorizontalBarPlot;
+import tech.tablesaw.plotly.api.VerticalBarPlot;
+import tech.tablesaw.plotly.components.Layout;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
@@ -30,10 +33,13 @@ public class BarExample {
         NumberColumn logNInjuries = table.numberColumn("injuries").add(1).logN();
         logNInjuries.setName("log injuries");
         table.addColumns(logNInjuries);
+        NumberColumn scale = table.numberColumn("scale");
+        scale.set(scale.isLessThan(0), DoubleColumn.MISSING_VALUE);
 
         Table s = table.summarize("fatalities", "log injuries", sum).by("Scale");
         System.out.println(s);
 
-        Plot.show(HorizontalBarPlot.create("Tornado Fatalities", s,"scale","Sum [Fatalities]", "Sum [log injuries]"));
+        Plot.show(HorizontalBarPlot.create("Tornado Impact", s, "scale", Layout.BarMode.STACK,"Sum [Fatalities]", "Sum [log injuries]"));
+        Plot.show(VerticalBarPlot.create("Tornado Impact", s, "scale", Layout.BarMode.GROUP,"Sum [Fatalities]", "Sum [log injuries]"));
     }
 }
