@@ -683,6 +683,5 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
             output[i] = data.getDouble(i);
         }
         return output;
-
     }
 }
