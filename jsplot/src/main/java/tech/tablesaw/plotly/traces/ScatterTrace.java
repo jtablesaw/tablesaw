@@ -7,6 +7,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.HoverLabel;
 import tech.tablesaw.plotly.components.Line;
 import tech.tablesaw.plotly.components.Marker;
@@ -21,6 +22,7 @@ import static tech.tablesaw.plotly.Utils.dataAsString;
 public class ScatterTrace extends AbstractTrace {
 
     static final Fill DEFAULT_FILL = Fill.NONE;
+    static final double DEFAULT_WHISKER_WIDTH = 0;
 
     public static enum Fill {
         NONE("none"),
@@ -55,6 +57,12 @@ public class ScatterTrace extends AbstractTrace {
     private final Marker marker;
     private final Line line;
 
+    private final double[] open;
+    private final double[] high;
+    private final double[] low;
+    private final double[] close;
+    private final double whiskerWidth;
+
     public static ScatterBuilder builder(double[] x, double[] y) {
         return new ScatterBuilder(x, y);
     }
@@ -65,6 +73,13 @@ public class ScatterTrace extends AbstractTrace {
 
     public static ScatterBuilder builder(DateColumn x, NumberColumn y) {
         return new ScatterBuilder(x, y);
+    }
+    public static ScatterBuilder builder(Column x, NumberColumn y) {
+        return new ScatterBuilder(x, y);
+    }
+
+    public static ScatterBuilder builder(Column x, NumberColumn open, NumberColumn high, NumberColumn low, NumberColumn close) {
+        return new ScatterBuilder(x, open, high, low, close);
     }
 
     public static ScatterBuilder builder(DateTimeColumn x, NumberColumn y) {
@@ -87,6 +102,12 @@ public class ScatterTrace extends AbstractTrace {
         this.line = builder.line;
         this.fill = builder.fill;
         this.fillColor = builder.fillColor;
+
+        this.open = builder.open;
+        this.high = builder.high;
+        this.low = builder.low;
+        this.close = builder.close;
+        this.whiskerWidth = builder.whiskerWidth;
     }
 
     private Map<String, Object> getContext(int i) {
@@ -94,8 +115,16 @@ public class ScatterTrace extends AbstractTrace {
         Map<String, Object> context = super.getContext();
         context.put("variableName", "trace" + i);
         context.put("mode", mode);
-        context.put("y", dataAsString(y));
         context.put("x", dataAsString(x));
+        if (y != null) context.put("y", dataAsString(y));
+
+        // for pricing data (candlesticks and OHLC)
+        if (open != null) context.put("open", dataAsString(open));
+        if (high != null) context.put("high", dataAsString(high));
+        if (low != null) context.put("low", dataAsString(low));
+        if (close != null) context.put("close", dataAsString(close));
+        if (whiskerWidth != DEFAULT_WHISKER_WIDTH) context.put("whiskerWidth", whiskerWidth);
+
         context.put("marker", marker);
         context.put("showlegend", showLegend);
         if (!fill.equals(DEFAULT_FILL)) context.put("fill", fill);
@@ -158,6 +187,10 @@ public class ScatterTrace extends AbstractTrace {
         private String[] text;
         private Marker marker;
         private Line line;
+        private double[] open;
+        private double[] close;
+        private double[] high;
+        private double[] low;
 
         /**
          * Sets the area to fill with a solid color. Use with `fillcolor` if not "none". "tozerox" and "tozeroy"
@@ -176,6 +209,12 @@ public class ScatterTrace extends AbstractTrace {
          */
         String fillColor;
 
+        /**
+         * Sets the width of the whiskers relative to the box' width. For example, with 1, the whiskers are as wide
+         * as the box(es).
+         */
+        double whiskerWidth = DEFAULT_WHISKER_WIDTH;
+
         private ScatterBuilder(double[] x, double[] y) {
             Double[] x1 = new Double[x.length];
             for (int i = 0; i < x1.length; i++) {
@@ -183,6 +222,19 @@ public class ScatterTrace extends AbstractTrace {
             }
             this.x = x1;
             this.y = y;
+        }
+
+        private ScatterBuilder(Column x, NumberColumn y) {
+            this.x = x.asObjectArray();
+            this.y = y.asDoubleArray();
+        }
+
+        private ScatterBuilder(Column x, NumberColumn open, NumberColumn high, NumberColumn low, NumberColumn close) {
+            this.x = x.asObjectArray();
+            this.open = open.asDoubleArray();
+            this.high = high.asDoubleArray();
+            this.low = low.asDoubleArray();
+            this.close = close.asDoubleArray();
         }
 
         private ScatterBuilder(NumberColumn x, NumberColumn y) {
@@ -212,6 +264,12 @@ public class ScatterTrace extends AbstractTrace {
 
         public ScatterBuilder line(Line line) {
             this.line = line;
+            return this;
+        }
+
+        public ScatterBuilder whiskerWidth(double width) {
+            Preconditions.checkArgument(width >= 0 && width <= 1);
+            this.whiskerWidth = width;
             return this;
         }
 

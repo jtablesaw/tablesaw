@@ -4,6 +4,18 @@ x: {{x | raw}},
 {% if y is not null %}
 y: {{y | raw}},
 {% endif %}
+{% if open is not null %}
+open: {{open | raw}},
+{% endif %}
+{% if high is not null %}
+high: {{high | raw}},
+{% endif %}
+{% if low is not null %}
+low: {{low | raw}},
+{% endif %}
+{% if close is not null %}
+close: {{close | raw}},
+{% endif %}
 {% if z is not null %}
 z: {{z | raw}},
 {% endif %}

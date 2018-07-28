@@ -42,7 +42,7 @@ public class TimeSeriesPlot {
         Layout layout = standardLayout(title, dateColXName, yColName);
 
         ScatterTrace trace = ScatterTrace.builder(
-                table.dateColumn(dateColXName),
+                table.column(dateColXName),
                 table.numberColumn(yColName))
                 .mode(ScatterTrace.Mode.LINE)
                 .build();

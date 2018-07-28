@@ -19,5 +19,8 @@ public class TimeSeriesVisualizations {
         Table robberies = Table.read().csv("../data/boston-robberies.csv");
         Plot.show(LinePlot.create("Boston Robberies by month: Jan 1966-Oct 1975", robberies, "Record", "Robberies"));
         Plot.show(AreaPlot.create("Boston Robberies by month: Jan 1966-Oct 1975", robberies, "Record", "Robberies"));
+
+       // Plot.show(OHLCPlot.create("Prices", priceTable, "open", "high", "low", "close"));
+       // Plot.show(CandlestickPlot.create("Prices", priceTable, "open", "high", "low", "close"));
     }
 }
