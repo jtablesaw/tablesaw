@@ -21,7 +21,7 @@ import tech.tablesaw.api.ColumnType;
 /**
  * Defines the type of data held by a {@link Column}
  */
-public class ColumnTypeImpl implements ColumnType {
+public abstract class AbstractColumnType implements ColumnType {
 
     private final Comparable<?> missingValue;
 
@@ -31,7 +31,7 @@ public class ColumnTypeImpl implements ColumnType {
 
     private final String printerFriendlyName;
 
-    public ColumnTypeImpl(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
+    protected AbstractColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
         this.missingValue = missingValue;
         this.byteSize = byteSize;
         this.name = name;
@@ -65,7 +65,7 @@ public class ColumnTypeImpl implements ColumnType {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ColumnTypeImpl that = (ColumnTypeImpl) o;
+        AbstractColumnType that = (AbstractColumnType) o;
         return byteSize == that.byteSize &&
                 Objects.equal(missingValue, that.missingValue) &&
                 Objects.equal(name, that.name) &&
