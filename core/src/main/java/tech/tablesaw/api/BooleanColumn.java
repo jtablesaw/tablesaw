@@ -221,11 +221,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, Ca
         return new BooleanColumn(name() + " Unique values", list);
     }
 
-    @Override
-    public ColumnType type() {
-        return BOOLEAN;
-    }
-
     public BooleanColumn append(boolean b) {
         if (b) {
             data.add(BYTE_TRUE);

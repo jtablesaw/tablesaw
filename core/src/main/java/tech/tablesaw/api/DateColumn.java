@@ -129,11 +129,6 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return data.size();
     }
 
-    @Override
-    public ColumnType type() {
-        return ColumnType.LOCAL_DATE;
-    }
-
     public DateColumn appendInternal(int f) {
         data.add(f);
         return this;

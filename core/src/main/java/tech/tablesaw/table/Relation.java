@@ -271,6 +271,14 @@ public abstract class Relation {
         return (BooleanColumn) column(columnName);
     }
 
+    /**
+     * Returns the NumberColumn at the given index.
+     * If the index points to a String or a boolean column, a new NumberColumn is created and returned
+     * TODO(lwhite):Consider separating the indexed access and the column type mods, which must be for ML functions (in smile or elsewhere)
+     * @param columnIndex The 0-based index of a column in the table
+     * @return A number column
+     * @throws ClassCastException if the cast to NumberColumn fails
+     */
     public NumberColumn numberColumn(int columnIndex) {
         Column c = column(columnIndex);
         if (c.type() == ColumnType.STRING) {
@@ -284,15 +292,7 @@ public abstract class Relation {
     }
 
     public NumberColumn numberColumn(String columnName) {
-        Column c = column(columnName);
-        if (c.type() == ColumnType.STRING) {
-            StringColumn stringColumn = (StringColumn) c;
-            return stringColumn.asNumberColumn();
-        } else if (c.type() == ColumnType.BOOLEAN) {
-            BooleanColumn booleanColumn = (BooleanColumn) c;
-            return booleanColumn.asNumberColumn();
-        }
-        return (NumberColumn) column(columnName);
+        return numberColumn(columnIndex(columnName));
     }
 
     public StringColumn[] stringColumns() {

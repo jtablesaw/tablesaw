@@ -31,8 +31,8 @@ import java.sql.Types;
  */
 public class SqlResultSetReader {
 
-    // Maps from supported SQL types to their Airframe 'equivalents'
-    private static final ImmutableMap<Integer, ColumnType> SQL_TYPE_TO_Airframe_TYPE =
+    // Maps from supported SQL types to their Tablesaw equivalents'
+    private static final ImmutableMap<Integer, ColumnType> SQL_TYPE_TO_TABLESAW_TYPE =
             new ImmutableMap.Builder<Integer, ColumnType>()
                     .put(Types.BINARY, ColumnType.BOOLEAN)
                     .put(Types.BOOLEAN, ColumnType.BOOLEAN)
@@ -75,7 +75,7 @@ public class SqlResultSetReader {
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             String name = metaData.getColumnName(i);
 
-            ColumnType type = SQL_TYPE_TO_Airframe_TYPE.get(metaData.getColumnType(i));
+            ColumnType type = SQL_TYPE_TO_TABLESAW_TYPE.get(metaData.getColumnType(i));
             Preconditions.checkState(type != null,
                     "No column type found for %s as specified for column %s", metaData.getColumnType(i), name);
 

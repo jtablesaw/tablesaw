@@ -183,11 +183,6 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
     }
 
     @Override
-    public ColumnType type() {
-        return LOCAL_TIME;
-    }
-
-    @Override
     public String getString(int row) {
         return printFormatter.format(getPackedTime(row));
     }

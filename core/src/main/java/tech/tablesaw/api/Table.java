@@ -607,29 +607,29 @@ public class Table extends Relation implements Iterable<Row> {
     public void addRow(int rowIndex, Table sourceTable) {
         for (int i = 0; i < columnCount(); i++) {
             Column column = column(i);
-            ColumnType type = column.type();
+            final String type = column.type().name();
             switch (type) {
-                case NUMBER:
+                case "NUMBER":
                     NumberColumn numberColumn = (NumberColumn) column;
                     numberColumn.append(sourceTable.numberColumn(i).get(rowIndex));
                     break;
-                case BOOLEAN:
+                case "BOOLEAN":
                     BooleanColumn booleanColumn = (BooleanColumn) column;
                     booleanColumn.append(sourceTable.booleanColumn(i).get(rowIndex));
                     break;
-                case LOCAL_DATE:
+                case "LOCAL_DATE":
                     DateColumn localDateColumn = (DateColumn) column;
                     localDateColumn.appendInternal(sourceTable.dateColumn(i).getIntInternal(rowIndex));
                     break;
-                case LOCAL_TIME:
+                case "LOCAL_TIME":
                     TimeColumn timeColumn = (TimeColumn) column;
                     timeColumn.appendInternal(sourceTable.timeColumn(i).getIntInternal(rowIndex));
                     break;
-                case LOCAL_DATE_TIME:
+                case "LOCAL_DATE_TIME":
                     DateTimeColumn localDateTimeColumn = (DateTimeColumn) column;
                     localDateTimeColumn.appendInternal(sourceTable.dateTimeColumn(i).getLongInternal(rowIndex));
                     break;
-                case STRING:
+                case "STRING":
                     StringColumn stringColumn = (StringColumn) column;
                     stringColumn.append(sourceTable.stringColumn(i).get(rowIndex));
                     break;
@@ -642,29 +642,29 @@ public class Table extends Relation implements Iterable<Row> {
     public void addRow(Row row) {
         //TODO Implement
         for (Column column : columns()) {
-            ColumnType type = column.type();
+            final String type = column.type().name();
             switch (type) {
-                case NUMBER:
+                case "NUMBER":
                     NumberColumn numberColumn = (NumberColumn) column;
                     numberColumn.append(row.getDouble(column.name()));
                     break;
-                case BOOLEAN:
+                case "BOOLEAN":
                     BooleanColumn booleanColumn = (BooleanColumn) column;
                     booleanColumn.append(row.getBoolean(column.name()));
                     break;
-                case LOCAL_DATE:
+                case "LOCAL_DATE":
                     DateColumn localDateColumn = (DateColumn) column;
                     localDateColumn.appendInternal(row.getPackedDate(column.name()).getPackedValue());
                     break;
-                case LOCAL_TIME:
+                case "LOCAL_TIME":
                     TimeColumn timeColumn = (TimeColumn) column;
                     timeColumn.appendInternal(row.getPackedTime(column.name()).getPackedValue());
                     break;
-                case LOCAL_DATE_TIME:
+                case "LOCAL_DATE_TIME":
                     DateTimeColumn localDateTimeColumn = (DateTimeColumn) column;
                     localDateTimeColumn.appendInternal(row.getPackedDateTime(column.name()).getPackedValue());
                     break;
-                case STRING:
+                case "STRING":
                     StringColumn stringColumn = (StringColumn) column;
                     stringColumn.append(row.getString(column.name()));
                     break;

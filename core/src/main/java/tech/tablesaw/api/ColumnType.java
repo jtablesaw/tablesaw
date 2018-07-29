@@ -1,69 +1,63 @@
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package tech.tablesaw.api;
 
-
+import com.google.common.base.Preconditions;
 import tech.tablesaw.columns.Column;
 
-/**
- * Defines the type of data held by a {@link Column}
- */
-public enum ColumnType {
+import java.util.ArrayList;
+import java.util.List;
 
-    BOOLEAN(Byte.MIN_VALUE, 1, "Boolean"),
-    STRING("", 4, "String"),
-    NUMBER(Double.NaN, 8, "Number"),
-    LOCAL_DATE(Integer.MIN_VALUE, 4, "Date"),
-    LOCAL_DATE_TIME(Long.MIN_VALUE, 8, "DateTime"),
-    LOCAL_TIME(Integer.MIN_VALUE, 4, "Time"),
-    SKIP(null, 0, "Skipped");
+public interface ColumnType {
 
-    private final Comparable<?> missingValue;
+    List<ColumnType> values = new ArrayList<>();
 
-    private final int byteSize;
+    // standard column types
+    ColumnType BOOLEAN = new StandardColumnType(Byte.MIN_VALUE, 1, "BOOLEAN", "Boolean");
+    ColumnType STRING = new StandardColumnType("", 4, "STRING", "String");
+    ColumnType NUMBER = new StandardColumnType(Double.NaN, 8, "NUMBER", "Number");
+    ColumnType LOCAL_DATE = new StandardColumnType(Integer.MIN_VALUE, 4, "LOCAL_DATE", "Date");
+    ColumnType LOCAL_DATE_TIME = new StandardColumnType(Long.MIN_VALUE, 8, "LOCAL_DATE_TIME","DateTime");
+    ColumnType LOCAL_TIME = new StandardColumnType(Integer.MIN_VALUE, 4, "LOCAL_TIME", "Time");
+    ColumnType SKIP = new StandardColumnType(null, 0, "SKIP", "Skipped");
 
-    private final String printerFriendlyName;
-
-    ColumnType(Comparable<?> missingValue, int byteSize, String name) {
-        this.missingValue = missingValue;
-        this.byteSize = byteSize;
-        this.printerFriendlyName = name;
+    static void register(ColumnType type) {
+        values.add(type);
     }
 
-    public Column create(String name) {
-        switch (this) {
-            case BOOLEAN: return BooleanColumn.create(name);
-            case STRING: return StringColumn.create(name);
-            case NUMBER: return DoubleColumn.create(name);
-            case LOCAL_DATE: return DateColumn.create(name);
-            case LOCAL_DATE_TIME: return DateTimeColumn.create(name);
-            case LOCAL_TIME: return TimeColumn.create(name);
-            case SKIP: throw new IllegalArgumentException("Cannot create column of type SKIP");
+    static ColumnType[] values() {
+        return values.toArray(new ColumnType[0]);
+    }
+
+    static ColumnType valueOf(String name) {
+        Preconditions.checkNotNull(name);
+
+        for (ColumnType type : values) {
+            if (type.name().equals(name)) {
+                return type;
+            }
         }
-        throw new UnsupportedOperationException("Column type " + this.name() + " doesn't support column creation");
+        throw new IllegalArgumentException(name + " is not a registered column type.");
     }
 
-    public Comparable<?> getMissingValue() {
-        return missingValue;
+    default Column create(String name) {
+        final String columnTypeName = this.name();
+        switch (columnTypeName) {
+            case "BOOLEAN": return BooleanColumn.create(name);
+            case "STRING": return StringColumn.create(name);
+            case "NUMBER": return DoubleColumn.create(name);
+            case "LOCAL_DATE": return DateColumn.create(name);
+            case "LOCAL_DATE_TIME": return DateTimeColumn.create(name);
+            case "LOCAL_TIME": return TimeColumn.create(name);
+            case "SKIP": throw new IllegalArgumentException("Cannot create column of type SKIP");
+        }
+        throw new UnsupportedOperationException("Column type " + name() + " doesn't support column creation");
     }
 
-    public int byteSize() {
-        return byteSize;
-    }
+    String name();
 
-    public String getPrinterFriendlyName() {
-        return printerFriendlyName;
-    }
+    Comparable<?> getMissingValue();
+
+    int byteSize();
+
+    String getPrinterFriendlyName();
+
 }
