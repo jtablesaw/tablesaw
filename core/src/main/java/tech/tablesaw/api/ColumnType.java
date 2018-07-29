@@ -3,12 +3,12 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import tech.tablesaw.columns.Column;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public interface ColumnType {
 
-    List<ColumnType> values = new ArrayList<>();
+    Map<String, ColumnType> values = new HashMap<>();
 
     // standard column types
     ColumnType BOOLEAN = new StandardColumnType(Byte.MIN_VALUE, 1, "BOOLEAN", "Boolean");
@@ -20,22 +20,21 @@ public interface ColumnType {
     ColumnType SKIP = new StandardColumnType(null, 0, "SKIP", "Skipped");
 
     static void register(ColumnType type) {
-        values.add(type);
+        values.put(type.name(), type);
     }
 
     static ColumnType[] values() {
-        return values.toArray(new ColumnType[0]);
+        return values.values().toArray(new ColumnType[0]);
     }
 
     static ColumnType valueOf(String name) {
         Preconditions.checkNotNull(name);
 
-        for (ColumnType type : values) {
-            if (type.name().equals(name)) {
-                return type;
-            }
+        ColumnType result = values.get(name);
+        if (result == null) {
+            throw new IllegalArgumentException(name + " is not a registered column type.");
         }
-        throw new IllegalArgumentException(name + " is not a registered column type.");
+        return result;
     }
 
     default Column create(String name) {
@@ -60,5 +59,4 @@ public interface ColumnType {
     int byteSize();
 
     String getPrinterFriendlyName();
-
 }
