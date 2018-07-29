@@ -48,8 +48,9 @@ public interface ColumnType {
             case "LOCAL_DATE_TIME": return DateTimeColumn.create(name);
             case "LOCAL_TIME": return TimeColumn.create(name);
             case "SKIP": throw new IllegalArgumentException("Cannot create column of type SKIP");
+            default:
+                throw new UnsupportedOperationException("Column type " + name() + " doesn't support column creation");
         }
-        throw new UnsupportedOperationException("Column type " + name() + " doesn't support column creation");
     }
 
     String name();
