@@ -12,16 +12,16 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.api;
+package tech.tablesaw.columns;
 
 
 import com.google.common.base.Objects;
-import tech.tablesaw.columns.Column;
+import tech.tablesaw.api.ColumnType;
 
 /**
  * Defines the type of data held by a {@link Column}
  */
-public class StandardColumnType implements ColumnType {
+public class ColumnTypeImpl implements ColumnType {
 
     private final Comparable<?> missingValue;
 
@@ -31,7 +31,7 @@ public class StandardColumnType implements ColumnType {
 
     private final String printerFriendlyName;
 
-    public StandardColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
+    public ColumnTypeImpl(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
         this.missingValue = missingValue;
         this.byteSize = byteSize;
         this.name = name;
@@ -65,7 +65,7 @@ public class StandardColumnType implements ColumnType {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StandardColumnType that = (StandardColumnType) o;
+        ColumnTypeImpl that = (ColumnTypeImpl) o;
         return byteSize == that.byteSize &&
                 Objects.equal(missingValue, that.missingValue) &&
                 Objects.equal(name, that.name) &&

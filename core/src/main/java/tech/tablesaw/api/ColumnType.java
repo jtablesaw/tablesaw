@@ -2,6 +2,7 @@ package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.ColumnTypeImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,13 +12,13 @@ public interface ColumnType {
     Map<String, ColumnType> values = new HashMap<>();
 
     // standard column types
-    ColumnType BOOLEAN = new StandardColumnType(Byte.MIN_VALUE, 1, "BOOLEAN", "Boolean");
-    ColumnType STRING = new StandardColumnType("", 4, "STRING", "String");
-    ColumnType NUMBER = new StandardColumnType(Double.NaN, 8, "NUMBER", "Number");
-    ColumnType LOCAL_DATE = new StandardColumnType(Integer.MIN_VALUE, 4, "LOCAL_DATE", "Date");
-    ColumnType LOCAL_DATE_TIME = new StandardColumnType(Long.MIN_VALUE, 8, "LOCAL_DATE_TIME","DateTime");
-    ColumnType LOCAL_TIME = new StandardColumnType(Integer.MIN_VALUE, 4, "LOCAL_TIME", "Time");
-    ColumnType SKIP = new StandardColumnType(null, 0, "SKIP", "Skipped");
+    ColumnType BOOLEAN = new ColumnTypeImpl(Byte.MIN_VALUE, 1, "BOOLEAN", "Boolean");
+    ColumnType STRING = new ColumnTypeImpl("", 4, "STRING", "String");
+    ColumnType NUMBER = new ColumnTypeImpl(Double.NaN, 8, "NUMBER", "Number");
+    ColumnType LOCAL_DATE = new ColumnTypeImpl(Integer.MIN_VALUE, 4, "LOCAL_DATE", "Date");
+    ColumnType LOCAL_DATE_TIME = new ColumnTypeImpl(Long.MIN_VALUE, 8, "LOCAL_DATE_TIME","DateTime");
+    ColumnType LOCAL_TIME = new ColumnTypeImpl(Integer.MIN_VALUE, 4, "LOCAL_TIME", "Time");
+    ColumnType SKIP = new ColumnTypeImpl(null, 0, "SKIP", "Skipped");
 
     static void register(ColumnType type) {
         values.put(type.name(), type);
