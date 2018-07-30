@@ -14,7 +14,7 @@ import tech.tablesaw.api.ColumnType;
  */
 public abstract class StringParser<T> {
 
-    protected ColumnType columnType;
+    private ColumnType columnType;
 
     public StringParser(ColumnType columnType) {
         this.columnType = columnType;

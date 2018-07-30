@@ -3,6 +3,9 @@ package tech.tablesaw.columns.times;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.io.csv.CsvReadOptions;
+
+import java.time.LocalTime;
 
 public class TimeColumnType extends AbstractColumnType {
 
@@ -16,7 +19,12 @@ public class TimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public StringParser defaultParser() {
+    public StringParser<LocalTime> defaultParser() {
+        return null;
+    }
+
+    @Override
+    public StringParser<LocalTime> customParser(CsvReadOptions options) {
         return null;
     }
 }

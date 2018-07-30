@@ -4,6 +4,7 @@ import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class BooleanColumnType extends AbstractColumnType {
 
@@ -17,7 +18,13 @@ public class BooleanColumnType extends AbstractColumnType {
     }
 
     @Override
-    public StringParser defaultParser() {
+    public StringParser<Boolean> defaultParser() {
         return null;
     }
+
+    @Override
+    public StringParser<Boolean> customParser(CsvReadOptions options) {
+        return null;
+    }
+
 }

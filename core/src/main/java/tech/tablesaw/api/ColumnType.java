@@ -10,6 +10,7 @@ import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.SkipColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,4 +57,6 @@ public interface ColumnType {
     String getPrinterFriendlyName();
 
     StringParser defaultParser();
+
+    StringParser customParser(CsvReadOptions options);
 }

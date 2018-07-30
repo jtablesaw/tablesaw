@@ -600,7 +600,6 @@ public class CsvReader {
     /**
      * Returns the list of parsers to use for type detection
      *
-     * TODO Apply the CsvReadOptions
      * @param typeArray Array of column types. The order specifies the order the types are applied
      * @param options CsvReadOptions to use to modify the default parsers for each type
      * @return  A list of parsers in the order they should be used for type detection
@@ -610,7 +609,7 @@ public class CsvReader {
 
         List<StringParser> parsers = new ArrayList<>();
         for (ColumnType type : typeArray) {
-            parsers.add(type.defaultParser());
+            parsers.add(type.customParser(options));
         }
         return parsers;
     }
