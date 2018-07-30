@@ -238,11 +238,6 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
         return data;
     }
 
-    @Override
-    public ColumnType type() {
-        return LOCAL_DATE_TIME;
-    }
-
     public DateTimeColumn appendInternal(long dateTime) {
         data.add(dateTime);
         return this;

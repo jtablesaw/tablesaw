@@ -140,11 +140,6 @@ public class StringColumn extends AbstractColumn
         return get(rowNumber).equals(MISSING_VALUE);
     }
 
-    @Override
-    public ColumnType type() {
-        return STRING;
-    }
-
     public void setPrintFormatter(StringColumnFormatter formatter) {
         Preconditions.checkNotNull(formatter);
         this.printFormatter = formatter;

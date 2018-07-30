@@ -254,18 +254,18 @@ public class CsvReader {
     }
 
     private static void addFormatter(Column newColumn, CsvReadOptions options) {
-        switch (newColumn.type()) {
-            case LOCAL_DATE_TIME :
+        final String columnTypeName = newColumn.type().name();
+        switch (columnTypeName) {
+            case "LOCAL_DATE_TIME" :
                 ((DateTimeColumn) newColumn).setFormatter(options.dateTimeFormatter());
                 return;
-            case LOCAL_DATE:
+            case "LOCAL_DATE":
                 ((DateColumn) newColumn).setFormatter(options.dateFormatter());
                 return;
-            case LOCAL_TIME :
+            case "LOCAL_TIME" :
                 ((TimeColumn) newColumn).setFormatter(options.timeFormatter());
                 return;
             default:
-                return;
         }
     }
 
@@ -510,7 +510,7 @@ public class CsvReader {
             ColumnType detectedType = detectType(valuesList, options);
             columnTypes.add(detectedType);
         }
-        return columnTypes.toArray(new ColumnType[columnTypes.size()]);
+        return columnTypes.toArray(new ColumnType[0]);
     }
 
     private static int nextRowWithoutSampling(int nextRow) {

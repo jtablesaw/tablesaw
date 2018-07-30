@@ -16,7 +16,6 @@ package tech.tablesaw.table;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
@@ -40,29 +39,29 @@ public class Rows {
     public static void copyRowsToTable(IntArrayList rows, Table oldTable, Table newTable) {
 
         for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
-            ColumnType columnType = oldTable.column(columnIndex).type();
+            final String columnType = oldTable.column(columnIndex).type().name();
             switch (columnType) {
-                case STRING:
+                case "STRING":
                     copy(rows, (StringColumn) oldTable.column(columnIndex),
                             (StringColumn) newTable.column(columnIndex));
                     break;
-                case BOOLEAN:
+                case "BOOLEAN":
                     copy(rows, (BooleanColumn) oldTable.column(columnIndex),
                             (BooleanColumn) newTable.column(columnIndex));
                     break;
-                case NUMBER:
+                case "NUMBER":
                     copy(rows, (NumberColumn) oldTable.column(columnIndex),
                             (NumberColumn) newTable.column(columnIndex));
                     break;
-                case LOCAL_DATE:
+                case "LOCAL_DATE":
                     copy(rows, (DateColumn) oldTable.column(columnIndex),
                             (DateColumn) newTable.column(columnIndex));
                     break;
-                case LOCAL_DATE_TIME:
+                case "LOCAL_DATE_TIME":
                     copy(rows, (DateTimeColumn) oldTable.column(columnIndex),
                             (DateTimeColumn) newTable.column(columnIndex));
                     break;
-                case LOCAL_TIME:
+                case "LOCAL_TIME":
                     copy(rows, (TimeColumn) oldTable.column(columnIndex),
                             (TimeColumn) newTable.column(columnIndex));
                     break;
@@ -83,34 +82,34 @@ public class Rows {
 
         boolean result;
         for (int columnIndex = 0; columnIndex < original.columnCount(); columnIndex++) {
-            ColumnType columnType = original.column(columnIndex).type();
+            String columnType = original.column(columnIndex).type().name();
             switch (columnType) {
-                case NUMBER:
+                case "NUMBER":
                     result = compare(rowInOriginal, (NumberColumn) tempTable.column(columnIndex), (NumberColumn)
                             original.column(columnIndex));
                     if (!result) return false;
                     break;
-                case STRING:
+                case "STRING":
                     result = compare(rowInOriginal, (StringColumn) tempTable.column(columnIndex), (StringColumn)
                             original.column(columnIndex));
                     if (!result) return false;
                     break;
-                case BOOLEAN:
+                case "BOOLEAN":
                     result = compare(rowInOriginal, (BooleanColumn) tempTable.column(columnIndex), (BooleanColumn)
                             original.column(columnIndex));
                     if (!result) return false;
                     break;
-                case LOCAL_DATE:
+                case "LOCAL_DATE":
                     result = compare(rowInOriginal, (DateColumn) tempTable.column(columnIndex), (DateColumn) original
                             .column(columnIndex));
                     if (!result) return false;
                     break;
-                case LOCAL_DATE_TIME:
+                case "LOCAL_DATE_TIME":
                     result = compare(rowInOriginal, (DateTimeColumn) tempTable.column(columnIndex), (DateTimeColumn)
                             original.column(columnIndex));
                     if (!result) return false;
                     break;
-                case LOCAL_TIME:
+                case "LOCAL_TIME":
                     result = compare(rowInOriginal, (TimeColumn) tempTable.column(columnIndex), (TimeColumn) original
                             .column(columnIndex));
                     if (!result) return false;

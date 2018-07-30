@@ -239,18 +239,19 @@ public final class TypeUtils {
         Preconditions.checkArgument(type != ColumnType.SKIP,
                 "SKIP-ped columns should be handled outside of this method.");
 
-        switch (type) {
-            case LOCAL_DATE:
+        final String columnTypeName = type.name();
+        switch (columnTypeName) {
+            case "LOCAL_DATE":
                 return DateColumn.create(name);
-            case LOCAL_TIME:
+            case "LOCAL_TIME":
                 return TimeColumn.create(name);
-            case LOCAL_DATE_TIME:
+            case "LOCAL_DATE_TIME":
                 return DateTimeColumn.create(name);
-            case NUMBER:
+            case "NUMBER":
                 return DoubleColumn.create(name);
-            case BOOLEAN:
+            case "BOOLEAN":
                 return BooleanColumn.create(name);
-            case STRING:
+            case "STRING":
                 return StringColumn.create(name);
             default:
                 throw new IllegalArgumentException("Unknown ColumnType: " + type);

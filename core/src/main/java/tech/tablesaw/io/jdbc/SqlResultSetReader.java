@@ -25,41 +25,57 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Creates a Relation from the result of a SQL query, by passing the jdbc resultset to the constructor
  */
 public class SqlResultSetReader {
 
-    // Maps from supported SQL types to their Airframe 'equivalents'
-    private static final ImmutableMap<Integer, ColumnType> SQL_TYPE_TO_Airframe_TYPE =
-            new ImmutableMap.Builder<Integer, ColumnType>()
-                    .put(Types.BINARY, ColumnType.BOOLEAN)
-                    .put(Types.BOOLEAN, ColumnType.BOOLEAN)
-                    .put(Types.BIT, ColumnType.BOOLEAN)
+    // Maps from supported SQL types to their Tablesaw equivalents'
+    private static final Map<Integer, ColumnType> SQL_TYPE_TO_TABLESAW_TYPE = initializeMap();
 
-                    .put(Types.DATE, ColumnType.LOCAL_DATE)
-                    .put(Types.TIME, ColumnType.LOCAL_TIME)
-                    .put(Types.TIMESTAMP, ColumnType.LOCAL_DATE_TIME)
+    private static Map<Integer, ColumnType> initializeMap() {
+        return new HashMap<>(
+                new ImmutableMap.Builder<Integer, ColumnType>()
+                .put(Types.BINARY, ColumnType.BOOLEAN)
+                .put(Types.BOOLEAN, ColumnType.BOOLEAN)
+                .put(Types.BIT, ColumnType.BOOLEAN)
 
-                    .put(Types.DECIMAL, ColumnType.NUMBER)
-                    .put(Types.DOUBLE, ColumnType.NUMBER)
-                    .put(Types.FLOAT, ColumnType.NUMBER)
-                    .put(Types.NUMERIC, ColumnType.NUMBER)
-                    .put(Types.REAL, ColumnType.NUMBER)
+                .put(Types.DATE, ColumnType.LOCAL_DATE)
+                .put(Types.TIME, ColumnType.LOCAL_TIME)
+                .put(Types.TIMESTAMP, ColumnType.LOCAL_DATE_TIME)
 
-                    .put(Types.INTEGER, ColumnType.NUMBER)
-                    .put(Types.SMALLINT, ColumnType.NUMBER)
-                    .put(Types.TINYINT, ColumnType.NUMBER)
-                    .put(Types.BIGINT, ColumnType.NUMBER)
+                .put(Types.DECIMAL, ColumnType.NUMBER)
+                .put(Types.DOUBLE, ColumnType.NUMBER)
+                .put(Types.FLOAT, ColumnType.NUMBER)
+                .put(Types.NUMERIC, ColumnType.NUMBER)
+                .put(Types.REAL, ColumnType.NUMBER)
 
-                    .put(Types.CHAR, ColumnType.STRING)
-                    .put(Types.LONGVARCHAR, ColumnType.STRING)
-                    .put(Types.LONGNVARCHAR, ColumnType.STRING)
-                    .put(Types.NCHAR, ColumnType.STRING)
-                    .put(Types.NVARCHAR, ColumnType.STRING)
-                    .put(Types.VARCHAR, ColumnType.STRING)
-                    .build();
+                .put(Types.INTEGER, ColumnType.NUMBER)
+                .put(Types.SMALLINT, ColumnType.NUMBER)
+                .put(Types.TINYINT, ColumnType.NUMBER)
+                .put(Types.BIGINT, ColumnType.NUMBER)
+
+                .put(Types.CHAR, ColumnType.STRING)
+                .put(Types.LONGVARCHAR, ColumnType.STRING)
+                .put(Types.LONGNVARCHAR, ColumnType.STRING)
+                .put(Types.NCHAR, ColumnType.STRING)
+                .put(Types.NVARCHAR, ColumnType.STRING)
+                .put(Types.VARCHAR, ColumnType.STRING)
+                .build());
+    }
+
+    /**
+     * Change or add a mapping between the given Jdbc type and column type.
+     * When reading from a database, the db column type is automatically assigned to the associated tablesaw column type
+     * @param jdbc          an int representing a legal value from java.sql.types;
+     * @param columnType    a tablesaw column type
+     */
+    public static void mapJdbcTypeToColumnType(Integer jdbc, ColumnType columnType) {
+        SQL_TYPE_TO_TABLESAW_TYPE.put(jdbc, columnType);
+    }
 
     /**
      * Returns a new table with the given tableName, constructed from the given result set
@@ -75,7 +91,7 @@ public class SqlResultSetReader {
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             String name = metaData.getColumnName(i);
 
-            ColumnType type = SQL_TYPE_TO_Airframe_TYPE.get(metaData.getColumnType(i));
+            ColumnType type = SQL_TYPE_TO_TABLESAW_TYPE.get(metaData.getColumnType(i));
             Preconditions.checkState(type != null,
                     "No column type found for %s as specified for column %s", metaData.getColumnType(i), name);
 
