@@ -10,4 +10,9 @@ public class SkipColumnType extends AbstractColumnType {
     public Column create(String name) {
         throw new UnsupportedOperationException("Column type " + name() + " doesn't support column creation");
     }
+
+    @Override
+    public StringParser defaultParser() {
+        throw new UnsupportedOperationException("Column type " + name() + " doesn't support parsing");
+    }
 }

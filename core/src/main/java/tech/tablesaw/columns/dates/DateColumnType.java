@@ -1,13 +1,19 @@
 package tech.tablesaw.columns.dates;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.io.TypeUtils;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Locale;
 
 public class DateColumnType extends AbstractColumnType {
@@ -22,20 +28,41 @@ public class DateColumnType extends AbstractColumnType {
     }
 
     @Override
-    public StringParser<LocalDate> parser() {
+    public StringParser<LocalDate> defaultParser() {
 
-        return new DateStringParser();
+        return new DateStringParser(this);
     }
 
     static class DateStringParser extends StringParser<LocalDate> {
 
         Locale locale = Locale.getDefault();
         DateTimeFormatter formatter = DEFAULT_FORMATTER;
+        List<String> missingValueStrings = TypeUtils.MISSING_INDICATORS;
+
+        public DateStringParser(ColumnType type, CsvReadOptions readOptions) {
+            super(type);
+            if (readOptions.dateFormatter() != null) {
+                formatter = readOptions.dateFormatter();
+            }
+            if (readOptions.locale() != null) {
+                locale = readOptions.locale();
+            }
+            if (readOptions.missingValueIndicator() != null) {
+                missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
+            }
+        }
+
+        public DateStringParser(ColumnType type) {
+            super(type);
+        }
 
         @Override
         public boolean canParse(String s) {
+            if (isMissing(s)) {
+                return true;
+            }
             try {
-                LocalDate.parse(s, DEFAULT_FORMATTER.withLocale(locale));
+                LocalDate.parse(s, formatter.withLocale(locale));
                 return true;
             } catch (DateTimeParseException e) {
                 // it's all part of the plan
@@ -51,13 +78,19 @@ public class DateColumnType extends AbstractColumnType {
             this.locale = locale;
         }
 
+        private boolean isMissing(String s) {
+            return Strings.isNullOrEmpty(s) || missingValueStrings.contains(s);
+        }
+
         @Override
         public LocalDate parse(String s) {
-            return formatter.parse(s, LocalDate.class);
+            if (missingValueStrings.contains(s)) {
+                return null;
+            }
+            return LocalDate.parse(s, formatter);
         }
 
         // Formats that we accept in parsing dates from strings
-        // TODO: Add more types, especially dates with month names spelled-out fully.
         private static final DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyyMMdd");
         private static final DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         private static final DateTimeFormatter dtf3 = DateTimeFormatter.ofPattern("MM-dd-yyyy");

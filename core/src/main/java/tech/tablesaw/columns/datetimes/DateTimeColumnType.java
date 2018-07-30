@@ -2,6 +2,7 @@ package tech.tablesaw.columns.datetimes;
 
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
+import tech.tablesaw.columns.StringParser;
 
 public class DateTimeColumnType extends AbstractColumnType {
 
@@ -12,5 +13,10 @@ public class DateTimeColumnType extends AbstractColumnType {
     @Override
     public DateTimeColumn create(String name) {
         return DateTimeColumn.create(name);
+    }
+
+    @Override
+    public StringParser defaultParser() {
+        return null;
     }
 }

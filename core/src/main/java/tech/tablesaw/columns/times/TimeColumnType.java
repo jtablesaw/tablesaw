@@ -2,6 +2,7 @@ package tech.tablesaw.columns.times;
 
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
+import tech.tablesaw.columns.StringParser;
 
 public class TimeColumnType extends AbstractColumnType {
 
@@ -12,5 +13,10 @@ public class TimeColumnType extends AbstractColumnType {
     @Override
     public TimeColumn create(String name) {
         return TimeColumn.create(name);
+    }
+
+    @Override
+    public StringParser defaultParser() {
+        return null;
     }
 }

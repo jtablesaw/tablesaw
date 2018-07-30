@@ -28,6 +28,7 @@ import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.io.UnicodeBOMInputStream;
 
@@ -548,54 +549,20 @@ public class CsvReader {
      */
     private static ColumnType detectType(List<String> valuesList, CsvReadOptions options) {
 
-        Locale locale = options.locale();
-        DateTimeFormatter dateFormatter = options.dateFormatter();
-        DateTimeFormatter timeFormatter = options.timeFormatter();
-        DateTimeFormatter dateTimeFormatter = options.dateTimeFormatter();
-
         // Types to choose from. When more than one would work, we pick the first of the options
         ColumnType[] typeArray
                 = // we leave out string, as that is the default type
                 {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, NUMBER};
 
+        List<StringParser> parsers = getParserList(typeArray, options);
+
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
         for (String s : valuesList) {
-            if (isMissing(s, options)) {
-                continue;
-            }
-            if (dateTimeFormatter != null) {
-                if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime(s, dateTimeFormatter)) {
-                    typeCandidates.remove(LOCAL_DATE_TIME);
+            for (StringParser parser : parsers) {
+                if (!parser.canParse(s)) {
+                    typeCandidates.remove(parser.columnType());
                 }
-            } else {
-                if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime.test(s, locale)) {
-                    typeCandidates.remove(LOCAL_DATE_TIME);
-                }
-            }
-            if (timeFormatter != null) {
-                if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime(s, options.timeFormatter())) {
-                    typeCandidates.remove(LOCAL_TIME);
-                }
-            } else {
-                if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime.test(s, locale)) {
-                    typeCandidates.remove(LOCAL_TIME);
-                }
-            }
-            if (dateFormatter != null) {
-                if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate(s, options.dateFormatter())) {
-                    typeCandidates.remove(LOCAL_DATE);
-                }
-            } else {
-                if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate.test(s, locale)) {
-                    typeCandidates.remove(LOCAL_DATE);
-                }
-            }
-            if (typeCandidates.contains(BOOLEAN) && !isBoolean.test(s)) {
-                typeCandidates.remove(BOOLEAN);
-            }
-            if (typeCandidates.contains(NUMBER) && !isDouble.test(s)) {
-                typeCandidates.remove(NUMBER);
             }
         }
         return selectType(typeCandidates);
@@ -628,5 +595,23 @@ public class CsvReader {
         } else {
             return typeCandidates.get(0);
         }
+    }
+
+    /**
+     * Returns the list of parsers to use for type detection
+     *
+     * TODO Apply the CsvReadOptions
+     * @param typeArray Array of column types. The order specifies the order the types are applied
+     * @param options CsvReadOptions to use to modify the default parsers for each type
+     * @return  A list of parsers in the order they should be used for type detection
+     */
+    private static List<StringParser> getParserList(ColumnType[] typeArray, CsvReadOptions options) {
+        // Types to choose from. When more than one would work, we pick the first of the options
+
+        List<StringParser> parsers = new ArrayList<>();
+        for (ColumnType type : typeArray) {
+            parsers.add(type.defaultParser());
+        }
+        return parsers;
     }
 }

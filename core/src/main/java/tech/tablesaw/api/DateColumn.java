@@ -348,7 +348,7 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
      */
     public int convert(String value) {
         if (Strings.isNullOrEmpty(value) || TypeUtils.MISSING_INDICATORS.contains(value) || value.equals("-1")) {
-            return (Integer) ColumnType.LOCAL_DATE.getMissingValue();
+            return (Integer) type().getMissingValue();
         }
         String paddedValue = Strings.padStart(value, 4, '0');
 

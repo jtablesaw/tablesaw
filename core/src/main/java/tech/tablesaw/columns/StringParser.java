@@ -1,5 +1,7 @@
 package tech.tablesaw.columns;
 
+import tech.tablesaw.api.ColumnType;
+
 /**
  * A parser for turning strings into objects that can be inserted into a column
  *
@@ -12,7 +14,17 @@ package tech.tablesaw.columns;
  */
 public abstract class StringParser<T> {
 
+    protected ColumnType columnType;
+
+    public StringParser(ColumnType columnType) {
+        this.columnType = columnType;
+    }
+
     public abstract boolean canParse(String s);
 
     public abstract T parse(String s);
+
+    public ColumnType columnType() {
+        return columnType;
+    }
 }

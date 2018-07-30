@@ -2,6 +2,7 @@ package tech.tablesaw.columns.numbers;
 
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.columns.AbstractColumnType;
+import tech.tablesaw.columns.StringParser;
 
 public class DoubleColumnType extends AbstractColumnType {
 
@@ -12,5 +13,10 @@ public class DoubleColumnType extends AbstractColumnType {
     @Override
     public DoubleColumn create(String name) {
         return DoubleColumn.create(name);
+    }
+
+    @Override
+    public StringParser defaultParser() {
+        return null;
     }
 }

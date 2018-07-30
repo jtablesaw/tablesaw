@@ -55,5 +55,5 @@ public interface ColumnType {
 
     String getPrinterFriendlyName();
 
-    StringParser parser();
+    StringParser defaultParser();
 }
