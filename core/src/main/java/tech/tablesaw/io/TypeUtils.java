@@ -327,35 +327,4 @@ public final class TypeUtils {
         }
         return DATE_FORMATTER;
     }
-
-/*
-/**
-     * Handles converting formatted strings and timestamps.
-     * Assumes timestamps are milliseconds since epoch (midnight, January 1, 1970 UTC).
-     * This is the timestamp format most commonly used in Java.
-     * Unix uses seconds since epoch instead of Java's millis since epoch.
-     * Unix timestamps are not currently supported.
-     *//*
-
-    public static class DateTimeConverter {
-        private final boolean isTimestamp;
-        private final DateTimeFormatter dtFormatter;
-
-        public DateTimeConverter() {
-            this.dtFormatter = null;
-            this.isTimestamp = true;
-        }
-
-        public DateTimeConverter(DateTimeFormatter dtFormatter) {
-            this.dtFormatter = dtFormatter;
-            this.isTimestamp = false;
-        }
-
-        public LocalDateTime convert(String dateTime) {
-            return isTimestamp
-                    ? Instant.ofEpochMilli(Long.parseLong(dateTime)).atZone(ZoneOffset.UTC).toLocalDateTime()
-                    : LocalDateTime.parse(dateTime, dtFormatter);
-        }
-    }
-*/
 }

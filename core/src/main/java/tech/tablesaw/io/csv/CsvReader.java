@@ -555,7 +555,7 @@ public class CsvReader {
 
         // Types to choose from. When more than one would work, we pick the first of the options
         ColumnType[] typeArray
-                = // we leave out category, as that is the default type
+                = // we leave out string, as that is the default type
                 {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, NUMBER};
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);

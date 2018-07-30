@@ -1,6 +1,7 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
+import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.DateColumnType;
@@ -53,4 +54,6 @@ public interface ColumnType {
     int byteSize();
 
     String getPrinterFriendlyName();
+
+    StringParser parser();
 }
