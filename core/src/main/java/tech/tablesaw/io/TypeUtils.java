@@ -24,27 +24,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Utilities for working with {@link ColumnType}s
  */
 @Immutable
 public final class TypeUtils {
-
-    // These Strings will convert to true booleans
-    public static final List<String> TRUE_STRINGS =
-            Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "True", "1");
-    // A more restricted set of 'true' strings that is used for column type detection
-    public static final List<String> TRUE_STRINGS_FOR_DETECTION =
-            Arrays.asList("T", "t", "Y", "y", "TRUE", "true", "True");
-    // These Strings will convert to false booleans
-    public static final List<String> FALSE_STRINGS =
-            Arrays.asList("F", "f", "N", "n", "FALSE", "false", "False", "0");
-    // A more restricted set of 'false' strings that is used for column type detection
-    public static final List<String> FALSE_STRINGS_FOR_DETECTION =
-            Arrays.asList("F", "f", "N", "n", "FALSE", "false", "False");
 
     // Formats that we accept in parsing dates from strings
     // TODO: Add more types, especially dates with month names spelled-out fully.
