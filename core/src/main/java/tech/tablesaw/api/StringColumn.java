@@ -15,7 +15,6 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -29,11 +28,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
+import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringFilters;
 import tech.tablesaw.columns.strings.StringMapFunctions;
 import tech.tablesaw.columns.strings.StringReduceUtils;
-import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -126,13 +126,6 @@ public class StringColumn extends AbstractColumn
         for (String string : strings) {
             append(string);
         }
-    }
-
-    public static String convert(String stringValue) {
-        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return MISSING_VALUE;
-        }
-        return stringValue;
     }
 
     @Override
@@ -423,7 +416,13 @@ public class StringColumn extends AbstractColumn
 
     @Override
     public StringColumn appendCell(String object) {
-        addValue(convert(object));
+        addValue(StringColumnType.DEFAULT_PARSER.parse(object));
+        return this;
+    }
+
+    @Override
+    public StringColumn appendCell(String object, StringParser parser) {
+        addValue((String) parser.parse(object));
         return this;
     }
 

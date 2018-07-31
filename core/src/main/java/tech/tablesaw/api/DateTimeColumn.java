@@ -15,7 +15,6 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
@@ -25,12 +24,13 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
+import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeFillers;
 import tech.tablesaw.columns.datetimes.DateTimeFilters;
 import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
@@ -38,13 +38,11 @@ import java.nio.ByteBuffer;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -55,7 +53,7 @@ import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
 public class DateTimeColumn extends AbstractColumn
-implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn>, Iterable<LocalDateTime> {
+    implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn>, Iterable<LocalDateTime> {
 
     public static final long MISSING_VALUE = (Long) ColumnType.LOCAL_DATE_TIME.getMissingValue();
 
@@ -69,18 +67,7 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
         return Long.compare(f1, f2);
     };
 
-    /**
-     * The formatter chosen to parse date-time strings for this particular column
-     */
-    private DateTimeFormatter selectedFormatter;
-
-    public void setFormatter(DateTimeFormatter formatter) {
-        this.selectedFormatter = formatter;
-    }
-
     private DateTimeColumnFormatter printFormatter = new DateTimeColumnFormatter();
-
-    private Locale locale;
 
     public static boolean valueIsMissing(long value) {
         return MISSING_VALUE == value;
@@ -96,15 +83,11 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
     }
 
     public static DateTimeColumn create(String name, int initialSize) {
-        return create(name, initialSize, Locale.getDefault());
-    }
-
-    public static DateTimeColumn create(String name, int initialSize, Locale locale) {
-        return new DateTimeColumn(name, new LongArrayList(initialSize), locale);
+        return new DateTimeColumn(name, new LongArrayList(initialSize));
     }
 
     public static DateTimeColumn create(String name, List<LocalDateTime> data) {
-        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.size()), Locale.getDefault());
+        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.size()));
         for (LocalDateTime date : data) {
             column.append(date);
         }
@@ -112,17 +95,16 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
     }
 
     public static DateTimeColumn create(String name, LocalDateTime[] data) {
-        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.length), Locale.getDefault());
+        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(data.length));
         for (LocalDateTime date : data) {
             column.append(date);
         }
         return column;
     }
 
-    private DateTimeColumn(String name, LongArrayList data, Locale locale) {
+    private DateTimeColumn(String name, LongArrayList data) {
         super(LOCAL_DATE_TIME, name);
         this.data = data;
-        this.locale = locale;
     }
 
     @Override
@@ -184,12 +166,13 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
 
     @Override
     public DateTimeColumn appendCell(String stringValue) {
-        if (stringValue == null) {
-            appendInternal(MISSING_VALUE);
-        } else {
-            long dateTime = convert(stringValue);
-            appendInternal(dateTime);
-        }
+        appendInternal(PackedLocalDateTime.pack(DateTimeColumnType.DEFAULT_PARSER.parse(stringValue)));
+        return this;
+    }
+
+    @Override
+    public DateTimeColumn appendCell(String stringValue, StringParser parser) {
+        appendInternal(PackedLocalDateTime.pack((LocalDateTime) parser.parse(stringValue)));
         return this;
     }
 
@@ -201,33 +184,6 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
             appendInternal(MISSING_VALUE);
         }
         return this;
-    }
-
-    /**
-     * Returns a PackedDateTime as converted from the given string
-     *
-     * @param value A string representation of a time
-     * @throws DateTimeParseException if no parser can be found for the time format used
-     */
-    public long convert(String value) {
-        if (Strings.isNullOrEmpty(value)
-                || TypeUtils.MISSING_INDICATORS.contains(value)
-                || value.equals("-1")) {
-            return MISSING_VALUE;
-        }
-        value = Strings.padStart(value, 4, '0');
-        LocalDateTime dateTime = parseDateTime(value);
-        return PackedLocalDateTime.pack(dateTime);
-    }
-
-    private LocalDateTime parseDateTime(String value) {
-        if (selectedFormatter == null) {
-            setFormatter(TypeUtils.getDateTimeFormatter(value));
-        }
-        if (! TypeUtils.canParse(selectedFormatter, value)) {
-            setFormatter(TypeUtils.getDateTimeFormatter(value));
-        }
-        return LocalDateTime.parse(value, selectedFormatter);
     }
 
     public int size() {
@@ -260,8 +216,7 @@ implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn
 
     @Override
     public DateTimeColumn emptyCopy(int rowSize) {
-        DateTimeColumn column = create(name(), rowSize, locale);
-        column.setFormatter(selectedFormatter);
+        DateTimeColumn column = create(name(), rowSize);
         column.setPrintFormatter(printFormatter);
         return column;
     }

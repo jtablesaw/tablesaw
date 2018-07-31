@@ -23,10 +23,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.TypeUtils;
@@ -108,7 +105,6 @@ public class CsvReader {
                         columnName = "Column " + table.columnCount();
                     }
                     Column newColumn = TypeUtils.newColumn(columnName, types[x]);
-                    addFormatter(newColumn, options);
                     table.addColumns(newColumn);
                 }
             }
@@ -140,13 +136,10 @@ public class CsvReader {
                     int cellIndex = 0;
                     for (int columnIndex : columnIndexes) {
                         Column column = table.column(cellIndex);
+                        StringParser parser = column.type().customParser(options);
                         try {
                             String value = nextLine[columnIndex];
-                            if (value.equals(options.missingValueIndicator())) {
-                                column.appendCell("");
-                            } else {
-                                column.appendCell(value);
-                            }
+                            column.appendCell(value, parser);
                         } catch (Exception e) {
                             throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
                         }
@@ -156,22 +149,6 @@ public class CsvReader {
                 rowNumber++;
             }
             return table;
-        }
-    }
-
-    private static void addFormatter(Column newColumn, CsvReadOptions options) {
-        final String columnTypeName = newColumn.type().name();
-        switch (columnTypeName) {
-            case "LOCAL_DATE_TIME" :
-                ((DateTimeColumn) newColumn).setFormatter(options.dateTimeFormatter());
-                return;
-            case "LOCAL_DATE":
-                ((DateColumn) newColumn).setFormatter(options.dateFormatter());
-                return;
-            case "LOCAL_TIME" :
-                ((TimeColumn) newColumn).setFormatter(options.timeFormatter());
-                return;
-            default:
         }
     }
 

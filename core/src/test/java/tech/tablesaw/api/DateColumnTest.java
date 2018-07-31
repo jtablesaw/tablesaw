@@ -2,13 +2,12 @@ package tech.tablesaw.api;
 
 import org.junit.Before;
 import org.junit.Test;
+import tech.tablesaw.columns.dates.DateColumnType;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
-import static tech.tablesaw.columns.dates.PackedLocalDate.asLocalDate;
 import static org.junit.Assert.assertEquals;
 
 public class DateColumnTest {
@@ -17,7 +16,7 @@ public class DateColumnTest {
     @Before
     public void setUp() {
         Table table = Table.create("Test");
-        column1 = DateColumn.create("Game date", Locale.ENGLISH);
+        column1 = DateColumn.create("Game date");
         table.addColumns(column1);
     }
 
@@ -140,7 +139,7 @@ public class DateColumnTest {
 
         LocalDate actual = column1.min();
 
-        assertEquals(asLocalDate(column1.convert("2013-10-23")), actual);
+        assertEquals(DateColumnType.DEFAULT_PARSER.parse("2013-10-23"), actual);
     }
 
     @Test

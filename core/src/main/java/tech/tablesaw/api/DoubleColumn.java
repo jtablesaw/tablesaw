@@ -15,7 +15,6 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleArrays;
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
@@ -30,11 +29,12 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.Stats;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
-import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -50,8 +50,6 @@ import java.util.function.BiPredicate;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static tech.tablesaw.api.ColumnType.NUMBER;
 
@@ -60,7 +58,6 @@ import static tech.tablesaw.api.ColumnType.NUMBER;
  */
 public class DoubleColumn extends AbstractColumn implements NumberColumn {
 
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
      */
@@ -128,22 +125,6 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
             doubles[i] = numbers[i].doubleValue();
         }
         return new DoubleColumn(name, new DoubleArrayList(doubles));
-    }
-
-    /**
-     * Returns a double that is parsed from the given String
-     * <p>
-     * We remove any commas before parsing
-     */
-    private static double convert(final String stringValue) {
-        if (stringValue == null) {
-            return MISSING_VALUE;
-        }
-        if (Strings.isNullOrEmpty(stringValue.trim()) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return MISSING_VALUE;
-        }
-        final Matcher matcher = DoubleColumn.COMMA_PATTERN.matcher(stringValue);
-        return Double.parseDouble(matcher.replaceAll(""));
     }
 
     @Override
@@ -385,7 +366,17 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     @Override
     public DoubleColumn appendCell(final String object) {
         try {
-            append(convert(object));
+            append(DoubleColumnType.DEFAULT_PARSER.parseDouble(object));
+        } catch (final NumberFormatException e) {
+            throw new NumberFormatException(name() + ": " + e.getMessage());
+        }
+        return this;
+    }
+
+    @Override
+    public DoubleColumn appendCell(final String object, StringParser parser) {
+        try {
+            append(parser.parseDouble(object));
         } catch (final NumberFormatException e) {
             throw new NumberFormatException(name() + ": " + e.getMessage());
         }

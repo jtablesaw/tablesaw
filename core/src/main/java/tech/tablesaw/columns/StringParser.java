@@ -1,6 +1,5 @@
 package tech.tablesaw.columns;
 
-import com.google.common.base.Strings;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.TypeUtils;
 
@@ -35,7 +34,17 @@ public abstract class StringParser<T> {
     }
 
     protected boolean isMissing(String s) {
-        return Strings.isNullOrEmpty(s) || missingValueStrings.contains(s);
+        if (s == null) {
+            return true;
+        }
+        return s.isEmpty() || missingValueStrings.contains(s);
     }
 
+    public byte parseByte(String s) {
+        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to booleans");
+    }
+
+    public double parseDouble(String s) {
+        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to booleans");
+    }
 }

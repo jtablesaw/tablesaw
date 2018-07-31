@@ -5,11 +5,9 @@ import org.junit.Test;
 
 import java.time.DayOfWeek;
 import java.time.temporal.ChronoUnit;
-import java.util.Locale;
 
-import static tech.tablesaw.columns.dates.PackedLocalDate.asLocalDate;
-import static tech.tablesaw.columns.dates.PackedLocalDate.pack;
 import static org.junit.Assert.assertEquals;
+import static tech.tablesaw.columns.dates.PackedLocalDate.*;
 
 public class DateColumnMapTest {
     private DateColumn column1;
@@ -17,7 +15,7 @@ public class DateColumnMapTest {
     @Before
     public void setUp() {
         Table table = Table.create("Test");
-        column1 = DateColumn.create("Game date", Locale.ENGLISH);
+        column1 = DateColumn.create("Game date");
         table.addColumns(column1);
     }
 
