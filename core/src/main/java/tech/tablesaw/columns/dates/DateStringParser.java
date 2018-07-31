@@ -85,7 +85,7 @@ public class DateStringParser extends StringParser<LocalDate> {
     private static final DateTimeFormatter dtf19 = DateTimeFormatter.ofPattern("MMM d, yyyy");
 
     // A formatter that handles all the date formats defined above
-    private static final DateTimeFormatter DEFAULT_FORMATTER =
+    public static final DateTimeFormatter DEFAULT_FORMATTER =
             new DateTimeFormatterBuilder()
                     .appendOptional(dtf1)
                     .appendOptional(dtf2)

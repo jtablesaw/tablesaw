@@ -22,8 +22,6 @@ import tech.tablesaw.columns.Column;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 
 /**
  * Utilities for working with {@link ColumnType}s
@@ -31,113 +29,6 @@ import java.time.format.DateTimeFormatterBuilder;
 @Immutable
 public final class TypeUtils {
 
-    // Formats that we accept in parsing dates from strings
-    // TODO: Add more types, especially dates with month names spelled-out fully.
-    private static final DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyyMMdd");
-    private static final DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    private static final DateTimeFormatter dtf3 = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-    private static final DateTimeFormatter dtf4 = DateTimeFormatter.ofPattern("MM.dd.yyyy");
-    private static final DateTimeFormatter dtf5 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter dtf6 = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-    private static final DateTimeFormatter dtf7 = DateTimeFormatter.ofPattern("dd/MMM/yyyy");
-    private static final DateTimeFormatter dtf8 = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
-    private static final DateTimeFormatter dtf9 = DateTimeFormatter.ofPattern("M/d/yyyy");
-    private static final DateTimeFormatter dtf10 = DateTimeFormatter.ofPattern("M/d/yy");
-    private static final DateTimeFormatter dtf11 = DateTimeFormatter.ofPattern("MMM/dd/yyyy");
-    private static final DateTimeFormatter dtf12 = DateTimeFormatter.ofPattern("MMM-dd-yyyy");
-    private static final DateTimeFormatter dtf13 = DateTimeFormatter.ofPattern("MMM/dd/yy");
-    private static final DateTimeFormatter dtf14 = DateTimeFormatter.ofPattern("MMM-dd-yy");
-    private static final DateTimeFormatter dtf15 = DateTimeFormatter.ofPattern("MMM/dd/yyyy");
-    private static final DateTimeFormatter dtf16 = DateTimeFormatter.ofPattern("MMM/d/yyyy");
-    private static final DateTimeFormatter dtf17 = DateTimeFormatter.ofPattern("MMM-dd-yy");
-    private static final DateTimeFormatter dtf18 = DateTimeFormatter.ofPattern("MMM dd, yyyy");
-    private static final DateTimeFormatter dtf19 = DateTimeFormatter.ofPattern("MMM d, yyyy");
-    // A formatter that handles all the date formats defined above
-    public static final DateTimeFormatter DATE_FORMATTER =
-            new DateTimeFormatterBuilder()
-                    .appendOptional(dtf1)
-                    .appendOptional(dtf2)
-                    .appendOptional(dtf3)
-                    .appendOptional(dtf4)
-                    .appendOptional(dtf5)
-                    .appendOptional(dtf6)
-                    .appendOptional(dtf7)
-                    .appendOptional(dtf8)
-                    .appendOptional(dtf9)
-                    .appendOptional(dtf10)
-                    .appendOptional(dtf11)
-                    .appendOptional(dtf12)
-                    .appendOptional(dtf13)
-                    .appendOptional(dtf14)
-                    .appendOptional(dtf15)
-                    .appendOptional(dtf16)
-                    .appendOptional(dtf17)
-                    .appendOptional(dtf18)
-                    .appendOptional(dtf19)
-                    .toFormatter();
-    private static final DateTimeFormatter dtTimef0 =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");     // 2014-07-09 13:03:44
-    private static final DateTimeFormatter dtTimef2 =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");   // 2014-07-09 13:03:44.7 (as above, but without leading 0 in millis
-    private static final DateTimeFormatter dtTimef4 =
-            DateTimeFormatter.ofPattern("dd-MMM-yyyy HH:mm");       // 09-Jul-2014 13:03
-    private static final DateTimeFormatter dtTimef5 = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-    private static final DateTimeFormatter dtTimef6;                // ISO, with millis appended
-    private static final DateTimeFormatter dtTimef7 =               //  7/9/14 9:04
-            DateTimeFormatter.ofPattern("M/d/yy H:mm");
-    private static final DateTimeFormatter dtTimef8 =
-            DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a");      //  7/9/2014 9:04:55 PM
-
-    static {
-        dtTimef6 = new DateTimeFormatterBuilder()
-                .parseCaseInsensitive()
-                .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                .appendLiteral('.')
-                .appendPattern("SSS")
-                .toFormatter();
-    }
-
-    // A formatter that handles date time formats defined above
-    public static final DateTimeFormatter DATE_TIME_FORMATTER =
-            new DateTimeFormatterBuilder()
-                    .appendOptional(dtTimef7)
-                    .appendOptional(dtTimef8)
-                    .appendOptional(dtTimef2)
-                    .appendOptional(dtTimef4)
-                    .appendOptional(dtTimef0)
-                    .appendOptional(dtTimef5)
-                    .appendOptional(dtTimef6)
-                    .toFormatter();
-    private static final DateTimeFormatter timef1 = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-    private static final DateTimeFormatter timef2 = DateTimeFormatter.ofPattern("hh:mm:ss a");
-    private static final DateTimeFormatter timef3 = DateTimeFormatter.ofPattern("h:mm:ss a");
-    private static final DateTimeFormatter timef4 = DateTimeFormatter.ISO_LOCAL_TIME;
-    private static final DateTimeFormatter timef5 = DateTimeFormatter.ofPattern("hh:mm a");
-    private static final DateTimeFormatter timef6 = DateTimeFormatter.ofPattern("h:mm a");
-    // A formatter that handles time formats defined above used for type detection.
-    // It is more conservative than the converter
-    public static final DateTimeFormatter TIME_DETECTION_FORMATTER =
-            new DateTimeFormatterBuilder()
-                    .appendOptional(timef5)
-                    .appendOptional(timef2)
-                    .appendOptional(timef3)
-                    .appendOptional(timef1)
-                    .appendOptional(timef4)
-                    .appendOptional(timef6)
-                    //  .appendOptional(timef7)
-                    .toFormatter();
-    private static final DateTimeFormatter timef7 = DateTimeFormatter.ofPattern("HHmm");
-    // A formatter that handles time formats defined above
-    public static final DateTimeFormatter TIME_FORMATTER =
-            new DateTimeFormatterBuilder()
-                    .appendOptional(timef5)
-                    .appendOptional(timef2)
-                    .appendOptional(timef3)
-                    .appendOptional(timef1)
-                    .appendOptional(timef4)
-                    .appendOptional(timef6)
-                    .appendOptional(timef7)
-                    .toFormatter();
     /**
      * Strings representing missing values in, for example, a CSV file that is being imported
      */
@@ -150,30 +41,6 @@ public final class TypeUtils {
             missingInd2,
             missingInd3,
             missingInd4
-    );
-
-    /**
-     * List of formatters for use in code that selects the correct one for a given DateTime string
-     */
-    private static ImmutableList<DateTimeFormatter> dateTimeFormatters = ImmutableList.of(
-            dtTimef0,
-            dtTimef2,
-            dtTimef4,
-            dtTimef5,
-            dtTimef6,
-            dtTimef7,
-            dtTimef8
-    );
-    /**
-     * List of formatters for use in code that selects the correct one for a given Time string
-     */
-    private static ImmutableList<DateTimeFormatter> timeFormatters = ImmutableList.of(
-            timef1,
-            timef2,
-            timef3,
-            timef4,
-            timef5,
-            timef6
     );
 
     /**

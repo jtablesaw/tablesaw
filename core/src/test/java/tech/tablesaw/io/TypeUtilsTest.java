@@ -16,15 +16,17 @@ package tech.tablesaw.io;
 
 import org.junit.Test;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.columns.dates.DateStringParser;
+import tech.tablesaw.columns.datetimes.DateTimeStringParser;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static tech.tablesaw.api.ColumnType.*;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static tech.tablesaw.api.ColumnType.NUMBER;
 
 public class TypeUtilsTest {
 
@@ -40,7 +42,7 @@ public class TypeUtilsTest {
     @Test
     public void testDateFormaterWithLocaleEN() {
         String anotherDate = "12-May-2015";
-        LocalDate result = LocalDate.parse(anotherDate, TypeUtils.DATE_FORMATTER.withLocale(Locale.ENGLISH));
+        LocalDate result = LocalDate.parse(anotherDate, DateStringParser.DEFAULT_FORMATTER.withLocale(Locale.ENGLISH));
         assertThat(result, notNullValue());
     }
 
@@ -51,7 +53,7 @@ public class TypeUtilsTest {
 
         String anotherDate = "10/2/2016 8:18:03 AM";
         dtTimef8.parse(anotherDate);
-        LocalDateTime result = LocalDateTime.parse(anotherDate, TypeUtils.DATE_TIME_FORMATTER);
+        LocalDateTime result = LocalDateTime.parse(anotherDate, DateTimeStringParser.DEFAULT_FORMATTER);
         assertThat(result, notNullValue());
     }
 }
