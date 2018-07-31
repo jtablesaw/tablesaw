@@ -17,20 +17,13 @@ package tech.tablesaw.io;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -173,30 +166,7 @@ public final class TypeUtils {
             missingInd3,
             missingInd4
     );
-    /**
-     * List of formatters for use in code that selects the correct one for a given Date string
-     */
-    private static ImmutableList<DateTimeFormatter> dateFormatters = ImmutableList.of(
-            dtf1,
-            dtf2,
-            dtf3,
-            dtf4,
-            dtf5,
-            dtf6,
-            dtf7,
-            dtf8,
-            dtf9,
-            dtf10,
-            dtf11,
-            dtf12,
-            dtf13,
-            dtf14,
-            dtf15,
-            dtf16,
-            dtf17,
-            dtf18,
-            dtf19
-    );
+
     /**
      * List of formatters for use in code that selects the correct one for a given DateTime string
      */
@@ -224,14 +194,12 @@ public final class TypeUtils {
     /**
      * Private constructor to prevent instantiation
      */
-    private TypeUtils() {
-    }
+    private TypeUtils() {}
 
     /**
      * Constructs and returns a column for the given {@code name} and {@code type}
      */
-    public static Column newColumn(@Nonnull String name,
-                                   @Nonnull ColumnType type) {
+    public static Column newColumn(@Nonnull String name, @Nonnull ColumnType type) {
 
         Preconditions.checkArgument(!Strings.isNullOrEmpty(name),
                 "There must be a valid name for a new column");
@@ -239,123 +207,6 @@ public final class TypeUtils {
         Preconditions.checkArgument(type != ColumnType.SKIP,
                 "SKIP-ped columns should be handled outside of this method.");
 
-        final String columnTypeName = type.name();
-        switch (columnTypeName) {
-            case "LOCAL_DATE":
-                return DateColumn.create(name);
-            case "LOCAL_TIME":
-                return TimeColumn.create(name);
-            case "LOCAL_DATE_TIME":
-                return DateTimeColumn.create(name);
-            case "NUMBER":
-                return DoubleColumn.create(name);
-            case "BOOLEAN":
-                return BooleanColumn.create(name);
-            case "STRING":
-                return StringColumn.create(name);
-            default:
-                throw new IllegalArgumentException("Unknown ColumnType: " + type);
-        }
+        return type.create(name);
     }
-
-    /**
-     * Returns the first DateTimeFormatter to parse the string, which represents a DATE
-     * <p>
-     * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
-     * called again. This is an optimization, because the older version, which will try multiple formatters was too
-     * slow for large data sets.
-     */
-    public static DateTimeFormatter getDateFormatter(String dateValue) {
-
-        for (DateTimeFormatter formatter : dateFormatters) {
-            try {
-                formatter.parse(dateValue);
-                return formatter;
-            } catch (DateTimeParseException e) {
-                // ignore;
-            }
-        }
-        return DATE_FORMATTER;
-    }
-
-    /**
-     * Returns the first DateTimeFormatter to parse the string, which represents a DATE_TIME
-     * <p>
-     * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
-     * called again. This is an optimization, because the older version, which will try multiple formatters was too
-     * slow for large data sets.
-     */
-    public static DateTimeFormatter getDateTimeFormatter(String dateTimeValue) {
-        for (DateTimeFormatter formatter : dateTimeFormatters) {
-            if (canParse(formatter, dateTimeValue)) {
-                return formatter;
-            }
-        }
-        if (canParse(DATE_FORMATTER, dateTimeValue)) {
-            return DATE_FORMATTER;
-        }
-        if (canParse(DATE_TIME_FORMATTER, dateTimeValue)) {
-            return DATE_TIME_FORMATTER;
-        }
-        throw new IllegalArgumentException("Could not find datetime parser for " + dateTimeValue);
-    }
-
-    public static boolean canParse(DateTimeFormatter formatter, String dateTimeValue) {
-        try {
-            formatter.parse(dateTimeValue);
-            return true;
-        } catch (DateTimeParseException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Returns the first DateTimeFormatter to parse the string, which represents a TIME
-     * <p>
-     * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
-     * called again. This is an optimization, because the older version, which will try multiple formatters was too
-     * slow for large data sets.
-     */
-    public static DateTimeFormatter getTimeFormatter(String timeValue) {
-        for (DateTimeFormatter formatter : timeFormatters) {
-            try {
-                formatter.parse(timeValue);
-                return formatter;
-            } catch (DateTimeParseException e) {
-                // ignore;
-            }
-        }
-        return DATE_FORMATTER;
-    }
-
-/*
-/**
-     * Handles converting formatted strings and timestamps.
-     * Assumes timestamps are milliseconds since epoch (midnight, January 1, 1970 UTC).
-     * This is the timestamp format most commonly used in Java.
-     * Unix uses seconds since epoch instead of Java's millis since epoch.
-     * Unix timestamps are not currently supported.
-     *//*
-
-    public static class DateTimeConverter {
-        private final boolean isTimestamp;
-        private final DateTimeFormatter dtFormatter;
-
-        public DateTimeConverter() {
-            this.dtFormatter = null;
-            this.isTimestamp = true;
-        }
-
-        public DateTimeConverter(DateTimeFormatter dtFormatter) {
-            this.dtFormatter = dtFormatter;
-            this.isTimestamp = false;
-        }
-
-        public LocalDateTime convert(String dateTime) {
-            return isTimestamp
-                    ? Instant.ofEpochMilli(Long.parseLong(dateTime)).atZone(ZoneOffset.UTC).toLocalDateTime()
-                    : LocalDateTime.parse(dateTime, dtFormatter);
-        }
-    }
-*/
 }

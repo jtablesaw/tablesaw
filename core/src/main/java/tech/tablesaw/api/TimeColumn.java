@@ -15,7 +15,6 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -24,25 +23,24 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.columns.times.TimeColumnFormatter;
+import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.columns.times.TimeFillers;
 import tech.tablesaw.columns.times.TimeFilters;
 import tech.tablesaw.columns.times.TimeMapFunctions;
-import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 
 import java.nio.ByteBuffer;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -57,20 +55,7 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
 
     public static final int MISSING_VALUE = (Integer) LOCAL_TIME.getMissingValue();
 
-    /**
-     * locale for formatter
-     */
-    private Locale locale;
-
     private final IntComparator descendingIntComparator = DescendingIntComparator.instance();
-    /**
-     * The formatter chosen to parse times for this particular column
-     */
-    private DateTimeFormatter selectedFormatter;
-
-    public void setFormatter(DateTimeFormatter formatter) {
-        this.selectedFormatter = formatter;
-    }
 
     private TimeColumnFormatter printFormatter = new TimeColumnFormatter();
 
@@ -82,10 +67,9 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
         return Integer.compare(f1, f2);
     };
 
-    private TimeColumn(String name, IntArrayList times, Locale locale) {
+    private TimeColumn(String name, IntArrayList times) {
         super(LOCAL_TIME, name);
         data = times;
-        this.locale = locale;
     }
 
     public static boolean valueIsMissing(int i) {
@@ -97,7 +81,7 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
     }
 
     public static TimeColumn create(String name, List<LocalTime> data) {
-        TimeColumn column = new TimeColumn(name, new IntArrayList(data.size()), Locale.getDefault());
+        TimeColumn column = new TimeColumn(name, new IntArrayList(data.size()));
         for (LocalTime time : data) {
             column.append(time);
         }
@@ -105,7 +89,7 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
     }
 
     public static TimeColumn create(String name, LocalTime[] data) {
-        TimeColumn column = new TimeColumn(name, new IntArrayList(data.length), Locale.getDefault());
+        TimeColumn column = new TimeColumn(name, new IntArrayList(data.length));
         for (LocalTime time : data) {
             column.append(time);
         }
@@ -113,11 +97,7 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
     }
 
     public static TimeColumn create(String name, int initialSize) {
-        return create(name, initialSize, Locale.getDefault());
-    }
-
-    public static TimeColumn create(String name, int initialSize, Locale locale) {
-        return new TimeColumn(name, new IntArrayList(initialSize), locale);
+        return new TimeColumn(name, new IntArrayList(initialSize));
     }
 
     @Override
@@ -210,9 +190,8 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
 
     @Override
     public TimeColumn emptyCopy(int rowSize) {
-        TimeColumn column = TimeColumn.create(name(), rowSize, locale);
+        TimeColumn column = TimeColumn.create(name(), rowSize);
         column.printFormatter = printFormatter;
-        column.selectedFormatter = selectedFormatter;
         return column;
     }
 
@@ -346,47 +325,15 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
         return data.isEmpty();
     }
 
-    /**
-     * Returns a PackedTime as converted from the given string
-     *
-     * @param value A string representation of a time
-     * @throws DateTimeParseException if no parser can be found for the time format used
-     */
-    public int convert(String value) {
-        if (Strings.isNullOrEmpty(value)
-                || TypeUtils.MISSING_INDICATORS.contains(value)
-                || value.equals("-1")) {
-            return MISSING_VALUE;
-        }
-        value = Strings.padStart(value, 4, '0');
-        if (selectedFormatter == null) {
-            selectedFormatter = TypeUtils.getTimeFormatter(value);
-        }
-        LocalTime time = parseTime(value);
-        return PackedLocalTime.pack(time);
-    }
-
-    private LocalTime parseTime(String value) {
-        if (selectedFormatter == null) {
-            setFormatter(TypeUtils.getTimeFormatter(value));
-        }
-        if (! TypeUtils.canParse(selectedFormatter, value)) {
-            setFormatter(TypeUtils.getTimeFormatter(value));
-        }
-        LocalTime time;
-        try {
-            time = LocalTime.parse(value, selectedFormatter);
-        } catch (DateTimeParseException e) {
-            selectedFormatter = TypeUtils.TIME_FORMATTER.withLocale(locale);
-            time = LocalTime.parse(value, selectedFormatter);
-        }
-        return time;
-    }
-
-
     @Override
     public TimeColumn appendCell(String object) {
-        appendInternal(convert(object));
+        appendInternal(PackedLocalTime.pack(TimeColumnType.DEFAULT_PARSER.parse(object)));
+        return this;
+    }
+
+    @Override
+    public TimeColumn appendCell(String object, StringParser parser) {
+        appendInternal(PackedLocalTime.pack((LocalTime) parser.parse(object)));
         return this;
     }
 

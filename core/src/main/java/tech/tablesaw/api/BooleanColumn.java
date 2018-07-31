@@ -14,7 +14,6 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.booleans.BooleanIterable;
 import it.unimi.dsi.fastutil.booleans.BooleanIterator;
 import it.unimi.dsi.fastutil.booleans.BooleanOpenHashSet;
@@ -31,12 +30,13 @@ import it.unimi.dsi.fastutil.bytes.ByteSet;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.booleans.BooleanColumnUtils;
 import tech.tablesaw.columns.booleans.BooleanFillers;
 import tech.tablesaw.columns.booleans.BooleanFormatter;
 import tech.tablesaw.columns.booleans.BooleanMapUtils;
 import tech.tablesaw.filtering.predicates.BytePredicate;
-import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -59,8 +59,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, Ca
 
     public static final byte MISSING_VALUE = (Byte) BOOLEAN.getMissingValue();
 
-    private static final byte BYTE_TRUE = 1;
-    private static final byte BYTE_FALSE = 0;
+    public static final byte BYTE_TRUE = 1;
+    public static final byte BYTE_FALSE = 0;
 
     private final ByteComparator descendingByteComparator = (o1, o2) -> Byte.compare(o2, o1);
 
@@ -142,21 +142,6 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, Ca
 
     public BooleanFormatter getPrintFormatter() {
         return formatter;
-    }
-
-    public static byte convert(String stringValue) {
-
-        if (Strings.isNullOrEmpty(stringValue) || TypeUtils.MISSING_INDICATORS.contains(stringValue)) {
-            return MISSING_VALUE;
-
-        } else if (TypeUtils.TRUE_STRINGS.contains(stringValue)) {
-            return BYTE_TRUE;
-        } else if (TypeUtils.FALSE_STRINGS.contains(stringValue)) {
-            return BYTE_FALSE;
-        } else {
-            throw new IllegalArgumentException("Attempting to convert non-boolean value " +
-                    stringValue + " to Boolean");
-        }
     }
 
     public int size() {
@@ -294,7 +279,13 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, Ca
     }
 
     public BooleanColumn appendCell(String object) {
-        append(convert(object));
+        append(BooleanColumnType.DEFAULT_PARSER.parseByte(object));
+        return this;
+    }
+
+    @Override
+    public BooleanColumn appendCell(String object, StringParser parser) {
+        append(parser.parseByte(object));
         return this;
     }
 

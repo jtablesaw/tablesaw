@@ -263,9 +263,9 @@ public class CsvReaderTest {
                 .build();
 
         Table t = Table.read().csv(options);
-        assertEquals(t.stringColumn(0).countMissing(), 1);
-        assertEquals(t.numberColumn(1).countMissing(), 1);
-        assertEquals(t.numberColumn(2).countMissing(), 1);
+        assertEquals(1, t.stringColumn(0).countMissing());
+        assertEquals(1, t.numberColumn(1).countMissing());
+        assertEquals(1, t.numberColumn(2).countMissing());
     }
 
     @Test

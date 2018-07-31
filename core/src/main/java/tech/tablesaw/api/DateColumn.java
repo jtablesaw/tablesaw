@@ -15,7 +15,6 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -24,13 +23,14 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.dates.DateColumnFormatter;
+import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.dates.DateFillers;
 import tech.tablesaw.columns.dates.DateFilters;
 import tech.tablesaw.columns.dates.DateMapFunctions;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
-import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
@@ -38,13 +38,11 @@ import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 import java.nio.ByteBuffer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
@@ -60,11 +58,6 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     public static final int MISSING_VALUE = (Integer) ColumnType.LOCAL_DATE.getMissingValue();
 
-    /**
-     * locale for formatter
-     */
-    private final Locale locale;
-
     private final IntComparator reverseIntComparator = DescendingIntComparator.instance();
 
     private IntArrayList data;
@@ -77,33 +70,16 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     private DateColumnFormatter printFormatter = new DateColumnFormatter();
 
-    /**
-     * The formatter chosen to parse dates for this particular column
-     */
-    private DateTimeFormatter selectedFormatter;
-
-    public void setFormatter(DateTimeFormatter formatter) {
-        this.selectedFormatter = formatter;
-    }
-
     public static DateColumn create(String name) {
-        return create(name, DEFAULT_ARRAY_SIZE, Locale.getDefault());
-    }
-
-    public static DateColumn create(String name, Locale locale) {
-        return create(name, DEFAULT_ARRAY_SIZE, locale);
-    }
-
-    public static DateColumn create(String name, int initialSize, Locale locale) {
-        return new DateColumn(name, new IntArrayList(initialSize), locale);
+        return create(name, DEFAULT_ARRAY_SIZE);
     }
 
     public static DateColumn create(String name, int initialSize) {
-        return create(name, initialSize, Locale.getDefault());
+        return new DateColumn(name, new IntArrayList(initialSize));
     }
 
     public static DateColumn create(String name, List<LocalDate> data) {
-        DateColumn column = new DateColumn(name, new IntArrayList(data.size()), Locale.getDefault());
+        DateColumn column = new DateColumn(name, new IntArrayList(data.size()));
         for (LocalDate date : data) {
             column.append(date);
         }
@@ -111,17 +87,16 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     public static DateColumn create(String name, LocalDate[] data) {
-        DateColumn column = new DateColumn(name, new IntArrayList(data.length), Locale.getDefault());
+        DateColumn column = new DateColumn(name, new IntArrayList(data.length));
         for (LocalDate date : data) {
             column.append(date);
         }
         return column;
     }
 
-    private DateColumn(String name, IntArrayList data, Locale locale) {
+    private DateColumn(String name, IntArrayList data) {
         super(ColumnType.LOCAL_DATE, name);
         this.data = data;
-        this.locale = locale;
     }
 
     @Override
@@ -182,9 +157,8 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     @Override
     public DateColumn emptyCopy(int rowSize) {
-        DateColumn copy = create(name(), rowSize, locale);
+        DateColumn copy = create(name(), rowSize);
         copy.printFormatter = printFormatter;
-        copy.selectedFormatter = selectedFormatter;
         return copy;
     }
 
@@ -340,45 +314,15 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return comparator;
     }
 
-    /**
-     * Returns a PackedDate as converted from the given string
-     *
-     * @param value A string representation of a date
-     * @throws DateTimeParseException if no parser can be found for the date format
-     */
-    public int convert(String value) {
-        if (Strings.isNullOrEmpty(value) || TypeUtils.MISSING_INDICATORS.contains(value) || value.equals("-1")) {
-            return (Integer) ColumnType.LOCAL_DATE.getMissingValue();
-        }
-        String paddedValue = Strings.padStart(value, 4, '0');
-
-        if (selectedFormatter == null) {
-            selectedFormatter = TypeUtils.getDateFormatter(paddedValue).withLocale(locale);
-        }
-        LocalDate date = parseDate(paddedValue);
-        return PackedLocalDate.pack(date);
-    }
-
-    private LocalDate parseDate(String value) {
-        if (selectedFormatter == null) {
-            setFormatter(TypeUtils.getDateFormatter(value));
-        }
-        if (! TypeUtils.canParse(selectedFormatter, value)) {
-            setFormatter(TypeUtils.getDateFormatter(value));
-        }
-        LocalDate date;
-        try {
-            date = LocalDate.parse(value, selectedFormatter);
-        } catch (DateTimeParseException e) {
-            selectedFormatter = TypeUtils.DATE_FORMATTER.withLocale(locale);
-            date = LocalDate.parse(value, selectedFormatter);
-        }
-        return date;
+    @Override
+    public DateColumn appendCell(String string) {
+        appendInternal(PackedLocalDate.pack(DateColumnType.DEFAULT_PARSER.parse(string)));
+        return this;
     }
 
     @Override
-    public DateColumn appendCell(String string) {
-        appendInternal(convert(string));
+    public DateColumn appendCell(String string, StringParser parser) {
+        appendInternal(PackedLocalDate.pack((LocalDate) parser.parse(string)));
         return this;
     }
 

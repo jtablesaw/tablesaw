@@ -22,7 +22,6 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 
 import java.time.LocalTime;
-import java.util.Locale;
 
 import static org.junit.Assert.*;
 
@@ -33,7 +32,7 @@ public class DateMapFunctionsTest {
     @Before
     public void setUp() {
         Table table = Table.create("Test");
-        column1 = DateColumn.create("Game date", Locale.ENGLISH);
+        column1 = DateColumn.create("Game date");
         table.addColumns(column1);
     }
 

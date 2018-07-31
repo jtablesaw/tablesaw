@@ -23,11 +23,9 @@ import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.io.UnicodeBOMInputStream;
 
@@ -40,110 +38,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import static tech.tablesaw.api.ColumnType.*;
 
 @Immutable
 public class CsvReader {
-
-    private static final Predicate<String> isBoolean = s
-            -> TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
-
-    private static final Predicate<String> isDouble = s -> {
-        try {
-            Double.parseDouble(s);
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static final BiPredicate<String, Locale> isLocalDate = (s, locale) -> {
-        try {
-            LocalDate.parse(s, TypeUtils.DATE_FORMATTER.withLocale(locale));
-            return true;
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static boolean isLocalDate(String s, DateTimeFormatter dateTimeFormatter) {
-        try {
-            if (dateTimeFormatter == null) {
-                LocalDate.parse(s, TypeUtils.DATE_FORMATTER);
-                return true;
-            } else {
-                LocalDate.parse(s, dateTimeFormatter);
-                return true;
-            }
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    }
-
-    private static final BiPredicate<String, Locale> isLocalTime = (s, locale) -> {
-        try {
-            LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER.withLocale(locale));
-            return true;
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static boolean isLocalTime(String s, DateTimeFormatter formatter) {
-        try {
-            if (formatter == null) {
-                LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER);
-                return true;
-            } else {
-                LocalDate.parse(s, formatter);
-                return true;
-            }
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static final BiPredicate<String, Locale> isLocalDateTime = (s, locale) -> {
-        try {
-            LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER.withLocale(locale));
-            return true;
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static boolean isLocalDateTime(String s, DateTimeFormatter formatter) {
-        try {
-            if (formatter == null) {
-                LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER);
-                return true;
-            } else {
-                LocalDate.parse(s, formatter);
-                return true;
-            }
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
 
     /**
      * Private constructor to prevent instantiation
@@ -202,7 +105,6 @@ public class CsvReader {
                         columnName = "Column " + table.columnCount();
                     }
                     Column newColumn = TypeUtils.newColumn(columnName, types[x]);
-                    addFormatter(newColumn, options);
                     table.addColumns(newColumn);
                 }
             }
@@ -234,13 +136,10 @@ public class CsvReader {
                     int cellIndex = 0;
                     for (int columnIndex : columnIndexes) {
                         Column column = table.column(cellIndex);
+                        StringParser parser = column.type().customParser(options);
                         try {
                             String value = nextLine[columnIndex];
-                            if (value.equals(options.missingValueIndicator())) {
-                                column.appendCell("");
-                            } else {
-                                column.appendCell(value);
-                            }
+                            column.appendCell(value, parser);
                         } catch (Exception e) {
                             throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
                         }
@@ -250,22 +149,6 @@ public class CsvReader {
                 rowNumber++;
             }
             return table;
-        }
-    }
-
-    private static void addFormatter(Column newColumn, CsvReadOptions options) {
-        final String columnTypeName = newColumn.type().name();
-        switch (columnTypeName) {
-            case "LOCAL_DATE_TIME" :
-                ((DateTimeColumn) newColumn).setFormatter(options.dateTimeFormatter());
-                return;
-            case "LOCAL_DATE":
-                ((DateColumn) newColumn).setFormatter(options.dateFormatter());
-                return;
-            case "LOCAL_TIME" :
-                ((TimeColumn) newColumn).setFormatter(options.timeFormatter());
-                return;
-            default:
         }
     }
 
@@ -548,73 +431,23 @@ public class CsvReader {
      */
     private static ColumnType detectType(List<String> valuesList, CsvReadOptions options) {
 
-        Locale locale = options.locale();
-        DateTimeFormatter dateFormatter = options.dateFormatter();
-        DateTimeFormatter timeFormatter = options.timeFormatter();
-        DateTimeFormatter dateTimeFormatter = options.dateTimeFormatter();
-
         // Types to choose from. When more than one would work, we pick the first of the options
         ColumnType[] typeArray
-                = // we leave out category, as that is the default type
+                = // we leave out string, as that is the default type
                 {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, NUMBER};
+
+        List<StringParser> parsers = getParserList(typeArray, options);
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
         for (String s : valuesList) {
-            if (isMissing(s, options)) {
-                continue;
-            }
-            if (dateTimeFormatter != null) {
-                if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime(s, dateTimeFormatter)) {
-                    typeCandidates.remove(LOCAL_DATE_TIME);
+            for (StringParser parser : parsers) {
+                if (!parser.canParse(s)) {
+                    typeCandidates.remove(parser.columnType());
                 }
-            } else {
-                if (typeCandidates.contains(LOCAL_DATE_TIME) && !isLocalDateTime.test(s, locale)) {
-                    typeCandidates.remove(LOCAL_DATE_TIME);
-                }
-            }
-            if (timeFormatter != null) {
-                if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime(s, options.timeFormatter())) {
-                    typeCandidates.remove(LOCAL_TIME);
-                }
-            } else {
-                if (typeCandidates.contains(LOCAL_TIME) && !isLocalTime.test(s, locale)) {
-                    typeCandidates.remove(LOCAL_TIME);
-                }
-            }
-            if (dateFormatter != null) {
-                if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate(s, options.dateFormatter())) {
-                    typeCandidates.remove(LOCAL_DATE);
-                }
-            } else {
-                if (typeCandidates.contains(LOCAL_DATE) && !isLocalDate.test(s, locale)) {
-                    typeCandidates.remove(LOCAL_DATE);
-                }
-            }
-            if (typeCandidates.contains(BOOLEAN) && !isBoolean.test(s)) {
-                typeCandidates.remove(BOOLEAN);
-            }
-            if (typeCandidates.contains(NUMBER) && !isDouble.test(s)) {
-                typeCandidates.remove(NUMBER);
             }
         }
         return selectType(typeCandidates);
-    }
-
-    /**
-     * Returns true if the given string indicates a missing value
-     *
-     * If the given string is empty, it's missing, otherwise if a missing value indicator is provided and the string
-     * matches, it's missing. If no missing value indicator is provided, a default missing values list is used.
-     */
-    private static boolean isMissing(String s, CsvReadOptions options) {
-        String missingValueIndicator = options.missingValueIndicator();
-        if (options.missingValueIndicator() != null) {
-            return missingValueIndicator.equals(s) || Strings.isNullOrEmpty(s);
-        }
-
-        return Strings.isNullOrEmpty(s)
-                || TypeUtils.MISSING_INDICATORS.contains(s);
     }
 
     /**
@@ -628,5 +461,22 @@ public class CsvReader {
         } else {
             return typeCandidates.get(0);
         }
+    }
+
+    /**
+     * Returns the list of parsers to use for type detection
+     *
+     * @param typeArray Array of column types. The order specifies the order the types are applied
+     * @param options CsvReadOptions to use to modify the default parsers for each type
+     * @return  A list of parsers in the order they should be used for type detection
+     */
+    private static List<StringParser> getParserList(ColumnType[] typeArray, CsvReadOptions options) {
+        // Types to choose from. When more than one would work, we pick the first of the options
+
+        List<StringParser> parsers = new ArrayList<>();
+        for (ColumnType type : typeArray) {
+            parsers.add(type.customParser(options));
+        }
+        return parsers;
     }
 }

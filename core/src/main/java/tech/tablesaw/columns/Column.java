@@ -169,6 +169,8 @@ public interface Column {
 
     Column appendCell(String stringValue);
 
+    Column appendCell(String stringValue, StringParser parser);
+
     IntComparator rowComparator();
 
     void append(Column column);
