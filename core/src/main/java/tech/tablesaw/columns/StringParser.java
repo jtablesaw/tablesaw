@@ -1,6 +1,10 @@
 package tech.tablesaw.columns;
 
+import com.google.common.base.Strings;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.io.TypeUtils;
+
+import java.util.List;
 
 /**
  * A parser for turning strings into objects that can be inserted into a column
@@ -16,6 +20,8 @@ public abstract class StringParser<T> {
 
     private ColumnType columnType;
 
+    protected List<String> missingValueStrings = TypeUtils.MISSING_INDICATORS;
+
     public StringParser(ColumnType columnType) {
         this.columnType = columnType;
     }
@@ -27,4 +33,9 @@ public abstract class StringParser<T> {
     public ColumnType columnType() {
         return columnType;
     }
+
+    protected boolean isMissing(String s) {
+        return Strings.isNullOrEmpty(s) || missingValueStrings.contains(s);
+    }
+
 }

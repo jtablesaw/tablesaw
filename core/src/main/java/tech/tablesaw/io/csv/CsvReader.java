@@ -41,110 +41,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import static tech.tablesaw.api.ColumnType.*;
 
 @Immutable
 public class CsvReader {
-
-    private static final Predicate<String> isBoolean = s
-            -> TypeUtils.TRUE_STRINGS_FOR_DETECTION.contains(s) || TypeUtils.FALSE_STRINGS_FOR_DETECTION.contains(s);
-
-    private static final Predicate<String> isDouble = s -> {
-        try {
-            Double.parseDouble(s);
-            return true;
-        } catch (NumberFormatException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static final BiPredicate<String, Locale> isLocalDate = (s, locale) -> {
-        try {
-            LocalDate.parse(s, TypeUtils.DATE_FORMATTER.withLocale(locale));
-            return true;
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static boolean isLocalDate(String s, DateTimeFormatter dateTimeFormatter) {
-        try {
-            if (dateTimeFormatter == null) {
-                LocalDate.parse(s, TypeUtils.DATE_FORMATTER);
-                return true;
-            } else {
-                LocalDate.parse(s, dateTimeFormatter);
-                return true;
-            }
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    }
-
-    private static final BiPredicate<String, Locale> isLocalTime = (s, locale) -> {
-        try {
-            LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER.withLocale(locale));
-            return true;
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static boolean isLocalTime(String s, DateTimeFormatter formatter) {
-        try {
-            if (formatter == null) {
-                LocalTime.parse(s, TypeUtils.TIME_DETECTION_FORMATTER);
-                return true;
-            } else {
-                LocalDate.parse(s, formatter);
-                return true;
-            }
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static final BiPredicate<String, Locale> isLocalDateTime = (s, locale) -> {
-        try {
-            LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER.withLocale(locale));
-            return true;
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
-
-    private static boolean isLocalDateTime(String s, DateTimeFormatter formatter) {
-        try {
-            if (formatter == null) {
-                LocalDateTime.parse(s, TypeUtils.DATE_TIME_FORMATTER);
-                return true;
-            } else {
-                LocalDate.parse(s, formatter);
-                return true;
-            }
-        } catch (DateTimeParseException e) {
-            // it's all part of the plan
-            return false;
-        }
-    };
 
     /**
      * Private constructor to prevent instantiation
@@ -566,22 +471,6 @@ public class CsvReader {
             }
         }
         return selectType(typeCandidates);
-    }
-
-    /**
-     * Returns true if the given string indicates a missing value
-     *
-     * If the given string is empty, it's missing, otherwise if a missing value indicator is provided and the string
-     * matches, it's missing. If no missing value indicator is provided, a default missing values list is used.
-     */
-    private static boolean isMissing(String s, CsvReadOptions options) {
-        String missingValueIndicator = options.missingValueIndicator();
-        if (options.missingValueIndicator() != null) {
-            return missingValueIndicator.equals(s) || Strings.isNullOrEmpty(s);
-        }
-
-        return Strings.isNullOrEmpty(s)
-                || TypeUtils.MISSING_INDICATORS.contains(s);
     }
 
     /**

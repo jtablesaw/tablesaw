@@ -17,13 +17,7 @@ package tech.tablesaw.io;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
-import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 
 import javax.annotation.Nonnull;
@@ -224,14 +218,12 @@ public final class TypeUtils {
     /**
      * Private constructor to prevent instantiation
      */
-    private TypeUtils() {
-    }
+    private TypeUtils() {}
 
     /**
      * Constructs and returns a column for the given {@code name} and {@code type}
      */
-    public static Column newColumn(@Nonnull String name,
-                                   @Nonnull ColumnType type) {
+    public static Column newColumn(@Nonnull String name, @Nonnull ColumnType type) {
 
         Preconditions.checkArgument(!Strings.isNullOrEmpty(name),
                 "There must be a valid name for a new column");
@@ -239,29 +231,13 @@ public final class TypeUtils {
         Preconditions.checkArgument(type != ColumnType.SKIP,
                 "SKIP-ped columns should be handled outside of this method.");
 
-        final String columnTypeName = type.name();
-        switch (columnTypeName) {
-            case "LOCAL_DATE":
-                return DateColumn.create(name);
-            case "LOCAL_TIME":
-                return TimeColumn.create(name);
-            case "LOCAL_DATE_TIME":
-                return DateTimeColumn.create(name);
-            case "NUMBER":
-                return DoubleColumn.create(name);
-            case "BOOLEAN":
-                return BooleanColumn.create(name);
-            case "STRING":
-                return StringColumn.create(name);
-            default:
-                throw new IllegalArgumentException("Unknown ColumnType: " + type);
-        }
+        return type.create(name);
     }
 
     /**
      * Returns the first DateTimeFormatter to parse the string, which represents a DATE
      * <p>
-     * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
+     * It's intended to be called at the start of a large formatting job so that it picks the right format and is not
      * called again. This is an optimization, because the older version, which will try multiple formatters was too
      * slow for large data sets.
      */

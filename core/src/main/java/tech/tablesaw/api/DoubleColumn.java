@@ -135,7 +135,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
      * <p>
      * We remove any commas before parsing
      */
-    public static double convert(final String stringValue) {
+    private static double convert(final String stringValue) {
         if (stringValue == null) {
             return MISSING_VALUE;
         }

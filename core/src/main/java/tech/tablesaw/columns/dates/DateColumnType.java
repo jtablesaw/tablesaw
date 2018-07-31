@@ -6,14 +6,12 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.StringParser;
-import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Locale;
 
 public class DateColumnType extends AbstractColumnType {
@@ -41,7 +39,6 @@ public class DateColumnType extends AbstractColumnType {
 
         Locale locale = Locale.getDefault();
         DateTimeFormatter formatter = DEFAULT_FORMATTER;
-        List<String> missingValueStrings = TypeUtils.MISSING_INDICATORS;
 
         public DateStringParser(ColumnType type, CsvReadOptions readOptions) {
             super(type);
@@ -80,10 +77,6 @@ public class DateColumnType extends AbstractColumnType {
 
         public void setLocale(Locale locale) {
             this.locale = locale;
-        }
-
-        private boolean isMissing(String s) {
-            return Strings.isNullOrEmpty(s) || missingValueStrings.contains(s);
         }
 
         @Override
