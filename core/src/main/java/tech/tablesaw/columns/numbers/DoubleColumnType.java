@@ -8,8 +8,10 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 public class DoubleColumnType extends AbstractColumnType {
 
     public static final DoubleStringParser DEFAULT_PARSER = new DoubleStringParser(ColumnType.NUMBER);
+    public static final DoubleColumnType INSTANCE =
+            new DoubleColumnType(Double.NaN, 8, "NUMBER", "Number");
 
-    public DoubleColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
+    private DoubleColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
         super(missingValue, byteSize, name, printerFriendlyName);
     }
 

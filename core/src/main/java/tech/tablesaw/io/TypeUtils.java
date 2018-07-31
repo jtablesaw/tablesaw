@@ -24,7 +24,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -167,30 +166,7 @@ public final class TypeUtils {
             missingInd3,
             missingInd4
     );
-    /**
-     * List of formatters for use in code that selects the correct one for a given Date string
-     */
-    private static ImmutableList<DateTimeFormatter> dateFormatters = ImmutableList.of(
-            dtf1,
-            dtf2,
-            dtf3,
-            dtf4,
-            dtf5,
-            dtf6,
-            dtf7,
-            dtf8,
-            dtf9,
-            dtf10,
-            dtf11,
-            dtf12,
-            dtf13,
-            dtf14,
-            dtf15,
-            dtf16,
-            dtf17,
-            dtf18,
-            dtf19
-    );
+
     /**
      * List of formatters for use in code that selects the correct one for a given DateTime string
      */
@@ -232,75 +208,5 @@ public final class TypeUtils {
                 "SKIP-ped columns should be handled outside of this method.");
 
         return type.create(name);
-    }
-
-    /**
-     * Returns the first DateTimeFormatter to parse the string, which represents a DATE
-     * <p>
-     * It's intended to be called at the start of a large formatting job so that it picks the right format and is not
-     * called again. This is an optimization, because the older version, which will try multiple formatters was too
-     * slow for large data sets.
-     */
-    public static DateTimeFormatter getDateFormatter(String dateValue) {
-
-        for (DateTimeFormatter formatter : dateFormatters) {
-            try {
-                formatter.parse(dateValue);
-                return formatter;
-            } catch (DateTimeParseException e) {
-                // ignore;
-            }
-        }
-        return DATE_FORMATTER;
-    }
-
-    /**
-     * Returns the first DateTimeFormatter to parse the string, which represents a DATE_TIME
-     * <p>
-     * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
-     * called again. This is an optimization, because the older version, which will try multiple formatters was too
-     * slow for large data sets.
-     */
-    public static DateTimeFormatter getDateTimeFormatter(String dateTimeValue) {
-        for (DateTimeFormatter formatter : dateTimeFormatters) {
-            if (canParse(formatter, dateTimeValue)) {
-                return formatter;
-            }
-        }
-        if (canParse(DATE_FORMATTER, dateTimeValue)) {
-            return DATE_FORMATTER;
-        }
-        if (canParse(DATE_TIME_FORMATTER, dateTimeValue)) {
-            return DATE_TIME_FORMATTER;
-        }
-        throw new IllegalArgumentException("Could not find datetime parser for " + dateTimeValue);
-    }
-
-    public static boolean canParse(DateTimeFormatter formatter, String dateTimeValue) {
-        try {
-            formatter.parse(dateTimeValue);
-            return true;
-        } catch (DateTimeParseException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Returns the first DateTimeFormatter to parse the string, which represents a TIME
-     * <p>
-     * It's intended to be called at the start of a large formatting job so that it picks the write format and is not
-     * called again. This is an optimization, because the older version, which will try multiple formatters was too
-     * slow for large data sets.
-     */
-    public static DateTimeFormatter getTimeFormatter(String timeValue) {
-        for (DateTimeFormatter formatter : timeFormatters) {
-            try {
-                formatter.parse(timeValue);
-                return formatter;
-            } catch (DateTimeParseException e) {
-                // ignore;
-            }
-        }
-        return DATE_FORMATTER;
     }
 }

@@ -8,9 +8,16 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class BooleanColumnType extends AbstractColumnType {
 
-    public static BooleanStringParser DEFAULT_PARSER = new BooleanStringParser(ColumnType.BOOLEAN);
+    public static final BooleanStringParser DEFAULT_PARSER = new BooleanStringParser(ColumnType.BOOLEAN);
 
-    public BooleanColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
+
+    public static final BooleanColumnType INSTANCE =
+            new BooleanColumnType(Byte.MIN_VALUE,
+                    1,
+                    "BOOLEAN",
+                    "Boolean");
+
+    private BooleanColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
         super(missingValue, byteSize, name, printerFriendlyName);
     }
 

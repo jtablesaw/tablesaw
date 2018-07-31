@@ -8,8 +8,13 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 public class StringColumnType extends AbstractColumnType {
 
     public static final StringStringParser DEFAULT_PARSER = new StringStringParser(ColumnType.STRING);
+    public static final StringColumnType INSTANCE =
+            new StringColumnType("",
+                    4,
+                    "STRING",
+                    "String");
 
-    public StringColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
+    private StringColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
         super(missingValue, byteSize, name, printerFriendlyName);
     }
 

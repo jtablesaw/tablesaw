@@ -11,8 +11,10 @@ import java.time.LocalTime;
 public class TimeColumnType extends AbstractColumnType {
 
     public static final TimeStringParser DEFAULT_PARSER = new TimeStringParser(ColumnType.LOCAL_TIME);
+    public static final TimeColumnType INSTANCE =
+            new TimeColumnType(Integer.MIN_VALUE, 4, "LOCAL_TIME", "Time");;
 
-    public TimeColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
+    private TimeColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
         super(missingValue, byteSize, name, printerFriendlyName);
     }
 

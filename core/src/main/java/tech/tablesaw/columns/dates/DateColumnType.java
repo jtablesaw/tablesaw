@@ -11,8 +11,10 @@ import java.time.LocalDate;
 public class DateColumnType extends AbstractColumnType {
 
     public static final DateStringParser DEFAULT_PARSER = new DateStringParser(ColumnType.LOCAL_DATE);
+    public static final DateColumnType INSTANCE =
+            new DateColumnType(Integer.MIN_VALUE, 4, "LOCAL_DATE", "Date");;
 
-    public DateColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
+    private DateColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
         super(missingValue, byteSize, name, printerFriendlyName);
     }
 
