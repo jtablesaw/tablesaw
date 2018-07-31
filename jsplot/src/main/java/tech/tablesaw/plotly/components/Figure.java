@@ -16,7 +16,7 @@ import java.util.Map;
  * traces (objects that describe a single series of data in a graph like Scatter or Heatmap)
  * and layout attributes that apply to the rest of the chart, like the title, xaxis, or annotations).
  * <p>
- * Figure combines the two parts, associating one or more traces with a layout. If the layout is null a default layuut
+ * Figure combines the two parts, associating one or more traces with a layout. If the layout is null a default layout
  * is provided.
  */
 public class Figure {
