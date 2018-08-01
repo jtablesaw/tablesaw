@@ -2,15 +2,13 @@ language: java
 jdk:
 - oraclejdk8
 
-# Codacy download uses hardcoded version instead of latest version
-# codacy-coverage-reporter README at https://github.com/codacy/codacy-coverage-reporter documents a new method for fetching latest jar
-# However, we had difficulty using it: https://github.com/codacy/codacy-coverage-reporter/issues/75#issuecomment-409388255
 before_install:
   - sudo apt-get install jq
-  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://oss.sonatype.org/service/local/repositories/releases/content/com/codacy/codacy-coverage-reporter/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
+  - curl -L -o ~/codacy-coverage-reporter "https://dl.bintray.com/codacy/Binaries/$(curl https://api.bintray.com/packages/codacy/Binaries/codacy-coverage-reporter/versions/_latest | jq -r .name)/codacy-coverage-reporter"
+  - chmod u+x codacy-coverage-reporter
   - "export DISPLAY=:99.0"
   - "export TERM=dumb"
   - "sh -e /etc/init.d/xvfb start"
 install: mvn install -DskipTests -Dgpg.skip
 script: mvn -B verify
-after_success: java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter report --language Java --coverage-report aggregate/target/site/jacoco-aggregate/jacoco.xml
+after_success: ~/codacy-coverage-reporter report --language Java --coverage-report aggregate/target/site/jacoco-aggregate/jacoco.xml
