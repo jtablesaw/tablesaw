@@ -1,8 +1,10 @@
 package tech.tablesaw.columns.times;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
@@ -12,7 +14,7 @@ public class TimeColumnType extends AbstractColumnType {
 
     public static final TimeStringParser DEFAULT_PARSER = new TimeStringParser(ColumnType.LOCAL_TIME);
     public static final TimeColumnType INSTANCE =
-            new TimeColumnType(Integer.MIN_VALUE, 4, "LOCAL_TIME", "Time");;
+            new TimeColumnType(Integer.MIN_VALUE, 4, "LOCAL_TIME", "Time");
 
     private TimeColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
         super(missingValue, byteSize, name, printerFriendlyName);
@@ -33,4 +35,19 @@ public class TimeColumnType extends AbstractColumnType {
         return new TimeStringParser(this, options);
     }
 
+    @Override
+    public void copy(IntArrayList rows, Column oldColumn, Column newColumn) {
+        TimeColumn oldTime = (TimeColumn) oldColumn;
+        TimeColumn newTime = (TimeColumn) newColumn;
+        for (int index : rows) {
+            newTime.appendInternal(oldTime.getIntInternal(index));
+        }
+    }
+
+    @Override
+    public boolean compare(int rowNumber, Column temp, Column original) {
+        TimeColumn tempTime = (TimeColumn) temp;
+        TimeColumn originalTime = (TimeColumn) original;
+        return originalTime.getIntInternal(rowNumber) == tempTime.getIntInternal(tempTime.size() - 1);
+    }
 }

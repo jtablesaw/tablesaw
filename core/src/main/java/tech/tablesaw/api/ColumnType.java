@@ -1,13 +1,14 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.SkipColumnType;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.SkipColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -59,4 +60,10 @@ public interface ColumnType {
     StringParser defaultParser();
 
     StringParser customParser(CsvReadOptions options);
+
+
+    void copy(IntArrayList rows, Column oldColumn, Column newColumn);
+
+
+    boolean compare(int rowNumber, Column temp, Column original);
 }

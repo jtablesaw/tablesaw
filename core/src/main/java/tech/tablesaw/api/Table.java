@@ -779,6 +779,8 @@ public class Table extends Relation implements Iterable<Row> {
         return temp;
     }
 
+
+
     /**
      * Returns only those records in this table that have no columns with missing values
      */

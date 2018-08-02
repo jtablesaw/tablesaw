@@ -81,8 +81,9 @@ public class TableTest {
                 .add(t.numberColumn(1))
                 .add(t.numberColumn(2));
 
-        //System.out.println(n.print());
-        //System.out.println(Arrays.toString(n.asDoubleArray()));
+        assertEquals(n.get(0), 9, 0);
+        assertEquals(n.get(1), 12, 0);
+        assertEquals(n.get(2), 15, 0);
     }
 
     @Test
@@ -97,8 +98,9 @@ public class TableTest {
 
         NumberColumn n = sum(t.numberColumns());
 
-        //System.out.println(n.print());
-        //System.out.println(Arrays.toString(n.asDoubleArray()));
+        assertEquals(n.get(0), 9, 0);
+        assertEquals(n.get(1), 12, 0);
+        assertEquals(n.get(2), 15, 0);
     }
 
     @Test
@@ -123,6 +125,18 @@ public class TableTest {
         Column c1 = StringColumn.create("SC");
         t.addColumns(c1);
         assertEquals(" Test \n SC  |\n------", t.print());
+    }
+
+    @Test
+    public void testDropDuplicateRows() throws Exception {
+        Table t1 = Table.read().csv("../data/bush.csv");
+        int rowCount = t1.rowCount();
+        Table t2 = Table.read().csv("../data/bush.csv");
+        Table t3 = Table.read().csv("../data/bush.csv");
+        t1.append(t2).append(t3);
+        assertEquals(3 * rowCount, t1.rowCount());
+        t1 = t1.dropDuplicateRows();
+        assertEquals(t1.rowCount(),rowCount);
     }
 
     @Test

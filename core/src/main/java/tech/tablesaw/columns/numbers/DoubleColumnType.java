@@ -1,8 +1,10 @@
 package tech.tablesaw.columns.numbers;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.columns.AbstractColumnType;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class DoubleColumnType extends AbstractColumnType {
@@ -30,4 +32,19 @@ public class DoubleColumnType extends AbstractColumnType {
         return new DoubleStringParser(this, options);
     }
 
+    @Override
+    public void copy(IntArrayList rows, Column oldColumn, Column newColumn) {
+        DoubleColumn oldDouble = (DoubleColumn) oldColumn;
+        DoubleColumn newDouble = (DoubleColumn) newColumn;
+        for (int index : rows) {
+            newDouble.append(oldDouble.get(index));
+        }
+    }
+
+    @Override
+    public boolean compare(int rowNumber, Column temp, Column original) {
+        DoubleColumn tempDouble = (DoubleColumn) temp;
+        DoubleColumn originalDouble = (DoubleColumn) original;
+        return originalDouble.get(rowNumber) == tempDouble.get(tempDouble.size() - 1);
+    }
 }

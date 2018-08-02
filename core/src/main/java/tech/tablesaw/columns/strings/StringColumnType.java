@@ -1,8 +1,10 @@
 package tech.tablesaw.columns.strings;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.AbstractColumnType;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class StringColumnType extends AbstractColumnType {
@@ -33,4 +35,19 @@ public class StringColumnType extends AbstractColumnType {
         return new StringStringParser(this, options);
     }
 
+    @Override
+    public void copy(IntArrayList rows, Column oldColumn, Column newColumn) {
+        StringColumn oldString = (StringColumn) oldColumn;
+        StringColumn newString = (StringColumn) newColumn;
+        for (int index : rows) {
+            newString.append(oldString.get(index));
+        }
+    }
+
+    @Override
+    public boolean compare(int rowNumber, Column temp, Column original) {
+        StringColumn tempString = (StringColumn) temp;
+        StringColumn originalString = (StringColumn) original;
+        return originalString.get(rowNumber).equals(tempString.get(tempString.size() - 1));
+    }
 }

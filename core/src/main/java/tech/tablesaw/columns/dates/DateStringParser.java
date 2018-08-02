@@ -107,5 +107,4 @@ public class DateStringParser extends StringParser<LocalDate> {
                     .appendOptional(dtf18)
                     .appendOptional(dtf19)
                     .toFormatter();
-
 }
