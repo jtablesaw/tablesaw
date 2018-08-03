@@ -57,8 +57,9 @@ public class DateTimeStringParser extends StringParser<LocalDateTime> {
 
     public DateTimeStringParser(DateTimeColumnType dateTimeColumnType, CsvReadOptions readOptions) {
         super(dateTimeColumnType);
-        if (readOptions.dateFormatter() != null) {
-            formatter = readOptions.dateFormatter();
+        DateTimeFormatter readCsvFormatter = readOptions.dateFormatter();
+        if (readCsvFormatter != null) {
+            formatter = readCsvFormatter;
         }
         if (readOptions.locale() != null) {
             locale = readOptions.locale();

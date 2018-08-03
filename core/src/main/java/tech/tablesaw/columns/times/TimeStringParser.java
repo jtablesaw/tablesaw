@@ -34,13 +34,14 @@ public class TimeStringParser extends StringParser<LocalTime> {
                     .appendOptional(timef1)
                     .appendOptional(timef4)
                     .appendOptional(timef6)
-                    //  .appendOptional(timef7)
                     .toFormatter();
 
     private static final DateTimeFormatter DEFAULT_FORMATTER = TIME_DETECTION_FORMATTER;
 
     private Locale locale = Locale.getDefault();
+
     private DateTimeFormatter formatter = DEFAULT_FORMATTER;
+    private DateTimeFormatter parserFormatter = TIME_CONVERSION_FORMATTER;
 
     public TimeStringParser(ColumnType columnType) {
         super(columnType);
@@ -48,9 +49,10 @@ public class TimeStringParser extends StringParser<LocalTime> {
 
     public TimeStringParser(ColumnType columnType, CsvReadOptions readOptions) {
         super(columnType);
-        if (readOptions.dateFormatter() != null) {
-            if (readOptions.dateFormatter().getLocale() != null ) {} // TODO HERE AND OTHER TIME COLS, MAKE SURE WE DON'T REPLACE A LOCALE SET IN FORMATTER IF ANY
-            formatter = readOptions.dateFormatter();
+        DateTimeFormatter readCsvFormatter = readOptions.timeFormatter();
+        if (readCsvFormatter != null) {
+            formatter = readCsvFormatter;
+            parserFormatter = readCsvFormatter;
         }
         if (readOptions.locale() != null) {
             locale = readOptions.locale();
@@ -80,15 +82,13 @@ public class TimeStringParser extends StringParser<LocalTime> {
             return null;
         }
         value = Strings.padStart(value, 4, '0');
-        return LocalTime.parse(value, formatter);
+        return LocalTime.parse(value, parserFormatter);
     }
 
     // A formatter that handles time formats defined above
     /**
      * A formatter for parsing. Useful when the user has specified that a numeric-like column is really supposed to be a time
-     * See timef7 definintion
-     *
-     * TODO: Use for parsing.
+     * See timef7 definition
      */
     private static final DateTimeFormatter TIME_CONVERSION_FORMATTER =
             new DateTimeFormatterBuilder()

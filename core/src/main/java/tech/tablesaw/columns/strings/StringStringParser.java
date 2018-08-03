@@ -5,13 +5,9 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import java.util.Locale;
-
 import static tech.tablesaw.api.StringColumn.MISSING_VALUE;
 
 public class StringStringParser extends StringParser<String> {
-
-    private Locale locale = Locale.getDefault();
 
     public StringStringParser(ColumnType columnType) {
         super(columnType);
@@ -19,9 +15,6 @@ public class StringStringParser extends StringParser<String> {
 
     public StringStringParser(ColumnType columnType, CsvReadOptions readOptions) {
         super(columnType);
-        if (readOptions.locale() != null) {
-            locale = readOptions.locale();
-        }
         if (readOptions.missingValueIndicator() != null) {
             missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
         }
