@@ -596,11 +596,10 @@ public class StringColumn extends AbstractColumn
     /**
      * Returns the integer encoded value of each cell in this column. It can be used to lookup the mapped string in
      * the lookupTable
-     * TODO(lwhite): Should this be private?
      *
      * @return values a {@link IntArrayList}
      */
-    public IntArrayList values() {
+    private IntArrayList values() {
         return values;
     }
 

@@ -33,6 +33,7 @@ public abstract class AbstractColumn implements Column {
         setName(name);
     }
 
+    @Override
     public String name() {
         return name;
     }
@@ -42,8 +43,6 @@ public abstract class AbstractColumn implements Column {
         this.name = name.trim();
         return this;
     }
-
-    public abstract Column appendCell(String stringvalue);
 
     /**
      * Returns the width of the column in characters, for printing

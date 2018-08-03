@@ -68,7 +68,9 @@ public interface Column {
      *
      * @return unique values as int
      */
-    int countUnique();
+    default int countUnique() {
+        return unique().size();
+    }
 
     /**
      * Returns a column of the same type as the receiver, containing only the unique values of the receiver.

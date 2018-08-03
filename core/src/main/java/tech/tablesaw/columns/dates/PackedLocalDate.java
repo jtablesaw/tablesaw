@@ -385,11 +385,6 @@ public class PackedLocalDate {
         byte m = getMonthValue(packedDate);
         short y = getYear(packedDate);
 
-        //TODO REMOVE THIS PLAY STUFF
-        LocalDate localDate = LocalDate.now();
-        localDate.plusMonths(4);
-
-        // TODO now good stuff again
         long monthCount = y * 12L + (m - 1);
         long calcMonths = monthCount + months;
         int newYear = YEAR.checkValidIntValue(Math.floorDiv((int) calcMonths, 12));

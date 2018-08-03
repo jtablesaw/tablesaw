@@ -238,13 +238,15 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     /**
-     * TODO(lwhite): Ensure proper handling of missing values. They should not end up in the result set
+     *
      */
     @Override
     public Column unique() {
         final DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
-            doubles.add(data.getDouble(i));
+            if (!isMissing(i)) {
+                doubles.add(data.getDouble(i));
+            }
         }
         final DoubleColumn column = DoubleColumn.create(name() + " Unique values", doubles.size());
         doubles.forEach((DoubleConsumer) column::append);
