@@ -210,7 +210,7 @@ Table structure = bushTable.structure();
 	 Index  |  Column Name  |  Column Type  |
 	-----------------------------------------
 	     0  |         date  |   LOCAL_DATE  |
-	     1  |     approval  |       NUMBER  |
+	     1  |     approval  |       DOUBLE  |
 	     2  |          who  |       STRING  |
 
 String shape = bushTable.shape();
@@ -283,7 +283,7 @@ DateColumn dc = table.dateColumn("start date");
 If you want all the columns of specific type, you can get those as well. The method columnsOfType(aColumnType) returns them as a List, but you still have to cast the results. For example, to format all columns as ints when you print them, you could do this. 
 
 ```Java
-table.columnOfType(ColumnType.NUMBER).forEach(x ->                                               		((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
+table.columnOfType(ColumnType.DOUBLE).forEach(x ->                                               		((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
 ```
 
 > **Key point:** You may want a specific kind of column to work with. Either use the standard *column()* method and cast the result or use one of the type specific methods (like *numberColumn()*) that handle the cast for you. There are also methods or getting columns of a specific type. 
@@ -433,7 +433,7 @@ If you're only interested in how the frequently observations appear in different
 Table percents = table.xTabTablePercents("month", "who");
 
 // make table print as percents with no decimals instead of the raw doubles it holds
-percents.columnsOfType(ColumnType.NUMBER)
+percents.columnsOfType(ColumnType.DOUBLE)
     .forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
 System.out.println(percents);
 ```

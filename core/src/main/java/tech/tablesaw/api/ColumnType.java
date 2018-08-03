@@ -23,7 +23,7 @@ public interface ColumnType {
     // standard column types
     ColumnType BOOLEAN = BooleanColumnType.INSTANCE;
     ColumnType STRING = StringColumnType.INSTANCE;
-    ColumnType NUMBER = DoubleColumnType.INSTANCE;
+    ColumnType DOUBLE = DoubleColumnType.INSTANCE;
     ColumnType LOCAL_DATE = DateColumnType.INSTANCE;
     ColumnType LOCAL_DATE_TIME = DateTimeColumnType.INSTANCE;
     ColumnType LOCAL_TIME = TimeColumnType.INSTANCE;

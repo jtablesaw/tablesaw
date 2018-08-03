@@ -490,7 +490,7 @@ public class NumberColumnTest {
     @Test
     public void testType() {
         NumberColumn doubles =  DoubleColumn.create("doubles", 100);
-        assertEquals(ColumnType.NUMBER, doubles.type());
+        assertEquals(ColumnType.DOUBLE, doubles.type());
     }
 
     @Test

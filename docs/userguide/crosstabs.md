@@ -22,7 +22,7 @@ Table counts = table.xTabCounts("month", "who");
 
 // formatting 
 // make table print as integers with no decimals instead of the raw doubles it holds
-counts.columnsOfType(ColumnType.NUMBER)
+counts.columnsOfType(ColumnType.DOUBLE)
                 .forEach(x ->	
                        ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
 // print
@@ -84,7 +84,7 @@ Table whoPercents = table.xTabPercents("who");
 Actually, percents is a misnomer. The results produced are the proportions in decimal format. To get percent-formatted output we use a different NumericColumnFormatter.
 
 ```
-whoPercents.columnsOfType(ColumnType.NUMBER) // format to display as percents
+whoPercents.columnsOfType(ColumnType.DOUBLE) // format to display as percents
                 .forEach(x ->
                 ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
 ```
@@ -107,7 +107,7 @@ When you have two variables, you can display the percent that falls into each co
 
 ```java
 Table tablePercents = table.xTabTablePercents("month", "who");
-tablePercents.columnsOfType(ColumnType.NUMBER)
+tablePercents.columnsOfType(ColumnType.DOUBLE)
                 .forEach(x ->
                 ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(1)));
 ```

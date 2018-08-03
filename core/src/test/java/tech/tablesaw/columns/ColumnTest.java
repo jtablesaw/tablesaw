@@ -30,8 +30,8 @@ public class ColumnTest {
 
     private static final ColumnType[] types = {
             ColumnType.LOCAL_DATE,     // date of poll
-            ColumnType.NUMBER,        // approval rating (pct)
-            ColumnType.STRING             // polling org
+            ColumnType.DOUBLE,         // approval rating (pct)
+            ColumnType.STRING          // polling org
     };
 
     private Table table;
@@ -93,6 +93,6 @@ public class ColumnTest {
     @Test
     public void testType() {
         Column c = table.numberColumn("approval");
-        assertEquals(ColumnType.NUMBER, c.type());
+        assertEquals(ColumnType.DOUBLE, c.type());
     }
 }

@@ -53,29 +53,29 @@ The *shape()* method displays the row and column counts:
             0     Date         LOCAL_DATE  
             1     Time         LOCAL_TIME  
             2     State        CATEGORY    
-            3     State No     NUMBER     
-            4     Scale        NUMBER     
-            5     Injuries     NUMBER     
-            6     Fatalities   NUMBER     
-            7     Start Lat    NUMBER       
-            8     Start Lon    NUMBER       
-            9     Length       NUMBER       
-            10    Width        NUMBER       
+            3     State No     DOUBLE     
+            4     Scale        DOUBLE     
+            5     Injuries     DOUBLE     
+            6     Fatalities   DOUBLE     
+            7     Start Lat    DOUBLE       
+            8     Start Lon    DOUBLE       
+            9     Length       DOUBLE       
+            10    Width        DOUBLE       
 
 Like many Tablesaw methods, *structure()* returns a table.  You can then produce a string representation for display. For convenience, calling *toString()* on a table invokes *print()*, which produces a string representation of the table table. To display the table then, you can simply call. 
 
 `System.out.println(table);`
 
-You can also perform other table operations on it. For example, the code below removes all columns whose type isn’t NUMBER:
+You can also perform other table operations on it. For example, the code below removes all columns whose type isn’t DOUBLE:
 
-    tornadoes.structure().selectWhere(column("Column Type").isEqualTo("NUMBER"));
+    tornadoes.structure().selectWhere(column("Column Type").isEqualTo("DOUBLE"));
     
     >>  Structure of data/tornadoes_1950-2014.csv
             Index Column Name Column Type 
-            3     State No    NUMBER     
-            4     Scale       NUMBER     
-            5     Injuries    NUMBER     
-            6     Fatalities  NUMBER     
+            3     State No    DOUBLE     
+            4     Scale       DOUBLE     
+            5     Injuries    DOUBLE     
+            6     Fatalities  DOUBLE     
 
 Of course, that also returned a table. We’ll cover selecting rows in more detail later.
 
@@ -139,13 +139,13 @@ table.column("Fatalities").summary().print();
 You can write your own methods to filter rows, but it’s easier to use the built-in filter classes as shown below:
 
 ```java 
-result = tornadoes.selectWhere(numberColumn("Fatalities").isGreaterThan(0));
+result = tornadoes.selectWhere(DOUBLEColumn("Fatalities").isGreaterThan(0));
 
 result = tornadoes.selectWhere(dateColumn("Date").isInApril());
 
 result = tornadoes.selectWhere(either
-           (numberColumn("Width").isGreaterThan(300)),   // 300 yards
-           (numberColumn("Length").isGreaterThan(10)));  // 10 miles
+           (DOUBLEColumn("Width").isGreaterThan(300)),   // 300 yards
+           (DOUBLEColumn("Length").isGreaterThan(10)));  // 10 miles
 
 result = tornadoes.select("State", "Date").where(column("Date").isInQ2());
 ```
@@ -214,7 +214,7 @@ Filter summerFilter =
 Table summer = tornadoes.selectWhere(summerFilter);
 ```
 
-To get the frequency, we calculate the difference in days between successive tornadoes. The *lag()* method creates a column where every value equals the previous value (the prior row) of the source column. Then we can simply get the difference in days between the two dates. DateColumn has a method *daysUntil()* that does this.  It returns a NumberColumn that we'll call "delta". 
+To get the frequency, we calculate the difference in days between successive tornadoes. The *lag()* method creates a column where every value equals the previous value (the prior row) of the source column. Then we can simply get the difference in days between the two dates. DateColumn has a method *daysUntil()* that does this.  It returns a DOUBLEColumn that we'll call "delta". 
 
 ```java
 summer = summer.sortAscendingOn("Date", "Time");
@@ -223,7 +223,7 @@ summer.addColumn(summer.dateColumn("Date").lag(1));
 DateColumn summerDate = summer.dateColumn("Date");
 DateColumn laggedDate = summer.dateColumn("Date lag(1)");
 
-NumberColumn delta = laggedDate.daysUntil(summerDate);
+DOUBLEColumn delta = laggedDate.daysUntil(summerDate);
 summer.addColumn(delta);
 ```
 
@@ -245,7 +245,7 @@ Printing summary gives us the answer by year.
 ...
 ```
 
-To get a number for the entire period, we can take the average of the annual means. 
+To get a DOUBLE for the entire period, we can take the average of the annual means. 
 
 ```
 summary.nCol(1).mean();

@@ -27,10 +27,10 @@ import java.time.ZoneOffset;
 import java.util.function.DoublePredicate;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.api.ColumnType.NUMBER;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
 
 public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
-    double MISSING_VALUE = (Double) NUMBER.getMissingValue();
+    double MISSING_VALUE = (Double) DOUBLE.getMissingValue();
 
     static boolean valueIsMissing(double value) {
         return Double.isNaN(value);

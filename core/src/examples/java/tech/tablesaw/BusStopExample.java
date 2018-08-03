@@ -29,7 +29,7 @@ public class BusStopExample {
         out("Some Examples: ");
 
         // Read the CSV file
-        ColumnType[] types = {ColumnType.NUMBER, ColumnType.STRING, ColumnType.STRING, ColumnType.NUMBER, ColumnType.NUMBER};
+        ColumnType[] types = {ColumnType.DOUBLE, ColumnType.STRING, ColumnType.STRING, ColumnType.DOUBLE, ColumnType.DOUBLE};
         Table table = Table.read().csv(CsvReadOptions.builder("../data/bus_stop_test.csv").columnTypes(types));
 
         // Look at the column names

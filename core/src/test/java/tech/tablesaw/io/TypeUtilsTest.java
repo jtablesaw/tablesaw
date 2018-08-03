@@ -26,7 +26,7 @@ import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static tech.tablesaw.api.ColumnType.NUMBER;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
 
 public class TypeUtilsTest {
 
@@ -35,7 +35,7 @@ public class TypeUtilsTest {
      */
     @Test
     public void testNewColumn() {
-        NumberColumn column = (NumberColumn) TypeUtils.newColumn("test", NUMBER);
+        NumberColumn column = (NumberColumn) TypeUtils.newColumn("test", DOUBLE);
         assertThat(column, notNullValue());
     }
 

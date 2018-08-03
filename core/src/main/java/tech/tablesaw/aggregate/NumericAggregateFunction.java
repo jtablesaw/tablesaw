@@ -15,6 +15,6 @@ public abstract class NumericAggregateFunction extends AggregateFunction {
     abstract public double summarize(Column column);
 
     public boolean isCompatibleWith(ColumnType type) {
-        return type.equals(ColumnType.NUMBER);
+        return type.equals(ColumnType.DOUBLE);
     }
 }

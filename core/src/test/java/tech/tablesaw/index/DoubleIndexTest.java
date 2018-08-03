@@ -40,11 +40,11 @@ public class DoubleIndexTest {
                         // explicitly set column type, due to CsvReader#detectType returns ColumnType.FLOAT
                         // for 'stop_lat' and 'stop_lon' columns
                         .columnTypes(new ColumnType[]{
-                                ColumnType.NUMBER,
+                                ColumnType.DOUBLE,
                                 ColumnType.STRING,
                                 ColumnType.STRING,
-                                ColumnType.NUMBER,
-                                ColumnType.NUMBER}));
+                                ColumnType.DOUBLE,
+                                ColumnType.DOUBLE}));
         index = new DoubleIndex(table.numberColumn("stop_lat"));
     }
 

@@ -300,7 +300,11 @@ public abstract class Relation {
     }
 
     public NumberColumn[] numberColumns() {
-        return columns().stream().filter(e->e.type() == ColumnType.NUMBER).toArray(NumberColumn[]::new);
+        return columns().stream().filter(e->e.type() == ColumnType.DOUBLE).toArray(NumberColumn[]::new);
+    }
+
+    public NumberColumn[] doubleColumns() {
+        return columns().stream().filter(e->e.type() == ColumnType.DOUBLE).toArray(NumberColumn[]::new);
     }
 
     public BooleanColumn[] booleanColumns() {

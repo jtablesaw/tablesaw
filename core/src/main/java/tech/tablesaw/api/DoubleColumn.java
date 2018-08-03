@@ -51,7 +51,7 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
 
-import static tech.tablesaw.api.ColumnType.NUMBER;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
 
 /**
  * A column in a base table that contains double precision floating point values
@@ -180,7 +180,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     private DoubleColumn(final String name, final DoubleArrayList data) {
-        super(NUMBER, name);
+        super(DOUBLE, name);
         this.data = data;
     }
 

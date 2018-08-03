@@ -55,7 +55,7 @@ At this point we continue developing our model, but for those interested, this n
 > Table xtab95 = moneyball.xTabColumnPercents("Playoffs", "95+ Wins");
 > 
 > // format the results to show percents with one decimal place
-> xtab95.columnsOfType(ColumnType.NUMBER)
+> xtab95.columnsOfType(ColumnType.DOUBLE)
 >     .forEach(ea -> 
 >              ((NumberColumn)ea).setPrintFormatter(NumberColumnFormatter.percent(1)));
 > 

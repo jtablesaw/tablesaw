@@ -34,7 +34,7 @@ public class TornadoExample extends AbstractExample {
 
         out(tornadoes.structure());
         out(tornadoes.structure().where(
-                tornadoes.stringColumn("Column Type").isEqualTo("NUMBER")));
+                tornadoes.stringColumn("Column Type").isEqualTo("DOUBLE")));
 
         tornadoes.setName("tornadoes");
 

@@ -35,7 +35,7 @@ public class IntIndexTest {
 
     private ColumnType[] types = {
             ColumnType.LOCAL_DATE,     // date of poll
-            ColumnType.NUMBER,        // approval rating (pct)
+            ColumnType.DOUBLE,        // approval rating (pct)
             ColumnType.STRING        // polling org
     };
 

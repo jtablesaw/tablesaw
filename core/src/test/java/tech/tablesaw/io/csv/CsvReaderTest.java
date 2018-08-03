@@ -47,8 +47,8 @@ import static tech.tablesaw.io.csv.CsvReader.detectColumnTypes;
  */
 public class CsvReaderTest {
 
-    private final ColumnType[] bus_types = {NUMBER, STRING, STRING, NUMBER, NUMBER};
-    private final ColumnType[] bus_types_with_SKIP = {NUMBER, STRING, SKIP, NUMBER, NUMBER};
+    private final ColumnType[] bus_types = {DOUBLE, STRING, STRING, DOUBLE, DOUBLE};
+    private final ColumnType[] bus_types_with_SKIP = {DOUBLE, STRING, SKIP, DOUBLE, DOUBLE};
 
     @Test
     public void testWithBusData() throws Exception {
@@ -92,7 +92,7 @@ public class CsvReaderTest {
     @Test
     public void testWithBushData() throws Exception {
         // Read the CSV file
-        ColumnType[] types = {LOCAL_DATE, NUMBER, STRING};
+        ColumnType[] types = {LOCAL_DATE, DOUBLE, STRING};
         Table table = Table.read().csv(
                 CsvReadOptions.builder("../data/bush.csv")
                         .columnTypes(types));
@@ -292,7 +292,7 @@ public class CsvReaderTest {
         String output =
                 "ColumnType[] columnTypes = {\n" +
                         "LOCAL_DATE, // 0     date        \n" +
-                        "NUMBER,     // 1     approval    \n" +
+                        "DOUBLE,     // 1     approval    \n" +
                         "STRING,     // 2     who         \n" +
                         "}\n";
         assertEquals(output, CsvReader.printColumnTypes("../data/bush.csv", true, ',', Locale.getDefault()));
@@ -310,14 +310,14 @@ public class CsvReaderTest {
 
         ColumnType[] columnTypes = detectColumnTypes(stream, options);
         assertEquals(LOCAL_DATE, columnTypes[0]);
-        assertEquals(NUMBER, columnTypes[1]);
+        assertEquals(DOUBLE, columnTypes[1]);
         assertEquals(STRING, columnTypes[2]);
     }
 
     @Ignore
     @Test
     public void testLoadFromUrl() throws Exception {
-        ColumnType[] types = {LOCAL_DATE, NUMBER, STRING};
+        ColumnType[] types = {LOCAL_DATE, DOUBLE, STRING};
         String location = "https://raw.githubusercontent.com/jAirframe/Airframe/master/data/bush.csv";
         Table table;
         try (InputStream input = new URL(location).openStream()) {

@@ -123,11 +123,11 @@ public class Example1 {
         StringColumn who = table1.stringColumn("who");
 
         Table xtab = CrossTab.counts(table1, month, who);
-        xtab.columnsOfType(ColumnType.NUMBER).forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
+        xtab.columnsOfType(ColumnType.DOUBLE).forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
         out(xtab);
 
         Table percents = table1.xTabTablePercents("month", "who");
-        percents.columnsOfType(ColumnType.NUMBER)
+        percents.columnsOfType(ColumnType.DOUBLE)
                 .forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
         out(percents);
 
