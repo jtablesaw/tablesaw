@@ -16,6 +16,9 @@ A dataframe is an in-memory, tabular data structure in which each column holds a
 * Combining tables by appending or joining
 * Calculating descriptive statistics
 * Adding, updating, and removing rows
+
+### Support for visualization
+
 * Plotting data
 
 ### Looking ahead

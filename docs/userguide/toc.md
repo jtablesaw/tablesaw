@@ -7,15 +7,15 @@ Tablesaw User Guide
 
 * [Importing Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data)
 
-* [Columns](https://jtablesaw.github.io/tablesaw/userguide/columns)
+* Transforming Data
 
-* [Tables](https://jtablesaw.github.io/tablesaw/userguide/tables)
-
-  * [Sorting](https://jtablesaw.github.io/tablesaw/userguide/sorting)
-  * [Filtering (Queries)](https://jtablesaw.github.io/tablesaw/userguide/filters)
-  * [Mapping](https://jtablesaw.github.io/tablesaw/userguide/mapping)
-  * [Summarizing (Aggregation/Reducing)](https://jtablesaw.github.io/tablesaw/userguide/reducing)
-    * [Creating cross-tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs)
+  * [Working with Columns](https://jtablesaw.github.io/tablesaw/userguide/columns)
+  * [Working with Tables](https://jtablesaw.github.io/tablesaw/userguide/tables)
+    * [Sorting](https://jtablesaw.github.io/tablesaw/userguide/sorting)
+    * [Filtering (Queries)](https://jtablesaw.github.io/tablesaw/userguide/filters)
+    * [Mapping](https://jtablesaw.github.io/tablesaw/userguide/mapping)
+    * [Summarizing (Aggregation/Reducing)](https://jtablesaw.github.io/tablesaw/userguide/reducing)
+      * [Creating cross-tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs)
   * [Working with Rows](https://jtablesaw.github.io/tablesaw/userguide/rows)
 
 * Plotting and Visualization
@@ -30,5 +30,7 @@ Tablesaw User Guide
 * Machine Learning
 
   * [Linear Regression with Smile and Tablesaw: Moneyball Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball Linear regression)
+
+* Using Tablesaw in Jupyter
 
   
