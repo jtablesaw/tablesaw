@@ -58,11 +58,53 @@ public class DataFrameJoinerTest {
                     + "5.0,King\n",
             "Dogs");
 
+    private static final Table DUPLICATE_COL_NAME_DOGS = Table.read().csv(
+            "ID,Dog Name, Good\n"
+                    + "1.0,Spot,true\n"
+                    + "3.0,Fido,true\n"
+                    + "4.0,Sasha,true\n"
+                    + "5.0,King,true\n"
+                    + "1.0,Spot,false\n"
+                    + "3.0,Fido,false\n"
+                    + "4.0,Sasha,false\n"
+                    + "5.0,King,false\n",
+            "Dogs");
+
     @Test
     public void innerJoinWithDoubles() {
         Table joined = DOUBLE_INDEXED_PEOPLE.join("ID").inner(DOUBLE_INDEXED_DOGS, "ID");
         assertEquals(3, joined.columnCount());
         assertEquals(3, joined.rowCount());
+    }
+
+    @Test
+    public void innerJoinWithDuplicateColumnNames() {
+        Table table1 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isTrue());
+        Table table2 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isFalse());
+
+        Table joined = table1.join("ID").inner(table2, "ID", true);
+        assertEquals(5, joined.columnCount());
+        assertEquals(4, joined.rowCount());
+    }
+
+    @Test
+    public void rightOuterJoinWithDuplicateColumnNames() {
+        Table table1 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isTrue());
+        Table table2 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isFalse());
+
+        Table joined = table1.join("ID").rightOuter(table2, "ID", true);
+        assertEquals(5, joined.columnCount());
+        assertEquals(4, joined.rowCount());
+    }
+
+    @Test
+    public void leftOuterJoinWithDuplicateColumnNames() {
+        Table table1 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isTrue());
+        Table table2 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isFalse());
+
+        Table joined = table1.join("ID").leftOuter(table2, "ID", true);
+        assertEquals(5, joined.columnCount());
+        assertEquals(4, joined.rowCount());
     }
 
     @Test

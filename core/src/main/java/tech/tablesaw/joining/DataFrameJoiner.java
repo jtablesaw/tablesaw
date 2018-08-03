@@ -14,10 +14,15 @@ import tech.tablesaw.index.IntIndex;
 import tech.tablesaw.index.LongIndex;
 import tech.tablesaw.selection.Selection;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class DataFrameJoiner {
+
+    private static final String TABLE_ALIAS = "T";
 
     private final Table table;
     private final Column column;
+    private AtomicInteger joinTableId = new AtomicInteger(2);
 
     public DataFrameJoiner(Table table, String column) {
         this.table = table;
@@ -30,9 +35,20 @@ public class DataFrameJoiner {
      * @param tables The tables to join with
      */
     public Table inner(Table... tables) {
+        return inner(false, tables);
+    }
+
+    /**
+     * Joins to the given tables assuming that they have a column of the name we're joining on
+     *
+     * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
+     *                                  if {@code true} the join will succeed and duplicate columns are renamed*
+     * @param tables The tables to join with
+     */
+    public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
         Table joined = table;
         for (Table table2 : tables) {
-          joined = inner(table2, column.name());
+          joined = inner(table2, column.name(), allowDuplicateColumnNames);
         }
         return joined;
     }
@@ -45,10 +61,28 @@ public class DataFrameJoiner {
      *                 rounding to integers.
      */
     public Table inner(Table table2, String col2Name) {
-        return joinInternal(table2, col2Name, false);
+        return joinInternal(table2, col2Name, false, false);
     }
 
-    private Table joinInternal(Table table2, String col2Name, boolean outer) {
+    /**
+     * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
+     *
+     * @param table2   The table to join with
+     * @param col2Name The column to join on. If col2Name refers to a double column, the join is performed after
+     *                 rounding to integers.
+     * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
+     *                                  if {@code true} the join will succeed and duplicate columns are renamed*
+     */
+    public Table inner(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
+        return joinInternal(table2, col2Name, false, allowDuplicateColumnNames);
+    }
+
+    private Table joinInternal(Table table2, String col2Name, boolean outer, boolean allowDuplicates) {
+
+        if (allowDuplicates) {
+            renameColumnsWithDuplicateNames(table2, col2Name);
+        }
+
         Table result = emptyTableFromColumns(table, table2, col2Name);
         if (column instanceof DateColumn) {
             IntIndex index = new IntIndex(table2.dateColumn(col2Name));
@@ -129,18 +163,45 @@ public class DataFrameJoiner {
         return result;
     }
 
+    private void renameColumnsWithDuplicateNames(Table table2, String col2Name) {
+        String table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
+
+        for (Column table2Column : table2.columns()) {
+            String columnName = table2Column.name();
+            if (table.columnNames().contains(columnName)
+                    && !columnName.equals(col2Name)) {
+                table2Column.setName(newName(table2Alias, columnName));
+            }
+        }
+    }
+
+    private String newName(String table2Alias, String columnName) {
+        return table2Alias + "." + columnName;
+    }
+
     /**
      * Joins to the given tables assuming that they have a column of the name we're joining on
      *
      * @param tables The tables to join with
      */
     public Table leftOuter(Table... tables) {
+        return leftOuter(false, tables);
+    }
+
+    /**
+     * Joins to the given tables assuming that they have a column of the name we're joining on
+     *
+     * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
+     *                                  if {@code true} the join will succeed and duplicate columns are renamed*
+     * @param tables The tables to join with
+     */
+    public Table leftOuter(boolean allowDuplicateColumnNames, Table... tables) {
         Table joined = table;
         for (Table table2 : tables) {
-          joined = leftOuter(table2, column.name());
+          joined = leftOuter(table2, column.name(), allowDuplicateColumnNames);
         }
         return joined;
-    }    
+    }
 
     /**
      * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
@@ -150,7 +211,20 @@ public class DataFrameJoiner {
      *                 rounding to integers.
      */
     public Table leftOuter(Table table2, String col2Name) {
-        return joinInternal(table2, col2Name, true);
+        return joinInternal(table2, col2Name, true, false);
+    }
+
+    /**
+     * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
+     *
+     * @param table2   The table to join with
+     * @param col2Name The column to join on. If col2Name refers to a double column, the join is performed after
+     *                 rounding to integers.
+     * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
+     *                                  if {@code true} the join will succeed and duplicate columns are renamed
+     */
+    public Table leftOuter(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
+        return joinInternal(table2, col2Name, true, allowDuplicateColumnNames);
     }
 
     /**
@@ -159,12 +233,23 @@ public class DataFrameJoiner {
      * @param tables The tables to join with
      */
     public Table rightOuter(Table... tables) {
+        return rightOuter(false, tables);
+    }
+
+    /**
+     * Joins to the given tables assuming that they have a column of the name we're joining on
+     *
+     * @param tables The tables to join with
+     * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
+     *                                  if {@code true} the join will succeed and duplicate columns are renamed
+     */
+    public Table rightOuter(boolean allowDuplicateColumnNames, Table... tables) {
         Table joined = table;
         for (Table table2 : tables) {
-          joined = rightOuter(table2, column.name());
+          joined = rightOuter(table2, column.name(), allowDuplicateColumnNames);
         }
         return joined;
-    }    
+    }
 
     /**
      * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
@@ -174,7 +259,21 @@ public class DataFrameJoiner {
      *                 rounding to integers.
      */
     public Table rightOuter(Table table2, String col2Name) {
-        Table leftOuter = table2.join(col2Name).leftOuter(table, column.name());
+        return rightOuter(table2, col2Name, false);
+    }
+
+    /**
+     * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
+     *
+     * @param table2   The table to join with
+     * @param col2Name The column to join on. If col2Name refers to a double column, the join is performed after
+     *                 rounding to integers.
+     * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
+     *                                  if {@code true} the join will succeed and duplicate columns are renamed
+     */
+
+    public Table rightOuter(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
+        Table leftOuter = table2.join(col2Name).leftOuter(table, column.name(), allowDuplicateColumnNames);
 
         // reverse the columns
         Table result = Table.create(leftOuter.name());
