@@ -2,6 +2,7 @@ package tech.tablesaw.columns.strings;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
@@ -41,6 +42,15 @@ public class StringColumnType extends AbstractColumnType {
         StringColumn newString = (StringColumn) newColumn;
         for (int index : rows) {
             newString.append(oldString.get(index));
+        }
+    }
+
+    @Override
+    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
+        StringColumn newTime = (StringColumn) newColumn;
+        for (int index : rows) {
+            row.at(index);
+            newTime.append(row.getString(newColumn.name()));
         }
     }
 

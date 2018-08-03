@@ -3,6 +3,7 @@ package tech.tablesaw.columns.dates;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
@@ -41,6 +42,16 @@ public class DateColumnType extends AbstractColumnType {
         DateColumn newDate = (DateColumn) newColumn;
         for (int index : rows) {
             newDate.appendInternal(oldDate.getIntInternal(index));
+        }
+    }
+
+    @Override
+    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
+        DateColumn newDate = (DateColumn) newColumn;
+        for (int index : rows) {
+            row.at(index);
+            PackedDate date = row.getPackedDate(newColumn.name());
+            newDate.appendInternal(date.getPackedValue());
         }
     }
 

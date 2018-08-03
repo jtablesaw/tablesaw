@@ -2,6 +2,7 @@ package tech.tablesaw.columns.times;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
@@ -41,6 +42,16 @@ public class TimeColumnType extends AbstractColumnType {
         TimeColumn newTime = (TimeColumn) newColumn;
         for (int index : rows) {
             newTime.appendInternal(oldTime.getIntInternal(index));
+        }
+    }
+
+    @Override
+    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
+        TimeColumn newTime = (TimeColumn) newColumn;
+        for (int index : rows) {
+            row.at(index);
+            PackedTime time = row.getPackedTime(newColumn.name());
+            newTime.appendInternal(time.getPackedValue());
         }
     }
 

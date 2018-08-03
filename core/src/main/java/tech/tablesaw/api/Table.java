@@ -605,72 +605,20 @@ public class Table extends Relation implements Iterable<Row> {
      * @param sourceTable   A table with the same column structure as this table
      */
     public void addRow(int rowIndex, Table sourceTable) {
+        IntArrayList rows = new IntArrayList();
         for (int i = 0; i < columnCount(); i++) {
             Column column = column(i);
-            final String type = column.type().name();
-            switch (type) {
-                case "NUMBER":
-                    NumberColumn numberColumn = (NumberColumn) column;
-                    numberColumn.append(sourceTable.numberColumn(i).get(rowIndex));
-                    break;
-                case "BOOLEAN":
-                    BooleanColumn booleanColumn = (BooleanColumn) column;
-                    booleanColumn.append(sourceTable.booleanColumn(i).get(rowIndex));
-                    break;
-                case "LOCAL_DATE":
-                    DateColumn localDateColumn = (DateColumn) column;
-                    localDateColumn.appendInternal(sourceTable.dateColumn(i).getIntInternal(rowIndex));
-                    break;
-                case "LOCAL_TIME":
-                    TimeColumn timeColumn = (TimeColumn) column;
-                    timeColumn.appendInternal(sourceTable.timeColumn(i).getIntInternal(rowIndex));
-                    break;
-                case "LOCAL_DATE_TIME":
-                    DateTimeColumn localDateTimeColumn = (DateTimeColumn) column;
-                    localDateTimeColumn.appendInternal(sourceTable.dateTimeColumn(i).getLongInternal(rowIndex));
-                    break;
-                case "STRING":
-                    StringColumn stringColumn = (StringColumn) column;
-                    stringColumn.append(sourceTable.stringColumn(i).get(rowIndex));
-                    break;
-                default:
-                    throw new IllegalStateException("Unhandled column type updating columns");
-            }
+            rows.add(rowIndex);
+            column.type().copy(rows, sourceTable.column(i), column(i));
         }
     }
 
     public void addRow(Row row) {
-        //TODO Implement
         for (Column column : columns()) {
-            final String type = column.type().name();
-            switch (type) {
-                case "NUMBER":
-                    NumberColumn numberColumn = (NumberColumn) column;
-                    numberColumn.append(row.getDouble(column.name()));
-                    break;
-                case "BOOLEAN":
-                    BooleanColumn booleanColumn = (BooleanColumn) column;
-                    booleanColumn.append(row.getBoolean(column.name()));
-                    break;
-                case "LOCAL_DATE":
-                    DateColumn localDateColumn = (DateColumn) column;
-                    localDateColumn.appendInternal(row.getPackedDate(column.name()).getPackedValue());
-                    break;
-                case "LOCAL_TIME":
-                    TimeColumn timeColumn = (TimeColumn) column;
-                    timeColumn.appendInternal(row.getPackedTime(column.name()).getPackedValue());
-                    break;
-                case "LOCAL_DATE_TIME":
-                    DateTimeColumn localDateTimeColumn = (DateTimeColumn) column;
-                    localDateTimeColumn.appendInternal(row.getPackedDateTime(column.name()).getPackedValue());
-                    break;
-                case "STRING":
-                    StringColumn stringColumn = (StringColumn) column;
-                    stringColumn.append(row.getString(column.name()));
-                    break;
-                default:
-                    throw new IllegalStateException("Unhandled column type updating columns");
-            }
+            final ColumnType type = column.type();
+            IntArrayList rows = new IntArrayList();
+            rows.add(row.getRowNumber());
+            type.copyFromRows(rows, column, row);
         }
     }
 

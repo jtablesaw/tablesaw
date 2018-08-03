@@ -240,14 +240,12 @@ public class TableTest {
     @Test
     public void testRowToString() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
-        for (Row row : t) {
-            if (row.getRowNumber() < 1) {
-                assertEquals("             bush.csv              \n" +
-                        "    date     |  approval  |  who  |\n" +
-                        "-----------------------------------\n" +
-                        " 2004-02-04  |      53.0  |  fox  |", row.toString());
-            }
-        }
+        Row row = new Row(t);
+        row.at(0);
+        assertEquals("             bush.csv              \n" +
+                "    date     |  approval  |  who  |\n" +
+                "-----------------------------------\n" +
+                " 2004-02-04  |      53.0  |  fox  |", row.toString());
     }
 
     @Test

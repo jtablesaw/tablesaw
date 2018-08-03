@@ -3,6 +3,7 @@ package tech.tablesaw.columns.datetimes;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
@@ -41,6 +42,16 @@ public class DateTimeColumnType extends AbstractColumnType {
         DateTimeColumn newDateTime = (DateTimeColumn) newColumn;
         for (int index : rows) {
             newDateTime.appendInternal(oldDateTime.getLongInternal(index));
+        }
+    }
+
+    @Override
+    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
+        DateTimeColumn newDateTime = (DateTimeColumn) newColumn;
+        for (int index : rows) {
+            row.at(index);
+            PackedDateTime dateTime = row.getPackedDateTime(newColumn.name());
+            newDateTime.appendInternal(dateTime.getPackedValue());
         }
     }
 

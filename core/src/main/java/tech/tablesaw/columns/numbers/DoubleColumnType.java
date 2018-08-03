@@ -3,6 +3,7 @@ package tech.tablesaw.columns.numbers;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -38,6 +39,16 @@ public class DoubleColumnType extends AbstractColumnType {
         DoubleColumn newDouble = (DoubleColumn) newColumn;
         for (int index : rows) {
             newDouble.append(oldDouble.get(index));
+        }
+    }
+
+    @Override
+    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
+        DoubleColumn newDate = (DoubleColumn) newColumn;
+        for (int index : rows) {
+            row.at(index);
+            double value = row.getDouble(newColumn.name());
+            newDate.append(value);
         }
     }
 

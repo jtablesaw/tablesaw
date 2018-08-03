@@ -64,6 +64,8 @@ public interface ColumnType {
 
     void copy(IntArrayList rows, Column oldColumn, Column newColumn);
 
+    void copyFromRows(IntArrayList rows, Column newColumn, Row row);
+
 
     boolean compare(int rowNumber, Column temp, Column original);
 }
