@@ -8,21 +8,21 @@ import tech.tablesaw.columns.times.PackedTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Row implements Iterator<Row> {
 
     private int rowNumber;
     private final Table table;
-    private final Map<String, PackedDate> dateColumnMap = new HashMap<>();
-    private final Map<String, NumberColumn> numberColumnMap = new HashMap<>();
-    private final Map<String, StringColumn> stringColumnMap = new HashMap<>();
-    private final Map<String, BooleanColumn> booleanColumnMap = new HashMap<>();
-    private final Map<String, PackedDateTime> dateTimeColumnMap = new HashMap<>();
-    private final Map<String, PackedTime> timeColumnMap = new HashMap<>();
+    private final Map<String, PackedDate> dateColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, DoubleColumn> numberColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, StringColumn> stringColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, BooleanColumn> booleanColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, PackedDateTime> dateTimeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, PackedTime> timeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     public Row(Table table) {
         this.table = table;
@@ -32,7 +32,7 @@ public class Row implements Iterator<Row> {
             if (column instanceof DateColumn) {
                 dateColumnMap.put(column.name(), new PackedDate((DateColumn) column));
             } else if (column instanceof DoubleColumn) {
-                numberColumnMap.put(column.name(), (NumberColumn) column);
+                numberColumnMap.put(column.name(), (DoubleColumn) column);
             } else if (column instanceof StringColumn) {
                 stringColumnMap.put(column.name(), (StringColumn) column);
             } else if (column instanceof BooleanColumn) {

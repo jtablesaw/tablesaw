@@ -33,6 +33,17 @@ public class RowTest {
     }
 
     @Test
+    public void testGetDate2() throws IOException {
+        Table table = Table.read().csv("../data/bush.csv");
+        Row row = new Row(table);
+        while (row.hasNext()) {
+            row.next();
+            assertEquals(table.dateColumn("date").get(row.getRowNumber()),
+                    row.getDate("DATE"));
+        }
+    }
+
+    @Test
     public void testGetDouble() throws IOException {
         Table table = Table.read().csv("../data/bush.csv");
         Row row = new Row(table);
