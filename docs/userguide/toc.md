@@ -27,7 +27,7 @@ Tablesaw User Guide
   * [Simple plotting API: Time Series, Line Charts and Area charts](https://jtablesaw.github.io/tablesaw/userguide/TimeSeries)
   * [Writing Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/Visualization_custom)
 
-* Machine Learning
+* Data Science
 
   * [Linear Regression with Smile and Tablesaw: Moneyball Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball Linear regression)
 
