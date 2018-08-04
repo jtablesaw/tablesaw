@@ -62,8 +62,8 @@ public class RollingColumn {
             selection.addRange(origColIndex, origColIndex + window);
             Column windowedColumn = column.subset(selection);
             double calc;
-            if (windowedColumn instanceof DoubleColumn) {
-                calc = function.summarize((NumberColumn) windowedColumn);
+            if (windowedColumn instanceof NumberColumn) {
+                calc = function.summarize(windowedColumn);
             } else {
                 throw new IllegalArgumentException("Cannot calculate " + function.functionName()
                         + " on column of type " + windowedColumn.type());
