@@ -47,16 +47,10 @@
       </plugin>
     </plugins>
   </build>
-
   <dependencies>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.24.5-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>tech.tablesaw</groupId>
-      <artifactId>tablesaw-plot</artifactId>
       <version>0.24.5-SNAPSHOT</version>
     </dependency>
     <dependency>

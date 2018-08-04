@@ -44,7 +44,6 @@
 
     <modules>
         <module>core</module>
-        <module>plot</module>
         <module>beakerx</module>
         <module>aggregate</module>
         <module>jsplot</module>
