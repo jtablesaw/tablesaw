@@ -4,8 +4,6 @@ import com.google.common.base.Preconditions;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.HoverLabel;
 
-import static tech.tablesaw.plotly.traces.ScatterTrace.DEFAULT_FILL;
-
 public abstract class TraceBuilder {
 
     AbstractTrace.Visibility visible = AbstractTrace.DEFAULT_VISIBILITY;
