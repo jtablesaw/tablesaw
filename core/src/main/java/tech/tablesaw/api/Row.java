@@ -17,6 +17,7 @@ public class Row implements Iterator<Row> {
 
     private int rowNumber;
     private final Table table;
+    private final String[] columnNames;
     private final Map<String, PackedDate> dateColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, DoubleColumn> numberColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, StringColumn> stringColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -26,6 +27,7 @@ public class Row implements Iterator<Row> {
 
     public Row(Table table) {
         this.table = table;
+        columnNames = table.columnNames().toArray(new String[0]);
         rowNumber = -1;
         for (Column column : table.columns()) {
 
@@ -74,7 +76,7 @@ public class Row implements Iterator<Row> {
     }
 
     public double getDouble(int columnIndex) {
-        return numberColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+        return numberColumnMap.get(columnNames[columnIndex]).get(rowNumber);
     }
 
     public int getInt(String columnName) {
@@ -82,7 +84,7 @@ public class Row implements Iterator<Row> {
     }
 
     public int getInt(int columnIndex) {
-        return (int) numberColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+        return (int) numberColumnMap.get(columnNames[columnIndex]).get(rowNumber);
     }
 
     public String getString(String columnName) {
@@ -90,7 +92,7 @@ public class Row implements Iterator<Row> {
     }
 
     public String getString(int columnIndex) {
-        return stringColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+        return stringColumnMap.get(columnNames[columnIndex]).get(rowNumber);
     }
 
     public LocalDate getDate(String columnName) {
@@ -98,7 +100,7 @@ public class Row implements Iterator<Row> {
     }
 
     public LocalDate getDate(int columnIndex) {
-        return getPackedDate(columnNames().get(columnIndex)).asLocalDate();
+        return getPackedDate(columnNames[columnIndex]).asLocalDate();
     }
 
     public PackedDate getPackedDate(String columnName) {
@@ -106,7 +108,7 @@ public class Row implements Iterator<Row> {
     }
 
     public PackedDate getPackedDate(int columnIndex) {
-        return dateColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+        return dateColumnMap.get(columnNames[columnIndex]).get(rowNumber);
     }
 
     public LocalTime getTime(String columnName) {
@@ -114,7 +116,7 @@ public class Row implements Iterator<Row> {
     }
 
     public LocalTime getTime(int columnIndex) {
-        return getPackedTime(columnNames().get(columnIndex)).asLocalTime();
+        return getPackedTime(columnNames[columnIndex]).asLocalTime();
     }
 
     public PackedTime getPackedTime(String columnName) {
@@ -122,7 +124,7 @@ public class Row implements Iterator<Row> {
     }
 
     public PackedTime getPackedTime(int columnIndex) {
-        return timeColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+        return timeColumnMap.get(columnNames[columnIndex]).get(rowNumber);
     }
 
     public LocalDateTime getDateTime(String columnName) {
@@ -130,7 +132,7 @@ public class Row implements Iterator<Row> {
     }
 
     public LocalDateTime getDateTime(int columnIndex) {
-        return getPackedDateTime(columnNames().get(columnIndex)).asLocalDateTime();
+        return getPackedDateTime(columnNames[columnIndex]).asLocalDateTime();
     }
 
     public PackedDateTime getPackedDateTime(String columnName) {
@@ -138,7 +140,7 @@ public class Row implements Iterator<Row> {
     }
 
     public PackedDateTime getPackedDateTime(int columnIndex) {
-        return dateTimeColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+        return dateTimeColumnMap.get(columnNames[columnIndex]).get(rowNumber);
     }
 
     public boolean getBoolean(String columnName) {
@@ -146,7 +148,7 @@ public class Row implements Iterator<Row> {
     }
 
     public boolean getBoolean(int columnIndex) {
-        return booleanColumnMap.get(columnNames().get(columnIndex)).get(rowNumber);
+        return booleanColumnMap.get(columnNames[columnIndex]).get(rowNumber);
     }
 
     public void at(int rowNumber) {
