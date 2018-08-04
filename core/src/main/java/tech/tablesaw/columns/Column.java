@@ -280,4 +280,6 @@ public interface Column {
     Column where(Selection selection);
 
     Column removeMissing();
+
+    Object getObject(int index);
 }

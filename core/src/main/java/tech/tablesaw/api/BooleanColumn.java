@@ -724,4 +724,9 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, Ca
         }
         return output;
     }
+
+    @Override
+    public Object getObject(int index) {
+        return get(index);
+    }
 }

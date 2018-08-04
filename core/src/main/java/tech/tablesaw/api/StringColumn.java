@@ -570,6 +570,11 @@ public class StringColumn extends AbstractColumn
         return noMissing;
     }
 
+    @Override
+    public Object getObject(int index) {
+        return get(index);
+    }
+
 
     @Override
     public Iterator<String> iterator() {
@@ -809,5 +814,6 @@ public class StringColumn extends AbstractColumn
         Object2IntMap<String> valueToKeyMap() {
             return valueToKey;
         }
+
     }
 }

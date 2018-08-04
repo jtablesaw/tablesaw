@@ -595,4 +595,9 @@ public class DateTimeColumn extends AbstractColumn
         }
         return output;
     }
+
+    @Override
+    public Object getObject(int index) {
+        return get(index);
+    }
 }

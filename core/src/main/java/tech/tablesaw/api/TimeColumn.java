@@ -593,4 +593,9 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
     public int[] asIntArray() {
         return data.toArray(new int[size()]);
     }
+
+    @Override
+    public Object getObject(int index) {
+        return get(index);
+    }
 }

@@ -677,4 +677,9 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
         }
         return output;
     }
+
+    @Override
+    public Object getObject(int index) {
+        return getDouble(index);
+    }
 }

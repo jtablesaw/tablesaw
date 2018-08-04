@@ -3,6 +3,7 @@ package tech.tablesaw.api;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import static org.junit.Assert.*;
 
@@ -18,17 +19,17 @@ public class RowTest {
         assertEquals(table.columnNames(), row.columnNames());
     }
 
-
     @Test
     public void testGetDate() throws IOException {
         Table table = Table.read().csv("../data/bush.csv");
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();
-            assertEquals(table.dateColumn(0).get(row.getRowNumber()),
-                    row.getDate(0));
-            assertEquals(table.dateColumn("date").get(row.getRowNumber()),
-                    row.getDate("date"));
+            LocalDate date = table.dateColumn("date").get(row.getRowNumber());
+            assertEquals(date, row.getDate(0));
+            assertEquals(date, row.getDate("date"));
+            assertEquals(date, row.getObject("date"));
+            assertEquals(date, row.getObject(0));
         }
     }
 
