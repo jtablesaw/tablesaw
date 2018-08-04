@@ -526,7 +526,6 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
         return data().contains(date);
     }
 
-
     @Override
     public double[] asDoubleArray() {
         double[] doubles = new double[size()];

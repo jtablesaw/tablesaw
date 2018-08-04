@@ -49,6 +49,17 @@ import static tech.tablesaw.api.ColumnType.*;
 public class CsvReader {
 
     /**
+     * Types to choose from. When more than one would work, we pick the first of the options. The order these appear in
+     * is critical. The broadest must go last, which is why String is at the end of the list. Any String read from
+     * a CSV will match string. If it were first on the list, you would get nothing but strings in your table.
+     *
+     * As another example, an integer type, should go before double. Otherwise double would match integers so
+     * the integer test would never be evaluated and all the ints would be read as doubles.
+     */
+    private static List<ColumnType> typeArray =
+            Lists.newArrayList(LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, DOUBLE, STRING);
+
+    /**
      * Private constructor to prevent instantiation
      */
     private CsvReader() {}
@@ -114,41 +125,45 @@ public class CsvReader {
                 columnIndexes[i] = headerRow.indexOf(columnNames[i]);
             }
 
-            long rowNumber = options.header() ? 1L : 0L;
-            String[] nextLine;
-
-            // Add the rows
-            while ((nextLine = reader.readNext()) != null) {
-
-                if (nextLine.length < types.length) {
-                    if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
-                        System.err.println("Warning: Invalid CSV file. Row "
-                                + rowNumber
-                                + " is empty. Continuing.");
-                    } else {
-                        Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " is too short.");
-                        throw new AddCellToColumnException(e, 0, rowNumber, columnNames, nextLine);
-                    }
-                } else if (nextLine.length > types.length) {
-                    throw new RuntimeException("Row number " + rowNumber + " is too long.");
-                } else {
-                    // for each column that we're including (not skipping)
-                    int cellIndex = 0;
-                    for (int columnIndex : columnIndexes) {
-                        Column column = table.column(cellIndex);
-                        StringParser parser = column.type().customParser(options);
-                        try {
-                            String value = nextLine[columnIndex];
-                            column.appendCell(value, parser);
-                        } catch (Exception e) {
-                            throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
-                        }
-                        cellIndex++;
-                    }
-                }
-                rowNumber++;
-            }
+            addRows(options, types, reader, table, columnNames, columnIndexes);
             return table;
+        }
+    }
+
+    private static void addRows(CsvReadOptions options, ColumnType[] types, CSVReader reader, Table table, String[] columnNames, int[] columnIndexes) throws IOException {
+        long rowNumber = options.header() ? 1L : 0L;
+        String[] nextLine;
+
+        // Add the rows
+        while ((nextLine = reader.readNext()) != null) {
+
+            if (nextLine.length < types.length) {
+                if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
+                    System.err.println("Warning: Invalid CSV file. Row "
+                            + rowNumber
+                            + " is empty. Continuing.");
+                } else {
+                    Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " is too short.");
+                    throw new AddCellToColumnException(e, 0, rowNumber, columnNames, nextLine);
+                }
+            } else if (nextLine.length > types.length) {
+                throw new RuntimeException("Row number " + rowNumber + " is too long.");
+            } else {
+                // for each column that we're including (not skipping)
+                int cellIndex = 0;
+                for (int columnIndex : columnIndexes) {
+                    Column column = table.column(cellIndex);
+                    StringParser parser = column.type().customParser(options);
+                    try {
+                        String value = nextLine[columnIndex];
+                        column.appendCell(value, parser);
+                    } catch (Exception e) {
+                        throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
+                    }
+                    cellIndex++;
+                }
+            }
+            rowNumber++;
         }
     }
 
@@ -431,11 +446,6 @@ public class CsvReader {
      */
     private static ColumnType detectType(List<String> valuesList, CsvReadOptions options) {
 
-        // Types to choose from. When more than one would work, we pick the first of the options
-        ColumnType[] typeArray
-                = // we leave out string, as that is the default type
-                {LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, DOUBLE};
-
         List<StringParser> parsers = getParserList(typeArray, options);
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
@@ -456,11 +466,7 @@ public class CsvReader {
      * @param typeCandidates a possibly empty list of candidates. This list should be sorted in order of preference
      */
     private static ColumnType selectType(List<ColumnType> typeCandidates) {
-        if (typeCandidates.isEmpty()) {
-            return STRING;
-        } else {
-            return typeCandidates.get(0);
-        }
+        return typeCandidates.get(0);
     }
 
     /**
@@ -470,7 +476,7 @@ public class CsvReader {
      * @param options CsvReadOptions to use to modify the default parsers for each type
      * @return  A list of parsers in the order they should be used for type detection
      */
-    private static List<StringParser> getParserList(ColumnType[] typeArray, CsvReadOptions options) {
+    private static List<StringParser> getParserList(List<ColumnType> typeArray, CsvReadOptions options) {
         // Types to choose from. When more than one would work, we pick the first of the options
 
         List<StringParser> parsers = new ArrayList<>();
