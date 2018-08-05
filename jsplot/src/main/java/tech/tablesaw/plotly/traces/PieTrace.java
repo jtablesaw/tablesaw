@@ -59,12 +59,11 @@ public class PieTrace extends AbstractTrace {
     public static class PieBuilder extends TraceBuilder {
 
         private String type = "pie";
-        Object[] x;
         double[] y;
         Object[] labels;
 
         private PieBuilder(Object[] x, double[] y) {
-            this.x = x;
+            this.labels = x;
             this.y = y;
         }
 
