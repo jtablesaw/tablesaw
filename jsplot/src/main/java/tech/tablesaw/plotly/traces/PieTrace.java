@@ -14,12 +14,12 @@ import java.util.Map;
 
 public class PieTrace extends AbstractTrace {
 
-    private double[] y;
+    private double[] values;
     private Object[] labels;
 
     private PieTrace(PieBuilder builder) {
         super(builder);
-        this.y = builder.y;
+        this.values = builder.values;
         this.labels = builder.labels;
     }
 
@@ -41,30 +41,30 @@ public class PieTrace extends AbstractTrace {
 
         Map<String, Object> context = super.getContext();
         context.put("variableName", "trace" + i);
-        context.put("values", Utils.dataAsString(y));
+        context.put("values", Utils.dataAsString(values));
         if (labels != null) {
             context.put("labels", Utils.dataAsString(labels));
         }
         return context;
     }
 
-    public static PieBuilder builder(Object[] x, double[] y) {
-        return new PieBuilder(x, y);
+    public static PieBuilder builder(Object[] labels, double[] values) {
+        return new PieBuilder(labels, values);
     }
 
-    public static PieBuilder builder(CategoricalColumn x, NumberColumn y) {
-        return new PieBuilder(TraceBuilder.columnToStringArray(x), y.asDoubleArray());
+    public static PieBuilder builder(CategoricalColumn labels, NumberColumn values) {
+        return new PieBuilder(TraceBuilder.columnToStringArray(labels), values.asDoubleArray());
     }
 
     public static class PieBuilder extends TraceBuilder {
 
         private String type = "pie";
-        double[] y;
+        double[] values;
         Object[] labels;
 
-        private PieBuilder(Object[] x, double[] y) {
-            this.labels = x;
-            this.y = y;
+        private PieBuilder(Object[] labels, double[] values) {
+            this.labels = labels;
+            this.values = values;
         }
 
         public PieTrace build() {
@@ -80,14 +80,5 @@ public class PieTrace extends AbstractTrace {
             super.showLegend(b);
             return this;
         }
-
-        /**
-         * Sets the sector labels. If `labels` entries are duplicated, we sum associated `values` or simply count occurrences if `values` is not provided. For other array attributes (including color) we use the first non-empty entry among all occurrences of the label.
-         */
-        public PieTrace.PieBuilder labels(Column labels) {
-            this.labels = labels.asObjectArray();
-            return this;
-        }
-
     }
 }

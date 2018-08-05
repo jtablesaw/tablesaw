@@ -22,7 +22,6 @@ public class PiePlot {
                 table.categoricalColumn(groupColName),
                 table.numberColumn(numberColName))
                 .showLegend(true)
-                .labels(table.column(groupColName))
                 .build();
         return new Figure(layout, trace);
     }
