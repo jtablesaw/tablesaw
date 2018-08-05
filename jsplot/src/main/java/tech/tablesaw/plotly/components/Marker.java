@@ -12,6 +12,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static tech.tablesaw.plotly.components.Marker.SizeMode.DIAMETER;
+
 public class Marker extends Component {
 
     public enum SizeMode {
@@ -70,6 +72,7 @@ public class Marker extends Component {
     private static final boolean DEFAULT_SHOW_SCALE = false;
     private static final boolean DEFAULT_REVERSE_SCALE = false;
     private static final double DEFAULT_OPACITY = 1.0;
+    private static final SizeMode DEFAULT_SIZE_MODE = DIAMETER;
 
     private final double[] size;
     private final String[] color;
@@ -82,6 +85,7 @@ public class Marker extends Component {
     private final boolean reverseScale;
     private final double opacity;
     private final Symbol symbol;
+    private final SizeMode sizeMode;
 
     public static MarkerBuilder builder() {
         return new MarkerBuilder();
@@ -99,6 +103,7 @@ public class Marker extends Component {
         showScale = builder.showScale;
         reverseScale = builder.reverseScale;
         opacity = builder.opacity;
+        sizeMode = builder.sizeMode;
     }
 
     @Override
@@ -118,7 +123,7 @@ public class Marker extends Component {
     private Map<String, Object> getContext() {
         Map<String, Object> context = new HashMap<>();
         context.put("size", size.length == 1? size[0]: Utils.dataAsString(size));
-        //context.put("size", Utils.dataAsString(size));
+
         context.put("color", color);
         context.put("colorScale", colorScalePalette);
         if(cAuto != DEFAULT_C_AUTO) context.put("cAuto", cAuto);
@@ -130,6 +135,7 @@ public class Marker extends Component {
         if (showScale != DEFAULT_SHOW_SCALE) context.put("showScale",showScale);
         if (reverseScale != DEFAULT_REVERSE_SCALE) context.put("reverseScale", reverseScale);
         if (opacity != DEFAULT_OPACITY) context.put("opacity", opacity);
+        if (sizeMode != DEFAULT_SIZE_MODE) context.put("sizeMode", sizeMode);
         context.put("symbol", symbol);
         return context;
     }
@@ -147,6 +153,7 @@ public class Marker extends Component {
         boolean reverseScale = DEFAULT_REVERSE_SCALE;
         double opacity = DEFAULT_OPACITY;
         Symbol symbol;
+        SizeMode sizeMode = DEFAULT_SIZE_MODE;
 
         public MarkerBuilder size(double ... size) {
             String errorMessage = "All sizes in size array must be greater than 0.";
@@ -262,6 +269,17 @@ public class Marker extends Component {
          */
         public MarkerBuilder symbol(Symbol symbol) {
             this.symbol = symbol;
+            return this;
+        }
+
+        /**
+         * Sets the size mode for the marker
+         *
+         * Has an effect only if `marker.size` is set to a numerical array.
+         * Sets the rule for which the data in `size` is converted to pixels, either as area or the diameter
+         */
+        public MarkerBuilder sizeMode(SizeMode sizeMode) {
+            this.sizeMode = sizeMode;
             return this;
         }
 

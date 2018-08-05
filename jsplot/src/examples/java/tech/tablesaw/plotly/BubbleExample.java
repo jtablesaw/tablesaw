@@ -36,7 +36,10 @@ public class BubbleExample {
         NumberColumn data = sub.nCol("Market_Share");
 
         Layout layout = Layout.builder().title("Market Share").build();
-        Marker marker = Marker.builder().size(data).build();
+        Marker marker = Marker.builder()
+                .size(data)
+                .sizeMode(Marker.SizeMode.AREA)
+                .build();
         ScatterTrace trace = ScatterTrace
                 .builder(x, y)
                 .marker(marker)
