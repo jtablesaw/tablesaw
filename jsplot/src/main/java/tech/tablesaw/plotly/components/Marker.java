@@ -12,8 +12,6 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static tech.tablesaw.plotly.components.Marker.SizeMode.DIAMETER;
-
 public class Marker extends Component {
 
     public enum SizeMode {
@@ -72,7 +70,6 @@ public class Marker extends Component {
     private static final boolean DEFAULT_SHOW_SCALE = false;
     private static final boolean DEFAULT_REVERSE_SCALE = false;
     private static final double DEFAULT_OPACITY = 1.0;
-    private static final SizeMode DEFAULT_SIZE_MODE = DIAMETER;
 
     private final double[] size;
     private final String[] color;

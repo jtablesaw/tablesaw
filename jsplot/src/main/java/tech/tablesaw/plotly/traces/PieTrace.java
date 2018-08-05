@@ -14,13 +14,11 @@ import java.util.Map;
 
 public class PieTrace extends AbstractTrace {
 
-    private Object[] x;
     private double[] y;
     private Object[] labels;
 
     private PieTrace(PieBuilder builder) {
         super(builder);
-        this.x = builder.x;
         this.y = builder.y;
         this.labels = builder.labels;
     }
