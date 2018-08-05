@@ -14,6 +14,7 @@
 
 package tech.tablesaw.aggregate;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
@@ -26,6 +27,7 @@ import tech.tablesaw.table.TableSliceGroup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Summarizes the data in a table, by applying functions to a subset of its columns.
@@ -95,6 +97,7 @@ public class Summarizer {
                       Column column3,
                       Column column4,
                       AggregateFunction... functions) {
+        Preconditions.checkArgument(!sourceTable.isEmpty(), "The table to summarize is empty.");
         Table tempTable = Table.create(sourceTable.name());
         tempTable.addColumns(column1);
         tempTable.addColumns(column2);
@@ -128,12 +131,17 @@ public class Summarizer {
 
     public Table by(String... columnNames) {
         for (String columnName : columnNames) {
-            if (!temp.columnNames().contains(columnName)) {
+            if (tableDoesNotContain(columnName, temp)) {
                 temp.addColumns(original.column(columnName));
             }
         }
         TableSliceGroup group = StandardTableSliceGroup.create(temp, columnNames);
         return summarize(group);
+    }
+
+    private boolean tableDoesNotContain(String columnName, Table table) {
+        List<String> upperCase = table.columnNames().stream().map(String::toUpperCase).collect(Collectors.toList());
+        return !upperCase.contains(columnName.toUpperCase());
     }
 
     public Table by(CategoricalColumn... columns) {
@@ -215,7 +223,7 @@ public class Summarizer {
                 result = table;
             } else {
                 for (Column column : table.columns()) {
-                    if (!result.columnNames().contains(column.name())) {
+                    if (tableDoesNotContain(column.name(), result)) {
                         result.addColumns(column);
                     }
                 }
