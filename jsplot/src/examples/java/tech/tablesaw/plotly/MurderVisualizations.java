@@ -1,0 +1,77 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package tech.tablesaw.plotly;
+
+import tech.tablesaw.AbstractExample;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.api.AreaPlot;
+import tech.tablesaw.plotly.api.HorizontalBarPlot;
+import tech.tablesaw.plotly.api.LinePlot;
+import tech.tablesaw.plotly.api.ParetoPlot;
+import tech.tablesaw.plotly.api.PiePlot;
+import tech.tablesaw.plotly.api.ScatterPlot;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+
+/**
+ * Usage example using a Tornado data set
+ */
+public class MurderVisualizations extends AbstractExample {
+
+    public static void main(String[] args) throws Exception {
+
+        Table murders = Table.read().csv("../data/UCR1965_2015.csv");
+        out(murders.structure());
+        murders.setName("murders");
+
+        StringColumn state = murders.stringColumn("state");
+        state.set(state.isEqualTo("Rhodes Island"), "Rhode Island");
+
+        Table annualMurders = murders.summarize("mrd", sum).by("year");
+
+        Plot.show(HorizontalBarPlot.create(
+                "Total murders by year",
+                annualMurders,
+                "year",
+                "sum [mrd]"));
+
+        Plot.show(LinePlot.create(
+                "Total murders by year",
+                annualMurders,
+                "year",
+                "sum [mrd]"));
+
+        Table RI = murders.where(murders.stringColumn("State").isEqualTo("Rhode Island"));
+        Table RI_total = RI.summarize("mrd", sum).by("county");
+        Plot.show(PiePlot.create("RI murders by county", RI_total, "County", "sum [mrd]"));
+
+        Table murders2 = murders.summarize("mrd", sum).by("state");
+
+        Plot.show(
+                ParetoPlot.createVertical(
+                        "Total Murders by State",
+                        murders2,
+                        "state",
+                        "sum [mrd]"));
+
+        Table injuries1 = murders.summarize("injuries", mean).by("year");
+        Plot.show(HorizontalBarPlot.create("Tornado Injuries by Scale", injuries1, "year", "mean [injuries]"));
+        out(injuries1);
+    }
+}
