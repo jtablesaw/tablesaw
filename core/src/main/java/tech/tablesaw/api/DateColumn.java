@@ -53,7 +53,7 @@ import java.util.function.Supplier;
 /**
  * A column in a base table that contains float values
  */
-public class DateColumn extends AbstractColumn implements DateFilters, DateFillers<DateColumn>,
+public class DateColumn extends AbstractColumn<LocalDate, DateColumn> implements DateFilters, DateFillers<DateColumn>,
 DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
 
     public static final int MISSING_VALUE = (Integer) ColumnType.LOCAL_DATE.getMissingValue();
@@ -657,7 +657,7 @@ DateMapFunctions, CategoricalColumn, Iterable<LocalDate> {
     }
 
     @Override
-    public Object getObject(int index) {
+    public LocalDate getObject(int index) {
         return get(index);
     }
 }

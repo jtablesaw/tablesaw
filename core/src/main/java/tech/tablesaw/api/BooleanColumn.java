@@ -54,7 +54,7 @@ import static tech.tablesaw.api.ColumnType.BOOLEAN;
 /**
  * A column in a base table that contains float values
  */
-public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, CategoricalColumn,
+public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implements BooleanMapUtils, CategoricalColumn,
         BooleanFillers<BooleanColumn>, Iterable<Boolean> {
 
     public static final byte MISSING_VALUE = (Byte) BOOLEAN.getMissingValue();
@@ -431,6 +431,11 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, Ca
         return this;
     }
 
+    @Override
+    public BooleanColumn set(int i, Boolean val) {
+      return set(i, val.booleanValue());
+    }
+
     public BooleanColumn lead(int n) {
         BooleanColumn column = lag(-n);
         column.setName(name() + " lead(" + n + ")");
@@ -726,7 +731,8 @@ public class BooleanColumn extends AbstractColumn implements BooleanMapUtils, Ca
     }
 
     @Override
-    public Object getObject(int index) {
+    public Boolean getObject(int index) {
         return get(index);
     }
+
 }

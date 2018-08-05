@@ -56,7 +56,7 @@ import static tech.tablesaw.api.ColumnType.DOUBLE;
 /**
  * A column in a base table that contains double precision floating point values
  */
-public class DoubleColumn extends AbstractColumn implements NumberColumn {
+public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implements NumberColumn {
 
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
@@ -300,7 +300,7 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public NumberColumn emptyCopy() {
+    public DoubleColumn emptyCopy() {
         return emptyCopy(DEFAULT_ARRAY_SIZE);
     }
 
@@ -429,6 +429,11 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     public DoubleColumn set(final int r, final double value) {
         data.set(r, value);
         return this;
+    }
+
+    @Override
+    public DoubleColumn set(int i, Double val) {
+        return set(i, val.doubleValue());
     }
 
     /**
@@ -679,7 +684,8 @@ public class DoubleColumn extends AbstractColumn implements NumberColumn {
     }
 
     @Override
-    public Object getObject(int index) {
+    public Double getObject(int index) {
         return getDouble(index);
     }
+
 }
