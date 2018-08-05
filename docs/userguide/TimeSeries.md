@@ -2,8 +2,13 @@
 
 ## Introduction
 
+Time series data is essential in finance, healthcare, business operations, server log analysis, and many other areas. Here we take a broad look at crunching temporal data in Java using the Tablesaw data science library. 
 
-[Tablesaw](https://github.com/jtablesaw/tablesaw) is an open-source data science library for Java that combines tools for loading and transforming data with the ability to create statistical models and visualizations. You can think of it as a data frame, combined with visualization library. You can find more resources at the bottom of this article. In this article, we show how to use Tablesaw to easily create a variety of plots for representing the change in variables over time. !!
+About Tablesaw
+
+[Tablesaw](https://github.com/jtablesaw/tablesaw) is an open-source data science library for Java that combines tools for loading and transforming data with the ability to create statistical models and visualizations. You can think of it as a data frame, combined with visualization library. You can find more resources at the bottom of this article. In this article, we show how to use Tablesaw to easily create a variety of plots for representing the change in variables over time. 
+
+ is Java for data science. It includes a dataframe and a visualization library, as well as utilities for loading, transforming, filtering, and summarizing data. It's fast and careful with memory. If you work with data in Java, it may save you time and effort. Tablesaw also supports descriptive statistics and integrates well with the Smile machine learning library. 
 
 ## Time Series
 

@@ -7,7 +7,7 @@ Tablesaw
 
 ### Overview
 
-__Tablesaw__ is a Java dataframe and visualization library. As a dataframe, it's similar to Pandas in Python, and the R data frame. If you work with data in Java, it may save you time and effort. Tablesaw also supports descriptive statistics and integrates well with the Java machine learning library, Smile. 
+__Tablesaw__ is Java for data science. It includes a dataframe and a visualization library, as well as utilities for loading, transforming, filtering, and summarizing data. It's fast and careful with memory. If you work with data in Java, it may save you time and effort. Tablesaw also supports descriptive statistics and integrates well with the Smile machine learning library. 
 
 ### Tablesaw features: 
 

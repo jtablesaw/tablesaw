@@ -32,9 +32,10 @@ public class TornadoExample extends AbstractExample {
         Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
         assert (tornadoes != null);
 
-        out(tornadoes.structure());
-        out(tornadoes.structure().where(
-                tornadoes.stringColumn("Column Type").isEqualTo("DOUBLE")));
+        Table structure = tornadoes.structure();
+        out(structure);
+        out(structure.where(
+                structure.stringColumn("Column Type").isEqualTo("DOUBLE")));
 
         tornadoes.setName("tornadoes");
 
