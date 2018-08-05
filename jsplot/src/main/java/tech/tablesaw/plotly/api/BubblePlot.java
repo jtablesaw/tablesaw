@@ -1,7 +1,6 @@
 package tech.tablesaw.plotly.api;
 
 import tech.tablesaw.api.Table;
-import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;

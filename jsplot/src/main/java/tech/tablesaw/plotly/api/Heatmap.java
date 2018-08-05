@@ -4,9 +4,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.AbstractTrace;
 import tech.tablesaw.plotly.traces.HeatmapTrace;
-import tech.tablesaw.plotly.traces.PieTrace;
 import tech.tablesaw.util.DoubleArrays;
 
 import java.util.List;
