@@ -55,7 +55,7 @@ import static tech.tablesaw.api.ColumnType.STRING;
  * Because the MISSING_VALUE for this column type is an empty string, there is little or no need for special handling
  * of missing values in this class's methods.
  */
-public class StringColumn extends AbstractColumn
+public class StringColumn extends AbstractColumn<String, StringColumn>
         implements CategoricalColumn, StringFilters, StringMapFunctions, StringReduceUtils {
 
     public static final String MISSING_VALUE = (String) STRING.getMissingValue();
@@ -571,10 +571,9 @@ public class StringColumn extends AbstractColumn
     }
 
     @Override
-    public Object getObject(int index) {
+    public String getObject(int index) {
         return get(index);
     }
-
 
     @Override
     public Iterator<String> iterator() {

@@ -20,7 +20,7 @@ import tech.tablesaw.api.ColumnType;
 /**
  * Partial implementation of the {@link Column} interface
  */
-public abstract class AbstractColumn implements Column {
+public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implements Column {
 
     public static final int DEFAULT_ARRAY_SIZE = 128;
 
@@ -61,6 +61,10 @@ public abstract class AbstractColumn implements Column {
     public ColumnType type() {
         return type;
     }
+
+    public abstract C set(int i, T val);
+
+    public abstract T getObject(int i);
 
     @Override
     public String toString() {

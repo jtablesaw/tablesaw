@@ -52,7 +52,7 @@ import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
-public class DateTimeColumn extends AbstractColumn
+public class DateTimeColumn extends AbstractColumn<LocalDateTime, DateTimeColumn>
     implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn>, Iterable<LocalDateTime> {
 
     public static final long MISSING_VALUE = (Long) ColumnType.LOCAL_DATE_TIME.getMissingValue();
@@ -597,7 +597,7 @@ public class DateTimeColumn extends AbstractColumn
     }
 
     @Override
-    public Object getObject(int index) {
+    public LocalDateTime getObject(int index) {
         return get(index);
     }
 }

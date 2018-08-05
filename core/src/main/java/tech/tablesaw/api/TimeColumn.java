@@ -51,7 +51,7 @@ import static tech.tablesaw.columns.DateAndTimePredicates.*;
 /**
  * A column in a base table that contains float values
  */
-public class TimeColumn extends AbstractColumn implements CategoricalColumn, Iterable<LocalTime>, TimeFilters, TimeFillers<TimeColumn>, TimeMapFunctions {
+public class TimeColumn extends AbstractColumn<LocalTime, TimeColumn> implements CategoricalColumn, Iterable<LocalTime>, TimeFilters, TimeFillers<TimeColumn>, TimeMapFunctions {
 
     public static final int MISSING_VALUE = (Integer) LOCAL_TIME.getMissingValue();
 
@@ -595,7 +595,7 @@ public class TimeColumn extends AbstractColumn implements CategoricalColumn, Ite
     }
 
     @Override
-    public Object getObject(int index) {
+    public LocalTime getObject(int index) {
         return get(index);
     }
 }
