@@ -169,7 +169,7 @@ public class DataFrameJoiner {
         for (Column table2Column : table2.columns()) {
             String columnName = table2Column.name();
             if (table.columnNames().contains(columnName)
-                    && !columnName.equals(col2Name)) {
+                    && !columnName.equalsIgnoreCase(col2Name)) {
                 table2Column.setName(newName(table2Alias, columnName));
             }
         }
@@ -291,7 +291,7 @@ public class DataFrameJoiner {
     private Table emptyTableFromColumns(Table table1, Table table2, String col2Name) {
         Column[] cols = Streams.concat(
                 table1.columns().stream(),
-                table2.columns().stream().filter(c -> !c.name().equals(col2Name))
+                table2.columns().stream().filter(c -> !c.name().equalsIgnoreCase(col2Name))
         ).map(col -> col.emptyCopy(col.size())).toArray(Column[]::new);
         return Table.create(table1.name(), cols);
     }
