@@ -62,6 +62,39 @@ public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implemen
         return type;
     }
 
+    @Override
+    public abstract C emptyCopy();
+
+    /**
+     * Create a copy of this column where missing values are replaced with the given default value
+     */
+    public C fillMissing(T defaultVal) {
+        C newCol = emptyCopy();
+        for (int i = 0; i < this.size(); i++) {
+            if (isMissing(i)) {
+                newCol.set(i, defaultVal);
+            } else {
+                newCol.set(1, getObject(i));
+            }
+        }
+        return newCol;
+    }
+
+    /**
+     * Create a copy of this column where missing values are replaced with the corresponding value in the given column
+     */
+    public C fillMissing(C other) {
+        C newCol = emptyCopy();
+        for (int i = 0; i < this.size(); i++) {
+            if (isMissing(i)) {
+                newCol.set(i, other.getObject(i));
+            } else {
+                newCol.set(1, getObject(i));
+            }
+        }
+        return newCol;
+    }
+
     public abstract C set(int i, T val);
 
     public abstract T getObject(int i);

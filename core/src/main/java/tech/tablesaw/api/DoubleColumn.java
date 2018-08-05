@@ -300,7 +300,7 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
     }
 
     @Override
-    public NumberColumn emptyCopy() {
+    public DoubleColumn emptyCopy() {
         return emptyCopy(DEFAULT_ARRAY_SIZE);
     }
 
