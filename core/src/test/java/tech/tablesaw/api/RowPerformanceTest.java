@@ -6,7 +6,6 @@ import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.index.LongIndex;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,9 +23,8 @@ public class RowPerformanceTest {
     private static LongArrayList dates = new LongArrayList(5_000_000);
 
     private static int numberOfRecordsInTable = 5_000_000;
-    private static LongIndex dateIndex;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
 
         Table t = defineSchema();
@@ -58,7 +56,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            double d = row.getDouble("lowValue");
+            row.getDouble("lowValue");
         }
         stopwatch.stop();
         System.out.println("one getDouble(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -69,7 +67,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            int d = row.getInt("lowValue");
+            row.getInt("lowValue");
         }
         stopwatch.stop();
         System.out.println("one getInt(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -80,7 +78,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            long value = row.getPackedDateTime("date").getPackedValue();
+            row.getPackedDateTime("date").getPackedValue();
         }
         stopwatch.stop();
         System.out.println("one getPackedDateTime(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -91,7 +89,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            LocalDateTime value = row.getDateTime("date");
+            row.getDateTime("date");
         }
         stopwatch.stop();
         System.out.println("one getDateTime(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -102,7 +100,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            String value = row.getString("concept");
+            row.getString("concept");
         }
         stopwatch.stop();
         System.out.println("one getString(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -113,10 +111,10 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            String value = row.getString("concept");
-            long date = row.getPackedDateTime("date").getPackedValue();
-            double low = row.getDouble("lowValue");
-            double high = row.getDouble("highValue");
+            row.getString("concept");
+            row.getPackedDateTime("date").getPackedValue();
+            row.getDouble("lowValue");
+            row.getDouble("highValue");
         }
         stopwatch.stop();
         System.out.println("Getting four values: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -131,7 +129,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            double d = row.getDouble(2);
+            row.getDouble(2);
         }
         stopwatch.stop();
         System.out.println("one getDouble(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -142,7 +140,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            int d = row.getInt(2);
+            row.getInt(2);
         }
         stopwatch.stop();
         System.out.println("one getInt(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -153,7 +151,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            long value = row.getPackedDateTime(1).getPackedValue();
+            row.getPackedDateTime(1).getPackedValue();
         }
         stopwatch.stop();
         System.out.println("one getPackedDateTime(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -164,7 +162,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            LocalDateTime value = row.getDateTime(1);
+            row.getDateTime(1);
         }
         stopwatch.stop();
         System.out.println("one getDateTime(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -175,7 +173,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            String value = row.getString(0);
+            row.getString(0);
         }
         stopwatch.stop();
         System.out.println("one getString(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -186,10 +184,10 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            String value = row.getString(0);
-            long date = row.getPackedDateTime(1).getPackedValue();
-            double low = row.getDouble(2);
-            double high = row.getDouble(3);
+            row.getString(0);
+            row.getPackedDateTime(1).getPackedValue();
+            row.getDouble(2);
+            row.getDouble(3);
         }
         stopwatch.stop();
         System.out.println("Getting four values: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
