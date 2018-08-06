@@ -32,14 +32,18 @@ public class DataFrameJoinerTest {
                     + "Pig,Bob\n"
                     + "Pig,James\n"
                     + "Horse,David\n"
-                    + "Goat,Samantha\n",
+                    + "Goat,Samantha\n"
+                    + "Tigon,Rudhrani\n"
+                    + "Rabbit,Taylor\n",
             "Animal Names");
 
     private static final Table ANIMAL_FEED = Table.read().csv(
             "Animal,Feed\n"
                     + "Pig,Mush\n"
                     + "Horse,Hay\n"
-                    + "Goat,Anything\n",
+                    + "Goat,Anything\n"
+                    + "Guanaco,Grass\n"
+                    + "Monkey,Banana\n",
             "Animal Feed");
 
     private static final Table DOUBLE_INDEXED_PEOPLE = Table.read().csv(
@@ -153,7 +157,7 @@ public class DataFrameJoinerTest {
     public void leftOuterJoinDuplicateKeysFirstTable() {
         Table joined = ANIMAL_NAMES.join("Animal").leftOuter(ANIMAL_FEED, "Animal");
         assertEquals(3, joined.columnCount());
-        assertEquals(4, joined.rowCount());
+        assertEquals(6, joined.rowCount());
     }
 
     @Test
@@ -167,6 +171,20 @@ public class DataFrameJoinerTest {
     public void leftOuterJoinDuplicateKeysSecondTable() {
         Table joined = ANIMAL_FEED.join("Animal").leftOuter(ANIMAL_NAMES, "Animal");
         assertEquals(3, joined.columnCount());
-        assertEquals(4, joined.rowCount());
+        assertEquals(6, joined.rowCount());
     }
+
+    @Test
+    public void fullOuterJoin() {
+        Table joined = ANIMAL_FEED.join("Animal").fullOuter(ANIMAL_NAMES, "Animal");
+        assertEquals(3, joined.columnCount());
+        assertEquals(8, joined.rowCount());
+        assertEquals(8, joined.column("Animal").size());
+        assertEquals(0, joined.column("Animal").countMissing());
+        assertEquals(8, joined.column("Name").size());
+        assertEquals(2, joined.column("Name").countMissing());
+        assertEquals(8, joined.column("Feed").size());
+        assertEquals(2, joined.column("Feed").countMissing());
+    }
+
 }

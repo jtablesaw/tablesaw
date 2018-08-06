@@ -25,11 +25,11 @@ import java.util.Map;
 /**
  * An index for four-byte integer and Date columns
  */
-public class CategoryIndex {
+public class StringIndex {
 
     private final Map<String, IntArrayList> index;
 
-    public CategoryIndex(StringColumn column) {
+    public StringIndex(StringColumn column) {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Map<String, IntArrayList> tempMap = new HashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
