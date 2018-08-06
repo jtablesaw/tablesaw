@@ -15,18 +15,15 @@
 package tech.tablesaw.plotly;
 
 import tech.tablesaw.AbstractExample;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.api.AreaPlot;
-import tech.tablesaw.plotly.api.HorizontalBarPlot;
 import tech.tablesaw.plotly.api.LinePlot;
 import tech.tablesaw.plotly.api.ParetoPlot;
 import tech.tablesaw.plotly.api.PiePlot;
-import tech.tablesaw.plotly.api.ScatterPlot;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
 /**
@@ -50,8 +47,13 @@ public class MurderVisualizations extends AbstractExample {
         murders.addColumns(clearanceRate, unsolved);
 
         Table totals = murders
-                .summarize("murdered", "cleared", sum)
+                .summarize("murdered", "cleared", "unsolved", sum)
                 .by("year");
+
+        Column cum_unsolved = totals.numberColumn("sum [unsolved]").cumSum();
+        cum_unsolved.setName("cumulative unsolved");
+        totals.addColumns(cum_unsolved);
+        Plot.show(AreaPlot.create("Cumulative unsolved homicides", totals, "year", "cumulative unsolved"));
 
         NumberColumn rate = totals.numberColumn("sum [cleared]").divide(totals.numberColumn("sum [murdered]"));
         rate.setName("clearance rate");
