@@ -271,6 +271,14 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
     }
 
     /**
+     * Adds the given Double to this column
+     */
+    @Override
+    public DoubleColumn append(Double d) {
+        return append(d.doubleValue());
+    }
+
+    /**
      * Adds the given double to this column
      */
     @Override
@@ -278,7 +286,6 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
         data.add(d);
         return this;
     }
-
 
     @Override
     public String getString(final int row) {

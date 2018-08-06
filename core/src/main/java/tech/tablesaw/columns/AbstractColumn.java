@@ -72,9 +72,9 @@ public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implemen
         C newCol = emptyCopy();
         for (int i = 0; i < this.size(); i++) {
             if (isMissing(i)) {
-                newCol.set(i, defaultVal);
+                newCol.append(defaultVal);
             } else {
-                newCol.set(1, getObject(i));
+                newCol.appendCell(getUnformattedString(i));
             }
         }
         return newCol;
@@ -87,13 +87,15 @@ public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implemen
         C newCol = emptyCopy();
         for (int i = 0; i < this.size(); i++) {
             if (isMissing(i)) {
-                newCol.set(i, other.getObject(i));
+                newCol.appendCell(other.getUnformattedString(i));
             } else {
-                newCol.set(1, getObject(i));
+                newCol.appendCell(getUnformattedString(i));
             }
         }
         return newCol;
     }
+
+    public abstract C append(T val);
 
     public abstract C set(int i, T val);
 
