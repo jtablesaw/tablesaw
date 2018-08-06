@@ -1,20 +1,21 @@
 package tech.tablesaw.joining;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.google.common.collect.Streams;
+
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.index.CategoryIndex;
+import tech.tablesaw.index.StringIndex;
 import tech.tablesaw.index.IntIndex;
 import tech.tablesaw.index.LongIndex;
+import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataFrameJoiner {
 
@@ -61,7 +62,7 @@ public class DataFrameJoiner {
      *                 rounding to integers.
      */
     public Table inner(Table table2, String col2Name) {
-        return joinInternal(table2, col2Name, false, false);
+        return inner(table2, col2Name, false);
     }
 
     /**
@@ -93,7 +94,7 @@ public class DataFrameJoiner {
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
-                    withMissing(result, table1Rows, table2Rows);
+                    withMissingLeftJoin(result, table1Rows);
                 } else {
                     crossProduct(result, table1Rows, table2Rows);
                 }
@@ -107,7 +108,7 @@ public class DataFrameJoiner {
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
-                    withMissing(result, table1Rows, table2Rows);
+                    withMissingLeftJoin(result, table1Rows);
                 } else {
                     crossProduct(result, table1Rows, table2Rows);
                 }
@@ -121,13 +122,13 @@ public class DataFrameJoiner {
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
-                    withMissing(result, table1Rows, table2Rows);
+                    withMissingLeftJoin(result, table1Rows);
                 } else {
                     crossProduct(result, table1Rows, table2Rows);
                 }
             }
         } else if (column instanceof StringColumn) {
-            CategoryIndex index = new CategoryIndex(table2.stringColumn(col2Name));
+            StringIndex index = new StringIndex(table2.stringColumn(col2Name));
             StringColumn col1 = (StringColumn) column;
             for (int i = 0; i < col1.size(); i++) {
                 String value = col1.get(i);
@@ -135,12 +136,12 @@ public class DataFrameJoiner {
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
-                    withMissing(result, table1Rows, table2Rows);
+                    withMissingLeftJoin(result, table1Rows);
                 } else {
                     crossProduct(result, table1Rows, table2Rows);
                 }
             }
-        } else if (column instanceof DoubleColumn) {
+        } else if (column instanceof NumberColumn) {
             LongIndex index = new LongIndex(table2.numberColumn(col2Name));
             NumberColumn col1 = (NumberColumn) column;
             for (int i = 0; i < col1.size(); i++) {
@@ -149,7 +150,7 @@ public class DataFrameJoiner {
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
-                    withMissing(result, table1Rows, table2Rows);
+                    withMissingLeftJoin(result, table1Rows);
                 } else {
                     crossProduct(result, table1Rows, table2Rows);
                 }
@@ -184,6 +185,112 @@ public class DataFrameJoiner {
      *
      * @param tables The tables to join with
      */
+    public Table fullOuter(Table... tables) {
+        return fullOuter(false, tables);
+    }
+
+    /**
+     * Joins to the given tables assuming that they have a column of the name we're joining on
+     *
+     * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
+     *                                  if {@code true} the join will succeed and duplicate columns are renamed*
+     * @param tables The tables to join with
+     */
+    public Table fullOuter(boolean allowDuplicateColumnNames, Table... tables) {
+        Table joined = table;
+        for (Table table2 : tables) {
+            joined = fullOuter(table2, column.name(), allowDuplicateColumnNames);
+        }
+        return joined;
+    }
+
+    /**
+     * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
+     *
+     * @param table2   The table to join with
+     * @param col2Name The column to join on. If col2Name refers to a double column, the join is performed after
+     *                 rounding to integers.
+     */
+    public Table fullOuter(Table table2, String col2Name) {
+        return fullOuter(table2, col2Name, false);
+    }
+
+    /**
+     * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
+     *
+     * @param table2   The table to join with
+     * @param col2Name The column to join on. If col2Name refers to a double column, the join is performed after
+     *                 rounding to integers.
+     * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
+     *                                  if {@code true} the join will succeed and duplicate columns are renamed
+     */
+    public Table fullOuter(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
+        Table result = joinInternal(table2, col2Name, true, allowDuplicateColumnNames);
+
+        Selection selection = new BitmapBackedSelection();
+        if (column instanceof DateColumn) {
+            IntIndex index = new IntIndex(result.dateColumn(col2Name));
+            DateColumn col2 = (DateColumn) table2.column(col2Name);
+            for (int i = 0; i < col2.size(); i++) {
+                int value = col2.getIntInternal(i);
+                if (index.get(value).isEmpty()) {
+                    selection.add(i);
+                }
+            }
+        } else if (column instanceof DateTimeColumn) {
+            LongIndex index = new LongIndex(result.dateTimeColumn(col2Name));
+            DateTimeColumn col2 = (DateTimeColumn) table2.column(col2Name);
+            for (int i = 0; i < col2.size(); i++) {
+                long value = col2.getLongInternal(i);
+                if (index.get(value).isEmpty()) {
+                    selection.add(i);
+                }
+            }
+        } else if (column instanceof TimeColumn) {
+            IntIndex index = new IntIndex(result.timeColumn(col2Name));
+            TimeColumn col2 = (TimeColumn) table2.column(col2Name);
+            for (int i = 0; i < col2.size(); i++) {
+                int value = col2.getIntInternal(i);
+                if (index.get(value).isEmpty()) {
+                    selection.add(i);
+                }
+            }
+        } else if (column instanceof StringColumn) {
+            StringIndex index = new StringIndex(result.stringColumn(col2Name));
+            StringColumn col2 = (StringColumn) table2.column(col2Name);
+            for (int i = 0; i < col2.size(); i++) {
+                String value = col2.get(i);
+                if (index.get(value).isEmpty()) {
+                    selection.add(i);
+                }
+            }
+        } else if (column instanceof NumberColumn) {
+            LongIndex index = new LongIndex(result.numberColumn(col2Name));
+            NumberColumn col2 = (NumberColumn) table2.column(col2Name);
+            for (int i = 0; i < col2.size(); i++) {
+                long value = col2.getLong(i);
+                if (index.get(value).isEmpty()) {
+                    selection.add(i);
+                }
+            }
+        } else {
+            throw new IllegalArgumentException(
+                    "Joining is supported on numeric, string, and date-like columns. Column "
+                            + column.name() + " is of type " + column.type());
+        }
+        
+        Table table2OnlyRows = table2.where(selection);
+        Column joinColumn = table2OnlyRows.column(col2Name);
+        table2OnlyRows.removeColumns(joinColumn);
+        withMissingRightJoin(result, joinColumn, table2OnlyRows);        
+        return result;
+    }
+
+    /**
+     * Joins to the given tables assuming that they have a column of the name we're joining on
+     *
+     * @param tables The tables to join with
+     */
     public Table leftOuter(Table... tables) {
         return leftOuter(false, tables);
     }
@@ -211,7 +318,7 @@ public class DataFrameJoiner {
      *                 rounding to integers.
      */
     public Table leftOuter(Table table2, String col2Name) {
-        return joinInternal(table2, col2Name, true, false);
+        return leftOuter(table2, col2Name, false);
     }
 
     /**
@@ -281,7 +388,7 @@ public class DataFrameJoiner {
             result.addColumns(leftOuter.column(name));
         }
         for (String name : table2.columnNames()) {
-            if (! result.columnNames().contains(name)) {
+            if (!result.columnNames().contains(name)) {
                 result.addColumns(leftOuter.column(name));
             }
         }
@@ -313,13 +420,35 @@ public class DataFrameJoiner {
     /**
      * Adds rows to destination for each row in table1, with the columns from table2 added as missing values in each
      */
-    private void withMissing(Table destination, Table table1, Table table2) {
-        for (int c = 0; c < table1.columnCount() + table2.columnCount(); c++) {
+    private void withMissingLeftJoin(Table destination, Table table1) {
+        for (int c = 0; c < destination.columnCount(); c++) {
             for (int r1 = 0; r1 < table1.rowCount(); r1++) {
                 if (c < table1.columnCount()) {
                     destination.column(c).appendCell(table1.getUnformatted(r1, c));
                 } else {
                     destination.column(c).appendMissing();
+                }
+            }
+        }
+    }
+
+    /**
+     * Adds rows to destination for each row in the joinColumn and table2
+     */
+    private void withMissingRightJoin(Table destination, Column joinColumn, Table table2) {
+        int t2StartCol = destination.columnCount() - table2.columnCount();
+        for (int c = 0; c < destination.columnCount(); c++) {
+            if (destination.column(c).name().equalsIgnoreCase(joinColumn.name())) {
+                for (int r = 0; r < joinColumn.size(); r++) {
+                    destination.column(c).appendCell(joinColumn.getUnformattedString(r));
+                }
+                continue;
+            }
+            for (int r2 = 0; r2 < table2.rowCount(); r2++) {
+                if (c < t2StartCol) {
+                    destination.column(c).appendMissing();
+                } else {
+                    destination.column(c).appendCell(table2.getUnformatted(r2, c - t2StartCol));
                 }
             }
         }
