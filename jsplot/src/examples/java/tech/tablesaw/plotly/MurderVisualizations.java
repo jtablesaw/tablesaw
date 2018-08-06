@@ -39,39 +39,53 @@ public class MurderVisualizations extends AbstractExample {
         Table murders = Table.read().csv("../data/UCR1965_2015.csv");
         out(murders.structure());
         murders.setName("murders");
+        NumberColumn cleared = murders.numberColumn("clr");
+        NumberColumn murdered = murders.numberColumn("mrd");
+        murdered.setName("murdered");
+        cleared.setName("cleared");
+        NumberColumn clearanceRate = cleared.divide(murdered);
+        clearanceRate.setName("clearance rate");
+        NumberColumn unsolved = murdered.subtract(cleared);
+        unsolved.setName("unsolved");
+        murders.addColumns(clearanceRate, unsolved);
+
+        Table totals = murders
+                .summarize("murdered", "cleared", sum)
+                .by("year");
+
+        NumberColumn rate = totals.numberColumn("sum [cleared]").divide(totals.numberColumn("sum [murdered]"));
+        rate.setName("clearance rate");
+        totals.addColumns(rate);
+
+        Plot.show(LinePlot.create(
+                "clearance rate by year",
+                totals,
+                "year",
+                "clearance rate"));
 
         StringColumn state = murders.stringColumn("state");
         state.set(state.isEqualTo("Rhodes Island"), "Rhode Island");
 
-        Table annualMurders = murders.summarize("mrd", sum).by("year");
-
-        Plot.show(HorizontalBarPlot.create(
-                "Total murders by year",
-                annualMurders,
-                "year",
-                "sum [mrd]"));
+        Table annualMurders = murders.summarize("murdered", sum).by("year");
 
         Plot.show(LinePlot.create(
                 "Total murders by year",
                 annualMurders,
                 "year",
-                "sum [mrd]"));
+                "sum [murdered]"));
 
         Table RI = murders.where(murders.stringColumn("State").isEqualTo("Rhode Island"));
-        Table RI_total = RI.summarize("mrd", sum).by("county");
-        Plot.show(PiePlot.create("RI murders by county", RI_total, "County", "sum [mrd]"));
+        Table RI_total = RI.summarize("murdered", sum).by("county");
+        Plot.show(PiePlot.create("RI murders by county", RI_total, "County", "sum [murdered]"));
 
-        Table murders2 = murders.summarize("mrd", sum).by("state");
+        Table murders2 = murders.summarize("murdered", sum).by("state");
 
         Plot.show(
                 ParetoPlot.createVertical(
                         "Total Murders by State",
                         murders2,
                         "state",
-                        "sum [mrd]"));
+                        "sum [murdered]"));
 
-        Table injuries1 = murders.summarize("injuries", mean).by("year");
-        Plot.show(HorizontalBarPlot.create("Tornado Injuries by Scale", injuries1, "year", "mean [injuries]"));
-        out(injuries1);
     }
 }
