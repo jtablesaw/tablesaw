@@ -15,11 +15,15 @@
 package tech.tablesaw.plotly;
 
 import tech.tablesaw.AbstractExample;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.api.AreaPlot;
+import tech.tablesaw.plotly.api.Histogram;
+import tech.tablesaw.plotly.api.Histogram2D;
+import tech.tablesaw.plotly.api.HorizontalBarPlot;
 import tech.tablesaw.plotly.api.LinePlot;
 import tech.tablesaw.plotly.api.ParetoPlot;
 import tech.tablesaw.plotly.api.PiePlot;
@@ -89,5 +93,35 @@ public class MurderVisualizations extends AbstractExample {
                         "state",
                         "sum [murdered]"));
 
+
+        Table details = Table.read().csv("../data/SHR76_16.csv");
+        out(details.structure().printAll());
+        out(details.shape());
+        out(details);
+
+        details.numberColumn("offage")
+                .set(details.numberColumn("offage").isEqualTo(999), DoubleColumn.MISSING_VALUE);
+
+        details.numberColumn("vicage")
+                .set(details.numberColumn("vicage").isEqualTo(999), DoubleColumn.MISSING_VALUE);
+
+        details.numberColumn("vicCount")
+                .set(details.numberColumn("vicCount").isEqualTo(0)
+                        .andNot(details.stringColumn("situation").containsString("multiple victims")), 1);
+
+        details.numberColumn("offCount")
+                .set(
+                        details.numberColumn("offCount").isEqualTo(0)
+                        .andNot(details.stringColumn("situation").containsString("multiple offenders")), 1);
+
+        out(details);
+        out(details.stringColumn("weapon").unique().print());
+
+        Plot.show(Histogram.create("victim age", details, "vicage"));
+        Plot.show(Histogram.create("offender age", details, "offage"));
+        Plot.show(Histogram2D.create("2D Histogram of offender age by victim age", details, "offage", "vicage"));
+
+        Table weaponSummary = details.countBy(details.stringColumn("weapon"));
+        Plot.show(HorizontalBarPlot.create("homicide counts by weapon used", weaponSummary, "Category", "count"));
     }
 }
