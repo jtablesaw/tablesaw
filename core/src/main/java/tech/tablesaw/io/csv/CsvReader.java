@@ -56,15 +56,15 @@ public class CsvReader {
      * As another example, an integer type, should go before double. Otherwise double would match integers so
      * the integer test would never be evaluated and all the ints would be read as doubles.
      */
-    private static List<ColumnType> typeArray =
+    private List<ColumnType> typeArray =
             Lists.newArrayList(LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, DOUBLE, STRING);
 
     /**
      * Private constructor to prevent instantiation
      */
-    private CsvReader() {}
+    public CsvReader() {}
 
-    public static Table read(CsvReadOptions options) throws IOException {
+    public Table read(CsvReadOptions options) throws IOException {
 
         byte[] bytes = options.reader() != null
                 ? CharStreams.toString(options.reader()).getBytes() : null;
@@ -130,7 +130,7 @@ public class CsvReader {
         }
     }
 
-    private static void addRows(CsvReadOptions options, ColumnType[] types, CSVReader reader, Table table, String[] columnNames, int[] columnIndexes) throws IOException {
+    private void addRows(CsvReadOptions options, ColumnType[] types, CSVReader reader, Table table, String[] columnNames, int[] columnIndexes) throws IOException {
         long rowNumber = options.header() ? 1L : 0L;
         String[] nextLine;
 
@@ -167,7 +167,7 @@ public class CsvReader {
         }
     }
 
-    private static void cleanNames(List<String> headerRow) {
+    private void cleanNames(List<String> headerRow) {
         for (int i = 0; i < headerRow.size(); i++) {
             headerRow.set(i, headerRow.get(i).trim());
         }
@@ -185,7 +185,7 @@ public class CsvReader {
      * @return A Relation containing the data in the csv file.
      * @throws IOException if file cannot be read
      */
-    public static Table headerOnly(ColumnType types[], boolean header, char columnSeparator, File file)
+    public Table headerOnly(ColumnType types[], boolean header, char columnSeparator, File file)
             throws IOException {
 
         FileInputStream fis = new FileInputStream(file);
@@ -232,7 +232,7 @@ public class CsvReader {
      *
      * @throws IOException if file cannot be read
      */
-    private static Table detectedColumnTypes(String csvFileName, boolean header, char delimiter, Locale locale) throws IOException {
+    private Table detectedColumnTypes(String csvFileName, boolean header, char delimiter, Locale locale) throws IOException {
         File file = new File(csvFileName);
         InputStream stream = new FileInputStream(file);
 
@@ -271,7 +271,7 @@ public class CsvReader {
      *
      * @throws IOException if file cannot be read
      */
-    public static String printColumnTypes(String csvFileName, boolean header, char delimiter, Locale locale) throws IOException {
+    public String printColumnTypes(String csvFileName, boolean header, char delimiter, Locale locale) throws IOException {
 
         Table structure = detectedColumnTypes(csvFileName, header, delimiter, locale);
 
@@ -315,7 +315,7 @@ public class CsvReader {
     /**
      * Reads column names from header, skipping any for which the type == SKIP
      */
-    private static String[] selectColumnNames(List<String> names, ColumnType types[]) {
+    private String[] selectColumnNames(List<String> names, ColumnType types[]) {
         List<String> header = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
             if (types[i] != SKIP) {
@@ -329,7 +329,7 @@ public class CsvReader {
     /**
      * Provides placeholder column names for when the file read has no header
      */
-    private static String[] makeColumnNames(ColumnType types[]) {
+    private String[] makeColumnNames(ColumnType types[]) {
         String[] header = new String[types.length];
         for (int i = 0; i < types.length; i++) {
             header[i] = "C" + i;
@@ -348,8 +348,7 @@ public class CsvReader {
      * corrected and
      * used to explicitly specify the correct column types.
      */
-    public static ColumnType[] detectColumnTypes(InputStream stream, CsvReadOptions options)
-            throws IOException {
+    public ColumnType[] detectColumnTypes(InputStream stream, CsvReadOptions options) throws IOException {
 
         boolean header = options.header();
         char delimiter = options.separator();
@@ -411,11 +410,11 @@ public class CsvReader {
         return columnTypes.toArray(new ColumnType[0]);
     }
 
-    private static int nextRowWithoutSampling(int nextRow) {
+    private int nextRowWithoutSampling(int nextRow) {
         return nextRow + 1;
     }
 
-    private static int nextRow(int nextRow) {
+    private int nextRow(int nextRow) {
         if (nextRow < 100) {
             return nextRow + 1;
         }
@@ -444,7 +443,7 @@ public class CsvReader {
      * Returns a predicted ColumnType derived by analyzing the given list of undifferentiated strings read from a
      * column in the file and applying the given Locale and options
      */
-    private static ColumnType detectType(List<String> valuesList, CsvReadOptions options) {
+    private ColumnType detectType(List<String> valuesList, CsvReadOptions options) {
 
         List<StringParser> parsers = getParserList(typeArray, options);
 
@@ -465,7 +464,7 @@ public class CsvReader {
      *
      * @param typeCandidates a possibly empty list of candidates. This list should be sorted in order of preference
      */
-    private static ColumnType selectType(List<ColumnType> typeCandidates) {
+    private ColumnType selectType(List<ColumnType> typeCandidates) {
         return typeCandidates.get(0);
     }
 
@@ -476,7 +475,7 @@ public class CsvReader {
      * @param options CsvReadOptions to use to modify the default parsers for each type
      * @return  A list of parsers in the order they should be used for type detection
      */
-    private static List<StringParser> getParserList(List<ColumnType> typeArray, CsvReadOptions options) {
+    private List<StringParser> getParserList(List<ColumnType> typeArray, CsvReadOptions options) {
         // Types to choose from. When more than one would work, we pick the first of the options
 
         List<StringParser> parsers = new ArrayList<>();

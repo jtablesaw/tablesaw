@@ -59,7 +59,7 @@ public class DataFrameReader {
     }
 
     public Table csv(CsvReadOptions options) throws IOException {
-        return CsvReader.read(options);
+        return new CsvReader().read(options);
     }
 
     public Table db(ResultSet resultSet, String tableName) throws SQLException {

@@ -40,7 +40,6 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static tech.tablesaw.api.ColumnType.*;
-import static tech.tablesaw.io.csv.CsvReader.detectColumnTypes;
 
 /**
  * Tests for CSV Reading
@@ -127,7 +126,7 @@ public class CsvReaderTest {
                 .locale(Locale.getDefault())
                 .build();
 
-        ColumnType[] columnTypes = detectColumnTypes(stream, options);
+        ColumnType[] columnTypes = new CsvReader().detectColumnTypes(stream, options);
         assertTrue(Arrays.equals(bus_types, columnTypes));
     }
 
@@ -163,7 +162,7 @@ public class CsvReaderTest {
                 .locale(Locale.ENGLISH)
                 .build();
 
-        final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(stream, options));
 
         assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE))));
     }
@@ -191,7 +190,7 @@ public class CsvReaderTest {
                 .locale(Locale.ENGLISH)
                 .build();
 
-        final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(stream, options));
 
         assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE_TIME))));
 
@@ -220,7 +219,7 @@ public class CsvReaderTest {
                 .locale(Locale.FRENCH)
                 .build();
 
-        final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(stream, options));
 
         assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE))));
     }
@@ -248,7 +247,7 @@ public class CsvReaderTest {
                 .locale(Locale.FRENCH)
                 .build();
 
-        final List<ColumnType> actual = asList(detectColumnTypes(stream, options));
+        final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(stream, options));
 
         assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE_TIME))));
     }
@@ -295,7 +294,8 @@ public class CsvReaderTest {
                         "DOUBLE,     // 1     approval    \n" +
                         "STRING,     // 2     who         \n" +
                         "}\n";
-        assertEquals(output, CsvReader.printColumnTypes("../data/bush.csv", true, ',', Locale.getDefault()));
+        assertEquals(output, new CsvReader()
+                .printColumnTypes("../data/bush.csv", true, ',', Locale.getDefault()));
     }
 
     @Test
@@ -308,7 +308,7 @@ public class CsvReaderTest {
                 .locale(Locale.getDefault())
                 .build();
 
-        ColumnType[] columnTypes = detectColumnTypes(stream, options);
+        ColumnType[] columnTypes = new CsvReader().detectColumnTypes(stream, options);
         assertEquals(LOCAL_DATE, columnTypes[0]);
         assertEquals(DOUBLE, columnTypes[1]);
         assertEquals(STRING, columnTypes[2]);
