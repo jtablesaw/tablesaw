@@ -284,16 +284,21 @@ public class TableTest {
 
     @Test
     public void testRollWithNrows2() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv").first(10);
+        Table t = Table.read().csv("../data/bush.csv").first(4);
+        NumberColumn approval = t.numberColumn("approval");
 
+        List<Integer> sums = new ArrayList<>();
         Consumer<Row[]> rowConsumer = rows -> {
             int sum = 0;
             for (Row row : rows) {
                 sum += row.getDouble("approval");
             }
-            //System.out.println("Running avg = " + sum / (double) rows.length);
+            sums.add(sum);
         };
         t.rollWithRows(rowConsumer,2);
+        assertTrue(sums.contains((int) approval.get(0) + (int) approval.get(1)));
+        assertTrue(sums.contains((int) approval.get(1) + (int) approval.get(2)));
+        assertTrue(sums.contains((int) approval.get(2) + (int) approval.get(3)));
     }
 
     private class PairChild implements Table.Pairs {
