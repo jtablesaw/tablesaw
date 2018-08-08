@@ -60,9 +60,18 @@ public class CsvReader {
             Lists.newArrayList(LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, DOUBLE, STRING);
 
     /**
-     * Private constructor to prevent instantiation
+     * Constructs a CsvReader
      */
     public CsvReader() {}
+
+    /**
+     * Constructs a CsvReader with the given list of ColumnTypes
+     *
+     * These are the only types that the CsvReader can detect and parse
+     */
+    public CsvReader(List<ColumnType> typeDetectionList) {
+        this.typeArray = typeDetectionList;
+    }
 
     public Table read(CsvReadOptions options) throws IOException {
 
@@ -91,7 +100,9 @@ public class CsvReader {
                 .withSeparator(options.separator())
                 .build();
 
-        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(ubis)).withCSVParser(csvParser).build()) {
+        CSVReader reader;
+        try {
+            reader = new CSVReaderBuilder(new InputStreamReader(ubis)).withCSVParser(csvParser).build();
             Table table = Table.create(options.tableName());
 
             String[] headerNames;
@@ -127,6 +138,10 @@ public class CsvReader {
 
             addRows(options, types, reader, table, columnNames, columnIndexes);
             return table;
+        } finally {
+            if (options.reader() != null) {
+                options.reader().close();
+            }
         }
     }
 
@@ -483,5 +498,12 @@ public class CsvReader {
             parsers.add(type.customParser(options));
         }
         return parsers;
+    }
+
+    /**
+     * Returns the list of types that specifies the order in which types are tested in the detection algorithm.
+     */
+    public List<ColumnType> getTypeArray() {
+        return typeArray;
     }
 }
