@@ -50,8 +50,8 @@ public class DateColumnType extends AbstractColumnType {
         DateColumn newDate = (DateColumn) newColumn;
         for (int index : rows) {
             row.at(index);
-            PackedDate date = row.getPackedDate(newColumn.name());
-            newDate.appendInternal(date.getPackedValue());
+            int packedDate = row.getPackedDate(newColumn.name());
+            newDate.appendInternal(packedDate);
         }
     }
 

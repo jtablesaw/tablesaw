@@ -78,7 +78,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            row.getPackedDateTime("date").getPackedValue();
+            row.getPackedDateTime("date");
         }
         stopwatch.stop();
         System.out.println("one getPackedDateTime(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -112,7 +112,7 @@ public class RowPerformanceTest {
         while(row.hasNext()) {
             row.next();
             row.getString("concept");
-            row.getPackedDateTime("date").getPackedValue();
+            row.getPackedDateTime("date");
             row.getDouble("lowValue");
             row.getDouble("highValue");
         }
@@ -151,7 +151,7 @@ public class RowPerformanceTest {
         stopwatch.start();
         while(row.hasNext()) {
             row.next();
-            row.getPackedDateTime(1).getPackedValue();
+            row.getPackedDateTime(1);
         }
         stopwatch.stop();
         System.out.println("one getPackedDateTime(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
@@ -185,7 +185,7 @@ public class RowPerformanceTest {
         while(row.hasNext()) {
             row.next();
             row.getString(0);
-            row.getPackedDateTime(1).getPackedValue();
+            row.getPackedDateTime(1);
             row.getDouble(2);
             row.getDouble(3);
         }

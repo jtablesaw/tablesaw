@@ -50,8 +50,8 @@ public class DateTimeColumnType extends AbstractColumnType {
         DateTimeColumn newDateTime = (DateTimeColumn) newColumn;
         for (int index : rows) {
             row.at(index);
-            PackedDateTime dateTime = row.getPackedDateTime(newColumn.name());
-            newDateTime.appendInternal(dateTime.getPackedValue());
+            long packedDateTime = row.getPackedDateTime(newColumn.name());
+            newDateTime.appendInternal(packedDateTime);
         }
     }
 

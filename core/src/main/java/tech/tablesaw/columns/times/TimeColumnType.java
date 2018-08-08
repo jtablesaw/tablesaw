@@ -50,8 +50,8 @@ public class TimeColumnType extends AbstractColumnType {
         TimeColumn newTime = (TimeColumn) newColumn;
         for (int index : rows) {
             row.at(index);
-            PackedTime time = row.getPackedTime(newColumn.name());
-            newTime.appendInternal(time.getPackedValue());
+            int packedTime = row.getPackedTime(newColumn.name());
+            newTime.appendInternal(packedTime);
         }
     }
 
