@@ -100,7 +100,7 @@ public class CsvReader {
                 .withSeparator(options.separator())
                 .build();
 
-        CSVReader reader;
+        CSVReader reader = null;
         try {
             reader = new CSVReaderBuilder(new InputStreamReader(ubis)).withCSVParser(csvParser).build();
             Table table = Table.create(options.tableName());
@@ -139,8 +139,8 @@ public class CsvReader {
             addRows(options, types, reader, table, columnNames, columnIndexes);
             return table;
         } finally {
-            if (options.reader() != null) {
-                options.reader().close();
+            if (options.reader() == null && reader != null) {
+                reader.close();
             }
         }
     }
