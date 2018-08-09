@@ -157,12 +157,12 @@ public class ScatterTrace extends AbstractTrace {
     }
 
     public enum Mode {
-        LINE("line"),
+        LINE("lines"),
         MARKERS("markers"),
-        LINE_AND_MARKERS("line + markers"),
-        LINE_AND_TEXT("line + text"),
-        TEXT_AND_MARKERS("text + text"),
-        LINE_TEXT_AND_MARKERS("line + text + markers"),
+        LINE_AND_MARKERS("lines+markers"),
+        LINE_AND_TEXT("lines+text"),
+        TEXT_AND_MARKERS("markers+text"),
+        LINE_TEXT_AND_MARKERS("lines+markers+text"),
         TEXT("text"),
         NONE("none");
 

@@ -19,6 +19,7 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
@@ -137,6 +138,15 @@ public interface StringMapFunctions extends Column {
         StringColumn newColumn = StringColumn.create(name() + "[formatted]");
         for (int r = 0; r < size(); r++) {
             newColumn.append(String.format(formatString, getString(r)));
+        }
+        return newColumn;
+    }
+
+    default NumberColumn parseInt() {
+
+        NumberColumn newColumn = (DoubleColumn) Column.create(name() + "[parsed]", ColumnType.DOUBLE);
+        for (int r = 0; r < size(); r++) {
+            newColumn.append(Integer.parseInt(getString(r)));
         }
         return newColumn;
     }

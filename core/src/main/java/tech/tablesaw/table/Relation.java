@@ -295,6 +295,14 @@ public abstract class Relation {
         return numberColumn(columnIndex(columnName));
     }
 
+    public DoubleColumn doubleColumn(String columnName) {
+        return doubleColumn(columnIndex(columnName));
+    }
+
+    public DoubleColumn doubleColumn(int columnIndex) {
+        return (DoubleColumn) column(columnIndex);
+    }
+
     public StringColumn[] stringColumns() {
         return columns().stream().filter(e->e.type() == ColumnType.STRING).toArray(StringColumn[]::new);
     }
