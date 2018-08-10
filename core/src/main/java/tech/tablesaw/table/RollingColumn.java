@@ -3,8 +3,8 @@ package tech.tablesaw.table;
 import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.AggregateFunctions;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -23,23 +23,23 @@ public class RollingColumn {
     }
 
     public NumberColumn mean() {
-        return calc(AggregateFunctions.mean);
+        return (NumberColumn) calc(AggregateFunctions.mean);
     }
 
     public NumberColumn median() {
-        return calc(AggregateFunctions.median);
+        return (NumberColumn) calc(AggregateFunctions.median);
     }
 
     public NumberColumn geometricMean() {
-        return calc(AggregateFunctions.geometricMean);
+        return (NumberColumn) calc(AggregateFunctions.geometricMean);
     }
 
     public NumberColumn sum() {
-        return calc(AggregateFunctions.sum);
+        return (NumberColumn) calc(AggregateFunctions.sum);
     }
 
     public NumberColumn pctChange() {
-        return calc(AggregateFunctions.pctChange);
+        return (NumberColumn) calc(AggregateFunctions.pctChange);
     }
 
     private String generateNewColumnName(AggregateFunction function) {
@@ -51,24 +51,19 @@ public class RollingColumn {
                 .toString();
     }
 
-    public NumberColumn calc(AggregateFunction function) {
+    /**
+     *
+     */
+    public Column calc(AggregateFunction function) {
         // TODO: the subset operation copies the array. creating a view would likely be more efficient
-        NumberColumn result = DoubleColumn.create(generateNewColumnName(function), column.size());
+        AbstractColumn result = (AbstractColumn) Column.create(generateNewColumnName(function), function.returnType());
         for (int i = 0; i < window - 1; i++) {
-            result.append(NumberColumn.MISSING_VALUE);
+            result.appendMissing();
         }
         for (int origColIndex = 0; origColIndex < column.size() - window + 1; origColIndex++) {
             Selection selection = new BitmapBackedSelection();
             selection.addRange(origColIndex, origColIndex + window);
-            Column windowedColumn = column.subset(selection);
-            double calc;
-            if (windowedColumn instanceof NumberColumn) {
-                calc = function.summarize(windowedColumn);
-            } else {
-                throw new IllegalArgumentException("Cannot calculate " + function.functionName()
-                        + " on column of type " + windowedColumn.type());
-            }
-            result.append(calc);
+            result.append(function.summarize(column.subset(selection)));
         }
         return result;
     }

@@ -18,9 +18,9 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class TableSliceGroupTest {
     private static NumericAggregateFunction exaggerate = new NumericAggregateFunction("exageration") {
 
         @Override
-        public double summarize(Column data) {
+        public Double summarize(NumberColumn data) {
             return StatUtils.max(data.asDoubleArray()) + 1000;
         }
     };

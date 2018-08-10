@@ -1,20 +1,28 @@
 package tech.tablesaw.aggregate;
 
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.Column;
+import tech.tablesaw.api.DateTimeColumn;
+
+import java.time.LocalDateTime;
 
 /**
  * A partial implementation of aggregate functions to summarize over a dateTime column
  */
-public abstract class DateTimeAggregateFunction extends AggregateFunction {
+public abstract class DateTimeAggregateFunction extends AggregateFunction<LocalDateTime, DateTimeColumn> {
 
     public DateTimeAggregateFunction(String name) {
         super(name);
     }
 
-    abstract public double summarize(Column column);
+    abstract public LocalDateTime summarize(DateTimeColumn column);
 
-    public boolean isCompatibleWith(ColumnType type) {
+    @Override
+    public boolean isCompatableColumn(ColumnType type) {
         return type.equals(ColumnType.LOCAL_DATE_TIME);
+    }
+
+    @Override
+    public ColumnType returnType() {
+        return ColumnType.LOCAL_DATE_TIME;
     }
 }

@@ -88,7 +88,7 @@ public class NumberColumnTest {
 
         assertEquals(5, c2.percentile(5), 0.00001);
         assertEquals(5, c.percentile(5), 0.00001);
-        assertEquals(5, percentile(c, 5), 0.00001);
+        assertEquals(5, percentile(c, 5.0), 0.00001);
 
         assertEquals(95, percentile95.summarize(c), 0.00001);
         assertEquals(99, percentile99.summarize(c), 0.00001);

@@ -16,7 +16,8 @@ package tech.tablesaw.table;
 
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.aggregate.NumericAggregateFunction;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -159,9 +160,9 @@ public class TableSlice extends Relation implements IntIterable {
      * @return the function result
      * @throws IllegalArgumentException if numberColumnName doesn't name a numeric column in this table
      */
-    public double reduce(String numberColumnName, AggregateFunction function) {
-        Column column = table.column(numberColumnName);
-        return function.summarize(column.where(selection));
+    public double reduce(String numberColumnName, NumericAggregateFunction function) {
+        NumberColumn column = table.numberColumn(numberColumnName);
+        return (Double) function.summarize(column.where(selection));
     }
 
     /**

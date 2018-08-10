@@ -54,6 +54,13 @@ public class AggregateFunctionsTest {
     }
 
     @Test
+    public void testDateMin() {
+        CategoricalColumn byColumn = table.dateColumn("date").yearQuarter();
+        Table result = table.summarize("approval", "date", mean, earliestDate).by(byColumn);
+        System.out.println(result);
+    }
+
+    @Test
     public void testGroupMean2() {
         Table result = table.summarize("approval", mean, stdDev).apply();
         assertEquals(2, result.columnCount());

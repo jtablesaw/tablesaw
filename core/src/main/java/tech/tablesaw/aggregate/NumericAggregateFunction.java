@@ -1,20 +1,24 @@
 package tech.tablesaw.aggregate;
 
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.Column;
+import tech.tablesaw.api.NumberColumn;
 
 /**
  * A partial implementation of aggregate functions to summarize over a numeric column
  */
-public abstract class NumericAggregateFunction extends AggregateFunction {
+public abstract class NumericAggregateFunction extends AggregateFunction<Double, NumberColumn> {
 
     public NumericAggregateFunction(String name) {
         super(name);
     }
 
-    abstract public double summarize(Column column);
-
-    public boolean isCompatibleWith(ColumnType type) {
+    @Override
+    public boolean isCompatableColumn(ColumnType type) {
         return type.equals(ColumnType.DOUBLE);
+    }
+
+    @Override
+    public ColumnType returnType() {
+        return ColumnType.DOUBLE;
     }
 }

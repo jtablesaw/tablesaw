@@ -6,23 +6,25 @@ import tech.tablesaw.columns.Column;
 /**
  * A partial implementation of aggregate functions to summarize over a numeric column
  */
-public abstract class AggregateFunction {
+public abstract class AggregateFunction<T, C extends Column> {
 
-    private final String name;
+    private final String functionName;
 
-    public AggregateFunction(String name) {
-        this.name = name;
+    public AggregateFunction(String functionName) {
+        this.functionName = functionName;
     }
-
-    abstract public double summarize(Column column);
 
     public String functionName() {
-        return name;
+        return functionName;
     }
+
+    public abstract T summarize(C column);
 
     public String toString() {
         return functionName();
     }
 
-    abstract public boolean isCompatibleWith(ColumnType type);
+    public abstract boolean isCompatableColumn(ColumnType type);
+
+    public abstract ColumnType returnType();
 }

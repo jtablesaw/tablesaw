@@ -20,10 +20,10 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 
 import java.util.ArrayList;
@@ -158,9 +158,10 @@ public class TableSliceGroup implements Iterable<TableSlice> {
             int functionCount = 0;
             for (AggregateFunction function : entry.getValue()) {
                 String colName = aggregateColumnName(columnName, function.functionName());
-                NumberColumn resultColumn = DoubleColumn.create(colName, getSlices().size());
+                ColumnType type = function.returnType();
+                AbstractColumn resultColumn = (AbstractColumn) Column.create(colName, type);
                 for (TableSlice subTable : getSlices()) {
-                    double result = subTable.reduce(columnName, function);
+                    Object result = function.summarize(subTable.column(columnName));
                     if (functionCount == 0) {
                         groupColumn.append(subTable.name());
                     }
