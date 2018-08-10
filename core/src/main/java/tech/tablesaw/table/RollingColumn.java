@@ -54,6 +54,7 @@ public class RollingColumn {
     /**
      *
      */
+    @SuppressWarnings("unchecked")
     public Column calc(AggregateFunction function) {
         // TODO: the subset operation copies the array. creating a view would likely be more efficient
         AbstractColumn result = (AbstractColumn) Column.create(generateNewColumnName(function), function.returnType());

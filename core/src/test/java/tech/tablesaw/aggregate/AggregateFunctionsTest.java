@@ -15,21 +15,20 @@
 package tech.tablesaw.aggregate;
 
 import org.apache.commons.math3.stat.StatUtils;
+import org.junit.Before;
+import org.junit.Test;
 import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.table.SelectionTableSliceGroup;
 import tech.tablesaw.table.StandardTableSliceGroup;
-import org.junit.Before;
-import org.junit.Test;
-import tech.tablesaw.api.CategoricalColumn;
-import tech.tablesaw.api.Table;
 import tech.tablesaw.table.TableSliceGroup;
-import tech.tablesaw.io.csv.CsvReadOptions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 public class AggregateFunctionsTest {

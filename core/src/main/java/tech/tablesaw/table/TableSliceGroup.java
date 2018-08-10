@@ -148,6 +148,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
      *
      * @param functions map from column name to aggregation to apply on that function
      */
+    @SuppressWarnings("unchecked")
     public Table aggregate(ListMultimap<String, AggregateFunction> functions) {
         Preconditions.checkArgument(!getSlices().isEmpty());
         Table groupTable = summaryTableName(sourceTable);
