@@ -57,7 +57,8 @@ public class AggregateFunctionsTest {
     public void testDateMin() {
         CategoricalColumn byColumn = table.dateColumn("date").yearQuarter();
         Table result = table.summarize("approval", "date", mean, earliestDate).by(byColumn);
-        System.out.println(result);
+        assertEquals(3, result.columnCount());
+        assertEquals(13, result.rowCount());
     }
 
     @Test
