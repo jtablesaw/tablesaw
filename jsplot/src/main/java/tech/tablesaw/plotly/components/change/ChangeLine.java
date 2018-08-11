@@ -1,8 +1,9 @@
-package tech.tablesaw.plotly.components;
+package tech.tablesaw.plotly.components.change;
 
 import com.google.common.base.Preconditions;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
+import tech.tablesaw.plotly.components.Component;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -10,10 +11,19 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Change extends Component {
+public class ChangeLine extends Component {
 
-    private ChangeLine changeLine;
-    private String fillColor;
+    private static final int DEFAULT_WIDTH = 2;
+    private static final String DEFAULT_COLOR = "#3D9970";
+
+    private final String color;
+    private final int width;
+
+    private ChangeLine(LineBuilder lineBuilder) {
+
+        color = lineBuilder.color;
+        width = lineBuilder.width;
+    }
 
     @Override
     public String asJavascript() {
@@ -21,8 +31,7 @@ public class Change extends Component {
         PebbleTemplate compiledTemplate;
 
         try {
-            compiledTemplate = engine.getTemplate("change_template.html");
-
+            compiledTemplate = engine.getTemplate("changeLine_template.html");
             compiledTemplate.evaluate(writer, getContext());
         } catch (PebbleException | IOException e) {
             e.printStackTrace();
@@ -30,60 +39,21 @@ public class Change extends Component {
         return writer.toString();
     }
 
-    Change(ChangeBuilder builder) {
-        this.changeLine = builder.changeLine;
-        this.fillColor = builder.fillColor;
-    }
-
     private Map<String, Object> getContext() {
         Map<String, Object> context = new HashMap<>();
-        context.put("changeLine", changeLine);
-        context.put("fillColor", fillColor);
+        if (!color.equals(DEFAULT_COLOR)) context.put("color", color);
+        if (width != DEFAULT_WIDTH) context.put("width", width);
         return context;
     }
 
-    public static class ChangeBuilder {
-
-        String fillColor;
-        ChangeLine changeLine;
-
-        public ChangeBuilder fillColor(String color) {
-            this.fillColor = color;
-            return this;
-        }
-
-        public ChangeBuilder changeLine(ChangeLine line) {
-            this.changeLine = line;
-            return this;
-        }
-
-        public Change build() {
-            return new Change(this);
-        }
-    }
-
-
-    static class ChangeLine extends Component {
-
-        final String color;
-        final int width;
-
-        private ChangeLine(LineBuilder lineBuilder) {
-
-            color = lineBuilder.color;
-            width = lineBuilder.width;
-        }
-
-        @Override
-        public String asJavascript() {
-            return null;
-        }
+    public static LineBuilder builder() {
+        return new LineBuilder();
     }
 
     public static class LineBuilder {
 
-        String color = "#3D9970";
-        int width = 2;
+        String color = DEFAULT_COLOR;
+        int width = DEFAULT_WIDTH;
 
         /**
          * Sets the color of line bounding the box(es).
@@ -108,4 +78,5 @@ public class Change extends Component {
             return new ChangeLine(this);
         }
     }
+
 }

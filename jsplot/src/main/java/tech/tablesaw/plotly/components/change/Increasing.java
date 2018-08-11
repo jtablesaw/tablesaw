@@ -1,4 +1,4 @@
-package tech.tablesaw.plotly.components;
+package tech.tablesaw.plotly.components.change;
 
 public class Increasing extends Change {
 
@@ -6,14 +6,11 @@ public class Increasing extends Change {
         super(builder);
     }
 
-    public static IncreasingBuilder increasingBuilder() {
+    public static IncreasingBuilder builder() {
         return new IncreasingBuilder();
     }
 
     public static class IncreasingBuilder extends ChangeBuilder {
-
-        private String fillColor;
-        private ChangeLine changeLine;
 
         public Increasing.IncreasingBuilder fillColor(String color) {
             this.fillColor = color;
