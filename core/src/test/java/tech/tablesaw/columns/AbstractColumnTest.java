@@ -7,9 +7,6 @@ import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 
-import java.time.LocalDate;
-import java.util.function.Consumer;
-
 import static org.junit.Assert.assertEquals;
 
 public class AbstractColumnTest {
@@ -37,12 +34,8 @@ public class AbstractColumnTest {
         DateColumn dc1 = table.dateColumn("date");
 
         DateColumn dc2 = DateColumn.create("100 days later");
-        dc1.doWithEach(new Consumer<LocalDate>() {
-            @Override
-            public void accept(LocalDate localDate) {
-                dc2.append(localDate.plusDays(100L));
-            }
-        });
+
+        dc1.doWithEach(localDate -> dc2.append(localDate.plusDays(100)));
 
         assertEquals(dc1.get(0).plusDays(100), dc2.get(0));
     }
