@@ -1,8 +1,6 @@
 package tech.tablesaw.api;
 
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.doubles.DoubleIterable;
-import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
@@ -30,7 +28,8 @@ import java.util.function.DoublePredicate;
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.api.ColumnType.DOUBLE;
 
-public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
+public interface NumberColumn extends Column, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
+
     double MISSING_VALUE = (Double) DOUBLE.getMissingValue();
 
     static boolean valueIsMissing(double value) {
@@ -125,9 +124,6 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
 
     @Override
     void append(Column column);
-
-    @Override
-    DoubleIterator iterator();
 
     NumberColumn where(Selection selection);
 

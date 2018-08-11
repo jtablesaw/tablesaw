@@ -44,6 +44,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.BiPredicate;
@@ -56,7 +57,7 @@ import static tech.tablesaw.api.ColumnType.DOUBLE;
 /**
  * A column in a base table that contains double precision floating point values
  */
-public class DoubleColumn extends AbstractColumn<Number, DoubleColumn> implements NumberColumn {
+public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implements NumberColumn {
 
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
@@ -129,8 +130,8 @@ public class DoubleColumn extends AbstractColumn<Number, DoubleColumn> implement
 
     @Override
     public DoubleColumn removeMissing() {
-        final DoubleColumn noMissing = (DoubleColumn) emptyCopy();
-        final DoubleIterator iterator = iterator();
+        final DoubleColumn noMissing = emptyCopy();
+        final DoubleIterator iterator = doubleIterator();
         while(iterator.hasNext()) {
             final double v = iterator.nextDouble();
             if (!NumberColumn.valueIsMissing(v)) {
@@ -271,14 +272,6 @@ public class DoubleColumn extends AbstractColumn<Number, DoubleColumn> implement
     }
 
     /**
-     * Adds the given Double to this column
-     */
-    @Override
-    public DoubleColumn append(Number d) {
-        return append(d.doubleValue());
-    }
-
-    /**
      * Adds the given double to this column
      */
     @Override
@@ -315,6 +308,17 @@ public class DoubleColumn extends AbstractColumn<Number, DoubleColumn> implement
     @Override
     public DoubleColumn emptyCopy() {
         return emptyCopy(DEFAULT_ARRAY_SIZE);
+    }
+
+    @Override
+    public DoubleColumn append(Double val) {
+        this.append(val.doubleValue());
+        return this;
+    }
+
+    public DoubleColumn append(Integer val) {
+        this.append(val.doubleValue());
+        return this;
     }
 
     @Override
@@ -445,8 +449,8 @@ public class DoubleColumn extends AbstractColumn<Number, DoubleColumn> implement
     }
 
     @Override
-    public DoubleColumn set(int i, Number val) {
-        return set(i, val.doubleValue());
+    public DoubleColumn set(int i, Double val) {
+        return set(i, (double) val);
     }
 
     /**
@@ -483,7 +487,12 @@ public class DoubleColumn extends AbstractColumn<Number, DoubleColumn> implement
     }
 
     @Override
-    public DoubleIterator iterator() {
+    public DoubleIterator doubleIterator() {
+        return data.iterator();
+    }
+
+    @Override
+    public Iterator<Double> iterator() {
         return data.iterator();
     }
 
@@ -622,7 +631,9 @@ public class DoubleColumn extends AbstractColumn<Number, DoubleColumn> implement
 
     public IntSet asIntegerSet() {
         final IntSet ints = new IntOpenHashSet();
-        for (final double d : this) {
+        DoubleIterator it = doubleIterator();
+        while (it.hasNext()) {
+            double d = it.nextDouble();
             if (!NumberColumn.valueIsMissing(d)) {
                 ints.add((int) Math.round(d));
             }
@@ -638,7 +649,9 @@ public class DoubleColumn extends AbstractColumn<Number, DoubleColumn> implement
     @Override
     public DateTimeColumn asDateTimes(ZoneOffset offset) {
         DateTimeColumn column = DateTimeColumn.create(name() + ": date time");
-        for (double d : this) {
+        DoubleIterator it = doubleIterator();
+        while (it.hasNext()) {
+            double d = it.nextDouble();
             LocalDateTime dateTime =
                     Instant.ofEpochMilli((long) d).atZone(offset).toLocalDateTime();
             column.append(dateTime);

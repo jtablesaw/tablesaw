@@ -17,10 +17,12 @@ package tech.tablesaw.columns;
 import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.ColumnType;
 
+import java.util.function.Consumer;
+
 /**
  * Partial implementation of the {@link Column} interface
  */
-public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implements Column {
+public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implements Column, Iterable<T> {
 
     public static final int DEFAULT_ARRAY_SIZE = 128;
 
@@ -93,6 +95,15 @@ public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implemen
             }
         }
         return newCol;
+    }
+
+    /**
+     * Applies the given consumer to each element in this column
+     */
+    public void doWithEach(Consumer<T> consumer) {
+        for (T t : this) {
+            consumer.accept(t);
+        }
     }
 
     public abstract C append(T val);

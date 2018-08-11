@@ -14,7 +14,6 @@
 
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.doubles.DoubleIterable;
 import org.apache.commons.math3.random.EmpiricalDistribution;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;

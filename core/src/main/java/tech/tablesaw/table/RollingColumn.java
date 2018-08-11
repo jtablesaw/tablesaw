@@ -64,7 +64,13 @@ public class RollingColumn {
         for (int origColIndex = 0; origColIndex < column.size() - window + 1; origColIndex++) {
             Selection selection = new BitmapBackedSelection();
             selection.addRange(origColIndex, origColIndex + window);
-            result.append(function.summarize(column.subset(selection)));
+            Object answer = function.summarize(column.subset(selection));
+            if (answer instanceof Number) {
+                Number number = (Number) answer;
+                result.append(number.doubleValue());
+            } else {
+                result.append(answer);
+            }
         }
         return result;
     }

@@ -166,7 +166,12 @@ public class TableSliceGroup implements Iterable<TableSlice> {
                     if (functionCount == 0) {
                         groupColumn.append(subTable.name());
                     }
-                    resultColumn.append(result);
+                    if (result instanceof Number) {
+                        Number number = (Number) result;
+                        resultColumn.append(number.doubleValue());
+                    } else {
+                        resultColumn.append(result);
+                    }
                 }
                 groupTable.addColumns(resultColumn);
                 functionCount++;
