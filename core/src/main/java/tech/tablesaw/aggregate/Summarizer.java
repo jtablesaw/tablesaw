@@ -162,6 +162,7 @@ public class Summarizer {
     /**
      * Returns the result of applying to the functions to all the values in the appropriate column
      */
+    @SuppressWarnings("unchecked")
     public Table apply() {
         List<Table> results = new ArrayList<>();
         ArrayListMultimap<String, AggregateFunction> reductionMultimap = getAggregateFunctionMultimap();
@@ -171,9 +172,14 @@ public class Summarizer {
             Table table = TableSliceGroup.summaryTableName(temp);
             for (AggregateFunction function : reductions) {
                 Column column = temp.column(name);
-                double result = function.summarize(column);
+                Object result = function.summarize(column);
                 Column newColumn = DoubleColumn.create(TableSliceGroup.aggregateColumnName(name, function.functionName()));
-                ((DoubleColumn) newColumn).append(result);
+                if (result instanceof Number) {
+                    Number number = (Number) result;
+                    newColumn.append(number.doubleValue());
+                } else {
+                    newColumn.append(result);
+                }
                 table.addColumns(newColumn);
             }
             results.add(table);
@@ -204,9 +210,9 @@ public class Summarizer {
             Column column = temp.column(name);
             ColumnType type = column.type();
             for (AggregateFunction reduction : reductions) {
-                if (reduction.isCompatibleWith(type)) {
+              if (reduction.isCompatableColumn(type)) {
                     reductionMultimap.put(name, reduction);
-                }
+              }
             }
         }
         return reductionMultimap;

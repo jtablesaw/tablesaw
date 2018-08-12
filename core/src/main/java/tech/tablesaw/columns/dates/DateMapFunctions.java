@@ -37,7 +37,7 @@ import static tech.tablesaw.api.DateColumn.*;
 /**
  * An interface for mapping operations unique to Date columns
  */
-public interface DateMapFunctions extends Column {
+public interface DateMapFunctions extends Column<LocalDate> {
 
     static String dateColumnName(Column column1, int value, TemporalUnit unit) {
         return column1.name() + ": " + value + " " + unit.toString() + "(s)";

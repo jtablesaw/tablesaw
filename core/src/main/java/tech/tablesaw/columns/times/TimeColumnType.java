@@ -11,7 +11,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalTime;
 
-public class TimeColumnType extends AbstractColumnType {
+public class TimeColumnType extends AbstractColumnType<LocalTime> {
 
     public static final TimeStringParser DEFAULT_PARSER = new TimeStringParser(ColumnType.LOCAL_TIME);
     public static final TimeColumnType INSTANCE =
@@ -37,7 +37,7 @@ public class TimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public void copy(IntArrayList rows, Column oldColumn, Column newColumn) {
+    public void copy(IntArrayList rows, Column<LocalTime> oldColumn, Column<LocalTime> newColumn) {
         TimeColumn oldTime = (TimeColumn) oldColumn;
         TimeColumn newTime = (TimeColumn) newColumn;
         for (int index : rows) {
@@ -46,7 +46,7 @@ public class TimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
+    public void copyFromRows(IntArrayList rows, Column<LocalTime> newColumn, Row row) {
         TimeColumn newTime = (TimeColumn) newColumn;
         for (int index : rows) {
             row.at(index);
@@ -56,9 +56,10 @@ public class TimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public boolean compare(int rowNumber, Column temp, Column original) {
+    public boolean compare(int rowNumber, Column<LocalTime> temp, Column<LocalTime> original) {
         TimeColumn tempTime = (TimeColumn) temp;
         TimeColumn originalTime = (TimeColumn) original;
         return originalTime.getIntInternal(rowNumber) == tempTime.getIntInternal(tempTime.size() - 1);
     }
+
 }

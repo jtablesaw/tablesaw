@@ -1,8 +1,6 @@
 package tech.tablesaw.api;
 
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.doubles.DoubleIterable;
-import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
@@ -12,7 +10,8 @@ import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import tech.tablesaw.aggregate.AggregateFunctions;
-import tech.tablesaw.columns.Column;
+import tech.tablesaw.aggregate.NumericAggregateFunction;
+import tech.tablesaw.columns.numbers.DoubleIterable;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.NumberFilters;
@@ -28,8 +27,11 @@ import java.util.function.DoublePredicate;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isNotMissing;
 
-public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
+public interface NumberColumn extends NumberMapFunctions, DoubleIterable, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn<Double> {
+
     double MISSING_VALUE = (Double) DOUBLE.getMissingValue();
 
     static boolean valueIsMissing(double value) {
@@ -43,6 +45,7 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
 
     void setPrintFormatter(NumberColumnFormatter formatter);
 
+    @Override
     int size();
 
     @Override
@@ -55,13 +58,15 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
     DoubleArrayList bottom(int n);
 
     @Override
-    Column unique();
+    NumberColumn unique();
 
     double firstElement();
 
     NumberColumn append(float f);
 
     NumberColumn append(double d);
+
+    NumberColumn append(int i);
 
     @Override
     String getString(int row);
@@ -77,10 +82,6 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
 
     @Override
     NumberColumn emptyCopy(int rowSize);
-
-    NumberColumn lead(int n);
-
-    NumberColumn lag(int n);
 
     @Override
     NumberColumn copy();
@@ -104,10 +105,13 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
 
     long getLong(int i);
 
+    default Double summarizeIf(Selection selection, NumericAggregateFunction function) {
+        NumberColumn column = where(selection);
+        return function.summarize(column);
+    }
+
     @Override
     IntComparator rowComparator();
-
-    double get(int index);
 
     NumberColumn set(int r, double value);
 
@@ -116,11 +120,6 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
     double[] asDoubleArray();
 
     @Override
-    void append(Column column);
-
-    @Override
-    DoubleIterator iterator();
-
     NumberColumn where(Selection selection);
 
     Selection eval(DoublePredicate predicate);
@@ -163,7 +162,7 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
     default int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (NumberColumn.valueIsMissing(get(i))) {
+            if (NumberColumn.valueIsMissing(getDouble(i))) {
                 count++;
             }
         }
@@ -172,27 +171,27 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
 
     // Reduce functions applied to the whole column
     default double sum() {
-        return sum.summarize(this);
+        return (Double) sum.summarize(this);
     }
 
     default double product() {
-        return product.summarize(this);
+        return (Double) product.summarize(this);
     }
 
     default double mean() {
-        return mean.summarize(this);
+        return (Double) mean.summarize(this);
     }
 
     default double median() {
-        return median.summarize(this);
+        return (Double) median.summarize(this);
     }
 
     default double quartile1() {
-        return quartile1.summarize(this);
+        return (Double) quartile1.summarize(this);
     }
 
     default double quartile3() {
-        return quartile3.summarize(this);
+        return (Double) quartile3.summarize(this);
     }
 
     default double percentile(double percentile) {
@@ -200,54 +199,54 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
     }
 
     default double range() {
-        return range.summarize(this);
+        return (Double) range.summarize(this);
     }
 
     default double max() {
-        return max.summarize(this);
+        return (Double) max.summarize(this);
     }
 
     default double min() {
-        return min.summarize(this);
+        return (Double) min.summarize(this);
     }
 
     default double variance() {
-        return variance.summarize(this);
+        return (Double) variance.summarize(this);
     }
 
     default double populationVariance() {
-        return populationVariance.summarize(this);
+        return (Double) populationVariance.summarize(this);
     }
 
     default double standardDeviation() {
-        return stdDev.summarize(this);
+        return (Double) stdDev.summarize(this);
     }
 
     default double sumOfLogs() {
-        return sumOfLogs.summarize(this);
+        return (Double) sumOfLogs.summarize(this);
     }
 
     default double sumOfSquares() {
-        return sumOfSquares.summarize(this);
+        return (Double) sumOfSquares.summarize(this);
     }
 
     default double geometricMean() {
-        return geometricMean.summarize(this);
+        return (Double) geometricMean.summarize(this);
     }
 
     /**
      * Returns the quadraticMean, aka the root-mean-square, for all values in this column
      */
     default double quadraticMean() {
-        return quadraticMean.summarize(this);
+        return (Double) quadraticMean.summarize(this);
     }
 
     default double kurtosis() {
-        return kurtosis.summarize(this);
+        return (Double) kurtosis.summarize(this);
     }
 
     default double skewness() {
-        return skewness.summarize(this);
+        return (Double) skewness.summarize(this);
     }
 
     /**
@@ -303,10 +302,19 @@ public interface NumberColumn extends Column, DoubleIterable, NumberMapFunctions
     default int countUnique() {
         DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
-            if (!NumberColumn.valueIsMissing(get(i))) {
-                doubles.add(get(i));
+            if (!NumberColumn.valueIsMissing(getDouble(i))) {
+                doubles.add(getDouble(i));
             }
         }
         return doubles.size();
     }
+
+    default Selection isMissing() {
+        return eval(isMissing);
+    }
+
+    default Selection isNotMissing() {
+        return eval(isNotMissing);
+    }
+
 }

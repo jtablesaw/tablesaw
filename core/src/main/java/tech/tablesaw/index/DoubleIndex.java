@@ -33,7 +33,7 @@ public class DoubleIndex {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Double2ObjectOpenHashMap<IntArrayList> tempMap = new Double2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
-            double value = column.get(i);
+            double value = column.getDouble(i);
             IntArrayList recordIds = tempMap.get(value);
             if (recordIds == null) {
                 recordIds = new IntArrayList();

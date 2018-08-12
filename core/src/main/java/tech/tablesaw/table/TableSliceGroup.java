@@ -20,8 +20,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -72,7 +71,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return splitColumnNames;
     }
 
-    int getByteSize(List<Column> columns) {
+    int getByteSize(List<Column<?>> columns) {
         int byteSize = 0;
         for (Column c : columns) {
             byteSize += c.byteSize();
@@ -110,8 +109,8 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     private Table splitGroupingColumn(Table groupTable) {
 
         if (splitColumnNames.length > 0) {
-            List<Column> newColumns = new ArrayList<>();
-            List<Column> columns = sourceTable.columns(splitColumnNames);
+            List<Column<?>> newColumns = new ArrayList<>();
+            List<Column<?>> columns = sourceTable.columns(splitColumnNames);
             for (Column column : columns) {
                 Column newColumn = column.emptyCopy();
                 newColumns.add(newColumn);
@@ -148,6 +147,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
      *
      * @param functions map from column name to aggregation to apply on that function
      */
+    @SuppressWarnings("unchecked")
     public Table aggregate(ListMultimap<String, AggregateFunction> functions) {
         Preconditions.checkArgument(!getSlices().isEmpty());
         Table groupTable = summaryTableName(sourceTable);
@@ -158,13 +158,19 @@ public class TableSliceGroup implements Iterable<TableSlice> {
             int functionCount = 0;
             for (AggregateFunction function : entry.getValue()) {
                 String colName = aggregateColumnName(columnName, function.functionName());
-                NumberColumn resultColumn = DoubleColumn.create(colName, getSlices().size());
+                ColumnType type = function.returnType();
+                Column resultColumn = type.create(colName);
                 for (TableSlice subTable : getSlices()) {
-                    double result = subTable.reduce(columnName, function);
+                    Object result = function.summarize(subTable.column(columnName));
                     if (functionCount == 0) {
                         groupColumn.append(subTable.name());
                     }
-                    resultColumn.append(result);
+                    if (result instanceof Number) {
+                        Number number = (Number) result;
+                        resultColumn.append(number.doubleValue());
+                    } else {
+                        resultColumn.append(result);
+                    }
                 }
                 groupTable.addColumns(resultColumn);
                 functionCount++;

@@ -231,7 +231,6 @@ public class PackedLocalDate {
 
     public static boolean isAfter(int packedDate, int value) {
         return packedDate > value;
-        //return isGreaterThan.test(packedDate, value);
     }
 
     public static boolean isEqualTo(int packedDate, int value) {

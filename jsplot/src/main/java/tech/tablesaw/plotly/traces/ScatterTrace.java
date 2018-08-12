@@ -8,7 +8,9 @@ import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.plotly.components.change.Decreasing;
 import tech.tablesaw.plotly.components.HoverLabel;
+import tech.tablesaw.plotly.components.change.Increasing;
 import tech.tablesaw.plotly.components.Line;
 import tech.tablesaw.plotly.components.Marker;
 
@@ -62,6 +64,8 @@ public class ScatterTrace extends AbstractTrace {
     private final double[] low;
     private final double[] close;
     private final double whiskerWidth;
+    private final Increasing increasing;
+    private final Decreasing decreasing;
 
     public static ScatterBuilder builder(double[] x, double[] y) {
         return new ScatterBuilder(x, y);
@@ -108,6 +112,8 @@ public class ScatterTrace extends AbstractTrace {
         this.low = builder.low;
         this.close = builder.close;
         this.whiskerWidth = builder.whiskerWidth;
+        this.increasing = builder.increasing;
+        this.decreasing = builder.decreasing;
     }
 
     private Map<String, Object> getContext(int i) {
@@ -124,6 +130,8 @@ public class ScatterTrace extends AbstractTrace {
         if (low != null) context.put("low", dataAsString(low));
         if (close != null) context.put("close", dataAsString(close));
         if (whiskerWidth != DEFAULT_WHISKER_WIDTH) context.put("whiskerWidth", whiskerWidth);
+        if (increasing != null) context.put("increasing", increasing);
+        if (decreasing != null) context.put("increasing", decreasing);
 
         context.put("marker", marker);
         context.put("showlegend", showLegend);
@@ -157,12 +165,12 @@ public class ScatterTrace extends AbstractTrace {
     }
 
     public enum Mode {
-        LINE("line"),
+        LINE("lines"),
         MARKERS("markers"),
-        LINE_AND_MARKERS("line + markers"),
-        LINE_AND_TEXT("line + text"),
-        TEXT_AND_MARKERS("text + text"),
-        LINE_TEXT_AND_MARKERS("line + text + markers"),
+        LINE_AND_MARKERS("lines+markers"),
+        LINE_AND_TEXT("lines+text"),
+        TEXT_AND_MARKERS("markers+text"),
+        LINE_TEXT_AND_MARKERS("lines+markers+text"),
         TEXT("text"),
         NONE("none");
 
@@ -191,6 +199,8 @@ public class ScatterTrace extends AbstractTrace {
         private double[] close;
         private double[] high;
         private double[] low;
+        private Increasing increasing;
+        private Decreasing decreasing;
 
         /**
          * Sets the area to fill with a solid color. Use with `fillcolor` if not "none". "tozerox" and "tozeroy"
@@ -267,6 +277,9 @@ public class ScatterTrace extends AbstractTrace {
             return this;
         }
 
+        /**
+         * For candlestick plots
+         */
         public ScatterBuilder whiskerWidth(double width) {
             Preconditions.checkArgument(width >= 0 && width <= 1);
             this.whiskerWidth = width;
@@ -288,6 +301,22 @@ public class ScatterTrace extends AbstractTrace {
             return this;
         }
 
+        /**
+         * For candlestick plots
+         */
+        public ScatterBuilder increasing(Increasing increasing) {
+            this.increasing = increasing;
+            return this;
+        }
+
+        /**
+         * For candlestick plots
+         */
+        public ScatterBuilder decreasing (Decreasing decreasing) {
+            this.decreasing = decreasing;
+            return this;
+        }
+
         public ScatterBuilder fill(ScatterTrace.Fill fill) {
             this.fill = fill;
             return this;
@@ -297,7 +326,6 @@ public class ScatterTrace extends AbstractTrace {
             this.fillColor = fillColor;
             return this;
         }
-
 
         public ScatterTrace build() {
             return new ScatterTrace(this);

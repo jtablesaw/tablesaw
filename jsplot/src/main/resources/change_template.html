@@ -1,0 +1,8 @@
+{
+{% if changeLine is not null %}
+    line: {{changeLine | raw}},
+{% endif %}
+{% if fillColor is not null %}
+    fillcolor: '{{fillColor}}',
+{% endif %}
+}

@@ -13,20 +13,23 @@ import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public interface ColumnType {
+public interface ColumnType<T> {
 
     Map<String, ColumnType> values = new HashMap<>();
 
     // standard column types
-    ColumnType BOOLEAN = BooleanColumnType.INSTANCE;
-    ColumnType STRING = StringColumnType.INSTANCE;
-    ColumnType DOUBLE = DoubleColumnType.INSTANCE;
-    ColumnType LOCAL_DATE = DateColumnType.INSTANCE;
-    ColumnType LOCAL_DATE_TIME = DateTimeColumnType.INSTANCE;
-    ColumnType LOCAL_TIME = TimeColumnType.INSTANCE;
+    ColumnType<Boolean> BOOLEAN = BooleanColumnType.INSTANCE;
+    ColumnType<String> STRING = StringColumnType.INSTANCE;
+    ColumnType<Double> DOUBLE = DoubleColumnType.INSTANCE;
+    ColumnType<LocalDate> LOCAL_DATE = DateColumnType.INSTANCE;
+    ColumnType<LocalDateTime> LOCAL_DATE_TIME = DateTimeColumnType.INSTANCE;
+    ColumnType<LocalTime> LOCAL_TIME = TimeColumnType.INSTANCE;
     ColumnType SKIP = SkipColumnType.INSTANCE;
 
     static void register(ColumnType type) {
@@ -47,7 +50,7 @@ public interface ColumnType {
         return result;
     }
 
-    Column create(String name);
+    Column<T> create(String name);
 
     String name();
 
@@ -61,9 +64,11 @@ public interface ColumnType {
 
     StringParser customParser(CsvReadOptions options);
 
-    void copy(IntArrayList rows, Column oldColumn, Column newColumn);
+    void copy(IntArrayList rows, Column<T> oldColumn, Column<T> newColumn);
 
-    void copyFromRows(IntArrayList rows, Column newColumn, Row row);
+    void copyFromRows(IntArrayList rows, Column<T> newColumn, Row row);
 
-    boolean compare(int rowNumber, Column temp, Column original);
+    boolean compare(int rowNumber, Column<T> temp, Column<T> original);
+
+    void appendColumns(Column<T> column, Column<T> columnToAppend);
 }

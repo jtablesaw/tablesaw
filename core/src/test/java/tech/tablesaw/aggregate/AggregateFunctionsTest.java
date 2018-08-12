@@ -15,21 +15,20 @@
 package tech.tablesaw.aggregate;
 
 import org.apache.commons.math3.stat.StatUtils;
+import org.junit.Before;
+import org.junit.Test;
 import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.table.SelectionTableSliceGroup;
 import tech.tablesaw.table.StandardTableSliceGroup;
-import org.junit.Before;
-import org.junit.Test;
-import tech.tablesaw.api.CategoricalColumn;
-import tech.tablesaw.api.Table;
 import tech.tablesaw.table.TableSliceGroup;
-import tech.tablesaw.io.csv.CsvReadOptions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 public class AggregateFunctionsTest {
@@ -51,6 +50,14 @@ public class AggregateFunctionsTest {
         assertEquals(6, result.rowCount());
         assertEquals("65.671875", result.get(0, 1));
         assertEquals("10.648876067826901", result.get(0, 2));
+    }
+
+    @Test
+    public void testDateMin() {
+        CategoricalColumn byColumn = table.dateColumn("date").yearQuarter();
+        Table result = table.summarize("approval", "date", mean, earliestDate).by(byColumn);
+        assertEquals(3, result.columnCount());
+        assertEquals(13, result.rowCount());
     }
 
     @Test

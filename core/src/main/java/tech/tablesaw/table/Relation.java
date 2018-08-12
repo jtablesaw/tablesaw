@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
  */
 public abstract class Relation {
 
-    public abstract Relation addColumns(Column... cols);
+    public abstract Relation addColumns(Column<?>... cols);
 
     public abstract Relation setName(String name);
 
@@ -63,7 +63,7 @@ public abstract class Relation {
     /**
      * Removes the given columns from the receiver
      */
-    public abstract Relation removeColumns(Column... columns);
+    public abstract Relation removeColumns(Column<?>... columns);
 
     public Relation removeColumns(String... columnName) {
         Column[] cols = new Column[columnName.length];
@@ -129,15 +129,15 @@ public abstract class Relation {
     /**
      * Returns a list of all the columns in the relation
      */
-    public abstract List<Column> columns();
+    public abstract List<Column<?>> columns();
 
     /**
      * Returns the columns whose names are given in the input array
      */
-    public List<Column> columns(String... columnName) {
-        List<Column> cols = new ArrayList<>(columnName.length);
-        for (int i = 0; i < columnName.length; i++) {
-            cols.add(column(columnName[i]));
+    public List<Column<?>> columns(String... columnName) {
+        List<Column<?>> cols = new ArrayList<>(columnName.length);
+        for (String aColumnName : columnName) {
+            cols.add(column(aColumnName));
         }
         return cols;
     }
@@ -145,8 +145,8 @@ public abstract class Relation {
     /**
      * Returns the columns whose indices are given in the input array
      */
-    public List<Column> columns(int... columnIndices) {
-        List<Column> cols = new ArrayList<>(columnIndices.length);
+    public List<Column<?>> columns(int... columnIndices) {
+        List<Column<?>> cols = new ArrayList<>(columnIndices.length);
         for (int i : columnIndices) {
             cols.add(column(i));
         }
@@ -156,7 +156,7 @@ public abstract class Relation {
     /**
      * Returns the index of the given column
      */
-    public abstract int columnIndex(Column col);
+    public abstract int columnIndex(Column<?> col);
 
     /**
      * Returns a String representing the value found at column index c and row index r
@@ -293,6 +293,14 @@ public abstract class Relation {
 
     public NumberColumn numberColumn(String columnName) {
         return numberColumn(columnIndex(columnName));
+    }
+
+    public DoubleColumn doubleColumn(String columnName) {
+        return doubleColumn(columnIndex(columnName));
+    }
+
+    public DoubleColumn doubleColumn(int columnIndex) {
+        return (DoubleColumn) column(columnIndex);
     }
 
     public StringColumn[] stringColumns() {

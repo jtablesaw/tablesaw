@@ -15,9 +15,58 @@ import java.util.function.Predicate;
 
 import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
-public interface DateFilters extends Column {
+public interface DateFilters extends Column<LocalDate> {
 
     DateColumn where(Selection selection);
+
+    /**
+     * This version operates on predicates that treat the given IntPredicate as operating on a packed local time
+     * This is much more efficient that using a LocalTimePredicate, but requires that the developer understand the
+     * semantics of packedLocalTimes
+     */
+    default Selection eval(IntPredicate predicate) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < data().size(); idx++) {
+            int next = data().getInt(idx);
+            if (predicate.test(next)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    default Selection eval(IntBiPredicate predicate, int value) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < data().size(); idx++) {
+            int next = data().getInt(idx);
+            if (predicate.test(next, value)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    default Selection eval(IntBiPredicate predicate, DateColumn otherColumn) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(this.getIntInternal(idx), otherColumn.getIntInternal(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
+
+    int getIntInternal(int idx);
+
+    default Selection eval(BiPredicate<LocalDate, LocalDate> predicate, LocalDate valueToCompare) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx), valueToCompare)) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
 
     /**
      * Returns a selection formed by applying the given predicate
@@ -25,13 +74,15 @@ public interface DateFilters extends Column {
      * Prefer using an IntPredicate where the int is a PackedDate, as this version creates a date object
      * for each value in the column
      */
-    Selection eval(Predicate<LocalDate> predicate);
-
-    Selection eval(IntPredicate predicate);
-
-    Selection eval(IntBiPredicate predicate, int value);
-
-    Selection eval(BiPredicate<LocalDate, LocalDate> predicate, LocalDate valueToCompare);
+    default Selection eval(Predicate<LocalDate> predicate) {
+        Selection selection = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            if (predicate.test(get(idx))) {
+                selection.add(idx);
+            }
+        }
+        return selection;
+    }
 
     default Selection isMonday() {
         return eval(PackedLocalDate::isMonday);

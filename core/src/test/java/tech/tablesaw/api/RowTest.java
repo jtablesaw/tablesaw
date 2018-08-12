@@ -63,9 +63,9 @@ public class RowTest {
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();
-            assertEquals((int) table.numberColumn(1).get(row.getRowNumber()),
+            assertEquals((int) table.numberColumn(1).getDouble(row.getRowNumber()),
                     row.getInt(1));
-            assertEquals((int) table.numberColumn("approval").get(row.getRowNumber()),
+            assertEquals((int) table.numberColumn("approval").getDouble(row.getRowNumber()),
                     row.getInt("approval"));
         }
     }

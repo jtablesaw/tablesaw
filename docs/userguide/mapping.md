@@ -40,6 +40,65 @@ The new Column is not added to the original columns table by default. To add it,
     StringColumn newColumn = table.column("Name").upperCase();
     table.addColumn(newColumn);
 
+## Custom map functions 
+
+You can create functions that build new columns using *doWithEach():*
+
+```java
+Table table = Table.read().csv("../data/bush.csv");
+
+DateColumn dc1 = table.dateColumn("date");
+DateColumn dc2 = DateColumn.create("100 days later");
+
+dc1.doWithEach(localDate -> dc2.append(localDate.plusDays(100)));
+```
+
+The method *doWithEach(Consumer<T>)* is defined on AbstractColumn. It takes a Consumer that accepts values of the same type as the column holds: LocalDates in the case of DateColumn. If the lambda syntax above is a bit too cryptic, here's a version that does the same thing with the Consumer written out as an anonymous class:
+
+```java
+DateColumn dc2 = DateColumn.create("100 days later");
+
+dc1.doWithEach(new Consumer<LocalDate>() {
+    @Override
+    public void accept(LocalDate localDate) {
+        if (localDate == null) {
+            dc2.appendMissing();
+        } else {
+        	dc2.append(localDate.plusDays(100));
+        }
+    }
+});
+```
+
+The accept() method here calls *plusDays(100)*  on each value in the column that receives the doWithEach method invocation and appends each result to the column d2. The results are added to the column dc2 declared just before the method is called. 
+
+In writing your own map functions it's good practice to handle missing data as we do above.
+
+## Columns are iterable
+
+You can also use a for loop to create new columns based on the values of existing ones. All columns in Tablesaw are iterable.
+
+ For example: 
+
+```java
+StringColumn season = StringColumn.create("Season");
+
+for (LocalDate date : dateColumn) {    
+	if (date == null) {        
+		newColumn.append(StringColumn.MISSING_VALUE);    
+	}   
+	else if(date.month.equals("May") {        
+		newColumn.append("Flower Season");    
+	}     
+	else {   
+    	newColumn.append("Not Flower Season");    
+	}
+}
+myTable.addColumns(season);
+```
+
+
+
 ## List of Current Map Functions
 
 ### String Mappers

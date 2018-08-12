@@ -44,6 +44,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.BiPredicate;
@@ -56,7 +57,7 @@ import static tech.tablesaw.api.ColumnType.DOUBLE;
 /**
  * A column in a base table that contains double precision floating point values
  */
-public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implements NumberColumn {
+public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn {
 
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
@@ -129,8 +130,8 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
 
     @Override
     public DoubleColumn removeMissing() {
-        final DoubleColumn noMissing = (DoubleColumn) emptyCopy();
-        final DoubleIterator iterator = iterator();
+        final DoubleColumn noMissing = emptyCopy();
+        final DoubleIterator iterator = doubleIterator();
         while(iterator.hasNext()) {
             final double v = iterator.nextDouble();
             if (!NumberColumn.valueIsMissing(v)) {
@@ -160,7 +161,7 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
 
     @Override
     public boolean isMissing(final int rowNumber) {
-        return NumberColumn.valueIsMissing(get(rowNumber));
+        return NumberColumn.valueIsMissing(getDouble(rowNumber));
     }
 
     @Override
@@ -241,7 +242,7 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
      *
      */
     @Override
-    public Column unique() {
+    public DoubleColumn unique() {
         final DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
             if (!isMissing(i)) {
@@ -271,19 +272,17 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
     }
 
     /**
-     * Adds the given Double to this column
-     */
-    @Override
-    public DoubleColumn append(Double d) {
-        return append(d.doubleValue());
-    }
-
-    /**
      * Adds the given double to this column
      */
     @Override
     public DoubleColumn append(double d) {
         data.add(d);
+        return this;
+    }
+
+    @Override
+    public NumberColumn append(int i) {
+        data.add(i);
         return this;
     }
 
@@ -298,17 +297,28 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
 
     @Override
     public double getDouble(final int row) {
-        return get(row);
+        return data.getDouble(row);
     }
 
     @Override
     public String getUnformattedString(final int row) {
-        return String.valueOf(get(row));
+        return String.valueOf(getDouble(row));
     }
 
     @Override
     public DoubleColumn emptyCopy() {
         return emptyCopy(DEFAULT_ARRAY_SIZE);
+    }
+
+    @Override
+    public DoubleColumn append(Double val) {
+        this.append(val.doubleValue());
+        return this;
+    }
+
+    public DoubleColumn append(Integer val) {
+        this.append(val.doubleValue());
+        return this;
     }
 
     @Override
@@ -320,14 +330,14 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
     }
 
     @Override
-    public NumberColumn lead(final int n) {
-        final NumberColumn numberColumn = lag(-n);
+    public DoubleColumn lead(final int n) {
+        final DoubleColumn numberColumn = lag(-n);
         numberColumn.setName(name() + " lead(" + n + ")");
         return numberColumn;
     }
 
     @Override
-    public NumberColumn lag(final int n) {
+    public DoubleColumn lag(final int n) {
         final int srcPos = n >= 0 ? 0 : 0 - n;
         final double[] dest = new double[size()];
         final int destPos = n <= 0 ? 0 : n;
@@ -346,7 +356,7 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
     }
 
     @Override
-    public NumberColumn copy() {
+    public DoubleColumn copy() {
         final DoubleColumn column = emptyCopy(size());
         column.data = data.clone();
         return column;
@@ -399,11 +409,11 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
      */
     @Override
     public Integer roundInt(final int i) {
-        final double value = get(i);
+        final double value = getDouble(i);
         if (NumberColumn.valueIsMissing(value)) {
             return null;
         }
-        return (int) Math.round(get(i));
+        return (int) Math.round(getDouble(i));
     }
 
     /**
@@ -428,7 +438,7 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
     }
 
     @Override
-    public double get(final int index) {
+    public Double get(final int index) {
         return data.getDouble(index);
     }
 
@@ -440,7 +450,7 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
 
     @Override
     public DoubleColumn set(int i, Double val) {
-        return set(i, val.doubleValue());
+        return set(i, (double) val);
     }
 
     /**
@@ -468,22 +478,28 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
     }
 
     @Override
-    public void append(final Column column) {
+    public DoubleColumn append(final Column<Double> column) {
         Preconditions.checkArgument(column.type() == this.type());
-        final NumberColumn numberColumn = (NumberColumn) column;
+        final DoubleColumn numberColumn =  (DoubleColumn) column;
         for (int i = 0; i < numberColumn.size(); i++) {
-            append(numberColumn.get(i));
+            append(numberColumn.getDouble(i));
         }
+        return this;
     }
 
     @Override
-    public DoubleIterator iterator() {
+    public DoubleIterator doubleIterator() {
         return data.iterator();
     }
 
     @Override
-    public NumberColumn where(final Selection selection) {
-        return (NumberColumn) subset(selection);
+    public Iterator<Double> iterator() {
+        return data.iterator();
+    }
+
+    @Override
+    public DoubleColumn where(final Selection selection) {
+        return (DoubleColumn) subset(selection);
     }
 
     @Override
@@ -502,7 +518,7 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
     public Selection eval(final DoubleBiPredicate predicate, final NumberColumn otherColumn) {
         final Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(get(idx), otherColumn.get(idx))) {
+            if (predicate.test(getDouble(idx), otherColumn.getDouble(idx))) {
                 selection.add(idx);
             }
         }
@@ -559,7 +575,7 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
         final Selection results = new BitmapBackedSelection();
         final DoubleRBTreeSet doubleSet = new DoubleRBTreeSet(doubles);
         for (int i = 0; i < size(); i++) {
-            if (doubleSet.contains(get(i))) {
+            if (doubleSet.contains(getDouble(i))) {
                 results.add(i);
             }
         }
@@ -602,7 +618,7 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
      */
     @Override
     public byte[] asBytes(final int rowNumber) {
-        return ByteBuffer.allocate(byteSize()).putDouble(get(rowNumber)).array();
+        return ByteBuffer.allocate(byteSize()).putDouble(getDouble(rowNumber)).array();
     }
 
     @Override
@@ -616,7 +632,9 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
 
     public IntSet asIntegerSet() {
         final IntSet ints = new IntOpenHashSet();
-        for (final double d : this) {
+        DoubleIterator it = doubleIterator();
+        while (it.hasNext()) {
+            double d = it.nextDouble();
             if (!NumberColumn.valueIsMissing(d)) {
                 ints.add((int) Math.round(d));
             }
@@ -632,7 +650,9 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
     @Override
     public DateTimeColumn asDateTimes(ZoneOffset offset) {
         DateTimeColumn column = DateTimeColumn.create(name() + ": date time");
-        for (double d : this) {
+        DoubleIterator it = doubleIterator();
+        while (it.hasNext()) {
+            double d = it.nextDouble();
             LocalDateTime dateTime =
                     Instant.ofEpochMilli((long) d).atZone(offset).toLocalDateTime();
             column.append(dateTime);
@@ -691,8 +711,7 @@ public class DoubleColumn extends AbstractColumn<Double, DoubleColumn> implement
     }
 
     @Override
-    public Double getObject(int index) {
-        return getDouble(index);
+    public int compare(Double o1, Double o2) {
+        return Double.compare(o1, o2);
     }
-
 }

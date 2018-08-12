@@ -61,7 +61,7 @@ public class Table extends Relation implements Iterable<Row> {
     /**
      * The columns that hold the data in this table
      */
-    private final List<Column> columnList = new ArrayList<>();
+    private final List<Column<?>> columnList = new ArrayList<>();
     /**
      * The name of the table
      */
@@ -82,7 +82,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     protected Table(String name, Column... columns) {
         this(name);
-        for (Column column : columns) {
+        for (final Column<?> column : columns) {
             this.addColumns(column);
         }
     }
@@ -99,7 +99,7 @@ public class Table extends Relation implements Iterable<Row> {
      *
      * @param columns One or more columns, all of the same @code{column.size()}
      */
-    public static Table create(String tableName, Column... columns) {
+    public static Table create(final String tableName, final Column<?>... columns) {
         return new Table(tableName, columns);
     }
 
@@ -139,8 +139,8 @@ public class Table extends Relation implements Iterable<Row> {
      * Adds the given column to this table
      */
     @Override
-    public Table addColumns(Column... cols) {
-        for (Column c : cols) {
+    public Table addColumns(final Column<?>... cols) {
+        for (final Column<?> c : cols) {
             validateColumn(c);
             columnList.add(c);
         }
@@ -150,7 +150,7 @@ public class Table extends Relation implements Iterable<Row> {
     /**
      * Throws an IllegalArgumentException if a column with the given name is already in the table
      */
-    private void validateColumn(Column newColumn) {
+    private void validateColumn(final Column<?> newColumn) {
         Preconditions.checkNotNull(newColumn, "Attempted to add a null to the columns in table " + name);
         List<String> stringList = new ArrayList<>();
         for (String name : columnNames()) {
@@ -168,7 +168,7 @@ public class Table extends Relation implements Iterable<Row> {
      * @param index  Zero-based index into the column list
      * @param column Column to be added
      */
-    public Table insertColumn(int index, Column column) {
+    public Table insertColumn(int index, Column<?> column) {
         validateColumn(column);
         columnList.add(index, column);
         return this;
@@ -180,7 +180,7 @@ public class Table extends Relation implements Iterable<Row> {
      * @param colIndex  Zero-based index of the column to be replaced
      * @param newColumn Column to be added
      */
-    public Table replaceColumn(int colIndex, Column newColumn) {
+    public Table replaceColumn(final int colIndex, final Column<?> newColumn) {
         removeColumns(column(colIndex));
         insertColumn(colIndex, newColumn);
         return this;
@@ -192,7 +192,7 @@ public class Table extends Relation implements Iterable<Row> {
      * @param columnName String name of the column to be replaced
      * @param newColumn  Column to be added
      */
-    public Table replaceColumn(String columnName, Column newColumn) {
+    public Table replaceColumn(final String columnName, final Column<?> newColumn) {
         int colIndex = columnIndex(columnName);
         replaceColumn(colIndex, newColumn);
         return this;
@@ -213,7 +213,7 @@ public class Table extends Relation implements Iterable<Row> {
      * @param columnIndex an integer at least 0 and less than number of columns in the table
      */
     @Override
-    public Column column(int columnIndex) {
+    public Column<?> column(int columnIndex) {
         return columnList.get(columnIndex);
     }
 
@@ -242,7 +242,7 @@ public class Table extends Relation implements Iterable<Row> {
      * Returns the list of columns
      */
     @Override
-    public List<Column> columns() {
+    public List<Column<?>> columns() {
         return columnList;
     }
 
@@ -253,8 +253,8 @@ public class Table extends Relation implements Iterable<Row> {
     /**
      * Returns only the columns whose names are given in the input array
      */
-    public List<CategoricalColumn> categoricalColumns(String... columnNames) {
-        List<CategoricalColumn> columns = new ArrayList<>();
+    public List<CategoricalColumn<?>> categoricalColumns(String... columnNames) {
+        List<CategoricalColumn<?>> columns = new ArrayList<>();
         for (String columnName : columnNames) {
             columns.add(categoricalColumn(columnName));
         }
@@ -286,7 +286,7 @@ public class Table extends Relation implements Iterable<Row> {
      *
      * @throws IllegalArgumentException if the column is not present in this table
      */
-    public int columnIndex(Column column) {
+    public int columnIndex(Column<?> column) {
         int columnIndex = -1;
         for (int i = 0; i < columnList.size(); i++) {
             if (columnList.get(i).equals(column)) {
@@ -326,7 +326,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     @Override
     public String get(int r, int c) {
-        Column column = column(c);
+        Column<?> column = column(c);
         return column.getString(r);
     }
 
@@ -338,7 +338,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     @Override
     public String getUnformatted(int r, int c) {
-        Column column = column(c);
+        Column<?> column = column(c);
         return column.getUnformattedString(r);
     }
 
@@ -351,7 +351,7 @@ public class Table extends Relation implements Iterable<Row> {
      *                   // TODO: performance would be enhanced if columns could be referenced via a hashTable
      */
     public String get(int r, String columnName) {
-        Column column = column(columnIndex(columnName));
+        Column<?> column = column(columnIndex(columnName));
         return column.getString(r);
     }
 
@@ -360,7 +360,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public Table copy() {
         Table copy = new Table(name);
-        for (Column column : columnList) {
+        for (Column<?> column : columnList) {
             copy.addColumns(column.emptyCopy());
         }
 
@@ -376,7 +376,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public Table emptyCopy() {
         Table copy = new Table(name);
-        for (Column column : columnList) {
+        for (Column<?> column : columnList) {
             copy.addColumns(column.emptyCopy());
         }
         return copy;
@@ -387,7 +387,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public Table emptyCopy(int rowSize) {
         Table copy = new Table(name);
-        for (Column column : columnList) {
+        for (Column<?> column : columnList) {
             copy.addColumns(column.emptyCopy(rowSize));
         }
         return copy;
@@ -607,14 +607,14 @@ public class Table extends Relation implements Iterable<Row> {
     public void addRow(int rowIndex, Table sourceTable) {
         IntArrayList rows = new IntArrayList();
         for (int i = 0; i < columnCount(); i++) {
-            Column column = column(i);
+            Column<?> column = column(i);
             rows.add(rowIndex);
             column.type().copy(rows, sourceTable.column(i), column(i));
         }
     }
 
     public void addRow(Row row) {
-        for (Column column : columns()) {
+        for (Column<?> column : columns()) {
             final ColumnType type = column.type();
             IntArrayList rows = new IntArrayList();
             rows.add(row.getRowNumber());
@@ -704,7 +704,7 @@ public class Table extends Relation implements Iterable<Row> {
         t.addColumns(columnType);
         columnName.addAll(columnNames());
         for (int i = 0; i < columnCount(); i++) {
-            Column column = columnList.get(i);
+            Column<?> column = columnList.get(i);
             columnType.append(column.type().name());
         }
         return t;
@@ -738,7 +738,7 @@ public class Table extends Relation implements Iterable<Row> {
         for (int row = 0; row < rowCount(); row++) {
             boolean add = true;
             for (int col = 0; col < columnCount(); col++) {
-                Column c = column(col);
+                Column<?> c = column(col);
                 if (c.isMissing(row)) {
                     add = false;
                     break;
@@ -751,7 +751,7 @@ public class Table extends Relation implements Iterable<Row> {
         return temp;
     }
 
-    public Table select(Column... columns) {
+    public Table select(Column<?>... columns) {
         return new Table(this.name, columns);
     }
 
@@ -763,7 +763,7 @@ public class Table extends Relation implements Iterable<Row> {
      * Removes the given columns
      */
     @Override
-    public Table removeColumns(Column... columns) {
+    public Table removeColumns(Column<?>... columns) {
         columnList.removeAll(Arrays.asList(columns));
         return this;
     }
@@ -772,15 +772,15 @@ public class Table extends Relation implements Iterable<Row> {
      * Removes the given columns with missing values
      */
     public Table removeColumnsWithMissingValues() {
-        removeColumns(columnList.stream().filter(x -> x.countMissing() > 0).toArray(Column[]::new));
+        removeColumns(columnList.stream().filter(x -> x.countMissing() > 0).toArray(Column<?>[]::new));
         return this;
     }
 
     /**
      * Removes all columns except for those given in the argument from this table
      */
-    public Table retainColumns(Column... columns) {
-        List<Column> retained = Arrays.asList(columns);
+    public Table retainColumns(Column<?>... columns) {
+        List<Column<?>> retained = Arrays.asList(columns);
         columnList.clear();
         columnList.addAll(retained);
         return this;
@@ -790,16 +790,18 @@ public class Table extends Relation implements Iterable<Row> {
      * Removes all columns except for those given in the argument from this table
      */
     public Table retainColumns(String... columnNames) {
-        List<Column> retained = columns(columnNames);
+        List<Column<?>> retained = columns(columnNames);
         columnList.clear();
         columnList.addAll(retained);
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public Table append(Table tableToAppend) {
-        for (Column column : columnList) {
-            Column columnToAppend = tableToAppend.column(column.name());
-            column.append(columnToAppend);
+        for (final Column<?> column : columnList) {
+            final Column<?> columnToAppend = tableToAppend.column(column.name());
+            ColumnType type = column.type();
+            type.appendColumns(column, columnToAppend);
         }
         return this;
     }
@@ -814,7 +816,7 @@ public class Table extends Relation implements Iterable<Row> {
     public Table concat(Table tableToConcatenate) {
         Preconditions.checkArgument(tableToConcatenate.rowCount() == this.rowCount(),
                 "Both tables must have the same number of rows to concatenate them.");
-        for (Column column : tableToConcatenate.columns()) {
+        for (Column<?> column : tableToConcatenate.columns()) {
             this.addColumns(column);
         }
         return this;
@@ -844,17 +846,17 @@ public class Table extends Relation implements Iterable<Row> {
         return new Summarizer(this, numberColumn, function);
     }
 
-    public Summarizer summarize(Column numberColumn1, Column numberColumn2,
+    public Summarizer summarize(Column<?> column1, Column<?> column2,
                                 AggregateFunction... function) {
-        return new Summarizer(this, numberColumn1, numberColumn2, function);
+        return new Summarizer(this, column1, column2, function);
     }
 
-    public Summarizer summarize(Column column1, Column column2, Column column3,
+    public Summarizer summarize(Column<?> column1, Column<?> column2, Column<?> column3,
                                 AggregateFunction... function) {
         return new Summarizer(this, column1, column2, column3, function);
     }
 
-    public Summarizer summarize(Column column1, Column column2, Column column3, Column column4,
+    public Summarizer summarize(Column<?> column1, Column<?> column2, Column<?> column3, Column<?> column4,
                                 AggregateFunction... function) {
         return new Summarizer(this, column1, column2, column3, column4, function);
     }
@@ -903,7 +905,7 @@ public class Table extends Relation implements Iterable<Row> {
      * Returns a table containing two columns, the grouping column, and a column named "Count" that contains
      * the counts for each grouping column value
      */
-    public Table countBy(CategoricalColumn groupingColumn) {
+    public Table countBy(CategoricalColumn<?> groupingColumn) {
         return groupingColumn.countByCategory();
     }
 

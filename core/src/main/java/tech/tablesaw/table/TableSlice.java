@@ -16,7 +16,8 @@ package tech.tablesaw.table;
 
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import tech.tablesaw.aggregate.AggregateFunction;
+import tech.tablesaw.aggregate.NumericAggregateFunction;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -47,19 +48,19 @@ public class TableSlice extends Relation implements IntIterable {
     }
 
     @Override
-    public Column column(int columnIndex) {
+    public Column<?> column(int columnIndex) {
         return table.column(columnIndex).subset(selection);
     }
 
     @Override
-    public Column column(String columnName) {
+    public Column<?> column(String columnName) {
         return table.column(columnName).subset(selection);
     }
 
     /**
      * Returns the entire column of the source table, unfiltered
      */
-    private Column entireColumn(int columnIndex) {
+    private Column<?> entireColumn(int columnIndex) {
         return table.column(columnIndex);
     }
 
@@ -74,8 +75,8 @@ public class TableSlice extends Relation implements IntIterable {
     }
 
     @Override
-    public List<Column> columns() {
-        List<Column> columns = new ArrayList<>();
+    public List<Column<?>> columns() {
+        List<Column<?>> columns = new ArrayList<>();
         for (int i = 0; i < columnCount(); i++) {
             columns.add(entireColumn(i));
         }
@@ -111,12 +112,12 @@ public class TableSlice extends Relation implements IntIterable {
     }
 
     @Override
-    public TableSlice addColumns(Column... column) {
+    public TableSlice addColumns(Column<?>... column) {
         throw new UnsupportedOperationException("Class TableSlice does not support the addColumns operation");
     }
 
     @Override
-    public TableSlice removeColumns(Column... columns) {
+    public TableSlice removeColumns(Column<?>... columns) {
         throw new UnsupportedOperationException("Class TableSlice does not support the removeColumns operation");
     }
 
@@ -141,7 +142,7 @@ public class TableSlice extends Relation implements IntIterable {
 
     public Table asTable() {
         Table table = Table.create(this.name());
-        for (Column column : columns()) {
+        for (Column<?> column : columns()) {
             table.addColumns(column.where(selection));
         }
         return table;
@@ -159,9 +160,9 @@ public class TableSlice extends Relation implements IntIterable {
      * @return the function result
      * @throws IllegalArgumentException if numberColumnName doesn't name a numeric column in this table
      */
-    public double reduce(String numberColumnName, AggregateFunction function) {
-        Column column = table.column(numberColumnName);
-        return function.summarize(column.where(selection));
+    public double reduce(String numberColumnName, NumericAggregateFunction function) {
+        NumberColumn column = table.numberColumn(numberColumnName);
+        return (Double) function.summarize(column.where(selection));
     }
 
     /**

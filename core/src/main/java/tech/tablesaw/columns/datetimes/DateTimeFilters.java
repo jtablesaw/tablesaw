@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 
 import static tech.tablesaw.columns.datetimes.DateTimePredicates.*;
 
-public interface DateTimeFilters extends Column {
+public interface DateTimeFilters extends Column<LocalDateTime> {
 
     default Selection isAfter(LocalDateTime value) {
         return eval(isGreaterThan, PackedLocalDateTime.pack(value));

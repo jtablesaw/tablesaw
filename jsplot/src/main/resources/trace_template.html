@@ -16,6 +16,12 @@ low: {{low | raw}},
 {% if close is not null %}
 close: {{close | raw}},
 {% endif %}
+{% if increasing is not null %}
+increasing: {{increasing | raw}},
+{% endif %}
+{% if decreasing is not null %}
+decreasing: {{decreasing | raw}},
+{% endif %}
 {% if z is not null %}
 z: {{z | raw}},
 {% endif %}
