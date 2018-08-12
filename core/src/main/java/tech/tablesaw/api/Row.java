@@ -1,9 +1,6 @@
 package tech.tablesaw.api;
 
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.PackedDate;
-import tech.tablesaw.columns.datetimes.PackedDateTime;
-import tech.tablesaw.columns.times.PackedTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,12 +15,12 @@ public class Row implements Iterator<Row> {
     private int rowNumber;
     private final Table table;
     private final String[] columnNames;
-    private final Map<String, PackedDate> dateColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, DateColumn> dateColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, DoubleColumn> doubleColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, StringColumn> stringColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, BooleanColumn> booleanColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private final Map<String, PackedDateTime> dateTimeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private final Map<String, PackedTime> timeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, DateTimeColumn> dateTimeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, TimeColumn> timeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     private final Map<String, Column> columnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
@@ -42,13 +39,13 @@ public class Row implements Iterator<Row> {
                 stringColumnMap.put(column.name(), (StringColumn) column);
             }
             if (column instanceof DateColumn) {
-                dateColumnMap.put(column.name(), new PackedDate((DateColumn) column));
+                dateColumnMap.put(column.name(), (DateColumn) column);
 
             } else if (column instanceof DateTimeColumn) {
-                dateTimeColumnMap.put(column.name(), new PackedDateTime((DateTimeColumn) column));
+                dateTimeColumnMap.put(column.name(), (DateTimeColumn) column);
 
             } else if (column instanceof TimeColumn) {
-                timeColumnMap.put(column.name(), new PackedTime((TimeColumn) column));
+                timeColumnMap.put(column.name(), (TimeColumn) column);
             }
             columnMap.put(column.name(), column);
         }
@@ -101,35 +98,35 @@ public class Row implements Iterator<Row> {
     }
 
     public LocalDate getDate(String columnName) {
-        return getPackedDate(columnName).asLocalDate();
-    }
-
-    public LocalDate getDate(int columnIndex) {
-        return getPackedDate(columnNames[columnIndex]).asLocalDate();
-    }
-
-    public PackedDate getPackedDate(String columnName) {
         return dateColumnMap.get(columnName).get(rowNumber);
     }
 
-    public PackedDate getPackedDate(int columnIndex) {
+    public LocalDate getDate(int columnIndex) {
         return dateColumnMap.get(columnNames[columnIndex]).get(rowNumber);
     }
 
+    public int getPackedDate(String columnName) {
+        return dateColumnMap.get(columnName).getIntInternal(rowNumber);
+    }
+
+    public int getPackedDate(int columnIndex) {
+        return dateColumnMap.get(columnNames[columnIndex]).getIntInternal(rowNumber);
+    }
+
     public LocalTime getTime(String columnName) {
-        return getPackedTime(columnName).asLocalTime();
-    }
-
-    public LocalTime getTime(int columnIndex) {
-        return getPackedTime(columnNames[columnIndex]).asLocalTime();
-    }
-
-    public PackedTime getPackedTime(String columnName) {
         return timeColumnMap.get(columnName).get(rowNumber);
     }
 
-    public PackedTime getPackedTime(int columnIndex) {
+    public LocalTime getTime(int columnIndex) {
         return timeColumnMap.get(columnNames[columnIndex]).get(rowNumber);
+    }
+
+    public int getPackedTime(String columnName) {
+        return timeColumnMap.get(columnName).getIntInternal(rowNumber);
+    }
+
+    public int getPackedTime(int columnIndex) {
+        return timeColumnMap.get(columnNames[columnIndex]).getIntInternal(rowNumber);
     }
 
     public LocalDateTime getDateTime(String columnName) {
@@ -140,12 +137,12 @@ public class Row implements Iterator<Row> {
         return getDateTime(columnNames[columnIndex]);
     }
 
-    public PackedDateTime getPackedDateTime(String columnName) {
-        return dateTimeColumnMap.get(columnName).get(rowNumber);
+    public long getPackedDateTime(String columnName) {
+        return dateTimeColumnMap.get(columnName).getLongInternal(rowNumber);
     }
 
-    public PackedDateTime getPackedDateTime(int columnIndex) {
-        return dateTimeColumnMap.get(columnNames[columnIndex]).get(rowNumber);
+    public long getPackedDateTime(int columnIndex) {
+        return dateTimeColumnMap.get(columnNames[columnIndex]).getLongInternal(rowNumber);
     }
 
     public boolean getBoolean(String columnName) {

@@ -14,11 +14,14 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.collect.Lists;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import tech.tablesaw.columns.Column;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -30,8 +33,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static org.junit.Assert.*;
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.google.common.collect.Lists;
+
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 
 /**
  * Tests for Table
@@ -213,11 +222,11 @@ public class TableTest {
     @Test
     public void testDoWithEachRow2() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
-        LocalDate dateTarget = LocalDate.of(2002, 1, 1);
+        int dateTarget = PackedLocalDate.pack(LocalDate.of(2002, 1, 1));
         double ratingTarget = 75;
         AtomicInteger count = new AtomicInteger(0);
         Consumer<Row> doable = row -> {
-            if (row.getPackedDate("date").isAfter(dateTarget)
+            if (row.getPackedDate("date") > dateTarget
                     && row.getInt("approval") > ratingTarget) {
                 count.getAndIncrement();
             }
@@ -229,10 +238,10 @@ public class TableTest {
     @Test
     public void testDetect() throws Exception {
         Table t = Table.read().csv("../data/bush.csv");
-        LocalDate dateTarget = LocalDate.of(2002, 1, 1);
+        int dateTarget = PackedLocalDate.pack(LocalDate.of(2002, 1, 1));
         double ratingTarget = 75;
         Predicate<Row> doable = row ->
-                (row.getPackedDate("date").isAfter(dateTarget)
+                (row.getPackedDate("date") > dateTarget
                 && row.getInt("approval") > ratingTarget);
         assertTrue(t.detect(doable));
     }

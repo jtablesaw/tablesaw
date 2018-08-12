@@ -90,9 +90,9 @@ public class RowTest {
         while (row.hasNext()) {
             row.next();
             assertEquals(table.dateColumn(0).getIntInternal(row.getRowNumber()),
-                    row.getPackedDate(0).getPackedValue());
+                    row.getPackedDate(0));
             assertEquals(table.dateColumn("date").getIntInternal(row.getRowNumber()),
-                    row.getPackedDate("date").getPackedValue());
+                    row.getPackedDate("date"));
         }
     }
 }
