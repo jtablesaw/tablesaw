@@ -20,6 +20,7 @@ import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.plotly.api.AreaPlot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.Histogram2D;
@@ -29,6 +30,7 @@ import tech.tablesaw.plotly.api.ParetoPlot;
 import tech.tablesaw.plotly.api.PiePlot;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
 
 /**
  * Usage example using a Tornado data set
@@ -111,11 +113,25 @@ public class MurderVisualizations extends AbstractExample {
 
         details.numberColumn("offCount")
                 .set(
-                        details.numberColumn("offCount").isEqualTo(0)
+                      details.numberColumn("offCount").isEqualTo(0)
                         .andNot(details.stringColumn("situation").containsString("multiple offenders")), 1);
 
         out(details);
         out(details.stringColumn("weapon").unique().print());
+
+        StringColumn weaponCategory = details.stringColumn("Weapon").copy();
+        weaponCategory.set(
+                weaponCategory.containsString("gun")
+                        .or(weaponCategory.containsString("Firearm")
+                                .or(weaponCategory.containsString("Rifle"))), "Firearms");
+        weaponCategory.setName("Weapon category");
+        details.addColumns(weaponCategory);
+        Table categoryCount = details.countBy(weaponCategory);
+        out(categoryCount.printAll());
+
+        Table xtab1 = details.xTabColumnPercents("VicSex", "Weapon category");
+        xtab1.columnsOfType(DOUBLE).stream().forEach(e -> ((DoubleColumn)e).setPrintFormatter(NumberColumnFormatter.percent(1)));
+        out(xtab1.printAll());
 
         Plot.show(Histogram.create("victim age", details, "vicage"));
         Plot.show(Histogram.create("offender age", details, "offage"));
@@ -123,5 +139,32 @@ public class MurderVisualizations extends AbstractExample {
 
         Table weaponSummary = details.countBy(details.stringColumn("weapon"));
         Plot.show(HorizontalBarPlot.create("homicide counts by weapon used", weaponSummary, "Category", "count"));
+
+        Table femaleVictims = details.where(
+                details.stringColumn("vicSex").isEqualTo("Female")
+                        .and(details.stringColumn("Weapon category").isNotEqualTo("Firearms"))
+                            .and(details.stringColumn("Solved").isEqualTo("No")));
+        femaleVictims.setName("Selected female victims");
+        out(femaleVictims.shape());
+        Table asphyx = femaleVictims.where(
+                femaleVictims.stringColumn("Weapon category").containsString("Asphyx")
+                    .and(femaleVictims.stringColumn("Relationship").isEqualTo("Relationship not determined")))
+
+                .sortAscendingOn("ID");
+        Table fla = asphyx.where(asphyx.stringColumn("Statename").isEqualTo("FLA"));
+        fla = (Table) fla.removeColumns("State", "Source", "Solved", "StateName", "ActionType", "Homicide", "OffSex");
+        fla = fla.retainColumns("CNTYFIPS", "Agency", "year", "month", "VicAge", "VicRace", "Situation", "Circumstance");
+        out(fla.printAll());
+        fla.write().csv("fla_asphyx.csv");
+        out(asphyx.shape());
+
+
+        Plot.show(Histogram.create("age", asphyx, "vicAge"));
+        Table counts = asphyx.xTabCounts("year", "StateName");
+        counts.columnsOfType(DOUBLE).stream().forEach(e -> ((DoubleColumn)e).setPrintFormatter(NumberColumnFormatter.ints()));
+        counts.columnsOfType(DOUBLE).stream().forEach(e -> ((DoubleColumn)e)
+                .set(((DoubleColumn) e).isEqualTo(0), DoubleColumn.MISSING_VALUE));
+        out(counts.printAll());
+        out(femaleVictims.shape());
     }
 }
