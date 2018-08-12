@@ -14,15 +14,12 @@
 
 package tech.tablesaw.columns;
 
-import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.ColumnType;
-
-import java.util.function.Consumer;
 
 /**
  * Partial implementation of the {@link Column} interface
  */
-public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implements Column, Iterable<T> {
+public abstract class AbstractColumn<T> implements Column<T> {
 
     public static final int DEFAULT_ARRAY_SIZE = 128;
 
@@ -30,7 +27,7 @@ public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implemen
 
     private final ColumnType type;
 
-    public AbstractColumn(ColumnType type, String name) {
+    public AbstractColumn(final ColumnType type, final String name) {
         this.type = type;
         setName(name);
     }
@@ -41,22 +38,9 @@ public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implemen
     }
 
     @Override
-    public Column setName(String name) {
+    public Column<T> setName(final String name) {
         this.name = name.trim();
         return this;
-    }
-
-    /**
-     * Returns the width of the column in characters, for printing
-     */
-    @Override
-    public int columnWidth() {
-
-        int width = name().length();
-        for (int rowNum = 0; rowNum < size(); rowNum++) {
-            width = Math.max(width, StringUtils.length(getString(rowNum)));
-        }
-        return width;
     }
 
     @Override
@@ -65,66 +49,10 @@ public abstract class AbstractColumn<T, C extends AbstractColumn<T, C>> implemen
     }
 
     @Override
-    public abstract C emptyCopy();
-
-    /**
-     * Create a copy of this column where missing values are replaced with the given default value
-     */
-    public C fillMissing(T defaultVal) {
-        C newCol = emptyCopy();
-        for (int i = 0; i < this.size(); i++) {
-            if (isMissing(i)) {
-                newCol.append(defaultVal);
-            } else {
-                newCol.appendCell(getUnformattedString(i));
-            }
-        }
-        return newCol;
-    }
-
-    /**
-     * Create a copy of this column where missing values are replaced with the corresponding value in the given column
-     */
-    public C fillMissing(C other) {
-        C newCol = emptyCopy();
-        for (int i = 0; i < this.size(); i++) {
-            if (isMissing(i)) {
-                newCol.appendCell(other.getUnformattedString(i));
-            } else {
-                newCol.appendCell(getUnformattedString(i));
-            }
-        }
-        return newCol;
-    }
-
-    /**
-     * Applies the given consumer to each element in this column
-     */
-    public void doWithEach(Consumer<T> consumer) {
-        for (T t : this) {
-            consumer.accept(t);
-        }
-    }
-
-    public abstract C append(T val);
-
-    public abstract C set(int i, T val);
-
-    public abstract T getObject(int i);
+    public abstract Column<T> emptyCopy();
 
     @Override
     public String toString() {
         return type().getPrinterFriendlyName() + " column: " + name();
-    }
-
-    @Override
-    public String print() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(title());
-        for (int i = 0; i < size(); i++) {
-            builder.append(getString(i));
-            builder.append('\n');
-        }
-        return builder.toString();
     }
 }

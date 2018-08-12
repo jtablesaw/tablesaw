@@ -26,7 +26,7 @@ public class Heatmap {
 
         Table counts = table.xTabCounts(categoryCol1, categoryCol2);
         counts = counts.dropRows(counts.rowCount() - 1);
-        List<Column> columns = counts.columns();
+        List<Column<?>> columns = counts.columns();
         columns.remove(counts.columnCount() - 1);
         Column yColumn = columns.remove(0);
         double[][] z = DoubleArrays.to2dArray(columns);

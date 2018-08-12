@@ -38,7 +38,7 @@ public class DoubleArrays {
         return result;
     }
 
-    public static double[][] to2dArray(Column... columns) {
+    public static double[][] to2dArray(Column<?>... columns) {
         Preconditions.checkArgument(columns.length >= 1);
         int obs = columns[0].size();
         double[][] allVals = new double[obs][columns.length];
@@ -51,7 +51,7 @@ public class DoubleArrays {
         return allVals;
     }
 
-    public static double[][] to2dArray(List<Column> columnList) {
+    public static double[][] to2dArray(List<Column<?>> columnList) {
         return to2dArray(columnList.toArray(new Column[columnList.size()]));
     }
 
@@ -65,7 +65,7 @@ public class DoubleArrays {
             allVals[viewNumber] = new double[view.rowCount()];
             NumberColumn numberColumn = view.numberColumn(columnNumber);
             for (int r = 0; r < view.rowCount(); r++) {
-                allVals[viewNumber][r] = numberColumn.get(r);
+                allVals[viewNumber][r] = numberColumn.getDouble(r);
             }
         }
         return allVals;
@@ -80,7 +80,7 @@ public class DoubleArrays {
         return allVals;
     }
 
-    public static double[][] to2dArray(Column x, Column y) {
+    public static double[][] to2dArray(Column<?> x, Column<?> y) {
         double[][] allVals = new double[x.size()][2];
         for (int i = 0; i < x.size(); i++) {
             allVals[i][0] = x.getDouble(i);

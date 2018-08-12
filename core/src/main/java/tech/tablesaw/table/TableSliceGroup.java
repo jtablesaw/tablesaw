@@ -23,7 +23,6 @@ import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return splitColumnNames;
     }
 
-    int getByteSize(List<Column> columns) {
+    int getByteSize(List<Column<?>> columns) {
         int byteSize = 0;
         for (Column c : columns) {
             byteSize += c.byteSize();
@@ -110,8 +109,8 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     private Table splitGroupingColumn(Table groupTable) {
 
         if (splitColumnNames.length > 0) {
-            List<Column> newColumns = new ArrayList<>();
-            List<Column> columns = sourceTable.columns(splitColumnNames);
+            List<Column<?>> newColumns = new ArrayList<>();
+            List<Column<?>> columns = sourceTable.columns(splitColumnNames);
             for (Column column : columns) {
                 Column newColumn = column.emptyCopy();
                 newColumns.add(newColumn);
@@ -160,7 +159,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
             for (AggregateFunction function : entry.getValue()) {
                 String colName = aggregateColumnName(columnName, function.functionName());
                 ColumnType type = function.returnType();
-                AbstractColumn resultColumn = (AbstractColumn) Column.create(colName, type);
+                Column resultColumn = type.create(colName);
                 for (TableSlice subTable : getSlices()) {
                     Object result = function.summarize(subTable.column(columnName));
                     if (functionCount == 0) {

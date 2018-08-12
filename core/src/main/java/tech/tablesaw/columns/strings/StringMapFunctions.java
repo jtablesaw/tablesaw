@@ -19,7 +19,6 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
@@ -34,7 +33,7 @@ import java.util.stream.Collectors;
  * String utility functions. Each function takes one or more String columns as input and produces
  * another Column as output. The resulting column need not be a string column.
  */
-public interface StringMapFunctions extends Column {
+public interface StringMapFunctions extends Column<String> {
 
     default StringColumn upperCase() {
         StringColumn newColumn = StringColumn.create(this.name() + "[ucase]");
@@ -144,7 +143,7 @@ public interface StringMapFunctions extends Column {
 
     default NumberColumn parseInt() {
 
-        NumberColumn newColumn = (DoubleColumn) Column.create(name() + "[parsed]", ColumnType.DOUBLE);
+        NumberColumn newColumn = DoubleColumn.create(name() + "[parsed]");
         for (int r = 0; r < size(); r++) {
             newColumn.append(Integer.parseInt(getString(r)));
         }

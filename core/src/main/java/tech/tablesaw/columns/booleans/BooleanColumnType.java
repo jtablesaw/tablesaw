@@ -8,7 +8,7 @@ import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-public class BooleanColumnType extends AbstractColumnType {
+public class BooleanColumnType extends AbstractColumnType<Boolean> {
 
     public static final BooleanStringParser DEFAULT_PARSER = new BooleanStringParser(ColumnType.BOOLEAN);
 
@@ -24,7 +24,7 @@ public class BooleanColumnType extends AbstractColumnType {
     }
 
     @Override
-    public Column create(String name) {
+    public BooleanColumn create(String name) {
         return BooleanColumn.create(name);
     }
 
@@ -39,7 +39,7 @@ public class BooleanColumnType extends AbstractColumnType {
     }
 
     @Override
-    public void copy(IntArrayList rows, Column oldColumn, Column newColumn) {
+    public void copy(IntArrayList rows, Column<Boolean> oldColumn, Column<Boolean> newColumn) {
         BooleanColumn oldBoolean = (BooleanColumn) oldColumn;
         BooleanColumn newBoolean = (BooleanColumn) newColumn;
         for (int index : rows) {

@@ -54,8 +54,7 @@ import static tech.tablesaw.api.ColumnType.BOOLEAN;
 /**
  * A column in a base table that contains float values
  */
-public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implements BooleanMapUtils, CategoricalColumn,
-        BooleanFillers<BooleanColumn>, Iterable<Boolean> {
+public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMapUtils, CategoricalColumn<Boolean>, BooleanFillers<BooleanColumn> {
 
     public static final byte MISSING_VALUE = (Byte) BOOLEAN.getMissingValue();
 
@@ -144,6 +143,7 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
         return formatter;
     }
 
+    @Override
     public int size() {
         return data.size();
     }
@@ -162,7 +162,7 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
         Table table = Table.create(name());
 
         BooleanColumn booleanColumn = create("Value");
-        NumberColumn countColumn = DoubleColumn.create("Count");
+        DoubleColumn countColumn = DoubleColumn.create("Count");
         table.addColumns(booleanColumn);
         table.addColumns(countColumn);
 
@@ -215,6 +215,7 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
         return this;
     }
 
+    @Override
     public BooleanColumn append(Boolean b) {
         if (b == null) {
             data.add(MISSING_VALUE);
@@ -278,6 +279,7 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
         ByteArrays.mergeSort(data.elements(), descendingByteComparator);
     }
 
+    @Override
     public BooleanColumn appendCell(String object) {
         append(BooleanColumnType.DEFAULT_PARSER.parseByte(object));
         return this;
@@ -295,6 +297,7 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
      * @param i the row number
      * @return A Boolean object (may be null)
      */
+    @Override
     public Boolean get(int i) {
         byte b = data.getByte(i);
         if (b == BYTE_TRUE) {
@@ -436,12 +439,14 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
       return set(i, val.booleanValue());
     }
 
+    @Override
     public BooleanColumn lead(int n) {
         BooleanColumn column = lag(-n);
         column.setName(name() + " lead(" + n + ")");
         return column;
     }
 
+    @Override
     public BooleanColumn lag(int n) {
         int srcPos = n >= 0 ? 0 : 0 - n;
         byte[] dest = new byte[size()];
@@ -491,12 +496,12 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
     }
 
     @Override
-    public void append(Column column) {
+    public BooleanColumn append(Column<Boolean> column) {
         checkArgument(column.type() == this.type());
-        BooleanColumn booleanColumn = (BooleanColumn) column;
-        for (int i = 0; i < booleanColumn.size(); i++) {
-            append(booleanColumn.get(i));
+        for (int i = 0; i < column.size(); i++) {
+            append(column.get(i));
         }
+        return this;
     }
 
     public Selection asSelection() {
@@ -520,6 +525,7 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
         return eval(BooleanColumnUtils.isNotMissing);
     }
 
+    @Override
     public Iterator<Boolean> iterator() {
         return new BooleanColumnIterator(this.byteIterator());
     }
@@ -556,6 +562,7 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
         return result;
     }
 
+    @Override
     public BooleanColumn where(Selection selection) {
         return (BooleanColumn) subset(selection);
     }
@@ -627,6 +634,11 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
             numberColumn.append(data.getByte(i));
         }
         return numberColumn;
+    }
+
+    @Override
+    public int compare(Boolean o1, Boolean o2) {
+        return Boolean.compare(o1, o2);
     }
 
     @Override
@@ -729,10 +741,4 @@ public class BooleanColumn extends AbstractColumn<Boolean, BooleanColumn> implem
         }
         return output;
     }
-
-    @Override
-    public Boolean getObject(int index) {
-        return get(index);
-    }
-
 }

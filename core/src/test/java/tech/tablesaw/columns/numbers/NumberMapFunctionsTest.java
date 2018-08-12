@@ -130,8 +130,8 @@ public class NumberMapFunctionsTest {
 
     @Test
     public void lag() {
-        NumberColumn n1 = DoubleColumn.indexColumn("index", 4, 0);
-        NumberColumn n2 = n1.lag(-2);
+        DoubleColumn n1 = DoubleColumn.indexColumn("index", 4, 0);
+        DoubleColumn n2 = n1.lag(-2);
         Table t = Table.create("tst");
         t.addColumns(n1, n2);
         assertEquals("            tst            \n" +
@@ -145,8 +145,8 @@ public class NumberMapFunctionsTest {
 
     @Test
     public void lead() {
-        NumberColumn n1 = DoubleColumn.indexColumn("index", 4, 0);
-        NumberColumn n2 = n1.lead(1);
+        DoubleColumn n1 = DoubleColumn.indexColumn("index", 4, 0);
+        DoubleColumn n2 = n1.lead(1);
         Table t = Table.create("tst");
         t.addColumns(n1, n2);
         assertEquals("            tst            \n" +

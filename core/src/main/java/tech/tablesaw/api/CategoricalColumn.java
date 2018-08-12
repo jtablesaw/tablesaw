@@ -38,18 +38,18 @@ import java.util.Set;
  * DateTimeColumn is not included. TimeColumn can be converted to ints without loss of data, so it does implement this
  * interface
  */
-public interface CategoricalColumn extends Column {
+public interface CategoricalColumn<T> extends Column<T> {
 
     default Table countByCategory() {
 
-        Table t = new Table("Column: " + name());
-        CategoricalColumn categories = (CategoricalColumn) type().create("Category");
-        NumberColumn counts = DoubleColumn.create("Count");
+        final Table t = new Table("Column: " + name());
+        final CategoricalColumn<?> categories = (CategoricalColumn<?>) type().create("Category");
+        final DoubleColumn counts = DoubleColumn.create("Count");
 
-        Object2IntMap<String> valueToCount = new Object2IntOpenHashMap<>();
+        final Object2IntMap<String> valueToCount = new Object2IntOpenHashMap<>();
 
         for (int i = 0; i < size(); i++) {
-            String next = getString(i);
+            final String next = getString(i);
             if (valueToCount.containsKey(next)) {
                 valueToCount.put(next, valueToCount.getInt(next) + 1);
             } else {

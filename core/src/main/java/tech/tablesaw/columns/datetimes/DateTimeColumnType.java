@@ -11,7 +11,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDateTime;
 
-public class DateTimeColumnType extends AbstractColumnType {
+public class DateTimeColumnType extends AbstractColumnType<LocalDateTime> {
 
     public static final DateTimeStringParser DEFAULT_PARSER = new DateTimeStringParser(ColumnType.LOCAL_DATE_TIME);
     public static final DateTimeColumnType INSTANCE =
@@ -37,7 +37,7 @@ public class DateTimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public void copy(IntArrayList rows, Column oldColumn, Column newColumn) {
+    public void copy(IntArrayList rows, Column<LocalDateTime> oldColumn, Column<LocalDateTime> newColumn) {
         DateTimeColumn oldDateTime = (DateTimeColumn) oldColumn;
         DateTimeColumn newDateTime = (DateTimeColumn) newColumn;
         for (int index : rows) {
@@ -46,12 +46,12 @@ public class DateTimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
-        DateTimeColumn newDateTime = (DateTimeColumn) newColumn;
+    public void copyFromRows(IntArrayList rows, Column<LocalDateTime> newColumn, Row row) {
+        DateTimeColumn dateTimes = (DateTimeColumn) newColumn;
         for (int index : rows) {
             row.at(index);
             PackedDateTime dateTime = row.getPackedDateTime(newColumn.name());
-            newDateTime.appendInternal(dateTime.getPackedValue());
+            dateTimes.appendInternal(dateTime.getPackedValue());
         }
     }
 

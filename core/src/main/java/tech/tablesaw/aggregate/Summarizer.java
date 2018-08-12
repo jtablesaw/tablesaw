@@ -20,7 +20,6 @@ import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.SelectionTableSliceGroup;
 import tech.tablesaw.table.StandardTableSliceGroup;
@@ -174,7 +173,7 @@ public class Summarizer {
             for (AggregateFunction function : reductions) {
                 Column column = temp.column(name);
                 Object result = function.summarize(column);
-                AbstractColumn newColumn = DoubleColumn.create(TableSliceGroup.aggregateColumnName(name, function.functionName()));
+                Column newColumn = DoubleColumn.create(TableSliceGroup.aggregateColumnName(name, function.functionName()));
                 if (result instanceof Number) {
                     Number number = (Number) result;
                     newColumn.append(number.doubleValue());

@@ -296,9 +296,9 @@ public class TableTest {
             sums.add(sum);
         };
         t.rollWithRows(rowConsumer,2);
-        assertTrue(sums.contains((int) approval.get(0) + (int) approval.get(1)));
-        assertTrue(sums.contains((int) approval.get(1) + (int) approval.get(2)));
-        assertTrue(sums.contains((int) approval.get(2) + (int) approval.get(3)));
+        assertTrue(sums.contains((int) approval.getDouble(0) + (int) approval.getDouble(1)));
+        assertTrue(sums.contains((int) approval.getDouble(1) + (int) approval.getDouble(2)));
+        assertTrue(sums.contains((int) approval.getDouble(2) + (int) approval.getDouble(3)));
     }
 
     private class PairChild implements Table.Pairs {

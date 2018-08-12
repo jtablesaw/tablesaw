@@ -52,10 +52,10 @@ public class RollingColumnTest {
 
         DoubleColumn result = (DoubleColumn) BooleanColumn.create("data", data).rolling(2).calc(countTrue);
 
-        assertEquals(Double.NaN, result.get(0), 0.0);
-        assertEquals(1, result.get(1), 0.0);
-        assertEquals(0, result.get(2), 0.0);
-        assertEquals(1, result.get(3), 0.0);
-        assertEquals(2, result.get(4), 0.0);
+        assertEquals(Double.NaN, result.getDouble(0), 0.0);
+        assertEquals(1, result.getDouble(1), 0.0);
+        assertEquals(0, result.getDouble(2), 0.0);
+        assertEquals(1, result.getDouble(3), 0.0);
+        assertEquals(2, result.getDouble(4), 0.0);
     }
 }

@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThan;
 import static tech.tablesaw.columns.DateAndTimePredicates.isLessThan;
 
-public interface TimeFilters extends Column {
+public interface TimeFilters extends Column<LocalTime> {
 
     TimeColumn where(Selection selection);
 
