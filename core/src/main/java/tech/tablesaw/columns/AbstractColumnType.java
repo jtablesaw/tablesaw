@@ -21,7 +21,7 @@ import tech.tablesaw.api.ColumnType;
 /**
  * Defines the type of data held by a {@link Column}
  */
-public abstract class AbstractColumnType implements ColumnType {
+public abstract class AbstractColumnType<T> implements ColumnType<T> {
 
     private final Comparable<?> missingValue;
 
@@ -75,5 +75,10 @@ public abstract class AbstractColumnType implements ColumnType {
     @Override
     public int hashCode() {
         return Objects.hashCode(missingValue, byteSize, name, printerFriendlyName);
+    }
+
+    @Override
+    public void appendColumns(Column<T> column, Column<T> columnToAppend) {
+        column.append(columnToAppend);
     }
 }

@@ -48,7 +48,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
      * The named columns must be CategoricalColumns
      */
     public static StandardTableSliceGroup create(Table original, String... columnsNames) {
-        List<CategoricalColumn> columns = original.categoricalColumns(columnsNames);
+        List<CategoricalColumn<?>> columns = original.categoricalColumns(columnsNames);
         return new StandardTableSliceGroup(original, columns.toArray(new CategoricalColumn[0]));
     }
 
@@ -66,7 +66,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
      */
     private void splitOn(String... columnNames) {
 
-        List<Column> columns = getSourceTable().columns(columnNames);
+        List<Column<?>> columns = getSourceTable().columns(columnNames);
         int byteSize = getByteSize(columns);
 
         byte[] currentKey = null;

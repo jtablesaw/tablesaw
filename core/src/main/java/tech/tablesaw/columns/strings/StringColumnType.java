@@ -8,7 +8,7 @@ import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-public class StringColumnType extends AbstractColumnType {
+public class StringColumnType extends AbstractColumnType<String> {
 
     public static final StringStringParser DEFAULT_PARSER = new StringStringParser(ColumnType.STRING);
     public static final StringColumnType INSTANCE =
@@ -37,7 +37,7 @@ public class StringColumnType extends AbstractColumnType {
     }
 
     @Override
-    public void copy(IntArrayList rows, Column oldColumn, Column newColumn) {
+    public void copy(IntArrayList rows, Column<String> oldColumn, Column<String> newColumn) {
         StringColumn oldString = (StringColumn) oldColumn;
         StringColumn newString = (StringColumn) newColumn;
         for (int index : rows) {
@@ -46,7 +46,7 @@ public class StringColumnType extends AbstractColumnType {
     }
 
     @Override
-    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
+    public void copyFromRows(IntArrayList rows, Column<String> newColumn, Row row) {
         StringColumn newTime = (StringColumn) newColumn;
         for (int index : rows) {
             row.at(index);
@@ -55,7 +55,7 @@ public class StringColumnType extends AbstractColumnType {
     }
 
     @Override
-    public boolean compare(int rowNumber, Column temp, Column original) {
+    public boolean compare(int rowNumber, Column<String> temp, Column<String> original) {
         StringColumn tempString = (StringColumn) temp;
         StringColumn originalString = (StringColumn) original;
         return originalString.get(rowNumber).equals(tempString.get(tempString.size() - 1));

@@ -17,7 +17,6 @@ package tech.tablesaw.columns.numbers;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -28,7 +27,7 @@ import java.util.function.DoublePredicate;
 
 import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
-public interface NumberFilters extends Column {
+public interface NumberFilters {
 
     Selection eval(DoublePredicate predicate);
 
@@ -112,15 +111,9 @@ public interface NumberFilters extends Column {
         return results;
     }
 
-    @Override
-    default Selection isMissing() {
-        return eval(isMissing);
-    }
+    Selection isMissing();
 
-    @Override
-    default Selection isNotMissing() {
-        return eval(isNotMissing);
-    }
+    Selection isNotMissing();
 
     // Column filters
 

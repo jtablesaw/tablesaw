@@ -11,7 +11,7 @@ import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
-import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleIterable;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.NumberFilters;
@@ -27,8 +27,10 @@ import java.util.function.DoublePredicate;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isNotMissing;
 
-public interface NumberColumn extends Column, NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn {
+public interface NumberColumn extends NumberMapFunctions, DoubleIterable, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn<Double> {
 
     double MISSING_VALUE = (Double) DOUBLE.getMissingValue();
 
@@ -43,6 +45,7 @@ public interface NumberColumn extends Column, NumberMapFunctions, NumberFilters,
 
     void setPrintFormatter(NumberColumnFormatter formatter);
 
+    @Override
     int size();
 
     @Override
@@ -80,10 +83,6 @@ public interface NumberColumn extends Column, NumberMapFunctions, NumberFilters,
     @Override
     NumberColumn emptyCopy(int rowSize);
 
-    NumberColumn lead(int n);
-
-    NumberColumn lag(int n);
-
     @Override
     NumberColumn copy();
 
@@ -108,13 +107,11 @@ public interface NumberColumn extends Column, NumberMapFunctions, NumberFilters,
 
     default Double summarizeIf(Selection selection, NumericAggregateFunction function) {
         NumberColumn column = where(selection);
-        return (Double) function.summarize(column);
+        return function.summarize(column);
     }
 
     @Override
     IntComparator rowComparator();
-
-    double get(int index);
 
     NumberColumn set(int r, double value);
 
@@ -123,8 +120,6 @@ public interface NumberColumn extends Column, NumberMapFunctions, NumberFilters,
     double[] asDoubleArray();
 
     @Override
-    void append(Column column);
-
     NumberColumn where(Selection selection);
 
     Selection eval(DoublePredicate predicate);
@@ -167,7 +162,7 @@ public interface NumberColumn extends Column, NumberMapFunctions, NumberFilters,
     default int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (NumberColumn.valueIsMissing(get(i))) {
+            if (NumberColumn.valueIsMissing(getDouble(i))) {
                 count++;
             }
         }
@@ -307,10 +302,19 @@ public interface NumberColumn extends Column, NumberMapFunctions, NumberFilters,
     default int countUnique() {
         DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
-            if (!NumberColumn.valueIsMissing(get(i))) {
-                doubles.add(get(i));
+            if (!NumberColumn.valueIsMissing(getDouble(i))) {
+                doubles.add(getDouble(i));
             }
         }
         return doubles.size();
     }
+
+    default Selection isMissing() {
+        return eval(isMissing);
+    }
+
+    default Selection isNotMissing() {
+        return eval(isNotMissing);
+    }
+
 }

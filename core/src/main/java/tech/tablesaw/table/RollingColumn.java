@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -55,9 +54,9 @@ public class RollingColumn {
      *
      */
     @SuppressWarnings("unchecked")
-    public Column calc(AggregateFunction function) {
+    public Column<?> calc(AggregateFunction function) {
         // TODO: the subset operation copies the array. creating a view would likely be more efficient
-        AbstractColumn result = (AbstractColumn) Column.create(generateNewColumnName(function), function.returnType());
+        Column result = function.returnType().create(generateNewColumnName(function));
         for (int i = 0; i < window - 1; i++) {
             result.appendMissing();
         }

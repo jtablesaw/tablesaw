@@ -17,10 +17,14 @@ package tech.tablesaw.columns;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
+
+import java.util.Comparator;
+import java.util.function.Consumer;
 
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
@@ -30,9 +34,9 @@ import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
  * Columns can either exist on their own or be a part of a table. All the data in a single column is of a particular
  * type.
  */
-public interface Column {
+public interface Column<T> extends Iterable<T>, Comparator<T> {
 
-    static Column create(String columnName, ColumnType type) {
+    static <T> Column<T> create(final String columnName, final ColumnType<T> type) {
         return type.create(columnName);
     }
 
@@ -42,9 +46,9 @@ public interface Column {
 
     Object[] asObjectArray();
 
-    default Column subset(Selection rows) {
-        Column c = this.emptyCopy();
-        for (int row : rows) {
+    default Column<T> subset(final Selection rows) {
+        final Column<T> c = this.emptyCopy();
+        for (final int row : rows) {
             c.appendCell(getString(row));
         }
         return c;
@@ -71,13 +75,13 @@ public interface Column {
      *
      * @return a {@link Column}
      */
-    Column unique();
+    Column<T> unique();
 
     /**
      * Returns a column of the same type as the receiver, containing the receivers values offset -n
      * For example if you lead a column containing 2, 3, 4 by 1, you get a column containing 3, 4, NA.
      */
-    default Column lead(int n) {
+    default Column<T> lead(final int n) {
         return lag(-n);
     }
 
@@ -86,7 +90,7 @@ public interface Column {
      * <p>
      * For example if you lag a column containing 2, 3, 4 by 1, you get a column containing NA, 2, 3
      */
-    Column lag(int n);
+    Column<T> lag(int n);
 
     /**
      * Returns the column's name.
@@ -101,7 +105,7 @@ public interface Column {
      * @param name The new name MUST be unique for any table containing this column
      * @return this Column to allow method chaining
      */
-    Column setName(String name);
+    Column<T> setName(String name);
 
     /**
      * Returns this column's ColumnType
@@ -118,6 +122,8 @@ public interface Column {
      */
     String getString(int row);
 
+    T get(int row);
+
     /**
      * Returns a double representation of the value at the given row. The nature of the returned value is column-specific.
      * The double returned MAY be the actual value (for Number columns) but is more likely a number that maps to the column
@@ -133,14 +139,14 @@ public interface Column {
      *
      * @return a empty copy of {@link Column}
      */
-    Column emptyCopy();
+    Column<T> emptyCopy();
 
     /**
      * Returns a deep copy of the receiver
      *
      * @return a {@link Column}
      */
-    Column copy();
+    Column<T> copy();
 
     /**
      * Returns an empty copy of the receiver, with its internal storage initialized to the given row size.
@@ -148,7 +154,7 @@ public interface Column {
      * @param rowSize the initial row size
      * @return a {@link Column}
      */
-    Column emptyCopy(int rowSize);
+    Column<T> emptyCopy(int rowSize);
 
     void clear();
 
@@ -163,28 +169,27 @@ public interface Column {
      */
     boolean isEmpty();
 
-    Column appendCell(String stringValue);
+    Column<T> appendCell(String stringValue);
 
-    Column appendCell(String stringValue, StringParser parser);
+    Column<T> appendCell(String stringValue, StringParser parser);
 
     IntComparator rowComparator();
 
-    void append(Column column);
+    Column<T> set(int row, T value);
 
-    default Column first(int numRows) {
+    Column<T> append(T value);
+
+    Column<T> append(Column<T> column);
+
+    default Column<T> first(final int numRows) {
         int newRowCount = Math.min(numRows, size());
         return inRange(0, newRowCount);
     }
 
-    default Column last(int numRows) {
+    default Column<T> last(final int numRows) {
         int newRowCount = Math.min(numRows, size());
         return inRange(size() - newRowCount, size());
     }
-
-    /**
-     * TODO(lwhite): Print n from the top and bottom, like a table;
-     */
-    String print();
 
     default String title() {
         return "Column: " + name() + '\n';
@@ -193,14 +198,9 @@ public interface Column {
     double[] asDoubleArray();
 
     /**
-     * Returns the width of the column in characters, for printing
-     */
-    int columnWidth();
-
-    /**
      * Returns a column containing the rows in this column beginning with start inclusive, and ending with end exclusive
      */
-    default Column inRange(int start, int end) {
+    default Column<T> inRange(int start, int end) {
         Preconditions.checkArgument(start < end);
         Preconditions.checkArgument(end <= size());
         return where(Selection.withRange(start, end));
@@ -209,7 +209,7 @@ public interface Column {
     /**
      * Returns a column containing the values in this column with the given indices
      */
-    default Column rows(int... indices) {
+    default Column<T> rows(int... indices) {
         Preconditions.checkArgument(Ints.max(indices) <= size());
         return where(Selection.with(indices));
     }
@@ -219,7 +219,7 @@ public interface Column {
      * @param n the number of values to select
      * @return  A column of the same type as the receiver
      */
-    default Column sampleN(int n) {
+    default Column<T> sampleN(int n) {
         Preconditions.checkArgument(n > 0 && n < size(),
                 "The number of rows sampled must be greater than 0 and less than the number of rows in the table.");
         return where(selectNRowsAtRandom(n, size()));
@@ -231,7 +231,7 @@ public interface Column {
      *
      * @param proportion The proportion to go in the sample
      */
-    default Column sampleX(double proportion) {
+    default Column<T> sampleX(double proportion) {
         Preconditions.checkArgument(proportion <= 1 && proportion >= 0,
                 "The sample proportion must be between 0 and 1");
 
@@ -258,7 +258,7 @@ public interface Column {
      */
     byte[] asBytes(int rowNumber);
 
-    default RollingColumn rolling(int windowSize) {
+    default RollingColumn rolling(final int windowSize) {
         return new RollingColumn(this, windowSize);
     }
 
@@ -269,11 +269,73 @@ public interface Column {
     /**
      * Appends a missing value appropriate to the column
      */
-    Column appendMissing();
+    Column<T> appendMissing();
 
-    Column where(Selection selection);
+    Column<T> where(Selection selection);
 
-    Column removeMissing();
+    Column<T> removeMissing();
 
-    Object getObject(int index);
+    /**
+     * Applies the given consumer to each element in this column
+     */
+    default void doWithEach(Consumer<T> consumer) {
+        for (T t : this) {
+            consumer.accept(t);
+        }
+    }
+
+    /**
+     * TODO(lwhite): Print n from the top and bottom, like a table;
+     */
+    default String print() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(title());
+        for (int i = 0; i < size(); i++) {
+            builder.append(getString(i));
+            builder.append('\n');
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Create a copy of this column where missing values are replaced with the corresponding value in the given column
+     */
+    default Column<T> fillMissing(Column<T> other) {
+        Column<T> newCol = emptyCopy();
+        for (int i = 0; i < this.size(); i++) {
+            if (isMissing(i)) {
+                newCol.appendCell(other.getUnformattedString(i));
+            } else {
+                newCol.appendCell(getUnformattedString(i));
+            }
+        }
+        return newCol;
+    }
+
+    /**
+     * Create a copy of this column where missing values are replaced with the given default value
+     */
+    default Column<T> fillMissing(T defaultVal) {
+        Column<T> newCol = emptyCopy();
+        for (int i = 0; i < this.size(); i++) {
+            if (isMissing(i)) {
+                newCol.append(defaultVal);
+            } else {
+                newCol.appendCell(getUnformattedString(i));
+            }
+        }
+        return newCol;
+    }
+
+    /**
+     * Returns the width of the column in characters, for printing
+     */
+    default int columnWidth() {
+
+        int width = name().length();
+        for (int rowNum = 0; rowNum < size(); rowNum++) {
+            width = Math.max(width, StringUtils.length(getString(rowNum)));
+        }
+        return width;
+    }
 }

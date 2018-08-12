@@ -11,7 +11,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
 
-public class DateColumnType extends AbstractColumnType {
+public class DateColumnType extends AbstractColumnType<LocalDate> {
 
     public static final DateStringParser DEFAULT_PARSER = new DateStringParser(ColumnType.LOCAL_DATE);
     public static final DateColumnType INSTANCE =
@@ -37,7 +37,7 @@ public class DateColumnType extends AbstractColumnType {
     }
 
     @Override
-    public void copy(IntArrayList rows, Column oldColumn, Column newColumn) {
+    public void copy(IntArrayList rows, Column<LocalDate> oldColumn, Column<LocalDate> newColumn) {
         DateColumn oldDate = (DateColumn) oldColumn;
         DateColumn newDate = (DateColumn) newColumn;
         for (int index : rows) {
@@ -46,7 +46,7 @@ public class DateColumnType extends AbstractColumnType {
     }
 
     @Override
-    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
+    public void copyFromRows(IntArrayList rows, Column<LocalDate> newColumn, Row row) {
         DateColumn newDate = (DateColumn) newColumn;
         for (int index : rows) {
             row.at(index);

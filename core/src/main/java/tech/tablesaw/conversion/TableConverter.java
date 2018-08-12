@@ -55,7 +55,7 @@ public class TableConverter {
         return intMatrix(table.columns(columnNames));
     }
 
-    private static double[][] doubleMatrix(List<Column> columns) {
+    private static double[][] doubleMatrix(List<Column<?>> columns) {
         Preconditions.checkArgument(columns.size() >= 1);
         int obs = columns.get(0).size();
         double[][] allVals = new double[obs][columns.size()];
@@ -68,7 +68,7 @@ public class TableConverter {
         return allVals;
     }
 
-    private static float[][] floatMatrix(List<Column> columns) {
+    private static float[][] floatMatrix(List<Column<?>> columns) {
         Preconditions.checkArgument(columns.size() >= 1);
         int obs = columns.get(0).size();
         float[][] allVals = new float[obs][columns.size()];
@@ -81,7 +81,7 @@ public class TableConverter {
         return allVals;
     }
 
-    private static int[][] intMatrix(List<Column> columns) {
+    private static int[][] intMatrix(List<Column<?>> columns) {
         Preconditions.checkArgument(columns.size() >= 1);
         int obs = columns.get(0).size();
         int[][] allVals = new int[obs][columns.size()];
@@ -108,9 +108,9 @@ public class TableConverter {
         return smileDataset(table.column(responseColName), table.columns(variablesColNames));
     }
 
-    private AttributeDataset smileDataset(Column responseCol, List<Column> variableCols) {
+    private AttributeDataset smileDataset(Column<?> responseCol, List<Column<?>> variableCols) {
         AttributeDataset data = new AttributeDataset(table.name(),
-            variableCols.stream().map(c -> colToAttribute(c)).toArray(Attribute[]::new),
+            variableCols.stream().map(this::colToAttribute).toArray(Attribute[]::new),
             colToAttribute(responseCol));
         for (int i = 0; i < responseCol.size(); i++) {
             final int r = i;

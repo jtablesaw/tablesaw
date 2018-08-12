@@ -14,12 +14,10 @@
 
 package tech.tablesaw.columns.booleans;
 
-import it.unimi.dsi.fastutil.ints.IntIterable;
 import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.predicates.BytePredicate;
 
-public interface BooleanColumnUtils extends Column, IntIterable {
+public interface BooleanColumnUtils {
 
     BytePredicate isMissing = i -> i == BooleanColumn.MISSING_VALUE;
 

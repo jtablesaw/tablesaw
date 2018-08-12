@@ -5,7 +5,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-public class SkipColumnType extends AbstractColumnType {
+public class SkipColumnType extends AbstractColumnType<Void> {
 
     public static final ColumnType INSTANCE =
             new SkipColumnType(null, 0, "SKIP", "Skipped");
@@ -15,7 +15,7 @@ public class SkipColumnType extends AbstractColumnType {
     }
 
     @Override
-    public Column create(String name) {
+    public Column<Void> create(String name) {
         throw new UnsupportedOperationException("Column type " + name() + " doesn't support column creation");
     }
 
@@ -30,17 +30,16 @@ public class SkipColumnType extends AbstractColumnType {
     }
 
     @Override
-    public void copy(IntArrayList rows, Column oldColumn, Column newColumn) {
-        throw new UnsupportedOperationException("Column type " + name() + " doesn't support copying");
-    }
+    public void copy(IntArrayList rows, Column oldColumn, Column newColumn) {}
 
     @Override
-    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
-        throw new UnsupportedOperationException("Column type " + name() + " doesn't support copying");
-    }
+    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {}
 
     @Override
     public boolean compare(int rowNumber, Column temp, Column original) {
         throw new UnsupportedOperationException("Column type " + name() + " doesn't support comparison");
     }
+
+    @Override
+    public void appendColumns(Column column, Column columnToAppend) {}
 }

@@ -77,7 +77,7 @@ public class Row implements Iterator<Row> {
     }
 
     public double getDouble(String columnName) {
-        return doubleColumnMap.get(columnName).get(rowNumber);
+        return doubleColumnMap.get(columnName).getDouble(rowNumber);
     }
 
     public double getDouble(int columnIndex) {
@@ -165,11 +165,11 @@ public class Row implements Iterator<Row> {
     }
 
     public Object getObject(String columnName) {
-        return columnMap.get(columnName).getObject(rowNumber);
+        return columnMap.get(columnName).get(rowNumber);
     }
 
     public Object getObject(int columnIndex) {
-        return columnMap.get(columnNames[columnIndex]).getObject(rowNumber);
+        return columnMap.get(columnNames[columnIndex]).get(rowNumber);
     }
 
     @Override

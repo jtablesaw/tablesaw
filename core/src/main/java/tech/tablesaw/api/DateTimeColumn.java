@@ -52,8 +52,8 @@ import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
-public class DateTimeColumn extends AbstractColumn<LocalDateTime, DateTimeColumn>
-    implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn>, Iterable<LocalDateTime> {
+public class DateTimeColumn extends AbstractColumn<LocalDateTime>
+    implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn> {
 
     public static final long MISSING_VALUE = (Long) ColumnType.LOCAL_DATE_TIME.getMissingValue();
 
@@ -370,12 +370,13 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime, DateTimeColumn
     }
 
     @Override
-    public void append(Column column) {
+    public DateTimeColumn append(Column column) {
         Preconditions.checkArgument(column.type() == this.type());
         DateTimeColumn doubleColumn = (DateTimeColumn) column;
         for (int i = 0; i < doubleColumn.size(); i++) {
             append(doubleColumn.get(i));
         }
+        return this;
     }
 
     public LocalDateTime max() {
@@ -427,6 +428,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime, DateTimeColumn
         return this;
     }
 
+    @Override
     public DateTimeColumn set(int index, LocalDateTime value) {
         data.set(index, PackedLocalDateTime.pack(value));
         return this;
@@ -597,7 +599,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime, DateTimeColumn
     }
 
     @Override
-    public LocalDateTime getObject(int index) {
-        return get(index);
+    public int compare(LocalDateTime o1, LocalDateTime o2) {
+        return o1.compareTo(o2);
     }
 }

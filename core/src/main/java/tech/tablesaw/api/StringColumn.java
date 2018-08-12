@@ -55,8 +55,8 @@ import static tech.tablesaw.api.ColumnType.STRING;
  * Because the MISSING_VALUE for this column type is an empty string, there is little or no need for special handling
  * of missing values in this class's methods.
  */
-public class StringColumn extends AbstractColumn<String, StringColumn>
-        implements CategoricalColumn, StringFilters, StringMapFunctions, StringReduceUtils {
+public class StringColumn extends AbstractColumn<String>
+        implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
     public static final String MISSING_VALUE = (String) STRING.getMissingValue();
 
@@ -535,12 +535,13 @@ public class StringColumn extends AbstractColumn<String, StringColumn>
     }
 
     @Override
-    public void append(Column column) {
+    public StringColumn append(Column<String> column) {
         Preconditions.checkArgument(column.type() == this.type());
         StringColumn source = (StringColumn) column;
         for (String string : source) {
             append(string);
         }
+        return this;
     }
 
     /**
@@ -568,11 +569,6 @@ public class StringColumn extends AbstractColumn<String, StringColumn>
             }
         }
         return noMissing;
-    }
-
-    @Override
-    public String getObject(int index) {
-        return get(index);
     }
 
     @Override
@@ -718,6 +714,11 @@ public class StringColumn extends AbstractColumn<String, StringColumn>
         }
         return output;
 
+    }
+
+    @Override
+    public int compare(String o1, String o2) {
+        return o1.compareTo(o2);
     }
 
     /**
