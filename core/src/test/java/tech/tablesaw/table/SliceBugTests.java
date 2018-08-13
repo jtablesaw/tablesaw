@@ -17,6 +17,8 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import static org.junit.Assert.assertFalse;
+
 public class SliceBugTests {
 
     private final Integer[] observations = new Integer[]{10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 10};
@@ -51,29 +53,21 @@ public class SliceBugTests {
     @Test
     public void sliceColumnIsSameWhenRetrievedWithNameOrIndex() {
         Table table = constructTableFromArrays();
-        System.out.println(table.printAll());
 
         TableSliceGroup countrySplit = table.splitOn("countries");
 
         for (TableSlice slice : countrySplit) {
-            System.out.println(slice.printAll());
             NumberColumn priceColFromIndex = slice.numberColumn(2);
-            // Work around
-//            int priceColIndex = slice.columnIndex("price");
-//            NumberColumn priceColFromName = slice.numberColumn(priceColIndex);
             NumberColumn priceColFromName = slice.numberColumn("price");
-
 
             Assert.assertTrue("Columns should have same data",
                     Arrays.equals(priceColFromName.asDoubleArray(), priceColFromIndex.asDoubleArray()));
-
         }
     }
 
     @Test
     public void sliceAsTableUsingDatesAfterFilteringDBLoadedTable() throws SQLException {
         Table salesTable = loadTableFromDB();
-        System.out.println(salesTable.printAll());
 
         Table filteredTable = salesTable.select(salesTable.columnNames().toArray(new String[0]))
                 .where(salesTable.dateTimeColumn("sale_timestamp")
@@ -81,13 +75,10 @@ public class SliceBugTests {
                         ));
         filteredTable.setName("filteredTable");
 
-        System.out.println(filteredTable.printAll());
-
         // work around
-        // filteredTable.dateTimeColumn("sale_timestamp").setFormatter(null);
         TableSliceGroup slices = filteredTable.splitOn("countries");
         slices.forEach(slice -> {
-            System.out.println(slice.printAll());
+            assertFalse(slice.isEmpty());
         });
     }
 

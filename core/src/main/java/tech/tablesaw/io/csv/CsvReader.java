@@ -17,7 +17,6 @@ package tech.tablesaw.io.csv;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
-import com.opencsv.CSVWriter;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
@@ -102,12 +101,7 @@ public class CsvReader {
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
 
-        CsvParserSettings settings = new CsvParserSettings();
-        CsvFormat format = new CsvFormat();
-        format.setLineSeparator(CSVWriter.DEFAULT_LINE_END);
-        settings.setFormat(format);
-
-        CsvParser parser = new CsvParser(settings);
+        CsvParser parser = csvParser(options);
 
         try {
             parser.beginParsing(new InputStreamReader(ubis));
@@ -147,9 +141,9 @@ public class CsvReader {
             addRows(options, types, parser, table, columnNames, columnIndexes);
             return table;
         } finally {
-            if (options.reader() == null && parser != null) {
+            if (options.reader() == null) {
                 parser.stopParsing();
-                ubis.close(); // TODO is this good enough????
+                ubis.close(); // TODO is this good enough????  See other uses
             }
         }
     }
@@ -204,12 +198,12 @@ public class CsvReader {
      *
      * @param types           An array of the types of columns in the file, in the order they appear
      * @param header          Is the first row in the file a header?
-     * @param columnSeparator the delimiter
+     * @param options         Sets the format for and instructions for parsing
      * @param file            The fully specified file name. It is used to provide a default name for the table
      * @return A Relation containing the data in the csv file.
      * @throws IOException if file cannot be read
      */
-    public Table headerOnly(ColumnType types[], boolean header, char columnSeparator, File file)
+    public Table headerOnly(ColumnType types[], boolean header, CsvReadOptions options, File file)
             throws IOException {
 
         FileInputStream fis = new FileInputStream(file);
@@ -220,17 +214,8 @@ public class CsvReader {
         Reader reader = new InputStreamReader(ubis);
 
         Table table;
-/*
-        CsvParser csvParser = new CSVParserBuilder()
-                .withSeparator(columnSeparator)
-                .build();
-        try (CSVReader csvReader = new CSVReaderBuilder(streamReader).withCSVParser(csvParser).build()) {
-*/
-        CsvParserSettings settings = new CsvParserSettings();
-        CsvFormat format = new CsvFormat();
-        format.setLineSeparator(CSVWriter.DEFAULT_LINE_END);
-        settings.setFormat(format);
-        CsvParser csvParser = new CsvParser(settings);
+
+        CsvParser csvParser = csvParser(options);
         try (BufferedReader streamReader = new BufferedReader(reader)) {
             csvParser.beginParsing(streamReader);
 
@@ -277,7 +262,7 @@ public class CsvReader {
                 .sample(false)
                 .build();
         ColumnType[] types = detectColumnTypes(stream, options);
-        Table t = headerOnly(types, header, delimiter, file);
+        Table t = headerOnly(types, header, options, file);
         return t.structure();
     }
 
@@ -385,7 +370,6 @@ public class CsvReader {
     public ColumnType[] detectColumnTypes(InputStream stream, CsvReadOptions options) throws IOException {
 
         boolean header = options.header();
-        char delimiter = options.separator();
         boolean useSampling = options.sample();
 
         int linesToSkip = header ? 1 : 0;
@@ -402,11 +386,7 @@ public class CsvReader {
         UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
         ubis.skipBOM();
 
-        CsvParserSettings settings = new CsvParserSettings();
-        CsvFormat format = new CsvFormat();
-        format.setLineSeparator(CSVWriter.DEFAULT_LINE_END);
-        settings.setFormat(format);
-        CsvParser csvParser = new CsvParser(settings);
+        CsvParser csvParser = csvParser(options);
 
         try {
             csvParser.beginParsing(new InputStreamReader(ubis));
@@ -526,6 +506,23 @@ public class CsvReader {
             parsers.add(type.customParser(options));
         }
         return parsers;
+    }
+
+    private CsvParser csvParser(CsvReadOptions options) {
+        CsvParserSettings settings = new CsvParserSettings();
+        settings.setFormat(csvFormat(options));
+        return new CsvParser(settings);
+    }
+
+    private CsvFormat csvFormat(CsvReadOptions options) {
+        CsvFormat format = new CsvFormat();
+        if (options.separator() != null) {
+            format.setDelimiter(options.separator());
+        }
+        if (options.lineEnding() != null) {
+            format.setLineSeparator(options.lineEnding());
+        }
+        return format;
     }
 
     /**
