@@ -17,12 +17,12 @@ package tech.tablesaw.columns.strings;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import org.apache.commons.lang3.StringUtils;
-//import org.apache.commons.text.similarity.LevenshteinDistance; TODO
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.util.LevenshteinDistance;
+import tech.tablesaw.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +32,8 @@ import java.util.stream.Collectors;
 /**
  * String utility functions. Each function takes one or more String columns as input and produces
  * another Column as output. The resulting column need not be a string column.
+ *
+ * This code was developed as part of Apache Commons Text.
  */
 public interface StringMapFunctions extends Column<String> {
 
@@ -124,10 +126,12 @@ public interface StringMapFunctions extends Column<String> {
      * @param maxWidth  the maximum width of the resulting strings, including the elipses.
      */
     default StringColumn abbreviate(int maxWidth) {
+        final String defaultAbbrevMarker = "...";
+
         StringColumn newColumn = StringColumn.create(name() + "[abbr]");
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-            newColumn.append(StringUtils.abbreviate(value, maxWidth));
+            newColumn.append(StringUtils.abbreviate(value, defaultAbbrevMarker, maxWidth));
         }
         return newColumn;
     }
@@ -196,11 +200,10 @@ public interface StringMapFunctions extends Column<String> {
         return newColumn;
     }
 
-/*
-    */
-/**
+
+    /**
      * Returns a column containing the levenshtein distance between the two given string columns
-     *//*
+     */
 
     default NumberColumn distance(Column column2) {
 
@@ -213,7 +216,6 @@ public interface StringMapFunctions extends Column<String> {
         }
         return newColumn;
     }
-*/
 
     /**
      * Return a copy of this column with the given string appended

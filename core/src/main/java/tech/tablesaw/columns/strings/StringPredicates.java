@@ -14,8 +14,8 @@
 
 package tech.tablesaw.columns.strings;
 
-import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.util.StringUtils;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -56,7 +56,7 @@ public class StringPredicates {
 
     public static final Predicate<String> isNumeric = StringUtils::isNumeric;
 
-    public static final Predicate<String> isEmpty = StringUtils::isEmpty;
+    public static final Predicate<String> isEmpty = e -> e.length() == 0;
 
     public static final BiPredicate<String, Integer> isLongerThan = (valueToTest, valueToCompareAgainst) -> valueToTest.length() > valueToCompareAgainst;
 

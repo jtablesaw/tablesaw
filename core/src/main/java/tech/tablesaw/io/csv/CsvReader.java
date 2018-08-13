@@ -20,7 +20,6 @@ import com.google.common.io.CharStreams;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -87,10 +86,11 @@ public class CsvReader {
         if (options.columnTypes() != null) {
             types = options.columnTypes();
         } else {
-            InputStream detectTypesStream = options.reader() != null
+            try(InputStream detectTypesStream = options.reader() != null
                     ? new ByteArrayInputStream(bytes)
-                    : new FileInputStream(options.file());
-            types = detectColumnTypes(detectTypesStream, options);
+                    : new FileInputStream(options.file())) {
+                types = detectColumnTypes(detectTypesStream, options);
+            }
         }
 
         // All other read methods end up here, make sure we don't have leading Unicode BOM
@@ -142,8 +142,10 @@ public class CsvReader {
             return table;
         } finally {
             if (options.reader() == null) {
+                // if we get a reader back from options it means the client opened it, so let the client close it
+                // if it's null, we close it here.
                 parser.stopParsing();
-                ubis.close(); // TODO is this good enough????  See other uses
+                ubis.close();
             }
         }
     }
@@ -241,6 +243,7 @@ public class CsvReader {
                 columnIndexes[i] = headerRow.indexOf(columnNames[i]);
             }
         } finally {
+            // the stream is already closed
             csvParser.stopParsing();
         }
         return table;
@@ -253,17 +256,18 @@ public class CsvReader {
      */
     private Table detectedColumnTypes(String csvFileName, boolean header, char delimiter, Locale locale) throws IOException {
         File file = new File(csvFileName);
-        InputStream stream = new FileInputStream(file);
+        try (InputStream stream = new FileInputStream(file)) {
 
-        CsvReadOptions options = CsvReadOptions.builder(stream, "")
-                .separator(delimiter)
-                .header(header)
-                .locale(locale)
-                .sample(false)
-                .build();
-        ColumnType[] types = detectColumnTypes(stream, options);
-        Table t = headerOnly(types, header, options, file);
-        return t.structure();
+            CsvReadOptions options = CsvReadOptions.builder(stream, "")
+                    .separator(delimiter)
+                    .header(header)
+                    .locale(locale)
+                    .sample(false)
+                    .build();
+            ColumnType[] types = detectColumnTypes(stream, options);
+            Table t = headerOnly(types, header, options, file);
+            return t.structure();
+        }
     }
 
     /**
@@ -311,16 +315,17 @@ public class CsvReader {
         int indxColWidth = indxCol.columnWidth();
         int nameColWidth = nameCol.columnWidth();
 
+        final char padChar = ' ';
         for (int r = 0; r < structure.rowCount(); r++) {
-            String cell = StringUtils.rightPad(structure.get(r, typeColIndex) + ",", typeColWidth);
+            String cell = Strings.padEnd(structure.get(r, typeColIndex) + ",", typeColWidth, padChar);
             buf.append(cell);
             buf.append(" // ");
 
-            cell = StringUtils.rightPad(structure.get(r, indxColIndex), indxColWidth);
+            cell = Strings.padEnd(structure.get(r, indxColIndex), indxColWidth, padChar);
             buf.append(cell);
             buf.append(' ');
 
-            cell = StringUtils.rightPad(structure.get(r, nameColIndex), nameColWidth);
+            cell = Strings.padEnd(structure.get(r, nameColIndex), nameColWidth, padChar);
             buf.append(cell);
             buf.append(' ');
 
@@ -422,7 +427,7 @@ public class CsvReader {
             }
         } finally {
             csvParser.stopParsing();
-            ubis.close();
+            // we don't close the reader since we didn't create it
         }
 
         // now detect

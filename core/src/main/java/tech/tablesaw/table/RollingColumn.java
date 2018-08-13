@@ -1,12 +1,12 @@
 package tech.tablesaw.table;
 
-import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+import tech.tablesaw.util.StringUtils;
 
 /**
  * Does a calculation on a rolling basis (e.g. mean for last 20 days)

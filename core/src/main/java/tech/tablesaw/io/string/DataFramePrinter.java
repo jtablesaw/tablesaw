@@ -14,8 +14,8 @@
 
 package tech.tablesaw.io.string;
 
-import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.table.Relation;
+import tech.tablesaw.util.StringUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;

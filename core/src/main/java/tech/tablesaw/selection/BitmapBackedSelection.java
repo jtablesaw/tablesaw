@@ -14,14 +14,12 @@
 
 package tech.tablesaw.selection;
 
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntIterator;
-
-import java.util.BitSet;
-
-import org.apache.commons.lang3.RandomUtils;
 import org.roaringbitmap.RoaringBitmap;
 
-import com.google.common.base.Preconditions;
+import java.util.BitSet;
+import java.util.Random;
 
 public class BitmapBackedSelection implements Selection {
 
@@ -234,8 +232,9 @@ public class BitmapBackedSelection implements Selection {
 
         BitSet bs = new BitSet(max);
         int cardinality = 0;
+        Random random = new Random();
         while (cardinality < n) {
-            int v = RandomUtils.nextInt(0, max);
+            int v = random.nextInt(max);
             if (!bs.get(v)) {
                 bs.set(v);
                 cardinality++;
