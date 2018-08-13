@@ -14,11 +14,10 @@
 
 package tech.tablesaw.io.csv;
 
-import com.opencsv.CSVWriter;
+import com.univocity.parsers.csv.CsvWriterSettings;
 import tech.tablesaw.api.Table;
 
 import javax.annotation.concurrent.Immutable;
-import java.io.IOException;
 
 /**
  * Static utility class that writes tables and individual columns to CSV files
@@ -29,13 +28,13 @@ final public class CsvWriter {
     /**
      * Private constructor to prevent instantiation
      */
-    private CsvWriter() {}
+    private CsvWriter() {
+    }
 
     /**
      * Writes the given table to a file
-     *
-     * @throws IOException if the write fails
      */
+/*
     public static void write(Table table, CsvWriteOptions options) throws IOException {
 
         try (CSVWriter csvWriter = new CSVWriter(options.writer(),
@@ -44,12 +43,28 @@ final public class CsvWriter {
                         options.escapeChar(),
                         options.lineEnd())) {
 
+        }
+    }
+*/
+    public static void write(Table table, CsvWriteOptions options) {
+
+        CsvWriterSettings settings = new CsvWriterSettings();
+        // Sets the character sequence to write for the values that are null.
+        settings.setNullValue("");
+
+        // writes empty lines as well.
+        settings.setSkipEmptyLines(false);
+        com.univocity.parsers.csv.CsvWriter csvWriter = null;
+        // Creates a writer with the above settings;
+        try {
+
+            csvWriter = new com.univocity.parsers.csv.CsvWriter(options.writer(), settings);
             if (options.header()) {
                 String[] header = new String[table.columnCount()];
                 for (int c = 0; c < table.columnCount(); c++) {
                     header[c] = table.column(c).name();
                 }
-                csvWriter.writeNext(header);
+                csvWriter.writeHeaders(header);
             }
             for (int r = 0; r < table.rowCount(); r++) {
                 String[] entries = new String[table.columnCount()];
@@ -57,8 +72,14 @@ final public class CsvWriter {
                     table.get(r, c);
                     entries[c] = table.get(r, c);
                 }
-                csvWriter.writeNext(entries);
+                csvWriter.writeRow(entries);
+            }
+        } finally {
+            if (csvWriter != null) {
+                csvWriter.flush();
+                csvWriter.close();
             }
         }
     }
 }
+

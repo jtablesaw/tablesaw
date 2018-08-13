@@ -18,7 +18,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.similarity.LevenshteinDistance;
+//import org.apache.commons.text.similarity.LevenshteinDistance; TODO
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
@@ -196,9 +196,12 @@ public interface StringMapFunctions extends Column<String> {
         return newColumn;
     }
 
-    /**
+/*
+    */
+/**
      * Returns a column containing the levenshtein distance between the two given string columns
-     */
+     *//*
+
     default NumberColumn distance(Column column2) {
 
         NumberColumn newColumn = DoubleColumn.create(name() + column2.name() + "[distance]");
@@ -210,6 +213,7 @@ public interface StringMapFunctions extends Column<String> {
         }
         return newColumn;
     }
+*/
 
     /**
      * Return a copy of this column with the given string appended
