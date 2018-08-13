@@ -17,11 +17,11 @@ package tech.tablesaw.columns;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import org.apache.commons.lang3.StringUtils;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
+import tech.tablesaw.util.StringUtils;
 
 import java.util.Comparator;
 import java.util.function.Consumer;

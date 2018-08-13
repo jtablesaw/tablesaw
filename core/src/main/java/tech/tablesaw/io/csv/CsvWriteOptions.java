@@ -1,7 +1,5 @@
 package tech.tablesaw.io.csv;
 
-import com.opencsv.CSVWriter;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -65,9 +63,12 @@ public class CsvWriteOptions {
         private Writer writer;
         private boolean header = true;
         private char separator = ',';
-        private String lineEnd = CSVWriter.DEFAULT_LINE_END;
-        private char escapeChar = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
-        private char quoteChar = CSVWriter.NO_QUOTE_CHARACTER;
+//        private String lineEnd = CSVWriter.DEFAULT_LINE_END;
+//        private char escapeChar = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
+//        private char quoteChar = CSVWriter.NO_QUOTE_CHARACTER;
+        private String lineEnd = "\n";
+        private char escapeChar = '\\';
+        private char quoteChar = '"';
 
         public Builder(String fileName) throws IOException {
             File file = Paths.get(fileName).toFile();

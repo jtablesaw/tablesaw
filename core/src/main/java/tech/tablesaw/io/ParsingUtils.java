@@ -1,8 +1,12 @@
 package tech.tablesaw.io;
 
-import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.base.Splitter;
+import tech.tablesaw.util.StringUtils;
 
 public class ParsingUtils {
+
+    private static final Splitter underscoreSplitter = Splitter.on('_');
 
     public static String splitCamelCase(String s) {
         return StringUtils.join(
@@ -13,7 +17,7 @@ public class ParsingUtils {
 
     public static String splitOnUnderscore(String s) {
         return StringUtils.join(
-                StringUtils.split(s, '_'),
+                underscoreSplitter.splitToList(s).toArray(),
                 ' '
         );
     }

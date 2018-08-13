@@ -31,7 +31,8 @@ public class CsvReadOptions {
     private final String tableName;
     private final ColumnType[] columnTypes;
     private final boolean header;
-    private final char separator;
+    private final Character separator;
+    private final String lineEnding;
     private final boolean sample;
     private final String dateFormat;
     private final String dateTimeFormat;
@@ -50,6 +51,7 @@ public class CsvReadOptions {
         dateFormat = builder.dateFormat;
         timeFormat = builder.timeFormat;
         dateTimeFormat = builder.dateTimeFormat;
+        lineEnding = builder.lineEnding;
         missingValueIndicator = builder.missingValueIndicator;
 
         if (builder.locale == null) {
@@ -102,8 +104,12 @@ public class CsvReadOptions {
         return header;
     }
 
-    public char separator() {
+    public Character separator() {
         return separator;
+    }
+
+    public String lineEnding() {
+        return lineEnding;
     }
 
     public boolean sample() {
@@ -145,7 +151,8 @@ public class CsvReadOptions {
         private Reader reader;
         private String tableName = "";
         private boolean header = true;
-        private char separator = ',';
+        private Character separator = ',';
+        private String lineEnding;
         private boolean sample = true;
         private ColumnType[] columnTypes;
         private String dateFormat;

@@ -18,6 +18,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -78,7 +79,7 @@ public enum TestData {
         this.columnNames = columnNames;
         try {
             this.table = Table.read().csv(CsvReadOptions
-                    .builder(csvSource)
+                    .builder(new FileInputStream(csvSource),"")
                     .columnTypes(columnTypes));
         } catch (IOException e) {
             throw new IllegalStateException("Unable to read from CSV file", e);

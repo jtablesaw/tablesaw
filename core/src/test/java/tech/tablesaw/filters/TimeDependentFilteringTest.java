@@ -124,7 +124,7 @@ public class TimeDependentFilteringTest {
             if (independentConstraintFilter == DependencyFilter.FIRST) {
                 if (eventDates.isEmpty()) {
                     // this is an error
-                    System.out.println(patientTable.name());
+                    throw new RuntimeException("There are no event dates");
                 } else {  //Get the first event for the current patient and createFromCsv a date range around it
                     LocalDate date = eventDates.get(0);
                     result.addRange(Range.closed(date.minusDays(daysConstraint.lowerEndpoint()),
@@ -133,9 +133,6 @@ public class TimeDependentFilteringTest {
             }
             independentResults.add(result);
         }
-
-
-        System.out.println("Done");
     }
 
     private static Table defineSchema() {

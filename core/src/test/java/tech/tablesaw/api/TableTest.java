@@ -14,14 +14,12 @@
 
 package tech.tablesaw.api;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+import com.google.common.collect.Lists;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.dates.PackedLocalDate;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -33,14 +31,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.google.common.collect.Lists;
-
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.PackedLocalDate;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
 /**
  * Tests for Table
@@ -262,7 +260,6 @@ public class TableTest {
         Table t = Table.read().csv("../data/bush.csv");
         PairChild pairs = new PairChild();
         t.doWithRows(pairs);
-        //System.out.println(pairs.runningAverage);
     }
 
     @Test
@@ -288,7 +285,6 @@ public class TableTest {
         };
 
         t.doWithRows(runningAvg);
-        //System.out.println(runningAvg.getResult());
     }
 
     @Test

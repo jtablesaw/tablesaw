@@ -67,7 +67,6 @@ public class SearchPerformanceTest {
         NumberColumn lowValues = t.numberColumn("lowValue");
         NumberColumn highValues = t.numberColumn("highValue");
 
-        System.out.println(t.structure());
         System.out.println(dates.summary());
         System.out.println(lowValues.summary());
         System.out.println(highValues.summary());
@@ -90,7 +89,6 @@ public class SearchPerformanceTest {
 
         stopwatch.stop();
         System.out.println("using rows with an index. found " + count + " in "  + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
-        System.out.println("Done");
     }
 
     private static int getRowNumber(Table t, LocalDateTime testDate, double testLow, double testHigh) {
