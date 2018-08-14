@@ -18,7 +18,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.SelectionTableSliceGroup;
@@ -161,6 +160,7 @@ public class Summarizer {
 
     /**
      * Returns the result of applying to the functions to all the values in the appropriate column
+     * TODO add a test that uses a non numeric return type with apply
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Table apply() {
@@ -173,7 +173,8 @@ public class Summarizer {
             for (AggregateFunction function : reductions) {
                 Column column = temp.column(name);
                 Object result = function.summarize(column);
-                Column newColumn = DoubleColumn.create(TableSliceGroup.aggregateColumnName(name, function.functionName()));
+                ColumnType type = function.returnType();
+                Column newColumn = type.create(TableSliceGroup.aggregateColumnName(name, function.functionName()));
                 if (result instanceof Number) {
                     Number number = (Number) result;
                     newColumn.append(number.doubleValue());
