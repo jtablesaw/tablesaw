@@ -605,12 +605,14 @@ public class Table extends Relation implements Iterable<Row> {
      * @param rowIndex      The row in sourceTable to add to this table
      * @param sourceTable   A table with the same column structure as this table
      */
+    @SuppressWarnings("unchecked")
     public void addRow(int rowIndex, Table sourceTable) {
         for (int i = 0; i < columnCount(); i++) {
             column(i).appendObj(sourceTable.column(i).get(rowIndex));
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void addRow(Row row) {
         for (int i = 0; i < row.columnCount(); i++) {
             column(i).appendObj(row.getObject(i));

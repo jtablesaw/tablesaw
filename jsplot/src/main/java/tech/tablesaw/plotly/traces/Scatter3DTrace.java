@@ -89,7 +89,7 @@ public class Scatter3DTrace extends AbstractTrace {
         TEXT("text"),
         NONE("none");
 
-        String value;
+        final String value;
 
         Mode(String value) {
             this.value = value;
@@ -105,9 +105,9 @@ public class Scatter3DTrace extends AbstractTrace {
 
         private String type = "scatter3d";
         Mode mode = Mode.MARKERS;
-        double[] x;
-        double[] y;
-        double[] z;
+        final double[] x;
+        final double[] y;
+        final double[] z;
         String[] text;
         Marker marker;
 

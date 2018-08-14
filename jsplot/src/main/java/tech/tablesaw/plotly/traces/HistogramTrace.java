@@ -12,12 +12,12 @@ import java.util.Map;
 
 public class HistogramTrace extends AbstractTrace {
 
-    private double[] x;
-    private double opacity;
-    private int nBinsX;
-    private int nBinsY;
-    private boolean autoBinX;
-    private boolean autoBinY;
+    private final double[] x;
+    private final double opacity;
+    private final int nBinsX;
+    private final int nBinsY;
+    private final boolean autoBinX;
+    private final boolean autoBinY;
 
     public static HistogramBuilder builder(double[] values) {
         return new HistogramBuilder(values);
@@ -66,7 +66,7 @@ public class HistogramTrace extends AbstractTrace {
 
     public static class HistogramBuilder extends TraceBuilder {
 
-        String type = "histogram";
+        final String type = "histogram";
         int nBinsX;
         int nBinsY;
         boolean autoBinX;
@@ -74,7 +74,7 @@ public class HistogramTrace extends AbstractTrace {
         String barMode;
         String histFunction;
         String histNorm;
-        double[] x;
+        final double[] x;
 
         private HistogramBuilder(double[] values) {
             this.x = values;

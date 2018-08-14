@@ -25,7 +25,7 @@ public class ScatterTrace extends AbstractTrace {
     static final Fill DEFAULT_FILL = Fill.NONE;
     static final double DEFAULT_WHISKER_WIDTH = 0;
 
-    public static enum Fill {
+    public enum Fill {
         NONE("none"),
         TO_ZERO_Y("tozeroy"),
         TO_ZERO_X("tozerox"),
@@ -34,7 +34,7 @@ public class ScatterTrace extends AbstractTrace {
         TO_SELF("toself"),
         TO_NEXT("tonext");
 
-        private String value;
+        private final String value;
 
         Fill(String value) {
             this.value = value;
@@ -169,7 +169,7 @@ public class ScatterTrace extends AbstractTrace {
         TEXT("text"),
         NONE("none");
 
-        String value;
+        final String value;
 
         Mode(String value) {
             this.value = value;
@@ -185,7 +185,7 @@ public class ScatterTrace extends AbstractTrace {
 
         private String type = "scatter";
         private Mode mode = Mode.MARKERS;
-        private Object[] x;
+        private final Object[] x;
         private double[] y;
         private String[] text;
         private Marker marker;

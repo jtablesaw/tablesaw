@@ -21,10 +21,10 @@ import java.util.Map;
  */
 public class Figure {
 
-    private Trace[] data;
-    private Layout layout;
+    private final Trace[] data;
+    private final Layout layout;
 
-    private Map<String, Object> context = new HashMap<>();
+    private final Map<String, Object> context = new HashMap<>();
 
     private final PebbleEngine engine = TemplateUtils.getNewEngine();
 

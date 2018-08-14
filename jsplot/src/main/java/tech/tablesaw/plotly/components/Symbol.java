@@ -114,7 +114,7 @@ public enum Symbol {
     LINE_NE("line-ne"),
     LINE_NW("line-sw");
 
-    private String value;
+    private final String value;
 
     Symbol(String value) {
         this.value = value;

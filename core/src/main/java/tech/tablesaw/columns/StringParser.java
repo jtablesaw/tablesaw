@@ -17,7 +17,7 @@ import java.util.List;
  */
 public abstract class StringParser<T> {
 
-    private ColumnType columnType;
+    private final ColumnType columnType;
 
     protected List<String> missingValueStrings = TypeUtils.MISSING_INDICATORS;
 

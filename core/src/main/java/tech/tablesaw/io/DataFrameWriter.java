@@ -42,16 +42,16 @@ public class DataFrameWriter {
         CsvWriter.write(table, options);
     }
 
-    public void csv(CsvWriteOptions options) throws IOException {
+    public void csv(CsvWriteOptions options) {
         CsvWriter.write(table, options);
     }
 
-    public void csv(OutputStream stream) throws IOException {
+    public void csv(OutputStream stream) {
         CsvWriteOptions options = new CsvWriteOptions.Builder(stream).build();
         CsvWriter.write(table, options);
     }
 
-    public void csv(Writer writer) throws IOException {
+    public void csv(Writer writer) {
         CsvWriteOptions options = new CsvWriteOptions.Builder(writer).build();
         CsvWriter.write(table, options);
     }

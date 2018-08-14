@@ -14,8 +14,8 @@ public abstract class Change extends Component {
 
     //private static final ChangeLine DEFAULT_CHANGE_LINE = new LineBuilder().build();
 
-    private ChangeLine changeLine;
-    private String fillColor;
+    private final ChangeLine changeLine;
+    private final String fillColor;
 
     @Override
     public String asJavascript() {

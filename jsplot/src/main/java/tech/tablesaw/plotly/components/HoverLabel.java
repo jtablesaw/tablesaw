@@ -28,7 +28,7 @@ public class HoverLabel extends Component {
     /**
      * Sets the default hover label font used by all traces on the graph.
      */
-    private Font font;
+    private final Font font;
 
     /**
      * Sets the default length (in number of characters) of the trace name in the hover labels for all traces.

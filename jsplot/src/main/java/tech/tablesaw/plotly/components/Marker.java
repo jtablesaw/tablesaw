@@ -20,7 +20,7 @@ public class Marker extends Component {
         AREA("area"),
         DIAMETER("diameter");
 
-        private String value;
+        private final String value;
 
         SizeMode(String value) {
             this.value = value;
@@ -55,7 +55,7 @@ public class Marker extends Component {
     VIRIDIS("Viridis"),
     CIVIDIS("Cividis");
 
-    private String value;
+    private final String value;
 
     Palette(String value) {
         this.value = value;

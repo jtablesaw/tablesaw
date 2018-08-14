@@ -44,11 +44,11 @@ public class Font extends Component {
         return new FontBuilder();
     }
 
-    private Family fontFamily;
+    private final Family fontFamily;
 
-    private int size; // number greater than or equal to 1
+    private final int size; // number greater than or equal to 1
 
-    private String color;
+    private final String color;
 
     private Font(FontBuilder builder) {
         this.color = builder.color;

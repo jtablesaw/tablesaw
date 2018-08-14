@@ -58,9 +58,9 @@ public class HeatmapTrace extends AbstractTrace {
     public static class HeatmapBuilder extends TraceBuilder {
 
         private static final String type = "heatmap";
-        private Object[] x;
-        private Object[] y;
-        private double[][] z;
+        private final Object[] x;
+        private final Object[] y;
+        private final double[][] z;
 
         HeatmapBuilder(List<String> x, Object[] y, double[][] z) {
             this.x = x.toArray(new String[0]);

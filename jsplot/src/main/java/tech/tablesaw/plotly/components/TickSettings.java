@@ -20,7 +20,7 @@ public class TickSettings {
         LINEAR("linear"),
         ARRAY("array");
 
-        private String value;
+        private final String value;
 
         TickMode(String value) {
             this.value = value;
@@ -39,7 +39,7 @@ public class TickSettings {
         OUTSIDE("outside"),
         INSIDE("inside"),
         NONE("");
-        private String value;
+        private final String value;
 
         TickPlacement(String value) {
             this.value = value;
@@ -59,7 +59,7 @@ public class TickSettings {
         FIRST("first"),
         LAST("last"),
         NONE("none");
-        private String value;
+        private final String value;
 
         DisplayRules(String value) {
             this.value = value;
@@ -80,7 +80,7 @@ public class TickSettings {
         TICKS("ticks"),
         ALL("all"),
         ALL_TICKS("allticks");
-        private String value;
+        private final String value;
 
         Mirror(String value) {
             this.value = value;
@@ -102,7 +102,7 @@ public class TickSettings {
         POWER("power"),
         SI("SI"),
         B("B");
-        private String value;
+        private final String value;
 
         ExponentFormat(String value) {
             this.value = value;

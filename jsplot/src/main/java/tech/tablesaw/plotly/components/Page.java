@@ -50,8 +50,8 @@ public class Page extends Component {
 
     public static class PageBuilder {
 
-        private Figure figure;
-        private String divName;
+        private final Figure figure;
+        private final String divName;
 
         public PageBuilder(Figure figure, String divName) {
             this.figure = figure;

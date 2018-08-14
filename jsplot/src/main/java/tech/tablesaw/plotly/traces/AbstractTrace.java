@@ -25,7 +25,7 @@ public abstract class AbstractTrace implements Trace {
         FALSE("False"),
         LEGEND_ONLY("legendonly");
 
-        private String value;
+        private final String value;
 
         Visibility(String value) {
             this.value = value;

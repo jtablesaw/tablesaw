@@ -130,7 +130,7 @@ public class MurderVisualizations extends AbstractExample {
         out(categoryCount.printAll());
 
         Table xtab1 = details.xTabColumnPercents("VicSex", "Weapon category");
-        xtab1.columnsOfType(DOUBLE).stream().forEach(e -> ((DoubleColumn)e).setPrintFormatter(NumberColumnFormatter.percent(1)));
+        xtab1.columnsOfType(DOUBLE).forEach(e -> ((DoubleColumn)e).setPrintFormatter(NumberColumnFormatter.percent(1)));
         out(xtab1.printAll());
 
         Plot.show(Histogram.create("victim age", details, "vicage"));

@@ -10,7 +10,7 @@ import static tech.tablesaw.columns.dates.PackedLocalDate.*;
 @Immutable
 public class DateColumnFormatter {
 
-    private DateTimeFormatter format;
+    private final DateTimeFormatter format;
     private String missingString = "";
 
     public DateColumnFormatter() {

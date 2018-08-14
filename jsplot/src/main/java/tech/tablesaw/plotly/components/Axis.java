@@ -27,7 +27,7 @@ public class Axis extends Component {
         CATEGORY("category"),
         DEFAULT("-");
 
-        private String value;
+        private final String value;
 
         Type(String value) {
             this.value = value;
@@ -48,7 +48,7 @@ public class Axis extends Component {
         FALSE("false"),
         REVERSED("reversed");
 
-        private String value;
+        private final String value;
 
         AutoRange(String value) {
             this.value = value;
@@ -69,7 +69,7 @@ public class Axis extends Component {
         RANGE("range"),
         DOMAIN("domain");
 
-        private String value;
+        private final String value;
 
         Constrain(String value) {
             this.value = value;
@@ -95,7 +95,7 @@ public class Axis extends Component {
         MIDDLE("middle"),
         BOTTOM("bottom");
 
-        private String value;
+        private final String value;
 
         ConstrainToward(String value) {
             this.value = value;
@@ -125,7 +125,7 @@ public class Axis extends Component {
         X("/^x([2-9]|[1-9][0-9]+)?$/"),
         Y("/^y([2-9]|[1-9][0-9]+)?$/");
 
-        private String value;
+        private final String value;
 
         ScaleAnchor(String value) {
             this.value = value;
@@ -146,7 +146,7 @@ public class Axis extends Component {
         NORMAL("normal"),
         TO_ZERO("tozero"),
         NON_NEGATIVE("nonnegative");
-        private String value;
+        private final String value;
 
         RangeMode(String value) {
             this.value = value;
@@ -546,7 +546,7 @@ public class Axis extends Component {
             DATA("data"),
             CURSOR("cursor");
 
-            private String value;
+            private final String value;
 
             SpikeSnap(String value) {
                 this.value = value;
@@ -567,7 +567,7 @@ public class Axis extends Component {
             ACROSS_AND_MARKER("across+marker"),
             TO_AXIS_AND_ACROSS_AND_MARKER("toaxis+across+marker");
 
-            private String value;
+            private final String value;
 
             SpikeMode(String value) {
                 this.value = value;

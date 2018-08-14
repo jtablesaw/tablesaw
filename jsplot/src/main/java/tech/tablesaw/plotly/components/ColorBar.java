@@ -12,28 +12,28 @@ import java.util.Map;
 
 public class ColorBar extends Component {
 
-    private static ThicknessMode DEFAULT_THICKNESS_MODE = ThicknessMode.PIXELS;
-    private static double DEFAULT_THICKNESS = 30.0;
+    private static final ThicknessMode DEFAULT_THICKNESS_MODE = ThicknessMode.PIXELS;
+    private static final double DEFAULT_THICKNESS = 30.0;
 
-    private static LenMode DEFAULT_LEN_MODE = LenMode.FRACTION;
-    private static double DEFAULT_LEN = 1.0;
+    private static final LenMode DEFAULT_LEN_MODE = LenMode.FRACTION;
+    private static final double DEFAULT_LEN = 1.0;
 
-    private static double DEFAULT_X = 1.02;
-    private static double DEFAULT_Y = 0.5 ;
+    private static final double DEFAULT_X = 1.02;
+    private static final double DEFAULT_Y = 0.5 ;
 
-    private static int DEFAULT_X_PAD = 10;
-    private static int DEFAULT_Y_PAD = 10;
+    private static final int DEFAULT_X_PAD = 10;
+    private static final int DEFAULT_Y_PAD = 10;
 
-    private static Xanchor DEFAULT_X_ANCHOR = Xanchor.LEFT;
-    private static Yanchor DEFAULT_Y_ANCHOR = Yanchor.MIDDLE;
+    private static final Xanchor DEFAULT_X_ANCHOR = Xanchor.LEFT;
+    private static final Yanchor DEFAULT_Y_ANCHOR = Yanchor.MIDDLE;
 
-    private static String DEFAULT_OUTLINE_COLOR = "444";
-    private static String DEFAULT_BORDER_COLOR = "444";
+    private static final String DEFAULT_OUTLINE_COLOR = "444";
+    private static final String DEFAULT_BORDER_COLOR = "444";
 
-    private static int DEFAULT_BORDER_WIDTH = 1;
-    private static int DEFAULT_OUTLINE_WIDTH = 0;
+    private static final int DEFAULT_BORDER_WIDTH = 1;
+    private static final int DEFAULT_OUTLINE_WIDTH = 0;
 
-    private static String DEFAULT_BG_COLOR = "rgba(0,0,0,0)";
+    private static final String DEFAULT_BG_COLOR = "rgba(0,0,0,0)";
 
     /**
      * Determines whether this color bar's thickness (i.e. the measure in the constant color direction) is set
@@ -43,7 +43,7 @@ public class ColorBar extends Component {
         FRACTION("fraction"),
         PIXELS("pixels");
 
-        private String value;
+        private final String value;
 
         ThicknessMode(String value) {
             this.value = value;
@@ -59,7 +59,7 @@ public class ColorBar extends Component {
         FRACTION("fraction"),
         PIXELS("pixels");
 
-        private String value;
+        private final String value;
 
         LenMode(String value) {
             this.value = value;
@@ -76,7 +76,7 @@ public class ColorBar extends Component {
         CENTER("center"),
         RIGHT("right");
 
-        private String value;
+        private final String value;
 
         Xanchor(String value) {
             this.value = value;
@@ -93,7 +93,7 @@ public class ColorBar extends Component {
         MIDDLE("middle"),
         BOTTOM("bottom");
 
-        private String value;
+        private final String value;
 
         Yanchor(String value) {
             this.value = value;
@@ -233,7 +233,7 @@ public class ColorBar extends Component {
 
         int borderWidth = DEFAULT_BORDER_WIDTH;
 
-        String bgColor = DEFAULT_BG_COLOR;
+        final String bgColor = DEFAULT_BG_COLOR;
 
         TickSettings tickSettings;
 

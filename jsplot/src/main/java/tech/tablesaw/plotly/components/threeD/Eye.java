@@ -12,9 +12,9 @@ public class Eye extends CameraComponent {
 
     public static class EyeBuilder {
 
-        private double x;
-        private double y;
-        private double z;
+        private final double x;
+        private final double y;
+        private final double z;
 
         private EyeBuilder(double x, double y, double z) {
             this.x = x;

@@ -39,7 +39,7 @@ public class Layout {
         CLOSEST("closest"),
         FALSE("false");
 
-        private String value;
+        private final String value;
 
         HoverMode(String value) {
             this.value = value;
@@ -67,7 +67,7 @@ public class Layout {
         OVERLAY("overlay"),
         RELATIVE("relative");
 
-        private String value;
+        private final String value;
 
         BarMode(String value) {
             this.value = value;
@@ -92,7 +92,7 @@ public class Layout {
         ORBIT("orbit"),
         TURNTABLE("turntable");
 
-        private String value;
+        private final String value;
 
         DragMode(String value) {
             this.value = value;
@@ -107,75 +107,75 @@ public class Layout {
     /**
      * The global font
      */
-    private Font font;
+    private final Font font;
 
     /*
      * The plot title
      */
-    private String title;
+    private final String title;
 
     /**
      * Sets the title font
      */
-    private Font titleFont;
+    private final Font titleFont;
 
     /**
      * Determines whether or not a layout width or height that has been left undefined by the user
      * is initialized on each relayout. Note that, regardless of this attribute, an undefined layout width or height
      * is always initialized on the first call to plot.
      */
-    private boolean autoSize;
+    private final boolean autoSize;
 
     /**
      * The width of the plot in pixels
      */
-    private int width;
+    private final int width;
 
     /**
      * The height of the plot in pixels
      */
-    private int height;
+    private final int height;
 
     /**
      * Sets the margins around the plot
      */
-    private Margin margin;
+    private final Margin margin;
 
     /**
      * Sets the color of paper where the graph is drawn.
      */
-    private String paperBgColor;
+    private final String paperBgColor;
 
     /**
      * Sets the color of plotting area in-between x and y axes.
      */
-    private String plotBgColor;
+    private final String plotBgColor;
 
     /**
      * Sets the decimal. For example, "." puts a '.' before decimals
      */
-    private String decimalSeparator;
+    private final String decimalSeparator;
 
     /**
      * Sets the separator. For example, a " " puts a space between thousands.
      */
-    private String thousandsSeparator;
+    private final String thousandsSeparator;
 
     /**
      * Determines whether or not a legend is drawn.
      */
-    private boolean showLegend;
+    private final boolean showLegend;
 
     /**
      * Determines the mode of hover interactions.
      */
-    private HoverMode hoverMode;
+    private final HoverMode hoverMode;
 
     /**
      * Determines the mode of drag interactions. "select" and "lasso" apply only to scatter traces with markers or text.
      * "orbit" and "turntable" apply only to 3D scenes.
      */
-    private DragMode dragMode;
+    private final DragMode dragMode;
 
     /**
      * Sets the default distance (in pixels) to look for data to add hover labels
@@ -184,15 +184,15 @@ public class Layout {
      * hovering is on inside the area and off outside, but these objects will not supersede hover on point-like
      * objects in case of conflict.
      */
-    private int hoverDistance;
+    private final int hoverDistance;
 
-    private Axis xAxis;
+    private final Axis xAxis;
 
-    private Axis yAxis;
+    private final Axis yAxis;
 
-    private Axis zAxis;
+    private final Axis zAxis;
 
-    private BarMode barMode;
+    private final BarMode barMode;
 
     private Layout(LayoutBuilder builder) {
         this.title = builder.title;
@@ -276,7 +276,7 @@ public class Layout {
         /**
          * The global font
          */
-        Font font = DEFAULT_FONT;
+        final Font font = DEFAULT_FONT;
 
         /*
          * The plot title
@@ -293,7 +293,7 @@ public class Layout {
          * is initialized on each relayout. Note that, regardless of this attribute, an undefined layout width or height
          * is always initialized on the first call to plot.
          */
-        boolean autoSize = false;
+        final boolean autoSize = false;
 
         /**
          * The width of the plot in pixels
@@ -323,12 +323,12 @@ public class Layout {
         /**
          * Sets the decimal. For example, "." puts a '.' before decimals
          */
-        String decimalSeparator = DEFAULT_DECIMAL_SEPARATOR;
+        final String decimalSeparator = DEFAULT_DECIMAL_SEPARATOR;
 
         /**
          * Sets the separator. For example, a " " puts a space between thousands.
          */
-        String thousandsSeparator = DEFAULT_THOUSANDS_SEPARATOR;
+        final String thousandsSeparator = DEFAULT_THOUSANDS_SEPARATOR;
 
         /**
          * Determines whether or not a legend is drawn.
@@ -344,7 +344,7 @@ public class Layout {
          * Determines the mode of drag interactions. "select" and "lasso" apply only to scatter traces with markers or text.
          * "orbit" and "turntable" apply only to 3D scenes.
          */
-        DragMode dragMode = DEFAULT_DRAG_MODE;
+        final DragMode dragMode = DEFAULT_DRAG_MODE;
 
         /**
          * Sets the default distance (in pixels) to look for data to add hover labels

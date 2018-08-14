@@ -127,7 +127,7 @@ public class AggregateFunctions {
     /**
      * A function that calculates the count of values in the column excluding missing values. A synonym for countNonMissing
      */
-    public static CountFunction count = countNonMissing;
+    public static final CountFunction count = countNonMissing;
 
     /**
      * A function that calculates the count of values in the column excluding missing values

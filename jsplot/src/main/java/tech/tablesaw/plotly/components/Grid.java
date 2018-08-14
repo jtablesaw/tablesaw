@@ -23,12 +23,12 @@ public class Grid extends Component {
      * its length is used as the default. But it's also possible to have a different length,
      * if you want to leave a row at the end for non-cartesian subplots.
      */
-    private int rows;
+    private final int rows;
 
     /**
      * Is the first row the top or the bottom? Note that columns are always enumerated from left to right.
      */
-    private RowOrder rowOrder;
+    private final RowOrder rowOrder;
 
     /**
      * The number of columns in the grid. If you provide a 2D `subplots` array,
@@ -36,20 +36,20 @@ public class Grid extends Component {
      * its length is used as the default. But it's also possible to have a different length,
      * if you want to leave a row at the end for non-cartesian subplots.
      */
-    private int columns;
+    private final int columns;
 
     /**
      *
      * Horizontal space between grid cells, expressed as a fraction of the total width available to one cell.
      * Defaults to 0.1 for coupled-axes grids and 0.2 for independent grids.
      */
-    private double xGap; // number between or equal to 0 and 1
+    private final double xGap; // number between or equal to 0 and 1
 
     /**
      * Vertical space between grid cells, expressed as a fraction of the total height available to one cell.
      * Defaults to 0.1 for coupled-axes grids and 0.3 for independent grids.
      */
-    private double yGap; // number between or equal to 0 and 1
+    private final double yGap; // number between or equal to 0 and 1
 
     public Grid(GridBuilder gridBuilder) {
         this.rows = gridBuilder.rows;

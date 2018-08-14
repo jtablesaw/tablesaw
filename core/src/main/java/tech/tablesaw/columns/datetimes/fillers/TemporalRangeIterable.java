@@ -52,6 +52,7 @@ public class TemporalRangeIterable<T extends Temporal> implements Iterable<T> {
             }
 
             @Override
+            @SuppressWarnings("unchecked")
             public T next() {
                 final T current = next;
                 next = (T) next.plus(by, byUnit);

@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class Histogram2DTrace extends AbstractTrace {
 
-    private double[] x;
-    private double[] y;
+    private final double[] x;
+    private final double[] y;
 
     public static Histogram2DBuilder builder(double[] x, double[] y) {
         return new Histogram2DBuilder(x, y);
@@ -54,15 +54,15 @@ public class Histogram2DTrace extends AbstractTrace {
 
     public static class Histogram2DBuilder extends TraceBuilder {
 
-        String type = "histogram2d";
+        final String type = "histogram2d";
 /*
         int bins;
         String barMode;
         String histFunction;
         String histNorm;
 */
-        double[] x;
-        double[] y;
+final double[] x;
+        final double[] y;
 
         private Histogram2DBuilder(double[] x, double[] y) {
             this.x = x;

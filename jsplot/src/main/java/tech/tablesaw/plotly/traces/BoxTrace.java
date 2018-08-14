@@ -14,8 +14,8 @@ import static tech.tablesaw.plotly.Utils.dataAsString;
 
 public class BoxTrace extends AbstractTrace {
 
-    private Object[] x;
-    private double[] y;
+    private final Object[] x;
+    private final double[] y;
 
     private BoxTrace(BoxBuilder builder) {
         super(builder);
@@ -65,8 +65,8 @@ public class BoxTrace extends AbstractTrace {
     public static class BoxBuilder extends TraceBuilder {
 
         private static final String type = "box";
-        private Object[] x;
-        private double[] y;
+        private final Object[] x;
+        private final double[] y;
 
         BoxBuilder(Object[] x, double[] y) {
             this.x = x;

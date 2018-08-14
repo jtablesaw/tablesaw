@@ -14,9 +14,9 @@ import static tech.tablesaw.plotly.Utils.dataAsString;
 
 public class BarTrace extends AbstractTrace {
 
-    private Object[] x;
-    private double[] y;
-    private Orientation orientation;
+    private final Object[] x;
+    private final double[] y;
+    private final Orientation orientation;
 
     private BarTrace(BarBuilder builder) {
         super(builder);
@@ -67,7 +67,7 @@ public class BarTrace extends AbstractTrace {
         VERTICAL("v"),
         HORIZONTAL("h");
 
-        String value;
+        final String value;
 
         Orientation(String value) {
             this.value = value;
@@ -81,9 +81,9 @@ public class BarTrace extends AbstractTrace {
 
     public static class BarBuilder extends TraceBuilder {
 
-        private String type = "bar";
-        Object[] x;
-        double[] y;
+        private final String type = "bar";
+        final Object[] x;
+        final double[] y;
         Orientation orientation = Orientation.VERTICAL;
 
         BarBuilder(Object[] x, double[] y) {

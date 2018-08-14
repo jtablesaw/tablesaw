@@ -17,30 +17,30 @@ public class Margin extends Component {
     /**
      * The left margin, in px
      */
-    private int left;
+    private final int left;
 
     /**
      * The right margin, in px
      */
-    private int right;
+    private final int right;
 
     /**
      * The top margin, in px
      */
-    private int top;
+    private final int top;
 
 
     /**
      * The bottom margin, in px
      */
-    private int bottom;
+    private final int bottom;
 
     /**
      * The amount of padding between the plotting area and the axis lines, in px
      */
-    private int pad;
+    private final int pad;
 
-    private boolean autoExpand;
+    private final boolean autoExpand;
 
     public static MarginBuilder builder() {
         return new MarginBuilder();
