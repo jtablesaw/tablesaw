@@ -138,6 +138,6 @@ public class Example1 {
 
     private static void out(Object str) {
         System.out.println(String.valueOf(str));
-        System.out.println("");
+        System.out.println();
     }
 }

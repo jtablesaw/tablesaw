@@ -25,7 +25,7 @@ public class TextExample extends AbstractExample {
     private static final String[] words1 = {"one", "two words"};
     private static final StringColumn stringColumn1 = StringColumn.create("words", words1);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         countWords(stringColumn1);
     }
 

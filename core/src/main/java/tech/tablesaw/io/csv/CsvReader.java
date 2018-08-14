@@ -150,7 +150,7 @@ public class CsvReader {
         }
     }
 
-    private void addRows(CsvReadOptions options, ColumnType[] types, CsvParser reader, Table table, String[] columnNames, int[] columnIndexes) throws IOException {
+    private void addRows(CsvReadOptions options, ColumnType[] types, CsvParser reader, Table table, String[] columnNames, int[] columnIndexes) {
         long rowNumber = options.header() ? 1L : 0L;
         String[] nextLine;
 

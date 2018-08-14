@@ -23,7 +23,7 @@ public abstract class AbstractExample {
         System.out.println(String.valueOf(obj));
     }
     protected static void out() {
-        System.out.println("");
+        System.out.println();
     }
 
 }

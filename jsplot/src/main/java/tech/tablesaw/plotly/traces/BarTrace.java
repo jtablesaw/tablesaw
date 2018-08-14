@@ -3,7 +3,7 @@ package tech.tablesaw.plotly.traces;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.api.CategoricalColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.columns.Column;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -29,7 +29,7 @@ public class BarTrace extends AbstractTrace {
         return new BarBuilder(x, y);
     }
 
-    public static BarBuilder builder(CategoricalColumn x, NumberColumn y) {
+    public static BarBuilder builder(CategoricalColumn x, Column<? extends Number> y) {
         return new BarBuilder(x, y);
     }
 
@@ -91,7 +91,7 @@ public class BarTrace extends AbstractTrace {
             this.y = y;
         }
 
-        BarBuilder(CategoricalColumn x, NumberColumn y) {
+        BarBuilder(CategoricalColumn x, Column<? extends Number> y) {
 
             this.x = TraceBuilder.columnToStringArray(x);
             this.y = y.asDoubleArray();

@@ -5,7 +5,6 @@ import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.change.Decreasing;
@@ -71,26 +70,22 @@ public class ScatterTrace extends AbstractTrace {
         return new ScatterBuilder(x, y);
     }
 
-    public static ScatterBuilder builder(NumberColumn x, NumberColumn y) {
+    public static ScatterBuilder builder(DateColumn x, Column<? extends Number> y) {
+        return new ScatterBuilder(x, y);
+    }
+    public static ScatterBuilder builder(Column x, Column<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
 
-    public static ScatterBuilder builder(DateColumn x, NumberColumn y) {
-        return new ScatterBuilder(x, y);
-    }
-    public static ScatterBuilder builder(Column x, NumberColumn y) {
-        return new ScatterBuilder(x, y);
-    }
-
-    public static ScatterBuilder builder(Column x, NumberColumn open, NumberColumn high, NumberColumn low, NumberColumn close) {
+    public static ScatterBuilder builder(Column x, Column<? extends Number> open, Column<? extends Number> high, Column<? extends Number> low, Column<? extends Number> close) {
         return new ScatterBuilder(x, open, high, low, close);
     }
 
-    public static ScatterBuilder builder(DateTimeColumn x, NumberColumn y) {
+    public static ScatterBuilder builder(DateTimeColumn x, Column<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
 
-    public static ScatterBuilder builder(TimeColumn x, NumberColumn y) {
+    public static ScatterBuilder builder(TimeColumn x, Column<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
 
@@ -234,12 +229,12 @@ public class ScatterTrace extends AbstractTrace {
             this.y = y;
         }
 
-        private ScatterBuilder(Column x, NumberColumn y) {
+        private ScatterBuilder(Column x, Column<? extends Number> y) {
             this.x = x.asObjectArray();
             this.y = y.asDoubleArray();
         }
 
-        private ScatterBuilder(Column x, NumberColumn open, NumberColumn high, NumberColumn low, NumberColumn close) {
+        private ScatterBuilder(Column x, Column<? extends Number> open, Column<? extends Number> high, Column<? extends Number> low, Column<? extends Number> close) {
             this.x = x.asObjectArray();
             this.open = open.asDoubleArray();
             this.high = high.asDoubleArray();
@@ -247,22 +242,17 @@ public class ScatterTrace extends AbstractTrace {
             this.close = close.asDoubleArray();
         }
 
-        private ScatterBuilder(NumberColumn x, NumberColumn y) {
+        private ScatterBuilder(DateColumn x, Column<? extends Number> y) {
             this.x = x.asObjectArray();
             this.y = y.asDoubleArray();
         }
 
-        private ScatterBuilder(DateColumn x, NumberColumn y) {
+        private ScatterBuilder(DateTimeColumn x, Column<? extends Number> y) {
             this.x = x.asObjectArray();
             this.y = y.asDoubleArray();
         }
 
-        private ScatterBuilder(DateTimeColumn x, NumberColumn y) {
-            this.x = x.asObjectArray();
-            this.y = y.asDoubleArray();
-        }
-
-        private ScatterBuilder(TimeColumn x, NumberColumn y) {
+        private ScatterBuilder(TimeColumn x, Column<? extends Number> y) {
             this.x = x.asObjectArray();
             this.y = y.asDoubleArray();
         }

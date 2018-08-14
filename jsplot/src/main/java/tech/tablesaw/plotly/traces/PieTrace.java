@@ -3,7 +3,6 @@ package tech.tablesaw.plotly.traces;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.api.CategoricalColumn;
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.Utils;
 
@@ -52,7 +51,7 @@ public class PieTrace extends AbstractTrace {
         return new PieBuilder(labels, values);
     }
 
-    public static PieBuilder builder(CategoricalColumn labels, NumberColumn values) {
+    public static PieBuilder builder(CategoricalColumn labels, Column<? extends Number> values) {
         return new PieBuilder(TraceBuilder.columnToStringArray(labels), values.asDoubleArray());
     }
 

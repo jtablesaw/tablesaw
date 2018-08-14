@@ -3,7 +3,7 @@ package tech.tablesaw.plotly.traces;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.api.CategoricalColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.columns.Column;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -27,7 +27,7 @@ public class BoxTrace extends AbstractTrace {
         return new BoxBuilder(x, y);
     }
 
-    public static BoxBuilder builder(CategoricalColumn x, NumberColumn y) {
+    public static BoxBuilder builder(CategoricalColumn x, Column<? extends Number> y) {
         return new BoxBuilder(x, y);
     }
 
@@ -73,7 +73,7 @@ public class BoxTrace extends AbstractTrace {
             this.y = y;
         }
 
-        BoxBuilder(CategoricalColumn x, NumberColumn y) {
+        BoxBuilder(CategoricalColumn x, Column<? extends Number> y) {
             this.x = columnToStringArray(x);
             this.y = y.asDoubleArray();
         }
