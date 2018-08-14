@@ -61,7 +61,7 @@ public class TableSliceTest {
         TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
         assertEquals(source.columnIndex("who"), slice.columnIndex("who"));
 
-        Column who = source.column("who");
+        Column<?> who = source.column("who");
         assertEquals(source.columnIndex(who), slice.columnIndex(who));
     }
 

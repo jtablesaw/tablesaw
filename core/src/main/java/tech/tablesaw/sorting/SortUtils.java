@@ -17,7 +17,7 @@ public class SortUtils {
     public static IntComparatorChain getChain(Table table, Sort key) {
         Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
         Map.Entry<String, Sort.Order> sort = entries.next();
-        Column column = table.column(sort.getKey());
+        Column<?> column = table.column(sort.getKey());
         IntComparator comparator = rowComparator(column, sort.getValue());
 
         IntComparatorChain chain = new IntComparatorChain(comparator);
@@ -34,7 +34,7 @@ public class SortUtils {
      * @param column     The column to sort
      * @param order      Specifies whether the sort should be in ascending or descending order
      */
-    public static IntComparator rowComparator(Column column, Sort.Order order) {
+    public static IntComparator rowComparator(Column<?> column, Sort.Order order) {
         IntComparator rowComparator = column.rowComparator();
         if (order == Sort.Order.DESCEND) {
             return ReversingIntComparator.reverse(rowComparator);
@@ -49,7 +49,7 @@ public class SortUtils {
     public static IntComparator getComparator(Table table, Sort key) {
         Iterator<Map.Entry<String, Sort.Order>> entries = key.iterator();
         Map.Entry<String, Sort.Order> sort = entries.next();
-        Column column = table.column(sort.getKey());
+        Column<?> column = table.column(sort.getKey());
         return SortUtils.rowComparator(column, sort.getValue());
     }
 }

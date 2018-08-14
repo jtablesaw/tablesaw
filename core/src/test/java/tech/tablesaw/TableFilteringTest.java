@@ -77,7 +77,7 @@ public class TableFilteringTest {
     public void testSelectRange() {
         Table result = table.inRange(20, 30);
         assertEquals(10, result.rowCount());
-        for (Column c: result.columns()) {
+        for (Column<?> c: result.columns()) {
             for (int r = 0; r < result.rowCount(); r++) {
                 assertEquals(table.get(r+20, c.name()), result.get(r, c.name()));
             }
@@ -88,7 +88,7 @@ public class TableFilteringTest {
     public void testSelectRows() {
         Table result = table.rows(20, 30);
         assertEquals(2, result.rowCount());
-        for (Column c: result.columns()) {
+        for (Column<?> c: result.columns()) {
             assertEquals(table.get(20, c.name()), result.get(0, c.name()));
             assertEquals(table.get(30, c.name()), result.get(1, c.name()));
         }
@@ -110,7 +110,7 @@ public class TableFilteringTest {
     public void testRejectRows() {
         Table result = table.dropRows(20, 30);
         assertEquals(table.rowCount() - 2, result.rowCount());
-        for (Column c: result.columns()) {
+        for (Column<?> c: result.columns()) {
             assertEquals(table.get(21, c.name()), result.get(20, c.name()));
             assertEquals(table.get(32, c.name()), result.get(30, c.name()));
         }
@@ -120,7 +120,7 @@ public class TableFilteringTest {
     public void testRejectRange() {
         Table result = table.dropRange(20, 30);
         assertEquals(table.rowCount() - 10, result.rowCount());
-        for (Column c: result.columns()) {
+        for (Column<?> c: result.columns()) {
             for (int r = 30; r < result.rowCount(); r++) {
                 assertEquals(result.get(r, c.name()), table.get(r + 10, c.name()));
             }

@@ -41,7 +41,7 @@ public class RollingColumn {
         return (NumberColumn) calc(AggregateFunctions.pctChange);
     }
 
-    private String generateNewColumnName(AggregateFunction function) {
+    private String generateNewColumnName(AggregateFunction<?, ?> function) {
         boolean useSpaces = column.name().matches("\\s+");
         String separator = useSpaces ? " " : "";
         return new StringBuilder(column.name())
@@ -50,9 +50,6 @@ public class RollingColumn {
                 .toString();
     }
 
-    /**
-     *
-     */
     @SuppressWarnings("unchecked")
     public Column<?> calc(AggregateFunction function) {
         // TODO: the subset operation copies the array. creating a view would likely be more efficient

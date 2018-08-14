@@ -73,7 +73,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
 
     int getByteSize(List<Column<?>> columns) {
         int byteSize = 0;
-        for (Column c : columns) {
+        for (Column<?> c : columns) {
             byteSize += c.byteSize();
         }
         return byteSize;
@@ -111,8 +111,8 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         if (splitColumnNames.length > 0) {
             List<Column<?>> newColumns = new ArrayList<>();
             List<Column<?>> columns = sourceTable.columns(splitColumnNames);
-            for (Column column : columns) {
-                Column newColumn = column.emptyCopy();
+            for (Column<?> column : columns) {
+                Column<?> newColumn = column.emptyCopy();
                 newColumns.add(newColumn);
             }
             // iterate through the rows in the table and split each of the grouping columns into multiple columns
@@ -123,7 +123,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
                 }
             }
             for (int col = 0; col < newColumns.size(); col++) {
-                Column c = newColumns.get(col);
+                Column<?> c = newColumns.get(col);
                 groupTable.insertColumn(col, c);
             }
             groupTable.removeColumns("Group");
@@ -135,8 +135,8 @@ public class TableSliceGroup implements Iterable<TableSlice> {
      * Applies the given aggregation to the given column.
      * The apply and combine steps of a split-apply-combine.
      */
-    public Table aggregate(String colName1, AggregateFunction... functions) {
-        ArrayListMultimap<String, AggregateFunction> columnFunctionMap = ArrayListMultimap.create();
+    public Table aggregate(String colName1, AggregateFunction<?,?>... functions) {
+        ArrayListMultimap<String, AggregateFunction<?,?>> columnFunctionMap = ArrayListMultimap.create();
         columnFunctionMap.putAll(colName1, Lists.newArrayList(functions));
         return aggregate(columnFunctionMap);
     }
@@ -147,13 +147,13 @@ public class TableSliceGroup implements Iterable<TableSlice> {
      *
      * @param functions map from column name to aggregation to apply on that function
      */
-    @SuppressWarnings("unchecked")
-    public Table aggregate(ListMultimap<String, AggregateFunction> functions) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public Table aggregate(ListMultimap<String, AggregateFunction<?,?>> functions) {
         Preconditions.checkArgument(!getSlices().isEmpty());
         Table groupTable = summaryTableName(sourceTable);
         StringColumn groupColumn = StringColumn.create("Group", size());
         groupTable.addColumns(groupColumn);
-        for (Map.Entry<String, Collection<AggregateFunction>> entry : functions.asMap().entrySet()) {
+        for (Map.Entry<String, Collection<AggregateFunction<?,?>>> entry : functions.asMap().entrySet()) {
             String columnName = entry.getKey();
             int functionCount = 0;
             for (AggregateFunction function : entry.getValue()) {

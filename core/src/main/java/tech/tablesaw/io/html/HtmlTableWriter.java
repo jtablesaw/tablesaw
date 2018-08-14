@@ -61,7 +61,7 @@ public final class HtmlTableWriter {
         StringBuilder builder = new StringBuilder()
                 .append("<tr>");
 
-        for (Column col : table.columns()) {
+        for (Column<?> col : table.columns()) {
             builder
                     .append("<td>")
                     .append(String.valueOf(col.getString(row)))
