@@ -22,7 +22,7 @@ public class Row implements Iterator<Row> {
     private final Map<String, DateTimeColumn> dateTimeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, TimeColumn> timeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-    private final Map<String, Column> columnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, Column<?>> columnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     public Row(Table table) {
         this.table = table;
