@@ -14,14 +14,22 @@
 
 package tech.tablesaw.columns;
 
-import tech.tablesaw.api.*;
 import org.junit.Before;
 import org.junit.Test;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for Column functionality that is common across column types
@@ -94,5 +102,45 @@ public class ColumnTest {
     public void testType() {
         Column c = table.numberColumn("approval");
         assertEquals(ColumnType.DOUBLE, c.type());
+    }
+
+    @Test
+    public void testContains() {
+        Column<String> c = table.stringColumn("who");
+        assertTrue(c.contains("fox"));
+        assertFalse(c.contains("foxes"));
+    }
+
+    @Test
+    public void testAsList() {
+        Column<String> whoColumn = table.stringColumn("who");
+        List<String> whos = whoColumn.asList();
+        assertEquals(whos.size(), whoColumn.size());
+    }
+
+    @Test
+    public void testMin() {
+        double[] d1 = {1, 0, -1};
+        double[] d2 = {2, -4, 3};
+
+        DoubleColumn dc1 = DoubleColumn.create("t1", d1);
+        DoubleColumn dc2 = DoubleColumn.create("t2", d2);
+        DoubleColumn dc3 = (DoubleColumn) dc1.min(dc2);
+        assertTrue(dc3.contains(1));
+        assertTrue(dc3.contains(-4));
+        assertTrue(dc3.contains(-1));
+    }
+
+    @Test
+    public void testMax() {
+        double[] d1 = {1, 0, -1};
+        double[] d2 = {2, -4, 3};
+
+        DoubleColumn dc1 = DoubleColumn.create("t1", d1);
+        DoubleColumn dc2 = DoubleColumn.create("t2", d2);
+        DoubleColumn dc3 = (DoubleColumn) dc1.max(dc2);
+        assertTrue(dc3.contains(2));
+        assertTrue(dc3.contains(0));
+        assertTrue(dc3.contains(3));
     }
 }

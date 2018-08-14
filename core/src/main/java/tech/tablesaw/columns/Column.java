@@ -23,7 +23,9 @@ import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
 import tech.tablesaw.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
@@ -337,5 +339,84 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
             width = Math.max(width, StringUtils.length(getString(rowNum)));
         }
         return width;
+    }
+
+    /**
+     * Returns a column containing the element-wise min between this column and other column
+     *
+     * TODO(lwhite) Override in column subtypes for better performance
+     */
+    default Column<T> min(Column<T> other) {
+        Preconditions.checkArgument(size() == other.size());
+        Column<T> newCol = emptyCopy();
+        for (int i = 0; i < this.size(); i++) {
+            if (isMissing(i) || other.isMissing(i)) {
+                newCol.appendMissing();
+            } else {
+                T thisValue = get(i);
+                T otherValue = other.get(i);
+                int result = compare(thisValue, otherValue);
+                newCol.append(result <= 0 ? thisValue : otherValue);
+            }
+        }
+        return newCol;
+    }
+
+    /**
+     * Returns a column containing the element-wise min between this column and other column
+     *
+     * TODO(lwhite) Override in column subtypes for better performance
+     */
+    default Column<T> max(Column<T> other) {
+        Preconditions.checkArgument(size() == other.size());
+        Column<T> newCol = emptyCopy();
+        for (int i = 0; i < this.size(); i++) {
+            if (isMissing(i) || other.isMissing(i)) {
+                newCol.appendMissing();
+            } else {
+                T thisValue = get(i);
+                T otherValue = other.get(i);
+                int result = compare(thisValue, otherValue);
+                newCol.append(result >= 0 ? thisValue : otherValue);
+            }
+        }
+        return newCol;
+    }
+
+    /**
+     * Returns a list of all the elements in this column
+     *
+     * Note, if a value in the column is missing, a {@code null} is added in it's place
+     */
+    default List<T> asList() {
+        List<T> results = new ArrayList<>();
+        for (int i = 0; i < this.size(); i++) {
+            if (isMissing(i)) {
+                results.add(null);
+            } else {
+                results.add(get(i));
+            }
+        }
+        return results;
+    }
+
+    /**
+     * Returns {@code true} if the given object appears in this column, and false otherwise
+     *
+     * TODO override in column subtypes for performance
+     */
+    default boolean contains(T object) {
+        for (int i = 0; i < this.size(); i++) {
+            if (object != null) {
+                if (object.equals(get(i))) {
+                    return true;
+                }
+            }
+            else {
+                if (get(i) == null)
+                    return true;
+            }
+        }
+        return false;
     }
 }
