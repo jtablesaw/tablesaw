@@ -80,7 +80,7 @@ public class Table extends Relation implements Iterable<Row> {
      * @param name    The name of the table
      * @param columns One or more columns, all of which must have either the same length or size 0
      */
-    protected Table(String name, Column... columns) {
+    protected Table(String name, Column<?>... columns) {
         this(name);
         for (final Column<?> column : columns) {
             this.addColumns(column);
@@ -246,7 +246,7 @@ public class Table extends Relation implements Iterable<Row> {
         return columnList;
     }
 
-    public Column[] columnArray() {
+    public Column<?>[] columnArray() {
         return columnList.toArray(new Column[columnCount()]);
     }
 
@@ -685,7 +685,7 @@ public class Table extends Relation implements Iterable<Row> {
      *
      * are preferred
      */
-    public TableSliceGroup splitOn(CategoricalColumn... columns) {
+    public TableSliceGroup splitOn(CategoricalColumn<?>... columns) {
         return StandardTableSliceGroup.create(this, columns);
     }
 

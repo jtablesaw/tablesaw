@@ -65,7 +65,7 @@ public abstract class AbstractColumnType<T> implements ColumnType<T> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AbstractColumnType that = (AbstractColumnType) o;
+        AbstractColumnType<?> that = (AbstractColumnType<?>) o;
         return byteSize == that.byteSize &&
                 Objects.equal(missingValue, that.missingValue) &&
                 Objects.equal(name, that.name) &&

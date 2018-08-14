@@ -28,7 +28,7 @@ public class Row implements Iterator<Row> {
         this.table = table;
         columnNames = table.columnNames().toArray(new String[0]);
         rowNumber = -1;
-        for (Column column : table.columns()) {
+        for (Column<?> column : table.columns()) {
             if (column instanceof DoubleColumn) {
                 doubleColumnMap.put(column.name(), (DoubleColumn) column);
             }

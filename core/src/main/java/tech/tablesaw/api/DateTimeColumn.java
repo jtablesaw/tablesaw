@@ -370,7 +370,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public DateTimeColumn append(Column column) {
+    public DateTimeColumn append(Column<LocalDateTime> column) {
         Preconditions.checkArgument(column.type() == this.type());
         DateTimeColumn doubleColumn = (DateTimeColumn) column;
         for (int i = 0; i < doubleColumn.size(); i++) {
