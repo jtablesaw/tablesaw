@@ -23,6 +23,9 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleFunction;
+import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
@@ -30,6 +33,7 @@ import java.util.function.ToDoubleFunction;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 
+import it.unimi.dsi.fastutil.doubles.DoubleComparator;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
@@ -418,27 +422,58 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     }
     
     // functional methods corresponding to those in Stream
-    
-    default boolean allMatch(Predicate<? super T> test) {
+
+    default int count(Predicate<? super T> test, int max) {
+        int count = 0;
         for (T t : this) {
-            if (! test.test(t)) {
-                return false;
+            if (test.test(t)) {
+                count++;
+                if (count >= max) {
+                    return count;
+                }
             }
         }
-        return true;
+        return count;
+    }
+    default int countDoubles(DoublePredicate test, int max) {
+        int count = 0;
+        for (int i = 0; i < size(); i++) {
+            if (test.test(getDouble(i))) {
+                count++;
+                if (count >= max) {
+                    return count;
+                }
+            }
+        }
+        return count;
+    }
+
+    default int count(Predicate<? super T> test) {
+        return count(test, size());
+    }
+    default int countDoubles(DoublePredicate test) {
+        return countDoubles(test, size());
+    }
+
+    default boolean allMatch(Predicate<? super T> test) {
+        return count(test.negate(), 1) == 0;
+    }
+    default boolean allMatchDoubles(DoublePredicate test) {
+        return countDoubles(test.negate(), 1) == 0;
     }
     
     default boolean anyMatch(Predicate<? super T> test) {
-        for (T t : this) {
-            if (test.test(t)) {
-                return true;
-            }
-        }
-        return false;
+        return count(test, 1) > 0;
+    }
+    default boolean anyMatchDoubles(DoublePredicate test) {
+        return countDoubles(test, 1) > 0;
     }
 
     default boolean noneMatch(Predicate<? super T> test) {
-        return ! anyMatch(test);
+        return count(test, 1) == 0;
+    }
+    default boolean noneMatchDoubles(DoublePredicate test) {
+        return countDoubles(test, 1) == 0;
     }
     
     default Column<T> filter(Predicate<? super T> test) {
@@ -446,6 +481,16 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         for (T t : this) {
             if (test.test(t)) {
                 result.append(t);
+            }
+        }
+        return result;
+    }
+    default DoubleColumn filterDoubles(DoublePredicate test) {
+        DoubleColumn result = DoubleColumn.create(name());
+        for (int i = 0; i < size(); i++) {
+            double d = getDouble(i);
+            if (test.test(d)) {
+                result.append(d);
             }
         }
         return result;
@@ -461,13 +506,23 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         }
         return into;
     }
-    
-    default Column<T>map(Function<? super T, ? extends T> fun) {
+    default <R> Column<R> mapDoublesInto(DoubleFunction<? extends R> fun, Column<R> into) {
+        for (int i = 0; i < size(); i++) {
+            try {
+                into.append(fun.apply(getDouble(i)));
+            } catch (Exception e) {
+                into.appendMissing();
+            }
+        }
+        return into;
+    }
+
+    default Column<T> map(Function<? super T, ? extends T> fun) {
         return mapInto(fun, emptyCopy(size()));
     }
     
-    default DoubleColumn mapToDouble(ToDoubleFunction<? super T> fun) {
-        DoubleColumn result = DoubleColumn.create("copy of " + name());
+    default DoubleColumn mapToDoubles(ToDoubleFunction<? super T> fun) {
+        DoubleColumn result = DoubleColumn.create(name());
         for (T t : this) {
             try {
                 result.append(fun.applyAsDouble(t));
@@ -491,7 +546,21 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         }
         return (first ? Optional.<T>empty() : Optional.<T>of(o1));
     }
-    
+    default Optional<Double> maxDoubles(DoubleComparator comp) {
+        boolean first = true;
+        double d1 = 0.0;
+        for (int i = 0; i < size(); i++) {
+            double d2 = getDouble(i);
+            if (first) {
+                d1 = d2;
+                first = false;
+            } else if (comp.compare(d1, d2) < 0) {
+                d1 = d2;
+            }
+        }
+        return (first ? Optional.<Double>empty() : Optional.<Double>of(d1));
+    }
+
     default Optional<T> min(Comparator<? super T> comp) {
         boolean first = true;
         T o1 = null;
@@ -505,11 +574,32 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         }
         return (first ? Optional.<T>empty() : Optional.<T>of(o1));
     }
+    default Optional<Double> minDoubles(DoubleComparator comp) {
+        boolean first = true;
+        double d1 = 0.0;
+        for (int i = 0; i < size(); i++) {
+            double d2 = getDouble(i);
+            if (first) {
+                d1 = d2;
+                first = false;
+            } else if (comp.compare(d1, d2) > 0) {
+                d1 = d2;
+            }
+        }
+        return (first ? Optional.<Double>empty() : Optional.<Double>of(d1));
+    }
 
     default T reduce(T initial, BinaryOperator<T> op) {
         T acc = initial;
         for (T t : this) {
             acc = op.apply(acc, t);
+        }
+        return acc;
+    }
+    default double reduceDoubles(double initial, DoubleBinaryOperator op) {
+        double acc = initial;
+        for (int i = 0; i < size(); i++) {
+            acc = op.applyAsDouble(acc, getDouble(i));
         }
         return acc;
     }
@@ -526,6 +616,20 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
             }
         }
         return (first ? Optional.empty() : Optional.of(acc));
+    }
+    default Optional<Double> reduceDoubles(DoubleBinaryOperator op) {
+        boolean first = true;
+        double acc = 0.0;
+        for (int i = 0; i < size(); i++) {
+            double d = getDouble(i);
+            if (first) {
+                acc = d;
+                first = false;
+            } else {
+                acc = op.applyAsDouble(acc, d);
+            }
+        }
+        return (first ? Optional.<Double>empty() : Optional.<Double>of(acc));
     }
     
     default Column<T> sorted(Comparator<? super T> comp) {
