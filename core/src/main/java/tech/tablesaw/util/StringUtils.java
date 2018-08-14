@@ -23,21 +23,21 @@ import java.util.List;
 
 /**
  * <p>Operations on {@link java.lang.String} that are
- * {@code null} safe.</p>
+ * {@code null} safe.
  *
  * <p>{@code StringUtils} handles {@code null} input Strings quietly.
  * That is to say that a {@code null} input will return {@code null}.
  * Where a {@code boolean} or {@code int} is being returned
- * details vary by method.</p>
+ * details vary by method.
  *
  * <p>A side effect of the {@code null} handling is that a
  * {@code NullPointerException} should be considered a bug in
- * {@code StringUtils}.</p>
+ * {@code StringUtils}.
  *
  * <p>Methods in this class give sample code to explain their operation.
- * The symbol {@code *} is used to indicate any input including {@code null}.</p>
+ * The symbol {@code *} is used to indicate any input including {@code null}.
  *
- * <p>#ThreadSafe#</p>
+ * <p>#ThreadSafe#
  * @see java.lang.String
  * @since 1.0
  */
@@ -66,7 +66,7 @@ public class StringUtils {
     private static final String EMPTY = "";
 
     /**
-     * <p>The maximum size to which the padding constant(s) can expand.</p>
+     * <p>The maximum size to which the padding constant(s) can expand.
      */
     private static final int PAD_LIMIT = 8192;
 
@@ -125,11 +125,11 @@ public class StringUtils {
 
     /**
      * <p>Joins the elements of the provided array into a single String
-     * containing the provided list of elements.</p>
+     * containing the provided list of elements.
      *
      * <p>No delimiter is added before or after the list.
      * Null objects or empty strings within the array are represented by
-     * empty strings.</p>
+     * empty strings.
      *
      * <pre>
      * StringUtils.join(null, *)               = null
@@ -154,11 +154,11 @@ public class StringUtils {
 
     /**
      * <p>Joins the elements of the provided array into a single String
-     * containing the provided list of elements.</p>
+     * containing the provided list of elements.
      *
      * <p>No delimiter is added before or after the list.
      * Null objects or empty strings within the array are represented by
-     * empty strings.</p>
+     * empty strings.
      *
      * <pre>
      * StringUtils.join(null, *)               = null
@@ -202,7 +202,7 @@ public class StringUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Repeat a String {@code repeat} times to form a
-     * new String.</p>
+     * new String.
      *
      * <pre>
      * StringUtils.repeat(null, 2) = null
@@ -259,7 +259,7 @@ public class StringUtils {
 
     /**
      * <p>Returns padding using the specified delimiter repeated
-     * to a given length.</p>
+     * to a given length.
      *
      * <pre>
      * StringUtils.repeat('e', 0)  = ""
@@ -272,7 +272,7 @@ public class StringUtils {
      * as they require a pair of {@code char}s to be represented.
      * If you are needing to support full I18N of your applications
      * consider using {@link #repeat(String, int)} instead.
-     * </p>
+     * 
      *
      * @param ch  character to repeat
      * @param repeat  number of times to repeat char, negative treated as zero
@@ -310,9 +310,9 @@ public class StringUtils {
 
     /**
      * <p>Capitalizes a String changing the first character to title case as
-     * per {@link Character#toTitleCase(int)}. No other characters are changed.</p>
+     * per {@link Character#toTitleCase(int)}. No other characters are changed.
      *
-     * A {@code null} input String returns {@code null}.</p>
+     * A {@code null} input String returns {@code null}.
      *
      * <pre>
      * StringUtils.capitalize(null)  = null
@@ -353,10 +353,10 @@ public class StringUtils {
     // Character Tests
     //-----------------------------------------------------------------------
     /**
-     * <p>Checks if the CharSequence contains only Unicode letters.</p>
+     * <p>Checks if the CharSequence contains only Unicode letters.
      *
      * <p>{@code null} will return {@code false}.
-     * An empty CharSequence (length()=0) will return {@code false}.</p>
+     * An empty CharSequence (length()=0) will return {@code false}.
      *
      * <pre>
      * StringUtils.isAlpha(null)   = false
@@ -386,10 +386,10 @@ public class StringUtils {
     }
 
     /**
-     * <p>Checks if the CharSequence contains only Unicode letters or digits.</p>
+     * <p>Checks if the CharSequence contains only Unicode letters or digits.
      *
      * <p>{@code null} will return {@code false}.
-     * An empty CharSequence (length()=0) will return {@code false}.</p>
+     * An empty CharSequence (length()=0) will return {@code false}.
      *
      * <pre>
      * StringUtils.isAlphanumeric(null)   = false
@@ -423,15 +423,15 @@ public class StringUtils {
 
     /**
      * <p>Checks if the CharSequence contains only Unicode digits.
-     * A decimal point is not a Unicode digit and returns false.</p>
+     * A decimal point is not a Unicode digit and returns false.
      *
      * <p>{@code null} will return {@code false}.
-     * An empty CharSequence (length()=0) will return {@code false}.</p>
+     * An empty CharSequence (length()=0) will return {@code false}.
      *
      * <p>Note that the method does not allow for a leading sign, either positive or negative.
      * Also, if a String passes the numeric test, it may still generate a NumberFormatException
      * when parsed by Integer.parseInt or Long.parseLong, e.g. if the value is outside the range
-     * for int or long respectively.</p>
+     * for int or long respectively.
      *
      * <pre>
      * StringUtils.isNumeric(null)   = false
@@ -466,10 +466,10 @@ public class StringUtils {
     }
 
     /**
-     * <p>Checks if the CharSequence contains only lowercase characters.</p>
+     * <p>Checks if the CharSequence contains only lowercase characters.
      *
      * <p>{@code null} will return {@code false}.
-     * An empty CharSequence (length()=0) will return {@code false}.</p>
+     * An empty CharSequence (length()=0) will return {@code false}.
      *
      * <pre>
      * StringUtils.isAllLowerCase(null)   = false
@@ -501,10 +501,10 @@ public class StringUtils {
     }
 
     /**
-     * <p>Checks if the CharSequence contains only uppercase characters.</p>
+     * <p>Checks if the CharSequence contains only uppercase characters.
      *
      * <p>{@code null} will return {@code false}.
-     * An empty String (length()=0) will return {@code false}.</p>
+     * An empty String (length()=0) will return {@code false}.
      *
      * <pre>
      * StringUtils.isAllUpperCase(null)   = false
@@ -539,9 +539,9 @@ public class StringUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Abbreviates a String using ellipses. This will turn
-     * "Now is the time for all good men" into "Now is the time for..."</p>
+     * "Now is the time for all good men" into "Now is the time for..."
      *
-     * <p>Specifically:</p>
+     * <p>Specifically:
      * <ul>
      *   <li>If the number of characters in {@code str} is less than or equal to
      *       {@code maxWidth}, return {@code str}.</li>
@@ -576,14 +576,14 @@ public class StringUtils {
     /**
      * <p>Abbreviates a String using a given replacement marker. This will turn
      * "Now is the time for all good men" into "...is the time for..." if "..." was defined
-     * as the replacement marker.</p>
+     * as the replacement marker.
      *
      * <p>Works like {@code abbreviate(String, String, int)}, but allows you to specify
      * a "left edge" offset.  Note that this left edge is not necessarily going to
      * be the leftmost character in the result, or the first character following the
      * replacement marker, but it will appear somewhere in the result.
      *
-     * <p>In no case will it return a String of length greater than {@code maxWidth}.</p>
+     * <p>In no case will it return a String of length greater than {@code maxWidth}.
      *
      * <pre>
      * StringUtils.abbreviate(null, null, *, *)                 = null
