@@ -605,19 +605,17 @@ public class Table extends Relation implements Iterable<Row> {
      * @param sourceTable   A table with the same column structure as this table
      */
     public void addRow(int rowIndex, Table sourceTable) {
-        IntArrayList rows = new IntArrayList();
+        IntArrayList rows = new IntArrayList(new int[] { rowIndex });
         for (int i = 0; i < columnCount(); i++) {
             Column<?> column = column(i);
-            rows.add(rowIndex);
             column.type().copy(rows, sourceTable.column(i), column(i));
         }
     }
 
     public void addRow(Row row) {
+        IntArrayList rows = new IntArrayList(new int[] { row.getRowNumber() });
         for (Column<?> column : columns()) {
-            final ColumnType type = column.type();
-            IntArrayList rows = new IntArrayList();
-            rows.add(row.getRowNumber());
+            ColumnType type = column.type();
             type.copyFromRows(rows, column, row);
         }
     }
