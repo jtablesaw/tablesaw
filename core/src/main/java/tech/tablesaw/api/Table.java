@@ -795,8 +795,9 @@ public class Table extends Relation implements Iterable<Row> {
     public Table append(Table tableToAppend) {
         for (final Column<?> column : columnList) {
             final Column<?> columnToAppend = tableToAppend.column(column.name());
-            ColumnType type = column.type();
-            type.appendColumns(column, columnToAppend);
+            for (int i = 0; i < columnToAppend.size(); i++) {
+                column.appendObj(columnToAppend.get(i));
+            }
         }
         return this;
     }

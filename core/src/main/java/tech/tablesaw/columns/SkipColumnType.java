@@ -3,7 +3,7 @@ package tech.tablesaw.columns;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-public class SkipColumnType extends AbstractColumnType<Void> {
+public class SkipColumnType extends AbstractColumnType {
 
     public static final ColumnType INSTANCE =
             new SkipColumnType(null, 0, "SKIP", "Skipped");
@@ -26,12 +26,4 @@ public class SkipColumnType extends AbstractColumnType<Void> {
     public StringParser customParser(CsvReadOptions options) {
         throw new UnsupportedOperationException("Column type " + name() + " doesn't support parsing");
     }
-
-    @Override
-    public boolean compare(int rowNumber, Column temp, Column original) {
-        throw new UnsupportedOperationException("Column type " + name() + " doesn't support comparison");
-    }
-
-    @Override
-    public void appendColumns(Column column, Column columnToAppend) {}
 }

@@ -5,11 +5,10 @@ import java.time.LocalDate;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-public class DateColumnType extends AbstractColumnType<LocalDate> {
+public class DateColumnType extends AbstractColumnType {
 
     public static final DateStringParser DEFAULT_PARSER = new DateStringParser(ColumnType.LOCAL_DATE);
     public static final DateColumnType INSTANCE =
@@ -34,10 +33,4 @@ public class DateColumnType extends AbstractColumnType<LocalDate> {
         return new DateStringParser(this, options);
     }
 
-    @Override
-    public boolean compare(int rowNumber, Column temp, Column original) {
-        DateColumn tempDate = (DateColumn) temp;
-        DateColumn originalDate = (DateColumn) original;
-        return originalDate.getIntInternal(rowNumber) == tempDate.getIntInternal(tempDate.size() - 1);
-    }
 }

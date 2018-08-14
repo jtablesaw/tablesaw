@@ -3,10 +3,9 @@ package tech.tablesaw.columns.numbers;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-public class DoubleColumnType extends AbstractColumnType<Double> {
+public class DoubleColumnType extends AbstractColumnType {
 
     public static final DoubleStringParser DEFAULT_PARSER = new DoubleStringParser(ColumnType.DOUBLE);
     public static final DoubleColumnType INSTANCE =
@@ -31,10 +30,4 @@ public class DoubleColumnType extends AbstractColumnType<Double> {
         return new DoubleStringParser(this, options);
     }
 
-    @Override
-    public boolean compare(int rowNumber, Column<Double> temp, Column<Double> original) {
-        DoubleColumn tempDouble = (DoubleColumn) temp;
-        DoubleColumn originalDouble = (DoubleColumn) original;
-        return originalDouble.getDouble(rowNumber) == tempDouble.getDouble(tempDouble.size() - 1);
-    }
 }

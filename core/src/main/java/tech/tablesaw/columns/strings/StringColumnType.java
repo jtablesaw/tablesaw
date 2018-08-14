@@ -3,10 +3,9 @@ package tech.tablesaw.columns.strings;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-public class StringColumnType extends AbstractColumnType<String> {
+public class StringColumnType extends AbstractColumnType {
 
     public static final StringStringParser DEFAULT_PARSER = new StringStringParser(ColumnType.STRING);
     public static final StringColumnType INSTANCE =
@@ -34,10 +33,4 @@ public class StringColumnType extends AbstractColumnType<String> {
         return new StringStringParser(this, options);
     }
 
-    @Override
-    public boolean compare(int rowNumber, Column<String> temp, Column<String> original) {
-        StringColumn tempString = (StringColumn) temp;
-        StringColumn originalString = (StringColumn) original;
-        return originalString.get(rowNumber).equals(tempString.get(tempString.size() - 1));
-    }
 }

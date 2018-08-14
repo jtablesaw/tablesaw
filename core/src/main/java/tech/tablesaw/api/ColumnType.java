@@ -1,8 +1,5 @@
 package tech.tablesaw.api;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,38 +16,38 @@ import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-public interface ColumnType<T> {
+public interface ColumnType {
 
-    Map<String, ColumnType<?>> values = new HashMap<>();
+    Map<String, ColumnType> values = new HashMap<>();
 
     // standard column types
-    ColumnType<Boolean> BOOLEAN = BooleanColumnType.INSTANCE;
-    ColumnType<String> STRING = StringColumnType.INSTANCE;
-    ColumnType<Double> DOUBLE = DoubleColumnType.INSTANCE;
-    ColumnType<LocalDate> LOCAL_DATE = DateColumnType.INSTANCE;
-    ColumnType<LocalDateTime> LOCAL_DATE_TIME = DateTimeColumnType.INSTANCE;
-    ColumnType<LocalTime> LOCAL_TIME = TimeColumnType.INSTANCE;
+    ColumnType BOOLEAN = BooleanColumnType.INSTANCE;
+    ColumnType STRING = StringColumnType.INSTANCE;
+    ColumnType DOUBLE = DoubleColumnType.INSTANCE;
+    ColumnType LOCAL_DATE = DateColumnType.INSTANCE;
+    ColumnType LOCAL_DATE_TIME = DateTimeColumnType.INSTANCE;
+    ColumnType LOCAL_TIME = TimeColumnType.INSTANCE;
     ColumnType SKIP = SkipColumnType.INSTANCE;
 
-    static void register(ColumnType<?> type) {
+    static void register(ColumnType type) {
         values.put(type.name(), type);
     }
 
-    static ColumnType<?>[] values() {
+    static ColumnType[] values() {
         return values.values().toArray(new ColumnType[0]);
     }
 
-    static ColumnType<?> valueOf(String name) {
+    static ColumnType valueOf(String name) {
         Preconditions.checkNotNull(name);
 
-        ColumnType<?> result = values.get(name);
+        ColumnType result = values.get(name);
         if (result == null) {
             throw new IllegalArgumentException(name + " is not a registered column type.");
         }
         return result;
     }
 
-    Column<T> create(String name);
+    Column<?> create(String name);
 
     String name();
 
@@ -64,7 +61,7 @@ public interface ColumnType<T> {
 
     StringParser customParser(CsvReadOptions options);
 
-    boolean compare(int rowNumber, Column<T> temp, Column<T> original);
-
-    void appendColumns(Column<T> column, Column<T> columnToAppend);
+    default boolean compare(int rowNumber, Column<?> temp, Column<?> original) {
+        return original.get(rowNumber).equals(temp.get(temp.size() - 1));
+    }
 }

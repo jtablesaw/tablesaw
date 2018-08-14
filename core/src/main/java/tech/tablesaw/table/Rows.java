@@ -50,7 +50,7 @@ public class Rows {
         int columnCount = original.columnCount();
         boolean result;
         for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
-            final ColumnType columnType = original.column(columnIndex).type();
+            ColumnType columnType = original.column(columnIndex).type();
             result = columnType.compare(rowInOriginal, tempTable.column(columnIndex), original.column(columnIndex));
             if (!result) {
                 return false;

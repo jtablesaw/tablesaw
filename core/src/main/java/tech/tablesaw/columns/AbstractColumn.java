@@ -25,9 +25,9 @@ public abstract class AbstractColumn<T> implements Column<T> {
 
     private String name;
 
-    private final ColumnType<T> type;
+    private final ColumnType type;
 
-    public AbstractColumn(final ColumnType<T> type, final String name) {
+    public AbstractColumn(ColumnType type, final String name) {
         this.type = type;
         setName(name);
     }
@@ -44,7 +44,7 @@ public abstract class AbstractColumn<T> implements Column<T> {
     }
 
     @Override
-    public ColumnType<T> type() {
+    public ColumnType type() {
         return type;
     }
 
