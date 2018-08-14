@@ -25,7 +25,13 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -142,5 +148,95 @@ public class ColumnTest {
         assertTrue(dc3.contains(2));
         assertTrue(dc3.contains(0));
         assertTrue(dc3.contains(3));
+    }
+    
+    private Predicate<Double> isPositiveOrZero = d -> d >= 0, isNegative = isPositiveOrZero.negate();
+    
+    @Test
+    public void testAllMatch() {
+        assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).allMatch(isPositiveOrZero));
+        assertFalse(DoubleColumn.create("t1", new double[] {-1, 0, 1}).allMatch(isPositiveOrZero));
+        assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).allMatch(isPositiveOrZero));
+    }
+
+    @Test
+    public void testAnyMatch() {
+        assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).anyMatch(isPositiveOrZero));
+        assertTrue(DoubleColumn.create("t1", new double[] {-1, 0, -1}).anyMatch(isPositiveOrZero));
+        assertFalse(DoubleColumn.create("t1", new double[] {0, 1, 2}).anyMatch(isNegative));
+    }
+    
+    @Test
+    public void noneMatch() {
+        assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).noneMatch(isNegative));
+        assertFalse(DoubleColumn.create("t1", new double[] {-1, 0, 1}).noneMatch(isNegative));
+        assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).noneMatch(isNegative));
+    }
+    
+    @Test
+    public void testFilter() {
+        Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZero);
+        assertEquals(2, filtered.size());
+        assertTrue(filtered.contains(0.0));
+        assertTrue(filtered.contains(1.0));
+        assertFalse(filtered.contains(-1.0));
+    }
+
+    private Function<Double, String> toString = d -> d.toString();
+    
+    private <T> void check(Column<T> column, T... ts) {
+        assertEquals(ts.length, column.size());
+        for (int i = 0; i < ts.length; i++) {
+            assertEquals(ts[i], column.get(i));
+        }
+    }
+    
+    @Test
+    public void testMapInto() {
+        check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).mapInto(toString, StringColumn.create("result")), "-1.0", "0.0", "1.0");
+    }
+
+    private Function<Double, Double> negate = d -> -d;
+    
+    @Test
+    public void testMap() {
+        check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).map(negate), 1.0, -0.0, -1.0);
+    }
+    
+    private ToDoubleFunction<String> valueOf = s -> Double.valueOf(s);
+
+    @Test
+    public void testMapToDouble() {
+        check(StringColumn.create("t1", new String[] {"-1.0", "0.0", "1.0"}).mapToDouble(valueOf), -1.0, 0.0, 1.0);
+    }
+    
+    @Test
+    public void testMaxComparator() {
+        assertEquals(Double.valueOf(1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).max(Double::compare).get());
+        assertFalse(DoubleColumn.create("t1").max((d1, d2) -> (int) (d1 - d2)).isPresent());
+    }
+
+    @Test
+    public void testMinComparator() {
+        assertEquals(Double.valueOf(-1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).min(Double::compare).get());
+        assertFalse(DoubleColumn.create("t1").min((d1, d2) -> (int) (d1 - d2)).isPresent());
+    }
+
+    private BinaryOperator<Double> sum = (d1, d2) -> d1 + d2;
+    
+    @Test
+    public void testReduceTBinaryOperator() {
+        assertEquals(Double.valueOf(1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduce(1.0, sum));
+    }
+    
+    @Test
+    public void testReduceBinaryOperator() {
+        assertEquals(Double.valueOf(0.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduce(sum).get());
+        assertFalse(DoubleColumn.create("t1", new double[] {}).reduce(sum).isPresent());
+    }
+    
+    @Test
+    public void sorted() {
+        check(DoubleColumn.create("t1", new double[] {1, -1, 0}).sorted(Double::compare), -1.0, 0.0, 1.0);
     }
 }

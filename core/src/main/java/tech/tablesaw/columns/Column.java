@@ -19,13 +19,20 @@ import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
@@ -277,15 +284,6 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     Column<T> removeMissing();
 
     /**
-     * Applies the given consumer to each element in this column
-     */
-    default void doWithEach(Consumer<T> consumer) {
-        for (T t : this) {
-            consumer.accept(t);
-        }
-    }
-
-    /**
      * TODO(lwhite): Print n from the top and bottom, like a table;
      */
     default String print() {
@@ -417,5 +415,126 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
             }
         }
         return false;
+    }
+    
+    // functional methods corresponding to those in Stream
+    
+    default boolean allMatch(Predicate<? super T> test) {
+        for (T t : this) {
+            if (! test.test(t)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    default boolean anyMatch(Predicate<? super T> test) {
+        for (T t : this) {
+            if (test.test(t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    default boolean noneMatch(Predicate<? super T> test) {
+        return ! anyMatch(test);
+    }
+    
+    default Column<T> filter(Predicate<? super T> test) {
+        Column<T> result = emptyCopy();
+        for (T t : this) {
+            if (test.test(t)) {
+                result.append(t);
+            }
+        }
+        return result;
+    }
+    
+    default <R> Column<R> mapInto(Function<? super T, ? extends R> fun, Column<R> into) {
+        for (T t : this) {
+            try {
+                into.append(fun.apply(t));
+            } catch (Exception e) {
+                into.appendMissing();
+            }
+        }
+        return into;
+    }
+    
+    default Column<T>map(Function<? super T, ? extends T> fun) {
+        return mapInto(fun, emptyCopy(size()));
+    }
+    
+    default DoubleColumn mapToDouble(ToDoubleFunction<? super T> fun) {
+        DoubleColumn result = DoubleColumn.create("copy of " + name());
+        for (T t : this) {
+            try {
+                result.append(fun.applyAsDouble(t));
+            } catch (Exception e) {
+                result.appendMissing();
+            }
+        }
+        return result;
+    }
+    
+    default Optional<T> max(Comparator<? super T> comp) {
+        boolean first = true;
+        T o1 = null;
+        for (T o2 : this) {
+            if (first) {
+                o1 = o2;
+                first = false;
+            } else if (comp.compare(o1, o2) < 0) {
+                o1 = o2;
+            }
+        }
+        return (first ? Optional.<T>empty() : Optional.<T>of(o1));
+    }
+    
+    default Optional<T> min(Comparator<? super T> comp) {
+        boolean first = true;
+        T o1 = null;
+        for (T o2 : this) {
+            if (first) {
+                o1 = o2;
+                first = false;
+            } else if (comp.compare(o1, o2) > 0) {
+                o1 = o2;
+            }
+        }
+        return (first ? Optional.<T>empty() : Optional.<T>of(o1));
+    }
+
+    default T reduce(T initial, BinaryOperator<T> op) {
+        T acc = initial;
+        for (T t : this) {
+            acc = op.apply(acc, t);
+        }
+        return acc;
+    }
+    
+    default Optional<T> reduce(BinaryOperator<T> op) {
+        boolean first = true; 
+        T acc = null;
+        for (T t : this) {
+            if (first) {
+                acc = t;
+                first = false;
+            } else {
+                acc = op.apply(acc, t);
+            }
+        }
+        return (first ? Optional.empty() : Optional.of(acc));
+    }
+    
+    default Column<T> sorted(Comparator<? super T> comp) {
+        List<T> list = asList();
+        list.sort(comp);
+        Column<T> result = emptyCopy();
+        for (T t : list) {
+            result.append(t);
+        }
+        return result;
     }
 }
