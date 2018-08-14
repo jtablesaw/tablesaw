@@ -31,16 +31,16 @@ public class Rows {
     private Rows() {}
 
     public static void copyRowsToTable(IntArrayList rows, Table oldTable, Table newTable) {
-
-        int columnCount = oldTable.columnCount();
-        for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
-            final ColumnType columnType = oldTable.column(columnIndex).type();
-            columnType.copy(rows, oldTable.column(columnIndex), newTable.column(columnIndex));
+        for (int i = 0; i < rows.size(); i++) {
+            int rowIndex = rows.getInt(i);
+            int columnCount = oldTable.columnCount();
+            for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+                newTable.column(columnIndex).appendObj(oldTable.column(columnIndex).get(rowIndex));
+            }
         }
     }
 
     public static void appendRowToTable(int row, Table oldTable, Table newTable) {
-
         IntArrayList rows = new IntArrayList();
         rows.add(row);
         copyRowsToTable(rows, oldTable, newTable);

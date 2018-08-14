@@ -1,9 +1,7 @@
 package tech.tablesaw.columns.booleans;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Row;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -36,24 +34,6 @@ public class BooleanColumnType extends AbstractColumnType<Boolean> {
     @Override
     public BooleanStringParser customParser(CsvReadOptions readOptions) {
         return new BooleanStringParser(this, readOptions);
-    }
-
-    @Override
-    public void copy(IntArrayList rows, Column<Boolean> oldColumn, Column<Boolean> newColumn) {
-        BooleanColumn oldBoolean = (BooleanColumn) oldColumn;
-        BooleanColumn newBoolean = (BooleanColumn) newColumn;
-        for (int index : rows) {
-            newBoolean.append(oldBoolean.get(index));
-        }
-    }
-
-    @Override
-    public void copyFromRows(IntArrayList rows, Column newColumn, Row row) {
-        BooleanColumn newBoolean = (BooleanColumn) newColumn;
-        for (int index : rows) {
-            row.at(index);
-            newBoolean.append(row.getBoolean(newColumn.name()));
-        }
     }
 
     @Override

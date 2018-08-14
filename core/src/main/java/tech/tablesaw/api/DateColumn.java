@@ -316,6 +316,14 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     @Override
+    public DateColumn appendObj(Object obj) {
+        if (!(obj instanceof LocalDate)) {
+            throw new IllegalArgumentException();
+        }
+        return append((LocalDate) obj);
+    }
+
+    @Override
     public DateColumn appendCell(String string) {
         appendInternal(PackedLocalDate.pack(DateColumnType.DEFAULT_PARSER.parse(string)));
         return this;

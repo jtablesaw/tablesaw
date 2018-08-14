@@ -186,6 +186,14 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return this;
     }
 
+    @Override
+    public DateTimeColumn appendObj(Object obj) {
+        if (!(obj instanceof LocalDateTime)) {
+            throw new IllegalArgumentException();
+        }
+        return append((LocalDateTime) obj);
+    }
+
     public int size() {
         return data.size();
     }

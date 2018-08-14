@@ -654,6 +654,14 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     @Override
+    public StringColumn appendObj(Object obj) {
+        if (!(obj instanceof String)) {
+            throw new IllegalArgumentException();
+        }
+        return append((String) obj);
+    }
+
+    @Override
     public Selection isIn(String... strings) {
         return selectIsIn(strings);
     }

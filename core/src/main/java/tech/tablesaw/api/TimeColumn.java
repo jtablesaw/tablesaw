@@ -151,6 +151,14 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     @Override
+    public TimeColumn appendObj(Object obj) {
+        if (!(obj instanceof LocalTime)) {
+            throw new IllegalArgumentException();
+        }
+        return append((LocalTime) obj);
+    }
+
+    @Override
     public TimeColumn removeMissing() {
         TimeColumn noMissing = emptyCopy();
         IntIterator iterator = intIterator();

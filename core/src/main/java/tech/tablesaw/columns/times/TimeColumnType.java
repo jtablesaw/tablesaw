@@ -1,15 +1,13 @@
 package tech.tablesaw.columns.times;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import java.time.LocalTime;
+
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Row;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
-
-import java.time.LocalTime;
 
 public class TimeColumnType extends AbstractColumnType<LocalTime> {
 
@@ -34,25 +32,6 @@ public class TimeColumnType extends AbstractColumnType<LocalTime> {
     @Override
     public StringParser<LocalTime> customParser(CsvReadOptions options) {
         return new TimeStringParser(this, options);
-    }
-
-    @Override
-    public void copy(IntArrayList rows, Column<LocalTime> oldColumn, Column<LocalTime> newColumn) {
-        TimeColumn oldTime = (TimeColumn) oldColumn;
-        TimeColumn newTime = (TimeColumn) newColumn;
-        for (int index : rows) {
-            newTime.appendInternal(oldTime.getIntInternal(index));
-        }
-    }
-
-    @Override
-    public void copyFromRows(IntArrayList rows, Column<LocalTime> newColumn, Row row) {
-        TimeColumn newTime = (TimeColumn) newColumn;
-        for (int index : rows) {
-            row.at(index);
-            int packedTime = row.getPackedTime(newColumn.name());
-            newTime.appendInternal(packedTime);
-        }
     }
 
     @Override

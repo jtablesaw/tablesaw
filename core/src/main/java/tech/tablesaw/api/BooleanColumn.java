@@ -228,6 +228,14 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
         return this;
     }
 
+    @Override
+    public BooleanColumn appendObj(Object obj) {
+        if (!(obj instanceof Boolean)) {
+            throw new IllegalArgumentException();
+        }
+        return append((Boolean) obj);
+    }
+
     public BooleanColumn append(byte b) {
         data.add(b);
         return this;

@@ -1,15 +1,13 @@
 package tech.tablesaw.columns.datetimes;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import java.time.LocalDateTime;
+
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.Row;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
-
-import java.time.LocalDateTime;
 
 public class DateTimeColumnType extends AbstractColumnType<LocalDateTime> {
 
@@ -34,25 +32,6 @@ public class DateTimeColumnType extends AbstractColumnType<LocalDateTime> {
     @Override
     public DateTimeStringParser customParser(CsvReadOptions options) {
         return new DateTimeStringParser(this, options);
-    }
-
-    @Override
-    public void copy(IntArrayList rows, Column<LocalDateTime> oldColumn, Column<LocalDateTime> newColumn) {
-        DateTimeColumn oldDateTime = (DateTimeColumn) oldColumn;
-        DateTimeColumn newDateTime = (DateTimeColumn) newColumn;
-        for (int index : rows) {
-            newDateTime.appendInternal(oldDateTime.getLongInternal(index));
-        }
-    }
-
-    @Override
-    public void copyFromRows(IntArrayList rows, Column<LocalDateTime> newColumn, Row row) {
-        DateTimeColumn dateTimes = (DateTimeColumn) newColumn;
-        for (int index : rows) {
-            row.at(index);
-            long packedDateTime = row.getPackedDateTime(newColumn.name());
-            dateTimes.appendInternal(packedDateTime);
-        }
     }
 
     @Override

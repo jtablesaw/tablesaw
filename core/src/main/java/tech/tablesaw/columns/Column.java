@@ -114,7 +114,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
      *
      * @return {@link ColumnType}
      */
-    ColumnType type();
+    ColumnType<T> type();
 
     /**
      * Returns a string representation of the value at the given row.
@@ -182,6 +182,8 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     Column<T> append(T value);
 
     Column<T> append(Column<T> column);
+
+    Column<T> appendObj(Object value);
 
     default Column<T> first(final int numRows) {
         int newRowCount = Math.min(numRows, size());

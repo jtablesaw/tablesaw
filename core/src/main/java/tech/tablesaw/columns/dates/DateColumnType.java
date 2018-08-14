@@ -1,15 +1,13 @@
 package tech.tablesaw.columns.dates;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import java.time.LocalDate;
+
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.Row;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
-
-import java.time.LocalDate;
 
 public class DateColumnType extends AbstractColumnType<LocalDate> {
 
@@ -34,25 +32,6 @@ public class DateColumnType extends AbstractColumnType<LocalDate> {
     @Override
     public StringParser<LocalDate> customParser(CsvReadOptions options) {
         return new DateStringParser(this, options);
-    }
-
-    @Override
-    public void copy(IntArrayList rows, Column<LocalDate> oldColumn, Column<LocalDate> newColumn) {
-        DateColumn oldDate = (DateColumn) oldColumn;
-        DateColumn newDate = (DateColumn) newColumn;
-        for (int index : rows) {
-            newDate.appendInternal(oldDate.getIntInternal(index));
-        }
-    }
-
-    @Override
-    public void copyFromRows(IntArrayList rows, Column<LocalDate> newColumn, Row row) {
-        DateColumn newDate = (DateColumn) newColumn;
-        for (int index : rows) {
-            row.at(index);
-            int packedDate = row.getPackedDate(newColumn.name());
-            newDate.appendInternal(packedDate);
-        }
     }
 
     @Override

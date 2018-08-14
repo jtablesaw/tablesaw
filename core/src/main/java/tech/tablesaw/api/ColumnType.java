@@ -1,7 +1,13 @@
 package tech.tablesaw.api;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.SkipColumnType;
 import tech.tablesaw.columns.StringParser;
@@ -13,15 +19,9 @@ import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Map;
-
 public interface ColumnType<T> {
 
-    Map<String, ColumnType> values = new HashMap<>();
+    Map<String, ColumnType<?>> values = new HashMap<>();
 
     // standard column types
     ColumnType<Boolean> BOOLEAN = BooleanColumnType.INSTANCE;
@@ -32,18 +32,18 @@ public interface ColumnType<T> {
     ColumnType<LocalTime> LOCAL_TIME = TimeColumnType.INSTANCE;
     ColumnType SKIP = SkipColumnType.INSTANCE;
 
-    static void register(ColumnType type) {
+    static void register(ColumnType<?> type) {
         values.put(type.name(), type);
     }
 
-    static ColumnType[] values() {
+    static ColumnType<?>[] values() {
         return values.values().toArray(new ColumnType[0]);
     }
 
-    static ColumnType valueOf(String name) {
+    static ColumnType<?> valueOf(String name) {
         Preconditions.checkNotNull(name);
 
-        ColumnType result = values.get(name);
+        ColumnType<?> result = values.get(name);
         if (result == null) {
             throw new IllegalArgumentException(name + " is not a registered column type.");
         }
@@ -63,10 +63,6 @@ public interface ColumnType<T> {
     StringParser defaultParser();
 
     StringParser customParser(CsvReadOptions options);
-
-    void copy(IntArrayList rows, Column<T> oldColumn, Column<T> newColumn);
-
-    void copyFromRows(IntArrayList rows, Column<T> newColumn, Row row);
 
     boolean compare(int rowNumber, Column<T> temp, Column<T> original);
 
