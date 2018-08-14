@@ -124,7 +124,7 @@ public class TableConverter {
      * We convert all columns to NumericAttribute. Smile's AttributeDataset only stores data as double.
      * While Smile defines NominalAttribute and DateAttribute they appear to be little used.
      */
-    private Attribute colToAttribute(Column col) {
+    private Attribute colToAttribute(Column<?> col) {
         return new NumericAttribute(col.name());
     }
 

@@ -128,7 +128,7 @@ public class CsvReader {
                     if (Strings.isNullOrEmpty(columnName)) {
                         columnName = "Column " + table.columnCount();
                     }
-                    Column newColumn = TypeUtils.newColumn(columnName, types[x]);
+                    Column<?> newColumn = TypeUtils.newColumn(columnName, types[x]);
                     table.addColumns(newColumn);
                 }
             }
@@ -172,7 +172,7 @@ public class CsvReader {
                 // for each column that we're including (not skipping)
                 int cellIndex = 0;
                 for (int columnIndex : columnIndexes) {
-                    Column column = table.column(cellIndex);
+                    Column<?> column = table.column(cellIndex);
                     StringParser parser = column.type().customParser(options);
                     try {
                         String value = nextLine[columnIndex];
@@ -233,7 +233,7 @@ public class CsvReader {
             table = Table.create(file.getName());
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != SKIP) {
-                    Column newColumn = TypeUtils.newColumn(headerRow.get(x).trim(), types[x]);
+                    Column<?> newColumn = TypeUtils.newColumn(headerRow.get(x).trim(), types[x]);
                     table.addColumns(newColumn);
                 }
             }
@@ -302,9 +302,9 @@ public class CsvReader {
         buf.append("ColumnType[] columnTypes = {");
         buf.append('\n');
 
-        Column typeCol = structure.column("Column Type");
-        Column indxCol = structure.column("Index");
-        Column nameCol = structure.column("Column Name");
+        Column<?> typeCol = structure.column("Column Type");
+        Column<?> indxCol = structure.column("Index");
+        Column<?> nameCol = structure.column("Column Name");
 
         // add the column headers
         int typeColIndex = structure.columnIndex(typeCol);

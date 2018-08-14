@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.collect.Streams;
 
+import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
@@ -11,9 +12,9 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.index.StringIndex;
 import tech.tablesaw.index.IntIndex;
 import tech.tablesaw.index.LongIndex;
+import tech.tablesaw.index.StringIndex;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -22,12 +23,12 @@ public class DataFrameJoiner {
     private static final String TABLE_ALIAS = "T";
 
     private final Table table;
-    private final Column column;
+    private final CategoricalColumn<?> column;
     private AtomicInteger joinTableId = new AtomicInteger(2);
 
     public DataFrameJoiner(Table table, String column) {
         this.table = table;
-        this.column = table.column(column);
+        this.column = table.categoricalColumn(column);
     }
 
     /**
@@ -167,7 +168,7 @@ public class DataFrameJoiner {
     private void renameColumnsWithDuplicateNames(Table table2, String col2Name) {
         String table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
 
-        for (Column table2Column : table2.columns()) {
+        for (Column<?> table2Column : table2.columns()) {
             String columnName = table2Column.name();
             if (table.columnNames().contains(columnName)
                     && !columnName.equalsIgnoreCase(col2Name)) {
@@ -280,7 +281,7 @@ public class DataFrameJoiner {
         }
         
         Table table2OnlyRows = table2.where(selection);
-        Column joinColumn = table2OnlyRows.column(col2Name);
+        CategoricalColumn<?> joinColumn = table2OnlyRows.categoricalColumn(col2Name);
         table2OnlyRows.removeColumns(joinColumn);
         withMissingRightJoin(result, joinColumn, table2OnlyRows);        
         return result;
@@ -396,7 +397,7 @@ public class DataFrameJoiner {
     }
 
     private Table emptyTableFromColumns(Table table1, Table table2, String col2Name) {
-        Column[] cols = Streams.concat(
+        Column<?>[] cols = Streams.concat(
                 table1.columns().stream(),
                 table2.columns().stream().filter(c -> !c.name().equalsIgnoreCase(col2Name))
         ).map(col -> col.emptyCopy(col.size())).toArray(Column[]::new);
@@ -435,7 +436,7 @@ public class DataFrameJoiner {
     /**
      * Adds rows to destination for each row in the joinColumn and table2
      */
-    private void withMissingRightJoin(Table destination, Column joinColumn, Table table2) {
+    private void withMissingRightJoin(Table destination, CategoricalColumn<?> joinColumn, Table table2) {
         int t2StartCol = destination.columnCount() - table2.columnCount();
         for (int c = 0; c < destination.columnCount(); c++) {
             if (destination.column(c).name().equalsIgnoreCase(joinColumn.name())) {

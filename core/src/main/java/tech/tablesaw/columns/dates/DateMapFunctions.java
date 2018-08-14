@@ -39,7 +39,7 @@ import static tech.tablesaw.api.DateColumn.*;
  */
 public interface DateMapFunctions extends Column<LocalDate> {
 
-    static String dateColumnName(Column column1, int value, TemporalUnit unit) {
+    static String dateColumnName(Column<LocalDate> column1, int value, TemporalUnit unit) {
         return column1.name() + ": " + value + " " + unit.toString() + "(s)";
     }
 

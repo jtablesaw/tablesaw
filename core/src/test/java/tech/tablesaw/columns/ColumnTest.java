@@ -94,13 +94,13 @@ public class ColumnTest {
 
     @Test
     public void testName() {
-        Column c = table.numberColumn("approval");
+        Column<?> c = table.numberColumn("approval");
         assertEquals("approval", c.name());
     }
 
     @Test
     public void testType() {
-        Column c = table.numberColumn("approval");
+        Column<?> c = table.numberColumn("approval");
         assertEquals(ColumnType.DOUBLE, c.type());
     }
 

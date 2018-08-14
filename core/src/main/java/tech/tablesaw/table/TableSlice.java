@@ -84,7 +84,7 @@ public class TableSlice extends Relation implements IntIterable {
     }
 
     @Override
-    public int columnIndex(Column column) {
+    public int columnIndex(Column<?> column) {
         return table.columnIndex(column);
     }
 

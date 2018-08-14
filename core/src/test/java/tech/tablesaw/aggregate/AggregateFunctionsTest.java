@@ -17,8 +17,9 @@ package tech.tablesaw.aggregate;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Before;
 import org.junit.Test;
+
 import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.CategoricalColumn;
+import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
@@ -42,7 +43,7 @@ public class AggregateFunctionsTest {
 
     @Test
     public void testGroupMean() {
-        CategoricalColumn byColumn = table.stringColumn("who");
+        StringColumn byColumn = table.stringColumn("who");
         TableSliceGroup group = StandardTableSliceGroup.create(table, byColumn);
         Table result = group.aggregate("approval", mean, stdDev);
         assertEquals(3, result.columnCount());
@@ -54,7 +55,7 @@ public class AggregateFunctionsTest {
 
     @Test
     public void testDateMin() {
-        CategoricalColumn byColumn = table.dateColumn("date").yearQuarter();
+        StringColumn byColumn = table.dateColumn("date").yearQuarter();
         Table result = table.summarize("approval", "date", mean, earliestDate).by(byColumn);
         assertEquals(3, result.columnCount());
         assertEquals(13, result.rowCount());
@@ -100,8 +101,8 @@ public class AggregateFunctionsTest {
 
     @Test
     public void test2ColumnGroupMean() {
-        CategoricalColumn byColumn1 = table.stringColumn("who");
-        CategoricalColumn byColumn2 = table.categoricalColumn("date");
+        StringColumn byColumn1 = table.stringColumn("who");
+        DateColumn byColumn2 = table.dateColumn("date");
         Table result = table.summarize("approval", mean, sum).by(byColumn1, byColumn2);
         assertEquals(4, result.columnCount());
         assertEquals("who", result.column(0).name());
@@ -113,8 +114,8 @@ public class AggregateFunctionsTest {
     public void testComplexSummarizing() {
         table.addColumns(table.numberColumn("approval").cube());
         table.column(3).setName("cubed");
-        CategoricalColumn byColumn1 = table.stringColumn("who");
-        CategoricalColumn byColumn2 = table.dateColumn("date").yearMonth();
+        StringColumn byColumn1 = table.stringColumn("who");
+        StringColumn byColumn2 = table.dateColumn("date").yearMonth();
         Table result = table.summarize("approval", "cubed", mean, sum).by(byColumn1, byColumn2);
         assertEquals(6, result.columnCount());
         assertEquals("who", result.column(0).name());

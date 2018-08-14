@@ -5,7 +5,6 @@ import org.junit.Test;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
 
 import static org.junit.Assert.*;
 
@@ -249,7 +248,7 @@ public class NumberMapFunctionsTest {
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
-        Column newDoubles = doubles.round();
+        DoubleColumn newDoubles = doubles.round();
         assertFalse(newDoubles.isEmpty());
     }
 
@@ -259,7 +258,7 @@ public class NumberMapFunctionsTest {
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
-        Column newDoubles = doubles.logN();
+        DoubleColumn newDoubles = doubles.logN();
         assertFalse(newDoubles.isEmpty());
     }
 
@@ -269,7 +268,7 @@ public class NumberMapFunctionsTest {
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
-        Column newDoubles = doubles.log10();
+        DoubleColumn newDoubles = doubles.log10();
         assertFalse(newDoubles.isEmpty());
     }
 }

@@ -29,13 +29,13 @@ import java.util.List;
  */
 public class StandardTableSliceGroup extends TableSliceGroup {
 
-    private StandardTableSliceGroup(Table original, CategoricalColumn... columns) {
+    private StandardTableSliceGroup(Table original, CategoricalColumn<?>... columns) {
         super(original, splitColumnNames(columns));
         setSourceTable(getSourceTable().sortOn(getSplitColumnNames()));
         splitOn(getSplitColumnNames());
     }
 
-    private static String[] splitColumnNames(CategoricalColumn... columns) {
+    private static String[] splitColumnNames(CategoricalColumn<?>... columns) {
         String[] splitColumnNames = new String[columns.length];
         for (int i = 0; i < columns.length; i++) {
             splitColumnNames[i] = columns[i].name();
@@ -56,7 +56,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
      * Returns a viewGroup splitting the original table on the given columns.
      * The named columns must be CategoricalColumns
      */
-    public static StandardTableSliceGroup create(Table original, CategoricalColumn... columns) {
+    public static StandardTableSliceGroup create(Table original, CategoricalColumn<?>... columns) {
         return new StandardTableSliceGroup(original, columns);
     }
 
@@ -85,7 +85,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
                     newStringKey = newStringKey + SPLIT_STRING;
                 }
 
-                Column c = getSourceTable().column(columnNames[col]);
+                Column<?> c = getSourceTable().column(columnNames[col]);
                 String groupKey = getSourceTable().get(row, getSourceTable().columnIndex(c));
                 newStringKey = newStringKey + groupKey;
                 byteBuffer.put(c.asBytes(row));

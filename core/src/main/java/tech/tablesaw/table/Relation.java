@@ -66,7 +66,7 @@ public abstract class Relation {
     public abstract Relation removeColumns(Column<?>... columns);
 
     public Relation removeColumns(String... columnName) {
-        Column[] cols = new Column[columnName.length];
+        Column<?>[] cols = new Column[columnName.length];
         for (int i = 0; i < columnName.length; i++) {
             cols[i] = column(columnName[i]);
         }
@@ -74,7 +74,7 @@ public abstract class Relation {
         return this;
     }
 
-    public List<Column> columnsOfType(ColumnType type) {
+    public List<Column<?>> columnsOfType(ColumnType type) {
         return columns().stream()
                 .filter(column -> column.type() == type)
                 .collect(Collectors.toList());
@@ -98,8 +98,8 @@ public abstract class Relation {
     /**
      * Returns the column with the given columnName, ignoring case
      */
-    public Column column(String columnName) {
-        for (Column column : columns()) {
+    public Column<?> column(String columnName) {
+        for (Column<?> column : columns()) {
             String name = column.name().trim();
             if (name.equalsIgnoreCase(columnName)) {
                 return column;
@@ -114,7 +114,7 @@ public abstract class Relation {
      * @param columnIndex an integer at least 0 and less than number of columns in the relation
      * @return the column at the given index
      */
-    public abstract Column column(int columnIndex);
+    public abstract Column<?> column(int columnIndex);
 
     /**
      * Returns the number of columns in the relation
@@ -238,7 +238,7 @@ public abstract class Relation {
         structure.addColumns(StringColumn.create("First"));
         structure.addColumns(StringColumn.create("Last"));
 
-        for (Column column : columns()) {
+        for (Column<?> column : columns()) {
             structure.numberColumn("Index").append(columnIndex(column));
             structure.stringColumn("Column Name").append(column.name());
             structure.stringColumn("Type").append(column.type().name());
@@ -255,7 +255,7 @@ public abstract class Relation {
                 .append("Table summary for: ")
                 .append(name())
                 .append("\n");
-        for (Column column : columns()) {
+        for (Column<?> column : columns()) {
             builder.append(column.summary().print());
             builder.append("\n");
         }
@@ -280,7 +280,7 @@ public abstract class Relation {
      * @throws ClassCastException if the cast to NumberColumn fails
      */
     public NumberColumn numberColumn(int columnIndex) {
-        Column c = column(columnIndex);
+        Column<?> c = column(columnIndex);
         if (c.type() == ColumnType.STRING) {
             StringColumn stringColumn = (StringColumn) c;
             return stringColumn.asNumberColumn();
@@ -331,12 +331,12 @@ public abstract class Relation {
         return columns().stream().filter(e->e.type() == ColumnType.LOCAL_TIME).toArray(TimeColumn[]::new);
     }
 
-    public CategoricalColumn categoricalColumn(String columnName) {
-        return (CategoricalColumn) column(columnName);
+    public CategoricalColumn<?> categoricalColumn(String columnName) {
+        return (CategoricalColumn<?>) column(columnName);
     }
 
-    public CategoricalColumn categoricalColumn(int columnNumber) {
-        return (CategoricalColumn) column(columnNumber);
+    public CategoricalColumn<?> categoricalColumn(int columnNumber) {
+        return (CategoricalColumn<?>) column(columnNumber);
     }
 
     /**
@@ -397,7 +397,7 @@ public abstract class Relation {
         return null;
     }
 
-    public boolean containsColumn(Column column) {
+    public boolean containsColumn(Column<?> column) {
         return columns().contains(column);
     }
 }

@@ -791,7 +791,6 @@ public class Table extends Relation implements Iterable<Row> {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     public Table append(Table tableToAppend) {
         for (final Column<?> column : columnList) {
             final Column<?> columnToAppend = tableToAppend.column(column.name());
@@ -818,42 +817,42 @@ public class Table extends Relation implements Iterable<Row> {
         return this;
     }
 
-    public Summarizer summarize(String columName, AggregateFunction... functions) {
+    public Summarizer summarize(String columName, AggregateFunction<?, ?>... functions) {
         return summarize(column(columName), functions);
     }
 
-    public Summarizer summarize(List<String> columnNames, AggregateFunction... functions) {
+    public Summarizer summarize(List<String> columnNames, AggregateFunction<?, ?>... functions) {
         return new Summarizer(this, columnNames, functions);
     }
 
-    public Summarizer summarize(String numericColumn1Name, String numericColumn2Name, AggregateFunction... functions) {
+    public Summarizer summarize(String numericColumn1Name, String numericColumn2Name, AggregateFunction<?, ?>... functions) {
         return summarize(column(numericColumn1Name), column(numericColumn2Name), functions);
     }
 
-    public Summarizer summarize(String col1Name, String col2Name, String col3Name, AggregateFunction... functions) {
+    public Summarizer summarize(String col1Name, String col2Name, String col3Name, AggregateFunction<?, ?>... functions) {
         return summarize(column(col1Name), column(col2Name), column(col3Name), functions);
     }
 
-    public Summarizer summarize(String col1Name, String col2Name, String col3Name, String col4Name, AggregateFunction... functions) {
+    public Summarizer summarize(String col1Name, String col2Name, String col3Name, String col4Name, AggregateFunction<?, ?>... functions) {
         return summarize(column(col1Name), column(col2Name), column(col3Name), column(col4Name), functions);
     }
 
-    public Summarizer summarize(Column numberColumn, AggregateFunction... function) {
+    public Summarizer summarize(Column<?> numberColumn, AggregateFunction<?, ?>... function) {
         return new Summarizer(this, numberColumn, function);
     }
 
     public Summarizer summarize(Column<?> column1, Column<?> column2,
-                                AggregateFunction... function) {
+                                AggregateFunction<?, ?>... function) {
         return new Summarizer(this, column1, column2, function);
     }
 
     public Summarizer summarize(Column<?> column1, Column<?> column2, Column<?> column3,
-                                AggregateFunction... function) {
+                                AggregateFunction<?, ?>... function) {
         return new Summarizer(this, column1, column2, column3, function);
     }
 
     public Summarizer summarize(Column<?> column1, Column<?> column2, Column<?> column3, Column<?> column4,
-                                AggregateFunction... function) {
+                                AggregateFunction<?, ?>... function) {
         return new Summarizer(this, column1, column2, column3, column4, function);
     }
 

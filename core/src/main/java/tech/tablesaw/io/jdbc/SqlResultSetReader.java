@@ -95,14 +95,14 @@ public class SqlResultSetReader {
             Preconditions.checkState(type != null,
                     "No column type found for %s as specified for column %s", metaData.getColumnType(i), name);
 
-            Column newColumn = TypeUtils.newColumn(name, type);
+            Column<?> newColumn = TypeUtils.newColumn(name, type);
             table.addColumns(newColumn);
         }
 
         // Add the rows
         while (resultSet.next()) {
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
-                Column column = table.column(i - 1); // subtract 1 because results sets originate at 1 not 0
+                Column<?> column = table.column(i - 1); // subtract 1 because results sets originate at 1 not 0
                 column.appendCell(resultSet.getString(i));
             }
         }

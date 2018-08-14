@@ -85,7 +85,7 @@ public class TimeColumnTest {
         List<LocalTime> top = column1.top(3);
 
         column1.sortAscending();
-        Column first = column1.first(3);
+        Column<?> first = column1.first(3);
         TimeColumn timeColumn = (TimeColumn) first;
         List<LocalTime> sortedA = timeColumn.asList();
 

@@ -16,8 +16,9 @@ package tech.tablesaw.io.html;
 
 import org.junit.Before;
 import org.junit.Test;
+
 import tech.tablesaw.aggregate.AggregateFunctions;
-import tech.tablesaw.api.CategoricalColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.table.StandardTableSliceGroup;
@@ -34,7 +35,7 @@ public class HtmlTableWriterTest {
 
     @Test
     public void testWrite() {
-        CategoricalColumn byColumn = table.categoricalColumn("who");
+        StringColumn byColumn = table.stringColumn("who");
         TableSliceGroup group = StandardTableSliceGroup.create(table, byColumn);
         Table result = group.aggregate("approval", AggregateFunctions.mean);
         HtmlTableWriter.write(result);

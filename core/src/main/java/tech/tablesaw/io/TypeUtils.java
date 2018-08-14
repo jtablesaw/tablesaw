@@ -51,7 +51,7 @@ public final class TypeUtils {
     /**
      * Constructs and returns a column for the given {@code name} and {@code type}
      */
-    public static Column newColumn(@Nonnull String name, @Nonnull ColumnType type) {
+    public static Column<?> newColumn(@Nonnull String name, @Nonnull ColumnType type) {
 
         Preconditions.checkArgument(!Strings.isNullOrEmpty(name),
                 "There must be a valid name for a new column");

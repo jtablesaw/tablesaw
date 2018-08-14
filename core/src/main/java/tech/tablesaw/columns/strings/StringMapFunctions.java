@@ -176,7 +176,7 @@ public interface StringMapFunctions extends Column<String> {
         return newColumn;
     }
 
-    default StringColumn commonPrefix(Column column2) {
+    default StringColumn commonPrefix(Column<?> column2) {
 
         StringColumn newColumn = StringColumn.create(name() + column2.name() + "[prefix]");
 
@@ -188,7 +188,7 @@ public interface StringMapFunctions extends Column<String> {
         return newColumn;
     }
 
-    default StringColumn commonSuffix(Column column2) {
+    default StringColumn commonSuffix(Column<?> column2) {
 
         StringColumn newColumn = StringColumn.create(name() + column2.name() + "[suffix]");
 
@@ -205,7 +205,7 @@ public interface StringMapFunctions extends Column<String> {
      * Returns a column containing the levenshtein distance between the two given string columns
      */
 
-    default NumberColumn distance(Column column2) {
+    default NumberColumn distance(Column<?> column2) {
 
         NumberColumn newColumn = DoubleColumn.create(name() + column2.name() + "[distance]");
 
