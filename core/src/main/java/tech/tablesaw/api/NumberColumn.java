@@ -171,27 +171,27 @@ public interface NumberColumn extends NumberMapFunctions, DoubleIterable, Number
 
     // Reduce functions applied to the whole column
     default double sum() {
-        return (Double) sum.summarize(this);
+        return sum.summarize(this);
     }
 
     default double product() {
-        return (Double) product.summarize(this);
+        return product.summarize(this);
     }
 
     default double mean() {
-        return (Double) mean.summarize(this);
+        return mean.summarize(this);
     }
 
     default double median() {
-        return (Double) median.summarize(this);
+        return median.summarize(this);
     }
 
     default double quartile1() {
-        return (Double) quartile1.summarize(this);
+        return quartile1.summarize(this);
     }
 
     default double quartile3() {
-        return (Double) quartile3.summarize(this);
+        return quartile3.summarize(this);
     }
 
     default double percentile(double percentile) {
@@ -199,54 +199,54 @@ public interface NumberColumn extends NumberMapFunctions, DoubleIterable, Number
     }
 
     default double range() {
-        return (Double) range.summarize(this);
+        return range.summarize(this);
     }
 
     default double max() {
-        return (Double) max.summarize(this);
+        return max.summarize(this);
     }
 
     default double min() {
-        return (Double) min.summarize(this);
+        return min.summarize(this);
     }
 
     default double variance() {
-        return (Double) variance.summarize(this);
+        return variance.summarize(this);
     }
 
     default double populationVariance() {
-        return (Double) populationVariance.summarize(this);
+        return populationVariance.summarize(this);
     }
 
     default double standardDeviation() {
-        return (Double) stdDev.summarize(this);
+        return stdDev.summarize(this);
     }
 
     default double sumOfLogs() {
-        return (Double) sumOfLogs.summarize(this);
+        return sumOfLogs.summarize(this);
     }
 
     default double sumOfSquares() {
-        return (Double) sumOfSquares.summarize(this);
+        return sumOfSquares.summarize(this);
     }
 
     default double geometricMean() {
-        return (Double) geometricMean.summarize(this);
+        return geometricMean.summarize(this);
     }
 
     /**
      * Returns the quadraticMean, aka the root-mean-square, for all values in this column
      */
     default double quadraticMean() {
-        return (Double) quadraticMean.summarize(this);
+        return quadraticMean.summarize(this);
     }
 
     default double kurtosis() {
-        return (Double) kurtosis.summarize(this);
+        return kurtosis.summarize(this);
     }
 
     default double skewness() {
-        return (Double) skewness.summarize(this);
+        return skewness.summarize(this);
     }
 
     /**
