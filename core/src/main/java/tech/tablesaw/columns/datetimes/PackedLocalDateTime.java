@@ -80,8 +80,12 @@ public class PackedLocalDateTime {
         }
         int date = date(dateTime);
         int time = time(dateTime);
-
-        return LocalDateTime.of(PackedLocalDate.asLocalDate(date), PackedLocalTime.asLocalTime(time));
+        LocalDate d = PackedLocalDate.asLocalDate(date);
+        LocalTime t = PackedLocalTime.asLocalTime(time);
+        if (d == null || t == null) {
+            return null;
+        }
+        return LocalDateTime.of(d, t);
     }
 
     public static byte getMonthValue(long dateTime) {

@@ -77,6 +77,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
     default long difference(long packedLocalDateTime1, long packedLocalDateTime2, ChronoUnit unit) {
         LocalDateTime value1 = asLocalDateTime(packedLocalDateTime1);
         LocalDateTime value2 = asLocalDateTime(packedLocalDateTime2);
+        // TODO Deal with null values here
         return unit.between(value1, value2);
     }
 

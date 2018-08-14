@@ -34,6 +34,9 @@ public class TimeColumnFormatter {
             return toShortTimeString(value);
         }
         LocalTime time = asLocalTime(value);
+        if (time == null) {
+            return "";
+        }
         return format.format(time);
     }
 
