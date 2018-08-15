@@ -27,6 +27,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
@@ -140,7 +141,8 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     }
 
     public static DoubleColumn createWithIntegers(String name) {
-        return create(name, DEFAULT_ARRAY_SIZE);
+        return new DoubleColumn(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
+        //return create(name, DEFAULT_ARRAY_SIZE);
     }
 
     @Override
@@ -432,7 +434,11 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     @Override
     public DoubleColumn copy() {
         final DoubleColumn column = emptyCopy(size());
-        column.data = data.clone();
+        if (type.equals(Double.class)) {
+            column.data = data.clone();
+        } else {
+            column.intData = intData.clone();
+        }
         return column;
     }
 
@@ -526,7 +532,16 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public DoubleColumn set(final int r, final double value) {
-        data.set(r, value);
+        if (type.equals(Double.class)) {
+            data.set(r, value);
+        } else {
+            if (value == (int) value) {
+                intData.set(r, (int) value);
+            }
+            else {
+                throw new RuntimeException("Incompatible numeric type. Attempting to add a float to a column of integers.");
+            }
+        }
         return this;
     }
 
@@ -572,6 +587,11 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     @Override
     public DoubleIterator doubleIterator() {
         return data.iterator();
+    }
+
+    @Override
+    public IntIterator intIterator() {
+        return intData.iterator();
     }
 
     @Override
@@ -678,11 +698,6 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
         results.addRange(0, size());
         results.andNot(isIn(doubles));
         return results;
-    }
-
-    @Override
-    public DoubleSet asSet() {
-        return new DoubleOpenHashSet(data);
     }
 
     @Override

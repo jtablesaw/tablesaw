@@ -136,8 +136,6 @@ public interface NumberColumn extends NumberMapFunctions, DoubleIterable, Number
     @Override
     Selection isNotIn(Number... numbers);
 
-    DoubleSet asSet();
-
     boolean contains(double value);
 
     @Override

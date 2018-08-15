@@ -8,7 +8,7 @@ public class IntegerColumnType extends DoubleColumnType {
 
     public static final IntegerStringParser DEFAULT_PARSER = new IntegerStringParser(ColumnType.DOUBLE);
     public static final IntegerColumnType INSTANCE =
-            new IntegerColumnType(Double.NaN, 8, "DOUBLE", "Double");
+            new IntegerColumnType(Double.NaN, 8, "INTEGER", "Integer");
 
     private IntegerColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
         super(missingValue, byteSize, name, printerFriendlyName);

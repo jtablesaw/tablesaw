@@ -398,7 +398,7 @@ public class CsvReader {
             while ((nextLine = csvParser.parseNext()) != null) {
                 // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
                 if (rowCount == 0) {
-                    for (int i = 0; i < nextLine.length; i++) {
+                    for (String aNextLine : nextLine) {
                         columnData.add(new ArrayList<>());
                     }
                 }
@@ -466,7 +466,7 @@ public class CsvReader {
      */
     private ColumnType detectType(List<String> valuesList, CsvReadOptions options) {
 
-        List<StringParser> parsers = getParserList(typeArray, options);
+        CopyOnWriteArrayList<StringParser> parsers = new CopyOnWriteArrayList<>(getParserList(typeArray, options));
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
@@ -474,6 +474,7 @@ public class CsvReader {
             for (StringParser parser : parsers) {
                 if (!parser.canParse(s)) {
                     typeCandidates.remove(parser.columnType());
+                    parsers.remove(parser);
                 }
             }
         }
