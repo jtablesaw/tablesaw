@@ -20,23 +20,15 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
-import java.util.function.Consumer;
-import java.util.function.DoubleBinaryOperator;
-import java.util.function.DoubleFunction;
-import java.util.function.DoublePredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 
-import it.unimi.dsi.fastutil.doubles.DoubleComparator;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
@@ -181,7 +173,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
     Column<T> appendCell(String stringValue);
 
-    Column<T> appendCell(String stringValue, StringParser parser);
+    Column<T> appendCell(String stringValue, StringParser<T> parser);
 
     IntComparator rowComparator();
 
@@ -423,24 +415,18 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     
     // functional methods corresponding to those in Stream
 
+    /**
+     * Counts the number of rows satisfying predicate, but only upto the max value
+     * @param test the predicate
+     * @param max the maximum number of rows to count
+     * @return the number of rows satisfying the predicate
+     */
     default int count(Predicate<? super T> test, int max) {
         int count = 0;
         for (T t : this) {
             if (test.test(t)) {
                 count++;
-                if (count >= max) {
-                    return count;
-                }
-            }
-        }
-        return count;
-    }
-    default int countDoubles(DoublePredicate test, int max) {
-        int count = 0;
-        for (int i = 0; i < size(); i++) {
-            if (test.test(getDouble(i))) {
-                count++;
-                if (count >= max) {
+                if (max > 0 && count >= max) {
                     return count;
                 }
             }
@@ -448,34 +434,47 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         return count;
     }
 
+    /**
+     * Counts the number of rows satisfying predicate
+     * @param test the predicate
+     * @return the number of rows satisfying the predicate
+     */
     default int count(Predicate<? super T> test) {
         return count(test, size());
     }
-    default int countDoubles(DoublePredicate test) {
-        return countDoubles(test, size());
-    }
 
+    /**
+     * Returns true if all rows satisfy the predicate, false otherwise
+     * @param test the predicate
+     * @return true if all rows satisfy the predicate, false otherwise
+     */
     default boolean allMatch(Predicate<? super T> test) {
         return count(test.negate(), 1) == 0;
     }
-    default boolean allMatchDoubles(DoublePredicate test) {
-        return countDoubles(test.negate(), 1) == 0;
-    }
     
+    /**
+     * Returns true if any row satisfies the predicate, false otherwise
+     * @param test the predicate
+     * @return true if any rows satisfies the predicate, false otherwise
+     */
     default boolean anyMatch(Predicate<? super T> test) {
         return count(test, 1) > 0;
     }
-    default boolean anyMatchDoubles(DoublePredicate test) {
-        return countDoubles(test, 1) > 0;
-    }
 
+    /**
+     * Returns true if no row satisfies the predicate, false otherwise
+     * @param test the predicate
+     * @return true if no row satisfies the predicate, false otherwise
+     */
     default boolean noneMatch(Predicate<? super T> test) {
         return count(test, 1) == 0;
     }
-    default boolean noneMatchDoubles(DoublePredicate test) {
-        return countDoubles(test, 1) == 0;
-    }
     
+    /**
+     * Returns a new Column of the same type with only those rows satisfying the predicate
+     * @param test the predicate
+     * @return a new Column of the same type with only those rows satisfying the predicate
+     */
     default Column<T> filter(Predicate<? super T> test) {
         Column<T> result = emptyCopy();
         for (T t : this) {
@@ -485,17 +484,13 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         }
         return result;
     }
-    default DoubleColumn filterDoubles(DoublePredicate test) {
-        DoubleColumn result = DoubleColumn.create(name());
-        for (int i = 0; i < size(); i++) {
-            double d = getDouble(i);
-            if (test.test(d)) {
-                result.append(d);
-            }
-        }
-        return result;
-    }
     
+    /**
+     * Maps the function across all rows, appending the results to the provided Column
+     * @param fun function to map
+     * @param into Column to which results are appended
+     * @return the provided Column, to which results are appended
+     */
     default <R> Column<R> mapInto(Function<? super T, ? extends R> fun, Column<R> into) {
         for (T t : this) {
             try {
@@ -506,33 +501,21 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         }
         return into;
     }
-    default <R> Column<R> mapDoublesInto(DoubleFunction<? extends R> fun, Column<R> into) {
-        for (int i = 0; i < size(); i++) {
-            try {
-                into.append(fun.apply(getDouble(i)));
-            } catch (Exception e) {
-                into.appendMissing();
-            }
-        }
-        return into;
-    }
 
+    /**
+     * Maps the function across all rows, appending the results to a new Column of the same type
+     * @param fun function to map
+     * @return the Column with the results
+     */
     default Column<T> map(Function<? super T, ? extends T> fun) {
         return mapInto(fun, emptyCopy(size()));
-    }
+    }    
     
-    default DoubleColumn mapToDoubles(ToDoubleFunction<? super T> fun) {
-        DoubleColumn result = DoubleColumn.create(name());
-        for (T t : this) {
-            try {
-                result.append(fun.applyAsDouble(t));
-            } catch (Exception e) {
-                result.appendMissing();
-            }
-        }
-        return result;
-    }
-    
+    /**
+     * Returns the maximum row according to the provided Comparator
+     * @param comp
+     * @return the maximum row
+     */
     default Optional<T> max(Comparator<? super T> comp) {
         boolean first = true;
         T o1 = null;
@@ -546,21 +529,12 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         }
         return (first ? Optional.<T>empty() : Optional.<T>of(o1));
     }
-    default Optional<Double> maxDoubles(DoubleComparator comp) {
-        boolean first = true;
-        double d1 = 0.0;
-        for (int i = 0; i < size(); i++) {
-            double d2 = getDouble(i);
-            if (first) {
-                d1 = d2;
-                first = false;
-            } else if (comp.compare(d1, d2) < 0) {
-                d1 = d2;
-            }
-        }
-        return (first ? Optional.<Double>empty() : Optional.<Double>of(d1));
-    }
 
+    /**
+     * Returns the minimum row according to the provided Comparator
+     * @param comp
+     * @return the minimum row
+     */
     default Optional<T> min(Comparator<? super T> comp) {
         boolean first = true;
         T o1 = null;
@@ -574,21 +548,13 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         }
         return (first ? Optional.<T>empty() : Optional.<T>of(o1));
     }
-    default Optional<Double> minDoubles(DoubleComparator comp) {
-        boolean first = true;
-        double d1 = 0.0;
-        for (int i = 0; i < size(); i++) {
-            double d2 = getDouble(i);
-            if (first) {
-                d1 = d2;
-                first = false;
-            } else if (comp.compare(d1, d2) > 0) {
-                d1 = d2;
-            }
-        }
-        return (first ? Optional.<Double>empty() : Optional.<Double>of(d1));
-    }
 
+    /**
+     * Reduction with binary operator and initial value
+     * @param initial initial value
+     * @param op the operator
+     * @return the result of reducing initial value and all rows with operator
+     */
     default T reduce(T initial, BinaryOperator<T> op) {
         T acc = initial;
         for (T t : this) {
@@ -596,14 +562,12 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         }
         return acc;
     }
-    default double reduceDoubles(double initial, DoubleBinaryOperator op) {
-        double acc = initial;
-        for (int i = 0; i < size(); i++) {
-            acc = op.applyAsDouble(acc, getDouble(i));
-        }
-        return acc;
-    }
     
+    /**
+     * Reduction with binary operator
+     * @param op the operator
+     * @return Optional with the result of reducing all rows with operator
+     */
     default Optional<T> reduce(BinaryOperator<T> op) {
         boolean first = true; 
         T acc = null;
@@ -617,21 +581,12 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         }
         return (first ? Optional.empty() : Optional.of(acc));
     }
-    default Optional<Double> reduceDoubles(DoubleBinaryOperator op) {
-        boolean first = true;
-        double acc = 0.0;
-        for (int i = 0; i < size(); i++) {
-            double d = getDouble(i);
-            if (first) {
-                acc = d;
-                first = false;
-            } else {
-                acc = op.applyAsDouble(acc, d);
-            }
-        }
-        return (first ? Optional.<Double>empty() : Optional.<Double>of(acc));
-    }
     
+    /**
+     * Returns a new Column of the same type sorted according to the provided Comparator 
+     * @param comp the Comparator
+     * @return a sorted Column
+     */
     default Column<T> sorted(Comparator<? super T> comp) {
         List<T> list = asList();
         list.sort(comp);

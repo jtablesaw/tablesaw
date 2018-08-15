@@ -154,28 +154,17 @@ public class ColumnTest {
     // Functional methods
 
     private Predicate<Double> isPositiveOrZero = d -> d >= 0, isNegative = isPositiveOrZero.negate();
-    private DoublePredicate isPositiveOrZeroD = d -> d >= 0, isNegativeD = d -> d < 0;
 
     @Test
     public void testCountAtLeast() {
         assertEquals(2, DoubleColumn.create("t1", new double[] {0, 1, 2}).count(isPositiveOrZero, 2));
         assertEquals(0, DoubleColumn.create("t1", new double[] {0, 1, 2}).count(isNegative, 2));
     }
-    @Test
-    public void testCountAtLeastDoubles() {
-        assertEquals(2, DoubleColumn.create("t1", new double[] {0, 1, 2}).countDoubles(isPositiveOrZeroD, 2));
-        assertEquals(0, DoubleColumn.create("t1", new double[] {0, 1, 2}).countDoubles(isNegativeD, 2));
-    }
 
     @Test
     public void testCount() {
         assertEquals(3, DoubleColumn.create("t1", new double[] {0, 1, 2}).count(isPositiveOrZero));
         assertEquals(0, DoubleColumn.create("t1", new double[] {0, 1, 2}).count(isNegative));
-    }
-    @Test
-    public void testCountDoubles() {
-        assertEquals(3, DoubleColumn.create("t1", new double[] {0, 1, 2}).countDoubles(isPositiveOrZeroD));
-        assertEquals(0, DoubleColumn.create("t1", new double[] {0, 1, 2}).countDoubles(isNegativeD));
     }
 
     @Test
@@ -184,24 +173,12 @@ public class ColumnTest {
         assertFalse(DoubleColumn.create("t1", new double[] {-1, 0, 1}).allMatch(isPositiveOrZero));
         assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).allMatch(isPositiveOrZero));
     }
-    @Test
-    public void testAllMatchDoubles() {
-        assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).allMatchDoubles(isPositiveOrZeroD));
-        assertFalse(DoubleColumn.create("t1", new double[] {-1, 0, 1}).allMatchDoubles(isPositiveOrZeroD));
-        assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).allMatchDoubles(isPositiveOrZeroD));
-    }
 
     @Test
     public void testAnyMatch() {
         assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).anyMatch(isPositiveOrZero));
         assertTrue(DoubleColumn.create("t1", new double[] {-1, 0, -1}).anyMatch(isPositiveOrZero));
         assertFalse(DoubleColumn.create("t1", new double[] {0, 1, 2}).anyMatch(isNegative));
-    }
-    @Test
-    public void testAnyMatchDoubles() {
-        assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).anyMatchDoubles(isPositiveOrZeroD));
-        assertTrue(DoubleColumn.create("t1", new double[] {-1, 0, -1}).anyMatchDoubles(isPositiveOrZeroD));
-        assertFalse(DoubleColumn.create("t1", new double[] {0, 1, 2}).anyMatchDoubles(isNegativeD));
     }
     
     @Test
@@ -210,47 +187,25 @@ public class ColumnTest {
         assertFalse(DoubleColumn.create("t1", new double[] {-1, 0, 1}).noneMatch(isNegative));
         assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).noneMatch(isNegative));
     }
-    @Test
-    public void noneMatchDoubles() {
-        assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).noneMatchDoubles(isNegativeD));
-        assertFalse(DoubleColumn.create("t1", new double[] {-1, 0, 1}).noneMatchDoubles(isNegativeD));
-        assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).noneMatchDoubles(isNegativeD));
-    }
     
-    @Test
-    public void testFilter() {
-        Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZero);
-        assertEquals(2, filtered.size());
-        assertTrue(filtered.contains(0.0));
-        assertTrue(filtered.contains(1.0));
-        assertFalse(filtered.contains(-1.0));
-    }
-    @Test
-    public void testFilterDoubles() {
-        Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filterDoubles(isPositiveOrZeroD);
-        assertEquals(2, filtered.size());
-        assertTrue(filtered.contains(0.0));
-        assertTrue(filtered.contains(1.0));
-        assertFalse(filtered.contains(-1.0));
-    }
-
-    private <T> void check(Column<T> column, T... ts) {
+    private <T> void check(Column<T> column, @SuppressWarnings("unchecked") T... ts) {
         assertEquals(ts.length, column.size());
         for (int i = 0; i < ts.length; i++) {
             assertEquals(ts[i], column.get(i));
         }
     }
     
+    @Test
+    public void testFilter() {
+        Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZero);
+        check(filtered, 0.0, 1.0);
+    }
+    
     private Function<Double, String> toString = d -> d.toString();
-    private DoubleFunction<String> toStringD = d -> String.valueOf(d);
     
     @Test
     public void testMapInto() {
         check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).mapInto(toString, StringColumn.create("result")), "-1.0", "0.0", "1.0");
-    }
-    @Test
-    public void testMapIntoDoubles() {
-        check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).mapDoublesInto(toStringD, StringColumn.create("result")), "-1.0", "0.0", "1.0");
     }
 
     private Function<Double, Double> negate = d -> -d;
@@ -260,22 +215,10 @@ public class ColumnTest {
         check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).map(negate), 1.0, -0.0, -1.0);
     }
     
-    private ToDoubleFunction<String> valueOf = s -> Double.valueOf(s);
-
-    @Test
-    public void testMapToDoubles() {
-        check(StringColumn.create("t1", new String[] {"-1.0", "0.0", "1.0"}).mapToDoubles(valueOf), -1.0, 0.0, 1.0);
-    }
-    
     @Test
     public void testMaxComparator() {
         assertEquals(Double.valueOf(1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).max(Double::compare).get());
         assertFalse(DoubleColumn.create("t1").max((d1, d2) -> (int) (d1 - d2)).isPresent());
-    }
-    @Test
-    public void testMaxDoubleComparator() {
-        assertEquals(Double.valueOf(1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).maxDoubles(Double::compare).get());
-        assertFalse(DoubleColumn.create("t1").maxDoubles((d1, d2) -> (int) (d1 - d2)).isPresent());
     }
 
     @Test
@@ -283,33 +226,18 @@ public class ColumnTest {
         assertEquals(Double.valueOf(-1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).min(Double::compare).get());
         assertFalse(DoubleColumn.create("t1").min((d1, d2) -> (int) (d1 - d2)).isPresent());
     }
-    @Test
-    public void testMinDoubleComparator() {
-        assertEquals(Double.valueOf(-1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).minDoubles(Double::compare).get());
-        assertFalse(DoubleColumn.create("t1").minDoubles((d1, d2) -> (int) (d1 - d2)).isPresent());
-    }
 
     private BinaryOperator<Double> sum = (d1, d2) -> d1 + d2;
-    private DoubleBinaryOperator sumD = (d1, d2) -> d1 + d2;
    
     @Test
     public void testReduceTBinaryOperator() {
         assertEquals(Double.valueOf(1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduce(1.0, sum));
-    }
-    @Test
-    public void testReduceTDoubleBinaryOperator() {
-        assertEquals(1.0, DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduceDoubles(1.0, sumD), 0.0);
     }
     
     @Test
     public void testReduceBinaryOperator() {
         assertEquals(Double.valueOf(0.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduce(sum).get());
         assertFalse(DoubleColumn.create("t1", new double[] {}).reduce(sum).isPresent());
-    }
-    @Test
-    public void testReduceDoubleBinaryOperator() {
-        assertEquals(Double.valueOf(0.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduceDoubles(sumD).get());
-        assertFalse(DoubleColumn.create("t1", new double[] {}).reduceDoubles(sumD).isPresent());
     }
     
     @Test

@@ -47,10 +47,14 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.BiPredicate;
+import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleConsumer;
+import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleSupplier;
+import java.util.function.ToDoubleFunction;
 
 import static tech.tablesaw.api.ColumnType.DOUBLE;
 
@@ -722,4 +726,186 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     public int compare(Double o1, Double o2) {
         return Double.compare(o1, o2);
     }
+    
+    // functional methods corresponding to those in Stream
+
+    /**
+     * Counts the number of rows satisfying predicate, but only upto the max value
+     * @param test the predicate
+     * @param max the maximum number of rows to count
+     * @return the number of rows satisfying the predicate
+     */
+    public int count(DoublePredicate test, int max) {
+        int count = 0;
+        for (int i = 0; i < size(); i++) {
+            if (test.test(getDouble(i))) {
+                count++;
+                if (count >= max) {
+                    return count;
+                }
+            }
+        }
+        return count;
+    }
+    
+    /**
+     * Counts the number of rows satisfying predicate
+     * @param test the predicate
+     * @return the number of rows satisfying the predicate
+     */
+    public int count(DoublePredicate test) {
+        return count(test, size());
+    }
+
+    /**
+     * Returns true if all rows satisfy the predicate, false otherwise
+     * @param test the predicate
+     * @return true if all rows satisfy the predicate, false otherwise
+     */
+   public boolean allMatch(DoublePredicate test) {
+        return count(test.negate(), 1) == 0;
+    }
+
+   /**
+    * Returns true if any row satisfies the predicate, false otherwise
+    * @param test the predicate
+    * @return true if any rows satisfies the predicate, false otherwise
+    */
+    public boolean anyMatch(DoublePredicate test) {
+        return count(test, 1) > 0;
+    }
+
+    /**
+     * Returns true if no row satisfies the predicate, false otherwise
+     * @param test the predicate
+     * @return true if no row satisfies the predicate, false otherwise
+     */
+    public boolean noneMatch(DoublePredicate test) {
+        return count(test, 1) == 0;
+    }
+
+    /**
+     * Returns a new DoubleColumn with only those rows satisfying the predicate
+     * @param test the predicate
+     * @return a new DoubleColumn with only those rows satisfying the predicate
+     */
+    public DoubleColumn filter(DoublePredicate test) {
+        DoubleColumn result = DoubleColumn.create(name());
+        for (int i = 0; i < size(); i++) {
+            double d = getDouble(i);
+            if (test.test(d)) {
+                result.append(d);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Maps the function across all rows, appending the results to the provided Column
+     * @param fun function to map
+     * @param into Column to which results are appended
+     * @return the provided Column, to which results are appended
+     */
+    public <R> Column<R> mapInto(DoubleFunction<? extends R> fun, Column<R> into) {
+        for (int i = 0; i < size(); i++) {
+            try {
+                into.append(fun.apply(getDouble(i)));
+            } catch (Exception e) {
+                into.appendMissing();
+            }
+        }
+        return into;
+    }
+
+    /**
+     * Maps the function across all rows, appending the results to a new DoubleColumn
+     * @param fun function to map
+     * @return the DoubleColumn with the results
+     */
+    public DoubleColumn map(ToDoubleFunction<Double> fun) {
+        DoubleColumn result = DoubleColumn.create(name());
+        for (double t : this) {
+            try {
+                result.append(fun.applyAsDouble(t));
+            } catch (Exception e) {
+                result.appendMissing();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the maximum row according to the provided Comparator
+     * @param comp
+     * @return the maximum row
+     */
+    public Optional<Double> max(DoubleComparator comp) {
+        boolean first = true;
+        double d1 = 0.0;
+        for (int i = 0; i < size(); i++) {
+            double d2 = getDouble(i);
+            if (first) {
+                d1 = d2;
+                first = false;
+            } else if (comp.compare(d1, d2) < 0) {
+                d1 = d2;
+            }
+        }
+        return (first ? Optional.<Double>empty() : Optional.<Double>of(d1));
+    }
+
+    /**
+     * Returns the minimum row according to the provided Comparator
+     * @param comp
+     * @return the minimum row
+     */
+    public Optional<Double> min(DoubleComparator comp) {
+        boolean first = true;
+        double d1 = 0.0;
+        for (int i = 0; i < size(); i++) {
+            double d2 = getDouble(i);
+            if (first) {
+                d1 = d2;
+                first = false;
+            } else if (comp.compare(d1, d2) > 0) {
+                d1 = d2;
+            }
+        }
+        return (first ? Optional.<Double>empty() : Optional.<Double>of(d1));
+    }
+
+    /**
+     * Reduction with binary operator and initial value
+     * @param initial initial value
+     * @param op the operator
+     * @return the result of reducing initial value and all rows with operator
+     */
+    public double reduce(double initial, DoubleBinaryOperator op) {
+        double acc = initial;
+        for (int i = 0; i < size(); i++) {
+            acc = op.applyAsDouble(acc, getDouble(i));
+        }
+        return acc;
+    }
+
+    /**
+     * Reduction with binary operator
+     * @param op the operator
+     * @return Optional with the result of reducing all rows with operator
+     */
+    public Optional<Double> reduce(DoubleBinaryOperator op) {
+        boolean first = true;
+        double acc = 0.0;
+        for (int i = 0; i < size(); i++) {
+            double d = getDouble(i);
+            if (first) {
+                acc = d;
+                first = false;
+            } else {
+                acc = op.applyAsDouble(acc, d);
+            }
+        }
+        return (first ? Optional.<Double>empty() : Optional.<Double>of(acc));
+    }
+
 }
