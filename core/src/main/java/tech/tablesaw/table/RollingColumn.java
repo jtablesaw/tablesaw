@@ -1,8 +1,6 @@
 package tech.tablesaw.table;
 
 import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.aggregate.AggregateFunctions;
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -13,35 +11,15 @@ import tech.tablesaw.util.StringUtils;
  */
 public class RollingColumn {
 
-    private final Column column;
-    private final int window;
+    protected final Column column;
+    protected final int window;
 
     public RollingColumn(Column column, int window) {
         this.column = column;
         this.window = window;
     }
 
-    public NumberColumn mean() {
-        return (NumberColumn) calc(AggregateFunctions.mean);
-    }
-
-    public NumberColumn median() {
-        return (NumberColumn) calc(AggregateFunctions.median);
-    }
-
-    public NumberColumn geometricMean() {
-        return (NumberColumn) calc(AggregateFunctions.geometricMean);
-    }
-
-    public NumberColumn sum() {
-        return (NumberColumn) calc(AggregateFunctions.sum);
-    }
-
-    public NumberColumn pctChange() {
-        return (NumberColumn) calc(AggregateFunctions.pctChange);
-    }
-
-    private String generateNewColumnName(AggregateFunction<?, ?> function) {
+    protected String generateNewColumnName(AggregateFunction<?, ?> function) {
         boolean useSpaces = column.name().matches("\\s+");
         String separator = useSpaces ? " " : "";
         return new StringBuilder(column.name())
