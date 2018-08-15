@@ -80,7 +80,6 @@ public class AggregateFunctionsTest {
     public void testApplyWithNonNumericResults() {
         Table result = table.summarize("date", earliestDate, latestDate).apply();
         assertEquals(2, result.columnCount());
-        System.out.println(result);
     }
 
     @Test
