@@ -18,12 +18,12 @@ public class SkipColumnType extends AbstractColumnType {
     }
 
     @Override
-    public StringParser defaultParser() {
+    public StringParser<?> defaultParser() {
         throw new UnsupportedOperationException("Column type " + name() + " doesn't support parsing");
     }
 
     @Override
-    public StringParser customParser(CsvReadOptions options) {
+    public StringParser<?> customParser(CsvReadOptions options) {
         throw new UnsupportedOperationException("Column type " + name() + " doesn't support parsing");
     }
 }

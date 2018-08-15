@@ -6,7 +6,7 @@ import tech.tablesaw.columns.Column;
 /**
  * A partial implementation of aggregate functions to summarize over a numeric column
  */
-public abstract class AggregateFunction<T, C extends Column> {
+public abstract class AggregateFunction<T, C extends Column<?>> {
 
     private final String functionName;
 

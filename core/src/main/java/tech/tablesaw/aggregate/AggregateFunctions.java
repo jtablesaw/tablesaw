@@ -119,7 +119,7 @@ public class AggregateFunctions {
     public static CountFunction countNonMissing = new CountFunction("Count") {
 
         @Override
-        public Integer summarize(Column column) {
+        public Integer summarize(Column<?> column) {
             return column.size() - column.countMissing();
         }
     };
@@ -135,7 +135,7 @@ public class AggregateFunctions {
     public static CountFunction countMissing = new CountFunction("Missing Values") {
 
         @Override
-        public Integer summarize(Column column) {
+        public Integer summarize(Column<?> column) {
             return column.countMissing();
         }
     };
@@ -146,7 +146,7 @@ public class AggregateFunctions {
     public static CountFunction countUnique = new CountFunction("Count Unique") {
 
         @Override
-        public Integer summarize(Column doubles) {
+        public Integer summarize(Column<?> doubles) {
             return removeMissing(doubles.unique()).size();
         }
     };
@@ -184,7 +184,7 @@ public class AggregateFunctions {
     public static final CountFunction countWithMissing = new CountFunction("Count (incl. missing)") {
 
         @Override
-        public Integer summarize(Column column) {
+        public Integer summarize(Column<?> column) {
             return column.size();
         }
     };
@@ -355,7 +355,7 @@ public class AggregateFunctions {
         return column.removeMissing().asDoubleArray();
     }
 
-    private static Column removeMissing(Column column) {
+    private static <T> Column<T> removeMissing(Column<T> column) {
         return column.removeMissing();
     }
 
