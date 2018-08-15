@@ -68,6 +68,13 @@ public class AggregateFunctionsTest {
     }
 
     @Test
+    public void testApplyWithNonNumericResults() {
+        Table result = table.summarize("date", earliestDate, latestDate).apply();
+        assertEquals(2, result.columnCount());
+        System.out.println(result);
+    }
+
+    @Test
     public void testGroupMean3() {
         Summarizer function = table.summarize("approval", mean, stdDev);
         Table result = function.by("Group", 10);

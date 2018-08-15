@@ -216,6 +216,9 @@ public class Summarizer {
               }
             }
         }
+        if (reductionMultimap.isEmpty()) {
+            throw new RuntimeException("None of the aggregate functions provided apply to the summarized column type(s).");
+        }
         return reductionMultimap;
     }
 
