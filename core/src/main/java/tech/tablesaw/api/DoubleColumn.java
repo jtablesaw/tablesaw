@@ -25,6 +25,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleRBTreeSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -68,6 +69,8 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
      */
     private final DoubleComparator descendingComparator = (o2, o1) -> (Double.compare(o1, o2));
+
+    private final IntComparator descendingIntComparator = (o2, o1) -> (Integer.compare(o1, o2));
 
     private DoubleArrayList data;
     private IntArrayList intData;
@@ -199,11 +202,15 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     private DoubleColumn(final String name, IntArrayList data) {
         super(DOUBLE, name);
+        this.type = Integer.class;
         this.intData = data;
     }
 
     @Override
     public int size() {
+        if (type.equals(Integer.class)) {
+            return intData.size();
+        }
         return data.size();
     }
 
@@ -228,10 +235,19 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     @Override
     public DoubleArrayList top(final int n) {
         final DoubleArrayList top = new DoubleArrayList();
-        final double[] values = data.toDoubleArray();
-        DoubleArrays.parallelQuickSort(values, descendingComparator);
-        for (int i = 0; i < n && i < values.length; i++) {
-            top.add(values[i]);
+        if (type.equals(Double.class)) {
+            final double[] values = data.toDoubleArray();
+            DoubleArrays.parallelQuickSort(values, descendingComparator);
+            for (int i = 0; i < n && i < values.length; i++) {
+                top.add(values[i]);
+            }
+        }
+        else {
+            final int[] values = intData.toIntArray();
+            IntArrays.parallelQuickSort(values, descendingIntComparator);
+            for (int i = 0; i < n && i < values.length; i++) {
+                top.add(values[i]);
+            }
         }
         return top;
     }
@@ -247,10 +263,19 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     @Override
     public DoubleArrayList bottom(final int n) {
         final DoubleArrayList bottom = new DoubleArrayList();
-        final double[] values = data.toDoubleArray();
-        DoubleArrays.parallelQuickSort(values);
-        for (int i = 0; i < n && i < values.length; i++) {
-            bottom.add(values[i]);
+        if (type.equals(Double.class)) {
+            final double[] values = data.toDoubleArray();
+            DoubleArrays.parallelQuickSort(values);
+            for (int i = 0; i < n && i < values.length; i++) {
+                bottom.add(values[i]);
+            }
+        }
+        else {
+            final int[] values = intData.toIntArray();
+            IntArrays.parallelQuickSort(values);
+            for (int i = 0; i < n && i < values.length; i++) {
+                bottom.add(values[i]);
+            }
         }
         return bottom;
     }
@@ -284,7 +309,15 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
      */
     @Override
     public DoubleColumn append(final float f) {
-        data.add(f);
+        if (type.equals(Integer.class)) {
+            if (f == (int) f) {
+                intData.add((int) f);
+            } else {
+                throw new RuntimeException("Incompatible numeric type. Attempting to add a float to a column of integers.");
+            }
+        } else {
+            data.add(f);
+        }
         return this;
     }
 
@@ -293,13 +326,25 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
      */
     @Override
     public DoubleColumn append(double d) {
-        data.add(d);
+        if (type.equals(Integer.class)) {
+            if (d == (int) d) {
+                intData.add((int) d);
+            } else {
+                throw new RuntimeException("Incompatible numeric type. Attempting to add a double to a column of integers.");
+            }
+        } else {
+            data.add(d);
+        }
         return this;
     }
 
     @Override
     public NumberColumn append(int i) {
-        data.add(i);
+        if (type == Integer.class) {
+            intData.add(i);
+        } else {
+            data.add(i);
+        }
         return this;
     }
 
@@ -322,7 +367,11 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public double getDouble(final int row) {
-        return getDouble(row);
+        return type.equals(Double.class) ? data.getDouble(row) : intData.getInt(row);
+    }
+
+    public int getInteger(final int row) {
+        return type.equals(Integer.class) ? roundInt(row) : intData.getInt(row);
     }
 
     @Override
@@ -394,17 +443,25 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public void sortAscending() {
-        Arrays.parallelSort(data.elements());
+        if (type.equals(Double.class)) {
+            Arrays.parallelSort(data.elements());
+        } else {
+            Arrays.parallelSort(intData.elements());
+        }
     }
 
     @Override
     public void sortDescending() {
-        DoubleArrays.parallelQuickSort(data.elements(), descendingComparator);
+        if (type.equals(Double.class)) {
+            DoubleArrays.parallelQuickSort(data.elements(), descendingComparator);
+        } else {
+            IntArrays.parallelQuickSort(intData.elements(), descendingIntComparator);
+        }
     }
 
     @Override
     public boolean isEmpty() {
-        return data.isEmpty();
+        return size() == 0;
     }
 
     @Override
@@ -495,8 +552,8 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public double[] asDoubleArray() {
-        final double[] output = new double[data.size()];
-        for (int i = 0; i < data.size(); i++) {
+        final double[] output = new double[size()];
+        for (int i = 0; i < size(); i++) {
             output[i] = getDouble(i);
         }
         return output;
@@ -530,7 +587,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     @Override
     public Selection eval(final DoublePredicate predicate) {
         final Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < data.size(); idx++) {
+        for (int idx = 0; idx < size(); idx++) {
             final double next = getDouble(idx);
             if (predicate.test(next)) {
                 bitmap.add(idx);
@@ -554,7 +611,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     public Selection eval(final DoubleBiPredicate predicate, final Number number) {
         final double value = number.doubleValue();
         final Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < data.size(); idx++) {
+        for (int idx = 0; idx < size(); idx++) {
             final double next = getDouble(idx);
             if (predicate.test(next, value)) {
                 bitmap.add(idx);
@@ -567,7 +624,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     public Selection eval(final BiPredicate<Number, Number> predicate, final Number number) {
         final double value = number.doubleValue();
         final Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < data.size(); idx++) {
+        for (int idx = 0; idx < size(); idx++) {
             final double next = getDouble(idx);
             if (predicate.test(next, value)) {
                 bitmap.add(idx);
@@ -581,7 +638,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
         final double start = rangeStart.doubleValue();
         final double end = rangeEnd.doubleValue();
         final Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < data.size(); idx++) {
+        for (int idx = 0; idx < size(); idx++) {
             final double next = getDouble(idx);
             if (predicate.test(next, start, end)) {
                 bitmap.add(idx);
@@ -630,7 +687,19 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public boolean contains(final double value) {
-        return data.contains(value);
+        if (type.equals(Double.class)) {
+            return data.contains(value);
+        } else {
+            return (value == (int) value) && intData.contains((int) value);
+        }
+    }
+
+    public boolean contains(final int value) {
+        if (type.equals(Double.class)) {
+            return data.contains(value);
+        } else {
+            return intData.contains(value);
+        }
     }
 
     @Override
@@ -728,8 +797,8 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public Object[] asObjectArray() {
-        final Double[] output = new Double[data.size()];
-        for (int i = 0; i < data.size(); i++) {
+        final Double[] output = new Double[size()];
+        for (int i = 0; i < size(); i++) {
             output[i] = getDouble(i);
         }
         return output;
