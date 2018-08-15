@@ -24,6 +24,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleRBTreeSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -69,6 +70,9 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     private final DoubleComparator descendingComparator = (o2, o1) -> (Double.compare(o1, o2));
 
     private DoubleArrayList data;
+    private IntArrayList intData;
+
+    private Class type = Double.class;
 
     private NumberColumnFormatter printFormatter = new NumberColumnFormatter();
 
@@ -78,8 +82,8 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
         @Override
         public int compare(final int r1, final int r2) {
-            final double f1 = data.getDouble(r1);
-            final double f2 = data.getDouble(r2);
+            final double f1 = getDouble(r1);
+            final double f2 = getDouble(r2);
             return Double.compare(f1, f2);
         }
     };
@@ -130,6 +134,10 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
             doubles[i] = numbers[i].doubleValue();
         }
         return new DoubleColumn(name, new DoubleArrayList(doubles));
+    }
+
+    public static DoubleColumn createWithIntegers(String name) {
+        return create(name, DEFAULT_ARRAY_SIZE);
     }
 
     @Override
@@ -187,6 +195,11 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     private DoubleColumn(final String name, final DoubleArrayList data) {
         super(DOUBLE, name);
         this.data = data;
+    }
+
+    private DoubleColumn(final String name, IntArrayList data) {
+        super(DOUBLE, name);
+        this.intData = data;
     }
 
     @Override
@@ -250,7 +263,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
         final DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
             if (!isMissing(i)) {
-                doubles.add(data.getDouble(i));
+                doubles.add(getDouble(i));
             }
         }
         final DoubleColumn column = DoubleColumn.create(name() + " Unique values", doubles.size());
@@ -261,7 +274,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     @Override
     public double firstElement() {
         if (size() > 0) {
-            return data.getDouble(0);
+            return getDouble(0);
         }
         return MISSING_VALUE;
     }
@@ -300,7 +313,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public String getString(final int row) {
-        final double value = data.getDouble(row);
+        final double value = getDouble(row);
         if (NumberColumn.valueIsMissing(value)) {
             return "";
         }
@@ -309,7 +322,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public double getDouble(final int row) {
-        return data.getDouble(row);
+        return getDouble(row);
     }
 
     @Override
@@ -436,7 +449,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
      */
     @Override
     public long getLong(final int i) {
-        final double value = data.getDouble(i);
+        final double value = getDouble(i);
         return NumberColumn.valueIsMissing(value) ? DateTimeColumn.MISSING_VALUE : Math.round(value);
     }
 
@@ -451,7 +464,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public Double get(final int index) {
-        return data.getDouble(index);
+        return getDouble(index);
     }
 
     @Override
@@ -484,7 +497,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     public double[] asDoubleArray() {
         final double[] output = new double[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            output[i] = data.getDouble(i);
+            output[i] = getDouble(i);
         }
         return output;
     }
@@ -518,7 +531,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     public Selection eval(final DoublePredicate predicate) {
         final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
-            final double next = data.getDouble(idx);
+            final double next = getDouble(idx);
             if (predicate.test(next)) {
                 bitmap.add(idx);
             }
@@ -542,7 +555,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
         final double value = number.doubleValue();
         final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
-            final double next = data.getDouble(idx);
+            final double next = getDouble(idx);
             if (predicate.test(next, value)) {
                 bitmap.add(idx);
             }
@@ -555,7 +568,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
         final double value = number.doubleValue();
         final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
-            final double next = data.getDouble(idx);
+            final double next = getDouble(idx);
             if (predicate.test(next, value)) {
                 bitmap.add(idx);
             }
@@ -569,7 +582,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
         final double end = rangeEnd.doubleValue();
         final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < data.size(); idx++) {
-            final double next = data.getDouble(idx);
+            final double next = getDouble(idx);
             if (predicate.test(next, start, end)) {
                 bitmap.add(idx);
             }
@@ -717,7 +730,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     public Object[] asObjectArray() {
         final Double[] output = new Double[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            output[i] = data.getDouble(i);
+            output[i] = getDouble(i);
         }
         return output;
     }

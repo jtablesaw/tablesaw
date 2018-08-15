@@ -11,7 +11,7 @@ public class DoubleColumnType extends AbstractColumnType {
     public static final DoubleColumnType INSTANCE =
             new DoubleColumnType(Double.NaN, 8, "DOUBLE", "Double");
 
-    private DoubleColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
+    DoubleColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
         super(missingValue, byteSize, name, printerFriendlyName);
     }
 

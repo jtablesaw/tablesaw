@@ -95,7 +95,7 @@ public class SqlResultSetReader {
             Preconditions.checkState(type != null,
                     "No column type found for %s as specified for column %s", metaData.getColumnType(i), name);
 
-            Column<?> newColumn = TypeUtils.newColumn(name, type);
+            Column<?> newColumn = type.create(name);
             table.addColumns(newColumn);
         }
 

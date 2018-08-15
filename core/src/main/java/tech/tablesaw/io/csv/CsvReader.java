@@ -24,7 +24,6 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
-import tech.tablesaw.io.TypeUtils;
 import tech.tablesaw.io.UnicodeBOMInputStream;
 
 import javax.annotation.concurrent.Immutable;
@@ -41,13 +40,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static tech.tablesaw.api.ColumnType.BOOLEAN;
-import static tech.tablesaw.api.ColumnType.DOUBLE;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
-import static tech.tablesaw.api.ColumnType.SKIP;
-import static tech.tablesaw.api.ColumnType.STRING;
+import static tech.tablesaw.api.ColumnType.*;
 
 @Immutable
 public class CsvReader {
@@ -61,7 +54,7 @@ public class CsvReader {
      * the integer test would never be evaluated and all the ints would be read as doubles.
      */
     private List<ColumnType> typeArray =
-            Lists.newArrayList(LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, DOUBLE, STRING);
+            Lists.newArrayList(LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, INTEGER, DOUBLE, STRING);
 
     /**
      * Constructs a CsvReader
@@ -128,7 +121,7 @@ public class CsvReader {
                     if (Strings.isNullOrEmpty(columnName)) {
                         columnName = "Column " + table.columnCount();
                     }
-                    Column<?> newColumn = TypeUtils.newColumn(columnName, types[x]);
+                    Column<?> newColumn = types[x].create(columnName);
                     table.addColumns(newColumn);
                 }
             }
@@ -233,7 +226,7 @@ public class CsvReader {
             table = Table.create(file.getName());
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != SKIP) {
-                    Column<?> newColumn = TypeUtils.newColumn(headerRow.get(x).trim(), types[x]);
+                    Column<?> newColumn = types[x].create(headerRow.get(x).trim());
                     table.addColumns(newColumn);
                 }
             }
