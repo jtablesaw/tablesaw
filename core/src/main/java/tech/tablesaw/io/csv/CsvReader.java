@@ -173,10 +173,10 @@ public class CsvReader {
                 int cellIndex = 0;
                 for (int columnIndex : columnIndexes) {
                     Column<?> column = table.column(cellIndex);
-                    StringParser parser = column.type().customParser(options);
+                    StringParser<?> parser = column.type().customParser(options);
                     try {
                         String value = nextLine[columnIndex];
-                        column.appendCell(value, parser);
+                        column.appendObj(parser.parse(value));
                     } catch (Exception e) {
                         throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
                     }
@@ -473,12 +473,12 @@ public class CsvReader {
      */
     private ColumnType detectType(List<String> valuesList, CsvReadOptions options) {
 
-        List<StringParser> parsers = getParserList(typeArray, options);
+        List<StringParser<?>> parsers = getParserList(typeArray, options);
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
         for (String s : valuesList) {
-            for (StringParser parser : parsers) {
+            for (StringParser<?> parser : parsers) {
                 if (!parser.canParse(s)) {
                     typeCandidates.remove(parser.columnType());
                 }
@@ -503,10 +503,10 @@ public class CsvReader {
      * @param options CsvReadOptions to use to modify the default parsers for each type
      * @return  A list of parsers in the order they should be used for type detection
      */
-    private List<StringParser> getParserList(List<ColumnType> typeArray, CsvReadOptions options) {
+    private List<StringParser<?>> getParserList(List<ColumnType> typeArray, CsvReadOptions options) {
         // Types to choose from. When more than one would work, we pick the first of the options
 
-        List<StringParser> parsers = new ArrayList<>();
+        List<StringParser<?>> parsers = new ArrayList<>();
         for (ColumnType type : typeArray) {
             parsers.add(type.customParser(options));
         }

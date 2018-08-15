@@ -28,7 +28,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringFilters;
@@ -417,12 +416,6 @@ public class StringColumn extends AbstractColumn<String>
     @Override
     public StringColumn appendCell(String object) {
         addValue(StringColumnType.DEFAULT_PARSER.parse(object));
-        return this;
-    }
-
-    @Override
-    public StringColumn appendCell(String object, StringParser parser) {
-        addValue((String) parser.parse(object));
         return this;
     }
 
