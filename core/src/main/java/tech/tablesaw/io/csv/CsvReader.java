@@ -473,7 +473,7 @@ public class CsvReader {
      */
     private ColumnType detectType(List<String> valuesList, CsvReadOptions options) {
 
-        List<StringParser<?>> parsers = getParserList(typeArray, options);
+        CopyOnWriteArrayList<StringParser<?>> parsers = new CopyOnWriteArrayList<>(getParserList(typeArray, options));
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
@@ -481,6 +481,7 @@ public class CsvReader {
             for (StringParser<?> parser : parsers) {
                 if (!parser.canParse(s)) {
                     typeCandidates.remove(parser.columnType());
+                    parsers.remove(parser);
                 }
             }
         }
