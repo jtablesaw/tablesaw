@@ -25,12 +25,17 @@ import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.Selection;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleFunction;
+import java.util.function.DoublePredicate;
 
 import static java.lang.Double.NaN;
 import static org.junit.Assert.*;
@@ -591,5 +596,87 @@ public class NumberColumnTest {
         }
         return true;
     }
-}
+    
+    // Functional methods
 
+    private DoublePredicate isPositiveOrZeroD = d -> d >= 0, isNegativeD = d -> d < 0;
+
+    @Test
+    public void testCountAtLeast() {
+        assertEquals(2, DoubleColumn.create("t1", new double[] {0, 1, 2}).count(isPositiveOrZeroD, 2));
+        assertEquals(0, DoubleColumn.create("t1", new double[] {0, 1, 2}).count(isNegativeD, 2));
+    }
+
+    @Test
+    public void testCount() {
+        assertEquals(3, DoubleColumn.create("t1", new double[] {0, 1, 2}).count(isPositiveOrZeroD));
+        assertEquals(0, DoubleColumn.create("t1", new double[] {0, 1, 2}).count(isNegativeD));
+    }
+
+    @Test
+    public void testAllMatch() {
+        assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).allMatch(isPositiveOrZeroD));
+        assertFalse(DoubleColumn.create("t1", new double[] {-1, 0, 1}).allMatch(isPositiveOrZeroD));
+        assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).allMatch(isPositiveOrZeroD));
+    }
+
+    @Test
+    public void testAnyMatch() {
+        assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).anyMatch(isPositiveOrZeroD));
+        assertTrue(DoubleColumn.create("t1", new double[] {-1, 0, -1}).anyMatch(isPositiveOrZeroD));
+        assertFalse(DoubleColumn.create("t1", new double[] {0, 1, 2}).anyMatch(isNegativeD));
+    }
+
+    @Test
+    public void noneMatch() {
+        assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).noneMatch(isNegativeD));
+        assertFalse(DoubleColumn.create("t1", new double[] {-1, 0, 1}).noneMatch(isNegativeD));
+        assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).noneMatch(isNegativeD));
+    }
+
+    private <T> void check(Column<T> column, @SuppressWarnings("unchecked") T... ts) {
+        assertEquals(ts.length, column.size());
+        for (int i = 0; i < ts.length; i++) {
+            assertEquals(ts[i], column.get(i));
+        }
+    }
+
+    @Test
+    public void testFilter() {
+        Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZeroD);
+        check(filtered, 0.0, 1.0);
+    }
+    
+    private DoubleFunction<String> toStringD = d -> String.valueOf(d);
+
+    @Test
+    public void testMapInto() {
+        check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).mapInto(toStringD, StringColumn.create("result")), "-1.0", "0.0", "1.0");
+    }
+
+    @Test
+    public void testMaxDoubleComparator() {
+        assertEquals(Double.valueOf(1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).max(Double::compare).get());
+        assertFalse(DoubleColumn.create("t1").max((d1, d2) -> (int) (d1 - d2)).isPresent());
+    }
+
+    @Test
+    public void testMinDoubleComparator() {
+        assertEquals(Double.valueOf(-1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).min(Double::compare).get());
+        assertFalse(DoubleColumn.create("t1").min((d1, d2) -> (int) (d1 - d2)).isPresent());
+    }
+
+    private DoubleBinaryOperator sumD = (d1, d2) -> d1 + d2;
+
+    @Test
+    public void testReduceTDoubleBinaryOperator() {
+        assertEquals(1.0, DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduce(1.0, sumD), 0.0);
+    }
+
+    @Test
+    public void testReduceDoubleBinaryOperator() {
+        assertEquals(Double.valueOf(0.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduce(sumD).get());
+        assertFalse(DoubleColumn.create("t1", new double[] {}).reduce(sumD).isPresent());
+    }
+
+}

@@ -35,7 +35,7 @@ public class AbstractColumnTest {
 
         DateColumn dc2 = DateColumn.create("100 days later");
 
-        dc1.doWithEach(localDate -> dc2.append(localDate.plusDays(100)));
+        dc1.forEach(localDate -> dc2.append(localDate.plusDays(100)));
 
         assertEquals(dc1.get(0).plusDays(100), dc2.get(0));
     }
