@@ -56,6 +56,30 @@ public class AggregateFunctions {
         }
     };
 
+    public static BooleanAggregateFunction allTrue = new BooleanAggregateFunction("All True") {
+
+        @Override
+        public Boolean summarize(BooleanColumn column) {
+            return column.all();
+        }
+    };
+
+    public static BooleanAggregateFunction anyTrue = new BooleanAggregateFunction("Any True") {
+
+        @Override
+        public Boolean summarize(BooleanColumn column) {
+            return column.any();
+        }
+    };
+
+    public static BooleanAggregateFunction noneTrue = new BooleanAggregateFunction("None True") {
+
+        @Override
+        public Boolean summarize(BooleanColumn column) {
+            return column.none();
+        }
+    };
+
     public static BooleanCountFunction countFalse = new BooleanCountFunction("Number False") {
         @Override
         public Integer summarize(BooleanColumn column) {
