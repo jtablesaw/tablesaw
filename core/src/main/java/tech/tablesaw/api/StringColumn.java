@@ -421,9 +421,8 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     @Override
-    public StringColumn appendCell(String object, StringParser parser) {
-        addValue((String) parser.parse(object));
-        return this;
+    public StringColumn appendCell(String object, StringParser<?> parser) {
+        return appendObj(parser.parse(object));
     }
 
     @Override

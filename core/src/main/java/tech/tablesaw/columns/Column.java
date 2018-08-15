@@ -173,7 +173,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
     Column<T> appendCell(String stringValue);
 
-    Column<T> appendCell(String stringValue, StringParser<T> parser);
+    Column<T> appendCell(String stringValue, StringParser<?> parser);
 
     IntComparator rowComparator();
 

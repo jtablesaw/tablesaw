@@ -325,14 +325,12 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
 
     @Override
     public DateColumn appendCell(String string) {
-        appendInternal(PackedLocalDate.pack(DateColumnType.DEFAULT_PARSER.parse(string)));
-        return this;
+        return appendInternal(PackedLocalDate.pack(DateColumnType.DEFAULT_PARSER.parse(string)));
     }
 
     @Override
-    public DateColumn appendCell(String string, StringParser parser) {
-        appendInternal(PackedLocalDate.pack((LocalDate) parser.parse(string)));
-        return this;
+    public DateColumn appendCell(String string, StringParser<?> parser) {
+        return appendObj(parser.parse(string));
     }
 
     @Override
