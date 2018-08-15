@@ -397,21 +397,19 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     @Override
     public DoubleColumn appendCell(final String object) {
         try {
-            append(DoubleColumnType.DEFAULT_PARSER.parseDouble(object));
+            return append(DoubleColumnType.DEFAULT_PARSER.parseDouble(object));
         } catch (final NumberFormatException e) {
             throw new NumberFormatException(name() + ": " + e.getMessage());
         }
-        return this;
     }
 
     @Override
-    public DoubleColumn appendCell(final String object, StringParser parser) {
+    public DoubleColumn appendCell(final String object, StringParser<?> parser) {
         try {
-            append(parser.parseDouble(object));
+            return append(parser.parseDouble(object));
         } catch (final NumberFormatException e) {
             throw new NumberFormatException(name() + ": " + e.getMessage());
         }
-        return this;
     }
 
     /**

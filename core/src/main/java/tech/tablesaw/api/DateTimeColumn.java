@@ -166,14 +166,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     @Override
     public DateTimeColumn appendCell(String stringValue) {
-        appendInternal(PackedLocalDateTime.pack(DateTimeColumnType.DEFAULT_PARSER.parse(stringValue)));
-        return this;
+        return appendInternal(PackedLocalDateTime.pack(DateTimeColumnType.DEFAULT_PARSER.parse(stringValue)));
     }
 
     @Override
-    public DateTimeColumn appendCell(String stringValue, StringParser parser) {
-        appendInternal(PackedLocalDateTime.pack((LocalDateTime) parser.parse(stringValue)));
-        return this;
+    public DateTimeColumn appendCell(String stringValue, StringParser<?> parser) {
+        return appendObj(parser.parse(stringValue));
     }
 
     public DateTimeColumn append(LocalDateTime dateTime) {

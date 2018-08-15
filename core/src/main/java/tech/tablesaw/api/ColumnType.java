@@ -57,9 +57,9 @@ public interface ColumnType {
 
     String getPrinterFriendlyName();
 
-    StringParser defaultParser();
+    StringParser<?> defaultParser();
 
-    StringParser customParser(CsvReadOptions options);
+    StringParser<?> customParser(CsvReadOptions options);
 
     default boolean compare(int rowNumber, Column<?> temp, Column<?> original) {
         return original.get(rowNumber).equals(temp.get(temp.size() - 1));

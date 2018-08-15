@@ -6,13 +6,11 @@ import tech.tablesaw.columns.Column;
 /**
  * A partial implementation of aggregate functions to summarize over a boolean column
  */
-public abstract class BooleanAggregateFunction extends AggregateFunction<Boolean, Column> {
+public abstract class BooleanAggregateFunction<C extends Column<?>> extends AggregateFunction<Boolean, C> {
 
     public BooleanAggregateFunction(String name) {
         super(name);
     }
-
-    abstract public Boolean summarize(Column column);
 
     @Override
     public boolean isCompatableColumn(ColumnType type) {

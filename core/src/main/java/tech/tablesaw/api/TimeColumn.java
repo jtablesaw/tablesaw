@@ -341,9 +341,8 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     @Override
-    public TimeColumn appendCell(String object, StringParser parser) {
-        appendInternal(PackedLocalTime.pack((LocalTime) parser.parse(object)));
-        return this;
+    public TimeColumn appendCell(String object, StringParser<?> parser) {
+        return appendObj(parser.parse(object));
     }
 
     @Override
