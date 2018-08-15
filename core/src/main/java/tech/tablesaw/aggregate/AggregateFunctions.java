@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class AggregateFunctions {
 
 
-    public static DateTimeAggregateFunction earliestDateTime = new DateTimeAggregateFunction("Earliest Date") {
+    public static DateTimeAggregateFunction earliestDateTime = new DateTimeAggregateFunction("Earliest Date-Time") {
 
         @Override
         public LocalDateTime summarize(DateTimeColumn column) {
@@ -32,7 +32,15 @@ public class AggregateFunctions {
         }
     };
 
-    public static DateTimeAggregateFunction latest = new DateTimeAggregateFunction("Latest Date") {
+    public static DateAggregateFunction latestDate = new DateAggregateFunction("Latest Date") {
+
+        @Override
+        public LocalDate summarize(DateColumn column) {
+            return column.max();
+        }
+    };
+
+    public static DateTimeAggregateFunction latestDateTime = new DateTimeAggregateFunction("Latest Date-Time") {
 
         @Override
         public LocalDateTime summarize(DateTimeColumn column) {
@@ -45,6 +53,30 @@ public class AggregateFunctions {
         @Override
         public Integer summarize(BooleanColumn column) {
             return column.countTrue();
+        }
+    };
+
+    public static BooleanAggregateFunction allTrue = new BooleanAggregateFunction("All True") {
+
+        @Override
+        public Boolean summarize(BooleanColumn column) {
+            return column.all();
+        }
+    };
+
+    public static BooleanAggregateFunction anyTrue = new BooleanAggregateFunction("Any True") {
+
+        @Override
+        public Boolean summarize(BooleanColumn column) {
+            return column.any();
+        }
+    };
+
+    public static BooleanAggregateFunction noneTrue = new BooleanAggregateFunction("None True") {
+
+        @Override
+        public Boolean summarize(BooleanColumn column) {
+            return column.none();
         }
     };
 

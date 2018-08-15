@@ -42,7 +42,7 @@ public class RollingColumnTest {
                 LocalDate.of(2011, 1, 9).atStartOfDay()
         };
 
-        DateTimeColumn result = (DateTimeColumn) DateTimeColumn.create("data", data).rolling(2).calc(latest);
+        DateTimeColumn result = (DateTimeColumn) DateTimeColumn.create("data", data).rolling(2).calc(latestDateTime);
         assertArrayEquals(sma5, result.asObjectArray());
     }
 

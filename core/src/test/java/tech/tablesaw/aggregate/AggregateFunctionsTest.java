@@ -62,9 +62,25 @@ public class AggregateFunctionsTest {
     }
 
     @Test
+    public void testBooleanAggregateFunctions() {
+        boolean[] values = {true, false};
+        BooleanColumn bc = BooleanColumn.create("test", values);
+        assertTrue(anyTrue.summarize(bc));
+        assertFalse(noneTrue.summarize(bc));
+        assertFalse(allTrue.summarize(bc));
+    }
+
+    @Test
     public void testGroupMean2() {
         Table result = table.summarize("approval", mean, stdDev).apply();
         assertEquals(2, result.columnCount());
+    }
+
+    @Test
+    public void testApplyWithNonNumericResults() {
+        Table result = table.summarize("date", earliestDate, latestDate).apply();
+        assertEquals(2, result.columnCount());
+        System.out.println(result);
     }
 
     @Test
