@@ -279,7 +279,11 @@ public interface DateMapFunctions extends Column<LocalDate> {
                     default:  // handle decades, etc.
                         LocalDate value1 = PackedLocalDate.asLocalDate(c1);
                         LocalDate value2 = PackedLocalDate.asLocalDate(c2);
-                        newColumn.append(unit.between(value1, value2));
+                        if (value1 == null || value2 == null) {
+                            newColumn.appendMissing();
+                        } else {
+                            newColumn.append(unit.between(value1, value2));
+                        }
                         break;
                 }
             }

@@ -348,15 +348,27 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     /**
      * Returns an array where each entry is the difference, measured in seconds,
      * between the LocalDateTime and midnight, January 1, 1970 UTC.
+     *
+     * If a value is missing, Long.MIN_VALUE is used
      */
     public long[] asEpochSecondArray() {
         return asEpochSecondArray(ZoneOffset.UTC);
     }
 
+    /**
+     * Returns the seconds from epoch for each value as an array based on the given offset
+     *
+     * If a value is missing, Long.MIN_VALUE is used
+     */
     public long[] asEpochSecondArray(ZoneOffset offset) {
         long[] output = new long[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            output[i] = PackedLocalDateTime.asLocalDateTime(data.getLong(i)).toEpochSecond(offset);
+            LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
+            if (dateTime == null) {
+                output[i] = Long.MIN_VALUE;
+            } else {
+                output[i] = dateTime.toEpochSecond(offset);
+            }
         }
         return output;
     }
@@ -364,15 +376,28 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     /**
      * Returns an array where each entry is the difference, measured in milliseconds,
      * between the LocalDateTime and midnight, January 1, 1970 UTC.
+     *
+     * If a missing value is encountered, Long.MIN_VALUE is inserted in the array
      */
     public long[] asEpochMillisArray() {
         return asEpochMillisArray(ZoneOffset.UTC);
     }
 
+    /**
+     * Returns an array where each entry is the difference, measured in milliseconds,
+     * between the LocalDateTime and midnight, January 1, 1970 UTC.
+     *
+     * If a missing value is encountered, Long.MIN_VALUE is inserted in the array
+     */
     public long[] asEpochMillisArray(ZoneOffset offset) {
         long[] output = new long[data.size()];
         for (int i = 0; i < data.size(); i++) {
-            output[i] = PackedLocalDateTime.asLocalDateTime(data.getLong(i)).toInstant(offset).toEpochMilli();
+            LocalDateTime dateTime = PackedLocalDateTime.asLocalDateTime(data.getLong(i));
+            if (dateTime == null) {
+                output[i] = Long.MIN_VALUE;
+            } else {
+                output[i] = dateTime.toInstant(offset).toEpochMilli();
+            }
         }
         return output;
     }

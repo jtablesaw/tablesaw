@@ -5,6 +5,7 @@ import tech.tablesaw.api.BooleanColumn;
 public class BooleanFormatter {
     private String trueString = "true";
     private String falseString = "false";
+
     private String missingString = "";
 
     public BooleanFormatter(String trueString, String falseString, String missingString) {
@@ -17,6 +18,10 @@ public class BooleanFormatter {
         this.trueString = trueString;
         this.falseString = falseString;
         this.missingString = "";
+    }
+
+    public BooleanFormatter(String missingString) {
+        this.missingString = missingString;
     }
 
     public String format(Boolean value) {

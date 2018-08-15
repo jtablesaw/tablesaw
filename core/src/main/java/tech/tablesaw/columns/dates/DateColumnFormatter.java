@@ -34,6 +34,9 @@ public class DateColumnFormatter {
             return PackedLocalDate.toDateString(value);
         }
         LocalDate date = asLocalDate(value);
+        if (date == null) {
+            return "";
+        }
         return format.format(date);
     }
 

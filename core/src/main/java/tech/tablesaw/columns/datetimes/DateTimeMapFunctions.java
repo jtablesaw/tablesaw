@@ -68,17 +68,16 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
             if (c1 == MISSING_VALUE || c2 == MISSING_VALUE) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
-                newColumn.append(difference(c1, c2, unit));
+                LocalDateTime value1 = asLocalDateTime(c1);
+                LocalDateTime value2 = asLocalDateTime(c2);
+                if (value1 != null && value2 != null) {
+                    newColumn.append(unit.between(value1, value2));
+                } else {
+                    newColumn.appendMissing();
+                }
             }
         }
         return newColumn;
-    }
-
-    default long difference(long packedLocalDateTime1, long packedLocalDateTime2, ChronoUnit unit) {
-        LocalDateTime value1 = asLocalDateTime(packedLocalDateTime1);
-        LocalDateTime value2 = asLocalDateTime(packedLocalDateTime2);
-        // TODO Deal with null values here
-        return unit.between(value1, value2);
     }
 
     default NumberColumn hour() {

@@ -65,7 +65,13 @@ public interface TimeMapFunctions extends Column<LocalTime> {
             if (TimeColumn.valueIsMissing(c1) || TimeColumn.valueIsMissing(c2)) {
                 newColumn.append(NumberColumn.MISSING_VALUE);
             } else {
-                newColumn.append((int) difference(c1, c2, unit));
+                LocalTime value1 = PackedLocalTime.asLocalTime(c1);
+                LocalTime value2 = PackedLocalTime.asLocalTime(c2);
+                if (value1 != null && value2 != null) {
+                    newColumn.append(unit.between(value1, value2));
+                } else {
+                    newColumn.appendMissing();
+                }
             }
         }
         return newColumn;
@@ -172,12 +178,6 @@ public interface TimeMapFunctions extends Column<LocalTime> {
         }
         newColumn.setName(name() + " with " + time + " " + timeUnitString + "(s)");
         return newColumn;
-    }
-
-    default long difference(int packedLocalTime1, int packedLocalTime2, ChronoUnit unit) {
-        LocalTime value1 = PackedLocalTime.asLocalTime(packedLocalTime1);
-        LocalTime value2 = PackedLocalTime.asLocalTime(packedLocalTime2);
-        return unit.between(value1, value2);
     }
 
     default TimeColumn withHour(int hours) {

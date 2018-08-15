@@ -34,6 +34,9 @@ public class DateTimeColumnFormatter {
             return PackedLocalDateTime.toString(value);
         }
         LocalDateTime time = asLocalDateTime(value);
+        if (time == null) {
+            return "";
+        }
         return format.format(time);
     }
 

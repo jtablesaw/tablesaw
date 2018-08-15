@@ -18,12 +18,12 @@ public class HoverLabel extends Component {
     /**
      * Sets the background color of all hover labels on graph
      */
-    private String bgColor = "";
+    private final String bgColor;
 
     /**
      * Sets the border color of all hover labels on graph.
      */
-    private String borderColor = "";
+    private final String borderColor;
 
     /**
      * Sets the default hover label font used by all traces on the graph.
@@ -36,7 +36,7 @@ public class HoverLabel extends Component {
      * and an integer >3 will show the whole name if it is less than that many characters,
      * but if it is longer, will truncate to `namelength - 3` characters and add an ellipsis.
      */
-    private int nameLength = 15;
+    private final int nameLength;
 
     HoverLabel(HoverLabelBuilder builder) {
         this.bgColor = builder.bgColor;

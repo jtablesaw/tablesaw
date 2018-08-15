@@ -40,17 +40,11 @@ public class DateTimeMapFunctionsTest {
     private DateTimeColumn stopCol = DateTimeColumn.create("stop");
     private LocalDateTime start = LocalDateTime.now();
 
-
     @Test
     public void testDifferenceInMilliseconds() {
-        long pStart = PackedLocalDateTime.pack(start);
         LocalDateTime stop = start.plus(100_000L, ChronoUnit.MILLIS);
-        long pStop = PackedLocalDateTime.pack(stop);
-
         startCol.append(start);
         stopCol.append(stop);
-
-        assertEquals(100_000L, startCol.difference(pStart, pStop, ChronoUnit.MILLIS));
         NumberColumn result = startCol.differenceInMilliseconds(stopCol);
         assertEquals(100_000L, result.firstElement(),0.01);
     }
