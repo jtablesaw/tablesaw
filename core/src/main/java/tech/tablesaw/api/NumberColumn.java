@@ -11,7 +11,6 @@ import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
-import tech.tablesaw.columns.numbers.DoubleIterable;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.NumberFilters;
@@ -27,10 +26,9 @@ import java.util.function.DoublePredicate;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.api.ColumnType.DOUBLE;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isNotMissing;
+import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
-public interface NumberColumn extends NumberMapFunctions, DoubleIterable, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn<Double> {
+public interface NumberColumn extends NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn<Double> {
 
     double MISSING_VALUE = (Double) DOUBLE.getMissingValue();
 

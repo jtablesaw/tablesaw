@@ -18,8 +18,6 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleArrays;
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
-import it.unimi.dsi.fastutil.doubles.DoubleIterable;
-import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleRBTreeSet;
@@ -34,7 +32,9 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.DoubleIterable;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.columns.numbers.NumberIterator;
 import tech.tablesaw.columns.numbers.Stats;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
@@ -148,9 +148,9 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     @Override
     public DoubleColumn removeMissing() {
         final DoubleColumn noMissing = emptyCopy();
-        final DoubleIterator iterator = doubleIterator();
+        final NumberIterator iterator = doubleIterator();
         while(iterator.hasNext()) {
-            final double v = iterator.nextDouble();
+            final double v = iterator.next();
             if (!NumberColumn.valueIsMissing(v)) {
                 noMissing.append(v);
             }
@@ -329,7 +329,10 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     @Override
     public DoubleColumn append(double d) {
         if (type.equals(Integer.class)) {
-            if (d == (int) d) {
+            if (NumberColumn.valueIsMissing(d)) {
+                append(Integer.MIN_VALUE);
+            }
+            else if (d == (int) d) {
                 intData.add((int) d);
             } else {
                 throw new RuntimeException("Incompatible numeric type. Attempting to add a double to a column of integers.");
@@ -369,7 +372,15 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public double getDouble(final int row) {
-        return type.equals(Double.class) ? data.getDouble(row) : intData.getInt(row);
+        if (type.equals(Double.class)) {
+            return data.getDouble(row);
+        } else {
+            int value = intData.getInt(row);
+            if (value == Integer.MIN_VALUE) {
+                return MISSING_VALUE;
+            }
+            return value;
+        }
     }
 
     public int getInteger(final int row) {
@@ -585,8 +596,12 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     }
 
     @Override
-    public DoubleIterator doubleIterator() {
-        return data.iterator();
+    public NumberIterator doubleIterator() {
+        if (type.equals(Double.class)) {
+            return new NumberIterator(data);
+        } else {
+            return new NumberIterator(intData);
+        }
     }
 
     @Override
@@ -596,7 +611,11 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public Iterator<Double> iterator() {
-        return data.iterator();
+        if (type.equals(Double.class)) {
+            return data.iterator();
+        } else {
+            return new NumberIterator(intData).iterator();
+        }
     }
 
     @Override
@@ -741,9 +760,9 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     public IntSet asIntegerSet() {
         final IntSet ints = new IntOpenHashSet();
-        DoubleIterator it = doubleIterator();
+        NumberIterator it = doubleIterator();
         while (it.hasNext()) {
-            double d = it.nextDouble();
+            double d = it.next();
             if (!NumberColumn.valueIsMissing(d)) {
                 ints.add((int) Math.round(d));
             }
@@ -759,9 +778,9 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     @Override
     public DateTimeColumn asDateTimes(ZoneOffset offset) {
         DateTimeColumn column = DateTimeColumn.create(name() + ": date time");
-        DoubleIterator it = doubleIterator();
+        NumberIterator it = doubleIterator();
         while (it.hasNext()) {
-            double d = it.nextDouble();
+            double d = it.next();
             LocalDateTime dateTime =
                     Instant.ofEpochMilli((long) d).atZone(offset).toLocalDateTime();
             column.append(dateTime);
@@ -773,27 +792,27 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     // fillWith methods
 
     @Override
-    public DoubleColumn fillWith(final DoubleIterator iterator) {
+    public DoubleColumn fillWith(final NumberIterator iterator) {
         for (int r = 0; r < size(); r++) {
             if (!iterator.hasNext()) {
                 break;
             }
-            set(r, iterator.nextDouble());
+            set(r, iterator.next());
         }
         return this;
     }
 
     @Override
     public DoubleColumn fillWith(final DoubleIterable iterable) {
-        DoubleIterator iterator = null;
+        NumberIterator iterator = null;
         for (int r = 0; r < size(); r++) {
             if (iterator == null || (!iterator.hasNext())) {
-                iterator = iterable.iterator();
+                iterator = doubleIterator();
                 if (!iterator.hasNext()) {
                     break;
                 }
             }
-            set(r, iterator.nextDouble());
+            set(r, iterator.next());
         }
         return this;
     }

@@ -1,7 +1,10 @@
 package tech.tablesaw.columns.numbers.fillers;
 
-import it.unimi.dsi.fastutil.doubles.DoubleIterable;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import tech.tablesaw.columns.numbers.DoubleIterable;
+import tech.tablesaw.columns.numbers.NumberIterator;
 
 public class DoubleRangeIterable implements DoubleIterable {
 
@@ -55,6 +58,54 @@ public class DoubleRangeIterable implements DoubleIterable {
             @Override
             public double nextDouble() {
                 final double current = next;
+                next += by;
+                num++;
+                return current;
+            }
+        };
+    }
+
+    @Override
+    public NumberIterator doubleIterator() {
+
+        return new NumberIterator(new DoubleArrayList()) {
+
+            double next = from;
+            int num = 0;
+
+            @Override
+            public boolean hasNext() {
+                return (count < 0 || num < count) && (Double.isNaN(to) || Math.abs(next - from) < Math.abs(to - from)
+                        || (including && next == to));
+            }
+
+            @Override
+            public double next() {
+                final double current = next;
+                next += by;
+                num++;
+                return current;
+            }
+        };
+    }
+
+    @Override
+    public IntIterator intIterator() {
+
+        return new IntIterator() {
+
+            int next = (int) from;
+            int num = 0;
+
+            @Override
+            public boolean hasNext() {
+                return (count < 0 || num < count) && (Double.isNaN(to) || Math.abs(next - from) < Math.abs(to - from)
+                        || (including && next == to));
+            }
+
+            @Override
+            public int nextInt() {
+                final int current = next;
                 next += by;
                 num++;
                 return current;

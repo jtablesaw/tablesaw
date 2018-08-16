@@ -16,15 +16,12 @@ package tech.tablesaw.columns.numbers;
 
 import java.util.function.DoubleSupplier;
 
-import it.unimi.dsi.fastutil.doubles.DoubleIterable;
-import it.unimi.dsi.fastutil.doubles.DoubleIterator;
-
 public interface NumberFillers<T> {
 
-    T fillWith(DoubleIterator iterator);
+    T fillWith(NumberIterator iterator);
 
     default T fillWith(final DoubleIterable iterable) {
-        return fillWith(iterable.iterator());
+        return fillWith(iterable.doubleIterator());
     }
 
     T fillWith(final DoubleSupplier supplier);

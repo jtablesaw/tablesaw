@@ -29,7 +29,7 @@ public class IntegerStringParser extends DoubleStringParser {
             return true;
         }
         try {
-            Double.parseDouble(s);
+            Integer.parseInt(s);
             return true;
         } catch (NumberFormatException e) {
             // it's all part of the plan
