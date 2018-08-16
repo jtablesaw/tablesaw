@@ -3,7 +3,7 @@ package tech.tablesaw.aggregate;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.Column;
 
-abstract class CountFunction extends AggregateFunction<Integer, Column<?>> {
+abstract class CountFunction extends AggregateFunction<Column<?>, Integer> {
 
     public CountFunction(String functionName) {
         super(functionName);

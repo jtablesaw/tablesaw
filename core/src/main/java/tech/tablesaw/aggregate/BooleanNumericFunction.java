@@ -3,7 +3,7 @@ package tech.tablesaw.aggregate;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.ColumnType;
 
-abstract class BooleanNumericFunction extends AggregateFunction<Double, BooleanColumn> {
+abstract class BooleanNumericFunction extends AggregateFunction<BooleanColumn, Double> {
 
     public BooleanNumericFunction(String functionName) {
         super(functionName);

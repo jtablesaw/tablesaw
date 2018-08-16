@@ -16,6 +16,7 @@ import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.NumberFilters;
 import tech.tablesaw.columns.numbers.NumberMapFunctions;
+import tech.tablesaw.columns.numbers.NumberRollingColumn;
 import tech.tablesaw.columns.numbers.Stats;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
@@ -154,6 +155,10 @@ public interface NumberColumn extends NumberMapFunctions, DoubleIterable, Number
 
     @Override
     NumberColumn appendMissing();
+
+    default NumberRollingColumn rolling(final int windowSize) {
+        return new NumberRollingColumn(this, windowSize);
+    }    
 
     /**
      * Returns the count of missing values in this column

@@ -6,7 +6,7 @@ import tech.tablesaw.api.NumberColumn;
 /**
  * A partial implementation of aggregate functions to summarize over a numeric column
  */
-public abstract class NumericAggregateFunction extends AggregateFunction<Double, NumberColumn> {
+public abstract class NumericAggregateFunction extends AggregateFunction<NumberColumn, Double> {
 
     public NumericAggregateFunction(String name) {
         super(name);

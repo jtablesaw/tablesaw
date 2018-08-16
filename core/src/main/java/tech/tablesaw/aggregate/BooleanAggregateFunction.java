@@ -6,7 +6,7 @@ import tech.tablesaw.api.ColumnType;
 /**
  * A partial implementation of aggregate functions to summarize over a boolean column
  */
-public abstract class BooleanAggregateFunction extends AggregateFunction<Boolean, BooleanColumn> {
+public abstract class BooleanAggregateFunction extends AggregateFunction<BooleanColumn, Boolean> {
 
     public BooleanAggregateFunction(String name) {
         super(name);
