@@ -205,6 +205,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
     private DoubleColumn(final String name, IntArrayList data) {
         super(DOUBLE, name);
         this.type = Integer.class;
+        this.printFormatter = NumberColumnFormatter.ints();
         this.intData = data;
     }
 
@@ -804,7 +805,7 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public DoubleColumn fillWith(final DoubleIterable iterable) {
-        NumberIterator iterator = null;
+        NumberIterator iterator = iterable.doubleIterator();
         for (int r = 0; r < size(); r++) {
             if (iterator == null || (!iterator.hasNext())) {
                 iterator = doubleIterator();

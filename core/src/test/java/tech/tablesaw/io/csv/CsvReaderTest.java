@@ -46,8 +46,8 @@ import static tech.tablesaw.api.ColumnType.*;
  */
 public class CsvReaderTest {
 
-    private final ColumnType[] bus_types = {DOUBLE, STRING, STRING, DOUBLE, DOUBLE};
-    private final ColumnType[] bus_types_with_SKIP = {DOUBLE, STRING, SKIP, DOUBLE, DOUBLE};
+    private final ColumnType[] bus_types = {INTEGER, STRING, STRING, DOUBLE, DOUBLE};
+    private final ColumnType[] bus_types_with_SKIP = {INTEGER, STRING, SKIP, DOUBLE, DOUBLE};
 
     @Test
     public void testWithBusData() throws Exception {
@@ -310,7 +310,7 @@ public class CsvReaderTest {
 
         ColumnType[] columnTypes = new CsvReader().detectColumnTypes(stream, options);
         assertEquals(LOCAL_DATE, columnTypes[0]);
-        assertEquals(DOUBLE, columnTypes[1]);
+        assertEquals(INTEGER, columnTypes[1]);
         assertEquals(STRING, columnTypes[2]);
     }
 

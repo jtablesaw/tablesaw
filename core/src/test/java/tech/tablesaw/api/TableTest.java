@@ -252,7 +252,7 @@ public class TableTest {
         assertEquals("             bush.csv              \n" +
                 "    date     |  approval  |  who  |\n" +
                 "-----------------------------------\n" +
-                " 2004-02-04  |      53.0  |  fox  |", row.toString());
+                " 2004-02-04  |        53  |  fox  |", row.toString());
     }
 
     @Test
