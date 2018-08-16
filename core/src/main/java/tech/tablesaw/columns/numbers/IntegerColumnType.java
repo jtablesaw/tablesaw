@@ -1,7 +1,7 @@
 package tech.tablesaw.columns.numbers;
 
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class IntegerColumnType extends DoubleColumnType {
@@ -15,8 +15,8 @@ public class IntegerColumnType extends DoubleColumnType {
     }
 
     @Override
-    public DoubleColumn create(String name) {
-        return DoubleColumn.createWithIntegers(name);
+    public NumberColumn create(String name) {
+        return NumberColumn.createWithIntegers(name);
     }
 
     @Override

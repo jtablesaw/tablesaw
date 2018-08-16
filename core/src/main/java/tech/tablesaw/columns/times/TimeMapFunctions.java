@@ -15,7 +15,6 @@
 package tech.tablesaw.columns.times;
 
 import com.google.common.base.Strings;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
@@ -57,7 +56,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
     TimeColumn lag(int n);
 
     default NumberColumn difference(TimeColumn column2, ChronoUnit unit) {
-        NumberColumn newColumn = DoubleColumn.create(name() + " - " + column2.name());
+        NumberColumn newColumn = NumberColumn.create(name() + " - " + column2.name());
 
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
@@ -242,7 +241,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
     }
 
     default NumberColumn hour() {
-        NumberColumn newColumn = DoubleColumn.create(name() + "[" + "hour" + "]");
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "hour" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
@@ -255,7 +254,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
     }
 
     default NumberColumn minute() {
-        NumberColumn newColumn = DoubleColumn.create(name() + "[" + "minute" + "]");
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "minute" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
@@ -268,7 +267,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
     }
 
     default NumberColumn second() {
-        NumberColumn newColumn = DoubleColumn.create(name() + "[" + "second" + "]");
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "second" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
@@ -281,7 +280,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
     }
 
     default NumberColumn milliseconds() {
-        NumberColumn newColumn = DoubleColumn.create(name() + "[" + "ms" + "]");
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "ms" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
@@ -294,7 +293,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
     }
 
     default NumberColumn minuteOfDay() {
-        NumberColumn newColumn = DoubleColumn.create(name() + "[" + "minute-of-day" + "]");
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "minute-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
@@ -307,7 +306,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
     }
 
     default NumberColumn secondOfDay() {
-        NumberColumn newColumn = DoubleColumn.create(name() + "[" + "second-of-day" + "]");
+        NumberColumn newColumn = NumberColumn.create(name() + "[" + "second-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
@@ -333,7 +332,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
         String newColumnName = "" +  n + " " + unit.toString() + " window [" + name() + "]";
 
         int packedStartTime = PackedLocalTime.pack(start);
-        NumberColumn numberColumn = DoubleColumn.create(newColumnName, size());
+        NumberColumn numberColumn = NumberColumn.create(newColumnName, size());
         for (int i = 0; i < size(); i++) {
             int packedTime = getIntInternal(i);
             int result;

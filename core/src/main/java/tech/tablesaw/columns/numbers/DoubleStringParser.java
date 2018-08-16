@@ -2,7 +2,7 @@ package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
@@ -41,7 +41,7 @@ public class DoubleStringParser extends StringParser<Double> {
     @Override
     public Double parse(String s) {
         if (isMissing(s)) {
-            return DoubleColumn.MISSING_VALUE;
+            return NumberColumn.MISSING_VALUE;
         }
         final Matcher matcher = COMMA_PATTERN.matcher(s);
         return Double.parseDouble(matcher.replaceAll(""));
@@ -50,7 +50,7 @@ public class DoubleStringParser extends StringParser<Double> {
     @Override
     public double parseDouble(String s) {
         if (isMissing(s)) {
-            return DoubleColumn.MISSING_VALUE;
+            return NumberColumn.MISSING_VALUE;
         }
         final Matcher matcher = COMMA_PATTERN.matcher(s);
         return Double.parseDouble(matcher.replaceAll(""));

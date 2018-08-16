@@ -14,7 +14,6 @@
 
 package tech.tablesaw.plotly;
 
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.api.HorizontalBarPlot;
@@ -34,7 +33,7 @@ public class BarExample {
         logNInjuries.setName("log injuries");
         table.addColumns(logNInjuries);
         NumberColumn scale = table.numberColumn("scale");
-        scale.set(scale.isLessThan(0), DoubleColumn.MISSING_VALUE);
+        scale.set(scale.isLessThan(0), NumberColumn.MISSING_VALUE);
 
         Table s = table.summarize("fatalities", "log injuries", sum).by("Scale");
         System.out.println(s);

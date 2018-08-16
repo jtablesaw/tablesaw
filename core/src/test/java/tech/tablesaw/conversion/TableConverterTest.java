@@ -14,14 +14,13 @@
 
 package tech.tablesaw.conversion;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Table;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.Table;
+import static org.junit.Assert.assertTrue;
 
 public class TableConverterTest {
 
@@ -30,8 +29,8 @@ public class TableConverterTest {
         double[] array1 = {0, 1, 2};
         double[] array2 = {0, 1, 2};
 
-        DoubleColumn c1 = DoubleColumn.create("1", array1);
-        DoubleColumn c2 = DoubleColumn.create("2", array2);
+        NumberColumn c1 = NumberColumn.create("1", array1);
+        NumberColumn c2 = NumberColumn.create("2", array2);
         Table table = Table.create("test", c1, c2);
 
         double[][] expected = {{0.0, 0.0}, {1.0, 1.0}, {2.0, 2.0}};
@@ -45,9 +44,9 @@ public class TableConverterTest {
         double[] array2 = {0, 1, 2};
         double[] array3 = {0, 1, 3};
 
-        DoubleColumn c1 = DoubleColumn.create("1", array1);
-        DoubleColumn c2 = DoubleColumn.create("2", array2);
-        DoubleColumn c3 = DoubleColumn.create("3", array3);
+        NumberColumn c1 = NumberColumn.create("1", array1);
+        NumberColumn c2 = NumberColumn.create("2", array2);
+        NumberColumn c3 = NumberColumn.create("3", array3);
         Table table = Table.create("test", c1, c2, c3);
 
         double[][] expected = {{0.0, 0.0}, {1.0, 1.0}, {1.0, 3.0}};
@@ -60,8 +59,8 @@ public class TableConverterTest {
         double[] array1 = {0, 1, 2};
         double[] array2 = {0, 1, 2};
 
-        DoubleColumn c1 = DoubleColumn.create("1", array1);
-        DoubleColumn c2 = DoubleColumn.create("2", array2);
+        NumberColumn c1 = NumberColumn.create("1", array1);
+        NumberColumn c2 = NumberColumn.create("2", array2);
         Table table = Table.create("test", c1, c2);
 
         int[][] expected = {{0, 0}, {1, 1}, {2, 2}};
@@ -75,9 +74,9 @@ public class TableConverterTest {
         double[] array2 = {0, 1, 2};
         double[] array3 = {0, 1, 3};
 
-        DoubleColumn c1 = DoubleColumn.create("1", array1);
-        DoubleColumn c2 = DoubleColumn.create("2", array2);
-        DoubleColumn c3 = DoubleColumn.create("3", array3);
+        NumberColumn c1 = NumberColumn.create("1", array1);
+        NumberColumn c2 = NumberColumn.create("2", array2);
+        NumberColumn c3 = NumberColumn.create("3", array3);
         Table table = Table.create("test", c1, c2, c3);
 
         int[][] expected = {{0, 0}, {1, 1}, {1, 3}};
@@ -90,8 +89,8 @@ public class TableConverterTest {
         double[] array1 = {0, 1, 2};
         double[] array2 = {0, 1, 2};
 
-        DoubleColumn c1 = DoubleColumn.create("1", array1);
-        DoubleColumn c2 = DoubleColumn.create("2", array2);
+        NumberColumn c1 = NumberColumn.create("1", array1);
+        NumberColumn c2 = NumberColumn.create("2", array2);
         Table table = Table.create("test", c1, c2);
 
         float[][] expected = {{0.0f, 0.0f}, {1.0f, 1.0f}, {2.0f, 2.0f}};
@@ -105,9 +104,9 @@ public class TableConverterTest {
         double[] array2 = {0, 1, 2};
         double[] array3 = {0, 1, 3};
 
-        DoubleColumn c1 = DoubleColumn.create("1", array1);
-        DoubleColumn c2 = DoubleColumn.create("2", array2);
-        DoubleColumn c3 = DoubleColumn.create("3", array3);
+        NumberColumn c1 = NumberColumn.create("1", array1);
+        NumberColumn c2 = NumberColumn.create("2", array2);
+        NumberColumn c3 = NumberColumn.create("3", array3);
         Table table = Table.create("test", c1, c2, c3);
 
         float[][] expected = {{0.0f, 0.0f}, {1.0f, 1.0f}, {1.0f, 3.0f}};

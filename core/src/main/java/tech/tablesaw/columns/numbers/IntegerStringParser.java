@@ -2,7 +2,7 @@ package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.util.regex.Matcher;
@@ -49,7 +49,7 @@ public class IntegerStringParser extends DoubleStringParser {
     @Override
     public double parseDouble(String s) {
         if (isMissing(s)) {
-            return DoubleColumn.MISSING_VALUE;
+            return NumberColumn.MISSING_VALUE;
         }
         final Matcher matcher = COMMA_PATTERN.matcher(s);
         return Integer.parseInt(matcher.replaceAll(""));

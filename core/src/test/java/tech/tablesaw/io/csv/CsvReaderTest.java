@@ -21,7 +21,6 @@ import org.junit.rules.ExpectedException;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 
@@ -134,7 +133,7 @@ public class CsvReaderTest {
     public void testMillis() {
 
         long[] times = {1530486314124L, 1530488214124L};
-        DoubleColumn d = DoubleColumn.create("times", times);
+        NumberColumn d = NumberColumn.create("times", times);
         DateTimeColumn column = d.asDateTimes(ZoneOffset.UTC);
         assertEquals(1530486314124L, column.get(0).toInstant(ZoneOffset.UTC).toEpochMilli());
     }

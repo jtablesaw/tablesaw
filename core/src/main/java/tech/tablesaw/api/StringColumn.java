@@ -224,7 +224,7 @@ public class StringColumn extends AbstractColumn<String>
     public Table countByCategory() {
         Table t = new Table("Column: " + name());
         StringColumn categories = create("Category");
-        NumberColumn counts = DoubleColumn.create("Count");
+        NumberColumn counts = NumberColumn.create("Count");
 
         Int2IntMap valueToCount = new Int2IntOpenHashMap();
 
@@ -513,7 +513,7 @@ public class StringColumn extends AbstractColumn<String>
 
 
     public NumberColumn asNumberColumn() {
-        NumberColumn numberColumn = DoubleColumn.create(this.name() + ": codes", size());
+        NumberColumn numberColumn = NumberColumn.create(this.name() + ": codes", size());
         IntArrayList data = data();
         for (int i = 0; i < size(); i++) {
             numberColumn.append(data.getInt(i));

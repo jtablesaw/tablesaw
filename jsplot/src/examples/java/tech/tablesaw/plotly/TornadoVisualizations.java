@@ -15,7 +15,6 @@
 package tech.tablesaw.plotly;
 
 import tech.tablesaw.AbstractExample;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.api.HorizontalBarPlot;
@@ -39,7 +38,7 @@ public class TornadoVisualizations extends AbstractExample {
         tornadoes = tornadoes.where(tornadoes.numberColumn("Start Lat").isGreaterThan(20f));
 
         NumberColumn scale = tornadoes.numberColumn("scale");
-        scale.set(scale.isEqualTo(-9), DoubleColumn.MISSING_VALUE);
+        scale.set(scale.isEqualTo(-9), NumberColumn.MISSING_VALUE);
 
         Table fatalities1 = tornadoes.summarize("fatalities", sum).by("scale");
 

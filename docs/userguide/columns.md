@@ -34,7 +34,7 @@ To create a column with data, you can initialize the column with an array:
 
 ```Java
 double[] values = {1, 2, 3, 7, 9.44242, 11};
-DoubleColumn column = DoubleColumn.create("my numbers", values);
+DoubleColumn column = NumberColumn.create("my numbers", values);
 ```
 
 Once you have a column, you can add it to a table using the addColumns() method on Table.

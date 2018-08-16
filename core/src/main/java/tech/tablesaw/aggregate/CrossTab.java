@@ -17,7 +17,6 @@ package tech.tablesaw.aggregate;
 import com.google.common.collect.TreeBasedTable;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -68,10 +67,10 @@ public final class CrossTab {
         }
 
         for (String colName : gTable.columnKeySet()) {
-            t.addColumns(DoubleColumn.create(colName));
+            t.addColumns(NumberColumn.create(colName));
         }
 
-        t.addColumns(DoubleColumn.create("total"));
+        t.addColumns(NumberColumn.create("total"));
 
         int[] columnTotals = new int[t.columnCount()];
 
@@ -118,7 +117,7 @@ public final class CrossTab {
         percentTable.addColumns(countTable.column(0).copy());
 
         NumberColumn countsColumn = countTable.numberColumn("Count");
-        NumberColumn pctsColumn = DoubleColumn.create("Percents");
+        NumberColumn pctsColumn = NumberColumn.create("Percents");
         double sum = countsColumn.sum();
         for (int i = 0; i < countsColumn.size(); i++) {
             pctsColumn.append(countsColumn.getDouble(i) / sum);
@@ -140,7 +139,7 @@ public final class CrossTab {
 
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column<?> column = xTabCounts.column(i);
-            pctTable.addColumns(DoubleColumn.create(column.name()));
+            pctTable.addColumns(NumberColumn.create(column.name()));
         }
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
@@ -172,7 +171,7 @@ public final class CrossTab {
 
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column<?> column = xTabCounts.column(i);
-            pctTable.addColumns(DoubleColumn.create(column.name()));
+            pctTable.addColumns(NumberColumn.create(column.name()));
         }
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
@@ -202,7 +201,7 @@ public final class CrossTab {
         // create the new cols
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column<?> column = xTabCounts.column(i);
-            pctTable.addColumns(DoubleColumn.create(column.name()));
+            pctTable.addColumns(NumberColumn.create(column.name()));
         }
 
         // get the column totals

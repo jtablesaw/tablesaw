@@ -214,7 +214,7 @@ Filter summerFilter =
 Table summer = tornadoes.selectWhere(summerFilter);
 ```
 
-To get the frequency, we calculate the difference in days between successive tornadoes. The *lag()* method creates a column where every value equals the previous value (the prior row) of the source column. Then we can simply get the difference in days between the two dates. DateColumn has a method *daysUntil()* that does this.  It returns a DOUBLEColumn that we'll call "delta". 
+To get the frequency, we calculate the difference in days between successive tornadoes. The *lag()* method creates a column where every value equals the previous value (the prior row) of the source column. Then we can simply get the difference in days between the two dates. DateColumn has a method *daysUntil()* that does this.  It returns a NumberColumn that we'll call "delta". 
 
 ```java
 summer = summer.sortAscendingOn("Date", "Time");

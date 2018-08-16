@@ -1,18 +1,17 @@
 package tech.tablesaw.io.string;
 
 import org.junit.Test;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertThat;
 
 public class DataFramePrinterTest {
 
     @Test
     public void printNull() {
-        NumberColumn col = DoubleColumn.create("testCol");
+        NumberColumn col = NumberColumn.create("testCol");
         col.append(5.0);
         col.appendCell(null);
         col.append(3.0);
