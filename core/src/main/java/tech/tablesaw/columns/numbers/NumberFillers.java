@@ -20,8 +20,8 @@ public interface NumberFillers<T> {
 
     T fillWith(NumberIterator iterator);
 
-    default T fillWith(final DoubleIterable iterable) {
-        return fillWith(iterable.doubleIterator());
+    default T fillWith(final NumberIterable iterable) {
+        return fillWith(iterable.numberIterator());
     }
 
     T fillWith(final DoubleSupplier supplier);

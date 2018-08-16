@@ -14,7 +14,6 @@
 
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
@@ -99,14 +98,13 @@ public interface NumberFilters {
     // TODO(lwhite): see section in Effective Java on double point comparisons.
     default Selection isCloseTo(Number target, Number margin) {
         Selection results = new BitmapBackedSelection();
-        int i = 0;
-        for (double val : dataInternal()) {
+        for (int i = 0; i < size(); i++) {
             double targetValue = target.doubleValue();
             double marginValue = margin.doubleValue();
+            double val = getDouble(i);
             if (val > targetValue - marginValue && val < targetValue + marginValue) {
                 results.add(i);
             }
-            i++;
         }
         return results;
     }
@@ -119,78 +117,64 @@ public interface NumberFilters {
 
     default Selection isGreaterThan(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
-        int i = 0;
-        NumberIterator doubleIterator = d.doubleIterator();
-        for (double doubles : dataInternal()) {
-            if (doubles > doubleIterator.next()) {
+        for (int i = 0; i < size(); i++) {
+            if (this.getDouble(i) > d.getDouble(i)) {
                 results.add(i);
             }
-            i++;
         }
         return results;
     }
 
     default Selection isGreaterThanOrEqualTo(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
-        int i = 0;
-        NumberIterator doubleIterator = d.doubleIterator();
-        for (double doubles : dataInternal()) {
-            if (doubles >= doubleIterator.next()) {
+        for (int i = 0; i < size(); i++) {
+            if (this.getDouble(i) >= d.getDouble(i)) {
                 results.add(i);
             }
-            i++;
         }
         return results;
     }
 
     default Selection isEqualTo(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
-        int i = 0;
-        NumberIterator doubleIterator = d.doubleIterator();
-        for (double doubles : dataInternal()) {
-            if (doubles == doubleIterator.next()) {
+        for (int i = 0; i < size(); i++) {
+            if (this.getDouble(i) == d.getDouble(i)) {
                 results.add(i);
             }
-            i++;
         }
         return results;
     }
 
+    int size();
+
+    double getDouble(int i);
+
     default Selection isNotEqualTo(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
-        int i = 0;
-        NumberIterator doubleIterator = d.doubleIterator();
-        for (double doubles : dataInternal()) {
-            if (doubles != doubleIterator.next()) {
+        for (int i = 0; i < size(); i++) {
+            if (this.getDouble(i) != d.getDouble(i)) {
                 results.add(i);
             }
-            i++;
         }
         return results;
     }
 
     default Selection isLessThan(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
-        int i = 0;
-        NumberIterator doubleIterator = d.doubleIterator();
-        for (double doubles : dataInternal()) {
-            if (doubles < doubleIterator.next()) {
+        for (int i = 0; i < size(); i++) {
+            if (this.getDouble(i) < d.getDouble(i)) {
                 results.add(i);
             }
-            i++;
         }
         return results;
     }
 
     default Selection isLessThanOrEqualTo(NumberColumn d) {
         Selection results = new BitmapBackedSelection();
-        int i = 0;
-        NumberIterator doubleIterator = d.doubleIterator();
-        for (double doubles : dataInternal()) {
-            if (doubles <= doubleIterator.next()) {
+        for (int i = 0; i < size(); i++) {
+            if (this.getDouble(i) <= d.getDouble(i)) {
                 results.add(i);
             }
-            i++;
         }
         return results;
     }

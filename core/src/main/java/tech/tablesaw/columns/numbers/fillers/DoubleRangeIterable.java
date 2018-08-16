@@ -3,10 +3,10 @@ package tech.tablesaw.columns.numbers.fillers;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import tech.tablesaw.columns.numbers.DoubleIterable;
+import tech.tablesaw.columns.numbers.NumberIterable;
 import tech.tablesaw.columns.numbers.NumberIterator;
 
-public class DoubleRangeIterable implements DoubleIterable {
+public class DoubleRangeIterable implements NumberIterable {
 
     private final double from, to, by;
     private final boolean including;
@@ -66,7 +66,7 @@ public class DoubleRangeIterable implements DoubleIterable {
     }
 
     @Override
-    public NumberIterator doubleIterator() {
+    public NumberIterator numberIterator() {
 
         return new NumberIterator(new DoubleArrayList()) {
 
@@ -89,7 +89,6 @@ public class DoubleRangeIterable implements DoubleIterable {
         };
     }
 
-    @Override
     public IntIterator intIterator() {
 
         return new IntIterator() {

@@ -14,9 +14,8 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.base.Stopwatch;
 import com.devskiller.jfairy.Fairy;
-import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import com.google.common.base.Stopwatch;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
@@ -25,7 +24,6 @@ import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.Selection;
@@ -104,7 +102,9 @@ public class NumberColumnTest {
         NumberColumn c = NumberColumn.indexColumn("t", 99, 1);
         NumberColumn c2 = c.copy();
         c2.appendCell("");
-        assertEquals(StatUtils.variance(c.asDoubleArray()), c2.variance(), 0.00001);
+        double c2Variance = c2.variance();
+        double cVariance = StatUtils.variance(c.asDoubleArray());
+        assertEquals(cVariance, c2Variance, 0.00001);
         assertEquals(StatUtils.sumLog(c.asDoubleArray()), c2.sumOfLogs(), 0.00001);
         assertEquals(StatUtils.sumSq(c.asDoubleArray()), c2.sumOfSquares(), 0.00001);
         assertEquals(StatUtils.geometricMean(c.asDoubleArray()), c2.geometricMean(), 0.00001);
@@ -376,8 +376,8 @@ public class NumberColumnTest {
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
-        DoubleArrayList doubles1 = doubles.top(50);
-        DoubleArrayList doubles2 = doubles.bottom(50);
+        NumberColumn doubles1 = doubles.top(50);
+        NumberColumn doubles2 = doubles.bottom(50);
         double[] doublesA = new double[50];
         double[] doublesB = new double[50];
         for (int i = 0; i < doubles1.size(); i++) {

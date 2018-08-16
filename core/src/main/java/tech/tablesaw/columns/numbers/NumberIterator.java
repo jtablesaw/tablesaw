@@ -9,10 +9,10 @@ import java.util.Iterator;
 
 public class NumberIterator implements Iterable<Double> {
 
-    DoubleArrayList dList;
-    IntArrayList iList;
+    private DoubleArrayList dList;
+    private IntArrayList iList;
 
-    Object iterator;
+    private final Object iterator;
 
     public NumberIterator(DoubleArrayList list) {
         this.dList = list;
@@ -27,6 +27,14 @@ public class NumberIterator implements Iterable<Double> {
     public double next() {
         if (dList != null) {
             return ((DoubleIterator) iterator).nextDouble();
+        } else {
+            return ((IntIterator) iterator).nextInt();
+        }
+    }
+
+    public int nextInt() {
+        if (dList != null) {
+            return (int) ((DoubleIterator) iterator).nextDouble();
         } else {
             return ((IntIterator) iterator).nextInt();
         }
