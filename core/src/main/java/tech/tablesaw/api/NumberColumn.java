@@ -334,12 +334,15 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
 
     @Override
     public NumberColumn emptyCopy() {
-        return emptyCopy(DEFAULT_ARRAY_SIZE);
+        final NumberColumn column = NumberColumn.create(name(), data.emptyCopy(DEFAULT_ARRAY_SIZE));
+        column.setPrintFormatter(printFormatter);
+        column.locale = locale;
+        return column;
     }
 
     @Override
     public NumberColumn emptyCopy(final int rowSize) {
-        final NumberColumn column = NumberColumn.create(name(), rowSize);
+        final NumberColumn column = NumberColumn.create(name(), data.emptyCopy(rowSize));
         column.setPrintFormatter(printFormatter);
         column.locale = locale;
         return column;

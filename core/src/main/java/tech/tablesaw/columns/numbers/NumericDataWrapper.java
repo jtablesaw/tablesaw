@@ -18,6 +18,10 @@ public interface NumericDataWrapper extends NumberIterable {
 
     NumericDataWrapper copy();
 
+    NumericDataWrapper emptyCopy();
+
+    NumericDataWrapper emptyCopy(int rowSize);
+
     void clear();
 
     void sortAscending();

@@ -113,6 +113,16 @@ public class IntDataWrapper implements NumericDataWrapper {
     }
 
     @Override
+    public IntDataWrapper emptyCopy() {
+        return new IntDataWrapper(new IntArrayList());
+    }
+
+    @Override
+    public IntDataWrapper emptyCopy(int size) {
+        return new IntDataWrapper(new IntArrayList(size));
+    }
+
+    @Override
     public void clear() {
         this.data.clear();
     }

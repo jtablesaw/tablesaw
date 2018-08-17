@@ -89,6 +89,16 @@ public class DoubleDataWrapper implements NumericDataWrapper {
     }
 
     @Override
+    public DoubleDataWrapper emptyCopy() {
+        return new DoubleDataWrapper(new DoubleArrayList());
+    }
+
+    @Override
+    public DoubleDataWrapper emptyCopy(int size) {
+        return new DoubleDataWrapper(new DoubleArrayList(size));
+    }
+
+    @Override
     public void clear() {
         this.data.clear();
     }

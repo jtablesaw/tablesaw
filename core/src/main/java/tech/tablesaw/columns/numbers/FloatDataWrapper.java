@@ -88,6 +88,16 @@ public class FloatDataWrapper implements NumericDataWrapper {
     }
 
     @Override
+    public FloatDataWrapper emptyCopy() {
+        return new FloatDataWrapper(new FloatArrayList());
+    }
+
+    @Override
+    public FloatDataWrapper emptyCopy(int size) {
+        return new FloatDataWrapper(new FloatArrayList(size));
+    }
+
+    @Override
     public void clear() {
         this.data.clear();
     }
