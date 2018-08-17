@@ -15,7 +15,7 @@ public abstract class StringFunction extends AggregateFunction<String, StringCol
     abstract public String summarize(StringColumn column);
 
     @Override
-    public boolean isCompatableColumn(ColumnType type) {
+    public boolean isCompatibleColumn(ColumnType type) {
         return type.equals(ColumnType.STRING);
     }
 

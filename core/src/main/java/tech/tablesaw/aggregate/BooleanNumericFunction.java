@@ -13,7 +13,7 @@ abstract class BooleanNumericFunction extends AggregateFunction<Double, BooleanC
     abstract public Double summarize(BooleanColumn column);
 
     @Override
-    public boolean isCompatableColumn(ColumnType type) {
+    public boolean isCompatibleColumn(ColumnType type) {
         return type.equals(ColumnType.BOOLEAN);
     }
 

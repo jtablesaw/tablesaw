@@ -211,7 +211,7 @@ public class Summarizer {
             Column<?> column = temp.column(name);
             ColumnType type = column.type();
             for (AggregateFunction<?, ?> reduction : reductions) {
-              if (reduction.isCompatableColumn(type)) {
+              if (reduction.isCompatibleColumn(type)) {
                     reductionMultimap.put(name, reduction);
               }
             }

@@ -15,7 +15,7 @@ public abstract class BooleanAggregateFunction extends AggregateFunction<Boolean
     abstract public Boolean summarize(BooleanColumn column);
 
     @Override
-    public boolean isCompatableColumn(ColumnType type) {
+    public boolean isCompatibleColumn(ColumnType type) {
         return type == ColumnType.BOOLEAN;
     }
 

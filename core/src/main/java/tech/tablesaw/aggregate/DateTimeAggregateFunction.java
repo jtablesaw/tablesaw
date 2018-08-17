@@ -17,7 +17,7 @@ public abstract class DateTimeAggregateFunction extends AggregateFunction<LocalD
     abstract public LocalDateTime summarize(DateTimeColumn column);
 
     @Override
-    public boolean isCompatableColumn(ColumnType type) {
+    public boolean isCompatibleColumn(ColumnType type) {
         return type.equals(ColumnType.LOCAL_DATE_TIME);
     }
 
