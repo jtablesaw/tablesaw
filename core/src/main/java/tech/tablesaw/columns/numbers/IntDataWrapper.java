@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.NumberColumn;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -26,8 +25,6 @@ public class IntDataWrapper implements NumericDataWrapper {
     public IntDataWrapper(IntArrayList data) {
         this.data = data;
     }
-
-    private static final int MISSING_VALUE = Integer.MIN_VALUE;
 
     @Override
     public NumberIterator numberIterator() {
@@ -69,7 +66,7 @@ public class IntDataWrapper implements NumericDataWrapper {
         final NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
             final int v = iterator.nextInt();
-            if (v != MISSING_VALUE) {
+            if (!isMissingValue(v)) {
                 wrapper.append(v);
             }
         }
@@ -88,7 +85,7 @@ public class IntDataWrapper implements NumericDataWrapper {
     @Override
     public void append(double d) {
         if (isMissingValue(d)) {
-            append(MISSING_VALUE);
+            appendMissing();
         } else if (d == (int) d) {
             data.add((int) d);
         } else {
@@ -105,7 +102,7 @@ public class IntDataWrapper implements NumericDataWrapper {
     public double getDouble(int row) {
         int value = data.getInt(row);
         if (isMissingValue(value)) {
-            return NumberColumn.MISSING_VALUE;
+            return IntColumnType.missingValueIndicator();
         }
         return value;
     }
@@ -157,7 +154,7 @@ public class IntDataWrapper implements NumericDataWrapper {
         final int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = MISSING_VALUE;
+            dest[i] = IntColumnType.missingValueIndicator();
         }
 
         int[] array = data.toIntArray();
@@ -194,5 +191,15 @@ public class IntDataWrapper implements NumericDataWrapper {
     @Override
     public byte[] asBytes(int rowNumber) {
         return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putInt(getInt(rowNumber)).array();
+    }
+
+    @Override
+    public IntColumnType type() {
+        return ColumnType.INTEGER;
+    }
+
+    @Override
+    public double missingValueIndicator() {
+        return IntColumnType.missingValueIndicator();
     }
 }

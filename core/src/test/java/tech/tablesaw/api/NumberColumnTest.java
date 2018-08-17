@@ -25,6 +25,7 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.Ignore;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.Selection;
 
@@ -43,6 +44,8 @@ import static tech.tablesaw.aggregate.AggregateFunctions.*;
  * Unit tests for the NumberColumn class
  */
 public class NumberColumnTest {
+
+    private static final double MISSING = DoubleColumnType.missingValueIndicator();
 
     @Ignore
     @Test
@@ -410,7 +413,7 @@ public class NumberColumnTest {
         assertEquals(0, doubles.countMissing());
         doubles.clear();
         for (int i = 0; i < 10; i++) {
-            doubles.append(NumberColumn.MISSING_VALUE);
+            doubles.append(MISSING);
         }
         assertEquals(10, doubles.countMissing());
     }
@@ -462,7 +465,7 @@ public class NumberColumnTest {
         assertEquals(10, doubles.isNotMissing().size());
         doubles.clear();
         for (int i = 0; i < 10; i++) {
-            doubles.append(NumberColumn.MISSING_VALUE);
+            doubles.append(MISSING);
         }
         assertEquals(10, doubles.isMissing().size());
         assertEquals(0, doubles.isNotMissing().size());
@@ -501,14 +504,15 @@ public class NumberColumnTest {
     @Test
     public void testDifference() {
         double[] originalValues = new double[]{32, 42, 40, 57, 52};
-        double[] expectedValues = new double[]{NumberColumn.MISSING_VALUE, 10, -2, 17, -5};
+        double[] expectedValues = new double[]{MISSING, 10, -2, 17, -5};
         assertTrue(computeAndValidateDifference(originalValues, expectedValues));
     }
 
     @Test
     public void testDifferenceMissingValuesInColumn() {
-        double[] originalValues = new double[]{32, 42, NumberColumn.MISSING_VALUE, 57, 52};
-        double[] expectedValues = new double[]{NumberColumn.MISSING_VALUE, 10, NumberColumn.MISSING_VALUE, NumberColumn.MISSING_VALUE, -5};
+        double[] originalValues = new double[]{32, 42, MISSING, 57, 52};
+        double[] expectedValues =
+                new double[]{MISSING, 10, MISSING, MISSING, -5};
         assertTrue(computeAndValidateDifference(originalValues, expectedValues));
     }
 
@@ -527,8 +531,8 @@ public class NumberColumnTest {
 
     @Test
     public void testCumSum() {
-        double[] originalValues = new double[]{32, 42, NumberColumn.MISSING_VALUE, 57, 52, -10, 0};
-        double[] expectedValues = new double[]{32, 74, NumberColumn.MISSING_VALUE, 131, 183, 173, 173};
+        double[] originalValues = new double[]{32, 42, MISSING, 57, 52, -10, 0};
+        double[] expectedValues = new double[]{32, 74, MISSING, 131, 183, 173, 173};
         NumberColumn initial =  NumberColumn.create("Test", originalValues);
         NumberColumn csum = initial.cumSum();
 
@@ -542,8 +546,8 @@ public class NumberColumnTest {
 
     @Test
     public void testCumProd() {
-        double[] originalValues = new double[]{1, 2, NumberColumn.MISSING_VALUE, 3, 4};
-        double[] expectedValues = new double[]{1, 2, NumberColumn.MISSING_VALUE, 6, 24};
+        double[] originalValues = new double[]{1, 2, MISSING, 3, 4};
+        double[] expectedValues = new double[]{1, 2, MISSING, 6, 24};
         NumberColumn initial =  NumberColumn.create("Test", originalValues);
         NumberColumn cprod = initial.cumProd();
 
@@ -557,9 +561,9 @@ public class NumberColumnTest {
 
     @Test
     public void testSubtract2Columns() {
-        double[] col1Values = new double[]{32.5, NumberColumn.MISSING_VALUE, 42, 57, 52};
-        double[] col2Values = new double[]{32, 42, 38.67, NumberColumn.MISSING_VALUE, 52.01};
-        double[] expected = new double[]{0.5, NumberColumn.MISSING_VALUE, 3.33, NumberColumn.MISSING_VALUE, -.01};
+        double[] col1Values = new double[]{32.5, MISSING, 42, 57, 52};
+        double[] col2Values = new double[]{32, 42, 38.67, MISSING, 52.01};
+        double[] expected = new double[]{0.5, MISSING, 3.33, MISSING, -.01};
 
         NumberColumn col1 =  NumberColumn.create("1", col1Values);
         NumberColumn col2 =  NumberColumn.create("2", col2Values);
@@ -569,14 +573,14 @@ public class NumberColumnTest {
 
         // change order to verify size of returned column
         difference = col2.subtract(col1);
-        expected = new double[]{-0.5, NumberColumn.MISSING_VALUE, -3.33, NumberColumn.MISSING_VALUE, .01};
+        expected = new double[]{-0.5, MISSING, -3.33, MISSING, .01};
         assertTrue(validateEquality(expected, difference));
     }
 
     @Test
     public void testPctChange() {
         double[] originalValues = new double[]{10, 12, 13};
-        double[] expectedValues = new double[]{NumberColumn.MISSING_VALUE, 0.2, 0.083333};
+        double[] expectedValues = new double[]{MISSING, 0.2, 0.083333};
         NumberColumn initial =  NumberColumn.create("Test", originalValues);
         NumberColumn pctChange = initial.pctChange();
 

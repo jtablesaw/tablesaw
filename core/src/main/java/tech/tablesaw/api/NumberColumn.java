@@ -55,12 +55,10 @@ import java.util.function.DoubleSupplier;
 import java.util.function.ToDoubleFunction;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
-import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.*;
 import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
 public class NumberColumn extends AbstractColumn<Double> implements NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn<Double> {
-
-    public static double MISSING_VALUE = (Double) DOUBLE.getMissingValueIndicator();
 
     private NumericDataWrapper data;
 
@@ -84,18 +82,18 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     }
 
     private NumberColumn(final String name, final FloatArrayList data) {
-        super(DOUBLE, name);
+        super(FLOAT, name);
         setDataWrapper(new FloatDataWrapper(data));
     }
 
     private NumberColumn(final String name, IntArrayList data) {
-        super(DOUBLE, name);
+        super(INTEGER, name);
         this.printFormatter = NumberColumnFormatter.ints();
         setDataWrapper(new IntDataWrapper(data));
     }
 
     private NumberColumn(final String name, final NumericDataWrapper data) {
-        super(DOUBLE, name);
+        super(data.type(), name);
         setDataWrapper(data);
     }
 
@@ -254,7 +252,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         if (size() > 0) {
             return getDouble(0);
         }
-        return MISSING_VALUE;
+        return data.missingValueIndicator();
     }
 
     /**
@@ -358,8 +356,17 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
 
     @Override
     public NumberColumn appendCell(final String object, StringParser parser) {
+        // TODO: Move this into the data wrappers and avoid the branching logic
         try {
-            append(parser.parseDouble(object));
+            if (type().equals(ColumnType.INTEGER)) {
+                append(parser.parseInt(object));
+            } else if (type().equals(ColumnType.FLOAT)) {
+                append(parser.parseFloat(object));
+            } else if (type().equals(ColumnType.DOUBLE)) {
+                append(parser.parseDouble(object));
+            } else {
+                throw new IllegalArgumentException("Unknown numeric type");
+            }
         } catch (final NumberFormatException e) {
             throw new NumberFormatException(name() + ": " + e.getMessage());
         }

@@ -15,6 +15,7 @@
 package tech.tablesaw.api;
 
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.selection.Selection;
 
 import org.junit.Before;
@@ -314,7 +315,7 @@ public class TimeColumnTest {
         NumberColumn second = column1.second();
         assertEquals(2, second.get(0), 0.001);
         assertEquals(30, second.get(1), 0.001);
-        assertEquals(NumberColumn.MISSING_VALUE, second.get(2), 0.001);
+        assertEquals(DoubleColumnType.missingValueIndicator(), second.get(2), 0.001);
     }
 
     @Test
@@ -323,7 +324,7 @@ public class TimeColumnTest {
         NumberColumn minute = column1.minute();
         assertEquals(4, minute.get(0), 0.001);
         assertEquals(15, minute.get(1), 0.001);
-        assertEquals(NumberColumn.MISSING_VALUE, minute.get(2), 0.001);
+        assertEquals(DoubleColumnType.missingValueIndicator(), minute.get(2), 0.001);
     }
 
     @Test

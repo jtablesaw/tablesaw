@@ -2,7 +2,6 @@ package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
@@ -25,11 +24,15 @@ public class IntStringParser extends StringParser {
     }
 
     @Override
-    public boolean canParse(String s) {
-        if (isMissing(s)) {
+    public boolean canParse(String str) {
+        if (isMissing(str)) {
             return true;
         }
+        String s = str;
         try {
+            if (s.endsWith(".0")) {
+                s = s.replaceFirst(".0$", "");
+            }
             Integer.parseInt(s);
             return true;
         } catch (NumberFormatException e) {
@@ -48,9 +51,26 @@ public class IntStringParser extends StringParser {
     }
 
     @Override
-    public double parseDouble(String s) {
-        if (isMissing(s)) {
-            return NumberColumn.MISSING_VALUE;
+    public double parseDouble(String str) {
+        if (isMissing(str)) {
+            return IntColumnType.missingValueIndicator();
+        }
+        String s = str;
+        if (s.endsWith(".0")) {
+            s = s.replaceFirst(".0$", "");
+        }
+        final Matcher matcher = COMMA_PATTERN.matcher(s);
+        return Integer.parseInt(matcher.replaceAll(""));
+    }
+
+    @Override
+    public int parseInt(String str) {
+        if (isMissing(str)) {
+            return IntColumnType.missingValueIndicator();
+        }
+        String s = str;
+        if (s.endsWith(".0")) {
+            s = s.replaceFirst(".0$", "");
         }
         final Matcher matcher = COMMA_PATTERN.matcher(s);
         return Integer.parseInt(matcher.replaceAll(""));

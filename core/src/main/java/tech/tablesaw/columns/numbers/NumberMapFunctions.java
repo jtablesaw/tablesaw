@@ -19,8 +19,6 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import tech.tablesaw.api.NumberColumn;
 
-import static tech.tablesaw.api.NumberColumn.MISSING_VALUE;
-
 public interface NumberMapFunctions extends NumberIterable {
 
     /**
@@ -53,7 +51,7 @@ public interface NumberMapFunctions extends NumberIterable {
             if (total != 0) {
                 pctColumn.append((float) value / total);
             } else {
-                pctColumn.append(MISSING_VALUE);
+                pctColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return pctColumn;
@@ -74,7 +72,7 @@ public interface NumberMapFunctions extends NumberIterable {
             if (total != 0) {
                 pctColumn.append(((float) value / total) * 100);
             } else {
-                pctColumn.append(MISSING_VALUE);
+                pctColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return pctColumn;
@@ -171,21 +169,21 @@ public interface NumberMapFunctions extends NumberIterable {
 
     default double add(double val1, double val2) {
         if (valueIsMissing(val1) || valueIsMissing(val2)) {
-            return MISSING_VALUE;
+            return DoubleColumnType.missingValueIndicator();
         }
         return val1 + val2;
     }
 
     default double multiply(double val1, double val2) {
         if (valueIsMissing(val1) || valueIsMissing(val2)) {
-            return MISSING_VALUE;
+            return DoubleColumnType.missingValueIndicator();
         }
         return val1 * val2;
     }
 
     default double divide(double val1, double val2) {
         if (valueIsMissing(val1) || valueIsMissing(val2)) {
-            return MISSING_VALUE;
+            return DoubleColumnType.missingValueIndicator();
         }
         return val1 / val2;
     }
@@ -195,7 +193,7 @@ public interface NumberMapFunctions extends NumberIterable {
      */
     default double subtract(double val1, double val2) {
         if (valueIsMissing(val1) || valueIsMissing(val2)) {
-            return MISSING_VALUE;
+            return DoubleColumnType.missingValueIndicator();
         }
         return val1 - val2;
     }
@@ -255,7 +253,7 @@ public interface NumberMapFunctions extends NumberIterable {
             double val1 = getDouble(r);
             double val2 = column2.getDouble(r);
             if (valueIsMissing(val1) || valueIsMissing(val2)) {
-                result.append(MISSING_VALUE);
+                result.append(DoubleColumnType.missingValueIndicator());
             } else {
                 result.append(getDouble(r) % column2.getDouble(r));
             }
@@ -366,7 +364,7 @@ public interface NumberMapFunctions extends NumberIterable {
         if (isEmpty()) {
             return returnValue;
         }
-        returnValue.append(MISSING_VALUE);
+        returnValue.append(DoubleColumnType.missingValueIndicator());
         for (int current = 1; current < size(); current++) {
             returnValue.append(subtract(getDouble(current), getDouble(current - 1)));
         }
@@ -383,7 +381,7 @@ public interface NumberMapFunctions extends NumberIterable {
         while (iterator.hasNext()) {
             double value = iterator.next();
             if (valueIsMissing(value)) {
-                newColumn.append(MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 total += value;
                 newColumn.append(total);
@@ -402,7 +400,7 @@ public interface NumberMapFunctions extends NumberIterable {
         while (iterator.hasNext()) {
             double value = iterator.next();
             if (valueIsMissing(value)) {
-                newColumn.append(MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 total *= value;
                 newColumn.append(total);
@@ -416,7 +414,7 @@ public interface NumberMapFunctions extends NumberIterable {
      */
     default NumberColumn pctChange() {
         NumberColumn newColumn = NumberColumn.create(name() + "[pctChange]", size());
-        newColumn.append(MISSING_VALUE);
+        newColumn.append(DoubleColumnType.missingValueIndicator());
         for (int i = 1; i < size(); i++) {
             newColumn.append(getDouble(i) / getDouble(i - 1) - 1);
         }

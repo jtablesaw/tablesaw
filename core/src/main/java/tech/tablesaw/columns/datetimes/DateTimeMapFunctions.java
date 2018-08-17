@@ -22,6 +22,7 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 import java.time.LocalDateTime;
@@ -65,7 +66,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
             long c1 = this.getLongInternal(r);
             long c2 = column2.getLongInternal(r);
             if (c1 == MISSING_VALUE || c2 == MISSING_VALUE) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 LocalDateTime value1 = asLocalDateTime(c1);
                 LocalDateTime value2 = asLocalDateTime(c2);
@@ -86,7 +87,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
             if (c1 != MISSING_VALUE) {
                 newColumn.append(getHour(c1));
             } else {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return newColumn;
@@ -99,7 +100,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
             if (c1 != MISSING_VALUE) {
                 newColumn.append((short) getMinuteOfDay(c1));
             } else {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return newColumn;
@@ -112,7 +113,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
             if (c1 != MISSING_VALUE) {
                 newColumn.append(getSecondOfDay(c1));
             } else {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return newColumn;
@@ -149,7 +150,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 newColumn.append((short) getMonthValue(c1));
             }
@@ -313,7 +314,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 newColumn.append(PackedLocalDate.getYear(PackedLocalDateTime.date(c1)));
             }
@@ -339,7 +340,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 newColumn.append((short) getDayOfWeek(c1).getValue());
             }
@@ -352,7 +353,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 newColumn.append((short) getDayOfYear(c1));
             }
@@ -365,7 +366,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 newColumn.append(getDayOfMonth(c1));
             }
@@ -425,7 +426,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
             if (!DateTimeColumn.valueIsMissing(c1)) {
                 newColumn.append(getMinute(c1));
             } else {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return newColumn;

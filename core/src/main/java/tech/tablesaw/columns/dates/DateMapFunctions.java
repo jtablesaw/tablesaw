@@ -23,6 +23,7 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 import java.time.LocalDate;
@@ -63,7 +64,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 newColumn.append(PackedLocalDate.getDayOfMonth(c1));
             }
@@ -76,7 +77,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 newColumn.append((short) PackedLocalDate.getDayOfYear(c1));
             }
@@ -90,7 +91,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 newColumn.append(PackedLocalDate.getMonthValue(c1));
             }
@@ -117,7 +118,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 newColumn.append(PackedLocalDate.getYear(c1));
             }
@@ -226,7 +227,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.set(r, NumberColumn.MISSING_VALUE);
+                newColumn.set(r, DoubleColumnType.missingValueIndicator());
             } else {
                 newColumn.append((short) PackedLocalDate.getDayOfWeek(c1).getValue());
             }
@@ -260,7 +261,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
             int c1 = getIntInternal(r);
             int c2 = end.getIntInternal(r);
             if (valueIsMissing(c1) || valueIsMissing(c2)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 switch (unit) {
                     case DAYS:

@@ -11,8 +11,6 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import static tech.tablesaw.api.NumberColumn.MISSING_VALUE;
-
 public class DoubleDataWrapper implements NumericDataWrapper {
 
     private static final ColumnType COLUMN_TYPE = ColumnType.DOUBLE;
@@ -128,7 +126,7 @@ public class DoubleDataWrapper implements NumericDataWrapper {
         final int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = MISSING_VALUE;
+            dest[i] = DoubleColumnType.missingValueIndicator();
         }
 
         double[] array = data.toDoubleArray();
@@ -176,5 +174,15 @@ public class DoubleDataWrapper implements NumericDataWrapper {
     @Override
     public byte[] asBytes(int rowNumber) {
         return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putDouble(getDouble(rowNumber)).array();
+    }
+
+    @Override
+    public double missingValueIndicator() {
+        return DoubleColumnType.missingValueIndicator();
+    }
+
+    @Override
+    public DoubleColumnType type() {
+        return ColumnType.DOUBLE;
     }
 }

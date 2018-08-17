@@ -19,6 +19,7 @@ import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 import java.time.LocalTime;
@@ -62,7 +63,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
             int c1 = this.getIntInternal(r);
             int c2 = column2.getIntInternal(r);
             if (TimeColumn.valueIsMissing(c1) || TimeColumn.valueIsMissing(c2)) {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 LocalTime value1 = PackedLocalTime.asLocalTime(c1);
                 LocalTime value2 = PackedLocalTime.asLocalTime(c2);
@@ -247,7 +248,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getHour(c1));
             } else {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return newColumn;
@@ -260,7 +261,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getMinute(c1));
             } else {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return newColumn;
@@ -273,7 +274,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getSecond(c1));
             } else {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return newColumn;
@@ -286,7 +287,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getMilliseconds(c1));
             } else {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return newColumn;
@@ -299,7 +300,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getMinuteOfDay(c1));
             } else {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return newColumn;
@@ -312,7 +313,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getSecondOfDay(c1));
             } else {
-                newColumn.append(NumberColumn.MISSING_VALUE);
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return newColumn;

@@ -9,6 +9,7 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -108,7 +109,7 @@ public class AggregateFunctions {
 
         @Override
         public Double summarize(NumberColumn column) {
-            return column.isEmpty() ? NumberColumn.MISSING_VALUE : column.getDouble(0);
+            return column.isEmpty() ? DoubleColumnType.missingValueIndicator() : column.getDouble(0);
         }
     };
 
@@ -119,7 +120,7 @@ public class AggregateFunctions {
 
         @Override
         public Double summarize(NumberColumn column) {
-            return column.isEmpty() ? NumberColumn.MISSING_VALUE : column.getDouble(column.size() - 1);
+            return column.isEmpty() ? DoubleColumnType.missingValueIndicator() : column.getDouble(column.size() - 1);
         }
     };
 
@@ -130,7 +131,7 @@ public class AggregateFunctions {
 
         @Override
         public Double summarize(NumberColumn column) {
-            return column.size() < 2 ? NumberColumn.MISSING_VALUE : column.getDouble(column.size() - 1) - column.getDouble(0);
+            return column.size() < 2 ? DoubleColumnType.missingValueIndicator() : column.getDouble(column.size() - 1) - column.getDouble(0);
         }
     };
 
@@ -141,7 +142,7 @@ public class AggregateFunctions {
 
         @Override
         public Double summarize(NumberColumn column) {
-            return column.size() < 2 ? NumberColumn.MISSING_VALUE : (column.getDouble(column.size() - 1) - column.getDouble(0)) / column.getDouble(0);
+            return column.size() < 2 ? DoubleColumnType.missingValueIndicator() : (column.getDouble(column.size() - 1) - column.getDouble(0)) / column.getDouble(0);
         }
     };    
  

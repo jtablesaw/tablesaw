@@ -1,5 +1,7 @@
 package tech.tablesaw.columns.numbers;
 
+import tech.tablesaw.api.ColumnType;
+
 import java.util.Iterator;
 
 public interface NumericDataWrapper extends NumberIterable {
@@ -72,9 +74,12 @@ public interface NumericDataWrapper extends NumberIterable {
 
     void appendMissing();
 
+    ColumnType type();
 
     /**
      * Returns the contents of the cell at rowNumber as a byte[]
      */
     byte[] asBytes(final int rowNumber);
+
+    double missingValueIndicator();
 }

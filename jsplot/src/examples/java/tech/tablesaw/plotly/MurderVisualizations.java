@@ -19,6 +19,7 @@ import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.plotly.api.AreaPlot;
 import tech.tablesaw.plotly.api.Histogram;
@@ -101,10 +102,10 @@ public class MurderVisualizations extends AbstractExample {
         out(details);
 
         details.numberColumn("offage")
-                .set(details.numberColumn("offage").isEqualTo(999), NumberColumn.MISSING_VALUE);
+                .set(details.numberColumn("offage").isEqualTo(999), DoubleColumnType.missingValueIndicator());
 
         details.numberColumn("vicage")
-                .set(details.numberColumn("vicage").isEqualTo(999), NumberColumn.MISSING_VALUE);
+                .set(details.numberColumn("vicage").isEqualTo(999), DoubleColumnType.missingValueIndicator());
 
         details.numberColumn("vicCount")
                 .set(details.numberColumn("vicCount").isEqualTo(0)
@@ -162,7 +163,7 @@ public class MurderVisualizations extends AbstractExample {
         Table counts = asphyx.xTabCounts("year", "StateName");
         counts.columnsOfType(DOUBLE).stream().forEach(e -> ((NumberColumn)e).setPrintFormatter(NumberColumnFormatter.ints()));
         counts.columnsOfType(DOUBLE).stream().forEach(e -> ((NumberColumn)e)
-                .set(((NumberColumn) e).isEqualTo(0), NumberColumn.MISSING_VALUE));
+                .set(((NumberColumn) e).isEqualTo(0), DoubleColumnType.missingValueIndicator()));
         out(counts.printAll());
         out(femaleVictims.shape());
     }

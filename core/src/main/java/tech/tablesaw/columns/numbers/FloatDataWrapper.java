@@ -125,7 +125,7 @@ public class FloatDataWrapper implements NumericDataWrapper {
         final int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = Float.NaN;
+            dest[i] = FloatColumnType.missingValueIndicator();
         }
 
         float[] array = data.toFloatArray();
@@ -162,5 +162,15 @@ public class FloatDataWrapper implements NumericDataWrapper {
     @Override
     public byte[] asBytes(int rowNumber) {
         return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putFloat(getFloat(rowNumber)).array();
+    }
+
+    @Override
+    public ColumnType type() {
+        return ColumnType.FLOAT;
+    }
+
+    @Override
+    public double missingValueIndicator() {
+        return FloatColumnType.missingValueIndicator();
     }
 }
