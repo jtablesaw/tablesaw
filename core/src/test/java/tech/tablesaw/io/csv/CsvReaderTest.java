@@ -290,7 +290,7 @@ public class CsvReaderTest {
         String output =
                 "ColumnType[] columnTypes = {\n" +
                         "LOCAL_DATE, // 0     date        \n" +
-                        "DOUBLE,     // 1     approval    \n" +
+                        "INTEGER,    // 1     approval    \n" +
                         "STRING,     // 2     who         \n" +
                         "}\n";
         assertEquals(output, new CsvReader()

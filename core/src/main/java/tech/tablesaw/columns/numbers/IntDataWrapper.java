@@ -102,7 +102,7 @@ public class IntDataWrapper implements NumericDataWrapper {
     public double getDouble(int row) {
         int value = data.getInt(row);
         if (isMissingValue(value)) {
-            return IntColumnType.missingValueIndicator();
+            return DoubleColumnType.missingValueIndicator();
         }
         return value;
     }
