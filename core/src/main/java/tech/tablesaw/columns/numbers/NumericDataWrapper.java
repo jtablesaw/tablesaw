@@ -1,7 +1,5 @@
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.doubles.DoubleList;
-
 import java.util.Iterator;
 
 public interface NumericDataWrapper extends NumberIterable {
@@ -29,8 +27,6 @@ public interface NumericDataWrapper extends NumberIterable {
     boolean contains(final double value);
 
     boolean contains(final int value);
-
-    DoubleList dataInternal();
 
     NumericDataWrapper lag(final int n);
 
@@ -68,4 +64,17 @@ public interface NumericDataWrapper extends NumberIterable {
     default boolean isMissingValue(int value) {
         return value == Integer.MIN_VALUE;
     }
+
+    /**
+     * Returns the count of unique, non-missing values in the dataset.
+     */
+    int countUnique();
+
+    void appendMissing();
+
+
+    /**
+     * Returns the contents of the cell at rowNumber as a byte[]
+     */
+    byte[] asBytes(final int rowNumber);
 }

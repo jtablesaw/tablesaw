@@ -3,14 +3,19 @@ package tech.tablesaw.columns.numbers;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleArrays;
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
-import it.unimi.dsi.fastutil.doubles.DoubleList;
+import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
+import it.unimi.dsi.fastutil.doubles.DoubleSet;
+import tech.tablesaw.api.ColumnType;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
 
 import static tech.tablesaw.api.NumberColumn.MISSING_VALUE;
 
 public class DoubleDataWrapper implements NumericDataWrapper {
+
+    private static final ColumnType COLUMN_TYPE = ColumnType.DOUBLE;
 
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
@@ -116,11 +121,6 @@ public class DoubleDataWrapper implements NumericDataWrapper {
     }
 
     @Override
-    public DoubleList dataInternal() {
-        return null;
-    }
-
-    @Override
     public NumericDataWrapper lag(int n) {
         final int srcPos = n >= 0 ? 0 : 0 - n;
         final double[] dest = new double[size()];
@@ -145,7 +145,8 @@ public class DoubleDataWrapper implements NumericDataWrapper {
     @Override
     public NumericDataWrapper removeMissing() {
         NumericDataWrapper wrapper = copy();
-        wrapper.clear();;
+        wrapper.clear();
+        ;
         final NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
             final double v = iterator.next();
@@ -154,5 +155,26 @@ public class DoubleDataWrapper implements NumericDataWrapper {
             }
         }
         return wrapper;
+    }
+
+    @Override
+    public int countUnique() {
+        DoubleSet doubles = new DoubleOpenHashSet();
+        for (int i = 0; i < size(); i++) {
+            if (!isMissingValue(getDouble(i))) {
+                doubles.add(getDouble(i));
+            }
+        }
+        return doubles.size();
+    }
+
+    @Override
+    public void appendMissing() {
+        data.add(DoubleColumnType.missingValueIndicator());
+    }
+
+    @Override
+    public byte[] asBytes(int rowNumber) {
+        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putDouble(getDouble(rowNumber)).array();
     }
 }

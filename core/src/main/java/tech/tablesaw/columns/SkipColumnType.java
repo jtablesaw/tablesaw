@@ -1,11 +1,10 @@
 package tech.tablesaw.columns;
 
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class SkipColumnType extends AbstractColumnType {
 
-    public static final ColumnType INSTANCE =
+    public static final SkipColumnType INSTANCE =
             new SkipColumnType(0, "SKIP", "Skipped");
 
     private SkipColumnType(int byteSize, String name, String printerFriendlyName) {

@@ -22,15 +22,15 @@ public interface ColumnType {
     Map<String, ColumnType> values = new HashMap<>();
 
     // standard column types
-    ColumnType INTEGER = IntColumnType.INSTANCE;
-    ColumnType FLOAT = FloatColumnType.INSTANCE;
-    ColumnType BOOLEAN = BooleanColumnType.INSTANCE;
-    ColumnType STRING = StringColumnType.INSTANCE;
-    ColumnType DOUBLE = DoubleColumnType.INSTANCE;
-    ColumnType LOCAL_DATE = DateColumnType.INSTANCE;
-    ColumnType LOCAL_DATE_TIME = DateTimeColumnType.INSTANCE;
-    ColumnType LOCAL_TIME = TimeColumnType.INSTANCE;
-    ColumnType SKIP = SkipColumnType.INSTANCE;
+    IntColumnType INTEGER = IntColumnType.INSTANCE;
+    FloatColumnType FLOAT = FloatColumnType.INSTANCE;
+    BooleanColumnType BOOLEAN = BooleanColumnType.INSTANCE;
+    StringColumnType STRING = StringColumnType.INSTANCE;
+    DoubleColumnType DOUBLE = DoubleColumnType.INSTANCE;
+    DateColumnType LOCAL_DATE = DateColumnType.INSTANCE;
+    DateTimeColumnType LOCAL_DATE_TIME = DateTimeColumnType.INSTANCE;
+    TimeColumnType LOCAL_TIME = TimeColumnType.INSTANCE;
+    SkipColumnType SKIP = SkipColumnType.INSTANCE;
 
     static void register(ColumnType type) {
         values.put(type.name(), type);

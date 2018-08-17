@@ -1,15 +1,19 @@
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrays;
 import it.unimi.dsi.fastutil.floats.FloatComparator;
+import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
+import it.unimi.dsi.fastutil.floats.FloatSet;
+import tech.tablesaw.api.ColumnType;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
 
 public class FloatDataWrapper implements NumericDataWrapper {
 
+    private FloatColumnType COLUMN_TYPE = (FloatColumnType) ColumnType.FLOAT;
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
      */
@@ -114,11 +118,6 @@ public class FloatDataWrapper implements NumericDataWrapper {
     }
 
     @Override
-    public DoubleList dataInternal() {
-        return null;
-    }
-
-    @Override
     public NumericDataWrapper lag(int n) {
         final int srcPos = n >= 0 ? 0 : 0 - n;
         final float[] dest = new float[size()];
@@ -138,5 +137,30 @@ public class FloatDataWrapper implements NumericDataWrapper {
     @Override
     public NumericDataWrapper lead(int n) {
         return lag(-n);
+    }
+
+    @Override
+    public int countUnique() {
+        FloatSet floats = new FloatOpenHashSet();
+        for (int i = 0; i < size(); i++) {
+            if (!isMissingValue(getFloat(i))) {
+                floats.add(getFloat(i));
+            }
+        }
+        return floats.size();
+    }
+
+    @Override
+    public void appendMissing() {
+        data.add(FloatColumnType.missingValueIndicator());
+    }
+
+    public float getFloat(int index) {
+        return data.getFloat(index);
+    }
+
+    @Override
+    public byte[] asBytes(int rowNumber) {
+        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putFloat(getFloat(rowNumber)).array();
     }
 }

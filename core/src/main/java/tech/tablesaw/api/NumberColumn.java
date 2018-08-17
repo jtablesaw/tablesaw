@@ -37,7 +37,6 @@ import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-import java.nio.ByteBuffer;
 import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -69,22 +68,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
 
     private Locale locale;
 
-    public static NumberColumn createWithFloats(String name) {
-        return new NumberColumn(name, new FloatArrayList(DEFAULT_ARRAY_SIZE));
-    }
-
-    public boolean valueIsMissing(double value) {
-        return data.isMissingValue(value);
-    }
-
-    public boolean valueIsMissing(float value) {
-        return data.isMissingValue(value);
-    }
-
-    public boolean valueIsMissing(int value) {
-        return data.isMissingValue(value);
-    }
-
     private final IntComparator comparator = new IntComparator() {
 
         @Override
@@ -95,17 +78,29 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         }
     };
 
-    /**
-     * Returns a new numeric column initialized with the given name and size. The values in the column are
-     * integers beginning at startsWith and continuing through size (exclusive), monotonically increasing by 1
-     * TODO consider a generic fill function including steps or random samples from various distributions
-     */
-    public static NumberColumn indexColumn(final String columnName, final int size, final int startsWith) {
-        final NumberColumn indexColumn = NumberColumn.createWithIntegers(columnName, size);
-        for (int i = 0; i < size; i++) {
-            indexColumn.append(i + startsWith);
-        }
-        return indexColumn;
+    private NumberColumn(final String name, final DoubleArrayList data) {
+        super(DOUBLE, name);
+        setDataWrapper(new DoubleDataWrapper(data));
+    }
+
+    private NumberColumn(final String name, final FloatArrayList data) {
+        super(DOUBLE, name);
+        setDataWrapper(new FloatDataWrapper(data));
+    }
+
+    private NumberColumn(final String name, IntArrayList data) {
+        super(DOUBLE, name);
+        this.printFormatter = NumberColumnFormatter.ints();
+        setDataWrapper(new IntDataWrapper(data));
+    }
+
+    private NumberColumn(final String name, final NumericDataWrapper data) {
+        super(DOUBLE, name);
+        setDataWrapper(data);
+    }
+
+    public static NumberColumn createWithFloats(String name) {
+        return new NumberColumn(name, new FloatArrayList(DEFAULT_ARRAY_SIZE));
     }
 
     public static NumberColumn create(final String name, final double[] arr) {
@@ -141,6 +136,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     }
 
     public static NumberColumn create(final String name, final List<Number> numberList) {
+        // TODO This should be pushed down to the dataWrappers
         final double[] doubles = new double[numberList.size()];
         for (int i = 0; i < numberList.size(); i++) {
             doubles[i] = numberList.get(i).doubleValue();
@@ -156,6 +152,10 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return new NumberColumn(name, new DoubleArrayList(doubles));
     }
 
+    public static NumberColumn create(final String name, final int initialSize) {
+        return new NumberColumn(name, new DoubleArrayList(initialSize));
+    }
+
     public static NumberColumn createWithIntegers(String name) {
         return new NumberColumn(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
     }
@@ -164,18 +164,17 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return new NumberColumn(name, new IntArrayList(size));
     }
 
-    public static NumberColumn create(final String name, final int initialSize) {
-        return new NumberColumn(name, new DoubleArrayList(initialSize));
-    }
-
-    private NumberColumn(final String name, final DoubleArrayList data) {
-        super(DOUBLE, name);
-        setDataWrapper(new DoubleDataWrapper(data));
-    }
-
-    private NumberColumn(final String name, final FloatArrayList data) {
-        super(DOUBLE, name);
-        setDataWrapper(new FloatDataWrapper(data));
+    /**
+     * Returns a new numeric column initialized with the given name and size. The values in the column are
+     * integers beginning at startsWith and continuing through size (exclusive), monotonically increasing by 1
+     * TODO consider a generic fill function including steps or random samples from various distributions
+     */
+    public static NumberColumn indexColumn(final String columnName, final int size, final int startsWith) {
+        final NumberColumn indexColumn = NumberColumn.createWithIntegers(columnName, size);
+        for (int i = 0; i < size; i++) {
+            indexColumn.append(i + startsWith);
+        }
+        return indexColumn;
     }
 
     private void setDataWrapper(NumericDataWrapper wrapper) {
@@ -183,11 +182,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
             printFormatter = NumberColumnFormatter.ints();
         }
         this.data = wrapper;
-    }
-
-    private NumberColumn(final String name, final NumericDataWrapper data) {
-        super(DOUBLE, name);
-        setDataWrapper(data);
     }
 
     @Override
@@ -198,7 +192,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     public void setPrintFormatter(final NumberFormat format, final String missingValueString) {
         this.printFormatter = new NumberColumnFormatter(format, missingValueString);
     }
-
 
     public void setPrintFormatter(final NumberColumnFormatter formatter) {
         this.printFormatter = formatter;
@@ -294,12 +287,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     public NumberColumn append(Integer val) {
         this.append(val.doubleValue());
         return this;
-    }
-
-    private NumberColumn(final String name, IntArrayList data) {
-        super(DOUBLE, name);
-        this.printFormatter = NumberColumnFormatter.ints();
-        setDataWrapper(new IntDataWrapper(data));
     }
 
     @Override
@@ -422,7 +409,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         data.set(r, value);
         return this;
     }
-
 
     /**
      * Conditionally update this column, replacing current values with newValue for all rows where the current value
@@ -566,7 +552,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
      */
     @Override
     public byte[] asBytes(final int rowNumber) {
-        return ByteBuffer.allocate(byteSize()).putDouble(getDouble(rowNumber)).array();
+        return data.asBytes(rowNumber);
     }
 
     @Override
@@ -580,7 +566,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
 
     @Override
     public NumberColumn appendMissing() {
-        append(MISSING_VALUE);
+        data.appendMissing();
         return this;
     }
 
@@ -740,13 +726,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
      */
     @Override
     public int countUnique() {
-        DoubleSet doubles = new DoubleOpenHashSet();
-        for (int i = 0; i < size(); i++) {
-            if (!data.isMissingValue(getDouble(i))) {
-                doubles.add(getDouble(i));
-            }
-        }
-        return doubles.size();
+        return data.countUnique();
     }
 
     public Selection isMissing() {
@@ -759,10 +739,18 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
 
     @Override
     public NumberColumn appendObj(Object obj) {
-        if (!(obj instanceof Double)) {
+        if (obj instanceof Double) {
+            return append((double) obj);
+        }
+        if (obj instanceof Float) {
+            return append((float) obj);
+        }
+        if (obj instanceof Integer) {
+            return append((int) obj);
+        }
+        else {
             throw new IllegalArgumentException();
         }
-        return append((double) obj);
     }
 
     /**
@@ -969,7 +957,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return Double.compare(o1, o2);
     }
 
-
     /**
      * Counts the number of rows satisfying predicate
      *
@@ -1009,7 +996,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     public boolean noneMatch(DoublePredicate test) {
         return count(test, 1) == 0;
     }
-
 
     @Override
     public Double get(final int index) {
@@ -1071,7 +1057,16 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return this;
     }
 
-    public boolean isMissingValue(double value) {
+    public boolean valueIsMissing(double value) {
         return data.isMissingValue(value);
     }
+
+    public boolean valueIsMissing(float value) {
+        return data.isMissingValue(value);
+    }
+
+    public boolean valueIsMissing(int value) {
+        return data.isMissingValue(value);
+    }
+
 }

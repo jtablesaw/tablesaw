@@ -1,15 +1,20 @@
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.NumberColumn;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Iterator;
 
 public class IntDataWrapper implements NumericDataWrapper {
+
+    private static final IntColumnType COLUMN_TYPE = ColumnType.INTEGER;
 
     /**
      * Compares two ints, such that a sort based on this comparator would sort in descending order
@@ -145,11 +150,6 @@ public class IntDataWrapper implements NumericDataWrapper {
     }
 
     @Override
-    public DoubleList dataInternal() {
-        return null;
-    }
-
-    @Override
     public IntDataWrapper lag(int n) {
         final int srcPos = n >= 0 ? 0 : 0 - n;
         final int[] dest = new int[size()];
@@ -169,5 +169,30 @@ public class IntDataWrapper implements NumericDataWrapper {
     @Override
     public IntDataWrapper lead(int n) {
         return lag(-n);
+    }
+
+    @Override
+    public int countUnique() {
+        IntSet uniqueElements = new IntOpenHashSet();
+        for (int i = 0; i < size(); i++) {
+            if (!isMissingValue(getInt(i))) {
+                uniqueElements.add(getInt(i));
+            }
+        }
+        return uniqueElements.size();
+    }
+
+    public int getInt(int index) {
+        return data.getInt(index);
+    }
+
+    @Override
+    public void appendMissing() {
+        append(IntColumnType.missingValueIndicator());
+    }
+
+    @Override
+    public byte[] asBytes(int rowNumber) {
+        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putInt(getInt(rowNumber)).array();
     }
 }
