@@ -8,7 +8,8 @@ import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.IntegerColumnType;
+import tech.tablesaw.columns.numbers.FloatColumnType;
+import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -21,7 +22,8 @@ public interface ColumnType {
     Map<String, ColumnType> values = new HashMap<>();
 
     // standard column types
-    ColumnType INTEGER = IntegerColumnType.INSTANCE;
+    ColumnType INTEGER = IntColumnType.INSTANCE;
+    ColumnType FLOAT = FloatColumnType.INSTANCE;
     ColumnType BOOLEAN = BooleanColumnType.INSTANCE;
     ColumnType STRING = StringColumnType.INSTANCE;
     ColumnType DOUBLE = DoubleColumnType.INSTANCE;
@@ -52,7 +54,7 @@ public interface ColumnType {
 
     String name();
 
-    Comparable<?> getMissingValue();
+    Comparable<?> getMissingValueIndicator();
 
     int byteSize();
 

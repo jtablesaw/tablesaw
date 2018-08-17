@@ -3,10 +3,10 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
-import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleRBTreeSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -22,6 +22,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.DoubleDataWrapper;
+import tech.tablesaw.columns.numbers.FloatDataWrapper;
 import tech.tablesaw.columns.numbers.IntDataWrapper;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberFillers;
@@ -58,16 +59,19 @@ import static tech.tablesaw.aggregate.AggregateFunctions.*;
 import static tech.tablesaw.api.ColumnType.DOUBLE;
 import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
-
 public class NumberColumn extends AbstractColumn<Double> implements NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn<Double> {
 
-    public static double MISSING_VALUE = (Double) DOUBLE.getMissingValue();
+    public static double MISSING_VALUE = (Double) DOUBLE.getMissingValueIndicator();
 
     private NumericDataWrapper data;
 
     private NumberColumnFormatter printFormatter = new NumberColumnFormatter();
 
     private Locale locale;
+
+    public static NumberColumn createWithFloats(String name) {
+        return new NumberColumn(name, new FloatArrayList(DEFAULT_ARRAY_SIZE));
+    }
 
     public boolean valueIsMissing(double value) {
         return data.isMissingValue(value);
@@ -101,7 +105,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         for (int i = 0; i < size; i++) {
             indexColumn.append(i + startsWith);
         }
-        indexColumn.setPrintFormatter(NumberColumnFormatter.ints());
         return indexColumn;
     }
 
@@ -126,11 +129,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     }
 
     public static NumberColumn create(final String name, final int[] arr) {
-        final double[] doubles = new double[arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            doubles[i] = arr[i];
-        }
-        return new NumberColumn(name, new DoubleArrayList(doubles));
+        return new NumberColumn(name, new IntArrayList(arr));
     }
 
     public static NumberColumn create(final String name, final long[] arr) {
@@ -172,6 +171,11 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     private NumberColumn(final String name, final DoubleArrayList data) {
         super(DOUBLE, name);
         setDataWrapper(new DoubleDataWrapper(data));
+    }
+
+    private NumberColumn(final String name, final FloatArrayList data) {
+        super(DOUBLE, name);
+        setDataWrapper(new FloatDataWrapper(data));
     }
 
     private void setDataWrapper(NumericDataWrapper wrapper) {
@@ -222,13 +226,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
      * @return A list, possibly empty, of the largest observations
      */
     public NumberColumn top(final int n) {
-//            final int[] values = intData.toIntArray();
-//            IntArrays.parallelQuickSort(values, descendingIntComparator);
-//            for (int i = 0; i < n && i < values.length; i++) {
-//                top.add(values[i]);
-//            }
         return NumberColumn.create(name() + "[Top " + n  + "]", data.top(n));
-
     }
 
     /**
@@ -273,7 +271,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         data.append(f);
         return this;
     }
-
 
     /**
      * Adds the given double to this column
@@ -579,11 +576,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
             result[i] = roundInt(i);
         }
         return result;
-    }
-
-    @Override
-    public DoubleList dataInternal() {
-        return data.copy().dataInternal();
     }
 
     @Override

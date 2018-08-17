@@ -14,7 +14,6 @@
 
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.doubles.DoubleList;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
@@ -178,9 +177,4 @@ public interface NumberFilters {
         }
         return results;
     }
-
-    /**
-     * Returns a clone of the internal data structure
-     */
-    DoubleList dataInternal();
 }

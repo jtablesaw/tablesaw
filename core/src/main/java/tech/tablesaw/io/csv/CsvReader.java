@@ -54,7 +54,7 @@ public class CsvReader {
      * the integer test would never be evaluated and all the ints would be read as doubles.
      */
     private List<ColumnType> typeArray =
-            Lists.newArrayList(LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, INTEGER, DOUBLE, STRING);
+            Lists.newArrayList(LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, INTEGER, FLOAT, DOUBLE, STRING);
 
     /**
      * Constructs a CsvReader

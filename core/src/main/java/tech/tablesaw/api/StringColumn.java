@@ -58,7 +58,7 @@ import static tech.tablesaw.api.ColumnType.STRING;
 public class StringColumn extends AbstractColumn<String>
         implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
-    public static final String MISSING_VALUE = (String) STRING.getMissingValue();
+    public static final String MISSING_VALUE = (String) STRING.getMissingValueIndicator();
 
     private final AtomicInteger nextIndex = new AtomicInteger(1);
 

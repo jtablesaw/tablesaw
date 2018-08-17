@@ -16,7 +16,7 @@ public class IntDataWrapper implements NumericDataWrapper {
      */
     private final IntComparator descendingComparator = (o2, o1) -> (Integer.compare(o1, o2));
 
-    private IntArrayList data;
+    private final IntArrayList data;
 
     public IntDataWrapper(IntArrayList data) {
         this.data = data;

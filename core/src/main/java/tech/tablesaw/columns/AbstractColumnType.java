@@ -23,16 +23,13 @@ import tech.tablesaw.api.ColumnType;
  */
 public abstract class AbstractColumnType implements ColumnType {
 
-    private final Comparable<?> missingValue;
-
     private final int byteSize;
 
     private final String name;
 
     private final String printerFriendlyName;
 
-    protected AbstractColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
-        this.missingValue = missingValue;
+    protected AbstractColumnType(int byteSize, String name, String printerFriendlyName) {
         this.byteSize = byteSize;
         this.name = name;
         this.printerFriendlyName = printerFriendlyName;
@@ -49,9 +46,6 @@ public abstract class AbstractColumnType implements ColumnType {
         return name;
     }
 
-    public Comparable<?> getMissingValue() {
-        return missingValue;
-    }
 
     public int byteSize() {
         return byteSize;
@@ -67,14 +61,13 @@ public abstract class AbstractColumnType implements ColumnType {
         if (o == null || getClass() != o.getClass()) return false;
         AbstractColumnType that = (AbstractColumnType) o;
         return byteSize == that.byteSize &&
-                Objects.equal(missingValue, that.missingValue) &&
                 Objects.equal(name, that.name) &&
                 Objects.equal(printerFriendlyName, that.printerFriendlyName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(missingValue, byteSize, name, printerFriendlyName);
+        return Objects.hashCode(byteSize, name, printerFriendlyName);
     }
 
 }

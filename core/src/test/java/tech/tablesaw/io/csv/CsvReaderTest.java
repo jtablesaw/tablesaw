@@ -45,7 +45,7 @@ import static tech.tablesaw.api.ColumnType.*;
  */
 public class CsvReaderTest {
 
-    private final ColumnType[] bus_types = {INTEGER, STRING, STRING, DOUBLE, DOUBLE};
+    private final ColumnType[] bus_types = {INTEGER, STRING, STRING, FLOAT, FLOAT};
     private final ColumnType[] bus_types_with_SKIP = {INTEGER, STRING, SKIP, DOUBLE, DOUBLE};
 
     @Test

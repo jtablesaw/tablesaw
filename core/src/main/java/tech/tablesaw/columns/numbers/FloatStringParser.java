@@ -2,22 +2,22 @@ package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class IntegerStringParser extends DoubleStringParser {
+public class FloatStringParser extends StringParser<Float> {
 
     private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
-    public IntegerStringParser(ColumnType columnType) {
+    public FloatStringParser(ColumnType columnType) {
         super(columnType);
     }
 
-    public IntegerStringParser(DoubleColumnType doubleColumnType, CsvReadOptions readOptions) {
-        super(doubleColumnType);
+    public FloatStringParser(FloatColumnType columnType, CsvReadOptions readOptions) {
+        super(columnType);
         if (readOptions.missingValueIndicator() != null) {
             missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
         }
@@ -29,7 +29,7 @@ public class IntegerStringParser extends DoubleStringParser {
             return true;
         }
         try {
-            Integer.parseInt(s);
+            Float.parseFloat(s);
             return true;
         } catch (NumberFormatException e) {
             // it's all part of the plan
@@ -38,20 +38,20 @@ public class IntegerStringParser extends DoubleStringParser {
     }
 
     @Override
-    public Double parse(String s) {
+    public Float parse(String s) {
         if (isMissing(s)) {
-            return Double.NaN;
+            return FloatColumnType.missingValueIndicator();
         }
         final Matcher matcher = COMMA_PATTERN.matcher(s);
-        return (double) Integer.parseInt(matcher.replaceAll(""));
+        return Float.parseFloat(matcher.replaceAll(""));
     }
 
     @Override
-    public double parseDouble(String s) {
+    public float parseFloat(String s) {
         if (isMissing(s)) {
-            return NumberColumn.MISSING_VALUE;
+            return FloatColumnType.missingValueIndicator();
         }
         final Matcher matcher = COMMA_PATTERN.matcher(s);
-        return Integer.parseInt(matcher.replaceAll(""));
+        return Float.parseFloat(matcher.replaceAll(""));
     }
 }

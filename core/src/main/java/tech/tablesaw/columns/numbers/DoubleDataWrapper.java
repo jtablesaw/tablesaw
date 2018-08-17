@@ -17,7 +17,7 @@ public class DoubleDataWrapper implements NumericDataWrapper {
      */
     private final DoubleComparator descendingComparator = (o2, o1) -> (Double.compare(o1, o2));
 
-    private DoubleArrayList data;
+    private final DoubleArrayList data;
 
     public DoubleDataWrapper(DoubleArrayList data) {
         this.data = data;

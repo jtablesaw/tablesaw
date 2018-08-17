@@ -55,7 +55,7 @@ import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
 public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn> {
 
-    public static final long MISSING_VALUE = (Long) ColumnType.LOCAL_DATE_TIME.getMissingValue();
+    public static final long MISSING_VALUE = (Long) ColumnType.LOCAL_DATE_TIME.getMissingValueIndicator();
 
     private final LongComparator reverseLongComparator = DescendingLongComparator.instance();
 

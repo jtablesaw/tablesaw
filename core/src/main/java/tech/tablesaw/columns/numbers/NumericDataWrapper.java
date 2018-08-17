@@ -44,7 +44,18 @@ public interface NumericDataWrapper extends NumberIterable {
 
     NumericDataWrapper bottom(final int n);
 
-    NumericDataWrapper removeMissing();
+    default NumericDataWrapper removeMissing() {
+        NumericDataWrapper wrapper = copy();
+        wrapper.clear();;
+        final NumberIterator iterator = numberIterator();
+        while (iterator.hasNext()) {
+            final double v = iterator.next();
+            if (!isMissingValue(v)) {
+                wrapper.append(v);
+            }
+        }
+        return wrapper;
+    }
 
     default boolean isMissingValue(double value) {
         return value != value;

@@ -2,6 +2,7 @@ package tech.tablesaw.columns.numbers;
 
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
@@ -12,11 +13,17 @@ public class NumberIterator implements Iterable<Double> {
 
     private DoubleArrayList dList;
     private IntArrayList iList;
+    private FloatArrayList fList;
 
     private final Object iterator;
 
     public NumberIterator(DoubleArrayList list) {
         this.dList = list;
+        this.iterator = list.iterator();
+    }
+
+    public NumberIterator(FloatArrayList list) {
+        this.fList = list;
         this.iterator = list.iterator();
     }
 
@@ -41,9 +48,12 @@ public class NumberIterator implements Iterable<Double> {
         }
     }
 
-    public int nextFloat() {
-        if (dList != null) {
-            return (int) ((FloatIterator) iterator).nextFloat();
+    public float nextFloat() {
+        if (fList != null) {
+            return ((FloatIterator) iterator).nextFloat();
+        }
+        else if (dList != null) { // TODO (check for cast exception)
+            return ((FloatIterator) iterator).nextFloat();
         } else {
             return ((IntIterator) iterator).nextInt();
         }
