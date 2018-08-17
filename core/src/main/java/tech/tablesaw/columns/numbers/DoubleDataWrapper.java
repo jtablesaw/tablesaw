@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 import static tech.tablesaw.api.NumberColumn.MISSING_VALUE;
 
-public class DoubleDataWrapper implements NumericDataWrapper<Double> {
+public class DoubleDataWrapper implements NumericDataWrapper {
 
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order

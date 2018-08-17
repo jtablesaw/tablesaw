@@ -2,6 +2,7 @@ package tech.tablesaw.columns.numbers;
 
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
+import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 
@@ -35,6 +36,14 @@ public class NumberIterator implements Iterable<Double> {
     public int nextInt() {
         if (dList != null) {
             return (int) ((DoubleIterator) iterator).nextDouble();
+        } else {
+            return ((IntIterator) iterator).nextInt();
+        }
+    }
+
+    public int nextFloat() {
+        if (dList != null) {
+            return (int) ((FloatIterator) iterator).nextFloat();
         } else {
             return ((IntIterator) iterator).nextInt();
         }

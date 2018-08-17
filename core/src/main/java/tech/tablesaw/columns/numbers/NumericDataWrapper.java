@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleList;
 
 import java.util.Iterator;
 
-public interface NumericDataWrapper<T> extends NumberIterable {
+public interface NumericDataWrapper extends NumberIterable {
 
     int size();
 

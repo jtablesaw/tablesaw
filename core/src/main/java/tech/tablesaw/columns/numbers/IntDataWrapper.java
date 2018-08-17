@@ -9,7 +9,7 @@ import tech.tablesaw.api.NumberColumn;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class IntDataWrapper implements NumericDataWrapper<Integer> {
+public class IntDataWrapper implements NumericDataWrapper {
 
     /**
      * Compares two ints, such that a sort based on this comparator would sort in descending order
