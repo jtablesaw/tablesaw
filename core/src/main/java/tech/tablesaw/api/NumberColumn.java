@@ -69,12 +69,16 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
 
     private Locale locale;
 
-    public static boolean valueIsMissing(double value) {
-        return Double.isNaN(value);
+    public boolean valueIsMissing(double value) {
+        return data.isMissingValue(value);
     }
 
-    public static boolean valueIsMissing(float value) {
-        return Float.isNaN(value);
+    public boolean valueIsMissing(float value) {
+        return data.isMissingValue(value);
+    }
+
+    public boolean valueIsMissing(int value) {
+        return data.isMissingValue(value);
     }
 
     private final IntComparator comparator = new IntComparator() {
@@ -184,7 +188,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
 
     @Override
     public boolean isMissing(final int rowNumber) {
-        return NumberColumn.valueIsMissing(getDouble(rowNumber));
+        return data.isMissingValue(getDouble(rowNumber));
     }
 
     public void setPrintFormatter(final NumberFormat format, final String missingValueString) {
@@ -304,7 +308,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     @Override
     public String getString(final int row) {
         final double value = getDouble(row);
-        if (NumberColumn.valueIsMissing(value)) {
+        if (data.isMissingValue(value)) {
             return "";
         }
         return String.valueOf(printFormatter.format(value));
@@ -385,7 +389,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
      */
     public Integer roundInt(final int i) {
         final double value = getDouble(i);
-        if (NumberColumn.valueIsMissing(value)) {
+        if (data.isMissingValue(value)) {
             return null;
         }
         return (int) Math.round(getDouble(i));
@@ -399,7 +403,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
      */
     public long getLong(final int i) {
         final double value = getDouble(i);
-        return NumberColumn.valueIsMissing(value) ? DateTimeColumn.MISSING_VALUE : Math.round(value);
+        return data.isMissingValue(value) ? DateTimeColumn.MISSING_VALUE : Math.round(value);
     }
 
 
@@ -595,7 +599,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (NumberColumn.valueIsMissing(getDouble(i))) {
+            if (data.isMissingValue(getDouble(i))) {
                 count++;
             }
         }
@@ -746,7 +750,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     public int countUnique() {
         DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
-            if (!NumberColumn.valueIsMissing(getDouble(i))) {
+            if (!data.isMissingValue(getDouble(i))) {
                 doubles.add(getDouble(i));
             }
         }
@@ -952,7 +956,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         NumberIterator it = numberIterator();
         while (it.hasNext()) {
             double d = it.next();
-            if (!NumberColumn.valueIsMissing(d)) {
+            if (!data.isMissingValue(d)) {
                 ints.add((int) Math.round(d));
             }
         }
@@ -1075,5 +1079,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return this;
     }
 
-
+    public boolean isMissingValue(double value) {
+        return data.isMissingValue(value);
+    }
 }

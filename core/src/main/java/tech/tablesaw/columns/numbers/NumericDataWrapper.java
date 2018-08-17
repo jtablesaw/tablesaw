@@ -45,4 +45,16 @@ public interface NumericDataWrapper<T> extends NumberIterable {
     NumericDataWrapper bottom(final int n);
 
     NumericDataWrapper removeMissing();
+
+    default boolean isMissingValue(double value) {
+        return value != value;
+    }
+
+    default boolean isMissingValue(float value) {
+        return value != value;
+    }
+
+    default boolean isMissingValue(int value) {
+        return value == Integer.MIN_VALUE;
+    }
 }

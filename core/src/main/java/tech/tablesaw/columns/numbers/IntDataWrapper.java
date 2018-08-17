@@ -82,7 +82,7 @@ public class IntDataWrapper implements NumericDataWrapper<Integer> {
 
     @Override
     public void append(double d) {
-        if (NumberColumn.valueIsMissing(d)) {
+        if (isMissingValue(d)) {
             append(MISSING_VALUE);
         } else if (d == (int) d) {
             data.add((int) d);
@@ -99,7 +99,7 @@ public class IntDataWrapper implements NumericDataWrapper<Integer> {
     @Override
     public double getDouble(int row) {
         int value = data.getInt(row);
-        if (value == MISSING_VALUE) {
+        if (isMissingValue(value)) {
             return NumberColumn.MISSING_VALUE;
         }
         return value;

@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleArrays;
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
-import tech.tablesaw.api.NumberColumn;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -150,7 +149,7 @@ public class DoubleDataWrapper implements NumericDataWrapper<Double> {
         final NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
             final double v = iterator.next();
-            if (!NumberColumn.valueIsMissing(v)) {
+            if (!isMissingValue(v)) {
                 wrapper.append(v);
             }
         }

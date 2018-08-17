@@ -170,21 +170,21 @@ public interface NumberMapFunctions extends NumberIterable {
     }
 
     default double add(double val1, double val2) {
-        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
+        if (isMissingValue(val1) || isMissingValue(val2)) {
             return MISSING_VALUE;
         }
         return val1 + val2;
     }
 
     default double multiply(double val1, double val2) {
-        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
+        if (isMissingValue(val1) || isMissingValue(val2)) {
             return MISSING_VALUE;
         }
         return val1 * val2;
     }
 
     default double divide(double val1, double val2) {
-        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
+        if (isMissingValue(val1) || isMissingValue(val2)) {
             return MISSING_VALUE;
         }
         return val1 / val2;
@@ -194,7 +194,7 @@ public interface NumberMapFunctions extends NumberIterable {
      * Returns the result of subtracting val2 from val1, after handling missing values
      */
     default double subtract(double val1, double val2) {
-        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
+        if (isMissingValue(val1) || isMissingValue(val2)) {
             return MISSING_VALUE;
         }
         return val1 - val2;
@@ -254,7 +254,7 @@ public interface NumberMapFunctions extends NumberIterable {
         for (int r = 0; r < size(); r++) {
             double val1 = getDouble(r);
             double val2 = column2.getDouble(r);
-            if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
+            if (isMissingValue(val1) || isMissingValue(val2)) {
                 result.append(MISSING_VALUE);
             } else {
                 result.append(getDouble(r) % column2.getDouble(r));
@@ -382,7 +382,7 @@ public interface NumberMapFunctions extends NumberIterable {
         NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
             double value = iterator.next();
-            if (NumberColumn.valueIsMissing(value)) {
+            if (isMissingValue(value)) {
                 newColumn.append(MISSING_VALUE);
             } else {
                 total += value;
@@ -401,7 +401,7 @@ public interface NumberMapFunctions extends NumberIterable {
         NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
             double value = iterator.next();
-            if (NumberColumn.valueIsMissing(value)) {
+            if (isMissingValue(value)) {
                 newColumn.append(MISSING_VALUE);
             } else {
                 total *= value;
@@ -435,4 +435,6 @@ public interface NumberMapFunctions extends NumberIterable {
     }
 
     double getDouble(int i);
+
+    boolean isMissingValue(double value);
 }
