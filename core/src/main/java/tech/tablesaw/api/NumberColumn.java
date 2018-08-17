@@ -101,6 +101,10 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return new NumberColumn(name, new FloatArrayList(DEFAULT_ARRAY_SIZE));
     }
 
+    public static NumberColumn createWithFloats(String name, float[] data) {
+        return new NumberColumn(name, new FloatArrayList(data));
+    }
+
     public static NumberColumn create(final String name, final double[] arr) {
         return new NumberColumn(name, new DoubleArrayList(arr));
     }
@@ -299,6 +303,28 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     @Override
     public double getDouble(final int row) {
         return data.getDouble(row);
+    }
+
+    /**
+     * Returns the value at the given index. The actual value is returned if the ColumnType is INTEGER. Otherwise the
+     * value is rounded as described below.
+     *
+     * Returns the closest {@code int} to the argument, with ties
+     * rounding to positive infinity.
+     *
+     * <p>
+     * Special cases:
+     * <ul><li>If the argument is NaN, the result is 0.
+     * <li>If the argument is positive infinity or any value greater than or
+     * equal to the value of {@code Integer.MAX_VALUE}, an error will be thrown
+     *
+     * @param   row the index of the value to be rounded to an integer.
+     * @return  the value of the argument rounded to the nearest
+     *          {@code int} value.
+     * @throws  ClassCastException if the absolute value of the value to be rounded is too large to be cast to an int
+     */
+    public int getInt(final int row) {
+        return data.getInt(row);
     }
 
     @Override

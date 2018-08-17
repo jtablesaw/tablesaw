@@ -46,7 +46,6 @@ public class NumberColumnFormatter {
         return new NumberColumnFormatter(format);
     }
 
-
     public NumberColumnFormatter() {
         this.format = null;
     }

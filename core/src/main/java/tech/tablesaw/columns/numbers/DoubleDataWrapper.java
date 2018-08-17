@@ -166,6 +166,26 @@ public class DoubleDataWrapper implements NumericDataWrapper {
         return doubles.size();
     }
 
+    /**
+     * Returns the closest {@code int} to the argument, with ties
+     * rounding to positive infinity.
+     *
+     * <p>
+     * Special cases:
+     * <ul><li>If the argument is NaN, the result is 0.
+     * <li>If the argument is positive infinity or any value greater than or
+     * equal to the value of {@code Integer.MAX_VALUE}, an error will be thrown
+     *
+     * @param   index the index of the value to be rounded to an integer.
+     * @return  the value of the argument rounded to the nearest
+     *          {@code int} value.
+     * @throws  ClassCastException if the absolute value of the value to be rounded is too large to be cast to an int
+     */
+    @Override
+    public int getInt(int index) {
+        return (int) Math.round(data.getDouble(index));
+    }
+
     @Override
     public void appendMissing() {
         data.add(DoubleColumnType.missingValueIndicator());

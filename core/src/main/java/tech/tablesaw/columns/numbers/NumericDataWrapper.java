@@ -82,4 +82,11 @@ public interface NumericDataWrapper extends NumberIterable {
     byte[] asBytes(final int rowNumber);
 
     double missingValueIndicator();
+
+    /**
+     * Returns an int from the data at the given index.
+     *
+     * NOTE: If the data is floating point, it is cast to int and precision may be lost
+     */
+    int getInt(int index);
 }

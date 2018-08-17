@@ -169,6 +169,31 @@ public class FloatDataWrapper implements NumericDataWrapper {
         return ColumnType.FLOAT;
     }
 
+    /**
+     * Returns the closest {@code int} to the argument, with ties
+     * rounding to positive infinity.
+     *
+     * <p>
+     * Special cases:
+     * <ul><li>If the argument is NaN, the result is 0.
+     * <li>If the argument is negative infinity or any value less than or
+     * equal to the value of {@code Integer.MIN_VALUE}, the result is
+     * equal to the value of {@code Integer.MIN_VALUE}.
+     * <li>If the argument is positive infinity or any value greater than or
+     * equal to the value of {@code Integer.MAX_VALUE}, the result is
+     * equal to the value of {@code Integer.MAX_VALUE}.</ul>
+     *
+     * @param   index the index of the value to be rounded to an integer.
+     * @return  the value of the argument rounded to the nearest
+     *          {@code int} value.
+     * @see     java.lang.Integer#MAX_VALUE
+     * @see     java.lang.Integer#MIN_VALUE
+     */
+    @Override
+    public int getInt(int index) {
+        return Math.round(data.getFloat(index));
+    }
+
     @Override
     public double missingValueIndicator() {
         return FloatColumnType.missingValueIndicator();

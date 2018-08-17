@@ -1,10 +1,8 @@
 package tech.tablesaw.joining;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.google.common.collect.Streams;
-
 import tech.tablesaw.api.CategoricalColumn;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
@@ -12,11 +10,18 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.dates.DateColumnType;
+import tech.tablesaw.columns.datetimes.DateTimeColumnType;
+import tech.tablesaw.columns.numbers.IntColumnType;
+import tech.tablesaw.columns.strings.StringColumnType;
+import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.index.IntIndex;
 import tech.tablesaw.index.LongIndex;
 import tech.tablesaw.index.StringIndex;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataFrameJoiner {
 
@@ -86,7 +91,8 @@ public class DataFrameJoiner {
         }
 
         Table result = emptyTableFromColumns(table, table2, col2Name);
-        if (column instanceof DateColumn) {
+        ColumnType type = column.type();
+        if (type instanceof DateColumnType) {
             IntIndex index = new IntIndex(table2.dateColumn(col2Name));
             DateColumn col1 = (DateColumn) column;
             for (int i = 0; i < col1.size(); i++) {
@@ -100,7 +106,7 @@ public class DataFrameJoiner {
                     crossProduct(result, table1Rows, table2Rows);
                 }
             }
-        } else if (column instanceof DateTimeColumn) {
+        } else if (type instanceof DateTimeColumnType) {
             LongIndex index = new LongIndex(table2.dateTimeColumn(col2Name));
             DateTimeColumn col1 = (DateTimeColumn) column;
             for (int i = 0; i < col1.size(); i++) {
@@ -114,7 +120,7 @@ public class DataFrameJoiner {
                     crossProduct(result, table1Rows, table2Rows);
                 }
             }
-        } else if (column instanceof TimeColumn) {
+        } else if (type instanceof TimeColumnType) {
             IntIndex index = new IntIndex(table2.timeColumn(col2Name));
             TimeColumn col1 = (TimeColumn) column;
             for (int i = 0; i < col1.size(); i++) {
@@ -128,7 +134,7 @@ public class DataFrameJoiner {
                     crossProduct(result, table1Rows, table2Rows);
                 }
             }
-        } else if (column instanceof StringColumn) {
+        } else if (type instanceof StringColumnType) {
             StringIndex index = new StringIndex(table2.stringColumn(col2Name));
             StringColumn col1 = (StringColumn) column;
             for (int i = 0; i < col1.size(); i++) {
@@ -142,11 +148,11 @@ public class DataFrameJoiner {
                     crossProduct(result, table1Rows, table2Rows);
                 }
             }
-        } else if (column instanceof NumberColumn) {
-            LongIndex index = new LongIndex(table2.numberColumn(col2Name));
+        } else if (type instanceof IntColumnType) {
+            IntIndex index = new IntIndex(table2.numberColumn(col2Name));
             NumberColumn col1 = (NumberColumn) column;
             for (int i = 0; i < col1.size(); i++) {
-                long value = col1.getLong(i);
+                int value = col1.getInt(i);
                 Table table1Rows = table.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
@@ -161,7 +167,6 @@ public class DataFrameJoiner {
                     "Joining is supported on numeric, string, and date-like columns. Column "
                             + column.name() + " is of type " + column.type());
         }
-
         return result;
     }
 
@@ -229,7 +234,9 @@ public class DataFrameJoiner {
         Table result = joinInternal(table2, col2Name, true, allowDuplicateColumnNames);
 
         Selection selection = new BitmapBackedSelection();
-        if (column instanceof DateColumn) {
+        ColumnType type = column.type();
+
+        if (type instanceof DateColumnType) {
             IntIndex index = new IntIndex(result.dateColumn(col2Name));
             DateColumn col2 = (DateColumn) table2.column(col2Name);
             for (int i = 0; i < col2.size(); i++) {
@@ -238,7 +245,7 @@ public class DataFrameJoiner {
                     selection.add(i);
                 }
             }
-        } else if (column instanceof DateTimeColumn) {
+        } else if (type instanceof DateTimeColumnType) {
             LongIndex index = new LongIndex(result.dateTimeColumn(col2Name));
             DateTimeColumn col2 = (DateTimeColumn) table2.column(col2Name);
             for (int i = 0; i < col2.size(); i++) {
@@ -247,7 +254,7 @@ public class DataFrameJoiner {
                     selection.add(i);
                 }
             }
-        } else if (column instanceof TimeColumn) {
+        } else if (type instanceof TimeColumnType) {
             IntIndex index = new IntIndex(result.timeColumn(col2Name));
             TimeColumn col2 = (TimeColumn) table2.column(col2Name);
             for (int i = 0; i < col2.size(); i++) {
@@ -256,7 +263,7 @@ public class DataFrameJoiner {
                     selection.add(i);
                 }
             }
-        } else if (column instanceof StringColumn) {
+        } else if (type instanceof StringColumnType) {
             StringIndex index = new StringIndex(result.stringColumn(col2Name));
             StringColumn col2 = (StringColumn) table2.column(col2Name);
             for (int i = 0; i < col2.size(); i++) {
@@ -265,7 +272,8 @@ public class DataFrameJoiner {
                     selection.add(i);
                 }
             }
-        } else if (column instanceof NumberColumn) {
+        } else if (type instanceof IntColumnType) {
+
             LongIndex index = new LongIndex(result.numberColumn(col2Name));
             NumberColumn col2 = (NumberColumn) table2.column(col2Name);
             for (int i = 0; i < col2.size(); i++) {
