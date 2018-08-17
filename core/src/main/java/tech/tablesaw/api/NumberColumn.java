@@ -327,6 +327,16 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return data.getInt(row);
     }
 
+    /**
+     * Returns a float representation of the data at the given index. Some precision may be lost, and if the value is
+     * to large to be cast to a float, an exception is thrown.
+     *
+     * @throws  ClassCastException if the value can't be cast to ta float
+     */
+    public float getFloat(final int index) {
+        return data.getFloat(index);
+    }
+
     @Override
     public String getUnformattedString(final int row) {
         return String.valueOf(getDouble(row));

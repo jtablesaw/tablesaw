@@ -62,7 +62,7 @@ public class IntDataWrapper implements NumericDataWrapper {
     @Override
     public NumericDataWrapper removeMissing() {
         NumericDataWrapper wrapper = copy();
-        wrapper.clear();;
+        wrapper.clear();
         final NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
             final int v = iterator.nextInt();
@@ -103,6 +103,15 @@ public class IntDataWrapper implements NumericDataWrapper {
         int value = data.getInt(row);
         if (isMissingValue(value)) {
             return DoubleColumnType.missingValueIndicator();
+        }
+        return value;
+    }
+
+    @Override
+    public float getFloat(int row) {
+        int value = data.getInt(row);
+        if (isMissingValue(value)) {
+            return FloatColumnType.missingValueIndicator();
         }
         return value;
     }

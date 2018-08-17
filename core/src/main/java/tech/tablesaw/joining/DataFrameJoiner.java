@@ -164,7 +164,7 @@ public class DataFrameJoiner {
             }
         } else {
             throw new IllegalArgumentException(
-                    "Joining is supported on numeric, string, and date-like columns. Column "
+                    "Joining is supported on integer, string, and date-like columns. Column "
                             + column.name() + " is of type " + column.type());
         }
         return result;

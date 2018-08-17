@@ -84,6 +84,11 @@ public class DoubleDataWrapper implements NumericDataWrapper {
     }
 
     @Override
+    public float getFloat(int row) {
+        return (float) data.getDouble(row);
+    }
+
+    @Override
     public DoubleDataWrapper copy() {
         return new DoubleDataWrapper(data.clone());
     }
