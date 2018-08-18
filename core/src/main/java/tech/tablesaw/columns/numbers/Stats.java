@@ -15,7 +15,9 @@
 package tech.tablesaw.columns.numbers;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
@@ -43,15 +45,15 @@ public class Stats {
         this.name = name;
     }
 
-    public static Stats create(final NumberColumn values) {
+    public static Stats create(final NumericColumn<?> values) {
         SummaryStatistics summaryStatistics = new SummaryStatistics();
-        for (double f : values) {
+        for (double f : values.numberIterator()) {
             summaryStatistics.addValue(f);
         }
         return getStats(values, summaryStatistics);
     }
 
-    private static Stats getStats(NumberColumn values, SummaryStatistics summaryStatistics) {
+    private static Stats getStats(NumericColumn<?> values, SummaryStatistics summaryStatistics) {
         Stats stats = new Stats("Column: " + values.name());
         stats.min = summaryStatistics.getMin();
         stats.max = summaryStatistics.getMax();

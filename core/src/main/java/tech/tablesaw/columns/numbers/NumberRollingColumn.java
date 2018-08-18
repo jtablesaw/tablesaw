@@ -2,6 +2,7 @@ package tech.tablesaw.columns.numbers;
 
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.table.RollingColumn;
 
 /**
@@ -9,7 +10,7 @@ import tech.tablesaw.table.RollingColumn;
  */
 public class NumberRollingColumn extends RollingColumn {
 
-    public NumberRollingColumn(NumberColumn column, int window) {
+    public NumberRollingColumn(NumericColumn<?> column, int window) {
         super(column, window);
     }
 

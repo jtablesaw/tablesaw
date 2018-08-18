@@ -1,22 +1,31 @@
 package tech.tablesaw.api;
 
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+
+import java.text.NumberFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoublePredicate;
+import java.util.function.DoubleSupplier;
+import java.util.function.ToDoubleFunction;
+
 import com.google.common.base.Preconditions;
+
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.doubles.DoubleComparator;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
-import it.unimi.dsi.fastutil.doubles.DoubleRBTreeSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import org.apache.commons.math3.exception.NotANumberException;
-import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
-import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
-import tech.tablesaw.aggregate.AggregateFunctions;
-import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
@@ -25,60 +34,12 @@ import tech.tablesaw.columns.numbers.FloatDataWrapper;
 import tech.tablesaw.columns.numbers.IntDataWrapper;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberFillers;
-import tech.tablesaw.columns.numbers.NumberFilters;
 import tech.tablesaw.columns.numbers.NumberIterable;
 import tech.tablesaw.columns.numbers.NumberIterator;
-import tech.tablesaw.columns.numbers.NumberMapFunctions;
-import tech.tablesaw.columns.numbers.NumberRollingColumn;
 import tech.tablesaw.columns.numbers.NumericDataWrapper;
-import tech.tablesaw.columns.numbers.Stats;
-import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
-import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
-import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-import java.text.NumberFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.function.BiPredicate;
-import java.util.function.DoubleBinaryOperator;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoubleFunction;
-import java.util.function.DoublePredicate;
-import java.util.function.DoubleSupplier;
-import java.util.function.ToDoubleFunction;
-
-import static tech.tablesaw.aggregate.AggregateFunctions.geometricMean;
-import static tech.tablesaw.aggregate.AggregateFunctions.kurtosis;
-import static tech.tablesaw.aggregate.AggregateFunctions.max;
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.median;
-import static tech.tablesaw.aggregate.AggregateFunctions.min;
-import static tech.tablesaw.aggregate.AggregateFunctions.populationVariance;
-import static tech.tablesaw.aggregate.AggregateFunctions.product;
-import static tech.tablesaw.aggregate.AggregateFunctions.quadraticMean;
-import static tech.tablesaw.aggregate.AggregateFunctions.quartile1;
-import static tech.tablesaw.aggregate.AggregateFunctions.quartile3;
-import static tech.tablesaw.aggregate.AggregateFunctions.range;
-import static tech.tablesaw.aggregate.AggregateFunctions.skewness;
-import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
-import static tech.tablesaw.aggregate.AggregateFunctions.sum;
-import static tech.tablesaw.aggregate.AggregateFunctions.sumOfLogs;
-import static tech.tablesaw.aggregate.AggregateFunctions.sumOfSquares;
-import static tech.tablesaw.aggregate.AggregateFunctions.variance;
-import static tech.tablesaw.api.ColumnType.DOUBLE;
-import static tech.tablesaw.api.ColumnType.FLOAT;
-import static tech.tablesaw.api.ColumnType.INTEGER;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isNotMissing;
-
-public class NumberColumn extends AbstractColumn<Double> implements NumberMapFunctions, NumberFilters, NumberFillers<NumberColumn>, CategoricalColumn<Double> {
+public class NumberColumn extends AbstractColumn<Double> implements NumericColumn<Double>, NumberFillers<NumberColumn>, CategoricalColumn<Double> {
 
     private NumericDataWrapper data;
 
@@ -95,11 +56,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
             return Double.compare(f1, f2);
         }
     };
-
-    @Override
-    public NumberRollingColumn rolling(final int windowSize) {
-        return new NumberRollingColumn(this, windowSize);
-    }
 
     private NumberColumn(final String name, final DoubleArrayList data) {
         super(DOUBLE, name);
@@ -212,6 +168,11 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     }
 
     @Override
+    public Double get(int index) {
+	return getDouble(index);
+    }
+
+    @Override
     public boolean isMissing(final int rowNumber) {
         return data.isMissingValue(getDouble(rowNumber));
     }
@@ -227,14 +188,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     @Override
     public int size() {
         return data.size();
-    }
-
-    public Table summary() {
-        return stats().asTable();
-    }
-
-    public Stats stats() {
-        return Stats.create(this);
     }
 
     /**
@@ -261,9 +214,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return NumberColumn.create(name() + "[Bottoms " + n  + "]", data.bottom(n));
     }
 
-    /**
-     *
-     */
     @Override
     public NumberColumn unique() {
         final DoubleSet doubles = new DoubleOpenHashSet();
@@ -363,11 +313,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     }
 
     @Override
-    public String getUnformattedString(final int row) {
-        return String.valueOf(getDouble(row));
-    }
-
-    @Override
     public NumberColumn emptyCopy() {
         final NumberColumn column = NumberColumn.create(name(), data.emptyCopy(DEFAULT_ARRAY_SIZE));
         column.setPrintFormatter(printFormatter);
@@ -401,11 +346,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     @Override
     public void sortDescending() {
         data.sortDescending();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size() == 0;
     }
 
     @Override
@@ -486,127 +426,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return this;
     }
 
-    /**
-     * Summarizes the data in this column for all rows where the current value matches the selection criteria
-     * <p>
-     * Example:
-     * myColumn.summarize(myColumn.isLessThan(100), AggregateFunctions.count);
-     */
-    public Double summarize(Selection selection, NumericAggregateFunction function) {
-        NumberColumn column = where(selection);
-        return function.summarize(column);
-    }
-
-    @Override
-    public double[] asDoubleArray() {
-        final double[] output = new double[size()];
-        for (int i = 0; i < size(); i++) {
-            output[i] = getDouble(i);
-        }
-        return output;
-    }
-
-    @Override
-    public NumberColumn where(final Selection selection) {
-        return (NumberColumn) subset(selection);
-    }
-
-    @Override
-    public Selection eval(final DoublePredicate predicate) {
-        final Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            final double next = getDouble(idx);
-            if (predicate.test(next)) {
-                bitmap.add(idx);
-            }
-        }
-        return bitmap;
-    }
-
-    @Override
-    public Selection eval(final DoubleBiPredicate predicate, final NumberColumn otherColumn) {
-        final Selection selection = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            if (predicate.test(getDouble(idx), otherColumn.getDouble(idx))) {
-                selection.add(idx);
-            }
-        }
-        return selection;
-    }
-
-    @Override
-    public Selection eval(final DoubleBiPredicate predicate, final Number number) {
-        final double value = number.doubleValue();
-        final Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            final double next = getDouble(idx);
-            if (predicate.test(next, value)) {
-                bitmap.add(idx);
-            }
-        }
-        return bitmap;
-    }
-
-    @Override
-    public Selection eval(final BiPredicate<Number, Number> predicate, final Number number) {
-        final double value = number.doubleValue();
-        final Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            final double next = getDouble(idx);
-            if (predicate.test(next, value)) {
-                bitmap.add(idx);
-            }
-        }
-        return bitmap;
-    }
-
-    @Override
-    public Selection eval(final DoubleRangePredicate predicate, final Number rangeStart, final Number rangeEnd) {
-        final double start = rangeStart.doubleValue();
-        final double end = rangeEnd.doubleValue();
-        final Selection bitmap = new BitmapBackedSelection();
-        for (int idx = 0; idx < size(); idx++) {
-            final double next = getDouble(idx);
-            if (predicate.test(next, start, end)) {
-                bitmap.add(idx);
-            }
-        }
-        return bitmap;
-    }
-
-    @Override
-    public Selection isIn(final Number... numbers) {
-        return isIn(Arrays.stream(numbers).mapToDouble(Number::doubleValue).toArray());
-    }
-
-    @Override
-    public Selection isIn(final double... doubles) {
-        final Selection results = new BitmapBackedSelection();
-        final DoubleRBTreeSet doubleSet = new DoubleRBTreeSet(doubles);
-        for (int i = 0; i < size(); i++) {
-            if (doubleSet.contains(getDouble(i))) {
-                results.add(i);
-            }
-        }
-        return results;
-    }
-
-    @Override
-    public Selection isNotIn(final Number... numbers) {
-        final Selection results = new BitmapBackedSelection();
-        results.addRange(0, size());
-        results.andNot(isIn(numbers));
-        return results;
-    }
-
-    @Override
-    public Selection isNotIn(final double... doubles) {
-        final Selection results = new BitmapBackedSelection();
-        results.addRange(0, size());
-        results.andNot(isIn(doubles));
-        return results;
-    }
-
     public boolean contains(final double value) {
         return data.contains(value);
     }
@@ -651,86 +470,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return data.countMissing();
     }
 
-    // Reduce functions applied to the whole column
-    public double sum() {
-        return sum.summarize(this);
-    }
-
-    public double product() {
-        return product.summarize(this);
-    }
-
-    public double mean() {
-        return mean.summarize(this);
-    }
-
-    public double median() {
-        return median.summarize(this);
-    }
-
-    public double quartile1() {
-        return quartile1.summarize(this);
-    }
-
-    public double quartile3() {
-        return quartile3.summarize(this);
-    }
-
-    public double percentile(double percentile) {
-        return AggregateFunctions.percentile(this, percentile);
-    }
-
-    public double range() {
-        return range.summarize(this);
-    }
-
-    public double max() {
-        return max.summarize(this);
-    }
-
-    public double min() {
-        return min.summarize(this);
-    }
-
-    public double variance() {
-        return variance.summarize(this);
-    }
-
-    public double populationVariance() {
-        return populationVariance.summarize(this);
-    }
-
-    public double standardDeviation() {
-        return stdDev.summarize(this);
-    }
-
-    public double sumOfLogs() {
-        return sumOfLogs.summarize(this);
-    }
-
-    public double sumOfSquares() {
-        return sumOfSquares.summarize(this);
-    }
-
-    public double geometricMean() {
-        return geometricMean.summarize(this);
-    }
-
-    /**
-     * Returns the quadraticMean, aka the root-mean-square, for all values in this column
-     */
-    public double quadraticMean() {
-        return quadraticMean.summarize(this);
-    }
-
-    public double kurtosis() {
-        return kurtosis.summarize(this);
-    }
-
-    public double skewness() {
-        return skewness.summarize(this);
-    }
-
     /**
      * Returns a DateTimeColumn where each value is the LocalDateTime represented by the values in this column
      * <p>
@@ -753,42 +492,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     }
 
     /**
-     * Returns the pearson's correlation between the receiver and the otherColumn
-     **/
-    public double pearsons(NumberColumn otherColumn) {
-
-        double[] x = asDoubleArray();
-        double[] y = otherColumn.asDoubleArray();
-
-        return new PearsonsCorrelation().correlation(x, y);
-    }
-
-    /**
-     * Returns the Spearman's Rank correlation between the receiver and the otherColumn
-     *
-     * @param otherColumn A NumberColumn with no missing values
-     * @throws NotANumberException if either column contains any missing values
-     **/
-    public double spearmans(NumberColumn otherColumn) {
-
-        double[] x = asDoubleArray();
-        double[] y = otherColumn.asDoubleArray();
-
-        return new SpearmansCorrelation().correlation(x, y);
-    }
-
-    /**
-     * Returns the Kendall's Tau Rank correlation between the receiver and the otherColumn
-     **/
-    public double kendalls(NumberColumn otherColumn) {
-
-        double[] x = asDoubleArray();
-        double[] y = otherColumn.asDoubleArray();
-
-        return new KendallsCorrelation().correlation(x, y);
-    }
-
-    /**
      * Returns the number of unique values in this column, excluding missing values
      */
     @Override
@@ -796,169 +499,10 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return data.countUnique();
     }
 
-    public Selection isMissing() {
-        return eval(isMissing);
-    }
-
-    public Selection isNotMissing() {
-        return eval(isNotMissing);
-    }
-
     @Override
     public NumberColumn appendObj(Object obj) {
         data.appendObj(obj);
         return this;
-    }
-
-    /**
-     * Counts the number of rows satisfying predicate, but only upto the max value
-     *
-     * @param test the predicate
-     * @param max  the maximum number of rows to count
-     * @return the number of rows satisfying the predicate
-     */
-    public int count(DoublePredicate test, int max) {
-        int count = 0;
-        for (int i = 0; i < size(); i++) {
-            if (test.test(getDouble(i))) {
-                count++;
-                if (count >= max) {
-                    return count;
-                }
-            }
-        }
-        return count;
-    }
-
-    /**
-     * Returns a new NumberColumn with only those rows satisfying the predicate
-     *
-     * @param test the predicate
-     * @return a new NumberColumn with only those rows satisfying the predicate
-     */
-    public NumberColumn filter(DoublePredicate test) {
-        NumberColumn result = NumberColumn.create(name());
-        for (int i = 0; i < size(); i++) {
-            double d = getDouble(i);
-            if (test.test(d)) {
-                result.append(d);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Maps the function across all rows, appending the results to the provided Column
-     *
-     * @param fun  function to map
-     * @param into Column to which results are appended
-     * @return the provided Column, to which results are appended
-     */
-    public <R> Column<R> mapInto(DoubleFunction<? extends R> fun, Column<R> into) {
-        for (int i = 0; i < size(); i++) {
-            try {
-                into.append(fun.apply(getDouble(i)));
-            } catch (Exception e) {
-                into.appendMissing();
-            }
-        }
-        return into;
-    }
-
-    /**
-     * Maps the function across all rows, appending the results to a new NumberColumn
-     *
-     * @param fun function to map
-     * @return the NumberColumn with the results
-     */
-    public NumberColumn map(ToDoubleFunction<Double> fun) {
-        NumberColumn result = NumberColumn.create(name());
-        for (double t : this) {
-            try {
-                result.append(fun.applyAsDouble(t));
-            } catch (Exception e) {
-                result.appendMissing();
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns the maximum row according to the provided Comparator
-     *
-     * @param comp
-     * @return the maximum row
-     */
-    public Optional<Double> max(DoubleComparator comp) {
-        boolean first = true;
-        double d1 = 0.0;
-        for (int i = 0; i < size(); i++) {
-            double d2 = getDouble(i);
-            if (first) {
-                d1 = d2;
-                first = false;
-            } else if (comp.compare(d1, d2) < 0) {
-                d1 = d2;
-            }
-        }
-        return (first ? Optional.<Double>empty() : Optional.<Double>of(d1));
-    }
-
-    /**
-     * Returns the minimum row according to the provided Comparator
-     *
-     * @param comp
-     * @return the minimum row
-     */
-    public Optional<Double> min(DoubleComparator comp) {
-        boolean first = true;
-        double d1 = 0.0;
-        for (int i = 0; i < size(); i++) {
-            double d2 = getDouble(i);
-            if (first) {
-                d1 = d2;
-                first = false;
-            } else if (comp.compare(d1, d2) > 0) {
-                d1 = d2;
-            }
-        }
-        return (first ? Optional.<Double>empty() : Optional.<Double>of(d1));
-    }
-
-    /**
-     * Reduction with binary operator and initial value
-     *
-     * @param initial initial value
-     * @param op      the operator
-     * @return the result of reducing initial value and all rows with operator
-     */
-    public double reduce(double initial, DoubleBinaryOperator op) {
-        double acc = initial;
-        for (int i = 0; i < size(); i++) {
-            acc = op.applyAsDouble(acc, getDouble(i));
-        }
-        return acc;
-    }
-
-    /**
-     * Reduction with binary operator
-     *
-     * @param op the operator
-     * @return Optional with the result of reducing all rows with operator
-     */
-    public Optional<Double> reduce(DoubleBinaryOperator op) {
-        boolean first = true;
-        double acc = 0.0;
-        for (int i = 0; i < size(); i++) {
-            double d = getDouble(i);
-            if (first) {
-                acc = d;
-                first = false;
-            } else {
-                acc = op.applyAsDouble(acc, d);
-            }
-        }
-        return (first ? Optional.<Double>empty() : Optional.<Double>of(acc));
     }
 
     @Override
@@ -1015,16 +559,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     }
 
     /**
-     * Counts the number of rows satisfying predicate
-     *
-     * @param test the predicate
-     * @return the number of rows satisfying the predicate
-     */
-    public int count(DoublePredicate test) {
-        return count(test, size());
-    }
-
-    /**
      * Returns true if all rows satisfy the predicate, false otherwise
      *
      * @param test the predicate
@@ -1052,11 +586,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
      */
     public boolean noneMatch(DoublePredicate test) {
         return count(test, 1) == 0;
-    }
-
-    @Override
-    public Double get(final int index) {
-        return getDouble(index);
     }
 
     @Override
@@ -1124,6 +653,41 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
 
     public boolean valueIsMissing(int value) {
         return data.isMissingValue(value);
+    }
+
+    /**
+     * Maps the function across all rows, appending the results to a new NumberColumn
+     *
+     * @param fun function to map
+     * @return the NumberColumn with the results
+     */
+    public NumberColumn map(ToDoubleFunction<Double> fun) {
+        NumberColumn result = NumberColumn.create(name());
+        for (double t : this) {
+            try {
+                result.append(fun.applyAsDouble(t));
+            } catch (Exception e) {
+                result.appendMissing();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns a new NumberColumn with only those rows satisfying the predicate
+     *
+     * @param test the predicate
+     * @return a new NumberColumn with only those rows satisfying the predicate
+     */
+    public NumberColumn filter(DoublePredicate test) {
+        NumberColumn result = NumberColumn.create(name());
+        for (int i = 0; i < size(); i++) {
+            double d = getDouble(i);
+            if (test.test(d)) {
+                result.append(d);
+            }
+        }
+        return result;
     }
 
 }
