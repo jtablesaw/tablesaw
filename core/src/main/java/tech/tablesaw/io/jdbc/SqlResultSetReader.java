@@ -50,11 +50,11 @@ public class SqlResultSetReader {
                 .put(Types.DOUBLE, ColumnType.DOUBLE)
                 .put(Types.FLOAT, ColumnType.DOUBLE)
                 .put(Types.NUMERIC, ColumnType.DOUBLE)
-                .put(Types.REAL, ColumnType.DOUBLE)
+                .put(Types.REAL, ColumnType.FLOAT)
 
-                .put(Types.INTEGER, ColumnType.DOUBLE)
-                .put(Types.SMALLINT, ColumnType.DOUBLE)
-                .put(Types.TINYINT, ColumnType.DOUBLE)
+                .put(Types.INTEGER, ColumnType.INTEGER)
+                .put(Types.SMALLINT, ColumnType.INTEGER)
+                .put(Types.TINYINT, ColumnType.INTEGER)
                 .put(Types.BIGINT, ColumnType.DOUBLE)
 
                 .put(Types.CHAR, ColumnType.STRING)
