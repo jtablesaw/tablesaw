@@ -1,18 +1,18 @@
 package tech.tablesaw.api;
 
-import static tech.tablesaw.api.ColumnType.INTEGER;
-
-import java.util.Iterator;
-
 import com.google.common.base.Preconditions;
-
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.IntDataWrapper;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumericDataWrapper;
+
+import java.util.Iterator;
+
+import static tech.tablesaw.api.ColumnType.INTEGER;
 
 public class IntColumn extends NumberColumn<Integer> implements NumericColumn<Integer>, CategoricalColumn<Integer> {
 
@@ -43,25 +43,21 @@ public class IntColumn extends NumberColumn<Integer> implements NumericColumn<In
         return new IntColumn(name, new IntArrayList(initialSize));
     }
 
-    public static IntColumn createWithIntegers(String name) {
-        return new IntColumn(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
-    }
-
-    public static IntColumn createWithIntegers(String name, int size) {
-        return new IntColumn(name, new IntArrayList(size));
-    }
-
     /**
      * Returns a new numeric column initialized with the given name and size. The values in the column are
      * integers beginning at startsWith and continuing through size (exclusive), monotonically increasing by 1
      * TODO consider a generic fill function including steps or random samples from various distributions
      */
     public static IntColumn indexColumn(final String columnName, final int size, final int startsWith) {
-        final IntColumn indexColumn = IntColumn.createWithIntegers(columnName, size);
+        final IntColumn indexColumn = IntColumn.create(columnName, size);
         for (int i = 0; i < size; i++) {
             indexColumn.append(i + startsWith);
         }
         return indexColumn;
+    }
+
+    public static boolean valueIsMissing(int value) {
+        return value == IntColumnType.missingValueIndicator();
     }
 
     @Override

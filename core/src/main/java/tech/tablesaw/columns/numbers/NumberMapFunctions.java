@@ -18,6 +18,7 @@ import org.apache.commons.math3.random.EmpiricalDistribution;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumericColumn;
 
 public interface NumberMapFunctions extends NumberIterable {
 
@@ -78,7 +79,7 @@ public interface NumberMapFunctions extends NumberIterable {
         return pctColumn;
     }
 
-    default DoubleColumn subtract(DoubleColumn column2) {
+    default DoubleColumn subtract(NumericColumn<?> column2) {
         int col1Size = size();
         int col2Size = column2.size();
         if (col1Size != col2Size)
@@ -91,7 +92,7 @@ public interface NumberMapFunctions extends NumberIterable {
         return result;
     }
 
-    default DoubleColumn add(DoubleColumn column2) {
+    default DoubleColumn add(NumericColumn<?> column2) {
         int col1Size = size();
         int col2Size = column2.size();
         if (col1Size != col2Size)
@@ -104,7 +105,7 @@ public interface NumberMapFunctions extends NumberIterable {
         return result;
     }
 
-    default DoubleColumn multiply(DoubleColumn column2) {
+    default DoubleColumn multiply(NumericColumn<?> column2) {
         int col1Size = size();
         int col2Size = column2.size();
         if (col1Size != col2Size)
@@ -117,7 +118,7 @@ public interface NumberMapFunctions extends NumberIterable {
         return result;
     }
 
-    default DoubleColumn divide(DoubleColumn column2) {
+    default DoubleColumn divide(NumericColumn<?> column2) {
         int col1Size = size();
         int col2Size = column2.size();
         if (col1Size != col2Size)

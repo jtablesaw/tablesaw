@@ -15,6 +15,7 @@
 package tech.tablesaw.plotly;
 
 import tech.tablesaw.AbstractExample;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -46,7 +47,7 @@ public class MurderVisualizations extends AbstractExample {
         NumberColumn murdered = murders.numberColumn("mrd");
         murdered.setName("murdered");
         cleared.setName("cleared");
-        NumberColumn clearanceRate = cleared.divide(murdered);
+        DoubleColumn clearanceRate = cleared.divide(murdered);
         clearanceRate.setName("clearance rate");
         NumberColumn unsolved = murdered.subtract(cleared);
         unsolved.setName("unsolved");

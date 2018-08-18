@@ -27,10 +27,10 @@ public class PieExample {
     public static void main(String[] args) throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
 
-        Table t2 = table.countBy(table.numberColumn("Scale"));
+        Table t2 = table.countBy(table.categoricalColumn("Scale"));
 
         PieTrace trace = PieTrace.builder(
-                t2.numberColumn("Category"),
+                t2.categoricalColumn("Category"),
                 t2.numberColumn("Count")).build();
         Layout layout = Layout.builder().title("Total fatalities by scale").build();
 

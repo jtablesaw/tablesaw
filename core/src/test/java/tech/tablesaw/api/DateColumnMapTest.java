@@ -45,24 +45,24 @@ public class DateColumnMapTest {
         column1.appendInternal(day4);
         column1.appendInternal(day5);
 
-        DoubleColumn group = column1.timeWindow(ChronoUnit.DAYS, 7);
-        assertEquals(0, group.get(0), 0.001);
-        assertEquals(0, group.get(1), 0.001);
-        assertEquals(1, group.get(2), 0.001);
-        assertEquals(2, group.get(3), 0.001);
+        IntColumn group = column1.timeWindow(ChronoUnit.DAYS, 7);
+        assertEquals(0, group.getInt(0));
+        assertEquals(0, group.getInt(1));
+        assertEquals(1, group.getInt(2));
+        assertEquals(2, group.getInt(3));
 
-        DoubleColumn group2 = column1.timeWindow(ChronoUnit.WEEKS, 1);
-        assertEquals(0, group2.get(0), 0.001);
-        assertEquals(0, group2.get(1), 0.001);
-        assertEquals(1, group2.get(2), 0.001);
-        assertEquals(2, group2.get(3), 0.001);
+        IntColumn group2 = column1.timeWindow(ChronoUnit.WEEKS, 1);
+        assertEquals(0, group2.getInt(0));
+        assertEquals(0, group2.getInt(1));
+        assertEquals(1, group2.getInt(2));
+        assertEquals(2, group2.getInt(3));
 
-        DoubleColumn group3 = column1.timeWindow(ChronoUnit.MONTHS, 1);
-        assertEquals(0, group3.get(0), 0.001);
-        assertEquals(0, group3.get(1), 0.001);
-        assertEquals(0, group3.get(2), 0.001);
-        assertEquals(0, group3.get(3), 0.001);
-        assertEquals(1, group3.get(4), 0.001);
+        IntColumn group3 = column1.timeWindow(ChronoUnit.MONTHS, 1);
+        assertEquals(0, group3.getInt(0));
+        assertEquals(0, group3.getInt(1));
+        assertEquals(0, group3.getInt(2));
+        assertEquals(0, group3.getInt(3));
+        assertEquals(1, group3.getInt(4));
     }
 
     @Test
@@ -80,14 +80,14 @@ public class DateColumnMapTest {
         int day2 = pack(2018, 11, 23);
         DateColumn column2 = DateColumn.create("foo");
         column2.appendInternal(day2);
-        DoubleColumn days = column1.daysUntil(column2);
-        DoubleColumn weeks = column1.weeksUntil(column2);
-        DoubleColumn months = column1.monthsUntil(column2);
-        DoubleColumn years = column1.yearsUntil(column2);
-        assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.DAYS), days.get(0), 0.01);
-        assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.WEEKS), weeks.get(0), 0.01);
-        assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.MONTHS), months.get(0), 0.01);
-        assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.YEARS), years.get(0), 0.01);
+        IntColumn days = column1.daysUntil(column2);
+        IntColumn weeks = column1.weeksUntil(column2);
+        IntColumn months = column1.monthsUntil(column2);
+        IntColumn years = column1.yearsUntil(column2);
+        assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.DAYS), days.getInt(0));
+        assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.WEEKS), weeks.getInt(0));
+        assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.MONTHS), months.getInt(0));
+        assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.YEARS), years.getInt(0));
     }
 
         @Test
@@ -100,22 +100,22 @@ public class DateColumnMapTest {
         column1.appendInternal(day2);
         column1.appendInternal(day3);
         // plus days
-        assertEquals(pack(2011, 12,21), column1.plusDays(2).getPackedDate(0), 0.001);
-        assertEquals(pack(2012, 1,3), column1.plusDays(2).getPackedDate(1), 0.001);
-        assertEquals(pack(2011, 12,30), column1.minusDays(2).getPackedDate(1), 0.001);
+        assertEquals(pack(2011, 12,21), column1.plusDays(2).getPackedDate(0));
+        assertEquals(pack(2012, 1,3), column1.plusDays(2).getPackedDate(1));
+        assertEquals(pack(2011, 12,30), column1.minusDays(2).getPackedDate(1));
 
         // plus weeks
-        assertEquals(pack(2012, 1,8), column1.plusWeeks(1).getPackedDate(1), 0.001);
-        assertEquals(pack(2012, 1,3), column1.minusWeeks(1).getPackedDate(2), 0.001);
+        assertEquals(pack(2012, 1,8), column1.plusWeeks(1).getPackedDate(1));
+        assertEquals(pack(2012, 1,3), column1.minusWeeks(1).getPackedDate(2));
 
         // plus months
-        assertEquals(pack(2012, 2,19), column1.plusMonths(2).getPackedDate(0), 0.001);
-        assertEquals(pack(2012, 3,1), column1.plusMonths(2).getPackedDate(1), 0.001);
-        assertEquals(pack(2011, 11,1), column1.minusMonths(2).getPackedDate(1), 0.001);
+        assertEquals(pack(2012, 2,19), column1.plusMonths(2).getPackedDate(0));
+        assertEquals(pack(2012, 3,1), column1.plusMonths(2).getPackedDate(1));
+        assertEquals(pack(2011, 11,1), column1.minusMonths(2).getPackedDate(1));
 
         // plus years
-        assertEquals(pack(2013, 12,19), column1.plusYears(2).getPackedDate(0), 0.001);
-        assertEquals(pack(2015, 1,1), column1.plusYears(3).getPackedDate(1), 0.001);
-        assertEquals(pack(2011, 1,1), column1.minusYears(1).getPackedDate(1), 0.001);
+        assertEquals(pack(2013, 12,19), column1.plusYears(2).getPackedDate(0));
+        assertEquals(pack(2015, 1,1), column1.plusYears(3).getPackedDate(1));
+        assertEquals(pack(2011, 1,1), column1.minusYears(1).getPackedDate(1));
     }
 }

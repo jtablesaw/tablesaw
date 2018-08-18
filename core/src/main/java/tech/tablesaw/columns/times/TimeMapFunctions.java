@@ -16,10 +16,14 @@ package tech.tablesaw.columns.times;
 
 import com.google.common.base.Strings;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 import java.time.LocalTime;
@@ -31,19 +35,19 @@ import static tech.tablesaw.api.TimeColumn.MISSING_VALUE;
 
 public interface TimeMapFunctions extends Column<LocalTime> {
 
-    default DoubleColumn differenceInMilliseconds(TimeColumn column2) {
+    default IntColumn differenceInMilliseconds(TimeColumn column2) {
         return difference(column2, MILLIS);
     }
 
-    default DoubleColumn differenceInSeconds(TimeColumn column2) {
+    default IntColumn differenceInSeconds(TimeColumn column2) {
         return difference(column2, SECONDS);
     }
 
-    default DoubleColumn differenceInMinutes(TimeColumn column2) {
+    default IntColumn differenceInMinutes(TimeColumn column2) {
         return difference(column2, MINUTES);
     }
 
-    default DoubleColumn differenceInHours(TimeColumn column2) {
+    default IntColumn differenceInHours(TimeColumn column2) {
         return difference(column2, HOURS);
     }
 
@@ -56,19 +60,19 @@ public interface TimeMapFunctions extends Column<LocalTime> {
 
     TimeColumn lag(int n);
 
-    default DoubleColumn difference(TimeColumn column2, ChronoUnit unit) {
-        DoubleColumn newColumn = DoubleColumn.create(name() + " - " + column2.name());
+    default IntColumn difference(TimeColumn column2, ChronoUnit unit) {
+        IntColumn newColumn = IntColumn.create(name() + " - " + column2.name());
 
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
             int c2 = column2.getIntInternal(r);
             if (TimeColumn.valueIsMissing(c1) || TimeColumn.valueIsMissing(c2)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.append(IntColumnType.missingValueIndicator());
             } else {
                 LocalTime value1 = PackedLocalTime.asLocalTime(c1);
                 LocalTime value2 = PackedLocalTime.asLocalTime(c2);
                 if (value1 != null && value2 != null) {
-                    newColumn.append(unit.between(value1, value2));
+                    newColumn.append((int) unit.between(value1, value2));
                 } else {
                     newColumn.appendMissing();
                 }
@@ -241,27 +245,27 @@ public interface TimeMapFunctions extends Column<LocalTime> {
         return newColumn;
     }
 
-    default DoubleColumn hour() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[" + "hour" + "]");
+    default IntColumn hour() {
+        IntColumn newColumn = IntColumn.create(name() + "[" + "hour" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getHour(c1));
             } else {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.append(IntColumnType.missingValueIndicator());
             }
         }
         return newColumn;
     }
 
-    default DoubleColumn minute() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[" + "minute" + "]");
+    default IntColumn minute() {
+        IntColumn newColumn = IntColumn.create(name() + "[" + "minute" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
-            if (!TimeColumn.valueIsMissing(c1)) {
+            if (!IntColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getMinute(c1));
             } else {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.append(IntColumnType.missingValueIndicator());
             }
         }
         return newColumn;

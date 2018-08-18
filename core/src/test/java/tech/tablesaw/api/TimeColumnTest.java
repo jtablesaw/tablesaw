@@ -267,8 +267,8 @@ public class TimeColumnTest {
     public void testPlusHours() {
         fillColumn();
         TimeColumn column2 = column1.plusHours(3);
-        DoubleColumn numberColumn = column2.differenceInHours(column1);
-        double expected = -3;
+        IntColumn numberColumn = column2.differenceInHours(column1);
+        int expected = -3;
         check(numberColumn, expected);
     }
 
@@ -321,7 +321,7 @@ public class TimeColumnTest {
     @Test
     public void testMinute() {
         fillColumn();
-        DoubleColumn minute = column1.minute();
+        IntColumn minute = column1.minute();
         assertEquals(4, minute.get(0), 0.001);
         assertEquals(15, minute.get(1), 0.001);
         assertEquals(DoubleColumnType.missingValueIndicator(), minute.get(2), 0.001);
@@ -339,8 +339,8 @@ public class TimeColumnTest {
     public void testMinusHours() {
         fillColumn();
         TimeColumn column2 = column1.minusHours(0);
-        DoubleColumn numberColumn = column2.differenceInHours(column1);
-        double expected = 0;
+        IntColumn numberColumn = column2.differenceInHours(column1);
+        int expected = 0;
         check(numberColumn, expected);
     }
 
@@ -348,8 +348,8 @@ public class TimeColumnTest {
     public void testPlusMinutes() {
         fillColumn();
         TimeColumn column2 = column1.plusMinutes(30);
-        DoubleColumn numberColumn = column2.differenceInMinutes(column1);
-        double expected = -30;
+        IntColumn numberColumn = column2.differenceInMinutes(column1);
+        int expected = -30;
         check(numberColumn, expected);
     }
 
@@ -357,8 +357,8 @@ public class TimeColumnTest {
     public void testMinusMinutes() {
         fillColumn();
         TimeColumn column2 = column1.minusMinutes(30);
-        DoubleColumn numberColumn = column2.differenceInMinutes(column1);
-        double expected = 30;
+        IntColumn numberColumn = column2.differenceInMinutes(column1);
+        int expected = 30;
         check(numberColumn, expected);
     }
 
@@ -366,8 +366,8 @@ public class TimeColumnTest {
     public void testPlusSeconds() {
         fillColumn();
         TimeColumn column2 = column1.plusSeconds(101);
-        DoubleColumn numberColumn = column2.differenceInSeconds(column1);
-        double expected = -101;
+        IntColumn numberColumn = column2.differenceInSeconds(column1);
+        int expected = -101;
         check(numberColumn, expected);
     }
 
@@ -375,8 +375,8 @@ public class TimeColumnTest {
     public void testMinusSeconds() {
         fillColumn();
         TimeColumn column2 = column1.minusSeconds(101);
-        DoubleColumn numberColumn = column2.differenceInSeconds(column1);
-        double expected = 101;
+        IntColumn numberColumn = column2.differenceInSeconds(column1);
+        int expected = 101;
         check(numberColumn, expected);
     }
 
@@ -384,8 +384,8 @@ public class TimeColumnTest {
     public void testPlusMilliseconds() {
         fillColumn();
         TimeColumn column2 = column1.plusMilliseconds(101);
-        DoubleColumn numberColumn = column2.differenceInMilliseconds(column1);
-        double expected = -101;
+        IntColumn numberColumn = column2.differenceInMilliseconds(column1);
+        int expected = -101;
         check(numberColumn, expected);
     }
 
@@ -393,8 +393,8 @@ public class TimeColumnTest {
     public void testMinusMilliseconds() {
         fillColumn();
         TimeColumn column2 = column1.minusMilliseconds(101);
-        DoubleColumn numberColumn = column2.differenceInMilliseconds(column1);
-        double expected = 101;
+        IntColumn numberColumn = column2.differenceInMilliseconds(column1);
+        int expected = 101;
         check(numberColumn, expected);
     }
 
@@ -408,6 +408,11 @@ public class TimeColumnTest {
     private void check(DoubleColumn numberColumn, double expected) {
         assertEquals(expected, numberColumn.min(), .0001);
         assertEquals(expected, numberColumn.max(), .0001);
+    }
+
+    private void check(IntColumn numberColumn, int expected) {
+        assertEquals(expected, (int) numberColumn.min());
+        assertEquals(expected, (int) numberColumn.max());
     }
 
     private void fillColumn() {

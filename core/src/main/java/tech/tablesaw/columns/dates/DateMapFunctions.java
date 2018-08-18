@@ -14,8 +14,16 @@
 
 package tech.tablesaw.columns.dates;
 
-import static tech.tablesaw.api.DateColumn.MISSING_VALUE;
-import static tech.tablesaw.api.DateColumn.valueIsMissing;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,18 +31,8 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.TimeColumn;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import static tech.tablesaw.api.DateColumn.MISSING_VALUE;
+import static tech.tablesaw.api.DateColumn.valueIsMissing;
 
 /**
  * An interface for mapping operations unique to Date columns
@@ -45,19 +43,19 @@ public interface DateMapFunctions extends Column<LocalDate> {
         return column1.name() + ": " + value + " " + unit.toString() + "(s)";
     }
 
-    default DoubleColumn daysUntil(DateColumn column2) {
+    default IntColumn daysUntil(DateColumn column2) {
         return timeUntil(column2, ChronoUnit.DAYS);
     }
 
-    default DoubleColumn weeksUntil(DateColumn column2) {
+    default IntColumn weeksUntil(DateColumn column2) {
         return timeUntil(column2, ChronoUnit.WEEKS);
     }
 
-    default DoubleColumn monthsUntil(DateColumn column2) {
+    default IntColumn monthsUntil(DateColumn column2) {
         return timeUntil(column2, ChronoUnit.MONTHS);
     }
 
-    default DoubleColumn yearsUntil(DateColumn column2) {
+    default IntColumn yearsUntil(DateColumn column2) {
         return timeUntil(column2, ChronoUnit.YEARS);
     }
 
@@ -256,9 +254,9 @@ public interface DateMapFunctions extends Column<LocalDate> {
      * <p>
      * Missing values in either result in a Missing Value for the new column
      */
-    default DoubleColumn timeUntil(DateColumn end, ChronoUnit unit) {
+    default IntColumn timeUntil(DateColumn end, ChronoUnit unit) {
 
-        DoubleColumn newColumn = DoubleColumn.create(name() + " - " + end.name());
+        IntColumn newColumn = IntColumn.create(name() + " - " + end.name());
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             int c2 = end.getIntInternal(r);
@@ -284,7 +282,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
                         if (value1 == null || value2 == null) {
                             newColumn.appendMissing();
                         } else {
-                            newColumn.append(unit.between(value1, value2));
+                            newColumn.append((int) unit.between(value1, value2));
                         }
                         break;
                 }
@@ -338,10 +336,10 @@ public interface DateMapFunctions extends Column<LocalDate> {
      * @param n     The number of units in each group.
      * @param start The starting point of the first group; group boundaries are offsets from this point
      */
-    default DoubleColumn timeWindow(ChronoUnit unit, int n, LocalDate start) {
+    default IntColumn timeWindow(ChronoUnit unit, int n, LocalDate start) {
         String newColumnName = "" +  n + " " + unit.toString() + " window [" + name() + "]";
         int packedStartDate = PackedLocalDate.pack(start);
-        DoubleColumn numberColumn = DoubleColumn.create(newColumnName, size());
+        IntColumn numberColumn = IntColumn.create(newColumnName, size());
         for (int i = 0; i < size(); i++) {
             int packedDate = getIntInternal(i);
             int result;
@@ -367,7 +365,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         return numberColumn;
     }
 
-    default DoubleColumn timeWindow(ChronoUnit unit, int n) {
+    default IntColumn timeWindow(ChronoUnit unit, int n) {
         return timeWindow(unit, n, min());
     }
 
