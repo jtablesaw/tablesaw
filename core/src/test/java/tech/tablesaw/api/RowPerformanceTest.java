@@ -200,8 +200,8 @@ public class RowPerformanceTest {
         t = Table.create("Observations");
         StringColumn conceptId = StringColumn.create("concept");
         DateTimeColumn date = DateTimeColumn.create("date");
-        NumberColumn lowValues = DoubleColumn.create("lowValue");
-        NumberColumn highValues = DoubleColumn.create("highValue");
+        NumberColumn lowValues = NumberColumn.create("lowValue");
+        NumberColumn highValues = NumberColumn.create("highValue");
         highValues.setPrintFormatter(NumberColumnFormatter.ints());
         lowValues.setPrintFormatter(NumberColumnFormatter.ints());
 

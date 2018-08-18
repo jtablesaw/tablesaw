@@ -57,7 +57,7 @@ public class DateTimeColumnTest {
     @Test
     public void testConvertMillisSinceEpoch() {
         long millis = 1503952123189L;
-        DoubleColumn dc = DoubleColumn.create("test");
+        NumberColumn dc = NumberColumn.create("test");
         dc.appendCell(Long.toString(millis));
         DateTimeColumn column2 = dc.asDateTimes(ZoneOffset.UTC);
 

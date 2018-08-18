@@ -17,7 +17,6 @@ package tech.tablesaw.columns.strings;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
@@ -147,7 +146,7 @@ public interface StringMapFunctions extends Column<String> {
 
     default NumberColumn parseInt() {
 
-        NumberColumn newColumn = DoubleColumn.create(name() + "[parsed]");
+        NumberColumn newColumn = NumberColumn.create(name() + "[parsed]");
         for (int r = 0; r < size(); r++) {
             newColumn.append(Integer.parseInt(getString(r)));
         }
@@ -207,7 +206,7 @@ public interface StringMapFunctions extends Column<String> {
 
     default NumberColumn distance(Column<?> column2) {
 
-        NumberColumn newColumn = DoubleColumn.create(name() + column2.name() + "[distance]");
+        NumberColumn newColumn = NumberColumn.create(name() + column2.name() + "[distance]");
 
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
@@ -290,7 +289,7 @@ public interface StringMapFunctions extends Column<String> {
     }
 
     default NumberColumn countTokens(String separator) {
-        NumberColumn newColumn = DoubleColumn.create(name() + "[token count]", this.size());
+        NumberColumn newColumn = NumberColumn.create(name() + "[token count]", this.size());
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -350,7 +349,7 @@ public interface StringMapFunctions extends Column<String> {
      * The returned column is the same size as the original
      */
     default NumberColumn length() {
-        NumberColumn newColumn = DoubleColumn.create(name() + "[length]", this.size());
+        NumberColumn newColumn = NumberColumn.create(name() + "[length]", this.size());
 
         for (int r = 0; r < size(); r++) {
             newColumn.append(getString(r).length());

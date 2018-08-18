@@ -1,21 +1,24 @@
 package tech.tablesaw.columns.datetimes;
 
-import java.time.LocalDateTime;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
+import java.time.LocalDateTime;
+
 public class DateTimeColumnType extends AbstractColumnType {
 
-    public static final DateTimeStringParser DEFAULT_PARSER = new DateTimeStringParser(ColumnType.LOCAL_DATE_TIME);
-    public static final DateTimeColumnType INSTANCE =
-            new DateTimeColumnType(Long.MIN_VALUE, 8, "LOCAL_DATE_TIME", "DateTime");
+    public static int BYTE_SIZE = 8;
 
-    private DateTimeColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
-        super(missingValue, byteSize, name, printerFriendlyName);
+    public static final DateTimeStringParser DEFAULT_PARSER = new DateTimeStringParser(ColumnType.LOCAL_DATE_TIME);
+
+    public static final DateTimeColumnType INSTANCE =
+            new DateTimeColumnType(BYTE_SIZE, "LOCAL_DATE_TIME", "DateTime");
+
+    private DateTimeColumnType(int byteSize, String name, String printerFriendlyName) {
+        super(byteSize, name, printerFriendlyName);
     }
 
     @Override
@@ -33,4 +36,12 @@ public class DateTimeColumnType extends AbstractColumnType {
         return new DateTimeStringParser(this, options);
     }
 
+    @Override
+    public Comparable<?> getMissingValueIndicator() {
+        return missingValueIndicator();
+    }
+
+    public static long missingValueIndicator() {
+        return Long.MIN_VALUE;
+    }
 }

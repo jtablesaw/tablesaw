@@ -15,7 +15,6 @@
 package tech.tablesaw.columns.numbers;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -129,7 +128,7 @@ public class Stats {
     public Table asTable() {
         Table t = Table.create(name);
         StringColumn measure = StringColumn.create("Measure");
-        NumberColumn value = DoubleColumn.create("Value");
+        NumberColumn value = NumberColumn.create("Value");
         t.addColumns(measure);
         t.addColumns(value);
 

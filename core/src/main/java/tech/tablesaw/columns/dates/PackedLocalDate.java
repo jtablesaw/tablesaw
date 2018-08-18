@@ -17,6 +17,7 @@ package tech.tablesaw.columns.dates;
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.columns.numbers.IntColumnType;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -32,7 +33,6 @@ import java.util.Locale;
 import static java.time.DayOfWeek.*;
 import static java.time.Month.*;
 import static java.time.temporal.ChronoField.*;
-import static tech.tablesaw.api.NumberColumn.MISSING_VALUE;
 import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 /**
@@ -68,7 +68,7 @@ public class PackedLocalDate {
     }
 
     public static LocalDate asLocalDate(int date) {
-        if (date == MISSING_VALUE) {
+        if (date == IntColumnType.missingValueIndicator()) {
             return null;
         }
 

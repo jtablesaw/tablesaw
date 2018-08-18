@@ -17,7 +17,6 @@ package tech.tablesaw.columns.dates;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -131,7 +130,7 @@ public class DateFiltersTest {
 
         Table t = Table.create("Test");
         t.addColumns(dateColumn);
-        NumberColumn index = DoubleColumn.indexColumn("index", t.rowCount(), 0);
+        NumberColumn index = NumberColumn.indexColumn("index", t.rowCount(), 0);
         t.addColumns(index);
 
         assertTrue(t.where(t.dateColumn("test").isInJanuary()).numberColumn("index").contains(0.0));
@@ -190,7 +189,7 @@ public class DateFiltersTest {
         assertFalse(dateColumn.isBetweenExcluding(beforeDate, afterDate).contains(2));
         assertFalse(dateColumn.isBetweenExcluding(beforeDate, afterDate).contains(0));
 
-        NumberColumn index = DoubleColumn.indexColumn("index", dateColumn.size(), 0);
+        NumberColumn index = NumberColumn.indexColumn("index", dateColumn.size(), 0);
         Table t = Table.create("test", dateColumn, index);
 
         assertTrue(t.where(dateColumn.isBefore(packed)).nCol("index").contains(0));

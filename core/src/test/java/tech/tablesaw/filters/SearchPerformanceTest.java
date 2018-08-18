@@ -19,7 +19,6 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
@@ -114,8 +113,8 @@ public class SearchPerformanceTest {
         t = Table.create("Observations");
         StringColumn conceptId = StringColumn.create("concept");
         DateTimeColumn date = DateTimeColumn.create("date");
-        NumberColumn lowValues = DoubleColumn.create("lowValue");
-        NumberColumn highValues = DoubleColumn.create("highValue");
+        NumberColumn lowValues = NumberColumn.create("lowValue");
+        NumberColumn highValues = NumberColumn.create("highValue");
         highValues.setPrintFormatter(NumberColumnFormatter.ints());
         lowValues.setPrintFormatter(NumberColumnFormatter.ints());
 

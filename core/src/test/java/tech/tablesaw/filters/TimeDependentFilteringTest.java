@@ -22,7 +22,6 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -140,8 +139,8 @@ public class TimeDependentFilteringTest {
         t = Table.create("Observations");
         StringColumn conceptId = StringColumn.create("concept");
         DateColumn date = DateColumn.create("date");
-        NumberColumn value =  DoubleColumn.create("value");
-        NumberColumn patientId =  DoubleColumn.create("patient");
+        NumberColumn value =  NumberColumn.create("value");
+        NumberColumn patientId =  NumberColumn.create("patient");
         patientId.setPrintFormatter(NumberColumnFormatter.ints());
 
         t.addColumns(conceptId);

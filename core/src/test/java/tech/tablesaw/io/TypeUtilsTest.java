@@ -15,7 +15,6 @@
 package tech.tablesaw.io;
 
 import org.junit.Test;
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.dates.DateStringParser;
 import tech.tablesaw.columns.datetimes.DateTimeStringParser;
 
@@ -26,18 +25,8 @@ import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static tech.tablesaw.api.ColumnType.DOUBLE;
 
 public class TypeUtilsTest {
-
-    /**
-     * Test would throw ClassCastException if method does not work properly
-     */
-    @Test
-    public void testNewColumn() {
-        NumberColumn column = (NumberColumn) TypeUtils.newColumn("test", DOUBLE);
-        assertThat(column, notNullValue());
-    }
 
     @Test
     public void testDateFormaterWithLocaleEN() {

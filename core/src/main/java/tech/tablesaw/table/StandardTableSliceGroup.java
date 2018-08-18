@@ -49,7 +49,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
      */
     public static StandardTableSliceGroup create(Table original, String... columnsNames) {
         List<CategoricalColumn<?>> columns = original.categoricalColumns(columnsNames);
-        return new StandardTableSliceGroup(original, columns.toArray(new CategoricalColumn[0]));
+        return new StandardTableSliceGroup(original, columns.toArray(new CategoricalColumn<?>[0]));
     }
 
     /**

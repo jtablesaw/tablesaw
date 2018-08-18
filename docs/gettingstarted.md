@@ -34,7 +34,7 @@ To create a column you can use one of its static *create()* methods:
 
 ```java
 double[] numbers = {1, 2, 3, 4};
-NumberColumn nc = DoubleColumn.create("Test", numbers);
+NumberColumn nc = NumberColumn.create("Test", numbers);
 out(nc.print());
 ```
 which produces: [^1]
@@ -184,7 +184,7 @@ double[] cuteness = {90.1, 84.3, 99.7};
 Table cuteAnimals = Table.create("Cute Animals)
 	.addColumns(
 		StringColumn.create("Animal types", animals),
-		DoubleColumn.create("rating", cuteness));
+		NumberColumn.create("rating", cuteness));
 ```
 
 #### Importing data

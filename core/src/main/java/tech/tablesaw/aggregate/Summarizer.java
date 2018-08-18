@@ -200,7 +200,7 @@ public class Summarizer {
 
         for (String name : reductionMultimap.keys()) {
             List<AggregateFunction<?, ?>> reductions = reductionMultimap.get(name);
-            results.add(group.aggregate(name, reductions.toArray(new AggregateFunction[0])));
+            results.add(group.aggregate(name, reductions.toArray(new AggregateFunction<?, ?>[0])));
         }
         return combineTables(results);
     }
@@ -211,7 +211,7 @@ public class Summarizer {
             Column<?> column = temp.column(name);
             ColumnType type = column.type();
             for (AggregateFunction<?, ?> reduction : reductions) {
-              if (reduction.isCompatableColumn(type)) {
+              if (reduction.isCompatibleColumn(type)) {
                     reductionMultimap.put(name, reduction);
               }
             }

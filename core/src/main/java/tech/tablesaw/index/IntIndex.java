@@ -14,11 +14,14 @@
 
 package tech.tablesaw.index;
 
+import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.times.PackedLocalTime;
@@ -41,6 +44,26 @@ public class IntIndex {
         Int2ObjectOpenHashMap<IntArrayList> tempMap = new Int2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
             int value = column.getIntInternal(i);
+            IntArrayList recordIds = tempMap.get(value);
+            if (recordIds == null) {
+                recordIds = new IntArrayList();
+                recordIds.add(i);
+                tempMap.trim();
+                tempMap.put(value, recordIds);
+            } else {
+                recordIds.add(i);
+            }
+        }
+        index = new Int2ObjectAVLTreeMap<>(tempMap);
+    }
+
+    public IntIndex(NumberColumn column) {
+        Preconditions.checkArgument(column.type().equals(ColumnType.INTEGER),
+                "Int indexing only allowed on INTEGER numeric columns");
+        int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
+        Int2ObjectOpenHashMap<IntArrayList> tempMap = new Int2ObjectOpenHashMap<>(sizeEstimate);
+        for (int i = 0; i < column.size(); i++) {
+            int value = column.getInt(i);
             IntArrayList recordIds = tempMap.get(value);
             if (recordIds == null) {
                 recordIds = new IntArrayList();

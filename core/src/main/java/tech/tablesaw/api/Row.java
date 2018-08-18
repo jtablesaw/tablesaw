@@ -16,7 +16,7 @@ public class Row implements Iterator<Row> {
     private final Table table;
     private final String[] columnNames;
     private final Map<String, DateColumn> dateColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private final Map<String, DoubleColumn> doubleColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, NumberColumn> doubleColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, StringColumn> stringColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, BooleanColumn> booleanColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, DateTimeColumn> dateTimeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -29,8 +29,8 @@ public class Row implements Iterator<Row> {
         columnNames = table.columnNames().toArray(new String[0]);
         rowNumber = -1;
         for (Column<?> column : table.columns()) {
-            if (column instanceof DoubleColumn) {
-                doubleColumnMap.put(column.name(), (DoubleColumn) column);
+            if (column instanceof NumberColumn) {
+                doubleColumnMap.put(column.name(), (NumberColumn) column);
             }
             if (column instanceof BooleanColumn) {
                 booleanColumnMap.put(column.name(), (BooleanColumn) column);

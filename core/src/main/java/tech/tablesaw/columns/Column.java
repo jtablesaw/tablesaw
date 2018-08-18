@@ -14,7 +14,14 @@
 
 package tech.tablesaw.columns;
 
-import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
+import com.google.common.base.Preconditions;
+import com.google.common.primitives.Ints;
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.table.RollingColumn;
+import tech.tablesaw.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,15 +31,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import com.google.common.base.Preconditions;
-import com.google.common.primitives.Ints;
-
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.table.RollingColumn;
-import tech.tablesaw.util.StringUtils;
+import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 /**
  * The general interface for columns.

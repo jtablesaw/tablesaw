@@ -51,7 +51,7 @@ import java.util.function.Supplier;
 public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters, DateFillers<DateColumn>,
             DateMapFunctions, CategoricalColumn<LocalDate> {
 
-    public static final int MISSING_VALUE = (Integer) ColumnType.LOCAL_DATE.getMissingValue();
+    public static final int MISSING_VALUE = (Integer) DateColumnType.missingValueIndicator();
 
     private final IntComparator reverseIntComparator = DescendingIntComparator.instance();
 

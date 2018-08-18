@@ -20,7 +20,6 @@ import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -66,7 +65,7 @@ public abstract class Relation {
     public abstract Relation removeColumns(Column<?>... columns);
 
     public Relation removeColumns(String... columnName) {
-        Column<?>[] cols = new Column[columnName.length];
+        Column<?>[] cols = new Column<?>[columnName.length];
         for (int i = 0; i < columnName.length; i++) {
             cols[i] = column(columnName[i]);
         }
@@ -231,10 +230,10 @@ public abstract class Relation {
                 .append(" variables (cols)");
 
         Table structure = Table.create(nameBuilder.toString());
-        structure.addColumns(DoubleColumn.create("Index"));
+        structure.addColumns(NumberColumn.create("Index"));
         structure.addColumns(StringColumn.create("Column Name"));
         structure.addColumns(StringColumn.create("Type"));
-        structure.addColumns(DoubleColumn.create("Unique Values"));
+        structure.addColumns(NumberColumn.create("Unique Values"));
         structure.addColumns(StringColumn.create("First"));
         structure.addColumns(StringColumn.create("Last"));
 
@@ -295,12 +294,12 @@ public abstract class Relation {
         return numberColumn(columnIndex(columnName));
     }
 
-    public DoubleColumn doubleColumn(String columnName) {
+    public NumberColumn doubleColumn(String columnName) {
         return doubleColumn(columnIndex(columnName));
     }
 
-    public DoubleColumn doubleColumn(int columnIndex) {
-        return (DoubleColumn) column(columnIndex);
+    public NumberColumn doubleColumn(int columnIndex) {
+        return (NumberColumn) column(columnIndex);
     }
 
     public StringColumn[] stringColumns() {
@@ -309,10 +308,6 @@ public abstract class Relation {
 
     public NumberColumn[] numberColumns() {
         return columns().stream().filter(e->e instanceof NumberColumn).toArray(NumberColumn[]::new);
-    }
-
-    public NumberColumn[] doubleColumns() {
-        return columns().stream().filter(e->e instanceof DoubleColumn).toArray(NumberColumn[]::new);
     }
 
     public BooleanColumn[] booleanColumns() {

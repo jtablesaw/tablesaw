@@ -13,8 +13,10 @@ public abstract class NumericAggregateFunction extends AggregateFunction<NumberC
     }
 
     @Override
-    public boolean isCompatableColumn(ColumnType type) {
-        return type.equals(ColumnType.DOUBLE);
+    public boolean isCompatibleColumn(ColumnType type) {
+        return type.equals(ColumnType.DOUBLE)
+                || type.equals(ColumnType.FLOAT)
+                || type.equals(ColumnType.INTEGER);
     }
 
     @Override

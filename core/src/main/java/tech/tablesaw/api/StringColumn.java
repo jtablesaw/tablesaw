@@ -58,7 +58,7 @@ import static tech.tablesaw.api.ColumnType.STRING;
 public class StringColumn extends AbstractColumn<String>
         implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
-    public static final String MISSING_VALUE = (String) STRING.getMissingValue();
+    public static final String MISSING_VALUE = (String) STRING.getMissingValueIndicator();
 
     private final AtomicInteger nextIndex = new AtomicInteger(1);
 
@@ -224,7 +224,7 @@ public class StringColumn extends AbstractColumn<String>
     public Table countByCategory() {
         Table t = new Table("Column: " + name());
         StringColumn categories = create("Category");
-        NumberColumn counts = DoubleColumn.create("Count");
+        NumberColumn counts = NumberColumn.create("Count");
 
         Int2IntMap valueToCount = new Int2IntOpenHashMap();
 
@@ -512,7 +512,7 @@ public class StringColumn extends AbstractColumn<String>
 
 
     public NumberColumn asNumberColumn() {
-        NumberColumn numberColumn = DoubleColumn.create(this.name() + ": codes", size());
+        NumberColumn numberColumn = NumberColumn.create(this.name() + ": codes", size());
         IntArrayList data = data();
         for (int i = 0; i < size(); i++) {
             numberColumn.append(data.getInt(i));

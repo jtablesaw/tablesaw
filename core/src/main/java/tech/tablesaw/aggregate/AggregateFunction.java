@@ -24,7 +24,7 @@ public abstract class AggregateFunction<INCOL extends Column<?>, OUT> {
         return functionName();
     }
 
-    public abstract boolean isCompatableColumn(ColumnType type);
+    public abstract boolean isCompatibleColumn(ColumnType type);
 
     public abstract ColumnType returnType();
 }

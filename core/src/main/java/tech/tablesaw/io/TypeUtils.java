@@ -14,13 +14,9 @@
 
 package tech.tablesaw.io;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.Column;
 
-import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -47,18 +43,4 @@ public final class TypeUtils {
      * Private constructor to prevent instantiation
      */
     private TypeUtils() {}
-
-    /**
-     * Constructs and returns a column for the given {@code name} and {@code type}
-     */
-    public static Column<?> newColumn(@Nonnull String name, @Nonnull ColumnType type) {
-
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(name),
-                "There must be a valid name for a new column");
-
-        Preconditions.checkArgument(type != ColumnType.SKIP,
-                "SKIP-ped columns should be handled outside of this method.");
-
-        return type.create(name);
-    }
 }

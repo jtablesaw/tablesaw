@@ -1,9 +1,9 @@
 package tech.tablesaw.plotly;
 
 import tech.tablesaw.AbstractExample;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.plotly.api.BoxPlot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.Histogram2D;
@@ -17,8 +17,8 @@ public class DistributionVisualizations extends AbstractExample {
         out(property.xTabCounts("type"));
         NumberColumn sqft = property.numberColumn("sq__ft");
         NumberColumn price = property.numberColumn("price");
-        sqft.set(sqft.isEqualTo(0), DoubleColumn.MISSING_VALUE);
-        price.set(price.isEqualTo(0), DoubleColumn.MISSING_VALUE);
+        sqft.set(sqft.isEqualTo(0), DoubleColumnType.missingValueIndicator());
+        price.set(price.isEqualTo(0), DoubleColumnType.missingValueIndicator());
 
         Plot.show(Histogram.create("Distribution of prices", property.numberColumn("price")));
 

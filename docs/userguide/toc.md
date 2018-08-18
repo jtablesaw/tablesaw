@@ -15,7 +15,6 @@ Tablesaw User Guide
     * [Filtering (Queries)](https://jtablesaw.github.io/tablesaw/userguide/filters)
     * [Mapping](https://jtablesaw.github.io/tablesaw/userguide/mapping)
     * [Summarizing (Aggregation/Reducing)](https://jtablesaw.github.io/tablesaw/userguide/reducing)
-      * [Creating cross-tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs)
   * [Working with Rows](https://jtablesaw.github.io/tablesaw/userguide/rows)
 
 * Plotting and Visualization
@@ -29,7 +28,13 @@ Tablesaw User Guide
 
 * Data Science
 
+  * Introduction
   * [Linear Regression with Smile and Tablesaw: Moneyball Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball Linear regression)
+  * [Creating cross-tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs)
+  * Non-hierarchical clustering (with Smile)
+  * Hierarchical clustering (with Smile)
+  * Classification using Logistic Regression (with Smile)
+  * Classification using Random Forests (with Smile)
 
 * Using Tablesaw in Jupyter
 

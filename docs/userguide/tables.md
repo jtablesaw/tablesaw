@@ -141,7 +141,7 @@ Often you want just one column, which you can get using *t.column(â€œcolumnNameâ
 Since Tablesaw columns are typed, you often need to cast the returned column to something more specific. For example:
 
 ```java
-DoubleColumn dc = (DoubleColumn) t.column();
+DoubleColumn dc = (NumberColumn) t.column();
 ```
 
 as a convenience, tables have column accessors that are type specific: The do the casting for you.

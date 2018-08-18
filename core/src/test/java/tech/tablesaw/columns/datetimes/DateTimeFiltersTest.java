@@ -17,7 +17,6 @@ package tech.tablesaw.columns.datetimes;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
@@ -152,7 +151,7 @@ public class DateTimeFiltersTest {
 
         Table t = Table.create("Test");
         t.addColumns(dateTimeColumn);
-        NumberColumn index = DoubleColumn.indexColumn("index", t.rowCount(), 0);
+        NumberColumn index = NumberColumn.indexColumn("index", t.rowCount(), 0);
         t.addColumns(index);
     }
 
@@ -169,7 +168,7 @@ public class DateTimeFiltersTest {
         dateTimeColumn.append(dateTime);
         dateTimeColumn.append(afterDate);
 
-        NumberColumn index = DoubleColumn.indexColumn("index", dateTimeColumn.size(), 0);
+        NumberColumn index = NumberColumn.indexColumn("index", dateTimeColumn.size(), 0);
         Table t = Table.create("test", dateTimeColumn, index);
 
         assertTrue(dateTimeColumn.isOnOrBefore(date).contains(0));

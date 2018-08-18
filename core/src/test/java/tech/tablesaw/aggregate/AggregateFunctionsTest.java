@@ -17,10 +17,8 @@ package tech.tablesaw.aggregate;
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -144,7 +142,7 @@ public class AggregateFunctionsTest {
         BooleanColumn booleanColumn = BooleanColumn.create("b", args);
 
         double[] numbers = {1, 2, 3, 4};
-        NumberColumn numberColumn = DoubleColumn.create("n", numbers);
+        NumberColumn numberColumn = NumberColumn.create("n", numbers);
 
         String[] strings = {"M", "F", "M", "F"};
         StringColumn stringColumn = StringColumn.create("s", strings);
@@ -160,7 +158,7 @@ public class AggregateFunctionsTest {
         BooleanColumn booleanColumn = BooleanColumn.create("b", args);
 
         double[] numbers = {1, 2, 3, 4};
-        NumberColumn numberColumn = DoubleColumn.create("n", numbers);
+        NumberColumn numberColumn = NumberColumn.create("n", numbers);
 
         String[] strings = {"M", "F", "M", "F"};
         StringColumn stringColumn = StringColumn.create("s", strings);
@@ -189,7 +187,7 @@ public class AggregateFunctionsTest {
     @Test
     public void testPercentileFunctions() {
         double[] values = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        NumberColumn c = DoubleColumn.create("test", values);
+        NumberColumn c = NumberColumn.create("test", values);
         c.appendCell("");
 
         assertEquals(1, countMissing.summarize(c), 0.0001);

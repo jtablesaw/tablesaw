@@ -21,7 +21,6 @@ import org.junit.rules.ExpectedException;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 
@@ -46,8 +45,8 @@ import static tech.tablesaw.api.ColumnType.*;
  */
 public class CsvReaderTest {
 
-    private final ColumnType[] bus_types = {DOUBLE, STRING, STRING, DOUBLE, DOUBLE};
-    private final ColumnType[] bus_types_with_SKIP = {DOUBLE, STRING, SKIP, DOUBLE, DOUBLE};
+    private final ColumnType[] bus_types = {INTEGER, STRING, STRING, FLOAT, FLOAT};
+    private final ColumnType[] bus_types_with_SKIP = {INTEGER, STRING, SKIP, DOUBLE, DOUBLE};
 
     @Test
     public void testWithBusData() throws Exception {
@@ -134,7 +133,7 @@ public class CsvReaderTest {
     public void testMillis() {
 
         long[] times = {1530486314124L, 1530488214124L};
-        DoubleColumn d = DoubleColumn.create("times", times);
+        NumberColumn d = NumberColumn.create("times", times);
         DateTimeColumn column = d.asDateTimes(ZoneOffset.UTC);
         assertEquals(1530486314124L, column.get(0).toInstant(ZoneOffset.UTC).toEpochMilli());
     }
@@ -291,7 +290,7 @@ public class CsvReaderTest {
         String output =
                 "ColumnType[] columnTypes = {\n" +
                         "LOCAL_DATE, // 0     date        \n" +
-                        "DOUBLE,     // 1     approval    \n" +
+                        "INTEGER,    // 1     approval    \n" +
                         "STRING,     // 2     who         \n" +
                         "}\n";
         assertEquals(output, new CsvReader()
@@ -310,7 +309,7 @@ public class CsvReaderTest {
 
         ColumnType[] columnTypes = new CsvReader().detectColumnTypes(stream, options);
         assertEquals(LOCAL_DATE, columnTypes[0]);
-        assertEquals(DOUBLE, columnTypes[1]);
+        assertEquals(INTEGER, columnTypes[1]);
         assertEquals(STRING, columnTypes[2]);
     }
 

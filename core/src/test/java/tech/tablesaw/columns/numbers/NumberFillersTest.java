@@ -1,7 +1,7 @@
 package tech.tablesaw.columns.numbers;
 
 import static org.junit.Assert.assertEquals;
-import static tech.tablesaw.api.DoubleColumn.create;
+import static tech.tablesaw.api.NumberColumn.create;
 import static tech.tablesaw.columns.numbers.fillers.DoubleRangeIterable.range;
 
 import org.junit.Test;

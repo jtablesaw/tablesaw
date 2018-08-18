@@ -1,7 +1,5 @@
 package tech.tablesaw.columns.numbers;
 
-import tech.tablesaw.api.NumberColumn;
-
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -48,7 +46,6 @@ public class NumberColumnFormatter {
         return new NumberColumnFormatter(format);
     }
 
-
     public NumberColumnFormatter() {
         this.format = null;
     }
@@ -64,7 +61,7 @@ public class NumberColumnFormatter {
 
     public String format(double value) {
 
-        if (NumberColumn.valueIsMissing(value)) {
+        if (isMissingValue(value)) {
             return missingString;
         }
         if (format == null) {
@@ -79,5 +76,9 @@ public class NumberColumnFormatter {
                 "format=" + format +
                 ", missingString='" + missingString + '\'' +
                 '}';
+    }
+
+    private boolean isMissingValue(double value) {
+        return value != value;
     }
 }

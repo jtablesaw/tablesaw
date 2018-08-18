@@ -14,24 +14,20 @@
 
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import org.apache.commons.math3.random.EmpiricalDistribution;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 
-import static tech.tablesaw.api.NumberColumn.MISSING_VALUE;
-
-public interface NumberMapFunctions extends DoubleIterable {
+public interface NumberMapFunctions extends NumberIterable {
 
     /**
      * Returns a transformation of the data in this column such that the result has a mean of 0, and a
      * standard deviation of 1
      */
-    default DoubleColumn normalize() {
+    default NumberColumn normalize() {
         double[] result = StatUtils.normalize(asDoubleArray());
-        return DoubleColumn.create(name() + " normalized", result);
+        return NumberColumn.create(name() + " normalized", result);
     }
 
     String name();
@@ -46,16 +42,16 @@ public interface NumberMapFunctions extends DoubleIterable {
      * Return the elements of this column as the ratios of their value and the sum of all
      * elements
      */
-    default DoubleColumn asRatio() {
-      DoubleColumn pctColumn = DoubleColumn.create(name() + " percents");
+    default NumberColumn asRatio() {
+      NumberColumn pctColumn = NumberColumn.create(name() + " percents");
         double total = sum();
-        DoubleIterator iterator = doubleIterator();
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             if (total != 0) {
                 pctColumn.append((float) value / total);
             } else {
-                pctColumn.append(MISSING_VALUE);
+                pctColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return pctColumn;
@@ -67,76 +63,76 @@ public interface NumberMapFunctions extends DoubleIterable {
      * Return the elements of this column as the percentages of their value relative to the sum of all
      * elements
      */
-    default DoubleColumn asPercent() {
-        DoubleColumn pctColumn = DoubleColumn.create(name() + " percents");
+    default NumberColumn asPercent() {
+        NumberColumn pctColumn = NumberColumn.create(name() + " percents");
         double total = sum();
-        DoubleIterator iterator = doubleIterator();
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             if (total != 0) {
                 pctColumn.append(((float) value / total) * 100);
             } else {
-                pctColumn.append(MISSING_VALUE);
+                pctColumn.append(DoubleColumnType.missingValueIndicator());
             }
         }
         return pctColumn;
     }
 
-    default DoubleColumn subtract(NumberColumn column2) {
+    default NumberColumn subtract(NumberColumn column2) {
         int col1Size = size();
         int col2Size = column2.size();
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        DoubleColumn result = DoubleColumn.create(name() + " - " + column2.name(), col1Size);
+        NumberColumn result = NumberColumn.create(name() + " - " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
             result.append(subtract(getDouble(r), column2.getDouble(r)));
         }
         return result;
     }
 
-    default DoubleColumn add(NumberColumn column2) {
+    default NumberColumn add(NumberColumn column2) {
         int col1Size = size();
         int col2Size = column2.size();
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        DoubleColumn result = DoubleColumn.create(name() + " + " + column2.name(), col1Size);
+        NumberColumn result = NumberColumn.create(name() + " + " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
             result.append(add(getDouble(r), column2.getDouble(r)));
         }
         return result;
     }
 
-    default DoubleColumn multiply(NumberColumn column2) {
+    default NumberColumn multiply(NumberColumn column2) {
         int col1Size = size();
         int col2Size = column2.size();
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        DoubleColumn result = DoubleColumn.create(name() + " * " + column2.name(), col1Size);
+        NumberColumn result = NumberColumn.create(name() + " * " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
             result.append(multiply(getDouble(r), column2.getDouble(r)));
         }
         return result;
     }
 
-    default DoubleColumn divide(NumberColumn column2) {
+    default NumberColumn divide(NumberColumn column2) {
         int col1Size = size();
         int col2Size = column2.size();
         if (col1Size != col2Size)
             throw new IllegalArgumentException("The columns must have the same number of elements");
 
-        DoubleColumn result = DoubleColumn.create(name() + " / " + column2.name(), col1Size);
+        NumberColumn result = NumberColumn.create(name() + " / " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
             result.append(divide(getDouble(r), column2.getDouble(r)));
         }
         return result;
     }
 
-    default DoubleColumn add(Number value) {
+    default NumberColumn add(Number value) {
         double val = value.doubleValue();
-        DoubleColumn result = DoubleColumn.create(name() + " + " + val);
+        NumberColumn result = NumberColumn.create(name() + " + " + val);
         for (int i = 0; i < size(); i++) {
             result.append(add(getDouble(i), val));
         }
@@ -144,27 +140,27 @@ public interface NumberMapFunctions extends DoubleIterable {
     }
 
 
-    default DoubleColumn subtract(Number value) {
+    default NumberColumn subtract(Number value) {
         double val = value.doubleValue();
-        DoubleColumn result = DoubleColumn.create(name() + " - " + val);
+        NumberColumn result = NumberColumn.create(name() + " - " + val);
         for (int i = 0; i < size(); i++) {
             result.append(subtract(getDouble(i), val));
         }
         return result;
     }
 
-    default DoubleColumn divide(Number value) {
+    default NumberColumn divide(Number value) {
         double val = value.doubleValue();
-        DoubleColumn result = DoubleColumn.create(name() + " / " + val);
+        NumberColumn result = NumberColumn.create(name() + " / " + val);
         for (int i = 0; i < size(); i++) {
             result.append(divide(getDouble(i), val));
         }
         return result;
     }
 
-    default DoubleColumn multiply(Number value) {
+    default NumberColumn multiply(Number value) {
         double val = value.doubleValue();
-        DoubleColumn result = DoubleColumn.create(name() + " * " + val);
+        NumberColumn result = NumberColumn.create(name() + " * " + val);
         for (int i = 0; i < size(); i++) {
             result.append(multiply(getDouble(i), val));
         }
@@ -172,22 +168,22 @@ public interface NumberMapFunctions extends DoubleIterable {
     }
 
     default double add(double val1, double val2) {
-        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
-            return MISSING_VALUE;
+        if (valueIsMissing(val1) || valueIsMissing(val2)) {
+            return DoubleColumnType.missingValueIndicator();
         }
         return val1 + val2;
     }
 
     default double multiply(double val1, double val2) {
-        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
-            return MISSING_VALUE;
+        if (valueIsMissing(val1) || valueIsMissing(val2)) {
+            return DoubleColumnType.missingValueIndicator();
         }
         return val1 * val2;
     }
 
     default double divide(double val1, double val2) {
-        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
-            return MISSING_VALUE;
+        if (valueIsMissing(val1) || valueIsMissing(val2)) {
+            return DoubleColumnType.missingValueIndicator();
         }
         return val1 / val2;
     }
@@ -196,68 +192,68 @@ public interface NumberMapFunctions extends DoubleIterable {
      * Returns the result of subtracting val2 from val1, after handling missing values
      */
     default double subtract(double val1, double val2) {
-        if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
-            return MISSING_VALUE;
+        if (valueIsMissing(val1) || valueIsMissing(val2)) {
+            return DoubleColumnType.missingValueIndicator();
         }
         return val1 - val2;
     }
 
     /**
-     * Returns a doubleColumn with the exponential power of each value in this column
+     * Returns a NumberColumn with the exponential power of each value in this column
      */
-    default DoubleColumn power(double power) {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[pow]", size());
-        DoubleIterator iterator = doubleIterator();
+    default NumberColumn power(double power) {
+        NumberColumn newColumn = NumberColumn.create(name() + "[pow]", size());
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             newColumn.append(Math.pow(value, power));
         }
         return newColumn;
     }    
 
     /**
-     * Returns a doubleColumn with the square of each value in this column
+     * Returns a NumberColumn with the square of each value in this column
      */
-    default DoubleColumn square() {
-       DoubleColumn newColumn = power(2);
+    default NumberColumn square() {
+       NumberColumn newColumn = power(2);
         newColumn.setName(name() + "[sq]");
         return newColumn;
     }
 
-    default DoubleColumn sqrt() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[sqrt]", size());
-        DoubleIterator iterator = doubleIterator();
+    default NumberColumn sqrt() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[sqrt]", size());
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             newColumn.append(Math.sqrt(value));
         }
         return newColumn;
     }
 
-    default DoubleColumn cubeRoot() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[cbrt]", size());
-        DoubleIterator iterator = doubleIterator();
+    default NumberColumn cubeRoot() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[cbrt]", size());
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             newColumn.append(Math.cbrt(value));
         }
         return newColumn;
     }
 
-    default DoubleColumn cube() {
-        DoubleColumn newColumn = power(3);
+    default NumberColumn cube() {
+        NumberColumn newColumn = power(3);
         newColumn.setName(name() + "[cb]");
         return newColumn;
     }
 
 
-    default DoubleColumn remainder(NumberColumn column2) {
-        DoubleColumn result = DoubleColumn.create(name() + " % " + column2.name(), size());
+    default NumberColumn remainder(NumberColumn column2) {
+        NumberColumn result = NumberColumn.create(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             double val1 = getDouble(r);
             double val2 = column2.getDouble(r);
-            if (NumberColumn.valueIsMissing(val1) || NumberColumn.valueIsMissing(val2)) {
-                result.append(MISSING_VALUE);
+            if (valueIsMissing(val1) || valueIsMissing(val2)) {
+                result.append(DoubleColumnType.missingValueIndicator());
             } else {
                 result.append(getDouble(r) % column2.getDouble(r));
             }
@@ -268,12 +264,12 @@ public interface NumberMapFunctions extends DoubleIterable {
     /**
      * Returns the natural log of the values in this column as a NumberColumn.
      */
-    default DoubleColumn logN() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[logN]", size());
+    default NumberColumn logN() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[logN]", size());
 
-        DoubleIterator iterator = doubleIterator();
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             newColumn.append(Math.log(value));
         }
         return newColumn;
@@ -282,12 +278,12 @@ public interface NumberMapFunctions extends DoubleIterable {
     /**
      * Returns the base 10 log of the values in this column as a NumberColumn.
      */
-    default DoubleColumn log10() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[log10]", size());
+    default NumberColumn log10() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[log10]", size());
 
-        DoubleIterator iterator = doubleIterator();
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             newColumn.append(Math.log10(value));
         }
         return newColumn;
@@ -297,21 +293,21 @@ public interface NumberMapFunctions extends DoubleIterable {
      * Returns the natural log of the values in this column, after adding 1 to each so that zero
      * values don't return -Infinity
      */
-    default DoubleColumn log1p() {
-      DoubleColumn newColumn = DoubleColumn.create(name() + "[1og1p]", size());
-        DoubleIterator iterator = doubleIterator();
+    default NumberColumn log1p() {
+      NumberColumn newColumn = NumberColumn.create(name() + "[1og1p]", size());
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             newColumn.append(Math.log1p(value));
         }
         return newColumn;
     }
 
-    default DoubleColumn round() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[rounded]", size());
-        DoubleIterator iterator = doubleIterator();
+    default NumberColumn round() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[rounded]", size());
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             newColumn.append(Math.round(value));
         }
         return newColumn;
@@ -322,11 +318,11 @@ public interface NumberMapFunctions extends DoubleIterable {
      *
      * @throws ClassCastException if the returned value will not fit in an int
      */
-    default DoubleColumn roundInt() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[rounded]", size());
-        DoubleIterator iterator = doubleIterator();
+    default NumberColumn roundInt() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[rounded]", size());
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             newColumn.append((int) Math.round(value));
         }
         return newColumn;
@@ -334,13 +330,13 @@ public interface NumberMapFunctions extends DoubleIterable {
 
 
     /**
-     * Returns a doubleColumn with the absolute value of each value in this column
+     * Returns a NumberColumn with the absolute value of each value in this column
      */
-    default DoubleColumn abs() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[abs]", size());
-        DoubleIterator iterator = doubleIterator();
+    default NumberColumn abs() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[abs]", size());
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             newColumn.append(Math.abs(value));
         }
         return newColumn;
@@ -353,22 +349,22 @@ public interface NumberMapFunctions extends DoubleIterable {
      * 2.135 returns -2.135
      * 0     returns  0
      */
-    default DoubleColumn neg() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[neg]", size());
-        DoubleIterator iterator = doubleIterator();
+    default NumberColumn neg() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[neg]", size());
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
+            double value = iterator.next();
             newColumn.append(value * -1);
         }
         return newColumn;
     }
 
-    default DoubleColumn difference() {
-        DoubleColumn returnValue = DoubleColumn.create(this.name(), this.size());
+    default NumberColumn difference() {
+        NumberColumn returnValue = NumberColumn.create(this.name(), this.size());
         if (isEmpty()) {
             return returnValue;
         }
-        returnValue.append(MISSING_VALUE);
+        returnValue.append(DoubleColumnType.missingValueIndicator());
         for (int current = 1; current < size(); current++) {
             returnValue.append(subtract(getDouble(current), getDouble(current - 1)));
         }
@@ -378,14 +374,14 @@ public interface NumberMapFunctions extends DoubleIterable {
     /**
      * Returns a new column with a cumulative sum calculated
      */
-    default DoubleColumn cumSum() {
+    default NumberColumn cumSum() {
         double total = 0.0;
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[cumSum]", size());
-        DoubleIterator iterator = doubleIterator();
+        NumberColumn newColumn = NumberColumn.create(name() + "[cumSum]", size());
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
-            if (NumberColumn.valueIsMissing(value)) {
-                newColumn.append(MISSING_VALUE);
+            double value = iterator.next();
+            if (valueIsMissing(value)) {
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 total += value;
                 newColumn.append(total);
@@ -397,14 +393,14 @@ public interface NumberMapFunctions extends DoubleIterable {
     /**
      * Returns a new column with a cumulative product calculated
      */
-    default DoubleColumn cumProd() {
+    default NumberColumn cumProd() {
         double total = 1.0;
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[cumProd]", size());
-        DoubleIterator iterator = doubleIterator();
+        NumberColumn newColumn = NumberColumn.create(name() + "[cumProd]", size());
+        NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
-            double value = iterator.nextDouble();
-            if (NumberColumn.valueIsMissing(value)) {
-                newColumn.append(MISSING_VALUE);
+            double value = iterator.next();
+            if (valueIsMissing(value)) {
+                newColumn.append(DoubleColumnType.missingValueIndicator());
             } else {
                 total *= value;
                 newColumn.append(total);
@@ -416,16 +412,16 @@ public interface NumberMapFunctions extends DoubleIterable {
     /**
      * Returns a new column with a percent change calculated
      */
-    default DoubleColumn pctChange() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[pctChange]", size());
-        newColumn.append(MISSING_VALUE);
+    default NumberColumn pctChange() {
+        NumberColumn newColumn = NumberColumn.create(name() + "[pctChange]", size());
+        newColumn.append(DoubleColumnType.missingValueIndicator());
         for (int i = 1; i < size(); i++) {
             newColumn.append(getDouble(i) / getDouble(i - 1) - 1);
         }
         return newColumn;
     }
 
-    default DoubleColumn bin(int binCount) {
+    default NumberColumn bin(int binCount) {
         double[] histogram = new double[binCount];
         EmpiricalDistribution distribution = new EmpiricalDistribution(binCount);
         distribution.load(asDoubleArray());
@@ -433,8 +429,10 @@ public interface NumberMapFunctions extends DoubleIterable {
         for(SummaryStatistics stats: distribution.getBinStats()) {
             histogram[k++] = stats.getN();
         }
-        return DoubleColumn.create(name() + "[binned]", histogram);
+        return NumberColumn.create(name() + "[binned]", histogram);
     }
 
     double getDouble(int i);
+
+    boolean valueIsMissing(double value);
 }

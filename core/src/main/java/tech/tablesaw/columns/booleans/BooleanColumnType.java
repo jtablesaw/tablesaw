@@ -9,20 +9,25 @@ public class BooleanColumnType extends AbstractColumnType {
 
     public static final BooleanStringParser DEFAULT_PARSER = new BooleanStringParser(ColumnType.BOOLEAN);
 
+    private static byte BYTE_SIZE = 1;
 
     public static final BooleanColumnType INSTANCE =
-            new BooleanColumnType(Byte.MIN_VALUE,
-                    1,
+            new BooleanColumnType(BYTE_SIZE,
                     "BOOLEAN",
                     "Boolean");
 
-    private BooleanColumnType(Comparable<?> missingValue, int byteSize, String name, String printerFriendlyName) {
-        super(missingValue, byteSize, name, printerFriendlyName);
+    private BooleanColumnType(int byteSize, String name, String printerFriendlyName) {
+        super(byteSize, name, printerFriendlyName);
     }
 
     @Override
     public BooleanColumn create(String name) {
         return BooleanColumn.create(name);
+    }
+
+    @Override
+    public Comparable<?> getMissingValueIndicator() {
+        return missingValueIndicator();
     }
 
     @Override
@@ -35,4 +40,7 @@ public class BooleanColumnType extends AbstractColumnType {
         return new BooleanStringParser(this, readOptions);
     }
 
+    public static byte missingValueIndicator() {
+        return Byte.MIN_VALUE;
+    }
 }

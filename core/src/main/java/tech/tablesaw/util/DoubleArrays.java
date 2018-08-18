@@ -52,7 +52,7 @@ public class DoubleArrays {
     }
 
     public static double[][] to2dArray(List<Column<?>> columnList) {
-        return to2dArray(columnList.toArray(new Column[columnList.size()]));
+        return to2dArray(columnList.toArray(new Column<?>[columnList.size()]));
     }
 
     public static double[][] to2dArray(TableSliceGroup views, int columnNumber) {

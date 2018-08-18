@@ -17,7 +17,7 @@ public abstract class TimeAggregateFunction extends AggregateFunction<TimeColumn
     abstract public LocalTime summarize(TimeColumn column);
 
     @Override
-    public boolean isCompatableColumn(ColumnType type) {
+    public boolean isCompatibleColumn(ColumnType type) {
         return type.equals(ColumnType.LOCAL_TIME);
     }
 

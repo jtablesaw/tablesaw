@@ -247,7 +247,7 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     public Column<?>[] columnArray() {
-        return columnList.toArray(new Column[columnCount()]);
+        return columnList.toArray(new Column<?>[columnCount()]);
     }
 
     /**
@@ -666,7 +666,7 @@ public class Table extends Relation implements Iterable<Row> {
      * are preferred
      */
     public TableSliceGroup splitOn(String... columns) {
-        return splitOn(categoricalColumns(columns).toArray(new CategoricalColumn[columns.length]));
+        return splitOn(categoricalColumns(columns).toArray(new CategoricalColumn<?>[columns.length]));
     }
 
     /**
@@ -690,8 +690,8 @@ public class Table extends Relation implements Iterable<Row> {
 
     public Table structure() {
         Table t = new Table("Structure of " + name());
-        //NumberColumn index = DoubleColumn.create("Index", columnCount());
-        NumberColumn index = DoubleColumn.indexColumn("Index", columnCount(), 0);
+        //NumberColumn index = NumberColumn.create("Index", columnCount());
+        NumberColumn index = NumberColumn.indexColumn("Index", columnCount(), 0);
         StringColumn columnName = StringColumn.create("Column Name", columnCount());
         StringColumn columnType = StringColumn.create("Column Type", columnCount());
         t.addColumns(index);
@@ -751,7 +751,7 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     public Table select(String... columnNames) {
-        return Table.create(this.name, columns(columnNames).toArray(new Column[0]));
+        return Table.create(this.name, columns(columnNames).toArray(new Column<?>[0]));
     }
 
     /**

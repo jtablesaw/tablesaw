@@ -15,11 +15,11 @@
 package tech.tablesaw.plotly;
 
 import tech.tablesaw.AbstractExample;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.plotly.api.AreaPlot;
 import tech.tablesaw.plotly.api.Histogram;
@@ -102,10 +102,10 @@ public class MurderVisualizations extends AbstractExample {
         out(details);
 
         details.numberColumn("offage")
-                .set(details.numberColumn("offage").isEqualTo(999), DoubleColumn.MISSING_VALUE);
+                .set(details.numberColumn("offage").isEqualTo(999), DoubleColumnType.missingValueIndicator());
 
         details.numberColumn("vicage")
-                .set(details.numberColumn("vicage").isEqualTo(999), DoubleColumn.MISSING_VALUE);
+                .set(details.numberColumn("vicage").isEqualTo(999), DoubleColumnType.missingValueIndicator());
 
         details.numberColumn("vicCount")
                 .set(details.numberColumn("vicCount").isEqualTo(0)
@@ -130,7 +130,7 @@ public class MurderVisualizations extends AbstractExample {
         out(categoryCount.printAll());
 
         Table xtab1 = details.xTabColumnPercents("VicSex", "Weapon category");
-        xtab1.columnsOfType(DOUBLE).forEach(e -> ((DoubleColumn)e).setPrintFormatter(NumberColumnFormatter.percent(1)));
+        xtab1.columnsOfType(DOUBLE).forEach(e -> ((NumberColumn)e).setPrintFormatter(NumberColumnFormatter.percent(1)));
         out(xtab1.printAll());
 
         Plot.show(Histogram.create("victim age", details, "vicage"));
@@ -161,9 +161,9 @@ public class MurderVisualizations extends AbstractExample {
 
         Plot.show(Histogram.create("age", asphyx, "vicAge"));
         Table counts = asphyx.xTabCounts("year", "StateName");
-        counts.columnsOfType(DOUBLE).stream().forEach(e -> ((DoubleColumn)e).setPrintFormatter(NumberColumnFormatter.ints()));
-        counts.columnsOfType(DOUBLE).stream().forEach(e -> ((DoubleColumn)e)
-                .set(((DoubleColumn) e).isEqualTo(0), DoubleColumn.MISSING_VALUE));
+        counts.columnsOfType(DOUBLE).stream().forEach(e -> ((NumberColumn)e).setPrintFormatter(NumberColumnFormatter.ints()));
+        counts.columnsOfType(DOUBLE).stream().forEach(e -> ((NumberColumn)e)
+                .set(((NumberColumn) e).isEqualTo(0), DoubleColumnType.missingValueIndicator()));
         out(counts.printAll());
         out(femaleVictims.shape());
     }

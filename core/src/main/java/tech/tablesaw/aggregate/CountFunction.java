@@ -13,7 +13,7 @@ abstract class CountFunction extends AggregateFunction<Column<?>, Integer> {
     abstract public Integer summarize(Column<?> column);
 
     @Override
-    public boolean isCompatableColumn(ColumnType type) {
+    public boolean isCompatibleColumn(ColumnType type) {
         return true;
     }
 
