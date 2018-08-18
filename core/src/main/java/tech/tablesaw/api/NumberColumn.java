@@ -423,11 +423,11 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     public NumberColumn appendCell(final String object, StringParser<?> parser) {
         // TODO: Move this into the data wrappers and avoid the branching logic
         try {
-            if (type().equals(ColumnType.INTEGER)) {
+            if (type().equals(INTEGER)) {
                 append(parser.parseInt(object));
-            } else if (type().equals(ColumnType.FLOAT)) {
+            } else if (type().equals(FLOAT)) {
                 append(parser.parseFloat(object));
-            } else if (type().equals(ColumnType.DOUBLE)) {
+            } else if (type().equals(DOUBLE)) {
                 append(parser.parseDouble(object));
             } else {
                 throw new IllegalArgumentException("Unknown numeric type");
@@ -444,11 +444,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
      * @throws ClassCastException if the returned value will not fit in an int
      */
     public Integer roundInt(final int i) {
-        final double value = getDouble(i);
-        if (data.isMissingValue(value)) {
-            return null;
-        }
-        return (int) Math.round(getDouble(i));
+        return getInt(i);
     }
 
     /**
