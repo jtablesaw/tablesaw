@@ -654,8 +654,11 @@ public class StringColumn extends AbstractColumn<String>
 
     @Override
     public StringColumn appendObj(Object obj) {
+        if (obj == null) {
+            return appendMissing();
+        }
         if (!(obj instanceof String)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to StringColumn");
         }
         return append((String) obj);
     }

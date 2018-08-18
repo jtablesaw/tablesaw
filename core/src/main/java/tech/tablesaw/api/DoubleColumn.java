@@ -292,8 +292,11 @@ public class DoubleColumn extends AbstractColumn<Double> implements NumberColumn
 
     @Override
     public DoubleColumn appendObj(Object obj) {
+        if (obj == null) {
+            return appendMissing();
+        }
         if (!(obj instanceof Double)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to DoubleColumn");
         }
         return append((double) obj);
     }

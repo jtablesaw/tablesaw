@@ -230,8 +230,11 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
 
     @Override
     public BooleanColumn appendObj(Object obj) {
+        if (obj == null) {
+            return appendMissing();
+        }
         if (!(obj instanceof Boolean)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to BooleanColumn");
         }
         return append((Boolean) obj);
     }

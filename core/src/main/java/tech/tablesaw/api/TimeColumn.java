@@ -152,8 +152,11 @@ public class TimeColumn extends AbstractColumn<LocalTime>
 
     @Override
     public TimeColumn appendObj(Object obj) {
+        if (obj == null) {
+            return appendMissing();
+        }
         if (!(obj instanceof LocalTime)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to TimeColumn");
         }
         return append((LocalTime) obj);
     }

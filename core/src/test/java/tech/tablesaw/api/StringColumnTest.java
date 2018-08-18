@@ -53,6 +53,15 @@ TODO: fix
 */
 
     @Test
+    public void testAppendObj() {
+        StringColumn column = StringColumn.create("testing");
+        column.appendObj("Value 1");
+        column.appendObj(null);
+        column.appendObj("Value 2");
+        assertEquals(3, column.size());
+    }
+    
+    @Test
     public void testConditionalSet() {
         column.set(column.isEqualTo("Value 4"), "no Value");
         assertTrue(column.contains("no Value"));
