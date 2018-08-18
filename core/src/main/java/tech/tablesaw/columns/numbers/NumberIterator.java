@@ -10,7 +10,7 @@ import it.unimi.dsi.fastutil.floats.FloatIterator;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 
-public class NumberIterator implements Iterable<Double> {
+public class NumberIterator {
 
     private DoubleArrayList dList;
     private IntArrayList iList;
@@ -45,9 +45,11 @@ public class NumberIterator implements Iterable<Double> {
         if (dList != null) {
             return ((DoubleIterator) iterator).nextDouble();
         } else if (iList != null){
-            return ((IntIterator) iterator).nextInt();
+            int nextInt = ((IntIterator) iterator).nextInt();
+            return IntColumnType.isMissingValue(nextInt) ? DoubleColumnType.missingValueIndicator() : nextInt;
         } else {
-            return ((FloatIterator) iterator).nextFloat();
+            float nextFloat = ((FloatIterator) iterator).nextFloat();
+            return FloatColumnType.isMissingValue(nextFloat) ? DoubleColumnType.missingValueIndicator() : nextFloat;
         }
     }
 

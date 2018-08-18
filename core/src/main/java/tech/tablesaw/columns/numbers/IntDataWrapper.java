@@ -33,8 +33,8 @@ public class IntDataWrapper implements NumericDataWrapper {
     }
 
     @Override
-    public Iterator<Double> iterator() {
-        return new NumberIterator(data).iterator();
+    public Iterator<Integer> iterator() {
+        return data.iterator();
     }
 
     @Override

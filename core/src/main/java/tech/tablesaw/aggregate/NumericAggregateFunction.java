@@ -1,12 +1,12 @@
 package tech.tablesaw.aggregate;
 
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 
 /**
  * A partial implementation of aggregate functions to summarize over a numeric column
  */
-public abstract class NumericAggregateFunction extends AggregateFunction<NumberColumn, Double> {
+public abstract class NumericAggregateFunction extends AggregateFunction<NumericColumn<?>, Double> {
 
     public NumericAggregateFunction(String name) {
         super(name);

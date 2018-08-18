@@ -17,7 +17,7 @@ package tech.tablesaw.columns.strings;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.util.LevenshteinDistance;
@@ -144,9 +144,9 @@ public interface StringMapFunctions extends Column<String> {
         return newColumn;
     }
 
-    default NumberColumn parseInt() {
+    default DoubleColumn parseInt() {
 
-        NumberColumn newColumn = NumberColumn.create(name() + "[parsed]");
+        DoubleColumn newColumn = DoubleColumn.create(name() + "[parsed]");
         for (int r = 0; r < size(); r++) {
             newColumn.append(Integer.parseInt(getString(r)));
         }
@@ -204,9 +204,9 @@ public interface StringMapFunctions extends Column<String> {
      * Returns a column containing the levenshtein distance between the two given string columns
      */
 
-    default NumberColumn distance(Column<?> column2) {
+    default DoubleColumn distance(Column<?> column2) {
 
-        NumberColumn newColumn = NumberColumn.create(name() + column2.name() + "[distance]");
+        DoubleColumn newColumn = DoubleColumn.create(name() + column2.name() + "[distance]");
 
         for (int r = 0; r < size(); r++) {
             String value1 = getString(r);
@@ -288,8 +288,8 @@ public interface StringMapFunctions extends Column<String> {
         return newColumn;
     }
 
-    default NumberColumn countTokens(String separator) {
-        NumberColumn newColumn = NumberColumn.create(name() + "[token count]", this.size());
+    default DoubleColumn countTokens(String separator) {
+        DoubleColumn newColumn = DoubleColumn.create(name() + "[token count]", this.size());
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
@@ -348,8 +348,8 @@ public interface StringMapFunctions extends Column<String> {
      * Returns a column containing the character length of each string in this column
      * The returned column is the same size as the original
      */
-    default NumberColumn length() {
-        NumberColumn newColumn = NumberColumn.create(name() + "[length]", this.size());
+    default DoubleColumn length() {
+        DoubleColumn newColumn = DoubleColumn.create(name() + "[length]", this.size());
 
         for (int r = 0; r < size(); r++) {
             newColumn.append(getString(r).length());

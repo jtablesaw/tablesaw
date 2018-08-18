@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -108,7 +108,7 @@ public class AggregateFunctionsTest {
     public void testSummaryWithACalculatedColumn() {
         Summarizer summarizer = new Summarizer(table, table.dateColumn("date").year(), mean);
         Table t = summarizer.apply();
-        double avg = t.numberColumn(0).get(0);
+        double avg = t.doubleColumn(0).get(0);
         assertTrue(avg > 2002 && avg < 2003);
     }
 
@@ -142,7 +142,7 @@ public class AggregateFunctionsTest {
         BooleanColumn booleanColumn = BooleanColumn.create("b", args);
 
         double[] numbers = {1, 2, 3, 4};
-        NumberColumn numberColumn = NumberColumn.create("n", numbers);
+        DoubleColumn numberColumn = DoubleColumn.create("n", numbers);
 
         String[] strings = {"M", "F", "M", "F"};
         StringColumn stringColumn = StringColumn.create("s", strings);
@@ -158,14 +158,14 @@ public class AggregateFunctionsTest {
         BooleanColumn booleanColumn = BooleanColumn.create("b", args);
 
         double[] numbers = {1, 2, 3, 4};
-        NumberColumn numberColumn = NumberColumn.create("n", numbers);
+        DoubleColumn numberColumn = DoubleColumn.create("n", numbers);
 
         String[] strings = {"M", "F", "M", "F"};
         StringColumn stringColumn = StringColumn.create("s", strings);
 
         Table table = Table.create("test", booleanColumn, numberColumn, stringColumn);
         Table summarized = table.summarize(booleanColumn, numberColumn, countTrue, standardDeviation).apply();
-        assertEquals(1.2909944487358056, summarized.numberColumn(1).get(0), 0.00001);
+        assertEquals(1.2909944487358056, summarized.doubleColumn(1).get(0), 0.00001);
     }
 
     @Test
@@ -187,7 +187,7 @@ public class AggregateFunctionsTest {
     @Test
     public void testPercentileFunctions() {
         double[] values = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        NumberColumn c = NumberColumn.create("test", values);
+        DoubleColumn c = DoubleColumn.create("test", values);
         c.appendCell("");
 
         assertEquals(1, countMissing.summarize(c), 0.0001);

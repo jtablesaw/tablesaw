@@ -3,7 +3,7 @@ package tech.tablesaw.table;
 import org.junit.Assert;
 import org.junit.Test;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
@@ -56,8 +56,8 @@ public class SliceBugTests {
         TableSliceGroup countrySplit = table.splitOn("countries");
 
         for (TableSlice slice : countrySplit) {
-            NumberColumn priceColFromIndex = slice.numberColumn(2);
-            NumberColumn priceColFromName = slice.numberColumn("price");
+            DoubleColumn priceColFromIndex = slice.doubleColumn(2);
+            DoubleColumn priceColFromName = slice.doubleColumn("price");
 
             Assert.assertTrue("Columns should have same data",
                     Arrays.equals(priceColFromName.asDoubleArray(), priceColFromIndex.asDoubleArray()));
@@ -107,7 +107,7 @@ public class SliceBugTests {
     private Table constructTableFromArrays() {
         StringColumn countries = StringColumn.create("countries", categories);
         DateTimeColumn timestamp = DateTimeColumn.create("sale_timestamp", timestamps);
-        NumberColumn values = NumberColumn.create("price", observations);
+        DoubleColumn values = DoubleColumn.create("price", observations);
 
         return Table.create("table_from_arrays", countries, timestamp, values);
     }

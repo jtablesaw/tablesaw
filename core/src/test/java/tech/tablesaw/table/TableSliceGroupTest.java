@@ -14,28 +14,27 @@
 
 package tech.tablesaw.table;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import org.apache.commons.math3.stat.StatUtils;
 import org.junit.Before;
 import org.junit.Test;
+
 import tech.tablesaw.aggregate.NumericAggregateFunction;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import java.util.List;
-
-import static org.junit.Assert.*;
-
-/**
- *
- */
 public class TableSliceGroupTest {
 
     private static NumericAggregateFunction exaggerate = new NumericAggregateFunction("exageration") {
 
         @Override
-        public Double summarize(NumberColumn data) {
+        public Double summarize(NumericColumn<?> data) {
             return StatUtils.max(data.asDoubleArray()) + 1000;
         }
     };

@@ -1,9 +1,9 @@
 package tech.tablesaw.columns.numbers;
 
+import java.util.Iterator;
+
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.StringParser;
-
-import java.util.Iterator;
 
 public interface NumericDataWrapper extends NumberIterable {
 
@@ -52,7 +52,7 @@ public interface NumericDataWrapper extends NumberIterable {
 
     NumberIterator numberIterator();
 
-    Iterator<Double> iterator();
+    Iterator<?> iterator();
 
     NumericDataWrapper top(final int n);
 

@@ -15,9 +15,11 @@
 package tech.tablesaw.aggregate;
 
 import com.google.common.collect.TreeBasedTable;
+
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -67,10 +69,10 @@ public final class CrossTab {
         }
 
         for (String colName : gTable.columnKeySet()) {
-            t.addColumns(NumberColumn.create(colName));
+            t.addColumns(IntColumn.create(colName));
         }
 
-        t.addColumns(NumberColumn.create("total"));
+        t.addColumns(IntColumn.create("total"));
 
         int[] columnTotals = new int[t.columnCount()];
 
@@ -83,15 +85,15 @@ public final class CrossTab {
                 Integer cellValue = gTable.get(rowKey, colKey);
                 if (cellValue != null) {
                     int colIdx = t.columnIndex(colKey);
-                    t.numberColumn(colIdx).append(cellValue);
+                    t.intColumn(colIdx).append(cellValue);
                     rowSum += cellValue;
                     columnTotals[colIdx] = columnTotals[colIdx] + cellValue;
 
                 } else {
-                    t.numberColumn(colKey).append(0);
+                    t.intColumn(colKey).append(0);
                 }
             }
-            t.numberColumn(t.columnCount() - 1).append(rowSum);
+            t.intColumn(t.columnCount() - 1).append(rowSum);
         }
         if (t.column(0).type().equals(ColumnType.STRING)) {
             t.column(0).appendCell("Total");
@@ -100,10 +102,10 @@ public final class CrossTab {
         }
         int grandTotal = 0;
         for (int i = 1; i < t.columnCount() - 1; i++) {
-            t.numberColumn(i).append(columnTotals[i]);
+            t.intColumn(i).append(columnTotals[i]);
             grandTotal = grandTotal + columnTotals[i];
         }
-        t.numberColumn(t.columnCount() - 1).append(grandTotal);
+        t.intColumn(t.columnCount() - 1).append(grandTotal);
         return t;
     }
 
@@ -116,8 +118,8 @@ public final class CrossTab {
         Table percentTable = Table.create(countTable.name());
         percentTable.addColumns(countTable.column(0).copy());
 
-        NumberColumn countsColumn = countTable.numberColumn("Count");
-        NumberColumn pctsColumn = NumberColumn.create("Percents");
+        IntColumn countsColumn = countTable.intColumn("Count");
+        DoubleColumn pctsColumn = DoubleColumn.create("Percents");
         double sum = countsColumn.sum();
         for (int i = 0; i < countsColumn.size(); i++) {
             pctsColumn.append(countsColumn.getDouble(i) / sum);
@@ -139,7 +141,7 @@ public final class CrossTab {
 
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column<?> column = xTabCounts.column(i);
-            pctTable.addColumns(NumberColumn.create(column.name()));
+            pctTable.addColumns(DoubleColumn.create(column.name()));
         }
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
@@ -147,9 +149,9 @@ public final class CrossTab {
 
             for (int c = 1; c < xTabCounts.columnCount(); c++) {
                 if (rowTotal == 0) {
-                    pctTable.numberColumn(c).append(Float.NaN);
+                    pctTable.doubleColumn(c).append(Float.NaN);
                 } else {
-                    pctTable.numberColumn(c).append(xTabCounts.numberColumn(c).getDouble(i) / rowTotal);
+                    pctTable.doubleColumn(c).append(xTabCounts.numberColumn(c).getDouble(i) / rowTotal);
                 }
             }
         }
@@ -171,15 +173,15 @@ public final class CrossTab {
 
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column<?> column = xTabCounts.column(i);
-            pctTable.addColumns(NumberColumn.create(column.name()));
+            pctTable.addColumns(DoubleColumn.create(column.name()));
         }
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
             for (int c = 1; c < xTabCounts.columnCount(); c++) {
                 if (grandTotal == 0) {
-                    pctTable.numberColumn(c).append(Double.NaN);
+                    pctTable.doubleColumn(c).append(Double.NaN);
                 } else {
-                    pctTable.numberColumn(c).append(xTabCounts.numberColumn(c).getDouble(i) / grandTotal);
+                    pctTable.doubleColumn(c).append(xTabCounts.numberColumn(c).getDouble(i) / grandTotal);
                 }
             }
         }
@@ -201,7 +203,7 @@ public final class CrossTab {
         // create the new cols
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column<?> column = xTabCounts.column(i);
-            pctTable.addColumns(NumberColumn.create(column.name()));
+            pctTable.addColumns(DoubleColumn.create(column.name()));
         }
 
         // get the column totals
@@ -215,9 +217,9 @@ public final class CrossTab {
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
             for (int c = 1; c < xTabCounts.columnCount(); c++) {
                 if (columnTotals[c - 1] == 0) {
-                    pctTable.numberColumn(c).append(Float.NaN);
+                    pctTable.doubleColumn(c).append(Float.NaN);
                 } else {
-                    pctTable.numberColumn(c).append(xTabCounts.numberColumn(c).getDouble(i) / columnTotals[c - 1]);
+                    pctTable.doubleColumn(c).append(xTabCounts.numberColumn(c).getDouble(i) / columnTotals[c - 1]);
                 }
             }
         }

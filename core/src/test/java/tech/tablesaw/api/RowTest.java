@@ -45,27 +45,14 @@ public class RowTest {
     }
 
     @Test
-    public void testGetDouble() throws IOException {
-        Table table = Table.read().csv("../data/bush.csv");
-        Row row = new Row(table);
-        while (row.hasNext()) {
-            row.next();
-            assertEquals(table.numberColumn(1).get(row.getRowNumber()),
-                    row.getDouble(1), 0.00001);
-            assertEquals(table.numberColumn("approval").get(row.getRowNumber()),
-                    row.getDouble("approval"), 0.00001);
-        }
-    }
-
-    @Test
     public void testGetInt() throws IOException {
         Table table = Table.read().csv("../data/bush.csv");
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();
-            assertEquals((int) table.numberColumn(1).getDouble(row.getRowNumber()),
+            assertEquals(table.intColumn(1).getInt(row.getRowNumber()),
                     row.getInt(1));
-            assertEquals((int) table.numberColumn("approval").getDouble(row.getRowNumber()),
+            assertEquals(table.intColumn("approval").getInt(row.getRowNumber()),
                     row.getInt("approval"));
         }
     }

@@ -1,13 +1,14 @@
 package tech.tablesaw.aggregate;
 
-import org.junit.Test;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.Row;
-import tech.tablesaw.api.Table;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.Row;
+import tech.tablesaw.api.Table;
 
 public class CrossTabTest {
 
@@ -18,8 +19,8 @@ public class CrossTabTest {
         Table pcts = CrossTab.percents(bush, "who");
         double sum = counts.numberColumn("Count").sum();
         for (int row = 0; row < pcts.rowCount(); row++) {
-            assertEquals(counts.numberColumn("Count").get(row) / sum,
-                    pcts.numberColumn(1).get(row),
+            assertEquals(counts.intColumn("Count").get(row) / sum,
+                    pcts.doubleColumn(1).get(row),
                     0.01);
         }
     }
@@ -31,8 +32,8 @@ public class CrossTabTest {
         Table pcts = CrossTab.percents(bush, "date");
         double sum = counts.numberColumn("Count").sum();
         for (int row = 0; row < pcts.rowCount(); row++) {
-            assertEquals(counts.numberColumn("Count").get(row) / sum,
-                    pcts.numberColumn(1).get(row),
+            assertEquals(counts.intColumn("Count").get(row) / sum,
+                    pcts.doubleColumn(1).get(row),
                     0.01);
         }
     }
@@ -40,7 +41,7 @@ public class CrossTabTest {
     @Test
     public void testCounts3() throws Exception {
         Table bush = Table.read().csv("../data/bush.csv");
-        NumberColumn month = bush.dateColumn("date").monthValue();
+        IntColumn month = bush.dateColumn("date").monthValue();
         month.setName("month");
         BooleanColumn seventyPlus =
                 BooleanColumn.create("70",
@@ -52,7 +53,7 @@ public class CrossTabTest {
         Table counts = bush.xTabCounts("month", "seventyPlus" );
         for (Row row : counts) {
             assertEquals(
-                    counts.numberColumn("total").get(row.getRowNumber()),
+                    counts.intColumn("total").get(row.getRowNumber()),
                     row.getInt("true") + row.getInt("false"),
                     0.01);
         }
@@ -64,7 +65,7 @@ public class CrossTabTest {
         Table bush = Table.read().csv("../data/bush.csv");
         bush.addColumns(bush.dateColumn("date").year());
         Table xtab = CrossTab.columnPercents(bush, "who", "date year");
-        assertEquals(1, xtab.numberColumn(1).get(xtab.rowCount()-1), 0.001);
+        assertEquals(1, xtab.doubleColumn(1).getInt(xtab.rowCount() - 1));
     }
 
     @Test
@@ -72,7 +73,7 @@ public class CrossTabTest {
         Table bush = Table.read().csv("../data/bush.csv");
         bush.addColumns(bush.dateColumn("date").year());
         Table xtab = CrossTab.rowPercents(bush, "who", "date year");
-        assertEquals(1, xtab.numberColumn( xtab.columnCount() - 1).get(0), 0.001);
+        assertEquals(1, xtab.doubleColumn(xtab.columnCount() - 1).getInt(0));
     }
 
     @Test
@@ -80,6 +81,6 @@ public class CrossTabTest {
         Table bush = Table.read().csv("../data/bush.csv");
         bush.addColumns(bush.dateColumn("date").year());
         Table xtab = CrossTab.tablePercents(bush, "who", "date year");
-        assertEquals(1, xtab.numberColumn( xtab.columnCount() - 1).get(xtab.rowCount()-1), 0.001);
+        assertEquals(1, xtab.doubleColumn(xtab.columnCount() - 1).getInt(xtab.rowCount()-1));
     }
 }

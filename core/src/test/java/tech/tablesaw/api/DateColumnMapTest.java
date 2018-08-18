@@ -45,19 +45,19 @@ public class DateColumnMapTest {
         column1.appendInternal(day4);
         column1.appendInternal(day5);
 
-        NumberColumn group = column1.timeWindow(ChronoUnit.DAYS, 7);
+        DoubleColumn group = column1.timeWindow(ChronoUnit.DAYS, 7);
         assertEquals(0, group.get(0), 0.001);
         assertEquals(0, group.get(1), 0.001);
         assertEquals(1, group.get(2), 0.001);
         assertEquals(2, group.get(3), 0.001);
 
-        NumberColumn group2 = column1.timeWindow(ChronoUnit.WEEKS, 1);
+        DoubleColumn group2 = column1.timeWindow(ChronoUnit.WEEKS, 1);
         assertEquals(0, group2.get(0), 0.001);
         assertEquals(0, group2.get(1), 0.001);
         assertEquals(1, group2.get(2), 0.001);
         assertEquals(2, group2.get(3), 0.001);
 
-        NumberColumn group3 = column1.timeWindow(ChronoUnit.MONTHS, 1);
+        DoubleColumn group3 = column1.timeWindow(ChronoUnit.MONTHS, 1);
         assertEquals(0, group3.get(0), 0.001);
         assertEquals(0, group3.get(1), 0.001);
         assertEquals(0, group3.get(2), 0.001);
@@ -80,10 +80,10 @@ public class DateColumnMapTest {
         int day2 = pack(2018, 11, 23);
         DateColumn column2 = DateColumn.create("foo");
         column2.appendInternal(day2);
-        NumberColumn days = column1.daysUntil(column2);
-        NumberColumn weeks = column1.weeksUntil(column2);
-        NumberColumn months = column1.monthsUntil(column2);
-        NumberColumn years = column1.yearsUntil(column2);
+        DoubleColumn days = column1.daysUntil(column2);
+        DoubleColumn weeks = column1.weeksUntil(column2);
+        DoubleColumn months = column1.monthsUntil(column2);
+        DoubleColumn years = column1.yearsUntil(column2);
         assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.DAYS), days.get(0), 0.01);
         assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.WEEKS), weeks.get(0), 0.01);
         assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.MONTHS), months.get(0), 0.01);

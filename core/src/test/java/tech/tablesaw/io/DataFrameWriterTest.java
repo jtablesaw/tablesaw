@@ -1,7 +1,7 @@
 package tech.tablesaw.io;
 
 import org.junit.Test;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 
 import java.io.ByteArrayOutputStream;
@@ -15,8 +15,8 @@ public class DataFrameWriterTest {
     private double[] v1 = {1, 2, 3, 4, 5, NaN};
     private double[] v2 = {1, 2, 3, 4, 5, NaN};
     private Table table = Table.create("t",
-            NumberColumn.create("v", v1),
-            NumberColumn.create("v2", v2)
+            DoubleColumn.create("v", v1),
+            DoubleColumn.create("v2", v2)
     );
 
     @Test

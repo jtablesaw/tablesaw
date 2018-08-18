@@ -73,11 +73,11 @@ public class ScatterTrace extends AbstractTrace {
     public static ScatterBuilder builder(DateColumn x, Column<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
-    public static ScatterBuilder builder(Column x, Column<? extends Number> y) {
+    public static ScatterBuilder builder(Column<?> x, Column<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
 
-    public static ScatterBuilder builder(Column x, Column<? extends Number> open, Column<? extends Number> high, Column<? extends Number> low, Column<? extends Number> close) {
+    public static ScatterBuilder builder(Column<?> x, Column<? extends Number> open, Column<? extends Number> high, Column<? extends Number> low, Column<? extends Number> close) {
         return new ScatterBuilder(x, open, high, low, close);
     }
 
@@ -229,12 +229,12 @@ public class ScatterTrace extends AbstractTrace {
             this.y = y;
         }
 
-        private ScatterBuilder(Column x, Column<? extends Number> y) {
+        private ScatterBuilder(Column<?> x, Column<? extends Number> y) {
             this.x = x.asObjectArray();
             this.y = y.asDoubleArray();
         }
 
-        private ScatterBuilder(Column x, Column<? extends Number> open, Column<? extends Number> high, Column<? extends Number> low, Column<? extends Number> close) {
+        private ScatterBuilder(Column<?> x, Column<? extends Number> open, Column<? extends Number> high, Column<? extends Number> low, Column<? extends Number> close) {
             this.x = x.asObjectArray();
             this.open = open.asDoubleArray();
             this.high = high.asDoubleArray();

@@ -45,7 +45,7 @@ public class DoubleIndexTest {
                                 ColumnType.STRING,
                                 ColumnType.DOUBLE,
                                 ColumnType.DOUBLE}));
-        index = new DoubleIndex(table.numberColumn("stop_lat"));
+        index = new DoubleIndex(table.doubleColumn("stop_lat"));
     }
 
     @Test

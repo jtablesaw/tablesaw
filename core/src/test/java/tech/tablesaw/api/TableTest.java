@@ -49,8 +49,8 @@ public class TableTest {
     private static final Random RANDOM = new Random();
 
     private Table table;
-    private NumberColumn f1 =  NumberColumn.create("f1");
-    private NumberColumn numberColumn =  NumberColumn.create("d1");
+    private DoubleColumn f1 =  DoubleColumn.create("f1");
+    private DoubleColumn numberColumn =  DoubleColumn.create("d1");
 
     @Before
     public void setUp() {
@@ -79,14 +79,14 @@ public class TableTest {
         double[] b = {3, 4, 5};
         double[] c = {3, 4, 5};
         Table t = Table.create("test",
-                NumberColumn.create("a", a),
-                NumberColumn.create("b", b),
-                NumberColumn.create("c", c));
+                DoubleColumn.create("a", a),
+                DoubleColumn.create("b", b),
+                DoubleColumn.create("c", c));
 
-        NumberColumn n =
-                t.numberColumn(0)
-                .add(t.numberColumn(1))
-                .add(t.numberColumn(2));
+        DoubleColumn n =
+                t.doubleColumn(0)
+                .add(t.doubleColumn(1))
+                .add(t.doubleColumn(2));
 
         assertEquals(n.get(0), 9, 0);
         assertEquals(n.get(1), 12, 0);
@@ -99,11 +99,11 @@ public class TableTest {
         double[] b = {3, 4, 5};
         double[] c = {3, 4, 5};
         Table t = Table.create("test",
-                NumberColumn.create("a", a),
-                NumberColumn.create("b", b),
-                NumberColumn.create("c", c));
+                DoubleColumn.create("a", a),
+                DoubleColumn.create("b", b),
+                DoubleColumn.create("c", c));
 
-        NumberColumn n = sum(t.numberColumns());
+        DoubleColumn n = sum(t.numberColumns());
 
         assertEquals(n.get(0), 9, 0);
         assertEquals(n.get(1), 12, 0);
@@ -149,10 +149,10 @@ public class TableTest {
     @Test
     public void testMissingValueCounts() {
         StringColumn c1 = StringColumn.create("SC");
-        NumberColumn c2 = NumberColumn.create("NC");
+        DoubleColumn c2 = DoubleColumn.create("NC");
         DateColumn c3 = DateColumn.create("DC");
         Table t = Table.create("Test", c1, c2, c3);
-        assertEquals(0, t.missingValueCounts().numberColumn(1).get(0), 0.00001);
+        assertEquals(0, t.missingValueCounts().doubleColumn(1).get(0), 0.00001);
     }
 
     @Test
@@ -161,7 +161,7 @@ public class TableTest {
         Table t = Table.create("test");
         t.addColumns(numberColumn);
         Table c = t.copy();
-        NumberColumn doubles = c.numberColumn(0);
+        DoubleColumn doubles = c.doubleColumn(0);
         assertNotNull(doubles);
         assertEquals(1, doubles.size());
     }
@@ -206,12 +206,12 @@ public class TableTest {
     @Test
     public void testDoWithEachRow() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(10);
-        Double[] ratingsArray = {53.0, 58.0};
-        List<Double> ratings = Lists.asList(52.0, ratingsArray);
+        Integer[] ratingsArray = {53, 58};
+        List<Integer> ratings = Lists.asList(52, ratingsArray);
 
         Consumer<Row> doable = row -> {
             if (row.getRowNumber() < 5) {
-                assertTrue(ratings.contains(row.getDouble("approval")));
+                assertTrue(ratings.contains(row.getInt("approval")));
             }
         };
         t.doWithRows(doable);
@@ -264,7 +264,6 @@ public class TableTest {
 
     @Test
     public void testPairs2() throws Exception {
-
         Table t = Table.read().csv("../data/bush.csv");
 
         Table.Pairs runningAvg =  new Table.Pairs() {
@@ -273,8 +272,8 @@ public class TableTest {
 
             @Override
             public void doWithPair(Row row1, Row row2) {
-                double r1  = row1.getDouble("approval");
-                double r2  = row2.getDouble("approval");
+                double r1  = row1.getInt("approval");
+                double r2  = row2.getInt("approval");
                 values.add((r1 + r2) / 2.0);
             }
 
@@ -290,13 +289,13 @@ public class TableTest {
     @Test
     public void testRollWithNrows2() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(4);
-        NumberColumn approval = t.numberColumn("approval");
+        IntColumn approval = t.intColumn("approval");
 
         List<Integer> sums = new ArrayList<>();
         Consumer<Row[]> rowConsumer = rows -> {
             int sum = 0;
             for (Row row : rows) {
-                sum += row.getDouble("approval");
+                sum += row.getInt("approval");
             }
             sums.add(sum);
         };
@@ -312,8 +311,8 @@ public class TableTest {
 
         @Override
         public void doWithPair(Row row1, Row row2) {
-            double r1  = row1.getDouble("approval");
-            double r2  = row2.getDouble("approval");
+            double r1  = row1.getInt("approval");
+            double r2  = row2.getInt("approval");
             runningAverage.add((r1 + r2) / 2.0);
         }
     }
@@ -321,7 +320,7 @@ public class TableTest {
     @Test
     public void testRowCount() {
         assertEquals(0, table.rowCount());
-        NumberColumn floatColumn = this.f1;
+        DoubleColumn floatColumn = this.f1;
         floatColumn.append(2f);
         assertEquals(1, table.rowCount());
         floatColumn.append(2.2342f);
@@ -360,10 +359,10 @@ public class TableTest {
 
     @Test
     public void testAppendMultipleColumns() {
-        NumberColumn column =  NumberColumn.create("e1");
+        DoubleColumn column =  DoubleColumn.create("e1");
         table.addColumns(column);
-        NumberColumn first = f1.emptyCopy();
-        NumberColumn second = column.emptyCopy();
+        DoubleColumn first = f1.emptyCopy();
+        DoubleColumn second = column.emptyCopy();
         int firstColumnSize = populateColumn(first);
         int secondColumnSize = populateColumn(second);
         Table tableToAppend = Table.create("populated", first, second);
@@ -385,14 +384,14 @@ public class TableTest {
 
     @Test(expected = IllegalStateException.class)
     public void testAppendTableWithAnotherColumnName() {
-        NumberColumn column =  NumberColumn.create("42");
+        DoubleColumn column =  DoubleColumn.create("42");
         Table tableToAppend = Table.create("wrong", column);
         table.append(tableToAppend);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testAppendTableWithDifferentShape() {
-        NumberColumn column =  NumberColumn.create("e1");
+        DoubleColumn column =  DoubleColumn.create("e1");
         table.addColumns(column);
         Table tableToAppend = Table.create("different", column);
         assertEquals(2, table.columns().size());
@@ -402,9 +401,9 @@ public class TableTest {
 
     @Test
     public void testReplaceColumn() {
-        NumberColumn first =  NumberColumn.create("c1", new double[]{1, 2, 3, 4, 5});
-        NumberColumn second =  NumberColumn.create("c2", new double[]{6, 7, 8, 9, 10});
-        NumberColumn replacement =  NumberColumn.create("c2", new double[]{10, 20, 30, 40, 50});
+        DoubleColumn first =  DoubleColumn.create("c1", new double[]{1, 2, 3, 4, 5});
+        DoubleColumn second =  DoubleColumn.create("c2", new double[]{6, 7, 8, 9, 10});
+        DoubleColumn replacement =  DoubleColumn.create("c2", new double[]{10, 20, 30, 40, 50});
 
         Table t = Table.create("populated", first, second);
 
@@ -417,13 +416,13 @@ public class TableTest {
     }
 
     private int appendRandomlyGeneratedColumn(Table table) {
-        NumberColumn column = f1.emptyCopy();
+        DoubleColumn column = f1.emptyCopy();
         populateColumn(column);
         return appendColumn(table, column);
     }
 
     private void appendEmptyColumn(Table table) {
-        NumberColumn column = f1.emptyCopy();
+        DoubleColumn column = f1.emptyCopy();
         appendColumn(table, column);
     }
 
@@ -438,7 +437,7 @@ public class TableTest {
         assertEquals(expected, actual);
     }
 
-    private int populateColumn(NumberColumn floatColumn) {
+    private int populateColumn(DoubleColumn floatColumn) {
         int rowsCount = RANDOM.nextInt(ROWS_BOUNDARY);
         for (int i = 0; i < rowsCount; i++) {
             floatColumn.append(RANDOM.nextFloat());
@@ -449,9 +448,9 @@ public class TableTest {
 
     @Test
     public void testAsMatrix() {
-        NumberColumn first =  NumberColumn.create("c1", new double[]{1L, 2L, 3L, 4L, 5L});
-        NumberColumn second =  NumberColumn.create("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
-        NumberColumn third =  NumberColumn.create("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
+        DoubleColumn first =  DoubleColumn.create("c1", new double[]{1L, 2L, 3L, 4L, 5L});
+        DoubleColumn second =  DoubleColumn.create("c2", new double[]{6.0f, 7.0f, 8.0f, 9.0f, 10.0f});
+        DoubleColumn third =  DoubleColumn.create("c3", new double[]{10.0, 20.0, 30.0, 40.0, 50.0});
 
         Table t = Table.create("table", first, second, third);
         double[][] matrix = t.as().doubleMatrix();
@@ -467,10 +466,10 @@ public class TableTest {
     public void testRowSort() throws Exception {
         Table bush = Table.read().csv("../data/bush.csv");
 
-        Comparator<Row> rowComparator = Comparator.comparingDouble(o -> o.getDouble("approval"));
+        Comparator<Row> rowComparator = Comparator.comparingDouble(o -> o.getInt("approval"));
 
         Table sorted = bush.sortOn(rowComparator);
-        NumberColumn approval = sorted.nCol("approval");
+        IntColumn approval = sorted.intColumn("approval");
         for (int i = 0; i < bush.rowCount() - 2; i++) {
             assertTrue(approval.get(i) <= approval.get(i + 1));
         }
@@ -485,12 +484,12 @@ public class TableTest {
         }
     }
 
-    private NumberColumn sum(NumberColumn ... columns) {
+    private DoubleColumn sum(DoubleColumn ... columns) {
         int size = columns[0].size();
-        NumberColumn result = NumberColumn.create("sum", size);
+        DoubleColumn result = DoubleColumn.create("sum", size);
         for (int r = 0; r < size; r++) {
             double sum = 0;
-            for (NumberColumn nc : columns) {
+            for (DoubleColumn nc : columns) {
                 sum += nc.get(r);
             }
             result.append(sum);

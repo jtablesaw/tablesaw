@@ -19,7 +19,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -63,8 +63,8 @@ public class SearchPerformanceTest {
         t.setName("Observations");
 
         DateTimeColumn dates = t.dateTimeColumn("date");
-        NumberColumn lowValues = t.numberColumn("lowValue");
-        NumberColumn highValues = t.numberColumn("highValue");
+        DoubleColumn lowValues = t.doubleColumn("lowValue");
+        DoubleColumn highValues = t.doubleColumn("highValue");
 
         System.out.println(dates.summary());
         System.out.println(lowValues.summary());
@@ -113,8 +113,8 @@ public class SearchPerformanceTest {
         t = Table.create("Observations");
         StringColumn conceptId = StringColumn.create("concept");
         DateTimeColumn date = DateTimeColumn.create("date");
-        NumberColumn lowValues = NumberColumn.create("lowValue");
-        NumberColumn highValues = NumberColumn.create("highValue");
+        DoubleColumn lowValues = DoubleColumn.create("lowValue");
+        DoubleColumn highValues = DoubleColumn.create("highValue");
         highValues.setPrintFormatter(NumberColumnFormatter.ints());
         lowValues.setPrintFormatter(NumberColumnFormatter.ints());
 
@@ -152,8 +152,8 @@ public class SearchPerformanceTest {
 
         DateTimeColumn dateColumn = table.dateTimeColumn("date");
         StringColumn conceptColumn = table.stringColumn("concept");
-        NumberColumn lowValues = table.numberColumn("lowValue");
-        NumberColumn highValues = table.numberColumn("highValue");
+        DoubleColumn lowValues = table.doubleColumn("lowValue");
+        DoubleColumn highValues = table.doubleColumn("highValue");
 
         // sample from the pools to write the data
         for (int i = 0; i < observationCount; i++) {

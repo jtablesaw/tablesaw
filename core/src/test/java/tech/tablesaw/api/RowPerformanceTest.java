@@ -200,8 +200,8 @@ public class RowPerformanceTest {
         t = Table.create("Observations");
         StringColumn conceptId = StringColumn.create("concept");
         DateTimeColumn date = DateTimeColumn.create("date");
-        NumberColumn lowValues = NumberColumn.create("lowValue");
-        NumberColumn highValues = NumberColumn.create("highValue");
+        DoubleColumn lowValues = DoubleColumn.create("lowValue");
+        DoubleColumn highValues = DoubleColumn.create("highValue");
         highValues.setPrintFormatter(NumberColumnFormatter.ints());
         lowValues.setPrintFormatter(NumberColumnFormatter.ints());
 
@@ -236,8 +236,8 @@ public class RowPerformanceTest {
 
         DateTimeColumn dateColumn = table.dateTimeColumn("date");
         StringColumn conceptColumn = table.stringColumn("concept");
-        NumberColumn lowValues = table.numberColumn("lowValue");
-        NumberColumn highValues = table.numberColumn("highValue");
+        DoubleColumn lowValues = table.doubleColumn("lowValue");
+        DoubleColumn highValues = table.doubleColumn("highValue");
 
         // sample from the pools to write the data
         for (int i = 0; i < observationCount; i++) {

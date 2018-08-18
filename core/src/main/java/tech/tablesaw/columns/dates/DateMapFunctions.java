@@ -14,17 +14,8 @@
 
 package tech.tablesaw.columns.dates;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.TimeColumn;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import static tech.tablesaw.api.DateColumn.MISSING_VALUE;
+import static tech.tablesaw.api.DateColumn.valueIsMissing;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,7 +23,18 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import static tech.tablesaw.api.DateColumn.*;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 /**
  * An interface for mapping operations unique to Date columns
@@ -43,28 +45,28 @@ public interface DateMapFunctions extends Column<LocalDate> {
         return column1.name() + ": " + value + " " + unit.toString() + "(s)";
     }
 
-    default NumberColumn daysUntil(DateColumn column2) {
+    default DoubleColumn daysUntil(DateColumn column2) {
         return timeUntil(column2, ChronoUnit.DAYS);
     }
 
-    default NumberColumn weeksUntil(DateColumn column2) {
+    default DoubleColumn weeksUntil(DateColumn column2) {
         return timeUntil(column2, ChronoUnit.WEEKS);
     }
 
-    default NumberColumn monthsUntil(DateColumn column2) {
+    default DoubleColumn monthsUntil(DateColumn column2) {
         return timeUntil(column2, ChronoUnit.MONTHS);
     }
 
-    default NumberColumn yearsUntil(DateColumn column2) {
+    default DoubleColumn yearsUntil(DateColumn column2) {
         return timeUntil(column2, ChronoUnit.YEARS);
     }
 
-    default NumberColumn dayOfMonth() {
-        NumberColumn newColumn = NumberColumn.create(this.name() + " day of month");
+    default IntColumn dayOfMonth() {
+	IntColumn newColumn = IntColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+        	newColumn.appendMissing();
             } else {
                 newColumn.append(PackedLocalDate.getDayOfMonth(c1));
             }
@@ -72,12 +74,12 @@ public interface DateMapFunctions extends Column<LocalDate> {
         return newColumn;
     }
 
-    default NumberColumn dayOfYear() {
-        NumberColumn newColumn = NumberColumn.create(this.name() + " day of year");
+    default IntColumn dayOfYear() {
+	IntColumn newColumn = IntColumn.create(this.name() + " day of year");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+        	newColumn.appendMissing();
             } else {
                 newColumn.append((short) PackedLocalDate.getDayOfYear(c1));
             }
@@ -85,13 +87,13 @@ public interface DateMapFunctions extends Column<LocalDate> {
         return newColumn;
     }
 
-    default NumberColumn monthValue() {
-        NumberColumn newColumn = NumberColumn.create(this.name() + " month");
+    default IntColumn monthValue() {
+	IntColumn newColumn = IntColumn.create(this.name() + " month");
 
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             } else {
                 newColumn.append(PackedLocalDate.getMonthValue(c1));
             }
@@ -105,7 +107,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+        	newColumn.appendMissing();
             } else {
                 newColumn.append(PackedLocalDate.getMonth(c1).name());
             }
@@ -113,12 +115,12 @@ public interface DateMapFunctions extends Column<LocalDate> {
         return newColumn;
     }
 
-    default NumberColumn year() {
-        NumberColumn newColumn = NumberColumn.create(this.name() + " year");
+    default IntColumn year() {
+	IntColumn newColumn = IntColumn.create(this.name() + " year");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             } else {
                 newColumn.append(PackedLocalDate.getYear(c1));
             }
@@ -139,7 +141,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+        	newColumn.appendMissing();
             } else {
                 String yq = String.valueOf(PackedLocalDate.getYear(c1));
                 yq = yq + "-" + Strings.padStart(
@@ -163,7 +165,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+        	newColumn.appendMissing();
             } else {
                 String ym = String.valueOf(PackedLocalDate.getYear(c1));
                 ym = ym + "-" + Strings.padStart(
@@ -187,7 +189,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+        	newColumn.appendMissing();
             } else {
                 String ym = String.valueOf(PackedLocalDate.getYear(c1));
                 ym = ym + "-" + Strings.padStart(
@@ -211,7 +213,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+        	newColumn.appendMissing();
             } else {
                 String ym = String.valueOf(PackedLocalDate.getYear(c1));
                 ym = ym + "-" + Strings.padStart(
@@ -222,12 +224,12 @@ public interface DateMapFunctions extends Column<LocalDate> {
         return newColumn;
     }
 
-    default NumberColumn dayOfWeekValue() {
-        NumberColumn newColumn = NumberColumn.create(this.name() + " day of week", this.size());
+    default IntColumn dayOfWeekValue() {
+	IntColumn newColumn = IntColumn.create(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.set(r, DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             } else {
                 newColumn.append((short) PackedLocalDate.getDayOfWeek(c1).getValue());
             }
@@ -240,7 +242,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+        	newColumn.appendMissing();
             } else {
                 newColumn.append(PackedLocalDate.getDayOfWeek(c1).toString());
             }
@@ -254,14 +256,14 @@ public interface DateMapFunctions extends Column<LocalDate> {
      * <p>
      * Missing values in either result in a Missing Value for the new column
      */
-    default NumberColumn timeUntil(DateColumn end, ChronoUnit unit) {
+    default DoubleColumn timeUntil(DateColumn end, ChronoUnit unit) {
 
-        NumberColumn newColumn = NumberColumn.create(name() + " - " + end.name());
+        DoubleColumn newColumn = DoubleColumn.create(name() + " - " + end.name());
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             int c2 = end.getIntInternal(r);
             if (valueIsMissing(c1) || valueIsMissing(c2)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             } else {
                 switch (unit) {
                     case DAYS:
@@ -336,10 +338,10 @@ public interface DateMapFunctions extends Column<LocalDate> {
      * @param n     The number of units in each group.
      * @param start The starting point of the first group; group boundaries are offsets from this point
      */
-    default NumberColumn timeWindow(ChronoUnit unit, int n, LocalDate start) {
+    default DoubleColumn timeWindow(ChronoUnit unit, int n, LocalDate start) {
         String newColumnName = "" +  n + " " + unit.toString() + " window [" + name() + "]";
         int packedStartDate = PackedLocalDate.pack(start);
-        NumberColumn numberColumn = NumberColumn.create(newColumnName, size());
+        DoubleColumn numberColumn = DoubleColumn.create(newColumnName, size());
         for (int i = 0; i < size(); i++) {
             int packedDate = getIntInternal(i);
             int result;
@@ -365,7 +367,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         return numberColumn;
     }
 
-    default NumberColumn timeWindow(ChronoUnit unit, int n) {
+    default DoubleColumn timeWindow(ChronoUnit unit, int n) {
         return timeWindow(unit, n, min());
     }
 
@@ -377,7 +379,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < column1.size(); r++) {
             int packedDate = column1.getIntInternal(r);
             if (packedDate == MISSING_VALUE) {
-                newColumn.appendInternal(MISSING_VALUE);
+        	newColumn.appendMissing();
             } else {
                 newColumn.appendInternal(PackedLocalDate.plus(value, unit, packedDate));
             }
@@ -395,7 +397,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             LocalDate c1 = this.get(r);
             if (c1 == null) {
-                newColumn.appendInternal(DateTimeColumn.MISSING_VALUE);
+        	newColumn.appendMissing();
             } else {
                 newColumn.append(c1.atStartOfDay());
             }
@@ -413,7 +415,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.appendInternal(DateTimeColumn.MISSING_VALUE);
+        	newColumn.appendMissing();
             } else {
                 LocalDate value1 = PackedLocalDate.asLocalDate(c1);
                 newColumn.appendInternal(PackedLocalDateTime.pack(value1, time));
@@ -432,7 +434,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
             int c1 = this.getIntInternal(r);
             int c2 = timeColumn.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1) || DateColumn.valueIsMissing(c2)) {
-                newColumn.appendInternal(DateTimeColumn.MISSING_VALUE);
+        	newColumn.appendMissing();
             } else {
                 newColumn.appendInternal(PackedLocalDateTime.create(c1, c2));
             }

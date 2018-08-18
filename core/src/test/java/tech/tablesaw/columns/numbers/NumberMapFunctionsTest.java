@@ -1,19 +1,22 @@
 package tech.tablesaw.columns.numbers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
-import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.Table;
 
-import static org.junit.Assert.*;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.Table;
 
 public class NumberMapFunctionsTest {
 
     @Test
     public void testNormalize() {
         double[] values = {4, 12, 9, 7, 8, 1, 3, 8, 9, 11};
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn result = test.normalize();
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn result = test.normalize();
         assertEquals(0, result.mean(), 0.01);
         assertEquals(1, result.standardDeviation(), 0.01);
     }
@@ -21,8 +24,8 @@ public class NumberMapFunctionsTest {
     @Test
     public void testAsRatio() {
         double[] values = {4, 1, 1, 2, 2};  // sums to 10
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn result = test.asRatio();
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn result = test.asRatio();
         assertEquals(.4, result.get(0), 0.01);
         assertEquals(.1, result.get(1), 0.01);
         assertEquals(.2, result.get(3), 0.01);
@@ -31,8 +34,8 @@ public class NumberMapFunctionsTest {
     @Test
     public void testAsPercent() {
         double[] values = {4, 1, 1, 2, 2};  // sums to 10
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn result = test.asPercent();
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn result = test.asPercent();
         assertEquals(40, result.get(0), 0.01);
         assertEquals(10, result.get(1), 0.01);
         assertEquals(20, result.get(3), 0.01);
@@ -41,8 +44,8 @@ public class NumberMapFunctionsTest {
     @Test
     public void testAdd() {
         double[] values = {4, 1, 1, 2, 2};
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn result = test.add(4);
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn result = test.add(4);
         assertEquals(8, result.get(0), 0.01);
         assertEquals(5, result.get(1), 0.01);
         assertEquals(6, result.get(3), 0.01);
@@ -52,9 +55,9 @@ public class NumberMapFunctionsTest {
     public void testAdd2() {
         double[] values = {4, 1, 1, 2, 2};
         double[] values2 = {4, 1, 1, 2, 2};
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn test2 =  NumberColumn.create("test2", values2);
-        NumberColumn result = test.add(test2);
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn test2 =  DoubleColumn.create("test2", values2);
+        DoubleColumn result = test.add(test2);
         assertEquals(8, result.get(0), 0.01);
         assertEquals(2, result.get(1), 0.01);
         assertEquals(4, result.get(3), 0.01);
@@ -63,8 +66,8 @@ public class NumberMapFunctionsTest {
     @Test
     public void testSubtract() {
         double[] values = {4, 1, 1, 2, 2};
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn result = test.subtract(4);
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn result = test.subtract(4);
         assertEquals(0, result.get(0), 0.01);
         assertEquals(-3, result.get(1), 0.01);
         assertEquals(-2, result.get(3), 0.01);
@@ -74,9 +77,9 @@ public class NumberMapFunctionsTest {
     public void testSubtract2() {
         double[] values = {4, 1, 1, 2, 2};
         double[] values2 = {4, 1, 1, 2, 2};
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn test2 =  NumberColumn.create("test2", values2);
-        NumberColumn result = test.subtract(test2);
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn test2 =  DoubleColumn.create("test2", values2);
+        DoubleColumn result = test.subtract(test2);
         assertEquals(0, result.get(0), 0.01);
         assertEquals(0, result.get(1), 0.01);
         assertEquals(0, result.get(3), 0.01);
@@ -85,8 +88,8 @@ public class NumberMapFunctionsTest {
     @Test
     public void testMultiply() {
         double[] values = {4, 1, 1, 2, 2};
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn result = test.multiply(4);
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn result = test.multiply(4);
         assertEquals(16, result.get(0), 0.01);
         assertEquals(4, result.get(1), 0.01);
         assertEquals(8, result.get(3), 0.01);
@@ -96,9 +99,9 @@ public class NumberMapFunctionsTest {
     public void testMultiply2() {
         double[] values = {4, 1, 1, 2, 2};
         double[] values2 = {4, 1, 1, 2, 2};
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn test2 =  NumberColumn.create("test2", values2);
-        NumberColumn result = test.multiply(test2);
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn test2 =  DoubleColumn.create("test2", values2);
+        DoubleColumn result = test.multiply(test2);
         assertEquals(16, result.get(0), 0.01);
         assertEquals(1, result.get(1), 0.01);
         assertEquals(4, result.get(3), 0.01);
@@ -107,8 +110,8 @@ public class NumberMapFunctionsTest {
     @Test
     public void testDivide() {
         double[] values = {4, 1, 1, 2, 2};
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn result = test.divide(2);
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn result = test.divide(2);
         assertEquals(2, result.get(0), 0.01);
         assertEquals(0.5, result.get(1), 0.01);
         assertEquals(1.0, result.get(3), 0.01);
@@ -118,9 +121,9 @@ public class NumberMapFunctionsTest {
     public void testDivide2() {
         double[] values = {4, 1, 1, 2, 2};
         double[] values2 = {4, 1, 1, 2, 2};
-        NumberColumn test =  NumberColumn.create("test", values);
-        NumberColumn test2 =  NumberColumn.create("test2", values2);
-        NumberColumn result = test.divide(test2);
+        DoubleColumn test =  DoubleColumn.create("test", values);
+        DoubleColumn test2 =  DoubleColumn.create("test2", values2);
+        DoubleColumn result = test.divide(test2);
         assertEquals(1, result.get(0), 0.01);
         assertEquals(1, result.get(1), 0.01);
         assertEquals(1, result.get(3), 0.01);
@@ -128,10 +131,9 @@ public class NumberMapFunctionsTest {
 
     @Test
     public void lag() {
-        NumberColumn n1 = NumberColumn.indexColumn("index", 4, 0);
-        NumberColumn n2 = n1.lag(-2);
+	IntColumn n1 = IntColumn.indexColumn("index", 4, 0);
         Table t = Table.create("tst");
-        t.addColumns(n1, n2);
+        t.addColumns(n1, n1.lag(-2));
         assertEquals("            tst            \n" +
                 " index  |  index lag(-2)  |\n" +
                 "---------------------------\n" +
@@ -143,10 +145,9 @@ public class NumberMapFunctionsTest {
 
     @Test
     public void lead() {
-        NumberColumn n1 = NumberColumn.indexColumn("index", 4, 0);
-        NumberColumn n2 = n1.lead(1);
+	IntColumn n1 = IntColumn.indexColumn("index", 4, 0);
         Table t = Table.create("tst");
-        t.addColumns(n1, n2);
+        t.addColumns(n1, n1.lead(1));
         assertEquals("            tst            \n" +
                 " index  |  index lead(1)  |\n" +
                 "---------------------------\n" +
@@ -158,11 +159,11 @@ public class NumberMapFunctionsTest {
 
     @Test
     public void testNeg() {
-        NumberColumn doubles =  NumberColumn.create("doubles", 100);
+        DoubleColumn doubles =  DoubleColumn.create("doubles", 100);
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
-        NumberColumn newDoubles = doubles.neg();
+        DoubleColumn newDoubles = doubles.neg();
         assertFalse(newDoubles.isEmpty());
         assertEquals(0 - doubles.get(0), newDoubles.get(0), 0.0001);
     }
@@ -170,8 +171,8 @@ public class NumberMapFunctionsTest {
     @Test
     public void testRoundInt() {
         double[] values = {4.4, 1.9, 1.5, 2.3, 2.0};
-        NumberColumn doubles =  NumberColumn.create("doubles", values);
-        NumberColumn newDoubles = doubles.roundInt();
+        DoubleColumn doubles =  DoubleColumn.create("doubles", values);
+        DoubleColumn newDoubles = doubles.roundInt();
         assertEquals(4, newDoubles.get(0), 0.0001);
         assertEquals(2, newDoubles.get(1), 0.0001);
         assertEquals(2, newDoubles.get(2), 0.0001);
@@ -183,22 +184,22 @@ public class NumberMapFunctionsTest {
     public void testMod() {
         double[] values = {4, 1, 1, 2, 2};
         double[] values2 = {4, 1, 1, 2, 2};
-        NumberColumn doubles =  NumberColumn.create("doubles", values);
-        NumberColumn otherDoubles =  NumberColumn.create("otherDoubles", values2);
+        DoubleColumn doubles =  DoubleColumn.create("doubles", values);
+        DoubleColumn otherDoubles =  DoubleColumn.create("otherDoubles", values2);
 
-        NumberColumn newDoubles = doubles.remainder(otherDoubles);
+        DoubleColumn newDoubles = doubles.remainder(otherDoubles);
         assertEquals(0, newDoubles.get(0), 0.001);
     }
 
     @Test
     public void testSquareAndSqrt() {
-        NumberColumn doubles =  NumberColumn.create("doubles", 100);
+        DoubleColumn doubles =  DoubleColumn.create("doubles", 100);
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
 
-        NumberColumn newDoubles = doubles.square();
-        NumberColumn revert = newDoubles.sqrt();
+        DoubleColumn newDoubles = doubles.square();
+        DoubleColumn revert = newDoubles.sqrt();
         for (int i = 0; i < doubles.size(); i++) {
             assertEquals(doubles.get(i), revert.get(i), 0.01);
         }
@@ -206,12 +207,12 @@ public class NumberMapFunctionsTest {
 
     @Test
     public void testCubeAndCbrt() {
-        NumberColumn doubles =  NumberColumn.create("doubles", 100);
+        DoubleColumn doubles =  DoubleColumn.create("doubles", 100);
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
-        NumberColumn newDoubles = doubles.cube();
-        NumberColumn revert = newDoubles.cubeRoot();
+        DoubleColumn newDoubles = doubles.cube();
+        DoubleColumn revert = newDoubles.cubeRoot();
         for (int i = 0; i < doubles.size(); i++) {
             assertEquals(doubles.get(i), revert.get(i), 0.01);
         }
@@ -219,19 +220,19 @@ public class NumberMapFunctionsTest {
 
     @Test
     public void testLog1p() {
-        NumberColumn doubles =  NumberColumn.create("doubles", 100);
+        DoubleColumn doubles =  DoubleColumn.create("doubles", 100);
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
-        NumberColumn newDoubles = doubles.log1p();
+        DoubleColumn newDoubles = doubles.log1p();
         assertFalse(newDoubles.isEmpty());
     }
 
     @Test
     public void testAbs() {
         double[] values = {4.4, -1.9, -1.5, 2.3, 0.0};
-        NumberColumn doubles =  NumberColumn.create("doubles", values);
-        NumberColumn newDoubles = doubles.abs();
+        DoubleColumn doubles =  DoubleColumn.create("doubles", values);
+        DoubleColumn newDoubles = doubles.abs();
         assertEquals(4.4, newDoubles.get(0), 0.0001);
         assertEquals(1.9, newDoubles.get(1), 0.0001);
         assertEquals(1.5, newDoubles.get(2), 0.0001);
@@ -243,31 +244,31 @@ public class NumberMapFunctionsTest {
 
     @Test
     public void testRound() {
-        NumberColumn doubles =  NumberColumn.create("doubles", 100);
+        DoubleColumn doubles =  DoubleColumn.create("doubles", 100);
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
-        NumberColumn newDoubles = doubles.round();
+        DoubleColumn newDoubles = doubles.round();
         assertFalse(newDoubles.isEmpty());
     }
 
     @Test
     public void testLogN() {
-        NumberColumn doubles =  NumberColumn.create("doubles", 100);
+        DoubleColumn doubles =  DoubleColumn.create("doubles", 100);
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
-        NumberColumn newDoubles = doubles.logN();
+        DoubleColumn newDoubles = doubles.logN();
         assertFalse(newDoubles.isEmpty());
     }
 
     @Test
     public void testLog10() {
-        NumberColumn doubles =  NumberColumn.create("doubles", 100);
+        DoubleColumn doubles =  DoubleColumn.create("doubles", 100);
         for (int i = 0; i < 100; i++) {
             doubles.append(RandomUtils.nextDouble(0, 10_000));
         }
-        NumberColumn newDoubles = doubles.log10();
+        DoubleColumn newDoubles = doubles.log10();
         assertFalse(newDoubles.isEmpty());
     }
 }

@@ -28,7 +28,7 @@ public class DoubleArraysTest {
     @Test
     public void testTo2dArray() throws Exception {
         Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        TableSliceGroup tableSliceGroup = table.splitOn(table.numberColumn("Scale"));
+        TableSliceGroup tableSliceGroup = table.splitOn("Scale");
         int columnNuumber = table.columnIndex("Injuries");
         DoubleArrays.to2dArray(tableSliceGroup, columnNuumber);
     }

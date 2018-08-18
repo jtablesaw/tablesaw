@@ -1,7 +1,8 @@
 package tech.tablesaw.columns.numbers;
 
 import tech.tablesaw.aggregate.AggregateFunctions;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.table.RollingColumn;
 
 /**
@@ -9,28 +10,28 @@ import tech.tablesaw.table.RollingColumn;
  */
 public class NumberRollingColumn extends RollingColumn {
 
-    public NumberRollingColumn(NumberColumn column, int window) {
+    public NumberRollingColumn(NumericColumn<?> column, int window) {
         super(column, window);
     }
 
-    public NumberColumn mean() {
-        return (NumberColumn) calc(AggregateFunctions.mean);
+    public DoubleColumn mean() {
+        return (DoubleColumn) calc(AggregateFunctions.mean);
     }
 
-    public NumberColumn median() {
-        return (NumberColumn) calc(AggregateFunctions.median);
+    public DoubleColumn median() {
+        return (DoubleColumn) calc(AggregateFunctions.median);
     }
 
-    public NumberColumn geometricMean() {
-        return (NumberColumn) calc(AggregateFunctions.geometricMean);
+    public DoubleColumn geometricMean() {
+        return (DoubleColumn) calc(AggregateFunctions.geometricMean);
     }
 
-    public NumberColumn sum() {
-        return (NumberColumn) calc(AggregateFunctions.sum);
+    public DoubleColumn sum() {
+        return (DoubleColumn) calc(AggregateFunctions.sum);
     }
 
-    public NumberColumn pctChange() {
-        return (NumberColumn) calc(AggregateFunctions.pctChange);
+    public DoubleColumn pctChange() {
+        return (DoubleColumn) calc(AggregateFunctions.pctChange);
     }
 
 }

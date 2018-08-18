@@ -14,13 +14,14 @@
 
 package tech.tablesaw.util;
 
+import java.util.List;
+
 import com.google.common.base.Preconditions;
+
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.TableSliceGroup;
-
-import java.util.List;
 
 /**
  * Utility functions for creating 2D double arrays from columns and other arrays
@@ -56,14 +57,13 @@ public class DoubleArrays {
     }
 
     public static double[][] to2dArray(TableSliceGroup views, int columnNumber) {
-
         int viewCount = views.size();
 
         double[][] allVals = new double[viewCount][];
         for (int viewNumber = 0; viewNumber < viewCount; viewNumber++) {
             TableSlice view = views.get(viewNumber);
             allVals[viewNumber] = new double[view.rowCount()];
-            NumberColumn numberColumn = view.numberColumn(columnNumber);
+            NumberColumn<?> numberColumn = view.numberColumn(columnNumber);
             for (int r = 0; r < view.rowCount(); r++) {
                 allVals[viewNumber][r] = numberColumn.getDouble(r);
             }

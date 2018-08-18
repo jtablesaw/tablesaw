@@ -1,11 +1,15 @@
 package tech.tablesaw.joining;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.google.common.collect.Streams;
+
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
@@ -20,8 +24,6 @@ import tech.tablesaw.index.LongIndex;
 import tech.tablesaw.index.StringIndex;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataFrameJoiner {
 
@@ -149,8 +151,8 @@ public class DataFrameJoiner {
                 }
             }
         } else if (type instanceof IntColumnType) {
-            IntIndex index = new IntIndex(table2.numberColumn(col2Name));
-            NumberColumn col1 = (NumberColumn) column;
+            IntIndex index = new IntIndex(table2.intColumn(col2Name));
+            IntColumn col1 = (IntColumn) column;
             for (int i = 0; i < col1.size(); i++) {
                 int value = col1.getInt(i);
                 Table table1Rows = table.where(Selection.with(i));
@@ -273,11 +275,10 @@ public class DataFrameJoiner {
                 }
             }
         } else if (type instanceof IntColumnType) {
-
-            LongIndex index = new LongIndex(result.numberColumn(col2Name));
-            NumberColumn col2 = (NumberColumn) table2.column(col2Name);
+            IntIndex index = new IntIndex(result.intColumn(col2Name));
+            DoubleColumn col2 = (DoubleColumn) table2.column(col2Name);
             for (int i = 0; i < col2.size(); i++) {
-                long value = col2.getLong(i);
+                int value = col2.getInt(i);
                 if (index.get(value).isEmpty()) {
                     selection.add(i);
                 }

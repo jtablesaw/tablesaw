@@ -14,12 +14,20 @@
 
 package tech.tablesaw.table;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -28,11 +36,6 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.conversion.TableConverter;
 import tech.tablesaw.io.string.DataFramePrinter;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
-
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A tabular data structure like a table in a relational database, but not formally implementing the relational algebra
@@ -230,18 +233,18 @@ public abstract class Relation {
                 .append(" variables (cols)");
 
         Table structure = Table.create(nameBuilder.toString());
-        structure.addColumns(NumberColumn.create("Index"));
+        structure.addColumns(DoubleColumn.create("Index"));
         structure.addColumns(StringColumn.create("Column Name"));
         structure.addColumns(StringColumn.create("Type"));
-        structure.addColumns(NumberColumn.create("Unique Values"));
+        structure.addColumns(DoubleColumn.create("Unique Values"));
         structure.addColumns(StringColumn.create("First"));
         structure.addColumns(StringColumn.create("Last"));
 
         for (Column<?> column : columns()) {
-            structure.numberColumn("Index").append(columnIndex(column));
+            structure.intColumn("Index").append(columnIndex(column));
             structure.stringColumn("Column Name").append(column.name());
             structure.stringColumn("Type").append(column.type().name());
-            structure.numberColumn("Unique Values").append(column.countUnique());
+            structure.intColumn("Unique Values").append(column.countUnique());
             structure.stringColumn("First").append(column.getString(0));
             structure.stringColumn("Last").append(column.getString(column.size() - 1));
         }
@@ -278,7 +281,7 @@ public abstract class Relation {
      * @return A number column
      * @throws ClassCastException if the cast to NumberColumn fails
      */
-    public NumberColumn numberColumn(int columnIndex) {
+    public NumberColumn<?> numberColumn(int columnIndex) {
         Column<?> c = column(columnIndex);
         if (c.type() == ColumnType.STRING) {
             StringColumn stringColumn = (StringColumn) c;
@@ -287,27 +290,27 @@ public abstract class Relation {
             BooleanColumn booleanColumn = (BooleanColumn) c;
             return booleanColumn.asNumberColumn();
         }
-        return (NumberColumn) column(columnIndex);
+        return (NumberColumn<?>) column(columnIndex);
     }
 
-    public NumberColumn numberColumn(String columnName) {
+    public NumberColumn<?> numberColumn(String columnName) {
         return numberColumn(columnIndex(columnName));
     }
 
-    public NumberColumn doubleColumn(String columnName) {
+    public DoubleColumn doubleColumn(String columnName) {
         return doubleColumn(columnIndex(columnName));
     }
 
-    public NumberColumn doubleColumn(int columnIndex) {
-        return (NumberColumn) column(columnIndex);
+    public DoubleColumn doubleColumn(int columnIndex) {
+        return (DoubleColumn) column(columnIndex);
     }
 
     public StringColumn[] stringColumns() {
         return columns().stream().filter(e->e.type() == ColumnType.STRING).toArray(StringColumn[]::new);
     }
 
-    public NumberColumn[] numberColumns() {
-        return columns().stream().filter(e->e instanceof NumberColumn).toArray(NumberColumn[]::new);
+    public DoubleColumn[] numberColumns() {
+        return columns().stream().filter(e->e instanceof DoubleColumn).toArray(DoubleColumn[]::new);
     }
 
     public BooleanColumn[] booleanColumns() {
@@ -339,7 +342,7 @@ public abstract class Relation {
      * <p>
      * Shorthand for numberColumn()
      */
-    public NumberColumn nCol(String columnName) {
+    public NumberColumn<?> nCol(String columnName) {
         return numberColumn(columnName);
     }
 
@@ -348,8 +351,24 @@ public abstract class Relation {
      * <p>
      * Shorthand for numberColumn()
      */
-    public NumberColumn nCol(int columnIndex) {
+    public NumberColumn<?> nCol(int columnIndex) {
         return numberColumn(columnIndex);
+    }
+
+    public IntColumn intColumn(String columnName) {
+        return intColumn(columnIndex(columnName));
+    }
+
+    public IntColumn intColumn(int columnIndex) {
+        return (IntColumn) column(columnIndex);
+    }
+    
+    public FloatColumn floatColumn(String columnName) {
+        return floatColumn(columnIndex(columnName));
+    }
+
+    public FloatColumn floatColumn(int columnIndex) {
+        return (FloatColumn) column(columnIndex);
     }
 
     public DateColumn dateColumn(int columnIndex) {
