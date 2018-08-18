@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.floats.FloatComparator;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.StringParser;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -75,6 +76,27 @@ public class FloatDataWrapper implements NumericDataWrapper {
     @Override
     public void append(int i) {
         data.add(i);
+    }
+
+    @Override
+    public void appendCell(String value) {
+        append(FloatColumnType.DEFAULT_PARSER.parseFloat(value));
+    }
+
+    @Override
+    public void appendCell(String value, StringParser<?> parser) {
+        append(parser.parseFloat(value));
+    }
+
+    @Override
+    public int countMissing() {
+        int count = 0;
+        for (int i = 0; i < size(); i++) {
+            if (isMissingValue(getFloat(i))) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override

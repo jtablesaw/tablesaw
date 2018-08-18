@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleComparator;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.StringParser;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -76,6 +77,27 @@ public class DoubleDataWrapper implements NumericDataWrapper {
     @Override
     public void append(int i) {
         data.add(i);
+    }
+
+    @Override
+    public void appendCell(String value) {
+        append(DoubleColumnType.DEFAULT_PARSER.parseDouble(value));
+    }
+
+    @Override
+    public void appendCell(String value, StringParser<?> parser) {
+        append(parser.parseDouble(value));
+    }
+
+    @Override
+    public int countMissing() {
+        int count = 0;
+        for (int i = 0; i < size(); i++) {
+            if (isMissingValue(getDouble(i))) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override

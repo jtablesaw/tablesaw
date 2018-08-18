@@ -20,7 +20,6 @@ import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.DoubleDataWrapper;
 import tech.tablesaw.columns.numbers.FloatDataWrapper;
 import tech.tablesaw.columns.numbers.IntDataWrapper;
@@ -412,28 +411,19 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     @Override
     public NumberColumn appendCell(final String object) {
         try {
-            append(DoubleColumnType.DEFAULT_PARSER.parseDouble(object));
+            data.appendCell(object);
         } catch (final NumberFormatException e) {
-            throw new NumberFormatException(name() + ": " + e.getMessage());
+            throw new NumberFormatException("Error adding value to column " + name() + ": " + e.getMessage());
         }
         return this;
     }
 
     @Override
     public NumberColumn appendCell(final String object, StringParser<?> parser) {
-        // TODO: Move this into the data wrappers and avoid the branching logic
         try {
-            if (type().equals(INTEGER)) {
-                append(parser.parseInt(object));
-            } else if (type().equals(FLOAT)) {
-                append(parser.parseFloat(object));
-            } else if (type().equals(DOUBLE)) {
-                append(parser.parseDouble(object));
-            } else {
-                throw new IllegalArgumentException("Unknown numeric type");
-            }
+            data.appendCell(object, parser);
         } catch (final NumberFormatException e) {
-            throw new NumberFormatException(name() + ": " + e.getMessage());
+            throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
         }
         return this;
     }
@@ -458,12 +448,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
         return data.isMissingValue(value) ? DateTimeColumn.MISSING_VALUE : Math.round(value);
     }
 
-
-    public Double summarizeIf(Selection selection, NumericAggregateFunction function) {
-        NumberColumn column = where(selection);
-        return function.summarize(column);
-    }
-
     /**
      * Compares the given ints, which refer to the indexes of the doubles in this column, according to the values of the
      * doubles themselves
@@ -474,6 +458,16 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
     }
 
     public NumberColumn set(final int r, final double value) {
+        data.set(r, value);
+        return this;
+    }
+
+    public NumberColumn set(final int r, final int value) {
+        data.set(r, value);
+        return this;
+    }
+
+    public NumberColumn set(final int r, final float value) {
         data.set(r, value);
         return this;
     }
@@ -490,6 +484,17 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
             set(row, newValue);
         }
         return this;
+    }
+
+    /**
+     * Summarizes the data in this column for all rows where the current value matches the selection criteria
+     * <p>
+     * Example:
+     * myColumn.summarize(myColumn.isLessThan(100), AggregateFunctions.count);
+     */
+    public Double summarize(Selection selection, NumericAggregateFunction function) {
+        NumberColumn column = where(selection);
+        return function.summarize(column);
     }
 
     @Override
@@ -643,13 +648,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
      */
     @Override
     public int countMissing() {
-        int count = 0;
-        for (int i = 0; i < size(); i++) {
-            if (data.isMissingValue(getDouble(i))) {
-                count++;
-            }
-        }
-        return count;
+        return data.countMissing();
     }
 
     // Reduce functions applied to the whole column
@@ -807,18 +806,8 @@ public class NumberColumn extends AbstractColumn<Double> implements NumberMapFun
 
     @Override
     public NumberColumn appendObj(Object obj) {
-        if (obj instanceof Double) {
-            return append((double) obj);
-        }
-        if (obj instanceof Float) {
-            return append((float) obj);
-        }
-        if (obj instanceof Integer) {
-            return append((int) obj);
-        }
-        else {
-            throw new IllegalArgumentException();
-        }
+        data.appendObj(obj);
+        return this;
     }
 
     /**

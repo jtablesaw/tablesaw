@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.StringParser;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -96,6 +97,27 @@ public class IntDataWrapper implements NumericDataWrapper {
     @Override
     public void append(int i) {
         data.add(i);
+    }
+
+    @Override
+    public void appendCell(String value) {
+        append(IntColumnType.DEFAULT_PARSER.parseInt(value));
+    }
+
+    @Override
+    public void appendCell(String value, StringParser<?> parser) {
+        append(parser.parseInt(value));
+    }
+
+    @Override
+    public int countMissing() {
+        int count = 0;
+        for (int i = 0; i < size(); i++) {
+            if (isMissingValue(getInt(i))) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override

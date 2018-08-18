@@ -1,6 +1,7 @@
 package tech.tablesaw.columns.numbers;
 
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.StringParser;
 
 import java.util.Iterator;
 
@@ -13,6 +14,8 @@ public interface NumericDataWrapper extends NumberIterable {
     void append(double d);
 
     void append(int i);
+
+    void appendCell(String value);
 
     double getDouble(final int row);
 
@@ -57,7 +60,7 @@ public interface NumericDataWrapper extends NumberIterable {
 
     default NumericDataWrapper removeMissing() {
         NumericDataWrapper wrapper = copy();
-        wrapper.clear();;
+        wrapper.clear();
         final NumberIterator iterator = numberIterator();
         while (iterator.hasNext()) {
             final double v = iterator.next();
@@ -68,6 +71,8 @@ public interface NumericDataWrapper extends NumberIterable {
         return wrapper;
     }
 
+    int countMissing();
+
     default boolean isMissingValue(double value) {
         return value != value;
     }
@@ -77,7 +82,7 @@ public interface NumericDataWrapper extends NumberIterable {
     }
 
     default boolean isMissingValue(int value) {
-        return value == Integer.MIN_VALUE;
+        return value == IntColumnType.missingValueIndicator();
     }
 
     /**
@@ -95,4 +100,21 @@ public interface NumericDataWrapper extends NumberIterable {
     byte[] asBytes(final int rowNumber);
 
     double missingValueIndicator();
+
+    void appendCell(final String object, StringParser<?> parser);
+
+    default void appendObj(Object obj) {
+        if (obj instanceof Double) {
+            append((double) obj);
+        }
+        else if (obj instanceof Float) {
+            append((float) obj);
+        }
+        else if (obj instanceof Integer) {
+            append((int) obj);
+        }
+        else {
+            throw new IllegalArgumentException();
+        }
+    }
 }
