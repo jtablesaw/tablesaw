@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableMap;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.TypeUtils;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
