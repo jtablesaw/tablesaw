@@ -18,7 +18,7 @@ import com.google.common.base.Strings;
 import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 
@@ -45,7 +45,7 @@ public class DateTimeMapFunctionsTest {
         LocalDateTime stop = start.plus(100_000L, ChronoUnit.MILLIS);
         startCol.append(start);
         stopCol.append(stop);
-        NumberColumn result = startCol.differenceInMilliseconds(stopCol);
+        DoubleColumn result = startCol.differenceInMilliseconds(stopCol);
         assertEquals(100_000L, result.firstElement(),0.01);
     }
 
@@ -56,7 +56,7 @@ public class DateTimeMapFunctionsTest {
         startCol.append(start);
         stopCol.append(stop);
 
-        NumberColumn result = startCol.differenceInSeconds(stopCol);
+        DoubleColumn result = startCol.differenceInSeconds(stopCol);
         assertEquals(100_000L, result.firstElement(), 0.01);
     }
 
@@ -67,7 +67,7 @@ public class DateTimeMapFunctionsTest {
         startCol.append(start);
         stopCol.append(stop);
 
-        NumberColumn result = startCol.differenceInMinutes(stopCol);
+        DoubleColumn result = startCol.differenceInMinutes(stopCol);
         assertEquals(100_000L, result.firstElement(), 0.01);
     }
 
@@ -78,7 +78,7 @@ public class DateTimeMapFunctionsTest {
         startCol.append(start);
         stopCol.append(stop);
 
-        NumberColumn result = startCol.differenceInHours(stopCol);
+        DoubleColumn result = startCol.differenceInHours(stopCol);
         assertEquals(100_000L, result.firstElement(), 0.01);
 
     }
@@ -90,7 +90,7 @@ public class DateTimeMapFunctionsTest {
         startCol.append(start);
         stopCol.append(stop);
 
-        NumberColumn result = startCol.differenceInDays(stopCol);
+        DoubleColumn result = startCol.differenceInDays(stopCol);
         assertEquals(100_000L, result.firstElement(), 0.01);
     }
 
@@ -101,49 +101,49 @@ public class DateTimeMapFunctionsTest {
         startCol.append(start);
         stopCol.append(stop);
 
-        NumberColumn result = startCol.differenceInYears(stopCol);
+        DoubleColumn result = startCol.differenceInYears(stopCol);
         assertEquals(10_000L, result.firstElement(), 0.01);
     }
 
     @Test
     public void testHour() {
         startCol.append(LocalDateTime.of(1984, 12, 12, 7, 30));
-        NumberColumn hour = startCol.hour();
+        DoubleColumn hour = startCol.hour();
         assertEquals(7, hour.firstElement(), 0.0001);
     }
 
     @Test
     public void testYear() {
         startCol.append(LocalDateTime.of(1984, 12, 12, 7, 30));
-        NumberColumn year = startCol.year();
+        DoubleColumn year = startCol.year();
         assertEquals(1984, year.firstElement(), 0.0001);
     }
 
     @Test
     public void testDayOfYear() {
         startCol.append(LocalDateTime.of(1984, 1, 5, 7, 30));
-        NumberColumn dayOfYear = startCol.dayOfYear();
+        DoubleColumn dayOfYear = startCol.dayOfYear();
         assertEquals(5, dayOfYear.firstElement(), 0.0001);
     }
 
     @Test
     public void testDayOfMonth() {
         startCol.append(LocalDateTime.of(1984, 1, 22, 7, 30));
-        NumberColumn dayOfMonth = startCol.dayOfMonth();
+        DoubleColumn dayOfMonth = startCol.dayOfMonth();
         assertEquals(22, dayOfMonth.firstElement(), 0.0001);
     }
 
     @Test
     public void testMinute() {
         startCol.append(LocalDateTime.of(1984, 1, 22, 7, 30));
-        NumberColumn minute = startCol.minute();
+        DoubleColumn minute = startCol.minute();
         assertEquals(30, minute.firstElement(), 0.0001);
     }
 
     @Test
     public void testDayOfWeekValue() {
         startCol.append(LocalDateTime.of(2018, 4, 10, 7, 30));
-        NumberColumn dayOfWeekValue = startCol.dayOfWeekValue();
+        DoubleColumn dayOfWeekValue = startCol.dayOfWeekValue();
         assertEquals(2, dayOfWeekValue.firstElement(), 0.0001);
     }
 
@@ -211,7 +211,7 @@ public class DateTimeMapFunctionsTest {
     public void testMonthValue() {
         LocalDateTime dateTime = LocalDateTime.of(2018, 4, 10, 7, 30);
         startCol.append(dateTime);
-        NumberColumn month = startCol.monthValue();
+        DoubleColumn month = startCol.monthValue();
         assertEquals(4, month.get(0), 0.0001);
     }
 
@@ -219,7 +219,7 @@ public class DateTimeMapFunctionsTest {
     public void testMinuteOfDay() {
         LocalDateTime dateTime = LocalDateTime.of(2018, 4, 10, 7, 30);
         startCol.append(dateTime);
-        NumberColumn minuteOfDay = startCol.minuteOfDay();
+        DoubleColumn minuteOfDay = startCol.minuteOfDay();
         assertEquals((7 * 60) + 30, minuteOfDay.get(0), 0.0001);
     }
 
@@ -227,7 +227,7 @@ public class DateTimeMapFunctionsTest {
     public void testSecondOfDay() {
         LocalDateTime dateTime = LocalDateTime.of(2018, 4, 10, 7, 30);
         startCol.append(dateTime);
-        NumberColumn secondOfDay = startCol.secondOfDay();
+        DoubleColumn secondOfDay = startCol.secondOfDay();
         assertEquals(dateTime.get(ChronoField.SECOND_OF_DAY), secondOfDay.get(0), 0.0001);
     }
 
@@ -255,7 +255,7 @@ public class DateTimeMapFunctionsTest {
             dateTime = dateTime.plusDays(1);
             startCol.append(dateTime);
         }
-        NumberColumn timeWindows = startCol.timeWindow(ChronoUnit.DAYS, 5);
+        DoubleColumn timeWindows = startCol.timeWindow(ChronoUnit.DAYS, 5);
         assertEquals(0, timeWindows.get(0), 0.0001);
         assertEquals(9, timeWindows.max(), 0.0001);
 

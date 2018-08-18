@@ -45,7 +45,7 @@ public abstract class StringParser<T> {
     }
 
     public int parseInt(String s) {
-        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to booleans");
+        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to ints");
     }
 
     public double parseDouble(String s) {

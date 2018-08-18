@@ -14,6 +14,9 @@
 
 package tech.tablesaw.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
@@ -22,9 +25,6 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A TableSlice is a facade around a Relation that acts as a filter.
@@ -161,7 +161,7 @@ public class TableSlice extends Relation implements IntIterable {
      * @throws IllegalArgumentException if numberColumnName doesn't name a numeric column in this table
      */
     public double reduce(String numberColumnName, NumericAggregateFunction function) {
-        NumberColumn column = table.numberColumn(numberColumnName);
+        NumberColumn<?> column = table.numberColumn(numberColumnName);
         return function.summarize(column.where(selection));
     }
 

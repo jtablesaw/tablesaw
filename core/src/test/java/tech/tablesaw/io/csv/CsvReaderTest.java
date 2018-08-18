@@ -14,15 +14,20 @@
 
 package tech.tablesaw.io.csv;
 
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.Table;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.SKIP;
+import static tech.tablesaw.api.ColumnType.STRING;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -35,10 +40,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static tech.tablesaw.api.ColumnType.*;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.Table;
 
 /**
  * Tests for CSV Reading
@@ -133,7 +145,7 @@ public class CsvReaderTest {
     public void testMillis() {
 
         long[] times = {1530486314124L, 1530488214124L};
-        NumberColumn d = NumberColumn.create("times", times);
+        DoubleColumn d = DoubleColumn.create("times", times);
         DateTimeColumn column = d.asDateTimes(ZoneOffset.UTC);
         assertEquals(1530486314124L, column.get(0).toInstant(ZoneOffset.UTC).toEpochMilli());
     }
@@ -365,7 +377,7 @@ public class CsvReaderTest {
         // TODO (lwhite): These tests don't fail. What was their intent?
         Table table1 = Table.read().csv("../data/read_failure_test.csv");
         table1.structure(); // just make sure the import completed
-        NumberColumn test = table1.numberColumn("Test");
+        IntColumn test = table1.intColumn("Test");
         //TODO(lwhite): Better tests
         assertNotNull(test.summary());
     }
@@ -374,7 +386,7 @@ public class CsvReaderTest {
     public void testReadFailure2() throws Exception {
         Table table1 = Table.read().csv("../data/read_failure_test2.csv");
         table1.structure(); // just make sure the import completed
-        NumberColumn test = table1.numberColumn("Test");
+        IntColumn test = table1.intColumn("Test");
 
         //TODO(lwhite): Better tests
         assertNotNull(test.summary());

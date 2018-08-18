@@ -248,7 +248,7 @@ public class TimeColumnTest {
     @Test
     public void minuteOfDay() {
         fillLargerColumn();
-        NumberColumn column2 = column1.minuteOfDay();
+        DoubleColumn column2 = column1.minuteOfDay();
         for (int i = 0; i < column1.size() - 2; i++) {
             assertEquals(column2.get(i), getMinuteOfDay(column1.getPackedTime(i)), 0.0001);
         }
@@ -257,7 +257,7 @@ public class TimeColumnTest {
     @Test
     public void secondOfDay() {
         fillLargerColumn();
-        NumberColumn column2 = column1.secondOfDay();
+        DoubleColumn column2 = column1.secondOfDay();
         for (int i = 0; i < column1.size() - 2; i++) {
             assertEquals(column2.get(i), getSecondOfDay(column1.getPackedTime(i)), 0.0001);
         }
@@ -267,7 +267,7 @@ public class TimeColumnTest {
     public void testPlusHours() {
         fillColumn();
         TimeColumn column2 = column1.plusHours(3);
-        NumberColumn numberColumn = column2.differenceInHours(column1);
+        DoubleColumn numberColumn = column2.differenceInHours(column1);
         double expected = -3;
         check(numberColumn, expected);
     }
@@ -312,7 +312,7 @@ public class TimeColumnTest {
     @Test
     public void testSecond() {
         fillColumn();
-        NumberColumn second = column1.second();
+        DoubleColumn second = column1.second();
         assertEquals(2, second.get(0), 0.001);
         assertEquals(30, second.get(1), 0.001);
         assertEquals(DoubleColumnType.missingValueIndicator(), second.get(2), 0.001);
@@ -321,7 +321,7 @@ public class TimeColumnTest {
     @Test
     public void testMinute() {
         fillColumn();
-        NumberColumn minute = column1.minute();
+        DoubleColumn minute = column1.minute();
         assertEquals(4, minute.get(0), 0.001);
         assertEquals(15, minute.get(1), 0.001);
         assertEquals(DoubleColumnType.missingValueIndicator(), minute.get(2), 0.001);
@@ -339,7 +339,7 @@ public class TimeColumnTest {
     public void testMinusHours() {
         fillColumn();
         TimeColumn column2 = column1.minusHours(0);
-        NumberColumn numberColumn = column2.differenceInHours(column1);
+        DoubleColumn numberColumn = column2.differenceInHours(column1);
         double expected = 0;
         check(numberColumn, expected);
     }
@@ -348,7 +348,7 @@ public class TimeColumnTest {
     public void testPlusMinutes() {
         fillColumn();
         TimeColumn column2 = column1.plusMinutes(30);
-        NumberColumn numberColumn = column2.differenceInMinutes(column1);
+        DoubleColumn numberColumn = column2.differenceInMinutes(column1);
         double expected = -30;
         check(numberColumn, expected);
     }
@@ -357,7 +357,7 @@ public class TimeColumnTest {
     public void testMinusMinutes() {
         fillColumn();
         TimeColumn column2 = column1.minusMinutes(30);
-        NumberColumn numberColumn = column2.differenceInMinutes(column1);
+        DoubleColumn numberColumn = column2.differenceInMinutes(column1);
         double expected = 30;
         check(numberColumn, expected);
     }
@@ -366,7 +366,7 @@ public class TimeColumnTest {
     public void testPlusSeconds() {
         fillColumn();
         TimeColumn column2 = column1.plusSeconds(101);
-        NumberColumn numberColumn = column2.differenceInSeconds(column1);
+        DoubleColumn numberColumn = column2.differenceInSeconds(column1);
         double expected = -101;
         check(numberColumn, expected);
     }
@@ -375,7 +375,7 @@ public class TimeColumnTest {
     public void testMinusSeconds() {
         fillColumn();
         TimeColumn column2 = column1.minusSeconds(101);
-        NumberColumn numberColumn = column2.differenceInSeconds(column1);
+        DoubleColumn numberColumn = column2.differenceInSeconds(column1);
         double expected = 101;
         check(numberColumn, expected);
     }
@@ -384,7 +384,7 @@ public class TimeColumnTest {
     public void testPlusMilliseconds() {
         fillColumn();
         TimeColumn column2 = column1.plusMilliseconds(101);
-        NumberColumn numberColumn = column2.differenceInMilliseconds(column1);
+        DoubleColumn numberColumn = column2.differenceInMilliseconds(column1);
         double expected = -101;
         check(numberColumn, expected);
     }
@@ -393,7 +393,7 @@ public class TimeColumnTest {
     public void testMinusMilliseconds() {
         fillColumn();
         TimeColumn column2 = column1.minusMilliseconds(101);
-        NumberColumn numberColumn = column2.differenceInMilliseconds(column1);
+        DoubleColumn numberColumn = column2.differenceInMilliseconds(column1);
         double expected = 101;
         check(numberColumn, expected);
     }
@@ -405,7 +405,7 @@ public class TimeColumnTest {
         assertNull(col.get(0));
     }
 
-    private void check(NumberColumn numberColumn, double expected) {
+    private void check(DoubleColumn numberColumn, double expected) {
         assertEquals(expected, numberColumn.min(), .0001);
         assertEquals(expected, numberColumn.max(), .0001);
     }

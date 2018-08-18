@@ -14,8 +14,21 @@
 
 package tech.tablesaw.api;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
+import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -36,18 +49,6 @@ import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
-import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
@@ -691,7 +692,7 @@ public class Table extends Relation implements Iterable<Row> {
     public Table structure() {
         Table t = new Table("Structure of " + name());
         //NumberColumn index = NumberColumn.create("Index", columnCount());
-        NumberColumn index = NumberColumn.indexColumn("Index", columnCount(), 0);
+        IntColumn index = IntColumn.indexColumn("Index", columnCount(), 0);
         StringColumn columnName = StringColumn.create("Column Name", columnCount());
         StringColumn columnType = StringColumn.create("Column Type", columnCount());
         t.addColumns(index);

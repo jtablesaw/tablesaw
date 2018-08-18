@@ -22,7 +22,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.dates.PackedLocalDate;
@@ -82,7 +82,7 @@ public class TimeDependentFilteringTest {
         //Non-temporal clause
         Table nt = t.where(concept.isEqualTo(conceptA).and(concept.isNotEqualTo(conceptB)));
 
-        NumberColumn ntPatients = nt.numberColumn("patient");
+        DoubleColumn ntPatients = nt.doubleColumn("patient");
 
         // Group the original table by patient id
         TableSliceGroup patients = StandardTableSliceGroup.create(t, "patient");
@@ -139,8 +139,8 @@ public class TimeDependentFilteringTest {
         t = Table.create("Observations");
         StringColumn conceptId = StringColumn.create("concept");
         DateColumn date = DateColumn.create("date");
-        NumberColumn value =  NumberColumn.create("value");
-        NumberColumn patientId =  NumberColumn.create("patient");
+        DoubleColumn value =  DoubleColumn.create("value");
+        DoubleColumn patientId =  DoubleColumn.create("patient");
         patientId.setPrintFormatter(NumberColumnFormatter.ints());
 
         t.addColumns(conceptId);
@@ -178,8 +178,8 @@ public class TimeDependentFilteringTest {
 
         DateColumn dateColumn = table.dateColumn("date");
         StringColumn conceptColumn = table.stringColumn("concept");
-        NumberColumn valueColumn = table.numberColumn("value");
-        NumberColumn patientColumn = table.numberColumn("patient");
+        DoubleColumn valueColumn = table.doubleColumn("value");
+        DoubleColumn patientColumn = table.doubleColumn("patient");
 
         // sample from the pools to write the data
         for (int i = 0; i < observationCount; i++) {

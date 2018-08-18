@@ -16,7 +16,7 @@ package tech.tablesaw.columns.numbers;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -47,8 +47,9 @@ public class Stats {
 
     public static Stats create(final NumericColumn<?> values) {
         SummaryStatistics summaryStatistics = new SummaryStatistics();
-        for (double f : values.numberIterator()) {
-            summaryStatistics.addValue(f);
+        NumberIterator itr = values.numberIterator();
+        while (itr.hasNext()) {
+            summaryStatistics.addValue(itr.next());
         }
         return getStats(values, summaryStatistics);
     }
@@ -130,7 +131,7 @@ public class Stats {
     public Table asTable() {
         Table t = Table.create(name);
         StringColumn measure = StringColumn.create("Measure");
-        NumberColumn value = NumberColumn.create("Value");
+        DoubleColumn value = DoubleColumn.create("Value");
         t.addColumns(measure);
         t.addColumns(value);
 
@@ -165,7 +166,7 @@ public class Stats {
         Table t = asTable();
 
         StringColumn measure = t.stringColumn("Measure");
-        NumberColumn value = t.numberColumn("Value");
+        DoubleColumn value = t.doubleColumn("Value");
 
         measure.append("Sum of Squares");
         value.append(sumOfSquares());

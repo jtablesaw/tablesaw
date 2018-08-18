@@ -14,19 +14,23 @@
 
 package tech.tablesaw;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.time.LocalDate;
+
 import org.junit.Before;
 import org.junit.Test;
+
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.io.csv.CsvReadOptions;
-
-import java.time.LocalDate;
-
-import static org.junit.Assert.*;
 
 /**
  * Tests for filtering on the T class
@@ -43,7 +47,7 @@ public class TableFilteringTest {
     @Test
     public void testFilter1() {
         Table result = table.where(table.numberColumn("approval").isLessThan(70));
-        NumberColumn a = result.numberColumn("approval");
+        IntColumn a = result.intColumn("approval");
         for (double v : a) {
             assertTrue(v < 70);
         }
@@ -52,7 +56,7 @@ public class TableFilteringTest {
     @Test
     public void testReject() {
         Table result = table.dropWhere(table.numberColumn("approval").isLessThan(70));
-        NumberColumn a = result.numberColumn("approval");
+        IntColumn a = result.intColumn("approval");
         for (double v : a) {
             assertFalse(v < 70);
         }
@@ -64,7 +68,7 @@ public class TableFilteringTest {
         String[] values = {"a", "b", "", "d"};
         double[] values2 = {1, Double.NaN, 3, 4};
         StringColumn sc = StringColumn.create("s", values);
-        NumberColumn nc = NumberColumn.create("n", values2);
+        DoubleColumn nc = DoubleColumn.create("n", values2);
         Table test = Table.create("test", sc, nc);
         Table result = test.dropRowsWithMissingValues();
         assertEquals(2, result.rowCount());
@@ -142,7 +146,7 @@ public class TableFilteringTest {
                         table.numberColumn("approval").isGreaterThan(70)));
 
         DateColumn dates = result.dateColumn("date");
-        NumberColumn approval = result.numberColumn("approval");
+        IntColumn approval = result.intColumn("approval");
         for (int row = 0; row < result.rowCount(); row++) {
             assertTrue(PackedLocalDate.isInApril(dates.getIntInternal(row)));
             assertTrue(approval.get(row) > 70);

@@ -14,7 +14,7 @@
 
 package tech.tablesaw.columns.numbers;
 
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -31,7 +31,7 @@ public interface NumberFilters {
 
     Selection eval(DoubleRangePredicate predicate, Number rangeStart, Number rangeEnd);
 
-    Selection eval(DoubleBiPredicate predicate, NumberColumn otherColumn);
+    Selection eval(DoubleBiPredicate predicate, DoubleColumn otherColumn);
 
     Selection eval(DoubleBiPredicate predicate, Number value);
 
@@ -114,7 +114,7 @@ public interface NumberFilters {
 
     // Column filters
 
-    default Selection isGreaterThan(NumberColumn d) {
+    default Selection isGreaterThan(DoubleColumn d) {
         Selection results = new BitmapBackedSelection();
         for (int i = 0; i < size(); i++) {
             if (this.getDouble(i) > d.getDouble(i)) {
@@ -124,7 +124,7 @@ public interface NumberFilters {
         return results;
     }
 
-    default Selection isGreaterThanOrEqualTo(NumberColumn d) {
+    default Selection isGreaterThanOrEqualTo(DoubleColumn d) {
         Selection results = new BitmapBackedSelection();
         for (int i = 0; i < size(); i++) {
             if (this.getDouble(i) >= d.getDouble(i)) {
@@ -134,7 +134,7 @@ public interface NumberFilters {
         return results;
     }
 
-    default Selection isEqualTo(NumberColumn d) {
+    default Selection isEqualTo(DoubleColumn d) {
         Selection results = new BitmapBackedSelection();
         for (int i = 0; i < size(); i++) {
             if (this.getDouble(i) == d.getDouble(i)) {
@@ -148,7 +148,7 @@ public interface NumberFilters {
 
     double getDouble(int i);
 
-    default Selection isNotEqualTo(NumberColumn d) {
+    default Selection isNotEqualTo(DoubleColumn d) {
         Selection results = new BitmapBackedSelection();
         for (int i = 0; i < size(); i++) {
             if (this.getDouble(i) != d.getDouble(i)) {
@@ -158,7 +158,7 @@ public interface NumberFilters {
         return results;
     }
 
-    default Selection isLessThan(NumberColumn d) {
+    default Selection isLessThan(DoubleColumn d) {
         Selection results = new BitmapBackedSelection();
         for (int i = 0; i < size(); i++) {
             if (this.getDouble(i) < d.getDouble(i)) {
@@ -168,7 +168,7 @@ public interface NumberFilters {
         return results;
     }
 
-    default Selection isLessThanOrEqualTo(NumberColumn d) {
+    default Selection isLessThanOrEqualTo(DoubleColumn d) {
         Selection results = new BitmapBackedSelection();
         for (int i = 0; i < size(); i++) {
             if (this.getDouble(i) <= d.getDouble(i)) {

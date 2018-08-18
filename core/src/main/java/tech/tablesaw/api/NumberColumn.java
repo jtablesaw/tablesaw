@@ -8,46 +8,34 @@ import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
-import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
-import java.util.function.DoubleSupplier;
-import java.util.function.ToDoubleFunction;
-
-import com.google.common.base.Preconditions;
 
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
-import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleDataWrapper;
 import tech.tablesaw.columns.numbers.FloatDataWrapper;
 import tech.tablesaw.columns.numbers.IntDataWrapper;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.columns.numbers.NumberFillers;
-import tech.tablesaw.columns.numbers.NumberIterable;
 import tech.tablesaw.columns.numbers.NumberIterator;
 import tech.tablesaw.columns.numbers.NumericDataWrapper;
 import tech.tablesaw.selection.Selection;
 
-public class NumberColumn extends AbstractColumn<Double> implements NumericColumn<Double>, NumberFillers<NumberColumn>, CategoricalColumn<Double> {
+public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> implements NumericColumn<T> {
 
-    private NumericDataWrapper data;
+    protected NumericDataWrapper data;
 
-    private NumberColumnFormatter printFormatter = new NumberColumnFormatter();
+    protected NumberColumnFormatter printFormatter = new NumberColumnFormatter();
 
-    private Locale locale;
+    protected Locale locale;
 
-    private final IntComparator comparator = new IntComparator() {
+    protected final IntComparator comparator = new IntComparator() {
 
         @Override
         public int compare(final int r1, final int r2) {
@@ -57,119 +45,38 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
         }
     };
 
-    private NumberColumn(final String name, final DoubleArrayList data) {
+    protected NumberColumn(final ColumnType type, final String name) {
+        super(type, name);
+    }
+
+    protected NumberColumn(final String name, final DoubleArrayList data) {
         super(DOUBLE, name);
         setDataWrapper(new DoubleDataWrapper(data));
     }
 
-    private NumberColumn(final String name, final FloatArrayList data) {
+    protected NumberColumn(final String name, final FloatArrayList data) {
         super(FLOAT, name);
         setDataWrapper(new FloatDataWrapper(data));
     }
 
-    private NumberColumn(final String name, IntArrayList data) {
+    protected NumberColumn(final String name, IntArrayList data) {
         super(INTEGER, name);
         this.printFormatter = NumberColumnFormatter.ints();
         setDataWrapper(new IntDataWrapper(data));
     }
 
-    private NumberColumn(final String name, final NumericDataWrapper data) {
+    protected NumberColumn(final String name, final NumericDataWrapper data) {
         super(data.type(), name);
         setDataWrapper(data);
     }
 
-    public static NumberColumn createWithFloats(String name) {
-        return new NumberColumn(name, new FloatArrayList(DEFAULT_ARRAY_SIZE));
-    }
+    protected abstract NumberColumn<T> createCol(final String name, final NumericDataWrapper data);
 
-    public static NumberColumn createWithFloats(String name, float[] data) {
-        return new NumberColumn(name, new FloatArrayList(data));
-    }
-
-    public static NumberColumn create(final String name, final double[] arr) {
-        return new NumberColumn(name, new DoubleArrayList(arr));
-    }
-
-    public static NumberColumn create(final String name, final NumericDataWrapper data) {
-        return new NumberColumn(name, data);
-    }
-
-    public static NumberColumn create(final String name) {
-        return new NumberColumn(name, new DoubleArrayList());
-    }
-
-    public static NumberColumn create(final String name, final float[] arr) {
-        final double[] doubles = new double[arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            doubles[i] = arr[i];
-        }
-        return new NumberColumn(name, new DoubleArrayList(doubles));
-    }
-
-    public static NumberColumn create(final String name, final int[] arr) {
-        return new NumberColumn(name, new IntArrayList(arr));
-    }
-
-    public static NumberColumn create(final String name, final long[] arr) {
-        final double[] doubles = new double[arr.length];
-        for (int i = 0; i < arr.length; i++) {
-            doubles[i] = arr[i];
-        }
-        return new NumberColumn(name, new DoubleArrayList(doubles));
-    }
-
-    public static NumberColumn create(final String name, final List<Number> numberList) {
-        // TODO This should be pushed down to the dataWrappers
-        final double[] doubles = new double[numberList.size()];
-        for (int i = 0; i < numberList.size(); i++) {
-            doubles[i] = numberList.get(i).doubleValue();
-        }
-        return new NumberColumn(name, new DoubleArrayList(doubles));
-    }
-
-    public static NumberColumn create(final String name, final Number[] numbers) {
-        final double[] doubles = new double[numbers.length];
-        for (int i = 0; i < numbers.length; i++) {
-            doubles[i] = numbers[i].doubleValue();
-        }
-        return new NumberColumn(name, new DoubleArrayList(doubles));
-    }
-
-    public static NumberColumn create(final String name, final int initialSize) {
-        return new NumberColumn(name, new DoubleArrayList(initialSize));
-    }
-
-    public static NumberColumn createWithIntegers(String name) {
-        return new NumberColumn(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
-    }
-
-    public static NumberColumn createWithIntegers(String name, int size) {
-        return new NumberColumn(name, new IntArrayList(size));
-    }
-
-    /**
-     * Returns a new numeric column initialized with the given name and size. The values in the column are
-     * integers beginning at startsWith and continuing through size (exclusive), monotonically increasing by 1
-     * TODO consider a generic fill function including steps or random samples from various distributions
-     */
-    public static NumberColumn indexColumn(final String columnName, final int size, final int startsWith) {
-        final NumberColumn indexColumn = NumberColumn.createWithIntegers(columnName, size);
-        for (int i = 0; i < size; i++) {
-            indexColumn.append(i + startsWith);
-        }
-        return indexColumn;
-    }
-
-    private void setDataWrapper(NumericDataWrapper wrapper) {
+    protected void setDataWrapper(NumericDataWrapper wrapper) {
         if (wrapper instanceof IntDataWrapper) {
             printFormatter = NumberColumnFormatter.ints();
         }
         this.data = wrapper;
-    }
-
-    @Override
-    public Double get(int index) {
-	return getDouble(index);
     }
 
     @Override
@@ -198,8 +105,8 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
      *          number of observations in the column
      * @return A list, possibly empty, of the largest observations
      */
-    public NumberColumn top(final int n) {
-        return NumberColumn.create(name() + "[Top " + n  + "]", data.top(n));
+    public NumericColumn<T> top(final int n) {
+        return createCol(name() + "[Top " + n  + "]", data.top(n));
     }
 
     /**
@@ -210,60 +117,8 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
      *          number of observations in the column
      * @return A list, possibly empty, of the smallest n observations
      */
-    public NumberColumn bottom(final int n) {
-        return NumberColumn.create(name() + "[Bottoms " + n  + "]", data.bottom(n));
-    }
-
-    @Override
-    public NumberColumn unique() {
-        final DoubleSet doubles = new DoubleOpenHashSet();
-        for (int i = 0; i < size(); i++) {
-            if (!isMissing(i)) {
-                doubles.add(getDouble(i));
-            }
-        }
-        final NumberColumn column = NumberColumn.create(name() + " Unique values", doubles.size());
-        doubles.forEach((DoubleConsumer) column::append);
-        return column;
-    }
-
-    public double firstElement() {
-        if (size() > 0) {
-            return getDouble(0);
-        }
-        return data.missingValueIndicator();
-    }
-
-    /**
-     * Adds the given float to this column
-     */
-    public NumberColumn append(final float f) {
-        data.append(f);
-        return this;
-    }
-
-    /**
-     * Adds the given double to this column
-     */
-    public NumberColumn append(double d) {
-        data.append(d);
-        return this;
-    }
-
-    public NumberColumn append(int i) {
-        data.append(i);
-        return this;
-    }
-
-    @Override
-    public NumberColumn append(Double val) {
-        this.append(val.doubleValue());
-        return this;
-    }
-
-    public NumberColumn append(Integer val) {
-        this.append(val.doubleValue());
-        return this;
+    public NumericColumn<T> bottom(final int n) {
+        return createCol(name() + "[Bottoms " + n  + "]", data.bottom(n));
     }
 
     @Override
@@ -313,24 +168,24 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
     }
 
     @Override
-    public NumberColumn emptyCopy() {
-        final NumberColumn column = NumberColumn.create(name(), data.emptyCopy(DEFAULT_ARRAY_SIZE));
+    public NumberColumn<T> emptyCopy() {
+        final NumberColumn<T> column = createCol(name(), data.emptyCopy(DEFAULT_ARRAY_SIZE));
         column.setPrintFormatter(printFormatter);
         column.locale = locale;
         return column;
     }
 
     @Override
-    public NumberColumn emptyCopy(final int rowSize) {
-        final NumberColumn column = NumberColumn.create(name(), data.emptyCopy(rowSize));
+    public NumberColumn<T> emptyCopy(final int rowSize) {
+        final NumberColumn<T> column = createCol(name(), data.emptyCopy(rowSize));
         column.setPrintFormatter(printFormatter);
         column.locale = locale;
         return column;
     }
 
     @Override
-    public NumberColumn copy() {
-        return NumberColumn.create(name(), data.copy());
+    public NumberColumn<T> copy() {
+        return createCol(name(), data.copy());
     }
 
     @Override
@@ -349,7 +204,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
     }
 
     @Override
-    public NumberColumn appendCell(final String object) {
+    public NumberColumn<T> appendCell(final String object) {
         try {
             data.appendCell(object);
         } catch (final NumberFormatException e) {
@@ -359,7 +214,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
     }
 
     @Override
-    public NumberColumn appendCell(final String object, StringParser<?> parser) {
+    public NumberColumn<T> appendCell(final String object, StringParser<?> parser) {
         try {
             data.appendCell(object, parser);
         } catch (final NumberFormatException e) {
@@ -397,17 +252,17 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
         return comparator;
     }
 
-    public NumberColumn set(final int r, final double value) {
+    public NumberColumn<T> set(final int r, final double value) {
         data.set(r, value);
         return this;
     }
 
-    public NumberColumn set(final int r, final int value) {
+    public NumberColumn<T> set(final int r, final int value) {
         data.set(r, value);
         return this;
     }
 
-    public NumberColumn set(final int r, final float value) {
+    public NumberColumn<T> set(final int r, final float value) {
         data.set(r, value);
         return this;
     }
@@ -419,7 +274,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
      * Example:
      * myColumn.set(4.0, myColumn.valueIsMissing()); // no more missing values
      */
-    public NumberColumn set(final Selection rowSelection, final double newValue) {
+    public NumberColumn<T> set(final Selection rowSelection, final double newValue) {
         for (final int row : rowSelection) {
             set(row, newValue);
         }
@@ -448,16 +303,7 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
     }
 
     @Override
-    public int[] asIntArray() {  // TODO: Need to figure out how to handle NaN -> Maybe just use a list with nulls?
-        final int[] result = new int[size()];
-        for (int i = 0; i < size(); i++) {
-            result[i] = roundInt(i);
-        }
-        return result;
-    }
-
-    @Override
-    public NumberColumn appendMissing() {
+    public NumberColumn<T> appendMissing() {
         data.appendMissing();
         return this;
     }
@@ -500,36 +346,24 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
     }
 
     @Override
-    public NumberColumn appendObj(Object obj) {
+    public NumberColumn<T> appendObj(Object obj) {
         data.appendObj(obj);
         return this;
     }
 
     @Override
-    public NumberColumn lead(final int n) {
-        final NumberColumn numberColumn = lag(-n);
-        numberColumn.setName(name() + " lead(" + n + ")");
-        return numberColumn;
+    public NumberColumn<T> lag(final int n) {
+        return createCol(name() + " lag(" + n + ")", data.lag(n));
     }
 
     @Override
-    public NumberColumn lag(final int n) {
-        return NumberColumn.create(name() + " lag(" + n + ")", data.lag(n));
-    }
-
-    @Override
-    public NumberColumn removeMissing() {
-        return new NumberColumn(name(), data.removeMissing());
+    public NumberColumn<T> removeMissing() {
+        return createCol(name(), data.removeMissing());
     }
 
     @Override
     public NumberIterator numberIterator() {
         return data.numberIterator();
-    }
-
-    @Override
-    public Iterator<Double> iterator() {
-        return data.iterator();
     }
 
     public IntSet asIntegerSet() {
@@ -551,11 +385,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
             output[i] = getDouble(i);
         }
         return output;
-    }
-
-    @Override
-    public int compare(Double o1, Double o2) {
-        return Double.compare(o1, o2);
     }
 
     /**
@@ -586,108 +415,6 @@ public class NumberColumn extends AbstractColumn<Double> implements NumericColum
      */
     public boolean noneMatch(DoublePredicate test) {
         return count(test, 1) == 0;
-    }
-
-    @Override
-    public NumberColumn set(int i, Double val) {
-        return set(i, (double) val);
-    }
-
-    @Override
-    public NumberColumn append(final Column<Double> column) {
-        Preconditions.checkArgument(column.type() == this.type());
-        final NumberColumn numberColumn = (NumberColumn) column;
-        for (int i = 0; i < numberColumn.size(); i++) {
-            append(numberColumn.getDouble(i));
-        }
-        return this;
-    }
-
-    // fillWith methods
-
-    @Override
-    public NumberColumn fillWith(final NumberIterator iterator) {
-        for (int r = 0; r < size(); r++) {
-            if (!iterator.hasNext()) {
-                break;
-            }
-            set(r, iterator.next());
-        }
-        return this;
-    }
-
-    @Override
-    public NumberColumn fillWith(final NumberIterable iterable) {
-        NumberIterator iterator = iterable.numberIterator();
-        for (int r = 0; r < size(); r++) {
-            if (iterator == null || (!iterator.hasNext())) {
-                iterator = numberIterator();
-                if (!iterator.hasNext()) {
-                    break;
-                }
-            }
-            set(r, iterator.next());
-        }
-        return this;
-    }
-
-    @Override
-    public NumberColumn fillWith(final DoubleSupplier supplier) {
-        for (int r = 0; r < size(); r++) {
-            try {
-                set(r, supplier.getAsDouble());
-            } catch (final Exception e) {
-                break;
-            }
-        }
-        return this;
-    }
-
-    public boolean valueIsMissing(double value) {
-        return data.isMissingValue(value);
-    }
-
-    public boolean valueIsMissing(float value) {
-        return data.isMissingValue(value);
-    }
-
-    public boolean valueIsMissing(int value) {
-        return data.isMissingValue(value);
-    }
-
-    /**
-     * Maps the function across all rows, appending the results to a new NumberColumn
-     *
-     * @param fun function to map
-     * @return the NumberColumn with the results
-     */
-    public NumberColumn map(ToDoubleFunction<Double> fun) {
-        NumberColumn result = NumberColumn.create(name());
-        for (double t : this) {
-            try {
-                result.append(fun.applyAsDouble(t));
-            } catch (Exception e) {
-                result.appendMissing();
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns a new NumberColumn with only those rows satisfying the predicate
-     *
-     * @param test the predicate
-     * @return a new NumberColumn with only those rows satisfying the predicate
-     */
-    public NumberColumn filter(DoublePredicate test) {
-        NumberColumn result = NumberColumn.create(name());
-        for (int i = 0; i < size(); i++) {
-            double d = getDouble(i);
-            if (test.test(d)) {
-                result.append(d);
-            }
-        }
-        return result;
     }
 
 }

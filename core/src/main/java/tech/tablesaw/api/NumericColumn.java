@@ -84,7 +84,7 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
     }
 
     @Override
-    default Selection eval(final DoubleBiPredicate predicate, final NumberColumn otherColumn) {
+    default Selection eval(final DoubleBiPredicate predicate, final DoubleColumn otherColumn) {
         final Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
             if (predicate.test(getDouble(idx), otherColumn.getDouble(idx))) {

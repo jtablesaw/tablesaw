@@ -32,8 +32,8 @@ public class FloatDataWrapper implements NumericDataWrapper {
     }
 
     @Override
-    public Iterator<Double> iterator() {
-        return new NumberIterator(data).iterator();
+    public Iterator<Float> iterator() {
+        return data.iterator();
     }
 
     @Override

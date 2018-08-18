@@ -1,7 +1,7 @@
 package tech.tablesaw.table;
 
 import tech.tablesaw.aggregate.AggregateFunction;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -43,7 +43,7 @@ public class RollingColumn {
             OUT answer = function.summarize(subsetCol);
             if (answer instanceof Number) {
                 Number number = (Number) answer;
-                ((NumberColumn) result).append(number.doubleValue());
+                ((DoubleColumn) result).append(number.doubleValue());
             } else {
                 result.appendObj(answer);
             }

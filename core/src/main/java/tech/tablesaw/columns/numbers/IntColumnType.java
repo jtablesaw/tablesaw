@@ -1,7 +1,7 @@
 package tech.tablesaw.columns.numbers;
 
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
@@ -19,8 +19,8 @@ public class IntColumnType extends AbstractColumnType {
     }
 
     @Override
-    public NumberColumn create(String name) {
-        return NumberColumn.createWithIntegers(name);
+    public IntColumn create(String name) {
+        return IntColumn.create(name);
     }
 
     @Override
@@ -31,6 +31,10 @@ public class IntColumnType extends AbstractColumnType {
     @Override
     public IntStringParser customParser(CsvReadOptions options) {
         return new IntStringParser(this, options);
+    }
+
+    public static boolean isMissingValue(int value) {
+	return value == missingValueIndicator();
     }
 
     public static int missingValueIndicator() {

@@ -16,7 +16,9 @@ public class Row implements Iterator<Row> {
     private final Table table;
     private final String[] columnNames;
     private final Map<String, DateColumn> dateColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private final Map<String, NumberColumn> doubleColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, DoubleColumn> doubleColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, IntColumn> intColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, FloatColumn> floatColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, StringColumn> stringColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, BooleanColumn> booleanColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, DateTimeColumn> dateTimeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -29,8 +31,14 @@ public class Row implements Iterator<Row> {
         columnNames = table.columnNames().toArray(new String[0]);
         rowNumber = -1;
         for (Column<?> column : table.columns()) {
-            if (column instanceof NumberColumn) {
-                doubleColumnMap.put(column.name(), (NumberColumn) column);
+            if (column instanceof DoubleColumn) {
+                doubleColumnMap.put(column.name(), (DoubleColumn) column);
+            }
+            if (column instanceof IntColumn) {
+                intColumnMap.put(column.name(), (IntColumn) column);
+            }
+            if (column instanceof FloatColumn) {
+                floatColumnMap.put(column.name(), (FloatColumn) column);
             }
             if (column instanceof BooleanColumn) {
                 booleanColumnMap.put(column.name(), (BooleanColumn) column);
@@ -82,13 +90,21 @@ public class Row implements Iterator<Row> {
     }
 
     public int getInt(String columnName) {
-        return (int) getDouble(columnName);
+	return intColumnMap.get(columnName).getInt(rowNumber);
     }
 
     public int getInt(int columnIndex) {
-        return (int) getDouble(columnIndex);
+        return getInt(columnNames[columnIndex]);
     }
 
+    public int getFloat(String columnName) {
+	return floatColumnMap.get(columnName).getInt(rowNumber);
+    }
+
+    public int getFloat(int columnIndex) {
+        return getFloat(columnNames[columnIndex]);
+    }
+    
     public String getString(String columnName) {
         return stringColumnMap.get(columnName).get(rowNumber);
     }

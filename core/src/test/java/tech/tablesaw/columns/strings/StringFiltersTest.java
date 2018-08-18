@@ -17,7 +17,7 @@ package tech.tablesaw.columns.strings;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
@@ -257,7 +257,7 @@ public class StringFiltersTest {
     public void testCountWords() {
         final String[] words1 = {"one", "two words"};
         final StringColumn stringColumn1 = StringColumn.create("words", words1);
-        NumberColumn nc = stringColumn1.countTokens(" ");
+        DoubleColumn nc = stringColumn1.countTokens(" ");
         assertEquals( 3, nc.sum(), 0.00001);
     }
 }

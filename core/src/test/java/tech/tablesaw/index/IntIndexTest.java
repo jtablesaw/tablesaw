@@ -28,9 +28,6 @@ import java.time.LocalDate;
 
 import static org.junit.Assert.*;
 
-/**
- *
- */
 public class IntIndexTest {
 
     private ColumnType[] types = {
@@ -46,7 +43,7 @@ public class IntIndexTest {
     @Before
     public void setUp() throws Exception {
         table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").columnTypes(types));
-        index = new DoubleIndex(table.numberColumn("approval"));
+        index = new DoubleIndex(table.doubleColumn("approval"));
         dateIndex = new IntIndex(table.dateColumn("date"));
     }
 

@@ -44,7 +44,7 @@ public interface CategoricalColumn<T> extends Column<T> {
 
         final Table t = new Table("Column: " + name());
         final CategoricalColumn<?> categories = (CategoricalColumn<?>) type().create("Category");
-        final NumberColumn counts = NumberColumn.create("Count");
+        final IntColumn counts = IntColumn.create("Count");
 
         final Object2IntMap<String> valueToCount = new Object2IntOpenHashMap<>();
 

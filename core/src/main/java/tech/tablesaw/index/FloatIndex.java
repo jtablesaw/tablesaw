@@ -18,7 +18,7 @@ import it.unimi.dsi.fastutil.floats.Float2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.floats.Float2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.floats.Float2ObjectSortedMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -29,7 +29,7 @@ public class FloatIndex {
 
     private final Float2ObjectAVLTreeMap<IntArrayList> index;
 
-    public FloatIndex(NumberColumn column) {
+    public FloatIndex(DoubleColumn column) {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Float2ObjectOpenHashMap<IntArrayList> tempMap = new Float2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
