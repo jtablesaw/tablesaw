@@ -18,6 +18,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
+import tech.tablesaw.util.ColumnUtil;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -35,7 +36,7 @@ public class Rows {
             int rowIndex = rows.getInt(i);
             int columnCount = oldTable.columnCount();
             for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
-                newTable.column(columnIndex).appendObj(oldTable.column(columnIndex).get(rowIndex));
+                ColumnUtil.append(oldTable.column(columnIndex), newTable.column(columnIndex), rowIndex);
             }
         }
     }

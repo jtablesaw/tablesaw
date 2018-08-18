@@ -36,6 +36,7 @@ import tech.tablesaw.table.Relation;
 import tech.tablesaw.table.Rows;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
+import tech.tablesaw.util.ColumnUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -607,10 +608,10 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public void addRow(int rowIndex, Table sourceTable) {
         for (int i = 0; i < columnCount(); i++) {
-            column(i).appendObj(sourceTable.column(i).get(rowIndex));
+            ColumnUtil.append(sourceTable.column(i), column(i), rowIndex);
         }
     }
-    
+
     public void addRow(Row row) {
         for (int i = 0; i < row.columnCount(); i++) {
             column(i).appendObj(row.getObject(i));
