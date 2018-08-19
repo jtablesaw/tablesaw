@@ -5,11 +5,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import java.util.regex.Pattern;
-
 public class DoubleStringParser extends StringParser<Double> {
-
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
     public DoubleStringParser(ColumnType columnType) {
         super(columnType);

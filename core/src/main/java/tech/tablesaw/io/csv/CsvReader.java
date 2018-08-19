@@ -157,7 +157,7 @@ public class CsvReader {
         long rowNumber = options.header() ? 1L : 0L;
         String[] nextLine;
 
-        Map<String, StringParser<?>> parserMap = getParserMap(options, table, columnIndexes);
+        Map<String, StringParser<?>> parserMap = getParserMap(options, table);
 
         // Add the rows
         while ((nextLine = reader.parseNext()) != null) {
@@ -192,7 +192,7 @@ public class CsvReader {
         }
     }
 
-    private Map<String, StringParser<?>> getParserMap(CsvReadOptions options, Table table, int[] columnIndexes) {
+    private Map<String, StringParser<?>> getParserMap(CsvReadOptions options, Table table) {
         Map<String, StringParser<?>> parserMap = new HashMap<>();
         for (Column<?> column : table.columns()) {
             StringParser<?> parser = column.type().customParser(options);
