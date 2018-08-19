@@ -178,6 +178,17 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
     Column<T> set(int row, T value);
 
+    /**
+     * Conditionally update this column, replacing current values with newValue for all rows where the current value
+     * matches the selection criteria
+     **/
+    default Column<T> set(Selection rowSelection, T newValue) {
+        for (int row : rowSelection) {
+            set(row, newValue);
+        }
+        return this;
+    }
+
     Column<T> append(T value);
 
     Column<T> append(Column<T> column);
