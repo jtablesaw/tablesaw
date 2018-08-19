@@ -182,47 +182,47 @@ public class DateTimeFiltersTest {
         assertTrue(dateTimeColumn.isBefore(dateTime).contains(0));
         assertTrue(dateTimeColumn.isBefore(date).contains(0));
         assertTrue(t.where(t.dateTimeColumn("test")
-                .isBefore(dateTime)).nCol("index").contains(0));
+                .isBefore(dateTime)).intColumn("index").contains(0));
         assertTrue(t.where(t.dateTimeColumn("test")
-                .isBefore(date)).nCol("index").contains(0));
+                .isBefore(date)).intColumn("index").contains(0));
 
         assertTrue(dateTimeColumn.isEqualTo(dateTime).contains(1));
         assertTrue(t.where(t.dateTimeColumn("test")
-                .isEqualTo(dateTime)).nCol("index").contains(1));
+                .isEqualTo(dateTime)).intColumn("index").contains(1));
 
         assertTrue(dateTimeColumn.isAfter(dateTime).contains(2));
         assertTrue(dateTimeColumn.isAfter(date).contains(2));
         assertTrue(t.where(t.dateTimeColumn("test")
-                .isAfter(dateTime)).nCol("index").contains(2));
+                .isAfter(dateTime)).intColumn("index").contains(2));
         assertTrue(t.where(t.dateTimeColumn("test")
-                .isAfter(date)).nCol("index").contains(2));
+                .isAfter(date)).intColumn("index").contains(2));
 
         assertTrue(dateTimeColumn.isNotEqualTo(dateTime).contains(2));
         assertTrue(t.where(t.dateTimeColumn("test")
-                .isNotEqualTo(dateTime)).nCol("index").contains(2));
+                .isNotEqualTo(dateTime)).intColumn("index").contains(2));
 
         assertTrue(dateTimeColumn.isBetweenExcluding(beforeDate, afterDate).contains(1));
         assertTrue(t.where(t.dateTimeColumn("test")
-                .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(1));
+                .isBetweenExcluding(beforeDate, afterDate)).intColumn("index").contains(1));
         assertTrue(dateTimeColumn.isBetweenExcluding(beforeDate, afterDate).contains(1));
         assertTrue(t.where(t.dateTimeColumn("test")
-                .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(1));
+                .isBetweenExcluding(beforeDate, afterDate)).intColumn("index").contains(1));
 
         assertTrue(dateTimeColumn.isBetweenIncluding(beforeDate, afterDate).contains(2));
         assertTrue(t.where(t.dateTimeColumn("test")
-                .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(2));
+                .isBetweenIncluding(beforeDate, afterDate)).intColumn("index").contains(2));
 
         assertTrue(dateTimeColumn.isBetweenIncluding(beforeDate, afterDate).contains(0));
         assertTrue(t.where(t.dateTimeColumn("test")
-                .isBetweenIncluding(beforeDate, afterDate)).nCol("index").contains(0));
+                .isBetweenIncluding(beforeDate, afterDate)).intColumn("index").contains(0));
 
         assertFalse(dateTimeColumn.isBetweenExcluding(beforeDate, afterDate).contains(2));
         assertFalse(t.where(t.dateTimeColumn("test")
-                .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(2));
+                .isBetweenExcluding(beforeDate, afterDate)).intColumn("index").contains(2));
 
         assertFalse(dateTimeColumn.isBetweenExcluding(beforeDate, afterDate).contains(0));
         assertFalse(t.where(t.dateTimeColumn("test")
-                .isBetweenExcluding(beforeDate, afterDate)).nCol("index").contains(0));
+                .isBetweenExcluding(beforeDate, afterDate)).intColumn("index").contains(0));
     }
 
 

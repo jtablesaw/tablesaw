@@ -97,11 +97,11 @@ public class Row implements Iterator<Row> {
         return getInt(columnNames[columnIndex]);
     }
 
-    public int getFloat(String columnName) {
-	return floatColumnMap.get(columnName).getInt(rowNumber);
+    public float getFloat(String columnName) {
+	return floatColumnMap.get(columnName).getFloat(rowNumber);
     }
 
-    public int getFloat(int columnIndex) {
+    public float getFloat(int columnIndex) {
         return getFloat(columnNames[columnIndex]);
     }
     

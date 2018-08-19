@@ -8,7 +8,6 @@ import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -276,7 +275,7 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof IntColumnType) {
             IntIndex index = new IntIndex(result.intColumn(col2Name));
-            DoubleColumn col2 = (DoubleColumn) table2.column(col2Name);
+            IntColumn col2 = (IntColumn) table2.column(col2Name);
             for (int i = 0; i < col2.size(); i++) {
                 int value = col2.getInt(i);
                 if (index.get(value).isEmpty()) {

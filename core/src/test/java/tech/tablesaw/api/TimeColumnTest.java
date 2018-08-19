@@ -410,11 +410,6 @@ public class TimeColumnTest {
         assertNull(col.get(0));
     }
 
-    private void check(DoubleColumn numberColumn, double expected) {
-        assertEquals(expected, numberColumn.min(), .0001);
-        assertEquals(expected, numberColumn.max(), .0001);
-    }
-
     private void check(IntColumn numberColumn, int expected) {
         assertEquals(expected, (int) numberColumn.min());
         assertEquals(expected, (int) numberColumn.max());

@@ -65,7 +65,7 @@ public class CrossTabTest {
         Table bush = Table.read().csv("../data/bush.csv");
         bush.addColumns(bush.dateColumn("date").year());
         Table xtab = CrossTab.columnPercents(bush, "who", "date year");
-        assertEquals(1, xtab.doubleColumn(1).getInt(xtab.rowCount() - 1));
+        assertEquals(1.0, xtab.doubleColumn(1).getDouble(xtab.rowCount() - 1), 0.00001);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class CrossTabTest {
         Table bush = Table.read().csv("../data/bush.csv");
         bush.addColumns(bush.dateColumn("date").year());
         Table xtab = CrossTab.rowPercents(bush, "who", "date year");
-        assertEquals(1, xtab.doubleColumn(xtab.columnCount() - 1).getInt(0));
+        assertEquals(1.0, xtab.doubleColumn(xtab.columnCount() - 1).getDouble(0), 0.00001);
     }
 
     @Test
@@ -81,6 +81,6 @@ public class CrossTabTest {
         Table bush = Table.read().csv("../data/bush.csv");
         bush.addColumns(bush.dateColumn("date").year());
         Table xtab = CrossTab.tablePercents(bush, "who", "date year");
-        assertEquals(1, xtab.doubleColumn(xtab.columnCount() - 1).getInt(xtab.rowCount()-1));
+        assertEquals(1.0, xtab.doubleColumn(xtab.columnCount() - 1).getDouble(xtab.rowCount()-1), 0.00001);
     }
 }

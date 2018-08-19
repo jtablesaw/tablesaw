@@ -298,9 +298,9 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         Column<T> newCol = emptyCopy();
         for (int i = 0; i < this.size(); i++) {
             if (isMissing(i)) {
-                newCol.appendCell(other.getUnformattedString(i));
+                newCol.appendObj(other.get(i));
             } else {
-                newCol.appendCell(getUnformattedString(i));
+                newCol.appendObj(get(i));
             }
         }
         return newCol;
@@ -313,9 +313,9 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         Column<T> newCol = emptyCopy();
         for (int i = 0; i < this.size(); i++) {
             if (isMissing(i)) {
-                newCol.append(defaultVal);
+                newCol.appendObj(defaultVal);
             } else {
-                newCol.appendCell(getUnformattedString(i));
+                newCol.appendObj(get(i));
             }
         }
         return newCol;

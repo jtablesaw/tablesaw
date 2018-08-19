@@ -50,9 +50,6 @@ import tech.tablesaw.selection.Selection;
 public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberFilters {
 
     @Override
-    T get(final int index);
-
-    @Override
     default boolean isEmpty() {
         return size() == 0;
     }
