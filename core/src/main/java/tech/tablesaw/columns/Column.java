@@ -316,22 +316,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         }
         return newCol;
     }
-
-    /**
-     * Create a copy of this column where missing values are replaced with the given default value
-     */
-    default Column<T> fillMissing(T defaultVal) {
-        Column<T> newCol = emptyCopy();
-        for (int i = 0; i < this.size(); i++) {
-            if (isMissing(i)) {
-                newCol.appendObj(defaultVal);
-            } else {
-                newCol.appendObj(get(i));
-            }
-        }
-        return newCol;
-    }
-
+    
     /**
      * Returns the width of the column in characters, for printing
      */
