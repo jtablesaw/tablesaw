@@ -26,9 +26,9 @@ public class IntStringParser extends StringParser<Integer> {
         String s = str;
         try {
             if (s.endsWith(".0")) {
-                s = s.replaceFirst(".0$", "");
+                s = s.substring(0, s.length() - 2);
             }
-            Integer.parseInt(s);
+            Integer.parseInt(StringParser.remove(s, ','));
             return true;
         } catch (NumberFormatException e) {
             // it's all part of the plan

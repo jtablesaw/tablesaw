@@ -1,17 +1,11 @@
 package tech.tablesaw.columns.numbers;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.google.common.collect.Lists;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class LongStringParser extends StringParser<Long> {
-
-    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
 
     public LongStringParser(ColumnType columnType) {
         super(columnType);
@@ -32,9 +26,9 @@ public class LongStringParser extends StringParser<Long> {
         String s = str;
         try {
             if (s.endsWith(".0")) {
-                s = s.replaceFirst(".0$", "");
+                s = s.substring(0, s.length() - 2);
             }
-            Long.parseLong(s);
+            Long.parseLong(StringParser.remove(s, ','));
             return true;
         } catch (NumberFormatException e) {
             // it's all part of the plan
@@ -44,24 +38,12 @@ public class LongStringParser extends StringParser<Long> {
 
     @Override
     public Long parse(String s) {
-        if (isMissing(s)) {
-            return LongColumnType.missingValueIndicator();
-        }
-        final Matcher matcher = COMMA_PATTERN.matcher(s);
-        return Long.parseLong(matcher.replaceAll(""));
+        return parseLong(s);
     }
 
     @Override
     public double parseDouble(String str) {
-        if (isMissing(str)) {
-            return IntColumnType.missingValueIndicator();
-        }
-        String s = str;
-        if (s.endsWith(".0")) {
-            s = s.replaceFirst(".0$", "");
-        }
-        final Matcher matcher = COMMA_PATTERN.matcher(s);
-        return Integer.parseInt(matcher.replaceAll(""));
+        return parseLong(str);
     }
 
     @Override
@@ -71,9 +53,8 @@ public class LongStringParser extends StringParser<Long> {
         }
         String s = str;
         if (s.endsWith(".0")) {
-            s = s.replaceFirst(".0$", "");
+            s = s.substring(0, s.length() - 2);
         }
-        final Matcher matcher = COMMA_PATTERN.matcher(s);
-        return Long.parseLong(matcher.replaceAll(""));
+        return Long.parseLong(StringParser.remove(s, ','));
     }
 }

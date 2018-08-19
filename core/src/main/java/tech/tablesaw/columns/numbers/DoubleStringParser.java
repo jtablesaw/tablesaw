@@ -24,7 +24,7 @@ public class DoubleStringParser extends StringParser<Double> {
             return true;
         }
         try {
-            Double.parseDouble(s);
+            Double.parseDouble(StringParser.remove(s, ','));
             return true;
         } catch (NumberFormatException e) {
             // it's all part of the plan

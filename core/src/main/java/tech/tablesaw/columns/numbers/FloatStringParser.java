@@ -24,7 +24,7 @@ public class FloatStringParser extends StringParser<Float> {
             return true;
         }
         try {
-            Float.parseFloat(s);
+            Float.parseFloat(StringParser.remove(s, ','));
             return true;
         } catch (NumberFormatException e) {
             // it's all part of the plan
