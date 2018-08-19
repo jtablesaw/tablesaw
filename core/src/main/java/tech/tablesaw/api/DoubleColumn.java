@@ -1,10 +1,6 @@
 package tech.tablesaw.api;
 
-import static tech.tablesaw.api.ColumnType.DOUBLE;
-
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.DoubleConsumer;
@@ -15,33 +11,37 @@ import java.util.function.ToDoubleFunction;
 import com.google.common.base.Preconditions;
 
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleArrays;
+import it.unimi.dsi.fastutil.doubles.DoubleComparator;
+import it.unimi.dsi.fastutil.doubles.DoubleListIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.DoubleDataWrapper;
+import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.NumberIterable;
 import tech.tablesaw.columns.numbers.NumberIterator;
-import tech.tablesaw.columns.numbers.NumericDataWrapper;
 
 public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<Double>, NumberFillers<DoubleColumn> {
 
-    protected DoubleColumn(final String name, final DoubleArrayList data) {
-        super(DOUBLE, name);
-        setDataWrapper(new DoubleDataWrapper(data));
-    }
+    private static final ColumnType COLUMN_TYPE = ColumnType.DOUBLE;
 
-    protected DoubleColumn(final String name, final NumericDataWrapper data) {
-        super(data.type(), name);
-        setDataWrapper(data);
+    /**
+     * Compares two doubles, such that a sort based on this comparator would sort in descending order
+     */
+    private final DoubleComparator descendingComparator = (o2, o1) -> (Double.compare(o1, o2));
+
+    private final DoubleArrayList data;
+
+    protected DoubleColumn(final String name, final DoubleArrayList data) {
+        super(COLUMN_TYPE, name, data);
+        this.data = data;
     }
 
     public static DoubleColumn create(final String name, final double[] arr) {
         return new DoubleColumn(name, new DoubleArrayList(arr));
-    }
-
-    public static DoubleColumn create(final String name, final NumericDataWrapper data) {
-        return new DoubleColumn(name, data);
     }
 
     public static DoubleColumn create(final String name) {
@@ -94,13 +94,13 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
     }
 
     @Override
-    protected NumberColumn<Double> createCol(String name, NumericDataWrapper data) {
-	return DoubleColumn.create(name, data);
+    public DoubleColumn createCol(final String name, final int initialSize) {
+        return create(name, initialSize);
     }
 
     @Override
     public Double get(int index) {
-	return getDouble(index);
+        return getDouble(index);
     }
 
     @Override
@@ -116,18 +116,71 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
         return column;
     }
 
+    @Override
+    public DoubleColumn top(int n) {
+        DoubleArrayList top = new DoubleArrayList();
+        double[] values = data.toDoubleArray();
+        DoubleArrays.parallelQuickSort(values, descendingComparator);
+        for (int i = 0; i < n && i < values.length; i++) {
+            top.add(values[i]);
+        }
+        return new DoubleColumn(name() + "[Top " + n  + "]", top);
+    }
+
+    @Override
+    public DoubleColumn bottom(final int n) {
+        DoubleArrayList bottom = new DoubleArrayList();
+        double[] values = data.toDoubleArray();
+        DoubleArrays.parallelQuickSort(values);
+        for (int i = 0; i < n && i < values.length; i++) {
+            bottom.add(values[i]);
+        }
+        return new DoubleColumn(name() + "[Bottoms " + n  + "]", bottom);
+    }    
+
+    @Override
+    public DoubleColumn lag(int n) {
+        final int srcPos = n >= 0 ? 0 : 0 - n;
+        final double[] dest = new double[size()];
+        final int destPos = n <= 0 ? 0 : n;
+        final int length = n >= 0 ? size() - n : size() + n;
+
+        for (int i = 0; i < size(); i++) {
+            dest[i] = FloatColumnType.missingValueIndicator();
+        }
+
+        double[] array = data.toDoubleArray();
+
+        System.arraycopy(array, srcPos, dest, destPos, length);
+        return new DoubleColumn(name() + " lag(" + n + ")", new DoubleArrayList(dest));
+    }
+
+    @Override
+    public DoubleColumn removeMissing() {
+        DoubleColumn result = copy();
+        result.clear();
+        DoubleListIterator iterator = data.iterator();
+        while (iterator.hasNext()) {
+            double v = iterator.nextDouble();
+            if (!isMissingValue(v)) {
+                result.append(v);
+            }
+        }
+        return result;
+    }
+
     public double firstElement() {
         if (size() > 0) {
             return getDouble(0);
         }
-        return data.missingValueIndicator();
+        return (Double) COLUMN_TYPE.getMissingValueIndicator();
     }
 
     /**
      * Adds the given float to this column
      */
     public DoubleColumn append(final float f) {
-        data.append(f);
+        data.add(f);
         return this;
     }
 
@@ -135,12 +188,12 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
      * Adds the given double to this column
      */
     public DoubleColumn append(double d) {
-        data.append(d);
+        data.add(d);
         return this;
     }
 
     public DoubleColumn append(int i) {
-        data.append(i);
+        data.add(i);
         return this;
     }
 
@@ -162,37 +215,15 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
 
     @Override
     public DoubleColumn emptyCopy(final int rowSize) {
-	return (DoubleColumn) super.emptyCopy(rowSize);
+        return (DoubleColumn) super.emptyCopy(rowSize);
     }
 
     @Override
     public DoubleColumn copy() {
-        return (DoubleColumn) super.copy();
-    }
-
-    /**
-     * Returns a DateTimeColumn where each value is the LocalDateTime represented by the values in this column
-     * <p>
-     * The values in this column must be longs that represent the time in milliseconds from the epoch as in standard
-     * Java date/time calculations
-     *
-     * @param offset The ZoneOffset to use in the calculation
-     * @return A column of LocalDateTime values
-     */
-    public DateTimeColumn asDateTimes(ZoneOffset offset) {
-        DateTimeColumn column = DateTimeColumn.create(name() + ": date time");
-        NumberIterator it = numberIterator();
-        while (it.hasNext()) {
-            double d = it.next();
-            LocalDateTime dateTime =
-                    Instant.ofEpochMilli((long) d).atZone(offset).toLocalDateTime();
-            column.append(dateTime);
-        }
-        return column;
+        return new DoubleColumn(name(), data.clone());
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Iterator<Double> iterator() {
         return (Iterator<Double>) data.iterator();
     }
@@ -213,7 +244,12 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
 
     @Override
     public DoubleColumn set(int i, Double val) {
-        return (DoubleColumn) set(i, (double) val);
+        return set(i, (double) val);
+    }
+
+    public DoubleColumn set(int i, double val) {
+        data.set(i, val);
+        return this;
     }
 
     @Override
@@ -299,6 +335,85 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
             }
         }
         return result;
+    }
+
+    @Override
+    public byte[] asBytes(int rowNumber) {
+        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putDouble(getDouble(rowNumber)).array();
+    }
+
+    @Override
+    public int countUnique() {
+        DoubleSet uniqueElements = new DoubleOpenHashSet();
+        for (int i = 0; i < size(); i++) {
+            if (!isMissing(i)) {
+                uniqueElements.add(getDouble(i));
+            }
+        }
+        return uniqueElements.size();
+    }
+
+    @Override
+    public double getDouble(int row) {
+        return data.getDouble(row);
+    }
+
+    public boolean isMissingValue(double value) {
+        return DoubleColumnType.isMissingValue(value);
+    }
+
+    @Override
+    public boolean isMissing(int rowNumber) {
+        return isMissingValue(getDouble(rowNumber));
+    }
+
+    @Override
+    public NumberIterator numberIterator() {
+        return new NumberIterator(data);
+    }
+
+    @Override
+    public void sortAscending() {
+        DoubleArrays.parallelQuickSort(data.elements());
+    }
+
+    @Override
+    public void sortDescending() {
+        DoubleArrays.parallelQuickSort(data.elements(), descendingComparator);
+    }
+
+    @Override
+    public DoubleColumn appendMissing() {
+        return append(DoubleColumnType.missingValueIndicator());
+    }
+
+    @Override
+    public DoubleColumn appendObj(Object obj) {
+        if (obj == null) {
+            return appendMissing();
+        }
+        if (obj instanceof Double) {
+            return append((double) obj);
+        }
+        throw new IllegalArgumentException("Could not append " + obj.getClass());
+    }
+
+    @Override
+    public DoubleColumn appendCell(final String value) {
+        try {
+            return append(DoubleColumnType.DEFAULT_PARSER.parseDouble(value));
+        } catch (final NumberFormatException e) {
+            throw new NumberFormatException("Error adding value to column " + name() + ": " + e.getMessage());
+        }
+    }
+
+    @Override
+    public DoubleColumn appendCell(final String value, StringParser<?> parser) {
+        try {
+            return append(parser.parseDouble(value));
+        } catch (final NumberFormatException e) {
+            throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
+        }
     }
 
 }

@@ -48,6 +48,10 @@ public abstract class StringParser<T> {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to ints");
     }
 
+    public long parseLong(String s) {
+        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to longs");
+    }
+
     public double parseDouble(String s) {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to doubles");
     }

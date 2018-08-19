@@ -597,11 +597,6 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     @Override
-    public int[] asIntArray() {
-        return data.toArray(new int[size()]);
-    }
-
-    @Override
     public Object[] asObjectArray() {
         final LocalDate[] output = new LocalDate[data.size()];
         for (int i = 0; i < data.size(); i++) {

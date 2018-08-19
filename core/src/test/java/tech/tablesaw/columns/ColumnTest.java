@@ -126,9 +126,9 @@ public class ColumnTest {
         DoubleColumn dc1 = DoubleColumn.create("t1", d1);
         DoubleColumn dc2 = DoubleColumn.create("t2", d2);
         DoubleColumn dc3 = (DoubleColumn) dc1.min(dc2);
-        assertTrue(dc3.contains(1));
-        assertTrue(dc3.contains(-4));
-        assertTrue(dc3.contains(-1));
+        assertTrue(dc3.contains(1.0));
+        assertTrue(dc3.contains(-4.0));
+        assertTrue(dc3.contains(-1.0));
     }
 
     @Test
@@ -139,9 +139,9 @@ public class ColumnTest {
         DoubleColumn dc1 = DoubleColumn.create("t1", d1);
         DoubleColumn dc2 = DoubleColumn.create("t2", d2);
         DoubleColumn dc3 = (DoubleColumn) dc1.max(dc2);
-        assertTrue(dc3.contains(2));
-        assertTrue(dc3.contains(0));
-        assertTrue(dc3.contains(3));
+        assertTrue(dc3.contains(2.0));
+        assertTrue(dc3.contains(0.0));
+        assertTrue(dc3.contains(3.0));
     }
     
     // Functional methods

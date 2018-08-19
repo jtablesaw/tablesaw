@@ -28,6 +28,7 @@ import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -361,6 +362,14 @@ public abstract class Relation {
 
     public IntColumn intColumn(int columnIndex) {
         return (IntColumn) column(columnIndex);
+    }
+    
+    public LongColumn longColumn(String columnName) {
+        return longColumn(columnIndex(columnName));
+    }
+
+    public LongColumn longColumn(int columnIndex) {
+        return (LongColumn) column(columnIndex);
     }
     
     public FloatColumn floatColumn(String columnName) {

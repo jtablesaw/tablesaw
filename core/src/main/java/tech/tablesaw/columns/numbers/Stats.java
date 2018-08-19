@@ -21,9 +21,6 @@ import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 
-/**
- *
- */
 public class Stats {
 
     private long n;
@@ -47,9 +44,8 @@ public class Stats {
 
     public static Stats create(final NumericColumn<?> values) {
         SummaryStatistics summaryStatistics = new SummaryStatistics();
-        NumberIterator itr = values.numberIterator();
-        while (itr.hasNext()) {
-            summaryStatistics.addValue(itr.next());
+        for (int i = 0; i < values.size(); i++) {
+            summaryStatistics.addValue(values.getDouble(i));
         }
         return getStats(values, summaryStatistics);
     }

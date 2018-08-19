@@ -392,7 +392,7 @@ public class PackedLocalDateTime {
         return PackedLocalTime.getSecond(time(packedLocalDateTime));
     }
 
-    public static double getSecondOfDay(long packedLocalDateTime) {
+    public static int getSecondOfDay(long packedLocalDateTime) {
         return PackedLocalTime.getSecondOfDay(time(packedLocalDateTime));
     }
 

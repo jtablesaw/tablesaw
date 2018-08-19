@@ -627,15 +627,6 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
         return data.iterator();
     }
 
-    @Override
-    public int[] asIntArray() {
-        int[] output = new int[data.size()];
-        for (int i = 0; i < data.size(); i++) {
-            output[i] = data.getByte(i);
-        }
-        return output;
-    }
-
     public DoubleColumn asNumberColumn() {
         DoubleColumn numberColumn = DoubleColumn.create(this.name() + ": ints", size());
         ByteArrayList data = data();

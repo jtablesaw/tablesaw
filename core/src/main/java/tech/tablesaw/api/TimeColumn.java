@@ -602,11 +602,6 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     @Override
-    public int[] asIntArray() {
-        return data.toArray(new int[size()]);
-    }
-
-    @Override
     public int compare(LocalTime o1, LocalTime o2) {
         return o1.compareTo(o2);
     }
