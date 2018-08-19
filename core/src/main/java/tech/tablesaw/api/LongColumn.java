@@ -18,7 +18,6 @@ import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.columns.numbers.NumberIterator;
 
 public class LongColumn extends NumberColumn<Long> implements NumericColumn<Long>, CategoricalColumn<Long> {
 
@@ -307,11 +306,6 @@ public class LongColumn extends NumberColumn<Long> implements NumericColumn<Long
     @Override
     public boolean isMissing(int rowNumber) {
         return isMissingValue(getLong(rowNumber));
-    }
-
-    @Override
-    public NumberIterator numberIterator() {
-        return new NumberIterator(data);
     }
 
     @Override

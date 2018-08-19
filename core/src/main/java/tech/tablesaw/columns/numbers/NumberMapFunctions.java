@@ -20,7 +20,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumericColumn;
 
-public interface NumberMapFunctions extends NumberIterable {
+public interface NumberMapFunctions {
 
     /**
      * Returns a transformation of the data in this column such that the result has a mean of 0, and a
