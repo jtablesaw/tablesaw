@@ -26,11 +26,6 @@ public class TimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public StringParser<LocalTime> defaultParser() {
-        return new TimeStringParser(this);
-    }
-
-    @Override
     public StringParser<LocalTime> customParser(CsvReadOptions options) {
         return new TimeStringParser(this, options);
     }

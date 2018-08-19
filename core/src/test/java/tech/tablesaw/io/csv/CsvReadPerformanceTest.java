@@ -20,7 +20,7 @@ import tech.tablesaw.api.Table;
 
 import java.util.concurrent.TimeUnit;
 
-import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.INTEGER;
 import static tech.tablesaw.api.ColumnType.STRING;
 
 public class CsvReadPerformanceTest {
@@ -34,28 +34,28 @@ public class CsvReadPerformanceTest {
             STRING,
             STRING,
             STRING,
-            DOUBLE,
+            INTEGER,
             STRING,
             STRING,
-            DOUBLE,
-            STRING,
-            STRING,
-            STRING,
-            DOUBLE,
+            INTEGER,
             STRING,
             STRING,
             STRING,
-            DOUBLE,
+            INTEGER,
             STRING,
             STRING,
             STRING,
+            INTEGER,
             STRING,
             STRING,
             STRING,
             STRING,
-            DOUBLE,
-            DOUBLE,
-            DOUBLE,
+            STRING,
+            STRING,
+            STRING,
+            INTEGER,
+            INTEGER,
+            INTEGER,
             STRING,
             STRING
     };
@@ -68,7 +68,8 @@ public class CsvReadPerformanceTest {
         Stopwatch stopwatch = Stopwatch.createStarted();
         Table details = Table.read().csv("../data/SHR76_16.csv");
         stopwatch.stop();
-        System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " us");
+        //System.out.println(details.structure().printAll());
+        System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
         System.out.println(details.shape());
 
         // TODO (white) printColumnTypes is broken or very slow
@@ -81,7 +82,7 @@ public class CsvReadPerformanceTest {
                         .columnTypes(types).build());
         stopwatch.stop();
         System.out.println(details.shape());
-        System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " us");
+        System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms with type detection.");
 
     }
 }

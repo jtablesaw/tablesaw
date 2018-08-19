@@ -55,4 +55,19 @@ public abstract class StringParser<T> {
     public float parseFloat(String s) {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to floats");
     }
+
+    protected static String remove(final String str, final char remove) {
+        if (str == null || str.indexOf(remove) == -1) {
+            return str;
+        }
+        final char[] chars = str.toCharArray();
+        int pos = 0;
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] != remove) {
+                chars[pos++] = chars[i];
+            }
+        }
+        return new String(chars, 0, pos);
+    }
+
 }

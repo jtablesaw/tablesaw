@@ -26,11 +26,6 @@ public class DateColumnType extends AbstractColumnType {
     }
 
     @Override
-    public StringParser<LocalDate> defaultParser() {
-        return new DateStringParser(this);
-    }
-
-    @Override
     public StringParser<LocalDate> customParser(CsvReadOptions options) {
         return new DateStringParser(this, options);
     }

@@ -31,11 +31,6 @@ public class BooleanColumnType extends AbstractColumnType {
     }
 
     @Override
-    public BooleanStringParser defaultParser() {
-        return DEFAULT_PARSER;
-    }
-
-    @Override
     public BooleanStringParser customParser(CsvReadOptions readOptions) {
         return new BooleanStringParser(this, readOptions);
     }

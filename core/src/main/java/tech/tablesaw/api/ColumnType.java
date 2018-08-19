@@ -60,8 +60,6 @@ public interface ColumnType {
 
     String getPrinterFriendlyName();
 
-    StringParser<?> defaultParser();
-
     StringParser<?> customParser(CsvReadOptions options);
 
     default boolean compare(int rowNumber, Column<?> temp, Column<?> original) {

@@ -46,7 +46,6 @@ public abstract class AbstractColumnType implements ColumnType {
         return name;
     }
 
-
     public int byteSize() {
         return byteSize;
     }

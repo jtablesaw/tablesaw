@@ -24,11 +24,6 @@ public class FloatColumnType extends AbstractColumnType {
     }
 
     @Override
-    public FloatStringParser defaultParser() {
-        return DEFAULT_PARSER;
-    }
-
-    @Override
     public FloatStringParser customParser(CsvReadOptions options) {
         return new FloatStringParser(this, options);
     }

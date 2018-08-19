@@ -24,11 +24,6 @@ public class DoubleColumnType extends AbstractColumnType {
     }
 
     @Override
-    public DoubleStringParser defaultParser() {
-        return DEFAULT_PARSER;
-    }
-
-    @Override
     public DoubleStringParser customParser(CsvReadOptions options) {
         return new DoubleStringParser(this, options);
     }

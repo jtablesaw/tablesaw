@@ -5,7 +5,6 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IntStringParser extends StringParser<Integer> {
@@ -43,24 +42,12 @@ public class IntStringParser extends StringParser<Integer> {
 
     @Override
     public Integer parse(String s) {
-        if (isMissing(s)) {
-            return IntColumnType.missingValueIndicator();
-        }
-        final Matcher matcher = COMMA_PATTERN.matcher(s);
-        return Integer.parseInt(matcher.replaceAll(""));
+        return parseInt(s);
     }
 
     @Override
-    public double parseDouble(String str) {
-        if (isMissing(str)) {
-            return IntColumnType.missingValueIndicator();
-        }
-        String s = str;
-        if (s.endsWith(".0")) {
-            s = s.replaceFirst(".0$", "");
-        }
-        final Matcher matcher = COMMA_PATTERN.matcher(s);
-        return Integer.parseInt(matcher.replaceAll(""));
+    public double parseDouble(String s) {
+        return parseInt(s);
     }
 
     @Override
@@ -70,9 +57,8 @@ public class IntStringParser extends StringParser<Integer> {
         }
         String s = str;
         if (s.endsWith(".0")) {
-            s = s.replaceFirst(".0$", "");
+            s = s.substring(0, s.length() - 2);
         }
-        final Matcher matcher = COMMA_PATTERN.matcher(s);
-        return Integer.parseInt(matcher.replaceAll(""));
+        return Integer.parseInt(StringParser.remove(s, ','));
     }
 }

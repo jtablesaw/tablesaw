@@ -5,7 +5,6 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FloatStringParser extends StringParser<Float> {
@@ -39,11 +38,7 @@ public class FloatStringParser extends StringParser<Float> {
 
     @Override
     public Float parse(String s) {
-        if (isMissing(s)) {
-            return FloatColumnType.missingValueIndicator();
-        }
-        final Matcher matcher = COMMA_PATTERN.matcher(s);
-        return Float.parseFloat(matcher.replaceAll(""));
+        return parseFloat(s);
     }
 
     @Override
@@ -51,7 +46,6 @@ public class FloatStringParser extends StringParser<Float> {
         if (isMissing(s)) {
             return FloatColumnType.missingValueIndicator();
         }
-        final Matcher matcher = COMMA_PATTERN.matcher(s);
-        return Float.parseFloat(matcher.replaceAll(""));
+        return Float.parseFloat(StringParser.remove(s, ','));
     }
 }

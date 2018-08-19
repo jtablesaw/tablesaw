@@ -36,11 +36,21 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.BOOLEAN;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
+import static tech.tablesaw.api.ColumnType.SKIP;
+import static tech.tablesaw.api.ColumnType.STRING;
 
 @Immutable
 public class CsvReader {
@@ -147,6 +157,8 @@ public class CsvReader {
         long rowNumber = options.header() ? 1L : 0L;
         String[] nextLine;
 
+        Map<Integer, StringParser<?>> parserMap = getParserMap(options, table, columnIndexes);
+
         // Add the rows
         while ((nextLine = reader.parseNext()) != null) {
 
@@ -166,7 +178,7 @@ public class CsvReader {
                 int cellIndex = 0;
                 for (int columnIndex : columnIndexes) {
                     Column<?> column = table.column(cellIndex);
-                    StringParser<?> parser = column.type().customParser(options);
+                    StringParser<?> parser = parserMap.get(columnIndex);
                     try {
                         String value = nextLine[columnIndex];
                         column.appendCell(value, parser);
@@ -178,6 +190,16 @@ public class CsvReader {
             }
             rowNumber++;
         }
+    }
+
+    private Map<Integer, StringParser<?>> getParserMap(CsvReadOptions options, Table table, int[] columnIndexes) {
+        Map<Integer, StringParser<?>> parserMap = new HashMap<>();
+        for (int columnIndex : columnIndexes) {
+            Column<?> column = table.column(columnIndex);
+            StringParser<?> parser = column.type().customParser(options);
+            parserMap.put(columnIndex, parser);
+        }
+        return parserMap;
     }
 
     private void cleanNames(List<String> headerRow) {

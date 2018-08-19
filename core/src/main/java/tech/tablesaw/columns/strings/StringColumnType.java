@@ -30,11 +30,6 @@ public class StringColumnType extends AbstractColumnType {
     }
 
     @Override
-    public StringStringParser defaultParser() {
-        return new StringStringParser(this);
-    }
-
-    @Override
     public StringStringParser customParser(CsvReadOptions options) {
         return new StringStringParser(this, options);
     }

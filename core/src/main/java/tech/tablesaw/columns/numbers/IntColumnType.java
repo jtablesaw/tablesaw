@@ -24,11 +24,6 @@ public class IntColumnType extends AbstractColumnType {
     }
 
     @Override
-    public IntStringParser defaultParser() {
-        return DEFAULT_PARSER;
-    }
-
-    @Override
     public IntStringParser customParser(CsvReadOptions options) {
         return new IntStringParser(this, options);
     }
