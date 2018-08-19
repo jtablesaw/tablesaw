@@ -1,14 +1,12 @@
 package tech.tablesaw.joining;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.google.common.collect.Streams;
-
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
@@ -16,6 +14,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
+import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.index.IntIndex;
@@ -23,6 +22,8 @@ import tech.tablesaw.index.LongIndex;
 import tech.tablesaw.index.StringIndex;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataFrameJoiner {
 
@@ -163,6 +164,20 @@ public class DataFrameJoiner {
                     crossProduct(result, table1Rows, table2Rows);
                 }
             }
+        } else if (type instanceof LongColumnType) {
+            LongIndex index = new LongIndex(table2.intColumn(col2Name));
+            LongColumn col1 = (LongColumn) column;
+            for (int i = 0; i < col1.size(); i++) {
+                long value = col1.getLong(i);
+                Table table1Rows = table.where(Selection.with(i));
+                Table table2Rows = table2.where(index.get(value));
+                table2Rows.removeColumns(col2Name);
+                if (outer && table2Rows.isEmpty()) {
+                    withMissingLeftJoin(result, table1Rows);
+                } else {
+                    crossProduct(result, table1Rows, table2Rows);
+                }
+            }
         } else {
             throw new IllegalArgumentException(
                     "Joining is supported on integer, string, and date-like columns. Column "
@@ -278,6 +293,15 @@ public class DataFrameJoiner {
             IntColumn col2 = (IntColumn) table2.column(col2Name);
             for (int i = 0; i < col2.size(); i++) {
                 int value = col2.getInt(i);
+                if (index.get(value).isEmpty()) {
+                    selection.add(i);
+                }
+            }
+        } else if (type instanceof LongColumnType) {
+            LongIndex index = new LongIndex(result.intColumn(col2Name));
+            LongColumn col2 = (LongColumn) table2.column(col2Name);
+            for (int i = 0; i < col2.size(); i++) {
+                long value = col2.getLong(i);
                 if (index.get(value).isEmpty()) {
                     selection.add(i);
                 }
