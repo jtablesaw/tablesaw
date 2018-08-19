@@ -21,6 +21,7 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.plotly.api.AreaPlot;
 import tech.tablesaw.plotly.api.Histogram;
@@ -102,17 +103,17 @@ public class MurderVisualizations extends AbstractExample {
         out(details.shape());
         out(details);
 
-        details.numberColumn("offage")
-                .set(details.numberColumn("offage").isEqualTo(999), DoubleColumnType.missingValueIndicator());
+        details.intColumn("offage")
+                .set(details.numberColumn("offage").isEqualTo(999), IntColumnType.missingValueIndicator());
 
-        details.numberColumn("vicage")
-                .set(details.numberColumn("vicage").isEqualTo(999), DoubleColumnType.missingValueIndicator());
+        details.intColumn("vicage")
+                .set(details.numberColumn("vicage").isEqualTo(999), IntColumnType.missingValueIndicator());
 
-        details.numberColumn("vicCount")
+        details.intColumn("vicCount")
                 .set(details.numberColumn("vicCount").isEqualTo(0)
                         .andNot(details.stringColumn("situation").containsString("multiple victims")), 1);
 
-        details.numberColumn("offCount")
+        details.intColumn("offCount")
                 .set(
                       details.numberColumn("offCount").isEqualTo(0)
                         .andNot(details.stringColumn("situation").containsString("multiple offenders")), 1);
@@ -163,7 +164,7 @@ public class MurderVisualizations extends AbstractExample {
         Plot.show(Histogram.create("age", asphyx, "vicAge"));
         Table counts = asphyx.xTabCounts("year", "StateName");
         counts.columnsOfType(DOUBLE).stream().forEach(e -> ((NumberColumn)e).setPrintFormatter(NumberColumnFormatter.ints()));
-        counts.columnsOfType(DOUBLE).stream().forEach(e -> ((NumberColumn)e)
+        counts.columnsOfType(DOUBLE).stream().forEach(e -> ((DoubleColumn)e)
                 .set(((NumberColumn) e).isEqualTo(0), DoubleColumnType.missingValueIndicator()));
         out(counts.printAll());
         out(femaleVictims.shape());

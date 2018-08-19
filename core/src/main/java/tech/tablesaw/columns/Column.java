@@ -303,20 +303,16 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     }
 
     /**
-     * Create a copy of this column where missing values are replaced with the corresponding value in the given column
+     * Create a copy of this column where values matching the selection are replaced with the corresponding value
+     * from the given column
      */
-    default Column<T> fillMissing(Column<T> other) {
-        Column<T> newCol = emptyCopy();
-        for (int i = 0; i < this.size(); i++) {
-            if (isMissing(i)) {
-                newCol.appendObj(other.get(i));
-            } else {
-                newCol.appendObj(get(i));
-            }
+    default Column<T> set(Selection condition, Column<T> other) {
+        for (int row : condition) {
+            set(row, other.get(row));
         }
-        return newCol;
+        return this;
     }
-    
+
     /**
      * Returns the width of the column in characters, for printing
      */
