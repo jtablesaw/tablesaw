@@ -14,12 +14,11 @@
 
 package tech.tablesaw.api;
 
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.selection.Selection;
-
 import org.junit.Before;
 import org.junit.Test;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.IntColumnType;
+import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.time.LocalTime;
@@ -27,9 +26,15 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static tech.tablesaw.api.TimeColumn.MISSING_VALUE;
-import static tech.tablesaw.columns.times.PackedLocalTime.*;
-import static org.junit.Assert.*;
+import static tech.tablesaw.columns.times.PackedLocalTime.getMinuteOfDay;
+import static tech.tablesaw.columns.times.PackedLocalTime.getSecondOfDay;
+import static tech.tablesaw.columns.times.PackedLocalTime.of;
 
 public class TimeColumnTest {
 
@@ -248,7 +253,7 @@ public class TimeColumnTest {
     @Test
     public void minuteOfDay() {
         fillLargerColumn();
-        DoubleColumn column2 = column1.minuteOfDay();
+        IntColumn column2 = column1.minuteOfDay();
         for (int i = 0; i < column1.size() - 2; i++) {
             assertEquals(column2.get(i), getMinuteOfDay(column1.getPackedTime(i)), 0.0001);
         }
@@ -257,7 +262,7 @@ public class TimeColumnTest {
     @Test
     public void secondOfDay() {
         fillLargerColumn();
-        DoubleColumn column2 = column1.secondOfDay();
+        IntColumn column2 = column1.secondOfDay();
         for (int i = 0; i < column1.size() - 2; i++) {
             assertEquals(column2.get(i), getSecondOfDay(column1.getPackedTime(i)), 0.0001);
         }
@@ -312,10 +317,10 @@ public class TimeColumnTest {
     @Test
     public void testSecond() {
         fillColumn();
-        DoubleColumn second = column1.second();
+        IntColumn second = column1.second();
         assertEquals(2, second.get(0), 0.001);
         assertEquals(30, second.get(1), 0.001);
-        assertEquals(DoubleColumnType.missingValueIndicator(), second.get(2), 0.001);
+        assertEquals(IntColumnType.missingValueIndicator(), second.get(2), 0.001);
     }
 
     @Test
@@ -324,7 +329,7 @@ public class TimeColumnTest {
         IntColumn minute = column1.minute();
         assertEquals(4, minute.get(0), 0.001);
         assertEquals(15, minute.get(1), 0.001);
-        assertEquals(DoubleColumnType.missingValueIndicator(), minute.get(2), 0.001);
+        assertEquals(IntColumnType.missingValueIndicator(), minute.get(2), 0.001);
     }
 
     @Test

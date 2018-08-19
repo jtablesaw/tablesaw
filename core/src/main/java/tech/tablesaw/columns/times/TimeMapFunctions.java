@@ -17,8 +17,6 @@ package tech.tablesaw.columns.times;
 import com.google.common.base.Strings;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
@@ -30,7 +28,10 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import static java.time.temporal.ChronoUnit.*;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static tech.tablesaw.api.TimeColumn.MISSING_VALUE;
 
 public interface TimeMapFunctions extends Column<LocalTime> {
@@ -271,53 +272,53 @@ public interface TimeMapFunctions extends Column<LocalTime> {
         return newColumn;
     }
 
-    default DoubleColumn second() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[" + "second" + "]");
+    default IntColumn second() {
+        IntColumn newColumn = IntColumn.create(name() + "[" + "second" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getSecond(c1));
             } else {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             }
         }
         return newColumn;
     }
 
-    default DoubleColumn milliseconds() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[" + "ms" + "]");
+    default IntColumn milliseconds() {
+        IntColumn newColumn = IntColumn.create(name() + "[" + "ms" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getMilliseconds(c1));
             } else {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             }
         }
         return newColumn;
     }
 
-    default DoubleColumn minuteOfDay() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[" + "minute-of-day" + "]");
+    default IntColumn minuteOfDay() {
+        IntColumn newColumn = IntColumn.create(name() + "[" + "minute-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getMinuteOfDay(c1));
             } else {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             }
         }
         return newColumn;
     }
 
-    default DoubleColumn secondOfDay() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[" + "second-of-day" + "]");
+    default IntColumn secondOfDay() {
+        IntColumn newColumn = IntColumn.create(name() + "[" + "second-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             if (!TimeColumn.valueIsMissing(c1)) {
                 newColumn.append(PackedLocalTime.getSecondOfDay(c1));
             } else {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.append(IntColumnType.missingValueIndicator());
             }
         }
         return newColumn;

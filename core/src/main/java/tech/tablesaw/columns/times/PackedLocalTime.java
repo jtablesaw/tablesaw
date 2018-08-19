@@ -17,6 +17,7 @@ package tech.tablesaw.columns.times;
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.columns.numbers.IntColumnType;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -25,7 +26,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import static tech.tablesaw.api.TimeColumn.*;
+import static tech.tablesaw.api.TimeColumn.MISSING_VALUE;
 
 /**
  * A localTime with millisecond precision packed into a single int value.
@@ -339,16 +340,16 @@ public class PackedLocalTime {
         return (byte) (getMillisecondOfMinute(packedLocalTime) / 1000);
     }
 
-    public static double getMinuteOfDay(int packedLocalTime) {
+    public static int getMinuteOfDay(int packedLocalTime) {
         if (packedLocalTime == MISSING_VALUE) {
-            return Double.NaN;
+            return IntColumnType.missingValueIndicator();
         }
         return getHour(packedLocalTime) * 60 + getMinute(packedLocalTime);
     }
 
-    public static double getSecondOfDay(int packedLocalTime) {
+    public static int getSecondOfDay(int packedLocalTime) {
         if (packedLocalTime == MISSING_VALUE) {
-            return Double.NaN;
+            return IntColumnType.missingValueIndicator();
         }
         int total = getHour(packedLocalTime) * 60 * 60;
         total += getMinute(packedLocalTime) * 60;
