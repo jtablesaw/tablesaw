@@ -192,18 +192,6 @@ public class BooleanColumnTest {
     }
 
     @Test
-    public void testConversionToInt() {
-        int[] array = column.asIntArray();
-        assertTrue(array[0] == 0);
-        assertTrue(array[1] == 0);
-        assertTrue(array[2] == 0);
-        assertTrue(array[3] == 0);
-        assertTrue(array[4] == 1);
-        assertTrue(array[5] == 1);
-        assertTrue(array[6] == 0);
-    }
-
-    @Test
     public void testSelectionMethods() {
         assertEquals(5, column.isFalse().size());
         assertEquals(2, column.isTrue().size());

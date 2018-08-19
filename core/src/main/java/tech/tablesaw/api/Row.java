@@ -18,6 +18,7 @@ public class Row implements Iterator<Row> {
     private final Map<String, DateColumn> dateColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, DoubleColumn> doubleColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, IntColumn> intColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, LongColumn> longColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, FloatColumn> floatColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, StringColumn> stringColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, BooleanColumn> booleanColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -36,6 +37,9 @@ public class Row implements Iterator<Row> {
             }
             if (column instanceof IntColumn) {
                 intColumnMap.put(column.name(), (IntColumn) column);
+            }
+            if (column instanceof LongColumn) {
+                longColumnMap.put(column.name(), (LongColumn) column);
             }
             if (column instanceof FloatColumn) {
                 floatColumnMap.put(column.name(), (FloatColumn) column);
@@ -95,6 +99,14 @@ public class Row implements Iterator<Row> {
 
     public int getInt(int columnIndex) {
         return getInt(columnNames[columnIndex]);
+    }
+
+    public long getLong(String columnName) {
+	return longColumnMap.get(columnName).getLong(rowNumber);
+    }
+
+    public long getLong(int columnIndex) {
+        return getLong(columnNames[columnIndex]);
     }
 
     public float getFloat(String columnName) {

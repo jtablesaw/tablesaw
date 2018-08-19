@@ -249,11 +249,6 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     @Override
-    public int[] asIntArray() {
-        return data().toArray(new int[size()]);
-    }
-
-    @Override
     public void clear() {
         values.clear();
         lookupTable.clear();

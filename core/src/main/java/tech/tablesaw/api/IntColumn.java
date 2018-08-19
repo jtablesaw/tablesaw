@@ -168,15 +168,6 @@ public class IntColumn extends NumberColumn<Integer> implements NumericColumn<In
     }
 
     @Override
-    public int[] asIntArray() {  // TODO: Need to figure out how to handle NaN -> Maybe just use a list with nulls?
-        final int[] result = new int[size()];
-        for (int i = 0; i < size(); i++) {
-            result[i] = getInt(i);
-        }
-        return result;
-    }
-
-    @Override
     public Iterator<Integer> iterator() {
         return data.iterator();
     }
@@ -318,6 +309,13 @@ public class IntColumn extends NumberColumn<Integer> implements NumericColumn<In
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
         }
+    }
+
+    public int firstElement() {
+        if (size() > 0) {
+            return getInt(0);
+        }
+        return (Integer) COLUMN_TYPE.getMissingValueIndicator();
     }
 
 }

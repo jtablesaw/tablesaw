@@ -1,8 +1,6 @@
 package tech.tablesaw.api;
 
 import java.text.NumberFormat;
-import java.time.Instant;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.DoublePredicate;
@@ -141,23 +139,6 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
             }
         }
         return count;
-    }
-
-    /**
-     * Returns a DateTimeColumn where each value is the LocalDateTime represented by the values in this column
-     * <p>
-     * The values in this column must be longs that represent the time in milliseconds from the epoch as in standard
-     * Java date/time calculations
-     *
-     * @param offset The ZoneOffset to use in the calculation
-     * @return A column of LocalDateTime values
-     */
-    public DateTimeColumn asDateTimes(ZoneOffset offset) {
-        DateTimeColumn column = DateTimeColumn.create(name() + ": date time");
-        for (int i = 0; i < size(); i++) {
-            column.append(Instant.ofEpochMilli((long) getDouble(i)).atZone(offset).toLocalDateTime());
-        }
-        return column;
     }
 
     @Override

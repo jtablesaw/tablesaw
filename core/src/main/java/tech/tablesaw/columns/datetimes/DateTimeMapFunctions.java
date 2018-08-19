@@ -14,60 +14,78 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import com.google.common.base.Strings;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.TimeColumn;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.asLocalDateTime;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.daysUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfMonth;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfWeek;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfYear;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getHour;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinute;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinuteOfDay;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMonthValue;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getQuarter;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getSecondOfDay;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getWeekOfYear;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getYear;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.hoursUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.minutesUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.monthsUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.pack;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.weeksUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.yearsUntil;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import static tech.tablesaw.api.DateTimeColumn.MISSING_VALUE;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
+import com.google.common.base.Strings;
+
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 public interface DateTimeMapFunctions extends Column<LocalDateTime> {
 
-    default DoubleColumn differenceInMilliseconds(DateTimeColumn column2) {
+    default LongColumn differenceInMilliseconds(DateTimeColumn column2) {
         return difference(column2, ChronoUnit.MILLIS);
     }
 
-    default DoubleColumn differenceInSeconds(DateTimeColumn column2) {
+    default LongColumn differenceInSeconds(DateTimeColumn column2) {
         return difference(column2, ChronoUnit.SECONDS);
     }
 
-    default DoubleColumn differenceInMinutes(DateTimeColumn column2) {
+    default LongColumn differenceInMinutes(DateTimeColumn column2) {
         return difference(column2, ChronoUnit.MINUTES);
     }
 
-    default DoubleColumn differenceInHours(DateTimeColumn column2) {
+    default LongColumn differenceInHours(DateTimeColumn column2) {
         return difference(column2, ChronoUnit.HOURS);
     }
 
-    default DoubleColumn differenceInDays(DateTimeColumn column2) {
+    default LongColumn differenceInDays(DateTimeColumn column2) {
         return difference(column2, ChronoUnit.DAYS);
     }
 
-    default DoubleColumn differenceInYears(DateTimeColumn column2) {
+    default LongColumn differenceInYears(DateTimeColumn column2) {
         return difference(column2, ChronoUnit.YEARS);
     }
 
-    default DoubleColumn difference(DateTimeColumn column2, ChronoUnit unit) {
-        DoubleColumn newColumn = DoubleColumn.create(name() + " - " + column2.name());
+    default LongColumn difference(DateTimeColumn column2, ChronoUnit unit) {
+	LongColumn newColumn = LongColumn.create(name() + " - " + column2.name());
 
         for (int r = 0; r < size(); r++) {
-            long c1 = this.getLongInternal(r);
-            long c2 = column2.getLongInternal(r);
-            if (c1 == MISSING_VALUE || c2 == MISSING_VALUE) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+            if (this.isMissing(r) || column2.isMissing(r)) {
+                newColumn.appendMissing();
             } else {
+                long c1 = this.getLongInternal(r);
+                long c2 = column2.getLongInternal(r);
                 LocalDateTime value1 = asLocalDateTime(c1);
                 LocalDateTime value2 = asLocalDateTime(c2);
                 if (value1 != null && value2 != null) {
@@ -80,40 +98,40 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default DoubleColumn hour() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[" + "hour" + "]");
+    default IntColumn hour() {
+	IntColumn newColumn = IntColumn.create(name() + "[" + "hour" + "]");
         for (int r = 0; r < size(); r++) {
-            long c1 = getLongInternal(r);
-            if (c1 != MISSING_VALUE) {
+            if (!isMissing(r)) {
+                long c1 = getLongInternal(r);
                 newColumn.append(getHour(c1));
             } else {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             }
         }
         return newColumn;
     }
 
-    default DoubleColumn minuteOfDay() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[" + "minute-of-day" + "]");
+    default IntColumn minuteOfDay() {
+	IntColumn newColumn = IntColumn.create(name() + "[" + "minute-of-day" + "]");
         for (int r = 0; r < size(); r++) {
-            long c1 = getLongInternal(r);
-            if (c1 != MISSING_VALUE) {
+            if (!isMissing(r)) {
+                long c1 = getLongInternal(r);
                 newColumn.append((short) getMinuteOfDay(c1));
             } else {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             }
         }
         return newColumn;
     }
 
-    default DoubleColumn secondOfDay() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[" + "second-of-day" + "]");
+    default IntColumn secondOfDay() {
+	IntColumn newColumn = IntColumn.create(name() + "[" + "second-of-day" + "]");
         for (int r = 0; r < size(); r++) {
-            long c1 = getLongInternal(r);
-            if (c1 != MISSING_VALUE) {
+            if (!isMissing(r)) {
+                long c1 = getLongInternal(r);
                 newColumn.append(getSecondOfDay(c1));
             } else {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             }
         }
         return newColumn;
@@ -145,13 +163,13 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default DoubleColumn monthValue() {
-        DoubleColumn newColumn = DoubleColumn.create(this.name() + " month");
+    default IntColumn monthValue() {
+	IntColumn newColumn = IntColumn.create(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = getLongInternal(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+            if (isMissing(r)) {
+                newColumn.appendMissing();
             } else {
+                long c1 = getLongInternal(r);
                 newColumn.append((short) getMonthValue(c1));
             }
         }
@@ -299,23 +317,23 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
     default DateColumn date() {
         DateColumn newColumn = DateColumn.create(this.name() + " date");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = getLongInternal(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.appendInternal(DateColumn.MISSING_VALUE);
+            if (isMissing(r)) {
+                newColumn.appendMissing();
             } else {
+                long c1 = getLongInternal(r);
                 newColumn.appendInternal(PackedLocalDateTime.date(c1));
             }
         }
         return newColumn;
     }
 
-    default DoubleColumn year() {
-        DoubleColumn newColumn = DoubleColumn.create(this.name() + " year");
+    default IntColumn year() {
+	IntColumn newColumn = IntColumn.create(this.name() + " year");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = getLongInternal(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+            if (isMissing(r)) {
+                newColumn.appendMissing();
             } else {
+                long c1 = getLongInternal(r);
                 newColumn.append(PackedLocalDate.getYear(PackedLocalDateTime.date(c1)));
             }
         }
@@ -335,39 +353,39 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default DoubleColumn dayOfWeekValue() {
-        DoubleColumn newColumn = DoubleColumn.create(this.name() + " day of week", this.size());
+    default IntColumn dayOfWeekValue() {
+	IntColumn newColumn = IntColumn.create(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+            if (isMissing(r)) {
+                newColumn.appendMissing();
             } else {
+                long c1 = this.getLongInternal(r);
                 newColumn.append((short) getDayOfWeek(c1).getValue());
             }
         }
         return newColumn;
     }
 
-    default DoubleColumn dayOfYear() {
-        DoubleColumn newColumn = DoubleColumn.create(this.name() + " day of year", this.size());
+    default IntColumn dayOfYear() {
+	IntColumn newColumn = IntColumn.create(this.name() + " day of year", this.size());
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+            if (isMissing(r)) {
+                newColumn.appendMissing();
             } else {
+                long c1 = this.getLongInternal(r);
                 newColumn.append((short) getDayOfYear(c1));
             }
         }
         return newColumn;
     }
 
-    default DoubleColumn dayOfMonth() {
-        DoubleColumn newColumn = DoubleColumn.create(this.name() + " day of month");
+    default IntColumn dayOfMonth() {
+	IntColumn newColumn = IntColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
-            long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+            if (isMissing(r)) {
+                newColumn.isMissing();
             } else {
+                long c1 = this.getLongInternal(r);
                 newColumn.append(getDayOfMonth(c1));
             }
         }
@@ -384,10 +402,10 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
      * @param n     The number of units in each group.
      * @param start The starting point of the first group; group boundaries are offsets from this point
      */
-    default DoubleColumn timeWindow(ChronoUnit unit, int n, LocalDateTime start) {
+    default LongColumn timeWindow(ChronoUnit unit, int n, LocalDateTime start) {
         String newColumnName = "" +  n + " " + unit.toString() + " window [" + name() + "]";
         long packedStartDate = pack(start);
-        DoubleColumn numberColumn = DoubleColumn.create(newColumnName, size());
+        LongColumn numberColumn = LongColumn.create(newColumnName, size());
         for (int i = 0; i < size(); i++) {
             long packedDate = getLongInternal(i);
             long result;
@@ -419,20 +437,20 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return numberColumn;
     }
 
-    default DoubleColumn minute() {
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[" + "minute" + "]");
+    default IntColumn minute() {
+	IntColumn newColumn = IntColumn.create(name() + "[" + "minute" + "]");
         for (int r = 0; r < size(); r++) {
-            long c1 = getLongInternal(r);
-            if (!DateTimeColumn.valueIsMissing(c1)) {
+            if (!isMissing(r)) {
+                long c1 = getLongInternal(r);
                 newColumn.append(getMinute(c1));
             } else {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
+                newColumn.appendMissing();
             }
         }
         return newColumn;
     }
 
-    default DoubleColumn timeWindow(ChronoUnit unit, int n) {
+    default LongColumn timeWindow(ChronoUnit unit, int n) {
         return timeWindow(unit, n, min());
     }
 

@@ -1,6 +1,10 @@
 package tech.tablesaw.api;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.common.base.Preconditions;
+
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.SkipColumnType;
 import tech.tablesaw.columns.StringParser;
@@ -10,12 +14,10 @@ import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
+import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public interface ColumnType {
 
@@ -23,6 +25,7 @@ public interface ColumnType {
 
     // standard column types
     IntColumnType INTEGER = IntColumnType.INSTANCE;
+    LongColumnType LONG = LongColumnType.INSTANCE;
     FloatColumnType FLOAT = FloatColumnType.INSTANCE;
     BooleanColumnType BOOLEAN = BooleanColumnType.INSTANCE;
     StringColumnType STRING = StringColumnType.INSTANCE;
