@@ -157,7 +157,7 @@ public class CsvReader {
         long rowNumber = options.header() ? 1L : 0L;
         String[] nextLine;
 
-        Map<Integer, StringParser<?>> parserMap = getParserMap(options, table, columnIndexes);
+        Map<String, StringParser<?>> parserMap = getParserMap(options, table, columnIndexes);
 
         // Add the rows
         while ((nextLine = reader.parseNext()) != null) {
@@ -178,7 +178,7 @@ public class CsvReader {
                 int cellIndex = 0;
                 for (int columnIndex : columnIndexes) {
                     Column<?> column = table.column(cellIndex);
-                    StringParser<?> parser = parserMap.get(columnIndex);
+                    StringParser<?> parser = parserMap.get(column.name());
                     try {
                         String value = nextLine[columnIndex];
                         column.appendCell(value, parser);
@@ -192,12 +192,11 @@ public class CsvReader {
         }
     }
 
-    private Map<Integer, StringParser<?>> getParserMap(CsvReadOptions options, Table table, int[] columnIndexes) {
-        Map<Integer, StringParser<?>> parserMap = new HashMap<>();
-        for (int columnIndex : columnIndexes) {
-            Column<?> column = table.column(columnIndex);
+    private Map<String, StringParser<?>> getParserMap(CsvReadOptions options, Table table, int[] columnIndexes) {
+        Map<String, StringParser<?>> parserMap = new HashMap<>();
+        for (Column<?> column : table.columns()) {
             StringParser<?> parser = column.type().customParser(options);
-            parserMap.put(columnIndex, parser);
+            parserMap.put(column.name(), parser);
         }
         return parserMap;
     }
