@@ -1,15 +1,6 @@
 package tech.tablesaw.api;
 
-import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.DoubleConsumer;
-import java.util.function.DoublePredicate;
-import java.util.function.DoubleSupplier;
-import java.util.function.ToDoubleFunction;
-
 import com.google.common.base.Preconditions;
-
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleArrays;
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
@@ -23,6 +14,18 @@ import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.fillers.DoubleRangeIterable;
+import tech.tablesaw.selection.Selection;
+
+import java.nio.ByteBuffer;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.DoubleConsumer;
+import java.util.function.DoublePredicate;
+import java.util.function.DoubleSupplier;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToDoubleFunction;
 
 public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<DoubleColumn> {
 
@@ -274,7 +277,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     @Override
     public DoubleColumn append(Column<Double> column, int row) {
         Preconditions.checkArgument(column.type() == this.type());
-        return append(((DoubleColumn) column).getDouble(row));
+        return append(column.getDouble(row));
     }
 
     /**
@@ -435,4 +438,78 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         return this;
     }
 
+    @Override
+    public DoubleColumn inRange(int start, int end) {
+        return (DoubleColumn) super.inRange(start, end);
+    }
+
+    @Override
+    public DoubleColumn where(Selection selection) {
+        return (DoubleColumn) super.where(selection);
+    }
+
+    @Override
+    public DoubleColumn lead(int n) {
+        return (DoubleColumn) super.lead(n);
+    }
+
+    @Override
+    public DoubleColumn setName(String name) {
+        return (DoubleColumn) super.setName(name);
+    }
+
+    @Override
+    public DoubleColumn filter(Predicate<? super Double> test) {
+        return (DoubleColumn) super.filter(test);
+    }
+
+    @Override
+    public DoubleColumn sorted(Comparator<? super Double> comp) {
+        return (DoubleColumn) super.sorted(comp);
+    }
+
+    @Override
+    public DoubleColumn map(Function<? super Double, ? extends Double> fun) {
+        return (DoubleColumn) super.map(fun);
+    }
+
+    @Override
+    public DoubleColumn min(Column<Double> other) {
+        return (DoubleColumn) super.min(other);
+    }
+
+    @Override
+    public DoubleColumn max(Column<Double> other) {
+        return (DoubleColumn) super.max(other);
+    }
+
+    @Override
+    public DoubleColumn set(Selection condition, Column<Double> other) {
+        return (DoubleColumn) super.set(condition, other);
+    }
+
+    @Override
+    public DoubleColumn set(Selection rowSelection, Double newValue) {
+        return (DoubleColumn) super.set(rowSelection, newValue);
+    }
+
+    @Override
+    public DoubleColumn first(int numRows) {
+        return (DoubleColumn) super.first(numRows);
+    }
+
+    @Override
+    public DoubleColumn last(int numRows) {
+        return (DoubleColumn) super.last(numRows);
+    }
+
+    @Override
+    public DoubleColumn sampleN(int n) {
+        return (DoubleColumn) super.sampleN(n);
+    }
+
+    @Override
+    public DoubleColumn sampleX(double proportion) {
+        return (DoubleColumn) super.sampleX(proportion);
+    }
 }
