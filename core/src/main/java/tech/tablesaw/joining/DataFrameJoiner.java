@@ -436,14 +436,17 @@ public class DataFrameJoiner {
         return Table.create(table1.name(), cols);
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void crossProduct(Table destination, Table table1, Table table2) {
         for (int c = 0; c < table1.columnCount() + table2.columnCount(); c++) {
             for (int r1 = 0; r1 < table1.rowCount(); r1++) {
                 for (int r2 = 0; r2 < table2.rowCount(); r2++) {
                     if (c < table1.columnCount()) {
-                        destination.column(c).appendCell(table1.getUnformatted(r1, c));
+                	Column t1Col = table1.column(c);
+                        destination.column(c).append(t1Col, r1);
                     } else {
-                        destination.column(c).appendCell(table2.getUnformatted(r2, c - table1.columnCount()));
+                	Column t2Col = table2.column(c - table1.columnCount());
+                        destination.column(c).append(t2Col, r2);
                     }
                 }
             }
@@ -453,12 +456,14 @@ public class DataFrameJoiner {
     /**
      * Adds rows to destination for each row in table1, with the columns from table2 added as missing values in each
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private void withMissingLeftJoin(Table destination, Table table1) {
         for (int c = 0; c < destination.columnCount(); c++) {
-            for (int r1 = 0; r1 < table1.rowCount(); r1++) {
-                if (c < table1.columnCount()) {
-                    destination.column(c).appendCell(table1.getUnformatted(r1, c));
-                } else {
+            if (c < table1.columnCount()) {
+        	Column t1Col = table1.column(c);
+        	destination.column(c).append(t1Col);
+            } else {
+                for (int r1 = 0; r1 < table1.rowCount(); r1++) {
                     destination.column(c).appendMissing();
                 }
             }
@@ -468,21 +473,21 @@ public class DataFrameJoiner {
     /**
      * Adds rows to destination for each row in the joinColumn and table2
      */
-    private void withMissingRightJoin(Table destination, CategoricalColumn<?> joinColumn, Table table2) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private void withMissingRightJoin(Table destination, CategoricalColumn joinColumn, Table table2) {
         int t2StartCol = destination.columnCount() - table2.columnCount();
         for (int c = 0; c < destination.columnCount(); c++) {
             if (destination.column(c).name().equalsIgnoreCase(joinColumn.name())) {
-                for (int r = 0; r < joinColumn.size(); r++) {
-                    destination.column(c).appendCell(joinColumn.getUnformattedString(r));
-                }
+        	destination.column(c).append(joinColumn);
                 continue;
             }
-            for (int r2 = 0; r2 < table2.rowCount(); r2++) {
-                if (c < t2StartCol) {
+            if (c < t2StartCol) {
+                for (int r2 = 0; r2 < table2.rowCount(); r2++) {
                     destination.column(c).appendMissing();
-                } else {
-                    destination.column(c).appendCell(table2.getUnformatted(r2, c - t2StartCol));
                 }
+            } else {
+        	Column t2Col = table2.column(c - t2StartCol);
+        	destination.column(c).append(t2Col);
             }
         }
     }

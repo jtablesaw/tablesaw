@@ -143,7 +143,7 @@ public class TableTest {
         t1.append(t2).append(t3);
         assertEquals(3 * rowCount, t1.rowCount());
         t1 = t1.dropDuplicateRows();
-        assertEquals(t1.rowCount(),rowCount);
+        assertEquals(rowCount, t1.rowCount());
     }
 
     @Test

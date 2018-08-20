@@ -77,6 +77,15 @@ public class LongColumn extends NumberColumn<Long> implements NumericColumn<Long
     }
 
     @Override
+    public LongColumn subset(final int[] rows) {
+        final LongColumn c = this.emptyCopy();
+        for (final int row : rows) {
+            c.append(getLong(row));
+        }
+        return c;
+    }
+
+    @Override
     public LongColumn unique() {
         final LongSet values = new LongOpenHashSet();
         for (int i = 0; i < size(); i++) {
@@ -234,6 +243,12 @@ public class LongColumn extends NumberColumn<Long> implements NumericColumn<Long
     }
 
     @Override
+    public LongColumn append(Column<Long> column, int row) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return append(((LongColumn) column).getLong(row));
+    }
+
+    @Override
     public LongColumn appendMissing() {
         return append(LongColumnType.missingValueIndicator());
     }
@@ -336,6 +351,15 @@ public class LongColumn extends NumberColumn<Long> implements NumericColumn<Long
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
         }
+    }
+
+    @Override
+    public String getUnformattedString(final int row) {
+        final long value = getLong(row);
+        if (LongColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(value);
     }
 
     public long firstElement() {

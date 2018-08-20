@@ -89,7 +89,7 @@ public class TableSlice extends Relation implements IntIterable {
     }
 
     @Override
-    public String get(int r, int c) {
+    public Object get(int r, int c) {
         return table.get(selection.get(r), c);
     }
 

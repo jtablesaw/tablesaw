@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.aggregate.AggregateFunction;
@@ -322,30 +321,6 @@ public class Table extends Relation implements Iterable<Row> {
     /**
      * Returns a string representation of the value at the given row and column indexes
      *
-     * @param r the row index, 0 based
-     * @param c the column index, 0 based
-     */
-    @Override
-    public String get(int r, int c) {
-        Column<?> column = column(c);
-        return column.getString(r);
-    }
-
-    /**
-     * Returns a string representation of the value at the given row and column indexes
-     *
-     * @param r the row index, 0 based
-     * @param c the column index, 0 based
-     */
-    @Override
-    public String getUnformatted(int r, int c) {
-        Column<?> column = column(c);
-        return column.getUnformattedString(r);
-    }
-
-    /**
-     * Returns a string representation of the value at the given row and column indexes
-     *
      * @param r          the row index, 0 based
      * @param columnName the name of the column to be returned
      *                   <p>
@@ -365,11 +340,11 @@ public class Table extends Relation implements Iterable<Row> {
             copy.addColumns(column.emptyCopy());
         }
 
-        IntArrayList integers = new IntArrayList();
+        int[] rows = new int[rowCount()];
         for (int i = 0; i < rowCount(); i++) {
-            integers.add(i);
+            rows[i] = i;
         }
-        Rows.copyRowsToTable(integers, this, copy);
+        Rows.copyRowsToTable(rows, this, copy);
         return copy;
     }
 
@@ -569,7 +544,7 @@ public class Table extends Relation implements Iterable<Row> {
         int[] newRows = rows();
         IntArrays.parallelQuickSort(newRows, rowComparator);
 
-        Rows.copyRowsToTable(IntArrayList.wrap(newRows), this, newTable);
+        Rows.copyRowsToTable(newRows, this, newTable);
         return newTable;
     }
 
@@ -792,12 +767,11 @@ public class Table extends Relation implements Iterable<Row> {
         return this;
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public Table append(Table tableToAppend) {
-        for (final Column<?> column : columnList) {
-            final Column<?> columnToAppend = tableToAppend.column(column.name());
-            for (int i = 0; i < columnToAppend.size(); i++) {
-                column.appendObj(columnToAppend.get(i));
-            }
+        for (final Column column : columnList) {
+            final Column columnToAppend = tableToAppend.column(column.name());
+            column.append(columnToAppend);
         }
         return this;
     }

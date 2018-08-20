@@ -14,36 +14,40 @@
 
 package tech.tablesaw.table;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+import javax.annotation.concurrent.Immutable;
+
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import javax.annotation.concurrent.Immutable;
 
 /**
  * A static utility class for row operations
  */
 @Immutable
-public class Rows {
+public final class Rows {
 
     // Don't instantiate
     private Rows() {}
 
-    public static void copyRowsToTable(IntArrayList rows, Table oldTable, Table newTable) {
-        for (int i = 0; i < rows.size(); i++) {
-            int rowIndex = rows.getInt(i);
-            int columnCount = oldTable.columnCount();
-            for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
-                newTable.column(columnIndex).appendObj(oldTable.column(columnIndex).get(rowIndex));
-            }
+    /**
+     * N.B. this method does not preserve ordering. Use the version taking int[] if row ordering matters 
+     */
+    public static void copyRowsToTable(Selection rows, Table oldTable, Table newTable) {
+        copyRowsToTable(rows.toArray(), oldTable, newTable);
+    }
+
+    @SuppressWarnings({"rawtypes","unchecked"})
+    public static void copyRowsToTable(int[] rows, Table oldTable, Table newTable) {
+        for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
+            Column oldColumn = oldTable.column(columnIndex);
+            newTable.column(columnIndex).append(oldColumn.subset(rows));
         }
     }
 
     public static void appendRowToTable(int row, Table oldTable, Table newTable) {
-        IntArrayList rows = new IntArrayList();
-        rows.add(row);
-        copyRowsToTable(rows, oldTable, newTable);
+        copyRowsToTable(new int[] {row}, oldTable, newTable);
     }
 
     public static boolean compareRows(int rowInOriginal, Table original, Table tempTable) {
@@ -59,19 +63,8 @@ public class Rows {
         return true;
     }
 
-    /**
-     * Copies the rows in oldTable to newTable if they are included in the given selection
-     *
-     * TODO(lwhite): Possible performance enhancement: Consider implementing this method directly so we don't need array list
-     */
-    public static void copyRowsToTable(Selection rows, Table oldTable, Table newTable) {
-        int[] r = rows.toArray();
-        IntArrayList rowArray = new IntArrayList(r);
-        copyRowsToTable(rowArray, oldTable, newTable);
-    }
-
     public static void head(int rowCount, Table oldTable, Table newTable) {
-        IntArrayList rows = new IntArrayList(rowCount);
+        Selection rows = new BitmapBackedSelection(rowCount);
         for (int i = 0; i < rowCount; i++) {
             rows.add(i);
         }
@@ -81,7 +74,7 @@ public class Rows {
     public static void tail(int rowsToInclude, Table oldTable, Table newTable) {
         int oldTableSize = oldTable.rowCount();
         int start = oldTableSize - rowsToInclude;
-        IntArrayList rows = new IntArrayList(rowsToInclude);
+        Selection rows = new BitmapBackedSelection(rowsToInclude);
         for (int i = start; i < oldTableSize; i++) {
             rows.add(i);
         }

@@ -107,6 +107,16 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         return this;
     }
 
+    @Override
+    public TimeColumn subset(int[] rows) {
+        final TimeColumn c = this.emptyCopy();
+        for (final int row : rows) {
+            c.appendInternal(getIntInternal(row));
+        }
+        return c;
+    }
+
+    @Override
     public TimeColumn lag(int n) {
         int srcPos = n >= 0 ? 0 : 0 - n;
         int[] dest = new int[size()];
@@ -397,6 +407,12 @@ public class TimeColumn extends AbstractColumn<LocalTime>
             appendInternal(timeCol.getIntInternal(i));
         }
         return this;
+    }
+
+    @Override
+    public TimeColumn append(Column<LocalTime> column, int row) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return appendInternal(((TimeColumn) column).getIntInternal(row));
     }
 
     /**

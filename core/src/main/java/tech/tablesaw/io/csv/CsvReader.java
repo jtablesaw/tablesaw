@@ -335,11 +335,11 @@ public class CsvReader {
             buf.append(cell);
             buf.append(" // ");
 
-            cell = Strings.padEnd(structure.get(r, indxColIndex), indxColWidth, padChar);
+            cell = Strings.padEnd(structure.getUnformatted(r, indxColIndex), indxColWidth, padChar);
             buf.append(cell);
             buf.append(' ');
 
-            cell = Strings.padEnd(structure.get(r, nameColIndex), nameColWidth, padChar);
+            cell = Strings.padEnd(structure.getUnformatted(r, nameColIndex), nameColWidth, padChar);
             buf.append(cell);
             buf.append(' ');
 

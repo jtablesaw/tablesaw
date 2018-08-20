@@ -150,7 +150,6 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
 
     @Override
     public Table summary() {
-
         Byte2IntMap counts = new Byte2IntOpenHashMap(3);
         counts.put(BYTE_FALSE, 0);
         counts.put(BYTE_TRUE, 0);

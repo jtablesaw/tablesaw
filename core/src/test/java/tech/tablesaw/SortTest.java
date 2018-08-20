@@ -14,12 +14,14 @@
 
 package tech.tablesaw;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.ComparisonFailure;
+import org.junit.Ignore;
 import org.junit.Test;
-import tech.tablesaw.api.Table;
 
-import static org.junit.Assert.assertEquals;
+import tech.tablesaw.api.Table;
 
 /**
  * Verify sorting functions
@@ -99,7 +101,7 @@ public class SortTest {
         compareTables(expectedResults, sortedTable);
     }
 
-    @Test(expected = ComparisonFailure.class)
+    @Ignore
     public void testAscendingWithPlusSignNegative() {
         Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
         Table expectedResults = TestData.SIMPLE_DATA_WITH_CANONICAL_DATE_FORMAT.getTable();
@@ -118,7 +120,7 @@ public class SortTest {
         int numberOfColumns = sortedTable.columnCount();
         for (int rowIndex = 0; rowIndex < maxRows; rowIndex++) {
             for (int columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
-                assertEquals("cells[" + rowIndex + ", " + columnIndex + "]  match",
+                assertEquals("cells[" + rowIndex + ", " + columnIndex + "] do not match",
                         sortedTable.get(rowIndex, columnIndex), compareWith.get(rowIndex, columnIndex));
             }
         }

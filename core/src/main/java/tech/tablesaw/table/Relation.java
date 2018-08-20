@@ -162,9 +162,15 @@ public abstract class Relation {
     public abstract int columnIndex(Column<?> col);
 
     /**
-     * Returns a String representing the value found at column index c and row index r
+     * Returns the value at the given row and column indexes
+     *
+     * @param r the row index, 0 based
+     * @param c the column index, 0 based
      */
-    public abstract String get(int r, int c);
+    public Object get(int r, int c) {
+        Column<?> column = column(c);
+        return column.get(r);
+    }
 
     /**
      * Returns the name of this relation
@@ -416,8 +422,15 @@ public abstract class Relation {
         return new TableConverter(this);
     }
 
-    public String getUnformatted(int r1, int c) {
-        return null;
+    /**
+     * Returns a string representation of the value at the given row and column indexes
+     *
+     * @param r the row index, 0 based
+     * @param c the column index, 0 based
+     */
+    public String getUnformatted(int r, int c) {
+        Column<?> column = column(c);
+        return column.getUnformattedString(r);
     }
 
     public boolean containsColumn(Column<?> column) {

@@ -47,8 +47,8 @@ public class AggregateFunctionsTest {
         assertEquals(3, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(6, result.rowCount());
-        assertEquals("65.671875", result.get(0, 1));
-        assertEquals("10.648876067826901", result.get(0, 2));
+        assertEquals("65.671875", result.getUnformatted(0, 1));
+        assertEquals("10.648876067826901", result.getUnformatted(0, 2));
     }
 
     @Test
@@ -100,8 +100,8 @@ public class AggregateFunctionsTest {
         TableSliceGroup group = SelectionTableSliceGroup.create(table, "Step", 5);
         Table result = group.aggregate("approval", mean, AggregateFunctions.stdDev);
         assertEquals(3, result.columnCount());
-        assertEquals("53.6", result.get(0, 1));
-        assertEquals("2.5099800796022267", result.get(0, 2));
+        assertEquals("53.6", result.getUnformatted(0, 1));
+        assertEquals("2.5099800796022267", result.getUnformatted(0, 2));
     }
 
     @Test
@@ -120,7 +120,7 @@ public class AggregateFunctionsTest {
         assertEquals(4, result.columnCount());
         assertEquals("who", result.column(0).name());
         assertEquals(323, result.rowCount());
-        assertEquals("46.0", result.get(0, 2));
+        assertEquals("46.0", result.getUnformatted(0, 2));
     }
 
     @Test

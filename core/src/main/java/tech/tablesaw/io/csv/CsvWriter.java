@@ -70,7 +70,7 @@ final public class CsvWriter {
                 String[] entries = new String[table.columnCount()];
                 for (int c = 0; c < table.columnCount(); c++) {
                     table.get(r, c);
-                    entries[c] = table.get(r, c);
+                    entries[c] = table.getUnformatted(r, c);
                 }
                 csvWriter.writeRow(entries);
             }

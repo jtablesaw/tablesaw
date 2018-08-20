@@ -186,7 +186,7 @@ public class DataFramePrinter {
             int i;
             for (i = 0; i < rowCount / 2; i++) {
                 for (int j = 0; j < colCount; j++) {
-                    data[i][j] = frame.get(i, j);
+                    data[i][j] = frame.getUnformatted(i, j);
                 }
             }
             for (int j = 0; j < colCount; j++) {
@@ -194,13 +194,13 @@ public class DataFramePrinter {
             }
             for (i++; i < rowCount; i++) {
                 for (int j = 0; j < colCount; j++) {
-                    data[i][j] = frame.get(frame.rowCount() - maxRows + i, j);
+                    data[i][j] = frame.getUnformatted(frame.rowCount() - maxRows + i, j);
                 }
             }
         } else {
             for (int i = 0; i < rowCount; i++) {
                 for (int j = 0; j < colCount; j++) {
-                    String value = frame.get(i, j);
+                    String value = frame.getUnformatted(i, j);
                     data[i][j] = value == null ? "" : value;
                 }
             }

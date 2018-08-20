@@ -204,7 +204,7 @@ public class LocalTimeFilterTest {
         Table result = t.where(t.timeColumn("Game time")
                 .isEqualTo(LocalTime.of(7, 4, 2, 0)));
         assertEquals(result.rowCount(), 1);
-        assertEquals(result.get(0, 0), toShortTimeString(pack(LocalTime.of(7, 4, 2))));
+        assertEquals(result.getUnformatted(0, 0), toShortTimeString(pack(LocalTime.of(7, 4, 2))));
     }
 
     @Test
@@ -275,7 +275,7 @@ public class LocalTimeFilterTest {
         Table result = t.where(t.timeColumn("Game time")
                 .isOnOrBefore(LocalTime.of(7, 4, 2, 0)));
         assertEquals(result.rowCount(), 1);
-        assertEquals(result.get(0, 0), toShortTimeString(pack(LocalTime.of(7, 4, 2))));
+        assertEquals(result.getUnformatted(0, 0), toShortTimeString(pack(LocalTime.of(7, 4, 2))));
     }
 
     @Test
