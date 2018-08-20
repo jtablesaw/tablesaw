@@ -151,10 +151,10 @@ public class BooleanColumnTest {
         Table summary = column.summary();
         assertEquals(2, summary.columnCount());
         assertEquals(2, summary.rowCount());
-        assertEquals("false", summary.get(0, 0));
-        assertEquals("5.0", summary.get(0, 1));
-        assertEquals("true", summary.get(1, 0));
-        assertEquals("2.0", summary.get(1, 1));
+        assertEquals("false", summary.getUnformatted(0, 0));
+        assertEquals("5.0", summary.getUnformatted(0, 1));
+        assertEquals("true", summary.getUnformatted(1, 0));
+        assertEquals("2.0", summary.getUnformatted(1, 1));
     }
 
     @Test
@@ -185,10 +185,10 @@ public class BooleanColumnTest {
         Table summary = bc.summary();
         assertEquals(2, summary.columnCount());
         assertEquals(2, summary.rowCount());
-        assertEquals("false", summary.get(0, 0));
-        assertEquals("2.0", summary.get(0, 1));
-        assertEquals("true", summary.get(1, 0));
-        assertEquals("5.0", summary.get(1, 1));
+        assertEquals("false", summary.getUnformatted(0, 0));
+        assertEquals("2.0", summary.getUnformatted(0, 1));
+        assertEquals("true", summary.getUnformatted(1, 0));
+        assertEquals("5.0", summary.getUnformatted(1, 1));
     }
 
     @Test

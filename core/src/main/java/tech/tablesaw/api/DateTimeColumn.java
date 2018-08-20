@@ -14,7 +14,23 @@
 
 package tech.tablesaw.api;
 
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+
+import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import com.google.common.base.Preconditions;
+
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
@@ -33,21 +49,6 @@ import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingLongComparator;
-
-import java.nio.ByteBuffer;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
 
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
@@ -69,13 +70,9 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     private DateTimeColumnFormatter printFormatter = new DateTimeColumnFormatter();
 
-    public static boolean valueIsMissing(long value) {
-        return MISSING_VALUE == value;
-    }
-
-    @Override
-    public boolean isMissing(int rowNumber) {
-        return valueIsMissing(getLongInternal(rowNumber));
+    private DateTimeColumn(String name, LongArrayList data) {
+        super(LOCAL_DATE_TIME, name);
+        this.data = data;
     }
 
     public static DateTimeColumn create(String name) {
@@ -102,9 +99,22 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return column;
     }
 
-    private DateTimeColumn(String name, LongArrayList data) {
-        super(LOCAL_DATE_TIME, name);
-        this.data = data;
+    public static boolean valueIsMissing(long value) {
+        return MISSING_VALUE == value;
+    }
+
+    @Override
+    public boolean isMissing(int rowNumber) {
+        return valueIsMissing(getLongInternal(rowNumber));
+    }
+
+    @Override
+    public DateTimeColumn subset(final int[] rows) {
+        final DateTimeColumn c = this.emptyCopy();
+        for (final int row : rows) {
+            c.appendInternal(getLongInternal(row));
+        }
+        return c;
     }
 
     @Override
@@ -413,6 +423,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return this;
     }
 
+    @Override
+    public DateTimeColumn append(Column<LocalDateTime> column, int row) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return appendInternal(((DateTimeColumn) column).getLongInternal(row));
+    }
+
     public LocalDateTime max() {
         long max;
         if (!isEmpty()) {
@@ -438,6 +454,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return this;
     }
 
+    @Override
     public LocalDateTime min() {
         long min;
 

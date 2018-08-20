@@ -64,11 +64,6 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
     }
 
     @Override
-    default String getUnformattedString(final int row) {
-        return String.valueOf(getDouble(row));
-    }
-
-    @Override
     default Selection eval(final DoublePredicate predicate) {
         final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {

@@ -104,6 +104,15 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
     }
 
     @Override
+    public DoubleColumn subset(final int[] rows) {
+        final DoubleColumn c = this.emptyCopy();
+        for (final int row : rows) {
+            c.append(getDouble(row));
+        }
+        return c;
+    }
+
+    @Override
     public DoubleColumn unique() {
         final DoubleSet doubles = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
@@ -262,44 +271,10 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
         return this;
     }
 
-    // fillWith methods
-
     @Override
-    public DoubleColumn fillWith(final NumberIterator iterator) {
-        for (int r = 0; r < size(); r++) {
-            if (!iterator.hasNext()) {
-                break;
-            }
-            set(r, iterator.next());
-        }
-        return this;
-    }
-
-    @Override
-    public DoubleColumn fillWith(final NumberIterable iterable) {
-        NumberIterator iterator = iterable.numberIterator();
-        for (int r = 0; r < size(); r++) {
-            if (iterator == null || (!iterator.hasNext())) {
-                iterator = numberIterator();
-                if (!iterator.hasNext()) {
-                    break;
-                }
-            }
-            set(r, iterator.next());
-        }
-        return this;
-    }
-
-    @Override
-    public DoubleColumn fillWith(final DoubleSupplier supplier) {
-        for (int r = 0; r < size(); r++) {
-            try {
-                set(r, supplier.getAsDouble());
-            } catch (final Exception e) {
-                break;
-            }
-        }
-        return this;
+    public DoubleColumn append(Column<Double> column, int row) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return append(((DoubleColumn) column).getDouble(row));
     }
 
     /**
@@ -414,6 +389,55 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
         }
+    }
+
+    @Override
+    public String getUnformattedString(final int row) {
+        final double value = getDouble(row);
+        if (DoubleColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(value);
+    }
+
+    // fillWith methods
+
+    @Override
+    public DoubleColumn fillWith(final NumberIterator iterator) {
+        for (int r = 0; r < size(); r++) {
+            if (!iterator.hasNext()) {
+                break;
+            }
+            set(r, iterator.next());
+        }
+        return this;
+    }
+
+    @Override
+    public DoubleColumn fillWith(final NumberIterable iterable) {
+        NumberIterator iterator = iterable.numberIterator();
+        for (int r = 0; r < size(); r++) {
+            if (iterator == null || (!iterator.hasNext())) {
+                iterator = numberIterator();
+                if (!iterator.hasNext()) {
+                    break;
+                }
+            }
+            set(r, iterator.next());
+        }
+        return this;
+    }
+
+    @Override
+    public DoubleColumn fillWith(final DoubleSupplier supplier) {
+        for (int r = 0; r < size(); r++) {
+            try {
+                set(r, supplier.getAsDouble());
+            } catch (final Exception e) {
+                break;
+            }
+        }
+        return this;
     }
 
 }

@@ -56,6 +56,15 @@ public class FloatColumn extends NumberColumn<Float> implements NumericColumn<Fl
     }
 
     @Override
+    public FloatColumn subset(final int[] rows) {
+        final FloatColumn c = this.emptyCopy();
+        for (final int row : rows) {
+            c.append(getFloat(row));
+        }
+        return c;
+    }
+
+    @Override
     public FloatColumn unique() {
         final FloatSet values = new FloatOpenHashSet();
         for (int i = 0; i < size(); i++) {
@@ -188,6 +197,12 @@ public class FloatColumn extends NumberColumn<Float> implements NumericColumn<Fl
     }
 
     @Override
+    public FloatColumn append(Column<Float> column, int row) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return append(((FloatColumn) column).getFloat(row));
+    }
+
+    @Override
     public byte[] asBytes(int rowNumber) {
         return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putFloat(getFloat(rowNumber)).array();
     }
@@ -279,5 +294,14 @@ public class FloatColumn extends NumberColumn<Float> implements NumericColumn<Fl
             throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
         }
     }    
+
+    @Override
+    public String getUnformattedString(final int row) {
+        final float value = getFloat(row);
+        if (FloatColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(value);
+    }
 
 }

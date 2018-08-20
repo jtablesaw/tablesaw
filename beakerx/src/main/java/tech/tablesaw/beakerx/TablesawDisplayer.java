@@ -35,7 +35,7 @@ public class TablesawDisplayer {
                 new TableDisplay.Element() {
                   @Override
                   public String get(int columnIndex, int rowIndex) {
-                    return table.get(rowIndex,columnIndex);
+                    return table.getUnformatted(rowIndex,columnIndex);
                   }
                 }
         ).display();

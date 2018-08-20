@@ -75,6 +75,15 @@ public class IntColumn extends NumberColumn<Integer> implements NumericColumn<In
     }
 
     @Override
+    public IntColumn subset(final int[] rows) {
+        final IntColumn c = this.emptyCopy();
+        for (final int row : rows) {
+            c.append(getInt(row));
+        }
+        return c;
+    }
+
+    @Override
     public IntColumn unique() {
         final IntSet values = new IntOpenHashSet();
         for (int i = 0; i < size(); i++) {
@@ -207,6 +216,12 @@ public class IntColumn extends NumberColumn<Integer> implements NumericColumn<In
     }
 
     @Override
+    public IntColumn append(Column<Integer> column, int row) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return append(((IntColumn) column).getInt(row));
+    }
+
+    @Override
     public IntColumn appendMissing() {
         return append(IntColumnType.missingValueIndicator());
     }
@@ -309,6 +324,15 @@ public class IntColumn extends NumberColumn<Integer> implements NumericColumn<In
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
         }
+    }
+
+    @Override
+    public String getUnformattedString(final int row) {
+        final int value = getInt(row);
+        if (IntColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(value);
     }
 
     public int firstElement() {

@@ -86,7 +86,7 @@ public class StandardTableSliceGroup extends TableSliceGroup {
                 }
 
                 Column<?> c = getSourceTable().column(columnNames[col]);
-                String groupKey = getSourceTable().get(row, getSourceTable().columnIndex(c));
+                String groupKey = getSourceTable().getUnformatted(row, getSourceTable().columnIndex(c));
                 newStringKey = newStringKey + groupKey;
                 byteBuffer.put(c.asBytes(row));
             }

@@ -14,14 +14,7 @@
 
 package tech.tablesaw.columns;
 
-import com.google.common.base.Preconditions;
-import com.google.common.primitives.Ints;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.table.RollingColumn;
-import tech.tablesaw.util.StringUtils;
+import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,7 +24,15 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
+import com.google.common.base.Preconditions;
+import com.google.common.primitives.Ints;
+
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.table.RollingColumn;
+import tech.tablesaw.util.StringUtils;
 
 /**
  * The general interface for columns.
@@ -48,9 +49,13 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     Object[] asObjectArray();
 
     default Column<T> subset(final Selection rows) {
+	return subset(rows.toArray());
+    }
+
+    default Column<T> subset(final int[] rows) {
         final Column<T> c = this.emptyCopy();
         for (final int row : rows) {
-            c.appendCell(getString(row));
+            c.appendObj(get(row));
         }
         return c;
     }
@@ -192,6 +197,10 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     Column<T> append(T value);
 
     Column<T> append(Column<T> column);
+
+    default Column<T> append(Column<T> column, int row) {
+	return append(column.get(row));
+    }
 
     Column<T> appendObj(Object value);
 

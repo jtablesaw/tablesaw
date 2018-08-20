@@ -37,6 +37,11 @@ public class BitmapBackedSelection implements Selection {
         addRange(0, size);
     }
 
+    public BitmapBackedSelection(int[] arr) {
+        this.bitmap = new RoaringBitmap();
+        add(arr);
+    }
+
     public BitmapBackedSelection(RoaringBitmap bitmap) {
         this.bitmap = bitmap;
     }
