@@ -14,13 +14,13 @@
 
 package tech.tablesaw.table;
 
-import javax.annotation.concurrent.Immutable;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+
+import javax.annotation.concurrent.Immutable;
 
 /**
  * A static utility class for row operations
@@ -32,17 +32,31 @@ public final class Rows {
     private Rows() {}
 
     /**
-     * N.B. this method does not preserve ordering. Use the version taking int[] if row ordering matters 
+     * Copies the rows indicated by the row index values in the given selection from oldTable to newTable
      */
+    @SuppressWarnings({"rawtypes","unchecked"})
     public static void copyRowsToTable(Selection rows, Table oldTable, Table newTable) {
         copyRowsToTable(rows.toArray(), oldTable, newTable);
+/*
+        for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
+            Column oldColumn = oldTable.column(columnIndex);
+            for (int i : rows) {
+                newTable.column(columnIndex).append(oldColumn, i);
+            }
+        }
+*/
     }
 
+    /**
+     * Copies the rows indicated by the row index values in the given array from oldTable to newTable
+     */
     @SuppressWarnings({"rawtypes","unchecked"})
     public static void copyRowsToTable(int[] rows, Table oldTable, Table newTable) {
         for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
             Column oldColumn = oldTable.column(columnIndex);
-            newTable.column(columnIndex).append(oldColumn.subset(rows));
+            for (int i : rows) {
+                newTable.column(columnIndex).append(oldColumn, i);
+            }
         }
     }
 

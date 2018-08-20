@@ -14,23 +14,7 @@
 
 package tech.tablesaw.api;
 
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-
-import java.nio.ByteBuffer;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.google.common.base.Preconditions;
-
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
@@ -49,6 +33,22 @@ import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingLongComparator;
+
+import java.nio.ByteBuffer;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
 
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
@@ -199,10 +199,14 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         if (obj == null) {
             return appendMissing();
         }
-        if (!(obj instanceof LocalDateTime)) {
-            throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to DateTimeColumn");
+        if (obj instanceof LocalDateTime) {
+            return append((LocalDateTime) obj);
         }
-        return append((LocalDateTime) obj);
+        if (obj instanceof Timestamp ){
+            Timestamp timestamp = (Timestamp) obj;
+            return append(timestamp.toLocalDateTime());
+        }
+        throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to DateTimeColumn");
     }
 
     public int size() {

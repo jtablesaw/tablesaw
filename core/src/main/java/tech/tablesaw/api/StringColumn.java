@@ -505,7 +505,6 @@ public class StringColumn extends AbstractColumn<String>
         return values;
     }
 
-
     public DoubleColumn asNumberColumn() {
         DoubleColumn numberColumn = DoubleColumn.create(this.name() + ": codes", size());
         IntArrayList data = data();
@@ -536,6 +535,11 @@ public class StringColumn extends AbstractColumn<String>
             append(string);
         }
         return this;
+    }
+
+    @Override
+    public Column<String> append(Column<String> column, int row) {
+        return append(column.getUnformattedString(row));
     }
 
     /**

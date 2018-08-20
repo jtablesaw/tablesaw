@@ -14,15 +14,8 @@
 
 package tech.tablesaw;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.time.LocalDate;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
@@ -31,6 +24,12 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.io.csv.CsvReadOptions;
+
+import java.time.LocalDate;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for filtering on the T class
@@ -46,10 +45,10 @@ public class TableFilteringTest {
 
     @Test
     public void testFilter1() {
-        Table result = table.where(table.numberColumn("approval").isLessThan(70));
+        Table result = table.where(table.numberColumn("approval").isLessThan(53));
         IntColumn a = result.intColumn("approval");
         for (double v : a) {
-            assertTrue(v < 70);
+            assertTrue(v < 53);
         }
     }
 
