@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleArrays;
 import it.unimi.dsi.fastutil.doubles.DoubleComparator;
+import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleListIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
@@ -21,10 +22,9 @@ import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.NumberFillers;
-import tech.tablesaw.columns.numbers.NumberIterable;
-import tech.tablesaw.columns.numbers.NumberIterator;
+import tech.tablesaw.columns.numbers.fillers.DoubleRangeIterable;
 
-public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<Double>, NumberFillers<DoubleColumn> {
+public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<DoubleColumn> {
 
     private static final ColumnType COLUMN_TYPE = ColumnType.DOUBLE;
 
@@ -343,11 +343,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
     }
 
     @Override
-    public NumberIterator numberIterator() {
-        return new NumberIterator(data);
-    }
-
-    @Override
     public void sortAscending() {
         DoubleArrays.parallelQuickSort(data.elements());
     }
@@ -403,27 +398,27 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
     // fillWith methods
 
     @Override
-    public DoubleColumn fillWith(final NumberIterator iterator) {
+    public DoubleColumn fillWith(final DoubleIterator iterator) {
         for (int r = 0; r < size(); r++) {
             if (!iterator.hasNext()) {
                 break;
             }
-            set(r, iterator.next());
+            set(r, iterator.nextDouble());
         }
         return this;
     }
 
-    @Override
-    public DoubleColumn fillWith(final NumberIterable iterable) {
-        NumberIterator iterator = iterable.numberIterator();
+    @Override	
+    public DoubleColumn fillWith(final DoubleRangeIterable iterable) {
+	DoubleIterator iterator = iterable.iterator();
         for (int r = 0; r < size(); r++) {
             if (iterator == null || (!iterator.hasNext())) {
-                iterator = numberIterator();
+                iterator = iterable.iterator();
                 if (!iterator.hasNext()) {
                     break;
                 }
             }
-            set(r, iterator.next());
+            set(r, iterator.nextDouble());
         }
         return this;
     }
