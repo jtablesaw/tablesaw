@@ -38,11 +38,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -623,5 +626,65 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     @Override
     public int compare(LocalDate o1, LocalDate o2) {
         return o1.compareTo(o2);
+    }
+
+    @Override
+    public DateColumn setName(String name) {
+        return (DateColumn) super.setName(name);
+    }
+
+    @Override
+    public DateColumn filter(Predicate<? super LocalDate> test) {
+        return (DateColumn) super.filter(test);
+    }
+
+    @Override
+    public DateColumn sorted(Comparator<? super LocalDate> comp) {
+        return (DateColumn) super.sorted(comp);
+    }
+
+    @Override
+    public DateColumn map(Function<? super LocalDate, ? extends LocalDate> fun) {
+        return (DateColumn) super.map(fun);
+    }
+
+    @Override
+    public DateColumn min(Column<LocalDate> other) {
+        return (DateColumn) super.min(other);
+    }
+
+    @Override
+    public DateColumn max(Column<LocalDate> other) {
+        return (DateColumn) super.max(other);
+    }
+
+    @Override
+    public DateColumn set(Selection condition, Column<LocalDate> other) {
+        return (DateColumn) super.set(condition, other);
+    }
+
+    @Override
+    public DateColumn first(int numRows) {
+        return (DateColumn) super.first(numRows);
+    }
+
+    @Override
+    public DateColumn last(int numRows) {
+        return (DateColumn) super.last(numRows);
+    }
+
+    @Override
+    public DateColumn inRange(int start, int end) {
+        return (DateColumn) super.inRange(start, end);
+    }
+
+    @Override
+    public DateColumn sampleN(int n) {
+        return (DateColumn) super.sampleN(n);
+    }
+
+    @Override
+    public DateColumn sampleX(double proportion) {
+        return (DateColumn) super.sampleX(proportion);
     }
 }
