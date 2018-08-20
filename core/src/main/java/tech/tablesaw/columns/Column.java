@@ -303,7 +303,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     }
 
     /**
-     * Create a copy of this column where values matching the selection are replaced with the corresponding value
+     * Updates this column where values matching the selection are replaced with the corresponding value
      * from the given column
      */
     default Column<T> set(Selection condition, Column<T> other) {
