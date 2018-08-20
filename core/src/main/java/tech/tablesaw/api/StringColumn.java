@@ -40,11 +40,14 @@ import tech.tablesaw.selection.Selection;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static tech.tablesaw.api.ColumnType.STRING;
 
@@ -730,6 +733,71 @@ public class StringColumn extends AbstractColumn<String>
         return o1.compareTo(o2);
     }
 
+    @Override
+    public StringColumn setName(String name) {
+        return (StringColumn) super.setName(name);
+    }
+
+    @Override
+    public StringColumn filter(Predicate<? super String> test) {
+        return (StringColumn) super.filter(test);
+    }
+
+    @Override
+    public StringColumn subset(int[] rows) {
+        return (StringColumn) super.subset(rows);
+    }
+
+    @Override
+    public StringColumn sorted(Comparator<? super String> comp) {
+        return (StringColumn) super.sorted(comp);
+    }
+
+    @Override
+    public StringColumn map(Function<? super String, ? extends String> fun) {
+        return (StringColumn) super.map(fun);
+    }
+
+    @Override
+    public StringColumn min(Column<String> other) {
+        return (StringColumn) super.min(other);
+    }
+
+    @Override
+    public StringColumn max(Column<String> other) {
+        return (StringColumn) super.max(other);
+    }
+
+    @Override
+    public StringColumn set(Selection condition, Column<String> other) {
+        return (StringColumn) super.set(condition, other);
+    }
+
+    @Override
+    public StringColumn first(int numRows) {
+        return (StringColumn) super.first(numRows);
+    }
+
+    @Override
+    public StringColumn last(int numRows) {
+        return (StringColumn) super.last(numRows);
+    }
+
+    @Override
+    public StringColumn inRange(int start, int end) {
+        return (StringColumn) super.inRange(start, end);
+    }
+
+    @Override
+    public StringColumn sampleN(int n) {
+        return (StringColumn) super.sampleN(n);
+    }
+
+    @Override
+    public StringColumn sampleX(double proportion) {
+        return (StringColumn) super.sampleX(proportion);
+    }
+
     /**
      * A map that supports reversible key value pairs of int-String
      */
@@ -823,6 +891,5 @@ public class StringColumn extends AbstractColumn<String>
         Object2IntMap<String> valueToKeyMap() {
             return valueToKey;
         }
-
     }
 }
