@@ -22,16 +22,16 @@ public class QueryHelperTest {
                                         .and(t.numberColumn("approval").isLessThan(75))
                 )
         );
-        assertTrue(result.get(0, "who").startsWith("f"));
+        assertTrue(result.getString(0, "who").startsWith("f"));
     }
 
     @Test
     public void test3() {
         Table result = t.where(t.stringColumn("who").isIn("fox"));
-        assertEquals("fox", result.get(0, "who"));
+        assertEquals("fox", result.getString(0, "who"));
 
         result = t.where(t.stringColumn("who").isNotIn("fox", "zogby"));
-        assertFalse(result.get(0, "who").startsWith("f"));
+        assertFalse(result.getString(0, "who").startsWith("f"));
     }
 
     @Test
@@ -39,6 +39,6 @@ public class QueryHelperTest {
         Table result = t.where(
                 t.stringColumn("who").startsWith("f"));
 
-        assertTrue(result.get(0, "who").startsWith("f"));
+        assertTrue(result.getString(0, "who").startsWith("f"));
     }
 }

@@ -81,7 +81,7 @@ public class TableFilteringTest {
         assertEquals(10, result.rowCount());
         for (Column<?> c: result.columns()) {
             for (int r = 0; r < result.rowCount(); r++) {
-                assertEquals(table.get(r+20, c.name()), result.get(r, c.name()));
+                assertEquals(table.getString(r+20, c.name()), result.getString(r, c.name()));
             }
         }
     }
@@ -91,8 +91,8 @@ public class TableFilteringTest {
         Table result = table.rows(20, 30);
         assertEquals(2, result.rowCount());
         for (Column<?> c: result.columns()) {
-            assertEquals(table.get(20, c.name()), result.get(0, c.name()));
-            assertEquals(table.get(30, c.name()), result.get(1, c.name()));
+            assertEquals(table.getString(20, c.name()), result.getString(0, c.name()));
+            assertEquals(table.getString(30, c.name()), result.getString(1, c.name()));
         }
     }
 
@@ -113,8 +113,8 @@ public class TableFilteringTest {
         Table result = table.dropRows(20, 30);
         assertEquals(table.rowCount() - 2, result.rowCount());
         for (Column<?> c: result.columns()) {
-            assertEquals(table.get(21, c.name()), result.get(20, c.name()));
-            assertEquals(table.get(32, c.name()), result.get(30, c.name()));
+            assertEquals(table.getString(21, c.name()), result.getString(20, c.name()));
+            assertEquals(table.getString(32, c.name()), result.getString(30, c.name()));
         }
     }
 
@@ -124,7 +124,7 @@ public class TableFilteringTest {
         assertEquals(table.rowCount() - 10, result.rowCount());
         for (Column<?> c: result.columns()) {
             for (int r = 30; r < result.rowCount(); r++) {
-                assertEquals(result.get(r, c.name()), table.get(r + 10, c.name()));
+                assertEquals(result.getString(r, c.name()), table.getString(r + 10, c.name()));
             }
         }
     }
