@@ -1,12 +1,9 @@
 package tech.tablesaw.columns.numbers.fillers;
 
-import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import tech.tablesaw.columns.numbers.NumberIterable;
-import tech.tablesaw.columns.numbers.NumberIterator;
 
-public class DoubleRangeIterable implements NumberIterable {
+public class DoubleRangeIterable implements Iterable<Double> {
 
     private final double from, to, by;
     private final boolean including;
@@ -56,30 +53,6 @@ public class DoubleRangeIterable implements NumberIterable {
 
             @Override
             public double nextDouble() {
-                final double current = next;
-                next += by;
-                num++;
-                return current;
-            }
-        };
-    }
-
-    @Override
-    public NumberIterator numberIterator() {
-
-        return new NumberIterator(new DoubleArrayList()) {
-
-            double next = from;
-            int num = 0;
-
-            @Override
-            public boolean hasNext() {
-                return (count < 0 || num < count) && (Double.isNaN(to) || Math.abs(next - from) < Math.abs(to - from)
-                        || (including && next == to));
-            }
-
-            @Override
-            public double next() {
                 final double current = next;
                 next += by;
                 num++;

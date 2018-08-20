@@ -15,9 +15,8 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
-import tech.tablesaw.columns.numbers.NumberIterator;
 
-public class FloatColumn extends NumberColumn<Float> implements NumericColumn<Float> {
+public class FloatColumn extends NumberColumn<Float> {
 
     private static final FloatColumnType COLUMN_TYPE = ColumnType.FLOAT;
 
@@ -244,11 +243,6 @@ public class FloatColumn extends NumberColumn<Float> implements NumericColumn<Fl
     @Override
     public boolean isMissing(int rowNumber) {
         return isMissingValue(getFloat(rowNumber));
-    }
-
-    @Override
-    public NumberIterator numberIterator() {
-        return new NumberIterator(data);
     }
 
     @Override
