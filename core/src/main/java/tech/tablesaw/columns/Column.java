@@ -130,16 +130,6 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     T get(int row);
 
     /**
-     * Returns a double representation of the value at the given row. The nature of the returned value is column-specific.
-     * The double returned MAY be the actual value (for Number columns) but is more likely a number that maps to the column
-     * value in some way.
-     *
-     * @param row The index of the row.
-     * @return value as String
-     */
-    double getDouble(int row);
-
-    /**
      * Returns a copy of the receiver with no data. The column name and type are the same.
      *
      * @return a empty copy of {@link Column}
@@ -214,8 +204,6 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     default String title() {
         return "Column: " + name() + '\n';
     }
-
-    double[] asDoubleArray();
 
     /**
      * Returns a column containing the rows in this column beginning with start inclusive, and ending with end exclusive

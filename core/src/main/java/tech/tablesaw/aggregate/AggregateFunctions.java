@@ -385,7 +385,8 @@ public class AggregateFunctions {
     public static final NumericAggregateFunction standardDeviation = stdDev;
 
     private static double[] removeMissing(NumericColumn<?> column) {
-        return column.removeMissing().asDoubleArray();
+        NumericColumn<?> numericColumn = (NumericColumn) column.removeMissing();
+        return numericColumn.asDoubleArray();
     }
 
     // TODO(lwhite): These are two column reductions. We need a class for that

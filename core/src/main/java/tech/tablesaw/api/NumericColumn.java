@@ -1,40 +1,11 @@
 package tech.tablesaw.api;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.geometricMean;
-import static tech.tablesaw.aggregate.AggregateFunctions.kurtosis;
-import static tech.tablesaw.aggregate.AggregateFunctions.max;
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.median;
-import static tech.tablesaw.aggregate.AggregateFunctions.min;
-import static tech.tablesaw.aggregate.AggregateFunctions.populationVariance;
-import static tech.tablesaw.aggregate.AggregateFunctions.product;
-import static tech.tablesaw.aggregate.AggregateFunctions.quadraticMean;
-import static tech.tablesaw.aggregate.AggregateFunctions.quartile1;
-import static tech.tablesaw.aggregate.AggregateFunctions.quartile3;
-import static tech.tablesaw.aggregate.AggregateFunctions.range;
-import static tech.tablesaw.aggregate.AggregateFunctions.skewness;
-import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
-import static tech.tablesaw.aggregate.AggregateFunctions.sum;
-import static tech.tablesaw.aggregate.AggregateFunctions.sumOfLogs;
-import static tech.tablesaw.aggregate.AggregateFunctions.sumOfSquares;
-import static tech.tablesaw.aggregate.AggregateFunctions.variance;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isMissing;
-import static tech.tablesaw.columns.numbers.NumberPredicates.isNotMissing;
-
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.function.BiPredicate;
-import java.util.function.DoubleBinaryOperator;
-import java.util.function.DoubleFunction;
-import java.util.function.DoublePredicate;
-
+import it.unimi.dsi.fastutil.doubles.DoubleComparator;
+import it.unimi.dsi.fastutil.doubles.DoubleRBTreeSet;
 import org.apache.commons.math3.exception.NotANumberException;
 import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
-
-import it.unimi.dsi.fastutil.doubles.DoubleComparator;
-import it.unimi.dsi.fastutil.doubles.DoubleRBTreeSet;
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.columns.Column;
@@ -46,6 +17,16 @@ import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.BiPredicate;
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleFunction;
+import java.util.function.DoublePredicate;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
 public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberFilters {
 
@@ -443,4 +424,5 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
 
     NumericColumn<T> lag(final int n);
 
+    double getDouble(int index);
 }
