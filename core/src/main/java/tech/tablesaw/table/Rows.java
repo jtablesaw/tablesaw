@@ -36,8 +36,6 @@ public final class Rows {
      */
     @SuppressWarnings({"rawtypes","unchecked"})
     public static void copyRowsToTable(Selection rows, Table oldTable, Table newTable) {
-        //copyRowsToTable(rows.toArray(), oldTable, newTable);
-
         for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
             Column oldColumn = oldTable.column(columnIndex);
             for (int i : rows) {
