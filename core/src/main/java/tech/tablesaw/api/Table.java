@@ -318,19 +318,6 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
-     * Returns a string representation of the value at the given row and column indexes
-     *
-     * @param r          the row index, 0 based
-     * @param columnName the name of the column to be returned
-     *                   <p>
-     *                   // TODO: performance would be enhanced if columns could be referenced via a hashTable
-     */
-    public String get(int r, String columnName) {
-        Column<?> column = column(columnIndex(columnName));
-        return column.getString(r);
-    }
-
-    /**
      * Returns a table with the same columns as this table
      */
     public Table copy() {

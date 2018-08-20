@@ -189,10 +189,10 @@ public class TimeColumnTest {
     public void summary() {
         fillLargerColumn();
         Table t = column1.summary();
-        assertEquals("11", t.get(0, "Value"));
-        assertEquals("1", t.get(1, "Value"));
-        assertEquals("00:04:02", t.get(2, "Value"));
-        assertEquals("18:04:02", t.get(3, "Value"));
+        assertEquals("11", t.getString(0, "Value"));
+        assertEquals("1", t.getString(1, "Value"));
+        assertEquals("00:04:02", t.getString(2, "Value"));
+        assertEquals("18:04:02", t.getString(3, "Value"));
     }
 
     @Test

@@ -12,8 +12,7 @@ public class CrossTabsExample {
 
         Table table = Table.read().csv("../data/bush.csv");
         StringColumn month = table.dateColumn("date").month();
-        month.setName("month");
-        table.addColumns(month);
+        table.addColumns(month.setName("month"));
 
         // two variable counts
         Table counts = table.xTabCounts("month", "who");

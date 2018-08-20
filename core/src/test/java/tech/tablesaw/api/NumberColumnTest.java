@@ -233,7 +233,7 @@ public class NumberColumnTest {
         Selection filter = t.numberColumn("Test").isBetweenExclusive(42, 57);
         Table result = t.where(filter);
         assertEquals(1, result.rowCount());
-        assertEquals("52", result.get(0, "Test"));
+        assertEquals("52", result.getString(0, "Test"));
     }
 
     @Ignore

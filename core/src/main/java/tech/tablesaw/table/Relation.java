@@ -433,6 +433,31 @@ public abstract class Relation {
         return column.getUnformattedString(r);
     }
 
+    /**
+     * Returns a string representation of the value at the given row and column indexes
+     *
+     * @param r          the row index, 0 based
+     * @param columnName the name of the column to be returned
+     *                   <p>
+     *                   // TODO: performance would be enhanced if columns could be referenced via a hashTable
+     */
+    public String getString(int r, String columnName) {
+        return getString(r, columnIndex(columnName));
+    }
+
+    /**
+     * Returns a string representation of the value at the given row and column indexes
+     *
+     * @param r          the row index, 0 based
+     * @param columnName the name of the column to be returned
+     *                   <p>
+     *                   // TODO: performance would be enhanced if columns could be referenced via a hashTable
+     */
+    public String getString(int r, int columnIndex) {
+        Column<?> column = column(columnIndex);
+        return column.getString(r);
+    }
+
     public boolean containsColumn(Column<?> column) {
         return columns().contains(column);
     }
