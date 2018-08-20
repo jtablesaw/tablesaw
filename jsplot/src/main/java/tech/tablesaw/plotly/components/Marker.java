@@ -164,7 +164,7 @@ public class Marker extends Component {
             return this;
         }
 
-        public MarkerBuilder size(NumberColumn size) {
+        public MarkerBuilder size(NumberColumn<?> size) {
             return size(size.asDoubleArray());
         }
 

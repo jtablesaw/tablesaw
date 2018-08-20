@@ -29,7 +29,7 @@ public class BarTrace extends AbstractTrace {
         return new BarBuilder(x, y);
     }
 
-    public static BarBuilder builder(CategoricalColumn x, Column<? extends Number> y) {
+    public static BarBuilder builder(CategoricalColumn<?> x, Column<? extends Number> y) {
         return new BarBuilder(x, y);
     }
 
@@ -91,7 +91,7 @@ public class BarTrace extends AbstractTrace {
             this.y = y;
         }
 
-        BarBuilder(CategoricalColumn x, Column<? extends Number> y) {
+        BarBuilder(CategoricalColumn<?> x, Column<? extends Number> y) {
 
             this.x = TraceBuilder.columnToStringArray(x);
             this.y = y.asDoubleArray();

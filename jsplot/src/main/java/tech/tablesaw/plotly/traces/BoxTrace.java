@@ -27,7 +27,7 @@ public class BoxTrace extends AbstractTrace {
         return new BoxBuilder(x, y);
     }
 
-    public static BoxBuilder builder(CategoricalColumn x, Column<? extends Number> y) {
+    public static BoxBuilder builder(CategoricalColumn<?> x, Column<? extends Number> y) {
         return new BoxBuilder(x, y);
     }
 
@@ -73,7 +73,7 @@ public class BoxTrace extends AbstractTrace {
             this.y = y;
         }
 
-        BoxBuilder(CategoricalColumn x, Column<? extends Number> y) {
+        BoxBuilder(CategoricalColumn<?> x, Column<? extends Number> y) {
             this.x = columnToStringArray(x);
             this.y = y.asDoubleArray();
         }

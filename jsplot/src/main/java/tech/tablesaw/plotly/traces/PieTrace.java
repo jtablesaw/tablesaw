@@ -51,7 +51,7 @@ public class PieTrace extends AbstractTrace {
         return new PieBuilder(labels, values);
     }
 
-    public static PieBuilder builder(CategoricalColumn labels, Column<? extends Number> values) {
+    public static PieBuilder builder(CategoricalColumn<?> labels, Column<? extends Number> values) {
         return new PieBuilder(TraceBuilder.columnToStringArray(labels), values.asDoubleArray());
     }
 

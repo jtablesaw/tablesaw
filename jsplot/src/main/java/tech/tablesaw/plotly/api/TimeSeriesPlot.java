@@ -49,7 +49,7 @@ public class TimeSeriesPlot {
         return new Figure(layout, trace);
     }
 
-    public static Figure create(String title, String xTitle, DateColumn xCol, String yTitle, NumberColumn yCol) {
+    public static Figure create(String title, String xTitle, DateColumn xCol, String yTitle, NumberColumn<?> yCol) {
 
         Layout layout = standardLayout(title, xTitle, yTitle);
 
