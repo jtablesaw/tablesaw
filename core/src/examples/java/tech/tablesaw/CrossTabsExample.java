@@ -1,6 +1,7 @@
 package tech.tablesaw;
 
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -40,7 +41,8 @@ public class CrossTabsExample {
         // column percents
         Table columnPercents = table.xTabColumnPercents("month", "who");
         columnPercents.columnsOfType(ColumnType.DOUBLE)
-                .forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
+                .forEach(x -> ((DoubleColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
+        System.out.println(columnPercents);
 
         // row percents
         Table rowPercents = table.xTabRowPercents("month", "who");

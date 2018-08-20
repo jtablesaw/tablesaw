@@ -1,14 +1,12 @@
 package tech.tablesaw.aggregate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
-
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
+
+import static org.junit.Assert.*;
 
 public class CrossTabTest {
 
@@ -53,8 +51,8 @@ public class CrossTabTest {
         Table counts = bush.xTabCounts("month", "seventyPlus" );
         for (Row row : counts) {
             assertEquals(
-                    counts.intColumn("total").get(row.getRowNumber()),
-                    row.getInt("true") + row.getInt("false"),
+                    counts.longColumn("total").get(row.getRowNumber()),
+                    row.getLong("true") + row.getLong("false"),
                     0.01);
         }
         assertTrue(counts.numberColumn("[labels]").isMissing(counts.rowCount() -1 ));
