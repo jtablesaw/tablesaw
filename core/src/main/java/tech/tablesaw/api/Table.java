@@ -697,28 +697,26 @@ public class Table extends Relation implements Iterable<Row> {
         return temp;
     }
 
-
-
     /**
      * Returns only those records in this table that have no columns with missing values
-     * TODO(lwhite) Fix. inefficient
      */
     public Table dropRowsWithMissingValues() {
 
         Table temp = emptyCopy();
+        Selection missing = new BitmapBackedSelection();
+
         for (int row = 0; row < rowCount(); row++) {
-            boolean add = true;
             for (int col = 0; col < columnCount(); col++) {
                 Column<?> c = column(col);
                 if (c.isMissing(row)) {
-                    add = false;
+                    missing.add(row);
                     break;
                 }
             }
-            if (add) {
-                Rows.appendRowToTable(row, this, temp);
-            }
         }
+        Selection notMissing = Selection.withRange(0, rowCount());
+        notMissing.andNot(missing);
+        Rows.copyRowsToTable(notMissing, this, temp);
         return temp;
     }
 
