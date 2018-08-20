@@ -69,7 +69,7 @@ public class CsvReadPerformanceTest {
         Table details = Table.read().csv("../data/SHR76_16.csv");
         stopwatch.stop();
         //System.out.println(details.structure().printAll());
-        System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
+        System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms with type detection.");
         System.out.println(details.shape());
 
         // TODO (white) printColumnTypes is broken or very slow
@@ -82,7 +82,7 @@ public class CsvReadPerformanceTest {
                         .columnTypes(types).build());
         stopwatch.stop();
         System.out.println(details.shape());
-        System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms with type detection.");
+        System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms without type detection.");
 
     }
 }
