@@ -41,11 +41,14 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
@@ -656,5 +659,65 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     @Override
     public int compare(LocalDateTime o1, LocalDateTime o2) {
         return o1.compareTo(o2);
+    }
+
+    @Override
+    public DateTimeColumn setName(String name) {
+        return (DateTimeColumn) super.setName(name);
+    }
+
+    @Override
+    public DateTimeColumn filter(Predicate<? super LocalDateTime> test) {
+        return (DateTimeColumn) super.filter(test);
+    }
+
+    @Override
+    public DateTimeColumn sorted(Comparator<? super LocalDateTime> comp) {
+        return (DateTimeColumn) super.sorted(comp);
+    }
+
+    @Override
+    public DateTimeColumn map(Function<? super LocalDateTime, ? extends LocalDateTime> fun) {
+        return (DateTimeColumn) super.map(fun);
+    }
+
+    @Override
+    public DateTimeColumn min(Column<LocalDateTime> other) {
+        return (DateTimeColumn) super.min(other);
+    }
+
+    @Override
+    public DateTimeColumn max(Column<LocalDateTime> other) {
+        return (DateTimeColumn) super.max(other);
+    }
+
+    @Override
+    public DateTimeColumn set(Selection condition, Column<LocalDateTime> other) {
+        return (DateTimeColumn) super.set(condition, other);
+    }
+
+    @Override
+    public DateTimeColumn first(int numRows) {
+        return (DateTimeColumn) super.first(numRows);
+    }
+
+    @Override
+    public DateTimeColumn last(int numRows) {
+        return (DateTimeColumn) super.last(numRows);
+    }
+
+    @Override
+    public DateTimeColumn inRange(int start, int end) {
+        return (DateTimeColumn) super.inRange(start, end);
+    }
+
+    @Override
+    public DateTimeColumn sampleN(int n) {
+        return (DateTimeColumn) super.sampleN(n);
+    }
+
+    @Override
+    public DateTimeColumn sampleX(double proportion) {
+        return (DateTimeColumn) super.sampleX(proportion);
     }
 }
