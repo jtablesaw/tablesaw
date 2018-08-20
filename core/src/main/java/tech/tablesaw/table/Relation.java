@@ -14,11 +14,6 @@
 
 package tech.tablesaw.table;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.CategoricalColumn;
@@ -30,6 +25,7 @@ import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
@@ -37,6 +33,11 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.conversion.TableConverter;
 import tech.tablesaw.io.string.DataFramePrinter;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A tabular data structure like a table in a relational database, but not formally implementing the relational algebra
@@ -316,9 +317,45 @@ public abstract class Relation {
         return columns().stream().filter(e->e.type() == ColumnType.STRING).toArray(StringColumn[]::new);
     }
 
-    public DoubleColumn[] numberColumns() {
-        return columns().stream().filter(e->e instanceof DoubleColumn).toArray(DoubleColumn[]::new);
+    public NumericColumn[] numberColumns() {
+        return columns().stream().filter(e->e instanceof NumericColumn).toArray(NumericColumn[]::new);
     }
+
+    /**
+     * Returns all the NumericColumns in the relation
+     */
+    public List<NumericColumn<?>> numericColumns() {
+        List<NumericColumn<?>> cols = new ArrayList<>();
+        for (NumericColumn<?> c : numberColumns()) {
+            cols.add(c);
+        }
+        return cols;
+    }
+
+    /**
+     * Returns all the NumericColumns in the relation
+     */
+    public List<NumericColumn<?>> numericColumns(int... columnIndices) {
+        List<NumericColumn<?>> cols = new ArrayList<>();
+        for (int i : columnIndices) {
+            cols.add(numberColumn(i));
+        }
+
+        return cols;
+    }
+
+    /**
+     * Returns all the NumericColumns in the relation
+     */
+    public List<NumericColumn<?>> numericColumns(String ... columnNames) {
+        List<NumericColumn<?>> cols = new ArrayList<>();
+        for (String name : columnNames) {
+            cols.add(numberColumn(name));
+        }
+
+        return cols;
+    }
+
 
     public BooleanColumn[] booleanColumns() {
         return columns().stream().filter(e->e.type() == ColumnType.BOOLEAN).toArray(BooleanColumn[]::new);
@@ -449,7 +486,7 @@ public abstract class Relation {
      * Returns a string representation of the value at the given row and column indexes
      *
      * @param r          the row index, 0 based
-     * @param columnName the name of the column to be returned
+     * @param columnIndex the index of the column to be returned
      *                   <p>
      *                   // TODO: performance would be enhanced if columns could be referenced via a hashTable
      */
