@@ -547,7 +547,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
 
     @Override
     public TimeColumn where(Selection selection) {
-        return (TimeColumn) subset(selection);
+        return subset(selection.toArray());
     }
 
     // fillWith methods

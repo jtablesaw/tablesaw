@@ -39,7 +39,7 @@ public class RollingColumn {
         for (int origColIndex = 0; origColIndex < column.size() - window + 1; origColIndex++) {
             Selection selection = new BitmapBackedSelection();
             selection.addRange(origColIndex, origColIndex + window);
-            INCOL subsetCol = (INCOL) column.subset(selection);
+            INCOL subsetCol = (INCOL) column.subset(selection.toArray());
             OUT answer = function.summarize(subsetCol);
             if (answer instanceof Number) {
                 Number number = (Number) answer;

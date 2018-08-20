@@ -1,14 +1,14 @@
 package tech.tablesaw.api;
 
-import java.text.NumberFormat;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.DoublePredicate;
-
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.DoublePredicate;
 
 public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> implements NumericColumn<T> {
 
@@ -70,6 +70,11 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
             return "";
         }
         return String.valueOf(printFormatter.format(value));
+    }
+
+    @Override
+    public NumberColumn<T> inRange(int start, int end) {
+        return (NumberColumn<T>)super.inRange(start, end);
     }
 
     @Override

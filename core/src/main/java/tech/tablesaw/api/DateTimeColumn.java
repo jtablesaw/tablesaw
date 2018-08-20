@@ -136,7 +136,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     public DateTimeColumn where(Selection selection) {
-        return (DateTimeColumn) subset(selection);
+        return subset(selection.toArray());
     }
 
     public void setPrintFormatter(DateTimeFormatter dateTimeFormatter, String missingValueString) {

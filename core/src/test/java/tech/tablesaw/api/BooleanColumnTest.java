@@ -51,6 +51,13 @@ public class BooleanColumnTest {
     }
 
     @Test
+    public void inRange() {
+        assertFalse(column.all());
+        BooleanColumn filtered = column.inRange(0, 2);
+        assertEquals(2, filtered.size());
+    }
+
+    @Test
     public void testNone() {
         assertFalse(column.none());
         BooleanColumn filtered = column.where(column.isFalse());

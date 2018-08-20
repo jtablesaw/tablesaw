@@ -515,7 +515,7 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public StringColumn where(Selection selection) {
-        return (StringColumn) subset(selection);
+        return subset(selection.toArray());
     }
 
     @Override
