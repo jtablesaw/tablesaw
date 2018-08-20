@@ -20,7 +20,6 @@ import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -52,30 +51,30 @@ public final class CrossTab {
         int colIndex1 = table.columnIndex(column1.name());
         int colIndex2 = table.columnIndex(column2.name());
 
-        com.google.common.collect.Table<String, String, Long> gTable = TreeBasedTable.create();
+        com.google.common.collect.Table<String, String, Integer> gTable = TreeBasedTable.create();
         String a;
         String b;
 
         for (int row = 0; row < table.rowCount(); row++) {
             a = temp.column(colIndex1).getString(row);
             b = temp.column(colIndex2).getString(row);
-            Long cellValue = gTable.get(a, b);
-            Long value;
+            Integer cellValue = gTable.get(a, b);
+            Integer value;
             if (cellValue != null) {
                 value = cellValue + 1;
             } else {
-                value = 1L;
+                value = 1;
             }
             gTable.put(a, b, value);
         }
 
         for (String colName : gTable.columnKeySet()) {
-            t.addColumns(LongColumn.create(colName));
+            t.addColumns(IntColumn.create(colName));
         }
 
-        t.addColumns(LongColumn.create("total"));
+        t.addColumns(IntColumn.create("total"));
 
-        long[] columnTotals = new long[t.columnCount()];
+        int[] columnTotals = new int[t.columnCount()];
 
         for (String rowKey : gTable.rowKeySet()) {
             t.column(0).appendCell(rowKey);
@@ -83,30 +82,30 @@ public final class CrossTab {
             int rowSum = 0;
 
             for (String colKey : gTable.columnKeySet()) {
-                Long cellValue = gTable.get(rowKey, colKey);
+                Integer cellValue = gTable.get(rowKey, colKey);
                 if (cellValue != null) {
                     int colIdx = t.columnIndex(colKey);
-                    t.longColumn(colIdx).append(cellValue);
+                    t.intColumn(colIdx).append(cellValue);
                     rowSum += cellValue;
                     columnTotals[colIdx] = columnTotals[colIdx] + cellValue;
 
                 } else {
-                    t.longColumn(colKey).append(0);
+                    t.intColumn(colKey).append(0);
                 }
             }
-            t.longColumn(t.columnCount() - 1).append(rowSum);
+            t.intColumn(t.columnCount() - 1).append(rowSum);
         }
         if (t.column(0).type().equals(ColumnType.STRING)) {
             t.column(0).appendCell("Total");
         } else {
             t.column(0).appendCell("");
         }
-        long grandTotal = 0;
+        int grandTotal = 0;
         for (int i = 1; i < t.columnCount() - 1; i++) {
-            t.longColumn(i).append(columnTotals[i]);
+            t.intColumn(i).append(columnTotals[i]);
             grandTotal = grandTotal + columnTotals[i];
         }
-        t.longColumn(t.columnCount() - 1).append(grandTotal);
+        t.intColumn(t.columnCount() - 1).append(grandTotal);
         return t;
     }
 
