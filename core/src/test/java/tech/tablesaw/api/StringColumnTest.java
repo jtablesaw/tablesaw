@@ -195,7 +195,7 @@ TODO: fix
         stringColumn.addAll(TestDataUtil.usStates());
 
         Selection selection = stringColumn.isNotEqualTo("Alabama");
-        StringColumn result = (StringColumn) stringColumn.subset(selection);
+        StringColumn result = stringColumn.where(selection);
         assertEquals(result.size(), stringColumn.size() - 1);
         assertFalse(result.contains("Alabama"));
         assertEquals(stringColumn.size(), 51);
@@ -213,7 +213,7 @@ TODO: fix
         assertTrue(other.contains("VALUE 3"));
         assertTrue(other.contains("Value 4"));
         assertEquals(4, other.size());
-        StringColumn result = (StringColumn) column.subset(column.eval(isEqualToIgnoringCase, other));
+        StringColumn result = column.where(column.eval(isEqualToIgnoringCase, other));
         assertEquals(3, result.size());
     }
 
@@ -223,7 +223,7 @@ TODO: fix
         stringColumn.addAll(TestDataUtil.usStates());
         stringColumn.append("Alabama");  // so we have two entries
         Selection selection = stringColumn.isEqualTo("Alabama");
-        StringColumn result = (StringColumn) stringColumn.subset(selection);
+        StringColumn result = stringColumn.where(selection);
 
         assertEquals(2, result.size());
         assertTrue(result.contains("Alabama"));
@@ -241,7 +241,7 @@ TODO: fix
 
         Selection selection2 = stringColumn.isNotEqualTo("Yugoslavia");
         assertEquals(selection2.size(), 51);
-        StringColumn result2 = (StringColumn) stringColumn.subset(selection2);
+        StringColumn result2 = stringColumn.where(selection2);
         assertEquals(result2.size(), stringColumn.size());
     }
 

@@ -1,12 +1,6 @@
 package tech.tablesaw.api;
 
-import java.nio.ByteBuffer;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.util.Iterator;
-
 import com.google.common.base.Preconditions;
-
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
 import it.unimi.dsi.fastutil.longs.LongComparator;
@@ -18,6 +12,15 @@ import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.selection.Selection;
+
+import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<Long> {
 
@@ -30,7 +33,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
 
     private final LongArrayList data;
 
-    protected LongColumn(final String name, LongArrayList data) {
+    private LongColumn(final String name, LongArrayList data) {
         super(COLUMN_TYPE, name, data);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
@@ -363,4 +366,83 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
         return (Long) COLUMN_TYPE.getMissingValueIndicator();
     }
 
+    @Override
+    public LongColumn inRange(int start, int end) {
+        return (LongColumn) super.inRange(start, end);
+    }
+
+    @Override
+    public LongColumn where(Selection selection) {
+        return (LongColumn) super.where(selection);
+    }
+
+    @Override
+    public LongColumn lead(int n) {
+        return (LongColumn) super.lead(n);
+    }
+
+    @Override
+    public LongColumn setName(String name) {
+        return (LongColumn) super.setName(name);
+    }
+
+    @Override
+    public LongColumn filter(Predicate<? super Long> test) {
+        return (LongColumn) super.filter(test);
+    }
+
+    @Override
+    public LongColumn sorted(Comparator<? super Long> comp) {
+        return (LongColumn) super.sorted(comp);
+    }
+
+    @Override
+    public LongColumn map(Function<? super Long, ? extends Long> fun) {
+        return (LongColumn) super.map(fun);
+    }
+
+    @Override
+    public LongColumn min(Column<Long> other) {
+        return (LongColumn) super.min(other);
+    }
+
+    @Override
+    public LongColumn max(Column<Long> other) {
+        return (LongColumn) super.max(other);
+    }
+
+    @Override
+    public LongColumn set(Selection condition, Column<Long> other) {
+        return (LongColumn) super.set(condition, other);
+    }
+
+    @Override
+    public Table countByCategory() {
+        return null;
+    }
+
+    @Override
+    public LongColumn set(Selection rowSelection, Long newValue) {
+        return (LongColumn) super.set(rowSelection, newValue);
+    }
+
+    @Override
+    public LongColumn first(int numRows) {
+        return (LongColumn) super.first(numRows);
+    }
+
+    @Override
+    public LongColumn last(int numRows) {
+        return (LongColumn) super.last(numRows);
+    }
+
+    @Override
+    public LongColumn sampleN(int n) {
+        return (LongColumn) super.sampleN(n);
+    }
+
+    @Override
+    public LongColumn sampleX(double proportion) {
+        return (LongColumn) super.sampleX(proportion);
+    }
 }

@@ -1,10 +1,6 @@
 package tech.tablesaw.api;
 
-import java.nio.ByteBuffer;
-import java.util.Iterator;
-
 import com.google.common.base.Preconditions;
-
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
@@ -16,6 +12,13 @@ import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.selection.Selection;
+
+import java.nio.ByteBuffer;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class IntColumn extends NumberColumn<Integer> implements CategoricalColumn<Integer> {
 
@@ -336,4 +339,78 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
         return (Integer) COLUMN_TYPE.getMissingValueIndicator();
     }
 
+    @Override
+    public IntColumn inRange(int start, int end) {
+        return (IntColumn) super.inRange(start, end);
+    }
+
+    @Override
+    public IntColumn where(Selection selection) {
+        return (IntColumn) super.where(selection);
+    }
+
+    @Override
+    public IntColumn lead(int n) {
+        return (IntColumn) super.lead(n);
+    }
+
+    @Override
+    public IntColumn setName(String name) {
+        return (IntColumn) super.setName(name);
+    }
+
+    @Override
+    public IntColumn filter(Predicate<? super Integer> test) {
+        return (IntColumn) super.filter(test);
+    }
+
+    @Override
+    public IntColumn sorted(Comparator<? super Integer> comp) {
+        return (IntColumn) super.sorted(comp);
+    }
+
+    @Override
+    public IntColumn map(Function<? super Integer, ? extends Integer> fun) {
+        return (IntColumn) super.map(fun);
+    }
+
+    @Override
+    public IntColumn min(Column<Integer> other) {
+        return (IntColumn) super.min(other);
+    }
+
+    @Override
+    public IntColumn max(Column<Integer> other) {
+        return (IntColumn) super.max(other);
+    }
+
+    @Override
+    public IntColumn set(Selection condition, Column<Integer> other) {
+        return (IntColumn) super.set(condition, other);
+    }
+
+    @Override
+    public IntColumn set(Selection rowSelection, Integer newValue) {
+        return (IntColumn) super.set(rowSelection, newValue);
+    }
+
+    @Override
+    public IntColumn first(int numRows) {
+        return (IntColumn) super.first(numRows);
+    }
+
+    @Override
+    public IntColumn last(int numRows) {
+        return (IntColumn) super.last(numRows);
+    }
+
+    @Override
+    public IntColumn sampleN(int n) {
+        return (IntColumn) super.sampleN(n);
+    }
+
+    @Override
+    public IntColumn sampleX(double proportion) {
+        return (IntColumn) super.sampleX(proportion);
+    }
 }

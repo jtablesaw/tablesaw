@@ -14,9 +14,6 @@
 
 package tech.tablesaw.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.aggregate.NumericAggregateFunction;
@@ -25,6 +22,9 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A TableSlice is a facade around a Relation that acts as a filter.
@@ -49,12 +49,12 @@ public class TableSlice extends Relation implements IntIterable {
 
     @Override
     public Column<?> column(int columnIndex) {
-        return table.column(columnIndex).subset(selection);
+        return table.column(columnIndex).where(selection);
     }
 
     @Override
     public Column<?> column(String columnName) {
-        return table.column(columnName).subset(selection);
+        return table.column(columnName).where(selection);
     }
 
     /**

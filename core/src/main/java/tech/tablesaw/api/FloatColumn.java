@@ -1,10 +1,6 @@
 package tech.tablesaw.api;
 
-import java.nio.ByteBuffer;
-import java.util.Iterator;
-
 import com.google.common.base.Preconditions;
-
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrays;
 import it.unimi.dsi.fastutil.floats.FloatComparator;
@@ -15,6 +11,13 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
+import tech.tablesaw.selection.Selection;
+
+import java.nio.ByteBuffer;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class FloatColumn extends NumberColumn<Float> {
 
@@ -296,6 +299,81 @@ public class FloatColumn extends NumberColumn<Float> {
             return "";
         }
         return String.valueOf(value);
+    }
+
+    @Override
+    public FloatColumn inRange(int start, int end) {
+        return (FloatColumn) super.inRange(start, end);
+    }
+
+    @Override
+    public FloatColumn where(Selection selection) {
+        return (FloatColumn) super.where(selection);
+    }
+
+    @Override
+    public FloatColumn lead(int n) {
+        return (FloatColumn) super.lead(n);
+    }
+
+    @Override
+    public FloatColumn setName(String name) {
+        return (FloatColumn) super.setName(name);
+    }
+
+    @Override
+    public FloatColumn filter(Predicate<? super Float> test) {
+        return (FloatColumn) super.filter(test);
+    }
+
+    @Override
+    public FloatColumn sorted(Comparator<? super Float> comp) {
+        return (FloatColumn) super.sorted(comp);
+    }
+
+    @Override
+    public FloatColumn map(Function<? super Float, ? extends Float> fun) {
+        return (FloatColumn) super.map(fun);
+    }
+
+    @Override
+    public FloatColumn min(Column<Float> other) {
+        return (FloatColumn) super.min(other);
+    }
+
+    @Override
+    public FloatColumn max(Column<Float> other) {
+        return (FloatColumn) super.max(other);
+    }
+
+    @Override
+    public FloatColumn set(Selection condition, Column<Float> other) {
+        return (FloatColumn) super.set(condition, other);
+    }
+
+    @Override
+    public FloatColumn set(Selection rowSelection, Float newValue) {
+        return (FloatColumn) super.set(rowSelection, newValue);
+    }
+
+    @Override
+    public FloatColumn first(int numRows) {
+        return (FloatColumn) super.first(numRows);
+    }
+
+    @Override
+    public FloatColumn last(int numRows) {
+        return (FloatColumn) super.last(numRows);
+    }
+
+    @Override
+    public FloatColumn sampleN(int n) {
+        return (FloatColumn) super.sampleN(n);
+    }
+
+    @Override
+    public FloatColumn sampleX(double proportion) {
+        return (FloatColumn) super.sampleX(proportion);
     }
 
 }
