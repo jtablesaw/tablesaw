@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoublePredicate;
-import java.util.function.DoubleSupplier;
 import java.util.function.ToDoubleFunction;
 
 import com.google.common.base.Preconditions;
@@ -20,11 +19,8 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
-import tech.tablesaw.columns.numbers.NumberFillers;
-import tech.tablesaw.columns.numbers.NumberIterable;
-import tech.tablesaw.columns.numbers.NumberIterator;
 
-public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<Double>, NumberFillers<DoubleColumn> {
+public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<Double> {
 
     private static final ColumnType COLUMN_TYPE = ColumnType.DOUBLE;
 
@@ -343,11 +339,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
     }
 
     @Override
-    public NumberIterator numberIterator() {
-        return new NumberIterator(data);
-    }
-
-    @Override
     public void sortAscending() {
         DoubleArrays.parallelQuickSort(data.elements());
     }
@@ -398,46 +389,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumericColumn<
             return "";
         }
         return String.valueOf(value);
-    }
-
-    // fillWith methods
-
-    @Override
-    public DoubleColumn fillWith(final NumberIterator iterator) {
-        for (int r = 0; r < size(); r++) {
-            if (!iterator.hasNext()) {
-                break;
-            }
-            set(r, iterator.next());
-        }
-        return this;
-    }
-
-    @Override
-    public DoubleColumn fillWith(final NumberIterable iterable) {
-        NumberIterator iterator = iterable.numberIterator();
-        for (int r = 0; r < size(); r++) {
-            if (iterator == null || (!iterator.hasNext())) {
-                iterator = numberIterator();
-                if (!iterator.hasNext()) {
-                    break;
-                }
-            }
-            set(r, iterator.next());
-        }
-        return this;
-    }
-
-    @Override
-    public DoubleColumn fillWith(final DoubleSupplier supplier) {
-        for (int r = 0; r < size(); r++) {
-            try {
-                set(r, supplier.getAsDouble());
-            } catch (final Exception e) {
-                break;
-            }
-        }
-        return this;
     }
 
 }
