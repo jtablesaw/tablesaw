@@ -38,11 +38,14 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
@@ -620,5 +623,60 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     @Override
     public int compare(LocalTime o1, LocalTime o2) {
         return o1.compareTo(o2);
+    }
+
+    @Override
+    public TimeColumn filter(Predicate<? super LocalTime> test) {
+        return (TimeColumn) super.filter(test);
+    }
+
+    @Override
+    public TimeColumn sorted(Comparator<? super LocalTime> comp) {
+        return (TimeColumn) super.sorted(comp);
+    }
+
+    @Override
+    public TimeColumn map(Function<? super LocalTime, ? extends LocalTime> fun) {
+        return (TimeColumn) super.map(fun);
+    }
+
+    @Override
+    public TimeColumn min(Column<LocalTime> other) {
+        return (TimeColumn) super.min(other);
+    }
+
+    @Override
+    public TimeColumn max(Column<LocalTime> other) {
+        return (TimeColumn) super.max(other);
+    }
+
+    @Override
+    public TimeColumn set(Selection condition, Column<LocalTime> other) {
+        return (TimeColumn) super.set(condition, other);
+    }
+
+    @Override
+    public TimeColumn first(int numRows) {
+        return (TimeColumn) super.first(numRows);
+    }
+
+    @Override
+    public TimeColumn last(int numRows) {
+        return (TimeColumn) super.last(numRows);
+    }
+
+    @Override
+    public TimeColumn inRange(int start, int end) {
+        return (TimeColumn) super.inRange(start, end);
+    }
+
+    @Override
+    public TimeColumn sampleN(int n) {
+        return (TimeColumn) super.sampleN(n);
+    }
+
+    @Override
+    public TimeColumn sampleX(double proportion) {
+        return (TimeColumn) super.sampleX(proportion);
     }
 }
