@@ -30,7 +30,7 @@ public class FloatColumn extends NumberColumn<Float> {
 
     private final FloatArrayList data;    
 
-    protected FloatColumn(final String name, FloatArrayList data) {
+    private FloatColumn(final String name, FloatArrayList data) {
         super(COLUMN_TYPE, name, data);
         this.data = data;
     }
