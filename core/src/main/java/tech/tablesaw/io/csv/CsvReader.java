@@ -49,8 +49,12 @@ import static tech.tablesaw.api.ColumnType.*;
 @Immutable
 public class CsvReader {
 
+    // Consider using TextColumn instead of StringColumn for string data after this many rows
+    private static final int STRING_COLUMN_ROW_COUNT_CUTOFF = 25_000;
+
+    // Use a TextColumn if at least this proportion of values are unique
     private static final double STRING_COLUMN_CUTOFF = 0.70;
-    private static final int STRING_COLUMN_ROW_COUNT_CUTOFF = 10_000;
+
     /**
      * Types to choose from. When more than one would work, we pick the first of the options. The order these appear in
      * is critical. The broadest must go last, which is why String is at the end of the list. Any String read from
