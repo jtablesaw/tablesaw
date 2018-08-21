@@ -1,6 +1,9 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
 import it.unimi.dsi.fastutil.longs.LongComparator;
@@ -444,5 +447,35 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     @Override
     public LongColumn sampleX(double proportion) {
         return (LongColumn) super.sampleX(proportion);
+    }
+
+    @Override
+    public IntColumn asIntColumn() {
+        IntArrayList values = new IntArrayList();
+        for (long f : data) {
+            values.add((int) f);
+        }
+        values.trim();
+        return IntColumn.create(this.name(), values.elements());
+    }
+
+    @Override
+    public FloatColumn asFloatColumn() {
+        FloatArrayList values = new FloatArrayList();
+        for (long d : data) {
+            values.add(d);
+        }
+        values.trim();
+        return FloatColumn.create(this.name(), values.elements());
+    }
+
+    @Override
+    public DoubleColumn asDoubleColumn() {
+        DoubleArrayList values = new DoubleArrayList();
+        for (long d : data) {
+            values.add(d);
+        }
+        values.trim();
+        return DoubleColumn.create(this.name(), values.elements());
     }
 }

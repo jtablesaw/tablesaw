@@ -1,12 +1,15 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrays;
 import it.unimi.dsi.fastutil.floats.FloatComparator;
 import it.unimi.dsi.fastutil.floats.FloatListIterator;
 import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -374,6 +377,36 @@ public class FloatColumn extends NumberColumn<Float> {
     @Override
     public FloatColumn sampleX(double proportion) {
         return (FloatColumn) super.sampleX(proportion);
+    }
+
+    @Override
+    public LongColumn asLongColumn() {
+        LongArrayList values = new LongArrayList();
+        for (float f : data) {
+            values.add((long) f);
+        }
+        values.trim();
+        return LongColumn.create(this.name(), values.elements());
+    }
+
+    @Override
+    public IntColumn asIntColumn() {
+        IntArrayList values = new IntArrayList();
+        for (float d : data) {
+            values.add((int) d);
+        }
+        values.trim();
+        return IntColumn.create(this.name(), values.elements());
+    }
+
+    @Override
+    public DoubleColumn asDoubleColumn() {
+        DoubleArrayList values = new DoubleArrayList();
+        for (float d : data) {
+            values.add(d);
+        }
+        values.trim();
+        return DoubleColumn.create(this.name(), values.elements());
     }
 
 }

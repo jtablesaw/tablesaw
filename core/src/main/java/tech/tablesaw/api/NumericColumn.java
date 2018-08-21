@@ -424,4 +424,20 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
     NumericColumn<T> lag(final int n);
 
     double getDouble(int index);
+
+    default LongColumn asLongColumn() {
+        return (LongColumn) this.copy();
+    }
+
+    default IntColumn asIntColumn() {
+        return (IntColumn) this.copy();
+    }
+
+    default FloatColumn asFloatColumn() {
+        return (FloatColumn) this.copy();
+    }
+
+    default DoubleColumn asDoubleColumn() {
+        return (DoubleColumn) this.copy();
+    }
 }

@@ -8,6 +8,9 @@ import it.unimi.dsi.fastutil.doubles.DoubleIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleListIterator;
 import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
 import it.unimi.dsi.fastutil.doubles.DoubleSet;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -512,5 +515,35 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     @Override
     public DoubleColumn sampleX(double proportion) {
         return (DoubleColumn) super.sampleX(proportion);
+    }
+
+    @Override
+    public LongColumn asLongColumn() {
+        LongArrayList values = new LongArrayList();
+        for (double d : data) {
+            values.add((long) d);
+        }
+        values.trim();
+        return LongColumn.create(this.name(), values.elements());
+    }
+
+    @Override
+    public IntColumn asIntColumn() {
+        IntArrayList values = new IntArrayList();
+        for (double d : data) {
+            values.add((int) d);
+        }
+        values.trim();
+        return IntColumn.create(this.name(), values.elements());
+    }
+
+    @Override
+    public FloatColumn asFloatColumn() {
+        FloatArrayList values = new FloatArrayList();
+        for (double d : data) {
+            values.add((float) d);
+        }
+        values.trim();
+        return FloatColumn.create(this.name(), values.elements());
     }
 }
