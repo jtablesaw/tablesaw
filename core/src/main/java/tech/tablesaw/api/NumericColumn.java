@@ -468,4 +468,8 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
     default DoubleColumn asDoubleColumn() {
         return (DoubleColumn) this.copy();
     }
+
+    default ShortColumn asShortColumn() {
+        return (ShortColumn) this.copy();
+    }
 }

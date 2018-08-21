@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -558,6 +559,31 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         }
         values.trim();
         return IntColumn.create(this.name(), values.elements());
+    }
+
+    /**
+     * Returns a new ShortColumn containing a value for each value in this column, truncating if necessary.
+     *
+     * A narrowing primitive conversion such as this one may lose information about the overall magnitude of a
+     * numeric value and may also lose precision and range. Specifically, if the value is too small (a negative value
+     * of large magnitude or negative infinity), the result is the smallest representable value of type int.
+     *
+     * Similarly, if the value is too large (a positive value of large magnitude or positive infinity), the result is the
+     * largest representable value of type short.
+     *
+     * Despite the fact that overflow, underflow, or other loss of information may occur, a narrowing primitive
+     * conversion never results in a run-time exception.
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
+    @Override
+    public ShortColumn asShortColumn() {
+        ShortArrayList values = new ShortArrayList();
+        for (double d : data) {
+            values.add((short) d);
+        }
+        values.trim();
+        return ShortColumn.create(this.name(), values.elements());
     }
 
     /**

@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.ints.IntListIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -479,5 +480,31 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
         }
         values.trim();
         return DoubleColumn.create(this.name(), values.elements());
+    }
+
+    /**
+     * Returns a new ShortColumn containing a value for each value in this column
+     *
+     * A narrowing conversion of a signed integer to an integral type T simply discards all but the n lowest order bits,
+     * where n is the number of bits used to represent type T. In addition to a possible loss of information about
+     * the magnitude of the numeric value, this may cause the sign of the resulting value to differ from the sign of
+     * the input value.
+     *
+     * In other words, if the element being converted is larger (or smaller) than Short.MAX_VALUE
+     * (or Short.MIN_VALUE) you will not get a conventionally good conversion.
+     *
+     * Despite the fact that overflow, underflow, or other loss of information may occur, a narrowing primitive
+     * conversion never results in a run-time exception.
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
+    @Override
+    public ShortColumn asShortColumn() {
+        ShortArrayList values = new ShortArrayList();
+        for (int f : data) {
+            values.add((short) f);
+        }
+        values.trim();
+        return ShortColumn.create(this.name(), values.elements());
     }
 }
