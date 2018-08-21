@@ -14,7 +14,6 @@
 
 package tech.tablesaw.columns.strings;
 
-import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -27,7 +26,7 @@ import static tech.tablesaw.columns.strings.StringPredicates.*;
 
 public interface StringFilters extends Column<String> {
 
-    default Selection eval(BiPredicate<String, String> predicate, StringColumn otherColumn) {
+    default Selection eval(BiPredicate<String, String> predicate, Column<String> otherColumn) {
         Selection selection = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
             if (predicate.test(get(idx), otherColumn.get(idx))) {
@@ -136,19 +135,19 @@ public interface StringFilters extends Column<String> {
     }
 
     // Column Methods
-    default Selection isEqualTo(StringColumn other) {
+    default Selection isEqualTo(Column<String> other) {
         return eval(isEqualTo, other);
     }
 
-    default Selection isNotEqualTo(StringColumn other) {
+    default Selection isNotEqualTo(Column<String> other) {
         return eval(isNotEqualTo, other);
     }
 
-    default Selection equalsIgnoreCase(StringColumn other) {
+    default Selection equalsIgnoreCase(Column<String> other) {
         return eval(isEqualToIgnoringCase, other);
     }
 
-    default Selection startsWith(StringColumn other) {
+    default Selection startsWith(Column<String> other) {
         return eval(startsWith, other);
     }
 

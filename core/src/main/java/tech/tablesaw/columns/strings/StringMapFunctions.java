@@ -222,11 +222,11 @@ public interface StringMapFunctions extends Column<String> {
      * @param columns the column to append
      * @return the new column
      */
-    default StringColumn join(String separator, StringColumn ... columns) {
+    default StringColumn join(String separator, Column<String> ... columns) {
         StringColumn newColumn = StringColumn.create(name() + "[column appended]", this.size());
         for (int r = 0; r < size(); r++) {
             String result = getString(r);
-            for (StringColumn stringColumn : columns) {
+            for (Column<String> stringColumn : columns) {
                 result = result + separator + stringColumn.get(r);
             }
             newColumn.append(result);
