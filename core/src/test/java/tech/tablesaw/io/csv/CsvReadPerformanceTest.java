@@ -20,44 +20,43 @@ import tech.tablesaw.api.Table;
 
 import java.util.concurrent.TimeUnit;
 
-import static tech.tablesaw.api.ColumnType.INTEGER;
-import static tech.tablesaw.api.ColumnType.STRING;
+import static tech.tablesaw.api.ColumnType.*;
 
 public class CsvReadPerformanceTest {
 
     private static final ColumnType[] types = {
+            TEXT,
+            TEXT,
+            TEXT,
+            TEXT,
+            TEXT,
+            TEXT,
+            STRING,
+            STRING,
+            SHORT,
+            TEXT,
+            TEXT,
+            SHORT,
+            STRING,
+            STRING,
+            TEXT,
+            SHORT,
             STRING,
             STRING,
             STRING,
+            SHORT,
             STRING,
             STRING,
             STRING,
-            STRING,
-            STRING,
+            TEXT,
+            TEXT,
+            TEXT,
+            TEXT,
+            SHORT,
+            SHORT,
             INTEGER,
-            STRING,
-            STRING,
-            INTEGER,
-            STRING,
-            STRING,
-            STRING,
-            INTEGER,
-            STRING,
-            STRING,
-            STRING,
-            INTEGER,
-            STRING,
-            STRING,
-            STRING,
-            STRING,
-            STRING,
-            STRING,
-            STRING,
-            INTEGER,
-            INTEGER,
-            INTEGER,
-            STRING,
-            STRING
+            TEXT,
+            TEXT
     };
 
     /**
@@ -68,7 +67,7 @@ public class CsvReadPerformanceTest {
         Stopwatch stopwatch = Stopwatch.createStarted();
         Table details = Table.read().csv("../data/SHR76_16.csv");
         stopwatch.stop();
-        //System.out.println(details.structure().printAll());
+        System.out.println(details.structure().printAll());
         System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms with type detection.");
         System.out.println(details.shape());
 

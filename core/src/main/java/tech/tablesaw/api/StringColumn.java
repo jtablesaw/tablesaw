@@ -311,7 +311,8 @@ public class StringColumn extends AbstractColumn<String>
     private short getValueId() {
         int nextValue = nextIndex.getAndIncrement();
         if (nextValue > Short.MAX_VALUE) {
-            throw new IndexOutOfBoundsException("String column can only contain %d unique values");
+            String msg = String.format("String column can only contain %d unique values. Column %s has more.", Short.MAX_VALUE, name());
+            throw new IndexOutOfBoundsException(msg);
         }
         return (short) nextValue;
     }

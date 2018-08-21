@@ -37,8 +37,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static tech.tablesaw.api.ColumnType.STRING;
-
 /**
  * A column that contains String values. They are assumed to be free-form text. For categorical data, use stringColumn
  * <p>
@@ -102,7 +100,7 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     private TextColumn(String name, List<String> strings) {
-        super(STRING, name);
+        super(TextColumnType.INSTANCE, name);
         values = new ArrayList<>(strings.size());
         for (String string : strings) {
             append(string);
@@ -449,7 +447,7 @@ public class TextColumn extends AbstractColumn<String>
             return appendMissing();
         }
         if (!(obj instanceof String)) {
-            throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to StringColumn");
+            throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to TextColumn");
         }
         return append((String) obj);
     }

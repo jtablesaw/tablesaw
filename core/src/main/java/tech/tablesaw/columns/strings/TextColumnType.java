@@ -1,7 +1,7 @@
 package tech.tablesaw.columns.strings;
 
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
@@ -20,8 +20,8 @@ public class TextColumnType extends AbstractColumnType {
     }
 
     @Override
-    public StringColumn create(String name) {
-        return StringColumn.create(name);
+    public TextColumn create(String name) {
+        return TextColumn.create(name);
     }
 
     @Override

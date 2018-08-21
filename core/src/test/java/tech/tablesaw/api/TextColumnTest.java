@@ -97,7 +97,7 @@ public class TextColumnTest {
 
     @Test
     public void testType() {
-        assertEquals(ColumnType.STRING, column.type());
+        assertEquals(ColumnType.TEXT, column.type());
     }
 
     @Test
@@ -112,7 +112,7 @@ public class TextColumnTest {
 
     @Test
     public void testToString() {
-        assertEquals("String column: testing", column.toString());
+        assertEquals("Text column: testing", column.toString());
     }
 
     @Test

@@ -24,6 +24,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.io.UnicodeBOMInputStream;
 
 import javax.annotation.concurrent.Immutable;
@@ -37,6 +38,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -421,8 +423,6 @@ public class CsvReader {
                         columnData.get(columnNumber).add(field);
                         columnNumber++;
                     }
-                }
-                if (rowCount == nextRow) {
                     if (useSampling) {
                         nextRow = nextRow(nextRow);
                     } else {
@@ -439,6 +439,13 @@ public class CsvReader {
         // now detect
         for (List<String> valuesList : columnData) {
             ColumnType detectedType = detectType(valuesList, options);
+            if (detectedType.equals(StringColumnType.STRING)) {
+                HashSet<String> unique = new HashSet<>(valuesList);
+                double dupPercent = unique.size() / (valuesList.size() * 1.0);
+                if ( dupPercent * rowCount > 20000) {
+                    detectedType = ColumnType.TEXT;
+                }
+            }
             columnTypes.add(detectedType);
         }
         return columnTypes.toArray(new ColumnType[0]);
