@@ -70,6 +70,10 @@ public class CsvReadPerformanceTest {
         System.out.println(details.structure().printAll());
         System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms with type detection.");
         System.out.println(details.shape());
+        System.out.println("CNTY " + details.textColumn(1).countUnique());
+        System.out.println("ORI " + details.textColumn(2).countUnique());
+        System.out.println("Agency " + details.textColumn(4).countUnique());
+        //System.out.println(details.summary());
 
         // TODO (white) printColumnTypes is broken or very slow
         //System.out.println(new CsvReader().printColumnTypes("../data/SHR76_16.csv", true, ',', Locale.getDefault()));

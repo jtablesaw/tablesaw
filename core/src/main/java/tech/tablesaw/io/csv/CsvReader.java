@@ -49,6 +49,8 @@ import static tech.tablesaw.api.ColumnType.*;
 @Immutable
 public class CsvReader {
 
+    private static final double STRING_COLUMN_CUTOFF = 0.70;
+    private static final int STRING_COLUMN_ROW_COUNT_CUTOFF = 10_000;
     /**
      * Types to choose from. When more than one would work, we pick the first of the options. The order these appear in
      * is critical. The broadest must go last, which is why String is at the end of the list. Any String read from
@@ -436,14 +438,17 @@ public class CsvReader {
             // we don't close the reader since we didn't create it
         }
 
+
         // now detect
         for (List<String> valuesList : columnData) {
             ColumnType detectedType = detectType(valuesList, options);
             if (detectedType.equals(StringColumnType.STRING)) {
-                HashSet<String> unique = new HashSet<>(valuesList);
-                double dupPercent = unique.size() / (valuesList.size() * 1.0);
-                if ( dupPercent * rowCount > 20000) {
-                    detectedType = ColumnType.TEXT;
+                if (rowCount > STRING_COLUMN_ROW_COUNT_CUTOFF) {
+                    HashSet<String> unique = new HashSet<>(valuesList);
+                    double uniquePct = unique.size() / (valuesList.size() * 1.0);
+                    if (uniquePct > STRING_COLUMN_CUTOFF) {
+                        detectedType = ColumnType.TEXT;
+                    }
                 }
             }
             columnTypes.add(detectedType);
