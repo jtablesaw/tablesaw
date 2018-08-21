@@ -363,13 +363,6 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
         return String.valueOf(value);
     }
 
-    public long firstElement() {
-        if (size() > 0) {
-            return getLong(0);
-        }
-        return LongColumnType.missingValueIndicator();
-    }
-
     @Override
     public LongColumn inRange(int start, int end) {
         return (LongColumn) super.inRange(start, end);

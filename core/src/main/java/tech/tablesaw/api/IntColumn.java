@@ -336,13 +336,6 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
         return String.valueOf(value);
     }
 
-    public int firstElement() {
-        if (size() > 0) {
-            return getInt(0);
-        }
-        return IntColumnType.missingValueIndicator();
-    }
-
     @Override
     public IntColumn inRange(int start, int end) {
         return (IntColumn) super.inRange(start, end);

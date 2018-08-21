@@ -14,7 +14,14 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import static org.junit.Assert.assertEquals;
+import com.google.common.base.Strings;
+import org.junit.Test;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.TimeColumn;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
@@ -23,16 +30,7 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
-import org.junit.Test;
-
-import com.google.common.base.Strings;
-
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.TimeColumn;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for DateTimeMapFunctions
@@ -49,7 +47,7 @@ public class DateTimeMapFunctionsTest {
         startCol.append(start);
         stopCol.append(stop);
         LongColumn result = startCol.differenceInMilliseconds(stopCol);
-        assertEquals(100_000L, result.firstElement(),0.01);
+        assertEquals(100_000L, result.getLong(0),0.01);
     }
 
     @Test
@@ -60,7 +58,7 @@ public class DateTimeMapFunctionsTest {
         stopCol.append(stop);
 
         LongColumn result = startCol.differenceInSeconds(stopCol);
-        assertEquals(100_000L, result.firstElement(), 0.01);
+        assertEquals(100_000L, result.getLong(0), 0.01);
     }
 
     @Test
@@ -71,7 +69,7 @@ public class DateTimeMapFunctionsTest {
         stopCol.append(stop);
 
         LongColumn result = startCol.differenceInMinutes(stopCol);
-        assertEquals(100_000L, result.firstElement(), 0.01);
+        assertEquals(100_000L, result.getLong(0), 0.01);
     }
 
     @Test
@@ -82,7 +80,7 @@ public class DateTimeMapFunctionsTest {
         stopCol.append(stop);
 
         LongColumn result = startCol.differenceInHours(stopCol);
-        assertEquals(100_000L, result.firstElement(), 0.01);
+        assertEquals(100_000L, result.getLong(0), 0.01);
 
     }
 
@@ -94,7 +92,7 @@ public class DateTimeMapFunctionsTest {
         stopCol.append(stop);
 
         LongColumn result = startCol.differenceInDays(stopCol);
-        assertEquals(100_000L, result.firstElement(), 0.01);
+        assertEquals(100_000L, result.getLong(0), 0.01);
     }
 
     @Test
@@ -105,49 +103,49 @@ public class DateTimeMapFunctionsTest {
         stopCol.append(stop);
 
         LongColumn result = startCol.differenceInYears(stopCol);
-        assertEquals(10_000L, result.firstElement(), 0.01);
+        assertEquals(10_000L, result.getLong(0), 0.01);
     }
 
     @Test
     public void testHour() {
         startCol.append(LocalDateTime.of(1984, 12, 12, 7, 30));
         IntColumn hour = startCol.hour();
-        assertEquals(7, hour.firstElement(), 0.0001);
+        assertEquals(7, hour.getInt(0), 0.0001);
     }
 
     @Test
     public void testYear() {
         startCol.append(LocalDateTime.of(1984, 12, 12, 7, 30));
         IntColumn year = startCol.year();
-        assertEquals(1984, year.firstElement(), 0.0001);
+        assertEquals(1984, year.getInt(0), 0.0001);
     }
 
     @Test
     public void testDayOfYear() {
         startCol.append(LocalDateTime.of(1984, 1, 5, 7, 30));
         IntColumn dayOfYear = startCol.dayOfYear();
-        assertEquals(5, dayOfYear.firstElement(), 0.0001);
+        assertEquals(5, dayOfYear.getInt(0), 0.0001);
     }
 
     @Test
     public void testDayOfMonth() {
         startCol.append(LocalDateTime.of(1984, 1, 22, 7, 30));
         IntColumn dayOfMonth = startCol.dayOfMonth();
-        assertEquals(22, dayOfMonth.firstElement(), 0.0001);
+        assertEquals(22, dayOfMonth.getInt(0), 0.0001);
     }
 
     @Test
     public void testMinute() {
         startCol.append(LocalDateTime.of(1984, 1, 22, 7, 30));
         IntColumn minute = startCol.minute();
-        assertEquals(30, minute.firstElement(), 0.0001);
+        assertEquals(30, minute.getInt(0), 0.0001);
     }
 
     @Test
     public void testDayOfWeekValue() {
         startCol.append(LocalDateTime.of(2018, 4, 10, 7, 30));
         IntColumn dayOfWeekValue = startCol.dayOfWeekValue();
-        assertEquals(2, dayOfWeekValue.firstElement(), 0.0001);
+        assertEquals(2, dayOfWeekValue.getInt(0), 0.0001);
     }
 
     @Test
