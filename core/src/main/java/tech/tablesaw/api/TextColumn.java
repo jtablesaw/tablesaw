@@ -41,6 +41,8 @@ import static tech.tablesaw.api.ColumnType.STRING;
 /**
  * A column that contains String values. They are assumed to be free-form text. For categorical data, use stringColumn
  * <p>
+ * This is the default column type for SQL longvarchar and longnvarchar types
+ * <p>
  * Because the MISSING_VALUE for this column type is an empty string, there is little or no need for special handling
  * of missing values in this class's methods.
  */
