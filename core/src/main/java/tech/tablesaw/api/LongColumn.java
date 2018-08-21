@@ -449,6 +449,22 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
         return (LongColumn) super.sampleX(proportion);
     }
 
+    /**
+     * Returns a new IntColumn containing a value for each value in this column
+     *
+     * A narrowing conversion of a signed integer to an integral type T simply discards all but the n lowest order bits,
+     * where n is the number of bits used to represent type T. In addition to a possible loss of information about
+     * the magnitude of the numeric value, this may cause the sign of the resulting value to differ from the sign of
+     * the input value.
+     *
+     * In other words, if the element being converted is larger (or smaller) than Integer.MAX_VALUE
+     * (or Integer.MIN_VALUE) you will not get a conventionally good conversion.
+     *
+     * Despite the fact that overflow, underflow, or other loss of information may occur, a narrowing primitive
+     * conversion never results in a run-time exception.
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
     @Override
     public IntColumn asIntColumn() {
         IntArrayList values = new IntArrayList();
@@ -459,6 +475,19 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
         return IntColumn.create(this.name(), values.elements());
     }
 
+    /**
+     * Returns a new FloatColumn containing a value for each value in this column
+     *
+     * A widening primitive conversion from a long to a float does not lose information about the overall magnitude
+     * of a numeric value. It may, however, result in loss of precision - that is, the result may lose some of the
+     * least significant bits of the value. In this case, the resulting floating-point value will be a correctly
+     * rounded version of the integer value, using IEEE 754 round-to-nearest mode.
+     *
+     * Despite the fact that a loss of precision may occur, a widening primitive conversion never results in a
+     * run-time exception.
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
     @Override
     public FloatColumn asFloatColumn() {
         FloatArrayList values = new FloatArrayList();
@@ -469,6 +498,19 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
         return FloatColumn.create(this.name(), values.elements());
     }
 
+    /**
+     * Returns a new DoubleColumn containing a value for each value in this column
+     *
+     * A widening primitive conversion from a long to a double does not lose information about the overall magnitude
+     * of a numeric value. It may, however, result in loss of precision - that is, the result may lose some of the
+     * least significant bits of the value. In this case, the resulting floating-point value will be a correctly
+     * rounded version of the integer value, using IEEE 754 round-to-nearest mode.
+     *
+     * Despite the fact that a loss of precision may occur, a widening primitive conversion never results in a
+     * run-time exception.
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
     @Override
     public DoubleColumn asDoubleColumn() {
         DoubleArrayList values = new DoubleArrayList();

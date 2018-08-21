@@ -379,6 +379,21 @@ public class FloatColumn extends NumberColumn<Float> {
         return (FloatColumn) super.sampleX(proportion);
     }
 
+    /**
+     * Returns a new LongColumn containing a value for each value in this column, truncating if necessary
+     *
+     * A narrowing primitive conversion such as this one may lose information about the overall magnitude of a
+     * numeric value and may also lose precision and range. Specifically, if the value is too small (a negative value
+     * of large magnitude or negative infinity), the result is the smallest representable value of type long.
+     *
+     * Similarly, if the value is too large (a positive value of large magnitude or positive infinity), the result is the
+     * largest representable value of type long.
+     *
+     * Despite the fact that overflow, underflow, or other loss of information may occur, a narrowing primitive
+     * conversion never results in a run-time exception.
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
     @Override
     public LongColumn asLongColumn() {
         LongArrayList values = new LongArrayList();
@@ -389,6 +404,21 @@ public class FloatColumn extends NumberColumn<Float> {
         return LongColumn.create(this.name(), values.elements());
     }
 
+    /**
+     * Returns a new IntColumn containing a value for each value in this column, truncating if necessary.
+     *
+     * A narrowing primitive conversion such as this one may lose information about the overall magnitude of a
+     * numeric value and may also lose precision and range. Specifically, if the value is too small (a negative value
+     * of large magnitude or negative infinity), the result is the smallest representable value of type int.
+     *
+     * Similarly, if the value is too large (a positive value of large magnitude or positive infinity), the result is the
+     * largest representable value of type int.
+     *
+     * Despite the fact that overflow, underflow, or other loss of information may occur, a narrowing primitive
+     * conversion never results in a run-time exception.
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
     @Override
     public IntColumn asIntColumn() {
         IntArrayList values = new IntArrayList();
@@ -399,6 +429,13 @@ public class FloatColumn extends NumberColumn<Float> {
         return IntColumn.create(this.name(), values.elements());
     }
 
+    /**
+     * Returns a new DoubleColumn containing a value for each value in this column.
+     *
+     * No information is lost in converting from the floats to doubles
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
     @Override
     public DoubleColumn asDoubleColumn() {
         DoubleArrayList values = new DoubleArrayList();

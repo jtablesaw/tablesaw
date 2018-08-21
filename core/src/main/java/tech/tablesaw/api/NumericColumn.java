@@ -425,18 +425,46 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
 
     double getDouble(int index);
 
+    /**
+     * Returns a new LongColumn containing a value for each value in this column
+     *
+     * The exact behavior when overridden depends on the type of the receiver (LongColumn, FloatColumn, etc.)
+     *
+     * In this version, the result is a copy of the original
+     */
     default LongColumn asLongColumn() {
         return (LongColumn) this.copy();
     }
 
+    /**
+     * Returns a new IntColumn containing  a value for each value in this column
+     *
+     * The exact behavior when overridden depends on the type of the receiver (LongColumn, FloatColumn, etc.)
+     *
+     * In this version, the result is a copy of the original
+     */
     default IntColumn asIntColumn() {
         return (IntColumn) this.copy();
     }
 
+    /**
+     * Returns a new FloatColumn containing a value for each value in this column
+     *
+     * The exact behavior when overridden depends on the type of the receiver (LongColumn, FloatColumn, etc.)
+     *
+     * In this version, the result is a copy of the original
+     */
     default FloatColumn asFloatColumn() {
         return (FloatColumn) this.copy();
     }
 
+    /**
+     * Returns a new DoubleColumn containing a value for each value in this column
+     *
+     * The exact behavior when overridden depends on the type of the receiver (LongColumn, FloatColumn, etc.)
+     *
+     * In this version, the result is a copy of the original
+     */
     default DoubleColumn asDoubleColumn() {
         return (DoubleColumn) this.copy();
     }

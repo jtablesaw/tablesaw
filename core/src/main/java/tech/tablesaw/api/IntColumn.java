@@ -417,6 +417,14 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
         return (IntColumn) super.sampleX(proportion);
     }
 
+    /**
+     * Returns a new LongColumn containing a value for each value in this column
+     *
+     * A widening primitive conversion from int to long does not lose any information at all;
+     * the numeric value is preserved exactly.
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
     @Override
     public LongColumn asLongColumn() {
         LongArrayList values = new LongArrayList();
@@ -427,6 +435,19 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
         return LongColumn.create(this.name(), values.elements());
     }
 
+    /**
+     * Returns a new FloatColumn containing a value for each value in this column, truncating if necessary.
+     *
+     * A widening primitive conversion from an int to a float does not lose information about the overall magnitude
+     * of a numeric value. It may, however, result in loss of precision - that is, the result may lose some of the
+     * least significant bits of the value. In this case, the resulting floating-point value will be a correctly
+     * rounded version of the integer value, using IEEE 754 round-to-nearest mode.
+     *
+     * Despite the fact that a loss of precision may occur, a widening primitive conversion never results in a
+     * run-time exception.
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
     @Override
     public FloatColumn asFloatColumn() {
         FloatArrayList values = new FloatArrayList();
@@ -437,6 +458,19 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
         return FloatColumn.create(this.name(), values.elements());
     }
 
+    /**
+     * Returns a new DoubleColumn containing a value for each value in this column, truncating if necessary.
+     *
+     * A widening primitive conversion from an int to a double does not lose information about the overall magnitude
+     * of a numeric value. It may, however, result in loss of precision - that is, the result may lose some of the
+     * least significant bits of the value. In this case, the resulting floating-point value will be a correctly
+     * rounded version of the integer value, using IEEE 754 round-to-nearest mode.
+     *
+     * Despite the fact that a loss of precision may occur, a widening primitive conversion never results in a
+     * run-time exception.
+     *
+     * A missing value in the receiver is converted to a missing value in the result
+     */
     @Override
     public DoubleColumn asDoubleColumn() {
         DoubleArrayList values = new DoubleArrayList();
