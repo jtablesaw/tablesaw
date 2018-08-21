@@ -53,8 +53,8 @@ public class SqlResultSetReader {
                 .put(Types.REAL, ColumnType.FLOAT)
 
                 .put(Types.INTEGER, ColumnType.INTEGER)
-                .put(Types.SMALLINT, ColumnType.INTEGER)
-                .put(Types.TINYINT, ColumnType.INTEGER)
+                .put(Types.SMALLINT, ColumnType.SHORT)
+                .put(Types.TINYINT, ColumnType.SHORT)
                 .put(Types.BIGINT, ColumnType.DOUBLE)
 
                 .put(Types.CHAR, ColumnType.STRING)

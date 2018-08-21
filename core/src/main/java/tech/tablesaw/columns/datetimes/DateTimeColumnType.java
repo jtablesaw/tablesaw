@@ -28,11 +28,6 @@ public class DateTimeColumnType extends AbstractColumnType {
         return new DateTimeStringParser(this, options);
     }
 
-    @Override
-    public Comparable<?> getMissingValueIndicator() {
-        return missingValueIndicator();
-    }
-
     public static long missingValueIndicator() {
         return Long.MIN_VALUE;
     }

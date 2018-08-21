@@ -35,9 +35,4 @@ public class IntColumnType extends AbstractColumnType {
     public static int missingValueIndicator() {
         return Integer.MIN_VALUE;
     }
-
-    @Override
-    public Comparable<?> getMissingValueIndicator() {
-        return missingValueIndicator();
-    }
 }

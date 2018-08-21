@@ -14,7 +14,7 @@ public class FloatColumnType extends AbstractColumnType {
     public static final FloatColumnType INSTANCE =
             new FloatColumnType(BYTE_SIZE, "FLOAT", "Float");
 
-    FloatColumnType(int byteSize, String name, String printerFriendlyName) {
+    private FloatColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
     }
 
@@ -34,10 +34,5 @@ public class FloatColumnType extends AbstractColumnType {
 
     public static float missingValueIndicator() {
         return Float.NaN;
-    }
-
-    @Override
-    public Comparable<?> getMissingValueIndicator() {
-        return missingValueIndicator();
     }
 }

@@ -19,8 +19,9 @@ public class Row implements Iterator<Row> {
     private final Map<String, DoubleColumn> doubleColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, IntColumn> intColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, LongColumn> longColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, ShortColumn> shortColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, FloatColumn> floatColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private final Map<String, StringColumn> stringColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, Column<String>> stringColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, BooleanColumn> booleanColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, DateTimeColumn> dateTimeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, TimeColumn> timeColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -38,6 +39,9 @@ public class Row implements Iterator<Row> {
             if (column instanceof IntColumn) {
                 intColumnMap.put(column.name(), (IntColumn) column);
             }
+            if (column instanceof ShortColumn) {
+                shortColumnMap.put(column.name(), (ShortColumn) column);
+            }
             if (column instanceof LongColumn) {
                 longColumnMap.put(column.name(), (LongColumn) column);
             }
@@ -49,6 +53,9 @@ public class Row implements Iterator<Row> {
             }
             if (column instanceof StringColumn) {
                 stringColumnMap.put(column.name(), (StringColumn) column);
+            }
+            if (column instanceof TextColumn) {
+                stringColumnMap.put(column.name(), (TextColumn) column);
             }
             if (column instanceof DateColumn) {
                 dateColumnMap.put(column.name(), (DateColumn) column);
@@ -94,7 +101,7 @@ public class Row implements Iterator<Row> {
     }
 
     public int getInt(String columnName) {
-	return intColumnMap.get(columnName).getInt(rowNumber);
+    	return intColumnMap.get(columnName).getInt(rowNumber);
     }
 
     public int getInt(int columnIndex) {
@@ -107,6 +114,14 @@ public class Row implements Iterator<Row> {
 
     public long getLong(int columnIndex) {
         return getLong(columnNames[columnIndex]);
+    }
+
+    public short getShort(String columnName) {
+	return shortColumnMap.get(columnName).getShort(rowNumber);
+    }
+
+    public short getShort(int columnIndex) {
+        return getShort(columnNames[columnIndex]);
     }
 
     public float getFloat(String columnName) {
@@ -122,6 +137,14 @@ public class Row implements Iterator<Row> {
     }
 
     public String getString(int columnIndex) {
+        return getString(columnNames[columnIndex]);
+    }
+
+    public String getText(String columnName) {
+        return stringColumnMap.get(columnName).get(rowNumber);
+    }
+
+    public String getText(int columnIndex) {
         return getString(columnNames[columnIndex]);
     }
 

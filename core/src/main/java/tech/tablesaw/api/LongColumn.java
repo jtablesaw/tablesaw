@@ -366,7 +366,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
         if (size() > 0) {
             return getLong(0);
         }
-        return (Long) COLUMN_TYPE.getMissingValueIndicator();
+        return LongColumnType.missingValueIndicator();
     }
 
     @Override

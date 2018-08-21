@@ -39,9 +39,4 @@ public class LongColumnType extends AbstractColumnType {
     public static long missingValueIndicator() {
         return Long.MIN_VALUE;
     }
-
-    @Override
-    public Comparable<?> getMissingValueIndicator() {
-        return missingValueIndicator();
-    }
 }

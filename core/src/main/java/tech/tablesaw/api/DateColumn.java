@@ -234,13 +234,6 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
         return copy;
     }
 
-    public LocalDate firstElement() {
-        if (isEmpty()) {
-            return null;
-        }
-        return PackedLocalDate.asLocalDate(getPackedDate(0));
-    }
-
     @Override
     public DateColumn append(final Column<LocalDate> column) {
         Preconditions.checkArgument(column.type() == this.type());

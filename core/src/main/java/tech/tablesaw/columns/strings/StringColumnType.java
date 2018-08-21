@@ -25,11 +25,6 @@ public class StringColumnType extends AbstractColumnType {
     }
 
     @Override
-    public Comparable<?> getMissingValueIndicator() {
-        return missingValueIndicator();
-    }
-
-    @Override
     public StringStringParser customParser(CsvReadOptions options) {
         return new StringStringParser(this, options);
     }

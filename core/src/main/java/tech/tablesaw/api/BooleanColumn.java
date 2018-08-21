@@ -58,7 +58,7 @@ import static tech.tablesaw.api.ColumnType.BOOLEAN;
  */
 public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMapUtils, CategoricalColumn<Boolean>, BooleanFillers<BooleanColumn> {
 
-    public static final byte MISSING_VALUE = (Byte) BOOLEAN.getMissingValueIndicator();
+    public static final byte MISSING_VALUE = (Byte) BooleanColumnType.missingValueIndicator();
 
     public static final byte BYTE_TRUE = 1;
     public static final byte BYTE_FALSE = 0;

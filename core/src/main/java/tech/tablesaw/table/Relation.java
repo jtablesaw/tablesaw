@@ -26,8 +26,10 @@ import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.conversion.TableConverter;
@@ -408,6 +410,14 @@ public abstract class Relation {
         return (IntColumn) column(columnIndex);
     }
     
+    public ShortColumn shortColumn(String columnName) {
+        return shortColumn(columnIndex(columnName));
+    }
+
+    public ShortColumn shortColumn(int columnIndex) {
+        return (ShortColumn) column(columnIndex);
+    }
+
     public LongColumn longColumn(String columnName) {
         return longColumn(columnIndex(columnName));
     }
@@ -446,6 +456,14 @@ public abstract class Relation {
 
     public StringColumn stringColumn(int columnIndex) {
         return (StringColumn) column(columnIndex);
+    }
+
+    public TextColumn textColumn(String columnName) {
+        return (TextColumn) column(columnName);
+    }
+
+    public TextColumn textColumn(int columnIndex) {
+        return (TextColumn) column(columnIndex);
     }
 
     public DateTimeColumn dateTimeColumn(int columnIndex) {

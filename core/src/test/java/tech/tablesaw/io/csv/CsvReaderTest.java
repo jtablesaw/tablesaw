@@ -14,20 +14,16 @@
 
 package tech.tablesaw.io.csv;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static tech.tablesaw.api.ColumnType.DOUBLE;
-import static tech.tablesaw.api.ColumnType.FLOAT;
-import static tech.tablesaw.api.ColumnType.INTEGER;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-import static tech.tablesaw.api.ColumnType.SKIP;
-import static tech.tablesaw.api.ColumnType.STRING;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.Table;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -40,25 +36,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.Table;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static tech.tablesaw.api.ColumnType.*;
 
 /**
  * Tests for CSV Reading
  */
 public class CsvReaderTest {
 
-    private final ColumnType[] bus_types = {INTEGER, STRING, STRING, FLOAT, FLOAT};
-    private final ColumnType[] bus_types_with_SKIP = {INTEGER, STRING, SKIP, DOUBLE, DOUBLE};
+    private final ColumnType[] bus_types = {SHORT, STRING, STRING, FLOAT, FLOAT};
+    private final ColumnType[] bus_types_with_SKIP = {SHORT, STRING, SKIP, DOUBLE, DOUBLE};
 
     @Test
     public void testWithBusData() throws Exception {
@@ -293,7 +282,7 @@ public class CsvReaderTest {
 
         final Table table = Table.read().csv(options);
         DateColumn date = table.dateColumn(0);
-        assertNotNull(date.firstElement());
+        assertFalse(date.isEmpty());
     }
 
     @Test
@@ -301,7 +290,7 @@ public class CsvReaderTest {
         String output =
                 "ColumnType[] columnTypes = {\n" +
                         "LOCAL_DATE, // 0     date        \n" +
-                        "INTEGER,    // 1     approval    \n" +
+                        "SHORT,      // 1     approval    \n" +
                         "STRING,     // 2     who         \n" +
                         "}\n";
         assertEquals(output, new CsvReader()
@@ -320,7 +309,7 @@ public class CsvReaderTest {
 
         ColumnType[] columnTypes = new CsvReader().detectColumnTypes(stream, options);
         assertEquals(LOCAL_DATE, columnTypes[0]);
-        assertEquals(INTEGER, columnTypes[1]);
+        assertEquals(SHORT, columnTypes[1]);
         assertEquals(STRING, columnTypes[2]);
     }
 
@@ -376,7 +365,7 @@ public class CsvReaderTest {
         // TODO (lwhite): These tests don't fail. What was their intent?
         Table table1 = Table.read().csv("../data/read_failure_test.csv");
         table1.structure(); // just make sure the import completed
-        IntColumn test = table1.intColumn("Test");
+        ShortColumn test = table1.shortColumn("Test");
         //TODO(lwhite): Better tests
         assertNotNull(test.summary());
     }
@@ -385,7 +374,7 @@ public class CsvReaderTest {
     public void testReadFailure2() throws Exception {
         Table table1 = Table.read().csv("../data/read_failure_test2.csv");
         table1.structure(); // just make sure the import completed
-        IntColumn test = table1.intColumn("Test");
+        ShortColumn test = table1.shortColumn("Test");
 
         //TODO(lwhite): Better tests
         assertNotNull(test.summary());

@@ -25,6 +25,7 @@ import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringFilters;
 import tech.tablesaw.columns.strings.StringMapFunctions;
 import tech.tablesaw.columns.strings.StringReduceUtils;
+import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -49,7 +50,7 @@ import static tech.tablesaw.api.ColumnType.STRING;
 public class TextColumn extends AbstractColumn<String>
         implements StringFilters, StringMapFunctions, StringReduceUtils {
 
-    public static final String MISSING_VALUE = (String) STRING.getMissingValueIndicator();
+    public static final String MISSING_VALUE = TextColumnType.missingValueIndicator();
 
     // holds each element in the column.
     private List<String> values;

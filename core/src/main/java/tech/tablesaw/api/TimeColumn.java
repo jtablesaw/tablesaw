@@ -57,7 +57,7 @@ import static tech.tablesaw.columns.DateAndTimePredicates.*;
 public class TimeColumn extends AbstractColumn<LocalTime>
         implements CategoricalColumn<LocalTime>, TimeFilters, TimeFillers<TimeColumn>, TimeMapFunctions {
 
-    public static final int MISSING_VALUE = (Integer) LOCAL_TIME.getMissingValueIndicator();
+    public static final int MISSING_VALUE = (Integer) TimeColumnType.missingValueIndicator();
 
     private final IntComparator descendingIntComparator = DescendingIntComparator.instance();
 

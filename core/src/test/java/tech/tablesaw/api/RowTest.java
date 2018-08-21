@@ -45,15 +45,15 @@ public class RowTest {
     }
 
     @Test
-    public void testGetInt() throws IOException {
+    public void testGetShort() throws IOException {
         Table table = Table.read().csv("../data/bush.csv");
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();
-            assertEquals(table.intColumn(1).getInt(row.getRowNumber()),
-                    row.getInt(1));
-            assertEquals(table.intColumn("approval").getInt(row.getRowNumber()),
-                    row.getInt("approval"));
+            assertEquals(table.shortColumn(1).getShort(row.getRowNumber()),
+                    row.getShort(1));
+            assertEquals(table.shortColumn("approval").getShort(row.getRowNumber()),
+                    row.getShort("approval"));
         }
     }
 

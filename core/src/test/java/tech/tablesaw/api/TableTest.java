@@ -210,12 +210,12 @@ public class TableTest {
     @Test
     public void testDoWithEachRow() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(10);
-        Integer[] ratingsArray = {53, 58};
-        List<Integer> ratings = Lists.asList(52, ratingsArray);
+        Short[] ratingsArray = {53, 58};
+        List<Short> ratings = Lists.asList((short) 52, ratingsArray);
 
         Consumer<Row> doable = row -> {
             if (row.getRowNumber() < 5) {
-                assertTrue(ratings.contains(row.getInt("approval")));
+                assertTrue(ratings.contains(row.getShort("approval")));
             }
         };
         t.doWithRows(doable);
@@ -229,7 +229,7 @@ public class TableTest {
         AtomicInteger count = new AtomicInteger(0);
         Consumer<Row> doable = row -> {
             if (row.getPackedDate("date") > dateTarget
-                    && row.getInt("approval") > ratingTarget) {
+                    && row.getShort("approval") > ratingTarget) {
                 count.getAndIncrement();
             }
         };
@@ -244,7 +244,7 @@ public class TableTest {
         double ratingTarget = 75;
         Predicate<Row> doable = row ->
                 (row.getPackedDate("date") > dateTarget
-                && row.getInt("approval") > ratingTarget);
+                && row.getShort("approval") > ratingTarget);
         assertTrue(t.detect(doable));
     }
 
@@ -276,8 +276,8 @@ public class TableTest {
 
             @Override
             public void doWithPair(Row row1, Row row2) {
-                double r1  = row1.getInt("approval");
-                double r2  = row2.getInt("approval");
+                short r1  = row1.getShort("approval");
+                short r2  = row2.getShort("approval");
                 values.add((r1 + r2) / 2.0);
             }
 
@@ -293,13 +293,13 @@ public class TableTest {
     @Test
     public void testRollWithNrows2() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(4);
-        IntColumn approval = t.intColumn("approval");
+        ShortColumn approval = t.shortColumn("approval");
 
         List<Integer> sums = new ArrayList<>();
         Consumer<Row[]> rowConsumer = rows -> {
             int sum = 0;
             for (Row row : rows) {
-                sum += row.getInt("approval");
+                sum += row.getShort("approval");
             }
             sums.add(sum);
         };
@@ -315,8 +315,8 @@ public class TableTest {
 
         @Override
         public void doWithPair(Row row1, Row row2) {
-            double r1  = row1.getInt("approval");
-            double r2  = row2.getInt("approval");
+            double r1  = row1.getShort("approval");
+            double r2  = row2.getShort("approval");
             runningAverage.add((r1 + r2) / 2.0);
         }
     }
@@ -470,10 +470,10 @@ public class TableTest {
     public void testRowSort() throws Exception {
         Table bush = Table.read().csv("../data/bush.csv");
 
-        Comparator<Row> rowComparator = Comparator.comparingDouble(o -> o.getInt("approval"));
+        Comparator<Row> rowComparator = Comparator.comparingDouble(o -> o.getShort("approval"));
 
         Table sorted = bush.sortOn(rowComparator);
-        IntColumn approval = sorted.intColumn("approval");
+        ShortColumn approval = sorted.shortColumn("approval");
         for (int i = 0; i < bush.rowCount() - 2; i++) {
             assertTrue(approval.get(i) <= approval.get(i + 1));
         }

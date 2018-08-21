@@ -18,6 +18,7 @@ import com.google.common.base.CharMatcher;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.util.LevenshteinDistance;
@@ -144,9 +145,9 @@ public interface StringMapFunctions extends Column<String> {
         return newColumn;
     }
 
-    default DoubleColumn parseInt() {
+    default IntColumn parseInt() {
 
-        DoubleColumn newColumn = DoubleColumn.create(name() + "[parsed]");
+        IntColumn newColumn = IntColumn.create(name() + "[parsed]");
         for (int r = 0; r < size(); r++) {
             newColumn.append(Integer.parseInt(getString(r)));
         }
@@ -222,11 +223,11 @@ public interface StringMapFunctions extends Column<String> {
      * @param columns the column to append
      * @return the new column
      */
-    default StringColumn join(String separator, Column<String> ... columns) {
+    default StringColumn join(String separator, Column<?> ... columns) {
         StringColumn newColumn = StringColumn.create(name() + "[column appended]", this.size());
         for (int r = 0; r < size(); r++) {
             String result = getString(r);
-            for (Column<String> stringColumn : columns) {
+            for (Column<?> stringColumn : columns) {
                 result = result + separator + stringColumn.get(r);
             }
             newColumn.append(result);

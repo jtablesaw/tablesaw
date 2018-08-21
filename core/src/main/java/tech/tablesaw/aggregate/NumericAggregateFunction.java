@@ -16,7 +16,9 @@ public abstract class NumericAggregateFunction extends AggregateFunction<Numeric
     public boolean isCompatibleColumn(ColumnType type) {
         return type.equals(ColumnType.DOUBLE)
                 || type.equals(ColumnType.FLOAT)
-                || type.equals(ColumnType.INTEGER);
+                || type.equals(ColumnType.INTEGER)
+                || type.equals(ColumnType.SHORT)
+                || type.equals(ColumnType.LONG);
     }
 
     @Override

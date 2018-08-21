@@ -184,13 +184,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         return result;
     }
 
-    public double firstElement() {
-        if (size() > 0) {
-            return getDouble(0);
-        }
-        return (Double) COLUMN_TYPE.getMissingValueIndicator();
-    }
-
     /**
      * Adds the given float to this column
      */

@@ -26,11 +26,6 @@ public class BooleanColumnType extends AbstractColumnType {
     }
 
     @Override
-    public Comparable<?> getMissingValueIndicator() {
-        return missingValueIndicator();
-    }
-
-    @Override
     public BooleanStringParser customParser(CsvReadOptions readOptions) {
         return new BooleanStringParser(this, readOptions);
     }
