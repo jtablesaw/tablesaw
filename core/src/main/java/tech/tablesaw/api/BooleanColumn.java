@@ -556,12 +556,10 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
         return (BooleanColumn) super.filter(test);
     }
 
-    @Override
     public double getDouble(int row) {
         return getByte(row);
     }
 
-    @Override
     public double[] asDoubleArray() {
         double[] doubles = new double[data.size()];
         for (int i = 0; i < size(); i++) {

@@ -2,7 +2,7 @@ package tech.tablesaw.plotly.traces;
 
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import tech.tablesaw.columns.Column;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.plotly.Utils;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class Histogram2DTrace extends AbstractTrace {
         return new Histogram2DBuilder(x, y);
     }
 
-    public static Histogram2DBuilder builder(Column<? extends Number> x, Column<? extends Number> y) {
+    public static Histogram2DBuilder builder(NumericColumn<? extends Number> x, NumericColumn<? extends Number> y) {
         return new Histogram2DBuilder(x.asDoubleArray(), y.asDoubleArray());
     }
 

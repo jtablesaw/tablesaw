@@ -162,7 +162,16 @@ public interface StringFilters extends Column<String> {
         return eval(isNotMissing);
     }
 
-    Selection isEqualTo(String string);
+    default Selection isEqualTo(String string) {
+        return eval(isEqualTo, string);
+    }
+
+    default Selection isNotEqualTo(String string) {
+        Selection selection = new BitmapBackedSelection();
+        selection.addRange(0, size());
+        selection.andNot(isEqualTo(string));
+        return selection;
+    }
 
     String get(int index);
 }

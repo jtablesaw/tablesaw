@@ -96,9 +96,9 @@ public class TimeColumnTest {
         List<LocalTime> sortedA = timeColumn.asList();
 
         column1.sortDescending();
-        List<LocalTime> sortedD = ((TimeColumn) column1.first(3)).asList();
+        List<LocalTime> sortedD = column1.first(3).asList();
 
-        assertEquals(null, sortedA.get(0));
+        assertNull(sortedA.get(0));
         assertEquals(LocalTime.of(0, 4, 2), sortedA.get(1));
         assertEquals(LocalTime.of(3, 6, 2), sortedA.get(2));
         assertEquals(top, sortedD);

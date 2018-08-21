@@ -617,12 +617,10 @@ public class StringColumn extends AbstractColumn<String>
         return ByteBuffer.allocate(byteSize()).putInt(getInt(rowNumber)).array();
     }
 
-    @Override
     public double getDouble(int i) {
         return getInt(i);
     }
 
-    @Override
     public double[] asDoubleArray() {
         double[] doubles = new double[values.size()];
         for (int i = 0; i < size(); i++) {

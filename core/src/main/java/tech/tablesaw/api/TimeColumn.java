@@ -383,12 +383,10 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         return data;
     }
 
-    @Override
     public double getDouble(int i) {
         return getIntInternal(i);
     }
 
-    @Override
     public double[] asDoubleArray() {
         double[] doubles = new double[data.size()];
         for (int i = 0; i < size(); i++) {

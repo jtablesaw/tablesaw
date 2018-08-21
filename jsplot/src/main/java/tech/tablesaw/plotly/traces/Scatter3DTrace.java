@@ -3,7 +3,7 @@ package tech.tablesaw.plotly.traces;
 import com.google.common.base.Preconditions;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import tech.tablesaw.columns.Column;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.plotly.components.HoverLabel;
 import tech.tablesaw.plotly.components.Marker;
 
@@ -29,7 +29,7 @@ public class Scatter3DTrace extends AbstractTrace {
         return new Scatter3DBuilder(x, y, z);
     }
 
-    public static Scatter3DBuilder builder(Column<? extends Number> x, Column<? extends Number> y, Column<? extends Number> z) {
+    public static Scatter3DBuilder builder(NumericColumn<? extends Number> x, NumericColumn<? extends Number> y, NumericColumn<? extends Number> z) {
         return new Scatter3DBuilder(x, y, z);
     }
 
@@ -117,7 +117,7 @@ public class Scatter3DTrace extends AbstractTrace {
             this.z = z;
         }
 
-        private Scatter3DBuilder(Column<? extends Number> x, Column<? extends Number> y, Column<? extends Number> z) {
+        private Scatter3DBuilder(NumericColumn<? extends Number> x, NumericColumn<? extends Number> y, NumericColumn<? extends Number> z) {
             this.x = x.asDoubleArray();
             this.y = y.asDoubleArray();
             this.z = z.asDoubleArray();

@@ -5,13 +5,14 @@ import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.plotly.components.change.Decreasing;
 import tech.tablesaw.plotly.components.HoverLabel;
-import tech.tablesaw.plotly.components.change.Increasing;
 import tech.tablesaw.plotly.components.Line;
 import tech.tablesaw.plotly.components.Marker;
+import tech.tablesaw.plotly.components.change.Decreasing;
+import tech.tablesaw.plotly.components.change.Increasing;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -22,8 +23,8 @@ import static tech.tablesaw.plotly.Utils.dataAsString;
 
 public class ScatterTrace extends AbstractTrace {
 
-    static final Fill DEFAULT_FILL = Fill.NONE;
-    static final double DEFAULT_WHISKER_WIDTH = 0;
+    private static final Fill DEFAULT_FILL = Fill.NONE;
+    private static final double DEFAULT_WHISKER_WIDTH = 0;
 
     public enum Fill {
         NONE("none"),
@@ -70,22 +71,22 @@ public class ScatterTrace extends AbstractTrace {
         return new ScatterBuilder(x, y);
     }
 
-    public static ScatterBuilder builder(DateColumn x, Column<? extends Number> y) {
+    public static ScatterBuilder builder(DateColumn x, NumericColumn<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
-    public static ScatterBuilder builder(Column<?> x, Column<? extends Number> y) {
+    public static ScatterBuilder builder(Column<?> x, NumericColumn<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
 
-    public static ScatterBuilder builder(Column<?> x, Column<? extends Number> open, Column<? extends Number> high, Column<? extends Number> low, Column<? extends Number> close) {
+    public static ScatterBuilder builder(Column<?> x, NumericColumn<? extends Number> open, NumericColumn<? extends Number> high, NumericColumn<? extends Number> low, NumericColumn<? extends Number> close) {
         return new ScatterBuilder(x, open, high, low, close);
     }
 
-    public static ScatterBuilder builder(DateTimeColumn x, Column<? extends Number> y) {
+    public static ScatterBuilder builder(DateTimeColumn x, NumericColumn<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
 
-    public static ScatterBuilder builder(TimeColumn x, Column<? extends Number> y) {
+    public static ScatterBuilder builder(TimeColumn x, NumericColumn<? extends Number> y) {
         return new ScatterBuilder(x, y);
     }
 
@@ -229,12 +230,12 @@ public class ScatterTrace extends AbstractTrace {
             this.y = y;
         }
 
-        private ScatterBuilder(Column<?> x, Column<? extends Number> y) {
+        private ScatterBuilder(Column<?> x, NumericColumn<? extends Number> y) {
             this.x = x.asObjectArray();
             this.y = y.asDoubleArray();
         }
 
-        private ScatterBuilder(Column<?> x, Column<? extends Number> open, Column<? extends Number> high, Column<? extends Number> low, Column<? extends Number> close) {
+        private ScatterBuilder(Column<?> x, NumericColumn<? extends Number> open, NumericColumn<? extends Number> high, NumericColumn<? extends Number> low, NumericColumn<? extends Number> close) {
             this.x = x.asObjectArray();
             this.open = open.asDoubleArray();
             this.high = high.asDoubleArray();
@@ -242,17 +243,17 @@ public class ScatterTrace extends AbstractTrace {
             this.close = close.asDoubleArray();
         }
 
-        private ScatterBuilder(DateColumn x, Column<? extends Number> y) {
+        private ScatterBuilder(DateColumn x, NumericColumn<? extends Number> y) {
             this.x = x.asObjectArray();
             this.y = y.asDoubleArray();
         }
 
-        private ScatterBuilder(DateTimeColumn x, Column<? extends Number> y) {
+        private ScatterBuilder(DateTimeColumn x, NumericColumn<? extends Number> y) {
             this.x = x.asObjectArray();
             this.y = y.asDoubleArray();
         }
 
-        private ScatterBuilder(TimeColumn x, Column<? extends Number> y) {
+        private ScatterBuilder(TimeColumn x, NumericColumn<? extends Number> y) {
             this.x = x.asObjectArray();
             this.y = y.asDoubleArray();
         }

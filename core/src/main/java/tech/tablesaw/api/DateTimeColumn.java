@@ -551,12 +551,10 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return ByteBuffer.allocate(byteSize()).putLong(getPackedDateTime(rowNumber)).array();
     }
 
-    @Override
     public double getDouble(int i) {
         return getPackedDateTime(i);
     }
 
-    @Override
     public double[] asDoubleArray() {
         double[] doubles = new double[size()];
         for (int i = 0; i < size(); i++) {

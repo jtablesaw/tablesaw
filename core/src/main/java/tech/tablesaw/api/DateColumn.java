@@ -498,7 +498,6 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
         return data().contains(date);
     }
 
-    @Override
     public double[] asDoubleArray() {
         double[] doubles = new double[size()];
         for (int i = 0; i < size(); i++) {
@@ -512,7 +511,6 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
         return valueIsMissing(getIntInternal(rowNumber));
     }
 
-    @Override
     public double getDouble(int i) {
         return getIntInternal(i);
     }

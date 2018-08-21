@@ -1,7 +1,7 @@
 package tech.tablesaw.plotly.api;
 
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.HeatmapTrace;
@@ -26,9 +26,9 @@ public class Heatmap {
 
         Table counts = table.xTabCounts(categoryCol1, categoryCol2);
         counts = counts.dropRows(counts.rowCount() - 1);
-        List<Column<?>> columns = counts.columns();
+        List<NumericColumn<?>> columns = counts.numericColumns();
         columns.remove(counts.columnCount() - 1);
-        Column<?> yColumn = columns.remove(0);
+        NumericColumn<?> yColumn = columns.remove(0);
         double[][] z = DoubleArrays.to2dArray(columns);
 
         List<String> x = counts.columnNames();

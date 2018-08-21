@@ -423,4 +423,5 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
 
     NumericColumn<T> lag(final int n);
 
+    double getDouble(int index);
 }

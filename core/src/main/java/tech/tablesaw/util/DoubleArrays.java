@@ -14,14 +14,13 @@
 
 package tech.tablesaw.util;
 
-import java.util.List;
-
 import com.google.common.base.Preconditions;
-
 import tech.tablesaw.api.NumberColumn;
-import tech.tablesaw.columns.Column;
+import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.table.TableSlice;
 import tech.tablesaw.table.TableSliceGroup;
+
+import java.util.List;
 
 /**
  * Utility functions for creating 2D double arrays from columns and other arrays
@@ -39,7 +38,7 @@ public class DoubleArrays {
         return result;
     }
 
-    public static double[][] to2dArray(Column<?>... columns) {
+    public static double[][] to2dArray(NumericColumn<?>... columns) {
         Preconditions.checkArgument(columns.length >= 1);
         int obs = columns[0].size();
         double[][] allVals = new double[obs][columns.length];
@@ -52,8 +51,8 @@ public class DoubleArrays {
         return allVals;
     }
 
-    public static double[][] to2dArray(List<Column<?>> columnList) {
-        return to2dArray(columnList.toArray(new Column<?>[columnList.size()]));
+    public static double[][] to2dArray(List<NumericColumn<?>> columnList) {
+        return to2dArray(columnList.toArray(new NumericColumn<?>[0]));
     }
 
     public static double[][] to2dArray(TableSliceGroup views, int columnNumber) {
@@ -80,7 +79,7 @@ public class DoubleArrays {
         return allVals;
     }
 
-    public static double[][] to2dArray(Column<?> x, Column<?> y) {
+    public static double[][] to2dArray(NumericColumn<?> x, NumericColumn<?> y) {
         double[][] allVals = new double[x.size()][2];
         for (int i = 0; i < x.size(); i++) {
             allVals[i][0] = x.getDouble(i);

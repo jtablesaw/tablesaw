@@ -277,7 +277,8 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     @Override
     public DoubleColumn append(Column<Double> column, int row) {
         Preconditions.checkArgument(column.type() == this.type());
-        return append(column.getDouble(row));
+        DoubleColumn doubleColumn = (DoubleColumn) column;
+        return append(doubleColumn.getDouble(row));
     }
 
     /**

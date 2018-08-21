@@ -52,7 +52,7 @@ public class ColumnTest {
     @Test
     public void testFirst() {
         // test with dates
-        DateColumn first = (DateColumn) table.dateColumn("date").first(3);
+        DateColumn first = table.dateColumn("date").first(3);
         assertEquals(LocalDate.parse("2004-02-04"), first.get(0));
         assertEquals(LocalDate.parse("2004-01-21"), first.get(1));
         assertEquals(LocalDate.parse("2004-01-07"), first.get(2));
@@ -64,7 +64,7 @@ public class ColumnTest {
         assertEquals(58, first2.get(2), 0.0001);
 
         // test with categories
-        StringColumn first3 = (StringColumn) table.stringColumn("who").first(3);
+        StringColumn first3 = table.stringColumn("who").first(3);
         assertEquals("fox", first3.get(0));
         assertEquals("fox", first3.get(1));
         assertEquals("fox", first3.get(2));
@@ -74,7 +74,7 @@ public class ColumnTest {
     public void testLast() {
 
         // test with dates
-        DateColumn last = (DateColumn) table.dateColumn("date").last(3);
+        DateColumn last = table.dateColumn("date").last(3);
         assertEquals(LocalDate.parse("2001-03-27"), last.get(0));
         assertEquals(LocalDate.parse("2001-02-27"), last.get(1));
         assertEquals(LocalDate.parse("2001-02-09"), last.get(2));
@@ -86,7 +86,7 @@ public class ColumnTest {
         assertEquals(57, last2.get(2), 0.0001);
 
         // test with categories
-        StringColumn last3 = (StringColumn) table.stringColumn("who").last(3);
+        StringColumn last3 = table.stringColumn("who").last(3);
         assertEquals("zogby", last3.get(0));
         assertEquals("zogby", last3.get(1));
         assertEquals("zogby", last3.get(2));
@@ -125,7 +125,7 @@ public class ColumnTest {
 
         DoubleColumn dc1 = DoubleColumn.create("t1", d1);
         DoubleColumn dc2 = DoubleColumn.create("t2", d2);
-        DoubleColumn dc3 = (DoubleColumn) dc1.min(dc2);
+        DoubleColumn dc3 = dc1.min(dc2);
         assertTrue(dc3.contains(1.0));
         assertTrue(dc3.contains(-4.0));
         assertTrue(dc3.contains(-1.0));
@@ -138,7 +138,7 @@ public class ColumnTest {
 
         DoubleColumn dc1 = DoubleColumn.create("t1", d1);
         DoubleColumn dc2 = DoubleColumn.create("t2", d2);
-        DoubleColumn dc3 = (DoubleColumn) dc1.max(dc2);
+        DoubleColumn dc3 = dc1.max(dc2);
         assertTrue(dc3.contains(2.0));
         assertTrue(dc3.contains(0.0));
         assertTrue(dc3.contains(3.0));
@@ -194,7 +194,7 @@ public class ColumnTest {
         check(filtered, 0.0, 1.0);
     }
     
-    private Function<Double, String> toString = d -> d.toString();
+    private Function<Double, String> toString = Object::toString;
     
     @Test
     public void testMapInto() {

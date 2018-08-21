@@ -432,6 +432,6 @@ public class PackedLocalTime {
     }
 
     public static int secondsUntil(int packedTimeEnd, int packedTimeStart) {
-        return (int) (getSecondOfDay(packedTimeEnd) - getSecondOfDay(packedTimeStart));
+        return (getSecondOfDay(packedTimeEnd) - getSecondOfDay(packedTimeStart));
     }
 }

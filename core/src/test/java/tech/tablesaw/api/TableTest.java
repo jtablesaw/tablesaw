@@ -94,6 +94,7 @@ public class TableTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRowWiseAddition2() {
         double[] a = {3, 4, 5};
         double[] b = {3, 4, 5};
@@ -103,7 +104,10 @@ public class TableTest {
                 DoubleColumn.create("b", b),
                 DoubleColumn.create("c", c));
 
-        DoubleColumn n = sum(t.numberColumns());
+        DoubleColumn n = sum(
+                t.doubleColumn("a"),
+                t.doubleColumn("b"),
+                t.doubleColumn("c"));
 
         assertEquals(n.get(0), 9, 0);
         assertEquals(n.get(1), 12, 0);
@@ -484,12 +488,12 @@ public class TableTest {
         }
     }
 
-    private DoubleColumn sum(DoubleColumn ... columns) {
+    private DoubleColumn sum(NumberColumn<Double> ... columns) {
         int size = columns[0].size();
         DoubleColumn result = DoubleColumn.create("sum", size);
         for (int r = 0; r < size; r++) {
             double sum = 0;
-            for (DoubleColumn nc : columns) {
+            for (NumberColumn<Double> nc : columns) {
                 sum += nc.get(r);
             }
             result.append(sum);
