@@ -1,10 +1,6 @@
 package tech.tablesaw.api;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.common.base.Preconditions;
-
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.SkipColumnType;
 import tech.tablesaw.columns.StringParser;
@@ -16,8 +12,12 @@ import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
+import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.io.csv.CsvReadOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public interface ColumnType {
 
@@ -33,6 +33,7 @@ public interface ColumnType {
     DateColumnType LOCAL_DATE = DateColumnType.INSTANCE;
     DateTimeColumnType LOCAL_DATE_TIME = DateTimeColumnType.INSTANCE;
     TimeColumnType LOCAL_TIME = TimeColumnType.INSTANCE;
+    TextColumnType TEXT = TextColumnType.INSTANCE;
     SkipColumnType SKIP = SkipColumnType.INSTANCE;
 
     static void register(ColumnType type) {
