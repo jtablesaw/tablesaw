@@ -63,16 +63,19 @@ import static tech.tablesaw.api.ColumnType.STRING;
 public class StringColumn extends AbstractColumn<String>
         implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
+    // The maximum number of unique values or categories that I can hold. If the column has more unique values,
+    // use a TextColumn
+    private static final int MAX_UNIQUE = Short.MAX_VALUE - Short.MIN_VALUE;
+
     public static final String MISSING_VALUE = StringColumnType.missingValueIndicator();
-
-    //private final AtomicInteger nextIndex = new AtomicInteger(Short.MIN_VALUE + 2);
-    private final AtomicInteger nextIndex = new AtomicInteger(1);
-
-    // holds a key for each element in the column. the key can be used to lookup the backing string value
-    private ShortArrayList values;
 
     // a bidirectional map of keys to backing string values.
     private final DictionaryMap lookupTable = new DictionaryMap();
+
+    private final AtomicInteger nextIndex = new AtomicInteger(DictionaryMap.DEFAULT_RETURN_VALUE);
+
+    // holds a key for each element in the column. the key can be used to lookup the backing string value
+    private ShortArrayList values;
 
     private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
@@ -300,7 +303,7 @@ public class StringColumn extends AbstractColumn<String>
             str = stringValue;
         }
         short valueId = lookupTable.get(str);
-        if (valueId <= 0) {
+        if (valueId == DictionaryMap.DEFAULT_RETURN_VALUE) {
             valueId = getValueId();
             lookupTable.put(valueId, str);
         }
@@ -309,9 +312,9 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     private short getValueId() {
-        int nextValue = nextIndex.getAndIncrement();
+        int nextValue = nextIndex.incrementAndGet();
         if (nextValue > Short.MAX_VALUE) {
-            String msg = String.format("String column can only contain %d unique values. Column %s has more.", Short.MAX_VALUE, name());
+            String msg = String.format("String column can only contain %d unique values. Column %s has more.", MAX_UNIQUE, name());
             throw new IndexOutOfBoundsException(msg);
         }
         return (short) nextValue;
@@ -358,20 +361,11 @@ public class StringColumn extends AbstractColumn<String>
 
     private void addValue(String value) {
         short key = lookupTable.get(value);
-        if (key <= 0) {
+        if (key == DictionaryMap.DEFAULT_RETURN_VALUE) {
             key = getValueId();
             lookupTable.put(key, value);
         }
         values.add(key);
-    }
-
-    /**
-     * Initializes this Column with the given values for performance
-     */
-    public void initializeWith(ShortArrayList list, StringColumn old) {
-        for (short key : list) {
-            append(old.lookupTable.get(key));
-        }
     }
 
     /**
@@ -434,7 +428,7 @@ public class StringColumn extends AbstractColumn<String>
 
     public Selection isEqualTo(String string) {
         Selection results = new BitmapBackedSelection();
-        int key = lookupTable.get(string);
+        short key = lookupTable.get(string);
         addValuesToSelection(results, key);
         return results;
     }
@@ -628,10 +622,10 @@ public class StringColumn extends AbstractColumn<String>
     /**
      * Given a key matching some string, add to the selection the index of every record that matches that key
      */
-    private void addValuesToSelection(Selection results, int key) {
-        if (key >= 0) {
+    private void addValuesToSelection(Selection results, short key) {
+        if (key != DictionaryMap.DEFAULT_RETURN_VALUE) {
             int i = 0;
-            for (int next : values) {
+            for (short next : values) {
                 if (key == next) {
                     results.add(i);
                 }
@@ -665,10 +659,10 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     private Selection selectIsIn(String... strings) {
-        IntArrayList keys = new IntArrayList();
+        ShortArrayList keys = new ShortArrayList();
         for (String string : strings) {
-            int key = lookupTable.get(string);
-            if (key > 0) {
+            short key = lookupTable.get(string);
+            if (key != DictionaryMap.DEFAULT_RETURN_VALUE) {
                 keys.add(key);
             }
         }
@@ -690,10 +684,6 @@ public class StringColumn extends AbstractColumn<String>
         return results;
     }
 
-    public Short2ObjectMap<String> keyToValueMap() {
-        return new Short2ObjectOpenHashMap<>(lookupTable.keyToValue);
-    }
-
     public int firstIndexOf(String value) {
         return values.indexOf(lookupTable.get(value));
     }
@@ -702,9 +692,9 @@ public class StringColumn extends AbstractColumn<String>
         if (!lookupTable.contains(value)) {
             return 0;
         }
-        int key = lookupTable.get(value);
+        short key = lookupTable.get(value);
         int count = 0;
-        for (int k : values) {
+        for (short k : values) {
             if (k == key) {
                 count++;
             }
@@ -797,25 +787,27 @@ public class StringColumn extends AbstractColumn<String>
      */
     static class DictionaryMap {
 
+        private static final short DEFAULT_RETURN_VALUE = Short.MIN_VALUE;
+
+        // we maintain two maps, one from strings to keys, and the second from keys to strings.
         private final Short2ObjectMap<String> keyToValue = new Short2ObjectOpenHashMap<>();
 
         private final Object2ShortOpenHashMap<String> valueToKey = new Object2ShortOpenHashMap<>();
 
         DictionaryMap() {
-            super();
-            valueToKey.defaultReturnValue((short) -1);
+            valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
         }
 
         /**
          * Returns a new DictionaryMap that is a deep copy of the original
          */
         DictionaryMap(DictionaryMap original) {
+            valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
+
             for (Short2ObjectMap.Entry<String> entry : original.keyToValue.short2ObjectEntrySet()) {
                 keyToValue.put(entry.getShortKey(), entry.getValue());
                 valueToKey.put(entry.getValue(), entry.getShortKey());
             }
-            //valueToKey.defaultReturnValue(Short.MIN_VALUE);
-            valueToKey.defaultReturnValue((short) -1);
         }
 
         void put(short key, String value) {
