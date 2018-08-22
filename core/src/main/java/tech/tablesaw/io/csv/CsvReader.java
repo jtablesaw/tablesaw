@@ -85,16 +85,7 @@ public class CsvReader {
         byte[] bytes = options.reader() != null
                 ? CharStreams.toString(options.reader()).getBytes() : null;
 
-        ColumnType[] types;
-        if (options.columnTypes() != null) {
-            types = options.columnTypes();
-        } else {
-            try(InputStream detectTypesStream = options.reader() != null
-                    ? new ByteArrayInputStream(bytes)
-                    : new FileInputStream(options.file())) {
-                types = detectColumnTypes(detectTypesStream, options);
-            }
-        }
+        ColumnType[] types = getColumnTypes(options, bytes);
 
         // All other read methods end up here, make sure we don't have leading Unicode BOM
         InputStream stream = options.reader() != null
@@ -151,6 +142,25 @@ public class CsvReader {
                 ubis.close();
             }
         }
+    }
+
+    /**
+     * Returns column types for this table as an array, the types are either provided in read options, or calculated by
+     * scanning the data
+     * @throws IOException
+     */
+    private ColumnType[] getColumnTypes(CsvReadOptions options, byte[] bytes) throws IOException {
+        ColumnType[] types;
+        if (options.columnTypes() != null) {
+            types = options.columnTypes();
+        } else {
+            try(InputStream detectTypesStream = options.reader() != null
+                    ? new ByteArrayInputStream(bytes)
+                    : new FileInputStream(options.file())) {
+                types = detectColumnTypes(detectTypesStream, options);
+            }
+        }
+        return types;
     }
 
     private void addRows(CsvReadOptions options, ColumnType[] types, CsvParser reader, Table table, String[] columnNames, int[] columnIndexes) {
@@ -294,17 +304,12 @@ public class CsvReader {
      * For example:
      * <p>
      * LOCAL_DATE, // 0     date
-     * SHORT_INT,  // 1     approval
-     * STRING,   // 2     who
+     * SHORT,      // 1     approval
+     * STRING,     // 2     who
      * <p>
      * Note that the types are array separated, and that the index position and the column name are printed such that
      * they would be interpreted as comments if you paste the output into an array:
      * <p>
-     * ColumnType[] types = {
-     * LOCAL_DATE, // 0     date
-     * SHORT_INT,  // 1     approval
-     * STRING,   // 2     who
-     * }
      *
      * @throws IOException if file cannot be read
      */
@@ -441,7 +446,6 @@ public class CsvReader {
             csvParser.stopParsing();
             // we don't close the reader since we didn't create it
         }
-
 
         // now detect
         for (List<String> valuesList : columnData) {

@@ -20,43 +20,46 @@ import tech.tablesaw.api.Table;
 
 import java.util.concurrent.TimeUnit;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+import static tech.tablesaw.api.ColumnType.SHORT;
+import static tech.tablesaw.api.ColumnType.STRING;
+import static tech.tablesaw.api.ColumnType.TEXT;
 
 public class CsvReadPerformanceTest {
 
     private static final ColumnType[] types = {
-            TEXT,
-            TEXT,
-            TEXT,
-            TEXT,
-            TEXT,
-            TEXT,
-            STRING,
-            STRING,
-            SHORT,
-            TEXT,
-            TEXT,
-            SHORT,
-            STRING,
-            STRING,
-            TEXT,
-            SHORT,
-            STRING,
-            STRING,
-            STRING,
-            SHORT,
-            STRING,
-            STRING,
-            STRING,
-            TEXT,
-            TEXT,
-            TEXT,
-            TEXT,
-            SHORT,
-            SHORT,
-            INTEGER,
-            TEXT,
-            TEXT
+            TEXT,       // 0     ID
+            STRING,     // 1     CNTYFIPS
+            STRING,     // 2     Ori
+            STRING,     // 3     State
+            STRING,     // 4     Agency
+            STRING,     // 5     Agentype
+            STRING,     // 6     Source
+            STRING,     // 7     Solved
+            SHORT,      // 8     Year
+            STRING,     // 9     StateName
+            STRING,     // 10    Month
+            SHORT,      // 11    Incident
+            STRING,     // 12    ActionType
+            STRING,     // 13    Homicide
+            STRING,     // 14    Situation
+            SHORT,      // 15    VicAge
+            STRING,     // 16    VicSex
+            STRING,     // 17    VicRace
+            STRING,     // 18    VicEthnic
+            SHORT,      // 19    OffAge
+            STRING,     // 20    OffSex
+            STRING,     // 21    OffRace
+            STRING,     // 22    OffEthnic
+            STRING,     // 23    Weapon
+            STRING,     // 24    Relationship
+            STRING,     // 25    Circumstance
+            STRING,     // 26    Subcircum
+            SHORT,      // 27    VicCount
+            SHORT,      // 28    OffCount
+            INTEGER,    // 29    FileDate
+            STRING,     // 30    fstate
+            STRING,     // 31    MSA
     };
 
     /**
@@ -67,25 +70,18 @@ public class CsvReadPerformanceTest {
         Stopwatch stopwatch = Stopwatch.createStarted();
         Table details = Table.read().csv("../data/SHR76_16.csv");
         stopwatch.stop();
-        System.out.println(details.structure().printAll());
         System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms with type detection.");
         System.out.println(details.shape());
-        System.out.println("CNTY " + details.textColumn(1).countUnique());
-        System.out.println("ORI " + details.textColumn(2).countUnique());
-        System.out.println("Agency " + details.textColumn(4).countUnique());
-        //System.out.println(details.summary());
-
-        // TODO (white) printColumnTypes is broken or very slow
-        //System.out.println(new CsvReader().printColumnTypes("../data/SHR76_16.csv", true, ',', Locale.getDefault()));
 
         stopwatch.reset();
         stopwatch.start();
         details = Table.read().csv(
                 CsvReadOptions.builder("../data/SHR76_16.csv")
-                        .columnTypes(types).build());
+                        .columnTypes(types)
+                        .build());
         stopwatch.stop();
-        System.out.println(details.shape());
-        System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms without type detection.");
 
+        System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms without type detection.");
+        System.out.println(details.shape());
     }
 }
