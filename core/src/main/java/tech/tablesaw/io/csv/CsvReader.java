@@ -22,16 +22,16 @@ import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.StringColumnType;
-import tech.tablesaw.io.UnicodeBOMInputStream;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,7 +44,17 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.BOOLEAN;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
+import static tech.tablesaw.api.ColumnType.SHORT;
+import static tech.tablesaw.api.ColumnType.SKIP;
+import static tech.tablesaw.api.ColumnType.STRING;
+import static tech.tablesaw.api.ColumnType.TEXT;
 
 @Immutable
 public class CsvReader {
@@ -89,35 +99,27 @@ public class CsvReader {
 
     public Table read(CsvReadOptions options) throws IOException {
 
-        byte[] bytes = options.reader() != null
-                ? CharStreams.toString(options.reader()).getBytes() : null;
+        ColumnType[] types = options.columnTypes();
+        byte[] bytes = null;
 
-        ColumnType[] types = getColumnTypes(options, bytes);
+        if (types == null) {
+            if (options.reader() != null) {
+                bytes = CharStreams.toString(options.reader()).getBytes();
+            }
+            types = getColumnTypes(options, bytes);
+        }
 
-        // All other read methods end up here, make sure we don't have leading Unicode BOM
-        InputStream stream = options.reader() != null
-                ? new ByteArrayInputStream(bytes)
-                : new FileInputStream(options.file());
-
-        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
-        ubis.skipBOM();
-
+        Reader reader = getReader(options, bytes);
         CsvParser parser = csvParser(options);
 
         try {
-            parser.beginParsing(new InputStreamReader(ubis));
+            parser.beginParsing(reader);
             Table table = Table.create(options.tableName());
 
-            String[] headerNames;
-            if (options.header()) {
-                headerNames = parser.parseNext();
-                if (headerNames == null) {
-                    return table;
-                }
-            } else {
-                headerNames = makeColumnNames(types);
+            String[] headerNames = getHeaderNames(options, types, parser);
+            if (headerNames == null) {
+                return table;
             }
-
             List<String> headerRow = Lists.newArrayList(headerNames);
 
             String[] columnNames = selectColumnNames(headerRow, types);
@@ -146,9 +148,34 @@ public class CsvReader {
                 // if we get a reader back from options it means the client opened it, so let the client close it
                 // if it's null, we close it here.
                 parser.stopParsing();
-                ubis.close();
+                reader.close();
             }
         }
+    }
+
+    private String[] getHeaderNames(CsvReadOptions options, ColumnType[] types, CsvParser parser) {
+        String[] headerNames;
+        if (options.header()) {
+            headerNames = parser.parseNext();
+        } else {
+            headerNames = makeColumnNames(types);
+        }
+        return headerNames;
+    }
+
+    private Reader getReader(CsvReadOptions options, byte[] bytes)
+            throws FileNotFoundException {
+        if (bytes != null) {
+            return new InputStreamReader(new ByteArrayInputStream(bytes));
+        }
+
+        if (options.inputStream() != null) {
+            return new InputStreamReader(options.inputStream());
+        }
+        else if (options.reader() != null) {
+            return options.reader();
+        }
+        return new InputStreamReader(new FileInputStream(options.file()));
     }
 
     /**
@@ -158,14 +185,10 @@ public class CsvReader {
      */
     private ColumnType[] getColumnTypes(CsvReadOptions options, byte[] bytes) throws IOException {
         ColumnType[] types;
-        if (options.columnTypes() != null) {
-            types = options.columnTypes();
-        } else {
-            try(InputStream detectTypesStream = options.reader() != null
-                    ? new ByteArrayInputStream(bytes)
-                    : new FileInputStream(options.file())) {
-                types = detectColumnTypes(detectTypesStream, options);
-            }
+        try(InputStream detectTypesStream = options.reader() != null
+                ? new ByteArrayInputStream(bytes)
+                : new FileInputStream(options.file())) {
+            types = detectColumnTypes(detectTypesStream, options);
         }
         return types;
     }
@@ -240,11 +263,8 @@ public class CsvReader {
             throws IOException {
 
         FileInputStream fis = new FileInputStream(file);
-        // make sure we don't have leading Unicode BOM
-        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(fis);
-        ubis.skipBOM();
 
-        Reader reader = new InputStreamReader(ubis);
+        Reader reader = new InputStreamReader(fis);
 
         Table table;
 
@@ -413,14 +433,10 @@ public class CsvReader {
 
         int rowCount = 0; // make sure we don't go over maxRows
 
-        // make sure we don't have leading Unicode BOM
-        UnicodeBOMInputStream ubis = new UnicodeBOMInputStream(stream);
-        ubis.skipBOM();
-
         CsvParser csvParser = csvParser(options);
 
         try {
-            csvParser.beginParsing(new InputStreamReader(ubis));
+            csvParser.beginParsing(new InputStreamReader(stream));
 
             for (int i = 0; i < linesToSkip; i++) {
                 csvParser.parseNext();

@@ -21,8 +21,8 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.plotly.api.AreaPlot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.Histogram2D;
@@ -103,20 +103,20 @@ public class MurderVisualizations extends AbstractExample {
         out(details.shape());
         out(details);
 
-        details.intColumn("offage")
-                .set(details.numberColumn("offage").isEqualTo(999), IntColumnType.missingValueIndicator());
+        details.shortColumn("offage")
+                .set(details.shortColumn("offage").isEqualTo(999), ShortColumnType.missingValueIndicator());
 
-        details.intColumn("vicage")
-                .set(details.numberColumn("vicage").isEqualTo(999), IntColumnType.missingValueIndicator());
+        details.shortColumn("vicage")
+                .set(details.shortColumn("vicage").isEqualTo(999), ShortColumnType.missingValueIndicator());
 
-        details.intColumn("vicCount")
-                .set(details.numberColumn("vicCount").isEqualTo(0)
-                        .andNot(details.stringColumn("situation").containsString("multiple victims")), 1);
+        details.shortColumn("vicCount")
+                .set(details.shortColumn("vicCount").isEqualTo(0)
+                        .andNot(details.stringColumn("situation").containsString("multiple victims")), (short) 1);
 
-        details.intColumn("offCount")
+        details.shortColumn("offCount")
                 .set(
-                      details.numberColumn("offCount").isEqualTo(0)
-                        .andNot(details.stringColumn("situation").containsString("multiple offenders")), 1);
+                      details.shortColumn("offCount").isEqualTo(0)
+                        .andNot(details.stringColumn("situation").containsString("multiple offenders")), (short) 1);
 
         out(details);
         out(details.stringColumn("weapon").unique().print());
