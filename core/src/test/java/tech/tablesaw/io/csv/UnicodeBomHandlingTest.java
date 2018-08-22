@@ -34,46 +34,14 @@ public class UnicodeBomHandlingTest {
         assertEquals((short) 1, t.get(0, 0));
     }
 
-    public static final class BOM {
-        /**
-         * NONE.
-         */
-        public static final BOM NONE = new BOM(new byte[]{}, "NONE");
+    static final class BOM {
         /**
          * UTF-8 BOM (EF BB BF).
          */
-        public static final BOM UTF_8 = new BOM(new byte[]{(byte) 0xEF,
+        static final BOM UTF_8 = new BOM(new byte[]{(byte) 0xEF,
                 (byte) 0xBB,
                 (byte) 0xBF},
                 "UTF-8");
-        /**
-         * UTF-16, little-endian (FF FE).
-         */
-        public static final BOM UTF_16_LE = new BOM(new byte[]{(byte) 0xFF,
-                (byte) 0xFE},
-                "UTF-16 little-endian");
-        /**
-         * UTF-16, big-endian (FE FF).
-         */
-        public static final BOM UTF_16_BE = new BOM(new byte[]{(byte) 0xFE,
-                (byte) 0xFF},
-                "UTF-16 big-endian");
-        /**
-         * UTF-32, little-endian (FF FE 00 00).
-         */
-        public static final BOM UTF_32_LE = new BOM(new byte[]{(byte) 0xFF,
-                (byte) 0xFE,
-                (byte) 0x00,
-                (byte) 0x00},
-                "UTF-32 little-endian");
-        /**
-         * UTF-32, big-endian (00 00 FE FF).
-         */
-        public static final BOM UTF_32_BE = new BOM(new byte[]{(byte) 0x00,
-                (byte) 0x00,
-                (byte) 0xFE,
-                (byte) 0xFF},
-                "UTF-32 big-endian");
         final byte bytes[];
         private final String description;
 
@@ -97,7 +65,7 @@ public class UnicodeBomHandlingTest {
         /**
          * Returns the bytes corresponding to this <code>BOM</code> value.
          */
-        public final byte[] getBytes() {
+        final byte[] getBytes() {
             final int length = bytes.length;
             final byte[] result = new byte[length];
 
