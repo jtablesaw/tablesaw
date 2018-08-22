@@ -313,7 +313,7 @@ public class CsvReader {
                     .separator(delimiter)
                     .header(header)
                     .locale(locale)
-                    .sample(false)
+                    .sample(true)
                     .build();
             ColumnType[] types = detectColumnTypes(stream, options);
             Table t = headerOnly(types, header, options, file);
