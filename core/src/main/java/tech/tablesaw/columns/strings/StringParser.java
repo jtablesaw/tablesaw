@@ -2,18 +2,18 @@ package tech.tablesaw.columns.strings;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import static tech.tablesaw.api.StringColumn.MISSING_VALUE;
 
-public class StringStringParser extends StringParser<String> {
+public class StringParser extends AbstractParser<String> {
 
-    public StringStringParser(ColumnType columnType) {
+    public StringParser(ColumnType columnType) {
         super(columnType);
     }
 
-    public StringStringParser(ColumnType columnType, CsvReadOptions readOptions) {
+    public StringParser(ColumnType columnType, CsvReadOptions readOptions) {
         super(columnType);
         if (readOptions.missingValueIndicator() != null) {
             missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());

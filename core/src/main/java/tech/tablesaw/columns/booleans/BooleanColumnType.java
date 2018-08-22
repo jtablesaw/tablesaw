@@ -7,7 +7,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class BooleanColumnType extends AbstractColumnType {
 
-    public static final BooleanStringParser DEFAULT_PARSER = new BooleanStringParser(ColumnType.BOOLEAN);
+    public static final BooleanParser DEFAULT_PARSER = new BooleanParser(ColumnType.BOOLEAN);
 
     private static byte BYTE_SIZE = 1;
 
@@ -26,8 +26,8 @@ public class BooleanColumnType extends AbstractColumnType {
     }
 
     @Override
-    public BooleanStringParser customParser(CsvReadOptions readOptions) {
-        return new BooleanStringParser(this, readOptions);
+    public BooleanParser customParser(CsvReadOptions readOptions) {
+        return new BooleanParser(this, readOptions);
     }
 
     public static byte missingValueIndicator() {

@@ -9,7 +9,7 @@ public class FloatColumnType extends AbstractColumnType {
 
     public static final int BYTE_SIZE = 4;
 
-    public static final FloatStringParser DEFAULT_PARSER = new FloatStringParser(ColumnType.FLOAT);
+    public static final FloatParser DEFAULT_PARSER = new FloatParser(ColumnType.FLOAT);
 
     public static final FloatColumnType INSTANCE =
             new FloatColumnType(BYTE_SIZE, "FLOAT", "Float");
@@ -24,8 +24,8 @@ public class FloatColumnType extends AbstractColumnType {
     }
 
     @Override
-    public FloatStringParser customParser(CsvReadOptions options) {
-        return new FloatStringParser(this, options);
+    public FloatParser customParser(CsvReadOptions options) {
+        return new FloatParser(this, options);
     }
 
     public static boolean isMissingValue(float value) {

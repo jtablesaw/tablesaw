@@ -13,7 +13,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.NumberFillers;
@@ -379,7 +379,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     }
 
     @Override
-    public DoubleColumn appendCell(final String value, StringParser<?> parser) {
+    public DoubleColumn appendCell(final String value, AbstractParser<?> parser) {
         try {
             return append(parser.parseDouble(value));
         } catch (final NumberFormatException e) {

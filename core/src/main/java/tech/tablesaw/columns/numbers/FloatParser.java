@@ -2,16 +2,16 @@ package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-public class FloatStringParser extends StringParser<Float> {
+public class FloatParser extends AbstractParser<Float> {
 
-    public FloatStringParser(ColumnType columnType) {
+    public FloatParser(ColumnType columnType) {
         super(columnType);
     }
 
-    public FloatStringParser(FloatColumnType columnType, CsvReadOptions readOptions) {
+    public FloatParser(FloatColumnType columnType, CsvReadOptions readOptions) {
         super(columnType);
         if (readOptions.missingValueIndicator() != null) {
             missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
@@ -24,7 +24,7 @@ public class FloatStringParser extends StringParser<Float> {
             return true;
         }
         try {
-            Float.parseFloat(StringParser.remove(s, ','));
+            Float.parseFloat(AbstractParser.remove(s, ','));
             return true;
         } catch (NumberFormatException e) {
             // it's all part of the plan
@@ -42,6 +42,6 @@ public class FloatStringParser extends StringParser<Float> {
         if (isMissing(s)) {
             return FloatColumnType.missingValueIndicator();
         }
-        return Float.parseFloat(StringParser.remove(s, ','));
+        return Float.parseFloat(AbstractParser.remove(s, ','));
     }
 }

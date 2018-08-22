@@ -11,7 +11,7 @@ import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -310,7 +310,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
-    public ShortColumn appendCell(final String value, StringParser<?> parser) {
+    public ShortColumn appendCell(final String value, AbstractParser<?> parser) {
         try {
             return append(parser.parseShort(value));
         } catch (final NumberFormatException e) {

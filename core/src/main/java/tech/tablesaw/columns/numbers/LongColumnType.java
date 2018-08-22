@@ -7,7 +7,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class LongColumnType extends AbstractColumnType {
 
-    public static final LongStringParser DEFAULT_PARSER = new LongStringParser(ColumnType.LONG);
+    public static final LongParser DEFAULT_PARSER = new LongParser(ColumnType.LONG);
 
     private static final int BYTE_SIZE = 8;
 
@@ -23,13 +23,13 @@ public class LongColumnType extends AbstractColumnType {
         return LongColumn.create(name);
     }
 
-    public LongStringParser defaultParser() {
+    public LongParser defaultParser() {
         return DEFAULT_PARSER;
     }
 
     @Override
-    public LongStringParser customParser(CsvReadOptions options) {
-        return new LongStringParser(this, options);
+    public LongParser customParser(CsvReadOptions options) {
+        return new LongParser(this, options);
     }
 
     public static boolean isMissingValue(long value) {

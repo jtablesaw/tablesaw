@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -346,7 +346,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     }
 
     @Override
-    public LongColumn appendCell(final String value, StringParser<?> parser) {
+    public LongColumn appendCell(final String value, AbstractParser<?> parser) {
         try {
             return append(parser.parseInt(value));
         } catch (final NumberFormatException e) {

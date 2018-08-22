@@ -30,7 +30,7 @@ import it.unimi.dsi.fastutil.shorts.ShortComparator;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringFilters;
@@ -411,7 +411,7 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     @Override
-    public StringColumn appendCell(String object, StringParser<?> parser) {
+    public StringColumn appendCell(String object, AbstractParser<?> parser) {
         return appendObj(parser.parse(object));
     }
 

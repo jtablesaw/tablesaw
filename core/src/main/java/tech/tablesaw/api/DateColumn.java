@@ -23,7 +23,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.dates.DateColumnFormatter;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.dates.DateFillers;
@@ -353,7 +353,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     @Override
-    public DateColumn appendCell(String string, StringParser<?> parser) {
+    public DateColumn appendCell(String string, AbstractParser<?> parser) {
         return appendObj(parser.parse(string));
     }
 

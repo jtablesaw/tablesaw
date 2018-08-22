@@ -15,8 +15,8 @@
 package tech.tablesaw.io;
 
 import org.junit.Test;
-import tech.tablesaw.columns.dates.DateStringParser;
-import tech.tablesaw.columns.datetimes.DateTimeStringParser;
+import tech.tablesaw.columns.dates.DateParser;
+import tech.tablesaw.columns.datetimes.DateTimeParser;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,7 +31,7 @@ public class TypeUtilsTest {
     @Test
     public void testDateFormaterWithLocaleEN() {
         String anotherDate = "12-May-2015";
-        LocalDate result = LocalDate.parse(anotherDate, DateStringParser.DEFAULT_FORMATTER.withLocale(Locale.ENGLISH));
+        LocalDate result = LocalDate.parse(anotherDate, DateParser.DEFAULT_FORMATTER.withLocale(Locale.ENGLISH));
         assertThat(result, notNullValue());
     }
 
@@ -42,7 +42,7 @@ public class TypeUtilsTest {
 
         String anotherDate = "10/2/2016 8:18:03 AM";
         dtTimef8.parse(anotherDate);
-        LocalDateTime result = LocalDateTime.parse(anotherDate, DateTimeStringParser.DEFAULT_FORMATTER);
+        LocalDateTime result = LocalDateTime.parse(anotherDate, DateTimeParser.DEFAULT_FORMATTER);
         assertThat(result, notNullValue());
     }
 }

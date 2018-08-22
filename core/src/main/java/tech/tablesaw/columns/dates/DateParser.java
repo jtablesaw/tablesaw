@@ -2,7 +2,7 @@ package tech.tablesaw.columns.dates;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
@@ -11,12 +11,12 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
-public class DateStringParser extends StringParser<LocalDate> {
+public class DateParser extends AbstractParser<LocalDate> {
 
     private Locale locale = Locale.getDefault();
     private DateTimeFormatter formatter = DEFAULT_FORMATTER;
 
-    public DateStringParser(ColumnType type, CsvReadOptions readOptions) {
+    public DateParser(ColumnType type, CsvReadOptions readOptions) {
         super(type);
         DateTimeFormatter readCsvFormatter = readOptions.dateFormatter();
         if (readCsvFormatter != null) {
@@ -30,7 +30,7 @@ public class DateStringParser extends StringParser<LocalDate> {
         }
     }
 
-    public DateStringParser(ColumnType type) {
+    public DateParser(ColumnType type) {
         super(type);
     }
 

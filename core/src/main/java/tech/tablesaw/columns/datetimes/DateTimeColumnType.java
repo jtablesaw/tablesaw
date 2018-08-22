@@ -9,7 +9,7 @@ public class DateTimeColumnType extends AbstractColumnType {
 
     public static int BYTE_SIZE = 8;
 
-    public static final DateTimeStringParser DEFAULT_PARSER = new DateTimeStringParser(ColumnType.LOCAL_DATE_TIME);
+    public static final DateTimeParser DEFAULT_PARSER = new DateTimeParser(ColumnType.LOCAL_DATE_TIME);
 
     public static final DateTimeColumnType INSTANCE =
             new DateTimeColumnType(BYTE_SIZE, "LOCAL_DATE_TIME", "DateTime");
@@ -24,8 +24,8 @@ public class DateTimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public DateTimeStringParser customParser(CsvReadOptions options) {
-        return new DateTimeStringParser(this, options);
+    public DateTimeParser customParser(CsvReadOptions options) {
+        return new DateTimeParser(this, options);
     }
 
     public static long missingValueIndicator() {

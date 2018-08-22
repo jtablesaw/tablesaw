@@ -8,7 +8,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 public class TextColumnType extends AbstractColumnType {
 
     public static final int BYTE_SIZE = 4;
-    public static final StringStringParser DEFAULT_PARSER = new StringStringParser(ColumnType.STRING);
+    public static final StringParser DEFAULT_PARSER = new StringParser(ColumnType.STRING);
 
     public static final TextColumnType INSTANCE =
             new TextColumnType(BYTE_SIZE,
@@ -25,8 +25,8 @@ public class TextColumnType extends AbstractColumnType {
     }
 
     @Override
-    public StringStringParser customParser(CsvReadOptions options) {
-        return new StringStringParser(this, options);
+    public StringParser customParser(CsvReadOptions options) {
+        return new StringParser(this, options);
     }
 
     public static String missingValueIndicator() {

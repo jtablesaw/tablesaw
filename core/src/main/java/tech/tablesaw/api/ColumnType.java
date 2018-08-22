@@ -3,7 +3,7 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.SkipColumnType;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
@@ -64,7 +64,7 @@ public interface ColumnType {
 
     String getPrinterFriendlyName();
 
-    StringParser<?> customParser(CsvReadOptions options);
+    AbstractParser<?> customParser(CsvReadOptions options);
 
     default boolean compare(int rowNumber, Column<?> temp, Column<?> original) {
         return original.get(rowNumber).equals(temp.get(temp.size() - 1));

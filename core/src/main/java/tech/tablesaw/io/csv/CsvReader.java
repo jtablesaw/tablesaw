@@ -23,7 +23,7 @@ import com.univocity.parsers.csv.CsvParserSettings;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.io.UnicodeBOMInputStream;
 
@@ -174,7 +174,7 @@ public class CsvReader {
         long rowNumber = options.header() ? 1L : 0L;
         String[] nextLine;
 
-        Map<String, StringParser<?>> parserMap = getParserMap(options, table);
+        Map<String, AbstractParser<?>> parserMap = getParserMap(options, table);
 
         // Add the rows
         while ((nextLine = reader.parseNext()) != null) {
@@ -195,7 +195,7 @@ public class CsvReader {
                 int cellIndex = 0;
                 for (int columnIndex : columnIndexes) {
                     Column<?> column = table.column(cellIndex);
-                    StringParser<?> parser = parserMap.get(column.name());
+                    AbstractParser<?> parser = parserMap.get(column.name());
                     try {
                         String value = nextLine[columnIndex];
                         column.appendCell(value, parser);
@@ -209,10 +209,10 @@ public class CsvReader {
         }
     }
 
-    private Map<String, StringParser<?>> getParserMap(CsvReadOptions options, Table table) {
-        Map<String, StringParser<?>> parserMap = new HashMap<>();
+    private Map<String, AbstractParser<?>> getParserMap(CsvReadOptions options, Table table) {
+        Map<String, AbstractParser<?>> parserMap = new HashMap<>();
         for (Column<?> column : table.columns()) {
-            StringParser<?> parser = column.type().customParser(options);
+            AbstractParser<?> parser = column.type().customParser(options);
             parserMap.put(column.name(), parser);
         }
         return parserMap;
@@ -506,12 +506,12 @@ public class CsvReader {
      */
     private ColumnType detectType(List<String> valuesList, CsvReadOptions options) {
 
-        CopyOnWriteArrayList<StringParser<?>> parsers = new CopyOnWriteArrayList<>(getParserList(typeArray, options));
+        CopyOnWriteArrayList<AbstractParser<?>> parsers = new CopyOnWriteArrayList<>(getParserList(typeArray, options));
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
         for (String s : valuesList) {
-            for (StringParser<?> parser : parsers) {
+            for (AbstractParser<?> parser : parsers) {
                 if (!parser.canParse(s)) {
                     typeCandidates.remove(parser.columnType());
                     parsers.remove(parser);
@@ -537,10 +537,10 @@ public class CsvReader {
      * @param options CsvReadOptions to use to modify the default parsers for each type
      * @return  A list of parsers in the order they should be used for type detection
      */
-    private List<StringParser<?>> getParserList(List<ColumnType> typeArray, CsvReadOptions options) {
+    private List<AbstractParser<?>> getParserList(List<ColumnType> typeArray, CsvReadOptions options) {
         // Types to choose from. When more than one would work, we pick the first of the options
 
-        List<StringParser<?>> parsers = new ArrayList<>();
+        List<AbstractParser<?>> parsers = new ArrayList<>();
         for (ColumnType type : typeArray) {
             parsers.add(type.customParser(options));
         }

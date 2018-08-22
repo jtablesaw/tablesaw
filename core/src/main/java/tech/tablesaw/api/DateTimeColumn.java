@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeFillers;
@@ -183,7 +183,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public DateTimeColumn appendCell(String stringValue, StringParser<?> parser) {
+    public DateTimeColumn appendCell(String stringValue, AbstractParser<?> parser) {
         return appendObj(parser.parse(stringValue));
     }
 

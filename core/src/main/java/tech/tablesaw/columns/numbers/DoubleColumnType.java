@@ -9,7 +9,7 @@ public class DoubleColumnType extends AbstractColumnType {
 
     private static final int BYTE_SIZE = 8;
 
-    public static final DoubleStringParser DEFAULT_PARSER = new DoubleStringParser(ColumnType.DOUBLE);
+    public static final DoubleParser DEFAULT_PARSER = new DoubleParser(ColumnType.DOUBLE);
 
     public static final DoubleColumnType INSTANCE =
             new DoubleColumnType(BYTE_SIZE, "DOUBLE", "Double");
@@ -24,8 +24,8 @@ public class DoubleColumnType extends AbstractColumnType {
     }
 
     @Override
-    public DoubleStringParser customParser(CsvReadOptions options) {
-        return new DoubleStringParser(this, options);
+    public DoubleParser customParser(CsvReadOptions options) {
+        return new DoubleParser(this, options);
     }
 
     public static boolean isMissingValue(double value) {

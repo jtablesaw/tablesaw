@@ -1,16 +1,17 @@
 package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-public class ShortStringParser extends StringParser<Short> {
+public class IntParser extends AbstractParser<Integer> {
 
-    public ShortStringParser(ShortColumnType columnType) {
+    public IntParser(ColumnType columnType) {
         super(columnType);
     }
 
-    public ShortStringParser(ShortColumnType columnType, CsvReadOptions readOptions) {
+    public IntParser(IntColumnType columnType, CsvReadOptions readOptions) {
         super(columnType);
         if (readOptions.missingValueIndicator() != null) {
             missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
@@ -27,7 +28,7 @@ public class ShortStringParser extends StringParser<Short> {
             if (s.endsWith(".0")) {
                 s = s.substring(0, s.length() - 2);
             }
-            Short.parseShort(StringParser.remove(s, ','));
+            Integer.parseInt(AbstractParser.remove(s, ','));
             return true;
         } catch (NumberFormatException e) {
             // it's all part of the plan
@@ -36,8 +37,8 @@ public class ShortStringParser extends StringParser<Short> {
     }
 
     @Override
-    public Short parse(String s) {
-        return parseShort(s);
+    public Integer parse(String s) {
+        return parseInt(s);
     }
 
     @Override
@@ -46,14 +47,14 @@ public class ShortStringParser extends StringParser<Short> {
     }
 
     @Override
-    public short parseShort(String str) {
+    public int parseInt(String str) {
         if (isMissing(str)) {
-            return ShortColumnType.missingValueIndicator();
+            return IntColumnType.missingValueIndicator();
         }
         String s = str;
         if (s.endsWith(".0")) {
             s = s.substring(0, s.length() - 2);
         }
-        return Short.parseShort(StringParser.remove(s, ','));
+        return Integer.parseInt(AbstractParser.remove(s, ','));
     }
 }

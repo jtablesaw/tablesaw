@@ -7,7 +7,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class ShortColumnType extends AbstractColumnType {
 
-    public static final ShortStringParser DEFAULT_PARSER = new ShortStringParser(ColumnType.SHORT);
+    public static final ShortParser DEFAULT_PARSER = new ShortParser(ColumnType.SHORT);
 
     private static final int BYTE_SIZE = 2;
 
@@ -24,8 +24,8 @@ public class ShortColumnType extends AbstractColumnType {
     }
 
     @Override
-    public ShortStringParser customParser(CsvReadOptions options) {
-        return new ShortStringParser(this, options);
+    public ShortParser customParser(CsvReadOptions options) {
+        return new ShortParser(this, options);
     }
 
     public static boolean isMissingValue(int value) {

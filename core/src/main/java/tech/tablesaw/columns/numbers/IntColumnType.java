@@ -7,7 +7,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class IntColumnType extends AbstractColumnType {
 
-    public static final IntStringParser DEFAULT_PARSER = new IntStringParser(ColumnType.INTEGER);
+    public static final IntParser DEFAULT_PARSER = new IntParser(ColumnType.INTEGER);
 
     private static final int BYTE_SIZE = 4;
 
@@ -24,8 +24,8 @@ public class IntColumnType extends AbstractColumnType {
     }
 
     @Override
-    public IntStringParser customParser(CsvReadOptions options) {
-        return new IntStringParser(this, options);
+    public IntParser customParser(CsvReadOptions options) {
+        return new IntParser(this, options);
     }
 
     public static boolean isMissingValue(int value) {

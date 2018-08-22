@@ -19,7 +19,7 @@ import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.StringParser;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringFilters;
@@ -329,7 +329,7 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     @Override
-    public TextColumn appendCell(String object, StringParser<?> parser) {
+    public TextColumn appendCell(String object, AbstractParser<?> parser) {
         return appendObj(parser.parse(object));
     }
 
