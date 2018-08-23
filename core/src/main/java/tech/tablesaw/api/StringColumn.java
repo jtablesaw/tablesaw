@@ -17,20 +17,11 @@ package tech.tablesaw.api;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.objects.Object2ShortMap;
-import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
-import it.unimi.dsi.fastutil.shorts.Short2IntMap;
-import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
-import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
-import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrays;
-import it.unimi.dsi.fastutil.shorts.ShortCollection;
-import it.unimi.dsi.fastutil.shorts.ShortComparator;
-import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.strings.DictionaryMap;
+import tech.tablesaw.columns.strings.ShortDictionaryMap;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringFilters;
@@ -39,15 +30,12 @@ import tech.tablesaw.columns.strings.StringReduceUtils;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -63,19 +51,8 @@ import static tech.tablesaw.api.ColumnType.STRING;
 public class StringColumn extends AbstractColumn<String>
         implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
-    // The maximum number of unique values or categories that I can hold. If the column has more unique values,
-    // use a TextColumn
-    private static final int MAX_UNIQUE = Short.MAX_VALUE - Short.MIN_VALUE;
-
-    public static final String MISSING_VALUE = StringColumnType.missingValueIndicator();
-
     // a bidirectional map of keys to backing string values.
-    private final DictionaryMap lookupTable = new DictionaryMap();
-
-    private final AtomicInteger nextIndex = new AtomicInteger(DictionaryMap.DEFAULT_RETURN_VALUE);
-
-    // holds a key for each element in the column. the key can be used to lookup the backing string value
-    private ShortArrayList values;
+    private DictionaryMap lookupTable = new ShortDictionaryMap();
 
     private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
@@ -86,18 +63,14 @@ public class StringColumn extends AbstractColumn<String>
     };
 
     public static boolean valueIsMissing(String string) {
-        return MISSING_VALUE.equals(string);
+        return StringColumnType.missingValueIndicator().equals(string);
     }
 
     @Override
     public StringColumn appendMissing() {
-        append(MISSING_VALUE);
+        lookupTable.appendMissing();
         return this;
     }
-
-    private final ShortComparator reverseDictionarySortComparator = (i, i1) -> -lookupTable.get(i).compareTo(lookupTable.get(i1));
-
-    private final ShortComparator dictionarySortComparator = (i, i1) -> lookupTable.get(i).compareTo(lookupTable.get(i1));
 
     public static StringColumn create(String name) {
         return create(name, DEFAULT_ARRAY_SIZE);
@@ -117,7 +90,6 @@ public class StringColumn extends AbstractColumn<String>
 
     private StringColumn(String name, List<String> strings) {
         super(STRING, name);
-        values = new ShortArrayList(strings.size());
         for (String string : strings) {
             append(string);
         }
@@ -125,7 +97,7 @@ public class StringColumn extends AbstractColumn<String>
 
     @Override
     public boolean isMissing(int rowNumber) {
-        return get(rowNumber).equals(MISSING_VALUE);
+        return lookupTable.isMissing(rowNumber);
     }
 
     public void setPrintFormatter(StringColumnFormatter formatter) {
@@ -159,16 +131,12 @@ public class StringColumn extends AbstractColumn<String>
 
     @Override
     public void sortAscending() {
-        short[] elements = values.toShortArray();
-        ShortArrays.parallelQuickSort(elements, dictionarySortComparator);
-        this.values = new ShortArrayList(elements);
+        lookupTable.sortAscending();
     }
 
     @Override
     public void sortDescending() {
-        short[] elements = values.toShortArray();
-        ShortArrays.parallelQuickSort(elements, reverseDictionarySortComparator);
-        this.values = new ShortArrayList(elements);
+        lookupTable.sortDescending();
     }
 
     /**
@@ -178,7 +146,7 @@ public class StringColumn extends AbstractColumn<String>
      */
     @Override
     public int size() {
-        return values.size();
+        return lookupTable.size();
     }
 
     /**
@@ -189,8 +157,7 @@ public class StringColumn extends AbstractColumn<String>
      * @throws IndexOutOfBoundsException if the given rowIndex is not in the column
      */
     public String get(int rowIndex) {
-        short k = values.getShort(rowIndex);
-        return lookupTable.get(k);
+        return lookupTable.getValueForIndex(rowIndex);
     }
 
     /**
@@ -217,35 +184,11 @@ public class StringColumn extends AbstractColumn<String>
      */
     @Override
     public Table countByCategory() {
-        Table t = new Table("Column: " + name());
-        StringColumn categories = create("Category");
-        IntColumn counts = IntColumn.create("Count");
-
-        Short2IntMap valueToCount = new Short2IntOpenHashMap();
-
-        for (short next : values) {
-            if (valueToCount.containsKey(next)) {
-                valueToCount.put(next, valueToCount.get(next) + 1);
-            } else {
-                valueToCount.put(next, 1);
-            }
-        }
-        for (Map.Entry<Short, Integer> entry : valueToCount.short2IntEntrySet()) {
-            categories.append(lookupTable.get(entry.getKey()));
-            counts.append(entry.getValue());
-        }
-        if (countMissing() > 0) {
-            categories.append("* missing values");
-            counts.append(countMissing());
-        }
-        t.addColumns(categories);
-        t.addColumns(counts);
-        return t;
+        return lookupTable.countByCategory(name());
     }
 
     @Override
     public void clear() {
-        values.clear();
         lookupTable.clear();
     }
 
@@ -262,7 +205,7 @@ public class StringColumn extends AbstractColumn<String>
 
         if (n >= 0) {
             for (int m = 0; m < n; m++) {
-                copy.appendCell(MISSING_VALUE);
+                copy.appendMissing();
             }
             for (int i = 0; i < size(); i++) {
                 if (i + n >= size()) {
@@ -275,7 +218,7 @@ public class StringColumn extends AbstractColumn<String>
                 copy.appendCell(get(i));
             }
             for (int m = 0; m > n; m--) {
-                copy.appendCell(MISSING_VALUE);
+                copy.appendMissing();
             }
         }
 
@@ -298,26 +241,8 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public StringColumn set(int rowIndex, String stringValue) {
-        String str = MISSING_VALUE;
-        if (stringValue != null) {
-            str = stringValue;
-        }
-        short valueId = lookupTable.get(str);
-        if (valueId == DictionaryMap.DEFAULT_RETURN_VALUE) {
-            valueId = getValueId();
-            lookupTable.put(valueId, str);
-        }
-        values.set(rowIndex, valueId);
+        lookupTable.set(rowIndex, stringValue);
         return this;
-    }
-
-    private short getValueId() {
-        int nextValue = nextIndex.incrementAndGet();
-        if (nextValue > Short.MAX_VALUE) {
-            String msg = String.format("String column can only contain %d unique values. Column %s has more.", MAX_UNIQUE, name());
-            throw new IndexOutOfBoundsException(msg);
-        }
-        return (short) nextValue;
     }
 
     @Override
@@ -359,15 +284,6 @@ public class StringColumn extends AbstractColumn<String>
         return bottom;
     }
 
-    private void addValue(String value) {
-        short key = lookupTable.get(value);
-        if (key == DictionaryMap.DEFAULT_RETURN_VALUE) {
-            key = getValueId();
-            lookupTable.put(key, value);
-        }
-        values.add(key);
-    }
-
     /**
      * Returns true if this column contains a cell with the given string, and false otherwise
      *
@@ -376,20 +292,6 @@ public class StringColumn extends AbstractColumn<String>
      */
     public boolean contains(String aString) {
         return firstIndexOf(aString) >= 0;
-    }
-
-    /**
-     * Returns all the values associated with the given indexes.
-     *
-     * @param indexes the indexes
-     * @return values as {@link ShortArrayList}
-     */
-    public ShortArrayList getValues(ShortArrayList indexes) {
-        ShortArrayList newList = new ShortArrayList(indexes.size());
-        for (int i : indexes) {
-            newList.add(values.getShort(i));
-        }
-        return newList;
     }
 
     /**
@@ -406,7 +308,7 @@ public class StringColumn extends AbstractColumn<String>
 
     @Override
     public StringColumn appendCell(String object) {
-        addValue(StringColumnType.DEFAULT_PARSER.parse(object));
+        lookupTable.append(StringColumnType.DEFAULT_PARSER.parse(object));
         return this;
     }
 
@@ -422,22 +324,18 @@ public class StringColumn extends AbstractColumn<String>
 
     @Override
     public boolean isEmpty() {
-        return values.isEmpty();
+        return lookupTable.size() == 0;
     }
 
 
+    @Override
     public Selection isEqualTo(String string) {
-        Selection results = new BitmapBackedSelection();
-        short key = lookupTable.get(string);
-        addValuesToSelection(results, key);
-        return results;
+        return lookupTable.isEqualTo(string);
     }
 
+    @Override
     public Selection isNotEqualTo(String string) {
-        Selection selection = new BitmapBackedSelection();
-        selection.addRange(0, size());
-        selection.andNot(isEqualTo(string));
-        return selection;
+        return lookupTable.isNotEqualTo(string);
     }
 
     /**
@@ -448,36 +346,7 @@ public class StringColumn extends AbstractColumn<String>
      * @return a list of {@link BooleanColumn}
      */
     public List<BooleanColumn> getDummies() {
-        List<BooleanColumn> results = new ArrayList<>();
-
-        // createFromCsv the necessary columns
-        for (Short2ObjectMap.Entry<String> entry : lookupTable.keyToValueMap().short2ObjectEntrySet()) {
-            BooleanColumn column = BooleanColumn.create(entry.getValue());
-            results.add(column);
-        }
-
-        // iterate over the values, updating the dummy variable columns as appropriate
-        for (short next : values) {
-            String category = lookupTable.get(next);
-            for (BooleanColumn column : results) {
-                if (category.equals(column.name())) {
-                    //TODO(lwhite): update the correct row more efficiently, by using set rather than add & only
-                    // updating true
-                    column.append(true);
-                } else {
-                    column.append(false);
-                }
-            }
-        }
-        return results;
-    }
-
-    /**
-     * Returns the int key for the string at rowNumber. The key will be the same for all records with the same string,
-     * and different if the string is different
-     */
-    private int getShort(int rowNumber) {
-        return values.getShort(rowNumber);
+        return lookupTable.getDummies();
     }
 
     /**
@@ -487,7 +356,7 @@ public class StringColumn extends AbstractColumn<String>
      */
     @Override
     public StringColumn unique() {
-        List<String> strings = new ArrayList<>(lookupTable.categories());
+        List<String> strings = new ArrayList<>(lookupTable.asSet());
         return StringColumn.create(name() + " Unique values", strings);
     }
 
@@ -496,15 +365,15 @@ public class StringColumn extends AbstractColumn<String>
      *
      * @return data as {@link IntArrayList}
      */
-    public ShortArrayList data() {
-        return values;
+    public IntArrayList data() {
+        return lookupTable.dataAsIntArray();
     }
 
-    public DoubleColumn asNumberColumn() {
-        DoubleColumn numberColumn = DoubleColumn.create(this.name() + ": codes", size());
-        ShortArrayList data = data();
+    public IntColumn asNumberColumn() {
+        IntColumn numberColumn = IntColumn.create(this.name() + ": codes", size());
+        IntArrayList data = data();
         for (int i = 0; i < size(); i++) {
-            numberColumn.append(data.getShort(i));
+            numberColumn.append(data.getInt(i));
         }
         return numberColumn;
     }
@@ -542,13 +411,7 @@ public class StringColumn extends AbstractColumn<String>
      */
     @Override
     public int countMissing() {
-        int count = 0;
-        for (int i = 0; i < size(); i++) {
-            if (MISSING_VALUE.equals(get(i))) {
-                count++;
-            }
-        }
-        return count;
+        return lookupTable.countMissing();
     }
 
     @Override
@@ -564,34 +427,11 @@ public class StringColumn extends AbstractColumn<String>
 
     @Override
     public Iterator<String> iterator() {
-        return new Iterator<String>() {
-
-            private final ShortListIterator valuesIt = values.iterator();
-
-            @Override
-            public boolean hasNext() {
-                return valuesIt.hasNext();
-            }
-
-            @Override
-            public String next() {
-                return lookupTable.get(valuesIt.nextShort());
-            }
-        };
+        return lookupTable.iterator();
     }
 
     public Set<String> asSet() {
-        return lookupTable.categories();
-    }
-
-    /**
-     * Returns the integer encoded value of each cell in this column. It can be used to lookup the mapped string in
-     * the lookupTable
-     *
-     * @return values a {@link IntArrayList}
-     */
-    private ShortArrayList values() {
-        return values;
+        return lookupTable.asSet();
     }
 
     @Override
@@ -604,34 +444,19 @@ public class StringColumn extends AbstractColumn<String>
      */
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(byteSize()).putInt(getShort(rowNumber)).array();
+        return lookupTable.asBytes(rowNumber);
     }
 
     public double getDouble(int i) {
-        return getShort(i);
+        return lookupTable.getKeyForIndex(i);
     }
 
     public double[] asDoubleArray() {
-        double[] doubles = new double[values.size()];
+        double[] doubles = new double[data().size()];
         for (int i = 0; i < size(); i++) {
-            doubles[i] = values.getShort(i);
+            doubles[i] = data().getInt(i);
         }
         return doubles;
-    }
-
-    /**
-     * Given a key matching some string, add to the selection the index of every record that matches that key
-     */
-    private void addValuesToSelection(Selection results, short key) {
-        if (key != DictionaryMap.DEFAULT_RETURN_VALUE) {
-            int i = 0;
-            for (short next : values) {
-                if (key == next) {
-                    results.add(i);
-                }
-                i++;
-            }
-        }
     }
 
     /**
@@ -659,21 +484,7 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     private Selection selectIsIn(String... strings) {
-        ShortArrayList keys = new ShortArrayList();
-        for (String string : strings) {
-            short key = lookupTable.get(string);
-            if (key != DictionaryMap.DEFAULT_RETURN_VALUE) {
-                keys.add(key);
-            }
-        }
-
-        Selection results = new BitmapBackedSelection();
-        for (int i = 0; i < values.size(); i++) {
-            if (keys.contains(values.getShort(i))) {
-                results.add(i);
-            }
-        }
-        return results;
+        return lookupTable.selectIsIn(strings);
     }
 
     @Override
@@ -685,31 +496,16 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public int firstIndexOf(String value) {
-        return values.indexOf(lookupTable.get(value));
+        return lookupTable.firstIndexOf(value);
     }
 
-    public double countOccurrences(String value) {
-        if (!lookupTable.contains(value)) {
-            return 0;
-        }
-        short key = lookupTable.get(value);
-        int count = 0;
-        for (short k : values) {
-            if (k == key) {
-                count++;
-            }
-        }
-        return count;
+    public int countOccurrences(String value) {
+        return lookupTable.countOccurrences(value);
     }
 
     @Override
     public Object[] asObjectArray() {
-        final String[] output = new String[values().size()];
-        for (int i = 0; i < values().size(); i++) {
-            output[i] = get(i);
-        }
-        return output;
-
+        return lookupTable.asObjectArray();
     }
 
     @Override
@@ -782,101 +578,4 @@ public class StringColumn extends AbstractColumn<String>
         return (StringColumn) super.sampleX(proportion);
     }
 
-    /**
-     * A map that supports reversible key value pairs of int-String
-     */
-    static class DictionaryMap {
-
-        private static final short DEFAULT_RETURN_VALUE = Short.MIN_VALUE;
-
-        // we maintain two maps, one from strings to keys, and the second from keys to strings.
-        private final Short2ObjectMap<String> keyToValue = new Short2ObjectOpenHashMap<>();
-
-        private final Object2ShortOpenHashMap<String> valueToKey = new Object2ShortOpenHashMap<>();
-
-        DictionaryMap() {
-            valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
-        }
-
-        /**
-         * Returns a new DictionaryMap that is a deep copy of the original
-         */
-        DictionaryMap(DictionaryMap original) {
-            valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
-
-            for (Short2ObjectMap.Entry<String> entry : original.keyToValue.short2ObjectEntrySet()) {
-                keyToValue.put(entry.getShortKey(), entry.getValue());
-                valueToKey.put(entry.getValue(), entry.getShortKey());
-            }
-        }
-
-        void put(short key, String value) {
-            keyToValue.put(key, value);
-            valueToKey.put(value, key);
-        }
-
-        String get(short key) {
-            return keyToValue.get(key);
-        }
-
-        short get(String value) {
-            return valueToKey.getShort(value);
-        }
-
-        void remove(short key) {
-            String value = keyToValue.remove(key);
-            valueToKey.removeShort(value);
-        }
-
-        void remove(String value) {
-            short key = valueToKey.removeShort(value);
-            keyToValue.remove(key);
-        }
-
-        void clear() {
-            keyToValue.clear();
-            valueToKey.clear();
-        }
-
-        /**
-         * Returns true if we have seen this stringValue before, and it hasn't been removed.
-         * <p>
-         * NOTE: An answer of true does not imply that the column still contains the value, only that
-         * it is in the dictionary map
-         */
-        boolean contains(String stringValue) {
-            return valueToKey.containsKey(stringValue);
-        }
-
-        int size() {
-            return categories().size();
-        }
-
-        Set<String> categories() {
-            return valueToKey.keySet();
-        }
-
-        /**
-         * Returns the strings in the dictionary as an array in order of the numeric key
-         *
-         * @deprecated This is an implementation detail that should not be public.
-         * If you need the strings you can get them by calling unique() or asSet() on the column,
-         */
-        @Deprecated
-        String[] categoryArray() {
-            return keyToValue.values().toArray(new String[size()]);
-        }
-
-        ShortCollection values() {
-            return valueToKey.values();
-        }
-
-        Short2ObjectMap<String> keyToValueMap() {
-            return keyToValue;
-        }
-
-        Object2ShortMap<String> valueToKeyMap() {
-            return valueToKey;
-        }
-    }
 }
