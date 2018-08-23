@@ -38,9 +38,9 @@ public interface DictionaryMap {
 
     void addValuesToSelection(Selection results, short key);
 
-    void append(String value);
+    void append(String value) throws NoKeysAvailableException;
 
-    void set(int rowIndex, String stringValue);
+    void set(int rowIndex, String stringValue) throws NoKeysAvailableException;
 
     void clear();
 
@@ -73,4 +73,5 @@ public interface DictionaryMap {
 
     boolean isMissing(int rowNumber);
 
+    DictionaryMap promoteYourself();
 }

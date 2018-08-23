@@ -60,7 +60,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     /**
      * Returns a new DictionaryMap that is a deep copy of the original
      */
-    public ShortDictionaryMap(DictionaryMap original) {
+    public ShortDictionaryMap(DictionaryMap original) throws NoKeysAvailableException {
         valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
 
         for (int i = 0; i < original.size(); i++) {
@@ -217,7 +217,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     }
 
     @Override
-    public void append(String value) {
+    public void append(String value) throws NoKeysAvailableException {
         short key = getKeyForValue(value);
         if (key == DEFAULT_RETURN_VALUE) {
             key = getValueId();
@@ -226,11 +226,11 @@ public class ShortDictionaryMap implements DictionaryMap {
         values.add(key);
     }
 
-    private short getValueId() {
+    private short getValueId() throws NoKeysAvailableException {
         int nextValue = nextIndex.incrementAndGet();
         if (nextValue > Short.MAX_VALUE) {
             String msg = String.format("String column can only contain %d unique values. Column has more.", MAX_UNIQUE);
-            throw new IndexOutOfBoundsException(msg);
+            throw new NoKeysAvailableException(msg);
         }
         return (short) nextValue;
     }
@@ -251,8 +251,9 @@ public class ShortDictionaryMap implements DictionaryMap {
         }
     }
 
+
     @Override
-    public void set(int rowIndex, String stringValue) {
+    public void set(int rowIndex, String stringValue) throws NoKeysAvailableException {
         String str = StringColumnType.missingValueIndicator();
         if (stringValue != null) {
             str = stringValue;
@@ -389,11 +390,21 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     @Override
     public void appendMissing() {
-        append(StringColumnType.missingValueIndicator());
+        try {
+            append(StringColumnType.missingValueIndicator());
+        } catch (NoKeysAvailableException e) {
+            // This can't happen because missing value key is the first one allocated
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public boolean isMissing(int rowNumber) {
         return getKeyForIndex(rowNumber) == MISSING_VALUE;
+    }
+
+    @Override
+    public DictionaryMap promoteYourself() {
+        return this;
     }
 }

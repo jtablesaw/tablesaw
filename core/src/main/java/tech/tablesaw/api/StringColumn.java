@@ -21,6 +21,7 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.DictionaryMap;
+import tech.tablesaw.columns.strings.NoKeysAvailableException;
 import tech.tablesaw.columns.strings.ShortDictionaryMap;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
@@ -241,8 +242,22 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public StringColumn set(int rowIndex, String stringValue) {
-        lookupTable.set(rowIndex, stringValue);
+        try {
+            lookupTable.set(rowIndex, stringValue);
+        } catch (NoKeysAvailableException ex) {
+            lookupTable.promoteYourself();
+            try {
+                lookupTable.set(rowIndex, stringValue);
+            } catch (NoKeysAvailableException e) {
+                // this can't happen
+                throw new RuntimeException(e);
+            }
+        }
         return this;
+    }
+
+    private void promoteDictonaryMap(DictionaryMap lookupTable) {
+        lookupTable = lookupTable.promoteYourself();
     }
 
     @Override
@@ -308,7 +323,19 @@ public class StringColumn extends AbstractColumn<String>
 
     @Override
     public StringColumn appendCell(String object) {
-        lookupTable.append(StringColumnType.DEFAULT_PARSER.parse(object));
+        String str = StringColumnType.DEFAULT_PARSER.parse(object);
+        try {
+            lookupTable.append(str);
+        } catch (NoKeysAvailableException ex) {
+            lookupTable.promoteYourself();
+            try {
+                lookupTable.append(str);
+            } catch (NoKeysAvailableException e) {
+                // this can't happen
+                throw new RuntimeException(e);
+            }
+        }
+
         return this;
     }
 
