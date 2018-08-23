@@ -22,6 +22,7 @@ import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.columns.strings.StringColumnType;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -371,7 +372,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (TimeColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+                newColumn.append(StringColumnType.missingValueIndicator());
             } else {
                 String hm = Strings.padStart(String.valueOf(PackedLocalTime.getHour(c1)), 2, '0');
                 hm = hm + "-" + Strings.padStart(

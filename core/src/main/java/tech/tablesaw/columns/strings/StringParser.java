@@ -5,8 +5,6 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import static tech.tablesaw.api.StringColumn.MISSING_VALUE;
-
 public class StringParser extends AbstractParser<String> {
 
     public StringParser(ColumnType columnType) {
@@ -28,7 +26,7 @@ public class StringParser extends AbstractParser<String> {
     @Override
     public String parse(String s) {
         if (isMissing(s)) {
-            return MISSING_VALUE;
+            return StringColumnType.missingValueIndicator();
         }
         return s;
     }

@@ -14,7 +14,6 @@
 
 package tech.tablesaw.columns.strings;
 
-import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.util.StringUtils;
 
 import java.util.function.BiPredicate;
@@ -24,9 +23,9 @@ import java.util.regex.Pattern;
 
 public class StringPredicates {
 
-    public static final Predicate<String> isMissing = i -> i.equals(StringColumn.MISSING_VALUE);
+    public static final Predicate<String> isMissing = i -> i.equals(StringColumnType.missingValueIndicator());
 
-    public static final Predicate<String> isNotMissing = i -> !i.equals(StringColumn.MISSING_VALUE);
+    public static final Predicate<String> isNotMissing = i -> !i.equals(StringColumnType.missingValueIndicator());
 
     public static final Predicate<String> isUpperCase = StringUtils::isAllUpperCase;
 

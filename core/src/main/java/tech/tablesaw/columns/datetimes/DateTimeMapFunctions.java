@@ -14,33 +14,7 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.asLocalDateTime;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.daysUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfMonth;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfWeek;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfYear;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getHour;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinute;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinuteOfDay;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMonthValue;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getQuarter;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getSecondOfDay;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getWeekOfYear;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getYear;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.hoursUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.minutesUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.monthsUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.pack;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.weeksUntil;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.yearsUntil;
-
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.UnsupportedTemporalTypeException;
-
 import com.google.common.base.Strings;
-
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.IntColumn;
@@ -50,6 +24,14 @@ import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.columns.strings.StringColumnType;
+
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.UnsupportedTemporalTypeException;
+
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
 
 public interface DateTimeMapFunctions extends Column<LocalDateTime> {
 
@@ -184,7 +166,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+                newColumn.append(StringColumnType.missingValueIndicator());
             } else {
                 newColumn.append(Month.of(getMonthValue(c1)).name());
             }
@@ -205,7 +187,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+                newColumn.append(StringColumnType.missingValueIndicator());
             } else {
                 String yq = String.valueOf(getYear(c1)) + "-" + getQuarter(c1);
                 newColumn.append(yq);
@@ -227,7 +209,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+                newColumn.append(StringColumnType.missingValueIndicator());
             } else {
                 String ym = String.valueOf(getYear(c1));
                 ym = ym + "-" + Strings.padStart(
@@ -251,7 +233,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+                newColumn.append(StringColumnType.missingValueIndicator());
             } else {
                 String ym = String.valueOf(getYear(c1));
                 ym = ym + "-" + Strings.padStart(
@@ -275,7 +257,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+                newColumn.append(StringColumnType.missingValueIndicator());
             } else {
                 String hm = Strings.padStart(String.valueOf(getHour(c1)), 2, '0');
                 hm = hm + ":" + Strings.padStart(
@@ -299,7 +281,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+                newColumn.append(StringColumnType.missingValueIndicator());
             } else {
                 String ym = String.valueOf(getYear(c1));
                 ym = ym + "-" + Strings.padStart(
@@ -345,7 +327,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+                newColumn.append(StringColumnType.missingValueIndicator());
             } else {
                 newColumn.append(getDayOfWeek(c1).toString());
             }

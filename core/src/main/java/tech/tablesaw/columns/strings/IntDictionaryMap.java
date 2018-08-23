@@ -1,16 +1,15 @@
 package tech.tablesaw.columns.strings;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
-import it.unimi.dsi.fastutil.shorts.Short2IntMap;
-import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
-import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
-import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrays;
-import it.unimi.dsi.fastutil.shorts.ShortCollection;
-import it.unimi.dsi.fastutil.shorts.ShortComparator;
-import it.unimi.dsi.fastutil.shorts.ShortListIterator;
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntCollection;
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntListIterator;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
@@ -29,55 +28,49 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * A map that supports reversible key value pairs of int-String
  */
-public class ShortDictionaryMap implements DictionaryMap {
+public class IntDictionaryMap implements DictionaryMap {
 
     // The maximum number of unique values or categories that I can hold. If the column has more unique values,
     // use a TextColumn
-    private static final int MAX_UNIQUE = Short.MAX_VALUE - Short.MIN_VALUE;
+    private static final int MAX_UNIQUE = Integer.MAX_VALUE;
 
-    private static final short MISSING_VALUE = Short.MAX_VALUE;
+    private static final int MISSING_VALUE = Integer.MAX_VALUE;
 
-    private static final short DEFAULT_RETURN_VALUE = Short.MIN_VALUE;
+    private static final int DEFAULT_RETURN_VALUE = Integer.MIN_VALUE;
 
-    private final ShortComparator reverseDictionarySortComparator = (i, i1) -> -getValueForShortKey(i).compareTo(getValueForShortKey(i1));
+    private final IntComparator reverseDictionarySortComparator = (i, i1) -> -getValueForKey(i).compareTo(getValueForKey(i1));
 
-    private final ShortComparator dictionarySortComparator = (i, i1) -> getValueForShortKey(i).compareTo(getValueForShortKey(i1));
+    private final IntComparator dictionarySortComparator = (i, i1) -> getValueForKey(i).compareTo(getValueForKey(i1));
 
     // holds a key for each element in the column. the key can be used to lookup the backing string value
-    private ShortArrayList values = new ShortArrayList();
+    private IntArrayList values = new IntArrayList();
 
     private final AtomicInteger nextIndex = new AtomicInteger(DEFAULT_RETURN_VALUE);
 
     // we maintain two maps, one from strings to keys, and the second from keys to strings.
-    private final Short2ObjectMap<String> keyToValue = new Short2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<String> keyToValue = new Int2ObjectOpenHashMap<>();
 
-    private final Object2ShortOpenHashMap<String> valueToKey = new Object2ShortOpenHashMap<>();
-
-    public ShortDictionaryMap() {
-        valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
-    }
+    private final Object2IntOpenHashMap<String> valueToKey = new Object2IntOpenHashMap<>();
 
     /**
      * Returns a new DictionaryMap that is a deep copy of the original
      */
-    public ShortDictionaryMap(DictionaryMap original) throws NoKeysAvailableException {
+    IntDictionaryMap(DictionaryMap original) throws NoKeysAvailableException {
         valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
 
         for (int i = 0; i < original.size(); i++) {
             String value = original.getValueForIndex(i);
-            short key = getValueId();
-            keyToValue.put(key, value);
-            valueToKey.put(value, key);
+            append(value);
         }
     }
 
-    private void put(short key, String value) {
+    private void put(int key, String value) {
         keyToValue.put(key, value);
         valueToKey.put(value, key);
     }
 
-    private short getKeyForValue(String value) {
-        return valueToKey.getShort(value);
+    private int getKeyForValue(String value) {
+        return valueToKey.getInt(value);
     }
 
     /**
@@ -92,13 +85,13 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     @Override
     public String getValueForIndex(int rowIndex) {
-        short k = values.getShort(rowIndex);
+        int k = values.getInt(rowIndex);
         return getValueForKey(k);
     }
 
     @Override
     public int getKeyForIndex(int rowIndex) {
-        return values.getShort(rowIndex);
+        return values.getInt(rowIndex);
     }
 
     /**
@@ -126,44 +119,40 @@ public class ShortDictionaryMap implements DictionaryMap {
         return keyToValue.values().toArray(new String[size()]);
     }
 
-    private ShortCollection values() {
+    private IntCollection values() {
         return valueToKey.values();
     }
 
-    private Short2ObjectMap<String> keyToValueMap() {
+    private Int2ObjectMap<String> keyToValueMap() {
         return keyToValue;
     }
 
     @Override
     public void sortAscending() {
-        short[] elements = values.toShortArray();
-        ShortArrays.parallelQuickSort(elements, dictionarySortComparator);
-        this.values = new ShortArrayList(elements);
+        int[] elements = values.toIntArray();
+        IntArrays.parallelQuickSort(elements, dictionarySortComparator);
+        this.values = new IntArrayList(elements);
     }
 
     @Override
     public String getValueForKey(int key) {
-        return keyToValue.get((short) key);
-    }
-
-    private String getValueForShortKey(short key) {
         return keyToValue.get(key);
     }
 
     @Override
     public void sortDescending() {
-        short[] elements = values.toShortArray();
-        ShortArrays.parallelQuickSort(elements, reverseDictionarySortComparator);
-        this.values = new ShortArrayList(elements);
+        int[] elements = values.toIntArray();
+        IntArrays.parallelQuickSort(elements, reverseDictionarySortComparator);
+        this.values = new IntArrayList(elements);
     }
 
     public int countOccurrences(String value) {
         if (!contains(value)) {
             return 0;
         }
-        short key = getKeyForValue(value);
+        int key = getKeyForValue(value);
         int count = 0;
-        for (short k : values) {
+        for (int k : values) {
             if (k == key) {
                 count++;
             }
@@ -179,7 +168,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     public IntArrayList dataAsIntArray() {
         IntArrayList copy = new IntArrayList(size());
         for (int i = 0; i < size(); i++) {
-            copy.add(values.getShort(i));
+            copy.add(values.getInt(i));
         }
         return copy;
     }
@@ -199,9 +188,9 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     @Override
     public Selection selectIsIn(String... strings) {
-        ShortArrayList keys = new ShortArrayList();
+        IntArrayList keys = new IntArrayList();
         for (String string : strings) {
-            short key = getKeyForValue(string);
+            int key = getKeyForValue(string);
             if (key != DEFAULT_RETURN_VALUE) {
                 keys.add(key);
             }
@@ -209,7 +198,7 @@ public class ShortDictionaryMap implements DictionaryMap {
 
         Selection results = new BitmapBackedSelection();
         for (int i = 0; i < values.size(); i++) {
-            if (keys.contains(values.getShort(i))) {
+            if (keys.contains(values.getInt(i))) {
                 results.add(i);
             }
         }
@@ -218,7 +207,7 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     @Override
     public void append(String value) throws NoKeysAvailableException {
-        short key;
+        int key;
         if (value == null || StringColumnType.missingValueIndicator().equals(value)) {
             key = MISSING_VALUE;
             put(key, value);
@@ -232,22 +221,22 @@ public class ShortDictionaryMap implements DictionaryMap {
         values.add(key);
     }
 
-    private short getValueId() throws NoKeysAvailableException {
+    private int getValueId() throws NoKeysAvailableException {
         int nextValue = nextIndex.incrementAndGet();
-        if (nextValue >= Short.MAX_VALUE) {
-            String msg = String.format("String column can only contain %d unique values. Column has more.", MAX_UNIQUE);
+        if (nextValue >= Integer.MAX_VALUE) {
+            String msg = String.format("String column can only contain %d unique values.", MAX_UNIQUE);
             throw new NoKeysAvailableException(msg);
         }
-        return (short) nextValue;
+        return nextValue;
     }
 
     /**
      * Given a key matching some string, add to the selection the index of every record that matches that key
      */
-    private void addValuesToSelection(Selection results, short key) {
+    private void addValuesToSelection(Selection results, int key) {
         if (key != DEFAULT_RETURN_VALUE) {
             int i = 0;
-            for (short next : values) {
+            for (int next : values) {
                 if (key == next) {
                     results.add(i);
                 }
@@ -263,7 +252,7 @@ public class ShortDictionaryMap implements DictionaryMap {
         if (stringValue != null) {
             str = stringValue;
         }
-        short valueId = getKeyForValue(str);
+        int valueId = getKeyForValue(str);
         if (valueId == DEFAULT_RETURN_VALUE) {
             valueId = getValueId();
             put(valueId, str);
@@ -286,16 +275,16 @@ public class ShortDictionaryMap implements DictionaryMap {
         StringColumn categories = StringColumn.create("Category");
         IntColumn counts = IntColumn.create("Count");
 
-        Short2IntMap valueToCount = new Short2IntOpenHashMap();
+        Int2IntMap valueToCount = new Int2IntOpenHashMap();
 
-        for (short next : values) {
+        for (int next : values) {
             if (valueToCount.containsKey(next)) {
                 valueToCount.put(next, valueToCount.get(next) + 1);
             } else {
                 valueToCount.put(next, 1);
             }
         }
-        for (Map.Entry<Short, Integer> entry : valueToCount.short2IntEntrySet()) {
+        for (Map.Entry<Integer, Integer> entry : valueToCount.int2IntEntrySet()) {
             categories.append(getValueForKey(entry.getKey()));
             counts.append(entry.getValue());
         }
@@ -311,7 +300,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     @Override
     public Selection isEqualTo(String string) {
         Selection results = new BitmapBackedSelection();
-        short key = getKeyForValue(string);
+        int key = getKeyForValue(string);
         addValuesToSelection(results, key);
         return results;
     }
@@ -328,13 +317,13 @@ public class ShortDictionaryMap implements DictionaryMap {
         List<BooleanColumn> results = new ArrayList<>();
 
         // createFromCsv the necessary columns
-        for (Short2ObjectMap.Entry<String> entry : keyToValueMap().short2ObjectEntrySet()) {
+        for (Int2ObjectMap.Entry<String> entry : keyToValueMap().int2ObjectEntrySet()) {
             BooleanColumn column = BooleanColumn.create(entry.getValue());
             results.add(column);
         }
 
         // iterate over the values, updating the dummy variable columns as appropriate
-        for (short next : values) {
+        for (int next : values) {
             String category = getValueForKey(next);
             for (BooleanColumn column : results) {
                 if (category.equals(column.name())) {
@@ -354,11 +343,11 @@ public class ShortDictionaryMap implements DictionaryMap {
      */
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(byteSize()).putShort((short) getKeyForIndex(rowNumber)).array();
+        return ByteBuffer.allocate(byteSize()).putInt(getKeyForIndex(rowNumber)).array();
     }
 
     private int byteSize() {
-        return 2;
+        return 4;
     }
 
     /**
@@ -379,7 +368,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     public Iterator<String> iterator() {
         return new Iterator<String>() {
 
-            private final ShortListIterator valuesIt = values.iterator();
+            private final IntListIterator valuesIt = values.iterator();
 
             @Override
             public boolean hasNext() {
@@ -388,7 +377,7 @@ public class ShortDictionaryMap implements DictionaryMap {
 
             @Override
             public String next() {
-                return getValueForKey(valuesIt.nextShort());
+                return getValueForKey(valuesIt.nextInt());
             }
         };
     }
@@ -410,16 +399,6 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     @Override
     public DictionaryMap promoteYourself() {
-
-        IntDictionaryMap dictionaryMap;
-
-        try {
-            dictionaryMap = new IntDictionaryMap(this);
-        } catch (NoKeysAvailableException e) {
-            // this should never happen;
-            throw new RuntimeException(e);
-        }
-
-        return dictionaryMap;
+        return this;
     }
 }

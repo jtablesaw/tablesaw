@@ -1,7 +1,5 @@
 package tech.tablesaw.columns.strings;
 
-import tech.tablesaw.api.StringColumn;
-
 import java.util.function.Function;
 
 public class StringColumnFormatter {
@@ -24,7 +22,7 @@ public class StringColumnFormatter {
 
     public String format(String value) {
 
-        if (StringColumn.MISSING_VALUE.equals(value)) {
+        if (StringColumnType.missingValueIndicator().equals(value)) {
             return missingString;
         }
         if (formatter == null) {

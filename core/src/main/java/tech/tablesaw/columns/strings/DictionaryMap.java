@@ -36,8 +36,6 @@ public interface DictionaryMap {
 
     Selection selectIsIn(String... strings);
 
-    void addValuesToSelection(Selection results, short key);
-
     void append(String value) throws NoKeysAvailableException;
 
     void set(int rowIndex, String stringValue) throws NoKeysAvailableException;

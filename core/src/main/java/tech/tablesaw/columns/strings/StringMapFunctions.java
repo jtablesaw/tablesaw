@@ -43,7 +43,7 @@ public interface StringMapFunctions extends Column<String> {
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
             if (value == null) {
-                newColumn.append(StringColumn.MISSING_VALUE);
+                newColumn.append(StringColumnType.missingValueIndicator());
             } else {
                 newColumn.append(value.toUpperCase());
             }
