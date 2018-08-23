@@ -20,9 +20,9 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.DictionaryMap;
 import tech.tablesaw.columns.strings.NoKeysAvailableException;
-import tech.tablesaw.columns.strings.ShortDictionaryMap;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringFilters;
@@ -53,7 +53,7 @@ public class StringColumn extends AbstractColumn<String>
         implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
     // a bidirectional map of keys to backing string values.
-    private DictionaryMap lookupTable = new ShortDictionaryMap();
+    private DictionaryMap lookupTable = new ByteDictionaryMap();
 
     private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
@@ -323,20 +323,7 @@ public class StringColumn extends AbstractColumn<String>
 
     @Override
     public StringColumn appendCell(String object) {
-        String str = StringColumnType.DEFAULT_PARSER.parse(object);
-        try {
-            lookupTable.append(str);
-        } catch (NoKeysAvailableException ex) {
-            lookupTable.promoteYourself();
-            try {
-                lookupTable.append(str);
-            } catch (NoKeysAvailableException e) {
-                // this can't happen
-                throw new RuntimeException(e);
-            }
-        }
-
-        return this;
+        return appendCell(object, StringColumnType.DEFAULT_PARSER);
     }
 
     @Override
@@ -490,7 +477,17 @@ public class StringColumn extends AbstractColumn<String>
      * Added for naming consistency with all other columns
      */
     public StringColumn append(String value) {
-        appendCell(value);
+        try {
+            lookupTable.append(value);
+        } catch (NoKeysAvailableException ex) {
+            lookupTable = lookupTable.promoteYourself();
+            try {
+                lookupTable.append(value);
+            } catch (NoKeysAvailableException e) {
+                // this can't happen
+                throw new RuntimeException(e);
+            }
+        }
         return this;
     }
 
@@ -604,5 +601,4 @@ public class StringColumn extends AbstractColumn<String>
     public StringColumn sampleX(double proportion) {
         return (StringColumn) super.sampleX(proportion);
     }
-
 }
