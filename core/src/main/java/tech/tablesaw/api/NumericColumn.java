@@ -44,6 +44,11 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
         return output;
     }
 
+    void append(int value);
+    void append(short value);
+    void append(byte value);
+    void append(long value);
+
     @Override
     default Selection eval(final DoublePredicate predicate) {
         final Selection bitmap = new BitmapBackedSelection();
@@ -106,6 +111,27 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
         }
         return bitmap;
     }
+
+    /**
+     * Returns the largest ("top") n values in the column
+     * TODO(lwhite): Consider whether this should exclude missing
+     *
+     * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+     *          number of observations in the column
+     * @return A list, possibly empty, of the largest observations
+     */
+    public abstract NumericColumn<T> top(final int n);
+
+    /**
+     * Returns the smallest ("bottom") n values in the column
+     * TODO(lwhite): Consider whether this should exclude missing
+     *
+     * @param n The maximum number of records to return. The actual number will be smaller if n is greater than the
+     *          number of observations in the column
+     * @return A list, possibly empty, of the smallest n observations
+     */
+    public abstract NumericColumn<T> bottom(final int n);
+
 
     @Override
     default Selection isIn(final Number... numbers) {

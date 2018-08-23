@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
+import static tech.tablesaw.api.ColumnType.SHORT;
+
 public class ShortParser extends AbstractParser<Short> {
 
     public ShortParser(ShortColumnType columnType) {
@@ -54,6 +56,20 @@ public class ShortParser extends AbstractParser<Short> {
         if (s.endsWith(".0")) {
             s = s.substring(0, s.length() - 2);
         }
-        return Short.parseShort(AbstractParser.remove(s, ','));
-    }
+        String preparedString = AbstractParser.remove(s, ',');
+        try {
+            return Short.parseShort(preparedString);
+        } catch (NumberFormatException e) {
+            long intResult;
+
+            intResult = Long.parseLong(s);
+
+            if (intResult > Short.MAX_VALUE) {
+                // if it hasn't blown up parsing as a long, we know it was too big for short, but is a real whole number
+                // now we can upgrade our data holder to one that holds integers and try again
+                throw new NumberOutOfRangeException(str, intResult, SHORT);
+            }
+            else throw e;
+        }
+     }
 }

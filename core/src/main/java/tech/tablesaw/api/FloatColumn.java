@@ -71,6 +71,26 @@ public class FloatColumn extends NumberColumn<Float> {
     }
 
     @Override
+    public void append(int value) {
+        data.add(value);
+    }
+
+    @Override
+    public void append(short value) {
+        data.add(value);
+    }
+
+    @Override
+    public void append(byte value) {
+        data.add(value);
+    }
+
+    @Override
+    public void append(long value) {
+        data.add(value);
+    }
+
+    @Override
     public FloatColumn unique() {
         final FloatSet values = new FloatOpenHashSet();
         for (int i = 0; i < size(); i++) {

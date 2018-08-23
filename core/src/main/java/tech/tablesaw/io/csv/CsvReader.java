@@ -179,7 +179,6 @@ public class CsvReader {
         if (bytes != null) {
             return new InputStreamReader(new ByteArrayInputStream(bytes));
         }
-
         if (options.inputStream() != null) {
             return new InputStreamReader(options.inputStream());
         }

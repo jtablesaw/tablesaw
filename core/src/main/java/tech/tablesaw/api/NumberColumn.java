@@ -33,6 +33,10 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
         this.data = data;
     }
 
+    protected NumberColumn(final ColumnType type, final String name) {
+        super(type, name);
+    }
+
     protected abstract NumberColumn<T> createCol(final String name, int size);
 
     public void setPrintFormatter(final NumberFormat format, final String missingValueString) {
@@ -145,6 +149,11 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
         }
         return count;
     }
+
+    abstract public void append(int value);
+    abstract public void append(short value);
+    abstract public void append(byte value);
+    abstract public void append(long value);
 
     @Override
     public Object[] asObjectArray() {

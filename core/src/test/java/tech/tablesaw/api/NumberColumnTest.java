@@ -102,8 +102,8 @@ public class NumberColumnTest {
 
     @Test
     public void testSummarize() {
-	IntColumn c = IntColumn.indexColumn("t", 99, 1);
-	IntColumn c2 = c.copy();
+	    IntColumn c = IntColumn.indexColumn("t", 99, 1);
+	    IntColumn c2 = c.copy();
         c2.appendCell("");
         double c2Variance = c2.variance();
         double cVariance = StatUtils.variance(c.asDoubleArray());

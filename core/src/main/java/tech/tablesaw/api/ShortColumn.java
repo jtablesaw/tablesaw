@@ -148,9 +148,18 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
         return result;
     }
 
-    public ShortColumn append(short i) {
+    public void append(short i) {
         data.add(i);
-        return this;
+    }
+
+    @Override
+    public void append(byte value) {
+        data.add(value);
+    }
+
+    @Override
+    public void append(long value) {
+        data.add((short) value);
     }
 
     public ShortColumn append(Short val) {
@@ -215,12 +224,19 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     @Override
     public ShortColumn append(Column<Short> column, int row) {
         Preconditions.checkArgument(column.type() == this.type());
-        return append(((ShortColumn) column).getShort(row));
+        append(((ShortColumn) column).getShort(row));
+        return this;
     }
 
     @Override
     public ShortColumn appendMissing() {
-        return append(ShortColumnType.missingValueIndicator());
+        append(ShortColumnType.missingValueIndicator());
+        return this;
+    }
+
+    @Override
+    public void append(int value) {
+        data.add((short) value);
     }
 
     @Override
@@ -295,7 +311,8 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
             return appendMissing();
         }
         if (obj instanceof Short) {
-            return append((short) obj);
+            append((short) obj);
+            return this;
         }
         throw new IllegalArgumentException("Could not append " + obj.getClass());
     }
@@ -303,7 +320,8 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     @Override
     public ShortColumn appendCell(final String value) {
         try {
-            return append(ShortColumnType.DEFAULT_PARSER.parseShort(value));
+            append(ShortColumnType.DEFAULT_PARSER.parseShort(value));
+            return this;
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Error adding value to column " + name() + ": " + e.getMessage());
         }
@@ -312,7 +330,8 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     @Override
     public ShortColumn appendCell(final String value, AbstractParser<?> parser) {
         try {
-            return append(parser.parseShort(value));
+            append(parser.parseShort(value));
+            return this;
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
         }

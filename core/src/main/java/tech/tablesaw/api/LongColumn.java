@@ -159,9 +159,8 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
         return result;
     }
 
-    public LongColumn append(long i) {
+    public void append(long i) {
         data.add(i);
-        return this;
     }
 
     public LongColumn append(Long val) {
@@ -251,12 +250,29 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     @Override
     public LongColumn append(Column<Long> column, int row) {
         Preconditions.checkArgument(column.type() == this.type());
-        return append(((LongColumn) column).getLong(row));
+        append(((LongColumn) column).getLong(row));
+        return this;
     }
 
     @Override
     public LongColumn appendMissing() {
-        return append(LongColumnType.missingValueIndicator());
+        append(LongColumnType.missingValueIndicator());
+        return this;
+    }
+
+    @Override
+    public void append(int value) {
+        data.add(value);
+    }
+
+    @Override
+    public void append(short value) {
+        data.add(value);
+    }
+
+    @Override
+    public void append(byte value) {
+        data.add(value);
     }
 
     @Override
@@ -331,7 +347,8 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
             return appendMissing();
         }
         if (obj instanceof Long) {
-            return append((long) obj);
+            append((long) obj);
+            return this;
         }
         throw new IllegalArgumentException("Could not append " + obj.getClass());
     }
@@ -339,7 +356,8 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     @Override
     public LongColumn appendCell(final String value) {
         try {
-            return append(LongColumnType.DEFAULT_PARSER.parseLong(value));
+            append(LongColumnType.DEFAULT_PARSER.parseLong(value));
+            return this;
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Error adding value to column " + name() + ": " + e.getMessage());
         }
@@ -348,7 +366,8 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     @Override
     public LongColumn appendCell(final String value, AbstractParser<?> parser) {
         try {
-            return append(parser.parseInt(value));
+            append(parser.parseInt(value));
+            return this;
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
         }

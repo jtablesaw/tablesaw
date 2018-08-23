@@ -46,6 +46,17 @@ public class IntParser extends AbstractParser<Integer> {
         return parseInt(s);
     }
 
+    public short parseShort(String str) {
+        if (isMissing(str)) {
+            return ShortColumnType.missingValueIndicator();
+        }
+        String s = str;
+        if (s.endsWith(".0")) {
+            s = s.substring(0, s.length() - 2);
+        }
+        return Short.parseShort(AbstractParser.remove(s, ','));
+    }
+
     @Override
     public int parseInt(String str) {
         if (isMissing(str)) {

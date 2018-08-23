@@ -201,9 +201,23 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         return this;
     }
 
-    public DoubleColumn append(int i) {
+    public void append(int i) {
         data.add(i);
-        return this;
+    }
+
+    @Override
+    public void append(short value) {
+        data.add(value);
+    }
+
+    @Override
+    public void append(byte value) {
+        data.add(value);
+    }
+
+    @Override
+    public void append(long value) {
+        data.add(value);
     }
 
     @Override
