@@ -30,9 +30,9 @@ public class CsvReadPerformanceTest {
     private static final ColumnType[] types = {
             TEXT,       // 0     ID
             STRING,     // 1     CNTYFIPS
-            STRING,     // 2     Ori
+            TEXT,       // 2     Ori
             STRING,     // 3     State
-            STRING,     // 4     Agency
+            TEXT,       // 4     Agency
             STRING,     // 5     Agentype
             STRING,     // 6     Source
             STRING,     // 7     Solved
@@ -72,6 +72,8 @@ public class CsvReadPerformanceTest {
         stopwatch.stop();
         System.out.println("Large file (752,313 rows) read: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms with type detection.");
         System.out.println(details.shape());
+        System.out.println(details.structure().printAll());
+        System.out.println(details);
 
         stopwatch.reset();
         stopwatch.start();
