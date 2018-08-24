@@ -57,6 +57,13 @@
             <version>2.6.0</version>
         </dependency>
         <dependency>
+            <groupId>com.github.haifengl</groupId>
+            <artifactId>smile-core</artifactId>
+            <version>1.5.1 </version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-core</artifactId>
             <version>0.25.3-SNAPSHOT</version>
