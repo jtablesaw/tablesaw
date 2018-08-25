@@ -8,7 +8,6 @@ Tablesaw User Guide
 * [Importing Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data)
 
 * Transforming Data
-
   * [Working with Columns](https://jtablesaw.github.io/tablesaw/userguide/columns)
   * [Working with Tables](https://jtablesaw.github.io/tablesaw/userguide/tables)
     * [Sorting](https://jtablesaw.github.io/tablesaw/userguide/sorting)
@@ -18,7 +17,6 @@ Tablesaw User Guide
   * [Working with Rows](https://jtablesaw.github.io/tablesaw/userguide/rows)
 
 * Plotting and Visualization
-
   * [Introduction](https://jtablesaw.github.io/tablesaw/userguide/Introduction_to_Plotting)
   * [Simple plotting API: Bars, Pareto Charts & Pies](https://jtablesaw.github.io/tablesaw/userguide/BarsAndPies)
   * [Simple plotting API: Histograms and Box plots](https://jtablesaw.github.io/tablesaw/userguide/Histograms)
@@ -27,7 +25,6 @@ Tablesaw User Guide
   * [Writing Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/Visualization_custom)
 
 * Data Science
-
   * Introduction
   * [Linear Regression with Smile and Tablesaw: Moneyball Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball Linear regression)
   * [Creating cross-tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs)
@@ -37,5 +34,3 @@ Tablesaw User Guide
   * Classification using Random Forests (with Smile)
 
 * Using Tablesaw in Jupyter
-
-  
