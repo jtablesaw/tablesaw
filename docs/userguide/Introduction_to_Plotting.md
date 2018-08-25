@@ -69,5 +69,3 @@ Unfortunately, this isn't as easy to do as it should be. The JavaFx  WebView com
 ## For more information
 
 See Tablesaw and the Tablesaw User Guide for more information.
-
-## 
