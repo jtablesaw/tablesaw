@@ -385,7 +385,7 @@ public class AggregateFunctions {
     public static final NumericAggregateFunction standardDeviation = stdDev;
 
     private static double[] removeMissing(NumericColumn<?> column) {
-        NumericColumn<?> numericColumn = (NumericColumn) column.removeMissing();
+        NumericColumn<?> numericColumn = (NumericColumn<?>) column.removeMissing();
         return numericColumn.asDoubleArray();
     }
 

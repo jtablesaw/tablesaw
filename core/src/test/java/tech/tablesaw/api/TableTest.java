@@ -94,7 +94,6 @@ public class TableTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void testRowWiseAddition2() {
         double[] a = {3, 4, 5};
         double[] b = {3, 4, 5};
@@ -488,7 +487,7 @@ public class TableTest {
         }
     }
 
-    private DoubleColumn sum(NumberColumn<Double> ... columns) {
+    private DoubleColumn sum(DoubleColumn... columns) {
         int size = columns[0].size();
         DoubleColumn result = DoubleColumn.create("sum", size);
         for (int r = 0; r < size; r++) {

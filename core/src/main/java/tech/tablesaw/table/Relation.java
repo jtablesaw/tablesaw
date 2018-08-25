@@ -319,8 +319,7 @@ public abstract class Relation {
         return columns().stream().filter(e->e.type() == ColumnType.STRING).toArray(StringColumn[]::new);
     }
 
-    @SuppressWarnings("rawtypes")
-    public NumericColumn[] numberColumns() {
+    public NumericColumn<?>[] numberColumns() {
         return columns().stream().filter(e->e instanceof NumericColumn<?>).toArray(NumericColumn[]::new);
     }
 
