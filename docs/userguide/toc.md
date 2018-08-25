@@ -4,9 +4,7 @@ Tablesaw User Guide
 ## Contents
 
 * [Introduction](https://jtablesaw.github.io/tablesaw/userguide/introduction)
-
 * [Importing Data](https://jtablesaw.github.io/tablesaw/userguide/importing_data)
-
 * Transforming Data
   * [Working with Columns](https://jtablesaw.github.io/tablesaw/userguide/columns)
   * [Working with Tables](https://jtablesaw.github.io/tablesaw/userguide/tables)
@@ -15,7 +13,6 @@ Tablesaw User Guide
     * [Mapping](https://jtablesaw.github.io/tablesaw/userguide/mapping)
     * [Summarizing (Aggregation/Reducing)](https://jtablesaw.github.io/tablesaw/userguide/reducing)
   * [Working with Rows](https://jtablesaw.github.io/tablesaw/userguide/rows)
-
 * Plotting and Visualization
   * [Introduction](https://jtablesaw.github.io/tablesaw/userguide/Introduction_to_Plotting)
   * [Simple plotting API: Bars, Pareto Charts & Pies](https://jtablesaw.github.io/tablesaw/userguide/BarsAndPies)
@@ -23,7 +20,6 @@ Tablesaw User Guide
   * [Simple plotting API: 2D and 3D Scatter plots and Bubble charts](https://jtablesaw.github.io/tablesaw/userguide/ScatterPlots)
   * [Simple plotting API: Time Series, Line Charts and Area charts](https://jtablesaw.github.io/tablesaw/userguide/TimeSeries)
   * [Writing Custom Visualizations](https://jtablesaw.github.io/tablesaw/userguide/Visualization_custom)
-
 * Data Science
   * Introduction
   * [Linear Regression with Smile and Tablesaw: Moneyball Tutorial](https://jtablesaw.github.io/tablesaw/userguide/ml/Moneyball Linear regression)
@@ -32,5 +28,4 @@ Tablesaw User Guide
   * Hierarchical clustering (with Smile)
   * Classification using Logistic Regression (with Smile)
   * Classification using Random Forests (with Smile)
-
 * Using Tablesaw in Jupyter
