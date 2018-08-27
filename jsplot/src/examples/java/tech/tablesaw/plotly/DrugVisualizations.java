@@ -1,9 +1,12 @@
 package tech.tablesaw.plotly;
 
+import com.google.common.base.Stopwatch;
 import tech.tablesaw.AbstractExample;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
+
+import java.util.concurrent.TimeUnit;
 
 import static tech.tablesaw.api.ColumnType.FLOAT;
 import static tech.tablesaw.api.ColumnType.INTEGER;
@@ -39,6 +42,7 @@ public class DrugVisualizations extends AbstractExample {
 
     public static void main(String[] args) throws Exception {
 
+        Stopwatch stopwatch = Stopwatch.createStarted();
 
         Table scripts = Table.read()
                 .csv(CsvReadOptions.builder("../data/PartD_Prescriber_16.txt")
@@ -46,6 +50,8 @@ public class DrugVisualizations extends AbstractExample {
                         .columnTypes(columnTypes)
                         .build());
 
+        stopwatch.stop();
+        System.out.println("loaded " + scripts.shape() + " in " + stopwatch.elapsed(TimeUnit.SECONDS) + " seconds");
         scripts.setName("prescriptions");
 
         out(scripts.structure().printAll());
