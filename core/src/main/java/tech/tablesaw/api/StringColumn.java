@@ -255,11 +255,7 @@ public class StringColumn extends AbstractColumn<String>
         }
         return this;
     }
-
-    private void promoteDictonaryMap(DictionaryMap lookupTable) {
-        lookupTable = lookupTable.promoteYourself();
-    }
-
+    
     @Override
     public int countUnique() {
         return lookupTable.size();
