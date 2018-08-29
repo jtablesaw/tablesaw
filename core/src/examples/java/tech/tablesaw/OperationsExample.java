@@ -28,7 +28,7 @@ public class OperationsExample extends AbstractExample {
 
     public static void main(String[] args) throws Exception {
 
-        Table ops = Table.create("../data/operations.csv");
+        Table ops = Table.read().csv("../data/operations.csv");
 
         out(ops.structure());
         out(ops);

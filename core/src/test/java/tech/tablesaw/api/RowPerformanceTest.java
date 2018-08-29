@@ -61,17 +61,6 @@ public class RowPerformanceTest {
         stopwatch.stop();
         System.out.println("one getDouble(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
 
-        // run with one getInt() (casting from double)
-        row = new Row(t);
-        stopwatch.reset();
-        stopwatch.start();
-        while(row.hasNext()) {
-            row.next();
-            row.getInt("lowValue");
-        }
-        stopwatch.stop();
-        System.out.println("one getInt(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
-
         // run with one getPackedDateTime()
         row = new Row(t);
         stopwatch.reset();
@@ -133,17 +122,6 @@ public class RowPerformanceTest {
         }
         stopwatch.stop();
         System.out.println("one getDouble(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
-
-        // run with one getInt() (casting from double)
-        row = new Row(t);
-        stopwatch.reset();
-        stopwatch.start();
-        while(row.hasNext()) {
-            row.next();
-            row.getInt(2);
-        }
-        stopwatch.stop();
-        System.out.println("one getInt(): " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + " ms");
 
         // run with one getPackedDateTime()
         row = new Row(t);
