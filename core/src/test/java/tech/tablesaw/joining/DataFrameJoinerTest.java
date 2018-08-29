@@ -256,6 +256,17 @@ public class DataFrameJoinerTest {
     }
     
     @Test
+    public void innerJoinStudentInstructorOnAge() {
+    	Table STUDENT = create_STUDENT();
+    	Table INSTRUCTOR = create_INSTRUCTOR();
+    	Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR);
+    	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
+    			"T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear"})));
+    	assertEquals(16, joined.columnCount());
+    	assertEquals(14, joined.rowCount());
+    }    
+    
+    @Test
     public void innerJoinStudentInstructorClassOnAge() {
     	Table STUDENT = create_STUDENT();
     	Table INSTRUCTOR = create_INSTRUCTOR();
@@ -263,7 +274,7 @@ public class DataFrameJoinerTest {
     	Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR,CLASS);
     	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
     			"T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear",
-    			"T3.ID"})));
+    	"T3.ID"})));
     	assertEquals(24, joined.columnCount());
     	assertEquals(14, joined.rowCount());
     }    
