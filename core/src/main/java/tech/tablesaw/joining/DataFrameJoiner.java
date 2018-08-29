@@ -42,6 +42,20 @@ public class DataFrameJoiner {
     }
 
     /**
+     * Constructor.  Takes an initial value to start the joinTableId.  Useful during
+     * multiple table joins so that each new table joined can have its duplicate columns
+     * distinguished from the other tables.
+     * @param table					The table to join on
+     * @param columnName			The column name to join on
+     * @param joinTableInitialId	The initial index used when naming duplicate columns, e.g. "T3.Age"
+     */
+    public DataFrameJoiner(Table table, String columnName, int joinTableInitialId) {
+    	this.table = table;
+    	joinTableId.set(joinTableInitialId);
+    	this.column = table.categoricalColumn(columnName);
+    }
+    
+    /**
      * Joins to the given tables assuming that they have a column of the name we're joining on
      *
      * @param tables The tables to join with
@@ -58,13 +72,21 @@ public class DataFrameJoiner {
      * @param tables The tables to join with
      */
     public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
-        Table joined = table;
-        for (Table table2 : tables) {
-          joined = inner(table2, column.name(), allowDuplicateColumnNames);
-        }
-        return joined;
-    }
-
+    	Table joined = table;
+    	
+    	for (int i=0; i<tables.length; i++) {
+    		Table currT = tables[i];
+    		// if first iteration then join to initial table
+    		if(joined == table) {
+    			joined = inner(currT, column.name(), allowDuplicateColumnNames);
+    		} // else join to result of last join
+    		else {
+    			joined = joined.join(column.name(), i+2)
+    					.inner(currT, column.name(), allowDuplicateColumnNames);
+    		}
+    	}
+    	return joined;
+    }    
     /**
      * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
      *
