@@ -14,6 +14,11 @@ public class NumberOutOfRangeException extends RuntimeException {
         this.failingType = columnType;
     }
 
+    public NumberOutOfRangeException(String inputValue, Long parsedValue) {
+        this.inputValue = inputValue;
+        this.parsedValue = parsedValue;
+    }
+
     public String getInputValue() {
         return inputValue;
     }

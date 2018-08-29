@@ -45,19 +45,19 @@ public class DateColumnMapTest {
         column1.appendInternal(day4);
         column1.appendInternal(day5);
 
-        IntColumn group = column1.timeWindow(ChronoUnit.DAYS, 7);
+        IntegerColumn group = column1.timeWindow(ChronoUnit.DAYS, 7);
         assertEquals(0, group.getInt(0));
         assertEquals(0, group.getInt(1));
         assertEquals(1, group.getInt(2));
         assertEquals(2, group.getInt(3));
 
-        IntColumn group2 = column1.timeWindow(ChronoUnit.WEEKS, 1);
+        IntegerColumn group2 = column1.timeWindow(ChronoUnit.WEEKS, 1);
         assertEquals(0, group2.getInt(0));
         assertEquals(0, group2.getInt(1));
         assertEquals(1, group2.getInt(2));
         assertEquals(2, group2.getInt(3));
 
-        IntColumn group3 = column1.timeWindow(ChronoUnit.MONTHS, 1);
+        IntegerColumn group3 = column1.timeWindow(ChronoUnit.MONTHS, 1);
         assertEquals(0, group3.getInt(0));
         assertEquals(0, group3.getInt(1));
         assertEquals(0, group3.getInt(2));
@@ -80,10 +80,10 @@ public class DateColumnMapTest {
         int day2 = pack(2018, 11, 23);
         DateColumn column2 = DateColumn.create("foo");
         column2.appendInternal(day2);
-        IntColumn days = column1.daysUntil(column2);
-        IntColumn weeks = column1.weeksUntil(column2);
-        IntColumn months = column1.monthsUntil(column2);
-        IntColumn years = column1.yearsUntil(column2);
+        IntegerColumn days = column1.daysUntil(column2);
+        IntegerColumn weeks = column1.weeksUntil(column2);
+        IntegerColumn months = column1.monthsUntil(column2);
+        IntegerColumn years = column1.yearsUntil(column2);
         assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.DAYS), days.getInt(0));
         assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.WEEKS), weeks.getInt(0));
         assertEquals(asLocalDate(day1).until(asLocalDate(day2), ChronoUnit.MONTHS), months.getInt(0));

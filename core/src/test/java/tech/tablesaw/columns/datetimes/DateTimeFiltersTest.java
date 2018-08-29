@@ -14,20 +14,18 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.IntegerColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.Selection;
+import static org.junit.Assert.*;
 
 public class DateTimeFiltersTest {
 
@@ -153,7 +151,7 @@ public class DateTimeFiltersTest {
 
         Table t = Table.create("Test");
         t.addColumns(dateTimeColumn);
-        IntColumn index = IntColumn.indexColumn("index", t.rowCount(), 0);
+        IntegerColumn index = IntegerColumn.indexColumn("index", t.rowCount(), 0);
         t.addColumns(index);
     }
 
@@ -170,7 +168,7 @@ public class DateTimeFiltersTest {
         dateTimeColumn.append(dateTime);
         dateTimeColumn.append(afterDate);
 
-        IntColumn index = IntColumn.indexColumn("index", dateTimeColumn.size(), 0);
+        IntegerColumn index = IntegerColumn.indexColumn("index", dateTimeColumn.size(), 0);
         Table t = Table.create("test", dateTimeColumn, index);
 
         assertTrue(dateTimeColumn.isOnOrBefore(date).contains(0));

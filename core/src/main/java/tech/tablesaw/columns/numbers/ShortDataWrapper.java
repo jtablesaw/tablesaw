@@ -1,32 +1,37 @@
-package tech.tablesaw.api;
+package tech.tablesaw.columns.numbers;
 
-import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
+import it.unimi.dsi.fastutil.shorts.ShortIterator;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
-import tech.tablesaw.columns.Column;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.IntColumnType;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.columns.numbers.ShortColumnType;
+import tech.tablesaw.filtering.predicates.ShortPredicate;
+import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
-public class ShortColumn extends NumberColumn<Short> implements CategoricalColumn<Short> {
+import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
-    private static final ShortColumnType COLUMN_TYPE = ColumnType.SHORT;
+public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<Integer> {
+
+    private static final short MISSING_VALUE = Short.MIN_VALUE;
+
+    private static final ShortPredicate isMissing = value -> value == MISSING_VALUE;
+
+    public static final IntParser DEFAULT_PARSER = new IntParser(ColumnType.INTEGER);
+
+    private static final int BYTE_SIZE = 2;
 
     /**
      * Compares two ints, such that a sort based on this comparator would sort in descending order
@@ -35,45 +40,37 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
 
     private final ShortArrayList data;
 
-    protected ShortColumn(final String name, ShortArrayList data) {
-        super(COLUMN_TYPE, name, data);
-        this.printFormatter = NumberColumnFormatter.ints();
+/*
+    @Override
+    public ShortParser customParser(CsvReadOptions options) {
+        return new ShortParser(this, options);
+    }
+*/
+
+    protected ShortDataWrapper(ShortArrayList data) {
         this.data = data;
     }
 
-    public static ShortColumn create(final String name) {
-        return new ShortColumn(name, new ShortArrayList());
+    public static ShortDataWrapper create(final short[] arr) {
+        return new ShortDataWrapper(new ShortArrayList(arr));
     }
 
-    public static ShortColumn create(final String name, final short[] arr) {
-        return new ShortColumn(name, new ShortArrayList(arr));
-    }
-
-    public static ShortColumn create(final String name, final int initialSize) {
-        return new ShortColumn(name, new ShortArrayList(initialSize));
-    }
-
-    @Override
-    public ShortColumn createCol(final String name, final int initialSize) {
-        return create(name, initialSize);
+    public static ShortDataWrapper create(final int initialSize) {
+        return new ShortDataWrapper(new ShortArrayList(initialSize));
     }
 
     public static boolean valueIsMissing(int value) {
-        return value == ShortColumnType.missingValueIndicator();
+        return value == MISSING_VALUE;
     }
 
     @Override
-    public Short get(int index) {
-        return getShort(index);
-    }
-
     public short getShort(int index) {
         return data.getShort(index);
     }
 
     @Override
-    public ShortColumn subset(final int[] rows) {
-        final ShortColumn c = this.emptyCopy();
+    public ShortDataWrapper subset(final int[] rows) {
+        final ShortDataWrapper c = this.emptyCopy();
         for (final int row : rows) {
             c.append(getShort(row));
         }
@@ -81,14 +78,14 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
-    public ShortColumn unique() {
+    public ShortDataWrapper unique() {
         final ShortSet values = new ShortOpenHashSet();
         for (int i = 0; i < size(); i++) {
             if (!isMissing(i)) {
                 values.add(getShort(i));
             }
         }
-        final ShortColumn column = ShortColumn.create(name() + " Unique values", values.size());
+        final ShortDataWrapper column = ShortDataWrapper.create(values.size());
         for (short value : values) {
             column.append(value);
         }
@@ -96,47 +93,47 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
-    public ShortColumn top(int n) {
+    public ShortDataWrapper top(int n) {
         final ShortArrayList top = new ShortArrayList();
         final short[] values = data.toShortArray();
         ShortArrays.parallelQuickSort(values, descendingComparator);
         for (int i = 0; i < n && i < values.length; i++) {
             top.add(values[i]);
         }
-        return new ShortColumn(name() + "[Top " + n  + "]", top);
+        return new ShortDataWrapper(top);
     }
 
     @Override
-    public ShortColumn bottom(final int n) {
+    public ShortDataWrapper bottom(final int n) {
         final ShortArrayList bottom = new ShortArrayList();
         final short[] values = data.toShortArray();
         ShortArrays.parallelQuickSort(values);
         for (int i = 0; i < n && i < values.length; i++) {
             bottom.add(values[i]);
         }
-        return new ShortColumn(name() + "[Bottoms " + n  + "]", bottom);
+        return new ShortDataWrapper(bottom);
     }
 
     @Override
-    public ShortColumn lag(int n) {
+    public ShortDataWrapper lag(int n) {
         final int srcPos = n >= 0 ? 0 : 0 - n;
         final short[] dest = new short[size()];
         final int destPos = n <= 0 ? 0 : n;
         final int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = ShortColumnType.missingValueIndicator();
+            dest[i] = MISSING_VALUE;
         }
 
         short[] array = data.toShortArray();
 
         System.arraycopy(array, srcPos, dest, destPos, length);
-        return new ShortColumn(name() + " lag(" + n + ")", new ShortArrayList(dest));
+        return new ShortDataWrapper(new ShortArrayList(dest));
     }
 
     @Override
-    public ShortColumn removeMissing() {
-        ShortColumn result = copy();
+    public ShortDataWrapper removeMissing() {
+        ShortDataWrapper result = copy();
         result.clear();
         ShortListIterator iterator = data.iterator();
         while (iterator.hasNext()) {
@@ -148,6 +145,96 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
         return result;
     }
 
+    @Override
+    public IntIterator intIterator() {
+        ShortListIterator listIterator = data.listIterator();
+
+        return new IntIterator() {
+
+            @Override
+            public int nextInt() {
+                return listIterator.nextShort();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return listIterator.hasNext();
+            }
+        };
+    }
+
+    public ShortIterator shortIterator() {
+        ShortListIterator listIterator = data.listIterator();
+
+        return new ShortIterator() {
+
+            @Override
+            public short nextShort() {
+                return listIterator.nextShort();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return listIterator.hasNext();
+            }
+        };
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        ShortListIterator listIterator = data.listIterator();
+
+        return new IntIterator() {
+
+            @Override
+            public int nextInt() {
+                return listIterator.nextShort();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return listIterator.hasNext();
+            }
+        };
+    }
+
+    @Override
+    public void clear() {
+        data.clear();
+    }
+
+    @Override
+    public Selection isMissing() {
+        return eval(isMissing);
+    }
+
+    @Override
+    public void appendCell(String value) {
+        try {
+            append(DEFAULT_PARSER.parseShort(value));
+        } catch (final NumberFormatException e) {
+            throw new NumberFormatException("Parsing error adding value to ShortDataWrapper: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void appendCell(String value, AbstractParser<?> parser) {
+        try {
+            append(parser.parseShort(value));
+        } catch (final NumberFormatException e) {
+            throw new NumberFormatException("Parsing error adding value to ShortDataWrapper: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public boolean contains(int value) {
+        if (value > Short.MAX_VALUE || value < Short.MIN_VALUE) {
+            return false;
+        }
+        return data.contains((short) value);
+    }
+
+    @Override
     public void append(short i) {
         data.add(i);
     }
@@ -162,29 +249,19 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
         data.add((short) value);
     }
 
-    public ShortColumn append(Short val) {
-        this.append(val.shortValue());
-        return this;
+    @Override
+    public ShortDataWrapper emptyCopy() {
+        return emptyCopy(AbstractColumn.DEFAULT_ARRAY_SIZE);
     }
 
     @Override
-    public ShortColumn emptyCopy() {
-        return (ShortColumn) super.emptyCopy();
+    public ShortDataWrapper emptyCopy(final int rowSize) {
+        return new ShortDataWrapper(new ShortArrayList(rowSize));
     }
 
     @Override
-    public ShortColumn emptyCopy(final int rowSize) {
-        return (ShortColumn) super.emptyCopy(rowSize);
-    }
-
-    @Override
-    public ShortColumn copy() {
-        return new ShortColumn(name(), data.clone());
-    }
-
-    @Override
-    public Iterator<Short> iterator() {
-        return data.iterator();
+    public ShortDataWrapper copy() {
+        return new ShortDataWrapper(data.clone());
     }
 
     @Override
@@ -197,41 +274,35 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
-    public int compare(Short o1, Short o2) {
-        return Short.compare(o1, o2);
-    }
-
-    @Override
-    public ShortColumn set(int i, Short val) {
-        return set(i, (short) val);
-    }
-
-    public ShortColumn set(int i, short val) {
+    public void set(int i, short val) {
         data.set(i, val);
-        return this;
     }
 
     @Override
-    public ShortColumn append(final Column<Short> column) {
-        Preconditions.checkArgument(column.type() == this.type());
-        final ShortColumn numberColumn = (ShortColumn) column;
+    public void set(int i, int val) {
+        data.set(i, (short) val);
+    }
+
+/*
+    @Override
+    public void append(final Column<Short> column) {
+        final ShortDataWrapper numberColumn = (ShortDataWrapper) column;
         for (int i = 0; i < numberColumn.size(); i++) {
             append(numberColumn.getShort(i));
         }
-        return this;
     }
+*/
+
+/*
+    @Override
+    public void append(Column<Short> column, int row) {
+        append(((ShortDataWrapper) column).getShort(row));
+    }
+*/
 
     @Override
-    public ShortColumn append(Column<Short> column, int row) {
-        Preconditions.checkArgument(column.type() == this.type());
-        append(((ShortColumn) column).getShort(row));
-        return this;
-    }
-
-    @Override
-    public ShortColumn appendMissing() {
-        append(ShortColumnType.missingValueIndicator());
-        return this;
+    public void appendMissing() {
+        append(MISSING_VALUE);
     }
 
     @Override
@@ -241,7 +312,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putShort(getShort(rowNumber)).array();
+        return ByteBuffer.allocate(BYTE_SIZE).putShort(getShort(rowNumber)).array();
     }
 
     @Override
@@ -254,6 +325,13 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
             }
         }
         return uniqueElements.size();
+    }
+
+    @Override
+    public void setMissing(Selection condition) {
+        for (int index : condition) {
+            data.set(index, MISSING_VALUE);
+        }
     }
 
     /**
@@ -273,8 +351,13 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
      *          {@code int} value.
      * @throws  ClassCastException if the absolute value of the value to be rounded is too large to be cast to an int
      */
+    @Override
     public int getInt(int row) {
-        return data.getShort(row);
+        short value = data.getShort(row);
+        if (! isMissingValue(value)) {
+            return data.getShort(row);
+        }
+        return IntColumnType.missingValueIndicator();
     }
 
     @Override
@@ -286,8 +369,9 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
         return value;
     }
 
-    public boolean isMissingValue(short value) {
-        return ShortColumnType.isMissingValue(value);
+    @Override
+    public boolean isMissingValue(int value) {
+        return value == MISSING_VALUE;
     }
 
     @Override
@@ -306,119 +390,76 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
-    public ShortColumn appendObj(Object obj) {
+    public void appendObj(Object obj) {
         if (obj == null) {
-            return appendMissing();
+            appendMissing();
+            return;
         }
         if (obj instanceof Short) {
             append((short) obj);
-            return this;
+            return;
         }
         throw new IllegalArgumentException("Could not append " + obj.getClass());
     }
 
     @Override
-    public ShortColumn appendCell(final String value) {
-        try {
-            append(ShortColumnType.DEFAULT_PARSER.parseShort(value));
-            return this;
-        } catch (final NumberFormatException e) {
-            throw new NumberFormatException("Error adding value to column " + name() + ": " + e.getMessage());
+    public int size() {
+        return data.size();
+    }
+
+    @Override
+    public ShortDataWrapper inRange(int start, int end) {
+        return where(Selection.withRange(start, end));
+    }
+
+    @Override
+    public ShortDataWrapper where(Selection selection) {
+        ShortArrayList newList = new ShortArrayList(selection.size());
+        for (int i = 0; i < selection.size(); i++) {
+            newList.add(getShort(selection.get(i)));
         }
+        return new ShortDataWrapper(newList);
+
     }
 
     @Override
-    public ShortColumn appendCell(final String value, AbstractParser<?> parser) {
-        try {
-            append(parser.parseShort(value));
-            return this;
-        } catch (final NumberFormatException e) {
-            throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
-        }
+    public ShortDataWrapper lead(int n) {
+        return lag(-n);
+    }
+
+    // TODO(lwhite): Should this class have type params?
+/*
+    @Override
+    public ShortDataWrapper filter(Predicate<? super Short> test) {
+        return (ShortDataWrapper) super.filter(test);
     }
 
     @Override
-    public String getUnformattedString(final int row) {
-        final int value = getInt(row);
-        if (IntColumnType.isMissingValue(value)) {
-            return "";
-        }
-        return String.valueOf(value);
+    public ShortDataWrapper sorted(Comparator<? super Short> comp) {
+        return (ShortDataWrapper) super.sorted(comp);
+    }
+
+*/
+
+    @Override
+    public ShortDataWrapper first(int numRows) {
+        return where(Selection.withRange(0, numRows));
     }
 
     @Override
-    public ShortColumn inRange(int start, int end) {
-        return (ShortColumn) super.inRange(start, end);
+    public ShortDataWrapper last(int numRows) {
+        return where(Selection.withRange(size() - numRows, size()));
     }
 
     @Override
-    public ShortColumn where(Selection selection) {
-        return (ShortColumn) super.where(selection);
+    public ShortDataWrapper sampleN(int n) {
+        return where(selectNRowsAtRandom(n, size()));
     }
 
     @Override
-    public ShortColumn lead(int n) {
-        return (ShortColumn) super.lead(n);
-    }
-
-    @Override
-    public ShortColumn setName(String name) {
-        return (ShortColumn) super.setName(name);
-    }
-
-    @Override
-    public ShortColumn filter(Predicate<? super Short> test) {
-        return (ShortColumn) super.filter(test);
-    }
-
-    @Override
-    public ShortColumn sorted(Comparator<? super Short> comp) {
-        return (ShortColumn) super.sorted(comp);
-    }
-
-    @Override
-    public ShortColumn map(Function<? super Short, ? extends Short> fun) {
-        return (ShortColumn) super.map(fun);
-    }
-
-    @Override
-    public ShortColumn min(Column<Short> other) {
-        return (ShortColumn) super.min(other);
-    }
-
-    @Override
-    public ShortColumn max(Column<Short> other) {
-        return (ShortColumn) super.max(other);
-    }
-
-    @Override
-    public ShortColumn set(Selection condition, Column<Short> other) {
-        return (ShortColumn) super.set(condition, other);
-    }
-
-    @Override
-    public ShortColumn set(Selection rowSelection, Short newValue) {
-        return (ShortColumn) super.set(rowSelection, newValue);
-    }
-
-    @Override
-    public ShortColumn first(int numRows) {
-        return (ShortColumn) super.first(numRows);
-    }
-
-    @Override
-    public ShortColumn last(int numRows) {
-        return (ShortColumn) super.last(numRows);
-    }
-
-    @Override
-    public ShortColumn sampleN(int n) {
-        return (ShortColumn) super.sampleN(n);
-    }
-
-    @Override
-    public ShortColumn sampleX(double proportion) {
-        return (ShortColumn) super.sampleX(proportion);
+    public ShortDataWrapper sampleX(double proportion) {
+        int columnSize = (int) Math.round(size() * proportion);
+        return where(selectNRowsAtRandom(columnSize, size()));
     }
 
     /**
@@ -429,14 +470,13 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
      *
      * A missing value in the receiver is converted to a missing value in the result
      */
-    @Override
-    public LongColumn asLongColumn() {
+    public LongArrayList asLongArrayList() {
         LongArrayList values = new LongArrayList();
         for (int f : data) {
             values.add(f);
         }
         values.trim();
-        return LongColumn.create(this.name(), values.elements());
+        return values;
     }
 
     /**
@@ -452,14 +492,13 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
      *
      * A missing value in the receiver is converted to a missing value in the result
      */
-    @Override
-    public FloatColumn asFloatColumn() {
+    public FloatArrayList asFloatArrayList() {
         FloatArrayList values = new FloatArrayList();
         for (int d : data) {
             values.add(d);
         }
         values.trim();
-        return FloatColumn.create(this.name(), values.elements());
+        return values;
     }
 
     /**
@@ -475,13 +514,23 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
      *
      * A missing value in the receiver is converted to a missing value in the result
      */
-    @Override
-    public DoubleColumn asDoubleColumn() {
+    public DoubleArrayList asDoubleArrayList() {
         DoubleArrayList values = new DoubleArrayList();
         for (int d : data) {
             values.add(d);
         }
         values.trim();
-        return DoubleColumn.create(this.name(), values.elements());
+        return values;
+    }
+
+    public Selection eval(final ShortPredicate predicate) {
+        final Selection bitmap = new BitmapBackedSelection();
+        for (int idx = 0; idx < size(); idx++) {
+            final short next = getShort(idx);
+            if (predicate.test(next)) {
+                bitmap.add(idx);
+            }
+        }
+        return bitmap;
     }
 }

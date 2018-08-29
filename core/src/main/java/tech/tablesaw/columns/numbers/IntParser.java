@@ -48,13 +48,19 @@ public class IntParser extends AbstractParser<Integer> {
 
     public short parseShort(String str) {
         if (isMissing(str)) {
-            return ShortColumnType.missingValueIndicator();
+            return Short.MIN_VALUE;
         }
         String s = str;
         if (s.endsWith(".0")) {
             s = s.substring(0, s.length() - 2);
         }
-        return Short.parseShort(AbstractParser.remove(s, ','));
+        try {
+            return Short.parseShort(AbstractParser.remove(s, ','));
+        } catch (NumberFormatException e) {
+            long longValue = Long.parseLong(s);
+            throw new NumberOutOfRangeException(str, longValue, IntColumnType.INSTANCE);
+        }
+
     }
 
     @Override
@@ -66,6 +72,11 @@ public class IntParser extends AbstractParser<Integer> {
         if (s.endsWith(".0")) {
             s = s.substring(0, s.length() - 2);
         }
-        return Integer.parseInt(AbstractParser.remove(s, ','));
+        try {
+            return Integer.parseInt(AbstractParser.remove(s, ','));
+        } catch (NumberFormatException e) {
+            long longValue = Long.parseLong(s);
+            throw new NumberOutOfRangeException(str, longValue, IntColumnType.INSTANCE);
+        }
     }
 }

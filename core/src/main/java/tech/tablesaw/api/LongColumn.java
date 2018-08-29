@@ -10,9 +10,8 @@ import it.unimi.dsi.fastutil.longs.LongComparator;
 import it.unimi.dsi.fastutil.longs.LongListIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -366,7 +365,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     @Override
     public LongColumn appendCell(final String value, AbstractParser<?> parser) {
         try {
-            append(parser.parseInt(value));
+            append(parser.parseLong(value));
             return this;
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
@@ -463,7 +462,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     }
 
     /**
-     * Returns a new IntColumn containing a value for each value in this column
+     * Returns a new IntegerColumn containing a value for each value in this column
      *
      * A narrowing conversion of a signed integer to an integral type T simply discards all but the n lowest order bits,
      * where n is the number of bits used to represent type T. In addition to a possible loss of information about
@@ -479,17 +478,19 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
      * A missing value in the receiver is converted to a missing value in the result
      */
     @Override
-    public IntColumn asIntColumn() {
+    public IntegerColumn asIntegerColumn() {
         IntArrayList values = new IntArrayList();
         for (long f : data) {
             values.add((int) f);
         }
         values.trim();
-        return IntColumn.create(this.name(), values.elements());
+        return IntegerColumn.create(this.name(), values.elements());
     }
 
-    /**
-     * Returns a new ShortColumn containing a value for each value in this column
+/*
+    */
+/**
+     * Returns a new ShortDataWrapper containing a value for each value in this column
      *
      * A narrowing conversion of a signed long to an integral type T simply discards all but the n lowest order bits,
      * where n is the number of bits used to represent type T. In addition to a possible loss of information about
@@ -503,16 +504,18 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
      * conversion never results in a run-time exception.
      *
      * A missing value in the receiver is converted to a missing value in the result
-     */
+     *//*
+
     @Override
-    public ShortColumn asShortColumn() {
+    public ShortDataWrapper asShortColumn() {
         ShortArrayList values = new ShortArrayList();
         for (long f : data) {
             values.add((short) f);
         }
         values.trim();
-        return ShortColumn.create(this.name(), values.elements());
+        return ShortDataWrapper.create(this.name(), values.elements());
     }
+*/
 
     /**
      * Returns a new FloatColumn containing a value for each value in this column

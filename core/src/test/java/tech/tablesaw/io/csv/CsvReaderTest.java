@@ -21,8 +21,8 @@ import org.junit.rules.ExpectedException;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 
 import java.io.ByteArrayInputStream;
@@ -46,8 +46,8 @@ import static tech.tablesaw.api.ColumnType.*;
  */
 public class CsvReaderTest {
 
-    private final ColumnType[] bus_types = {SHORT, STRING, STRING, FLOAT, FLOAT};
-    private final ColumnType[] bus_types_with_SKIP = {SHORT, STRING, SKIP, DOUBLE, DOUBLE};
+    private final ColumnType[] bus_types = {INTEGER, STRING, STRING, FLOAT, FLOAT};
+    private final ColumnType[] bus_types_with_SKIP = {INTEGER, STRING, SKIP, DOUBLE, DOUBLE};
 
     @Test
     public void testWithBusData() throws Exception {
@@ -290,7 +290,7 @@ public class CsvReaderTest {
         String output =
                 "ColumnType[] columnTypes = {\n" +
                         "LOCAL_DATE, // 0     date        \n" +
-                        "SHORT,      // 1     approval    \n" +
+                        "INTEGER,    // 1     approval    \n" +
                         "STRING,     // 2     who         \n" +
                         "}\n";
         assertEquals(output, new CsvReader()
@@ -309,7 +309,7 @@ public class CsvReaderTest {
 
         ColumnType[] columnTypes = new CsvReader().detectColumnTypes(stream, options);
         assertEquals(LOCAL_DATE, columnTypes[0]);
-        assertEquals(SHORT, columnTypes[1]);
+        assertEquals(INTEGER, columnTypes[1]);
         assertEquals(STRING, columnTypes[2]);
     }
 
@@ -365,7 +365,7 @@ public class CsvReaderTest {
         // TODO (lwhite): These tests don't fail. What was their intent?
         Table table1 = Table.read().csv("../data/read_failure_test.csv");
         table1.structure(); // just make sure the import completed
-        ShortColumn test = table1.shortColumn("Test");
+        IntegerColumn test = table1.intColumn("Test");
         //TODO(lwhite): Better tests
         assertNotNull(test.summary());
     }
@@ -374,7 +374,7 @@ public class CsvReaderTest {
     public void testReadFailure2() throws Exception {
         Table table1 = Table.read().csv("../data/read_failure_test2.csv");
         table1.structure(); // just make sure the import completed
-        ShortColumn test = table1.shortColumn("Test");
+        IntegerColumn test = table1.intColumn("Test");
 
         //TODO(lwhite): Better tests
         assertNotNull(test.summary());

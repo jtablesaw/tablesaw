@@ -14,11 +14,11 @@
 
 package tech.tablesaw.api;
 
-import java.util.Map;
-
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.columns.Column;
+
+import java.util.Map;
 
 /**
  * A column type that can be summarized, or serve as a grouping variable in cross tabs or other aggregation operations.
@@ -42,7 +42,7 @@ public interface CategoricalColumn<T> extends Column<T> {
 
         final Table t = new Table("Column: " + name());
         final CategoricalColumn<?> categories = (CategoricalColumn<?>) type().create("Category");
-        final IntColumn counts = IntColumn.create("Count");
+        final IntegerColumn counts = IntegerColumn.create("Count");
 
         final Object2IntMap<String> valueToCount = new Object2IntOpenHashMap<>();
 

@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.shorts.ShortCollection;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -282,7 +282,7 @@ public class ShortDictionaryMap implements DictionaryMap {
     public Table countByCategory(String columnName) {
         Table t = Table.create("Column: " + columnName);
         StringColumn categories = StringColumn.create("Category");
-        IntColumn counts = IntColumn.create("Count");
+        IntegerColumn counts = IntegerColumn.create("Count");
 
         Short2IntMap valueToCount = new Short2IntOpenHashMap();
 

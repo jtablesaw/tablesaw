@@ -19,7 +19,7 @@ import com.google.common.collect.TreeBasedTable;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -69,10 +69,10 @@ public final class CrossTab {
         }
 
         for (String colName : gTable.columnKeySet()) {
-            t.addColumns(IntColumn.create(colName));
+            t.addColumns(IntegerColumn.create(colName));
         }
 
-        t.addColumns(IntColumn.create("total"));
+        t.addColumns(IntegerColumn.create("total"));
 
         int[] columnTotals = new int[t.columnCount()];
 
@@ -118,7 +118,7 @@ public final class CrossTab {
         Table percentTable = Table.create(countTable.name());
         percentTable.addColumns(countTable.column(0).copy());
 
-        IntColumn countsColumn = countTable.intColumn("Count");
+        IntegerColumn countsColumn = countTable.intColumn("Count");
         DoubleColumn pctsColumn = DoubleColumn.create("Percents");
         double sum = countsColumn.sum();
         for (int i = 0; i < countsColumn.size(); i++) {

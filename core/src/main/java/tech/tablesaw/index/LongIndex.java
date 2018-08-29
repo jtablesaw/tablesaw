@@ -14,17 +14,17 @@
 
 package tech.tablesaw.index;
 
-import java.time.LocalDateTime;
-
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+
+import java.time.LocalDateTime;
 
 /**
  * An index for eight-byte long and long backed columns (datetime)
@@ -51,7 +51,7 @@ public class LongIndex {
         index = new Long2ObjectAVLTreeMap<>(tempMap);
     }
 
-    public LongIndex(IntColumn column) {
+    public LongIndex(IntegerColumn column) {
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {

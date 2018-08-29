@@ -1,14 +1,21 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DataWrapper;
 import tech.tablesaw.columns.numbers.IntColumnType;
+import tech.tablesaw.columns.numbers.IntDataWrapper;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberOutOfRangeException;
+import tech.tablesaw.columns.numbers.ShortDataWrapper;
 import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
@@ -21,26 +28,22 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     private static final IntColumnType COLUMN_TYPE = ColumnType.INTEGER;
 
-    private NumericColumn<? extends Number> data;
+    private DataWrapper data;
 
     private IntegerColumn(final String name, IntArrayList data) {
         super(COLUMN_TYPE, name, data);
         this.printFormatter = NumberColumnFormatter.ints();
-        this.data = IntColumn.create(name, data.toIntArray());
+        this.data = IntDataWrapper.create(data.toIntArray());
     }
 
-    private IntegerColumn(String name, IntColumn copy) {
+    private IntegerColumn(String name, DataWrapper copy) {
         super(ColumnType.INTEGER, name);
-        this.data = copy;
-    }
-
-    private IntegerColumn(String name, ShortColumn copy) {
-        super(ColumnType.INTEGER, name);
+        this.printFormatter = NumberColumnFormatter.ints();
         this.data = copy;
     }
 
     public static IntegerColumn create(final String name) {
-        return new IntegerColumn(name, ShortColumn.create(name));
+        return new IntegerColumn(name, ShortDataWrapper.create(AbstractColumn.DEFAULT_ARRAY_SIZE));
     }
 
     public static IntegerColumn create(final String name, final int[] arr) {
@@ -109,22 +112,22 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     @Override
     public IntegerColumn top(int n) {
-        return (IntegerColumn) data.top(n);
+        return new IntegerColumn(name(), data.top(n));
     }
 
     @Override
     public IntegerColumn bottom(final int n) {
-        return (IntegerColumn) data.bottom(n);
+        return new IntegerColumn(name(), data.bottom(n));
     }
 
     @Override
     public IntegerColumn lag(int n) {
-        return (IntegerColumn) data.lag(n);
+        return new IntegerColumn(name() + " lag(" + n + ")", data.lag(n));
     }
 
     @Override
     public IntegerColumn removeMissing() {
-        return (IntegerColumn) data.removeMissing();
+        return new IntegerColumn(name(), data.removeMissing());
     }
 
     @Override
@@ -132,11 +135,15 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
         return data.size();
     }
 
+    public boolean contains(int value) {
+        return data.contains(value);
+    }
+
     public void append(int i) {
-        if (data instanceof IntColumn) {
-            ((IntColumn) data).append(i);
-        } else if (data instanceof ShortColumn) {
-            ((ShortColumn) data).append((short) i);
+        if (data instanceof IntDataWrapper) {
+            data.append(i);
+        } else if (data instanceof ShortDataWrapper) {
+            data.append((short) i);
         } else {
             throw new RuntimeException("Unsupported column type");
         }
@@ -174,18 +181,15 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     @Override
     public IntegerColumn copy() {
-        if (data instanceof IntColumn) {
-            return new IntegerColumn(name(), (IntColumn) data.copy());
+        if (data instanceof IntDataWrapper || data instanceof ShortDataWrapper) {
+            return new IntegerColumn(name(), data.copy());
         }
-        if (data instanceof ShortColumn) {
-            return new IntegerColumn(name(), (ShortColumn) data.copy());
-        }
-        throw new RuntimeException("Unexpected column type");
+        throw new RuntimeException("Unexpected data wrapper type for Integer Column");
     }
 
     @Override
     public Iterator<Integer> iterator() {
-        return (Iterator<Integer>) data.iterator();
+        return data.iterator();
     }
 
     @Override
@@ -204,12 +208,12 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     @Override
     public IntegerColumn set(int i, Integer val) {
-        if (data instanceof IntColumn)  {
-            ((IntColumn) data).set(i, val);
+        if (data instanceof IntegerColumn)  {
+            data.set(i, val);
             return this;
         }
-        if (data instanceof ShortColumn) {
-            ((ShortColumn) data).set(i, (short) val.intValue());
+        if (data instanceof ShortDataWrapper) {
+            data.set(i, (short) val.intValue());
             return this;
         }
         throw new IllegalArgumentException("Could not set int " + val);
@@ -234,7 +238,7 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     @Override
     public IntegerColumn appendMissing() {
-        append(IntColumnType.missingValueIndicator());
+        data.appendMissing();
         return this;
     }
 
@@ -273,7 +277,11 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
      * @throws  ClassCastException if the absolute value of the value to be rounded is too large to be cast to an int
      */
     public int getInt(int row) {
-        return (Integer) data.get(row);
+        return data.getInt(row);
+    }
+
+    public short getShort(int row) {
+        return data.getShort(row);
     }
 
     @Override
@@ -316,22 +324,23 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
     public IntegerColumn appendCell(final String value) {
         try {
             data.appendCell(value);
-            return this;
-        } catch (final NumberFormatException e) {
-            throw new NumberFormatException("Error adding value to column " + name() + ": " + e.getMessage());
+        } catch (final NumberOutOfRangeException e) {
+            Long parsedValue = e.getParsedValue();
+
+            if (parsedValue != null) {
+                promoteColumnType();
+            }
+            data.appendCell(value);
         }
+        return this;
     }
 
     @Override
     public IntegerColumn appendCell(final String value, AbstractParser<?> parser) {
         try {
             data.appendCell(value, parser);
-            return this;
         } catch (final NumberOutOfRangeException e) {
-            ColumnType failingType = e.getFailingType();
-            String inputString = e.getInputValue();
             Long parsedValue = e.getParsedValue();
-
             if (parsedValue != null) {
                 promoteColumnType();
             }
@@ -341,12 +350,16 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
     }
 
     private void promoteColumnType() {
-        if (data instanceof ShortColumn) {
-            ShortColumn shorts = (ShortColumn) data;
-            IntColumn column = IntColumn.create(name());
-            for (short s : shorts) {
-                column.append(s);
+        if (data instanceof ShortDataWrapper) {
+            ShortDataWrapper shorts = (ShortDataWrapper) data;
+            IntDataWrapper ints = IntDataWrapper.create(shorts.size());
+            for (int s : shorts) {
+                if (shorts.isMissingValue(s)) {
+                    ints.appendMissing();
+                }
+                ints.append(s);
             }
+            data = ints;
         }
     }
 
@@ -434,6 +447,10 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
         return (IntegerColumn) super.sampleX(proportion);
     }
 
+    public IntegerColumn setMissing(Selection condition) {
+        data.setMissing(condition);
+        return this;
+    }
     /**
      * Returns a new LongColumn containing a value for each value in this column
      *
@@ -444,7 +461,13 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
      */
     @Override
     public LongColumn asLongColumn() {
-        return data.asLongColumn();
+
+        LongArrayList values = new LongArrayList();
+        for (int i = 0; i < size(); i++) {
+            values.add(getInt(i));
+        }
+        values.trim();
+        return LongColumn.create(this.name(), values.elements());
     }
 
     /**
@@ -462,7 +485,12 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
      */
     @Override
     public FloatColumn asFloatColumn() {
-        return data.asFloatColumn();
+        FloatArrayList values = new FloatArrayList();
+        for (int i = 0; i < size(); i++) {
+            values.add(getInt(i));
+        }
+        values.trim();
+        return FloatColumn.create(this.name(), values.elements());
     }
 
     /**
@@ -480,27 +508,11 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
      */
     @Override
     public DoubleColumn asDoubleColumn() {
-        return data.asDoubleColumn();
-    }
-
-    /**
-     * Returns a new ShortColumn containing a value for each value in this column
-     *
-     * A narrowing conversion of a signed integer to an integral type T simply discards all but the n lowest order bits,
-     * where n is the number of bits used to represent type T. In addition to a possible loss of information about
-     * the magnitude of the numeric value, this may cause the sign of the resulting value to differ from the sign of
-     * the input value.
-     *
-     * In other words, if the element being converted is larger (or smaller) than Short.MAX_VALUE
-     * (or Short.MIN_VALUE) you will not get a conventionally good conversion.
-     *
-     * Despite the fact that overflow, underflow, or other loss of information may occur, a narrowing primitive
-     * conversion never results in a run-time exception.
-     *
-     * A missing value in the receiver is converted to a missing value in the result
-     */
-    @Override
-    public ShortColumn asShortColumn() {
-        return data.asShortColumn();
+        DoubleArrayList values = new DoubleArrayList();
+        for (int i = 0; i < size(); i++) {
+            values.add(getInt(i));
+        }
+        values.trim();
+        return DoubleColumn.create(this.name(), values.elements());
     }
 }

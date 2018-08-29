@@ -11,7 +11,6 @@ import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
-import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
@@ -25,7 +24,6 @@ public interface ColumnType {
     Map<String, ColumnType> values = new HashMap<>();
 
     // standard column types
-    ShortColumnType SHORT = ShortColumnType.INSTANCE;
     IntColumnType INTEGER = IntColumnType.INSTANCE;
     LongColumnType LONG = LongColumnType.INSTANCE;
     FloatColumnType FLOAT = FloatColumnType.INSTANCE;

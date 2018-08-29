@@ -5,9 +5,8 @@ import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
@@ -16,12 +15,10 @@ import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
-import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.index.IntIndex;
 import tech.tablesaw.index.LongIndex;
-import tech.tablesaw.index.ShortIndex;
 import tech.tablesaw.index.StringIndex;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -155,7 +152,7 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof IntColumnType) {
             IntIndex index = new IntIndex(table2.intColumn(col2Name));
-            IntColumn col1 = (IntColumn) column;
+            IntegerColumn col1 = (IntegerColumn) column;
             for (int i = 0; i < col1.size(); i++) {
                 int value = col1.getInt(i);
                 Table table1Rows = table.where(Selection.with(i));
@@ -172,20 +169,6 @@ public class DataFrameJoiner {
             LongColumn col1 = (LongColumn) column;
             for (int i = 0; i < col1.size(); i++) {
                 long value = col1.getLong(i);
-                Table table1Rows = table.where(Selection.with(i));
-                Table table2Rows = table2.where(index.get(value));
-                table2Rows.removeColumns(col2Name);
-                if (outer && table2Rows.isEmpty()) {
-                    withMissingLeftJoin(result, table1Rows);
-                } else {
-                    crossProduct(result, table1Rows, table2Rows);
-                }
-            }
-        } else if (type instanceof ShortColumnType) {
-            ShortIndex index = new ShortIndex(table2.shortColumn(col2Name));
-            ShortColumn col1 = (ShortColumn) column;
-            for (int i = 0; i < col1.size(); i++) {
-                short value = col1.getShort(i);
                 Table table1Rows = table.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
@@ -307,7 +290,7 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof IntColumnType) {
             IntIndex index = new IntIndex(result.intColumn(col2Name));
-            IntColumn col2 = (IntColumn) table2.column(col2Name);
+            IntegerColumn col2 = (IntegerColumn) table2.column(col2Name);
             for (int i = 0; i < col2.size(); i++) {
                 int value = col2.getInt(i);
                 if (index.get(value).isEmpty()) {
@@ -319,15 +302,6 @@ public class DataFrameJoiner {
             LongColumn col2 = (LongColumn) table2.column(col2Name);
             for (int i = 0; i < col2.size(); i++) {
                 long value = col2.getLong(i);
-                if (index.get(value).isEmpty()) {
-                    selection.add(i);
-                }
-            }
-        } else if (type instanceof ShortColumnType) {
-            ShortIndex index = new ShortIndex(result.shortColumn(col2Name));
-            ShortColumn col2 = (ShortColumn) table2.column(col2Name);
-            for (int i = 0; i < col2.size(); i++) {
-                short value = col2.getShort(i);
                 if (index.get(value).isEmpty()) {
                     selection.add(i);
                 }

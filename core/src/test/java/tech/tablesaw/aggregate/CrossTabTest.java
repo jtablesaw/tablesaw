@@ -1,14 +1,12 @@
 package tech.tablesaw.aggregate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
-
 import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
+
+import static org.junit.Assert.*;
 
 public class CrossTabTest {
 
@@ -41,7 +39,7 @@ public class CrossTabTest {
     @Test
     public void testCounts3() throws Exception {
         Table bush = Table.read().csv("../data/bush.csv");
-        IntColumn month = bush.dateColumn("date").monthValue();
+        IntegerColumn month = bush.dateColumn("date").monthValue();
         month.setName("month");
         BooleanColumn seventyPlus =
                 BooleanColumn.create("70",

@@ -383,8 +383,8 @@ public class StringColumn extends AbstractColumn<String>
         return lookupTable.dataAsIntArray();
     }
 
-    public IntColumn asNumberColumn() {
-        IntColumn numberColumn = IntColumn.create(this.name() + ": codes", size());
+    public IntegerColumn asNumberColumn() {
+        IntegerColumn numberColumn = IntegerColumn.create(this.name() + ": codes", size());
         IntArrayList data = data();
         for (int i = 0; i < size(); i++) {
             numberColumn.append(data.getInt(i));

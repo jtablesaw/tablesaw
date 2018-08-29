@@ -14,16 +14,13 @@
 
 package tech.tablesaw.index;
 
-import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectSortedMap;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.columns.numbers.ShortDataWrapper;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
 
 /**
  * An index for four-byte integer and integer backed columns (date, category, time)
@@ -32,13 +29,11 @@ public class ShortIndex {
 
     private final Short2ObjectAVLTreeMap<IntArrayList> index;
 
-    public ShortIndex(ShortColumn column) {
-        Preconditions.checkArgument(column.type().equals(ColumnType.SHORT),
-                "Short indexing only allowed on SHORT numeric columns");
-        int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
+    public ShortIndex(ShortDataWrapper w) {
+        int sizeEstimate = Integer.min(1_000_000, w.size() / 100);
         Short2ObjectOpenHashMap<IntArrayList> tempMap = new Short2ObjectOpenHashMap<>(sizeEstimate);
-        for (int i = 0; i < column.size(); i++) {
-            short value = column.getShort(i);
+        for (int i = 0; i < w.size(); i++) {
+            short value = w.getShort(i);
             IntArrayList recordIds = tempMap.get(value);
             if (recordIds == null) {
                 recordIds = new IntArrayList();

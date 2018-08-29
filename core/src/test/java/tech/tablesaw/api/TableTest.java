@@ -293,7 +293,7 @@ public class TableTest {
     @Test
     public void testRollWithNrows2() throws Exception {
         Table t = Table.read().csv("../data/bush.csv").first(4);
-        ShortColumn approval = t.shortColumn("approval");
+        IntegerColumn approval = t.intColumn("approval");
 
         List<Integer> sums = new ArrayList<>();
         Consumer<Row[]> rowConsumer = rows -> {
@@ -473,9 +473,9 @@ public class TableTest {
         Comparator<Row> rowComparator = Comparator.comparingDouble(o -> o.getShort("approval"));
 
         Table sorted = bush.sortOn(rowComparator);
-        ShortColumn approval = sorted.shortColumn("approval");
+        IntegerColumn approval = sorted.intColumn("approval");
         for (int i = 0; i < bush.rowCount() - 2; i++) {
-            assertTrue(approval.get(i) <= approval.get(i + 1));
+            assertTrue(approval.getShort(i) <= approval.getShort(i + 1));
         }
     }
 

@@ -10,9 +10,8 @@ import it.unimi.dsi.fastutil.floats.FloatOpenHashSet;
 import it.unimi.dsi.fastutil.floats.FloatSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.selection.Selection;
@@ -426,7 +425,7 @@ public class FloatColumn extends NumberColumn<Float> {
     }
 
     /**
-     * Returns a new IntColumn containing a value for each value in this column, truncating if necessary.
+     * Returns a new IntegerColumn containing a value for each value in this column, truncating if necessary.
      *
      * A narrowing primitive conversion such as this one may lose information about the overall magnitude of a
      * numeric value and may also lose precision and range. Specifically, if the value is too small (a negative value
@@ -441,17 +440,19 @@ public class FloatColumn extends NumberColumn<Float> {
      * A missing value in the receiver is converted to a missing value in the result
      */
     @Override
-    public IntColumn asIntColumn() {
+    public IntegerColumn asIntegerColumn() {
         IntArrayList values = new IntArrayList();
         for (float d : data) {
             values.add((int) d);
         }
         values.trim();
-        return IntColumn.create(this.name(), values.elements());
+        return IntegerColumn.create(this.name(), values.elements());
     }
 
-    /**
-     * Returns a new IntColumn containing a value for each value in this column, truncating if necessary.
+/*
+    */
+/**
+     * Returns a new IntegerColumn containing a value for each value in this column, truncating if necessary.
      *
      * A narrowing primitive conversion such as this one may lose information about the overall magnitude of a
      * numeric value and may also lose precision and range. Specifically, if the value is too small (a negative value
@@ -464,16 +465,18 @@ public class FloatColumn extends NumberColumn<Float> {
      * conversion never results in a run-time exception.
      *
      * A missing value in the receiver is converted to a missing value in the result
-     */
+     *//*
+
     @Override
-    public ShortColumn asShortColumn() {
+    public ShortDataWrapper asShortColumn() {
         ShortArrayList values = new ShortArrayList();
         for (float d : data) {
             values.add((short) d);
         }
         values.trim();
-        return ShortColumn.create(this.name(), values.elements());
+        return ShortDataWrapper.create(this.name(), values.elements());
     }
+*/
 
     /**
      * Returns a new DoubleColumn containing a value for each value in this column.

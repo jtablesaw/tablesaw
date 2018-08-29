@@ -5,11 +5,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import static tech.tablesaw.api.ColumnType.FLOAT;
-import static tech.tablesaw.api.ColumnType.INTEGER;
-import static tech.tablesaw.api.ColumnType.SHORT;
-import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
+import static tech.tablesaw.api.ColumnType.*;
 
 public class DrugVisualizations extends AbstractExample {
 
@@ -23,14 +19,14 @@ public class DrugVisualizations extends AbstractExample {
             STRING,     // 6     description_flag
             STRING,     // 7     drug_name
             STRING,     // 8     generic_name
-            SHORT,      // 9     bene_count
-            SHORT,      // 10    total_claim_count
+            INTEGER,    // 9     bene_count
+            INTEGER,    // 10    total_claim_count
             FLOAT,      // 11    total_30_day_fill_count
             INTEGER,    // 12    total_day_supply
             FLOAT,      // 13    total_drug_cost
-            SHORT,      // 14    bene_count_ge65
+            INTEGER,    // 14    bene_count_ge65
             STRING,     // 15    bene_count_ge65_suppress_flag
-            SHORT,      // 16    total_claim_count_ge65
+            INTEGER,    // 16    total_claim_count_ge65
             STRING,     // 17    ge65_suppress_flag
             FLOAT,      // 18    total_30_day_fill_count_ge65
             INTEGER,    // 19    total_day_supply_ge65

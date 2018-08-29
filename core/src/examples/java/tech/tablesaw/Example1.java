@@ -58,7 +58,7 @@ public class Example1 {
         out("Minimum approval rating: " + approval.min());
 
         // Other operations return a new column.
-        // Method dayOfYear() applied to a DateColumn returns a ShortColumn containing the day of the year from 1 to 366
+        // Method dayOfYear() applied to a DateColumn returns a ShortDataWrapper containing the day of the year from 1 to 366
 
         DateColumn date = table1.dateColumn("date");
         NumberColumn dayOfYear = date.dayOfYear();

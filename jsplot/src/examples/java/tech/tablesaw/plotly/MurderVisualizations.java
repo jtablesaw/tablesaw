@@ -22,7 +22,6 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.plotly.api.AreaPlot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.Histogram2D;
@@ -103,20 +102,21 @@ public class MurderVisualizations extends AbstractExample {
         out(details.shape());
         out(details);
 
-        details.shortColumn("offage")
-                .set(details.shortColumn("offage").isEqualTo(999), ShortColumnType.missingValueIndicator());
+        details.intColumn("offage")
+                .setMissing(details.intColumn("offage").isEqualTo(999));
 
-        details.shortColumn("vicage")
-                .set(details.shortColumn("vicage").isEqualTo(999), ShortColumnType.missingValueIndicator());
+        details.intColumn("vicage")
+                .setMissing(details.intColumn("vicage").isEqualTo(999));
 
-        details.shortColumn("vicCount")
-                .set(details.shortColumn("vicCount").isEqualTo(0)
-                        .andNot(details.stringColumn("situation").containsString("multiple victims")), (short) 1);
+        details.intColumn("vicCount")
+                .set(details.intColumn("vicCount").isEqualTo(0)
+                        .andNot(details.stringColumn("situation").containsString("multiple victims")), 1);
 
-        details.shortColumn("offCount")
+        details.intColumn("offCount")
                 .set(
-                      details.shortColumn("offCount").isEqualTo(0)
-                        .andNot(details.stringColumn("situation").containsString("multiple offenders")), (short) 1);
+                      details
+                              .intColumn("offCount").isEqualTo(0)
+                                .andNot(details.stringColumn("situation").containsString("multiple offenders")), 1);
 
         out(details);
         out(details.stringColumn("weapon").unique().print());

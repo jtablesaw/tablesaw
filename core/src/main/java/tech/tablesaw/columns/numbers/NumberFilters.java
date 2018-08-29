@@ -37,7 +37,6 @@ public interface NumberFilters {
 
     Selection eval(BiPredicate<Number, Number> predicate, Number value);
 
-
     default Selection isEqualTo(double d) {
         return eval(isEqualTo, d);
     }

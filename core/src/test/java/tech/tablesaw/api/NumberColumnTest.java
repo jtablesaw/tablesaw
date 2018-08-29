@@ -75,8 +75,8 @@ public class NumberColumnTest {
 
     @Test
     public void testPercentiles() {
-	IntColumn c = IntColumn.indexColumn("t", 99, 1);
-	IntColumn c2 = c.copy();
+	IntegerColumn c = IntegerColumn.indexColumn("t", 99, 1);
+	IntegerColumn c2 = c.copy();
         c2.appendCell("");
         assertEquals(50, c.median(), 0.00001);
         assertEquals(50, c2.median(), 0.00001);
@@ -102,8 +102,8 @@ public class NumberColumnTest {
 
     @Test
     public void testSummarize() {
-	    IntColumn c = IntColumn.indexColumn("t", 99, 1);
-	    IntColumn c2 = c.copy();
+	    IntegerColumn c = IntegerColumn.indexColumn("t", 99, 1);
+	    IntegerColumn c2 = c.copy();
         c2.appendCell("");
         double c2Variance = c2.variance();
         double cVariance = StatUtils.variance(c.asDoubleArray());
@@ -227,7 +227,7 @@ public class NumberColumnTest {
     public void testBetweenExclusive() {
         int[] originalValues = new int[]{32, 42, 40, 57, 52, -2};
 
-        IntColumn initial =  IntColumn.create("Test", originalValues);
+        IntegerColumn initial =  IntegerColumn.create("Test", originalValues);
         Table t = Table.create("t", initial);
 
         Selection filter = t.numberColumn("Test").isBetweenExclusive(42, 57);
@@ -315,7 +315,7 @@ public class NumberColumnTest {
 
     @Test
     public void testIndexColumn() {
-	IntColumn numberColumn = IntColumn.indexColumn("index", 12424, 0);
+	IntegerColumn numberColumn = IntegerColumn.indexColumn("index", 12424, 0);
         assertEquals("12423", numberColumn.getString(numberColumn.size() - 1));
     }
 

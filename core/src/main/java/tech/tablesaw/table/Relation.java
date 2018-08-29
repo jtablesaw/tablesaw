@@ -22,11 +22,10 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.NumericColumn;
-import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
@@ -402,20 +401,12 @@ public abstract class Relation {
         return numberColumn(columnIndex);
     }
 
-    public IntColumn intColumn(String columnName) {
+    public IntegerColumn intColumn(String columnName) {
         return intColumn(columnIndex(columnName));
     }
 
-    public IntColumn intColumn(int columnIndex) {
-        return (IntColumn) column(columnIndex);
-    }
-    
-    public ShortColumn shortColumn(String columnName) {
-        return shortColumn(columnIndex(columnName));
-    }
-
-    public ShortColumn shortColumn(int columnIndex) {
-        return (ShortColumn) column(columnIndex);
+    public IntegerColumn intColumn(int columnIndex) {
+        return (IntegerColumn) column(columnIndex);
     }
 
     public LongColumn longColumn(String columnName) {

@@ -17,7 +17,7 @@ package tech.tablesaw.columns.datetimes;
 import com.google.common.base.Strings;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
@@ -80,8 +80,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default IntColumn hour() {
-	IntColumn newColumn = IntColumn.create(name() + "[" + "hour" + "]");
+    default IntegerColumn hour() {
+	IntegerColumn newColumn = IntegerColumn.create(name() + "[" + "hour" + "]");
         for (int r = 0; r < size(); r++) {
             if (!isMissing(r)) {
                 long c1 = getLongInternal(r);
@@ -93,8 +93,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default IntColumn minuteOfDay() {
-	IntColumn newColumn = IntColumn.create(name() + "[" + "minute-of-day" + "]");
+    default IntegerColumn minuteOfDay() {
+	IntegerColumn newColumn = IntegerColumn.create(name() + "[" + "minute-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             if (!isMissing(r)) {
                 long c1 = getLongInternal(r);
@@ -106,8 +106,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default IntColumn secondOfDay() {
-	IntColumn newColumn = IntColumn.create(name() + "[" + "second-of-day" + "]");
+    default IntegerColumn secondOfDay() {
+	IntegerColumn newColumn = IntegerColumn.create(name() + "[" + "second-of-day" + "]");
         for (int r = 0; r < size(); r++) {
             if (!isMissing(r)) {
                 long c1 = getLongInternal(r);
@@ -145,8 +145,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default IntColumn monthValue() {
-	IntColumn newColumn = IntColumn.create(this.name() + " month");
+    default IntegerColumn monthValue() {
+	IntegerColumn newColumn = IntegerColumn.create(this.name() + " month");
         for (int r = 0; r < this.size(); r++) {
             if (isMissing(r)) {
                 newColumn.appendMissing();
@@ -309,8 +309,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default IntColumn year() {
-	IntColumn newColumn = IntColumn.create(this.name() + " year");
+    default IntegerColumn year() {
+	IntegerColumn newColumn = IntegerColumn.create(this.name() + " year");
         for (int r = 0; r < this.size(); r++) {
             if (isMissing(r)) {
                 newColumn.appendMissing();
@@ -335,8 +335,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default IntColumn dayOfWeekValue() {
-	IntColumn newColumn = IntColumn.create(this.name() + " day of week", this.size());
+    default IntegerColumn dayOfWeekValue() {
+	IntegerColumn newColumn = IntegerColumn.create(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
             if (isMissing(r)) {
                 newColumn.appendMissing();
@@ -348,8 +348,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default IntColumn dayOfYear() {
-	IntColumn newColumn = IntColumn.create(this.name() + " day of year", this.size());
+    default IntegerColumn dayOfYear() {
+	IntegerColumn newColumn = IntegerColumn.create(this.name() + " day of year", this.size());
         for (int r = 0; r < this.size(); r++) {
             if (isMissing(r)) {
                 newColumn.appendMissing();
@@ -361,8 +361,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
-    default IntColumn dayOfMonth() {
-	IntColumn newColumn = IntColumn.create(this.name() + " day of month");
+    default IntegerColumn dayOfMonth() {
+	IntegerColumn newColumn = IntegerColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             if (isMissing(r)) {
                 newColumn.isMissing();
@@ -419,8 +419,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return numberColumn;
     }
 
-    default IntColumn minute() {
-	IntColumn newColumn = IntColumn.create(name() + "[" + "minute" + "]");
+    default IntegerColumn minute() {
+	IntegerColumn newColumn = IntegerColumn.create(name() + "[" + "minute" + "]");
         for (int r = 0; r < size(); r++) {
             if (!isMissing(r)) {
                 long c1 = getLongInternal(r);

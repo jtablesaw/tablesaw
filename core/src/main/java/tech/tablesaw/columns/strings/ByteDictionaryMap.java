@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -270,7 +270,7 @@ public class ByteDictionaryMap implements DictionaryMap {
     public Table countByCategory(String columnName) {
         Table t = Table.create("Column: " + columnName);
         StringColumn categories = StringColumn.create("Category");
-        IntColumn counts = IntColumn.create("Count");
+        IntegerColumn counts = IntegerColumn.create("Count");
 
         Byte2IntMap valueToCount = new Byte2IntOpenHashMap();
 

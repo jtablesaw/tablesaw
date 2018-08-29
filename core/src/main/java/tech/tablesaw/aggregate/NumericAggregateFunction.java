@@ -17,7 +17,6 @@ public abstract class NumericAggregateFunction extends AggregateFunction<Numeric
         return type.equals(ColumnType.DOUBLE)
                 || type.equals(ColumnType.FLOAT)
                 || type.equals(ColumnType.INTEGER)
-                || type.equals(ColumnType.SHORT)
                 || type.equals(ColumnType.LONG);
     }
 

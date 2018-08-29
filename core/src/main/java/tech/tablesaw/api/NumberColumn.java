@@ -117,7 +117,7 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
     public void clear() {
         data.clear();
     }
-    
+
     public boolean contains(T value) {
         return data.contains(value);
     }

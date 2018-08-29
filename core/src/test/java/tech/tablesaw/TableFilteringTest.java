@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -44,7 +44,7 @@ public class TableFilteringTest {
     @Test
     public void testFilter1() {
         Table result = table.where(table.numberColumn("approval").isLessThan(53));
-        ShortColumn a = result.shortColumn("approval");
+        IntegerColumn a = result.intColumn("approval");
         for (double v : a) {
             assertTrue(v < 53);
         }
@@ -53,7 +53,7 @@ public class TableFilteringTest {
     @Test
     public void testReject() {
         Table result = table.dropWhere(table.numberColumn("approval").isLessThan(70));
-        ShortColumn a = result.shortColumn("approval");
+        IntegerColumn a = result.intColumn("approval");
         for (double v : a) {
             assertFalse(v < 70);
         }
@@ -143,10 +143,10 @@ public class TableFilteringTest {
                         table.numberColumn("approval").isGreaterThan(70)));
 
         DateColumn dates = result.dateColumn("date");
-        ShortColumn approval = result.shortColumn("approval");
+        IntegerColumn approval = result.intColumn("approval");
         for (int row = 0; row < result.rowCount(); row++) {
             assertTrue(PackedLocalDate.isInApril(dates.getIntInternal(row)));
-            assertTrue(approval.get(row) > 70);
+            assertTrue(approval.getShort(row) > 70);
         }
     }
 

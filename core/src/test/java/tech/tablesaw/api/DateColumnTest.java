@@ -75,7 +75,7 @@ public class DateColumnTest {
         column1.appendCell("12/24/1924");
         column1.appendCell("12-May-2015");
         column1.appendCell("14-Jan-2015");
-        IntColumn c2 = column1.dayOfMonth();
+        IntegerColumn c2 = column1.dayOfMonth();
         assertEquals(23, c2.get(0), 0.0001);
         assertEquals(24, c2.get(1), 0.0001);
         assertEquals(12, c2.get(2), 0.0001);
@@ -88,7 +88,7 @@ public class DateColumnTest {
         column1.appendCell("12/24/1924");
         column1.appendCell("12-May-2015");
         column1.appendCell("14-Jan-2015");
-        IntColumn c2 = column1.monthValue();
+        IntegerColumn c2 = column1.monthValue();
         assertEquals(10, c2.get(0), 0.0001);
         assertEquals(12, c2.get(1), 0.0001);
         assertEquals(5, c2.get(2), 0.0001);
@@ -113,7 +113,7 @@ public class DateColumnTest {
         column1.appendCell("2013-10-23");
         column1.appendCell("12/24/1924");
         column1.appendCell("12-May-2015");
-        IntColumn c2 = column1.year();
+        IntegerColumn c2 = column1.year();
         assertEquals(2013, c2.get(0), 0.0001);
         assertEquals(1924, c2.get(1), 0.0001);
         assertEquals(2015, c2.get(2), 0.0001);

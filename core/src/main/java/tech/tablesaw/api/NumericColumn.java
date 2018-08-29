@@ -12,6 +12,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberFilters;
 import tech.tablesaw.columns.numbers.NumberMapFunctions;
 import tech.tablesaw.columns.numbers.NumberRollingColumn;
+import tech.tablesaw.columns.numbers.ShortDataWrapper;
 import tech.tablesaw.columns.numbers.Stats;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
@@ -463,14 +464,14 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
     }
 
     /**
-     * Returns a new IntColumn containing  a value for each value in this column
+     * Returns a new IntegerColumn containing  a value for each value in this column
      *
      * The exact behavior when overridden depends on the type of the receiver (LongColumn, FloatColumn, etc.)
      *
      * In this version, the result is a copy of the original
      */
-    default IntColumn asIntColumn() {
-        return (IntColumn) this.copy();
+    default IntegerColumn asIntegerColumn() {
+        return (IntegerColumn) this.copy();
     }
 
     /**
@@ -495,7 +496,7 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
         return (DoubleColumn) this.copy();
     }
 
-    default ShortColumn asShortColumn() {
-        return (ShortColumn) this.copy();
+    default ShortDataWrapper asShortColumn() {
+        return (ShortDataWrapper) this.copy();
     }
 }

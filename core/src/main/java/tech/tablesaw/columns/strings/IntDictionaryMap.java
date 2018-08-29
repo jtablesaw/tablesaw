@@ -11,7 +11,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.BitmapBackedSelection;
@@ -273,7 +273,7 @@ public class IntDictionaryMap implements DictionaryMap {
     public Table countByCategory(String columnName) {
         Table t = Table.create("Column: " + columnName);
         StringColumn categories = StringColumn.create("Category");
-        IntColumn counts = IntColumn.create("Count");
+        IntegerColumn counts = IntegerColumn.create("Count");
 
         Int2IntMap valueToCount = new Int2IntOpenHashMap();
 

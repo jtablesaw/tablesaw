@@ -17,9 +17,8 @@ public class Row implements Iterator<Row> {
     private final String[] columnNames;
     private final Map<String, DateColumn> dateColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, DoubleColumn> doubleColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private final Map<String, IntColumn> intColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, IntegerColumn> intColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, LongColumn> longColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private final Map<String, ShortColumn> shortColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, FloatColumn> floatColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, Column<String>> stringColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private final Map<String, BooleanColumn> booleanColumnMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -36,11 +35,8 @@ public class Row implements Iterator<Row> {
             if (column instanceof DoubleColumn) {
                 doubleColumnMap.put(column.name(), (DoubleColumn) column);
             }
-            if (column instanceof IntColumn) {
-                intColumnMap.put(column.name(), (IntColumn) column);
-            }
-            if (column instanceof ShortColumn) {
-                shortColumnMap.put(column.name(), (ShortColumn) column);
+            if (column instanceof IntegerColumn) {
+                intColumnMap.put(column.name(), (IntegerColumn) column);
             }
             if (column instanceof LongColumn) {
                 longColumnMap.put(column.name(), (LongColumn) column);
@@ -117,7 +113,7 @@ public class Row implements Iterator<Row> {
     }
 
     public short getShort(String columnName) {
-	return shortColumnMap.get(columnName).getShort(rowNumber);
+	    return intColumnMap.get(columnName).getShort(rowNumber);
     }
 
     public short getShort(int columnIndex) {

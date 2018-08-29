@@ -11,9 +11,8 @@ import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.NumberFillers;
@@ -248,7 +247,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
 
     @Override
     public Iterator<Double> iterator() {
-        return (Iterator<Double>) data.iterator();
+        return data.iterator();
     }
 
     @Override
@@ -566,17 +565,19 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
      * A missing value in the receiver is converted to a missing value in the result
      */
     @Override
-    public IntColumn asIntColumn() {
+    public IntegerColumn asIntegerColumn() {
         IntArrayList values = new IntArrayList();
         for (double d : data) {
             values.add((int) d);
         }
         values.trim();
-        return IntColumn.create(this.name(), values.elements());
+        return IntegerColumn.create(this.name(), values.elements());
     }
 
-    /**
-     * Returns a new ShortColumn containing a value for each value in this column, truncating if necessary.
+/*
+    */
+/**
+     * Returns a new ShortDataWrapper containing a value for each value in this column, truncating if necessary.
      *
      * A narrowing primitive conversion such as this one may lose information about the overall magnitude of a
      * numeric value and may also lose precision and range. Specifically, if the value is too small (a negative value
@@ -589,16 +590,18 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
      * conversion never results in a run-time exception.
      *
      * A missing value in the receiver is converted to a missing value in the result
-     */
+     *//*
+
     @Override
-    public ShortColumn asShortColumn() {
+    public ShortDataWrapper asShortColumn() {
         ShortArrayList values = new ShortArrayList();
         for (double d : data) {
             values.add((short) d);
         }
         values.trim();
-        return ShortColumn.create(this.name(), values.elements());
+        return ShortDataWrapper.create(this.name(), values.elements());
     }
+*/
 
     /**
      * Returns a new FloatColumn containing a value for each value in this column, truncating if necessary.

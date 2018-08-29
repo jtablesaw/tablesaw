@@ -50,9 +50,9 @@ public class RowTest {
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();
-            assertEquals(table.shortColumn(1).getShort(row.getRowNumber()),
+            assertEquals(table.intColumn(1).getShort(row.getRowNumber()),
                     row.getShort(1));
-            assertEquals(table.shortColumn("approval").getShort(row.getRowNumber()),
+            assertEquals(table.intColumn("approval").getShort(row.getRowNumber()),
                     row.getShort("approval"));
         }
     }

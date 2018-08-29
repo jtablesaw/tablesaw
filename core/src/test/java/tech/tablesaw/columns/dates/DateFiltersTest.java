@@ -14,25 +14,19 @@
 
 package tech.tablesaw.columns.dates;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static tech.tablesaw.columns.dates.PackedLocalDate.asLocalDate;
-import static tech.tablesaw.columns.dates.PackedLocalDate.minusDays;
-import static tech.tablesaw.columns.dates.PackedLocalDate.pack;
-import static tech.tablesaw.columns.dates.PackedLocalDate.plusDays;
+import org.junit.Before;
+import org.junit.Test;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.IntegerColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 import java.time.Month;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.Selection;
+import static org.junit.Assert.*;
+import static tech.tablesaw.columns.dates.PackedLocalDate.*;
 
 
 public class DateFiltersTest {
@@ -109,7 +103,7 @@ public class DateFiltersTest {
         }
 
         StringColumn month = dateColumn.month();
-        IntColumn monthValue = dateColumn.monthValue();
+        IntegerColumn monthValue = dateColumn.monthValue();
 
         for (int i = 0; i < months.length; i++) {
             assertEquals(months[i].name(), month.get(i).toUpperCase());
@@ -136,10 +130,14 @@ public class DateFiltersTest {
 
         Table t = Table.create("Test");
         t.addColumns(dateColumn);
-        IntColumn index = IntColumn.indexColumn("index", t.rowCount(), 0);
+        IntegerColumn index = IntegerColumn.indexColumn("index", t.rowCount(), 0);
         t.addColumns(index);
 
-        assertTrue(t.where(t.dateColumn("test").isInJanuary()).intColumn("index").contains(0));
+        //assertTrue(t.where(t.dateColumn("test").isInJanuary()).intColumn("index").contains(0));
+        Table t2 = t.where(t.dateColumn("test").isInJanuary());
+        IntegerColumn ic = t2.intColumn("index");
+        assertTrue(ic.contains(0));
+
         assertTrue(t.where(t.dateColumn("test").isInFebruary()).intColumn("index").contains(1));
         assertTrue(t.where(t.dateColumn("test").isInMarch()).intColumn("index").contains(2));
         assertTrue(t.where(t.dateColumn("test").isInApril()).intColumn("index").contains(3));
@@ -195,7 +193,7 @@ public class DateFiltersTest {
         assertFalse(dateColumn.isBetweenExcluding(beforeDate, afterDate).contains(2));
         assertFalse(dateColumn.isBetweenExcluding(beforeDate, afterDate).contains(0));
 
-        IntColumn index = IntColumn.indexColumn("index", dateColumn.size(), 0);
+        IntegerColumn index = IntegerColumn.indexColumn("index", dateColumn.size(), 0);
         Table t = Table.create("test", dateColumn, index);
 
         assertTrue(t.where(dateColumn.isBefore(packed)).intColumn("index").contains(0));

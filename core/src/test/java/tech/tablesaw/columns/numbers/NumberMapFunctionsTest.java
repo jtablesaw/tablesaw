@@ -1,14 +1,12 @@
 package tech.tablesaw.columns.numbers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
-
 import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.Table;
+
+import static org.junit.Assert.*;
 
 public class NumberMapFunctionsTest {
 
@@ -131,7 +129,7 @@ public class NumberMapFunctionsTest {
 
     @Test
     public void lag() {
-	IntColumn n1 = IntColumn.indexColumn("index", 4, 0);
+	IntegerColumn n1 = IntegerColumn.indexColumn("index", 4, 0);
         Table t = Table.create("tst");
         t.addColumns(n1, n1.lag(-2));
         assertEquals("            tst            \n" +
@@ -145,7 +143,7 @@ public class NumberMapFunctionsTest {
 
     @Test
     public void lead() {
-	IntColumn n1 = IntColumn.indexColumn("index", 4, 0);
+	IntegerColumn n1 = IntegerColumn.indexColumn("index", 4, 0);
         Table t = Table.create("tst");
         t.addColumns(n1, n1.lead(1));
         assertEquals("            tst            \n" +

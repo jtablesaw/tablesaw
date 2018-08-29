@@ -14,23 +14,22 @@
 
 package tech.tablesaw.index;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 import com.google.common.base.Preconditions;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.IntegerColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 
 /**
@@ -58,7 +57,7 @@ public class IntIndex {
         index = new Int2ObjectAVLTreeMap<>(tempMap);
     }
 
-    public IntIndex(IntColumn column) {
+    public IntIndex(IntegerColumn column) {
         Preconditions.checkArgument(column.type().equals(ColumnType.INTEGER),
                 "Int indexing only allowed on INTEGER numeric columns");
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);

@@ -20,10 +20,7 @@ import tech.tablesaw.api.Table;
 
 import java.util.concurrent.TimeUnit;
 
-import static tech.tablesaw.api.ColumnType.INTEGER;
-import static tech.tablesaw.api.ColumnType.SHORT;
-import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
+import static tech.tablesaw.api.ColumnType.*;
 
 public class CsvReadPerformanceTest {
 
@@ -36,18 +33,18 @@ public class CsvReadPerformanceTest {
             STRING,     // 5     Agentype
             STRING,     // 6     Source
             STRING,     // 7     Solved
-            SHORT,      // 8     Year
+            INTEGER,      // 8     Year
             STRING,     // 9     StateName
             STRING,     // 10    Month
-            SHORT,      // 11    Incident
+            INTEGER,      // 11    Incident
             STRING,     // 12    ActionType
             STRING,     // 13    Homicide
             STRING,     // 14    Situation
-            SHORT,      // 15    VicAge
+            INTEGER,      // 15    VicAge
             STRING,     // 16    VicSex
             STRING,     // 17    VicRace
             STRING,     // 18    VicEthnic
-            SHORT,      // 19    OffAge
+            INTEGER,      // 19    OffAge
             STRING,     // 20    OffSex
             STRING,     // 21    OffRace
             STRING,     // 22    OffEthnic
@@ -55,8 +52,8 @@ public class CsvReadPerformanceTest {
             STRING,     // 24    Relationship
             STRING,     // 25    Circumstance
             STRING,     // 26    Subcircum
-            SHORT,      // 27    VicCount
-            SHORT,      // 28    OffCount
+            INTEGER,      // 27    VicCount
+            INTEGER,      // 28    OffCount
             INTEGER,    // 29    FileDate
             STRING,     // 30    fstate
             STRING,     // 31    MSA
