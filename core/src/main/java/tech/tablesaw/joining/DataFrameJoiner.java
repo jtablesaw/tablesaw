@@ -77,7 +77,7 @@ public class DataFrameJoiner {
     	for (int i=0; i<tables.length; i++) {
     		Table currT = tables[i];
     		// if first iteration then join to initial table
-    		if(joined == table) {
+    		if(joined.equals(table)) {
     			joined = inner(currT, column.name(), allowDuplicateColumnNames);
     		} // else join to result of last join
     		else {

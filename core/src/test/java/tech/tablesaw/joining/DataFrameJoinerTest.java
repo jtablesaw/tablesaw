@@ -76,7 +76,7 @@ public class DataFrameJoinerTest {
                     + "5.0,King,false\n",
             "Dogs");
 
-    private static Table create_STUDENT() {
+    private static Table createSTUDENT() {
     	return Table.read().csv(
             "ID,FirstName,LastName,City,State,Age,USID,GradYear\n"
                     + "1,Bob,Barney,Burke,VA,20,11122,2019\n"
@@ -92,7 +92,7 @@ public class DataFrameJoinerTest {
             "Student");
     }
 
-    private static Table create_INSTRUCTOR() {
+    private static Table createINSTRUCTOR() {
     	return Table.read().csv(
             "ID,First,Last,Title,City,State,Age,USID,GradYear\n"
                     + "1,Bob,Cabello,Prof,Burke,VA,20,11333,2019\n"
@@ -109,7 +109,7 @@ public class DataFrameJoinerTest {
     }
 
     
-    private static Table create_DEPTHEAD() {
+    private static Table createDEPTHEAD() {
     	return Table.read().csv(
     			"ID,First,Last,Dept,City,State,Age\n"
     					+ "1,John,Cabello,ComputerScience,Burke,VA,20\n"
@@ -125,7 +125,7 @@ public class DataFrameJoinerTest {
     			"DepartmentHead");
     }
     
-    private static Table create_CLASS() {
+    private static Table createCLASS() {
     	return Table.read().csv(
             "ID,ClassType,Name,Level,Description,StartDate,EndDate,Completed,Age\n"
                     + "1001,Math,Calculus,101,Newton math,2018-09-20,2018-12-17,false,16\n"
@@ -257,8 +257,8 @@ public class DataFrameJoinerTest {
     
     @Test
     public void innerJoinStudentInstructorOnAge() {
-    	Table STUDENT = create_STUDENT();
-    	Table INSTRUCTOR = create_INSTRUCTOR();
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
     	Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR);
     	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
     			"T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear"})));
@@ -268,9 +268,9 @@ public class DataFrameJoinerTest {
     
     @Test
     public void innerJoinStudentInstructorClassOnAge() {
-    	Table STUDENT = create_STUDENT();
-    	Table INSTRUCTOR = create_INSTRUCTOR();
-    	Table CLASS = create_CLASS();
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
+    	Table CLASS = createCLASS();
     	Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR,CLASS);
     	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
     			"T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear",
@@ -281,10 +281,10 @@ public class DataFrameJoinerTest {
     
     @Test
     public void innerJoinStudentInstructorClassDeptHeadOnAge() {
-    	Table STUDENT = create_STUDENT();
-    	Table INSTRUCTOR = create_INSTRUCTOR();
-    	Table CLASS = create_CLASS();
-    	Table DEPTHEAD = create_DEPTHEAD();
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
+    	Table CLASS = createCLASS();
+    	Table DEPTHEAD = createDEPTHEAD();
     	Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR,CLASS,DEPTHEAD);
     	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
     			"T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear",
