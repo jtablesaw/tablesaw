@@ -151,8 +151,6 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
     }
 
     abstract public void append(int value);
-    abstract public void append(short value);
-    abstract public void append(byte value);
     abstract public void append(long value);
 
     @Override

@@ -75,16 +75,6 @@ public class FloatColumn extends NumberColumn<Float> {
     }
 
     @Override
-    public void append(short value) {
-        data.add(value);
-    }
-
-    @Override
-    public void append(byte value) {
-        data.add(value);
-    }
-
-    @Override
     public void append(long value) {
         data.add(value);
     }

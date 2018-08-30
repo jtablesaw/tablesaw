@@ -45,8 +45,6 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
     }
 
     void append(int value);
-    void append(short value);
-    void append(byte value);
     void append(long value);
 
     @Override

@@ -206,16 +206,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     }
 
     @Override
-    public void append(short value) {
-        data.add(value);
-    }
-
-    @Override
-    public void append(byte value) {
-        data.add(value);
-    }
-
-    @Override
     public void append(long value) {
         data.add(value);
     }

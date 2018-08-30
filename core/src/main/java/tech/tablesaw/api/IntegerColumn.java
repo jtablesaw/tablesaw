@@ -179,41 +179,6 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
     }
 
     @Override
-    public void append(short value) {
-        if (data instanceof ByteDataWrapper) {
-            if (value > Byte.MAX_VALUE) {
-                promoteColumnType(value);
-            } else {
-                try {
-                    data.append(value);
-                    return;
-                } catch (NumberOutOfRangeException e) {
-                    // should never get here
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        if (data instanceof ShortDataWrapper) {
-            try {
-                data.append(value);
-            } catch (NumberOutOfRangeException e) {
-                // should never get here
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
-    @Override
-    public void append(byte value) {
-        try {
-            data.append(value);
-        } catch (NumberOutOfRangeException e) {
-            // should never get here
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public void append(long value) {
         append((int) value);
     }

@@ -265,16 +265,6 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     }
 
     @Override
-    public void append(short value) {
-        data.add(value);
-    }
-
-    @Override
-    public void append(byte value) {
-        data.add(value);
-    }
-
-    @Override
     public byte[] asBytes(int rowNumber) {
         return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putLong(getLong(rowNumber)).array();
     }
