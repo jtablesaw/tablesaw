@@ -102,4 +102,6 @@ public interface DataWrapper {
     void appendCell(String value, AbstractParser<?> parser);
 
     boolean contains(int value);
+
+    byte getByte(int row);
 }

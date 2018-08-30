@@ -53,6 +53,11 @@ public class IntDataWrapper implements DataWrapper, IntIterable {
     }
 
     @Override
+    public byte getByte(int index) {
+        return (byte) data.getInt(index);
+    }
+
+    @Override
     public IntDataWrapper subset(final int[] rows) {
         final IntDataWrapper c = this.emptyCopy();
         for (final int row : rows) {
@@ -170,7 +175,7 @@ public class IntDataWrapper implements DataWrapper, IntIterable {
 
     @Override
     public void append(long value) {
-        data.add((short) value);
+        data.add((int) value);
     }
 
     @Override
@@ -301,6 +306,10 @@ public class IntDataWrapper implements DataWrapper, IntIterable {
     public void appendObj(Object obj) {
         if (obj == null) {
             appendMissing();
+            return;
+        }
+        if (obj instanceof Integer) {
+            append((int) obj);
             return;
         }
         if (obj instanceof Short) {

@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.ByteDataWrapper;
 import tech.tablesaw.columns.numbers.DataWrapper;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.IntDataWrapper;
@@ -18,7 +19,6 @@ import tech.tablesaw.columns.numbers.NumberOutOfRangeException;
 import tech.tablesaw.columns.numbers.ShortDataWrapper;
 import tech.tablesaw.selection.Selection;
 
-import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.function.Function;
@@ -43,7 +43,7 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
     }
 
     public static IntegerColumn create(final String name) {
-        return new IntegerColumn(name, ShortDataWrapper.create(AbstractColumn.DEFAULT_ARRAY_SIZE));
+        return new IntegerColumn(name, ByteDataWrapper.create(AbstractColumn.DEFAULT_ARRAY_SIZE));
     }
 
     public static IntegerColumn create(final String name, final int[] arr) {
@@ -51,7 +51,7 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
     }
 
     public static IntegerColumn create(final String name, final int initialSize) {
-        return new IntegerColumn(name, new IntArrayList(initialSize));
+        return new IntegerColumn(name, ByteDataWrapper.create(initialSize));
     }
 
     @Override
@@ -140,10 +140,24 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
     }
 
     public void append(int i) {
+        if (data instanceof ByteDataWrapper) {
+            if (i > Byte.MAX_VALUE) {
+                promoteColumnType(i);
+            } else {
+                data.append((byte) i);
+                return;
+            }
+        }
+        if (data instanceof ShortDataWrapper) {
+            if (i > Short.MAX_VALUE) {
+                promoteColumnType(i);
+            } else {
+                data.append((short) i);
+                return;
+            }
+        }
         if (data instanceof IntDataWrapper) {
             data.append(i);
-        } else if (data instanceof ShortDataWrapper) {
-            data.append((short) i);
         } else {
             throw new RuntimeException("Unsupported column type");
         }
@@ -151,7 +165,17 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     @Override
     public void append(short value) {
-        data.append(value);
+        if (data instanceof ByteDataWrapper) {
+            if (value > Byte.MAX_VALUE) {
+                promoteColumnType(value);
+            } else {
+                data.append((byte) value);
+                return;
+            }
+        }
+        if (data instanceof ShortDataWrapper) {
+            data.append(value);
+        }
     }
 
     @Override
@@ -161,11 +185,11 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     @Override
     public void append(long value) {
-        data.append(value);
+        append((int) value);
     }
 
     public IntegerColumn append(Integer val) {
-        this.append(val.intValue());
+        append(val.intValue());
         return this;
     }
 
@@ -181,7 +205,9 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     @Override
     public IntegerColumn copy() {
-        if (data instanceof IntDataWrapper || data instanceof ShortDataWrapper) {
+        if (data instanceof IntDataWrapper
+                || data instanceof ShortDataWrapper
+                || data instanceof ByteDataWrapper) {
             return new IntegerColumn(name(), data.copy());
         }
         throw new RuntimeException("Unexpected data wrapper type for Integer Column");
@@ -208,12 +234,16 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     @Override
     public IntegerColumn set(int i, Integer val) {
-        if (data instanceof IntegerColumn)  {
+        if (data instanceof IntDataWrapper)  {
             data.set(i, val);
             return this;
         }
         if (data instanceof ShortDataWrapper) {
             data.set(i, (short) val.intValue());
+            return this;
+        }
+        if (data instanceof ByteDataWrapper) {
+            data.set(i, (byte) val.intValue());
             return this;
         }
         throw new IllegalArgumentException("Could not set int " + val);
@@ -244,7 +274,7 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putInt(getInt(rowNumber)).array();
+        return data.asBytes(rowNumber);
     }
 
     @Override
@@ -284,6 +314,10 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
         return data.getShort(row);
     }
 
+    public short getByte(int row) {
+        return data.getByte(row);
+    }
+
     @Override
     public double getDouble(int row) {
         return data.getDouble(row);
@@ -317,6 +351,14 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
             append((int) obj);
             return this;
         }
+        if (obj instanceof Short) {
+            append((short) obj);
+            return this;
+        }
+        if (obj instanceof Byte) {
+            append((byte) obj);
+            return this;
+        }
         throw new IllegalArgumentException("Could not append " + obj.getClass());
     }
 
@@ -326,9 +368,8 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
             data.appendCell(value);
         } catch (final NumberOutOfRangeException e) {
             Long parsedValue = e.getParsedValue();
-
             if (parsedValue != null) {
-                promoteColumnType();
+                promoteColumnType(parsedValue.intValue());
             }
             data.appendCell(value);
         }
@@ -342,19 +383,46 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
         } catch (final NumberOutOfRangeException e) {
             Long parsedValue = e.getParsedValue();
             if (parsedValue != null) {
-                promoteColumnType();
+                promoteColumnType(parsedValue.intValue());
             }
             data.appendCell(value, parser);
         }
         return this;
     }
 
-    private void promoteColumnType() {
+    private void promoteColumnType(int valueCausingPromotion) {
         if (data instanceof ShortDataWrapper) {
             ShortDataWrapper shorts = (ShortDataWrapper) data;
             IntDataWrapper ints = IntDataWrapper.create(shorts.size());
             for (int s : shorts) {
                 if (shorts.isMissingValue(s)) {
+                    ints.appendMissing();
+                }
+                ints.append(s);
+            }
+            data = ints;
+        }
+
+        if (data instanceof ByteDataWrapper) {
+            promoteByteDataWrapper(valueCausingPromotion);
+        }
+    }
+
+    private void promoteByteDataWrapper(int valueCausingPromotion) {
+        ByteDataWrapper bytes = (ByteDataWrapper) data;
+        if (valueCausingPromotion <= Short.MAX_VALUE) {
+            ShortDataWrapper shorts = ShortDataWrapper.create(bytes.size());
+            for (int s : bytes) {
+                if (bytes.isMissingValue(s)) {
+                    shorts.appendMissing();
+                }
+                shorts.append(s);
+            }
+            data = shorts;
+        } else {
+            IntDataWrapper ints = IntDataWrapper.create(bytes.size());
+            for (int s : bytes) {
+                if (bytes.isMissingValue(s)) {
                     ints.appendMissing();
                 }
                 ints.append(s);

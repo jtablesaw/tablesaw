@@ -396,11 +396,6 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     @Override
-    public String toString() {
-        return "LocalTime column: " + name();
-    }
-
-    @Override
     public TimeColumn append(Column<LocalTime> column) {
         Preconditions.checkArgument(column.type() == this.type());
         TimeColumn timeCol = (TimeColumn) column;

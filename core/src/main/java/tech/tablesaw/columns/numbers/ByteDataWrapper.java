@@ -1,20 +1,20 @@
 package tech.tablesaw.columns.numbers;
 
+import it.unimi.dsi.fastutil.bytes.ByteArrayList;
+import it.unimi.dsi.fastutil.bytes.ByteArrays;
+import it.unimi.dsi.fastutil.bytes.ByteComparator;
+import it.unimi.dsi.fastutil.bytes.ByteIterator;
+import it.unimi.dsi.fastutil.bytes.ByteListIterator;
+import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
+import it.unimi.dsi.fastutil.bytes.ByteSet;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrayList;
-import it.unimi.dsi.fastutil.shorts.ShortArrays;
-import it.unimi.dsi.fastutil.shorts.ShortComparator;
-import it.unimi.dsi.fastutil.shorts.ShortIterator;
-import it.unimi.dsi.fastutil.shorts.ShortListIterator;
-import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
-import it.unimi.dsi.fastutil.shorts.ShortSet;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.filtering.predicates.ShortPredicate;
+import tech.tablesaw.filtering.predicates.BytePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -23,33 +23,33 @@ import java.util.Iterator;
 
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
-public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<Integer> {
+public class ByteDataWrapper implements DataWrapper, IntegerIterable, Iterable<Integer> {
 
-    private static final short MISSING_VALUE = Short.MIN_VALUE;
+    private static final byte MISSING_VALUE = Byte.MIN_VALUE;
 
-    private static final ShortPredicate isMissing = value -> value == MISSING_VALUE;
+    private static final BytePredicate isMissing = value -> value == MISSING_VALUE;
 
     public static final IntParser DEFAULT_PARSER = new IntParser(ColumnType.INTEGER);
 
-    private static final int BYTE_SIZE = 2;
+    private static final int BYTE_SIZE = 1;
 
     /**
      * Compares two ints, such that a sort based on this comparator would sort in descending order
      */
-    private final ShortComparator descendingComparator = (o2, o1) -> (Short.compare(o1, o2));
+    private final ByteComparator descendingComparator = (o2, o1) -> (Byte.compare(o1, o2));
 
-    private final ShortArrayList data;
+    private final ByteArrayList data;
 
-    protected ShortDataWrapper(ShortArrayList data) {
+    protected ByteDataWrapper(ByteArrayList data) {
         this.data = data;
     }
 
-    public static ShortDataWrapper create(final short[] arr) {
-        return new ShortDataWrapper(new ShortArrayList(arr));
+    public static ByteDataWrapper create(final byte[] arr) {
+        return new ByteDataWrapper(new ByteArrayList(arr));
     }
 
-    public static ShortDataWrapper create(final int initialSize) {
-        return new ShortDataWrapper(new ShortArrayList(initialSize));
+    public static ByteDataWrapper create(final int initialSize) {
+        return new ByteDataWrapper(new ByteArrayList(initialSize));
     }
 
     public static boolean valueIsMissing(int value) {
@@ -58,17 +58,20 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
 
     @Override
     public short getShort(int index) {
-        return data.getShort(index);
+        byte result = getByte(index);
+        if (result == MISSING_VALUE) {
+            return Short.MIN_VALUE;
+        }
+        return result;
     }
 
-    @Override
     public byte getByte(int index) {
-        return (byte) data.getShort(index);
+        return data.getByte(index);
     }
 
     @Override
-    public ShortDataWrapper subset(final int[] rows) {
-        final ShortDataWrapper c = this.emptyCopy();
+    public ByteDataWrapper subset(final int[] rows) {
+        final ByteDataWrapper c = this.emptyCopy();
         for (final int row : rows) {
             c.append(getShort(row));
         }
@@ -76,46 +79,46 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
     }
 
     @Override
-    public ShortDataWrapper unique() {
-        final ShortSet values = new ShortOpenHashSet();
+    public ByteDataWrapper unique() {
+        final ByteSet values = new ByteOpenHashSet();
         for (int i = 0; i < size(); i++) {
             if (!isMissing(i)) {
-                values.add(getShort(i));
+                values.add(getByte(i));
             }
         }
-        final ShortDataWrapper column = ShortDataWrapper.create(values.size());
-        for (short value : values) {
-            column.append(value);
+        final ByteDataWrapper wrapper = ByteDataWrapper.create(values.size());
+        for (byte value : values) {
+            wrapper.append(value);
         }
-        return column;
+        return wrapper;
     }
 
     @Override
-    public ShortDataWrapper top(int n) {
-        final ShortArrayList top = new ShortArrayList();
-        final short[] values = data.toShortArray();
-        ShortArrays.parallelQuickSort(values, descendingComparator);
+    public ByteDataWrapper top(int n) {
+        final ByteArrayList top = new ByteArrayList();
+        final byte[] values = data.toByteArray();
+        ByteArrays.parallelQuickSort(values, descendingComparator);
         for (int i = 0; i < n && i < values.length; i++) {
             top.add(values[i]);
         }
-        return new ShortDataWrapper(top);
+        return new ByteDataWrapper(top);
     }
 
     @Override
-    public ShortDataWrapper bottom(final int n) {
-        final ShortArrayList bottom = new ShortArrayList();
-        final short[] values = data.toShortArray();
-        ShortArrays.parallelQuickSort(values);
+    public ByteDataWrapper bottom(final int n) {
+        final ByteArrayList bottom = new ByteArrayList();
+        final byte[] values = data.toByteArray();
+        ByteArrays.parallelQuickSort(values);
         for (int i = 0; i < n && i < values.length; i++) {
             bottom.add(values[i]);
         }
-        return new ShortDataWrapper(bottom);
+        return new ByteDataWrapper(bottom);
     }
 
     @Override
-    public ShortDataWrapper lag(int n) {
+    public ByteDataWrapper lag(int n) {
         final int srcPos = n >= 0 ? 0 : 0 - n;
-        final short[] dest = new short[size()];
+        final byte[] dest = new byte[size()];
         final int destPos = n <= 0 ? 0 : n;
         final int length = n >= 0 ? size() - n : size() + n;
 
@@ -123,19 +126,18 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
             dest[i] = MISSING_VALUE;
         }
 
-        short[] array = data.toShortArray();
+        byte[] array = data.toByteArray();
 
         System.arraycopy(array, srcPos, dest, destPos, length);
-        return new ShortDataWrapper(new ShortArrayList(dest));
+        return new ByteDataWrapper(new ByteArrayList(dest));
     }
 
     @Override
-    public ShortDataWrapper removeMissing() {
-        ShortDataWrapper result = copy();
-        result.clear();
-        ShortListIterator iterator = data.iterator();
+    public ByteDataWrapper removeMissing() {
+        ByteDataWrapper result = new ByteDataWrapper(new ByteArrayList());
+        ByteListIterator iterator = data.iterator();
         while (iterator.hasNext()) {
-            final short v = iterator.nextShort();
+            final byte v = iterator.nextByte();
             if (!isMissingValue(v)) {
                 result.append(v);
             }
@@ -145,13 +147,13 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
 
     @Override
     public IntIterator intIterator() {
-        ShortListIterator listIterator = data.listIterator();
+        ByteListIterator listIterator = data.listIterator();
 
         return new IntIterator() {
 
             @Override
             public int nextInt() {
-                return listIterator.nextShort();
+                return listIterator.nextByte();
             }
 
             @Override
@@ -161,14 +163,14 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
         };
     }
 
-    public ShortIterator shortIterator() {
-        ShortListIterator listIterator = data.listIterator();
+    public ByteIterator byteIterator() {
+        ByteListIterator listIterator = data.listIterator();
 
-        return new ShortIterator() {
+        return new ByteIterator() {
 
             @Override
-            public short nextShort() {
-                return listIterator.nextShort();
+            public byte nextByte() {
+                return listIterator.nextByte();
             }
 
             @Override
@@ -180,13 +182,13 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
 
     @Override
     public Iterator<Integer> iterator() {
-        ShortListIterator listIterator = data.listIterator();
+        ByteListIterator listIterator = data.listIterator();
 
         return new IntIterator() {
 
             @Override
             public int nextInt() {
-                return listIterator.nextShort();
+                return listIterator.nextByte();
             }
 
             @Override
@@ -209,32 +211,32 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
     @Override
     public void appendCell(String value) {
         try {
-            append(DEFAULT_PARSER.parseShort(value));
+            append(DEFAULT_PARSER.parseByte(value));
         } catch (final NumberFormatException e) {
-            throw new NumberFormatException("Parsing error adding value to ShortDataWrapper: " + e.getMessage());
+            throw new NumberFormatException("Parsing error adding value to ByteDataWrapper: " + e.getMessage());
         }
     }
 
     @Override
     public void appendCell(String value, AbstractParser<?> parser) {
         try {
-            append(parser.parseShort(value));
+            append(parser.parseByte(value));
         } catch (final NumberFormatException e) {
-            throw new NumberFormatException("Parsing error adding value to ShortDataWrapper: " + e.getMessage());
+            throw new NumberFormatException("Parsing error adding value to ByteDataWrapper: " + e.getMessage());
         }
     }
 
     @Override
     public boolean contains(int value) {
-        if (value > Short.MAX_VALUE || value < Short.MIN_VALUE) {
+        if (value > Byte.MAX_VALUE || value < Byte.MIN_VALUE) {
             return false;
         }
-        return data.contains((short) value);
+        return data.contains((byte) value);
     }
 
     @Override
     public void append(short i) {
-        data.add(i);
+        data.add((byte) i);
     }
 
     @Override
@@ -244,22 +246,22 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
 
     @Override
     public void append(long value) {
-        data.add((short) value);
+        data.add((byte) value);
     }
 
     @Override
-    public ShortDataWrapper emptyCopy() {
+    public ByteDataWrapper emptyCopy() {
         return emptyCopy(AbstractColumn.DEFAULT_ARRAY_SIZE);
     }
 
     @Override
-    public ShortDataWrapper emptyCopy(final int rowSize) {
-        return new ShortDataWrapper(new ShortArrayList(rowSize));
+    public ByteDataWrapper emptyCopy(final int rowSize) {
+        return new ByteDataWrapper(new ByteArrayList(rowSize));
     }
 
     @Override
-    public ShortDataWrapper copy() {
-        return new ShortDataWrapper(data.clone());
+    public ByteDataWrapper copy() {
+        return new ByteDataWrapper(data.clone());
     }
 
     @Override
@@ -273,12 +275,16 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
 
     @Override
     public void set(int i, short val) {
-        data.set(i, val);
+        data.set(i, (byte) val);
     }
 
     @Override
     public void set(int i, int val) {
-        data.set(i, (short) val);
+        data.set(i, (byte) val);
+    }
+
+    public void set(int i, byte val) {
+        data.set(i, val);
     }
 
     @Override
@@ -288,19 +294,19 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
 
     @Override
     public void append(int value) {
-        data.add((short) value);
+        data.add((byte) value);
     }
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(BYTE_SIZE).putShort(getShort(rowNumber)).array();
+        return ByteBuffer.allocate(BYTE_SIZE).put(getByte(rowNumber)).array();
     }
 
     @Override
     public int countUnique() {
-        ShortSet uniqueElements = new ShortOpenHashSet();
+        ByteSet uniqueElements = new ByteOpenHashSet();
         for (int i = 0; i < size(); i++) {
-            short val = getShort(i);
+            byte val = getByte(i);
             if (!isMissingValue(val)) {
                 uniqueElements.add(val);
             }
@@ -334,16 +340,16 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
      */
     @Override
     public int getInt(int row) {
-        short value = data.getShort(row);
+        short value = data.getByte(row);
         if (! isMissingValue(value)) {
-            return data.getShort(row);
+            return data.getByte(row);
         }
         return IntColumnType.missingValueIndicator();
     }
 
     @Override
     public double getDouble(int row) {
-        short value = data.getShort(row);
+        byte value = data.getByte(row);
         if (isMissingValue(value)) {
             return DoubleColumnType.missingValueIndicator();
         }
@@ -357,17 +363,17 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
 
     @Override
     public boolean isMissing(int rowNumber) {
-        return isMissingValue(getShort(rowNumber));
+        return isMissingValue(getByte(rowNumber));
     }
 
     @Override
     public void sortAscending() {
-        ShortArrays.parallelQuickSort(data.elements());
+        ByteArrays.parallelQuickSort(data.elements());
     }
 
     @Override
     public void sortDescending() {
-        ShortArrays.parallelQuickSort(data.elements(), descendingComparator);
+        ByteArrays.parallelQuickSort(data.elements(), descendingComparator);
     }
 
     @Override
@@ -376,8 +382,8 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
             appendMissing();
             return;
         }
-        if (obj instanceof Short) {
-            append((short) obj);
+        if (obj instanceof Byte) {
+            append((byte) obj);
             return;
         }
         throw new IllegalArgumentException("Could not append " + obj.getClass());
@@ -389,44 +395,44 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
     }
 
     @Override
-    public ShortDataWrapper inRange(int start, int end) {
+    public ByteDataWrapper inRange(int start, int end) {
         return where(Selection.withRange(start, end));
     }
 
     @Override
-    public ShortDataWrapper where(Selection selection) {
-        ShortArrayList newList = new ShortArrayList(selection.size());
+    public ByteDataWrapper where(Selection selection) {
+        ByteArrayList newList = new ByteArrayList(selection.size());
         for (int i = 0; i < selection.size(); i++) {
-            newList.add(getShort(selection.get(i)));
+            newList.add(getByte(selection.get(i)));
         }
-        return new ShortDataWrapper(newList);
+        return new ByteDataWrapper(newList);
 
     }
 
     @Override
-    public ShortDataWrapper lead(int n) {
+    public ByteDataWrapper lead(int n) {
         return lag(-n);
     }
 
     // TODO(lwhite): Should this class have type params?
 
     @Override
-    public ShortDataWrapper first(int numRows) {
+    public ByteDataWrapper first(int numRows) {
         return where(Selection.withRange(0, numRows));
     }
 
     @Override
-    public ShortDataWrapper last(int numRows) {
+    public ByteDataWrapper last(int numRows) {
         return where(Selection.withRange(size() - numRows, size()));
     }
 
     @Override
-    public ShortDataWrapper sampleN(int n) {
+    public ByteDataWrapper sampleN(int n) {
         return where(selectNRowsAtRandom(n, size()));
     }
 
     @Override
-    public ShortDataWrapper sampleX(double proportion) {
+    public ByteDataWrapper sampleX(double proportion) {
         int columnSize = (int) Math.round(size() * proportion);
         return where(selectNRowsAtRandom(columnSize, size()));
     }
@@ -492,10 +498,10 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
         return values;
     }
 
-    public Selection eval(final ShortPredicate predicate) {
+    public Selection eval(final BytePredicate predicate) {
         final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
-            final short next = getShort(idx);
+            final byte next = getByte(idx);
             if (predicate.test(next)) {
                 bitmap.add(idx);
             }

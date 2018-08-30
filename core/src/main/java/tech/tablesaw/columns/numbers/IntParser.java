@@ -63,6 +63,23 @@ public class IntParser extends AbstractParser<Integer> {
 
     }
 
+    public byte parseByte(String str) {
+        if (isMissing(str)) {
+            return Byte.MIN_VALUE;
+        }
+        String s = str;
+        if (s.endsWith(".0")) {
+            s = s.substring(0, s.length() - 2);
+        }
+        try {
+            return Byte.parseByte(AbstractParser.remove(s, ','));
+        } catch (NumberFormatException e) {
+            long longValue = Long.parseLong(s);
+            throw new NumberOutOfRangeException(str, longValue, IntColumnType.INSTANCE);
+        }
+
+    }
+
     @Override
     public int parseInt(String str) {
         if (isMissing(str)) {

@@ -229,7 +229,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
             if (DateColumn.valueIsMissing(c1)) {
                 newColumn.appendMissing();
             } else {
-                newColumn.append((short) PackedLocalDate.getDayOfWeek(c1).getValue());
+                newColumn.append(PackedLocalDate.getDayOfWeek(c1).getValue());
             }
         }
         return newColumn;
