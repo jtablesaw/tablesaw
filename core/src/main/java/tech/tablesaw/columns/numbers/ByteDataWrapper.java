@@ -170,7 +170,7 @@ public class ByteDataWrapper implements DataWrapper, Iterable<Integer> {
     }
 
     @Override
-    public void appendCell(String value) {
+    public void appendCell(String value) throws NumberOutOfRangeException {
         try {
             append(DEFAULT_PARSER.parseByte(value));
         } catch (final NumberFormatException e) {
@@ -179,7 +179,7 @@ public class ByteDataWrapper implements DataWrapper, Iterable<Integer> {
     }
 
     @Override
-    public void appendCell(String value, AbstractParser<?> parser) {
+    public void appendCell(String value, AbstractParser<?> parser) throws NumberOutOfRangeException {
         try {
             append(parser.parseByte(value));
         } catch (final NumberFormatException e) {
@@ -193,16 +193,6 @@ public class ByteDataWrapper implements DataWrapper, Iterable<Integer> {
             return false;
         }
         return data.contains((byte) value);
-    }
-
-    @Override
-    public void append(short i) {
-        data.add((byte) i);
-    }
-
-    @Override
-    public void append(byte value) {
-        data.add(value);
     }
 
     @Override
@@ -235,12 +225,18 @@ public class ByteDataWrapper implements DataWrapper, Iterable<Integer> {
     }
 
     @Override
-    public void set(int i, short val) {
+    public void set(int i, short val) throws NumberOutOfRangeException {
+        if (val > Byte.MAX_VALUE) {
+            throw new NumberOutOfRangeException(String.valueOf(val), (long) val);
+        }
         data.set(i, (byte) val);
     }
 
     @Override
-    public void set(int i, int val) {
+    public void set(int i, int val) throws NumberOutOfRangeException {
+        if (val > Byte.MAX_VALUE) {
+            throw new NumberOutOfRangeException(String.valueOf(val), (long) val);
+        }
         data.set(i, (byte) val);
     }
 

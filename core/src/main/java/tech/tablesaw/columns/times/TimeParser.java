@@ -85,6 +85,15 @@ public class TimeParser extends AbstractParser<LocalTime> {
         return LocalTime.parse(value, parserFormatter);
     }
 
+    @Override
+    public LocalTime parseTime(String value) {
+        if (isMissing(value)) {
+            return null;
+        }
+        value = Strings.padStart(value, 4, '0');
+        return LocalTime.parse(value, parserFormatter);
+    }
+
     // A formatter that handles time formats defined above
     /**
      * A formatter for parsing. Useful when the user has specified that a numeric-like column is really supposed to be a time

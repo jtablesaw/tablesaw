@@ -64,6 +64,14 @@ public class DateParser extends AbstractParser<LocalDate> {
         return LocalDate.parse(s, formatter);
     }
 
+    @Override
+    public LocalDate parseDate(String s) {
+        if (isMissing(s)) {
+            return null;
+        }
+        return LocalDate.parse(s, formatter);
+    }
+
     // Formats that we accept in parsing dates from strings
     private static final DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final DateTimeFormatter dtf2 = DateTimeFormatter.ofPattern("MM/dd/yyyy");

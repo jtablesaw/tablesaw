@@ -30,4 +30,12 @@ public class StringParser extends AbstractParser<String> {
         }
         return s;
     }
+
+    @Override
+    public String parseString(String s) {
+        if (isMissing(s)) {
+            return StringColumnType.missingValueIndicator();
+        }
+        return s;
+    }
 }

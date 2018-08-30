@@ -62,7 +62,7 @@ public class BooleanParser extends AbstractParser<Boolean> {
     }
 
     @Override
-    public byte parseByte(String s) {
+    public byte parseBoolean(String s) {
         if (isMissing(s)) {
             return MISSING_VALUE;
         } else if (TRUE_STRINGS.contains(s)) {

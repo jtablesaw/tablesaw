@@ -184,7 +184,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     @Override
     public DateTimeColumn appendCell(String stringValue, AbstractParser<?> parser) {
-        return appendObj(parser.parse(stringValue));
+        return appendObj(parser.parseDateTime(stringValue));
     }
 
     public DateTimeColumn append(LocalDateTime dateTime) {

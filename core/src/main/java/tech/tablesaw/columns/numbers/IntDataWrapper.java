@@ -141,9 +141,8 @@ public class IntDataWrapper implements DataWrapper, IntIterable {
         return eval(isMissing);
     }
 
-
     @Override
-    public void appendCell(String value) {
+    public void appendCell(String value) throws NumberOutOfRangeException {
         try {
             append(IntColumnType.DEFAULT_PARSER.parseInt(value));
         } catch (final NumberFormatException e) {
@@ -152,22 +151,12 @@ public class IntDataWrapper implements DataWrapper, IntIterable {
     }
 
     @Override
-    public void appendCell(String value, AbstractParser<?> parser) {
+    public void appendCell(String value, AbstractParser<?> parser) throws NumberOutOfRangeException {
         try {
             append(parser.parseInt(value));
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Parsing error adding value to IntDataWrapper: " + e.getMessage());
         }
-    }
-
-    @Override
-    public void append(short i) {
-        data.add(i);
-    }
-
-    @Override
-    public void append(byte value) {
-        data.add(value);
     }
 
     @Override
@@ -205,15 +194,15 @@ public class IntDataWrapper implements DataWrapper, IntIterable {
     }
 
     @Override
+    public void set(int i, int val) {
+        data.set(i, val);
+    }
+
+    @Override
     public void setMissing(Selection s) {
         for (int index : s) {
             data.set(index, Integer.MIN_VALUE);
         }
-    }
-
-    @Override
-    public void set(int i, int val) {
-        data.set(i, val);
     }
 
     @Override

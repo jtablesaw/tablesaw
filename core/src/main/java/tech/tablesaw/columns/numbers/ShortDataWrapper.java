@@ -66,7 +66,7 @@ public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
     public ShortDataWrapper subset(final int[] rows) {
         final ShortDataWrapper c = this.emptyCopy();
         for (final int row : rows) {
-            c.append(getShort(row));
+            c.data.add(getShort(row));
         }
         return c;
     }
@@ -81,7 +81,7 @@ public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
         }
         final ShortDataWrapper column = ShortDataWrapper.create(values.size());
         for (short value : values) {
-            column.append(value);
+            column.data.add(value);
         }
         return column;
     }
@@ -127,13 +127,12 @@ public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
 
     @Override
     public ShortDataWrapper removeMissing() {
-        ShortDataWrapper result = copy();
-        result.clear();
+        ShortDataWrapper result = new ShortDataWrapper(new ShortArrayList(size()));
         ShortListIterator iterator = data.iterator();
         while (iterator.hasNext()) {
             final short v = iterator.nextShort();
             if (!isMissingValue(v)) {
-                result.append(v);
+                result.data.add(v);
             }
         }
         return result;
@@ -173,11 +172,13 @@ public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
             append(DEFAULT_PARSER.parseShort(value));
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Parsing error adding value to ShortDataWrapper: " + e.getMessage());
+        } catch (NumberOutOfRangeException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    public void appendCell(String value, AbstractParser<?> parser) {
+    public void appendCell(String value, AbstractParser<?> parser) throws NumberOutOfRangeException {
         try {
             append(parser.parseShort(value));
         } catch (final NumberFormatException e) {
@@ -194,17 +195,10 @@ public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
     }
 
     @Override
-    public void append(short i) {
-        data.add(i);
-    }
-
-    @Override
-    public void append(byte value) {
-        data.add(value);
-    }
-
-    @Override
-    public void append(long value) {
+    public void append(long value) throws NumberOutOfRangeException {
+        if (value > Short.MAX_VALUE) {
+            throw new NumberOutOfRangeException(String.valueOf(value), value);
+        }
         data.add((short) value);
     }
 
@@ -238,17 +232,23 @@ public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
     }
 
     @Override
-    public void set(int i, int val) {
+    public void set(int i, int val) throws NumberOutOfRangeException {
+        if (val > Short.MAX_VALUE) {
+            throw new NumberOutOfRangeException(String.valueOf(val), (long) val);
+        }
         data.set(i, (short) val);
     }
 
     @Override
     public void appendMissing() {
-        append(MISSING_VALUE);
+        data.add(MISSING_VALUE);
     }
 
     @Override
-    public void append(int value) {
+    public void append(int value) throws NumberOutOfRangeException {
+        if (value > Short.MAX_VALUE) {
+            throw new NumberOutOfRangeException(String.valueOf(value), (long) value);
+        }
         data.add((short) value);
     }
 
@@ -338,7 +338,7 @@ public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
             return;
         }
         if (obj instanceof Short) {
-            append((short) obj);
+            data.add((short) obj);
             return;
         }
         throw new IllegalArgumentException("Could not append " + obj.getClass());

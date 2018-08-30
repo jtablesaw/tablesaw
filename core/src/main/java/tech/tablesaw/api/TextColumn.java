@@ -330,7 +330,7 @@ public class TextColumn extends AbstractColumn<String>
 
     @Override
     public TextColumn appendCell(String object, AbstractParser<?> parser) {
-        return appendObj(parser.parse(object));
+        return appendObj(parser.parseString(object));
     }
 
     @Override

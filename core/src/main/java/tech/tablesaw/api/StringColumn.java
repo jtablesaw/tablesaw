@@ -256,10 +256,6 @@ public class StringColumn extends AbstractColumn<String>
         return this;
     }
 
-    private void promoteDictonaryMap(DictionaryMap lookupTable) {
-        lookupTable = lookupTable.promoteYourself();
-    }
-
     @Override
     public int countUnique() {
         return lookupTable.size();
@@ -328,7 +324,7 @@ public class StringColumn extends AbstractColumn<String>
 
     @Override
     public StringColumn appendCell(String object, AbstractParser<?> parser) {
-        return appendObj(parser.parse(object));
+        return appendObj(parser.parseString(object));
     }
 
     @Override

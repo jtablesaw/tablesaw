@@ -16,6 +16,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.NumberFillers;
+import tech.tablesaw.columns.numbers.NumberOutOfRangeException;
 import tech.tablesaw.columns.numbers.fillers.DoubleRangeIterable;
 import tech.tablesaw.selection.Selection;
 
@@ -395,7 +396,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     public DoubleColumn appendCell(final String value, AbstractParser<?> parser) {
         try {
             return append(parser.parseDouble(value));
-        } catch (final NumberFormatException e) {
+        } catch (final NumberOutOfRangeException e) {
             throw new NumberFormatException("Error adding value to column " + name()  + ": " + e.getMessage());
         }
     }

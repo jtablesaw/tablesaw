@@ -358,7 +358,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
 
     @Override
     public TimeColumn appendCell(String object, AbstractParser<?> parser) {
-        return appendObj(parser.parse(object));
+        return appendObj(parser.parseTime(object));
     }
 
     @Override

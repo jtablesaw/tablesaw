@@ -358,12 +358,12 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
 
     @Override
     public BooleanColumn appendCell(String object) {
-        return append(BooleanColumnType.DEFAULT_PARSER.parseByte(object));
+        return append(BooleanColumnType.DEFAULT_PARSER.parseBoolean(object));
     }
 
     @Override
     public BooleanColumn appendCell(String object, AbstractParser<?> parser) {
-        return append(parser.parseByte(object));
+        return append(parser.parseBoolean(object));
     }
 
     /**

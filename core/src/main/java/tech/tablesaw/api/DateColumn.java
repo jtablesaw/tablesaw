@@ -354,7 +354,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
 
     @Override
     public DateColumn appendCell(String string, AbstractParser<?> parser) {
-        return appendObj(parser.parse(string));
+        return appendObj(parser.parseDate(string));
     }
 
     @Override

@@ -91,4 +91,13 @@ public class DateTimeParser extends AbstractParser<LocalDateTime> {
         value = Strings.padStart(value, 4, '0');
         return LocalDateTime.parse(value, formatter);
     }
+
+    @Override
+    public LocalDateTime parseDateTime(String value) {
+        if (isMissing(value)) {
+            return null;
+        }
+        value = Strings.padStart(value, 4, '0');
+        return LocalDateTime.parse(value, formatter);
+    }
 }

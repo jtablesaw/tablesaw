@@ -2,7 +2,7 @@ package tech.tablesaw.columns.numbers;
 
 import tech.tablesaw.api.ColumnType;
 
-public class NumberOutOfRangeException extends RuntimeException {
+public class NumberOutOfRangeException extends Exception {
 
     private final String inputValue;
     private final Long parsedValue;

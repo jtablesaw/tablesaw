@@ -28,13 +28,9 @@ public interface DataWrapper {
 
     DataWrapper removeMissing();
 
-    void append(short i);
+    void append(int value) throws NumberOutOfRangeException;
 
-    void append(byte value);
-
-    void append(int value);
-
-    void append(long value);
+    void append(long value) throws NumberOutOfRangeException;
 
     DataWrapper emptyCopy();
 
@@ -66,9 +62,9 @@ public interface DataWrapper {
 
     DataWrapper where(Selection selection);
 
-    void set(int i, short val);
+    void set(int i, short val) throws NumberOutOfRangeException;
 
-    void set(int i, int val);
+    void set(int i, int val) throws NumberOutOfRangeException;
 
     DataWrapper first(int numRows);
 
@@ -86,9 +82,9 @@ public interface DataWrapper {
 
     Selection isMissing();
 
-    void appendCell(String value);
+    void appendCell(String value) throws NumberOutOfRangeException;
 
-    void appendCell(String value, AbstractParser<?> parser);
+    void appendCell(String value, AbstractParser<?> parser) throws NumberOutOfRangeException;
 
     boolean contains(int value);
 

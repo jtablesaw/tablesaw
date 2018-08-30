@@ -144,20 +144,35 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
             if (i > Byte.MAX_VALUE) {
                 promoteColumnType(i);
             } else {
-                data.append((byte) i);
-                return;
+                try {
+                    data.append(i);
+                    return;
+                } catch (NumberOutOfRangeException e) {
+                    // should never get here
+                    throw new RuntimeException(e);
+                }
             }
         }
         if (data instanceof ShortDataWrapper) {
             if (i > Short.MAX_VALUE) {
                 promoteColumnType(i);
             } else {
-                data.append((short) i);
-                return;
+                try {
+                    data.append(i);
+                    return;
+                } catch (NumberOutOfRangeException e) {
+                    // should never get here
+                    throw new RuntimeException(e);
+                }
             }
         }
         if (data instanceof IntDataWrapper) {
-            data.append(i);
+            try {
+                data.append(i);
+            } catch (NumberOutOfRangeException e) {
+                // this shouldn't happen if promotion logic is correct
+                throw new RuntimeException(e);
+            }
         } else {
             throw new RuntimeException("Unsupported column type");
         }
@@ -169,18 +184,33 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
             if (value > Byte.MAX_VALUE) {
                 promoteColumnType(value);
             } else {
-                data.append((byte) value);
-                return;
+                try {
+                    data.append(value);
+                    return;
+                } catch (NumberOutOfRangeException e) {
+                    // should never get here
+                    throw new RuntimeException(e);
+                }
             }
         }
         if (data instanceof ShortDataWrapper) {
-            data.append(value);
+            try {
+                data.append(value);
+            } catch (NumberOutOfRangeException e) {
+                // should never get here
+                throw new RuntimeException(e);
+            }
         }
     }
 
     @Override
     public void append(byte value) {
-        data.append(value);
+        try {
+            data.append(value);
+        } catch (NumberOutOfRangeException e) {
+            // should never get here
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -234,19 +264,20 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     @Override
     public IntegerColumn set(int i, Integer val) {
-        if (data instanceof IntDataWrapper)  {
-            data.set(i, val);
-            return this;
+        try {
+            if (data instanceof IntDataWrapper) {
+                data.set(i, val);
+            } else if (data instanceof ShortDataWrapper) {
+                data.set(i, (short) val.intValue());
+            } else if (data instanceof ByteDataWrapper) {
+                data.set(i, (byte) val.intValue());
+            } else {
+                throw new IllegalArgumentException("Could not set int " + val);
+            }
+        } catch (NumberOutOfRangeException ex) {
+            promoteColumnType(ex.getParsedValue().intValue());
         }
-        if (data instanceof ShortDataWrapper) {
-            data.set(i, (short) val.intValue());
-            return this;
-        }
-        if (data instanceof ByteDataWrapper) {
-            data.set(i, (byte) val.intValue());
-            return this;
-        }
-        throw new IllegalArgumentException("Could not set int " + val);
+        return this;
     }
 
     @Override
@@ -291,7 +322,7 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
     /**
      * Returns the value at the given index. The actual value is returned if the ColumnType is INTEGER. Otherwise the
      * value is rounded as described below.
-     *
+     * <p>
      * Returns the closest {@code int} to the argument, with ties
      * rounding to positive infinity.
      *
@@ -301,10 +332,10 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
      * <li>If the argument is positive infinity or any value greater than or
      * equal to the value of {@code Integer.MAX_VALUE}, an error will be thrown
      *
-     * @param   row the index of the value to be rounded to an integer.
-     * @return  the value of the argument rounded to the nearest
-     *          {@code int} value.
-     * @throws  ClassCastException if the absolute value of the value to be rounded is too large to be cast to an int
+     * @param row the index of the value to be rounded to an integer.
+     * @return the value of the argument rounded to the nearest
+     * {@code int} value.
+     * @throws ClassCastException if the absolute value of the value to be rounded is too large to be cast to an int
      */
     public int getInt(int row) {
         return data.getInt(row);
@@ -371,7 +402,12 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
             if (parsedValue != null) {
                 promoteColumnType(parsedValue.intValue());
             }
-            data.appendCell(value);
+            try {
+                data.appendCell(value);
+            } catch (NumberOutOfRangeException e2) {
+                // this shouldn't happen
+                throw new RuntimeException(e2);
+            }
         }
         return this;
     }
@@ -385,7 +421,12 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
             if (parsedValue != null) {
                 promoteColumnType(parsedValue.intValue());
             }
-            data.appendCell(value, parser);
+            try {
+                data.appendCell(value, parser);
+            } catch (NumberOutOfRangeException e2) {
+                // this shouldn't happen
+                throw new RuntimeException(e2);
+            }
         }
         return this;
     }
@@ -409,25 +450,30 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
     }
 
     private void promoteByteDataWrapper(int valueCausingPromotion) {
-        ByteDataWrapper bytes = (ByteDataWrapper) data;
-        if (valueCausingPromotion <= Short.MAX_VALUE) {
-            ShortDataWrapper shorts = ShortDataWrapper.create(bytes.size());
-            for (int s : bytes) {
-                if (bytes.isMissingValue(s)) {
-                    shorts.appendMissing();
+        try {
+            ByteDataWrapper bytes = (ByteDataWrapper) data;
+            if (valueCausingPromotion <= Short.MAX_VALUE) {
+                ShortDataWrapper shorts = ShortDataWrapper.create(bytes.size());
+                for (int s : bytes) {
+                    if (bytes.isMissingValue(s)) {
+                        shorts.appendMissing();
+                    }
+                    shorts.append(s);
                 }
-                shorts.append(s);
-            }
-            data = shorts;
-        } else {
-            IntDataWrapper ints = IntDataWrapper.create(bytes.size());
-            for (int s : bytes) {
-                if (bytes.isMissingValue(s)) {
-                    ints.appendMissing();
+                data = shorts;
+            } else {
+                IntDataWrapper ints = IntDataWrapper.create(bytes.size());
+                for (int s : bytes) {
+                    if (bytes.isMissingValue(s)) {
+                        ints.appendMissing();
+                    }
+                    ints.append(s);
                 }
-                ints.append(s);
+                data = ints;
             }
-            data = ints;
+        } catch (NumberOutOfRangeException e) {
+            // this shouldn't happen if the promotion logic is correct
+            throw new RuntimeException(e);
         }
     }
 
@@ -519,12 +565,13 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
         data.setMissing(condition);
         return this;
     }
+
     /**
      * Returns a new LongColumn containing a value for each value in this column
-     *
+     * <p>
      * A widening primitive conversion from int to long does not lose any information at all;
      * the numeric value is preserved exactly.
-     *
+     * <p>
      * A missing value in the receiver is converted to a missing value in the result
      */
     @Override
@@ -540,15 +587,15 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     /**
      * Returns a new FloatColumn containing a value for each value in this column, truncating if necessary.
-     *
+     * <p>
      * A widening primitive conversion from an int to a float does not lose information about the overall magnitude
      * of a numeric value. It may, however, result in loss of precision - that is, the result may lose some of the
      * least significant bits of the value. In this case, the resulting floating-point value will be a correctly
      * rounded version of the integer value, using IEEE 754 round-to-nearest mode.
-     *
+     * <p>
      * Despite the fact that a loss of precision may occur, a widening primitive conversion never results in a
      * run-time exception.
-     *
+     * <p>
      * A missing value in the receiver is converted to a missing value in the result
      */
     @Override
@@ -563,15 +610,15 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     /**
      * Returns a new DoubleColumn containing a value for each value in this column, truncating if necessary.
-     *
+     * <p>
      * A widening primitive conversion from an int to a double does not lose information about the overall magnitude
      * of a numeric value. It may, however, result in loss of precision - that is, the result may lose some of the
      * least significant bits of the value. In this case, the resulting floating-point value will be a correctly
      * rounded version of the integer value, using IEEE 754 round-to-nearest mode.
-     *
+     * <p>
      * Despite the fact that a loss of precision may occur, a widening primitive conversion never results in a
      * run-time exception.
-     *
+     * <p>
      * A missing value in the receiver is converted to a missing value in the result
      */
     @Override

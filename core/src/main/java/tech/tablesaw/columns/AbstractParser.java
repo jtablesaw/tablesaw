@@ -1,8 +1,12 @@
 package tech.tablesaw.columns;
 
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.numbers.NumberOutOfRangeException;
 import tech.tablesaw.io.TypeUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -27,7 +31,7 @@ public abstract class AbstractParser<T> {
 
     public abstract boolean canParse(String s);
 
-    public abstract T parse(String s);
+    public abstract T parse(String s) throws NumberOutOfRangeException;
 
     public ColumnType columnType() {
         return columnType;
@@ -40,15 +44,19 @@ public abstract class AbstractParser<T> {
         return s.isEmpty() || missingValueStrings.contains(s);
     }
 
-    public byte parseByte(String s) {
+    public byte parseByte(String s) throws NumberOutOfRangeException {
+        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to bytes");
+    }
+
+    public byte parseBoolean(String s) {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to booleans");
     }
 
-    public int parseInt(String s) {
+    public int parseInt(String s) throws NumberOutOfRangeException {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to ints");
     }
 
-    public short parseShort(String s) {
+    public short parseShort(String s) throws NumberOutOfRangeException {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to shorts");
     }
 
@@ -56,7 +64,23 @@ public abstract class AbstractParser<T> {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to longs");
     }
 
-    public double parseDouble(String s) {
+    public LocalDate parseDate(String s) {
+        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to dates");
+    }
+
+    public String parseString(String s) {
+        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to strings");
+    }
+
+    public LocalTime parseTime(String s) {
+        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to times");
+    }
+
+    public LocalDateTime parseDateTime(String s) {
+        throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to dateTimes");
+    }
+
+    public double parseDouble(String s) throws NumberOutOfRangeException {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " doesn't support parsing to doubles");
     }
 
@@ -77,5 +101,4 @@ public abstract class AbstractParser<T> {
         }
         return new String(chars, 0, pos);
     }
-
 }
