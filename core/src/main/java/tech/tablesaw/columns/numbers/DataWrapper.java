@@ -1,6 +1,5 @@
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.selection.Selection;
 
@@ -70,15 +69,6 @@ public interface DataWrapper {
 
     void set(int i, int val);
 
-    /*
-    ShortDataWrapper filter(Predicate<? super Short> test);
-
-    ShortDataWrapper sorted(Comparator<? super Short> comp);
-
-    void set(Selection condition, Column<Short> other);
-
-    void set(Selection rowSelection, Short newValue);
-*/
     DataWrapper first(int numRows);
 
     DataWrapper last(int numRows);
@@ -88,8 +78,6 @@ public interface DataWrapper {
     DataWrapper sampleX(double proportion);
 
     int size();
-
-    IntIterator intIterator();
 
     Iterator<Integer> iterator();
 

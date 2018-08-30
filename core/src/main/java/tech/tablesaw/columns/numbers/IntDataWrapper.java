@@ -325,11 +325,6 @@ public class IntDataWrapper implements DataWrapper, IntIterable {
     }
 
     @Override
-    public IntIterator intIterator() {
-        return data.iterator();
-    }
-
-    @Override
     public IntDataWrapper inRange(int start, int end) {
         return where(Selection.withRange(start, end));
     }

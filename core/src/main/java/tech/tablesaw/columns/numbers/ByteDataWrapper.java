@@ -3,7 +3,6 @@ package tech.tablesaw.columns.numbers;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteArrays;
 import it.unimi.dsi.fastutil.bytes.ByteComparator;
-import it.unimi.dsi.fastutil.bytes.ByteIterator;
 import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
 import it.unimi.dsi.fastutil.bytes.ByteSet;
@@ -23,7 +22,7 @@ import java.util.Iterator;
 
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
-public class ByteDataWrapper implements DataWrapper, IntegerIterable, Iterable<Integer> {
+public class ByteDataWrapper implements DataWrapper, Iterable<Integer> {
 
     private static final byte MISSING_VALUE = Byte.MIN_VALUE;
 
@@ -143,41 +142,6 @@ public class ByteDataWrapper implements DataWrapper, IntegerIterable, Iterable<I
             }
         }
         return result;
-    }
-
-    @Override
-    public IntIterator intIterator() {
-        ByteListIterator listIterator = data.listIterator();
-
-        return new IntIterator() {
-
-            @Override
-            public int nextInt() {
-                return listIterator.nextByte();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return listIterator.hasNext();
-            }
-        };
-    }
-
-    public ByteIterator byteIterator() {
-        ByteListIterator listIterator = data.listIterator();
-
-        return new ByteIterator() {
-
-            @Override
-            public byte nextByte() {
-                return listIterator.nextByte();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return listIterator.hasNext();
-            }
-        };
     }
 
     @Override

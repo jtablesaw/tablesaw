@@ -210,7 +210,7 @@ public interface NumberMapFunctions {
      * Returns a NumberColumn with the square of each value in this column
      */
     default DoubleColumn square() {
-       DoubleColumn newColumn = power(2);
+        DoubleColumn newColumn = power(2);
         newColumn.setName(name() + "[sq]");
         return newColumn;
     }

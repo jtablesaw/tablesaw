@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
-import it.unimi.dsi.fastutil.shorts.ShortIterator;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
@@ -23,7 +22,7 @@ import java.util.Iterator;
 
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
-public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<Integer> {
+public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
 
     private static final short MISSING_VALUE = Short.MIN_VALUE;
 
@@ -141,41 +140,6 @@ public class ShortDataWrapper implements DataWrapper, IntegerIterable, Iterable<
             }
         }
         return result;
-    }
-
-    @Override
-    public IntIterator intIterator() {
-        ShortListIterator listIterator = data.listIterator();
-
-        return new IntIterator() {
-
-            @Override
-            public int nextInt() {
-                return listIterator.nextShort();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return listIterator.hasNext();
-            }
-        };
-    }
-
-    public ShortIterator shortIterator() {
-        ShortListIterator listIterator = data.listIterator();
-
-        return new ShortIterator() {
-
-            @Override
-            public short nextShort() {
-                return listIterator.nextShort();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return listIterator.hasNext();
-            }
-        };
     }
 
     @Override
