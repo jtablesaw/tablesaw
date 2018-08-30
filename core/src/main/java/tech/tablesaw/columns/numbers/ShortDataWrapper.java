@@ -36,7 +36,7 @@ public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
 
     private final ShortArrayList data;
 
-    protected ShortDataWrapper(ShortArrayList data) {
+    private ShortDataWrapper(ShortArrayList data) {
         this.data = data;
     }
 
