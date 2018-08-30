@@ -340,20 +340,6 @@ public class IntDataWrapper implements DataWrapper, IntIterable {
         return lag(-n);
     }
 
-    // TODO(lwhite): Should this class have type params?
-/*
-    @Override
-    public ShortDataWrapper filter(Predicate<? super Short> test) {
-        return (ShortDataWrapper) super.filter(test);
-    }
-
-    @Override
-    public ShortDataWrapper sorted(Comparator<? super Short> comp) {
-        return (ShortDataWrapper) super.sorted(comp);
-    }
-
-*/
-
     @Override
     public IntDataWrapper first(int numRows) {
         return where(Selection.withRange(0, numRows));
