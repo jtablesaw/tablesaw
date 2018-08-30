@@ -341,7 +341,6 @@ public class IntDataWrapper implements DataWrapper, IntIterable {
             newList.add(getShort(selection.get(i)));
         }
         return new IntDataWrapper(newList);
-
     }
 
     @Override

@@ -40,7 +40,7 @@ public class ByteDataWrapper implements DataWrapper, IntegerIterable, Iterable<I
 
     private final ByteArrayList data;
 
-    protected ByteDataWrapper(ByteArrayList data) {
+    private ByteDataWrapper(ByteArrayList data) {
         this.data = data;
     }
 
