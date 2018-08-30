@@ -12,7 +12,6 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.NumberFilters;
 import tech.tablesaw.columns.numbers.NumberMapFunctions;
 import tech.tablesaw.columns.numbers.NumberRollingColumn;
-import tech.tablesaw.columns.numbers.ShortDataWrapper;
 import tech.tablesaw.columns.numbers.Stats;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
@@ -494,9 +493,5 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
      */
     default DoubleColumn asDoubleColumn() {
         return (DoubleColumn) this.copy();
-    }
-
-    default ShortDataWrapper asShortColumn() {
-        return (ShortDataWrapper) this.copy();
     }
 }

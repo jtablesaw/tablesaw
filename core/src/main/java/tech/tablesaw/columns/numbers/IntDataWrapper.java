@@ -1,14 +1,11 @@
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
-import it.unimi.dsi.fastutil.floats.FloatArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntIterable;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
 import tech.tablesaw.columns.AbstractColumn;
@@ -376,67 +373,6 @@ public class IntDataWrapper implements DataWrapper, IntIterable {
     public IntDataWrapper sampleX(double proportion) {
         int columnSize = (int) Math.round(size() * proportion);
         return where(selectNRowsAtRandom(columnSize, size()));
-    }
-
-    /**
-     * Returns a new LongColumn containing a value for each value in this column
-     *
-     * A widening primitive conversion from short to long does not lose any information at all;
-     * the numeric value is preserved exactly.
-     *
-     * A missing value in the receiver is converted to a missing value in the result
-     */
-    public LongArrayList asLongArrayList() {
-        LongArrayList values = new LongArrayList();
-        for (int f : data) {
-            values.add(f);
-        }
-        values.trim();
-        return values;
-    }
-
-    /**
-     * Returns a new FloatColumn containing a value for each value in this column, truncating if necessary.
-     *
-     * A widening primitive conversion from an int to a float does not lose information about the overall magnitude
-     * of a numeric value. It may, however, result in loss of precision - that is, the result may lose some of the
-     * least significant bits of the value. In this case, the resulting floating-point value will be a correctly
-     * rounded version of the integer value, using IEEE 754 round-to-nearest mode.
-     *
-     * Despite the fact that a loss of precision may occur, a widening primitive conversion never results in a
-     * run-time exception.
-     *
-     * A missing value in the receiver is converted to a missing value in the result
-     */
-    public FloatArrayList asFloatArrayList() {
-        FloatArrayList values = new FloatArrayList();
-        for (int d : data) {
-            values.add(d);
-        }
-        values.trim();
-        return values;
-    }
-
-    /**
-     * Returns a new DoubleColumn containing a value for each value in this column, truncating if necessary.
-     *
-     * A widening primitive conversion from an int to a double does not lose information about the overall magnitude
-     * of a numeric value. It may, however, result in loss of precision - that is, the result may lose some of the
-     * least significant bits of the value. In this case, the resulting floating-point value will be a correctly
-     * rounded version of the integer value, using IEEE 754 round-to-nearest mode.
-     *
-     * Despite the fact that a loss of precision may occur, a widening primitive conversion never results in a
-     * run-time exception.
-     *
-     * A missing value in the receiver is converted to a missing value in the result
-     */
-    public DoubleArrayList asDoubleArrayList() {
-        DoubleArrayList values = new DoubleArrayList();
-        for (int d : data) {
-            values.add(d);
-        }
-        values.trim();
-        return values;
     }
 
     public Selection eval(final IntPredicate predicate) {

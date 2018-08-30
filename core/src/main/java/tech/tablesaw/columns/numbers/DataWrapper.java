@@ -5,6 +5,7 @@ import tech.tablesaw.selection.Selection;
 
 import java.util.Iterator;
 
+// TODO(lwhite): Should this class have type params?
 public interface DataWrapper {
 
     short getShort(int index);
