@@ -86,7 +86,7 @@ public class DataFrameJoiner {
     public Table inner(Table... tables) {
         return inner(false, tables);
     }
-
+    
     /**
      * Joins to the given tables assuming that they have a column of the name we're joining on
      *
@@ -117,10 +117,13 @@ public class DataFrameJoiner {
      * @param col2Name The column to join on. If col2Name refers to a double column, the join is performed after
      *                 rounding to integers.
      */
-    public Table inner(Table table2, String... col2Names) {
+    public Table inner(Table table2, String[] col2Names) {
         return inner(table2, false, col2Names);
     }
-
+    public Table inner(Table table2, String col2Name) {
+        return inner(table2, false, col2Name);
+    }
+    
     public Table inner(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
     	return inner(table2, allowDuplicateColumnNames, col2Name);
     }
@@ -137,7 +140,6 @@ public class DataFrameJoiner {
     public Table inner(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
         return inner(table2, false, allowDuplicateColumnNames, col2Names);
     }
-
     public Table inner(Table table2, boolean outer, boolean allowDuplicateColumnNames, String... col2Names) {
     	Table joinedTable;
     	if(col2Names.length > 1) {
@@ -149,7 +151,6 @@ public class DataFrameJoiner {
     }
 
     private Table joinInternal(Table table2, String col2Name, boolean outer, boolean allowDuplicates) {
-
         if (allowDuplicates) {
             renameColumnsWithDuplicateNames(table2, col2Name);
         }
@@ -506,7 +507,7 @@ public class DataFrameJoiner {
     public Table leftOuter(boolean allowDuplicateColumnNames, Table... tables) {
         Table joined = table;
         for (Table table2 : tables) {
-          joined = leftOuter(table2, column.name(), allowDuplicateColumnNames);
+          joined = leftOuter(table2, allowDuplicateColumnNames, columnNames);
         }
         return joined;
     }
@@ -518,8 +519,8 @@ public class DataFrameJoiner {
      * @param col2Name The column to join on. If col2Name refers to a double column, the join is performed after
      *                 rounding to integers.
      */
-    public Table leftOuter(Table table2, String col2Name) {
-        return leftOuter(table2, col2Name, false);
+    public Table leftOuter(Table table2, String... col2Names) {
+        return leftOuter(table2, false, col2Names);
     }
 
     /**
@@ -531,8 +532,8 @@ public class DataFrameJoiner {
      * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
      *                                  if {@code true} the join will succeed and duplicate columns are renamed
      */
-    public Table leftOuter(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
-        return joinInternal(table2, col2Name, true, allowDuplicateColumnNames);
+    public Table leftOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
+        return joinInternalMultiple(table2, true, allowDuplicateColumnNames, col2Names);
     }
 
     /**
@@ -554,7 +555,7 @@ public class DataFrameJoiner {
     public Table rightOuter(boolean allowDuplicateColumnNames, Table... tables) {
         Table joined = table;
         for (Table table2 : tables) {
-          joined = rightOuter(table2, column.name(), allowDuplicateColumnNames);
+          joined = rightOuter(table2, allowDuplicateColumnNames, columnNames);
         }
         return joined;
     }
@@ -567,7 +568,7 @@ public class DataFrameJoiner {
      *                 rounding to integers.
      */
     public Table rightOuter(Table table2, String col2Name) {
-        return rightOuter(table2, col2Name, false);
+        return rightOuter(table2, false, col2Name);
     }
 
     /**
@@ -580,13 +581,19 @@ public class DataFrameJoiner {
      *                                  if {@code true} the join will succeed and duplicate columns are renamed
      */
 
-    public Table rightOuter(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
-        Table leftOuter = table2.join(col2Name).leftOuter(table, column.name(), allowDuplicateColumnNames);
+    public Table rightOuter(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
+        Table leftOuter = table2.join(col2Names).leftOuter(table, allowDuplicateColumnNames, columnNames);
 
         // reverse the columns
         Table result = Table.create(leftOuter.name());
+        // loop on table that was originally first (left) and add the left-joined matching columns by name
         for (String name : table.columnNames()) {
-            result.addColumns(leftOuter.column(name));
+            try {
+                result.addColumns(leftOuter.column(name));
+            } catch (IllegalStateException e) {
+                System.out.println("NOTE: DataFrameJoiner.rightOuter(): skipping left table's column,'"
+                        +name+"', in favor of right table's matching column that was kept in join operation.");
+            }
         }
         for (String name : table2.columnNames()) {
             if (!result.columnNames().contains(name)) {

@@ -64,6 +64,30 @@ public class DataFrameJoinerTest {
                     + "5.0,King\n",
             "Dogs");
 
+    private static final Table DOUBLE_INDEXED_CATS = Table.read().csv(
+            "ID,Cat Name\n"
+                    + "1.0,Spot2\n"
+                    + "2.0,Fido\n"
+                    + "6.0,Sasha\n"
+                    + "8.0,King2\n",
+            "Cats");
+    
+    private static final Table DOUBLE_INDEXED_FISH = Table.read().csv(
+            "ID,Fish Name\n"
+                    + "11.0,Spot3\n"
+                    + "2.0,Fido\n"
+                    + "4.0,Sasha\n"
+                    + "6.0,King2\n",
+            "Fish");
+    
+    private static final Table DOUBLE_INDEXED_MICE = Table.read().csv(
+            "ID,Mice_Name\n"
+                    + "2.0,Jerry\n"
+                    + "3.0,Fido\n"
+                    + "6.0,Sasha\n"
+                    + "9.0,Market\n",
+            "Mice");
+    
     private static final Table DUPLICATE_COL_NAME_DOGS = Table.read().csv(
             "ID,Dog Name, Good\n"
                     + "1.0,Spot,true\n"
@@ -219,12 +243,33 @@ public class DataFrameJoinerTest {
 
     
     @Test
+    public void innerJoinWithDoubleDogsCatsFish() {
+        Table joined = DOUBLE_INDEXED_MICE.join("ID").inner(new Table[] {DOUBLE_INDEXED_CATS,DOUBLE_INDEXED_FISH});
+        assertEquals(4, joined.columnCount());
+        assertEquals(2, joined.rowCount());
+    }
+    
+    @Test
+    public void innerJoinWithDoubleDogsCatsFishVarargs() {
+        Table joined = DOUBLE_INDEXED_MICE.join("ID").inner(DOUBLE_INDEXED_CATS,DOUBLE_INDEXED_FISH);
+        assertEquals(4, joined.columnCount());
+        assertEquals(2, joined.rowCount());
+    }
+    
+    @Test
+    public void innerJoinWithDoublesSimple() {
+        Table joined = DOUBLE_INDEXED_PEOPLE.join("ID").inner(DOUBLE_INDEXED_DOGS);
+        assertEquals(3, joined.columnCount());
+        assertEquals(3, joined.rowCount());
+    }
+
+    @Test
     public void innerJoinWithDoubles() {
         Table joined = DOUBLE_INDEXED_PEOPLE.join("ID").inner(DOUBLE_INDEXED_DOGS, "ID");
         assertEquals(3, joined.columnCount());
         assertEquals(3, joined.rowCount());
     }
-
+    
     @Test
     public void innerJoinWithDuplicateColumnNames() {
         Table table1 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isTrue());
@@ -240,7 +285,7 @@ public class DataFrameJoinerTest {
         Table table1 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isTrue());
         Table table2 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isFalse());
 
-        Table joined = table1.join("ID").rightOuter(table2, "ID", true);
+        Table joined = table1.join("ID").rightOuter(table2, true, "ID");
         assertEquals(5, joined.columnCount());
         assertEquals(4, joined.rowCount());
     }
@@ -250,7 +295,7 @@ public class DataFrameJoinerTest {
         Table table1 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isTrue());
         Table table2 = DUPLICATE_COL_NAME_DOGS.where(DUPLICATE_COL_NAME_DOGS.booleanColumn("Good").isFalse());
 
-        Table joined = table1.join("ID").leftOuter(table2, "ID", true);
+        Table joined = table1.join("ID").leftOuter(table2, true, "ID");
         assertEquals(5, joined.columnCount());
         assertEquals(4, joined.rowCount());
     }
@@ -375,7 +420,8 @@ public class DataFrameJoinerTest {
     	Table STUDENT = createSTUDENT();
     	Table INSTRUCTOR = createINSTRUCTOR();
     	Table DEPTHEAD = createDEPTHEAD();
-    	Table joined = STUDENT.join(new String[] {"State","Age"}).inner(true, INSTRUCTOR,DEPTHEAD);
+    	Table joined = STUDENT.join(new String[] {"State","Age"})
+    	        .inner(true, INSTRUCTOR,DEPTHEAD);
     	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
     			"T2.ID", "T2.City", "T2.USID", "T2.GradYear", 
     			"T3.ID", "T3.First","T3.Last","T3.City"})));
@@ -397,16 +443,18 @@ public class DataFrameJoinerTest {
     public void innerJoinStudentInstructorOnStateAgeGradYear() {
     	Table STUDENT = createSTUDENT();
     	Table INSTRUCTOR = createINSTRUCTOR();
-    	Table joined = STUDENT.join(new String[] {"State","Age","GradYear"}).inner(true, INSTRUCTOR);
+    	Table joined = STUDENT.join(new String[] {"State","Age","GradYear"})
+    	        .inner(true, INSTRUCTOR);
     	assertEquals(14, joined.columnCount());
     	assertEquals(2, joined.rowCount());
     }
-/*    
+    
     @Test
     public void leftJoinStudentInstructorOnStateAge() {
     	Table STUDENT = createSTUDENT();
     	Table INSTRUCTOR = createINSTRUCTOR();
-    	Table joined = STUDENT.join(new String[] {"State","Age"}).leftOuter(true, INSTRUCTOR);
+    	Table joined = STUDENT.join(new String[] {"State","Age"})
+    	        .leftOuter(true, INSTRUCTOR);
     	assertEquals(15, joined.columnCount());
     	assertEquals(10, joined.rowCount());
     }
@@ -415,25 +463,28 @@ public class DataFrameJoinerTest {
     public void rightJoinStudentInstructorOnStateAge() {
     	Table STUDENT = createSTUDENT();
     	Table INSTRUCTOR = createINSTRUCTOR();
-    	Table joined = STUDENT.join(new String[] {"State","Age"}).rightOuter(true, INSTRUCTOR);
+    	Table joined = STUDENT.join(new String[] {"State","Age"})
+    	        .rightOuter(true, INSTRUCTOR);
     	assertEquals(15, joined.columnCount());
     	assertEquals(10, joined.rowCount());
     }
-*/    
+    
     @Test
     public void innerJoinStudentInstructorOnStateName() {
     	Table STUDENT = createSTUDENT();
     	Table INSTRUCTOR = createINSTRUCTOR();
-    	Table joined = STUDENT.join(new String[] {"State","FirstName"}).inner(INSTRUCTOR, true, new String[] {"State","First"});
+    	Table joined = STUDENT.join(new String[] {"State","FirstName"})
+    	        .inner(INSTRUCTOR, true, new String[] {"State","First"});
     	assertEquals(15, joined.columnCount());
     	assertEquals(5, joined.rowCount());
     }
-/*    
+    
     @Test
     public void leftJoinStudentInstructorOnStateName() {
     	Table STUDENT = createSTUDENT();
     	Table INSTRUCTOR = createINSTRUCTOR();
-    	Table joined = STUDENT.join(new String[] {"State","FirstName"}).leftOuter(INSTRUCTOR, new String[] {"State","First"}, true);
+    	Table joined = STUDENT.join(new String[] {"State","FirstName"})
+    	        .leftOuter(INSTRUCTOR, true, new String[] {"State","First"});
     	assertEquals(15, joined.columnCount());
     	assertEquals(10, joined.rowCount());
     }
@@ -442,16 +493,18 @@ public class DataFrameJoinerTest {
     public void rightJoinStudentInstructorOnStateName() {
     	Table STUDENT = createSTUDENT();
     	Table INSTRUCTOR = createINSTRUCTOR();
-    	Table joined = STUDENT.join(new String[] {"State","FirstName"}).rightOuter(INSTRUCTOR, new String[] {"State","First"}, true);
+    	Table joined = STUDENT.join(new String[] {"State","FirstName"})
+    	        .rightOuter(INSTRUCTOR, true, new String[] {"State","First"});
     	assertEquals(15, joined.columnCount());
     	assertEquals(10, joined.rowCount());
     }
-  */  
+  
     @Test
     public void innerJoinOnAge() {
     	Table ANIMAL_HOMES = createANIMALHOMES();
     	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
-    	Table joined = ANIMAL_HOMES.join("Age").inner(DOUBLE_INDEXED_PEOPLE_HOMES, "Age", true);
+    	Table joined = ANIMAL_HOMES.join("Age")
+    	        .inner(DOUBLE_INDEXED_PEOPLE_HOMES, "Age", true);
     	assertEquals(9, joined.columnCount());
     	assertEquals(18, joined.rowCount());
     }
@@ -480,7 +533,8 @@ public class DataFrameJoinerTest {
     	Table ANIMAL_HOMES = createANIMALHOMES();
     	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     	DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
-    	Table joined = ANIMAL_HOMES.join("Age").inner(true, DOUBLE_INDEXED_PEOPLE_HOMES, TREE, FLOWER);
+    	Table joined = ANIMAL_HOMES.join("Age")
+    	        .inner(true, DOUBLE_INDEXED_PEOPLE_HOMES, TREE, FLOWER);
     	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
     			"T2.Name", "T2.Home", "T2.MoveInDate",
     			"T3.Name", "T3.Home", "T4.Name","T4.Home","Color"})));
@@ -495,7 +549,8 @@ public class DataFrameJoinerTest {
     	Table ANIMAL_HOMES = createANIMALHOMES();
     	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
     	DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
-    	Table joined = ANIMAL_HOMES.join(new String[] {"Age","Home"}).inner(true, DOUBLE_INDEXED_PEOPLE_HOMES, TREE, FLOWER);
+    	Table joined = ANIMAL_HOMES.join(new String[] {"Age","Home"})
+    	        .inner(true, DOUBLE_INDEXED_PEOPLE_HOMES, TREE, FLOWER);
     	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
     			"Animal", "Name", "Home", "Age", "MoveInDate", "ID",
     			"T2.Name","T2.MoveInDate","T3.Name","T4.Name","Color"})));
@@ -537,32 +592,32 @@ public class DataFrameJoinerTest {
     	assertEquals(2, joined.rowCount());
     }
     
-    /*  
     
     @Test
     public void leftOuterJoinOnPartiallyMismatchedColNames() {
     	Table ANIMAL_HOMES = createANIMALHOMES();
     	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameDwellingYearsMoveInDate();
     	Table joined = ANIMAL_HOMES.join(new String[] {"Name", "Home", "Age"})
-    			.leftOuter(DOUBLE_INDEXED_PEOPLE_HOMES,
-    			new String[] {"Name", "Dwelling", "Years"}, true);
+    			.leftOuter(DOUBLE_INDEXED_PEOPLE_HOMES, true,
+    	                new String[] {"Name", "Dwelling", "Years"});
     	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {"Name", "Home", "Age"})));
     	assertEquals(7, joined.columnCount());
     	assertEquals(8, joined.rowCount());
     }
+
     @Test
     public void rightOuterJoinOnPartiallyMismatchedColNames() {
     	Table ANIMAL_HOMES = createANIMALHOMES();
     	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameDwellingYearsMoveInDate();
     	Table joined = ANIMAL_HOMES.join(new String[] {"Name", "Home", "Age"})
-    			.rightOuter(DOUBLE_INDEXED_PEOPLE_HOMES,
-    			new String[] {"Name", "Dwelling", "Years"}, true);
+    			.rightOuter(DOUBLE_INDEXED_PEOPLE_HOMES, true,
+    	                "Name", "Dwelling", "Years");
     	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {"Name", "Dwelling", "Years"})));
     	assertEquals(7, joined.columnCount());
     	assertEquals(6, joined.rowCount());
     }
     
-*/    @Test
+    @Test
     public void innerJoinOnAgeMoveInDate() {
     	Table ANIMAL_HOMES = createANIMALHOMES();
     	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
@@ -571,7 +626,7 @@ public class DataFrameJoinerTest {
     	assertEquals(8, joined.columnCount());
     	assertEquals(3, joined.rowCount());
     }
-/*    
+    
     @Test
     public void leftOuterJoinOnAgeMoveInDate() {
     	Table ANIMAL_HOMES = createANIMALHOMES();
@@ -586,10 +641,10 @@ public class DataFrameJoinerTest {
     public void rightOuterJoinOnAgeMoveInDate() {
     	Table ANIMAL_HOMES = createANIMALHOMES();
     	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
-    	Table joined = ANIMAL_HOMES.join(new String[] {"Age","MoveInDate"})
+    	Table joined = ANIMAL_HOMES.join("Age","MoveInDate")
     			.rightOuter(true, DOUBLE_INDEXED_PEOPLE_HOMES);
     	assertEquals(8, joined.columnCount());
     	assertEquals(6, joined.rowCount());
     }
-*/      
+      
 }
