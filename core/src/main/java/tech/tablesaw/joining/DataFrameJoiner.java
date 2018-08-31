@@ -41,20 +41,6 @@ public class DataFrameJoiner {
         this.table = table;
         this.column = table.categoricalColumn(column);
     }
-
-    /**
-     * Constructor.  Takes an initial value to start the joinTableId.  Useful during
-     * multiple table joins so that each new table joined can have its duplicate columns
-     * distinguished from the other tables.
-     * @param table                    The table to join on
-     * @param columnName            The column name to join on
-     * @param joinTableInitialId    The initial index used when naming duplicate columns, e.g. "T3.Age"
-     */
-    public DataFrameJoiner(Table table, String columnName, int joinTableInitialId) {
-        this.table = table;
-        joinTableId.set(joinTableInitialId);
-        this.column = table.categoricalColumn(columnName);
-    }
     
     /**
      * Joins to the given tables assuming that they have a column of the name we're joining on
@@ -75,7 +61,7 @@ public class DataFrameJoiner {
     public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
         Table joined = table;
         
-        for (int i=0; i<tables.length; i++) {
+        for (int i = 0; i < tables.length; i++) {
             Table currT = tables[i];
             // if first iteration then join to initial table
             if (joined.equals(table)) {
@@ -229,10 +215,9 @@ public class DataFrameJoiner {
     private void renameColumnsWithDuplicateNames(Table table2, String col2Name) {
         String table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
         List<String> colNames = table.columnNames();
-        boolean foundNextIndex = false;
-        // loop on parent table's column names until the new joinTableId is not 
-        // already being used to prefix any of them 
-        for (int i=0; !foundNextIndex && i<colNames.size(); i++) {
+        // loop on parent table's column names multiple times until the newly 
+        // incremented joinTableId is not found being used to prefix any of them 
+        for (int i = 0; i < colNames.size(); i++) {
             if (colNames.get(i).startsWith(table2Alias)) {
                 table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
                 // reset the counter to start at beginning again 
@@ -522,8 +507,8 @@ public class DataFrameJoiner {
     private void withMissingLeftJoin(Table destination, Table table1) {
         for (int c = 0; c < destination.columnCount(); c++) {
             if (c < table1.columnCount()) {
-            Column t1Col = table1.column(c);
-            destination.column(c).append(t1Col);
+                Column t1Col = table1.column(c);
+                destination.column(c).append(t1Col);
             } else {
                 for (int r1 = 0; r1 < table1.rowCount(); r1++) {
                     destination.column(c).appendMissing();
@@ -540,7 +525,7 @@ public class DataFrameJoiner {
         int t2StartCol = destination.columnCount() - table2.columnCount();
         for (int c = 0; c < destination.columnCount(); c++) {
             if (destination.column(c).name().equalsIgnoreCase(joinColumn.name())) {
-            destination.column(c).append(joinColumn);
+                destination.column(c).append(joinColumn);
                 continue;
             }
             if (c < t2StartCol) {
@@ -548,8 +533,8 @@ public class DataFrameJoiner {
                     destination.column(c).appendMissing();
                 }
             } else {
-            Column t2Col = table2.column(c - t2StartCol);
-            destination.column(c).append(t2Col);
+                Column t2Col = table2.column(c - t2StartCol);
+                destination.column(c).append(t2Col);
             }
         }
     }
