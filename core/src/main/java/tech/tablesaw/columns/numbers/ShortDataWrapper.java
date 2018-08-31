@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
-public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
+public class ShortDataWrapper implements IntegerDataWrapper, Iterable<Integer> {
 
     private static final short MISSING_VALUE = Short.MIN_VALUE;
 
@@ -167,13 +167,11 @@ public class ShortDataWrapper implements DataWrapper, Iterable<Integer> {
     }
 
     @Override
-    public void appendCell(String value) {
+    public void appendCell(String value) throws NumberOutOfRangeException {
         try {
             append(DEFAULT_PARSER.parseShort(value));
         } catch (final NumberFormatException e) {
             throw new NumberFormatException("Parsing error adding value to ShortDataWrapper: " + e.getMessage());
-        } catch (NumberOutOfRangeException e) {
-            e.printStackTrace();
         }
     }
 

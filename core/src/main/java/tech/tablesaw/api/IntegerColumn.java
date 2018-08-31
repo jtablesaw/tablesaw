@@ -11,9 +11,9 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.ByteDataWrapper;
-import tech.tablesaw.columns.numbers.DataWrapper;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.IntDataWrapper;
+import tech.tablesaw.columns.numbers.IntegerDataWrapper;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.NumberOutOfRangeException;
 import tech.tablesaw.columns.numbers.ShortDataWrapper;
@@ -28,7 +28,7 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
 
     private static final IntColumnType COLUMN_TYPE = ColumnType.INTEGER;
 
-    private DataWrapper data;
+    private IntegerDataWrapper data;
 
     private IntegerColumn(final String name, IntArrayList data) {
         super(COLUMN_TYPE, name, data);
@@ -36,7 +36,7 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
         this.data = IntDataWrapper.create(data.toIntArray());
     }
 
-    private IntegerColumn(String name, DataWrapper copy) {
+    private IntegerColumn(String name, IntegerDataWrapper copy) {
         super(ColumnType.INTEGER, name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = copy;
@@ -363,7 +363,7 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
         try {
             data.appendCell(value);
         } catch (final NumberOutOfRangeException e) {
-            Long parsedValue = e.getParsedValue();
+            Number parsedValue = e.getParsedValue();
             if (parsedValue != null) {
                 promoteColumnType(parsedValue.intValue());
             }
@@ -382,7 +382,7 @@ public class IntegerColumn extends NumberColumn<Integer> implements CategoricalC
         try {
             data.appendCell(value, parser);
         } catch (final NumberOutOfRangeException e) {
-            Long parsedValue = e.getParsedValue();
+            Number parsedValue = e.getParsedValue();
             if (parsedValue != null) {
                 promoteColumnType(parsedValue.intValue());
             }

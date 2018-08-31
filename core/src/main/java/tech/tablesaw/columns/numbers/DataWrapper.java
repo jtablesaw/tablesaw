@@ -3,14 +3,8 @@ package tech.tablesaw.columns.numbers;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.selection.Selection;
 
-import java.util.Iterator;
-
 // TODO(lwhite): Should this class have type params?
 public interface DataWrapper {
-
-    short getShort(int index);
-
-    int getInt(int row);
 
     double getDouble(int row);
 
@@ -28,10 +22,6 @@ public interface DataWrapper {
 
     DataWrapper removeMissing();
 
-    void append(int value) throws NumberOutOfRangeException;
-
-    void append(long value) throws NumberOutOfRangeException;
-
     DataWrapper emptyCopy();
 
     DataWrapper emptyCopy(int rowSize);
@@ -40,15 +30,11 @@ public interface DataWrapper {
 
     Object[] asObjectArray();
 
-    void appendMissing();
-
     byte[] asBytes(int rowNumber);
 
     int countUnique();
 
     void setMissing(Selection condition);
-
-    boolean isMissingValue(int value);
 
     boolean isMissing(int rowNumber);
 
@@ -56,15 +42,9 @@ public interface DataWrapper {
 
     void sortDescending();
 
-    void appendObj(Object obj);
-
     DataWrapper inRange(int start, int end);
 
     DataWrapper where(Selection selection);
-
-    void set(int i, short val) throws NumberOutOfRangeException;
-
-    void set(int i, int val) throws NumberOutOfRangeException;
 
     DataWrapper first(int numRows);
 
@@ -76,17 +56,15 @@ public interface DataWrapper {
 
     int size();
 
-    Iterator<Integer> iterator();
-
     void clear();
 
     Selection isMissing();
 
+    void appendMissing();
+
+    void appendObj(Object obj);
+
     void appendCell(String value) throws NumberOutOfRangeException;
 
     void appendCell(String value, AbstractParser<?> parser) throws NumberOutOfRangeException;
-
-    boolean contains(int value);
-
-    byte getByte(int row);
 }

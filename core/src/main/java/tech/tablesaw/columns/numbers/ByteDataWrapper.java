@@ -19,7 +19,7 @@ import java.util.Iterator;
 
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
-public class ByteDataWrapper implements DataWrapper, Iterable<Integer> {
+public class ByteDataWrapper implements IntegerDataWrapper, Iterable<Integer> {
 
     private static final byte MISSING_VALUE = Byte.MIN_VALUE;
 

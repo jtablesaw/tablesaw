@@ -1,109 +1,106 @@
 package tech.tablesaw.columns.numbers;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntIterable;
-import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntListIterator;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleArrays;
+import it.unimi.dsi.fastutil.doubles.DoubleComparator;
+import it.unimi.dsi.fastutil.doubles.DoubleIterable;
+import it.unimi.dsi.fastutil.doubles.DoubleIterator;
+import it.unimi.dsi.fastutil.doubles.DoubleListIterator;
+import it.unimi.dsi.fastutil.doubles.DoubleOpenHashSet;
+import it.unimi.dsi.fastutil.doubles.DoubleSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
-import java.util.function.IntPredicate;
+import java.util.function.DoublePredicate;
 
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
-public class IntDataWrapper implements IntegerDataWrapper, IntIterable {
+public class DoubleDataWrapper implements RealDataWrapper, DoubleIterable {
 
-    private static final IntPredicate isMissing = value -> value == IntColumnType.missingValueIndicator();
+    private static final double MISSING_VALUE_INDICATOR = Double.NaN;
+
+    private static final DoublePredicate isMissing = value -> value != value;
     /**
      * Compares two ints, such that a sort based on this comparator would sort in descending order
      */
-    private final IntComparator descendingComparator = (o2, o1) -> (Integer.compare(o1, o2));
+    private final DoubleComparator descendingComparator = (o2, o1) -> (Double.compare(o1, o2));
 
-    private final IntArrayList data;
+    private final DoubleArrayList data;
 
-    private IntDataWrapper(IntArrayList data) {
+    private DoubleDataWrapper(DoubleArrayList data) {
         this.data = data;
     }
 
-    public static IntDataWrapper create(final int[] arr) {
-        return new IntDataWrapper(new IntArrayList(arr));
+    public static DoubleDataWrapper create(final double[] arr) {
+        return new DoubleDataWrapper(new DoubleArrayList(arr));
     }
 
-    public static IntDataWrapper create(final int initialSize) {
-        return new IntDataWrapper(new IntArrayList(initialSize));
+    public static DoubleDataWrapper create(final int initialSize) {
+        return new DoubleDataWrapper(new DoubleArrayList(initialSize));
     }
 
     public static boolean valueIsMissing(int value) {
-        return value == Integer.MIN_VALUE;
+        return value == Double.MIN_VALUE;
     }
 
     @Override
-    public short getShort(int index) {
-        return (short) data.getInt(index);
+    public float getFloat(int index) {
+        return (float) data.getDouble(index);
     }
 
     @Override
-    public byte getByte(int index) {
-        return (byte) data.getInt(index);
-    }
-
-    @Override
-    public IntDataWrapper subset(final int[] rows) {
-        final IntDataWrapper c = this.emptyCopy();
+    public DoubleDataWrapper subset(final int[] rows) {
+        final DoubleDataWrapper c = this.emptyCopy();
         for (final int row : rows) {
-            c.append(getInt(row));
+            c.append(getDouble(row));
         }
         return c;
     }
 
     @Override
-    public IntDataWrapper unique() {
-        final IntSet values = new IntOpenHashSet();
+    public DoubleDataWrapper unique() {
+        final DoubleSet values = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
             if (!isMissing(i)) {
-                values.add(getInt(i));
+                values.add(getDouble(i));
             }
         }
-        final IntDataWrapper column = IntDataWrapper.create(values.size());
-        for (int value : values) {
+        final DoubleDataWrapper column = DoubleDataWrapper.create(values.size());
+        for (double value : values) {
             column.append(value);
         }
         return column;
     }
 
     @Override
-    public IntDataWrapper top(int n) {
-        final IntArrayList top = new IntArrayList();
-        final int[] values = data.toIntArray();
-        IntArrays.parallelQuickSort(values, descendingComparator);
+    public DoubleDataWrapper top(int n) {
+        final DoubleArrayList top = new DoubleArrayList();
+        final double[] values = data.toDoubleArray();
+        DoubleArrays.parallelQuickSort(values, descendingComparator);
         for (int i = 0; i < n && i < values.length; i++) {
             top.add(values[i]);
         }
-        return new IntDataWrapper(top);
+        return new DoubleDataWrapper(top);
     }
 
     @Override
-    public IntDataWrapper bottom(final int n) {
-        final IntArrayList bottom = new IntArrayList();
-        final int[] values = data.toIntArray();
-        IntArrays.parallelQuickSort(values);
+    public DoubleDataWrapper bottom(final int n) {
+        final DoubleArrayList bottom = new DoubleArrayList();
+        final double[] values = data.toDoubleArray();
+        DoubleArrays.parallelQuickSort(values);
         for (int i = 0; i < n && i < values.length; i++) {
             bottom.add(values[i]);
         }
-        return new IntDataWrapper(bottom);
+        return new DoubleDataWrapper(bottom);
     }
 
     @Override
-    public IntDataWrapper lag(int n) {
+    public DoubleDataWrapper lag(int n) {
         final int srcPos = n >= 0 ? 0 : 0 - n;
-        final int[] dest = new int[size()];
+        final double[] dest = new double[size()];
         final int destPos = n <= 0 ? 0 : n;
         final int length = n >= 0 ? size() - n : size() + n;
 
@@ -111,19 +108,19 @@ public class IntDataWrapper implements IntegerDataWrapper, IntIterable {
             dest[i] = Integer.MIN_VALUE;
         }
 
-        int[] array = data.toIntArray();
+        double[] array = data.toDoubleArray();
 
         System.arraycopy(array, srcPos, dest, destPos, length);
-        return new IntDataWrapper(new IntArrayList(dest));
+        return new DoubleDataWrapper(new DoubleArrayList(dest));
     }
 
     @Override
-    public IntDataWrapper removeMissing() {
-        IntDataWrapper result = copy();
+    public DoubleDataWrapper removeMissing() {
+        DoubleDataWrapper result = copy();
         result.clear();
-        IntListIterator iterator = data.iterator();
+        DoubleListIterator iterator = data.iterator();
         while (iterator.hasNext()) {
-            final int v = iterator.nextInt();
+            final double v = iterator.nextDouble();
             if (!isMissingValue(v)) {
                 result.append(v);
             }
@@ -160,71 +157,71 @@ public class IntDataWrapper implements IntegerDataWrapper, IntIterable {
     }
 
     @Override
-    public void append(long value) {
-        data.add((int) value);
+    public void append(float value) {
+        data.add(value);
     }
 
     @Override
-    public IntDataWrapper emptyCopy() {
+    public DoubleDataWrapper emptyCopy() {
         return emptyCopy(AbstractColumn.DEFAULT_ARRAY_SIZE);
     }
 
     @Override
-    public IntDataWrapper emptyCopy(final int rowSize) {
-        return new IntDataWrapper(new IntArrayList(rowSize));
+    public DoubleDataWrapper emptyCopy(final int rowSize) {
+        return new DoubleDataWrapper(new DoubleArrayList(rowSize));
     }
 
     @Override
-    public IntDataWrapper copy() {
-        return new IntDataWrapper(data.clone());
+    public DoubleDataWrapper copy() {
+        return new DoubleDataWrapper(data.clone());
     }
 
     @Override
     public Object[] asObjectArray() {
-        final Integer[] output = new Integer[size()];
+        final Double[] output = new Double[size()];
         for (int i = 0; i < size(); i++) {
-            output[i] = getInt(i);
+            output[i] = getDouble(i);
         }
         return output;
     }
 
     @Override
-    public void set(int i, short val) {
+    public void set(int i, float val) {
         data.set(i, val);
     }
 
     @Override
-    public void set(int i, int val) {
+    public void set(int i, double val) {
         data.set(i, val);
     }
 
     @Override
     public void setMissing(Selection s) {
         for (int index : s) {
-            data.set(index, Integer.MIN_VALUE);
+            data.set(index, MISSING_VALUE_INDICATOR);
         }
     }
 
     @Override
     public void appendMissing() {
-        append(Integer.MIN_VALUE);
+        append(MISSING_VALUE_INDICATOR);
     }
 
     @Override
-    public void append(int value) {
+    public void append(double value) {
         data.add(value);
     }
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(IntColumnType.INSTANCE.byteSize()).putInt(getInt(rowNumber)).array();
+        return ByteBuffer.allocate(DoubleColumnType.INSTANCE.byteSize()).putDouble(getDouble(rowNumber)).array();
     }
 
     @Override
     public int countUnique() {
-        IntSet uniqueElements = new IntOpenHashSet();
+        DoubleSet uniqueElements = new DoubleOpenHashSet();
         for (int i = 0; i < size(); i++) {
-            int val = getInt(i);
+            double val = getDouble(i);
             if (!isMissingValue(val)) {
                 uniqueElements.add(val);
             }
@@ -233,7 +230,7 @@ public class IntDataWrapper implements IntegerDataWrapper, IntIterable {
     }
 
     /**
-     * Returns the value at the given index. The actual value is returned if the ColumnType is INTEGER
+     * Returns the value at the given index. The actual value is returned if the ColumnType is DOUBLE
      *
      * Returns the closest {@code int} to the argument, with ties
      * rounding to positive infinity.
@@ -250,42 +247,33 @@ public class IntDataWrapper implements IntegerDataWrapper, IntIterable {
      * @throws  ClassCastException if the absolute value of the value to be rounded is too large to be cast to an int
      */
     @Override
-    public int getInt(int row) {
-        return data.getInt(row);
-    }
-
-    @Override
     public double getDouble(int row) {
-        int value = data.getInt(row);
-        if (isMissingValue(value)) {
-            return DoubleColumnType.missingValueIndicator();
-        }
-        return value;
+        return data.getDouble(row);
     }
 
     @Override
-    public boolean isMissingValue(int value) {
-        return IntColumnType.isMissingValue(value);
+    public boolean isMissingValue(double value) {
+        return DoubleColumnType.isMissingValue(value);
     }
 
     @Override
-    public boolean contains(int value) {
+    public boolean contains(double value) {
         return data.contains(value);
     }
 
     @Override
     public boolean isMissing(int rowNumber) {
-        return isMissingValue(getInt(rowNumber));
+        return isMissingValue(getDouble(rowNumber));
     }
 
     @Override
     public void sortAscending() {
-        IntArrays.parallelQuickSort(data.elements());
+        DoubleArrays.parallelQuickSort(data.elements());
     }
 
     @Override
     public void sortDescending() {
-        IntArrays.parallelQuickSort(data.elements(), descendingComparator);
+        DoubleArrays.parallelQuickSort(data.elements(), descendingComparator);
     }
 
     @Override
@@ -294,12 +282,12 @@ public class IntDataWrapper implements IntegerDataWrapper, IntIterable {
             appendMissing();
             return;
         }
-        if (obj instanceof Integer) {
-            append((int) obj);
+        if (obj instanceof Double) {
+            append((double) obj);
             return;
         }
-        if (obj instanceof Short) {
-            append((short) obj);
+        if (obj instanceof Float) {
+            append((float) obj);
             return;
         }
         throw new IllegalArgumentException("Could not append " + obj.getClass());
@@ -311,49 +299,49 @@ public class IntDataWrapper implements IntegerDataWrapper, IntIterable {
     }
 
     @Override
-    public IntDataWrapper inRange(int start, int end) {
+    public DoubleDataWrapper inRange(int start, int end) {
         return where(Selection.withRange(start, end));
     }
 
     @Override
-    public IntDataWrapper where(Selection selection) {
-        IntArrayList newList = new IntArrayList(selection.size());
+    public DoubleDataWrapper where(Selection selection) {
+        DoubleArrayList newList = new DoubleArrayList(selection.size());
         for (int i = 0; i < selection.size(); i++) {
-            newList.add(getInt(selection.get(i)));
+            newList.add(getDouble(selection.get(i)));
         }
-        return new IntDataWrapper(newList);
+        return new DoubleDataWrapper(newList);
     }
 
     @Override
-    public IntDataWrapper lead(int n) {
+    public DoubleDataWrapper lead(int n) {
         return lag(-n);
     }
 
     @Override
-    public IntDataWrapper first(int numRows) {
+    public DoubleDataWrapper first(int numRows) {
         return where(Selection.withRange(0, numRows));
     }
 
     @Override
-    public IntDataWrapper last(int numRows) {
+    public DoubleDataWrapper last(int numRows) {
         return where(Selection.withRange(size() - numRows, size()));
     }
 
     @Override
-    public IntDataWrapper sampleN(int n) {
+    public DoubleDataWrapper sampleN(int n) {
         return where(selectNRowsAtRandom(n, size()));
     }
 
     @Override
-    public IntDataWrapper sampleX(double proportion) {
+    public DoubleDataWrapper sampleX(double proportion) {
         int columnSize = (int) Math.round(size() * proportion);
         return where(selectNRowsAtRandom(columnSize, size()));
     }
 
-    public Selection eval(final IntPredicate predicate) {
+    public Selection eval(final DoublePredicate predicate) {
         final Selection bitmap = new BitmapBackedSelection();
         for (int idx = 0; idx < size(); idx++) {
-            final int next = getInt(idx);
+            final double next = getDouble(idx);
             if (predicate.test(next)) {
                 bitmap.add(idx);
             }
@@ -362,7 +350,7 @@ public class IntDataWrapper implements IntegerDataWrapper, IntIterable {
     }
 
     @Override
-    public IntIterator iterator() {
+    public DoubleIterator iterator() {
         return data.iterator();
     }
 }
