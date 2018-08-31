@@ -141,6 +141,82 @@ public class DataFrameJoinerTest {
             "Class");
     }
     
+    private static Table createANIMALHOMES() {
+    	return Table.read().csv(
+            "Animal,Name,Home,Age,MoveInDate\n"
+                    + "Pig,Bob,Sty,5,5/5/2018\n"
+                    + "Horse,James,Field,5,6/6/2018\n"
+                    + "Goat,Samantha,Tree,10,7/7/2018\n"
+                    + "Tigon,Rudhrani,Jungle,2,2/2/2018\n"
+                    + "Chicken,Chuck,Pen,2,1/1/2018\n"
+                    + "Squirrel,Sidney,Tree,10,3/3/2018\n"
+                    + "Fox,Frankie,Forest,10,9/19/2018\n"
+                    + "Rabbit,Taylor,Forest,10,4/4/2018\n",
+            "Animal Homes");
+    }
+    
+    private static Table createTREE() {
+    	return Table.read().csv(
+    			"Name,Home,Age\n"
+    					+ "Cherry,Frontyard,2\n"
+    					+ "Walnut,Field,3\n"
+    					+ "Birch,Forest,4\n"
+    					+ "Tallgreen,Jungle,5\n"
+    					+ "Apple,Orchard,6\n"
+    					+ "Orange,Orchard,9\n"
+    					+ "Hemlock,Forest,10\n",
+    			"Tree");
+    }
+
+    private static Table createFLOWER() {
+    	return Table.read().csv(
+    			"Name,Home,Age,Color\n"
+    					+ "Lily,Backyard,2,White\n"
+    					+ "VenusFlyTrap,Swamp,2,White\n"
+    					+ "Rose,Frontyard,4,Red\n"
+    					+ "Pansie,Meadow,5,Blue\n"
+    					+ "Daisy,Meadow,6,Yellow\n"
+    					+ "Dandelion,Field,7,Yellow\n"
+    					+ "Violet,Forest,10,Blue\n",
+    			"Flower");
+    }
+    
+    private static Table createDOUBLEINDEXEDPEOPLENicknameDwellingYearsMoveInDate() {
+    	return Table.read().csv(
+    			"ID,Nickname,Dwelling,Years,MoveInDate\n"
+    					+ "1.0,Bob,Jungle,5,2/2/2018\n"
+    					+ "2.0,James,Field,5,6/6/2018\n"
+    					+ "3.0,David,Jungle,5,6/6/2018\n"
+    					+ "4.0,Marty,Forest,10,2/2/2018\n"
+    					+ "5.0,Tarzan,Jungle,10,7/7/2018\n"
+    					+ "6.0,Samantha,Tree,10,5/5/2018\n",
+    			"People - Nickname Dwelling Years MoveInDate");
+    }
+    
+    private static Table createDOUBLEINDEXEDPEOPLENameDwellingYearsMoveInDate() {
+    	return Table.read().csv(
+    			"ID,Name,Dwelling,Years,MoveInDate\n"
+    					+ "1.0,Bob,Jungle,5,2/2/2018\n"
+    					+ "2.0,James,Field,5,6/6/2018\n"
+    					+ "3.0,David,Jungle,5,6/6/2018\n"
+    					+ "4.0,Marty,Jungle,10,2/2/2018\n"
+    					+ "5.0,Tarzan,Jungle,10,7/7/2018\n"
+    					+ "6.0,Samantha,Tree,10,5/5/2018\n",
+    			"People - Name Dwelling Years MoveInDate");
+    }
+    
+    private static Table createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate() {
+    	return Table.read().csv(
+            "ID,Name,Home,Age,MoveInDate\n"
+                    + "1.0,Bob,Jungle,5,2/2/2018\n"
+                    + "2.0,James,Field,5,6/6/2018\n"
+                    + "3.0,David,Jungle,5,6/6/2018\n"
+                    + "4.0,Marty,Jungle,10,2/2/2018\n"
+                    + "5.0,Tarzan,Jungle,10,7/7/2018\n"
+                    + "6.0,Samantha,Forest,10,5/5/2018\n",
+            "People - Name Home Age MoveInDate");
+    }
+
     
     @Test
     public void innerJoinWithDoubles() {
@@ -292,4 +368,228 @@ public class DataFrameJoinerTest {
     	assertEquals(30, joined.columnCount());
     	assertEquals(14, joined.rowCount());
     }
+    
+
+    @Test
+    public void innerJoinStudentInstructorDeptHeadOnStateAge() {
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
+    	Table DEPTHEAD = createDEPTHEAD();
+    	Table joined = STUDENT.join(new String[] {"State","Age"}).inner(true, INSTRUCTOR,DEPTHEAD);
+    	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
+    			"T2.ID", "T2.City", "T2.USID", "T2.GradYear", 
+    			"T3.ID", "T3.First","T3.Last","T3.City"})));
+    	assertEquals(20, joined.columnCount());
+    	assertEquals(1, joined.rowCount());
+    }
+    
+    @Test
+    public void innerJoinStudentInstructorOnStateAge() {
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
+    	Table joined = STUDENT.join(new String[] {"State","Age"}).inner(true, INSTRUCTOR);
+    	assertEquals(15, joined.columnCount());
+    	assertEquals(3, joined.rowCount());
+    }
+    
+    
+    @Test
+    public void innerJoinStudentInstructorOnStateAgeGradYear() {
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
+    	Table joined = STUDENT.join(new String[] {"State","Age","GradYear"}).inner(true, INSTRUCTOR);
+    	assertEquals(14, joined.columnCount());
+    	assertEquals(2, joined.rowCount());
+    }
+/*    
+    @Test
+    public void leftJoinStudentInstructorOnStateAge() {
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
+    	Table joined = STUDENT.join(new String[] {"State","Age"}).leftOuter(true, INSTRUCTOR);
+    	assertEquals(15, joined.columnCount());
+    	assertEquals(10, joined.rowCount());
+    }
+    
+    @Test
+    public void rightJoinStudentInstructorOnStateAge() {
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
+    	Table joined = STUDENT.join(new String[] {"State","Age"}).rightOuter(true, INSTRUCTOR);
+    	assertEquals(15, joined.columnCount());
+    	assertEquals(10, joined.rowCount());
+    }
+*/    
+    @Test
+    public void innerJoinStudentInstructorOnStateName() {
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
+    	Table joined = STUDENT.join(new String[] {"State","FirstName"}).inner(INSTRUCTOR, true, new String[] {"State","First"});
+    	assertEquals(15, joined.columnCount());
+    	assertEquals(5, joined.rowCount());
+    }
+/*    
+    @Test
+    public void leftJoinStudentInstructorOnStateName() {
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
+    	Table joined = STUDENT.join(new String[] {"State","FirstName"}).leftOuter(INSTRUCTOR, new String[] {"State","First"}, true);
+    	assertEquals(15, joined.columnCount());
+    	assertEquals(10, joined.rowCount());
+    }
+    
+    @Test
+    public void rightJoinStudentInstructorOnStateName() {
+    	Table STUDENT = createSTUDENT();
+    	Table INSTRUCTOR = createINSTRUCTOR();
+    	Table joined = STUDENT.join(new String[] {"State","FirstName"}).rightOuter(INSTRUCTOR, new String[] {"State","First"}, true);
+    	assertEquals(15, joined.columnCount());
+    	assertEquals(10, joined.rowCount());
+    }
+  */  
+    @Test
+    public void innerJoinOnAge() {
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    	Table joined = ANIMAL_HOMES.join("Age").inner(DOUBLE_INDEXED_PEOPLE_HOMES, "Age", true);
+    	assertEquals(9, joined.columnCount());
+    	assertEquals(18, joined.rowCount());
+    }
+    
+    @Test
+    public void innerJoinAnimalPeopleOnAge() {
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    	Table joined = ANIMAL_HOMES.join("Age").inner(true, DOUBLE_INDEXED_PEOPLE_HOMES);
+    	assertEquals(9, joined.columnCount());
+    	assertEquals(18, joined.rowCount());
+    }
+    @Test
+    public void innerJoinAnimalTreeOnAge() {
+    	Table TREE = createTREE();
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table joined = ANIMAL_HOMES.join("Age").inner(true, TREE);
+    	assertEquals(7, joined.columnCount());
+    	assertEquals(8, joined.rowCount());
+    }	
+
+    @Test
+    public void innerJoinAnimalPeopleTreeOnAge() {
+    	Table TREE = createTREE();
+    	Table FLOWER = createFLOWER();
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    	DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    	Table joined = ANIMAL_HOMES.join("Age").inner(true, DOUBLE_INDEXED_PEOPLE_HOMES, TREE, FLOWER);
+    	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
+    			"T2.Name", "T2.Home", "T2.MoveInDate",
+    			"T3.Name", "T3.Home", "T4.Name","T4.Home","Color"})));
+    	assertEquals(14, joined.columnCount());
+    	assertEquals(18, joined.rowCount());
+    }
+    
+    @Test
+    public void innerJoinAnimalPeopleTreeOnAgeHome() {
+    	Table TREE = createTREE();
+    	Table FLOWER = createFLOWER();
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    	DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    	Table joined = ANIMAL_HOMES.join(new String[] {"Age","Home"}).inner(true, DOUBLE_INDEXED_PEOPLE_HOMES, TREE, FLOWER);
+    	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
+    			"Animal", "Name", "Home", "Age", "MoveInDate", "ID",
+    			"T2.Name","T2.MoveInDate","T3.Name","T4.Name","Color"})));
+    	assertEquals(11, joined.columnCount());
+    	assertEquals(2, joined.rowCount());
+    }
+    
+    @Test
+    public void innerJoinOnNameHomeAge() {
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    	Table joined = ANIMAL_HOMES.join(new String[] {"Name", "Home", "Age"})
+    			.inner(true, DOUBLE_INDEXED_PEOPLE_HOMES);
+    	assertEquals(7, joined.columnCount());
+    	assertEquals(1, joined.rowCount());
+    }
+    
+    
+    @Test
+    public void innerJoinOnAllMismatchedColNames() {
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENicknameDwellingYearsMoveInDate();
+    	Table joined = ANIMAL_HOMES.join(new String[] {"Name", "Home", "Age"})
+    			.inner(DOUBLE_INDEXED_PEOPLE_HOMES, 
+    			true, new String[] {"Nickname", "Dwelling", "Years"});
+    	assertEquals(7, joined.columnCount());
+    	assertEquals(2, joined.rowCount());
+    }
+    
+    @Test
+    public void innerJoinOnPartiallyMismatchedColNames() {
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameDwellingYearsMoveInDate();
+    	Table joined = ANIMAL_HOMES.join(new String[] {"Name", "Home", "Age"})
+    			.inner(DOUBLE_INDEXED_PEOPLE_HOMES, true,
+    			new String[] {"Name", "Dwelling", "Years"});
+    	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {"Name", "Home", "Age"})));
+    	assertEquals(7, joined.columnCount());
+    	assertEquals(2, joined.rowCount());
+    }
+    
+    /*  
+    
+    @Test
+    public void leftOuterJoinOnPartiallyMismatchedColNames() {
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameDwellingYearsMoveInDate();
+    	Table joined = ANIMAL_HOMES.join(new String[] {"Name", "Home", "Age"})
+    			.leftOuter(DOUBLE_INDEXED_PEOPLE_HOMES,
+    			new String[] {"Name", "Dwelling", "Years"}, true);
+    	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {"Name", "Home", "Age"})));
+    	assertEquals(7, joined.columnCount());
+    	assertEquals(8, joined.rowCount());
+    }
+    @Test
+    public void rightOuterJoinOnPartiallyMismatchedColNames() {
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameDwellingYearsMoveInDate();
+    	Table joined = ANIMAL_HOMES.join(new String[] {"Name", "Home", "Age"})
+    			.rightOuter(DOUBLE_INDEXED_PEOPLE_HOMES,
+    			new String[] {"Name", "Dwelling", "Years"}, true);
+    	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {"Name", "Dwelling", "Years"})));
+    	assertEquals(7, joined.columnCount());
+    	assertEquals(6, joined.rowCount());
+    }
+    
+*/    @Test
+    public void innerJoinOnAgeMoveInDate() {
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    	Table joined = ANIMAL_HOMES.join(new String[] {"Age","MoveInDate"})
+    			.inner(true, DOUBLE_INDEXED_PEOPLE_HOMES);
+    	assertEquals(8, joined.columnCount());
+    	assertEquals(3, joined.rowCount());
+    }
+/*    
+    @Test
+    public void leftOuterJoinOnAgeMoveInDate() {
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    	Table joined = ANIMAL_HOMES.join(new String[] {"Age","MoveInDate"})
+    			.leftOuter(true, DOUBLE_INDEXED_PEOPLE_HOMES);
+    	assertEquals(8, joined.columnCount());
+    	assertEquals(9, joined.rowCount());
+    }
+    
+    @Test
+    public void rightOuterJoinOnAgeMoveInDate() {
+    	Table ANIMAL_HOMES = createANIMALHOMES();
+    	Table DOUBLE_INDEXED_PEOPLE_HOMES = createDOUBLEINDEXEDPEOPLENameHomeAgeMoveInDate();
+    	Table joined = ANIMAL_HOMES.join(new String[] {"Age","MoveInDate"})
+    			.rightOuter(true, DOUBLE_INDEXED_PEOPLE_HOMES);
+    	assertEquals(8, joined.columnCount());
+    	assertEquals(6, joined.rowCount());
+    }
+*/      
 }

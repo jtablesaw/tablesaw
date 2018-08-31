@@ -7,6 +7,8 @@ import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.Row;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
@@ -26,6 +28,8 @@ import tech.tablesaw.index.StringIndex;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataFrameJoiner {
@@ -34,13 +38,17 @@ public class DataFrameJoiner {
 
     private final Table table;
     private final CategoricalColumn<?> column;
+    private CategoricalColumn<?>[] columns;
+    private String[] columnNames;
     private AtomicInteger joinTableId = new AtomicInteger(2);
 
-    public DataFrameJoiner(Table table, String column) {
+/*    public DataFrameJoiner(Table table, String column) {
         this.table = table;
         this.column = table.categoricalColumn(column);
+        columns = new CategoricalColumn<?>[] {this.column};
+        columnNames = new String[] {this.column.name()};
     }
-
+*/
     /**
      * Constructor.  Takes an initial value to start the joinTableId.  Useful during
      * multiple table joins so that each new table joined can have its duplicate columns
@@ -49,10 +57,25 @@ public class DataFrameJoiner {
      * @param columnName			The column name to join on
      * @param joinTableInitialId	The initial index used when naming duplicate columns, e.g. "T3.Age"
      */
-    public DataFrameJoiner(Table table, String columnName, int joinTableInitialId) {
-    	this.table = table;
+/*    public DataFrameJoiner(Table table, String columnName, int joinTableInitialId) {
+    	this(table, columnName);
     	joinTableId.set(joinTableInitialId);
-    	this.column = table.categoricalColumn(columnName);
+    }
+*/
+    public DataFrameJoiner(Table table, String... columnNames) {
+        this.table = table;
+        column = table.categoricalColumn(columnNames[0]);
+        columns = new CategoricalColumn<?>[columnNames.length];
+        this.columnNames = columnNames;
+        for(int i=0; i<this.columnNames.length; i++) {
+        	String colName = this.columnNames[i];	
+            this.columns[i] = table.categoricalColumn(colName);
+        }
+	}
+
+    public DataFrameJoiner(Table table, int joinTableIdVal, String... columnNames) {
+    	this(table, columnNames);
+    	joinTableId.set(joinTableIdVal);
     }
     
     /**
@@ -71,18 +94,18 @@ public class DataFrameJoiner {
      *                                  if {@code true} the join will succeed and duplicate columns are renamed*
      * @param tables The tables to join with
      */
-    public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
+   	public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
     	Table joined = table;
     	
     	for (int i=0; i<tables.length; i++) {
     		Table currT = tables[i];
     		// if first iteration then join to initial table
     		if(joined.equals(table)) {
-    			joined = inner(currT, column.name(), allowDuplicateColumnNames);
+    			joined = inner(currT, allowDuplicateColumnNames, columnNames);
     		} // else join to result of last join
     		else {
-    			joined = joined.join(column.name(), i+2)
-    					.inner(currT, column.name(), allowDuplicateColumnNames);
+    			joined = joined.join(i+2, columnNames)
+    					.inner(currT, allowDuplicateColumnNames, columnNames);
     		}
     	}
     	return joined;
@@ -94,10 +117,14 @@ public class DataFrameJoiner {
      * @param col2Name The column to join on. If col2Name refers to a double column, the join is performed after
      *                 rounding to integers.
      */
-    public Table inner(Table table2, String col2Name) {
-        return inner(table2, col2Name, false);
+    public Table inner(Table table2, String... col2Names) {
+        return inner(table2, false, col2Names);
     }
 
+    public Table inner(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
+    	return inner(table2, allowDuplicateColumnNames, col2Name);
+    }
+    
     /**
      * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
      *
@@ -107,8 +134,18 @@ public class DataFrameJoiner {
      * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
      *                                  if {@code true} the join will succeed and duplicate columns are renamed*
      */
-    public Table inner(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
-        return joinInternal(table2, col2Name, false, allowDuplicateColumnNames);
+    public Table inner(Table table2, boolean allowDuplicateColumnNames, String... col2Names) {
+        return inner(table2, false, allowDuplicateColumnNames, col2Names);
+    }
+
+    public Table inner(Table table2, boolean outer, boolean allowDuplicateColumnNames, String... col2Names) {
+    	Table joinedTable;
+    	if(col2Names.length > 1) {
+    		joinedTable = joinInternalMultiple(table2, outer, allowDuplicateColumnNames, col2Names);
+    	} else {
+    		joinedTable = joinInternal(table2, col2Names[0], outer, allowDuplicateColumnNames);
+    	}
+    	return joinedTable;
     }
 
     private Table joinInternal(Table table2, String col2Name, boolean outer, boolean allowDuplicates) {
@@ -224,14 +261,97 @@ public class DataFrameJoiner {
         }
         return result;
     }
+    
+    /**
+     * Joins the joiner to the {@code table2}, using the given columns for the second table and returns the resulting table
+     *
+     * @param table2    The table to join with
+     * @param col2Names The columns to join on. If a col2Name refers to a double column, the join is performed after
+     *                  rounding to integers.
+     * @param outer     True if this join is actually an outer join, left or right or full, otherwise false.
+     * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
+     *                                  if {@code true} the join will succeed and duplicate columns are renamed*
+     */
+    private Table joinInternalMultiple(Table table2, boolean outer, boolean allowDuplicates, String... col2Names) {
+        if (allowDuplicates) {
+            renameColumnsWithDuplicateNames(table2, col2Names);
+        }
+        Table result = emptyTableFromColumns(table, table2, col2Names);
+        for (Row row : table) {
+        	int ri = row.getRowNumber();
+            Table table1Rows = table.where(Selection.with(ri));
+        	Selection rowBitMapMultiCol = null;
+           	for(int i=0; i<columns.length; i++) {
+           		CategoricalColumn<?> column = columns[i];
+                ColumnType type = column.type();
+           		// relies on both arrays, columns, and col2Names,
+           		// having corresponding values at same index
+            	String col2Name = col2Names[i];
+            	Selection rowBitMapOneCol = null;
+            	if (type instanceof DateColumnType) {
+                    IntIndex index = new IntIndex(table2.dateColumn(col2Name));
+                    DateColumn col1 = (DateColumn) column;
+                    int value = col1.getIntInternal(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof DateTimeColumnType) {
+                    LongIndex index = new LongIndex(table2.dateTimeColumn(col2Name));
+                    DateTimeColumn col1 = (DateTimeColumn) column;
+                    long value = col1.getLongInternal(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof TimeColumnType) {
+                    IntIndex index = new IntIndex(table2.timeColumn(col2Name));
+                    TimeColumn col1 = (TimeColumn) column;
+                    int value = col1.getIntInternal(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof StringColumnType) {
+                    StringIndex index = new StringIndex(table2.stringColumn(col2Name));
+                    StringColumn col1 = (StringColumn) column;
+                    String value = col1.get(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof IntColumnType) {
+                    IntIndex index = new IntIndex(table2.intColumn(col2Name));
+                    IntColumn col1 = (IntColumn) column;
+                    int value = col1.getInt(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof LongColumnType) {
+                    LongIndex index = new LongIndex(table2.intColumn(col2Name));
+                    LongColumn col1 = (LongColumn) column;
+                    long value = col1.getLong(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof ShortColumnType) {
+                    ShortIndex index = new ShortIndex(table2.shortColumn(col2Name));
+                    ShortColumn col1 = (ShortColumn) column;
+                    short value = col1.getShort(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else {
+                    throw new IllegalArgumentException(
+                            "Joining is supported on numeric, string, and date-like columns. Column "
+                                    + column.name() + " is of type " + column.type());
+                }
+            	// combine Selection's into one big AND Selection
+            	if(rowBitMapOneCol != null) {
+            		rowBitMapMultiCol = rowBitMapMultiCol != null?rowBitMapMultiCol.and(rowBitMapOneCol):rowBitMapOneCol;
+            	}
+            }            
+            Table table2Rows = table2.where(rowBitMapMultiCol);
+            table2Rows.removeColumns(col2Names);
+            if (outer && table2Rows.isEmpty()) {
+                withMissingLeftJoin(result, table1Rows);
+            } else {
+                crossProduct(result, table1Rows, table2Rows);
+            }
+            
+        }
+        return result;
+    }
 
-    private void renameColumnsWithDuplicateNames(Table table2, String col2Name) {
+    private void renameColumnsWithDuplicateNames(Table table2, String... col2Names) {
         String table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
-
+        List<String> list = Arrays.asList(col2Names);
         for (Column<?> table2Column : table2.columns()) {
             String columnName = table2Column.name();
             if (table.columnNames().contains(columnName)
-                    && !columnName.equalsIgnoreCase(col2Name)) {
+                    && !(list.contains(columnName))) {
                 table2Column.setName(newName(table2Alias, columnName));
             }
         }
@@ -476,13 +596,14 @@ public class DataFrameJoiner {
         return result;
     }
 
-    private Table emptyTableFromColumns(Table table1, Table table2, String col2Name) {
-        Column<?>[] cols = Streams.concat(
-                table1.columns().stream(),
-                table2.columns().stream().filter(c -> !c.name().equalsIgnoreCase(col2Name))
-        ).map(col -> col.emptyCopy(col.size())).toArray(Column[]::new);
-        return Table.create(table1.name(), cols);
+    private Table emptyTableFromColumns(Table table1, Table table2, String... col2Names) {
+    	Column<?>[] cols = Streams.concat(
+    			table1.columns().stream(),
+    			table2.columns().stream().filter(c -> !Arrays.asList(col2Names).contains(c.name()))
+    			).map(col -> col.emptyCopy(col.size())).toArray(Column[]::new);
+    	return Table.create(table1.name(), cols);
     }
+    
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void crossProduct(Table destination, Table table1, Table table2) {
