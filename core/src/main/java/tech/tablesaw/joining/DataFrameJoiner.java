@@ -26,6 +26,7 @@ import tech.tablesaw.index.StringIndex;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataFrameJoiner {
@@ -45,14 +46,14 @@ public class DataFrameJoiner {
      * Constructor.  Takes an initial value to start the joinTableId.  Useful during
      * multiple table joins so that each new table joined can have its duplicate columns
      * distinguished from the other tables.
-     * @param table					The table to join on
-     * @param columnName			The column name to join on
-     * @param joinTableInitialId	The initial index used when naming duplicate columns, e.g. "T3.Age"
+     * @param table                    The table to join on
+     * @param columnName            The column name to join on
+     * @param joinTableInitialId    The initial index used when naming duplicate columns, e.g. "T3.Age"
      */
     public DataFrameJoiner(Table table, String columnName, int joinTableInitialId) {
-    	this.table = table;
-    	joinTableId.set(joinTableInitialId);
-    	this.column = table.categoricalColumn(columnName);
+        this.table = table;
+        joinTableId.set(joinTableInitialId);
+        this.column = table.categoricalColumn(columnName);
     }
     
     /**
@@ -72,20 +73,20 @@ public class DataFrameJoiner {
      * @param tables The tables to join with
      */
     public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
-    	Table joined = table;
-    	
-    	for (int i=0; i<tables.length; i++) {
-    		Table currT = tables[i];
-    		// if first iteration then join to initial table
-    		if(joined.equals(table)) {
-    			joined = inner(currT, column.name(), allowDuplicateColumnNames);
-    		} // else join to result of last join
-    		else {
-    			joined = joined.join(column.name(), i+2)
-    					.inner(currT, column.name(), allowDuplicateColumnNames);
-    		}
-    	}
-    	return joined;
+        Table joined = table;
+        
+        for (int i=0; i<tables.length; i++) {
+            Table currT = tables[i];
+            // if first iteration then join to initial table
+            if (joined.equals(table)) {
+                joined = inner(currT, column.name(), allowDuplicateColumnNames);
+            } // else join to result of last join
+            else {
+                joined = joined.join(column.name())
+                        .inner(currT, column.name(), allowDuplicateColumnNames);
+            }
+        }
+        return joined;
     }    
     /**
      * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
@@ -227,7 +228,20 @@ public class DataFrameJoiner {
 
     private void renameColumnsWithDuplicateNames(Table table2, String col2Name) {
         String table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
-
+        List<String> colNames = table.columnNames();
+        boolean foundNextIndex = false;
+        // loop on parent table's column names until the new joinTableId is not 
+        // already being used to prefix any of them 
+        for (int i=0; !foundNextIndex && i<colNames.size(); i++) {
+            if (colNames.get(i).startsWith(table2Alias)) {
+                table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
+                // reset the counter to start at beginning again 
+                // to look for incremented table2Alias
+                i = 0;
+            }
+        }
+        
+        // the table2Alias value at this point is unique for this table
         for (Column<?> table2Column : table2.columns()) {
             String columnName = table2Column.name();
             if (table.columnNames().contains(columnName)
@@ -490,10 +504,10 @@ public class DataFrameJoiner {
             for (int r1 = 0; r1 < table1.rowCount(); r1++) {
                 for (int r2 = 0; r2 < table2.rowCount(); r2++) {
                     if (c < table1.columnCount()) {
-                	Column t1Col = table1.column(c);
+                        Column t1Col = table1.column(c);
                         destination.column(c).append(t1Col, r1);
                     } else {
-                	Column t2Col = table2.column(c - table1.columnCount());
+                        Column t2Col = table2.column(c - table1.columnCount());
                         destination.column(c).append(t2Col, r2);
                     }
                 }
@@ -508,8 +522,8 @@ public class DataFrameJoiner {
     private void withMissingLeftJoin(Table destination, Table table1) {
         for (int c = 0; c < destination.columnCount(); c++) {
             if (c < table1.columnCount()) {
-        	Column t1Col = table1.column(c);
-        	destination.column(c).append(t1Col);
+            Column t1Col = table1.column(c);
+            destination.column(c).append(t1Col);
             } else {
                 for (int r1 = 0; r1 < table1.rowCount(); r1++) {
                     destination.column(c).appendMissing();
@@ -526,7 +540,7 @@ public class DataFrameJoiner {
         int t2StartCol = destination.columnCount() - table2.columnCount();
         for (int c = 0; c < destination.columnCount(); c++) {
             if (destination.column(c).name().equalsIgnoreCase(joinColumn.name())) {
-        	destination.column(c).append(joinColumn);
+            destination.column(c).append(joinColumn);
                 continue;
             }
             if (c < t2StartCol) {
@@ -534,8 +548,8 @@ public class DataFrameJoiner {
                     destination.column(c).appendMissing();
                 }
             } else {
-        	Column t2Col = table2.column(c - t2StartCol);
-        	destination.column(c).append(t2Col);
+            Column t2Col = table2.column(c - t2StartCol);
+            destination.column(c).append(t2Col);
             }
         }
     }

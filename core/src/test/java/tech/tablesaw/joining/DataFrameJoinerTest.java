@@ -77,7 +77,7 @@ public class DataFrameJoinerTest {
             "Dogs");
 
     private static Table createSTUDENT() {
-    	return Table.read().csv(
+        return Table.read().csv(
             "ID,FirstName,LastName,City,State,Age,USID,GradYear\n"
                     + "1,Bob,Barney,Burke,VA,20,11122,2019\n"
                     + "2,Chris,Cabello,Canyonville,OR,20,22224,2019\n"
@@ -93,7 +93,7 @@ public class DataFrameJoinerTest {
     }
 
     private static Table createINSTRUCTOR() {
-    	return Table.read().csv(
+        return Table.read().csv(
             "ID,First,Last,Title,City,State,Age,USID,GradYear\n"
                     + "1,Bob,Cabello,Prof,Burke,VA,20,11333,2019\n"
                     + "2,Chris,Barney,TA,Canyonville,OR,20,22334,2019\n"
@@ -110,23 +110,23 @@ public class DataFrameJoinerTest {
 
     
     private static Table createDEPTHEAD() {
-    	return Table.read().csv(
-    			"ID,First,Last,Dept,City,State,Age\n"
-    					+ "1,John,Cabello,ComputerScience,Burke,VA,20\n"
-    					+ "2,Samantha,Barney,Writing,Canyonville,OR,21\n"
-    					+ "3,Mark,Earhardt,Mathematics,Denver,CO,22\n"
-    					+ "4,Christie,Dirble,Architecture,Easterly,WA,23\n"
-    					+ "5,Bhawesh,Frank,Psychology,Fredriksburg,VA,24\n"
-    					+ "6,Robert,George,Sociology,Garrisburg,MD,25\n"
-    					+ "7,George,Marbury,Physics,Msilton,NH,26\n"
-    					+ "8,Zhongyu,Riley,Chemistry,Roseburg,OR,27\n"
-    					+ "9,Laura,Riley,Economics,Milton,NH,28\n"
-    					+ "10,Sally,Gabral,Marketing,Easterly,WA,29\n",
-    			"DepartmentHead");
+        return Table.read().csv(
+                "ID,First,Last,Dept,City,State,Age\n"
+                        + "1,John,Cabello,ComputerScience,Burke,VA,20\n"
+                        + "2,Samantha,Barney,Writing,Canyonville,OR,21\n"
+                        + "3,Mark,Earhardt,Mathematics,Denver,CO,22\n"
+                        + "4,Christie,Dirble,Architecture,Easterly,WA,23\n"
+                        + "5,Bhawesh,Frank,Psychology,Fredriksburg,VA,24\n"
+                        + "6,Robert,George,Sociology,Garrisburg,MD,25\n"
+                        + "7,George,Marbury,Physics,Msilton,NH,26\n"
+                        + "8,Zhongyu,Riley,Chemistry,Roseburg,OR,27\n"
+                        + "9,Laura,Riley,Economics,Milton,NH,28\n"
+                        + "10,Sally,Gabral,Marketing,Easterly,WA,29\n",
+                "DepartmentHead");
     }
     
     private static Table createCLASS() {
-    	return Table.read().csv(
+        return Table.read().csv(
             "ID,ClassType,Name,Level,Description,StartDate,EndDate,Completed,Age\n"
                     + "1001,Math,Calculus,101,Newton math,2018-09-20,2018-12-17,false,16\n"
                     + "1002,Math,Calculus,102,Newton math,2019-01-06,2019-03-06,false,17\n"
@@ -257,39 +257,39 @@ public class DataFrameJoinerTest {
     
     @Test
     public void innerJoinStudentInstructorOnAge() {
-    	Table STUDENT = createSTUDENT();
-    	Table INSTRUCTOR = createINSTRUCTOR();
-    	Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR);
-    	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
-    			"T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear"})));
-    	assertEquals(16, joined.columnCount());
-    	assertEquals(14, joined.rowCount());
+        Table STUDENT = createSTUDENT();
+        Table INSTRUCTOR = createINSTRUCTOR();
+        Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR);
+        assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
+                "T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear"})));
+        assertEquals(16, joined.columnCount());
+        assertEquals(14, joined.rowCount());
     }    
     
     @Test
     public void innerJoinStudentInstructorClassOnAge() {
-    	Table STUDENT = createSTUDENT();
-    	Table INSTRUCTOR = createINSTRUCTOR();
-    	Table CLASS = createCLASS();
-    	Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR,CLASS);
-    	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
-    			"T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear",
-    	"T3.ID"})));
-    	assertEquals(24, joined.columnCount());
-    	assertEquals(14, joined.rowCount());
+        Table STUDENT = createSTUDENT();
+        Table INSTRUCTOR = createINSTRUCTOR();
+        Table CLASS = createCLASS();
+        Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR,CLASS);
+        assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
+                "T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear",
+        "T3.ID"})));
+        assertEquals(24, joined.columnCount());
+        assertEquals(14, joined.rowCount());
     }    
     
     @Test
     public void innerJoinStudentInstructorClassDeptHeadOnAge() {
-    	Table STUDENT = createSTUDENT();
-    	Table INSTRUCTOR = createINSTRUCTOR();
-    	Table CLASS = createCLASS();
-    	Table DEPTHEAD = createDEPTHEAD();
-    	Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR,CLASS,DEPTHEAD);
-    	assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
-    			"T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear",
-    			"T3.ID", "T4.ID", "T4.First", "T4.Last", "T4.City", "T4.State"})));
-    	assertEquals(30, joined.columnCount());
-    	assertEquals(14, joined.rowCount());
+        Table STUDENT = createSTUDENT();
+        Table INSTRUCTOR = createINSTRUCTOR();
+        Table CLASS = createCLASS();
+        Table DEPTHEAD = createDEPTHEAD();
+        Table joined = STUDENT.join("Age").inner(true, INSTRUCTOR,CLASS,DEPTHEAD);
+        assert(joined.columnNames().containsAll(Arrays.asList(new String[] {
+                "T2.ID", "T2.City", "T2.State", "T2.USID", "T2.GradYear",
+                "T3.ID", "T4.ID", "T4.First", "T4.Last", "T4.City", "T4.State"})));
+        assertEquals(30, joined.columnCount());
+        assertEquals(14, joined.rowCount());
     }
 }

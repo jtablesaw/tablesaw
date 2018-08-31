@@ -866,20 +866,10 @@ public class Table extends Relation implements Iterable<Row> {
 
     /**
      * Join on the given {@code columnName}  
-     * @param columnName			The column name to join on
+     * @param columnName            The column name to join on
      */
     public DataFrameJoiner join(String columnName) {
         return new DataFrameJoiner(this, columnName);
-    }
-
-    /**
-     * Join on the given {@code columnName} with {@code joinTableInitialId} as the initial
-     * index used when renaming duplicate columns. 
-     * @param columnName			The column name to join on
-     * @param joinTableInitialId	The initial index used when naming duplicate columns, e.g. "T3.Age"
-     */
-    public DataFrameJoiner join(String columnName, int joinTableInitialId) {
-    	return new DataFrameJoiner(this, columnName, joinTableInitialId);
     }
 
     public Table missingValueCounts() {
