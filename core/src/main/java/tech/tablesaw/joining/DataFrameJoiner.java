@@ -41,7 +41,7 @@ public class DataFrameJoiner {
         this.table = table;
         this.column = table.categoricalColumn(column);
     }
-    
+
     /**
      * Joins to the given tables assuming that they have a column of the name we're joining on
      *
@@ -61,19 +61,12 @@ public class DataFrameJoiner {
     public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
         Table joined = table;
         
-        for (int i = 0; i < tables.length; i++) {
-            Table currT = tables[i];
-            // if first iteration then join to initial table
-            if (joined.equals(table)) {
-                joined = inner(currT, column.name(), allowDuplicateColumnNames);
-            } // else join to result of last join
-            else {
-                joined = joined.join(column.name())
-                        .inner(currT, column.name(), allowDuplicateColumnNames);
-            }
+        for (Table currT : tables) {
+            joined = joinInternal(joined, currT, column.name(), false, allowDuplicateColumnNames);
         }
         return joined;
     }    
+
     /**
      * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
      *
@@ -97,21 +90,31 @@ public class DataFrameJoiner {
     public Table inner(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
         return joinInternal(table2, col2Name, false, allowDuplicateColumnNames);
     }
-
+    
     private Table joinInternal(Table table2, String col2Name, boolean outer, boolean allowDuplicates) {
+        return joinInternal(table, table2, col2Name, outer, allowDuplicates);
+    }
+
+    private Table joinInternal(Table table1, Table table2, String col2Name, boolean outer, boolean allowDuplicates) {
 
         if (allowDuplicates) {
-            renameColumnsWithDuplicateNames(table2, col2Name);
+            renameColumnsWithDuplicateNames(table1, table2, col2Name);
         }
 
-        Table result = emptyTableFromColumns(table, table2, col2Name);
-        ColumnType type = column.type();
+        Table result = emptyTableFromColumns(table1, table2, col2Name);
+        
+        // Need to use the column from table1 that is the same column originally
+        // defined for this DataFrameJoiner. Column names must be unique within the
+        // same table, so use the original column's name to get the corresponding
+        // column out of the table1 input Table.
+        CategoricalColumn<?> table1Column = table1.categoricalColumn(column.name());
+        ColumnType type = table1Column.type();
         if (type instanceof DateColumnType) {
             IntIndex index = new IntIndex(table2.dateColumn(col2Name));
-            DateColumn col1 = (DateColumn) column;
+            DateColumn col1 = (DateColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 int value = col1.getIntInternal(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -122,10 +125,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof DateTimeColumnType) {
             LongIndex index = new LongIndex(table2.dateTimeColumn(col2Name));
-            DateTimeColumn col1 = (DateTimeColumn) column;
+            DateTimeColumn col1 = (DateTimeColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 long value = col1.getLongInternal(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -136,10 +139,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof TimeColumnType) {
             IntIndex index = new IntIndex(table2.timeColumn(col2Name));
-            TimeColumn col1 = (TimeColumn) column;
+            TimeColumn col1 = (TimeColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 int value = col1.getIntInternal(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -150,10 +153,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof StringColumnType) {
             StringIndex index = new StringIndex(table2.stringColumn(col2Name));
-            StringColumn col1 = (StringColumn) column;
+            StringColumn col1 = (StringColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 String value = col1.get(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -164,10 +167,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof IntColumnType) {
             IntIndex index = new IntIndex(table2.intColumn(col2Name));
-            IntColumn col1 = (IntColumn) column;
+            IntColumn col1 = (IntColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 int value = col1.getInt(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -178,10 +181,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof LongColumnType) {
             LongIndex index = new LongIndex(table2.intColumn(col2Name));
-            LongColumn col1 = (LongColumn) column;
+            LongColumn col1 = (LongColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 long value = col1.getLong(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -192,10 +195,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof ShortColumnType) {
             ShortIndex index = new ShortIndex(table2.shortColumn(col2Name));
-            ShortColumn col1 = (ShortColumn) column;
+            ShortColumn col1 = (ShortColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 short value = col1.getShort(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -212,24 +215,12 @@ public class DataFrameJoiner {
         return result;
     }
 
-    private void renameColumnsWithDuplicateNames(Table table2, String col2Name) {
+    private void renameColumnsWithDuplicateNames(Table table1, Table table2, String col2Name) {
         String table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
-        List<String> colNames = table.columnNames();
-        // loop on parent table's column names multiple times until the newly 
-        // incremented joinTableId is not found being used to prefix any of them 
-        for (int i = 0; i < colNames.size(); i++) {
-            if (colNames.get(i).startsWith(table2Alias)) {
-                table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
-                // reset the counter to start at beginning again 
-                // to look for incremented table2Alias
-                i = 0;
-            }
-        }
         
-        // the table2Alias value at this point is unique for this table
         for (Column<?> table2Column : table2.columns()) {
             String columnName = table2Column.name();
-            if (table.columnNames().contains(columnName)
+            if (table1.columnNames().contains(columnName)
                     && !columnName.equalsIgnoreCase(col2Name)) {
                 table2Column.setName(newName(table2Alias, columnName));
             }
