@@ -108,7 +108,6 @@ public class DataFrameJoinerTest {
             "Instructor");
     }
 
-    
     private static Table createDEPTHEAD() {
         return Table.read().csv(
                 "ID,First,Last,Dept,City,State,Age\n"
@@ -124,7 +123,7 @@ public class DataFrameJoinerTest {
                         + "10,Sally,Gabral,Marketing,Easterly,WA,42\n",
                 "DepartmentHead");
     }
-    
+
     private static Table createCLASS() {
         return Table.read().csv(
             "ID,ClassType,Name,Level,Description,StartDate,EndDate,Completed,Age\n"
@@ -140,8 +139,7 @@ public class DataFrameJoinerTest {
                     + "1010,Literature,Shakespeare,101,Understanding Shakespeare,2018-09-20,2018-12-17,false,50\n",
             "Class");
     }
-    
-    
+
     @Test
     public void innerJoinWithDoubles() {
         Table joined = DOUBLE_INDEXED_PEOPLE.join("ID").inner(DOUBLE_INDEXED_DOGS, "ID");
@@ -254,7 +252,7 @@ public class DataFrameJoinerTest {
         assertEquals(8, joined.column("Feed").size());
         assertEquals(2, joined.column("Feed").countMissing());
     }
-    
+
     @Test
     public void innerJoinStudentInstructorOnAge() {
         Table STUDENT = createSTUDENT();
@@ -265,7 +263,7 @@ public class DataFrameJoinerTest {
         assertEquals(16, joined.columnCount());
         assertEquals(5, joined.rowCount());
     }    
-    
+
     @Test
     public void innerJoinInstructorStudentOnAge() {
         Table STUDENT = createSTUDENT();
@@ -276,7 +274,7 @@ public class DataFrameJoinerTest {
         assertEquals(16, joined.columnCount());
         assertEquals(5, joined.rowCount());
     }    
-  
+
     @Test
     public void innerJoinStudentInstructorClassOnAge() {
         Table STUDENT = createSTUDENT();
@@ -289,8 +287,7 @@ public class DataFrameJoinerTest {
         assertEquals(24, joined.columnCount());
         assertEquals(7, joined.rowCount());
     }
-    
-    
+
     @Test
     public void innerJoinStudentInstructorClassDeptHeadOnAge() {
         Table STUDENT = createSTUDENT();

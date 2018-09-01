@@ -59,7 +59,7 @@ public class DataFrameJoiner {
      */
     public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
         Table joined = table;
-        
+
         for (Table currT : tables) {
             joined = joinInternal(joined, currT, column.name(), false, allowDuplicateColumnNames);
         }
@@ -89,7 +89,7 @@ public class DataFrameJoiner {
     public Table inner(Table table2, String col2Name, boolean allowDuplicateColumnNames) {
         return joinInternal(table2, col2Name, false, allowDuplicateColumnNames);
     }
-    
+
     private Table joinInternal(Table table2, String col2Name, boolean outer, boolean allowDuplicates) {
         return joinInternal(table, table2, col2Name, outer, allowDuplicates);
     }
@@ -101,7 +101,7 @@ public class DataFrameJoiner {
         }
 
         Table result = emptyTableFromColumns(table1, table2, col2Name);
-        
+
         // Need to use the column from table1 that is the same column originally
         // defined for this DataFrameJoiner. Column names must be unique within the
         // same table, so use the original column's name to get the corresponding
@@ -216,7 +216,7 @@ public class DataFrameJoiner {
 
     private void renameColumnsWithDuplicateNames(Table table1, Table table2, String col2Name) {
         String table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
-        
+
         for (Column<?> table2Column : table2.columns()) {
             String columnName = table2Column.name();
             if (table1.columnNames().contains(columnName)
@@ -348,7 +348,7 @@ public class DataFrameJoiner {
                     "Joining is supported on numeric, string, and date-like columns. Column "
                             + column.name() + " is of type " + column.type());
         }
-        
+
         Table table2OnlyRows = table2.where(selection);
         CategoricalColumn<?> joinColumn = table2OnlyRows.categoricalColumn(col2Name);
         table2OnlyRows.removeColumns(joinColumn);
