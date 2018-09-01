@@ -51,6 +51,9 @@ final public class CsvWriter {
         CsvWriterSettings settings = new CsvWriterSettings();
         // Sets the character sequence to write for the values that are null.
         settings.setNullValue("");
+        settings.getFormat().setDelimiter(options.separator());
+        settings.getFormat().setQuote(options.quoteChar());
+        settings.getFormat().setQuoteEscape(options.escapeChar());
 
         // writes empty lines as well.
         settings.setSkipEmptyLines(false);
