@@ -26,7 +26,6 @@ import tech.tablesaw.index.StringIndex;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataFrameJoiner {
