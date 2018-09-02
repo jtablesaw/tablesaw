@@ -64,7 +64,7 @@ public class DataFrameJoiner {
             joined = joinInternal(joined, currT, column.name(), false, allowDuplicateColumnNames);
         }
         return joined;
-    }    
+    }
 
     /**
      * Joins the joiner to the table2, using the given column for the second table and returns the resulting table
