@@ -572,7 +572,7 @@ public class Table extends Relation implements Iterable<Row> {
             column(i).appendObj(sourceTable.column(i).get(rowIndex));
         }
     }
-    
+
     public void addRow(Row row) {
         for (int i = 0; i < row.columnCount(); i++) {
             column(i).appendObj(row.getObject(i));
@@ -864,6 +864,10 @@ public class Table extends Relation implements Iterable<Row> {
         return groupingColumn.countByCategory();
     }
 
+    /**
+     * Join on the given {@code columnName}  
+     * @param columnName  The column name to join on
+     */
     public DataFrameJoiner join(String columnName) {
         return new DataFrameJoiner(this, columnName);
     }

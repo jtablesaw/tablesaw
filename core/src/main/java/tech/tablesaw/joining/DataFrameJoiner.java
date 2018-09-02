@@ -59,8 +59,9 @@ public class DataFrameJoiner {
      */
     public Table inner(boolean allowDuplicateColumnNames, Table... tables) {
         Table joined = table;
-        for (Table table2 : tables) {
-          joined = inner(table2, column.name(), allowDuplicateColumnNames);
+
+        for (Table currT : tables) {
+            joined = joinInternal(joined, currT, column.name(), false, allowDuplicateColumnNames);
         }
         return joined;
     }
@@ -90,19 +91,29 @@ public class DataFrameJoiner {
     }
 
     private Table joinInternal(Table table2, String col2Name, boolean outer, boolean allowDuplicates) {
+        return joinInternal(table, table2, col2Name, outer, allowDuplicates);
+    }
+
+    private Table joinInternal(Table table1, Table table2, String col2Name, boolean outer, boolean allowDuplicates) {
 
         if (allowDuplicates) {
-            renameColumnsWithDuplicateNames(table2, col2Name);
+            renameColumnsWithDuplicateNames(table1, table2, col2Name);
         }
 
-        Table result = emptyTableFromColumns(table, table2, col2Name);
-        ColumnType type = column.type();
+        Table result = emptyTableFromColumns(table1, table2, col2Name);
+
+        // Need to use the column from table1 that is the same column originally
+        // defined for this DataFrameJoiner. Column names must be unique within the
+        // same table, so use the original column's name to get the corresponding
+        // column out of the table1 input Table.
+        CategoricalColumn<?> table1Column = table1.categoricalColumn(column.name());
+        ColumnType type = table1Column.type();
         if (type instanceof DateColumnType) {
             IntIndex index = new IntIndex(table2.dateColumn(col2Name));
-            DateColumn col1 = (DateColumn) column;
+            DateColumn col1 = (DateColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 int value = col1.getIntInternal(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -113,10 +124,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof DateTimeColumnType) {
             LongIndex index = new LongIndex(table2.dateTimeColumn(col2Name));
-            DateTimeColumn col1 = (DateTimeColumn) column;
+            DateTimeColumn col1 = (DateTimeColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 long value = col1.getLongInternal(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -127,10 +138,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof TimeColumnType) {
             IntIndex index = new IntIndex(table2.timeColumn(col2Name));
-            TimeColumn col1 = (TimeColumn) column;
+            TimeColumn col1 = (TimeColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 int value = col1.getIntInternal(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -141,10 +152,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof StringColumnType) {
             StringIndex index = new StringIndex(table2.stringColumn(col2Name));
-            StringColumn col1 = (StringColumn) column;
+            StringColumn col1 = (StringColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 String value = col1.get(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -155,10 +166,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof IntColumnType) {
             IntIndex index = new IntIndex(table2.intColumn(col2Name));
-            IntColumn col1 = (IntColumn) column;
+            IntColumn col1 = (IntColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 int value = col1.getInt(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -169,10 +180,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof LongColumnType) {
             LongIndex index = new LongIndex(table2.intColumn(col2Name));
-            LongColumn col1 = (LongColumn) column;
+            LongColumn col1 = (LongColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 long value = col1.getLong(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -183,10 +194,10 @@ public class DataFrameJoiner {
             }
         } else if (type instanceof ShortColumnType) {
             ShortIndex index = new ShortIndex(table2.shortColumn(col2Name));
-            ShortColumn col1 = (ShortColumn) column;
+            ShortColumn col1 = (ShortColumn) table1Column;
             for (int i = 0; i < col1.size(); i++) {
                 short value = col1.getShort(i);
-                Table table1Rows = table.where(Selection.with(i));
+                Table table1Rows = table1.where(Selection.with(i));
                 Table table2Rows = table2.where(index.get(value));
                 table2Rows.removeColumns(col2Name);
                 if (outer && table2Rows.isEmpty()) {
@@ -203,12 +214,12 @@ public class DataFrameJoiner {
         return result;
     }
 
-    private void renameColumnsWithDuplicateNames(Table table2, String col2Name) {
+    private void renameColumnsWithDuplicateNames(Table table1, Table table2, String col2Name) {
         String table2Alias = TABLE_ALIAS + joinTableId.getAndIncrement();
 
         for (Column<?> table2Column : table2.columns()) {
             String columnName = table2Column.name();
-            if (table.columnNames().contains(columnName)
+            if (table1.columnNames().contains(columnName)
                     && !columnName.equalsIgnoreCase(col2Name)) {
                 table2Column.setName(newName(table2Alias, columnName));
             }
@@ -337,7 +348,7 @@ public class DataFrameJoiner {
                     "Joining is supported on numeric, string, and date-like columns. Column "
                             + column.name() + " is of type " + column.type());
         }
-        
+
         Table table2OnlyRows = table2.where(selection);
         CategoricalColumn<?> joinColumn = table2OnlyRows.categoricalColumn(col2Name);
         table2OnlyRows.removeColumns(joinColumn);
@@ -468,10 +479,10 @@ public class DataFrameJoiner {
             for (int r1 = 0; r1 < table1.rowCount(); r1++) {
                 for (int r2 = 0; r2 < table2.rowCount(); r2++) {
                     if (c < table1.columnCount()) {
-                	Column t1Col = table1.column(c);
+                        Column t1Col = table1.column(c);
                         destination.column(c).append(t1Col, r1);
                     } else {
-                	Column t2Col = table2.column(c - table1.columnCount());
+                        Column t2Col = table2.column(c - table1.columnCount());
                         destination.column(c).append(t2Col, r2);
                     }
                 }
@@ -486,8 +497,8 @@ public class DataFrameJoiner {
     private void withMissingLeftJoin(Table destination, Table table1) {
         for (int c = 0; c < destination.columnCount(); c++) {
             if (c < table1.columnCount()) {
-        	Column t1Col = table1.column(c);
-        	destination.column(c).append(t1Col);
+                Column t1Col = table1.column(c);
+                destination.column(c).append(t1Col);
             } else {
                 for (int r1 = 0; r1 < table1.rowCount(); r1++) {
                     destination.column(c).appendMissing();
@@ -504,7 +515,7 @@ public class DataFrameJoiner {
         int t2StartCol = destination.columnCount() - table2.columnCount();
         for (int c = 0; c < destination.columnCount(); c++) {
             if (destination.column(c).name().equalsIgnoreCase(joinColumn.name())) {
-        	destination.column(c).append(joinColumn);
+                destination.column(c).append(joinColumn);
                 continue;
             }
             if (c < t2StartCol) {
@@ -512,8 +523,8 @@ public class DataFrameJoiner {
                     destination.column(c).appendMissing();
                 }
             } else {
-        	Column t2Col = table2.column(c - t2StartCol);
-        	destination.column(c).append(t2Col);
+                Column t2Col = table2.column(c - t2StartCol);
+                destination.column(c).append(t2Col);
             }
         }
     }
