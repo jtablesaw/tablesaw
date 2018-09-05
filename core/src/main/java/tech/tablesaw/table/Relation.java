@@ -384,6 +384,18 @@ public abstract class Relation {
     }
 
     /**
+     * Returns the columns whose names are given in the input array
+     */
+    public List<CategoricalColumn<?>> categoricalColumns(String... columnName) {
+        List<CategoricalColumn<?>> cols = new ArrayList<>(columnName.length);
+        for (String aColumnName : columnName) {
+            cols.add(categoricalColumn(aColumnName));
+        }
+        return cols;
+    }
+
+    
+    /**
      * Returns the column with the given name cast to a NumberColumn
      * <p>
      * Shorthand for numberColumn()
