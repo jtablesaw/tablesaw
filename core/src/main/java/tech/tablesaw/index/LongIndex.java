@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -56,6 +57,24 @@ public class LongIndex {
         Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
         for (int i = 0; i < column.size(); i++) {
             long value = column.getInt(i);
+            IntArrayList recordIds = tempMap.get(value);
+            if (recordIds == null) {
+                recordIds = new IntArrayList();
+                recordIds.add(i);
+                tempMap.trim();
+                tempMap.put(value, recordIds);
+            } else {
+                recordIds.add(i);
+            }
+        }
+        index = new Long2ObjectAVLTreeMap<>(tempMap);
+    }
+    
+    public LongIndex(LongColumn column) {
+        int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
+        Long2ObjectOpenHashMap<IntArrayList> tempMap = new Long2ObjectOpenHashMap<>(sizeEstimate);
+        for (int i = 0; i < column.size(); i++) {
+            long value = column.getLong(i);
             IntArrayList recordIds = tempMap.get(value);
             if (recordIds == null) {
                 recordIds = new IntArrayList();

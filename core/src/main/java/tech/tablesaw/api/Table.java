@@ -865,24 +865,6 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
-     * Join on the given {@code columnName}  
-     * @param columnName			The column name to join on
-     */
-/*    public DataFrameJoiner join(String columnName) {
-        return new DataFrameJoiner(this, columnName);
-    }
-*/
-    /**
-     * Join on the given {@code columnName} with {@code joinTableInitialId} as the initial
-     * index used when renaming duplicate columns. 
-     * @param columnName			The column name to join on
-     * @param joinTableInitialId	The initial index used when naming duplicate columns, e.g. "T3.Age"
-     */
-    public DataFrameJoiner join(int joinTableInitialId, String... columnNames) {
-    	return new DataFrameJoiner(this, joinTableInitialId, columnNames);
-    }
-    
-    /**
      * Returns a new DataFrameJoiner initialized with multiple {@code columnNames}
      * @param columnNames	Name of the columns to join on.
      * @return 				The new DataFrameJoiner

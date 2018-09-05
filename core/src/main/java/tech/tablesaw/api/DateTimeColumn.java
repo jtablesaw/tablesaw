@@ -14,25 +14,7 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparator;
-import it.unimi.dsi.fastutil.longs.LongIterator;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
-import tech.tablesaw.columns.datetimes.DateTimeColumnType;
-import tech.tablesaw.columns.datetimes.DateTimeFillers;
-import tech.tablesaw.columns.datetimes.DateTimeFilters;
-import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingLongComparator;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
 
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
@@ -51,13 +33,33 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import com.google.common.base.Preconditions;
+
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrays;
+import it.unimi.dsi.fastutil.longs.LongComparator;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
+import tech.tablesaw.columns.datetimes.DateTimeColumnType;
+import tech.tablesaw.columns.datetimes.DateTimeFillers;
+import tech.tablesaw.columns.datetimes.DateTimeFilters;
+import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
 public class DateTimeColumn extends AbstractColumn<LocalDateTime>
-    implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn> {
+    implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn>,
+        CategoricalColumn<LocalDateTime> {
 
     public static final long MISSING_VALUE = DateTimeColumnType.missingValueIndicator();
 
