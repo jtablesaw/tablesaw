@@ -29,6 +29,7 @@ import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.Selection;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -480,6 +481,13 @@ public class NumberColumnTest {
         DoubleColumn empty = doubles.emptyCopy();
         assertTrue(empty.isEmpty());
         assertEquals(doubles.name(), empty.name());
+    }
+
+    @Test
+    public void appendObject() {
+        DoubleColumn doubles =  DoubleColumn.create("doubles");
+        doubles.appendObj(BigDecimal.valueOf(1));
+        assertEquals(1.0, doubles.get(0), 0.00001);
     }
 
     @Test
