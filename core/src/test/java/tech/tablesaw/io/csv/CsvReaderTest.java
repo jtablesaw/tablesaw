@@ -267,6 +267,19 @@ public class CsvReaderTest {
     }
 
     @Test
+    public void testLineEndings() throws Exception {
+
+        CsvReadOptions options = CsvReadOptions.builder("../data/alt_line_endings.csv")
+                .lineEnding("~")
+                .header(true)
+                .build();
+
+        Table t = Table.read().csv(options);
+        assertEquals(2, t.columnCount());
+        assertEquals(2, t.rowCount());
+    }
+
+    @Test
     public void testDateWithFormatter2() throws Exception {
 
         final boolean header = false;

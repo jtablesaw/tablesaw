@@ -244,6 +244,11 @@ public class CsvReadOptions {
             return this;
         }
 
+        public Builder lineEnding(String lineEnding) {
+            this.lineEnding = lineEnding;
+            return this;
+        }
+
         public Builder sample(boolean sample) {
             this.sample = sample;
             return this;
