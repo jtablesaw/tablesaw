@@ -1035,7 +1035,7 @@ public class DataFrameJoinerTest {
             assertEquals(9, joined.columnCount());
             assertEquals(1, joined.rowCount());
         } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("Joining is supported on numeric, string, and date-like columns."));
+            assertTrue(e.getMessage().contains("Joining is supported on integral, string, and date-like columns."));
         }
     }
 
@@ -1101,7 +1101,7 @@ public class DataFrameJoinerTest {
             table1.join(new String[] {"HomeGame"})
                 .fullOuter(true, table2);
         } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("Joining is supported on numeric, string, and date-like columns."));
+            assertTrue(e.getMessage().contains("Joining is supported on integral, string, and date-like columns."));
         }
     }
 }

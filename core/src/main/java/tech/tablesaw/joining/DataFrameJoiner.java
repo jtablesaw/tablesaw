@@ -1,6 +1,7 @@
 package tech.tablesaw.joining;
 
 import com.google.common.collect.Streams;
+
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
@@ -49,7 +50,7 @@ public class DataFrameJoiner {
         this.table = table;
         columns = new CategoricalColumn<?>[columnNames.length];
         this.columnNames = columnNames;
-        for(int i = 0; i < this.columnNames.length; i++) {
+        for (int i = 0; i < this.columnNames.length; i++) {
             String colName = this.columnNames[i];
             this.columns[i] = table.categoricalColumn(colName);
         }
@@ -170,7 +171,7 @@ public class DataFrameJoiner {
             int ri = row.getRowNumber();
             Table table1Rows = table1.where(Selection.with(ri));
             Selection rowBitMapMultiCol = null;
-            for(int i = 0; i < columns.length; i++) {
+            for (int i = 0; i < columns.length; i++) {
 
                 // Need to use the column from table1 that is the same column originally
                 // defined for this DataFrameJoiner. Column names must be unique within the
@@ -221,15 +222,15 @@ public class DataFrameJoiner {
                     rowBitMapOneCol = index.get(value);
                 } else {
                     throw new IllegalArgumentException(
-                            "Joining is supported on numeric, string, and date-like columns. Column "
+                            "Joining is supported on integral, string, and date-like columns. Column "
                                     + table1Column.name() + " is of type " + table1Column.type());
                 }
                 // combine Selection's into one big AND Selection
-                if(rowBitMapOneCol != null) {
+                if (rowBitMapOneCol != null) {
                     rowBitMapMultiCol = 
                             rowBitMapMultiCol != null
-                            ?rowBitMapMultiCol.and(rowBitMapOneCol)
-                            :rowBitMapOneCol;
+                            ? rowBitMapMultiCol.and(rowBitMapOneCol)
+                            : rowBitMapOneCol;
                 }
             }
 
@@ -318,7 +319,7 @@ public class DataFrameJoiner {
             int ri = row.getRowNumber();
             Selection rowBitMapMultiCol = null;
 
-            for(int i = 0; i < columns.length; i++) {
+            for (int i = 0; i < columns.length; i++) {
 
                 // Need to use the column from table1 that is the same column originally
                 // defined for this DataFrameJoiner. Column names must be unique within the
@@ -370,17 +371,17 @@ public class DataFrameJoiner {
                     rowBitMapOneCol = index.get(value);
                 } else {
                     throw new IllegalArgumentException(
-                            "Joining is supported on numeric, string, and date-like columns. Column "
+                            "Joining is supported on integral, string, and date-like columns. Column "
                                     + table1Column.name() + " is of type " + table1Column.type());
                 }
                 // combine Selections into one big AND Selection
-                if(rowBitMapOneCol != null) {
+                if (rowBitMapOneCol != null) {
                     rowBitMapMultiCol = rowBitMapMultiCol != null
-                            ?rowBitMapMultiCol.and(rowBitMapOneCol)
-                            :rowBitMapOneCol;
+                            ? rowBitMapMultiCol.and(rowBitMapOneCol)
+                            : rowBitMapOneCol;
                 }
             }
-            if(rowBitMapMultiCol.isEmpty()) {
+            if (rowBitMapMultiCol.isEmpty()) {
                 selection.add(ri);
             }
         }
@@ -526,8 +527,9 @@ public class DataFrameJoiner {
             try {
                 result.addColumns(leftOuter.column(name));
             } catch (IllegalStateException e) {
-                System.out.println("NOTE: DataFrameJoiner.rightOuter(): skipping left table's column,'"
-                        +name+"', in favor of right table's matching column that was kept in join operation.");
+                // Can ignore this exception as it is anticipated.
+                // NOTE: DataFrameJoiner.rightOuter(): skipping left table's column,'"
+                //     +name+"', in favor of right table's matching column that was kept in join operation.");
             }
         }
         for (String name : table2.columnNames()) {
@@ -594,7 +596,7 @@ public class DataFrameJoiner {
                     addedJoinColumns = true;
                 }
             }
-            if(!addedJoinColumns) {
+            if (!addedJoinColumns) {
                 if (c < t2StartCol) {
                     for (int r2 = 0; r2 < table2.rowCount(); r2++) {
                         destination.column(c).appendMissing();
