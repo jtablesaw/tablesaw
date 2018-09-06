@@ -1,6 +1,9 @@
 package tech.tablesaw.joining;
 
 import org.junit.Test;
+
+import com.google.common.base.Joiner;
+
 import tech.tablesaw.api.Table;
 
 import static org.junit.Assert.*;
@@ -9,134 +12,134 @@ import java.util.Arrays;
 
 public class DataFrameJoinerTest {
 
-    private static final Table ONE_YEAR = Table.read().csv(
-            "Date,1 Yr Treasury Rate\n"
-                    + "\"Dec 1, 2017\",1.65%\n"
-                    + "\"Nov 1, 2017\",1.56%\n"
-                    + "\"Oct 1, 2017\",1.40%\n"
-                    + "\"Sep 1, 2017\",1.28%\n"
-                    + "\"Aug 1, 2017\",1.23%\n"
-                    + "\"Jul 1, 2017\",1.22%\n",
+    private static final Table ONE_YEAR = Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                "Date,1 Yr Treasury Rate",
+                "\"Dec 1, 2017\",1.65%",
+                "\"Nov 1, 2017\",1.56%",
+                "\"Oct 1, 2017\",1.40%",
+                "\"Sep 1, 2017\",1.28%",
+                "\"Aug 1, 2017\",1.23%",
+                "\"Jul 1, 2017\",1.22%"),
             "1 Yr Treasury Rate");
 
-    private static final Table SP500 = Table.read().csv(
-            "Date,S&P 500\n"
-                    + "\"Nov 1, 2017\",2579.36\n"
-                    + "\"Oct 1, 2017\",2521.20\n"
-                    + "\"Sep 1, 2017\",2474.42\n"
-                    + "\"Aug 1, 2017\",2477.10\n"
-                    + "\"Jul 1, 2017\",2431.39\n"
-                    + "\"Jun 1, 2017\",2430.06\n",
+    private static final Table SP500 = Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                "Date,S&P 500",
+                "\"Nov 1, 2017\",2579.36",
+                "\"Oct 1, 2017\",2521.20",
+                "\"Sep 1, 2017\",2474.42",
+                "\"Aug 1, 2017\",2477.10",
+                "\"Jul 1, 2017\",2431.39",
+                "\"Jun 1, 2017\",2430.06"),
             "S&P 500");
 
-    private static final Table ANIMAL_NAMES = Table.read().csv(
-            "Animal,Name\n"
-                    + "Pig,Bob\n"
-                    + "Pig,James\n"
-                    + "Horse,David\n"
-                    + "Goat,Samantha\n"
-                    + "Tigon,Rudhrani\n"
-                    + "Rabbit,Taylor\n",
+    private static final Table ANIMAL_NAMES = Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                "Animal,Name",
+                "Pig,Bob",
+                "Pig,James",
+                "Horse,David",
+                "Goat,Samantha",
+                "Tigon,Rudhrani",
+                "Rabbit,Taylor"),
             "Animal Names");
 
-    private static final Table ANIMAL_FEED = Table.read().csv(
-            "Animal,Feed\n"
-                    + "Pig,Mush\n"
-                    + "Horse,Hay\n"
-                    + "Goat,Anything\n"
-                    + "Guanaco,Grass\n"
-                    + "Monkey,Banana\n",
+    private static final Table ANIMAL_FEED = Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                "Animal,Feed",
+                "Pig,Mush",
+                "Horse,Hay",
+                "Goat,Anything",
+                "Guanaco,Grass",
+                "Monkey,Banana"),
             "Animal Feed");
 
-    private static final Table DOUBLE_INDEXED_PEOPLE = Table.read().csv(
-            "ID,Name\n"
-                    + "1.0,Bob\n"
-                    + "2.0,James\n"
-                    + "3.0,David\n"
-                    + "4.0,Samantha\n",
+    private static final Table DOUBLE_INDEXED_PEOPLE = Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                "ID,Name",
+                "1.0,Bob",
+                "2.0,James",
+                "3.0,David",
+                "4.0,Samantha"),
             "People");
 
-    private static final Table DOUBLE_INDEXED_DOGS = Table.read().csv(
-            "ID,Dog Name\n"
-                    + "1.0,Spot\n"
-                    + "3.0,Fido\n"
-                    + "4.0,Sasha\n"
-                    + "5.0,King\n",
+    private static final Table DOUBLE_INDEXED_DOGS = Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                "ID,Dog Name",
+                "1.0,Spot",
+                "3.0,Fido",
+                "4.0,Sasha",
+                "5.0,King"),
             "Dogs");
 
-    private static final Table DUPLICATE_COL_NAME_DOGS = Table.read().csv(
-            "ID,Dog Name, Good\n"
-                    + "1.0,Spot,true\n"
-                    + "3.0,Fido,true\n"
-                    + "4.0,Sasha,true\n"
-                    + "5.0,King,true\n"
-                    + "1.0,Spot,false\n"
-                    + "3.0,Fido,false\n"
-                    + "4.0,Sasha,false\n"
-                    + "5.0,King,false\n",
+    private static final Table DUPLICATE_COL_NAME_DOGS = Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                "ID,Dog Name, Good",
+                "1.0,Spot,true",
+                "3.0,Fido,true",
+                "4.0,Sasha,true",
+                "5.0,King,true",
+                "1.0,Spot,false",
+                "3.0,Fido,false",
+                "4.0,Sasha,false",
+                "5.0,King,false"),
             "Dogs");
 
     private static Table createSTUDENT() {
-        return Table.read().csv(
-            "ID,FirstName,LastName,City,State,Age,USID,GradYear\n"
-                    + "1,Bob,Barney,Burke,VA,17,11122,2019\n"
-                    + "2,Chris,Cabello,Canyonville,OR,17,22224,2019\n"
-                    + "3,Dan,Dirble,Denver,CO,17,33335,2020\n"
-                    + "4,Edward,Earhardt,Easterly,WA,18,44339,2021\n"
-                    + "5,Frank,Farnsworth,Fredriksburg,VA,18,55338,2019\n"
-                    + "6,George,Gabral,Garrisburg,MD,19,66337,2020\n"
-                    + "7,Michael,Marbury,Milton,NH,19,77330,2020\n"
-                    + "8,Robert,Riley,Roseburg,OR,19,88836,2020\n"
-                    + "9,Bob,Earhardt,Milton,NH,50,93333,2019\n"
-                    + "10,Dan,Gabral,Easterly,WA,20,13333,2020\n",
+        return Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                "ID,FirstName,LastName,City,State,Age,USID,GradYear",
+                "1,Bob,Barney,Burke,VA,17,11122,2019",
+                "2,Chris,Cabello,Canyonville,OR,17,22224,2019",
+                "3,Dan,Dirble,Denver,CO,17,33335,2020",
+                "4,Edward,Earhardt,Easterly,WA,18,44339,2021",
+                "5,Frank,Farnsworth,Fredriksburg,VA,18,55338,2019",
+                "6,George,Gabral,Garrisburg,MD,19,66337,2020",
+                "7,Michael,Marbury,Milton,NH,19,77330,2020",
+                "8,Robert,Riley,Roseburg,OR,19,88836,2020",
+                "9,Bob,Earhardt,Milton,NH,50,93333,2019",
+                "10,Dan,Gabral,Easterly,WA,20,13333,2020"),
             "Student");
     }
 
     private static Table createINSTRUCTOR() {
-        return Table.read().csv(
-            "ID,First,Last,Title,City,State,Age,USID,GradYear\n"
-                    + "1,Bob,Cabello,Prof,Burke,VA,20,11333,2019\n"
-                    + "2,Chris,Barney,TA,Canyonville,OR,20,22334,2019\n"
-                    + "3,Dan,Earhardt,Instructor,Denver,CO,22,33335,2020\n"
-                    + "4,Edward,Dirble,Prof,Easterly,WA,22,43339,2020\n"
-                    + "5,Farnsworth,Frank,Prof,Fredriksburg,VA,22,55338,2019\n"
-                    + "6,Gabral,George,TA,Garrisburg,MD,18,66337,2019\n"
-                    + "7,Robert,Marbury,TA,Msilton,NH,23,73330,2020\n"
-                    + "8,Michael,Riley,TA,Roseburg,OR,23,88336,2020\n"
-                    + "9,Bob,Riley,Prof,Milton,NH,50,99933,2020\n"
-                    + "10,Earhardt,Gabral,Prof,Easterly,WA,24,13333,2019\n",
+        return Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                "ID,First,Last,Title,City,State,Age,USID,GradYear",
+                "1,Bob,Cabello,Prof,Burke,VA,20,11333,2019",
+                "2,Chris,Barney,TA,Canyonville,OR,20,22334,2019",
+                "3,Dan,Earhardt,Instructor,Denver,CO,22,33335,2020",
+                "4,Edward,Dirble,Prof,Easterly,WA,22,43339,2020",
+                "5,Farnsworth,Frank,Prof,Fredriksburg,VA,22,55338,2019",
+                "6,Gabral,George,TA,Garrisburg,MD,18,66337,2019",
+                "7,Robert,Marbury,TA,Msilton,NH,23,73330,2020",
+                "8,Michael,Riley,TA,Roseburg,OR,23,88336,2020",
+                "9,Bob,Riley,Prof,Milton,NH,50,99933,2020",
+                "10,Earhardt,Gabral,Prof,Easterly,WA,24,13333,2019"),
             "Instructor");
     }
 
     private static Table createDEPTHEAD() {
-        return Table.read().csv(
-                "ID,First,Last,Dept,City,State,Age\n"
-                        + "1,John,Cabello,ComputerScience,Burke,VA,20\n"
-                        + "2,Samantha,Barney,Writing,Canyonville,OR,18\n"
-                        + "3,Mark,Earhardt,Mathematics,Denver,CO,35\n"
-                        + "4,Christie,Dirble,Architecture,Easterly,WA,36\n"
-                        + "5,Bhawesh,Frank,Psychology,Fredriksburg,VA,37\n"
-                        + "6,Robert,George,Sociology,Garrisburg,MD,38\n"
-                        + "7,George,Marbury,Physics,Msilton,NH,39\n"
-                        + "8,Zhongyu,Riley,Chemistry,Roseburg,OR,40\n"
-                        + "9,Laura,Riley,Economics,Milton,NH,50\n"
-                        + "10,Sally,Gabral,Marketing,Easterly,WA,42\n",
+        return Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                    "ID,First,Last,Dept,City,State,Age",
+                    "1,John,Cabello,ComputerScience,Burke,VA,20",
+                    "2,Samantha,Barney,Writing,Canyonville,OR,18",
+                    "3,Mark,Earhardt,Mathematics,Denver,CO,35",
+                    "4,Christie,Dirble,Architecture,Easterly,WA,36",
+                    "5,Bhawesh,Frank,Psychology,Fredriksburg,VA,37",
+                    "6,Robert,George,Sociology,Garrisburg,MD,38",
+                    "7,George,Marbury,Physics,Msilton,NH,39",
+                    "8,Zhongyu,Riley,Chemistry,Roseburg,OR,40",
+                    "9,Laura,Riley,Economics,Milton,NH,50",
+                    "10,Sally,Gabral,Marketing,Easterly,WA,42"),
                 "DepartmentHead");
     }
 
     private static Table createCLASS() {
-        return Table.read().csv(
-            "ID,ClassType,Name,Level,Description,StartDate,EndDate,Completed,Age\n"
-                    + "1001,Math,Calculus,101,Newton math,2018-09-20,2018-12-17,false,20\n"
-                    + "1002,Math,Calculus,102,Newton math,2019-01-06,2019-03-06,false,18\n"
-                    + "1003,Math,Calculus,103,Newton math,2019-03-10,2019-06-17,false,18\n"
-                    + "1004,Writing,Composition,101,Writing papers,2018-09-20,2018-12-17,false,23\n"
-                    + "1005,Writing,Composition,102,Writing papers,2019-01-06,2019-03-07,false,24\n"
-                    + "1006,Software,Programming,101,Programming basics,2018-09-22,2018-12-15,false,25\n"
-                    + "1007,Software,Programming,102,Programming basics,2019-01-05,2019-03-07,false,26\n"
-                    + "1008,Economics,Microeconomics,101,Basic micro economics,2018-09-20,2018-12-17,false,27\n"
-                    + "1009,Economics,Microeconomics,102,Basic micro economics,2018-01-05,2019-03-07,false,28\n"
-                    + "1010,Literature,Shakespeare,101,Understanding Shakespeare,2018-09-20,2018-12-17,false,50\n",
+        return Table.read().csv(Joiner.on(System.lineSeparator()).join(
+                "ID,ClassType,Name,Level,Description,StartDate,EndDate,Completed,Age",
+                "1001,Math,Calculus,101,Newton math,2018-09-20,2018-12-17,false,20",
+                "1002,Math,Calculus,102,Newton math,2019-01-06,2019-03-06,false,18",
+                "1003,Math,Calculus,103,Newton math,2019-03-10,2019-06-17,false,18",
+                "1004,Writing,Composition,101,Writing papers,2018-09-20,2018-12-17,false,23",
+                "1005,Writing,Composition,102,Writing papers,2019-01-06,2019-03-07,false,24",
+                "1006,Software,Programming,101,Programming basics,2018-09-22,2018-12-15,false,25",
+                "1007,Software,Programming,102,Programming basics,2019-01-05,2019-03-07,false,26",
+                "1008,Economics,Microeconomics,101,Basic micro economics,2018-09-20,2018-12-17,false,27",
+                "1009,Economics,Microeconomics,102,Basic micro economics,2018-01-05,2019-03-07,false,28",
+                "1010,Literature,Shakespeare,101,Understanding Shakespeare,2018-09-20,2018-12-17,false,50"),
             "Class");
     }
 
