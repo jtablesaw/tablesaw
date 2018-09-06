@@ -20,6 +20,7 @@ import tech.tablesaw.columns.numbers.NumberFillers;
 import tech.tablesaw.columns.numbers.fillers.DoubleRangeIterable;
 import tech.tablesaw.selection.Selection;
 
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -365,6 +366,9 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         }
         if (obj instanceof Double) {
             return append((double) obj);
+        }
+        if (obj instanceof BigDecimal) {
+            return append(((BigDecimal) obj).doubleValue());
         }
         throw new IllegalArgumentException("Could not append " + obj.getClass());
     }

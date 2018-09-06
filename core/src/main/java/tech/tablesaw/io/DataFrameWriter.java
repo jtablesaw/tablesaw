@@ -34,26 +34,26 @@ public class DataFrameWriter {
 
     public void csv(String file) throws IOException {
         CsvWriteOptions options = new CsvWriteOptions.Builder(file).build();
-        CsvWriter.write(table, options);
+        new CsvWriter(table, options).write();
     }
 
     public void csv(File file) {
         CsvWriteOptions options = new CsvWriteOptions.Builder(file).build();
-        CsvWriter.write(table, options);
+        new CsvWriter(table, options).write();
     }
 
     public void csv(CsvWriteOptions options) {
-        CsvWriter.write(table, options);
+        new CsvWriter(table, options).write();
     }
 
     public void csv(OutputStream stream) {
         CsvWriteOptions options = new CsvWriteOptions.Builder(stream).build();
-        CsvWriter.write(table, options);
+        new CsvWriter(table, options).write();
     }
 
     public void csv(Writer writer) {
         CsvWriteOptions options = new CsvWriteOptions.Builder(writer).build();
-        CsvWriter.write(table, options);
+        new CsvWriter(table, options).write();
     }
 
     public void html(OutputStream stream) {
