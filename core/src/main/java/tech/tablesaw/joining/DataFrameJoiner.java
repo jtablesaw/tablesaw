@@ -37,8 +37,8 @@ public class DataFrameJoiner {
     private static final String TABLE_ALIAS = "T";
 
     private final Table table;
-    private CategoricalColumn<?>[] columns;
-    private String[] columnNames;
+    private final CategoricalColumn<?>[] columns;
+    private final String[] columnNames;
     private AtomicInteger joinTableId = new AtomicInteger(2);
 
     /**
