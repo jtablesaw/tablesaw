@@ -865,12 +865,13 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
-     * Join on the given {@code columnName}  
-     * @param columnName  The column name to join on
+     * Returns a new DataFrameJoiner initialized with multiple {@code columnNames}
+     * @param columnNames   Name of the columns to join on.
+     * @return              The new DataFrameJoiner
      */
-    public DataFrameJoiner join(String columnName) {
-        return new DataFrameJoiner(this, columnName);
-    }
+    public DataFrameJoiner join(String... columnNames) {
+        return new DataFrameJoiner(this, columnNames);
+	}
 
     public Table missingValueCounts() {
         return summarize(columnNames(), countMissing).apply();
