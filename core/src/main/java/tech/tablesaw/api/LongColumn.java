@@ -38,7 +38,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     private final LongArrayList data;
 
     private LongColumn(final String name, LongArrayList data) {
-        super(COLUMN_TYPE, name, data);
+        super(COLUMN_TYPE, name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
     }
@@ -52,12 +52,21 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     }
 
     public static LongColumn create(final String name, final int initialSize) {
-        return new LongColumn(name, new LongArrayList(initialSize));
+        LongColumn column = new LongColumn(name, new LongArrayList(initialSize));
+        for (int i = 0; i < initialSize; i++) {
+            column.appendMissing();
+        }
+        return column;
     }
 
     @Override
     public LongColumn createCol(final String name, final int initialSize) {
         return create(name, initialSize);
+    }
+
+    @Override
+    public LongColumn createCol(final String name) {
+        return create(name);
     }
 
     /**
@@ -75,6 +84,16 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
 
     public static boolean valueIsMissing(long value) {
         return value == LongColumnType.missingValueIndicator();
+    }
+
+    @Override
+    public int size() {
+        return data.size();
+    }
+
+    @Override
+    public void clear() {
+        data.clear();
     }
 
     @Override
@@ -255,6 +274,12 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     }
 
     @Override
+    public LongColumn set(int row, Column<Long> column, int sourceRow) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return set(row, ((LongColumn) column).getLong(sourceRow));
+    }
+
+    @Override
     public LongColumn appendMissing() {
         return append(LongColumnType.missingValueIndicator());
     }
@@ -313,6 +338,11 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     @Override
     public boolean isMissing(int rowNumber) {
         return isMissingValue(getLong(rowNumber));
+    }
+
+    @Override
+    public Column<Long> setMissing(int i) {
+        return set(i, LongColumnType.missingValueIndicator());
     }
 
     @Override

@@ -60,7 +60,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
     }
 
     default LongColumn difference(DateTimeColumn column2, ChronoUnit unit) {
-	LongColumn newColumn = LongColumn.create(name() + " - " + column2.name());
+
+	    LongColumn newColumn = LongColumn.create(name() + " - " + column2.name());
 
         for (int r = 0; r < size(); r++) {
             if (this.isMissing(r) || column2.isMissing(r)) {
@@ -326,10 +327,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         StringColumn newColumn = StringColumn.create(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
             long c1 = this.getLongInternal(r);
-            if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.append(StringColumnType.missingValueIndicator());
-            } else {
-                newColumn.append(getDayOfWeek(c1).toString());
+            if (!DateTimeColumn.valueIsMissing(c1)) {
+                newColumn.set(r, getDayOfWeek(c1).toString());
             }
         }
         return newColumn;
@@ -338,11 +337,9 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
     default IntColumn dayOfWeekValue() {
 	IntColumn newColumn = IntColumn.create(this.name() + " day of week", this.size());
         for (int r = 0; r < this.size(); r++) {
-            if (isMissing(r)) {
-                newColumn.appendMissing();
-            } else {
+            if (!isMissing(r)) {
                 long c1 = this.getLongInternal(r);
-                newColumn.append((short) getDayOfWeek(c1).getValue());
+                newColumn.set(r, (short) getDayOfWeek(c1).getValue());
             }
         }
         return newColumn;
@@ -351,24 +348,20 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
     default IntColumn dayOfYear() {
 	IntColumn newColumn = IntColumn.create(this.name() + " day of year", this.size());
         for (int r = 0; r < this.size(); r++) {
-            if (isMissing(r)) {
-                newColumn.appendMissing();
-            } else {
+            if (!isMissing(r)) {
                 long c1 = this.getLongInternal(r);
-                newColumn.append((short) getDayOfYear(c1));
+                newColumn.set(r, (short) getDayOfYear(c1));
             }
         }
         return newColumn;
     }
 
     default IntColumn dayOfMonth() {
-	IntColumn newColumn = IntColumn.create(this.name() + " day of month");
+	IntColumn newColumn = IntColumn.create(this.name() + " day of month", size());
         for (int r = 0; r < this.size(); r++) {
-            if (isMissing(r)) {
-                newColumn.isMissing();
-            } else {
+            if (!isMissing(r)) {
                 long c1 = this.getLongInternal(r);
-                newColumn.append(getDayOfMonth(c1));
+                newColumn.set(r, getDayOfMonth(c1));
             }
         }
         return newColumn;
@@ -395,22 +388,22 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
 
                 case MINUTES:
                     result = minutesUntil(packedDate, packedStartDate) / n;
-                    numberColumn.append(result); break;
+                    numberColumn.set(i, result); break;
                 case HOURS:
                     result = hoursUntil(packedDate, packedStartDate) / n;
-                    numberColumn.append(result); break;
+                    numberColumn.set(i, result); break;
                 case DAYS:
                     result = daysUntil(packedDate, packedStartDate) / n;
-                    numberColumn.append(result); break;
+                    numberColumn.set(i, result); break;
                 case WEEKS:
                     result = weeksUntil(packedDate, packedStartDate) / n;
-                    numberColumn.append(result); break;
+                    numberColumn.set(i, result); break;
                 case MONTHS:
                     result = monthsUntil(packedDate, packedStartDate) / n;
-                    numberColumn.append(result); break;
+                    numberColumn.set(i, result); break;
                 case YEARS:
                     result = yearsUntil(packedDate, packedStartDate) / n;
-                    numberColumn.append(result); break;
+                    numberColumn.set(i, result); break;
                 default:
                     throw new UnsupportedTemporalTypeException("The ChronoUnit " + unit + " is not supported for timeWindows on dates");
             }
@@ -420,13 +413,11 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
     }
 
     default IntColumn minute() {
-	IntColumn newColumn = IntColumn.create(name() + "[" + "minute" + "]");
+	IntColumn newColumn = IntColumn.create(name() + "[" + "minute" + "]", size());
         for (int r = 0; r < size(); r++) {
             if (!isMissing(r)) {
                 long c1 = getLongInternal(r);
-                newColumn.append(getMinute(c1));
-            } else {
-                newColumn.appendMissing();
+                newColumn.set(r, getMinute(c1));
             }
         }
         return newColumn;

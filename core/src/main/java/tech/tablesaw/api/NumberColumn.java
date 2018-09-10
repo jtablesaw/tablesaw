@@ -6,7 +6,6 @@ import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
 import java.util.function.DoublePredicate;
 
@@ -15,8 +14,6 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
     protected NumberColumnFormatter printFormatter = new NumberColumnFormatter();
 
     protected Locale locale;
-
-    private List<T> data;
 
     protected final IntComparator comparator = new IntComparator() {
 
@@ -28,12 +25,13 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
         }
     };
 
-    protected NumberColumn(final ColumnType type, final String name, List<T> data) {
+    protected NumberColumn(final ColumnType type, final String name) {
         super(type, name);
-        this.data = data;
     }
 
     protected abstract NumberColumn<T> createCol(final String name, int size);
+
+    protected abstract NumberColumn<T> createCol(final String name);
 
     public void setPrintFormatter(final NumberFormat format, final String missingValueString) {
         this.printFormatter = new NumberColumnFormatter(format, missingValueString);
@@ -78,13 +76,8 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
     }
 
     @Override
-    public int size() {
-        return data.size();
-    }
-
-    @Override
     public NumberColumn<T> emptyCopy() {
-        final NumberColumn<T> column = createCol(name(), DEFAULT_ARRAY_SIZE);
+        final NumberColumn<T> column = createCol(name());
         column.setPrintFormatter(printFormatter);
         column.locale = locale;
         return column;
@@ -107,15 +100,6 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
     @Override
     public IntComparator rowComparator() {
         return comparator;
-    }
-
-    @Override
-    public void clear() {
-        data.clear();
-    }
-    
-    public boolean contains(T value) {
-        return data.contains(value);
     }
 
     @Override

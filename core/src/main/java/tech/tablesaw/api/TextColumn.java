@@ -18,8 +18,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringFilters;
@@ -30,7 +30,6 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -73,6 +72,22 @@ public class TextColumn extends AbstractColumn<String>
         }
     };
 
+    private TextColumn(String name, List<String> strings) {
+        super(TextColumnType.INSTANCE, name);
+        values = new ArrayList<>(strings.size());
+        for (String string : strings) {
+            append(string);
+        }
+    }
+
+    private TextColumn(String name, String[] strings) {
+        super(TextColumnType.INSTANCE, name);
+        values = new ArrayList<>(strings.length);
+        for (String string : strings) {
+            append(string);
+        }
+    }
+
     public static boolean valueIsMissing(String string) {
         return MISSING_VALUE.equals(string);
     }
@@ -88,7 +103,7 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     public static TextColumn create(String name, String[] strings) {
-        return create(name, Arrays.asList(strings));
+        return new TextColumn(name, strings);
     }
 
     public static TextColumn create(String name, List<String> strings) {
@@ -97,14 +112,6 @@ public class TextColumn extends AbstractColumn<String>
 
     public static TextColumn create(String name, int size) {
         return new TextColumn(name, new ArrayList<>(size));
-    }
-
-    private TextColumn(String name, List<String> strings) {
-        super(TextColumnType.INSTANCE, name);
-        values = new ArrayList<>(strings.size());
-        for (String string : strings) {
-            append(string);
-        }
     }
 
     @Override
@@ -310,6 +317,11 @@ public class TextColumn extends AbstractColumn<String>
         return values.contains(aString);
     }
 
+    @Override
+    public Column<String> setMissing(int i) {
+        return set(i, StringColumnType.missingValueIndicator());
+    }
+
     /**
      * Add all the strings in the list to this column
      *
@@ -381,6 +393,11 @@ public class TextColumn extends AbstractColumn<String>
     @Override
     public Column<String> append(Column<String> column, int row) {
         return append(column.getUnformattedString(row));
+    }
+
+    @Override
+    public Column<String> set(int row, Column<String> column, int sourceRow) {
+        return set(row, column.getUnformattedString(sourceRow));
     }
 
     /**

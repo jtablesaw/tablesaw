@@ -44,8 +44,28 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     private final DoubleArrayList data;
 
     protected DoubleColumn(final String name, final DoubleArrayList data) {
-        super(COLUMN_TYPE, name, data);
+        super(COLUMN_TYPE, name);
         this.data = data;
+    }
+
+    @Override
+    public int size() {
+        return data.size();
+    }
+
+    @Override
+    public void clear() {
+        data.clear();
+    }
+
+    public DoubleColumn setMissing(int index) {
+        set(index, DoubleColumnType.missingValueIndicator());
+        return this;
+    }
+
+    protected DoubleColumn(final String name) {
+        super(COLUMN_TYPE, name);
+        this.data = new DoubleArrayList(DEFAULT_ARRAY_SIZE);
     }
 
     public static DoubleColumn create(final String name, final double[] arr) {
@@ -53,7 +73,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     }
 
     public static DoubleColumn create(final String name) {
-        return new DoubleColumn(name, new DoubleArrayList());
+        return new DoubleColumn(name);
     }
 
     public static DoubleColumn create(final String name, final float[] arr) {
@@ -81,7 +101,6 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     }
 
     public static DoubleColumn create(final String name, final List<Number> numberList) {
-        // TODO This should be pushed down to the dataWrappers
         final double[] doubles = new double[numberList.size()];
         for (int i = 0; i < numberList.size(); i++) {
             doubles[i] = numberList.get(i).doubleValue();
@@ -98,12 +117,21 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     }
 
     public static DoubleColumn create(final String name, final int initialSize) {
-        return new DoubleColumn(name, new DoubleArrayList(initialSize));
+        DoubleColumn column = new DoubleColumn(name);
+        for (int i = 0; i < initialSize; i++) {
+            column.appendMissing();
+        }
+        return column;
     }
 
     @Override
     public DoubleColumn createCol(final String name, final int initialSize) {
         return create(name, initialSize);
+    }
+
+    @Override
+    public DoubleColumn createCol(final String name) {
+        return create(name);
     }
 
     @Override
@@ -128,7 +156,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
                 doubles.add(getDouble(i));
             }
         }
-        final DoubleColumn column = DoubleColumn.create(name() + " Unique values", doubles.size());
+        final DoubleColumn column = DoubleColumn.create(name() + " Unique values");
         doubles.forEach((DoubleConsumer) column::append);
         return column;
     }
@@ -277,6 +305,13 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
         Preconditions.checkArgument(column.type() == this.type());
         DoubleColumn doubleColumn = (DoubleColumn) column;
         return append(doubleColumn.getDouble(row));
+    }
+
+    @Override
+    public DoubleColumn set(int row, Column<Double> column, int sourceRow) {
+        Preconditions.checkArgument(column.type() == this.type());
+        DoubleColumn doubleColumn = (DoubleColumn) column;
+        return set(row, doubleColumn.getDouble(sourceRow));
     }
 
     /**

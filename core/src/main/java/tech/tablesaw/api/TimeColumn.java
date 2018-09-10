@@ -76,12 +76,17 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         data = times;
     }
 
+    private TimeColumn(String name) {
+        super(LOCAL_TIME, name);
+        data = new IntArrayList(DEFAULT_ARRAY_SIZE);
+    }
+
     public static boolean valueIsMissing(int i) {
         return i == MISSING_VALUE;
     }
 
     public static TimeColumn create(String name) {
-        return create(name, DEFAULT_ARRAY_SIZE);
+        return new TimeColumn(name);
     }
 
     public static TimeColumn create(String name, List<LocalTime> data) {
@@ -101,7 +106,11 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     public static TimeColumn create(String name, int initialSize) {
-        return new TimeColumn(name, new IntArrayList(initialSize));
+        TimeColumn column = new TimeColumn(name, new IntArrayList(initialSize));
+        for (int i = 0; i < initialSize; i++) {
+            column.appendMissing();
+        }
+        return column;
     }
 
     @Override
@@ -210,7 +219,9 @@ public class TimeColumn extends AbstractColumn<LocalTime>
 
     @Override
     public TimeColumn emptyCopy() {
-        return emptyCopy(DEFAULT_ARRAY_SIZE);
+        TimeColumn empty = create(name());
+        empty.printFormatter = printFormatter;
+        return empty;
     }
 
     @Override
@@ -416,6 +427,12 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         return appendInternal(((TimeColumn) column).getIntInternal(row));
     }
 
+    @Override
+    public TimeColumn set(int row, Column<LocalTime> column, int sourceRow) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return set(row, ((TimeColumn) column).getIntInternal(sourceRow));
+    }
+
     /**
      * Returns the largest ("top") n values in the column. Does not change the order in this column
      *
@@ -497,6 +514,12 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     public boolean contains(LocalTime time) {
         int t = PackedLocalTime.pack(time);
         return data().contains(t);
+    }
+
+    @Override
+    public TimeColumn setMissing(int i) {
+        data.set(i, TimeColumnType.missingValueIndicator());
+        return this;
     }
 
     @Override

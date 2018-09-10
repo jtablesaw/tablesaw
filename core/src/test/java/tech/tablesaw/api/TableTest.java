@@ -495,7 +495,7 @@ public class TableTest {
             for (NumberColumn<Double> nc : columns) {
                 sum += nc.get(r);
             }
-            result.append(sum);
+            result.set(r, sum);
         }
         return result;
     }

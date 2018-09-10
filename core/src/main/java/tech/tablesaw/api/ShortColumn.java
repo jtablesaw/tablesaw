@@ -36,7 +36,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     private final ShortArrayList data;
 
     protected ShortColumn(final String name, ShortArrayList data) {
-        super(COLUMN_TYPE, name, data);
+        super(COLUMN_TYPE, name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
     }
@@ -50,12 +50,21 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     public static ShortColumn create(final String name, final int initialSize) {
-        return new ShortColumn(name, new ShortArrayList(initialSize));
+        ShortColumn column = new ShortColumn(name, new ShortArrayList(initialSize));
+        for (int i = 0; i < initialSize; i++) {
+            column.appendMissing();
+        }
+        return column;
     }
 
     @Override
     public ShortColumn createCol(final String name, final int initialSize) {
         return create(name, initialSize);
+    }
+
+    @Override
+    public ShortColumn createCol(final String name) {
+        return create(name);
     }
 
     public static boolean valueIsMissing(int value) {
@@ -78,6 +87,16 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
             c.append(getShort(row));
         }
         return c;
+    }
+
+    @Override
+    public int size() {
+        return data.size();
+    }
+
+    @Override
+    public void clear() {
+        data.clear();
     }
 
     @Override
@@ -219,6 +238,12 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
+    public ShortColumn set(int row, Column<Short> column, int sourceRow) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return set(row, ((ShortColumn) column).getShort(sourceRow));
+    }
+
+    @Override
     public ShortColumn appendMissing() {
         return append(ShortColumnType.missingValueIndicator());
     }
@@ -277,6 +302,11 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     @Override
     public boolean isMissing(int rowNumber) {
         return isMissingValue(getShort(rowNumber));
+    }
+
+    @Override
+    public Column<Short> setMissing(int i) {
+        return set(i, ShortColumnType.missingValueIndicator());
     }
 
     @Override

@@ -22,8 +22,8 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.DateColumnFormatter;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.dates.DateFillers;
@@ -69,11 +69,15 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     private DateColumnFormatter printFormatter = new DateColumnFormatter();
 
     public static DateColumn create(final String name) {
-        return create(name, DEFAULT_ARRAY_SIZE);
+        return new DateColumn(name, new IntArrayList(DEFAULT_ARRAY_SIZE));
     }
 
     public static DateColumn create(final String name, final int initialSize) {
-        return new DateColumn(name, new IntArrayList(initialSize));
+        DateColumn column = new DateColumn(name, new IntArrayList(initialSize));
+        for (int i = 0; i < initialSize; i++) {
+            column.appendMissing();
+        }
+        return column;
     }
 
     public static DateColumn create(String name, List<LocalDate> data) {
@@ -155,7 +159,9 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
 
     @Override
     public DateColumn emptyCopy() {
-        return emptyCopy(DEFAULT_ARRAY_SIZE);
+        DateColumn empty = create(name());
+        empty.printFormatter = printFormatter;
+        return empty;
     }
 
     @Override
@@ -248,6 +254,12 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     public DateColumn append(Column<LocalDate> column, int row) {
         Preconditions.checkArgument(column.type() == this.type());
         return appendInternal(((DateColumn) column).getIntInternal(row));
+    }
+
+    @Override
+    public DateColumn set(int row, Column<LocalDate> column, int sourceRow) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return set(row, ((DateColumn) column).getIntInternal(sourceRow));
     }
 
     @Override
@@ -489,6 +501,11 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     public boolean contains(LocalDate localDate) {
         int date = PackedLocalDate.pack(localDate);
         return data().contains(date);
+    }
+
+    @Override
+    public Column<LocalDate> setMissing(int i) {
+        return set(i, DateColumnType.missingValueIndicator());
     }
 
     public double[] asDoubleArray() {

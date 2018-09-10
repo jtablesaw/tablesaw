@@ -44,13 +44,11 @@ public interface NumberMapFunctions {
      * elements
      */
     default DoubleColumn asRatio() {
-      DoubleColumn pctColumn = DoubleColumn.create(name() + " percents");
+      DoubleColumn pctColumn = DoubleColumn.create(name() + " percents", size());
         double total = sum();
         for (int i = 0; i < size(); i++) {
             if (total != 0) {
-                pctColumn.append(getDouble(i) / total);
-            } else {
-                pctColumn.append(DoubleColumnType.missingValueIndicator());
+                pctColumn.set(i, getDouble(i) / total);
             }
         }
         return pctColumn;
@@ -63,13 +61,11 @@ public interface NumberMapFunctions {
      * elements
      */
     default DoubleColumn asPercent() {
-        DoubleColumn pctColumn = DoubleColumn.create(name() + " percents");
+        DoubleColumn pctColumn = DoubleColumn.create(name() + " percents", size());
         double total = sum();
         for (int i = 0; i < size(); i++) {
             if (total != 0) {
-                pctColumn.append((getDouble(i) / total) * 100);
-            } else {
-                pctColumn.append(DoubleColumnType.missingValueIndicator());
+                pctColumn.set(i, (getDouble(i) / total) * 100);
             }
         }
         return pctColumn;
@@ -83,7 +79,7 @@ public interface NumberMapFunctions {
 
         DoubleColumn result = DoubleColumn.create(name() + " - " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
-            result.append(subtract(getDouble(r), column2.getDouble(r)));
+            result.set(r, subtract(getDouble(r), column2.getDouble(r)));
         }
         return result;
     }
@@ -96,7 +92,7 @@ public interface NumberMapFunctions {
 
         DoubleColumn result = DoubleColumn.create(name() + " + " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
-            result.append(add(getDouble(r), column2.getDouble(r)));
+            result.set(r, add(getDouble(r), column2.getDouble(r)));
         }
         return result;
     }
@@ -109,7 +105,7 @@ public interface NumberMapFunctions {
 
         DoubleColumn result = DoubleColumn.create(name() + " * " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
-            result.append(multiply(getDouble(r), column2.getDouble(r)));
+            result.set(r, multiply(getDouble(r), column2.getDouble(r)));
         }
         return result;
     }
@@ -122,44 +118,43 @@ public interface NumberMapFunctions {
 
         DoubleColumn result = DoubleColumn.create(name() + " / " + column2.name(), col1Size);
         for (int r = 0; r < col1Size; r++) {
-            result.append(divide(getDouble(r), column2.getDouble(r)));
+            result.set(r, divide(getDouble(r), column2.getDouble(r)));
         }
         return result;
     }
 
     default DoubleColumn add(Number value) {
         double val = value.doubleValue();
-        DoubleColumn result = DoubleColumn.create(name() + " + " + val);
+        DoubleColumn result = DoubleColumn.create(name() + " + " + val, size());
         for (int i = 0; i < size(); i++) {
-            result.append(add(getDouble(i), val));
+            result.set(i, add(getDouble(i), val));
         }
         return result;
     }
 
-
     default DoubleColumn subtract(Number value) {
         double val = value.doubleValue();
-        DoubleColumn result = DoubleColumn.create(name() + " - " + val);
+        DoubleColumn result = DoubleColumn.create(name() + " - " + val, size());
         for (int i = 0; i < size(); i++) {
-            result.append(subtract(getDouble(i), val));
+            result.set(i, subtract(getDouble(i), val));
         }
         return result;
     }
 
     default DoubleColumn divide(Number value) {
         double val = value.doubleValue();
-        DoubleColumn result = DoubleColumn.create(name() + " / " + val);
+        DoubleColumn result = DoubleColumn.create(name() + " / " + val, size());
         for (int i = 0; i < size(); i++) {
-            result.append(divide(getDouble(i), val));
+            result.set(i, divide(getDouble(i), val));
         }
         return result;
     }
 
     default DoubleColumn multiply(Number value) {
         double val = value.doubleValue();
-        DoubleColumn result = DoubleColumn.create(name() + " * " + val);
+        DoubleColumn result = DoubleColumn.create(name() + " * " + val, size());
         for (int i = 0; i < size(); i++) {
-            result.append(multiply(getDouble(i), val));
+            result.set(i, multiply(getDouble(i), val));
         }
         return result;
     }
@@ -201,7 +196,7 @@ public interface NumberMapFunctions {
     default DoubleColumn power(double power) {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[pow]", size());
         for (int i = 0; i < size(); i++) {
-            newColumn.append(Math.pow(getDouble(i), power));
+            newColumn.set(i, Math.pow(getDouble(i), power));
         }
         return newColumn;
     }    
@@ -211,14 +206,14 @@ public interface NumberMapFunctions {
      */
     default DoubleColumn square() {
        DoubleColumn newColumn = power(2);
-        newColumn.setName(name() + "[sq]");
-        return newColumn;
+       newColumn.setName(name() + "[sq]");
+       return newColumn;
     }
 
     default DoubleColumn sqrt() {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[sqrt]", size());
         for (int i = 0; i < size(); i++) {
-            newColumn.append(Math.sqrt(getDouble(i)));
+            newColumn.set(i, Math.sqrt(getDouble(i)));
         }
         return newColumn;
     }
@@ -226,7 +221,7 @@ public interface NumberMapFunctions {
     default DoubleColumn cubeRoot() {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[cbrt]", size());
         for (int i = 0; i < size(); i++) {
-            newColumn.append(Math.cbrt(getDouble(i)));
+            newColumn.set(i, Math.cbrt(getDouble(i)));
         }
         return newColumn;
     }
@@ -237,16 +232,15 @@ public interface NumberMapFunctions {
         return newColumn;
     }
 
-
     default DoubleColumn remainder(DoubleColumn column2) {
         DoubleColumn result = DoubleColumn.create(name() + " % " + column2.name(), size());
         for (int r = 0; r < size(); r++) {
             double val1 = getDouble(r);
             double val2 = column2.getDouble(r);
             if (DoubleColumnType.isMissingValue(val1) || DoubleColumnType.isMissingValue(val2)) {
-                result.append(DoubleColumnType.missingValueIndicator());
+                result.setMissing(r);
             } else {
-                result.append(getDouble(r) % column2.getDouble(r));
+                result.set(r, getDouble(r) % column2.getDouble(r));
             }
         }
         return result;
@@ -259,7 +253,7 @@ public interface NumberMapFunctions {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[logN]", size());
 
         for (int i = 0; i < size(); i++) {
-            newColumn.append(Math.log(getDouble(i)));
+            newColumn.set(i, Math.log(getDouble(i)));
         }
         return newColumn;
     }
@@ -270,7 +264,7 @@ public interface NumberMapFunctions {
     default DoubleColumn log10() {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[log10]", size());
         for (int i = 0; i < size(); i++) {
-            newColumn.append(Math.log10(getDouble(i)));
+            newColumn.set(i, Math.log10(getDouble(i)));
         }
         return newColumn;
     }
@@ -282,15 +276,15 @@ public interface NumberMapFunctions {
     default DoubleColumn log1p() {
       DoubleColumn newColumn = DoubleColumn.create(name() + "[1og1p]", size());
       for (int i = 0; i < size(); i++) {
-            newColumn.append(Math.log1p(getDouble(i)));
-        }
-        return newColumn;
+          newColumn.set(i, Math.log1p(getDouble(i)));
+      }
+      return newColumn;
     }
 
     default DoubleColumn round() {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[rounded]", size());
         for (int i = 0; i < size(); i++) {
-            newColumn.append(Math.round(getDouble(i)));
+            newColumn.set(i, Math.round(getDouble(i)));
         }
         return newColumn;
     }
@@ -303,7 +297,7 @@ public interface NumberMapFunctions {
     default DoubleColumn roundInt() {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[rounded]", size());
         for (int i = 0; i < size(); i++) {
-            newColumn.append((int) Math.round(getDouble(i)));
+            newColumn.set(i, (int) Math.round(getDouble(i)));
         }
         return newColumn;
     }
@@ -315,7 +309,7 @@ public interface NumberMapFunctions {
     default DoubleColumn abs() {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[abs]", size());
         for (int i = 0; i < size(); i++) {
-            newColumn.append(Math.abs(getDouble(i)));
+            newColumn.set(i, Math.abs(getDouble(i)));
         }
         return newColumn;
     }
@@ -330,7 +324,7 @@ public interface NumberMapFunctions {
     default DoubleColumn neg() {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[neg]", size());
         for (int i = 0; i < size(); i++) {
-            newColumn.append(getDouble(i) * -1);
+            newColumn.set(i, getDouble(i) * -1);
         }
         return newColumn;
     }
@@ -340,9 +334,9 @@ public interface NumberMapFunctions {
         if (isEmpty()) {
             return returnValue;
         }
-        returnValue.append(DoubleColumnType.missingValueIndicator());
+        returnValue.setMissing(0);
         for (int current = 1; current < size(); current++) {
-            returnValue.append(subtract(getDouble(current), getDouble(current - 1)));
+            returnValue.set(current, subtract(getDouble(current), getDouble(current - 1)));
         }
         return returnValue;
     }
@@ -355,12 +349,10 @@ public interface NumberMapFunctions {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[cumSum]", size());
         for (int i = 0; i < size(); i++) {
             double value = getDouble(i);
-            if (DoubleColumnType.isMissingValue(value)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
-            } else {
+            if (!DoubleColumnType.isMissingValue(value)) {
                 total += value;
-                newColumn.append(total);
             }
+            newColumn.set(i, total);
         }
         return newColumn;
     }
@@ -373,12 +365,10 @@ public interface NumberMapFunctions {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[cumProd]", size());
         for (int i = 0; i < size(); i++) {
             double value = getDouble(i);
-            if (DoubleColumnType.isMissingValue(value)) {
-                newColumn.append(DoubleColumnType.missingValueIndicator());
-            } else {
+            if (!DoubleColumnType.isMissingValue(value)) {
                 total *= value;
-                newColumn.append(total);
             }
+            newColumn.set(i, total);
         }
         return newColumn;
     }
@@ -388,9 +378,9 @@ public interface NumberMapFunctions {
      */
     default DoubleColumn pctChange() {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[pctChange]", size());
-        newColumn.append(DoubleColumnType.missingValueIndicator());
+        newColumn.setMissing(0);
         for (int i = 1; i < size(); i++) {
-            newColumn.append(getDouble(i) / getDouble(i - 1) - 1);
+            newColumn.set(i, divide(getDouble(i), getDouble(i - 1)) - 1);
         }
         return newColumn;
     }

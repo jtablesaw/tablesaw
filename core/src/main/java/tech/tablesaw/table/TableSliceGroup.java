@@ -151,7 +151,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
     public Table aggregate(ListMultimap<String, AggregateFunction<?,?>> functions) {
         Preconditions.checkArgument(!getSlices().isEmpty());
         Table groupTable = summaryTableName(sourceTable);
-        StringColumn groupColumn = StringColumn.create("Group", size());
+        StringColumn groupColumn = StringColumn.create("Group");
         groupTable.addColumns(groupColumn);
         for (Map.Entry<String, Collection<AggregateFunction<?,?>>> entry : functions.asMap().entrySet()) {
             String columnName = entry.getKey();

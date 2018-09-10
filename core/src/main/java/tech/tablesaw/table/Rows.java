@@ -38,8 +38,10 @@ public final class Rows {
     public static void copyRowsToTable(Selection rows, Table oldTable, Table newTable) {
         for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
             Column oldColumn = oldTable.column(columnIndex);
+            int r = 0;
             for (int i : rows) {
-                newTable.column(columnIndex).append(oldColumn, i);
+                newTable.column(columnIndex).set(r, oldColumn, i);
+                r++;
             }
         }
 
@@ -52,14 +54,23 @@ public final class Rows {
     public static void copyRowsToTable(int[] rows, Table oldTable, Table newTable) {
         for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
             Column oldColumn = oldTable.column(columnIndex);
+            int r = 0;
             for (int i : rows) {
-                newTable.column(columnIndex).append(oldColumn, i);
+                newTable.column(columnIndex).set(r, oldColumn, i);
+                r++;
             }
         }
     }
 
+    @SuppressWarnings({"rawtypes","unchecked"})
     public static void appendRowToTable(int row, Table oldTable, Table newTable) {
-        copyRowsToTable(new int[] {row}, oldTable, newTable);
+        int[] rows = new int[] {row};
+        for (int columnIndex = 0; columnIndex < oldTable.columnCount(); columnIndex++) {
+            Column oldColumn = oldTable.column(columnIndex);
+            for (int i : rows) {
+                newTable.column(columnIndex).append(oldColumn, i);
+            }
+        }
     }
 
     public static boolean compareRows(int rowInOriginal, Table original, Table tempTable) {

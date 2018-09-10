@@ -89,19 +89,22 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
         return valueIsMissing(getByte(rowNumber));
     }
 
+    @Override
+    public Column<Boolean> setMissing(int i) {
+        set(i, BooleanColumnType.missingValueIndicator());
+        return this;
+    }
+
     public static BooleanColumn create(String name, Selection hits, int columnSize) {
         BooleanColumn column = create(name, columnSize);
         checkArgument(
                 (hits.size() <= columnSize),
                 "Cannot have more true values than total values in a boolean column");
 
-        for (int i = 0; i < columnSize; i++) {
-            column.append((byte) 0);
-        }
-
         for (int hit : hits) {
             column.set(hit, true);
         }
+        column.set(column.isMissing(), false);
         return column;
     }
 
@@ -110,19 +113,25 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     }
 
     public static BooleanColumn create(String name, int initialSize) {
-        return new BooleanColumn(name, new ByteArrayList(initialSize));
+        BooleanColumn column = new BooleanColumn(name, new ByteArrayList(initialSize));
+        for (int i = 0; i < initialSize; i++) {
+            column.appendMissing();
+        }
+        return column;
     }
     public static BooleanColumn create(String name, boolean[] values) {
 
         BooleanColumn column = create(name, values.length);
+        int r = 0;
         for (boolean b : values) {
-            column.append(b);
+            column.set(r, b);
+            r++;
         }
         return column;
     }
 
     public static BooleanColumn create(String name, List<Boolean> values) {
-        BooleanColumn column = create(name, values.size());
+        BooleanColumn column = create(name);
         for (Boolean b : values) {
             column.append(b);
         }
@@ -130,7 +139,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     }
 
     public static BooleanColumn create(String name, Boolean[] objects) {
-        BooleanColumn column = create(name, objects.length);
+        BooleanColumn column = create(name);
         for (Boolean b : objects) {
             column.append(b);
         }
@@ -509,6 +518,10 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
         return this;
     }
 
+    private void set(int i, byte b) {
+        data.set(i, b);
+    }
+
     @Override
     public BooleanColumn set(int i, Boolean val) {
       return set(i, val.booleanValue());
@@ -588,6 +601,14 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
         checkArgument(column.type() == this.type());
         BooleanColumn col = (BooleanColumn) column;
         append(col.getByte(row));
+        return this;
+    }
+
+    @Override
+    public Column<Boolean> set(int row, Column<Boolean> column, int sourceRow) {
+        checkArgument(column.type() == this.type());
+        BooleanColumn col = (BooleanColumn) column;
+        set(row, col.getByte(sourceRow));
         return this;
     }
 

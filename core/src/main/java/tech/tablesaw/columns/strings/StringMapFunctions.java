@@ -230,7 +230,7 @@ public interface StringMapFunctions extends Column<String> {
             for (Column<?> stringColumn : columns) {
                 result = result + separator + stringColumn.get(r);
             }
-            newColumn.append(result);
+            newColumn.set(r, result);
         }
         return newColumn;
     }
@@ -244,7 +244,7 @@ public interface StringMapFunctions extends Column<String> {
     default StringColumn concatenate(String append) {
         StringColumn newColumn = StringColumn.create(name() + "[append]", this.size());
         for (int r = 0; r < size(); r++) {
-            newColumn.append(getString(r) + append);
+            newColumn.set(r, getString(r) + append);
         }
         return newColumn;
     }
@@ -266,7 +266,7 @@ public interface StringMapFunctions extends Column<String> {
             for (String regex : regexArray) {
                 value = value.replaceAll(regex, replacement);
             }
-            newColumn.append(value);
+            newColumn.set(r, value);
         }
         return newColumn;
     }
@@ -284,7 +284,7 @@ public interface StringMapFunctions extends Column<String> {
                     new ArrayList<>(splitter.splitToList(value));
             Collections.sort(tokens);
             value = String.join(separator, tokens);
-            newColumn.append(value);
+            newColumn.set(r, value);
         }
         return newColumn;
     }
@@ -299,7 +299,7 @@ public interface StringMapFunctions extends Column<String> {
             splitter = splitter.trimResults();
             splitter = splitter.omitEmptyStrings();
             List<String> tokens = new ArrayList<>(splitter.splitToList(value));
-            newColumn.append(tokens.size());
+            newColumn.set(r, tokens.size());
         }
         return newColumn;
     }
@@ -329,11 +329,10 @@ public interface StringMapFunctions extends Column<String> {
      * @return          a new column
      */
     default StringColumn tokens(String separator) {
-        StringColumn newColumn = StringColumn.create(name() + "[token count]", this.size());
+        StringColumn newColumn = StringColumn.create(name() + "[token count]");
 
         for (int r = 0; r < size(); r++) {
             String value = getString(r);
-
             Splitter splitter = Splitter.on(separator);
             splitter = splitter.trimResults();
             splitter = splitter.omitEmptyStrings();
@@ -353,7 +352,7 @@ public interface StringMapFunctions extends Column<String> {
         DoubleColumn newColumn = DoubleColumn.create(name() + "[length]", this.size());
 
         for (int r = 0; r < size(); r++) {
-            newColumn.append(getString(r).length());
+            newColumn.set(r, getString(r).length());
         }
         return newColumn;
     }
@@ -374,7 +373,7 @@ public interface StringMapFunctions extends Column<String> {
             List<String> tokens = new ArrayList<>(splitter.splitToList(value));
             Collections.sort(tokens);
             value = String.join(" ", tokens);
-            newColumn.append(value);
+            newColumn.set(r, value);
         }
         return newColumn;
     }
@@ -391,7 +390,7 @@ public interface StringMapFunctions extends Column<String> {
             List<String> tokens = new ArrayList<>(splitter.splitToList(value));
 
             String result = tokens.stream().distinct().collect(Collectors.joining(separator));
-            newColumn.append(result);
+            newColumn.set(r, result);
         }
         return newColumn;
     }

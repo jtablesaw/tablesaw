@@ -250,7 +250,8 @@ public class ByteDictionaryMap implements DictionaryMap {
             str = stringValue;
         }
         byte valueId = getKeyForValue(str);
-        if (valueId == DEFAULT_RETURN_VALUE) {
+
+        if (valueId == DEFAULT_RETURN_VALUE) { // this is a new value not in dictionary
             valueId = getValueId();
             put(valueId, str);
         }
@@ -405,7 +406,6 @@ public class ByteDictionaryMap implements DictionaryMap {
             // this should never happen;
             throw new RuntimeException(e);
         }
-
         return dictionaryMap;
     }
 }

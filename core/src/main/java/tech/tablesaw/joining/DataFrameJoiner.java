@@ -155,8 +155,8 @@ public class DataFrameJoiner {
      * @param table1    The base table to join on
      * @param table2    The table to join with
      * @param outer     True if this join is actually an outer join, left or right or full, otherwise false.
-     * @param allowDuplicateColumnNames if {@code false} the join will fail if any columns other than the join column have the same name
-     *                                  if {@code true} the join will succeed and duplicate columns are renamed*
+     * @param allowDuplicates    if {@code false} the join will fail if any columns other than the join column have the same name
+     *                           if {@code true} the join will succeed and duplicate columns are renamed*
      * @param col2Names The columns to join on. If a col2Name refers to a double column, the join is performed after
      *                  rounding to integers.
      * @return The resulting table
@@ -226,7 +226,7 @@ public class DataFrameJoiner {
                 }
                 // combine Selection's into one big AND Selection
                 if (rowBitMapOneCol != null) {
-                    rowBitMapMultiCol = 
+                    rowBitMapMultiCol =
                             rowBitMapMultiCol != null
                             ? rowBitMapMultiCol.and(rowBitMapOneCol)
                             : rowBitMapOneCol;
@@ -543,7 +543,7 @@ public class DataFrameJoiner {
         Column<?>[] cols = Streams.concat(
                 table1.columns().stream(),
                 table2.columns().stream().filter(c -> !Arrays.asList(col2Names).stream().anyMatch(c.name()::equalsIgnoreCase))
-                ).map(col -> col.emptyCopy(col.size())).toArray(Column[]::new);
+                ).map(Column::emptyCopy).toArray(Column[]::new);
         return Table.create(table1.name(), cols);
     }
 

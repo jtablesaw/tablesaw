@@ -323,7 +323,7 @@ public class Table extends Relation implements Iterable<Row> {
     public Table copy() {
         Table copy = new Table(name);
         for (Column<?> column : columnList) {
-            copy.addColumns(column.emptyCopy());
+            copy.addColumns(column.emptyCopy(rowCount()));
         }
 
         int[] rows = new int[rowCount()];
@@ -659,10 +659,10 @@ public class Table extends Relation implements Iterable<Row> {
         t.addColumns(index);
         t.addColumns(columnName);
         t.addColumns(columnType);
-        columnName.addAll(columnNames());
         for (int i = 0; i < columnCount(); i++) {
             Column<?> column = columnList.get(i);
-            columnType.append(column.type().name());
+            columnType.set(i, column.type().name());
+            columnName.set(i, columnNames().get(i));
         }
         return t;
     }
@@ -689,7 +689,6 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public Table dropRowsWithMissingValues() {
 
-        Table temp = emptyCopy();
         Selection missing = new BitmapBackedSelection();
 
         for (int row = 0; row < rowCount(); row++) {
@@ -703,6 +702,7 @@ public class Table extends Relation implements Iterable<Row> {
         }
         Selection notMissing = Selection.withRange(0, rowCount());
         notMissing.andNot(missing);
+        Table temp = emptyCopy(notMissing.size());
         Rows.copyRowsToTable(notMissing, this, temp);
         return temp;
     }

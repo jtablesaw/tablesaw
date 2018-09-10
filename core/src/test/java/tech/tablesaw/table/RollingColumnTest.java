@@ -50,7 +50,8 @@ public class RollingColumnTest {
     public void testRollingCountTrue() {
         Boolean[] data = new Boolean[]{true, false, false, true, true};
 
-        DoubleColumn result = (DoubleColumn) BooleanColumn.create("data", data).rolling(2).calc(countTrue);
+        BooleanColumn booleanColumn = BooleanColumn.create("data", data);
+        DoubleColumn result = (DoubleColumn) booleanColumn.rolling(2).calc(countTrue);
 
         assertEquals(Double.NaN, result.getDouble(0), 0.0);
         assertEquals(1, result.getDouble(1), 0.0);

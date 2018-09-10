@@ -36,7 +36,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     private final IntArrayList data;
 
     protected IntColumn(final String name, IntArrayList data) {
-        super(COLUMN_TYPE, name, data);
+        super(COLUMN_TYPE, name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
     }
@@ -50,12 +50,21 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     }
 
     public static IntColumn create(final String name, final int initialSize) {
-        return new IntColumn(name, new IntArrayList(initialSize));
+        IntColumn column = new IntColumn(name, new IntArrayList(initialSize));
+        for (int i = 0; i < initialSize; i++) {
+            column.appendMissing();
+        }
+        return column;
     }
 
     @Override
     public IntColumn createCol(final String name, final int initialSize) {
         return create(name, initialSize);
+    }
+
+    @Override
+    public IntColumn createCol(final String name) {
+        return create(name);
     }
 
     /**
@@ -66,9 +75,19 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     public static IntColumn indexColumn(final String columnName, final int size, final int startsWith) {
         final IntColumn indexColumn = IntColumn.create(columnName, size);
         for (int i = 0; i < size; i++) {
-            indexColumn.append(i + startsWith);
+            indexColumn.set(i, i + startsWith);
         }
         return indexColumn;
+    }
+
+    @Override
+    public int size() {
+        return data.size();
+    }
+
+    @Override
+    public void clear() {
+        data.clear();
     }
 
     public static boolean valueIsMissing(int value) {
@@ -225,6 +244,12 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     public IntColumn append(Column<Integer> column, int row) {
         Preconditions.checkArgument(column.type() == this.type());
         return append(((IntColumn) column).getInt(row));
+    }
+
+    @Override
+    public IntColumn set(int row, Column<Integer> column, int sourceRow) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return set(row, ((IntColumn) column).getInt(sourceRow));
     }
 
     @Override
@@ -499,5 +524,10 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
         }
         values.trim();
         return ShortColumn.create(this.name(), values.elements());
+    }
+
+    public IntColumn setMissing(int r) {
+        set(r, IntColumnType.missingValueIndicator());
+        return this;
     }
 }

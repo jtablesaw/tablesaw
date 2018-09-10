@@ -227,9 +227,9 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             if (DateColumn.valueIsMissing(c1)) {
-                newColumn.appendMissing();
+                newColumn.setMissing(r);
             } else {
-                newColumn.append((short) PackedLocalDate.getDayOfWeek(c1).getValue());
+                newColumn.set(r, (short) PackedLocalDate.getDayOfWeek(c1).getValue());
             }
         }
         return newColumn;
@@ -347,16 +347,16 @@ public interface DateMapFunctions extends Column<LocalDate> {
 
                 case DAYS:
                     result = PackedLocalDate.daysUntil(packedDate, packedStartDate) / n;
-                    numberColumn.append(result); break;
+                    numberColumn.set(i, result); break;
                 case WEEKS:
                     result = PackedLocalDate.weeksUntil(packedDate, packedStartDate) / n;
-                    numberColumn.append(result); break;
+                    numberColumn.set(i, result); break;
                 case MONTHS:
                     result = PackedLocalDate.monthsUntil(packedDate, packedStartDate) / n;
-                    numberColumn.append(result); break;
+                    numberColumn.set(i, result); break;
                 case YEARS:
                     result = PackedLocalDate.yearsUntil(packedDate, packedStartDate) / n;
-                    numberColumn.append(result); break;
+                    numberColumn.set(i, result); break;
                 default:
                     throw new UnsupportedTemporalTypeException("The ChronoUnit " + unit + " is not supported for timeWindows on dates");
             }

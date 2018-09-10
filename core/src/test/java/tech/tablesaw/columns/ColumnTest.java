@@ -198,7 +198,11 @@ public class ColumnTest {
     
     @Test
     public void testMapInto() {
-        check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).mapInto(toString, StringColumn.create("result")), "-1.0", "0.0", "1.0");
+        String[] strings = new String[] {"-1.0", "0.0", "1.0"};
+        DoubleColumn doubleColumn = DoubleColumn.create("t1", new double[] {-1, 0, 1});
+        StringColumn stringColumn1 =
+                (StringColumn) doubleColumn.mapInto(toString, StringColumn.create("T", doubleColumn.size()));
+        check(stringColumn1, strings);
     }
 
     private Function<Double, Double> negate = d -> -d;

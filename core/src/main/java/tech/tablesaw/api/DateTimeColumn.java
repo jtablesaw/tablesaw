@@ -81,11 +81,15 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     public static DateTimeColumn create(String name) {
-        return create(name, DEFAULT_ARRAY_SIZE);
+        return  new DateTimeColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
     }
 
     public static DateTimeColumn create(String name, int initialSize) {
-        return new DateTimeColumn(name, new LongArrayList(initialSize));
+        DateTimeColumn column = new DateTimeColumn(name, new LongArrayList(initialSize));
+        for (int i = 0; i < initialSize; i++) {
+            column.appendMissing();
+        }
+        return column;
     }
 
     public static DateTimeColumn create(String name, List<LocalDateTime> data) {
@@ -138,6 +142,11 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     public boolean contains(LocalDateTime dateTime) {
         long dt = PackedLocalDateTime.pack(dateTime);
         return data().contains(dt);
+    }
+
+    @Override
+    public Column<LocalDateTime> setMissing(int i) {
+        return set(i, DateTimeColumnType.missingValueIndicator());
     }
 
     public DateTimeColumn where(Selection selection) {
@@ -239,7 +248,9 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     @Override
     public DateTimeColumn emptyCopy() {
-        return emptyCopy(DEFAULT_ARRAY_SIZE);
+        DateTimeColumn empty = create(name());
+        empty.printFormatter = printFormatter;
+        return empty;
     }
 
     @Override
@@ -436,6 +447,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     public DateTimeColumn append(Column<LocalDateTime> column, int row) {
         Preconditions.checkArgument(column.type() == this.type());
         return appendInternal(((DateTimeColumn) column).getLongInternal(row));
+    }
+
+    @Override
+    public DateTimeColumn set(int row, Column<LocalDateTime> column, int sourceRow) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return set(row, ((DateTimeColumn) column).getLongInternal(sourceRow));
     }
 
     public LocalDateTime max() {

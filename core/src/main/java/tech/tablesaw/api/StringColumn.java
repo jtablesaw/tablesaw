@@ -32,7 +32,6 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -74,11 +73,11 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public static StringColumn create(String name) {
-        return create(name, DEFAULT_ARRAY_SIZE);
+        return new StringColumn(name);
     }
 
     public static StringColumn create(String name, String[] strings) {
-        return create(name, Arrays.asList(strings));
+        return new StringColumn(name, strings);
     }
 
     public static StringColumn create(String name, List<String> strings) {
@@ -86,10 +85,25 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public static StringColumn create(String name, int size) {
-        return new StringColumn(name, new ArrayList<>(size));
+        StringColumn column = new StringColumn(name, new ArrayList<>(size));
+        for (int i = 0; i < size; i++) {
+            column.appendMissing();
+        }
+        return column;
     }
 
     private StringColumn(String name, List<String> strings) {
+        super(STRING, name);
+        for (String string : strings) {
+            append(string);
+        }
+    }
+
+    private StringColumn(String name) {
+        super(STRING, name);
+    }
+
+    private StringColumn(String name, String[] strings) {
         super(STRING, name);
         for (String string : strings) {
             append(string);
@@ -201,7 +215,7 @@ public class StringColumn extends AbstractColumn<String>
 
     public StringColumn lag(int n) {
 
-        StringColumn copy = emptyCopy(size());
+        StringColumn copy = emptyCopy();
         copy.setName(name() + " lag(" + n + ")");
 
         if (n >= 0) {
@@ -245,7 +259,7 @@ public class StringColumn extends AbstractColumn<String>
         try {
             lookupTable.set(rowIndex, stringValue);
         } catch (NoKeysAvailableException ex) {
-            lookupTable.promoteYourself();
+            lookupTable = lookupTable.promoteYourself();
             try {
                 lookupTable.set(rowIndex, stringValue);
             } catch (NoKeysAvailableException e) {
@@ -303,6 +317,11 @@ public class StringColumn extends AbstractColumn<String>
      */
     public boolean contains(String aString) {
         return firstIndexOf(aString) >= 0;
+    }
+
+    @Override
+    public Column<String> setMissing(int i) {
+        return set(i, StringColumnType.missingValueIndicator());
     }
 
     /**
@@ -395,8 +414,10 @@ public class StringColumn extends AbstractColumn<String>
     @Override
     public StringColumn copy() {
         StringColumn newCol = create(name(), size());
+        int r = 0;
         for (String string : this) {
-            newCol.append(string);
+            newCol.set(r, string);
+            r++;
         }
         return newCol;
     }
@@ -414,6 +435,11 @@ public class StringColumn extends AbstractColumn<String>
     @Override
     public Column<String> append(Column<String> column, int row) {
         return append(column.getUnformattedString(row));
+    }
+
+    @Override
+    public Column<String> set(int row, Column<String> column, int sourceRow) {
+        return set(row, column.getUnformattedString(sourceRow));
     }
 
     /**

@@ -35,7 +35,7 @@ public class FloatColumn extends NumberColumn<Float> {
     private final FloatArrayList data;    
 
     private FloatColumn(final String name, FloatArrayList data) {
-        super(COLUMN_TYPE, name, data);
+        super(COLUMN_TYPE, name);
         this.data = data;
     }
 
@@ -48,12 +48,21 @@ public class FloatColumn extends NumberColumn<Float> {
     }
 
     public static FloatColumn create(final String name, final int initialSize) {
-        return new FloatColumn(name, new FloatArrayList(initialSize));
+        FloatColumn column = new FloatColumn(name, new FloatArrayList(initialSize));
+        for (int i = 0; i < initialSize; i++) {
+            column.appendMissing();
+        }
+        return column;
     }
 
     @Override
     public FloatColumn createCol(final String name, final int initialSize) {
         return create(name, initialSize);
+    }
+
+    @Override
+    public FloatColumn createCol(final String name) {
+        return create(name);
     }
 
     @Override
@@ -68,6 +77,16 @@ public class FloatColumn extends NumberColumn<Float> {
             c.append(getFloat(row));
         }
         return c;
+    }
+
+    @Override
+    public int size() {
+        return data.size();
+    }
+
+    @Override
+    public void clear() {
+        data.clear();
     }
 
     @Override
@@ -209,6 +228,12 @@ public class FloatColumn extends NumberColumn<Float> {
     }
 
     @Override
+    public FloatColumn set(int row, Column<Float> column, int sourceRow) {
+        Preconditions.checkArgument(column.type() == this.type());
+        return set(row, ((FloatColumn) column).getFloat(sourceRow));
+    }
+
+    @Override
     public byte[] asBytes(int rowNumber) {
         return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putFloat(getFloat(rowNumber)).array();
     }
@@ -250,6 +275,11 @@ public class FloatColumn extends NumberColumn<Float> {
     @Override
     public boolean isMissing(int rowNumber) {
         return isMissingValue(getFloat(rowNumber));
+    }
+
+    @Override
+    public Column<Float> setMissing(int i) {
+        return set(i, FloatColumnType.missingValueIndicator());
     }
 
     @Override

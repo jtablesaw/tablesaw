@@ -330,15 +330,17 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
      * @return the provided Column, to which results are appended
      */
     default <R> Column<R> mapInto(Function<? super T, ? extends R> fun, Column<R> into) {
-        for (T t : this) {
+        for (int i = 0; i < size(); i++) {
             try {
-                into.append(fun.apply(t));
+                into.set(i, fun.apply(get(i)));
             } catch (Exception e) {
-                into.appendMissing();
+                into.setMissing(i);
             }
         }
         return into;
     }
+
+    Column<T> setMissing(int i);
 
     /**
      * Returns a new Column of the same type with only those rows satisfying the predicate
@@ -493,6 +495,8 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
     Column<T> appendCell(String stringValue, AbstractParser<?> parser);
 
     Column<T> set(int row, T value);
+
+    Column<T> set(int row, Column<T> sourceColumn, int sourceRow);
 
     Column<T> append(T value);
 
