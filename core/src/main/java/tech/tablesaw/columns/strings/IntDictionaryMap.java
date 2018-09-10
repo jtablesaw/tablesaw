@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.IntColumn;
@@ -189,7 +190,7 @@ public class IntDictionaryMap implements DictionaryMap {
 
     @Override
     public Selection selectIsIn(String... strings) {
-        IntArrayList keys = new IntArrayList();
+        IntOpenHashSet keys = new IntOpenHashSet(strings.length);
         for (String string : strings) {
             int key = getKeyForValue(string);
             if (key != DEFAULT_RETURN_VALUE) {
@@ -208,7 +209,7 @@ public class IntDictionaryMap implements DictionaryMap {
 
     @Override
     public Selection selectIsIn(Collection<String> strings) {
-        IntArrayList keys = new IntArrayList();
+        IntOpenHashSet keys = new IntOpenHashSet(strings.size());
         for (String string : strings) {
             int key = getKeyForValue(string);
             if (key != DEFAULT_RETURN_VALUE) {

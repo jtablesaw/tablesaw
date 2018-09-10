@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.bytes.ByteArrays;
 import it.unimi.dsi.fastutil.bytes.ByteCollection;
 import it.unimi.dsi.fastutil.bytes.ByteComparator;
 import it.unimi.dsi.fastutil.bytes.ByteListIterator;
+import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import tech.tablesaw.api.BooleanColumn;
@@ -186,7 +187,7 @@ public class ByteDictionaryMap implements DictionaryMap {
 
     @Override
     public Selection selectIsIn(String... strings) {
-        ByteArrayList keys = new ByteArrayList();
+        ByteOpenHashSet keys = new ByteOpenHashSet();
         for (String string : strings) {
             byte key = getKeyForValue(string);
             if (key != DEFAULT_RETURN_VALUE) {
@@ -205,7 +206,8 @@ public class ByteDictionaryMap implements DictionaryMap {
 
     @Override
     public Selection selectIsIn(Collection<String> strings) {
-        ByteArrayList keys = new ByteArrayList();
+        ByteOpenHashSet keys = new ByteOpenHashSet();
+
         for (String string : strings) {
             byte key = getKeyForValue(string);
             if (key != DEFAULT_RETURN_VALUE) {

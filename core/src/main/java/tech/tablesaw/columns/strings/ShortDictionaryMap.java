@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.shorts.ShortArrays;
 import it.unimi.dsi.fastutil.shorts.ShortCollection;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
+import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
@@ -194,7 +195,7 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     @Override
     public Selection selectIsIn(String... strings) {
-        ShortArrayList keys = new ShortArrayList();
+        ShortOpenHashSet keys = new ShortOpenHashSet(strings.length);
         for (String string : strings) {
             short key = getKeyForValue(string);
             if (key != DEFAULT_RETURN_VALUE) {
@@ -213,7 +214,7 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     @Override
     public Selection selectIsIn(Collection<String> strings) {
-        ShortArrayList keys = new ShortArrayList();
+        ShortOpenHashSet keys = new ShortOpenHashSet(strings.size());
         for (String string : strings) {
             short key = getKeyForValue(string);
             if (key != DEFAULT_RETURN_VALUE) {
