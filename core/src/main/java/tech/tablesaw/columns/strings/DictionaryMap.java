@@ -6,6 +6,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +36,8 @@ public interface DictionaryMap {
     Object[] asObjectArray();
 
     Selection selectIsIn(String... strings);
+
+    Selection selectIsIn(Collection<String> strings);
 
     void append(String value) throws NoKeysAvailableException;
 

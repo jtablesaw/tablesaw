@@ -20,6 +20,7 @@ import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -185,6 +186,25 @@ public class ByteDictionaryMap implements DictionaryMap {
 
     @Override
     public Selection selectIsIn(String... strings) {
+        ByteArrayList keys = new ByteArrayList();
+        for (String string : strings) {
+            byte key = getKeyForValue(string);
+            if (key != DEFAULT_RETURN_VALUE) {
+                keys.add(key);
+            }
+        }
+
+        Selection results = new BitmapBackedSelection();
+        for (int i = 0; i < values.size(); i++) {
+            if (keys.contains(values.getByte(i))) {
+                results.add(i);
+            }
+        }
+        return results;
+    }
+
+    @Override
+    public Selection selectIsIn(Collection<String> strings) {
         ByteArrayList keys = new ByteArrayList();
         for (String string : strings) {
             byte key = getKeyForValue(string);

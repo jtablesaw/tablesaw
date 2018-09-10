@@ -124,15 +124,11 @@ public interface StringFilters extends Column<String> {
 
     Selection isIn(String... strings);
 
-    default Selection isIn(Collection<String> strings) {
-        return isIn(strings.toArray(new String[0]));
-    }
+    Selection isIn(Collection<String> strings);
 
     Selection isNotIn(String... strings);
 
-    default Selection isNotIn(Collection<String> strings) {
-        return isNotIn(strings.toArray(new String[0]));
-    }
+    Selection isNotIn(Collection<String> strings);
 
     // Column Methods
     default Selection isEqualTo(Column<String> other) {

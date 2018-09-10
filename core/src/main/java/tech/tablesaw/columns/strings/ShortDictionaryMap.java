@@ -20,6 +20,7 @@ import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -52,10 +53,6 @@ public class ShortDictionaryMap implements DictionaryMap {
     private final Short2ObjectMap<String> keyToValue = new Short2ObjectOpenHashMap<>();
 
     private final Object2ShortOpenHashMap<String> valueToKey = new Object2ShortOpenHashMap<>();
-
-    public ShortDictionaryMap() {
-        valueToKey.defaultReturnValue(DEFAULT_RETURN_VALUE);
-    }
 
     /**
      * Returns a new DictionaryMap that is a deep copy of the original
@@ -197,6 +194,25 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     @Override
     public Selection selectIsIn(String... strings) {
+        ShortArrayList keys = new ShortArrayList();
+        for (String string : strings) {
+            short key = getKeyForValue(string);
+            if (key != DEFAULT_RETURN_VALUE) {
+                keys.add(key);
+            }
+        }
+
+        Selection results = new BitmapBackedSelection();
+        for (int i = 0; i < values.size(); i++) {
+            if (keys.contains(values.getShort(i))) {
+                results.add(i);
+            }
+        }
+        return results;
+    }
+
+    @Override
+    public Selection selectIsIn(Collection<String> strings) {
         ShortArrayList keys = new ShortArrayList();
         for (String string : strings) {
             short key = getKeyForValue(string);

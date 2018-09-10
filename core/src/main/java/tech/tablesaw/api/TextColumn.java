@@ -30,6 +30,7 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -54,23 +55,13 @@ public class TextColumn extends AbstractColumn<String>
 
     private StringColumnFormatter printFormatter = new StringColumnFormatter();
 
-    private final IntComparator rowComparator = new IntComparator() {
-
-        @Override
-        public int compare(int i, int i1) {
-            String f1 = get(i);
-            String f2 = get(i1);
-            return f1.compareTo(f2);
-        }
+    private final IntComparator rowComparator = (i, i1) -> {
+        String f1 = get(i);
+        String f2 = get(i1);
+        return f1.compareTo(f2);
     };
 
-    private final Comparator<String> descendingStringComparator = new Comparator<String>() {
-
-        @Override
-        public int compare(String o1, String o2) {
-            return o2.compareTo(o1);
-        }
-    };
+    private final Comparator<String> descendingStringComparator = Comparator.reverseOrder();
 
     private TextColumn(String name, List<String> strings) {
         super(TextColumnType.INSTANCE, name);
@@ -483,7 +474,28 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     @Override
+    public Selection isIn(Collection<String> strings) {
+        List<String> stringList = Lists.newArrayList(strings);
+
+        Selection results = new BitmapBackedSelection();
+        for (int i = 0; i < size(); i++) {
+            if (stringList.contains(values.get(i))) {
+                results.add(i);
+            }
+        }
+        return results;
+    }
+
+    @Override
     public Selection isNotIn(String... strings) {
+        Selection results = new BitmapBackedSelection();
+        results.addRange(0, size());
+        results.andNot(isIn(strings));
+        return results;
+    }
+
+    @Override
+    public Selection isNotIn(Collection<String> strings) {
         Selection results = new BitmapBackedSelection();
         results.addRange(0, size());
         results.andNot(isIn(strings));

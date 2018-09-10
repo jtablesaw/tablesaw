@@ -32,6 +32,7 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -526,10 +527,11 @@ public class StringColumn extends AbstractColumn<String>
 
     @Override
     public Selection isIn(String... strings) {
-        return selectIsIn(strings);
+        return lookupTable.selectIsIn(strings);
     }
 
-    private Selection selectIsIn(String... strings) {
+    @Override
+    public Selection isIn(Collection<String> strings) {
         return lookupTable.selectIsIn(strings);
     }
 
@@ -537,7 +539,15 @@ public class StringColumn extends AbstractColumn<String>
     public Selection isNotIn(String... strings) {
         Selection results = new BitmapBackedSelection();
         results.addRange(0, size());
-        results.andNot(selectIsIn(strings));
+        results.andNot(isIn(strings));
+        return results;
+    }
+
+    @Override
+    public Selection isNotIn(Collection<String> strings) {
+        Selection results = new BitmapBackedSelection();
+        results.addRange(0, size());
+        results.andNot(isIn(strings));
         return results;
     }
 
