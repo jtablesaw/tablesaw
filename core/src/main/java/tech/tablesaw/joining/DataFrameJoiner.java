@@ -51,7 +51,7 @@ public class DataFrameJoiner {
         this.columnNames = columnNames;
         for (int i = 0; i < this.columnNames.length; i++) {
             String colName = this.columnNames[i];
-            this.columns[i] = table.categoricalColumn(colName);
+            this.columns[i] = table.column(colName);
         }
     }
 
@@ -177,7 +177,7 @@ public class DataFrameJoiner {
                 // same table, so use the original column's name to get the corresponding
                 // column out of the table1 input Table.
                 Column<?> column = columns[i];
-                Column<?> table1Column = table1.categoricalColumn(column.name());
+                Column<?> table1Column = table1.column(column.name());
 
                 ColumnType type = table1Column.type();
                 // relies on both arrays, columns, and col2Names,
@@ -325,7 +325,7 @@ public class DataFrameJoiner {
                 // same table, so use the original column's name to get the corresponding
                 // column out of the table1 input Table.
                 Column<?> column = columns[i];
-                Column<?> table1Column = table1.categoricalColumn(column.name());
+                Column<?> table1Column = table1.column(column.name());
 
                 ColumnType type = table1Column.type();
                 // relies on both arrays, columns, and col2Names,

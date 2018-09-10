@@ -85,11 +85,19 @@ public class DataFrameJoinerTest {
 
     private static final Table DOUBLE_INDEXED_MICE = Table.read().csv(Joiner.on(System.lineSeparator()).join(
             "ID,Mice_Name",
-                    "2.0,Jerry",
-                    "3.0,Fido",
-                    "6.0,Sasha",
-                    "9.0,Market"),
+            "2.0,Jerry",
+            "3.0,Fido",
+            "6.0,Sasha",
+            "9.0,Market"),
             "Mice");
+
+    private static final Table DOUBLE_INDEXED_BIRDS = Table.read().csv(Joiner.on(System.lineSeparator()).join(
+            "ID,Bird_Name",
+            "2.1,JerryB",
+            "3.0,FidoB",
+            "6.25,SashaB",
+            "9.0,Market"),
+            "Birds");
 
     private static final Table DUPLICATE_COL_NAME_DOGS = Table.read().csv(Joiner.on(System.lineSeparator()).join(
                 "ID,Dog Name, Good",
@@ -348,6 +356,24 @@ public class DataFrameJoinerTest {
                         "Patriots,2018-09-13T14:30,Boston,1500000000,9000000000000",
                         "Yankees,2018-09-10T12:00,NewYorkCity,1300000000,7000000000000"),
                 "SoccerSchedule2");
+    }
+
+    @Test
+    public void innerJoinWithDoubleBirdsCatsFishException() {
+        try {
+            DOUBLE_INDEXED_BIRDS.join("ID").inner(new Table[] {DOUBLE_INDEXED_CATS,DOUBLE_INDEXED_FISH});
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("Joining is supported on integral, string, and date-like columns."));
+        }
+    }
+
+    @Test
+    public void innerJoinWithDoubleDogsCatsBirdsException() {
+        try {
+            DOUBLE_INDEXED_FISH.join("ID").inner(new Table[] {DOUBLE_INDEXED_CATS,DOUBLE_INDEXED_BIRDS});
+        } catch (ClassCastException e) {
+            assertTrue(e.getMessage().contains("FloatColumn cannot be cast to tech.tablesaw.api.ShortColumn"));
+        }
     }
 
     @Test
@@ -1029,7 +1055,7 @@ public class DataFrameJoinerTest {
     }
 
     @Test
-    public void innerJoinFootballSoccerOnHomeGame() {
+    public void innerJoinFootballSoccerOnHomeGameException() {
         Table table1 = createFOOTBALLSCHEDULEDateTime();
         Table table2 = createSOCCERSCHEDULEDateTime();
         try {
