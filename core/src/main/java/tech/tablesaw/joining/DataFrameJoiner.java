@@ -1,10 +1,12 @@
 package tech.tablesaw.joining;
 
 import com.google.common.collect.Streams;
-
+import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Row;
@@ -13,13 +15,19 @@ import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
+import tech.tablesaw.index.ByteIndex;
+import tech.tablesaw.index.DoubleIndex;
+import tech.tablesaw.index.FloatIndex;
 import tech.tablesaw.index.IntIndex;
 import tech.tablesaw.index.LongIndex;
 import tech.tablesaw.index.ShortIndex;
@@ -219,9 +227,24 @@ public class DataFrameJoiner {
                     ShortColumn col1 = (ShortColumn) table1Column;
                     short value = col1.getShort(ri);
                     rowBitMapOneCol = index.get(value);
+                } else if (type instanceof BooleanColumnType) {
+                    ByteIndex index = new ByteIndex(table2.booleanColumn(col2Name));
+                    BooleanColumn col1 = (BooleanColumn) table1Column;
+                    byte value = col1.getByte(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof DoubleColumnType) {
+                    DoubleIndex index = new DoubleIndex(table2.doubleColumn(col2Name));
+                    DoubleColumn col1 = (DoubleColumn) table1Column;
+                    double value = col1.getDouble(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof FloatColumnType) {
+                    FloatIndex index = new FloatIndex(table2.floatColumn(col2Name));
+                    FloatColumn col1 = (FloatColumn) table1Column;
+                    float value = col1.getFloat(ri);
+                    rowBitMapOneCol = index.get(value);
                 } else {
                     throw new IllegalArgumentException(
-                            "Joining is supported on integral, string, and date-like columns. Column "
+                            "Joining is supported on numeric, string, and date-like columns. Column "
                                     + table1Column.name() + " is of type " + table1Column.type());
                 }
                 // combine Selection's into one big AND Selection
@@ -368,9 +391,24 @@ public class DataFrameJoiner {
                     ShortColumn col2 = (ShortColumn) table2.column(col2Name);
                     short value = col2.getShort(ri);
                     rowBitMapOneCol = index.get(value);
+                } else if (type instanceof BooleanColumnType) {
+                    ByteIndex index = new ByteIndex(result.booleanColumn(col2Name));
+                    BooleanColumn col2 = (BooleanColumn) table2.column(col2Name);
+                    byte value = col2.getByte(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof DoubleColumnType) {
+                    DoubleIndex index = new DoubleIndex(result.doubleColumn(col2Name));
+                    DoubleColumn col2 = (DoubleColumn) table2.column(col2Name);
+                    double value = col2.getDouble(ri);
+                    rowBitMapOneCol = index.get(value);
+                } else if (type instanceof FloatColumnType) {
+                    FloatIndex index = new FloatIndex(result.floatColumn(col2Name));
+                    FloatColumn col2 = (FloatColumn) table2.column(col2Name);
+                    float value = col2.getFloat(ri);
+                    rowBitMapOneCol = index.get(value);
                 } else {
                     throw new IllegalArgumentException(
-                            "Joining is supported on integral, string, and date-like columns. Column "
+                            "Joining is supported on numeric, string, and date-like columns. Column "
                                     + table1Column.name() + " is of type " + table1Column.type());
                 }
                 // combine Selections into one big AND Selection
