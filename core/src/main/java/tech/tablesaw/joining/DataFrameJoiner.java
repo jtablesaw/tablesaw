@@ -2,7 +2,6 @@ package tech.tablesaw.joining;
 
 import com.google.common.collect.Streams;
 
-import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
@@ -37,7 +36,7 @@ public class DataFrameJoiner {
     private static final String TABLE_ALIAS = "T";
 
     private final Table table;
-    private final CategoricalColumn<?>[] columns;
+    private final Column<?>[] columns;
     private final String[] columnNames;
     private AtomicInteger joinTableId = new AtomicInteger(2);
 
@@ -48,11 +47,11 @@ public class DataFrameJoiner {
      */
     public DataFrameJoiner(Table table, String... columnNames) {
         this.table = table;
-        columns = new CategoricalColumn<?>[columnNames.length];
+        columns = new Column<?>[columnNames.length];
         this.columnNames = columnNames;
         for (int i = 0; i < this.columnNames.length; i++) {
             String colName = this.columnNames[i];
-            this.columns[i] = table.categoricalColumn(colName);
+            this.columns[i] = table.column(colName);
         }
     }
 
@@ -177,8 +176,8 @@ public class DataFrameJoiner {
                 // defined for this DataFrameJoiner. Column names must be unique within the
                 // same table, so use the original column's name to get the corresponding
                 // column out of the table1 input Table.
-                CategoricalColumn<?> column = columns[i];
-                CategoricalColumn<?> table1Column = table1.categoricalColumn(column.name());
+                Column<?> column = columns[i];
+                Column<?> table1Column = table1.column(column.name());
 
                 ColumnType type = table1Column.type();
                 // relies on both arrays, columns, and col2Names,
@@ -325,8 +324,8 @@ public class DataFrameJoiner {
                 // defined for this DataFrameJoiner. Column names must be unique within the
                 // same table, so use the original column's name to get the corresponding
                 // column out of the table1 input Table.
-                CategoricalColumn<?> column = columns[i];
-                CategoricalColumn<?> table1Column = table1.categoricalColumn(column.name());
+                Column<?> column = columns[i];
+                Column<?> table1Column = table1.column(column.name());
 
                 ColumnType type = table1Column.type();
                 // relies on both arrays, columns, and col2Names,
@@ -386,7 +385,7 @@ public class DataFrameJoiner {
             }
         }
         Table table2OnlyRows = table2.where(selection);
-        List<CategoricalColumn<?>> joinColumns = table2OnlyRows.categoricalColumns(col2Names);
+        List<Column<?>> joinColumns = table2OnlyRows.columns(col2Names);
         table2OnlyRows.removeColumns(col2Names);
         withMissingRightJoin(result, joinColumns, table2OnlyRows);
         return result;
@@ -586,11 +585,11 @@ public class DataFrameJoiner {
      * Adds rows to destination for each row in the joinColumn and table2
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private void withMissingRightJoin(Table destination, List<CategoricalColumn<?>> joinColumns, Table table2) {
+    private void withMissingRightJoin(Table destination, List<Column<?>> joinColumns, Table table2) {
         int t2StartCol = destination.columnCount() - table2.columnCount();
         for (int c = 0; c < destination.columnCount(); c++) {
             boolean addedJoinColumns = false;
-            for (CategoricalColumn joinColumn : joinColumns) {
+            for (Column joinColumn : joinColumns) {
                 if (destination.column(c).name().equalsIgnoreCase(joinColumn.name())) {
                     destination.column(c).append(joinColumn);
                     addedJoinColumns = true;
