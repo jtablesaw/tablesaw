@@ -491,6 +491,15 @@ public class DataFrameJoinerTest {
     }
 
     @Test
+    public void innerJoinWithBoolean() {
+        Table joined = DUPLICATE_COL_NAME_DOGS.join("Good")
+                .inner(true, DUPLICATE_COL_NAME_DOGS.copy());
+        assertEquals(5, joined.columnCount());
+        assertEquals(32, joined.rowCount());
+        System.out.println(joined.printAll());
+    }
+
+    @Test
     public void leftOuterJoin() {
         Table joined = SP500.join("Date").leftOuter(ONE_YEAR, "Date");
         assertEquals(3, joined.columnCount());
@@ -515,6 +524,17 @@ public class DataFrameJoinerTest {
 
     @Test
     public void innerJoinDuplicateKeysSecondTable() {
+        Table joined = ANIMAL_FEED.join("Animal").inner(ANIMAL_NAMES, "Animal");
+        assertEquals(3, joined.columnCount());
+        assertEquals(4, joined.rowCount());
+    }
+
+    @Test
+    public void innerJoinDuplicateKeysSecondTableWithTextColumn() {
+        Table feed = ANIMAL_FEED.copy();
+        Table names = ANIMAL_NAMES.copy();
+        feed.replaceColumn("Animal", feed.stringColumn("Animal").asTextColumn());
+        feed.replaceColumn("Animal", names.stringColumn("Animal").asTextColumn());
         Table joined = ANIMAL_FEED.join("Animal").inner(ANIMAL_NAMES, "Animal");
         assertEquals(3, joined.columnCount());
         assertEquals(4, joined.rowCount());

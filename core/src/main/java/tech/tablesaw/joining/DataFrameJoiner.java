@@ -24,6 +24,7 @@ import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
+import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.index.ByteIndex;
 import tech.tablesaw.index.DoubleIndex;
@@ -207,7 +208,7 @@ public class DataFrameJoiner {
                     TimeColumn col1 = (TimeColumn) table1Column;
                     int value = col1.getIntInternal(ri);
                     rowBitMapOneCol = index.get(value);
-                } else if (type instanceof StringColumnType) {
+                } else if (type instanceof StringColumnType || type instanceof TextColumnType) {
                     StringIndex index = new StringIndex(table2.stringColumn(col2Name));
                     StringColumn col1 = (StringColumn) table1Column;
                     String value = col1.get(ri);
@@ -371,7 +372,7 @@ public class DataFrameJoiner {
                     TimeColumn col2 = (TimeColumn) table2.column(col2Name);
                     int value = col2.getIntInternal(ri);
                     rowBitMapOneCol = index.get(value);
-                } else if (type instanceof StringColumnType) {
+                } else if (type instanceof StringColumnType || type instanceof TextColumnType) {
                     StringIndex index = new StringIndex(result.stringColumn(col2Name));
                     StringColumn col2 = (StringColumn) table2.column(col2Name);
                     String value = col2.get(ri);

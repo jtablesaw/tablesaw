@@ -102,7 +102,11 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     public static TextColumn create(String name, int size) {
-        return new TextColumn(name, new ArrayList<>(size));
+        ArrayList<String> strings = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            strings.add(StringColumnType.missingValueIndicator());
+        }
+        return new TextColumn(name, strings);
     }
 
     @Override
@@ -513,6 +517,14 @@ public class TextColumn extends AbstractColumn<String>
             output[i] = get(i);
         }
         return output;
+    }
+
+    public StringColumn asStringColumn() {
+        StringColumn textColumn = StringColumn.create(name(), size());
+        for (int i = 0; i < size(); i++) {
+            textColumn.set(i, get(i));
+        }
+        return textColumn;
     }
 
     @Override

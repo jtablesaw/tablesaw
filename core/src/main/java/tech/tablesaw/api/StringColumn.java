@@ -633,4 +633,12 @@ public class StringColumn extends AbstractColumn<String>
     public StringColumn sampleX(double proportion) {
         return (StringColumn) super.sampleX(proportion);
     }
+
+    public TextColumn asTextColumn() {
+        TextColumn textColumn = TextColumn.create(name(), size());
+        for (int i = 0; i < size(); i++) {
+            textColumn.set(i, get(i));
+        }
+        return textColumn;
+    }
 }
