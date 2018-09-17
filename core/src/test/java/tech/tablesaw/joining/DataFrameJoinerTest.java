@@ -496,7 +496,6 @@ public class DataFrameJoinerTest {
                 .inner(true, DUPLICATE_COL_NAME_DOGS.copy());
         assertEquals(5, joined.columnCount());
         assertEquals(32, joined.rowCount());
-        System.out.println(joined.printAll());
     }
 
     @Test
