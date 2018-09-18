@@ -56,8 +56,7 @@ TODO: fix
     @Test
     public void testAppendObj2() {
         final StringColumn sc = StringColumn.create("sc", Arrays.asList("a", "b", "c", "a"));
-        System.out.println(Arrays.toString(sc.asObjectArray()));
-        System.out.println(Arrays.toString(sc.asList().toArray()));
+        assertArrayEquals(sc.asList().toArray(), sc.asObjectArray());
     }
 
     @Test
