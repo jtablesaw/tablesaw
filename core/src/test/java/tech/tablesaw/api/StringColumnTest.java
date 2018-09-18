@@ -20,6 +20,7 @@ import tech.tablesaw.TestDataUtil;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.selection.Selection;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -51,6 +52,13 @@ TODO: fix
         assertEquals(1, result2, 0.0);
     }
 */
+
+    @Test
+    public void testAppendObj2() {
+        final StringColumn sc = StringColumn.create("sc", Arrays.asList("a", "b", "c", "a"));
+        System.out.println(Arrays.toString(sc.asObjectArray()));
+        System.out.println(Arrays.toString(sc.asList().toArray()));
+    }
 
     @Test
     public void testAppendObj() {

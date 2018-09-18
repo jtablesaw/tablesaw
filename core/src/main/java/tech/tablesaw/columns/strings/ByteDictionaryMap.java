@@ -178,8 +178,8 @@ public class ByteDictionaryMap implements DictionaryMap {
 
     @Override
     public Object[] asObjectArray() {
-        final String[] output = new String[values().size()];
-        for (int i = 0; i < values().size(); i++) {
+        final String[] output = new String[size()];
+        for (int i = 0; i < size(); i++) {
             output[i] = getValueForIndex(i);
         }
         return output;
