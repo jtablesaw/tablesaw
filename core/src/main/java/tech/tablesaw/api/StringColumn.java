@@ -427,8 +427,9 @@ public class StringColumn extends AbstractColumn<String>
     public StringColumn append(Column<String> column) {
         Preconditions.checkArgument(column.type() == this.type());
         StringColumn source = (StringColumn) column;
-        for (String string : source) {
-            append(string);
+        final int size = source.size();
+        for (int i = 0; i < size; i++) {
+            append(source.getString(i));
         }
         return this;
     }

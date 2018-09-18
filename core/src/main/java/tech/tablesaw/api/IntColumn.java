@@ -234,7 +234,8 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     public IntColumn append(final Column<Integer> column) {
         Preconditions.checkArgument(column.type() == this.type());
         final IntColumn numberColumn = (IntColumn) column;
-        for (int i = 0; i < numberColumn.size(); i++) {
+        final int size = numberColumn.size();
+        for (int i = 0; i < size; i++) {
             append(numberColumn.getInt(i));
         }
         return this;

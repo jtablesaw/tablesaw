@@ -415,7 +415,8 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     public TimeColumn append(Column<LocalTime> column) {
         Preconditions.checkArgument(column.type() == this.type());
         TimeColumn timeCol = (TimeColumn) column;
-        for (int i = 0; i < timeCol.size(); i++) {
+        final int size = timeCol.size();
+        for (int i = 0; i < size; i++) {
             appendInternal(timeCol.getIntInternal(i));
         }
         return this;
