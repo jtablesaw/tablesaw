@@ -256,7 +256,8 @@ public interface DateMapFunctions extends Column<LocalDate> {
      */
     default IntColumn timeUntil(DateColumn end, ChronoUnit unit) {
 
-        IntColumn newColumn = IntColumn.create(name() + " - " + end.name());
+        IntColumn newColumn = IntColumn.create(name() + " - " + end.name() + "[" + unit.name() + "]");
+
         for (int r = 0; r < size(); r++) {
             int c1 = getIntInternal(r);
             int c2 = end.getIntInternal(r);

@@ -61,7 +61,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
 
     default LongColumn difference(DateTimeColumn column2, ChronoUnit unit) {
 
-	    LongColumn newColumn = LongColumn.create(name() + " - " + column2.name());
+	    LongColumn newColumn = LongColumn.create(name() + " - " + column2.name() + "[" + unit.name() + "]");
 
         for (int r = 0; r < size(); r++) {
             if (this.isMissing(r) || column2.isMissing(r)) {

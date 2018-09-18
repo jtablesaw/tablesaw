@@ -62,7 +62,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
     TimeColumn lag(int n);
 
     default IntColumn difference(TimeColumn column2, ChronoUnit unit) {
-        IntColumn newColumn = IntColumn.create(name() + " - " + column2.name());
+        IntColumn newColumn = IntColumn.create(name() + " - " + column2.name() + "[" + unit.name() + "]");
 
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
