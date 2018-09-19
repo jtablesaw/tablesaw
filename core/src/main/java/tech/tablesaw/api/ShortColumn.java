@@ -199,9 +199,9 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
 
     @Override
     public Object[] asObjectArray() {
-        final Integer[] output = new Integer[size()];
+        final Short[] output = new Short[size()];
         for (int i = 0; i < size(); i++) {
-            output[i] = getInt(i);
+            output[i] = getShort(i);
         }
         return output;
     }
@@ -225,7 +225,8 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     public ShortColumn append(final Column<Short> column) {
         Preconditions.checkArgument(column.type() == this.type());
         final ShortColumn numberColumn = (ShortColumn) column;
-        for (int i = 0; i < numberColumn.size(); i++) {
+        final int size = numberColumn.size();
+        for (int i = 0; i < size; i++) {
             append(numberColumn.getShort(i));
         }
         return this;

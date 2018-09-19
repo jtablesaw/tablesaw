@@ -261,7 +261,8 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     public LongColumn append(final Column<Long> column) {
         Preconditions.checkArgument(column.type() == this.type());
         final LongColumn numberColumn = (LongColumn) column;
-        for (int i = 0; i < numberColumn.size(); i++) {
+        final int size = numberColumn.size();
+        for (int i = 0; i < size; i++) {
             append(numberColumn.getLong(i));
         }
         return this;
