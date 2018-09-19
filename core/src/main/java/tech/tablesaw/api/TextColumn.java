@@ -386,8 +386,9 @@ public class TextColumn extends AbstractColumn<String>
     public TextColumn append(Column<String> column) {
         Preconditions.checkArgument(column.type() == this.type());
         TextColumn source = (TextColumn) column;
-        for (String string : source) {
-            append(string);
+        final int size = source.size();
+        for (int i = 0; i < size; i++) {
+            append(source.getString(i));
         }
         return this;
     }

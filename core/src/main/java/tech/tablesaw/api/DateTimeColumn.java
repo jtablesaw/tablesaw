@@ -437,7 +437,8 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     public DateTimeColumn append(Column<LocalDateTime> column) {
         Preconditions.checkArgument(column.type() == this.type());
         DateTimeColumn dateTimeColumn = (DateTimeColumn) column;
-        for (int i = 0; i < dateTimeColumn.size(); i++) {
+        final int size = dateTimeColumn.size();
+        for (int i = 0; i < size; i++) {
             append(dateTimeColumn.get(i));
         }
         return this;
