@@ -32,6 +32,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.conversion.SmileConverter;
 import tech.tablesaw.conversion.TableConverter;
 import tech.tablesaw.io.string.DataFramePrinter;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
@@ -487,6 +488,10 @@ public abstract class Relation {
 
     public TableConverter as() {
         return new TableConverter(this);
+    }
+
+    public SmileConverter smile() {
+        return new SmileConverter(this);
     }
 
     /**
