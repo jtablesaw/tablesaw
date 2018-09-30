@@ -1,14 +1,11 @@
 package tech.tablesaw.conversion;
 
+import java.util.List;
+
 import com.google.common.base.Preconditions;
-import smile.data.Attribute;
-import smile.data.AttributeDataset;
-import smile.data.NumericAttribute;
+
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.table.Relation;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class TableConverter {
 
@@ -91,40 +88,6 @@ public class TableConverter {
             }
         }
         return allVals;
-    }
-
-    public AttributeDataset smileDataset(String responseColName) {
-        return smileDataset(
-            table.numberColumn(responseColName),
-            table.numericColumns().stream().filter(c -> !c.name().equals(responseColName)).collect(Collectors.toList()));
-    }  
-
-    public AttributeDataset smileDataset(int responseColIndex, int... variablesColIndices) {
-        return smileDataset(table.numberColumn(responseColIndex), table.numericColumns(variablesColIndices));
-    }  
-
-    public AttributeDataset smileDataset(String responseColName, String... variablesColNames) {
-        return smileDataset(table.numberColumn(responseColName), table.numericColumns(variablesColNames));
-    }
-
-    private AttributeDataset smileDataset(NumericColumn<?> responseCol, List<NumericColumn<?>> variableCols) {
-        AttributeDataset data = new AttributeDataset(table.name(),
-            variableCols.stream().map(this::colToAttribute).toArray(Attribute[]::new),
-            colToAttribute(responseCol));
-        for (int i = 0; i < responseCol.size(); i++) {
-            final int r = i;
-            double[] x = variableCols.stream().mapToDouble(c -> c.getDouble(r)).toArray();
-            data.add(x, responseCol.getDouble(r));
-        }
-        return data;
-    }
-
-    /**
-     * We convert all numberColumns to NumericAttribute. Smile's AttributeDataset only stores data as double.
-     * While Smile defines NominalAttribute and DateAttribute they appear to be little used.
-     */
-    private Attribute colToAttribute(NumericColumn<?> col) {
-        return new NumericAttribute(col.name());
     }
 
 }
