@@ -194,6 +194,11 @@ public class ShortDictionaryMap implements DictionaryMap {
     }
 
     @Override
+    public int countUnique() {
+        return keyToValueMap().size();
+    }
+
+    @Override
     public Selection selectIsIn(String... strings) {
         ShortOpenHashSet keys = new ShortOpenHashSet(strings.length);
         for (String string : strings) {

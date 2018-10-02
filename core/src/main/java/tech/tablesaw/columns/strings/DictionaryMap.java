@@ -45,6 +45,8 @@ public interface DictionaryMap {
 
     void clear();
 
+    int countUnique();
+
     Table countByCategory(String columnName);
 
     Selection isEqualTo(String string);

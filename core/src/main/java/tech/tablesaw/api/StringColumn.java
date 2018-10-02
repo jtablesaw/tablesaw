@@ -273,7 +273,7 @@ public class StringColumn extends AbstractColumn<String>
     
     @Override
     public int countUnique() {
-        return lookupTable.size();
+        return lookupTable.countUnique();
     }
 
     /**

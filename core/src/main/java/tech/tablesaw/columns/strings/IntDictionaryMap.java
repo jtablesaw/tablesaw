@@ -189,6 +189,11 @@ public class IntDictionaryMap implements DictionaryMap {
     }
 
     @Override
+    public int countUnique() {
+        return keyToValueMap().size();
+    }
+
+    @Override
     public Selection selectIsIn(String... strings) {
         IntOpenHashSet keys = new IntOpenHashSet(strings.length);
         for (String string : strings) {

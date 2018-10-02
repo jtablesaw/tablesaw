@@ -287,6 +287,11 @@ public class ByteDictionaryMap implements DictionaryMap {
         valueToKey.clear();
     }
 
+    @Override
+    public int countUnique() {
+        return keyToValueMap().size();
+    }
+
     /**
      */
     @Override
