@@ -652,7 +652,7 @@ public class Table extends Relation implements Iterable<Row> {
 
     public Table structure() {
         Table t = new Table("Structure of " + name());
-        //NumberColumn index = NumberColumn.create("Index", columnCount());
+
         IntColumn index = IntColumn.indexColumn("Index", columnCount(), 0);
         StringColumn columnName = StringColumn.create("Column Name", columnCount());
         StringColumn columnType = StringColumn.create("Column Type", columnCount());
