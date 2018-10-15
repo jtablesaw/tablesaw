@@ -71,6 +71,11 @@ public class TextColumn extends AbstractColumn<String>
         }
     }
 
+    private TextColumn(String name) {
+        super(TextColumnType.INSTANCE, name);
+        values = new ArrayList<>(DEFAULT_ARRAY_SIZE);
+    }
+
     private TextColumn(String name, String[] strings) {
         super(TextColumnType.INSTANCE, name);
         values = new ArrayList<>(strings.length);
@@ -90,7 +95,7 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     public static TextColumn create(String name) {
-        return create(name, DEFAULT_ARRAY_SIZE);
+        return new TextColumn(name);
     }
 
     public static TextColumn create(String name, String[] strings) {
@@ -214,7 +219,7 @@ public class TextColumn extends AbstractColumn<String>
 
     public TextColumn lag(int n) {
 
-        TextColumn copy = emptyCopy(size());
+        TextColumn copy = emptyCopy();
         copy.setName(name() + " lag(" + n + ")");
 
         if (n >= 0) {
@@ -369,8 +374,10 @@ public class TextColumn extends AbstractColumn<String>
     @Override
     public TextColumn copy() {
         TextColumn newCol = create(name(), size());
+        int r = 0;
         for (String string : this) {
-            newCol.append(string);
+            newCol.set(r, string);
+            r++;
         }
         return newCol;
     }
@@ -379,8 +386,9 @@ public class TextColumn extends AbstractColumn<String>
     public TextColumn append(Column<String> column) {
         Preconditions.checkArgument(column.type() == this.type());
         TextColumn source = (TextColumn) column;
-        for (String string : source) {
-            append(string);
+        final int size = source.size();
+        for (int i = 0; i < size; i++) {
+            append(source.getString(i));
         }
         return this;
     }

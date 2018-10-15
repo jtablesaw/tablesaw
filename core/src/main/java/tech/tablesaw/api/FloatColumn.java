@@ -215,7 +215,8 @@ public class FloatColumn extends NumberColumn<Float> {
     public FloatColumn append(final Column<Float> column) {
         Preconditions.checkArgument(column.type() == this.type());
         final FloatColumn numberColumn = (FloatColumn) column;
-        for (int i = 0; i < numberColumn.size(); i++) {
+        final int size = numberColumn.size();
+        for (int i = 0; i < size; i++) {
             append(numberColumn.getFloat(i));
         }
         return this;

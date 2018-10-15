@@ -199,9 +199,9 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
 
     @Override
     public Object[] asObjectArray() {
-        final Integer[] output = new Integer[size()];
+        final Short[] output = new Short[size()];
         for (int i = 0; i < size(); i++) {
-            output[i] = getInt(i);
+            output[i] = getShort(i);
         }
         return output;
     }
@@ -225,7 +225,8 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     public ShortColumn append(final Column<Short> column) {
         Preconditions.checkArgument(column.type() == this.type());
         final ShortColumn numberColumn = (ShortColumn) column;
-        for (int i = 0; i < numberColumn.size(); i++) {
+        final int size = numberColumn.size();
+        for (int i = 0; i < size; i++) {
             append(numberColumn.getShort(i));
         }
         return this;
@@ -273,9 +274,13 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
      *
      * <p>
      * Special cases:
-     * <ul><li>If the argument is NaN, the result is 0.
-     * <li>If the argument is positive infinity or any value greater than or
-     * equal to the value of {@code Integer.MAX_VALUE}, an error will be thrown
+     * <p>
+     * Special cases:
+     * <ul>
+     *   <li>If the argument is NaN, the result is 0.
+     *   <li>If the argument is positive infinity or any value greater than or
+     *     equal to the value of {@code Integer.MAX_VALUE}, an error will be thrown
+     * </ul>
      *
      * @param   row the index of the value to be rounded to an integer.
      * @return  the value of the argument rounded to the nearest

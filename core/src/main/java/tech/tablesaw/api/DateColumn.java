@@ -244,7 +244,8 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     public DateColumn append(final Column<LocalDate> column) {
         Preconditions.checkArgument(column.type() == this.type());
         DateColumn dateColumn = (DateColumn) column;
-        for (int i = 0; i < dateColumn.size(); i++) {
+        final int size = dateColumn.size();
+        for (int i = 0; i < size; i++) {
             appendInternal(dateColumn.getPackedDate(i));
         }
         return this;

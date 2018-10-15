@@ -32,6 +32,7 @@ import java.time.chrono.IsoChronology;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.WeekFields;
 import java.util.Date;
 import java.util.Locale;
@@ -204,6 +205,17 @@ public class PackedLocalDateTime {
             return -1;
         }
         return PackedLocalDate.getQuarter(date(packedDate));
+    }
+
+    /**
+     * Returns the given packedDateTime with amtToAdd of temporal units added
+     *
+     * TODO(lwhite): Replace with a native implementation that doesn't convert everything to LocalDateTime
+     */
+    public static long plus(long packedDateTime, long amountToAdd, TemporalUnit unit) {
+
+        LocalDateTime dateTime = asLocalDateTime(packedDateTime);
+        return pack(dateTime.plus(amountToAdd, unit));
     }
 
     public static boolean isInQ1(long packedDateTime) {

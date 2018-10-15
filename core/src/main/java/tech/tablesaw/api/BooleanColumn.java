@@ -590,7 +590,8 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     public BooleanColumn append(Column<Boolean> column) {
         checkArgument(column.type() == this.type());
         BooleanColumn col = (BooleanColumn) column;
-        for (int i = 0; i < column.size(); i++) {
+        final int size = col.size();
+        for (int i = 0; i < size; i++) {
             append(col.getByte(i));
         }
         return this;

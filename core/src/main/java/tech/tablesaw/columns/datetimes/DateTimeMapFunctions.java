@@ -29,6 +29,7 @@ import tech.tablesaw.columns.strings.StringColumnType;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
 import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
@@ -61,7 +62,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
 
     default LongColumn difference(DateTimeColumn column2, ChronoUnit unit) {
 
-	    LongColumn newColumn = LongColumn.create(name() + " - " + column2.name());
+	    LongColumn newColumn = LongColumn.create(name() + " - " + column2.name() + "[" + unit.name() + "]");
 
         for (int r = 0; r < size(); r++) {
             if (this.isMissing(r) || column2.isMissing(r)) {
@@ -293,6 +294,57 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         return newColumn;
     }
 
+    default DateTimeColumn plus(long amountToAdd, ChronoUnit unit) {
+
+        DateTimeColumn newColumn = DateTimeColumn.create(dateTimeColumnName(this, amountToAdd, unit));
+        DateTimeColumn column1 = (DateTimeColumn) this;
+
+        for (int r = 0; r < column1.size(); r++) {
+            long packedDateTime = column1.getLongInternal(r);
+            if (packedDateTime == DateTimeColumnType.missingValueIndicator()) {
+                newColumn.appendMissing();
+            } else {
+                newColumn.appendInternal(PackedLocalDateTime.plus(packedDateTime, amountToAdd, unit));
+            }
+        }
+        return newColumn;
+    }
+
+    default DateTimeColumn plusYears(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.YEARS);
+    }
+
+    default DateTimeColumn plusMonths(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.MONTHS);
+    }
+
+    default DateTimeColumn plusWeeks(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.WEEKS);
+    }
+
+    default DateTimeColumn plusDays(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.DAYS);
+    }
+
+    default DateTimeColumn plusHours(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.HOURS);
+    }
+
+    default DateTimeColumn plusMinutes(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.MINUTES);
+    }
+
+    default DateTimeColumn plusSeconds(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.SECONDS);
+    }
+
+    default DateTimeColumn plusMillis(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.MILLIS);
+    }
+
+    default DateTimeColumn plusMicros(long amountToAdd) {
+        return plus(amountToAdd, ChronoUnit.MICROS);
+    }
 
     /**
      * Returns a DateColumn containing the date portion of each dateTime in this DateTimeColumn
@@ -335,7 +387,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
     }
 
     default IntColumn dayOfWeekValue() {
-	IntColumn newColumn = IntColumn.create(this.name() + " day of week", this.size());
+	IntColumn newColumn = IntColumn.create(this.name() + " day of week value", this.size());
         for (int r = 0; r < this.size(); r++) {
             if (!isMissing(r)) {
                 long c1 = this.getLongInternal(r);
@@ -432,4 +484,8 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
     long getLongInternal(int r);
 
     LocalDateTime min();
+
+    static String dateTimeColumnName(Column<LocalDateTime> column1, long value, TemporalUnit unit) {
+        return column1.name() + ": " + value + " " + unit.toString() + "(s)";
+    }
 }
