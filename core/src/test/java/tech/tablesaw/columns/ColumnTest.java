@@ -18,12 +18,14 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -193,9 +195,34 @@ public class ColumnTest {
         Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZero);
         check(filtered, 0.0, 1.0);
     }
+	private String getSeason(LocalDate date) {
+		String season = "";
+		int month = date.getMonthValue();
+		int day = date.getDayOfMonth();
+				
+		if ( (month == 1) || (month == 2) 
+				|| ( (month == 3) && (day <= 15 ))
+				|| ( (month == 12) && (day >= 16 )))
+			season = "WINTER";
+		else if ( (month == 4) || (month == 5) 
+				|| ( (month == 3) && (day >= 16 ))
+				|| ( (month == 6) && (day <= 15 )))
+			season = "SPRING";
+		else if ( (month == 7) || (month == 8)
+				|| ( (month == 6) && (day >= 16 ))
+				|| ( (month == 9) && (day <= 15 )))
+			season = "SUMMER";
+		else if ( (month == 10)|| (month == 11)
+				|| ( (month == 9) && (day >= 16 ))
+				|| ( (month == 12) && (day <= 15 )))
+			season = "FALL";
+
+		return season;
+	}
     
     private Function<Double, String> toString = Object::toString;
-    
+	private Function<LocalDateTime, String> toSeason = d -> getSeason(d.toLocalDate());
+
     @Test
     public void testMapInto() {
         String[] strings = new String[] {"-1.0", "0.0", "1.0"};
@@ -203,6 +230,19 @@ public class ColumnTest {
         StringColumn stringColumn1 =
                 (StringColumn) doubleColumn.mapInto(toString, StringColumn.create("T", doubleColumn.size()));
         check(stringColumn1, strings);
+    }
+    @Test
+    public void testMapIntoSeason() {
+    	String[] strings = new String[] {"WINTER", "SPRING", "SUMMER"};
+    	DateTimeColumn dateColumn = DateTimeColumn.create("Date", new LocalDateTime[] {
+    			LocalDateTime.of(2018, 1, 26, 12, 15),
+    			LocalDateTime.of(2018, 5, 31, 10, 38),
+    			LocalDateTime.of(2018, 9, 2, 21, 42)
+    	});
+    	StringColumn stringColumn1 =
+    			(StringColumn) dateColumn.mapInto(toSeason, 
+    					StringColumn.create("Season", dateColumn.size()));
+    	check(stringColumn1, strings);
     }
 
     private Function<Double, Double> negate = d -> -d;

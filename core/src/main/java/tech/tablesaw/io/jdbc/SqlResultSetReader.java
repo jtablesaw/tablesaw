@@ -14,18 +14,23 @@
 
 package tech.tablesaw.io.jdbc;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
-
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
 
 /**
  * Creates a Relation from the result of a SQL query, by passing the jdbc resultset to the constructor
@@ -89,8 +94,43 @@ public class SqlResultSetReader {
         // Setup the columns and add to the table
         for (int i = 1; i <= metaData.getColumnCount(); i++) {
             String name = metaData.getColumnName(i);
+            int columnType = metaData.getColumnType(i);
+            ColumnType type = SQL_TYPE_TO_TABLESAW_TYPE.get(columnType);
+            // Try to improve on the initial type assigned to 'type' to minimize size/space of type needed.
+            // For all generic numeric columns inspect closer, checking the precision and 
+            // scale to more accurately determine the appropriate java type to use.
+            if (columnType == Types.NUMERIC || columnType == Types.DECIMAL) {
+                int s = metaData.getScale(i);
+                // When scale is 0 then column is a type of integer
+                if (s == 0) {
+                    int p = metaData.getPrecision(i);
+/* Mapping to java integer types based on integer precision defined:
 
-            ColumnType type = SQL_TYPE_TO_TABLESAW_TYPE.get(metaData.getColumnType(i));
+Java type           TypeMinVal              TypeMaxVal          p               MaxIntVal
+-----------------------------------------------------------------------------------------
+byte, Byte:         -128                    127                 NUMBER(2)       99
+short, Short:       -32768                  32767               NUMBER(4)       9_999
+int, Integer:       -2147483648             2147483647          NUMBER(9)       999_999_999 
+long, Long:         -9223372036854775808    9223372036854775807 NUMBER(18)      999_999_999_999_999_999
+
+*/
+                    // Start with SHORT (since ColumnType.BYTE isn't supported yet)
+                    // and find the smallest java integer type that fits
+                    if (p <= 4) {
+                        type = ColumnType.SHORT;
+                    } else if (p <= 9) {
+                        type = ColumnType.INTEGER;
+                    } else if (p <= 18) {
+                        type = ColumnType.LONG;
+                    }
+                } else { // s is not zero, so a decimal value is expected. First try float, then double
+//                    if (s <= 7) {
+//                        type = ColumnType.FLOAT;
+//                    } else if (s <= 16) {
+                        type = ColumnType.DOUBLE;
+//                    }
+                }
+            }
             Preconditions.checkState(type != null,
                     "No column type found for %s as specified for column %s", metaData.getColumnType(i), name);
 
@@ -102,7 +142,19 @@ public class SqlResultSetReader {
         while (resultSet.next()) {
             for (int i = 1; i <= metaData.getColumnCount(); i++) {
                 Column<?> column = table.column(i - 1); // subtract 1 because results sets originate at 1 not 0
-                column.appendObj(resultSet.getObject(i));
+                if (column instanceof ShortColumn) {
+                    column.appendObj(resultSet.getObject(i, Short.class));
+                } else if (column instanceof IntColumn) {
+                    column.appendObj(resultSet.getObject(i, Integer.class));
+                } else if (column instanceof LongColumn) {
+                    column.appendObj(resultSet.getObject(i, Long.class));
+//                } else if (column instanceof FloatColumn) {
+//                    column.appendObj(resultSet.getObject(i, Float.class));
+                } else if (column instanceof DoubleColumn) {
+                    column.appendObj(resultSet.getObject(i, Double.class));
+                } else {
+                    column.appendObj(resultSet.getObject(i));
+                }
             }
         }
         return table;
