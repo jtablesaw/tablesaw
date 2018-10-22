@@ -1,4 +1,4 @@
-package tech.tablesaw;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.NumberColumn;

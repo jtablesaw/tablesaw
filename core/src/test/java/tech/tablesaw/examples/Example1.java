@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.*;
 import tech.tablesaw.aggregate.CrossTab;
@@ -25,7 +25,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.*;
  * Example code for:
  * Learning Data Science with Java and Airframe
  */
-public class Example1 {
+public class Example1 extends AbstractExample {
 
     public static void main(String[] args) throws Exception {
 
@@ -134,10 +134,5 @@ public class Example1 {
         out(table1.retainColumns("who", "approval").first(10));
 
         out(table1.countBy(who).sortDescendingOn("Count").first(3));
-    }
-
-    private static void out(Object str) {
-        System.out.println(String.valueOf(str));
-        System.out.println();
     }
 }

@@ -12,10 +12,11 @@
  * limitations under the License.
  */
 
-package tech.tablesaw;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.examples.AbstractExample;
 
 /**
  * Usage example using a Tornado data set

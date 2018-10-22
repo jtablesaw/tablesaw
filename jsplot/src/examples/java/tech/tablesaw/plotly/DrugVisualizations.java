@@ -1,7 +1,7 @@
 package tech.tablesaw.plotly;
 
 import com.google.common.base.Stopwatch;
-import tech.tablesaw.AbstractExample;
+import tech.tablesaw.examples.AbstractExample;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;

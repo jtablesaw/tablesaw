@@ -12,12 +12,13 @@
  * limitations under the License.
  */
 
-package tech.tablesaw;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.Row;
+import tech.tablesaw.examples.AbstractExample;
 
 import static tech.tablesaw.aggregate.AggregateFunctions.median;
 

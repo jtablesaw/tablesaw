@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.NumberColumn;

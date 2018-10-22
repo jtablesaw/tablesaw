@@ -14,7 +14,7 @@
 
 package tech.tablesaw.plotly;
 
-import tech.tablesaw.AbstractExample;
+import tech.tablesaw.examples.AbstractExample;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
