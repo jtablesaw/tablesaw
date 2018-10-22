@@ -21,7 +21,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 /**
  * Some example code using the API
  */
-public class BusStopExample {
+public class BusStopExample extends AbstractExample {
 
     public static void main(String[] args) throws Exception {
 
