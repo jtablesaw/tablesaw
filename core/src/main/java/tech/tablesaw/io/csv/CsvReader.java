@@ -169,6 +169,12 @@ public class CsvReader {
         String[] headerNames;
         if (options.header()) {
             headerNames = parser.parseNext();
+            // work around issue where Univocity returns null if a column has no header.
+            for (int i = 0; i < headerNames.length; i++) {
+                if (headerNames[i] == null) {
+                    headerNames[i] = "C" + i;
+                }
+            }
         } else {
             headerNames = makeColumnNames(types);
         }
@@ -287,8 +293,18 @@ public class CsvReader {
             String[] columnNames;
             List<String> headerRow;
 
-            String[] headerNames =
-                    header ? csvParser.parseNext() : makeColumnNames(types);
+            String[] headerNames;
+            if (header) {
+                headerNames = csvParser.parseNext();
+                // work around issue where Univocity returns null if a column has no header.
+                for (int i = 0; i < headerNames.length; i++) {
+                    if (headerNames[i] == null) {
+                        headerNames[i] = "C" + i;
+                    }
+                }
+            } else {
+                headerNames = makeColumnNames(types);
+            }
 
             headerRow = Lists.newArrayList(headerNames);
             columnNames = selectColumnNames(headerRow, types);
@@ -401,7 +417,9 @@ public class CsvReader {
         List<String> header = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
             if (types[i] != SKIP) {
-                header.add(names.get(i).trim());
+                String name = names.get(i);
+                name = name.trim();
+                header.add(name);
             }
         }
         String[] result = new String[header.size()];

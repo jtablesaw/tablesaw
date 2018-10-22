@@ -397,7 +397,7 @@ public class CsvReaderTest {
     public void testEmptyFileHeaderEnabled() throws Exception {
         Table table1 = Table.read().csv(CsvReadOptions
                 .builder("../data/empty_file.csv")
-                .header(true));
+                .header(false));
         assertEquals("0 rows X 0 cols", table1.shape());
     }
 
