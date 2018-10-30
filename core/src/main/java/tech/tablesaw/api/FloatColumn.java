@@ -163,7 +163,7 @@ public class FloatColumn extends NumberColumn<Float> {
     }
 
     public FloatColumn append(Float val) {
-        this.append(val.intValue());
+        this.append(val.floatValue());
         return this;
     }
 
