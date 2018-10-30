@@ -17,9 +17,6 @@ package tech.tablesaw.api;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * Unit tests for the NumberColumn class
- */
 public class FloatColumnTest {
 
     @Test
