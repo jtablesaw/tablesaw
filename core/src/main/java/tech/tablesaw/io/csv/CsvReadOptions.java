@@ -41,6 +41,7 @@ public class CsvReadOptions {
     private final String timeFormat;
     private final Locale locale;
     private final String missingValueIndicator;
+    private final Integer maxNumberOfColumns;
 
     private CsvReadOptions(CsvReadOptions.Builder builder) {
         file = builder.file;
@@ -56,6 +57,7 @@ public class CsvReadOptions {
         dateTimeFormat = builder.dateTimeFormat;
         lineEnding = builder.lineEnding;
         missingValueIndicator = builder.missingValueIndicator;
+        maxNumberOfColumns = builder.maxNumberOfColumns;
 
         if (builder.locale == null) {
             locale = Locale.getDefault();
@@ -163,6 +165,10 @@ public class CsvReadOptions {
         return DateTimeFormatter.ofPattern(dateFormat, locale);
     }
 
+    public Integer maxNumberOfColumns() {
+        return maxNumberOfColumns;
+    }
+
     public static class Builder {
 
         private InputStream inputStream;
@@ -179,6 +185,7 @@ public class CsvReadOptions {
         private String dateTimeFormat;
         private Locale locale;
         private String missingValueIndicator;
+        private Integer maxNumberOfColumns;
 
         public Builder(File file) {
             this.file = file;
@@ -261,6 +268,15 @@ public class CsvReadOptions {
 
         public Builder columnTypes(ColumnType[] columnTypes) {
             this.columnTypes = columnTypes;
+            return this;
+        }
+
+        /**
+         * Defines maximal value of columns in csv file.
+         * @param maxNumberOfColumns - must be positive integer. Default is 512.         *
+         */
+        public Builder maxNumberOfColumns(Integer maxNumberOfColumns){
+            this.maxNumberOfColumns = maxNumberOfColumns;
             return this;
         }
 

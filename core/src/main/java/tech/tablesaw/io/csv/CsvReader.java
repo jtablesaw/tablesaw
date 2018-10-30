@@ -578,6 +578,9 @@ public class CsvReader {
     private CsvParser csvParser(CsvReadOptions options) {
         CsvParserSettings settings = new CsvParserSettings();
         settings.setFormat(csvFormat(options));
+        if(options.maxNumberOfColumns() != null){
+            settings.setMaxColumns(options.maxNumberOfColumns());
+        }
         return new CsvParser(settings);
     }
 

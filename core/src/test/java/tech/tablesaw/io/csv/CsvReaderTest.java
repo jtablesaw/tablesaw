@@ -14,6 +14,7 @@
 
 package tech.tablesaw.io.csv;
 
+import com.univocity.parsers.common.TextParsingException;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -407,6 +408,22 @@ public class CsvReaderTest {
                 .builder("../data/empty_file.csv")
                 .header(false));
         assertEquals("0 rows X 0 cols", table1.shape());
+    }
+
+    @Test(expected = TextParsingException.class)
+    public void testReadMaxColumnsExceeded() throws Exception {
+        Table.read().csv(CsvReadOptions
+                .builder("../data/1000_columns.csv")
+                .header(false));
+    }
+
+    @Test
+    public void testReadWithMaxColumnsSetting() throws Exception {
+        Table table1 = Table.read().csv(CsvReadOptions
+                .builder("../data/1000_columns.csv")
+                .maxNumberOfColumns(1000)
+                .header(false));
+        assertEquals("1 rows X 1000 cols", table1.shape());
     }
 
 }
