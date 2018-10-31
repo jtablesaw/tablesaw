@@ -275,7 +275,7 @@ public class CsvReadOptions {
          * Defines maximal value of columns in csv file.
          * @param maxNumberOfColumns - must be positive integer. Default is 512.         *
          */
-        public Builder maxNumberOfColumns(Integer maxNumberOfColumns){
+        public Builder maxNumberOfColumns(Integer maxNumberOfColumns) {
             this.maxNumberOfColumns = maxNumberOfColumns;
             return this;
         }
