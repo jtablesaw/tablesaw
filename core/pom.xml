@@ -118,7 +118,7 @@
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-data</artifactId>
-            <version>1.5.1 </version>
+            <version>1.5.2 </version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -142,6 +142,12 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.197</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.haifengl</groupId>
+            <artifactId>smile-core</artifactId>
+            <version>1.5.2 </version>
             <scope>test</scope>
         </dependency>
     </dependencies>
