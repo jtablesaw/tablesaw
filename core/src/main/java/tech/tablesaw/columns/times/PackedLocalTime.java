@@ -16,7 +16,6 @@ package tech.tablesaw.columns.times;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
-import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.numbers.IntColumnType;
 
 import java.time.Duration;
@@ -315,7 +314,7 @@ public class PackedLocalTime {
 
     public static int pack(LocalTime time) {
         if (time == null) {
-            return TimeColumn.MISSING_VALUE;
+            return MISSING_VALUE;
         }
 
         byte hour = (byte) time.getHour();

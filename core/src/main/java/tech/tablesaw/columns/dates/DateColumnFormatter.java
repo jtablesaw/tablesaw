@@ -31,7 +31,7 @@ public class DateColumnFormatter {
             return missingString;
         }
         if (format == null) {
-            return PackedLocalDate.toDateString(value);
+            return toDateString(value);
         }
         LocalDate date = asLocalDate(value);
         if (date == null) {

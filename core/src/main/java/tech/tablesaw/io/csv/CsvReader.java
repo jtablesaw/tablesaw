@@ -508,7 +508,7 @@ public class CsvReader {
                     HashSet<String> unique = new HashSet<>(valuesList);
                     double uniquePct = unique.size() / (valuesList.size() * 1.0);
                     if (uniquePct > STRING_COLUMN_CUTOFF) {
-                        detectedType = ColumnType.TEXT;
+                        detectedType = TEXT;
                     }
                 }
             }

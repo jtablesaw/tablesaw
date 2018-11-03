@@ -63,7 +63,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
 	IntColumn newColumn = IntColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (DateColumn.valueIsMissing(c1)) {
+            if (valueIsMissing(c1)) {
         	newColumn.appendMissing();
             } else {
                 newColumn.append(PackedLocalDate.getDayOfMonth(c1));
@@ -76,7 +76,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
 	IntColumn newColumn = IntColumn.create(this.name() + " day of year");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (DateColumn.valueIsMissing(c1)) {
+            if (valueIsMissing(c1)) {
         	newColumn.appendMissing();
             } else {
                 newColumn.append((short) PackedLocalDate.getDayOfYear(c1));
