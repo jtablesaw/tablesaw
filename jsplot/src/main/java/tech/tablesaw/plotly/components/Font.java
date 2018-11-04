@@ -40,10 +40,6 @@ public class Font extends Component {
         }
     }
 
-    public static FontBuilder builder() {
-        return new FontBuilder();
-    }
-
     private final Family fontFamily;
 
     private final int size; // number greater than or equal to 1
@@ -54,6 +50,10 @@ public class Font extends Component {
         this.color = builder.color;
         this.fontFamily = builder.fontFamily;
         this.size = builder.size;
+    }
+
+    public static FontBuilder builder() {
+        return new FontBuilder();
     }
 
     public String asJavascript() {

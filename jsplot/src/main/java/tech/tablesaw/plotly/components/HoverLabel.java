@@ -11,10 +11,6 @@ import java.util.Map;
 
 public class HoverLabel extends Component {
 
-    public static HoverLabelBuilder builder() {
-        return new HoverLabelBuilder();
-    }
-
     /**
      * Sets the background color of all hover labels on graph
      */
@@ -43,6 +39,10 @@ public class HoverLabel extends Component {
         this.borderColor = builder.borderColor;
         this.font = builder.font;
         this.nameLength = builder.nameLength;
+    }
+
+    public static HoverLabelBuilder builder() {
+        return new HoverLabelBuilder();
     }
 
     public String asJavascript() {

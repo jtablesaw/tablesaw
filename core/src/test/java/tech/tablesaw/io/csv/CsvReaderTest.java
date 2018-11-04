@@ -50,6 +50,9 @@ public class CsvReaderTest {
     private final ColumnType[] bus_types = {SHORT, STRING, STRING, FLOAT, FLOAT};
     private final ColumnType[] bus_types_with_SKIP = {SHORT, STRING, SKIP, DOUBLE, DOUBLE};
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Test
     public void testWithBusData() throws Exception {
         // Read the CSV file
@@ -342,8 +345,6 @@ public class CsvReaderTest {
         assertEquals(3, table.columnCount());
     }
 
-    @Rule
-    public ExpectedException thrown= ExpectedException.none();
     @Test
     public void testEmptyRow() throws Exception {
         Table.read().csv("../data/empty_row.csv");

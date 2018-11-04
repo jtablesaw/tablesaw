@@ -419,7 +419,7 @@ public class ShortDictionaryMap implements DictionaryMap {
             append(StringColumnType.missingValueIndicator());
         } catch (NoKeysAvailableException e) {
             // This can't happen because missing value key is the first one allocated
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -437,7 +437,7 @@ public class ShortDictionaryMap implements DictionaryMap {
             dictionaryMap = new IntDictionaryMap(this);
         } catch (NoKeysAvailableException e) {
             // this should never happen;
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
 
         return dictionaryMap;
