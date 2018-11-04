@@ -456,7 +456,7 @@ public class StringColumn extends AbstractColumn<String>
     public StringColumn removeMissing() {
         StringColumn noMissing = emptyCopy();
         for (String v : this) {
-            if (valueIsMissing(v)) {
+            if (!valueIsMissing(v)) {
                 noMissing.append(v);
             }
         }
