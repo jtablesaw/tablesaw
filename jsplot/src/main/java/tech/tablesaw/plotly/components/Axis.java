@@ -11,7 +11,6 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static tech.tablesaw.plotly.components.Axis.AutoRange.*;
 import static tech.tablesaw.plotly.components.Axis.Spikes.SpikeSnap.DATA;
 
 public class Axis extends Component {
@@ -394,7 +393,7 @@ public class Axis extends Component {
          */
         public AxisBuilder autoRange(AutoRange autoRange) {
             this.autoRange = autoRange;
-            if (range != null && autoRange != FALSE) {
+            if (range != null && autoRange != AutoRange.FALSE) {
                 throw new RuntimeException("Can't set autoRange to anything but FALSE after specifying a range.");
             }
             return this;
