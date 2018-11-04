@@ -230,7 +230,7 @@ public class CsvReader {
                     throw new AddCellToColumnException(e, 0, rowNumber, columnNames, nextLine);
                 }
             } else if (nextLine.length > types.length) {
-                throw new RuntimeException("Row number " + rowNumber + " is too long.");
+                throw new IllegalArgumentException("Row number " + rowNumber + " is too long.");
             } else {
                 // for each column that we're including (not skipping)
                 int cellIndex = 0;

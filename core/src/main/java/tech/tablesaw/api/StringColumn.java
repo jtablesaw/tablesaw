@@ -265,7 +265,7 @@ public class StringColumn extends AbstractColumn<String>
                 lookupTable.set(rowIndex, stringValue);
             } catch (NoKeysAvailableException e) {
                 // this can't happen
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         }
         return this;

@@ -37,7 +37,7 @@ public class DataFrameWriter {
         new CsvWriter(table, options).write();
     }
 
-    public void csv(File file) {
+    public void csv(File file) throws IOException {
         CsvWriteOptions options = new CsvWriteOptions.Builder(file).build();
         new CsvWriter(table, options).write();
     }

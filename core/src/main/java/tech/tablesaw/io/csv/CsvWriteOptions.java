@@ -50,11 +50,11 @@ public class CsvWriteOptions {
         return lineEnd;
     }
 
-    public static Builder builder(File file) {
+    public static Builder builder(File file) throws IOException {
         return new Builder(file);
     }
 
-    public static Builder builder(String fileName) {
+    public static Builder builder(String fileName) throws IOException {
         return builder(new File(fileName));
     }
 
@@ -72,13 +72,8 @@ public class CsvWriteOptions {
             this.writer = new FileWriter(file);
         }
 
-        public Builder(File file) {
-            try {
-                this.writer = new FileWriter(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
+        public Builder(File file) throws IOException {
+            this.writer = new FileWriter(file);
         }
 
         public Builder(Writer writer) {

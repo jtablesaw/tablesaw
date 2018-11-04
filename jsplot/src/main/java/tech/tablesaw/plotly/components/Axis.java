@@ -394,7 +394,7 @@ public class Axis extends Component {
         public AxisBuilder autoRange(AutoRange autoRange) {
             this.autoRange = autoRange;
             if (range != null && autoRange != AutoRange.FALSE) {
-                throw new RuntimeException("Can't set autoRange to anything but FALSE after specifying a range.");
+                throw new IllegalArgumentException("Can't set autoRange to anything but FALSE after specifying a range.");
             }
             return this;
         }
