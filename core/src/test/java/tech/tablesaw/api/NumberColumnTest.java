@@ -47,6 +47,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.*;
 public class NumberColumnTest {
 
     private static final double MISSING = DoubleColumnType.missingValueIndicator();
+    private static final DoublePredicate isPositiveOrZeroD = d -> d >= 0, isNegativeD = d -> d < 0;
 
     @Ignore
     @Test
@@ -609,8 +610,6 @@ public class NumberColumnTest {
     }
     
     // Functional methods
-
-    private DoublePredicate isPositiveOrZeroD = d -> d >= 0, isNegativeD = d -> d < 0;
 
     @Test
     public void testCountAtLeast() {

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.*;
 import tech.tablesaw.aggregate.CrossTab;
@@ -25,7 +25,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.*;
  * Example code for:
  * Learning Data Science with Java and Airframe
  */
-public class Example1 {
+public class Example1 extends AbstractExample {
 
     public static void main(String[] args) throws Exception {
 
@@ -50,7 +50,7 @@ public class Example1 {
         out("Column names: " + table1.columnNames());
 
         // Get the approval column.
-        NumberColumn approval = table1.numberColumn("approval");
+        NumberColumn<?> approval = table1.numberColumn("approval");
 
         // Column Operation Examples
 
@@ -61,7 +61,7 @@ public class Example1 {
         // Method dayOfYear() applied to a DateColumn returns a ShortColumn containing the day of the year from 1 to 366
 
         DateColumn date = table1.dateColumn("date");
-        NumberColumn dayOfYear = date.dayOfYear();
+        IntColumn dayOfYear = date.dayOfYear();
 
         out(dayOfYear.summary());
 
@@ -123,21 +123,16 @@ public class Example1 {
         StringColumn who = table1.stringColumn("who");
 
         Table xtab = CrossTab.counts(table1, month, who);
-        xtab.columnsOfType(ColumnType.DOUBLE).forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
+        xtab.columnsOfType(ColumnType.DOUBLE).forEach(x -> ((NumberColumn<?>) x).setPrintFormatter(NumberColumnFormatter.ints()));
         out(xtab);
 
         Table percents = table1.xTabTablePercents("month", "who");
         percents.columnsOfType(ColumnType.DOUBLE)
-                .forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
+                .forEach(x -> ((NumberColumn<?>) x).setPrintFormatter(NumberColumnFormatter.percent(0)));
         out(percents);
 
         out(table1.retainColumns("who", "approval").first(10));
 
         out(table1.countBy(who).sortDescendingOn("Count").first(3));
-    }
-
-    private static void out(Object str) {
-        System.out.println(String.valueOf(str));
-        System.out.println();
     }
 }

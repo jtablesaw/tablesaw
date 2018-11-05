@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
@@ -21,7 +21,7 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 /**
  * Some example code using the API
  */
-public class BusStopExample {
+public class BusStopExample extends AbstractExample {
 
     public static void main(String[] args) throws Exception {
 
@@ -64,9 +64,5 @@ public class BusStopExample {
 
         // Write out the new CSV file
         filtered.write().csv("../data/filtered_bus_stops.csv");
-    }
-
-    private static void out(Object o) {
-        System.out.println(o);
     }
 }

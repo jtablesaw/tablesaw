@@ -15,6 +15,7 @@
 package tech.tablesaw.columns.datetimes;
 
 import com.google.common.base.Strings;
+import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.IntColumn;
@@ -370,6 +371,18 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
             } else {
                 long c1 = getLongInternal(r);
                 newColumn.append(PackedLocalDate.getYear(PackedLocalDateTime.date(c1)));
+            }
+        }
+        return newColumn;
+    }
+
+    default BooleanColumn missingValues() {
+	BooleanColumn newColumn = BooleanColumn.create(this.name() + " missing?");
+        for (int r = 0; r < this.size(); r++) {
+            if (isMissing(r)) {
+                newColumn.append(BooleanColumn.BYTE_TRUE);
+            } else {
+                newColumn.append(BooleanColumn.BYTE_FALSE);
             }
         }
         return newColumn;
