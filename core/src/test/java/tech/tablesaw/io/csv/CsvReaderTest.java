@@ -414,17 +414,17 @@ public class CsvReaderTest {
     @Test(expected = TextParsingException.class)
     public void testReadMaxColumnsExceeded() throws Exception {
         Table.read().csv(CsvReadOptions
-                .builder("../data/1000_columns.csv")
+                .builder("../data/10001_columns.csv")
                 .header(false));
     }
 
     @Test
     public void testReadWithMaxColumnsSetting() throws Exception {
         Table table1 = Table.read().csv(CsvReadOptions
-                .builder("../data/1000_columns.csv")
-                .maxNumberOfColumns(1000)
+                .builder("../data/10001_columns.csv")
+                .maxNumberOfColumns(10001)
                 .header(false));
-        assertEquals("1 rows X 1000 cols", table1.shape());
+        assertEquals("1 rows X 10001 cols", table1.shape());
     }
 
 }
