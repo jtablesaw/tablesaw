@@ -185,7 +185,7 @@ public class CsvReadOptions {
         private String dateTimeFormat;
         private Locale locale;
         private String missingValueIndicator;
-        private Integer maxNumberOfColumns;
+        private Integer maxNumberOfColumns = 10_000;
 
         public Builder(File file) {
             this.file = file;
@@ -284,4 +284,5 @@ public class CsvReadOptions {
             return new CsvReadOptions(this);
         }
     }
+
 }
