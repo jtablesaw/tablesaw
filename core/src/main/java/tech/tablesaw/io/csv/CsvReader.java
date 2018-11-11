@@ -522,14 +522,8 @@ public class CsvReader {
     }
 
     private int nextRow(int nextRow) {
-        if (nextRow < 100) {
-            return nextRow + 1;
-        }
-        if (nextRow < 1000) {
-            return nextRow + 10;
-        }
         if (nextRow < 10_000) {
-            return nextRow + 100;
+            return nextRow + 1;
         }
         if (nextRow < 100_000) {
             return nextRow + 1000;
