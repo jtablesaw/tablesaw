@@ -42,6 +42,8 @@ public class ColumnTest {
             ColumnType.STRING          // polling org
     };
 
+    private static final BinaryOperator<Double> sum = (d1, d2) -> d1 + d2;
+
     private Table table;
 
     @Before
@@ -223,8 +225,6 @@ public class ColumnTest {
         assertEquals(Double.valueOf(-1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).min(Double::compare).get());
         assertFalse(DoubleColumn.create("t1").min((d1, d2) -> (int) (d1 - d2)).isPresent());
     }
-
-    private BinaryOperator<Double> sum = (d1, d2) -> d1 + d2;
    
     @Test
     public void testReduceTBinaryOperator() {
