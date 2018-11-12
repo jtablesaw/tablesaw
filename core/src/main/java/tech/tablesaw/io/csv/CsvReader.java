@@ -503,13 +503,11 @@ public class CsvReader {
         // now detect
         for (List<String> valuesList : columnData) {
             ColumnType detectedType = detectType(valuesList, options);
-            if (detectedType.equals(StringColumnType.STRING)) {
-                if (rowCount > STRING_COLUMN_ROW_COUNT_CUTOFF) {
-                    HashSet<String> unique = new HashSet<>(valuesList);
-                    double uniquePct = unique.size() / (valuesList.size() * 1.0);
-                    if (uniquePct > STRING_COLUMN_CUTOFF) {
-                        detectedType = TEXT;
-                    }
+            if (detectedType.equals(StringColumnType.STRING) && rowCount > STRING_COLUMN_ROW_COUNT_CUTOFF) {
+                HashSet<String> unique = new HashSet<>(valuesList);
+                double uniquePct = unique.size() / (valuesList.size() * 1.0);
+                if (uniquePct > STRING_COLUMN_CUTOFF) {
+                    detectedType = TEXT;
                 }
             }
             columnTypes.add(detectedType);
