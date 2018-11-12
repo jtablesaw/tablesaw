@@ -43,6 +43,9 @@ public class ColumnTest {
     };
 
     private static final BinaryOperator<Double> sum = (d1, d2) -> d1 + d2;
+    private static final Predicate<Double> isPositiveOrZero = d -> d >= 0, isNegative = isPositiveOrZero.negate();
+    private static final Function<Double, String> toString = Object::toString;
+    private static final Function<Double, Double> negate = d -> -d;
 
     private Table table;
 
@@ -148,8 +151,6 @@ public class ColumnTest {
     
     // Functional methods
 
-    private Predicate<Double> isPositiveOrZero = d -> d >= 0, isNegative = isPositiveOrZero.negate();
-
     @Test
     public void testCountAtLeast() {
         assertEquals(2, DoubleColumn.create("t1", new double[] {0, 1, 2}).count(isPositiveOrZero, 2));
@@ -195,9 +196,7 @@ public class ColumnTest {
         Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZero);
         check(filtered, 0.0, 1.0);
     }
-    
-    private Function<Double, String> toString = Object::toString;
-    
+
     @Test
     public void testMapInto() {
         String[] strings = new String[] {"-1.0", "0.0", "1.0"};
@@ -206,8 +205,6 @@ public class ColumnTest {
                 (StringColumn) doubleColumn.mapInto(toString, StringColumn.create("T", doubleColumn.size()));
         check(stringColumn1, strings);
     }
-
-    private Function<Double, Double> negate = d -> -d;
     
     @Test
     public void testMap() {

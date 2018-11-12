@@ -48,6 +48,8 @@ public class NumberColumnTest {
 
     private static final double MISSING = DoubleColumnType.missingValueIndicator();
     private static final DoublePredicate isPositiveOrZeroD = d -> d >= 0, isNegativeD = d -> d < 0;
+    private static final DoubleFunction<String> toStringD = d -> String.valueOf(d);
+    private static final DoubleBinaryOperator sumD = (d1, d2) -> d1 + d2;
 
     @Ignore
     @Test
@@ -656,8 +658,6 @@ public class NumberColumnTest {
         Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZeroD);
         check(filtered, 0.0, 1.0);
     }
-    
-    private DoubleFunction<String> toStringD = d -> String.valueOf(d);
 
     @Test
     public void testMapInto() {
@@ -675,8 +675,6 @@ public class NumberColumnTest {
         assertEquals(Double.valueOf(-1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).min(Double::compare).get());
         assertFalse(DoubleColumn.create("t1").min((d1, d2) -> (int) (d1 - d2)).isPresent());
     }
-
-    private DoubleBinaryOperator sumD = (d1, d2) -> d1 + d2;
 
     @Test
     public void testReduceTDoubleBinaryOperator() {
