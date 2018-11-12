@@ -128,7 +128,7 @@ public class DateTimeFiltersTest {
         Month[] months = Month.values();
 
         DateTimeColumn dateTimeColumn = DateTimeColumn.create("test");
-        for (int i = 0, monthsLength = months.length; i < monthsLength; i++) {
+        for (int i = 0; i < months.length; i++) {
             dateTimeColumn.append(date);
             date = date.plusMonths(1);
         }
