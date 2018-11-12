@@ -51,7 +51,7 @@ Add tablesaw-core and tablesaw-jsplot to your project:
 </dependency>
 ```
 
-### Documentation and support:
+### Documentation and support
 
 * Start here:  https://jtablesaw.github.io/tablesaw/gettingstarted
 * Then see our documentation page: https://jtablesaw.github.io/tablesaw/ and the [Tablesaw User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc).
