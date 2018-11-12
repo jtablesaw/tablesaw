@@ -80,11 +80,11 @@ public class Font extends Component {
 
     public static class FontBuilder {
 
-        Family fontFamily = Family.OPEN_SANS;
+        private Family fontFamily = Family.OPEN_SANS;
 
-        int size = 12; // number greater than or equal to 1
+        private int size = 12; // number greater than or equal to 1
 
-        String color = "#444";
+        private String color = "#444";
 
         private FontBuilder() {}
 

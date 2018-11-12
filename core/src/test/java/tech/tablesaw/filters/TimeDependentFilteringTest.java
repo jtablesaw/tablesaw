@@ -208,9 +208,9 @@ public class TimeDependentFilteringTest {
     }
 
     private static class IndependentResult {
-        RangeSet<LocalDate> dateRanges = TreeRangeSet.create();
+        private RangeSet<LocalDate> dateRanges = TreeRangeSet.create();
 
-        void addRange(Range<LocalDate> dateRange) {
+        private void addRange(Range<LocalDate> dateRange) {
             dateRanges.add(dateRange);
         }
     }

@@ -335,7 +335,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return data.getLong(index);
     }
 
-    long getPackedDateTime(int index) {
+    protected long getPackedDateTime(int index) {
         return getLongInternal(index);
     }
 

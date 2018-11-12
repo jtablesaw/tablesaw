@@ -65,7 +65,7 @@ public class UnicodeBomHandlingTest {
         /**
          * Returns the bytes corresponding to this <code>BOM</code> value.
          */
-        final byte[] getBytes() {
+        private final byte[] getBytes() {
             final int length = bytes.length;
             final byte[] result = new byte[length];
 

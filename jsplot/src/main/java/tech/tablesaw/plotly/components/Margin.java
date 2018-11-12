@@ -83,29 +83,29 @@ public class Margin extends Component {
         /**
          * The left margin, in px
          */
-        int left = 80;
+        private int left = 80;
 
         /**
          * The right margin, in px
          */
-        int right = 80;
+        private int right = 80;
 
         /**
          * The top margin, in px
          */
-        int top = 100;
+        private int top = 100;
 
         /**
          * The bottom margin, in px
          */
-        int bottom = 80;
+        private int bottom = 80;
 
         /**
          * The amount of padding between the plotting area and the axis lines, in px
          */
-        int pad = 0;
+        private int pad = 0;
 
-        boolean autoExpand = true;
+        private boolean autoExpand = true;
 
         private MarginBuilder() {}
 

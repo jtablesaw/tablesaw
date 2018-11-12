@@ -583,11 +583,11 @@ public class Axis extends Component {
         }
 
         public static class SpikesBuilder {
-            String color = null;
-            int thickness = 3;
-            String dash = "dash";
-            SpikeMode mode = SpikeMode.TO_AXIS;
-            SpikeSnap snap = DATA;
+            private String color = null;
+            private int thickness = 3;
+            private String dash = "dash";
+            private SpikeMode mode = SpikeMode.TO_AXIS;
+            private SpikeSnap snap = DATA;
 
             private SpikesBuilder() {}
 
