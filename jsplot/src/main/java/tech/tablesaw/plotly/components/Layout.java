@@ -276,75 +276,75 @@ public class Layout {
         /**
          * The global font
          */
-        final Font font = DEFAULT_FONT;
+        private final Font font = DEFAULT_FONT;
 
-        /*
+        /**
          * The plot title
          */
-        String title = "";
+        private String title = "";
 
         /**
          * Sets the title font
          */
-        Font titleFont = DEFAULT_TITLE_FONT;
+        private Font titleFont = DEFAULT_TITLE_FONT;
 
         /**
          * Determines whether or not a layout width or height that has been left undefined by the user
          * is initialized on each relayout. Note that, regardless of this attribute, an undefined layout width or height
          * is always initialized on the first call to plot.
          */
-        final boolean autoSize = false;
+        private final boolean autoSize = false;
 
         /**
          * The width of the plot in pixels
          */
-        int width = 700;
+        private int width = 700;
 
         /**
          * The height of the plot in pixels
          */
-        int height = 450;
+        private int height = 450;
 
         /**
          * Sets the margins around the plot
          */
-        Margin margin;
+        private Margin margin;
 
         /**
          * Sets the color of paper where the graph is drawn.
          */
-        String paperBgColor = DEFAULT_PAPER_BG_COLOR;
+        private String paperBgColor = DEFAULT_PAPER_BG_COLOR;
 
         /**
          * Sets the color of plotting area in-between x and y axes.
          */
-        String plotBgColor = DEFAULT_PLOT_BG_COLOR;
+        private String plotBgColor = DEFAULT_PLOT_BG_COLOR;
 
         /**
          * Sets the decimal. For example, "." puts a '.' before decimals
          */
-        final String decimalSeparator = DEFAULT_DECIMAL_SEPARATOR;
+        private final String decimalSeparator = DEFAULT_DECIMAL_SEPARATOR;
 
         /**
          * Sets the separator. For example, a " " puts a space between thousands.
          */
-        final String thousandsSeparator = DEFAULT_THOUSANDS_SEPARATOR;
+        private final String thousandsSeparator = DEFAULT_THOUSANDS_SEPARATOR;
 
         /**
          * Determines whether or not a legend is drawn.
          */
-        boolean showLegend = DEFAULT_SHOW_LEGEND;
+        private boolean showLegend = DEFAULT_SHOW_LEGEND;
 
         /**
          * Determines the mode of hover interactions.
          */
-        HoverMode hoverMode = DEFAULT_HOVER_MODE;
+        private HoverMode hoverMode = DEFAULT_HOVER_MODE;
 
         /**
          * Determines the mode of drag interactions. "select" and "lasso" apply only to scatter traces with markers or text.
          * "orbit" and "turntable" apply only to 3D scenes.
          */
-        final DragMode dragMode = DEFAULT_DRAG_MODE;
+        private final DragMode dragMode = DEFAULT_DRAG_MODE;
 
         /**
          * Sets the default distance (in pixels) to look for data to add hover labels
@@ -353,15 +353,15 @@ public class Layout {
          * hovering is on inside the area and off outside, but these objects will not supersede hover on point-like
          * objects in case of conflict.
          */
-        int hoverDistance = DEFAULT_HOVER_DISTANCE; // greater than or equal to -1
+        private int hoverDistance = DEFAULT_HOVER_DISTANCE; // greater than or equal to -1
 
-        Axis xAxis;
+        private Axis xAxis;
 
-        Axis yAxis;
+        private Axis yAxis;
 
-        Axis zAxis;
+        private Axis zAxis;
 
-        BarMode barMode = DEFAULT_BAR_MODE;
+        private BarMode barMode = DEFAULT_BAR_MODE;
 
         private Scene scene;
 

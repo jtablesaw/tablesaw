@@ -9,10 +9,10 @@ import tech.tablesaw.plotly.traces.Trace;
 
 class BarPlot {
 
-    static final int HEIGHT = 700;
-    static final int WIDTH = 900;
+    protected static final int HEIGHT = 700;
+    protected static final int WIDTH = 900;
 
-    static Figure create(Orientation orientation, String title, Table table, String groupColName, String numberColName) {
+    protected static Figure create(Orientation orientation, String title, Table table, String groupColName, String numberColName) {
 
         Layout layout = standardLayout(title).build();
 
@@ -24,7 +24,7 @@ class BarPlot {
         return new Figure(layout, trace);
     }
 
-    static Figure create(Orientation orientation, String title, Table table, String groupColName, Layout.BarMode barMode, String... numberColNames) {
+    protected static Figure create(Orientation orientation, String title, Table table, String groupColName, Layout.BarMode barMode, String... numberColNames) {
 
         Layout layout = standardLayout(title)
                 .barMode(barMode)

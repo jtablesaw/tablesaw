@@ -90,15 +90,15 @@ public class Grid extends Component {
 
     public static class GridBuilder {
 
-        int rows = 80;
+        private int rows = 80;
 
-        int columns = 80;
+        private int columns = 80;
 
-        double xGap = 100;
+        private double xGap = 100;
 
-        double yGap = 80;
+        private double yGap = 80;
 
-        RowOrder rowOrder = RowOrder.TOP_TO_BOTTOM;
+        private RowOrder rowOrder = RowOrder.TOP_TO_BOTTOM;
 
         private GridBuilder() {}
 

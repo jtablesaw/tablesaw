@@ -26,27 +26,27 @@ public class CsvWriteOptions {
         this.lineEnd = builder.lineEnd;
     }
 
-    Writer writer() {
+    public Writer writer() {
         return writer;
     }
 
-    boolean header() {
+    public boolean header() {
         return header;
     }
 
-    char separator() {
+    public char separator() {
         return separator;
     }
 
-    char escapeChar() {
+    public char escapeChar() {
         return escapechar;
     }
 
-    char quoteChar() {
+    public char quoteChar() {
         return quotechar;
     }
 
-    String lineEnd() {
+    public String lineEnd() {
         return lineEnd;
     }
 

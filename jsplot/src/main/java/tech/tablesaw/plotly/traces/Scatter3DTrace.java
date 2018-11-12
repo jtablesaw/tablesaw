@@ -104,12 +104,12 @@ public class Scatter3DTrace extends AbstractTrace {
     public static class Scatter3DBuilder extends TraceBuilder {
 
         private String type = "scatter3d";
-        Mode mode = Mode.MARKERS;
-        final double[] x;
-        final double[] y;
-        final double[] z;
-        String[] text;
-        Marker marker;
+        private Mode mode = Mode.MARKERS;
+        private final double[] x;
+        private final double[] y;
+        private final double[] z;
+        private String[] text;
+        private Marker marker;
 
         private Scatter3DBuilder(double[] x, double[] y, double[] z) {
             this.x = x;

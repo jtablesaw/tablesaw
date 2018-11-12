@@ -46,8 +46,8 @@ public abstract class Change extends Component {
 
     public static class ChangeBuilder {
 
-        String fillColor;
-        ChangeLine changeLine;
+        protected String fillColor;
+        protected ChangeLine changeLine;
 
         public ChangeBuilder fillColor(String color) {
             this.fillColor = color;

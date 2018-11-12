@@ -298,37 +298,37 @@ public class Axis extends Component {
 
     public static class AxisBuilder {
 
-        Constrain constrain = DEFAULT_CONSTRAIN_RANGE;
-        ConstrainToward constrainToward;
-        double scaleRatio = DEFAULT_SCALE_RATIO;
+        private Constrain constrain = DEFAULT_CONSTRAIN_RANGE;
+        private ConstrainToward constrainToward;
+        private double scaleRatio = DEFAULT_SCALE_RATIO;
 
-        Font titleFont;
-        String title = "";
-        boolean visible = DEFAULT_VISIBLE;
-        String color = DEFAULT_COLOR;
-        Font font;
+        private Font titleFont;
+        private String title = "";
+        private boolean visible = DEFAULT_VISIBLE;
+        private String color = DEFAULT_COLOR;
+        private Font font;
 
-        Type type = DEFAULT_TYPE;
-        RangeMode rangeMode = RangeMode.NORMAL;
-        AutoRange autoRange = DEFAULT_AUTO_RANGE;
-        Object[] range;
-        boolean fixedRange = true;  // true means the axis cannot be zoomed
+        private Type type = DEFAULT_TYPE;
+        private RangeMode rangeMode = RangeMode.NORMAL;
+        private AutoRange autoRange = DEFAULT_AUTO_RANGE;
+        private Object[] range;
+        private boolean fixedRange = true;  // true means the axis cannot be zoomed
 
-        TickSettings tickSettings;
+        private TickSettings tickSettings;
 
-        Spikes spikes = null;
+        private Spikes spikes = null;
 
-        boolean showLine = DEFAULT_SHOW_LINE;
-        String lineColor = DEFAULT_LINE_COLOR;
-        int lineWidth = DEFAULT_LINE_WIDTH;
+        private boolean showLine = DEFAULT_SHOW_LINE;
+        private String lineColor = DEFAULT_LINE_COLOR;
+        private int lineWidth = DEFAULT_LINE_WIDTH;
 
-        boolean zeroLine = DEFAULT_ZERO_LINE;
-        String zeroLineColor = DEFAULT_ZERO_LINE_COLOR;
-        int zeroLineWidth = DEFAULT_ZERO_LINE_WIDTH;
+        private boolean zeroLine = DEFAULT_ZERO_LINE;
+        private String zeroLineColor = DEFAULT_ZERO_LINE_COLOR;
+        private int zeroLineWidth = DEFAULT_ZERO_LINE_WIDTH;
 
-        boolean showGrid = DEFAULT_SHOW_GRID;
-        String gridColor = DEFAULT_GRID_COLOR;
-        int gridWidth = DEFAULT_GRID_WIDTH;
+        private boolean showGrid = DEFAULT_SHOW_GRID;
+        private String gridColor = DEFAULT_GRID_COLOR;
+        private int gridWidth = DEFAULT_GRID_WIDTH;
 
         private AxisBuilder() {}
 

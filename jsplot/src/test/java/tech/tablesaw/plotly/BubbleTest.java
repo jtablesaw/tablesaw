@@ -20,9 +20,7 @@ import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.components.Symbol;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 
-/**
- *
- */
+
 @Ignore
 public class BubbleTest {
 
@@ -32,7 +30,7 @@ public class BubbleTest {
 
 
     @Test
-    void testAsJavascript() {
+    public void testAsJavascript() {
         ScatterTrace trace = ScatterTrace.builder(x, y)
                 .marker(Marker.builder().size(size).build())
                 .build();
@@ -40,8 +38,7 @@ public class BubbleTest {
     }
 
     @Test
-    void showScatter() {
-
+    public void showScatter() {
         ScatterTrace trace = ScatterTrace.builder(x, y)
                 .mode(ScatterTrace.Mode.MARKERS)
                 .marker(

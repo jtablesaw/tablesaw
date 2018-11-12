@@ -110,17 +110,6 @@ public class IntDictionaryMap implements DictionaryMap {
         return valueToKey.keySet();
     }
 
-    /**
-     * Returns the strings in the dictionary as an array in order of the numeric key
-     *
-     * @deprecated This is an implementation detail that should not be public.
-     * If you need the strings you can get them by calling unique() or asSet() on the column,
-     */
-    @Deprecated
-    String[] categoryArray() {
-        return keyToValue.values().toArray(new String[size()]);
-    }
-
     private IntCollection values() {
         return valueToKey.values();
     }

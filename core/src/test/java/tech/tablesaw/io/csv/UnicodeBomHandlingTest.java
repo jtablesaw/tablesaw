@@ -34,15 +34,15 @@ public class UnicodeBomHandlingTest {
         assertEquals((short) 1, t.get(0, 0));
     }
 
-    static final class BOM {
+    protected static final class BOM {
         /**
          * UTF-8 BOM (EF BB BF).
          */
-        static final BOM UTF_8 = new BOM(new byte[]{(byte) 0xEF,
+        protected static final BOM UTF_8 = new BOM(new byte[]{(byte) 0xEF,
                 (byte) 0xBB,
                 (byte) 0xBF},
                 "UTF-8");
-        final byte bytes[];
+        private final byte bytes[];
         private final String description;
 
         private BOM(final byte bom[], final String description) {

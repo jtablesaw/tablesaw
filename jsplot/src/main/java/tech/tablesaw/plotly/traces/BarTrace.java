@@ -67,7 +67,7 @@ public class BarTrace extends AbstractTrace {
         VERTICAL("v"),
         HORIZONTAL("h");
 
-        final String value;
+        private final String value;
 
         Orientation(String value) {
             this.value = value;
@@ -82,9 +82,9 @@ public class BarTrace extends AbstractTrace {
     public static class BarBuilder extends TraceBuilder {
 
         private final String type = "bar";
-        final Object[] x;
-        final double[] y;
-        Orientation orientation = Orientation.VERTICAL;
+        private final Object[] x;
+        private final double[] y;
+        private Orientation orientation = Orientation.VERTICAL;
 
         BarBuilder(Object[] x, double[] y) {
             this.x = x;

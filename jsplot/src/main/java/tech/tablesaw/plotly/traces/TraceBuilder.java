@@ -6,36 +6,36 @@ import tech.tablesaw.plotly.components.HoverLabel;
 
 public abstract class TraceBuilder {
 
-    AbstractTrace.Visibility visible = AbstractTrace.DEFAULT_VISIBILITY;
+    protected AbstractTrace.Visibility visible = AbstractTrace.DEFAULT_VISIBILITY;
 
     /**
      * Determines whether or not an item corresponding to this trace is shown in the legend.
      */
-    boolean showLegend = AbstractTrace.DEFAULT_SHOW_LEGEND;
+    protected boolean showLegend = AbstractTrace.DEFAULT_SHOW_LEGEND;
 
     /**
      * Sets the legend group for this trace. Traces part of the same legend group hide/show at the same time
      * when toggling legend items.
      */
-    String legendGroup = " ";
+    protected String legendGroup = " ";
 
     /**
      * Sets the opacity of the trace.
      */
-    double opacity = AbstractTrace.DEFAULT_OPACITY; // number between or equal to 0 and 1
+    protected double opacity = AbstractTrace.DEFAULT_OPACITY; // number between or equal to 0 and 1
 
     /**
      * Sets the trace name. The trace name appear as the legend item and on hover.
      */
-    String name;
+    protected String name;
 
     /**
      * Assigns id labels to each datum. These ids for object constancy of data points during animation.
      * Should be an array of strings, not numbers or any other type.
      */
-    String[] ids;
+    protected String[] ids;
 
-    HoverLabel hoverLabel;
+    protected HoverLabel hoverLabel;
 
     TraceBuilder() {}
 

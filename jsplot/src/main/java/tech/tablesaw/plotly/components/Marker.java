@@ -142,18 +142,18 @@ public class Marker extends Component {
 
     public static class MarkerBuilder {
 
-        double[] size = {6};
-        String[] color;
-        Palette colorScalePalette;
-        boolean cAuto = DEFAULT_C_AUTO;
-        double cMin;
-        double cMax;
-        boolean autoColorScale = DEFAULT_AUTO_COLOR_SCALE;
-        boolean showScale = DEFAULT_SHOW_SCALE;
-        boolean reverseScale = DEFAULT_REVERSE_SCALE;
-        double opacity = DEFAULT_OPACITY;
-        Symbol symbol;
-        SizeMode sizeMode = DEFAULT_SIZE_MODE;
+        private double[] size = {6};
+        private String[] color;
+        private Palette colorScalePalette;
+        private boolean cAuto = DEFAULT_C_AUTO;
+        private double cMin;
+        private double cMax;
+        private boolean autoColorScale = DEFAULT_AUTO_COLOR_SCALE;
+        private boolean showScale = DEFAULT_SHOW_SCALE;
+        private boolean reverseScale = DEFAULT_REVERSE_SCALE;
+        private double opacity = DEFAULT_OPACITY;
+        private Symbol symbol;
+        private SizeMode sizeMode = DEFAULT_SIZE_MODE;
 
         public MarkerBuilder size(double ... size) {
             String errorMessage = "All sizes in size array must be greater than 0.";
