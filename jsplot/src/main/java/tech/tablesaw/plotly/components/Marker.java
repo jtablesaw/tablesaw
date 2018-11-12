@@ -36,36 +36,36 @@ public class Marker extends Component {
      * Predefined palettes
      */
     public enum Palette {
-    GREYS("Greys"),
-    GREENS("Greens"),
-    YL_GN_BU("YlGnBu"),
-    YL_OR_RD("YlOrRd"),
-    BLUE_RED("Bluered"),
-    RD_BU("RdBu"),
-    REDS("Reds"),
-    BLUES("Blues"),
-    PICNIC("Picnic"),
-    RAINBOW("Rainbow"),
-    PORTLAND("Portland"),
-    JET("Jet"),
-    HOT("Hot"),
-    BLACKBODY("Blackbody"),
-    EARTH("Earth"),
-    ELECTRIC("Electric"),
-    VIRIDIS("Viridis"),
-    CIVIDIS("Cividis");
+        GREYS("Greys"),
+        GREENS("Greens"),
+        YL_GN_BU("YlGnBu"),
+        YL_OR_RD("YlOrRd"),
+        BLUE_RED("Bluered"),
+        RD_BU("RdBu"),
+        REDS("Reds"),
+        BLUES("Blues"),
+        PICNIC("Picnic"),
+        RAINBOW("Rainbow"),
+        PORTLAND("Portland"),
+        JET("Jet"),
+        HOT("Hot"),
+        BLACKBODY("Blackbody"),
+        EARTH("Earth"),
+        ELECTRIC("Electric"),
+        VIRIDIS("Viridis"),
+        CIVIDIS("Cividis");
 
-    private final String value;
+        private final String value;
 
-    Palette(String value) {
-        this.value = value;
+        Palette(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
-
-    @Override
-    public String toString() {
-        return value;
-    }
-}
 
     private static final boolean DEFAULT_C_AUTO = true;
     private static final boolean DEFAULT_AUTO_COLOR_SCALE = true;
