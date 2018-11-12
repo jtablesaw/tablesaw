@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="tablesaw.ui.TablesawCvsEditor"
+            contributorClass="tablesaw.ui.TablesawCvsEditorActionBarContributor"
+            default="false"
+            extensions="cvs"
+            id="tablesaw.ui.cvs"
+            name="Tablesaw CVS editor">
+      </editor>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="tablesaw.ui.nattable.NatTablesawCvsEditor"
+            contributorClass="tablesaw.ui.TablesawCvsEditorActionBarContributor"
+            default="true"
+            extensions="cvs"
+            id="tablesaw.ui.nattable.cvs"
+            name="Nat Tablesaw CVS editor">
+      </editor>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="tablesaw.ui.category"
+            name="Tablesaw">
+      </category>
+      <view
+            category="tablesaw.ui.category"
+            class="tablesaw.ui.SimpleTablesawView"
+            id="tablesaw.ui.SimpleTablesawView"
+            name="Table view">
+      </view>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="tablesaw.ui.category"
+            class="tablesaw.ui.nattable.NatTablesawView"
+            id="tablesaw.ui.NatTablesawView"
+            name="Nat Table view">
+      </view>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="tablesaw.ui.category"
+            class="tablesaw.ui.SummaryTableView"
+            id="tablesaw.ui.SummaryTableView"
+            name="Summary view">
+      </view>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="tablesaw.ui.category"
+            class="tablesaw.ui.plots.BarPlotView"
+            id="tablesaw.ui.BarPlotView"
+            name="Bar Plot view">
+      </view>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="tablesaw.ui.category"
+            class="tablesaw.ui.plots.PiePlotView"
+            id="tablesaw.ui.PiePlotView"
+            name="Pie Plot view">
+      </view>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="tablesaw.ui.category"
+            class="tablesaw.ui.plots.LinePlotView"
+            id="tablesaw.ui.LinePlotView"
+            name="Line Plot view">
+      </view>
+   </extension>
+
+   <extension-point id="exprSupport" name="Expression Support" schema="schema/exprSupport.exsd"/>
+   
+   	<extension point="tablesaw.ui.exprSupport">
+		<exprSupport
+			langName="js"
+			supportClass="tablesaw.ui.javaxscript.ScriptEngineExprSupport"
+		/>
+	</extension>
+   
+</plugin>

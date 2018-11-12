@@ -1,0 +1,23 @@
+import tech.tablesaw.api.ShortColumn
+import tech.tablesaw.api.Table
+import tech.tablesaw.api.StringColumn
+
+xaw tablesaw.ui.examples.Test1
+
+val var1 = "Aud"
+val var2 = 1
+
+val tab1 =
+# String name, 	double age	#
+| "Hallvard", 	50+var2		|
+| var1,		80			|
+
+val tab2 = #tab2: String name = tab1.column("name") as StringColumn, short age #
+(tab2.column("age") as ShortColumn).append(42 as short)
+(tab2.column("age") as ShortColumn).append(48 as short)
+helper(tab1)
+helper(tab2)
+
+def void helper(Table table) {
+	System.out.println(table)
+}

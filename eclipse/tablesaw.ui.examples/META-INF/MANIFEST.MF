@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Examples
+Bundle-SymbolicName: tablesaw.ui.examples
+Bundle-Version: 0.1.0.qualifier
+Automatic-Module-Name: tablesaw.ui.examples
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ tablesaw.core;bundle-version="0.25.3"

@@ -1,0 +1,65 @@
+grammar tablesaw.xtext.Xaw with org.eclipse.xtext.xbase.Xbase
+
+import "http://www.eclipse.org/xtext/common/JavaVMTypes" as types
+import "http://www.eclipse.org/xtext/xbase/Xtype" as xtype
+import "http://www.eclipse.org/xtext/xbase/Xbase" as xbase
+
+generate xaw "tablesaw/xtext/Xaw"
+
+Xaw returns xbase::XBlockExpression :
+	{ Xaw }
+	(importSection = XImportSection)?
+	'xaw' qName = QualifiedName
+	(
+		(expressions += XExpressionOrVarDeclaration) |
+		(methods += XMethod)
+	)*
+;
+
+XMethod:
+	'def' (returnType = JvmTypeReference)? name = ID
+	'(' (parameters += FullJvmFormalParameter (',' parameters += FullJvmFormalParameter)*)? ')'
+	body = XExpression
+;
+
+// Table syntax
+
+TableLiteral returns xbase::XBlockExpression :
+	{ TableLiteral }
+	'#' (name = (ValidID | STRING) ':')?
+	(expressions += TableColumn (',' expressions += TableColumn)*)?
+	'#'
+	(expressions += InlineTableRow)*
+;
+
+// Column syntax
+
+TableColumn returns xbase::XExpression:
+	{ TableColumn } (type = JvmTypeReference name = (ValidID | STRING) ('=' expression = XExpression)?)
+;
+
+// Row syntax
+
+InlineTableRow returns xbase::XBlockExpression:
+	{ InlineTableRow } '|' (expressions += XExpression (',' expressions += XExpression)*)? '|'
+;
+
+TableRowLiteral returns xbase::XExpression:
+	{ TableRowLiteral } '#' '|' expressions += XExpression (',' expressions += XExpression)* '|' '#'
+;
+
+//
+
+@Override 
+XLiteral returns xbase::XExpression:
+	TableLiteral
+	| TableRowLiteral
+	
+	| XCollectionLiteral
+	| XClosure
+	| XBooleanLiteral
+	| XNumberLiteral
+	| XNullLiteral
+	| XStringLiteral
+	| XTypeLiteral
+;

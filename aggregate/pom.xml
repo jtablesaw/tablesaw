@@ -58,10 +58,12 @@
       <artifactId>tablesaw-jsplot</artifactId>
       <version>0.25.3-SNAPSHOT</version>
     </dependency>
+    <!-- 
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-beakerx</artifactId>
       <version>0.25.3-SNAPSHOT</version>
     </dependency>
+     -->
   </dependencies>
 </project>

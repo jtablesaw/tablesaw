@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Library project for the tablesaw DSL
+Bundle-SymbolicName: tablesaw.xtext.lib
+Bundle-Version: 0.1.0.qualifier
+Automatic-Module-Name: tablesaw.xtext.lib
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.xtext.xbase.lib;bundle-version="2.14.0",
+ tablesaw.core;bundle-version="0.25.3"
+Export-Package: tablesaw.xtext.lib

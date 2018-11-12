@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tablesaw Javascript plot
+Bundle-SymbolicName: tablesaw.jsplot
+Bundle-Version: 0.25.3.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: libs/tablesaw-jsplot-0.25.3-SNAPSHOT-shaded.jar
+Export-Package: tech.tablesaw.plotly.api,
+ tech.tablesaw.plotly.components,
+ tech.tablesaw.plotly.traces
+Require-Bundle: tablesaw.core;bundle-version="0.25.3"

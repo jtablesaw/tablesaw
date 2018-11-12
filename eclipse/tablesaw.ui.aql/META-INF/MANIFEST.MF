@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tablesaw AQL expression support
+Bundle-SymbolicName: tablesaw.ui.aql;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: tablesaw.core;bundle-version="0.20.0",
+ tablesaw.ui;bundle-version="0.1.0",
+ org.eclipse.emf.ecore;bundle-version="2.13.0",
+ org.eclipse.acceleo.query;bundle-version="6.0.2"
+Bundle-ActivationPolicy: lazy
