@@ -9,7 +9,7 @@ Tablesaw
 
 __Tablesaw__ is Java for data science. It includes a dataframe and a visualization library, as well as utilities for loading, transforming, filtering, and summarizing data. It's fast and careful with memory. If you work with data in Java, it may save you time and effort. Tablesaw also supports descriptive statistics and integrates well with the Smile machine learning library. 
 
-### Tablesaw features: 
+### Tablesaw features
 
 #### Data processing & transformation
 * Import data from RDBMS and CSV files, local or remote (http, S3, etc.)
