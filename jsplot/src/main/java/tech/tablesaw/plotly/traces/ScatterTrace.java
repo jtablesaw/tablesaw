@@ -207,19 +207,19 @@ public class ScatterTrace extends AbstractTrace {
          * two traces if one completely encloses the other (eg consecutive contour lines), and behaves like "toself"
          * if there is no trace before it. "tonext" should not be used if one trace does not enclose the other.
          */
-        ScatterTrace.Fill fill = DEFAULT_FILL;
+        private ScatterTrace.Fill fill = DEFAULT_FILL;
 
         /**
          * Sets the fill color. Defaults to a half-transparent variant of the line color, marker color, or marker line
          * color, whichever is available.
          */
-        String fillColor;
+        private String fillColor;
 
         /**
          * Sets the width of the whiskers relative to the box' width. For example, with 1, the whiskers are as wide
          * as the box(es).
          */
-        double whiskerWidth = DEFAULT_WHISKER_WIDTH;
+        private double whiskerWidth = DEFAULT_WHISKER_WIDTH;
 
         private ScatterBuilder(double[] x, double[] y) {
             Double[] x1 = new Double[x.length];

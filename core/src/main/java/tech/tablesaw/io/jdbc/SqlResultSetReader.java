@@ -26,6 +26,7 @@ import com.google.common.collect.ImmutableMap;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
@@ -124,11 +125,11 @@ long, Long:         -9223372036854775808    9223372036854775807 NUMBER(18)      
                         type = ColumnType.LONG;
                     }
                 } else { // s is not zero, so a decimal value is expected. First try float, then double
-//                    if (s <= 7) {
-//                        type = ColumnType.FLOAT;
-//                    } else if (s <= 16) {
+                    if (s <= 7) {
+                        type = ColumnType.FLOAT;
+                    } else if (s <= 16) {
                         type = ColumnType.DOUBLE;
-//                    }
+                    }
                 }
             }
             Preconditions.checkState(type != null,
@@ -148,8 +149,8 @@ long, Long:         -9223372036854775808    9223372036854775807 NUMBER(18)      
                     column.appendObj(resultSet.getObject(i, Integer.class));
                 } else if (column instanceof LongColumn) {
                     column.appendObj(resultSet.getObject(i, Long.class));
-//                } else if (column instanceof FloatColumn) {
-//                    column.appendObj(resultSet.getObject(i, Float.class));
+                } else if (column instanceof FloatColumn) {
+                    column.appendObj(resultSet.getObject(i, Float.class));
                 } else if (column instanceof DoubleColumn) {
                     column.appendObj(resultSet.getObject(i, Double.class));
                 } else {

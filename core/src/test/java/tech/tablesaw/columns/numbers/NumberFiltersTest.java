@@ -173,7 +173,7 @@ public class NumberFiltersTest {
 
     @Test
     public void testIsMissing() {
-        double[] values = {4, 1, Double.NaN, 2, 2};
+        double[] values = {4, 1, NaN, 2, 2};
         DoubleColumn doubles =  DoubleColumn.create("doubles", values);
         Selection selection = doubles.isMissing();
         assertEquals(2, selection.get(0));
@@ -182,7 +182,7 @@ public class NumberFiltersTest {
 
     @Test
     public void testIsNotMissing() {
-        double[] values = {4, 1, Double.NaN, 2, 2};
+        double[] values = {4, 1, NaN, 2, 2};
         DoubleColumn doubles =  DoubleColumn.create("doubles", values);
         Selection selection = doubles.isNotMissing();
         assertEquals(0, selection.get(0));
@@ -192,7 +192,7 @@ public class NumberFiltersTest {
 
     @Test
     public void testNotIn() {
-        double[] values = {4, 1, Double.NaN, 2, 2};
+        double[] values = {4, 1, NaN, 2, 2};
         DoubleColumn doubles =  DoubleColumn.create("doubles", values);
         double[] comparison = {1, 2};
         Selection selection = doubles.isNotIn(comparison);

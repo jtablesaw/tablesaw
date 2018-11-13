@@ -54,15 +54,15 @@ public class Histogram2DTrace extends AbstractTrace {
 
     public static class Histogram2DBuilder extends TraceBuilder {
 
-        final String type = "histogram2d";
+        private final String type = "histogram2d";
 /*
-        int bins;
-        String barMode;
-        String histFunction;
-        String histNorm;
+        private int bins;
+        private String barMode;
+        private String histFunction;
+        private String histNorm;
 */
-final double[] x;
-        final double[] y;
+        private final double[] x;
+        private final double[] y;
 
         private Histogram2DBuilder(double[] x, double[] y) {
             this.x = x;

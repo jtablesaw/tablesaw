@@ -205,37 +205,37 @@ public class ColorBar extends Component {
 
     public static class ColorBarBuilder {
 
-        ThicknessMode thicknessMode = DEFAULT_THICKNESS_MODE;
+        private ThicknessMode thicknessMode = DEFAULT_THICKNESS_MODE;
 
-        double thickness = DEFAULT_THICKNESS; // (number greater than or equal to 0)
+        private double thickness = DEFAULT_THICKNESS; // (number greater than or equal to 0)
 
-        LenMode lenMode = DEFAULT_LEN_MODE;
+        private LenMode lenMode = DEFAULT_LEN_MODE;
 
-        double len = DEFAULT_LEN;
+        private double len = DEFAULT_LEN;
 
-        double x = DEFAULT_X;
+        private double x = DEFAULT_X;
 
-        int xPad = DEFAULT_X_PAD;
+        private int xPad = DEFAULT_X_PAD;
 
-        int yPad = DEFAULT_Y_PAD;
+        private int yPad = DEFAULT_Y_PAD;
 
-        double y = DEFAULT_Y;
+        private double y = DEFAULT_Y;
 
-        Xanchor xAnchor = DEFAULT_X_ANCHOR;
+        private Xanchor xAnchor = DEFAULT_X_ANCHOR;
 
-        Yanchor yAnchor = DEFAULT_Y_ANCHOR;
+        private Yanchor yAnchor = DEFAULT_Y_ANCHOR;
 
-        String outlineColor = DEFAULT_OUTLINE_COLOR;
+        private String outlineColor = DEFAULT_OUTLINE_COLOR;
 
-        int outlineWidth = DEFAULT_OUTLINE_WIDTH;
+        private int outlineWidth = DEFAULT_OUTLINE_WIDTH;
 
-        String borderColor = DEFAULT_BORDER_COLOR;
+        private String borderColor = DEFAULT_BORDER_COLOR;
 
-        int borderWidth = DEFAULT_BORDER_WIDTH;
+        private int borderWidth = DEFAULT_BORDER_WIDTH;
 
-        final String bgColor = DEFAULT_BG_COLOR;
+        private final String bgColor = DEFAULT_BG_COLOR;
 
-        TickSettings tickSettings;
+        private TickSettings tickSettings;
 
         /**
          * Sets the thickness of the color bar, This measure excludes the size of the padding, ticks and labels.

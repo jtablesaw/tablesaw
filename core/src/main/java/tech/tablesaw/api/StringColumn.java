@@ -265,7 +265,7 @@ public class StringColumn extends AbstractColumn<String>
                 lookupTable.set(rowIndex, stringValue);
             } catch (NoKeysAvailableException e) {
                 // this can't happen
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         }
         return this;
@@ -456,7 +456,7 @@ public class StringColumn extends AbstractColumn<String>
     public StringColumn removeMissing() {
         StringColumn noMissing = emptyCopy();
         for (String v : this) {
-            if (valueIsMissing(v)) {
+            if (!valueIsMissing(v)) {
                 noMissing.append(v);
             }
         }
@@ -509,7 +509,7 @@ public class StringColumn extends AbstractColumn<String>
                 lookupTable.append(value);
             } catch (NoKeysAvailableException e) {
                 // this can't happen
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         }
         return this;

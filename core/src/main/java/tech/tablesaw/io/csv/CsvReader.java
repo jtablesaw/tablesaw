@@ -169,6 +169,12 @@ public class CsvReader {
         String[] headerNames;
         if (options.header()) {
             headerNames = parser.parseNext();
+            // work around issue where Univocity returns null if a column has no header.
+            for (int i = 0; i < headerNames.length; i++) {
+                if (headerNames[i] == null) {
+                    headerNames[i] = "C" + i;
+                }
+            }
         } else {
             headerNames = makeColumnNames(types);
         }
@@ -224,7 +230,7 @@ public class CsvReader {
                     throw new AddCellToColumnException(e, 0, rowNumber, columnNames, nextLine);
                 }
             } else if (nextLine.length > types.length) {
-                throw new RuntimeException("Row number " + rowNumber + " is too long.");
+                throw new IllegalArgumentException("Row number " + rowNumber + " is too long.");
             } else {
                 // for each column that we're including (not skipping)
                 int cellIndex = 0;
@@ -287,8 +293,18 @@ public class CsvReader {
             String[] columnNames;
             List<String> headerRow;
 
-            String[] headerNames =
-                    header ? csvParser.parseNext() : makeColumnNames(types);
+            String[] headerNames;
+            if (header) {
+                headerNames = csvParser.parseNext();
+                // work around issue where Univocity returns null if a column has no header.
+                for (int i = 0; i < headerNames.length; i++) {
+                    if (headerNames[i] == null) {
+                        headerNames[i] = "C" + i;
+                    }
+                }
+            } else {
+                headerNames = makeColumnNames(types);
+            }
 
             headerRow = Lists.newArrayList(headerNames);
             columnNames = selectColumnNames(headerRow, types);
@@ -401,7 +417,9 @@ public class CsvReader {
         List<String> header = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
             if (types[i] != SKIP) {
-                header.add(names.get(i).trim());
+                String name = names.get(i);
+                name = name.trim();
+                header.add(name);
             }
         }
         String[] result = new String[header.size()];
@@ -485,13 +503,11 @@ public class CsvReader {
         // now detect
         for (List<String> valuesList : columnData) {
             ColumnType detectedType = detectType(valuesList, options);
-            if (detectedType.equals(StringColumnType.STRING)) {
-                if (rowCount > STRING_COLUMN_ROW_COUNT_CUTOFF) {
-                    HashSet<String> unique = new HashSet<>(valuesList);
-                    double uniquePct = unique.size() / (valuesList.size() * 1.0);
-                    if (uniquePct > STRING_COLUMN_CUTOFF) {
-                        detectedType = ColumnType.TEXT;
-                    }
+            if (detectedType.equals(StringColumnType.STRING) && rowCount > STRING_COLUMN_ROW_COUNT_CUTOFF) {
+                HashSet<String> unique = new HashSet<>(valuesList);
+                double uniquePct = unique.size() / (valuesList.size() * 1.0);
+                if (uniquePct > STRING_COLUMN_CUTOFF) {
+                    detectedType = TEXT;
                 }
             }
             columnTypes.add(detectedType);
@@ -504,14 +520,8 @@ public class CsvReader {
     }
 
     private int nextRow(int nextRow) {
-        if (nextRow < 100) {
-            return nextRow + 1;
-        }
-        if (nextRow < 1000) {
-            return nextRow + 10;
-        }
         if (nextRow < 10_000) {
-            return nextRow + 100;
+            return nextRow + 1;
         }
         if (nextRow < 100_000) {
             return nextRow + 1000;
@@ -578,6 +588,9 @@ public class CsvReader {
     private CsvParser csvParser(CsvReadOptions options) {
         CsvParserSettings settings = new CsvParserSettings();
         settings.setFormat(csvFormat(options));
+        if (options.maxNumberOfColumns() != null) {
+            settings.setMaxColumns(options.maxNumberOfColumns());
+        }
         return new CsvParser(settings);
     }
 

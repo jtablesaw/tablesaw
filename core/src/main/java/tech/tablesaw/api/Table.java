@@ -374,7 +374,7 @@ public class Table extends Relation implements Iterable<Row> {
         }
         Selection table1Selection = new BitmapBackedSelection();
 
-        Selection table1Records = Selection.selectNRowsAtRandom(table1Count, rowCount());
+        Selection table1Records = selectNRowsAtRandom(table1Count, rowCount());
         for (int table1Record : table1Records) {
             table1Selection.add(table1Record);
         }

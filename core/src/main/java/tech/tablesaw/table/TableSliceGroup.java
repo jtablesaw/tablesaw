@@ -37,7 +37,7 @@ import java.util.Map;
 public class TableSliceGroup implements Iterable<TableSlice> {
 
     // A string that is used internally as a delimiter in creating a column name from all the grouping columns
-    static final String SPLIT_STRING = "~~~";
+    protected static final String SPLIT_STRING = "~~~";
 
     // A function that splits the group column name back into the original column names for the grouping columns
     private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);

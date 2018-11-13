@@ -14,6 +14,7 @@
 
 package tech.tablesaw.io.csv;
 
+import com.univocity.parsers.common.TextParsingException;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,6 +49,9 @@ public class CsvReaderTest {
 
     private final ColumnType[] bus_types = {SHORT, STRING, STRING, FLOAT, FLOAT};
     private final ColumnType[] bus_types_with_SKIP = {SHORT, STRING, SKIP, DOUBLE, DOUBLE};
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testWithBusData() throws Exception {
@@ -341,8 +345,6 @@ public class CsvReaderTest {
         assertEquals(3, table.columnCount());
     }
 
-    @Rule
-    public ExpectedException thrown= ExpectedException.none();
     @Test
     public void testEmptyRow() throws Exception {
         Table.read().csv("../data/empty_row.csv");
@@ -397,7 +399,7 @@ public class CsvReaderTest {
     public void testEmptyFileHeaderEnabled() throws Exception {
         Table table1 = Table.read().csv(CsvReadOptions
                 .builder("../data/empty_file.csv")
-                .header(true));
+                .header(false));
         assertEquals("0 rows X 0 cols", table1.shape());
     }
 
@@ -407,6 +409,22 @@ public class CsvReaderTest {
                 .builder("../data/empty_file.csv")
                 .header(false));
         assertEquals("0 rows X 0 cols", table1.shape());
+    }
+
+    @Test(expected = TextParsingException.class)
+    public void testReadMaxColumnsExceeded() throws Exception {
+        Table.read().csv(CsvReadOptions
+                .builder("../data/10001_columns.csv")
+                .header(false));
+    }
+
+    @Test
+    public void testReadWithMaxColumnsSetting() throws Exception {
+        Table table1 = Table.read().csv(CsvReadOptions
+                .builder("../data/10001_columns.csv")
+                .maxNumberOfColumns(10001)
+                .header(false));
+        assertEquals("1 rows X 10001 cols", table1.shape());
     }
 
 }

@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.ShortColumnType;
@@ -97,6 +98,8 @@ public class SqlResultSetReaderTest {
                 Assert.assertTrue(numbers.column("NumNumber").type() instanceof DoubleColumnType);
                 Assert.assertTrue(numbers.column("NumBigInt").type() instanceof DoubleColumnType);
                 Assert.assertTrue(numbers.column("NumBigDec").type() instanceof DoubleColumnType);
+                Assert.assertTrue(numbers.column("NumFloat7_1").type() instanceof FloatColumnType);
+                Assert.assertTrue(numbers.column("NumFloat7_7").type() instanceof FloatColumnType);
                 Assert.assertTrue(numbers.column("NumDouble7_8").type() instanceof DoubleColumnType);
                 Assert.assertTrue(numbers.column("NumDouble7_16").type() instanceof DoubleColumnType);
             }

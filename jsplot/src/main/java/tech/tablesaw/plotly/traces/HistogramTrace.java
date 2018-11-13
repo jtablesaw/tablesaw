@@ -66,15 +66,15 @@ public class HistogramTrace extends AbstractTrace {
 
     public static class HistogramBuilder extends TraceBuilder {
 
-        final String type = "histogram";
-        int nBinsX;
-        int nBinsY;
-        boolean autoBinX;
-        boolean autoBinY;
-        String barMode;
-        String histFunction;
-        String histNorm;
-        final double[] x;
+        private final String type = "histogram";
+        private int nBinsX;
+        private int nBinsY;
+        private boolean autoBinX;
+        private boolean autoBinY;
+        private String barMode;
+        private String histFunction;
+        private String histNorm;
+        private final double[] x;
 
         private HistogramBuilder(double[] values) {
             this.x = values;

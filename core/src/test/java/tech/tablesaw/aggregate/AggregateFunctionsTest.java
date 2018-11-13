@@ -98,7 +98,7 @@ public class AggregateFunctionsTest {
     @Test
     public void testGroupMeanByStep() {
         TableSliceGroup group = SelectionTableSliceGroup.create(table, "Step", 5);
-        Table result = group.aggregate("approval", mean, AggregateFunctions.stdDev);
+        Table result = group.aggregate("approval", mean, stdDev);
         assertEquals(3, result.columnCount());
         assertEquals("53.6", result.getUnformatted(0, 1));
         assertEquals("2.5099800796022267", result.getUnformatted(0, 2));

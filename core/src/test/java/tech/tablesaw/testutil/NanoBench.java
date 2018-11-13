@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class NanoBench {
 
     private static final Logger logger = Logger.getLogger(NanoBench.class.getSimpleName());
-    static int[] arrayStress = new int[10000];
+    private static int[] arrayStress = new int[10000];
     private int numberOfMeasurement = 50;
     private int numberOfWarmUp = 20;
     private List<MeasureListener> listeners;

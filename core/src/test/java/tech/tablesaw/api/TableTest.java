@@ -40,9 +40,6 @@ import static org.junit.Assert.assertTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.mean;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
-/**
- * Tests for Table
- */
 public class TableTest {
 
     private static final int ROWS_BOUNDARY = 1000;
@@ -310,7 +307,7 @@ public class TableTest {
 
     private class PairChild implements Table.Pairs {
 
-        List<Double> runningAverage = new ArrayList<>();
+        private List<Double> runningAverage = new ArrayList<>();
 
         @Override
         public void doWithPair(Row row1, Row row2) {

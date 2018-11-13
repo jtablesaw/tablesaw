@@ -12,10 +12,11 @@
  * limitations under the License.
  */
 
-package tech.tablesaw;
+package tech.tablesaw.examples;
 
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.examples.AbstractExample;
 
 /**
  * Usage example using a Tornado data set
@@ -30,7 +31,7 @@ public class TextExample extends AbstractExample {
     }
 
     private static void countWords(StringColumn sc) {
-        NumberColumn nc = sc.countTokens(" ");
+        DoubleColumn nc = sc.countTokens(" ");
         out("Word count: " + nc.sum());
     }
 }

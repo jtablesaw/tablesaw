@@ -36,6 +36,22 @@ public class TimeParser extends AbstractParser<LocalTime> {
                     .appendOptional(timef6)
                     .toFormatter();
 
+    // A formatter that handles time formats defined above
+    /**
+     * A formatter for parsing. Useful when the user has specified that a numeric-like column is really supposed to be a time
+     * See timef7 definition
+     */
+    private static final DateTimeFormatter TIME_CONVERSION_FORMATTER =
+            new DateTimeFormatterBuilder()
+                    .appendOptional(timef5)
+                    .appendOptional(timef2)
+                    .appendOptional(timef3)
+                    .appendOptional(timef1)
+                    .appendOptional(timef4)
+                    .appendOptional(timef6)
+                    .appendOptional(timef7)
+                    .toFormatter();
+
     private static final DateTimeFormatter DEFAULT_FORMATTER = TIME_DETECTION_FORMATTER;
 
     private Locale locale = Locale.getDefault();
@@ -84,21 +100,5 @@ public class TimeParser extends AbstractParser<LocalTime> {
         value = Strings.padStart(value, 4, '0');
         return LocalTime.parse(value, parserFormatter);
     }
-
-    // A formatter that handles time formats defined above
-    /**
-     * A formatter for parsing. Useful when the user has specified that a numeric-like column is really supposed to be a time
-     * See timef7 definition
-     */
-    private static final DateTimeFormatter TIME_CONVERSION_FORMATTER =
-            new DateTimeFormatterBuilder()
-                    .appendOptional(timef5)
-                    .appendOptional(timef2)
-                    .appendOptional(timef3)
-                    .appendOptional(timef1)
-                    .appendOptional(timef4)
-                    .appendOptional(timef6)
-                    .appendOptional(timef7)
-                    .toFormatter();
 
 }

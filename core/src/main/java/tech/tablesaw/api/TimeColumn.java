@@ -377,7 +377,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         return data.getInt(index);
     }
 
-    int getPackedTime(int index) {
+    protected int getPackedTime(int index) {
         return getIntInternal(index);
     }
 

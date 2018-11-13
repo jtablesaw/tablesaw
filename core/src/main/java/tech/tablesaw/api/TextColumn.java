@@ -423,7 +423,7 @@ public class TextColumn extends AbstractColumn<String>
         Iterator<String> iterator = iterator();
         while(iterator.hasNext()) {
             String v = iterator.next();
-            if (valueIsMissing(v)) {
+            if (!valueIsMissing(v)) {
                 noMissing.append(v);
             }
         }

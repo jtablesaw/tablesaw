@@ -18,10 +18,10 @@ import static org.junit.Assert.assertEquals;
 @RunWith(Theories.class)
 public class ColumnAppendTest {
 
-    private static class Scenario<T extends Column> {
+    private static class Scenario<T extends Column<?>> {
         public final T col1;
         public final T col2;
-        public final List col1col2Appended;
+        public final List<?> col1col2Appended;
 
         public Scenario(T col) {
             this(col, col);
@@ -35,7 +35,7 @@ public class ColumnAppendTest {
     }
 
     @DataPoints
-    public static Scenario[] scenarios() {
+    public static Scenario<?>[] scenarios() {
         return new Scenario[]{
                 new Scenario<>(
                         FloatColumn.create("floatCol1", new float[]{1f, 2f, 3f}),
@@ -121,7 +121,7 @@ public class ColumnAppendTest {
     }
 
     @Theory
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void testColumnAppend(Scenario scenario) {
         assertEquals(scenario.col1col2Appended, scenario.col1.append(scenario.col2).asList());
     }

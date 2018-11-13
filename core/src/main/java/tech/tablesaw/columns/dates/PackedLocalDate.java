@@ -505,7 +505,7 @@ public class PackedLocalDate {
             case MONTHS: return plusMonths(valueToAdd, packedDate);
             case WEEKS: return plusWeeks(valueToAdd, packedDate);
             case DAYS: return plusDays(valueToAdd, packedDate);
-            default:throw new RuntimeException("Unsupported Temporal Unit");
+            default: throw new IllegalArgumentException("Unsupported Temporal Unit");
         }
     }
 

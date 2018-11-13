@@ -756,7 +756,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
 
     private static class BooleanColumnIterator implements Iterator<Boolean> {
 
-        final ByteIterator iterator;
+        private final ByteIterator iterator;
 
         BooleanColumnIterator(ByteIterator iterator) {
             this.iterator = iterator;

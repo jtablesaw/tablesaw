@@ -177,7 +177,7 @@ public class TickSettings {
         separateThousands = builder.separateThousands;
     }
 
-    void updateContext(Map<String, Object> context) {
+    protected void updateContext(Map<String, Object> context) {
         context.put("showTickLabels", showLabels);
         context.put("tickLength", length);
         context.put("tickWidth", width);

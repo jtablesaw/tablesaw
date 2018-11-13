@@ -103,17 +103,6 @@ public class ByteDictionaryMap implements DictionaryMap {
         return valueToKey.keySet();
     }
 
-    /**
-     * Returns the strings in the dictionary as an array in order of the numeric key
-     *
-     * @deprecated This is an implementation detail that should not be public.
-     * If you need the strings you can get them by calling unique() or asSet() on the column,
-     */
-    @Deprecated
-    String[] categoryArray() {
-        return keyToValue.values().toArray(new String[size()]);
-    }
-
     private ByteCollection values() {
         return valueToKey.values();
     }
@@ -413,7 +402,7 @@ public class ByteDictionaryMap implements DictionaryMap {
             append(StringColumnType.missingValueIndicator());
         } catch (NoKeysAvailableException e) {
             // This can't happen because missing value key is the first one allocated
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -431,7 +420,7 @@ public class ByteDictionaryMap implements DictionaryMap {
             dictionaryMap = new ShortDictionaryMap(this);
         } catch (NoKeysAvailableException e) {
             // this should never happen;
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         return dictionaryMap;
     }

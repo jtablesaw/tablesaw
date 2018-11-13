@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import smile.data.Attribute;
 import smile.data.AttributeDataset;
+import smile.data.NominalAttribute;
 import smile.data.NumericAttribute;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.table.Relation;
@@ -17,24 +18,60 @@ public class SmileConverter {
         this.table = table;
     }
 
-    public AttributeDataset dataset(String responseColName) {
+    /**
+     * Returns a dataset where the response column is numeric. E.g. to be used for a regression
+     */
+    public AttributeDataset numericDataset(String responseColName) {
         return dataset(
             table.numberColumn(responseColName),
+            AttributeType.NUMERIC,
             table.numericColumns().stream().filter(c -> !c.name().equals(responseColName)).collect(Collectors.toList()));
     }  
 
-    public AttributeDataset dataset(int responseColIndex, int... variablesColIndices) {
-        return dataset(table.numberColumn(responseColIndex), table.numericColumns(variablesColIndices));
+    /**
+     * Returns a dataset where the response column is numeric. E.g. to be used for a regression
+     */
+    public AttributeDataset numericDataset(int responseColIndex, int... variablesColIndices) {
+        return dataset(table.numberColumn(responseColIndex), AttributeType.NUMERIC, table.numericColumns(variablesColIndices));
     }  
 
-    public AttributeDataset dataset(String responseColName, String... variablesColNames) {
-        return dataset(table.numberColumn(responseColName), table.numericColumns(variablesColNames));
+    /**
+     * Returns a dataset where the response column is numeric. E.g. to be used for a regression
+     */
+    public AttributeDataset numericDataset(String responseColName, String... variablesColNames) {
+        return dataset(table.numberColumn(responseColName), AttributeType.NUMERIC, table.numericColumns(variablesColNames));
     }
 
-    private AttributeDataset dataset(NumericColumn<?> responseCol, List<NumericColumn<?>> variableCols) {
+    /**
+     * Returns a dataset where the response column is nominal. E.g. to be used for a classification
+     */
+    public AttributeDataset nominalDataset(String responseColName) {
+        return dataset(
+            table.numberColumn(responseColName),
+            AttributeType.NOMINAL,
+            table.numericColumns().stream().filter(c -> !c.name().equals(responseColName)).collect(Collectors.toList()));
+    }  
+
+    /**
+     * Returns a dataset where the response column is nominal. E.g. to be used for a classification
+     */
+    public AttributeDataset nominalDataset(int responseColIndex, int... variablesColIndices) {
+        return dataset(table.numberColumn(responseColIndex), AttributeType.NOMINAL, table.numericColumns(variablesColIndices));
+    }  
+
+    /**
+     * Returns a dataset where the response column is nominal. E.g. to be used for a classification
+     */
+    public AttributeDataset nominalDataset(String responseColName, String... variablesColNames) {
+        return dataset(table.numberColumn(responseColName), AttributeType.NOMINAL, table.numericColumns(variablesColNames));
+    }
+
+    private AttributeDataset dataset(NumericColumn<?> responseCol, AttributeType type, List<NumericColumn<?>> variableCols) {
+	Attribute responseAttribute = type == AttributeType.NOMINAL
+		? new NominalAttribute(responseCol.name()) : new NumericAttribute(responseCol.name());
         AttributeDataset data = new AttributeDataset(table.name(),
-            variableCols.stream().map(this::colToAttribute).toArray(Attribute[]::new),
-            colToAttribute(responseCol));
+            variableCols.stream().map(col -> new NumericAttribute(col.name())).toArray(Attribute[]::new),
+            responseAttribute);
         for (int i = 0; i < responseCol.size(); i++) {
             final int r = i;
             double[] x = variableCols.stream().mapToDouble(c -> c.getDouble(r)).toArray();
@@ -43,12 +80,9 @@ public class SmileConverter {
         return data;
     }
 
-    /**
-     * We convert all numberColumns to NumericAttribute. Smile's AttributeDataset only stores data as double.
-     * While Smile defines NominalAttribute and DateAttribute they appear to be little used.
-     */
-    private Attribute colToAttribute(NumericColumn<?> col) {
-        return new NumericAttribute(col.name());
+    private static enum AttributeType {
+	NUMERIC,
+	NOMINAL
     }
 
 }

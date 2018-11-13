@@ -21,6 +21,8 @@ import com.google.common.collect.TreeRangeSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
+import org.junit.Assert;
+
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
@@ -123,7 +125,7 @@ public class TimeDependentFilteringTest {
             if (independentConstraintFilter == DependencyFilter.FIRST) {
                 if (eventDates.isEmpty()) {
                     // this is an error
-                    throw new RuntimeException("There are no event dates");
+                    Assert.fail("There are no event dates");
                 } else {  //Get the first event for the current patient and createFromCsv a date range around it
                     LocalDate date = eventDates.get(0);
                     result.addRange(Range.closed(date.minusDays(daysConstraint.lowerEndpoint()),
@@ -206,9 +208,9 @@ public class TimeDependentFilteringTest {
     }
 
     private static class IndependentResult {
-        RangeSet<LocalDate> dateRanges = TreeRangeSet.create();
+        private RangeSet<LocalDate> dateRanges = TreeRangeSet.create();
 
-        void addRange(Range<LocalDate> dateRange) {
+        private void addRange(Range<LocalDate> dateRange) {
             dateRanges.add(dateRange);
         }
     }

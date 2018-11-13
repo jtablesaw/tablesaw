@@ -40,10 +40,6 @@ public class Font extends Component {
         }
     }
 
-    public static FontBuilder builder() {
-        return new FontBuilder();
-    }
-
     private final Family fontFamily;
 
     private final int size; // number greater than or equal to 1
@@ -54,6 +50,10 @@ public class Font extends Component {
         this.color = builder.color;
         this.fontFamily = builder.fontFamily;
         this.size = builder.size;
+    }
+
+    public static FontBuilder builder() {
+        return new FontBuilder();
     }
 
     public String asJavascript() {
@@ -80,11 +80,11 @@ public class Font extends Component {
 
     public static class FontBuilder {
 
-        Family fontFamily = Family.OPEN_SANS;
+        private Family fontFamily = Family.OPEN_SANS;
 
-        int size = 12; // number greater than or equal to 1
+        private int size = 12; // number greater than or equal to 1
 
-        String color = "#444";
+        private String color = "#444";
 
         private FontBuilder() {}
 

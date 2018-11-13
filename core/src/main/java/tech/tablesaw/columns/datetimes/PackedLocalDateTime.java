@@ -16,7 +16,6 @@ package tech.tablesaw.columns.datetimes;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
-import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.times.PackedLocalTime;
 
@@ -96,7 +95,7 @@ public class PackedLocalDateTime {
 
     public static long pack(LocalDate date, LocalTime time) {
         if (date == null || time == null) {
-            return DateTimeColumn.MISSING_VALUE;
+            return MISSING_VALUE;
         }
         int d = PackedLocalDate.pack(date);
         int t = PackedLocalTime.pack(time);
@@ -105,7 +104,7 @@ public class PackedLocalDateTime {
 
     public static long pack(LocalDateTime dateTime) {
         if (dateTime == null) {
-            return DateTimeColumn.MISSING_VALUE;
+            return MISSING_VALUE;
         }
         LocalDate date = dateTime.toLocalDate();
         LocalTime time = dateTime.toLocalTime();
@@ -114,7 +113,7 @@ public class PackedLocalDateTime {
 
     public static long pack(Date date) {
         if (date == null) {
-            return DateTimeColumn.MISSING_VALUE;
+            return MISSING_VALUE;
         }
         return pack(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     }
@@ -201,7 +200,7 @@ public class PackedLocalDateTime {
      * MISSING_VALUE for DateTimeColumn
      */
     public static int getQuarter(long packedDate) {
-        if (packedDate == DateTimeColumn.MISSING_VALUE) {
+        if (packedDate == MISSING_VALUE) {
             return -1;
         }
         return PackedLocalDate.getQuarter(date(packedDate));
