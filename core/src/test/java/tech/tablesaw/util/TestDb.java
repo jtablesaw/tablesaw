@@ -257,6 +257,7 @@ public class TestDb {
             stmt.execute("CREATE TABLE Customer" +
                     "( CustomerNumber CHAR(10) NOT NULL PRIMARY KEY, " +
                     "  Name CHAR(25)," +
+                    "  RegistrationDate DATE," +
                     "  Address CHAR(25)," +
                     "  City CHAR(12)," +
                     "  State CHAR(2)," +
@@ -264,16 +265,16 @@ public class TestDb {
 
             // Add some rows to the new table.
             stmt.executeUpdate("INSERT INTO Customer VALUES" +
-                    "('101', 'Downtown Cafe', '17 N. Main Street'," +
+                    "('101', 'Downtown Cafe', '2004-01-29', '17 N. Main Street'," +
                     " 'Asheville', 'NC', '55515')");
 
             stmt.executeUpdate("INSERT INTO Customer VALUES" +
-                    "('102', 'Main Street Grocery'," +
+                    "('102', 'Main Street Grocery', '2005-02-10'," +
                     " '110 E. Main Street'," +
                     " 'Canton', 'NC', '55555')");
 
             stmt.executeUpdate("INSERT INTO Customer VALUES" +
-                    "('103', 'The Coffee Place', '101 Center Plaza'," +
+                    "('103', 'The Coffee Place', '2006-08-31', '101 Center Plaza'," +
                     " 'Waynesville', 'NC', '55516')");
         } catch (SQLException ex) {
             System.out.println("ERROR: " + ex.getMessage());

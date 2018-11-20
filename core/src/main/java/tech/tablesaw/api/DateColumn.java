@@ -354,10 +354,13 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
         if (obj == null) {
             return appendMissing();
         }
-        if (!(obj instanceof LocalDate)) {
-            throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to DateColumn");
+        if (obj instanceof java.sql.Date) {
+            return append(((java.sql.Date) obj).toLocalDate());
         }
-        return append((LocalDate) obj);
+        if (obj instanceof LocalDate) {
+            return append((LocalDate) obj);
+        }
+        throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to DateColumn");
     }
 
     @Override

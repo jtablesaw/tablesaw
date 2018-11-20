@@ -63,7 +63,7 @@ public class SqlResultSetReaderTest {
             sql = "SELECT * FROM Customer";
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 Table customer = SqlResultSetReader.read(rs, "Customer");
-                Assert.assertEquals(6, customer.columnCount());
+                Assert.assertEquals(7, customer.columnCount());
                 Assert.assertEquals(3, customer.rowCount());
             }
 
