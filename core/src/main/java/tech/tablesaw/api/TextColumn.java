@@ -46,7 +46,7 @@ import java.util.Set;
  * of missing values in this class's methods.
  */
 public class TextColumn extends AbstractColumn<String>
-        implements StringFilters, StringMapFunctions, StringReduceUtils {
+        implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
     public static final String MISSING_VALUE = TextColumnType.missingValueIndicator();
 
