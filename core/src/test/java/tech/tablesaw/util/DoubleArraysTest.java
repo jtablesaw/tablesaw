@@ -14,14 +14,13 @@
 
 package tech.tablesaw.util;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.table.TableSliceGroup;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-
-import tech.tablesaw.api.Table;
-import tech.tablesaw.table.TableSliceGroup;
+import static org.junit.Assert.assertTrue;
 
 public class DoubleArraysTest {
 

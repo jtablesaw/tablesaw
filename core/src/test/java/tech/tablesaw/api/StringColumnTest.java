@@ -60,6 +60,21 @@ TODO: fix
     }
 
     @Test
+    public void testForNulls() {
+        String[] array1 = {"1", "2", "3", "4", null};
+        Table table1 = Table.create("table1", StringColumn.create("id", array1));
+        System.out.println(table1.stringColumn("id").get(4)); // output null
+
+        String[] array2 = {"1", "2", null, "", "5"};
+        Table table2 = Table.create("table2", StringColumn.create("id", array2));
+        System.out.println(table2.stringColumn("id").get(2)); // output ""
+
+        //And the first one above will cause NullPointerException if I do selection like:
+        Selection sel2 = table2.stringColumn("id").isMissing();
+        Selection sel1 = table1.stringColumn("id").isMissing();
+    }
+
+    @Test
     public void testAppendObj() {
         StringColumn column = StringColumn.create("testing");
         column.appendObj("Value 1");
