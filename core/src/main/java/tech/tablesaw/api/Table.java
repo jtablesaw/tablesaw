@@ -20,6 +20,7 @@ import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.aggregate.AggregateFunction;
 import tech.tablesaw.aggregate.CrossTab;
+import tech.tablesaw.aggregate.PivotTable;
 import tech.tablesaw.aggregate.Summarizer;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataFrameReader;
@@ -614,6 +615,38 @@ public class Table extends Relation implements Iterable<Row> {
         Table newTable = this.emptyCopy(opposite.size());
         Rows.copyRowsToTable(opposite, this, newTable);
         return newTable;
+    }
+
+    /**
+     * Returns a pivot on this table, where:
+     *    The first column contains unique values from the index column1
+     *    There are n additional columns, one for each unique value in column2
+     *    The values in each of the cells in these new columns are the result of applying the given AggregateFunction
+     *    to the data in column3, grouped by the values of column1 and column2
+     */
+    public Table pivot(CategoricalColumn<?> column1,
+                       CategoricalColumn<?> column2,
+                       NumberColumn<?> column3,
+                       AggregateFunction<?, ?> aggregateFunction) {
+        return PivotTable.pivot(this, column1, column2, column3, aggregateFunction);
+    }
+
+    /**
+     * Returns a pivot on this table, where:
+     *    The first column contains unique values from the index column1
+     *    There are n additional columns, one for each unique value in column2
+     *    The values in each of the cells in these new columns are the result of applying the given AggregateFunction
+     *    to the data in column3, grouped by the values of column1 and column2
+     */
+    public Table pivot(String column1Name,
+                       String column2Name,
+                       String column3Name,
+                       AggregateFunction<?, ?> aggregateFunction) {
+        return pivot(
+                categoricalColumn(column1Name),
+                categoricalColumn(column2Name),
+                numberColumn(column3Name),
+                aggregateFunction);
     }
 
     /**
