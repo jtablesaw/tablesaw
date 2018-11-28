@@ -97,7 +97,7 @@ public class FloatColumn extends NumberColumn<Float> {
                 values.add(getFloat(i));
             }
         }
-        final FloatColumn column = FloatColumn.create(name() + " Unique values", values.size());
+        final FloatColumn column = FloatColumn.create(name() + " Unique values");
         for (float value : values) {
             column.append(value);
         }

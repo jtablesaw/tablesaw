@@ -107,7 +107,8 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
                 values.add(getShort(i));
             }
         }
-        final ShortColumn column = ShortColumn.create(name() + " Unique values", values.size());
+        final ShortColumn column = ShortColumn.create(name() + " Unique values");
+
         for (short value : values) {
             column.append(value);
         }

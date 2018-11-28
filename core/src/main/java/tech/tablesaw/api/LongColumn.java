@@ -118,7 +118,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
                 values.add(getLong(i));
             }
         }
-        final LongColumn column = LongColumn.create(name() + " Unique values", values.size());
+        final LongColumn column = LongColumn.create(name() + " Unique values");
         for (long value : values) {
             column.append(value);
         }

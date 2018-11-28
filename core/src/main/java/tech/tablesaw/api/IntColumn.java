@@ -116,7 +116,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
                 values.add(getInt(i));
             }
         }
-        final IntColumn column = IntColumn.create(name() + " Unique values", values.size());
+        final IntColumn column = IntColumn.create(name() + " Unique values");
         for (int value : values) {
             column.append(value);
         }
