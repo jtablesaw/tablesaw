@@ -30,7 +30,7 @@ public class FloatColumnTest {
     @Test
     public void testAppendFloatObject() {
         final FloatColumn floatColumn = FloatColumn.create("floats");
-        final Float floatObject = Float.valueOf(2.5f);
+        final Float floatObject = 2.5f;
         floatColumn.append(floatObject);
         Assert.assertEquals(floatObject, floatColumn.get(0));
     }

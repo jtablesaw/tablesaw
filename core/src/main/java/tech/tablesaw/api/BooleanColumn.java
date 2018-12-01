@@ -802,9 +802,9 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
 
     @Override
     public BooleanColumn fillWith(BooleanIterable iterable) {
-        BooleanIterator iterator = null;
+        BooleanIterator iterator = iterable.iterator();
         for (int r = 0; r < size(); r++) {
-            if (iterator == null || (!iterator.hasNext())) {
+            if (!iterator.hasNext()) {
                 iterator = iterable.iterator();
                 if (!iterator.hasNext()) {
                     break;
