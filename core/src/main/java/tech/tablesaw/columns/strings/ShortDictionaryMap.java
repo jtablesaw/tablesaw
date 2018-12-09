@@ -8,7 +8,6 @@ import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
-import it.unimi.dsi.fastutil.shorts.ShortCollection;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
@@ -109,10 +108,6 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     private Set<String> categories() {
         return valueToKey.keySet();
-    }
-
-    private ShortCollection values() {
-        return valueToKey.values();
     }
 
     private Short2ObjectMap<String> keyToValueMap() {

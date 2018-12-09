@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteArrays;
-import it.unimi.dsi.fastutil.bytes.ByteCollection;
 import it.unimi.dsi.fastutil.bytes.ByteComparator;
 import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
@@ -101,10 +100,6 @@ public class ByteDictionaryMap implements DictionaryMap {
 
     private Set<String> categories() {
         return valueToKey.keySet();
-    }
-
-    private ByteCollection values() {
-        return valueToKey.values();
     }
 
     private Byte2ObjectMap<String> keyToValueMap() {

@@ -73,7 +73,7 @@ public class PivotTable {
         Table summary = temp.summarize(values.name(), function).by(column1.name(), column2.name());
 
         Map<String, Double> valueMap = new HashMap<>();
-        NumberColumn nc = summary.numberColumn(summary.columnCount() - 1);
+        NumberColumn<?> nc = summary.numberColumn(summary.columnCount() - 1);
         for (int i = 0; i < summary.rowCount(); i++) {
             valueMap.put(String.valueOf(summary.get(i, 1)), nc.getDouble(i));
         }
