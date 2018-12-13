@@ -31,8 +31,8 @@ public class ScatterplotExample2 {
     public static void main(String[] args) throws Exception {
         Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
         tornadoes = tornadoes.where(tornadoes.nCol("Start lat").isGreaterThan(20));
-        NumberColumn x = tornadoes.nCol("Start lon");
-        NumberColumn y = tornadoes.nCol("Start lat");
+        NumberColumn<?> x = tornadoes.nCol("Start lon");
+        NumberColumn<?> y = tornadoes.nCol("Start lat");
         Layout layout = Layout.builder()
                 .title("tornado start points")
                 .height(600)

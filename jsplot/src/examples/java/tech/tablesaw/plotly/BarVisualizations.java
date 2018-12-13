@@ -14,8 +14,7 @@
 
 package tech.tablesaw.plotly;
 
-import tech.tablesaw.examples.AbstractExample;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.plotly.api.HorizontalBarPlot;
@@ -35,7 +34,7 @@ public class BarVisualizations extends AbstractExample {
         Table murders = Table.read().csv("../data/SHR76_16.csv");
         out(murders.structure().printAll());
         murders.setName("murders");
-        NumberColumn victimAge = murders.numberColumn("vicAge");
+        DoubleColumn victimAge = murders.doubleColumn("vicAge");
         victimAge.set(victimAge.isEqualTo(999), DoubleColumnType.missingValueIndicator());
 
         Table count = murders.countBy(murders.stringColumn("state"));

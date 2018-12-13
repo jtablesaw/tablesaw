@@ -14,7 +14,6 @@
 
 package tech.tablesaw.plotly;
 
-import tech.tablesaw.examples.AbstractExample;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.StringColumn;
@@ -44,13 +43,13 @@ public class MurderVisualizations extends AbstractExample {
         Table murders = Table.read().csv("../data/UCR1965_2015.csv");
         out(murders.structure());
         murders.setName("murders");
-        NumberColumn cleared = murders.numberColumn("clr");
-        NumberColumn murdered = murders.numberColumn("mrd");
+        NumberColumn<?> cleared = murders.numberColumn("clr");
+        NumberColumn<?> murdered = murders.numberColumn("mrd");
         murdered.setName("murdered");
         cleared.setName("cleared");
         DoubleColumn clearanceRate = cleared.divide(murdered);
         clearanceRate.setName("clearance rate");
-        NumberColumn unsolved = murdered.subtract(cleared);
+        NumberColumn<?> unsolved = murdered.subtract(cleared);
         unsolved.setName("unsolved");
         murders.addColumns(clearanceRate, unsolved);
 
@@ -58,12 +57,12 @@ public class MurderVisualizations extends AbstractExample {
                 .summarize("murdered", "cleared", "unsolved", sum)
                 .by("year");
 
-        Column cum_unsolved = totals.numberColumn("sum [unsolved]").cumSum();
+        Column<?> cum_unsolved = totals.numberColumn("sum [unsolved]").cumSum();
         cum_unsolved.setName("cumulative unsolved");
         totals.addColumns(cum_unsolved);
         Plot.show(AreaPlot.create("Cumulative unsolved homicides", totals, "year", "cumulative unsolved"));
 
-        NumberColumn rate = totals.numberColumn("sum [cleared]").divide(totals.numberColumn("sum [murdered]"));
+        NumberColumn<?> rate = totals.numberColumn("sum [cleared]").divide(totals.numberColumn("sum [murdered]"));
         rate.setName("clearance rate");
         totals.addColumns(rate);
 

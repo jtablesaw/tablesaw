@@ -27,8 +27,8 @@ public class LinePlotExample {
 
     public static void main(String[] args) throws Exception {
         Table robberies = Table.read().csv("../data/boston-robberies.csv");
-        NumberColumn x = robberies.nCol("Record");
-        NumberColumn y = robberies.nCol("Robberies");
+        NumberColumn<?> x = robberies.nCol("Record");
+        NumberColumn<?> y = robberies.nCol("Robberies");
 
         Layout layout = Layout.builder()
                 .title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975")

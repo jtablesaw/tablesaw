@@ -31,9 +31,9 @@ public class BubbleExample {
     public static void main(String[] args) throws IOException {
         Table marketShare = Table.read().csv("../data/market_share.csv");
         Table sub = marketShare.where(Selection.withRange(0, 4));
-        NumberColumn x = sub.nCol("Products");
-        NumberColumn y = sub.nCol("Sales");
-        NumberColumn data = sub.nCol("Market_Share");
+        NumberColumn<?> x = sub.nCol("Products");
+        NumberColumn<?> y = sub.nCol("Sales");
+        NumberColumn<?> data = sub.nCol("Market_Share");
 
         Layout layout = Layout.builder().title("Market Share").build();
         Marker marker = Marker.builder()

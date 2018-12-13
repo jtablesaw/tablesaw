@@ -27,7 +27,7 @@ public class QuantileExample {
 
     public static void main(String[] args) throws Exception {
         Table baseball = Table.read().csv("../data/baseball.csv");
-        NumberColumn xCol = baseball.nCol("BA");
+        NumberColumn<?> xCol = baseball.nCol("BA");
 
         double[] x = new double[xCol.size()];
 
@@ -35,7 +35,7 @@ public class QuantileExample {
             x[i] = i / (float) x.length;
         }
 
-        NumberColumn copy = xCol.copy();
+        NumberColumn<?> copy = xCol.copy();
         copy.sortAscending();
 
         ScatterTrace trace = ScatterTrace.builder(x, copy.asDoubleArray()).build();

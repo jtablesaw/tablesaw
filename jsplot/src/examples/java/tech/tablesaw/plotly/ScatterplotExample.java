@@ -29,8 +29,8 @@ public class ScatterplotExample {
 
     public static void main(String[] args) throws Exception {
         Table baseball = Table.read().csv("../data/baseball.csv");
-        NumberColumn x = baseball.nCol("BA");
-        NumberColumn y = baseball.nCol("W");
+        NumberColumn<?> x = baseball.nCol("BA");
+        NumberColumn<?> y = baseball.nCol("W");
         Layout layout = Layout.builder().title("Wins vs BA")
                 .xAxis(Axis.builder().title("Batting Average").build())
                 .yAxis(Axis.builder().title("Wins").build())
