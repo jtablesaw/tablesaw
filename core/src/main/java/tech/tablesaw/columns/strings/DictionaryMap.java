@@ -35,6 +35,8 @@ public interface DictionaryMap {
 
     Object[] asObjectArray();
 
+    String[] asStringArray();
+
     Selection selectIsIn(String... strings);
 
     Selection selectIsIn(Collection<String> strings);

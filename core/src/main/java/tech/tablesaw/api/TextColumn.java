@@ -520,6 +520,10 @@ public class TextColumn extends AbstractColumn<String>
 
     @Override
     public Object[] asObjectArray() {
+        return asStringArray();
+    }
+
+    public String[] asStringArray() {
         final String[] output = new String[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = get(i);
