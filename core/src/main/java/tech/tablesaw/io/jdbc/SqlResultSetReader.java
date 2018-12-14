@@ -14,16 +14,8 @@
 
 package tech.tablesaw.io.jdbc;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.FloatColumn;
@@ -32,6 +24,13 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Creates a Relation from the result of a SQL query, by passing the jdbc resultset to the constructor
@@ -61,7 +60,7 @@ public class SqlResultSetReader {
                 .put(Types.INTEGER, ColumnType.INTEGER)
                 .put(Types.SMALLINT, ColumnType.SHORT)
                 .put(Types.TINYINT, ColumnType.SHORT)
-                .put(Types.BIGINT, ColumnType.DOUBLE)
+                .put(Types.BIGINT, ColumnType.LONG)
 
                 .put(Types.CHAR, ColumnType.STRING)
                 .put(Types.NCHAR, ColumnType.STRING)
