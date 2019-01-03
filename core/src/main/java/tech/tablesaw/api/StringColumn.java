@@ -15,7 +15,7 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractParser;
@@ -390,20 +390,10 @@ public class StringColumn extends AbstractColumn<String>
         return StringColumn.create(name() + " Unique values", strings);
     }
 
-    /**
-     * Returns the integers that back this column.
-     *
-     * @return data as {@link IntArrayList}
-     */
-    public IntArrayList data() {
-        return lookupTable.dataAsIntArray();
-    }
-
     public IntColumn asNumberColumn() {
-        IntColumn numberColumn = IntColumn.create(this.name() + ": codes");
-        IntArrayList data = data();
+        IntColumn numberColumn = IntColumn.create(this.name() + ": codes", size());
         for (int i = 0; i < size(); i++) {
-            numberColumn.append(data.getInt(i));
+            numberColumn.set(i, lookupTable.firstIndexOf(lookupTable.getValueForIndex(i)));
         }
         return numberColumn;
     }
@@ -490,9 +480,9 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public double[] asDoubleArray() {
-        double[] doubles = new double[data().size()];
+        double[] doubles = new double[size()];
         for (int i = 0; i < size(); i++) {
-            doubles[i] = data().getInt(i);
+            doubles[i] = lookupTable.firstIndexOf(lookupTable.getValueForIndex(i));
         }
         return doubles;
     }
