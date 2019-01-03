@@ -183,14 +183,14 @@ public class CsvReader {
 
     private Reader getReader(CsvReadOptions options, byte[] bytes)
             throws FileNotFoundException {
+
         if (bytes != null) {
             return new InputStreamReader(new ByteArrayInputStream(bytes));
         }
-
         if (options.inputStream() != null) {
             return new InputStreamReader(options.inputStream());
         }
-        else if (options.reader() != null) {
+        if (options.reader() != null) {
             return options.reader();
         }
         return new InputStreamReader(new FileInputStream(options.file()));
