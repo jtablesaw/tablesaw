@@ -8,6 +8,7 @@ import smile.data.AttributeDataset;
 import smile.data.NominalAttribute;
 import smile.data.NumericAttribute;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.table.Relation;
 
 public class SmileConverter {
@@ -68,7 +69,7 @@ public class SmileConverter {
 
     private AttributeDataset dataset(NumericColumn<?> responseCol, AttributeType type, List<NumericColumn<?>> variableCols) {
 	Attribute responseAttribute = type == AttributeType.NOMINAL
-		? new NominalAttribute(responseCol.name()) : new NumericAttribute(responseCol.name());
+		? colAsNominalAttribute(responseCol) : new NumericAttribute(responseCol.name());
         AttributeDataset data = new AttributeDataset(table.name(),
             variableCols.stream().map(col -> new NumericAttribute(col.name())).toArray(Attribute[]::new),
             responseAttribute);
@@ -78,6 +79,11 @@ public class SmileConverter {
             data.add(x, responseCol.getDouble(r));
         }
         return data;
+    }
+
+    private NominalAttribute colAsNominalAttribute(NumericColumn<?> col) {
+	return new NominalAttribute(col.name(),
+		col.unique().mapInto(o -> o.toString(), StringColumn.create(col.name(), col.size())).asObjectArray());
     }
 
     private static enum AttributeType {

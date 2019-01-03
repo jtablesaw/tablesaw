@@ -207,7 +207,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public Integer[] asObjectArray() {
         final Integer[] output = new Integer[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getInt(i);

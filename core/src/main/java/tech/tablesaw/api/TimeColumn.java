@@ -588,7 +588,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public LocalTime[] asObjectArray() {
         final LocalTime[] output = new LocalTime[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = get(i);

@@ -21,6 +21,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import smile.classification.RandomForest;
+import smile.data.AttributeDataset;
 import smile.regression.OLS;
 import tech.tablesaw.api.Table;
 
@@ -39,6 +40,13 @@ public class SmileConverterTest {
 	Table moneyball = Table.read().csv("../data/baseball.csv");
 	RandomForest playoffsModel = new RandomForest(moneyball.smile().nominalDataset("Playoffs", "RS", "RA", "OBP"), 1);
 	assertNotNull(playoffsModel.toString());
+    }
+
+    @Test
+    public void nominalDatasetToString() throws IOException {
+	Table moneyball = Table.read().csv("../data/baseball.csv");
+	AttributeDataset dataset = moneyball.smile().nominalDataset("Playoffs", "RS", "RA", "OBP");
+	assertNotNull(dataset.toString());
     }
 
 }

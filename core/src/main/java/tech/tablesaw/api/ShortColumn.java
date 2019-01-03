@@ -199,7 +199,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public Short[] asObjectArray() {
         final Short[] output = new Short[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getShort(i);

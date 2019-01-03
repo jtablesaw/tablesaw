@@ -44,7 +44,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
     Table summary();
 
-    Object[] asObjectArray();
+    T[] asObjectArray();
 
     /**
      * Returns the count of missing values in this column.
