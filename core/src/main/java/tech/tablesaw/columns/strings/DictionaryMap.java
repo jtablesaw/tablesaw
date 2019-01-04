@@ -1,15 +1,15 @@
 package tech.tablesaw.columns.strings;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.BitmapBackedSelection;
-import tech.tablesaw.selection.Selection;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 public interface DictionaryMap {
 
@@ -27,7 +27,21 @@ public interface DictionaryMap {
 
     Set<String> asSet();
 
-    IntArrayList dataAsIntArray();
+    default int[] asIntArray() {
+	String[] values = asObjectArray();
+	int[] result = new int[values.length];
+	List<String> uniqueValues = new ArrayList<>();
+	for (int i = 0; i < values.length; i++) {
+	    String value = values[i];
+	    int uniqueIndex = uniqueValues.indexOf(value);
+	    if (uniqueIndex < 0) {
+		uniqueValues.add(value);
+		uniqueIndex = uniqueValues.size() - 1;
+	    }
+	    result[i] = uniqueIndex;
+	}
+	return result;
+    }
 
     int getKeyForIndex(int i);
 
