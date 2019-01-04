@@ -164,12 +164,7 @@ public class IntDictionaryMap implements DictionaryMap {
     }
 
     @Override
-    public Object[] asObjectArray() {
-        return asStringArray();
-    }
-
-    @Override
-    public String[] asStringArray() {
+    public String[] asObjectArray() {
         final String[] output = new String[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getValueForIndex(i);

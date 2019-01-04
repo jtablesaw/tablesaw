@@ -33,9 +33,7 @@ public interface DictionaryMap {
 
     int firstIndexOf(String string);
 
-    Object[] asObjectArray();
-
-    String[] asStringArray();
+    String[] asObjectArray();
 
     Selection selectIsIn(String... strings);
 

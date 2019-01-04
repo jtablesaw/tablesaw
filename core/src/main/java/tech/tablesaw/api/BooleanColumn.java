@@ -834,7 +834,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public Boolean[] asObjectArray() {
         final Boolean[] output = new Boolean[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = get(i);

@@ -188,7 +188,7 @@ public class FloatColumn extends NumberColumn<Float> {
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public Float[] asObjectArray() {
         final Float[] output = new Float[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getFloat(i);

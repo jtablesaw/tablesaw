@@ -130,15 +130,6 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
         return count;
     }
 
-    @Override
-    public Object[] asObjectArray() {
-        final Double[] output = new Double[size()];
-        for (int i = 0; i < size(); i++) {
-            output[i] = getDouble(i);
-        }
-        return output;
-    }
-
     /**
      * Returns true if all rows satisfy the predicate, false otherwise
      *

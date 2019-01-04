@@ -551,12 +551,8 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public String[] asObjectArray() {
         return lookupTable.asObjectArray();
-    }
-
-    public String[] asStringArray() {
-        return lookupTable.asStringArray();
     }
 
     @Override

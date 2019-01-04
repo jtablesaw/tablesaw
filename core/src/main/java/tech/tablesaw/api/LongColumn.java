@@ -234,7 +234,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public Long[] asObjectArray() {
         final Long[] output = new Long[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getLong(i);
