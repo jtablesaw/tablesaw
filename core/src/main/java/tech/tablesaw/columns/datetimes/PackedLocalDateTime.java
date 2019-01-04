@@ -36,7 +36,7 @@ import java.time.temporal.WeekFields;
 import java.util.Date;
 import java.util.Locale;
 
-import static tech.tablesaw.api.DateTimeColumn.MISSING_VALUE;
+import static tech.tablesaw.columns.datetimes.DateTimeColumnType.missingValueIndicator;
 
 /*
  * TODO(lwhite): Extend missing-value handling on predicates to DateColumn and TimeColumn
@@ -75,7 +75,7 @@ public class PackedLocalDateTime {
     }
 
     public static LocalDateTime asLocalDateTime(long dateTime) {
-        if (dateTime == MISSING_VALUE) {
+        if (dateTime == missingValueIndicator()) {
             return null;
         }
         int date = date(dateTime);
@@ -95,7 +95,7 @@ public class PackedLocalDateTime {
 
     public static long pack(LocalDate date, LocalTime time) {
         if (date == null || time == null) {
-            return MISSING_VALUE;
+            return missingValueIndicator();
         }
         int d = PackedLocalDate.pack(date);
         int t = PackedLocalTime.pack(time);
@@ -104,7 +104,7 @@ public class PackedLocalDateTime {
 
     public static long pack(LocalDateTime dateTime) {
         if (dateTime == null) {
-            return MISSING_VALUE;
+            return missingValueIndicator();
         }
         LocalDate date = dateTime.toLocalDate();
         LocalTime time = dateTime.toLocalTime();
@@ -113,7 +113,7 @@ public class PackedLocalDateTime {
 
     public static long pack(Date date) {
         if (date == null) {
-            return MISSING_VALUE;
+            return missingValueIndicator();
         }
         return pack(date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
     }
@@ -168,7 +168,7 @@ public class PackedLocalDateTime {
     }
 
     public static boolean isLeapYear(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         return IsoChronology.INSTANCE.isLeapYear(getYear(packedDateTime));
     }
 
@@ -197,10 +197,10 @@ public class PackedLocalDateTime {
 
     /**
      * Returns the quarter of the year of the given date as an int from 1 to 4, or -1, if the argument is the
-     * MISSING_VALUE for DateTimeColumn
+     * missingValueIndicator() for DateTimeColumn
      */
     public static int getQuarter(long packedDate) {
-        if (packedDate == MISSING_VALUE) {
+        if (packedDate == missingValueIndicator()) {
             return -1;
         }
         return PackedLocalDate.getQuarter(date(packedDate));
@@ -218,7 +218,7 @@ public class PackedLocalDateTime {
     }
 
     public static boolean isInQ1(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         Month month = getMonth(packedDateTime);
         return month == Month.JANUARY ||
                 month == Month.FEBRUARY ||
@@ -226,7 +226,7 @@ public class PackedLocalDateTime {
     }
 
     public static boolean isInQ2(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         Month month = getMonth(packedDateTime);
         return month == Month.APRIL ||
                 month == Month.MAY ||
@@ -234,7 +234,7 @@ public class PackedLocalDateTime {
     }
 
     public static boolean isInQ3(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         Month month = getMonth(packedDateTime);
         return month == Month.JULY ||
                 month == Month.AUGUST ||
@@ -242,7 +242,7 @@ public class PackedLocalDateTime {
     }
 
     public static boolean isInQ4(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         Month month = getMonth(packedDateTime);
         return month == Month.OCTOBER ||
                 month == Month.NOVEMBER ||
@@ -250,121 +250,121 @@ public class PackedLocalDateTime {
     }
 
     public static boolean isAfter(long packedDateTime, long value) {
-        return (packedDateTime != MISSING_VALUE) && packedDateTime > value;
+        return (packedDateTime != missingValueIndicator()) && packedDateTime > value;
     }
 
     public static boolean isBefore(long packedDateTime, long value) {
-        return (packedDateTime != MISSING_VALUE) && packedDateTime < value;
+        return (packedDateTime != missingValueIndicator()) && packedDateTime < value;
     }
 
     public static boolean isSunday(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
         return dayOfWeek == DayOfWeek.SUNDAY;
     }
 
     public static boolean isMonday(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
         return dayOfWeek == DayOfWeek.MONDAY;
     }
 
     public static boolean isTuesday(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
         return dayOfWeek == DayOfWeek.TUESDAY;
     }
 
     public static boolean isWednesday(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
         return dayOfWeek == DayOfWeek.WEDNESDAY;
     }
 
     public static boolean isThursday(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
         return dayOfWeek == DayOfWeek.THURSDAY;
     }
 
     public static boolean isFriday(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
         return dayOfWeek == DayOfWeek.FRIDAY;
     }
 
     public static boolean isSaturday(long packedDateTime) {
-        if (packedDateTime == MISSING_VALUE) return false;
+        if (packedDateTime == missingValueIndicator()) return false;
         DayOfWeek dayOfWeek = getDayOfWeek(packedDateTime);
         return dayOfWeek == DayOfWeek.SATURDAY;
     }
 
     public static boolean isFirstDayOfMonth(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getDayOfMonth(packedDateTime) == 1;
+        return (packedDateTime != missingValueIndicator()) && getDayOfMonth(packedDateTime) == 1;
     }
 
     public static boolean isInJanuary(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.JANUARY;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.JANUARY;
     }
 
     public static boolean isInFebruary(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.FEBRUARY;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.FEBRUARY;
     }
 
     public static boolean isInMarch(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.MARCH;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.MARCH;
     }
 
     public static boolean isInApril(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.APRIL;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.APRIL;
     }
 
     public static boolean isInMay(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.MAY;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.MAY;
     }
 
     public static boolean isInJune(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.JUNE;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.JUNE;
     }
 
     public static boolean isInJuly(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.JULY;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.JULY;
     }
 
     public static boolean isInAugust(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.AUGUST;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.AUGUST;
     }
 
     public static boolean isInSeptember(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.SEPTEMBER;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.SEPTEMBER;
     }
 
     public static boolean isInOctober(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.OCTOBER;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.OCTOBER;
     }
 
     public static boolean isInNovember(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.NOVEMBER;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.NOVEMBER;
     }
 
     public static boolean isInDecember(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getMonth(packedDateTime) == Month.DECEMBER;
+        return (packedDateTime != missingValueIndicator()) && getMonth(packedDateTime) == Month.DECEMBER;
     }
 
     public static boolean isLastDayOfMonth(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && getDayOfMonth(packedDateTime) == lengthOfMonth(packedDateTime);
+        return (packedDateTime != missingValueIndicator()) && getDayOfMonth(packedDateTime) == lengthOfMonth(packedDateTime);
     }
 
     public static boolean isInYear(long packedDateTime, int year) {
-        return (packedDateTime != MISSING_VALUE) && getYear(packedDateTime) == year;
+        return (packedDateTime != missingValueIndicator()) && getYear(packedDateTime) == year;
     }
 
     public static boolean isMidnight(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && PackedLocalTime.isMidnight(time(packedDateTime));
+        return (packedDateTime != missingValueIndicator()) && PackedLocalTime.isMidnight(time(packedDateTime));
     }
 
     public static boolean isNoon(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && PackedLocalTime.isNoon(time(packedDateTime));
+        return (packedDateTime != missingValueIndicator()) && PackedLocalTime.isNoon(time(packedDateTime));
     }
 
     /**
@@ -372,7 +372,7 @@ public class PackedLocalDateTime {
      * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
      */
     public static boolean AM(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && PackedLocalTime.AM(time(packedDateTime));
+        return (packedDateTime != missingValueIndicator()) && PackedLocalTime.AM(time(packedDateTime));
     }
 
     /**
@@ -380,7 +380,7 @@ public class PackedLocalDateTime {
      * Note: we follow the convention that 12:00 NOON is PM and 12 MIDNIGHT is AM
      */
     public static boolean PM(long packedDateTime) {
-        return (packedDateTime != MISSING_VALUE) && PackedLocalTime.PM(time(packedDateTime));
+        return (packedDateTime != missingValueIndicator()) && PackedLocalTime.PM(time(packedDateTime));
     }
 
     public static int getMinuteOfDay(long packedLocalDateTime) {

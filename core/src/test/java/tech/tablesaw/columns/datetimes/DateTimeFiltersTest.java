@@ -14,20 +14,18 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.Selection;
+import static org.junit.Assert.*;
 
 public class DateTimeFiltersTest {
 
@@ -94,7 +92,7 @@ public class DateTimeFiltersTest {
     public void testIsMissing() {
         DateTimeColumn column = DateTimeColumn.create("test");
         column.append(LocalDateTime.now());
-        column.appendInternal(DateTimeColumn.MISSING_VALUE);
+        column.appendInternal(DateTimeColumnType.missingValueIndicator());
 
         assertTrue(column.isMissing().contains(1));
         assertTrue(column.isNotMissing().contains(0));

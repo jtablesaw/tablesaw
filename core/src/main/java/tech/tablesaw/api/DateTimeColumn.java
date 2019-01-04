@@ -14,27 +14,7 @@
 
 package tech.tablesaw.api;
 
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-
-import java.nio.ByteBuffer;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 import com.google.common.base.Preconditions;
-
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrays;
@@ -54,14 +34,32 @@ import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
+import java.nio.ByteBuffer;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.columns.datetimes.DateTimeColumnType.missingValueIndicator;
+
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
 public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn>,
         CategoricalColumn<LocalDateTime> {
-
-    public static final long MISSING_VALUE = DateTimeColumnType.missingValueIndicator();
 
     private final LongComparator reverseLongComparator = DescendingLongComparator.instance();
 
@@ -109,7 +107,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     public static boolean valueIsMissing(long value) {
-        return MISSING_VALUE == value;
+        return missingValueIndicator() == value;
     }
 
     @Override
@@ -177,7 +175,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = MISSING_VALUE;
+            dest[i] = missingValueIndicator();
         }
 
         System.arraycopy(data.toLongArray(), srcPos, dest, destPos, length);
@@ -203,7 +201,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
             final long dt = PackedLocalDateTime.pack(dateTime);
             appendInternal(dt);
         } else {
-            appendInternal(MISSING_VALUE);
+            appendInternal(missingValueIndicator());
         }
         return this;
     }
@@ -369,7 +367,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (getPackedDateTime(i) == MISSING_VALUE) {
+            if (getPackedDateTime(i) == missingValueIndicator()) {
                 count++;
             }
         }
@@ -464,12 +462,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
             return null;
         }
         for (long aData : data) {
-            if (MISSING_VALUE != aData) {
+            if (missingValueIndicator() != aData) {
                 max = (max > aData) ? max : aData;
             }
         }
 
-        if (MISSING_VALUE == max) {
+        if (missingValueIndicator() == max) {
             return null;
         }
         return PackedLocalDateTime.asLocalDateTime(max);
@@ -477,7 +475,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     @Override
     public DateTimeColumn appendMissing() {
-        appendInternal(MISSING_VALUE);
+        appendInternal(missingValueIndicator());
         return this;
     }
 
@@ -491,7 +489,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
             return null;
         }
         for (long aData : data) {
-            if (MISSING_VALUE != aData) {
+            if (missingValueIndicator() != aData) {
                 min = (min < aData) ? min : aData;
             }
         }
