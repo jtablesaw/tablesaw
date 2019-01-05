@@ -391,8 +391,8 @@ public class StringColumn extends AbstractColumn<String>
         return StringColumn.create(name() + " Unique values", strings);
     }
 
-    public IntColumn asNumberColumn() {
-        return IntColumn.create(this.name(), lookupTable.asIntArray());
+    public DoubleColumn asDoubleColumn() {
+        return DoubleColumn.create(this.name(), asDoubleArray());
     }
 
     public StringColumn where(Selection selection) {
