@@ -14,9 +14,12 @@
 
 package tech.tablesaw.conversion;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -45,8 +48,19 @@ public class SmileConverterTest {
     @Test
     public void nominalDatasetToString() throws IOException {
 	Table moneyball = Table.read().csv("../data/baseball.csv");
-	AttributeDataset dataset = moneyball.smile().nominalDataset("Playoffs", "RS", "RA", "OBP");
+	AttributeDataset dataset = moneyball.smile().nominalDataset("Playoffs", "League", "RS", "RA", "OBP");
 	assertNotNull(dataset.toString());
+    }
+
+    @Test
+    public void columnNames() throws IOException {
+	Table moneyball = Table.read().csv("../data/baseball.csv");
+	String responseColumnName = "Playoffs";
+	String[] variableColumnNames = new String[] { "League", "RS", "RA", "OBP" };
+	AttributeDataset dataset = moneyball.smile().nominalDataset(responseColumnName, variableColumnNames);
+	String[] resultNames = Arrays.stream(dataset.attributes()).map(attr -> attr.getName()).toArray(String[]::new);
+	assertEquals(responseColumnName, dataset.responseAttribute().getName());
+	assertArrayEquals(variableColumnNames, resultNames);
     }
 
 }

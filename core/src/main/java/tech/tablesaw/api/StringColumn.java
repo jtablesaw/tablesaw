@@ -392,7 +392,7 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public IntColumn asNumberColumn() {
-        return IntColumn.create(this.name() + ": codes", lookupTable.asIntArray());
+        return IntColumn.create(this.name(), lookupTable.asIntArray());
     }
 
     public StringColumn where(Selection selection) {
