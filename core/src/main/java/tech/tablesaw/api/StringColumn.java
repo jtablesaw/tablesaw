@@ -473,7 +473,7 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public double getDouble(int i) {
-        return lookupTable.getKeyForIndex(i);
+        return lookupTable.uniqueValuesAt(lookupTable.firstIndexOf(lookupTable.getValueForIndex(i))) - 1;
     }
 
     public double[] asDoubleArray() {

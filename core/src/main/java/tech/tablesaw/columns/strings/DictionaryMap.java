@@ -27,20 +27,37 @@ public interface DictionaryMap {
 
     Set<String> asSet();
 
+    /**
+     * Returns the number of unique values at or before the given index
+     */
+    default int uniqueValuesAt(int index) {
+        int result = 0;
+        List<String> uniqueValues = new ArrayList<>();
+        for (int i = 0; i <= index; i++) {
+            String value = getValueForIndex(i);
+            int uniqueIndex = uniqueValues.indexOf(value);
+            if (uniqueIndex < 0) {
+                uniqueValues.add(value);
+                uniqueIndex = uniqueValues.size() - 1;
+                result++;
+            }
+        }
+        return result;
+    }
+    
     default int[] asIntArray() {
-	String[] values = asObjectArray();
-	int[] result = new int[values.length];
-	List<String> uniqueValues = new ArrayList<>();
-	for (int i = 0; i < values.length; i++) {
-	    String value = values[i];
-	    int uniqueIndex = uniqueValues.indexOf(value);
-	    if (uniqueIndex < 0) {
-		uniqueValues.add(value);
-		uniqueIndex = uniqueValues.size() - 1;
-	    }
-	    result[i] = uniqueIndex;
-	}
-	return result;
+        int[] result = new int[size()];
+        List<String> uniqueValues = new ArrayList<>();
+        for (int i = 0; i < size(); i++) {
+            String value = getValueForIndex(i);
+              int uniqueIndex = uniqueValues.indexOf(value);
+              if (uniqueIndex < 0) {
+        	    uniqueValues.add(value);
+        	    uniqueIndex = uniqueValues.size() - 1;
+        	    }
+              result[i] = uniqueIndex;
+              }
+        return result;
     }
 
     int getKeyForIndex(int i);
