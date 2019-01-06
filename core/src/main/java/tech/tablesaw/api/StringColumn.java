@@ -618,6 +618,11 @@ public class StringColumn extends AbstractColumn<String>
         return (StringColumn) super.sampleX(proportion);
     }
 
+    @Override
+    public StringColumn asStringColumn() {
+        return copy();
+    }
+
     public TextColumn asTextColumn() {
         TextColumn textColumn = TextColumn.create(name(), size());
         for (int i = 0; i < size(); i++) {

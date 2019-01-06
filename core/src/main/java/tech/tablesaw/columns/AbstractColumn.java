@@ -15,6 +15,7 @@
 package tech.tablesaw.columns;
 
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.StringColumn;
 
 /**
  * Partial implementation of the {@link Column} interface
@@ -54,5 +55,14 @@ public abstract class AbstractColumn<T> implements Column<T> {
     @Override
     public String toString() {
         return type().getPrinterFriendlyName() + " column: " + name();
+    }
+
+    @Override
+    public StringColumn asStringColumn() {
+        StringColumn sc = StringColumn.create(name() + " strings");
+        for (T value: this) {
+            sc.append(String.valueOf(value));
+        }
+        return sc;
     }
 }

@@ -527,6 +527,7 @@ public class TextColumn extends AbstractColumn<String>
         return output;
     }
 
+    @Override
     public StringColumn asStringColumn() {
         StringColumn textColumn = StringColumn.create(name(), size());
         for (int i = 0; i < size(); i++) {

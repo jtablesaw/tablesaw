@@ -17,6 +17,7 @@ package tech.tablesaw.columns;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
@@ -574,4 +575,6 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         int tableSize = (int) Math.round(size() * proportion);
         return where(selectNRowsAtRandom(tableSize, size()));
     }
+
+    StringColumn asStringColumn();
 }

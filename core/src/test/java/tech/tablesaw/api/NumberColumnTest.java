@@ -293,6 +293,15 @@ public class NumberColumnTest {
     }
 
     @Test
+    public void testAsString() {
+        DoubleColumn numberColumn =  DoubleColumn.create("test");
+        numberColumn.append(48392.2932);
+        StringColumn sc = numberColumn.asStringColumn();
+        assertEquals("test strings", sc.name());
+        assertEquals("48392.2932", sc.get(0));
+    }
+
+    @Test
     public void testNumberFormat3() {
         DoubleColumn numberColumn =  DoubleColumn.create("test");
         numberColumn.append(48392.2932);
