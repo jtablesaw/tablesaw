@@ -187,7 +187,7 @@ public class ColumnTest {
         assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).noneMatch(isNegative));
     }
 
-    private <T> void check(Column<T> column, @SuppressWarnings("unchecked") T... ts) {
+    private <T> void assertContentEquals(Column<T> column, @SuppressWarnings("unchecked") T... ts) {
         assertEquals(ts.length, column.size());
         for (int i = 0; i < ts.length; i++) {
             assertEquals(ts[i], column.get(i));
@@ -197,7 +197,7 @@ public class ColumnTest {
     @Test
     public void testFilter() {
         Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZero);
-        check(filtered, 0.0, 1.0);
+        assertContentEquals(filtered, 0.0, 1.0);
     }
 
     static String getSeason(LocalDate date) {
@@ -231,7 +231,7 @@ public class ColumnTest {
         DoubleColumn doubleColumn = DoubleColumn.create("t1", new double[] {-1, 0, 1});
         StringColumn stringColumn1 =
                 (StringColumn) doubleColumn.mapInto(toString, StringColumn.create("T", doubleColumn.size()));
-        check(stringColumn1, strings);
+        assertContentEquals(stringColumn1, strings);
     }
 
     @Test
@@ -245,12 +245,12 @@ public class ColumnTest {
             StringColumn stringColumn1 =
                             (StringColumn) dateColumn.mapInto(toSeason, 
                                             StringColumn.create("Season", dateColumn.size()));
-            check(stringColumn1, strings);
+            assertContentEquals(stringColumn1, strings);
     }
 
     @Test
     public void testMap() {
-        check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).map(negate), 1.0, -0.0, -1.0);
+        assertContentEquals(DoubleColumn.create("t1", new double[] {-1, 0, 1}).map(negate), 1.0, -0.0, -1.0);
     }
 
     @Test
@@ -278,7 +278,7 @@ public class ColumnTest {
 
     @Test
     public void sorted() {
-        check(DoubleColumn.create("t1", new double[] {1, -1, 0}).sorted(Double::compare), -1.0, 0.0, 1.0);
+        assertContentEquals(DoubleColumn.create("t1", new double[] {1, -1, 0}).sorted(Double::compare), -1.0, 0.0, 1.0);
     }
 
 }

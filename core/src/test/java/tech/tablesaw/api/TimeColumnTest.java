@@ -274,7 +274,7 @@ public class TimeColumnTest {
         TimeColumn column2 = column1.plusHours(3);
         IntColumn numberColumn = column2.differenceInHours(column1);
         int expected = -3;
-        check(numberColumn, expected);
+        assertMinAndMaxEquals(expected, numberColumn);
     }
 
     @Test
@@ -346,7 +346,7 @@ public class TimeColumnTest {
         TimeColumn column2 = column1.minusHours(0);
         IntColumn numberColumn = column2.differenceInHours(column1);
         int expected = 0;
-        check(numberColumn, expected);
+        assertMinAndMaxEquals(expected, numberColumn);
     }
 
     @Test
@@ -355,7 +355,7 @@ public class TimeColumnTest {
         TimeColumn column2 = column1.plusMinutes(30);
         IntColumn numberColumn = column2.differenceInMinutes(column1);
         int expected = -30;
-        check(numberColumn, expected);
+        assertMinAndMaxEquals(expected, numberColumn);
     }
 
     @Test
@@ -364,7 +364,7 @@ public class TimeColumnTest {
         TimeColumn column2 = column1.minusMinutes(30);
         IntColumn numberColumn = column2.differenceInMinutes(column1);
         int expected = 30;
-        check(numberColumn, expected);
+        assertMinAndMaxEquals(expected, numberColumn);
     }
 
     @Test
@@ -373,7 +373,7 @@ public class TimeColumnTest {
         TimeColumn column2 = column1.plusSeconds(101);
         IntColumn numberColumn = column2.differenceInSeconds(column1);
         int expected = -101;
-        check(numberColumn, expected);
+        assertMinAndMaxEquals(expected, numberColumn);
     }
 
     @Test
@@ -382,7 +382,7 @@ public class TimeColumnTest {
         TimeColumn column2 = column1.minusSeconds(101);
         IntColumn numberColumn = column2.differenceInSeconds(column1);
         int expected = 101;
-        check(numberColumn, expected);
+        assertMinAndMaxEquals(expected, numberColumn);
     }
 
     @Test
@@ -391,7 +391,7 @@ public class TimeColumnTest {
         TimeColumn column2 = column1.plusMilliseconds(101);
         IntColumn numberColumn = column2.differenceInMilliseconds(column1);
         int expected = -101;
-        check(numberColumn, expected);
+        assertMinAndMaxEquals(expected, numberColumn);
     }
 
     @Test
@@ -400,7 +400,7 @@ public class TimeColumnTest {
         TimeColumn column2 = column1.minusMilliseconds(101);
         IntColumn numberColumn = column2.differenceInMilliseconds(column1);
         int expected = 101;
-        check(numberColumn, expected);
+        assertMinAndMaxEquals(expected, numberColumn);
     }
 
     @Test
@@ -410,7 +410,7 @@ public class TimeColumnTest {
         assertNull(col.get(0));
     }
 
-    private void check(IntColumn numberColumn, int expected) {
+    private void assertMinAndMaxEquals(int expected, IntColumn numberColumn) {
         assertEquals(expected, (int) numberColumn.min());
         assertEquals(expected, (int) numberColumn.max());
     }
