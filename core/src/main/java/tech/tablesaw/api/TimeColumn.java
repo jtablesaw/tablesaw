@@ -406,6 +406,10 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         return doubles;
     }
 
+    public DoubleColumn asDoubleColumn() {
+	return DoubleColumn.create(name(), asDoubleArray());
+    }
+
     @Override
     public String toString() {
         return "LocalTime column: " + name();

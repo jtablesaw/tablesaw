@@ -1,15 +1,15 @@
 package tech.tablesaw.columns.strings;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.BitmapBackedSelection;
-import tech.tablesaw.selection.Selection;
-
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 public interface DictionaryMap {
 
@@ -27,7 +27,38 @@ public interface DictionaryMap {
 
     Set<String> asSet();
 
-    IntArrayList dataAsIntArray();
+    /**
+     * Returns the number of unique values at or before the given index
+     */
+    default int uniqueValuesAt(int index) {
+        int result = 0;
+        List<String> uniqueValues = new ArrayList<>();
+        for (int i = 0; i <= index; i++) {
+            String value = getValueForIndex(i);
+            int uniqueIndex = uniqueValues.indexOf(value);
+            if (uniqueIndex < 0) {
+                uniqueValues.add(value);
+                uniqueIndex = uniqueValues.size() - 1;
+                result++;
+            }
+        }
+        return result;
+    }
+    
+    default int[] asIntArray() {
+        int[] result = new int[size()];
+        List<String> uniqueValues = new ArrayList<>();
+        for (int i = 0; i < size(); i++) {
+            String value = getValueForIndex(i);
+              int uniqueIndex = uniqueValues.indexOf(value);
+              if (uniqueIndex < 0) {
+        	    uniqueValues.add(value);
+        	    uniqueIndex = uniqueValues.size() - 1;
+        	    }
+              result[i] = uniqueIndex;
+              }
+        return result;
+    }
 
     int getKeyForIndex(int i);
 

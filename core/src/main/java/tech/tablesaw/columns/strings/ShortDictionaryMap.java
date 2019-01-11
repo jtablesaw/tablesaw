@@ -1,6 +1,5 @@
 package tech.tablesaw.columns.strings;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2IntMap;
 import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
@@ -153,15 +152,6 @@ public class ShortDictionaryMap implements DictionaryMap {
 
     public Set<String> asSet() {
         return categories();
-    }
-
-    @Override
-    public IntArrayList dataAsIntArray() {
-        IntArrayList copy = new IntArrayList(size());
-        for (int i = 0; i < size(); i++) {
-            copy.add(values.getShort(i));
-        }
-        return copy;
     }
 
     public int firstIndexOf(String value) {

@@ -1,14 +1,18 @@
 package tech.tablesaw.conversion;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import smile.data.Attribute;
 import smile.data.AttributeDataset;
 import smile.data.NominalAttribute;
 import smile.data.NumericAttribute;
+import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.table.Relation;
 
 public class SmileConverter {
@@ -33,14 +37,14 @@ public class SmileConverter {
      * Returns a dataset where the response column is numeric. E.g. to be used for a regression
      */
     public AttributeDataset numericDataset(int responseColIndex, int... variablesColIndices) {
-        return dataset(table.numberColumn(responseColIndex), AttributeType.NUMERIC, table.numericColumns(variablesColIndices));
+        return dataset(table.numberColumn(responseColIndex), AttributeType.NUMERIC, table.columns(variablesColIndices));
     }  
 
     /**
      * Returns a dataset where the response column is numeric. E.g. to be used for a regression
      */
     public AttributeDataset numericDataset(String responseColName, String... variablesColNames) {
-        return dataset(table.numberColumn(responseColName), AttributeType.NUMERIC, table.numericColumns(variablesColNames));
+        return dataset(table.numberColumn(responseColName), AttributeType.NUMERIC, table.columns(variablesColNames));
     }
 
     /**
@@ -57,38 +61,62 @@ public class SmileConverter {
      * Returns a dataset where the response column is nominal. E.g. to be used for a classification
      */
     public AttributeDataset nominalDataset(int responseColIndex, int... variablesColIndices) {
-        return dataset(table.numberColumn(responseColIndex), AttributeType.NOMINAL, table.numericColumns(variablesColIndices));
+        return dataset(table.numberColumn(responseColIndex), AttributeType.NOMINAL, table.columns(variablesColIndices));
     }  
 
     /**
      * Returns a dataset where the response column is nominal. E.g. to be used for a classification
      */
     public AttributeDataset nominalDataset(String responseColName, String... variablesColNames) {
-        return dataset(table.numberColumn(responseColName), AttributeType.NOMINAL, table.numericColumns(variablesColNames));
+        return dataset(table.numberColumn(responseColName), AttributeType.NOMINAL, table.columns(variablesColNames));
     }
 
-    private AttributeDataset dataset(NumericColumn<?> responseCol, AttributeType type, List<NumericColumn<?>> variableCols) {
-	Attribute responseAttribute = type == AttributeType.NOMINAL
-		? colAsNominalAttribute(responseCol) : new NumericAttribute(responseCol.name());
-        AttributeDataset data = new AttributeDataset(table.name(),
-            variableCols.stream().map(col -> new NumericAttribute(col.name())).toArray(Attribute[]::new),
+    private AttributeDataset dataset(NumericColumn<?> responseCol, AttributeType type, List<Column<?>> variableCols) {
+        List<Column<?>> convertedVariableCols = variableCols.stream()
+            .map(col -> col.type() == ColumnType.STRING ? col : table.nCol(col.name()))
+            .collect(Collectors.toList());
+        Attribute responseAttribute = type == AttributeType.NOMINAL
+            ? colAsNominalAttribute(responseCol) : new NumericAttribute(responseCol.name());
+        AttributeDataset dataset = new AttributeDataset(table.name(),
+            convertedVariableCols.stream().map(col -> colAsAttribute(col)).toArray(Attribute[]::new),
             responseAttribute);
         for (int i = 0; i < responseCol.size(); i++) {
             final int r = i;
-            double[] x = variableCols.stream().mapToDouble(c -> c.getDouble(r)).toArray();
-            data.add(x, responseCol.getDouble(r));
+            double[] x = IntStream.range(0, convertedVariableCols.size())
+                .mapToDouble(c -> getDouble(convertedVariableCols.get(c), dataset.attributes()[c], r))
+                .toArray();
+            dataset.add(x, responseCol.getDouble(r));
         }
-        return data;
+        return dataset;
+    }
+    
+    private double getDouble(Column<?> col, Attribute attr, int r) {
+        if (col.type() == ColumnType.STRING) {
+            String value = ((StringColumn) col).get(r);
+            try {
+                return attr.valueOf(value);
+            } catch (ParseException e) {
+                throw new IllegalArgumentException("Error converting " + value + " to nominal", e);
+            }
+        }
+        if (col instanceof NumericColumn) {
+            return ((NumericColumn<?>) col).getDouble(r);
+        }
+        throw new IllegalStateException("Error converting " + col.type() + " column " + col.name() + " to Smile");
     }
 
-    private NominalAttribute colAsNominalAttribute(NumericColumn<?> col) {
-	return new NominalAttribute(col.name(),
-		col.unique().mapInto(o -> o.toString(), StringColumn.create(col.name(), col.size())).asObjectArray());
+    private Attribute colAsAttribute(Column<?> col) {
+        return col.type() == ColumnType.STRING ? colAsNominalAttribute(col) : new NumericAttribute(col.name());
+    }
+
+    private NominalAttribute colAsNominalAttribute(Column<?> col) {
+        return new NominalAttribute(col.name(),
+            col.unique().mapInto(o -> o.toString(), StringColumn.create(col.name(), col.size())).asObjectArray());
     }
 
     private static enum AttributeType {
-	NUMERIC,
-	NOMINAL
+        NUMERIC,
+        NOMINAL
     }
 
 }

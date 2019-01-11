@@ -520,6 +520,10 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
         return doubles;
     }
 
+    public DoubleColumn asDoubleColumn() {
+	return DoubleColumn.create(name(), asDoubleArray());
+    }
+
     @Override
     public boolean isMissing(int rowNumber) {
         return valueIsMissing(getIntInternal(rowNumber));

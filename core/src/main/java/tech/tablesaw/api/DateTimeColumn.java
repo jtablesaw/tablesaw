@@ -79,7 +79,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     public static DateTimeColumn create(String name) {
-        return  new DateTimeColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
+        return new DateTimeColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
     }
 
     public static DateTimeColumn create(String name, int initialSize) {
@@ -575,10 +575,15 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     public double[] asDoubleArray() {
         double[] doubles = new double[size()];
-        for (int i = 0; i < size(); i++) {
-            doubles[i] = data.getLong(i);
+        long[] millis = asEpochSecondArray();
+        for (int i = 0; i < millis.length; i++) {
+            doubles[i] = millis[i];
         }
         return doubles;
+    }
+
+    public DoubleColumn asDoubleColumn() {
+	return DoubleColumn.create(name(), asEpochSecondArray());
     }
 
     /**

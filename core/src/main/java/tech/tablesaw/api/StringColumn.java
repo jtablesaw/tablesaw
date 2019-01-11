@@ -32,6 +32,7 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -390,12 +391,8 @@ public class StringColumn extends AbstractColumn<String>
         return StringColumn.create(name() + " Unique values", strings);
     }
 
-    public IntColumn asNumberColumn() {
-        IntColumn numberColumn = IntColumn.create(this.name() + ": codes", size());
-        for (int i = 0; i < size(); i++) {
-            numberColumn.set(i, lookupTable.firstIndexOf(lookupTable.getValueForIndex(i)));
-        }
-        return numberColumn;
+    public DoubleColumn asDoubleColumn() {
+        return DoubleColumn.create(this.name(), asDoubleArray());
     }
 
     public StringColumn where(Selection selection) {
@@ -476,15 +473,11 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public double getDouble(int i) {
-        return lookupTable.getKeyForIndex(i);
+        return lookupTable.uniqueValuesAt(lookupTable.firstIndexOf(lookupTable.getValueForIndex(i))) - 1;
     }
 
     public double[] asDoubleArray() {
-        double[] doubles = new double[size()];
-        for (int i = 0; i < size(); i++) {
-            doubles[i] = lookupTable.firstIndexOf(lookupTable.getValueForIndex(i));
-        }
-        return doubles;
+        return Arrays.stream(lookupTable.asIntArray()).asDoubleStream().toArray();
     }
 
     /**

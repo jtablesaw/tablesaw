@@ -295,11 +295,15 @@ public abstract class Relation {
     public NumberColumn<?> numberColumn(int columnIndex) {
         Column<?> c = column(columnIndex);
         if (c.type() == ColumnType.STRING) {
-            StringColumn stringColumn = (StringColumn) c;
-            return stringColumn.asNumberColumn();
+            return ((StringColumn) c).asDoubleColumn();
         } else if (c.type() == ColumnType.BOOLEAN) {
-            BooleanColumn booleanColumn = (BooleanColumn) c;
-            return booleanColumn.asNumberColumn();
+            return ((BooleanColumn) c).asDoubleColumn();
+        } else if (c.type() == ColumnType.LOCAL_DATE) {
+            return ((DateColumn) c).asDoubleColumn();
+        } else if (c.type() == ColumnType.LOCAL_DATE_TIME) {
+            return ((DateTimeColumn) c).asDoubleColumn();
+        } else if (c.type() == ColumnType.LOCAL_TIME) {
+            return ((TimeColumn) c).asDoubleColumn();
         }
         return (NumberColumn<?>) column(columnIndex);
     }

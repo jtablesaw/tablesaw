@@ -9,7 +9,7 @@ import static tech.tablesaw.columns.booleans.fillers.BooleanIterable.bits;
 
 public class BooleanFillersTest {
 
-    protected void testValues(Iterable<Boolean> booleans, boolean... expected) {
+    protected void assertContentEquals(Iterable<Boolean> booleans, boolean... expected) {
         int num = 0;
         for (boolean value : booleans) {
             assertEquals(expected[num], value);
@@ -21,7 +21,7 @@ public class BooleanFillersTest {
     @Test
     public void test() {
         BooleanColumn booleanColumn = create("booleans", new boolean[5]);
-        testValues(
+        assertContentEquals(
                 booleanColumn.fillWith(bits(0b110, 3)),
                 true, true, false, true, true);
     }
