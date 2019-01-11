@@ -25,7 +25,7 @@ public class TimeSeriesPlot {
         ScatterTrace[] traces  = new ScatterTrace[tables.size()];
         for (int i = 0; i < tables.size(); i++) {
             List<Table> tableList = tables.asTableList();
-            Table t = tableList.get(i).sortOn("date");
+            Table t = tableList.get(i).sortOn(dateColX);
             traces[i] = ScatterTrace.builder(
                     t.dateColumn(dateColX),
                     t.numberColumn(yCol))
