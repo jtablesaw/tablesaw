@@ -2,8 +2,8 @@ package tech.tablesaw.plotly.traces;
 
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.plotly.Utils;
 
 import java.io.IOException;
@@ -51,7 +51,7 @@ public class PieTrace extends AbstractTrace {
         return new PieBuilder(labels, values);
     }
 
-    public static PieBuilder builder(CategoricalColumn<?> labels, NumericColumn<? extends Number> values) {
+    public static PieBuilder builder(Column<?> labels, NumericColumn<? extends Number> values) {
         return new PieBuilder(TraceBuilder.columnToStringArray(labels), values.asDoubleArray());
     }
 
