@@ -13,7 +13,6 @@ import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.selection.Selection;
 
@@ -25,8 +24,6 @@ import java.util.function.Predicate;
 
 public class FloatColumn extends NumberColumn<Float> {
 
-    private static final FloatColumnType COLUMN_TYPE = ColumnType.FLOAT;
-
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
      */
@@ -35,7 +32,7 @@ public class FloatColumn extends NumberColumn<Float> {
     private final FloatArrayList data;    
 
     private FloatColumn(final String name, FloatArrayList data) {
-        super(COLUMN_TYPE, name);
+        super(FloatColumnType.INSTANCE, name);
         this.data = data;
     }
 
@@ -236,7 +233,7 @@ public class FloatColumn extends NumberColumn<Float> {
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putFloat(getFloat(rowNumber)).array();
+        return ByteBuffer.allocate(FloatColumnType.INSTANCE.byteSize()).putFloat(getFloat(rowNumber)).array();
     }
 
     @Override
@@ -254,7 +251,7 @@ public class FloatColumn extends NumberColumn<Float> {
     public double getDouble(int row) {
         float value = data.getFloat(row);
         if (isMissingValue(value)) {
-            return DoubleColumnType.missingValueIndicator();
+            return FloatColumnType.missingValueIndicator();
         }
         return value;
     }

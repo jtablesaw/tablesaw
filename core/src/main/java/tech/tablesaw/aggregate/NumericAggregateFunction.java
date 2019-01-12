@@ -2,6 +2,7 @@ package tech.tablesaw.aggregate;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.columns.numbers.ShortColumnType;
 
 /**
  * A partial implementation of aggregate functions to summarize over a numeric column
@@ -17,7 +18,7 @@ public abstract class NumericAggregateFunction extends AggregateFunction<Numeric
         return type.equals(ColumnType.DOUBLE)
                 || type.equals(ColumnType.FLOAT)
                 || type.equals(ColumnType.INTEGER)
-                || type.equals(ColumnType.SHORT)
+                || type.equals(ShortColumnType.INSTANCE)
                 || type.equals(ColumnType.LONG);
     }
 

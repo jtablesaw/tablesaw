@@ -1,9 +1,9 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
+import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.SkipColumnType;
-import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;

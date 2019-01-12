@@ -34,8 +34,6 @@ import java.util.function.ToDoubleFunction;
 
 public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<DoubleColumn> {
 
-    private static final ColumnType COLUMN_TYPE = ColumnType.DOUBLE;
-
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
      */
@@ -44,7 +42,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     private final DoubleArrayList data;
 
     protected DoubleColumn(final String name, final DoubleArrayList data) {
-        super(COLUMN_TYPE, name);
+        super(DoubleColumnType.INSTANCE, name);
         this.data = data;
     }
 
@@ -64,7 +62,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     }
 
     protected DoubleColumn(final String name) {
-        super(COLUMN_TYPE, name);
+        super(DoubleColumnType.INSTANCE, name);
         this.data = new DoubleArrayList(DEFAULT_ARRAY_SIZE);
     }
 
@@ -352,7 +350,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putDouble(getDouble(rowNumber)).array();
+        return ByteBuffer.allocate(DoubleColumnType.INSTANCE.byteSize()).putDouble(getDouble(rowNumber)).array();
     }
 
     @Override

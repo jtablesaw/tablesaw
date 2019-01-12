@@ -41,8 +41,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static tech.tablesaw.api.ColumnType.STRING;
-
 /**
  * A column that contains String values. They are assumed to be 'categorical' rather than free-form text, so are
  * stored in an encoding that takes advantage of the expected repetition of string values.
@@ -95,18 +93,18 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     private StringColumn(String name, List<String> strings) {
-        super(STRING, name);
+        super(StringColumnType.INSTANCE, name);
         for (String string : strings) {
             append(string);
         }
     }
 
     private StringColumn(String name) {
-        super(STRING, name);
+        super(StringColumnType.INSTANCE, name);
     }
 
     private StringColumn(String name, String[] strings) {
-        super(STRING, name);
+        super(StringColumnType.INSTANCE, name);
         for (String string : strings) {
             append(string);
         }

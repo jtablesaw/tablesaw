@@ -28,8 +28,6 @@ import java.util.function.Predicate;
 
 public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<Long> {
 
-    private static final LongColumnType COLUMN_TYPE = ColumnType.LONG;
-
     /**
      * Compares two ints, such that a sort based on this comparator would sort in descending order
      */
@@ -38,7 +36,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     private final LongArrayList data;
 
     private LongColumn(final String name, LongArrayList data) {
-        super(COLUMN_TYPE, name);
+        super(LongColumnType.INSTANCE, name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
     }
@@ -287,7 +285,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putLong(getLong(rowNumber)).array();
+        return ByteBuffer.allocate(LongColumnType.INSTANCE.byteSize()).putLong(getLong(rowNumber)).array();
     }
 
     @Override

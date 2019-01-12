@@ -19,8 +19,8 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectSortedMap;
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
@@ -33,7 +33,7 @@ public class ShortIndex {
     private final Short2ObjectAVLTreeMap<IntArrayList> index;
 
     public ShortIndex(ShortColumn column) {
-        Preconditions.checkArgument(column.type().equals(ColumnType.SHORT),
+        Preconditions.checkArgument(column.type().equals(ShortColumnType.INSTANCE),
                 "Short indexing only allowed on SHORT numeric columns");
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Short2ObjectOpenHashMap<IntArrayList> tempMap = new Short2ObjectOpenHashMap<>(sizeEstimate);

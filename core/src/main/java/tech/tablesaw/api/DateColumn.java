@@ -95,7 +95,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     private DateColumn(String name, IntArrayList data) {
-        super(ColumnType.LOCAL_DATE, name);
+        super(DateColumnType.INSTANCE, name);
         this.data = data;
     }
 

@@ -21,7 +21,6 @@ import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
-import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringFilters;
 import tech.tablesaw.columns.strings.StringMapFunctions;
 import tech.tablesaw.columns.strings.StringReduceUtils;
@@ -107,7 +106,7 @@ public class TextColumn extends AbstractColumn<String>
     public static TextColumn create(String name, int size) {
         ArrayList<String> strings = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            strings.add(StringColumnType.missingValueIndicator());
+            strings.add(TextColumnType.missingValueIndicator());
         }
         return new TextColumn(name, strings);
     }
@@ -317,7 +316,7 @@ public class TextColumn extends AbstractColumn<String>
 
     @Override
     public Column<String> setMissing(int i) {
-        return set(i, StringColumnType.missingValueIndicator());
+        return set(i, TextColumnType.missingValueIndicator());
     }
 
     /**
@@ -334,7 +333,7 @@ public class TextColumn extends AbstractColumn<String>
 
     @Override
     public TextColumn appendCell(String object) {
-        values.add(StringColumnType.DEFAULT_PARSER.parse(object));
+        values.add(TextColumnType.DEFAULT_PARSER.parse(object));
         return this;
     }
 

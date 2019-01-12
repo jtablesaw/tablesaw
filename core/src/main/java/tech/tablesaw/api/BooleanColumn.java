@@ -51,8 +51,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_FALSE;
-import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_TRUE;
 
 /**
  * A column in a base table that contains float values
@@ -223,8 +221,8 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     @Override
     public Table summary() {
         Byte2IntMap counts = new Byte2IntOpenHashMap(3);
-        counts.put(BYTE_FALSE, 0);
-        counts.put(BYTE_TRUE, 0);
+        counts.put(BooleanColumnType.BYTE_FALSE, 0);
+        counts.put(BooleanColumnType.BYTE_TRUE, 0);
 
         for (byte next : data) {
             counts.put(next, counts.get(next) + 1);
@@ -279,9 +277,9 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
 
     public BooleanColumn append(boolean b) {
         if (b) {
-            data.add(BYTE_TRUE);
+            data.add(BooleanColumnType.BYTE_TRUE);
         } else {
-            data.add(BYTE_FALSE);
+            data.add(BooleanColumnType.BYTE_FALSE);
         }
         return this;
     }
@@ -292,9 +290,9 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
             data.add(BooleanColumnType.MISSING_VALUE);
         }
         else if (b) {
-            data.add(BYTE_TRUE);
+            data.add(BooleanColumnType.BYTE_TRUE);
         } else {
-            data.add(BYTE_FALSE);
+            data.add(BooleanColumnType.BYTE_FALSE);
         }
         return this;
     }
@@ -380,10 +378,10 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     @Override
     public Boolean get(int i) {
         byte b = data.getByte(i);
-        if (b == BYTE_TRUE) {
+        if (b == BooleanColumnType.BYTE_TRUE) {
             return Boolean.TRUE;
         }
-        if (b == BYTE_FALSE) {
+        if (b == BooleanColumnType.BYTE_FALSE) {
             return Boolean.FALSE;
         }
         return null;
@@ -406,7 +404,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     public int countTrue() {
         int count = 0;
         for (byte b : data) {
-            if (b == BYTE_TRUE) {
+            if (b == BooleanColumnType.BYTE_TRUE) {
                 count++;
             }
         }
@@ -416,7 +414,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     public int countFalse() {
         int count = 0;
         for (byte b : data) {
-            if (b == BYTE_FALSE) {
+            if (b == BooleanColumnType.BYTE_FALSE) {
                 count++;
             }
         }
@@ -465,7 +463,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
         Selection results = new BitmapBackedSelection();
         int i = 0;
         for (byte next : data) {
-            if (next == BYTE_FALSE) {
+            if (next == BooleanColumnType.BYTE_FALSE) {
                 results.add(i);
             }
             i++;
@@ -477,7 +475,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
         Selection results = new BitmapBackedSelection();
         int i = 0;
         for (byte next : data) {
-            if (next == BYTE_TRUE) {
+            if (next == BooleanColumnType.BYTE_TRUE) {
                 results.add(i);
             }
             i++;
@@ -507,9 +505,9 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
 
     public BooleanColumn set(int i, boolean b) {
         if (b) {
-            data.set(i, BYTE_TRUE);
+            data.set(i, BooleanColumnType.BYTE_TRUE);
         } else {
-            data.set(i, BYTE_FALSE);
+            data.set(i, BooleanColumnType.BYTE_FALSE);
         }
         return this;
     }
@@ -650,9 +648,9 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
 
     public boolean contains(boolean aBoolean) {
         if (aBoolean) {
-            return data().contains(BYTE_TRUE);
+            return data().contains(BooleanColumnType.BYTE_TRUE);
         }
-        return data().contains(BYTE_FALSE);
+        return data().contains(BooleanColumnType.BYTE_FALSE);
     }
 
     @Override
@@ -663,7 +661,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     @Override
     public byte[] asBytes(int row) {
         byte[] result = new byte[byteSize()];
-        result[0] = (get(row) ? BYTE_TRUE : BYTE_FALSE);
+        result[0] = (get(row) ? BooleanColumnType.BYTE_TRUE : BooleanColumnType.BYTE_FALSE);
         return result;
     }
 

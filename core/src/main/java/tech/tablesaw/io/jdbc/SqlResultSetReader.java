@@ -24,6 +24,7 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.ShortColumnType;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -58,8 +59,8 @@ public class SqlResultSetReader {
                 .put(Types.REAL, ColumnType.FLOAT)
 
                 .put(Types.INTEGER, ColumnType.INTEGER)
-                .put(Types.SMALLINT, ColumnType.SHORT)
-                .put(Types.TINYINT, ColumnType.SHORT)
+                .put(Types.SMALLINT, ShortColumnType.INSTANCE)
+                .put(Types.TINYINT, ShortColumnType.INSTANCE)
                 .put(Types.BIGINT, ColumnType.LONG)
 
                 .put(Types.CHAR, ColumnType.STRING)
@@ -117,7 +118,7 @@ long, Long:         -9223372036854775808    9223372036854775807 NUMBER(18)      
                     // Start with SHORT (since ColumnType.BYTE isn't supported yet)
                     // and find the smallest java integer type that fits
                     if (p <= 4) {
-                        type = ColumnType.SHORT;
+                        type = ShortColumnType.INSTANCE;
                     } else if (p <= 9) {
                         type = ColumnType.INTEGER;
                     } else if (p <= 18) {

@@ -48,7 +48,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
 import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 /**
@@ -70,12 +69,12 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     };
 
     private TimeColumn(String name, IntArrayList times) {
-        super(LOCAL_TIME, name);
+        super(TimeColumnType.INSTANCE, name);
         data = times;
     }
 
     private TimeColumn(String name) {
-        super(LOCAL_TIME, name);
+        super(TimeColumnType.INSTANCE, name);
         data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
 
