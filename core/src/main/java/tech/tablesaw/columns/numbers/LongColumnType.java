@@ -11,13 +11,18 @@ public class LongColumnType extends AbstractColumnType {
 
     private static final int BYTE_SIZE = 8;
 
-    public static final LongColumnType INSTANCE =
-            new LongColumnType(BYTE_SIZE, "LONG", "Long");
+    private static LongColumnType INSTANCE;
 
     private LongColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
     }
 
+    public static LongColumnType instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LongColumnType(BYTE_SIZE, "LONG", "Long");
+        }
+        return INSTANCE;
+    }
     @Override
     public LongColumn create(String name) {
         return LongColumn.create(name);

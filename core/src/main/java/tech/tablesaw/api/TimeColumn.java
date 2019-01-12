@@ -69,12 +69,12 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     };
 
     private TimeColumn(String name, IntArrayList times) {
-        super(TimeColumnType.INSTANCE, name);
+        super(TimeColumnType.instance(), name);
         data = times;
     }
 
     private TimeColumn(String name) {
-        super(TimeColumnType.INSTANCE, name);
+        super(TimeColumnType.instance(), name);
         data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
 

@@ -71,7 +71,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     private DateTimeColumnFormatter printFormatter = new DateTimeColumnFormatter();
 
     private DateTimeColumn(String name, LongArrayList data) {
-        super(DateTimeColumnType.INSTANCE, name);
+        super(DateTimeColumnType.instance(), name);
         this.data = data;
     }
 

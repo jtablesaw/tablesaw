@@ -34,7 +34,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     private final ShortArrayList data;
 
     protected ShortColumn(final String name, ShortArrayList data) {
-        super(ShortColumnType.INSTANCE, name);
+        super(ShortColumnType.instance(), name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
     }
@@ -250,7 +250,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(ShortColumnType.INSTANCE.byteSize()).putShort(getShort(rowNumber)).array();
+        return ByteBuffer.allocate(ShortColumnType.instance().byteSize()).putShort(getShort(rowNumber)).array();
     }
 
     @Override

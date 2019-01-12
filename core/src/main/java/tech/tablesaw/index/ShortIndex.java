@@ -33,7 +33,7 @@ public class ShortIndex {
     private final Short2ObjectAVLTreeMap<IntArrayList> index;
 
     public ShortIndex(ShortColumn column) {
-        Preconditions.checkArgument(column.type().equals(ShortColumnType.INSTANCE),
+        Preconditions.checkArgument(column.type().equals(ShortColumnType.instance()),
                 "Short indexing only allowed on SHORT numeric columns");
         int sizeEstimate = Integer.min(1_000_000, column.size() / 100);
         Short2ObjectOpenHashMap<IntArrayList> tempMap = new Short2ObjectOpenHashMap<>(sizeEstimate);

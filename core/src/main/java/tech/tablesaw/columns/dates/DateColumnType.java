@@ -13,11 +13,17 @@ public class DateColumnType extends AbstractColumnType {
     public static final int BYTE_SIZE = 4;
     public static final DateParser DEFAULT_PARSER = new DateParser(ColumnType.LOCAL_DATE);
 
-    public static final DateColumnType INSTANCE =
-            new DateColumnType(BYTE_SIZE, "LOCAL_DATE", "Date");
+    private static DateColumnType INSTANCE;
 
     private DateColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
+    }
+
+    public static DateColumnType instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new DateColumnType(BYTE_SIZE, "LOCAL_DATE", "Date");
+        }
+        return INSTANCE;
     }
 
     @Override

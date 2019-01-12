@@ -32,7 +32,7 @@ public class FloatColumn extends NumberColumn<Float> {
     private final FloatArrayList data;    
 
     private FloatColumn(final String name, FloatArrayList data) {
-        super(FloatColumnType.INSTANCE, name);
+        super(FloatColumnType.instance(), name);
         this.data = data;
     }
 
@@ -233,7 +233,7 @@ public class FloatColumn extends NumberColumn<Float> {
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(FloatColumnType.INSTANCE.byteSize()).putFloat(getFloat(rowNumber)).array();
+        return ByteBuffer.allocate(FloatColumnType.instance().byteSize()).putFloat(getFloat(rowNumber)).array();
     }
 
     @Override

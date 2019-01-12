@@ -11,11 +11,18 @@ public class DateTimeColumnType extends AbstractColumnType {
 
     public static final DateTimeParser DEFAULT_PARSER = new DateTimeParser(ColumnType.LOCAL_DATE_TIME);
 
-    public static final DateTimeColumnType INSTANCE =
+    private static DateTimeColumnType INSTANCE =
             new DateTimeColumnType(BYTE_SIZE, "LOCAL_DATE_TIME", "DateTime");
 
     private DateTimeColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
+    }
+
+    public static DateTimeColumnType instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new DateTimeColumnType(BYTE_SIZE, "LOCAL_DATE_TIME", "DateTime");
+        }
+        return INSTANCE;
     }
 
     @Override

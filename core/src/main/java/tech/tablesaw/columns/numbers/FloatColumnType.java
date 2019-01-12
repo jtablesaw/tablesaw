@@ -11,11 +11,17 @@ public class FloatColumnType extends AbstractColumnType {
 
     public static final FloatParser DEFAULT_PARSER = new FloatParser(ColumnType.FLOAT);
 
-    public static final FloatColumnType INSTANCE =
-            new FloatColumnType(BYTE_SIZE, "FLOAT", "Float");
+    private static FloatColumnType INSTANCE;
 
     private FloatColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
+    }
+
+    public static FloatColumnType instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new FloatColumnType(BYTE_SIZE, "FLOAT", "float");
+        }
+        return INSTANCE;
     }
 
     @Override

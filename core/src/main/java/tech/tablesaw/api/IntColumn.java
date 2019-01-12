@@ -34,7 +34,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     private final IntArrayList data;
 
     protected IntColumn(final String name, IntArrayList data) {
-        super(IntColumnType.INSTANCE, name);
+        super(IntColumnType.instance(), name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
     }
@@ -258,7 +258,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(IntColumnType.INSTANCE.byteSize()).putInt(getInt(rowNumber)).array();
+        return ByteBuffer.allocate(IntColumnType.instance().byteSize()).putInt(getInt(rowNumber)).array();
     }
 
     @Override

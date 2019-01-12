@@ -14,16 +14,21 @@ public class BooleanColumnType extends AbstractColumnType {
     public static final byte BYTE_TRUE = 1;
     public static final byte BYTE_FALSE = 0;
 
-    private static byte BYTE_SIZE = 1;
+    private static final byte BYTE_SIZE = 1;
 
-    public static final BooleanColumnType INSTANCE =
-            new BooleanColumnType(BYTE_SIZE,
-                    "BOOLEAN",
-                    "Boolean");
+    private static BooleanColumnType INSTANCE;
 
     private BooleanColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
     }
+
+    public static BooleanColumnType instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new BooleanColumnType(BYTE_SIZE, "BOOLEAN", "Boolean");
+        }
+        return INSTANCE;
+    }
+
 
     @Override
     public BooleanColumn create(String name) {

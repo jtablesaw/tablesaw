@@ -42,7 +42,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     private final DoubleArrayList data;
 
     protected DoubleColumn(final String name, final DoubleArrayList data) {
-        super(DoubleColumnType.INSTANCE, name);
+        super(DoubleColumnType.instance(), name);
         this.data = data;
     }
 
@@ -62,7 +62,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     }
 
     protected DoubleColumn(final String name) {
-        super(DoubleColumnType.INSTANCE, name);
+        super(DoubleColumnType.instance(), name);
         this.data = new DoubleArrayList(DEFAULT_ARRAY_SIZE);
     }
 
@@ -350,7 +350,7 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(DoubleColumnType.INSTANCE.byteSize()).putDouble(getDouble(rowNumber)).array();
+        return ByteBuffer.allocate(DoubleColumnType.instance().byteSize()).putDouble(getDouble(rowNumber)).array();
     }
 
     @Override

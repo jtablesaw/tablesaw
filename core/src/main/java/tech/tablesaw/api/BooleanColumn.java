@@ -70,7 +70,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     private BooleanFormatter formatter = new BooleanFormatter("true", "false", "");
 
     private BooleanColumn(String name, ByteArrayList values) {
-        super(BooleanColumnType.INSTANCE, name);
+        super(BooleanColumnType.instance(), name);
         data = values;
     }
 

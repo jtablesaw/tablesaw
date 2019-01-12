@@ -10,13 +10,19 @@ public class StringColumnType extends AbstractColumnType {
     public static final int BYTE_SIZE = 4;
     public static final StringParser DEFAULT_PARSER = new StringParser(ColumnType.STRING);
 
-    public static final StringColumnType INSTANCE =
-            new StringColumnType(BYTE_SIZE,
-                    "STRING",
-                    "String");
+    private static StringColumnType INSTANCE;
 
     private StringColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
+    }
+
+    public static StringColumnType instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new StringColumnType(BYTE_SIZE,
+                    "STRING",
+                    "String");
+        }
+        return INSTANCE;
     }
 
     @Override

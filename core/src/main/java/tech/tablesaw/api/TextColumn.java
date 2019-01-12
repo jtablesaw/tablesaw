@@ -61,7 +61,7 @@ public class TextColumn extends AbstractColumn<String>
     private final Comparator<String> descendingStringComparator = Comparator.reverseOrder();
 
     private TextColumn(String name, List<String> strings) {
-        super(TextColumnType.INSTANCE, name);
+        super(TextColumnType.instance(), name);
         values = new ArrayList<>(strings.size());
         for (String string : strings) {
             append(string);
@@ -69,12 +69,12 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     private TextColumn(String name) {
-        super(TextColumnType.INSTANCE, name);
+        super(TextColumnType.instance(), name);
         values = new ArrayList<>(DEFAULT_ARRAY_SIZE);
     }
 
     private TextColumn(String name, String[] strings) {
-        super(TextColumnType.INSTANCE, name);
+        super(TextColumnType.instance(), name);
         values = new ArrayList<>(strings.length);
         for (String string : strings) {
             append(string);

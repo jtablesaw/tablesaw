@@ -93,18 +93,18 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     private StringColumn(String name, List<String> strings) {
-        super(StringColumnType.INSTANCE, name);
+        super(StringColumnType.instance(), name);
         for (String string : strings) {
             append(string);
         }
     }
 
     private StringColumn(String name) {
-        super(StringColumnType.INSTANCE, name);
+        super(StringColumnType.instance(), name);
     }
 
     private StringColumn(String name, String[] strings) {
-        super(StringColumnType.INSTANCE, name);
+        super(StringColumnType.instance(), name);
         for (String string : strings) {
             append(string);
         }

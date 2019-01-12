@@ -36,7 +36,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     private final LongArrayList data;
 
     private LongColumn(final String name, LongArrayList data) {
-        super(LongColumnType.INSTANCE, name);
+        super(LongColumnType.instance(), name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
     }
@@ -285,7 +285,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(LongColumnType.INSTANCE.byteSize()).putLong(getLong(rowNumber)).array();
+        return ByteBuffer.allocate(LongColumnType.instance().byteSize()).putLong(getLong(rowNumber)).array();
     }
 
     @Override

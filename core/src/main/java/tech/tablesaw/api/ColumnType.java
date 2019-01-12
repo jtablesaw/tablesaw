@@ -25,18 +25,18 @@ public interface ColumnType {
     Map<String, ColumnType> values = new HashMap<>();
 
     // standard column types
-    ShortColumnType SHORT = ShortColumnType.INSTANCE;
-    IntColumnType INTEGER = IntColumnType.INSTANCE;
-    LongColumnType LONG = LongColumnType.INSTANCE;
-    FloatColumnType FLOAT = FloatColumnType.INSTANCE;
-    BooleanColumnType BOOLEAN = BooleanColumnType.INSTANCE;
-    StringColumnType STRING = StringColumnType.INSTANCE;
-    DoubleColumnType DOUBLE = DoubleColumnType.INSTANCE;
-    DateColumnType LOCAL_DATE = DateColumnType.INSTANCE;
-    DateTimeColumnType LOCAL_DATE_TIME = DateTimeColumnType.INSTANCE;
-    TimeColumnType LOCAL_TIME = TimeColumnType.INSTANCE;
-    TextColumnType TEXT = TextColumnType.INSTANCE;
-    SkipColumnType SKIP = SkipColumnType.INSTANCE;
+    ShortColumnType SHORT = ShortColumnType.instance();
+    IntColumnType INTEGER = IntColumnType.instance();
+    LongColumnType LONG = LongColumnType.instance();
+    FloatColumnType FLOAT = FloatColumnType.instance();
+    BooleanColumnType BOOLEAN = BooleanColumnType.instance();
+    StringColumnType STRING = StringColumnType.instance();
+    DoubleColumnType DOUBLE = DoubleColumnType.instance();
+    DateColumnType LOCAL_DATE = DateColumnType.instance();
+    DateTimeColumnType LOCAL_DATE_TIME = DateTimeColumnType.instance();
+    TimeColumnType LOCAL_TIME = TimeColumnType.instance();
+    TextColumnType TEXT = TextColumnType.instance();
+    SkipColumnType SKIP = SkipColumnType.instance();
 
     static void register(ColumnType type) {
         values.put(type.name(), type);
