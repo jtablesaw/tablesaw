@@ -24,7 +24,7 @@ public class DateColumnTest {
     public void testCreate1() {
         LocalDate[] dates = new LocalDate[5];
         DateColumn column = DateColumn.create("Game date", dates);
-        assertEquals(DateColumn.MISSING_VALUE, column.getIntInternal(0));
+        assertEquals(DateColumnType.missingValueIndicator(), column.getIntInternal(0));
     }
 
     @Test
@@ -134,7 +134,7 @@ public class DateColumnTest {
 
     @Test
     public void testMin() {
-        column1.appendInternal(DateColumn.MISSING_VALUE);
+        column1.appendInternal(DateColumnType.missingValueIndicator());
         column1.appendCell("2013-10-23");
 
         LocalDate actual = column1.min();

@@ -4,8 +4,8 @@ import javax.annotation.concurrent.Immutable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import static tech.tablesaw.api.DateColumn.*;
-import static tech.tablesaw.columns.dates.PackedLocalDate.*;
+import static tech.tablesaw.columns.dates.PackedLocalDate.asLocalDate;
+import static tech.tablesaw.columns.dates.PackedLocalDate.toDateString;
 
 @Immutable
 public class DateColumnFormatter {
@@ -27,7 +27,7 @@ public class DateColumnFormatter {
     }
 
     public String format(int value) {
-        if (value == MISSING_VALUE) {
+        if (value == DateColumnType.missingValueIndicator()) {
             return missingString;
         }
         if (format == null) {

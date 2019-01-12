@@ -16,7 +16,6 @@ package tech.tablesaw.columns.dates;
 
 import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
-import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.numbers.IntColumnType;
 
 import java.time.DayOfWeek;
@@ -30,10 +29,31 @@ import java.time.temporal.WeekFields;
 import java.util.Date;
 import java.util.Locale;
 
-import static java.time.DayOfWeek.*;
-import static java.time.Month.*;
-import static java.time.temporal.ChronoField.*;
-import static tech.tablesaw.columns.DateAndTimePredicates.*;
+import static java.time.DayOfWeek.FRIDAY;
+import static java.time.DayOfWeek.MONDAY;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
+import static java.time.DayOfWeek.THURSDAY;
+import static java.time.DayOfWeek.TUESDAY;
+import static java.time.DayOfWeek.WEDNESDAY;
+import static java.time.Month.APRIL;
+import static java.time.Month.AUGUST;
+import static java.time.Month.DECEMBER;
+import static java.time.Month.FEBRUARY;
+import static java.time.Month.JANUARY;
+import static java.time.Month.JULY;
+import static java.time.Month.JUNE;
+import static java.time.Month.MARCH;
+import static java.time.Month.MAY;
+import static java.time.Month.NOVEMBER;
+import static java.time.Month.OCTOBER;
+import static java.time.Month.SEPTEMBER;
+import static java.time.temporal.ChronoField.EPOCH_DAY;
+import static java.time.temporal.ChronoField.YEAR;
+import static tech.tablesaw.columns.DateAndTimePredicates.isEqualTo;
+import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThanOrEqualTo;
+import static tech.tablesaw.columns.DateAndTimePredicates.isLessThan;
+import static tech.tablesaw.columns.DateAndTimePredicates.isLessThanOrEqualTo;
 
 /**
  * A short localdate packed into a single int value. It uses a short for year so the range is about +-30,000 years
@@ -85,7 +105,7 @@ public class PackedLocalDate {
 
     public static int pack(LocalDate date) {
         if (date == null) {
-            return DateColumn.MISSING_VALUE;
+            return DateColumnType.missingValueIndicator();
         }
         return pack(
                 (short) date.getYear(),
@@ -189,7 +209,7 @@ public class PackedLocalDate {
      * MISSING_VALUE for DateColumn
      */
     public static int getQuarter(int packedDate) {
-        if (packedDate == DateColumn.MISSING_VALUE) {
+        if (packedDate == DateColumnType.missingValueIndicator()) {
             return -1;
         }
         Month month = getMonth(packedDate);
