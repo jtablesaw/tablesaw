@@ -51,17 +51,13 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static tech.tablesaw.api.ColumnType.BOOLEAN;
+import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_FALSE;
+import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_TRUE;
 
 /**
  * A column in a base table that contains float values
  */
 public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMapUtils, CategoricalColumn<Boolean>, BooleanFillers<BooleanColumn> {
-
-    public static final byte MISSING_VALUE = (Byte) BooleanColumnType.missingValueIndicator();
-
-    public static final byte BYTE_TRUE = 1;
-    public static final byte BYTE_FALSE = 0;
 
     private final ByteComparator descendingByteComparator = (o1, o2) -> Byte.compare(o2, o1);
 
@@ -76,12 +72,12 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     private BooleanFormatter formatter = new BooleanFormatter("true", "false", "");
 
     private BooleanColumn(String name, ByteArrayList values) {
-        super(BOOLEAN, name);
+        super(BooleanColumnType.INSTANCE, name);
         data = values;
     }
 
     public static boolean valueIsMissing(byte b) {
-        return b == MISSING_VALUE;
+        return b == BooleanColumnType.MISSING_VALUE;
     }
 
     @Override
@@ -293,7 +289,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
     @Override
     public BooleanColumn append(Boolean b) {
         if (b == null) {
-            data.add(MISSING_VALUE);
+            data.add(BooleanColumnType.MISSING_VALUE);
         }
         else if (b) {
             data.add(BYTE_TRUE);
@@ -321,7 +317,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
 
     @Override
     public BooleanColumn appendMissing() {
-        append(MISSING_VALUE);
+        append(BooleanColumnType.MISSING_VALUE);
         return this;
     }
 
@@ -542,7 +538,7 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
         int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = MISSING_VALUE;
+            dest[i] = BooleanColumnType.MISSING_VALUE;
         }
 
         System.arraycopy(data.toByteArray(), srcPos, dest, destPos, length);

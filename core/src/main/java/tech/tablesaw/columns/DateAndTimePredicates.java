@@ -14,7 +14,7 @@
 
 package tech.tablesaw.columns;
 
-import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
 
 import java.util.function.IntPredicate;
@@ -26,9 +26,9 @@ import java.util.function.IntPredicate;
  */
 public class DateAndTimePredicates {
 
-    public final static IntPredicate isMissing = i -> i == TimeColumn.MISSING_VALUE;
+    public final static IntPredicate isMissing = i -> i == TimeColumnType.missingValueIndicator();
 
-    public final static IntPredicate isNotMissing = i -> i != TimeColumn.MISSING_VALUE;
+    public final static IntPredicate isNotMissing = i -> i != TimeColumnType.missingValueIndicator();
 
     public final static IntBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
 

@@ -48,8 +48,6 @@ import java.util.Set;
 public class TextColumn extends AbstractColumn<String>
         implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
-    public static final String MISSING_VALUE = TextColumnType.missingValueIndicator();
-
     // holds each element in the column.
     private List<String> values;
 
@@ -85,12 +83,12 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     public static boolean valueIsMissing(String string) {
-        return MISSING_VALUE.equals(string);
+        return TextColumnType.missingValueIndicator().equals(string);
     }
 
     @Override
     public TextColumn appendMissing() {
-        append(MISSING_VALUE);
+        append(TextColumnType.missingValueIndicator());
         return this;
     }
 
@@ -116,7 +114,7 @@ public class TextColumn extends AbstractColumn<String>
 
     @Override
     public boolean isMissing(int rowNumber) {
-        return get(rowNumber).equals(MISSING_VALUE);
+        return get(rowNumber).equals(TextColumnType.missingValueIndicator());
     }
 
     public void setPrintFormatter(StringColumnFormatter formatter) {
@@ -224,7 +222,7 @@ public class TextColumn extends AbstractColumn<String>
 
         if (n >= 0) {
             for (int m = 0; m < n; m++) {
-                copy.appendCell(MISSING_VALUE);
+                copy.appendCell(TextColumnType.missingValueIndicator());
             }
             for (int i = 0; i < size(); i++) {
                 if (i + n >= size()) {
@@ -237,7 +235,7 @@ public class TextColumn extends AbstractColumn<String>
                 copy.appendCell(get(i));
             }
             for (int m = 0; m > n; m--) {
-                copy.appendCell(MISSING_VALUE);
+                copy.appendCell(TextColumnType.missingValueIndicator());
             }
         }
 
@@ -260,7 +258,7 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     public TextColumn set(int rowIndex, String stringValue) {
-        String str = MISSING_VALUE;
+        String str = TextColumnType.missingValueIndicator();
         if (stringValue != null) {
             str = stringValue;
         }
@@ -410,7 +408,7 @@ public class TextColumn extends AbstractColumn<String>
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (MISSING_VALUE.equals(get(i))) {
+            if (TextColumnType.missingValueIndicator().equals(get(i))) {
                 count++;
             }
         }

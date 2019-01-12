@@ -8,7 +8,9 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 import java.util.Arrays;
 import java.util.List;
 
-import static tech.tablesaw.api.BooleanColumn.*;
+import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_FALSE;
+import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_TRUE;
+import static tech.tablesaw.columns.booleans.BooleanColumnType.MISSING_VALUE;
 
 public class BooleanParser extends AbstractParser<Boolean> {
 

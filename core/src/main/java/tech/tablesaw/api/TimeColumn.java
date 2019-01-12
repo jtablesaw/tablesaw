@@ -57,8 +57,6 @@ import static tech.tablesaw.columns.DateAndTimePredicates.*;
 public class TimeColumn extends AbstractColumn<LocalTime>
         implements CategoricalColumn<LocalTime>, TimeFilters, TimeFillers<TimeColumn>, TimeMapFunctions {
 
-    public static final int MISSING_VALUE = (Integer) TimeColumnType.missingValueIndicator();
-
     private final IntComparator descendingIntComparator = DescendingIntComparator.instance();
 
     private TimeColumnFormatter printFormatter = new TimeColumnFormatter();
@@ -82,7 +80,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     public static boolean valueIsMissing(int i) {
-        return i == MISSING_VALUE;
+        return i == TimeColumnType.missingValueIndicator();
     }
 
     public static TimeColumn create(String name) {
@@ -115,7 +113,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
 
     @Override
     public TimeColumn appendMissing() {
-        appendInternal(MISSING_VALUE);
+        appendInternal(TimeColumnType.missingValueIndicator());
         return this;
     }
 
@@ -136,7 +134,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = MISSING_VALUE;
+            dest[i] = TimeColumnType.missingValueIndicator();
         }
 
         System.arraycopy(data.toIntArray(), srcPos, dest, destPos, length);
@@ -164,7 +162,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     public TimeColumn append(LocalTime time) {
         int value;
         if (time == null) {
-            value = MISSING_VALUE;
+            value = TimeColumnType.missingValueIndicator();
         } else {
             value = PackedLocalTime.pack(time);
         }
@@ -277,7 +275,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
             max = (max > aData) ? max : aData;
         }
 
-        if (max == MISSING_VALUE) {
+        if (max == TimeColumnType.missingValueIndicator()) {
             return null;
         }
         return PackedLocalTime.asLocalTime(max);
@@ -292,7 +290,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         int min = Integer.MAX_VALUE;
 
         for (int aData : data) {
-            if (aData != MISSING_VALUE) {
+            if (aData != TimeColumnType.missingValueIndicator()) {
                 min = (min < aData) ? min : aData;
             }
         }
@@ -333,7 +331,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (getIntInternal(i) == MISSING_VALUE) {
+            if (getIntInternal(i) == TimeColumnType.missingValueIndicator()) {
                 count++;
             }
         }
@@ -343,7 +341,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     @Override
     public int countUnique() {
         IntOpenHashSet hashSet = new IntOpenHashSet(data);
-        hashSet.remove(MISSING_VALUE);
+        hashSet.remove(TimeColumnType.missingValueIndicator());
         return hashSet.size();
     }
 
@@ -470,7 +468,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         int validCount = 0;
         while (validCount < n && rowCount < size()) {
             int value = values[rowCount];
-            if (value != MISSING_VALUE) {
+            if (value != TimeColumnType.missingValueIndicator()) {
                 bottom.add(PackedLocalTime.asLocalTime(value));
                 validCount++;
             }

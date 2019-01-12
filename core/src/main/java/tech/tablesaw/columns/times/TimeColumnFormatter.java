@@ -4,8 +4,8 @@ import javax.annotation.concurrent.Immutable;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import static tech.tablesaw.api.TimeColumn.*;
-import static tech.tablesaw.columns.times.PackedLocalTime.*;
+import static tech.tablesaw.columns.times.PackedLocalTime.asLocalTime;
+import static tech.tablesaw.columns.times.PackedLocalTime.toShortTimeString;
 
 @Immutable
 public class TimeColumnFormatter {
@@ -27,7 +27,7 @@ public class TimeColumnFormatter {
     }
 
     public String format(int value) {
-        if (value == MISSING_VALUE) {
+        if (value == TimeColumnType.missingValueIndicator()) {
             return missingString;
         }
         if (format == null) {

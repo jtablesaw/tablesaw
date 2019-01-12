@@ -25,8 +25,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import static tech.tablesaw.api.TimeColumn.MISSING_VALUE;
-
 /**
  * A localTime with millisecond precision packed into a single int value.
  * <p>
@@ -290,7 +288,7 @@ public class PackedLocalTime {
     }
 
     public static LocalTime asLocalTime(int time) {
-        if (time == MISSING_VALUE) {
+        if (time == TimeColumnType.missingValueIndicator()) {
             return null;
         }
 
@@ -314,7 +312,7 @@ public class PackedLocalTime {
 
     public static int pack(LocalTime time) {
         if (time == null) {
-            return MISSING_VALUE;
+            return TimeColumnType.missingValueIndicator();
         }
 
         byte hour = (byte) time.getHour();
@@ -340,14 +338,14 @@ public class PackedLocalTime {
     }
 
     public static int getMinuteOfDay(int packedLocalTime) {
-        if (packedLocalTime == MISSING_VALUE) {
+        if (packedLocalTime == TimeColumnType.missingValueIndicator()) {
             return IntColumnType.missingValueIndicator();
         }
         return getHour(packedLocalTime) * 60 + getMinute(packedLocalTime);
     }
 
     public static int getSecondOfDay(int packedLocalTime) {
-        if (packedLocalTime == MISSING_VALUE) {
+        if (packedLocalTime == TimeColumnType.missingValueIndicator()) {
             return IntColumnType.missingValueIndicator();
         }
         int total = getHour(packedLocalTime) * 60 * 60;
@@ -361,7 +359,7 @@ public class PackedLocalTime {
     }
 
     public static String toShortTimeString(int time) {
-        if (time == MISSING_VALUE) {
+        if (time == TimeColumnType.missingValueIndicator()) {
             return "";
         }
 

@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.IntColumnType;
+import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.selection.Selection;
 
 import java.nio.ByteBuffer;
@@ -31,7 +32,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static tech.tablesaw.api.TimeColumn.MISSING_VALUE;
 import static tech.tablesaw.columns.times.PackedLocalTime.getMinuteOfDay;
 import static tech.tablesaw.columns.times.PackedLocalTime.getSecondOfDay;
 import static tech.tablesaw.columns.times.PackedLocalTime.of;
@@ -205,16 +205,16 @@ public class TimeColumnTest {
     @Test
     public void countMissing() {
         fillLargerColumn();
-        column1.appendInternal(MISSING_VALUE);
-        column1.appendInternal(MISSING_VALUE);
+        column1.appendInternal(TimeColumnType.missingValueIndicator());
+        column1.appendInternal(TimeColumnType.missingValueIndicator());
         assertEquals(3, column1.countMissing());
     }
 
     @Test
     public void isMissingIsNotMissing() {
         fillLargerColumn();
-        column1.appendInternal(MISSING_VALUE);
-        column1.appendInternal(MISSING_VALUE);
+        column1.appendInternal(TimeColumnType.missingValueIndicator());
+        column1.appendInternal(TimeColumnType.missingValueIndicator());
         Selection s = column1.isMissing();
         assertEquals(3, s.size());
         Selection s2 = column1.isNotMissing();
@@ -224,7 +224,7 @@ public class TimeColumnTest {
     @Test
     public void countUnique() {
         fillLargerColumn();
-        column1.appendInternal(MISSING_VALUE);
+        column1.appendInternal(TimeColumnType.missingValueIndicator());
         assertEquals(10, column1.countUnique());
     }
 
@@ -287,7 +287,7 @@ public class TimeColumnTest {
         assertEquals(0, column2.get(0).getMinute());
         assertEquals(0, column2.get(0).getSecond());
         assertEquals(0, column2.get(0).getNano());
-        assertEquals(MISSING_VALUE, column2.getIntInternal(2));
+        assertEquals(TimeColumnType.missingValueIndicator(), column2.getIntInternal(2));
     }
 
     @Test

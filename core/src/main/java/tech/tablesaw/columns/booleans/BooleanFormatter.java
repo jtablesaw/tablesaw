@@ -35,7 +35,7 @@ public class BooleanFormatter {
     }
 
     public String format(byte value) {
-        if (value == BooleanColumn.MISSING_VALUE) {
+        if (value == BooleanColumnType.MISSING_VALUE) {
             return missingString;
         }
         if (value == (byte) 1) {
