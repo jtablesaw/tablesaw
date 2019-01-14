@@ -22,7 +22,7 @@ public class DataFrameWriterTest {
     );
 
     @Test
-    public void csv() throws Exception {
+    public void csv() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         table.write().csv(baos);
         String output = baos.toString();
@@ -37,7 +37,7 @@ public class DataFrameWriterTest {
     }
 
     @Test
-    public void csv2() throws Exception {
+    public void csv2() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter osw = new OutputStreamWriter(baos);
         table.write().csv(osw);
