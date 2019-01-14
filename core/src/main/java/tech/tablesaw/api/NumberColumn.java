@@ -15,14 +15,10 @@ public abstract class NumberColumn<T extends Number> extends AbstractColumn<T> i
 
     protected Locale locale;
 
-    protected final IntComparator comparator = new IntComparator() {
-
-        @Override
-        public int compare(final int r1, final int r2) {
-            final double f1 = getDouble(r1);
-            final double f2 = getDouble(r2);
-            return Double.compare(f1, f2);
-        }
+    protected final IntComparator comparator = (r1, r2) -> {
+        final double f1 = getDouble(r1);
+        final double f2 = getDouble(r2);
+        return Double.compare(f1, f2);
     };
 
     protected NumberColumn(final ColumnType type, final String name) {

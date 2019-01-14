@@ -44,8 +44,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
 import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
@@ -313,9 +313,7 @@ public class Table extends Relation implements Iterable<Row> {
      * Returns a List of the names of all the columns in this table
      */
     public List<String> columnNames() {
-        List<String> names = new ArrayList<>(columnList.size());
-        names.addAll(columnList.stream().map(Column::name).collect(Collectors.toList()));
-        return names;
+        return columnList.stream().map(Column::name).collect(toList());
     }
 
     /**
@@ -435,14 +433,18 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
-     * Sorts this table into a new table on the columns indexed in ascending order
+     * Sorts this table into a new table on the columns indexed
      * <p>
-     * TODO(lwhite): Rework this so passing an negative number does a descending sort
+     * if index is negative then sort that column in decending order otherwise sort ascending
      */
     public Table sortOn(int... columnIndexes) {
         List<String> names = new ArrayList<>();
         for (int i : columnIndexes) {
-            names.add(columnList.get(i).name());
+            if (i >= 0) {
+                names.add(columnList.get(i).name());
+            } else {
+                names.add("-" + columnList.get(-i).name());
+            }
         }
         return sortOn(names.toArray(new String[names.size()]));
     }
@@ -455,34 +457,19 @@ public class Table extends Relation implements Iterable<Row> {
     public Table sortOn(String... columnNames) {
 
         Sort key = null;
-        List<String> names = new ArrayList<>();
-        for (String name : columnNames()) {
-            names.add(name.toUpperCase());
-        }
+        List<String> names = columnNames().stream().map(String::toUpperCase).collect(toList());
 
         for (String columnName : columnNames) {
-            Sort.Order order;
-            if (names.contains(columnName.toUpperCase())) {
-                // the column name has not been annotated with a prefix.
-                order = Sort.Order.ASCEND;
-            } else {
-
+            Sort.Order order = Sort.Order.ASCEND;
+            if (!names.contains(columnName.toUpperCase())) {
+                // the column name has been annotated with a prefix.
                 // get the prefix which could be - or +
                 String prefix = columnName.substring(0, 1);
 
                 // remove - prefix so provided name matches actual column name
                 columnName = columnName.substring(1, columnName.length());
 
-                switch (prefix) {
-                    case "+":
-                        order = Sort.Order.ASCEND;
-                        break;
-                    case "-":
-                        order = Sort.Order.DESCEND;
-                        break;
-                    default:
-                        throw new IllegalStateException("Column prefix: " + prefix + " is unknown.");
-                }
+                order = getOrder(prefix);
             }
 
             if (key == null) { // key will be null the first time through
@@ -492,6 +479,21 @@ public class Table extends Relation implements Iterable<Row> {
             }
         }
         return sortOn(key);
+    }
+
+    private Sort.Order getOrder(String prefix) {
+        Sort.Order order;
+        switch (prefix) {
+            case "+":
+                order = Sort.Order.ASCEND;
+                break;
+            case "-":
+                order = Sort.Order.DESCEND;
+                break;
+            default:
+                throw new IllegalStateException("Column prefix: " + prefix + " is unknown.");
+        }
+        return order;
     }
 
     /**
@@ -541,13 +543,10 @@ public class Table extends Relation implements Iterable<Row> {
     public Table sortOn(Comparator<Row> rowComparator) {
         Row row1 = new Row(this);
         Row row2 = new Row(this);
-        return sortOn(new IntComparator() {
-            @Override
-            public int compare(int k1, int k2) {
-                row1.at(k1);
-                row2.at(k2);
-                return rowComparator.compare(row1, row2);
-            }
+        return sortOn((IntComparator) (k1, k2) -> {
+            row1.at(k1);
+            row2.at(k2);
+            return rowComparator.compare(row1, row2);
         });
     }
 
@@ -956,19 +955,20 @@ public class Table extends Relation implements Iterable<Row> {
      * Applies the operation in {@code doable} to every row in the table
      */
     public void stepWithRows(Consumer<Row[]> rowConsumer, int n) {
-        if (!isEmpty()) {
-            Row[] rows = new Row[n];
-            for (int i = 0; i < n; i++) {
-                rows[i] = new Row(this);
-            }
+        if (isEmpty()) {
+            return;
+        }
+        Row[] rows = new Row[n];
+        for (int i = 0; i < n; i++) {
+            rows[i] = new Row(this);
+        }
 
-            int max = rowCount() - n;
-            for (int i = 0; i <= max; i++) {
-                for (int r = 0; r < n; r++) {
-                    rows[r].at(i + r);
-                }
-                rowConsumer.accept(rows);
+        int max = rowCount() - n;
+        for (int i = 0; i <= max; i++) {
+            for (int r = 0; r < n; r++) {
+                rows[r].at(i + r);
             }
+            rowConsumer.accept(rows);
         }
     }
 
@@ -976,15 +976,16 @@ public class Table extends Relation implements Iterable<Row> {
      * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
      */
     public void doWithRows(Pairs pairs) {
+        if (isEmpty()) {
+            return;
+        }
         Row row1 = new Row(this);
         Row row2 = new Row(this);
-        if (!isEmpty()) {
-            int max = rowCount();
-            for (int i = 1; i < max; i++) {
-                row1.at(i - 1);
-                row2.at(i);
-                pairs.doWithPair(row1, row2);
-            }
+        int max = rowCount();
+        for (int i = 1; i < max; i++) {
+            row1.at(i - 1);
+            row2.at(i);
+            pairs.doWithPair(row1, row2);
         }
     }
 
@@ -992,16 +993,17 @@ public class Table extends Relation implements Iterable<Row> {
      * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
      */
     public void doWithRowPairs(Consumer<RowPair> pairConsumer) {
+        if (isEmpty()) {
+            return;
+        }
         Row row1 = new Row(this);
         Row row2 = new Row(this);
         RowPair pair = new RowPair(row1, row2);
-        if (!isEmpty()) {
-            int max = rowCount();
-            for (int i = 1; i < max; i++) {
-                row1.at(i - 1);
-                row2.at(i);
-                pairConsumer.accept(pair);
-            }
+        int max = rowCount();
+        for (int i = 1; i < max; i++) {
+            row1.at(i - 1);
+            row2.at(i);
+            pairConsumer.accept(pair);
         }
     }
 
@@ -1010,19 +1012,20 @@ public class Table extends Relation implements Iterable<Row> {
      * This can be used, for example, to calculate a running average of in rows
      */
     public void rollWithRows(Consumer<Row[]> rowConsumer, int n) {
-        if (!isEmpty()) {
-            Row[] rows = new Row[n];
-            for (int i = 0; i < n; i++) {
-                rows[i] = new Row(this);
-            }
+        if (isEmpty()) {
+            return;
+        }
+        Row[] rows = new Row[n];
+        for (int i = 0; i < n; i++) {
+            rows[i] = new Row(this);
+        }
 
-            int max = rowCount() - (n - 2);
-            for (int i = 1; i < max; i++) {
-                for (int r = 0; r < n; r++) {
-                    rows[r].at(i + r - 1);
-                }
-                rowConsumer.accept(rows);
+        int max = rowCount() - (n - 2);
+        for (int i = 1; i < max; i++) {
+            for (int r = 0; r < n; r++) {
+                rows[r].at(i + r - 1);
             }
+            rowConsumer.accept(rows);
         }
     }
 

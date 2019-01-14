@@ -39,6 +39,7 @@ import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -332,11 +333,7 @@ public abstract class Relation {
      * Returns all the NumericColumns in the relation
      */
     public List<NumericColumn<?>> numericColumns() {
-        List<NumericColumn<?>> cols = new ArrayList<>();
-        for (NumericColumn<?> c : numberColumns()) {
-            cols.add(c);
-        }
-        return cols;
+        return Arrays.asList(numberColumns());
     }
 
     /**

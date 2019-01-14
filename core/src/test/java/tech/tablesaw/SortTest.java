@@ -100,6 +100,20 @@ public class SortTest {
         assertTablesEquals(expectedResults, sortedTable);
     }
 
+    @Test
+    public void testSortOnIndices() {
+        Table sortedTable = unsortedTable.sortOn(IQ_INDEX, DOB_INDEX);
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
+        assertTablesEquals(expectedResults, sortedTable);
+    }
+
+    @Test
+    public void testSortOnIndicesAscendingAndDescending() {
+        Table sortedTable = unsortedTable.sortOn(IQ_INDEX, -DOB_INDEX);
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_ASCENDING_AND_THEN_DATE_DESCENDING.getTable();
+        assertTablesEquals(expectedResults, sortedTable);
+    }
+
     @Ignore
     public void testAscendingWithPlusSignNegative() {
         Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);

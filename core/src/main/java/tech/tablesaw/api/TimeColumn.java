@@ -605,9 +605,9 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     private TimeColumn fillWith(int count, Iterable<LocalTime> iterable, Consumer<LocalTime> acceptor) {
-        Iterator<LocalTime> iterator = null;
+        Iterator<LocalTime> iterator = iterable.iterator();
         for (int r = 0; r < count; r++) {
-            if (iterator == null || (!iterator.hasNext())) {
+            if (!iterator.hasNext()) {
                 iterator = iterable.iterator();
                 if (!iterator.hasNext()) {
                     break;

@@ -590,9 +590,9 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     private DateColumn fillWith(int count, Iterable<LocalDate> iterable, Consumer<LocalDate> acceptor) {
-        Iterator<LocalDate> iterator = null;
+        Iterator<LocalDate> iterator = iterable.iterator();
         for (int r = 0; r < count; r++) {
-            if (iterator == null || (!iterator.hasNext())) {
+            if (!iterator.hasNext()) {
                 iterator = iterable.iterator();
                 if (!iterator.hasNext()) {
                     break;

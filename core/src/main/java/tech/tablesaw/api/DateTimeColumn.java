@@ -627,9 +627,9 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     private DateTimeColumn fillWith(int count, Iterable<LocalDateTime> iterable, Consumer<LocalDateTime> acceptor) {
-        Iterator<LocalDateTime> iterator = null;
+        Iterator<LocalDateTime> iterator = iterable.iterator();
         for (int r = 0; r < count; r++) {
-            if (iterator == null || (!iterator.hasNext())) {
+            if (!iterator.hasNext()) {
                 iterator = iterable.iterator();
                 if (!iterator.hasNext()) {
                     break;
