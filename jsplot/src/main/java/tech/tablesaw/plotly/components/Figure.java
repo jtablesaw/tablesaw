@@ -39,7 +39,7 @@ public class Figure {
     }
 
     public String divString(String divName) {
-        return String.format("<div id='%s' ></div>\n", divName);
+        return String.format("<div id='%s' ></div>" + System.lineSeparator(), divName);
     }
 
     public Layout getLayout() {
@@ -72,13 +72,13 @@ public class Figure {
         if (layout != null) {
             builder.append(layout.asJavascript());
         }
-        builder.append('\n');
+        builder.append(System.lineSeparator());
         for (int i = 0; i < data.length; i++) {
             Trace trace = data[i];
             builder.append(trace.asJavascript(i));
-            builder.append('\n');
+            builder.append(System.lineSeparator());
         }
-        builder.append('\n');
+        builder.append(System.lineSeparator());
         String figure = builder.toString();
         context.put("figure", figure);
         context.put("plotFunction", plotFunction(targetName));
@@ -95,7 +95,8 @@ public class Figure {
                 builder.append(", ");
             }
         }
-        builder.append("];\n");
+        builder.append("];")
+                .append(System.lineSeparator());
 
         builder.append("Plotly.newPlot(")
                 .append(divName)

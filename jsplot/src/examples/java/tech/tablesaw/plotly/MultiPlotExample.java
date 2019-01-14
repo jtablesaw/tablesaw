@@ -90,25 +90,25 @@ public class MultiPlotExample {
 
         return new StringBuilder()
                 .append(pageTop)
-                .append('\n')
+                .append(System.lineSeparator())
                 .append(figure1.asJavascript(divName1))
-                .append('\n')
+                .append(System.lineSeparator())
                 .append(figure2.asJavascript(divName2))
-                .append('\n')
+                .append(System.lineSeparator())
                 .append(pageBottom)
                 .toString();
     }
 
-    private static final String pageTop = "<html>\n" +
-            "<head>\n" +
-            "    <title>Multi-plot test</title>\n" +
-            "    <script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>\n" +
-            "</head>\n" +
-            "<body>\n" +
-            "<div id='plot1'>\n" +
-            "<div id='plot2'>\n";
+    private static final String pageTop = "<html>" + System.lineSeparator() +
+            "<head>" + System.lineSeparator() +
+            "    <title>Multi-plot test</title>" + System.lineSeparator() +
+            "    <script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>" + System.lineSeparator() +
+            "</head>" + System.lineSeparator() +
+            "<body>" + System.lineSeparator() +
+            "<div id='plot1'>" + System.lineSeparator() +
+            "<div id='plot2'>" + System.lineSeparator();
 
     private static final String pageBottom =
-            "</body>\n" +
-            "</html>";
+            "</body>" + System.lineSeparator() +
+                    "</html>";
 }

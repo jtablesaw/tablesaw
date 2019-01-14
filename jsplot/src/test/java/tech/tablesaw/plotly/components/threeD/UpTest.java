@@ -6,10 +6,10 @@ import static org.junit.Assert.*;
 
 public class UpTest {
 
-    private static final String javaScript = "{\n" +
-            "    x: 1.0,\n" +
-            "    y: 2.0,\n" +
-            "    z: 3.0,\n" +
+    private static final String javaScript = "{" + System.lineSeparator() +
+            "    x: 1.0," + System.lineSeparator() +
+            "    y: 2.0," + System.lineSeparator() +
+            "    z: 3.0," + System.lineSeparator() +
             "}";
 
     @Test
