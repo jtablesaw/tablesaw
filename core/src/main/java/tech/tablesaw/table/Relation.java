@@ -265,15 +265,15 @@ public abstract class Relation {
 
     public String summary() {
         StringBuilder builder = new StringBuilder();
-        builder.append("\n")
+        builder.append(System.lineSeparator())
                 .append("Table summary for: ")
                 .append(name())
-                .append("\n");
+                .append(System.lineSeparator());
         for (Column<?> column : columns()) {
             builder.append(column.summary().print());
-            builder.append("\n");
+            builder.append(System.lineSeparator());
         }
-        builder.append("\n");
+        builder.append(System.lineSeparator());
         return builder.toString();
     }
 

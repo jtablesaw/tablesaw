@@ -25,6 +25,8 @@ import static org.junit.Assert.*;
  */
 public class BooleanColumnTest {
 
+    private static final String LINE_END = System.lineSeparator();
+
     private final BooleanColumn column = BooleanColumn.create("Test");
 
     @Before
@@ -143,14 +145,14 @@ public class BooleanColumnTest {
 
     @Test
     public void testPrint() {
-        assertEquals("Column: Test\n" +
-                "false\n" +
-                "false\n" +
-                "false\n" +
-                "false\n" +
-                "true\n" +
-                "true\n" +
-                "false\n", column.print());
+        assertEquals("Column: Test" + LINE_END +
+                "false" + LINE_END +
+                "false" + LINE_END +
+                "false" + LINE_END +
+                "false" + LINE_END +
+                "true" + LINE_END +
+                "true" + LINE_END +
+                "false" + LINE_END, column.print());
     }
 
     @Test

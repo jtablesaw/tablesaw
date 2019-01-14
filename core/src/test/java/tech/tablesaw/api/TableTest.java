@@ -42,6 +42,7 @@ import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
 public class TableTest {
 
+    private static final String LINE_END = System.lineSeparator();
     private static final int ROWS_BOUNDARY = 1000;
     private static final Random RANDOM = new Random();
 
@@ -127,11 +128,11 @@ public class TableTest {
     @Test
     public void printEmptyTable() {
         Table t = Table.create("Test");
-        assertEquals("Test\n\n", t.print());
+        assertEquals("Test" + LINE_END + LINE_END, t.print());
 
         StringColumn c1 = StringColumn.create("SC");
         t.addColumns(c1);
-        assertEquals(" Test \n SC  |\n------", t.print());
+        assertEquals(" Test " + LINE_END + " SC  |" + LINE_END + "------", t.print());
     }
 
     @Test
@@ -249,9 +250,9 @@ public class TableTest {
         Table t = Table.read().csv("../data/bush.csv");
         Row row = new Row(t);
         row.at(0);
-        assertEquals("             bush.csv              \n" +
-                "    date     |  approval  |  who  |\n" +
-                "-----------------------------------\n" +
+        assertEquals("             bush.csv              " + LINE_END +
+                "    date     |  approval  |  who  |" + LINE_END +
+                "-----------------------------------" + LINE_END +
                 " 2004-02-04  |        53  |  fox  |", row.toString());
     }
 

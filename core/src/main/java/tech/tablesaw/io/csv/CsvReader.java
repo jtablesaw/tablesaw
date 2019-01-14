@@ -44,18 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static tech.tablesaw.api.ColumnType.BOOLEAN;
-import static tech.tablesaw.api.ColumnType.DOUBLE;
-import static tech.tablesaw.api.ColumnType.FLOAT;
-import static tech.tablesaw.api.ColumnType.INTEGER;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
-import static tech.tablesaw.api.ColumnType.LONG;
-import static tech.tablesaw.api.ColumnType.SHORT;
-import static tech.tablesaw.api.ColumnType.SKIP;
-import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
+import static tech.tablesaw.api.ColumnType.*;
 
 @Immutable
 public class CsvReader {
@@ -210,7 +199,6 @@ public class CsvReader {
     /**
      * Returns column types for this table as an array, the types are either provided in read options, or calculated by
      * scanning the data
-     * @throws IOException
      */
     private ColumnType[] getColumnTypes(CsvReadOptions options, byte[] bytes) throws IOException {
         ColumnType[] types;
@@ -285,10 +273,10 @@ public class CsvReader {
      * @param header          Is the first row in the file a header?
      * @param options         Sets the format for and instructions for parsing
      * @param file            The fully specified file name. It is used to provide a default name for the table
-     * @return A Relation containing the data in the csv file.
-     * @throws IOException if file cannot be read
+     * @return                A Relation containing the data in the csv file.
+     * @throws IOException    if file cannot be read
      */
-    public Table headerOnly(ColumnType types[], boolean header, CsvReadOptions options, File file)
+    public Table headerOnly(ColumnType[] types, boolean header, CsvReadOptions options, File file)
             throws IOException {
 
         FileInputStream fis = new FileInputStream(file);
@@ -385,7 +373,7 @@ public class CsvReader {
 
         StringBuilder buf = new StringBuilder();
         buf.append("ColumnType[] columnTypes = {");
-        buf.append('\n');
+        buf.append(System.lineSeparator());
 
         Column<?> typeCol = structure.column("Column Type");
         Column<?> indxCol = structure.column("Index");
@@ -414,17 +402,17 @@ public class CsvReader {
             buf.append(cell);
             buf.append(' ');
 
-            buf.append('\n');
+            buf.append(System.lineSeparator());
         }
         buf.append("}");
-        buf.append('\n');
+        buf.append(System.lineSeparator());
         return buf.toString();
     }
 
     /**
      * Reads column names from header, skipping any for which the type == SKIP
      */
-    private String[] selectColumnNames(List<String> names, ColumnType types[]) {
+    private String[] selectColumnNames(List<String> names, ColumnType[] types) {
         List<String> header = new ArrayList<>();
         for (int i = 0; i < types.length; i++) {
             if (types[i] != SKIP) {
@@ -440,7 +428,7 @@ public class CsvReader {
     /**
      * Provides placeholder column names for when the file read has no header
      */
-    private String[] makeColumnNames(ColumnType types[]) {
+    private String[] makeColumnNames(ColumnType[] types) {
         String[] header = new String[types.length];
         for (int i = 0; i < types.length; i++) {
             header[i] = "C" + i;
@@ -459,7 +447,7 @@ public class CsvReader {
      * corrected and
      * used to explicitly specify the correct column types.
      */
-    public ColumnType[] detectColumnTypes(InputStream stream, CsvReadOptions options) throws IOException {
+    public ColumnType[] detectColumnTypes(InputStream stream, CsvReadOptions options) {
 
         boolean header = options.header();
         boolean useSampling = options.sample();

@@ -137,7 +137,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
 
     default String title() {
-        return "Column: " + name() + '\n';
+        return "Column: " + name() + System.lineSeparator();
     }
 
     Selection isMissing();
@@ -175,7 +175,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         builder.append(title());
         for (int i = 0; i < size(); i++) {
             builder.append(getString(i));
-            builder.append('\n');
+            builder.append(System.lineSeparator());
         }
         return builder.toString();
     }

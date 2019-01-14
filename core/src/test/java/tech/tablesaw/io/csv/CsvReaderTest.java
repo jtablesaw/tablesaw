@@ -32,7 +32,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.ZoneOffset;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +45,8 @@ import static tech.tablesaw.api.ColumnType.*;
  * Tests for CSV Reading
  */
 public class CsvReaderTest {
+
+    private static final String LINE_END = System.lineSeparator();
 
     private final ColumnType[] bus_types = {SHORT, STRING, STRING, FLOAT, FLOAT};
     private final ColumnType[] bus_types_with_SKIP = {SHORT, STRING, SKIP, DOUBLE, DOUBLE};
@@ -131,7 +132,7 @@ public class CsvReaderTest {
                 .build();
 
         ColumnType[] columnTypes = new CsvReader().detectColumnTypes(stream, options);
-        assertTrue(Arrays.equals(bus_types, columnTypes));
+        assertArrayEquals(bus_types, columnTypes);
     }
 
     @Test
@@ -143,16 +144,16 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testLocalDateDetectionEnglish() throws Exception {
+    public void testLocalDateDetectionEnglish() {
 
         final InputStream stream = new ByteArrayInputStream((
-                "Date\n"
-            + "\"Nov 1, 2017\"\n"
-            + "\"Oct 1, 2017\"\n"
-            + "\"Sep 1, 2017\"\n"
-            + "\"Aug 1, 2017\"\n"
-            + "\"Jul 1, 2017\"\n"
-            + "\"Jun 1, 2017\"\n").getBytes());
+                "Date" + LINE_END
+            + "\"Nov 1, 2017\"" + LINE_END
+            + "\"Oct 1, 2017\"" + LINE_END
+            + "\"Sep 1, 2017\"" + LINE_END
+            + "\"Aug 1, 2017\"" + LINE_END
+            + "\"Jul 1, 2017\"" + LINE_END
+            + "\"Jun 1, 2017\"" + LINE_END).getBytes());
 
         final boolean header = true;
         final char delimiter = ',';
@@ -171,16 +172,16 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testLocalDateTimeDetectionEnglish() throws Exception {
+    public void testLocalDateTimeDetectionEnglish() {
 
         final InputStream stream = new ByteArrayInputStream((
-              "Date\n"
-            + "09-Nov-2014 13:03\n"
-            + "09-Oct-2014 13:03\n"
-            + "09-Sep-2014 13:03\n"
-            + "09-Aug-2014 13:03\n"
-            + "09-Jul-2014 13:03\n"
-            + "09-Jun-2014 13:03\n").getBytes());
+              "Date" + LINE_END
+            + "09-Nov-2014 13:03" + LINE_END
+            + "09-Oct-2014 13:03" + LINE_END
+            + "09-Sep-2014 13:03" + LINE_END
+            + "09-Aug-2014 13:03" + LINE_END
+            + "09-Jul-2014 13:03" + LINE_END
+            + "09-Jun-2014 13:03" + LINE_END).getBytes());
 
         final boolean header = true;
         final char delimiter = ',';
@@ -200,16 +201,16 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testLocalDateDetectionFrench() throws Exception {
+    public void testLocalDateDetectionFrench() {
 
         final InputStream stream = new ByteArrayInputStream((
-                "Date\n"
-            + "\"nov. 1, 2017\"\n"
-            + "\"oct. 1, 2017\"\n"
-            + "\"sept. 1, 2017\"\n"
-            + "\"août 1, 2017\"\n"
-            + "\"juil. 1, 2017\"\n"
-            + "\"juin 1, 2017\"\n").getBytes());
+                "Date" + LINE_END
+            + "\"nov. 1, 2017\"" + LINE_END
+            + "\"oct. 1, 2017\"" + LINE_END
+            + "\"sept. 1, 2017\"" + LINE_END
+            + "\"août 1, 2017\"" + LINE_END
+            + "\"juil. 1, 2017\"" + LINE_END
+            + "\"juin 1, 2017\""+ LINE_END).getBytes());
 
         final boolean header = true;
         final char delimiter = ',';
@@ -228,16 +229,16 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testLocalDateTimeDetectionFrench() throws Exception {
+    public void testLocalDateTimeDetectionFrench() {
 
         final InputStream stream = new ByteArrayInputStream((
-              "Date\n"
-            + "09-nov.-2014 13:03\n"
-            + "09-oct.-2014 13:03\n"
-            + "09-sept.-2014 13:03\n"
-            + "09-août-2014 13:03\n"
-            + "09-juil.-2014 13:03\n"
-            + "09-juin-2014 13:03\n").getBytes());
+              "Date" + LINE_END
+            + "09-nov.-2014 13:03" + LINE_END
+            + "09-oct.-2014 13:03" + LINE_END
+            + "09-sept.-2014 13:03" + LINE_END
+            + "09-août-2014 13:03" + LINE_END
+            + "09-juil.-2014 13:03" + LINE_END
+            + "09-juin-2014 13:03" + LINE_END).getBytes());
 
         final boolean header = true;
         final char delimiter = ',';
@@ -305,11 +306,11 @@ public class CsvReaderTest {
     @Test
     public void testPrintStructure() throws Exception {
         String output =
-                "ColumnType[] columnTypes = {\n" +
-                        "LOCAL_DATE, // 0     date        \n" +
-                        "SHORT,      // 1     approval    \n" +
-                        "STRING,     // 2     who         \n" +
-                        "}\n";
+                "ColumnType[] columnTypes = {" + LINE_END +
+                        "LOCAL_DATE, // 0     date        " + LINE_END +
+                        "SHORT,      // 1     approval    " + LINE_END +
+                        "STRING,     // 2     who         " + LINE_END +
+                        "}" + LINE_END;
         assertEquals(output, new CsvReader()
                 .printColumnTypes("../data/bush.csv", true, ',', Locale.getDefault()));
     }
@@ -427,4 +428,11 @@ public class CsvReaderTest {
         assertEquals("1 rows X 10001 cols", table1.shape());
     }
 
+    @Test
+    public void getTypeArray() {
+        List<ColumnType> types = new CsvReader().getTypeArray();
+        for (ColumnType type : types) {
+            assertNotNull(type);
+        }
+    }
 }

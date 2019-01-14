@@ -63,7 +63,7 @@ public class CsvWriteOptions {
         private Writer writer;
         private boolean header = true;
         private char separator = ',';
-        private String lineEnd = "\n";
+        private String lineEnd = System.lineSeparator();
         private char escapeChar = '\\';
         private char quoteChar = '"';
 

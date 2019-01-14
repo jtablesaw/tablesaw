@@ -46,11 +46,11 @@ public class DateColumnTest {
         column1.appendCell("12-May-2015");
         column1.appendCell("12-Jan-2015");
         column1.setPrintFormatter(DateTimeFormatter.ofPattern("MMM~dd~yyyy"), "");
-        assertEquals("Column: Game date\n" +
-                        "Oct~23~2013\n" +
-                        "Dec~23~1924\n" +
-                        "May~12~2015\n" +
-                        "Jan~12~2015\n"
+        assertEquals("Column: Game date" + System.lineSeparator() +
+                        "Oct~23~2013" + System.lineSeparator() +
+                        "Dec~23~1924" + System.lineSeparator() +
+                        "May~12~2015" + System.lineSeparator() +
+                        "Jan~12~2015" + System.lineSeparator()
                 , column1.print());
     }
 
@@ -61,11 +61,11 @@ public class DateColumnTest {
         column1.appendCell("12-May-2015");
         column1.appendCell("12-Jan-2015");
         column1.setPrintFormatter(DateTimeFormatter.ofPattern("MMM~dd~yyyy"));
-        assertEquals("Column: Game date\n" +
-                        "Oct~23~2013\n" +
-                        "Dec~23~1924\n" +
-                        "May~12~2015\n" +
-                        "Jan~12~2015\n"
+        assertEquals("Column: Game date"  + System.lineSeparator() +
+                        "Oct~23~2013" + System.lineSeparator() +
+                        "Dec~23~1924" + System.lineSeparator() +
+                        "May~12~2015" + System.lineSeparator() +
+                        "Jan~12~2015" + System.lineSeparator()
                 , column1.print());
     }
 
@@ -145,11 +145,11 @@ public class DateColumnTest {
     @Test
     public void testSortOn() {
         Table unsorted = Table.read().csv(
-                "Date,1 Yr Treasury Rate\n"
-                        + "\"01-01-1871\",4.44%\n"
-                        + "\"01-01-1920\",8.83%\n"
-                        + "\"01-01-1921\",7.11%\n"
-                        + "\"01-01-1919\",7.85%\n",
+                "Date,1 Yr Treasury Rate" + System.lineSeparator()
+                        + "\"01-01-1871\",4.44%" + System.lineSeparator()
+                        + "\"01-01-1920\",8.83%" + System.lineSeparator()
+                        + "\"01-01-1921\",7.11%" + System.lineSeparator()
+                        + "\"01-01-1919\",7.85%",
                 "1 Yr Treasury Rate");
         Table sorted = unsorted.sortOn("Date");
         assertEquals(
