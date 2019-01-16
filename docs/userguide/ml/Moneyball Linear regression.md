@@ -77,7 +77,7 @@ To check this assumption we compute Run Difference as Runs Scored - Runs Allow
 NumberColumn RS = moneyball.numberColumn("RS");
 NumberColumn RA = moneyball.numberColumn("RA");
 
-NumberColumn runDifference = RS.subtract(RA);
+NumberColumn runDifference = RS.subtract(RA).setName("RD");
 moneyball.addColumn(runDifference);
 runDifference.setName("Run Difference");
 ```
@@ -97,7 +97,7 @@ Our plot shows a strong linear relation between the two.
 Let's create our first predictive model using linear regression, with runDifference as the sole explanatory variable. Here we use Smile's OLS (Ordinary Least Squares) regression model.
 
 ```Java
-OLS winsModel = new OLS(new TableConverter(wins, runDifference);
+OLS winsModel = new OLS(moneyball.select("W", "RD").smile().numericDataset("RD"));
 ```
 
 If we print our "winsModel", it produces the output below:
@@ -142,8 +142,7 @@ We'd expect 95 wins when we outscore opponents by 135 runs.
 It's time to go deeper again and see how we can model Runs Scored and Runs Allowed. The approach the A's took was to model Runs Scored using team On-base percent (OBP) and team Slugging Average (SLG). In Tablesaw, we write:
 
 ```java
-OLS runsScored = 
-    new OLS(new TableConverter(moneyball).smileDataset("RS", "OBP", "SLG"));
+OLS runsScored = new OLS(moneyball.smile().numericDataset("RS", "OBP", "SLG"));
 ```
 
 
@@ -198,8 +197,7 @@ SLG &amp; OBP -&gt; Runs Scored -&gt; Run Difference -&gt; Regular Season Wins
 Of course, we haven't modeled the Runs Allowed side of Run Difference. We could use pitching and field stats to do this, but the A's cleverly used the same two variables (SLG and OBP), but now looked at how their opponent's performed against the A's. We could do the same as these data are encoded in the dataset as OOBP and OSLG.
 
 ```java
-OLS runsAllowed = 
-    new OLS(new TableConverter(moneyball).smileDataset("RA", "OOBP", "OSLG"));
+OLS runsAllowed = new OLS(moneyball.smile().numericDataset("RA", "OOBP", "OSLG"));
 
 > Linear Model:
 
@@ -225,9 +223,7 @@ This model also looks good, but you'd want to look at the plots again, and do ot
 Finally, we can tie this all together and see how well wins is predicted when we consider both offensive and defensive stats. 
 
 ```java
-OLS winsFinal = 
-    new OLS(new TableConverter(moneyball)
-            .smileDataset("W", "OOBP", "OBP", "OSLG", "SLG"));
+OLS winsFinal = new OLS(moneyball.smile().numericDataset("W", "OOBP", "OBP", "OSLG", "SLG"));
 ```
 
 The output isn't shown, but we get an R squared of .89. Again this is quite good. 
