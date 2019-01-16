@@ -159,13 +159,13 @@ As you can see, for many String methods that return a new String. StringColumn p
 
 Sometimes you want to derive a singly value that summarizes in some sense the data in a column. Aggregate functions do just that. Each such function scan all the values in a column and returns a single scalar value as a result.  All columns support some aggregate functions: *min*() and *max*(), for example, plus *count()*, *countUnique()*, and *countMissing()*. Some also support type-specific functions. BooleanColumn, for example, supports *all()*, which returns *true* if all of the values in the column are *true*. The functions *any()*, and *none()*,  return true if any or none the values in the column are true, respectively. The functions *countTrue()*, and *countFalse()* are also available.
 
-NumbericColumn has many more aggregate functions. For example, to calculate the standard deviation of the values in a column, you would call:
+NumberColumn has many more aggregate functions. For example, to calculate the standard deviation of the values in a column, you would call:
 
 ```java
 double stdDev = nc.standardDeviation();	
 ```
 
-> **Key point:** NumbericColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and so on. These are defined in the [NumericColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/NumericColumn.html) class. 
+> **Key point:** NumberColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and so on. These are defined in the [NumericColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/NumericColumn.html) class. 
 >
 
 When we discuss tables below, we'll show how to calculate sub-totals in one or more numeric columns by the values in one or more grouping columns.
