@@ -457,7 +457,7 @@ The formatted output is shown below.
      Total  |  20%  |     37%  |       17%  |        9%  |     3%  |    14%  |   100%  |
 ```
 
-See the section on [Cross Tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs), and the JavaDocs for the [CrostTab](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/aggregate/CrossTab.html) class. 
+See the section on [Cross Tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs), and the JavaDocs for the [CrossTab](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/aggregate/CrossTab.html) class. 
 
 ## Conclusion
 
