@@ -165,7 +165,7 @@ NumbericColumn has many more aggregate functions. For example, to calculate the 
 double stdDev = nc.standardDeviation();	
 ```
 
-> **Key point:** NumbericColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and so on. These are defined in the [NumberColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/NumbericColumn.html) class. 
+> **Key point:** NumbericColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and so on. These are defined in the [NumberColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/NumericColumn.html) class. 
 >
 
 When we discuss tables below, we'll show how to calculate sub-totals in one or more numeric columns by the values in one or more grouping columns.
