@@ -34,7 +34,7 @@ To create a column with data, you can initialize the column with an array:
 
 ```Java
 double[] values = {1, 2, 3, 7, 9.44242, 11};
-DoubleColumn column = NumberColumn.create("my numbers", values);
+DoubleColumn column = DoubleColumn.create("my numbers", values);
 ```
 
 Once you have a column, you can add it to a table using the addColumns() method on Table.
@@ -54,13 +54,13 @@ DateColumn.append(LocalDate.of(2016, 2, 28));
 To change the value of an element in a column you can use the *set(index, value)* method. This will replace the existing value at the given position with the new value.
 
 ```Java
-numberColumn.set(4, 123.2);
+doubleColumn.set(4, 123.2);
 ```
 
 Normally, you don't remove data from a column in the normal sense. To remove elements from the middle of column would cause problems if the column is part of a table. However, if you do want to get rid of some elements you have two choices. The first is to set the value to missing as shown below.
 
 ```Java
-numberColumn.set(4, NumberColumn.MISSING_VALUE);
+doubleColumn.setMissing(4);
 ```
 
 Your other option is to create a new column without the offending data elements. This is done with filters as described below.
