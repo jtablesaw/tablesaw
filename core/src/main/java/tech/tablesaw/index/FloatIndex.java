@@ -25,7 +25,7 @@ import tech.tablesaw.selection.Selection;
 /**
  * An index for single-precision 32-bit IEEE 754 floating point columns.
  */
-public class FloatIndex {
+public class FloatIndex implements Index {
 
     private final Float2ObjectAVLTreeMap<IntArrayList> index;
 

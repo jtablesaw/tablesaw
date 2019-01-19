@@ -14,11 +14,7 @@
 
 package tech.tablesaw.index;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 import com.google.common.base.Preconditions;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectSortedMap;
@@ -32,11 +28,14 @@ import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 
 /**
  * An index for four-byte integer and integer backed columns (date, category, time)
  */
-public class IntIndex {
+public class IntIndex implements Index {
 
     private final Int2ObjectAVLTreeMap<IntArrayList> index;
 
