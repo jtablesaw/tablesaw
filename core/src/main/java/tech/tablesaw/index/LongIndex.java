@@ -14,8 +14,6 @@
 
 package tech.tablesaw.index;
 
-import java.time.LocalDateTime;
-
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectAVLTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -27,10 +25,12 @@ import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
+import java.time.LocalDateTime;
+
 /**
  * An index for eight-byte long and long backed columns (datetime)
  */
-public class LongIndex {
+public class LongIndex implements Index {
 
     private final Long2ObjectAVLTreeMap<IntArrayList> index;
 

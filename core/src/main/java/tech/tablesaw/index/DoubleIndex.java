@@ -25,7 +25,7 @@ import tech.tablesaw.selection.Selection;
 /**
  * An index for double-precision 64-bit IEEE 754 floating point columns.
  */
-public class DoubleIndex {
+public class DoubleIndex implements Index {
 
     private final Double2ObjectAVLTreeMap<IntArrayList> index;
 

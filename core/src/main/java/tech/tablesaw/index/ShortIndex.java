@@ -28,7 +28,7 @@ import tech.tablesaw.selection.Selection;
 /**
  * An index for four-byte integer and integer backed columns (date, category, time)
  */
-public class ShortIndex {
+public class ShortIndex implements Index {
 
     private final Short2ObjectAVLTreeMap<IntArrayList> index;
 
