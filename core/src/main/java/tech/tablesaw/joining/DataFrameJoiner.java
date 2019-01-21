@@ -1,6 +1,5 @@
 package tech.tablesaw.joining;
 
-import com.google.common.base.Stopwatch;
 import com.google.common.collect.Streams;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.ColumnType;
@@ -42,7 +41,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataFrameJoiner {
@@ -176,8 +174,6 @@ public class DataFrameJoiner {
      * @return The resulting table
      */
     private Table joinInternal(Table table1, Table table2, boolean outer, boolean allowDuplicates, String... col2Names) {
-        System.out.println("Starting join");
-        Stopwatch stopwatch = Stopwatch.createStarted();
 
         if (allowDuplicates) {
             renameColumnsWithDuplicateNames(table1, table2, col2Names);
@@ -281,12 +277,10 @@ public class DataFrameJoiner {
                 crossProduct(result, table1Rows, table2Rows);
             }
         }
-        System.out.println("Time (MILLIS): " + stopwatch.elapsed(TimeUnit.MILLISECONDS));
         return result;
     }
 
     private Index indexFor(Table table2, String col2Name, Column<?> col) {
-        Index index;
         ColumnType type = col.type();
         if (type instanceof DateColumnType) {
             return new IntIndex(table2.dateColumn(col2Name));
