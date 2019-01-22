@@ -335,12 +335,13 @@ public class CsvReaderTest {
     @Test
     public void testLoadFromUrl() throws Exception {
         ColumnType[] types = {LOCAL_DATE, DOUBLE, STRING};
-        String location = "https://raw.githubusercontent.com/jAirframe/Airframe/master/data/bush.csv";
+        String location = "https://raw.githubusercontent.com/jTablesaw/tablesaw/master/data/bush.csv";
         Table table;
         try (InputStream input = new URL(location).openStream()) {
             table = Table.read().csv(CsvReadOptions
                     .builder(input, "Bush approval ratings")
-                    .columnTypes(types));
+                    .columnTypes(types)
+                    );
         }
         assertNotNull(table);
         assertEquals(3, table.columnCount());
