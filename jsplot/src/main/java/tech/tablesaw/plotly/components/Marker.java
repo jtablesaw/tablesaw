@@ -123,13 +123,18 @@ public class Marker extends Component {
     private Map<String, Object> getContext() {
         Map<String, Object> context = new HashMap<>();
         context.put("size", size.length == 1? size[0]: Utils.dataAsString(size));
-
-        context.put("color", color);
-        context.put("colorScale", colorScalePalette);
+        if (colorScalePalette != null) {
+            context.put("colorScale", colorScalePalette);
+        }
         if(cAuto != DEFAULT_C_AUTO) context.put("cAuto", cAuto);
-        if (color != null && color.length > 1) {
-            context.put("cMin", cMin);
-            context.put("cMax", cMax);
+        if (color != null && color.length > 0)  {
+            if (color.length > 1) {
+                context.put("color", Utils.dataAsString(color));
+                context.put("cMin", cMin);
+                context.put("cMax", cMax);
+            } else {
+                context.put("color", Utils.quote(color[0]));
+            }
         }
         if (autoColorScale != DEFAULT_AUTO_COLOR_SCALE) context.put("autoColorScale", autoColorScale);
         if (showScale != DEFAULT_SHOW_SCALE) context.put("showScale",showScale);

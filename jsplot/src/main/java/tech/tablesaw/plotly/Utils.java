@@ -8,6 +8,12 @@ public class Utils {
         return Arrays.toString(data);
     }
 
+    public static String quote(String string) {
+        return "'" +
+                string +
+                "'";
+    }
+
     public static String dataAsString(Object[] data) {
         StringBuilder builder = new StringBuilder("[");
         for (int i = 0; i < data.length; i++) {

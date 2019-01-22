@@ -3,7 +3,7 @@
     size: {{size}},
 {% endif %}
 {% if color is not null %}
-    color: '{{color | raw}}',
+    color: {{color | raw}},
 {% endif %}
 {% if colorScale is not null %}
     colorscale: '{{colorScale | raw}}',
