@@ -29,8 +29,11 @@ import tech.tablesaw.api.Table;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.InputStream;
+import java.io.Reader;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.List;
@@ -342,6 +345,54 @@ public class CsvReaderTest {
                     .builder(input, "Bush approval ratings")
                     .columnTypes(types)
                     );
+        }
+        assertNotNull(table);
+        assertEquals(3, table.columnCount());
+    }
+
+    /**
+     * Read from a url while performing column type inference
+     */
+    @Ignore
+    @Test
+    public void testLoadFromUrl2() throws Exception {
+        String location = "https://raw.githubusercontent.com/jTablesaw/tablesaw/master/data/bush.csv";
+        Table table;
+        try (InputStream input = new URL(location).openStream()) {
+            table = Table.read().csv(CsvReadOptions
+                    .builder(input, "Bush approval ratings"));
+        }
+        assertNotNull(table);
+        assertEquals(3, table.columnCount());
+    }
+
+    /**
+     * Read from a file input stream while performing column type inference
+     */
+    @Test
+    public void testLoadFromFileStream() throws Exception {
+        String location = "../data/bush.csv";
+        Table table;
+        File file = Paths.get(location).toFile();
+        try (InputStream input = new FileInputStream(file)) {
+            table = Table.read().csv(CsvReadOptions
+                    .builder(input, "Bush approval ratings"));
+        }
+        assertNotNull(table);
+        assertEquals(3, table.columnCount());
+    }
+
+    /**
+     * Read from a file input stream while performing column type inference
+     */
+    @Test
+    public void testLoadFromFileStreamReader() throws Exception {
+        String location = "../data/bush.csv";
+        Table table;
+        File file = Paths.get(location).toFile();
+        try (Reader reader = new FileReader(file)) {
+            table = Table.read().csv(CsvReadOptions
+                    .builder(reader, "Bush approval ratings"));
         }
         assertNotNull(table);
         assertEquals(3, table.columnCount());

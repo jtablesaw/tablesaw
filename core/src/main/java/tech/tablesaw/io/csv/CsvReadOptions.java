@@ -44,6 +44,18 @@ public class CsvReadOptions {
     private final Integer maxNumberOfColumns;
 
     private CsvReadOptions(CsvReadOptions.Builder builder) {
+
+        int sourceCount = 0;
+        if (builder.file != null) sourceCount++;
+        if (builder.reader != null) sourceCount++;
+        if (builder.inputStream != null) sourceCount++;
+
+        if (sourceCount == 0) {
+            throw new IllegalArgumentException("CsvReadOptions Builder configured with no data source");
+        } else if (sourceCount > 1) {
+            throw new IllegalArgumentException("CsvReadOptions Builder configured with more than one data source");
+        }
+
         file = builder.file;
         reader = builder.reader;
         inputStream = builder.inputStream;

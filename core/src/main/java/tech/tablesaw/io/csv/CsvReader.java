@@ -16,6 +16,7 @@ package tech.tablesaw.io.csv;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
@@ -118,6 +119,9 @@ public class CsvReader {
             if (options.reader() != null) {
                 bytes = CharStreams.toString(options.reader()).getBytes();
             }
+            if (options.inputStream() != null) {
+                bytes = ByteStreams.toByteArray(options.inputStream());
+            }
             types = getColumnTypes(options, bytes);
         }
 
@@ -202,9 +206,9 @@ public class CsvReader {
      */
     private ColumnType[] getColumnTypes(CsvReadOptions options, byte[] bytes) throws IOException {
         ColumnType[] types;
-        try(InputStream detectTypesStream = options.reader() != null
-                ? new ByteArrayInputStream(bytes)
-                : new FileInputStream(options.file())) {
+        try(InputStream detectTypesStream = options.file() != null
+                ? new FileInputStream(options.file())
+                : new ByteArrayInputStream(bytes)) {
             types = detectColumnTypes(detectTypesStream, options);
         }
         return types;
