@@ -15,7 +15,6 @@
 package tech.tablesaw.io.csv;
 
 import com.univocity.parsers.common.TextParsingException;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -32,7 +31,6 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.Reader;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.time.ZoneOffset;
 import java.util.Collections;
@@ -334,17 +332,14 @@ public class CsvReaderTest {
         assertEquals(STRING, columnTypes[2]);
     }
 
-    @Ignore
     @Test
-    public void testLoadFromUrl() throws Exception {
+    public void testLoadFromUrlWithColumnTypes() throws Exception {
         ColumnType[] types = {LOCAL_DATE, DOUBLE, STRING};
-        String location = "https://raw.githubusercontent.com/jTablesaw/tablesaw/master/data/bush.csv";
         Table table;
-        try (InputStream input = new URL(location).openStream()) {
+        try (InputStream input = new File("../data/bush.csv").toURI().toURL().openStream()) {
             table = Table.read().csv(CsvReadOptions
                     .builder(input, "Bush approval ratings")
-                    .columnTypes(types)
-                    );
+                    .columnTypes(types));
         }
         assertNotNull(table);
         assertEquals(3, table.columnCount());
@@ -353,12 +348,10 @@ public class CsvReaderTest {
     /**
      * Read from a url while performing column type inference
      */
-    @Ignore
     @Test
-    public void testLoadFromUrl2() throws Exception {
-        String location = "https://raw.githubusercontent.com/jTablesaw/tablesaw/master/data/bush.csv";
+    public void testLoadFromUrl() throws Exception {
         Table table;
-        try (InputStream input = new URL(location).openStream()) {
+        try (InputStream input = new File("../data/bush.csv").toURI().toURL().openStream()) {
             table = Table.read().csv(CsvReadOptions
                     .builder(input, "Bush approval ratings"));
         }
