@@ -62,7 +62,6 @@ public class ScatterplotWithTwoYAxes {
                 .name("Slugging pct.")
                 .build();
         Figure figure = new Figure(layout, trace2, trace);
-        System.out.println(figure.asJavascript("divx"));
         Plot.show(figure);
     }
 }
