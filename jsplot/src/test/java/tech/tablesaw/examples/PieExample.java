@@ -12,9 +12,10 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.PieTrace;

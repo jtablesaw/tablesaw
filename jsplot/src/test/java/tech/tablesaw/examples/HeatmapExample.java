@@ -1,7 +1,8 @@
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.Heatmap;
 import tech.tablesaw.plotly.components.Figure;
 

@@ -1,5 +1,6 @@
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.traces.Histogram2DTrace;
 

@@ -12,38 +12,31 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.Plot;
+import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.components.Line;
 import tech.tablesaw.plotly.traces.ScatterTrace;
+import tech.tablesaw.plotly.traces.Trace;
 
 /**
  *
  */
-public class LinePlotExampleWithSmoothing {
+public class ScatterplotExample {
 
     public static void main(String[] args) throws Exception {
-        Table robberies = Table.read().csv("../data/boston-robberies.csv");
-        NumberColumn<?> x = robberies.nCol("Record");
-        NumberColumn<?> y = robberies.nCol("Robberies");
-
-        Layout layout = Layout.builder()
-                .title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975")
+        Table baseball = Table.read().csv("../data/baseball.csv");
+        NumberColumn<?> x = baseball.nCol("BA");
+        NumberColumn<?> y = baseball.nCol("W");
+        Layout layout = Layout.builder().title("Wins vs BA")
+                .xAxis(Axis.builder().title("Batting Average").build())
+                .yAxis(Axis.builder().title("Wins").build())
                 .build();
-
-        ScatterTrace trace = ScatterTrace.builder(x, y)
-                .mode(ScatterTrace.Mode.LINE)
-                .line(Line.builder()
-                        .shape(Line.Shape.SPLINE)
-                        .smoothing(1.2f)
-                        .build())
-                .build();
-
+        Trace trace = ScatterTrace.builder(x, y).build();
         Plot.show(new Figure(layout, trace));
-
     }
 }

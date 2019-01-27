@@ -1,4 +1,4 @@
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;

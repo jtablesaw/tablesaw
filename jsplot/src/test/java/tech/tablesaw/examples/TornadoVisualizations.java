@@ -12,11 +12,12 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.HorizontalBarPlot;
 import tech.tablesaw.plotly.api.ParetoPlot;
 import tech.tablesaw.plotly.api.PiePlot;

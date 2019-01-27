@@ -1,4 +1,4 @@
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 import com.google.common.base.Stopwatch;
 import tech.tablesaw.api.ColumnType;

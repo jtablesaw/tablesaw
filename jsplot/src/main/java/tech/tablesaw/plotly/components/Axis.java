@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.plotly.Utils;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -157,6 +158,27 @@ public class Axis extends Component {
         }
     }
 
+    /**
+     * Determines whether an x (y) axis is positioned at the "bottom" ("left") or "top" ("right") of the plotting area.
+     */
+    public enum Side {
+        left("left"), // DEFAULT
+        right("right"),
+        top("top"),
+        bottom("bottom");
+
+        private final String value;
+
+        Side(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
     private static final String DEFAULT_COLOR = "#444";
     private static final String DEFAULT_ZERO_LINE_COLOR = "#444";
     private static final String DEFAULT_LINE_COLOR = "#444";
@@ -204,6 +226,9 @@ public class Axis extends Component {
     private final boolean zeroLine;
     private final boolean showGrid;
 
+    private final Side side;
+    private final ScatterTrace.YAxis overlaying;
+
     private final TickSettings tickSettings;
 
     public static AxisBuilder builder() {
@@ -222,7 +247,8 @@ public class Axis extends Component {
         rangeMode = builder.rangeMode;
         fixedRange = builder.fixedRange;
         tickSettings = builder.tickSettings;
-
+        side = builder.side;
+        overlaying = builder.overlaying;
         spikes = builder.spikes;
 
         showLine = builder.showLine;
@@ -264,6 +290,12 @@ public class Axis extends Component {
         if(!color.equals(DEFAULT_COLOR)) context.put("color", color);
         if (font != null) {
             context.put("font", font);
+        }
+        if (side != null) {
+            context.put("side", side);
+        }
+        if (overlaying != null) {
+            context.put("overlaying", overlaying);
         }
         if (!autoRange.equals(DEFAULT_AUTO_RANGE)) context.put("autoRange", autoRange);
         context.put("rangeMode", rangeMode);
@@ -307,6 +339,7 @@ public class Axis extends Component {
         private boolean visible = DEFAULT_VISIBLE;
         private String color = DEFAULT_COLOR;
         private Font font;
+        private Side side;
 
         private Type type = DEFAULT_TYPE;
         private RangeMode rangeMode = RangeMode.NORMAL;
@@ -330,6 +363,8 @@ public class Axis extends Component {
         private String gridColor = DEFAULT_GRID_COLOR;
         private int gridWidth = DEFAULT_GRID_WIDTH;
 
+        private ScatterTrace.YAxis overlaying;
+
         private AxisBuilder() {}
 
         public AxisBuilder title(String title) {
@@ -349,6 +384,21 @@ public class Axis extends Component {
 
         public AxisBuilder visible(boolean visible) {
             this.visible = visible;
+            return this;
+        }
+
+        public AxisBuilder side(Side side) {
+            this.side = side;
+            return this;
+        }
+
+        /**
+         * Instructs plotly to overly the trace with this axis on top of a trace with another axis
+         * @param axisToOverlay The axis we want to overlay
+         * @return  this AxisBuilder
+         */
+        public AxisBuilder overlaying(ScatterTrace.YAxis axisToOverlay) {
+            this.overlaying = axisToOverlay;
             return this;
         }
 

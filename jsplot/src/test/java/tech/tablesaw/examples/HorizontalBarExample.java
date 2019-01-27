@@ -12,36 +12,36 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
-import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.components.Marker;
-import tech.tablesaw.plotly.traces.ScatterTrace;
-import tech.tablesaw.plotly.traces.Trace;
+import tech.tablesaw.plotly.traces.BarTrace;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.count;
 
 /**
  *
  */
-
-public class ScatterplotExample2 {
+public class HorizontalBarExample {
 
     public static void main(String[] args) throws Exception {
-        Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
-        tornadoes = tornadoes.where(tornadoes.nCol("Start lat").isGreaterThan(20));
-        NumberColumn<?> x = tornadoes.nCol("Start lon");
-        NumberColumn<?> y = tornadoes.nCol("Start lat");
+        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
+        Table s = table.summarize("fatalities", count).by("State");
+
+        BarTrace trace = BarTrace.builder(
+                s.categoricalColumn(0),
+                s.numberColumn(1))
+                .orientation(BarTrace.Orientation.HORIZONTAL)
+                .build();
+
         Layout layout = Layout.builder()
-                .title("tornado start points")
+                .title("Tornadoes by state")
                 .height(600)
                 .width(800)
                 .build();
-        Trace trace = ScatterTrace.builder(x, y)
-                .marker(Marker.builder().size(1).build())
-                .build();
         Plot.show(new Figure(layout, trace));
-
     }
 }

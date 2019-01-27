@@ -12,27 +12,32 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.BoxTrace;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 /**
- * Basic sample box plot. It shows the distribution of the number of people injured in tornadoes, broken out
- * by the scale of the Tornado.
+ *
  */
-public class BoxExample {
+public class LinePlotExample {
 
     public static void main(String[] args) throws Exception {
-        Table table = Table.read().csv("../data/tornadoes_1950-2014.csv");
+        Table robberies = Table.read().csv("../data/boston-robberies.csv");
+        NumberColumn<?> x = robberies.nCol("Record");
+        NumberColumn<?> y = robberies.nCol("Robberies");
 
-        Layout layout = Layout.builder().title("Tornado Injuries by Scale").build();
-
-        BoxTrace trace = BoxTrace.builder(
-                table.categoricalColumn("scale"),
-                table.nCol("injuries")).build();
+        Layout layout = Layout.builder()
+                .title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975")
+                .build();
+        ScatterTrace trace = ScatterTrace.builder(x, y)
+                .mode(ScatterTrace.Mode.LINE)
+                .build();
         Plot.show(new Figure(layout, trace));
+
     }
 }

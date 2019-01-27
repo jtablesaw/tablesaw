@@ -1,6 +1,7 @@
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.BubblePlot;
 import tech.tablesaw.plotly.api.Scatter3DPlot;
 import tech.tablesaw.plotly.api.ScatterPlot;

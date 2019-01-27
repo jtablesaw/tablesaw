@@ -45,7 +45,24 @@ public class ScatterTrace extends AbstractTrace {
         public String toString() {
             return value;
         }
+    }
 
+    public enum YAxis {
+        Y("y"), // DEFAULT
+        Y2("y2"),
+        Y3("y3"),
+        Y4("y4");
+
+        private final String value;
+
+        YAxis(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 
     private final Fill fill;
@@ -58,6 +75,7 @@ public class ScatterTrace extends AbstractTrace {
     private final boolean showLegend;
     private final Marker marker;
     private final Line line;
+    private final YAxis yAxis;
 
     private final double[] open;
     private final double[] high;
@@ -102,7 +120,7 @@ public class ScatterTrace extends AbstractTrace {
         this.line = builder.line;
         this.fill = builder.fill;
         this.fillColor = builder.fillColor;
-
+        this.yAxis = builder.yAxis;
         this.open = builder.open;
         this.high = builder.high;
         this.low = builder.low;
@@ -128,7 +146,9 @@ public class ScatterTrace extends AbstractTrace {
         if (whiskerWidth != DEFAULT_WHISKER_WIDTH) context.put("whiskerWidth", whiskerWidth);
         if (increasing != null) context.put("increasing", increasing);
         if (decreasing != null) context.put("increasing", decreasing);
-
+        if (yAxis != null) {
+            context.put("yAxis", yAxis);
+        }
         context.put("marker", marker);
         context.put("showlegend", showLegend);
         if (!fill.equals(DEFAULT_FILL)) context.put("fill", fill);
@@ -190,6 +210,7 @@ public class ScatterTrace extends AbstractTrace {
         private double[] y;
         private String[] text;
         private Marker marker;
+        private YAxis yAxis;
         private Line line;
         private double[] open;
         private double[] close;
@@ -260,6 +281,22 @@ public class ScatterTrace extends AbstractTrace {
 
         public ScatterBuilder mode(Mode mode) {
             this.mode = mode;
+            return this;
+        }
+
+        /**
+         * Sets a specific yAxis to this trace when you want to display more than one yAxis in a plot.
+         * This can be ignored if only one y axis is desired for the whole plot, and need not be set if this trace
+         * should get the default y-axis.
+         *
+         * There must be a corresponding Y Axis defined in the layout, e.g., if you specify YAxis.Y2 here, you must
+         * provide a value for yAxis2 in the layout
+         *
+         * @param axis  The Axis to use for this trace
+         * @return      this ScatterBuilder
+         */
+        public ScatterBuilder yAxis(YAxis axis) {
+            this.yAxis = axis;
             return this;
         }
 

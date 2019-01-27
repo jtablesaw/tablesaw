@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumberColumn;
@@ -22,6 +22,7 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.ShortColumnType;
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.AreaPlot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.Histogram2D;

@@ -1,8 +1,9 @@
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.BoxPlot;
 import tech.tablesaw.plotly.api.Histogram;
 import tech.tablesaw.plotly.api.Histogram2D;

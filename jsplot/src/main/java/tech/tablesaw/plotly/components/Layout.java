@@ -190,6 +190,10 @@ public class Layout {
 
     private final Axis yAxis;
 
+    private final Axis yAxis2;
+    private final Axis yAxis3;
+    private final Axis yAxis4;
+
     private final Axis zAxis;
 
     private final BarMode barMode;
@@ -210,6 +214,9 @@ public class Layout {
         this.xAxis = builder.xAxis;
         this.yAxis = builder.yAxis;
         this.zAxis = builder.zAxis;
+        this.yAxis2 = builder.yAxis2;
+        this.yAxis3 = builder.yAxis3;
+        this.yAxis4 = builder.yAxis4;
         this.paperBgColor = builder.paperBgColor;
         this.plotBgColor = builder.plotBgColor;
         this.showLegend = builder.showLegend;
@@ -260,6 +267,15 @@ public class Layout {
         }
         if (yAxis != null) {
             context.put("yAxis", yAxis);
+        }
+        if (yAxis2 != null) {
+            context.put("yAxis2", yAxis2);
+        }
+        if (yAxis3 != null) {
+            context.put("yAxis3", yAxis3);
+        }
+        if (yAxis4 != null) {
+            context.put("yAxis4", yAxis4);
         }
         if (zAxis != null) {  // TODO: remove? It's in scene for 3d scatters at least.
             context.put("zAxis", zAxis);
@@ -359,6 +375,10 @@ public class Layout {
 
         private Axis yAxis;
 
+        private Axis yAxis2;
+        private Axis yAxis3;
+        private Axis yAxis4;
+
         private Axis zAxis;
 
         private BarMode barMode = DEFAULT_BAR_MODE;
@@ -427,6 +447,21 @@ public class Layout {
 
         public LayoutBuilder yAxis(Axis axis) {
             this.yAxis = axis;
+            return this;
+        }
+
+        public LayoutBuilder yAxis2(Axis axis) {
+            this.yAxis2 = axis;
+            return this;
+        }
+
+        public LayoutBuilder yAxis3(Axis axis) {
+            this.yAxis3 = axis;
+            return this;
+        }
+
+        public LayoutBuilder yAxis4(Axis axis) {
+            this.yAxis4 = axis;
             return this;
         }
 

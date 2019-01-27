@@ -12,41 +12,39 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
+import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
-import tech.tablesaw.plotly.traces.HistogramTrace;
-import tech.tablesaw.table.TableSliceGroup;
+import tech.tablesaw.plotly.components.Line;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 /**
  *
  */
-public class HistogramOverlayExample {
+public class LinePlotExampleWithSmoothing {
 
     public static void main(String[] args) throws Exception {
-        Table baseball = Table.read().csv("../data/baseball.csv");
+        Table robberies = Table.read().csv("../data/boston-robberies.csv");
+        NumberColumn<?> x = robberies.nCol("Record");
+        NumberColumn<?> y = robberies.nCol("Robberies");
 
         Layout layout = Layout.builder()
-                .title("Distribution of team batting averages")
-                .barMode(Layout.BarMode.OVERLAY)
-                .build();
-        TableSliceGroup groups = baseball.splitOn("league");
-        Table t1 = groups.get(0).asTable();
-        HistogramTrace trace1 = HistogramTrace
-                .builder(t1.nCol("BA"))
-                .opacity(.75)
-                .nBinsX(24)
-                .build();
-        Table t2 = groups.get(1).asTable();
-
-        HistogramTrace trace2 = HistogramTrace
-                .builder(t2.nCol("BA"))
-                .opacity(.75)
-                .nBinsX(24)
+                .title("Monthly Boston Armed Robberies Jan. 1966 - Oct. 1975")
                 .build();
 
-        Plot.show(new Figure(layout, trace1, trace2));
+        ScatterTrace trace = ScatterTrace.builder(x, y)
+                .mode(ScatterTrace.Mode.LINE)
+                .line(Line.builder()
+                        .shape(Line.Shape.SPLINE)
+                        .smoothing(1.2f)
+                        .build())
+                .build();
+
+        Plot.show(new Figure(layout, trace));
+
     }
 }

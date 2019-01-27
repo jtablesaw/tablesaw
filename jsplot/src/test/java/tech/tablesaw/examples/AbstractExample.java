@@ -1,4 +1,4 @@
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 /**
  * A helper class for writing example code

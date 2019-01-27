@@ -12,35 +12,37 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.plotly;
+package tech.tablesaw.examples;
 
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.traces.ScatterTrace;
+import tech.tablesaw.plotly.traces.Trace;
 
 /**
  *
  */
-public class QuantileExample {
+
+public class ScatterplotExample2 {
 
     public static void main(String[] args) throws Exception {
-        Table baseball = Table.read().csv("../data/baseball.csv");
-        NumberColumn<?> xCol = baseball.nCol("BA");
-
-        double[] x = new double[xCol.size()];
-
-        for (int i = 0; i < x.length; i++) {
-            x[i] = i / (float) x.length;
-        }
-
-        NumberColumn<?> copy = xCol.copy();
-        copy.sortAscending();
-
-        ScatterTrace trace = ScatterTrace.builder(x, copy.asDoubleArray()).build();
-
-        Layout layout = Layout.builder().title("Distribution of team batting averages").build();
+        Table tornadoes = Table.read().csv("../data/tornadoes_1950-2014.csv");
+        tornadoes = tornadoes.where(tornadoes.nCol("Start lat").isGreaterThan(20));
+        NumberColumn<?> x = tornadoes.nCol("Start lon");
+        NumberColumn<?> y = tornadoes.nCol("Start lat");
+        Layout layout = Layout.builder()
+                .title("tornado start points")
+                .height(600)
+                .width(800)
+                .build();
+        Trace trace = ScatterTrace.builder(x, y)
+                .marker(Marker.builder().size(1).build())
+                .build();
         Plot.show(new Figure(layout, trace));
+
     }
 }
