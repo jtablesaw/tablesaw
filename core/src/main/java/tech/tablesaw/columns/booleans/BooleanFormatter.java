@@ -1,7 +1,5 @@
 package tech.tablesaw.columns.booleans;
 
-import tech.tablesaw.api.BooleanColumn;
-
 public class BooleanFormatter {
     private String trueString = "true";
     private String falseString = "false";

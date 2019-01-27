@@ -203,7 +203,6 @@ public class DataFrameJoiner {
                 ColumnType type = table1Column.type();
                 // relies on both arrays, columns, and col2Names,
                 // having corresponding values at same index
-                String col2Name = col2Names[i];
                 Selection rowBitMapOneCol = null;
                 if (type instanceof DateColumnType) {
                     IntIndex index = (IntIndex) columnIndexMap.get(column);
