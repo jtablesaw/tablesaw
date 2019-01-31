@@ -14,19 +14,24 @@
 
 package tech.tablesaw.io;
 
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.io.csv.CsvReader;
-import tech.tablesaw.io.html.HtmlTableReader;
-import tech.tablesaw.io.jdbc.SqlResultSetReader;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
+
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.csv.CsvReader;
+import tech.tablesaw.io.html.HtmlTableReader;
+import tech.tablesaw.io.jdbc.SqlResultSetReader;
+import tech.tablesaw.io.json.JsonReader;
 
 public class DataFrameReader {
 
@@ -60,6 +65,20 @@ public class DataFrameReader {
 
     public Table csv(CsvReadOptions options) throws IOException {
         return new CsvReader().read(options);
+    }
+
+    public Table json(String url) throws MalformedURLException, IOException {
+        try (Scanner scanner = new Scanner(new URL(url).openStream(), StandardCharsets.UTF_8.toString())) {
+            scanner.useDelimiter("\\A");
+            return json(scanner.hasNext() ? scanner.next() : "", url);
+	}
+    }
+
+    public Table json(String contents, String tableName) throws IOException {
+	JsonReader.Csv csv = new JsonReader().jsonToCsv(contents);
+        return csv(CsvReadOptions
+        	.builder(new StringReader(csv.getContents()), tableName)
+        	.header(csv.hasHeader()));
     }
 
     public Table db(ResultSet resultSet, String tableName) throws SQLException {
