@@ -11,7 +11,7 @@ for every US tornado between 1950 and 2014. The code below loads the data, filte
 and renders the plot:
 
 ```java
-Table tornado = Table.createFromCsv("data/tornadoes_1950-2014.csv");
+Table tornado = Table.read().csv("data/tornadoes_1950-2014.csv");
 tornado = tornado.selectWhere(
         both(column("Start Lat").isGreaterThan(0),
              column("Scale").isGreaterThanOrEqualTo(0)));
@@ -20,7 +20,7 @@ Scatter.show("US Tornados 1950-2014",
         tornado.numberColumn("Start Lon"),
         tornado.numberColumn("Start Lat"));
 ```
-These plots provide instant visual feedback to the analyst while she’s working. They’re for discovery, rather than for presentation, and so ease of use is stressed over beauty. Behind the scenes, the scatter plots are created with Tim Molter’s awesome XChart library: https://github.com/timmolter/XChart.
+These plots provide instant visual feedback to the analyst while she’s working. They’re for discovery, rather than for presentation, and so ease of use is stressed over beauty.
 
 The following chart is taken from a baseball data set. It shows how to split a table on the values of one or more columns, 
 producing a series for each group. In this case, we color the mark differently if the team made the playoffs. 
@@ -30,7 +30,7 @@ winsByYear
 Here’s the code:
 
 ```java
-    Table baseball = Table.createFromCsv("data/baseball.csv");
+    Table baseball = Table.read().csv("data/baseball.csv");
     Scatter.show("Regular season wins by year",
         baseball.numericColumn("W"),
         baseball.numericColumn("Year"),
