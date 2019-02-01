@@ -20,7 +20,7 @@ Scatter.show("US Tornados 1950-2014",
         tornado.numberColumn("Start Lon"),
         tornado.numberColumn("Start Lat"));
 ```
-These plots provide instant visual feedback to the analyst while she’s working. They’re for discovery, rather than for presentation, and so ease of use is stressed over beauty. Behind the scenes, the scatter plots are created with Tim Molter’s awesome XChart library: https://github.com/timmolter/XChart.
+These plots provide instant visual feedback to the analyst while she’s working. They’re for discovery, rather than for presentation, and so ease of use is stressed over beauty.
 
 The following chart is taken from a baseball data set. It shows how to split a table on the values of one or more columns, 
 producing a series for each group. In this case, we color the mark differently if the team made the playoffs. 

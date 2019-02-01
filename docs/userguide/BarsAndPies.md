@@ -14,7 +14,7 @@ Here we focus on some common plot types for working with univariate data:
 
 When you're exploring data, you need plot creation to be as easy as possible. With Tablesaw's simple plot API you can usually create and display new charts in a line or two of code. 
 
-First we load the Tornado dataset: 
+First we load the Tornado dataset:
 
 ```java
 Table tornadoes = Table.read().csv("data/tornadoes_1950-2014.csv");
