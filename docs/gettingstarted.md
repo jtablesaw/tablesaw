@@ -35,9 +35,9 @@ To create a column you can use one of its static *create()* methods:
 ```java
 double[] numbers = {1, 2, 3, 4};
 DoubleColumn nc = DoubleColumn.create("Test", numbers);
-out(nc.print());
+System.out.println(nc.print());
 ```
-which produces: [^1]
+which produces:
 ```java
 Column: Test
 1.0
@@ -57,8 +57,9 @@ Tablesaw makes columns easy to work with. Operations that work on numbers in sta
 
 ```java
 DoubleColumn nc2 = nc.multiply(4);
+System.out.println(nc2.print());
 ```
-producing: [^1] 
+producing:
 
 ```java
 Column: Test * 4.0
@@ -123,7 +124,7 @@ If you have several columns of the same length as you would in a table of data, 
 DoubleColumn result = firstColumn.where(someOtherColumn.startsWith("foo"));
 ```
 
-> **Key point:** Note the methods *startsWith(aString)*, *isLessThan(aNumber)*, and *isOdd()*. These were predefined for your use. There are many such methods that can be used in building queries. For StringColumn, they're defined in the [tech.tablesaw.columns.strings.StringFilters interface](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/columns/strings/StringFilters.html). It also includes *endsWith()*, *isEmpty()*, *isAlpha()*, *containsString()*[^2], etc. Each column has a similar set of filter operations. They can all be found in the filter interfaces located in sub-folders of tech.tablesaw.columns (e.g. tech.tablesaw.columns.dates.DateFilters). 
+> **Key point:** Note the methods *startsWith(aString)*, *isLessThan(aNumber)*, and *isOdd()*. These were predefined for your use. There are many such methods that can be used in building queries. For StringColumn, they're defined in the [tech.tablesaw.columns.strings.StringFilters interface](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/columns/strings/StringFilters.html). It also includes *endsWith()*, *isEmpty()*, *isAlpha()*, *containsString()*[^1], etc. Each column has a similar set of filter operations. They can all be found in the filter interfaces located in sub-folders of tech.tablesaw.columns (e.g. tech.tablesaw.columns.dates.DateFilters). 
 
 #### Map functions
 
@@ -463,10 +464,4 @@ See the section on [Cross Tabs](https://jtablesaw.github.io/tablesaw/userguide/c
 
 We've covered a lot of ground. To learn more, please take a look at the [User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc) or API documentation ([Java Docs](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/index)).
 
-[^1]: The method shown does not actually "produce" any output For that you would call *System.out.println()*. For brevity, this "faux" output will be shown indented by one tab beneath the code that produced it.
-[^2]: Note that containsString(String subString) is different from contains(). The first method looks at each string in the column to see if it conains the substring. The second method looks at every row in the column and returns true if any matches the entire string. In other words, contains is like contains as defined on List<String>. , etc.
-
-
-
-
-
+[^1]: Note that containsString(String subString) is different from contains(). The first method looks at each string in the column to see if it conains the substring. The second method looks at every row in the column and returns true if any matches the entire string. In other words, contains is like contains as defined on List<String>. , etc.
