@@ -11,7 +11,7 @@ for every US tornado between 1950 and 2014. The code below loads the data, filte
 and renders the plot:
 
 ```java
-Table tornado = Table.createFromCsv("data/tornadoes_1950-2014.csv");
+Table tornado = Table.read().csv("data/tornadoes_1950-2014.csv");
 tornado = tornado.selectWhere(
         both(column("Start Lat").isGreaterThan(0),
              column("Scale").isGreaterThanOrEqualTo(0)));
@@ -30,7 +30,7 @@ winsByYear
 Here’s the code:
 
 ```java
-    Table baseball = Table.createFromCsv("data/baseball.csv");
+    Table baseball = Table.read().csv("data/baseball.csv");
     Scatter.show("Regular season wins by year",
         baseball.numericColumn("W"),
         baseball.numericColumn("Year"),

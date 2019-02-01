@@ -17,7 +17,7 @@ When you're exploring data, you need plot creation to be as easy as possible. Wi
 First we load the Tornado dataset: 
 
 ```java
-Table tornadoes = Table.read().csv("Tornadoes.csv");
+Table tornadoes = Table.read().csv("data/tornadoes_1950-2014.csv");
 ```
 
 ### Univariate data: counts and distributions
