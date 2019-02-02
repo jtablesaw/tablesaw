@@ -451,7 +451,7 @@ public class CsvReader {
      * corrected and
      * used to explicitly specify the correct column types.
      */
-    public ColumnType[] detectColumnTypes(InputStream stream, CsvReadOptions options) {
+    protected ColumnType[] detectColumnTypes(InputStream stream, CsvReadOptions options) {
 
         boolean header = options.header();
         boolean useSampling = options.sample();
