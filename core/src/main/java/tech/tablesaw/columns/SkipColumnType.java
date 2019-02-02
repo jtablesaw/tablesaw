@@ -1,6 +1,6 @@
 package tech.tablesaw.columns;
 
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 public class SkipColumnType extends AbstractColumnType {
 
@@ -22,7 +22,7 @@ public class SkipColumnType extends AbstractColumnType {
     }
 
     @Override
-    public AbstractParser<?> customParser(CsvReadOptions options) {
+    public AbstractParser<?> customParser(ReadOptions options) {
         throw new UnsupportedOperationException("Column type " + name() + " doesn't support parsing");
     }
 

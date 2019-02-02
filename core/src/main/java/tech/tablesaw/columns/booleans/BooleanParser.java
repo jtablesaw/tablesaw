@@ -3,7 +3,7 @@ package tech.tablesaw.columns.booleans;
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +34,7 @@ public class BooleanParser extends AbstractParser<Boolean> {
         super(columnType);
     }
 
-    public BooleanParser(BooleanColumnType booleanColumnType, CsvReadOptions readOptions) {
+    public BooleanParser(BooleanColumnType booleanColumnType, ReadOptions readOptions) {
         super(booleanColumnType);
         if (readOptions.missingValueIndicator() != null) {
             missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());

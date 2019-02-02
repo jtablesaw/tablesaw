@@ -3,7 +3,7 @@ package tech.tablesaw.columns.strings;
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 public class StringParser extends AbstractParser<String> {
 
@@ -11,7 +11,7 @@ public class StringParser extends AbstractParser<String> {
         super(columnType);
     }
 
-    public StringParser(ColumnType columnType, CsvReadOptions readOptions) {
+    public StringParser(ColumnType columnType, ReadOptions readOptions) {
         super(columnType);
         if (readOptions.missingValueIndicator() != null) {
             missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());

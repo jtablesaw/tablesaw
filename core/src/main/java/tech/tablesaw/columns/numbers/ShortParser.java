@@ -2,7 +2,7 @@ package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 public class ShortParser extends AbstractParser<Short> {
 
@@ -10,7 +10,7 @@ public class ShortParser extends AbstractParser<Short> {
         super(columnType);
     }
 
-    public ShortParser(ShortColumnType columnType, CsvReadOptions readOptions) {
+    public ShortParser(ShortColumnType columnType, ReadOptions readOptions) {
         super(columnType);
         if (readOptions.missingValueIndicator() != null) {
             missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());

@@ -4,7 +4,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 import java.time.LocalDate;
 
@@ -32,7 +32,7 @@ public class DateColumnType extends AbstractColumnType {
     }
 
     @Override
-    public AbstractParser<LocalDate> customParser(CsvReadOptions options) {
+    public AbstractParser<LocalDate> customParser(ReadOptions options) {
         return new DateParser(this, options);
     }
 

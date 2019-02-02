@@ -4,7 +4,7 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
 import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 import java.time.LocalTime;
 
@@ -33,7 +33,7 @@ public class TimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public AbstractParser<LocalTime> customParser(CsvReadOptions options) {
+    public AbstractParser<LocalTime> customParser(ReadOptions options) {
         return new TimeParser(this, options);
     }
 
