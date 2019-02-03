@@ -25,7 +25,6 @@ import java.nio.ByteBuffer;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -145,18 +144,6 @@ public class TimeColumnTest {
         assertEquals(LocalTime.NOON, column1.get(1));
         assertNotEquals(LocalTime.NOON, column1.get(2));
         assertNotEquals(LocalTime.NOON, column1.get(3));
-    }
-
-    @Test
-    public void testAsSet() {
-        column1.appendCell("10:15:30");
-        column1.appendCell("11:30:00");
-        column1.appendCell("14:00:00");
-        column1.appendCell("18:15:30");
-        column1.appendInternal(of(12,0, 0));
-        column1.appendInternal(of(12,0, 0));
-        Set<LocalTime> set = column1.asSet();
-        assertEquals(column1.size(), set.size() + 1);
     }
 
     @Test

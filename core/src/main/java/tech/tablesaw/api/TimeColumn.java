@@ -39,10 +39,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -502,15 +500,6 @@ public class TimeColumn extends AbstractColumn<LocalTime>
 
     public IntIterator intIterator() {
         return data.iterator();
-    }
-
-    Set<LocalTime> asSet() {
-        Set<LocalTime> times = new HashSet<>();
-        TimeColumn unique = unique();
-        for (LocalTime t : unique) {
-            times.add(t);
-        }
-        return times;
     }
 
     public boolean contains(LocalTime time) {

@@ -200,7 +200,7 @@ public class ColumnTest {
         assertContentEquals(filtered, 0.0, 1.0);
     }
 
-    static String getSeason(LocalDate date) {
+    private static String getSeason(LocalDate date) {
         String season = "";
         int month = date.getMonthValue();
         int day = date.getDayOfMonth();

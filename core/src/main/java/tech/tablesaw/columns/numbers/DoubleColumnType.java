@@ -11,15 +11,15 @@ public class DoubleColumnType extends AbstractColumnType {
 
     public static final DoubleParser DEFAULT_PARSER = new DoubleParser(ColumnType.DOUBLE);
 
+    private static DoubleColumnType INSTANCE =
+            new DoubleColumnType(BYTE_SIZE, "DOUBLE", "Double");
+
     public static DoubleColumnType instance() {
         if (INSTANCE == null) {
             INSTANCE = new DoubleColumnType(BYTE_SIZE, "DOUBLE", "Double");
         }
         return INSTANCE;
     }
-
-    private static DoubleColumnType INSTANCE =
-            new DoubleColumnType(BYTE_SIZE, "DOUBLE", "Double");
 
     private DoubleColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);

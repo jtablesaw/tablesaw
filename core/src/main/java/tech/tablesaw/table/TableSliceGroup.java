@@ -67,11 +67,11 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         this.splitColumnNames = groupColumnNames;
     }
 
-    String[] getSplitColumnNames() {
+    protected String[] getSplitColumnNames() {
         return splitColumnNames;
     }
 
-    int getByteSize(List<Column<?>> columns) {
+    protected int getByteSize(List<Column<?>> columns) {
         int byteSize = 0;
         for (Column<?> c : columns) {
             byteSize += c.byteSize();
@@ -79,7 +79,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return byteSize;
     }
 
-    void addSlice(TableSlice slice) {
+    protected void addSlice(TableSlice slice) {
         subTables.add(slice);
     }
 
@@ -211,7 +211,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return tableList;
     }
 
-    void setSourceTable(Table sourceTable) {
+    protected void setSourceTable(Table sourceTable) {
         this.sourceTable = sourceTable;
     }
 }
