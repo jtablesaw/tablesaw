@@ -1,19 +1,25 @@
 package tech.tablesaw.io.html;
 
-import com.univocity.parsers.csv.CsvWriter;
-import com.univocity.parsers.csv.CsvWriterSettings;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.ColumnTypeDetector;
+import tech.tablesaw.io.ReadOptions;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class HtmlTableReader {
 
-    public String tableToCsv(String url) throws IOException {
+    public Table read(String url) throws IOException { // TODO: take ReaderOptions. Add a test using a File
         Document doc = Jsoup.connect(url).get();
         Elements tables = doc.select("table");
         if (tables.size() != 1) {
@@ -22,18 +28,40 @@ public class HtmlTableReader {
                             + " The URL you passed has " + tables.size()
                             + ". You may file a feature request with the URL if you'd like your pagae to be supported");
         }
-        Element table = tables.get(0);
-        CsvWriterSettings settings = new CsvWriterSettings();
-        StringWriter stringWriter = new StringWriter();
-        CsvWriter csvWriter = new CsvWriter(stringWriter, settings);
+        Element htmlTable = tables.get(0);
 
-        for (Element row : table.select("tr")) {
+        List<String[]> rows = new ArrayList<>();
+        for (Element row : htmlTable.select("tr")) {
             Elements headerCells = row.getElementsByTag("th");
             Elements cells = row.getElementsByTag("td");
             String[] nextLine = Stream.concat(headerCells.stream(), cells.stream())
                     .map(Element::text).toArray(String[]::new);
-            csvWriter.writeRow(nextLine);
+            rows.add(nextLine);
         }
-        return stringWriter.toString();
+
+        Table table = Table.create(url);
+
+        if (rows.size() == 0) {
+            return table;
+        }
+
+        ColumnTypeDetector detector = new ColumnTypeDetector();
+        Iterator<String[]> iterator = rows.iterator();
+        iterator.next(); // Discard header row. TODO: support tables without headers
+        ReadOptions options = ReadOptions.builder(new StringReader(""), url).build(); // TODO: this should be passed in
+        ColumnType[] types = detector.detectColumnTypes(iterator, options);
+        String[] headerRow = rows.get(0);
+        for (int i = 0; i < headerRow.length; i++) {
+            table.addColumns(types[i].create(headerRow[i])); // TODO: cleansing and fallback name
+        }
+
+        for (int i = 1; i < rows.size(); i++) {
+            for (int j = 0; j < table.columnCount(); j++) {
+                table.column(j).appendCell(rows.get(i)[j]);        	
+            }
+        }
+
+        return table;
     }
+
 }

@@ -101,7 +101,7 @@ public class CsvReader {
         return read(options, false);
     }
 
-    public Table read(CsvReadOptions options, boolean headerOnly) throws IOException {
+    private Table read(CsvReadOptions options, boolean headerOnly) throws IOException {
 	Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options);
 	Reader reader = pair.getLeft();
 	ColumnType[] types = pair.getRight();
@@ -196,7 +196,7 @@ public class CsvReader {
                 Column<?> column = table.column(cellIndex);
                 AbstractParser<?> parser = parserMap.get(column.name());
                 try {
-                     String value = nextLine[columnIndex];
+                    String value = nextLine[columnIndex];
                     column.appendCell(value, parser);
                 } catch (Exception e) {
                     throw new AddCellToColumnException(e, columnIndex, rowNumber, table.columnNames(), nextLine);
