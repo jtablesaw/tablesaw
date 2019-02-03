@@ -16,7 +16,6 @@ package tech.tablesaw.io.csv;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.io.ByteStreams;
 import com.google.common.io.CharStreams;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
@@ -26,6 +25,7 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.ColumnTypeDetector;
+import tech.tablesaw.io.ReadOptions;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -35,8 +35,8 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -73,32 +73,32 @@ public class CsvReader {
      */
     private Pair<Reader, ColumnType[]> getReaderAndColumnTypes(CsvReadOptions options) throws IOException {
         ColumnType[] types = options.columnTypes();
-        byte[] bytes = null;
+        byte[] bytesCache = null;
 
         if (types == null) {
-            if (options.reader() != null) {
-                bytes = CharStreams.toString(options.reader()).getBytes();
+            Reader reader = createReader(options, bytesCache);
+            if (options.file() == null) {
+        	bytesCache = CharStreams.toString(reader).getBytes();
+        	// create a new reader since we just exhausted the existing one
+        	reader = createReader(options, bytesCache);
             }
-            if (options.inputStream() != null) {
-                bytes = ByteStreams.toByteArray(options.inputStream());
-            }
-            try (InputStream detectTypesStream = options.file() != null
-                    ? new FileInputStream(options.file())
-                    : new ByteArrayInputStream(bytes)) {
-                types = detectColumnTypes(detectTypesStream, options);
-            }
+            types = detectColumnTypes(reader, options);
         }
 
-        if (bytes != null) {
-            return Pair.of(new InputStreamReader(new ByteArrayInputStream(bytes)), types);
-        }
+        return Pair.of(createReader(options, bytesCache), types);
+    }
+
+    private Reader createReader(ReadOptions options, byte[] cachedBytes) throws IOException {
+	if (cachedBytes != null) {
+	    return new InputStreamReader(new ByteArrayInputStream(cachedBytes));
+	}
         if (options.inputStream() != null) {
-            return Pair.of(new InputStreamReader(options.inputStream()), types);
+            return new InputStreamReader(options.inputStream());
         }
         if (options.reader() != null) {
-            return Pair.of(options.reader(), types);
+            return options.reader();
         }
-        return Pair.of(new InputStreamReader(new FileInputStream(options.file())), types);
+        return new FileReader(options.file());
     }
 
     public Table read(CsvReadOptions options) throws IOException {
@@ -184,11 +184,13 @@ public class CsvReader {
                             + " is empty. Continuing.");
                     continue;
                 } else {
-                    Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " is too short.");
+                    Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " contains " + nextLine.length + " columns. "
+                    	+ types.length + " expected.");
                     throw new AddCellToColumnException(e, 0, rowNumber, table.columnNames(), nextLine);
                 }
             } else if (nextLine.length > types.length) {
-                throw new IllegalArgumentException("Row number " + rowNumber + " is too long.");
+                throw new IllegalArgumentException("Row number " + rowNumber + " contains " + nextLine.length + " columns. "
+                	+ types.length + " expected.");
             }
 
             // append each column that we're including (not skipping)
@@ -281,15 +283,15 @@ public class CsvReader {
      */
     private Table detectedColumnTypes(String csvFileName, boolean header, char delimiter, Locale locale) throws IOException {
         File file = new File(csvFileName);
-        try (InputStream stream = new FileInputStream(file)) {
+        try (Reader reader = new FileReader(file)) {
 
-            CsvReadOptions options = CsvReadOptions.builder(stream, "")
+            CsvReadOptions options = CsvReadOptions.builder(reader, "")
                     .separator(delimiter)
                     .header(header)
                     .locale(locale)
                     .sample(true)
                     .build();
-            ColumnType[] types = detectColumnTypes(stream, options);
+            ColumnType[] types = detectColumnTypes(reader, options);
             Table t = headerOnly(types, header, options, file);
             return t.structure();
         }
@@ -383,7 +385,7 @@ public class CsvReader {
      * corrected and
      * used to explicitly specify the correct column types.
      */
-    protected ColumnType[] detectColumnTypes(InputStream stream, CsvReadOptions options) {
+    protected ColumnType[] detectColumnTypes(Reader reader, CsvReadOptions options) {
 
         boolean header = options.header();
         int linesToSkip = header ? 1 : 0;
@@ -391,7 +393,7 @@ public class CsvReader {
         CsvParser csvParser = csvParser(options);
 
         try {
-            csvParser.beginParsing(new InputStreamReader(stream));
+            csvParser.beginParsing(reader);
 
             for (int i = 0; i < linesToSkip; i++) {
                 csvParser.parseNext();
