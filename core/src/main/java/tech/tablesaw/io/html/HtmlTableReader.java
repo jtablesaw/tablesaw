@@ -50,7 +50,7 @@ public class HtmlTableReader {
             columnNames.add(headerRow[i]); // TODO: cleansing and fallback name
         }
 
-        return TableBuildingUtils.build(url, columnNames, rows, options);
+        return TableBuildingUtils.build(columnNames, rows, options);
     }
 
 }

@@ -31,32 +31,40 @@ public class JsonReader {
         if (jsonObj.size() == 0) {
             return Table.create(tableName);
         }
-        // array of arrays
+
         JsonNode firstNode = jsonObj.get(0);
         if (firstNode.isArray()) {
-            boolean firstRowAllStrings = true;
-            List<String> columnNames = new ArrayList<>();
-            for (JsonNode n : firstNode) {
-        	if (!n.isTextual()) {
-        	    firstRowAllStrings = false;
-        	}
-            }
-            boolean hasHeader = firstRowAllStrings;
-            for (int i = 0; i < firstNode.size(); i++) {
-        	columnNames.add(hasHeader ? firstNode.get(i).textValue() : "Column " + i);
-            }
-            List<String[]> dataRows = new ArrayList<>();
-            for (int i = hasHeader ? 1 : 0; i < jsonObj.size(); i++) {
-        	JsonNode arr = jsonObj.get(i);
-                String[] row = new String[arr.size()];
-                for (int j = 0; j < arr.size(); j++) {
-                    row[j] = arr.get(j).asText();
-                }
-                dataRows.add(row);
-            }
-            return TableBuildingUtils.build(tableName, columnNames, dataRows, options);
+            return convertArrayOfArrays(jsonObj, options);
         }
-        // array of objects
+        return convertArrayOfObjects(jsonObj, options);
+    }
+
+    private Table convertArrayOfArrays(JsonNode jsonObj, ReadOptions options) {
+        JsonNode firstNode = jsonObj.get(0);
+	boolean firstRowAllStrings = true;
+        List<String> columnNames = new ArrayList<>();
+        for (JsonNode n : firstNode) {
+    	if (!n.isTextual()) {
+    	    firstRowAllStrings = false;
+    	}
+        }
+        boolean hasHeader = firstRowAllStrings;
+        for (int i = 0; i < firstNode.size(); i++) {
+    	columnNames.add(hasHeader ? firstNode.get(i).textValue() : "Column " + i);
+        }
+        List<String[]> dataRows = new ArrayList<>();
+        for (int i = hasHeader ? 1 : 0; i < jsonObj.size(); i++) {
+    	JsonNode arr = jsonObj.get(i);
+            String[] row = new String[arr.size()];
+            for (int j = 0; j < arr.size(); j++) {
+                row[j] = arr.get(j).asText();
+            }
+            dataRows.add(row);
+        }
+        return TableBuildingUtils.build(columnNames, dataRows, options);
+    }
+
+    private Table convertArrayOfObjects(JsonNode jsonObj, ReadOptions options) throws IOException {
         // flatten each object inside the array
         StringBuilder result = new StringBuilder("[");
         for (int i = 0; i < jsonObj.size(); i++) {
@@ -88,7 +96,6 @@ public class JsonReader {
             dataRows.add(arr);
         }
 
-        return TableBuildingUtils.build(tableName, columnNames, dataRows, options);
+        return TableBuildingUtils.build(columnNames, dataRows, options);
     }
-
 }
