@@ -170,41 +170,40 @@ public class CsvReader {
     }
 
     private void addRows(CsvReadOptions options, ColumnType[] types, CsvParser reader, Table table, int[] columnIndexes) {
-        long rowNumber = options.header() ? 1L : 0L;
         String[] nextLine;
 
         Map<String, AbstractParser<?>> parserMap = getParserMap(options, table);
 
         // Add the rows
-        while ((nextLine = reader.parseNext()) != null) {
-
+        for (long rowNumber = options.header() ? 1L : 0L; (nextLine = reader.parseNext()) != null; rowNumber++) {
+            // validation
             if (nextLine.length < types.length) {
                 if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
                     System.err.println("Warning: Invalid CSV file. Row "
                             + rowNumber
                             + " is empty. Continuing.");
+                    continue;
                 } else {
                     Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " is too short.");
                     throw new AddCellToColumnException(e, 0, rowNumber, table.columnNames(), nextLine);
                 }
             } else if (nextLine.length > types.length) {
                 throw new IllegalArgumentException("Row number " + rowNumber + " is too long.");
-            } else {
-                // for each column that we're including (not skipping)
-                int cellIndex = 0;
-                for (int columnIndex : columnIndexes) {
-                    Column<?> column = table.column(cellIndex);
-                    AbstractParser<?> parser = parserMap.get(column.name());
-                    try {
-                        String value = nextLine[columnIndex];
-                        column.appendCell(value, parser);
-                    } catch (Exception e) {
-                        throw new AddCellToColumnException(e, columnIndex, rowNumber, table.columnNames(), nextLine);
-                    }
-                    cellIndex++;
-                }
             }
-            rowNumber++;
+
+            // append each column that we're including (not skipping)
+            int cellIndex = 0;
+            for (int columnIndex : columnIndexes) {
+                Column<?> column = table.column(cellIndex);
+                AbstractParser<?> parser = parserMap.get(column.name());
+                try {
+                     String value = nextLine[columnIndex];
+                    column.appendCell(value, parser);
+                } catch (Exception e) {
+                    throw new AddCellToColumnException(e, columnIndex, rowNumber, table.columnNames(), nextLine);
+                }
+                cellIndex++;
+            }
         }
     }
 
