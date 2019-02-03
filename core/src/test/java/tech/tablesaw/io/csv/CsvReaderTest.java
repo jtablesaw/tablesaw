@@ -313,7 +313,12 @@ public class CsvReaderTest {
                         "STRING,     // 2     who         " + LINE_END +
                         "}" + LINE_END;
         assertEquals(output, new CsvReader()
-                .printColumnTypes("../data/bush.csv", true, ',', Locale.getDefault()));
+                .printColumnTypes(CsvReadOptions.builder("../data/bush.csv")
+                	.header(true)
+                	.separator(',')
+                	.locale(Locale.getDefault())
+                	.sample(true)
+                	.build()));
     }
 
     @Test

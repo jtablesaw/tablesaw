@@ -31,10 +31,7 @@ import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,7 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import static tech.tablesaw.api.ColumnType.*;
@@ -102,6 +98,10 @@ public class CsvReader {
     }
 
     public Table read(CsvReadOptions options) throws IOException {
+        return read(options, false);
+    }
+
+    public Table read(CsvReadOptions options, boolean headerOnly) throws IOException {
 	Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options);
 	Reader reader = pair.getLeft();
 	ColumnType[] types = pair.getRight();
@@ -131,13 +131,16 @@ public class CsvReader {
                     table.addColumns(newColumn);
                 }
             }
-            int[] columnIndexes = new int[columnNames.length];
-            for (int i = 0; i < columnIndexes.length; i++) {
-                // get the index in the original table, which includes skipped fields
-                columnIndexes[i] = headerRow.indexOf(columnNames[i]);
+
+            if (!headerOnly) {
+                int[] columnIndexes = new int[columnNames.length];
+                for (int i = 0; i < columnIndexes.length; i++) {
+                    // get the index in the original table, which includes skipped fields
+                    columnIndexes[i] = headerRow.indexOf(columnNames[i]);
+                }
+                addRows(options, types, parser, table, columnIndexes);
             }
 
-            addRows(options, types, parser, table, columnIndexes);
             return table;
         } finally {
             if (options.reader() == null) {
@@ -225,79 +228,6 @@ public class CsvReader {
     }
 
     /**
-     * Returns a Table constructed from a CSV File with the given file name
-     * <p>
-     * The @code{fileName} is used as the initial table name for the new table
-     *
-     * @param types           An array of the types of columns in the file, in the order they appear
-     * @param header          Is the first row in the file a header?
-     * @param options         Sets the format for and instructions for parsing
-     * @param file            The fully specified file name. It is used to provide a default name for the table
-     * @return                A Relation containing the data in the csv file.
-     * @throws IOException    if file cannot be read
-     */
-    private Table headerOnly(ColumnType[] types, boolean header, CsvReadOptions options, File file)
-            throws IOException {
-
-        FileInputStream fis = new FileInputStream(file);
-
-        Reader reader = new InputStreamReader(fis);
-
-        Table table;
-
-        CsvParser csvParser = csvParser(options);
-        try (BufferedReader streamReader = new BufferedReader(reader)) {
-            csvParser.beginParsing(streamReader);
-
-            String[] columnNames;
-            List<String> headerRow;
-
-            String[] headerNames = getHeaderNames(options, types, csvParser);
-
-            headerRow = Lists.newArrayList(headerNames);
-            columnNames = selectColumnNames(headerRow, types);
-
-            table = Table.create(file.getName());
-            for (int x = 0; x < types.length; x++) {
-                if (types[x] != SKIP) {
-                    Column<?> newColumn = types[x].create(headerRow.get(x).trim());
-                    table.addColumns(newColumn);
-                }
-            }
-            int[] columnIndexes = new int[columnNames.length];
-            for (int i = 0; i < columnIndexes.length; i++) {
-                // get the index in the original table, which includes skipped fields
-                columnIndexes[i] = headerRow.indexOf(columnNames[i]);
-            }
-        } finally {
-            // the stream is already closed
-            csvParser.stopParsing();
-        }
-        return table;
-    }
-
-    /**
-     * Returns the structure of the table given by {@code csvFileName} as detected by analysis of a sample of the data
-     *
-     * @throws IOException if file cannot be read
-     */
-    private Table detectedColumnTypes(String csvFileName, boolean header, char delimiter, Locale locale) throws IOException {
-        File file = new File(csvFileName);
-        try (Reader reader = new FileReader(file)) {
-
-            CsvReadOptions options = CsvReadOptions.builder(reader, "")
-                    .separator(delimiter)
-                    .header(header)
-                    .locale(locale)
-                    .sample(true)
-                    .build();
-            ColumnType[] types = detectColumnTypes(reader, options);
-            Table t = headerOnly(types, header, options, file);
-            return t.structure();
-        }
-    }
-
-    /**
      * Returns a string representation of the column types in file {@code csvFilename},
      * as determined by the type-detection algorithm
      * <p>
@@ -316,9 +246,9 @@ public class CsvReader {
      *
      * @throws IOException if file cannot be read
      */
-    public String printColumnTypes(String csvFileName, boolean header, char delimiter, Locale locale) throws IOException {
+    public String printColumnTypes(CsvReadOptions options) throws IOException {
 
-        Table structure = detectedColumnTypes(csvFileName, header, delimiter, locale);
+        Table structure = read(options, true).structure();
 
         StringBuilder buf = new StringBuilder();
         buf.append("ColumnType[] columnTypes = {");
