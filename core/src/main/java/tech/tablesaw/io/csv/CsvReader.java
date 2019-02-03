@@ -28,11 +28,13 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.ColumnTypeDetector;
 
 import javax.annotation.concurrent.Immutable;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -65,8 +67,11 @@ public class CsvReader {
         this.typeArrayOverrides = typeDetectionList;
     }
 
-    public Table read(CsvReadOptions options) throws IOException {
-
+    /**
+     * Determines column types if not provided by the user
+     * Reads all input into memory unless File was provided
+     */
+    private Pair<Reader, ColumnType[]> getReaderAndColumnTypes(CsvReadOptions options) throws IOException {
         ColumnType[] types = options.columnTypes();
         byte[] bytes = null;
 
@@ -77,10 +82,30 @@ public class CsvReader {
             if (options.inputStream() != null) {
                 bytes = ByteStreams.toByteArray(options.inputStream());
             }
-            types = getColumnTypes(options, bytes);
+            try (InputStream detectTypesStream = options.file() != null
+                    ? new FileInputStream(options.file())
+                    : new ByteArrayInputStream(bytes)) {
+                types = detectColumnTypes(detectTypesStream, options);
+            }
         }
 
-        Reader reader = getReader(options, bytes);
+        if (bytes != null) {
+            return Pair.of(new InputStreamReader(new ByteArrayInputStream(bytes)), types);
+        }
+        if (options.inputStream() != null) {
+            return Pair.of(new InputStreamReader(options.inputStream()), types);
+        }
+        if (options.reader() != null) {
+            return Pair.of(options.reader(), types);
+        }
+        return Pair.of(new InputStreamReader(new FileInputStream(options.file())), types);
+    }
+
+    public Table read(CsvReadOptions options) throws IOException {
+	Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options);
+	Reader reader = pair.getLeft();
+	ColumnType[] types = pair.getRight();
+
         CsvParser parser = csvParser(options);
 
         try {
@@ -142,35 +167,6 @@ public class CsvReader {
             }
             return headerNames;
         }
-    }
-
-    private Reader getReader(CsvReadOptions options, byte[] bytes)
-            throws FileNotFoundException {
-
-        if (bytes != null) {
-            return new InputStreamReader(new ByteArrayInputStream(bytes));
-        }
-        if (options.inputStream() != null) {
-            return new InputStreamReader(options.inputStream());
-        }
-        if (options.reader() != null) {
-            return options.reader();
-        }
-        return new InputStreamReader(new FileInputStream(options.file()));
-    }
-
-    /**
-     * Returns column types for this table as an array, the types are either provided in read options, or calculated by
-     * scanning the data
-     */
-    private ColumnType[] getColumnTypes(CsvReadOptions options, byte[] bytes) throws IOException {
-        ColumnType[] types;
-        try(InputStream detectTypesStream = options.file() != null
-                ? new FileInputStream(options.file())
-                : new ByteArrayInputStream(bytes)) {
-            types = detectColumnTypes(detectTypesStream, options);
-        }
-        return types;
     }
 
     private void addRows(CsvReadOptions options, ColumnType[] types, CsvParser reader, Table table, int[] columnIndexes) {
@@ -238,7 +234,7 @@ public class CsvReader {
      * @return                A Relation containing the data in the csv file.
      * @throws IOException    if file cannot be read
      */
-    public Table headerOnly(ColumnType[] types, boolean header, CsvReadOptions options, File file)
+    private Table headerOnly(ColumnType[] types, boolean header, CsvReadOptions options, File file)
             throws IOException {
 
         FileInputStream fis = new FileInputStream(file);
