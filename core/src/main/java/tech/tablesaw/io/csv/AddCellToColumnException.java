@@ -15,6 +15,7 @@
 package tech.tablesaw.io.csv;
 
 import java.io.PrintStream;
+import java.util.List;
 
 /**
  * This Exception wraps another Exception thrown while adding a cell to a column.
@@ -42,7 +43,7 @@ public class AddCellToColumnException extends RuntimeException {
     /**
      * The column names stored as an array
      */
-    private final String[] columnNames;
+    private final List<String> columnNames;
 
     /**
      * The original line that caused the Exception
@@ -58,8 +59,8 @@ public class AddCellToColumnException extends RuntimeException {
      * @param columnNames The column names stored as an array
      * @param line        The original line that caused the Exception
      */
-    public AddCellToColumnException(Exception e, int columnIndex, long rowNumber, String[] columnNames, String[] line) {
-        super("Error while adding cell from row " + rowNumber + " and column " + columnNames[columnIndex] + "" +
+    public AddCellToColumnException(Exception e, int columnIndex, long rowNumber, List<String> columnNames, String[] line) {
+        super("Error while adding cell from row " + rowNumber + " and column " + columnNames.get(columnIndex) + "" +
                 "(position:" + columnIndex + "): " + e.getMessage(), e);
         this.columnIndex = columnIndex;
         this.rowNumber = rowNumber;
@@ -84,7 +85,7 @@ public class AddCellToColumnException extends RuntimeException {
     /**
      * Returns the column names array
      */
-    public String[] getColumnNames() {
+    public List<String> getColumnNames() {
         return columnNames;
     }
 
@@ -92,7 +93,7 @@ public class AddCellToColumnException extends RuntimeException {
      * Returns the name of the column that caused the Exception
      */
     public String getColumnName() {
-        return columnNames[columnIndex];
+        return columnNames.get(columnIndex);
     }
 
     /**
@@ -101,11 +102,11 @@ public class AddCellToColumnException extends RuntimeException {
      * @param out The PrintStream to output to
      */
     public void dumpRow(PrintStream out) {
-        for (int i = 0; i < columnNames.length; i++) {
+        for (int i = 0; i < columnNames.size(); i++) {
             out.print("Column ");
             out.print(i);
             out.print(" ");
-            out.print(columnNames[i]);
+            out.print(columnNames.get(columnIndex));
             out.print(" : ");
             try {
                 out.println(line[i]);

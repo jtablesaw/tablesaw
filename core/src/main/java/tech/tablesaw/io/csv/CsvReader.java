@@ -112,7 +112,7 @@ public class CsvReader {
                 columnIndexes[i] = headerRow.indexOf(columnNames[i]);
             }
 
-            addRows(options, types, parser, table, columnNames, columnIndexes);
+            addRows(options, types, parser, table, columnIndexes);
             return table;
         } finally {
             if (options.reader() == null) {
@@ -169,7 +169,7 @@ public class CsvReader {
         return types;
     }
 
-    private void addRows(CsvReadOptions options, ColumnType[] types, CsvParser reader, Table table, String[] columnNames, int[] columnIndexes) {
+    private void addRows(CsvReadOptions options, ColumnType[] types, CsvParser reader, Table table, int[] columnIndexes) {
         long rowNumber = options.header() ? 1L : 0L;
         String[] nextLine;
 
@@ -185,7 +185,7 @@ public class CsvReader {
                             + " is empty. Continuing.");
                 } else {
                     Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " is too short.");
-                    throw new AddCellToColumnException(e, 0, rowNumber, columnNames, nextLine);
+                    throw new AddCellToColumnException(e, 0, rowNumber, table.columnNames(), nextLine);
                 }
             } else if (nextLine.length > types.length) {
                 throw new IllegalArgumentException("Row number " + rowNumber + " is too long.");
@@ -199,7 +199,7 @@ public class CsvReader {
                         String value = nextLine[columnIndex];
                         column.appendCell(value, parser);
                     } catch (Exception e) {
-                        throw new AddCellToColumnException(e, columnIndex, rowNumber, columnNames, nextLine);
+                        throw new AddCellToColumnException(e, columnIndex, rowNumber, table.columnNames(), nextLine);
                     }
                     cellIndex++;
                 }
