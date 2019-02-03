@@ -473,11 +473,4 @@ public class CsvReaderTest {
         assertEquals("1 rows X 10001 cols", table1.shape());
     }
 
-    @Test
-    public void getTypeArray() {
-        List<ColumnType> types = new CsvReader().getTypeArray();
-        for (ColumnType type : types) {
-            assertNotNull(type);
-        }
-    }
 }
