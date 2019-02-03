@@ -112,18 +112,11 @@ public class CsvReader {
             parser.beginParsing(reader);
             Table table = Table.create(options.tableName());
 
-            String[] headerNames = getHeaderNames(options, types, parser);
-            if (headerNames == null) {
-                return table;
-            }
-            List<String> headerRow = Lists.newArrayList(headerNames);
+            List<String> headerRow = Lists.newArrayList(getHeaderNames(options, types, parser));
 
-            String[] columnNames = selectColumnNames(headerRow, types);
-
-            cleanNames(headerRow);
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != SKIP) {
-                    String columnName = headerRow.get(x);
+                    String columnName = cleanName(headerRow.get(x));
                     if (Strings.isNullOrEmpty(columnName)) {
                         columnName = "Column " + table.columnCount();
                     }
@@ -133,6 +126,7 @@ public class CsvReader {
             }
 
             if (!headerOnly) {
+                String[] columnNames = selectColumnNames(headerRow, types);
                 int[] columnIndexes = new int[columnNames.length];
                 for (int i = 0; i < columnIndexes.length; i++) {
                     // get the index in the original table, which includes skipped fields
@@ -221,10 +215,8 @@ public class CsvReader {
         return parserMap;
     }
 
-    private void cleanNames(List<String> headerRow) {
-        for (int i = 0; i < headerRow.size(); i++) {
-            headerRow.set(i, headerRow.get(i).trim());
-        }
+    private String cleanName(String name) {
+	return name.trim();
     }
 
     /**
