@@ -25,16 +25,13 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.ColumnTypeDetector;
-import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.TableBuildingUtils;
 
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,29 +69,16 @@ public class CsvReader {
         byte[] bytesCache = null;
 
         if (types == null) {
-            Reader reader = createReader(options, bytesCache);
+            Reader reader = TableBuildingUtils.createReader(options, bytesCache);
             if (options.file() == null) {
         	bytesCache = CharStreams.toString(reader).getBytes();
         	// create a new reader since we just exhausted the existing one
-        	reader = createReader(options, bytesCache);
+        	reader = TableBuildingUtils.createReader(options, bytesCache);
             }
             types = detectColumnTypes(reader, options);
         }
 
-        return Pair.of(createReader(options, bytesCache), types);
-    }
-
-    private Reader createReader(ReadOptions options, byte[] cachedBytes) throws IOException {
-	if (cachedBytes != null) {
-	    return new InputStreamReader(new ByteArrayInputStream(cachedBytes));
-	}
-        if (options.inputStream() != null) {
-            return new InputStreamReader(options.inputStream());
-        }
-        if (options.reader() != null) {
-            return options.reader();
-        }
-        return new FileReader(options.file());
+        return Pair.of(TableBuildingUtils.createReader(options, bytesCache), types);
     }
 
     public Table read(CsvReadOptions options) throws IOException {

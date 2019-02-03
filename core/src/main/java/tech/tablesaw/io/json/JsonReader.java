@@ -1,8 +1,6 @@
 package tech.tablesaw.io.json;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,15 +19,14 @@ public class JsonReader {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public Table read(Reader json, String tableName) throws IOException {
-        ReadOptions options = ReadOptions.builder(new StringReader(""), tableName).build(); // TODO: this should be passed in
-        JsonNode jsonObj = mapper.readTree(json);
+    public Table read(ReadOptions options) throws IOException {
+        JsonNode jsonObj = mapper.readTree(TableBuildingUtils.createReader(options, null));
         if (!jsonObj.isArray()) {
             throw new IllegalStateException(
                     "Only reading a json array or arrays or objects is currently supported");
         }
         if (jsonObj.size() == 0) {
-            return Table.create(tableName);
+            return Table.create(options.tableName());
         }
 
         JsonNode firstNode = jsonObj.get(0);

@@ -75,7 +75,7 @@ public class DataFrameReader {
     }
 
     public Table json(Reader contents, String tableName) throws IOException {
-	return new JsonReader().read(contents, tableName);
+	return new JsonReader().read(ReadOptions.builder(contents, tableName).build());
     }
 
     public Table db(ResultSet resultSet, String tableName) throws SQLException {
