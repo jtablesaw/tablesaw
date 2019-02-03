@@ -125,19 +125,23 @@ public class CsvReader {
     }
 
     private String[] getHeaderNames(CsvReadOptions options, ColumnType[] types, CsvParser parser) {
-        String[] headerNames;
         if (options.header()) {
-            headerNames = parser.parseNext();
+            String[] headerNames = parser.parseNext();
             // work around issue where Univocity returns null if a column has no header.
             for (int i = 0; i < headerNames.length; i++) {
                 if (headerNames[i] == null) {
                     headerNames[i] = "C" + i;
                 }
             }
+            return headerNames;
         } else {
-            headerNames = makeColumnNames(types);
+            // Placeholder column names for when the file read has no header
+            String[] headerNames = new String[types.length];
+            for (int i = 0; i < types.length; i++) {
+        	headerNames[i] = "C" + i;
+            }
+            return headerNames;
         }
-        return headerNames;
     }
 
     private Reader getReader(CsvReadOptions options, byte[] bytes)
@@ -250,18 +254,7 @@ public class CsvReader {
             String[] columnNames;
             List<String> headerRow;
 
-            String[] headerNames;
-            if (header) {
-                headerNames = csvParser.parseNext();
-                // work around issue where Univocity returns null if a column has no header.
-                for (int i = 0; i < headerNames.length; i++) {
-                    if (headerNames[i] == null) {
-                        headerNames[i] = "C" + i;
-                    }
-                }
-            } else {
-                headerNames = makeColumnNames(types);
-            }
+            String[] headerNames = getHeaderNames(options, types, csvParser);
 
             headerRow = Lists.newArrayList(headerNames);
             columnNames = selectColumnNames(headerRow, types);
@@ -381,17 +374,6 @@ public class CsvReader {
         }
         String[] result = new String[header.size()];
         return header.toArray(result);
-    }
-
-    /**
-     * Provides placeholder column names for when the file read has no header
-     */
-    private String[] makeColumnNames(ColumnType[] types) {
-        String[] header = new String[types.length];
-        for (int i = 0; i < types.length; i++) {
-            header[i] = "C" + i;
-        }
-        return header;
     }
 
     /**
