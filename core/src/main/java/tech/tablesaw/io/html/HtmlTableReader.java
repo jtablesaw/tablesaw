@@ -1,9 +1,8 @@
 package tech.tablesaw.io.html;
 
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.ColumnTypeDetector;
 import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.TableBuildingUtils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -13,7 +12,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -45,23 +43,14 @@ public class HtmlTableReader {
             return table;
         }
 
-        ColumnTypeDetector detector = new ColumnTypeDetector();
-        Iterator<String[]> iterator = rows.iterator();
-        iterator.next(); // Discard header row. TODO: support tables without headers
         ReadOptions options = ReadOptions.builder(new StringReader(""), url).build(); // TODO: this should be passed in
-        ColumnType[] types = detector.detectColumnTypes(iterator, options);
         String[] headerRow = rows.get(0);
+        List<String> columnNames = new ArrayList<>();
         for (int i = 0; i < headerRow.length; i++) {
-            table.addColumns(types[i].create(headerRow[i])); // TODO: cleansing and fallback name
+            columnNames.add(headerRow[i]); // TODO: cleansing and fallback name
         }
 
-        for (int i = 1; i < rows.size(); i++) {
-            for (int j = 0; j < table.columnCount(); j++) {
-                table.column(j).appendCell(rows.get(i)[j]);        	
-            }
-        }
-
-        return table;
+        return TableBuildingUtils.build(url, columnNames, rows, options);
     }
 
 }

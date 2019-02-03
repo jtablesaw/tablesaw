@@ -152,12 +152,12 @@ public class ReadOptions {
 
     public static class Builder {
 
-	protected InputStream inputStream;
-	protected File file;
-	protected Reader reader;
-	protected String tableName = "";
-	protected boolean sample = true;
-	protected String dateFormat;
+        protected InputStream inputStream;
+        protected File file;
+        protected Reader reader;
+        protected String tableName = "";
+        protected boolean sample = true;
+        protected String dateFormat;
         protected String timeFormat;
         protected String dateTimeFormat;
         protected Locale locale;

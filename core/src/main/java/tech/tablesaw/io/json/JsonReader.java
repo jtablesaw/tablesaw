@@ -1,40 +1,60 @@
 package tech.tablesaw.io.json;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.github.wnameless.json.flattener.JsonFlattener;
+
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.TableBuildingUtils;
 
 public class JsonReader {
 
     private static final ObjectMapper mapper = new ObjectMapper();
-    private static final ObjectMapper csvMapper = new CsvMapper();
 
-    public Csv jsonToCsv(String json) throws IOException {
+    public Table read(Reader json, String tableName) throws IOException {
+        ReadOptions options = ReadOptions.builder(new StringReader(""), tableName).build(); // TODO: this should be passed in
         JsonNode jsonObj = mapper.readTree(json);
         if (!jsonObj.isArray()) {
             throw new IllegalStateException(
                     "Only reading a json array or arrays or objects is currently supported");
         }
         if (jsonObj.size() == 0) {
-            return new Csv("", false);
+            return Table.create(tableName);
         }
         // array of arrays
-        if (jsonObj.get(0).isArray()) {
-            CsvSchema schema = CsvSchema.emptySchema();
-            boolean allStrings = true;
-            for (JsonNode n : jsonObj.get(0)) {
+        JsonNode firstNode = jsonObj.get(0);
+        if (firstNode.isArray()) {
+            boolean firstRowAllStrings = true;
+            List<String> columnNames = new ArrayList<>();
+            for (JsonNode n : firstNode) {
         	if (!n.isTextual()) {
-        	    allStrings = false;
+        	    firstRowAllStrings = false;
         	}
             }
-            return new Csv(csvMapper.writer(schema).writeValueAsString(jsonObj), allStrings);
+            boolean hasHeader = firstRowAllStrings;
+            for (int i = 0; i < firstNode.size(); i++) {
+        	columnNames.add(hasHeader ? firstNode.get(i).textValue() : "Column " + i);
+            }
+            List<String[]> dataRows = new ArrayList<>();
+            for (int i = hasHeader ? 1 : 0; i < jsonObj.size(); i++) {
+        	JsonNode arr = jsonObj.get(i);
+                String[] row = new String[arr.size()];
+                for (int j = 0; j < arr.size(); j++) {
+                    row[j] = arr.get(j).asText();
+                }
+                dataRows.add(row);
+            }
+            return TableBuildingUtils.build(tableName, columnNames, dataRows, options);
         }
         // array of objects
         // flatten each object inside the array
@@ -49,6 +69,7 @@ public class JsonReader {
         }
         String flattenedJsonString = result.append("]").toString();
         JsonNode flattenedJsonObj = mapper.readTree(flattenedJsonString);
+
         Set<String> colNames = new HashSet<>();
         for (JsonNode row : flattenedJsonObj) {
             Iterator<String> fieldNames = row.fieldNames();
@@ -56,27 +77,18 @@ public class JsonReader {
         	colNames.add(fieldNames.next());
             }
         }
-        CsvSchema.Builder schemaBuilder = new CsvSchema.Builder().setUseHeader(true);
-        colNames.stream().forEach(c -> schemaBuilder.addColumn(c));
-        return new Csv(csvMapper.writer(schemaBuilder.build()).writeValueAsString(flattenedJsonObj), true);
-    }
 
-    public static class Csv {
-	private final String contents;
-	private final boolean hasHeader;
+        List<String> columnNames = new ArrayList<>(colNames);
+        List<String[]> dataRows = new ArrayList<>();
+        for (JsonNode node : flattenedJsonObj) {
+            String[] arr = new String[columnNames.size()];
+            for (int i = 0; i < columnNames.size(); i++) {
+        	arr[i] = node.get(columnNames.get(i)).asText();
+            }
+            dataRows.add(arr);
+        }
 
-	public Csv(String contents, boolean hasHeader) {
-	    this.contents = contents;
-	    this.hasHeader = hasHeader;
-	}
-
-	public String getContents() {
-	    return contents;
-	}
-
-	public boolean hasHeader() {
-	    return hasHeader;
-	}
+        return TableBuildingUtils.build(tableName, columnNames, dataRows, options);
     }
 
 }

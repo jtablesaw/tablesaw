@@ -70,15 +70,12 @@ public class DataFrameReader {
     public Table json(String url) throws MalformedURLException, IOException {
         try (Scanner scanner = new Scanner(new URL(url).openStream(), StandardCharsets.UTF_8.toString())) {
             scanner.useDelimiter("\\A");
-            return json(scanner.hasNext() ? scanner.next() : "", url);
+            return json(new StringReader(scanner.hasNext() ? scanner.next() : ""), url);
 	}
     }
 
-    public Table json(String contents, String tableName) throws IOException {
-	JsonReader.Csv csv = new JsonReader().jsonToCsv(contents);
-        return csv(CsvReadOptions
-        	.builder(new StringReader(csv.getContents()), tableName)
-        	.header(csv.hasHeader()));
+    public Table json(Reader contents, String tableName) throws IOException {
+	return new JsonReader().read(contents, tableName);
     }
 
     public Table db(ResultSet resultSet, String tableName) throws SQLException {
