@@ -196,11 +196,11 @@ public class Row implements Iterator<Row> {
         return dateTimeColumnMap.get(columnNames[columnIndex]).getLongInternal(rowNumber);
     }
 
-    public boolean getBoolean(String columnName) {
+    public Boolean getBoolean(String columnName) {
         return booleanColumnMap.get(columnName).get(rowNumber);
     }
 
-    public boolean getBoolean(int columnIndex) {
+    public Boolean getBoolean(int columnIndex) {
         return getBoolean(columnNames[columnIndex]);
     }
 
