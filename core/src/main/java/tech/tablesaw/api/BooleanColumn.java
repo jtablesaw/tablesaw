@@ -326,7 +326,11 @@ public class BooleanColumn extends AbstractColumn<Boolean> implements BooleanMap
 
     @Override
     public String getUnformattedString(int row) {
-        return String.valueOf(get(row));
+        Boolean b = get(row);
+        if (b == null) {
+            return "";
+        }
+        return String.valueOf(b);
     }
 
     @Override

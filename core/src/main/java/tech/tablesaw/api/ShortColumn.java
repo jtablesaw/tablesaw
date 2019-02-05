@@ -10,10 +10,9 @@ import it.unimi.dsi.fastutil.shorts.ShortComparator;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
-import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.selection.Selection;
@@ -355,7 +354,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     @Override
     public String getUnformattedString(final int row) {
         final int value = getInt(row);
-        if (IntColumnType.isMissingValue(value)) {
+        if (ShortColumnType.isMissingValue(value)) {
             return "";
         }
         return String.valueOf(value);
