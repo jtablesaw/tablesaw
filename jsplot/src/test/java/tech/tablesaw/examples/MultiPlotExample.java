@@ -17,6 +17,30 @@ import java.util.List;
 
 public class MultiPlotExample {
 
+    private static final String pageTop = "<html>" + System.lineSeparator() +
+        "<head>" + System.lineSeparator() +
+        "    <title>Multi-plot test</title>" + System.lineSeparator() +
+        "    <script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>" + System.lineSeparator() +
+        "</head>" + System.lineSeparator() +
+        "<body>" + System.lineSeparator() +
+        "<div id='plot1'>" + System.lineSeparator() +
+        "<div id='plot2'>" + System.lineSeparator();
+
+    private static final String pageBottom =
+        "</body>" + System.lineSeparator() + "</html>";
+
+    private static String makePage(Figure figure1, Figure figure2, String divName1, String divName2) {
+        return new StringBuilder()
+                .append(pageTop)
+                .append(System.lineSeparator())
+                .append(figure1.asJavascript(divName1))
+                .append(System.lineSeparator())
+                .append(figure2.asJavascript(divName2))
+                .append(System.lineSeparator())
+                .append(pageBottom)
+                .toString();
+    }
+
     public static void main(String[] args) throws Exception {
 
         /*
@@ -86,29 +110,4 @@ public class MultiPlotExample {
         new Browser().browse(outputFile);
     }
 
-    private static String makePage(Figure figure1, Figure figure2, String divName1, String divName2) {
-
-        return new StringBuilder()
-                .append(pageTop)
-                .append(System.lineSeparator())
-                .append(figure1.asJavascript(divName1))
-                .append(System.lineSeparator())
-                .append(figure2.asJavascript(divName2))
-                .append(System.lineSeparator())
-                .append(pageBottom)
-                .toString();
-    }
-
-    private static final String pageTop = "<html>" + System.lineSeparator() +
-            "<head>" + System.lineSeparator() +
-            "    <title>Multi-plot test</title>" + System.lineSeparator() +
-            "    <script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>" + System.lineSeparator() +
-            "</head>" + System.lineSeparator() +
-            "<body>" + System.lineSeparator() +
-            "<div id='plot1'>" + System.lineSeparator() +
-            "<div id='plot2'>" + System.lineSeparator();
-
-    private static final String pageBottom =
-            "</body>" + System.lineSeparator() +
-                    "</html>";
 }

@@ -72,7 +72,7 @@ public abstract class TraceBuilder {
         return this;
     }
 
-    static String[] columnToStringArray(Column<?> column) {
+    protected static String[] columnToStringArray(Column<?> column) {
         String[] x = new String[column.size()];
         for (int i = 0; i < column.size(); i++) {
             x[i] = column.getString(i);
