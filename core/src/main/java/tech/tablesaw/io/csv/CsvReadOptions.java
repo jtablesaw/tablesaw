@@ -226,6 +226,12 @@ public class CsvReadOptions extends ReadOptions {
             return this;
         }
 
+        public Builder minimizeColumnSizes(boolean minimize) {
+            this.minimizeColumnSizes = minimize;
+            return this;
+        }
+
+
         public Builder locale(Locale locale) {
             this.locale = locale;
             return this;

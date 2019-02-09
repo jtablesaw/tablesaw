@@ -28,10 +28,10 @@ public class UnicodeBomHandlingTest {
 
         Table t = new CsvReader().read(CsvReadOptions.builder(
                 new InputStreamReader(new ByteArrayInputStream(CONTENT)), "R").header(false).build());
-        assertEquals((short) 1, t.get(0, 0));
+        assertEquals(1, t.get(0, 0));
         t = new CsvReader().read(CsvReadOptions.builder(
                 new InputStreamReader(new ByteArrayInputStream(UTF8_BOM_CONTENT)), "R").header(false).build());
-        assertEquals((short) 1, t.get(0, 0));
+        assertEquals(1, t.get(0, 0));
     }
 
     protected static final class BOM {

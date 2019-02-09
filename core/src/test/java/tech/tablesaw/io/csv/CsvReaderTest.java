@@ -128,6 +128,7 @@ public class CsvReaderTest {
         Reader reader = new FileReader("../data/bus_stop_test.csv");
         CsvReadOptions options = CsvReadOptions.builder(reader, "")
                 .header(true)
+                .minimizeColumnSizes(true)
                 .separator(',')
                 .sample(false)
                 .locale(Locale.getDefault())
@@ -325,7 +326,7 @@ public class CsvReaderTest {
         String output =
                 "ColumnType[] columnTypes = {" + LINE_END +
                         "LOCAL_DATE, // 0     date        " + LINE_END +
-                        "SHORT,      // 1     approval    " + LINE_END +
+                        "INTEGER,    // 1     approval    " + LINE_END +
                         "STRING,     // 2     who         " + LINE_END +
                         "}" + LINE_END;
         assertEquals(output, new CsvReader()
@@ -349,7 +350,7 @@ public class CsvReaderTest {
 
         ColumnType[] columnTypes = new CsvReader().detectColumnTypes(reader, options);
         assertEquals(LOCAL_DATE, columnTypes[0]);
-        assertEquals(SHORT, columnTypes[1]);
+        assertEquals(INTEGER, columnTypes[1]);
         assertEquals(STRING, columnTypes[2]);
     }
 
@@ -445,7 +446,8 @@ public class CsvReaderTest {
     @Test
     public void testReadFailure() throws Exception {
         // TODO (lwhite): These tests don't fail. What was their intent?
-        Table table1 = Table.read().csv("../data/read_failure_test.csv");
+        Table table1 = Table.read().csv(CsvReadOptions.builder("../data/read_failure_test.csv")
+                .minimizeColumnSizes(true));
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
         //TODO(lwhite): Better tests
@@ -454,7 +456,9 @@ public class CsvReaderTest {
 
     @Test
     public void testReadFailure2() throws Exception {
-        Table table1 = Table.read().csv("../data/read_failure_test2.csv");
+        Table table1 = Table.read().csv(
+                CsvReadOptions.builder("../data/read_failure_test2.csv")
+                .minimizeColumnSizes(true));
         table1.structure(); // just make sure the import completed
         ShortColumn test = table1.shortColumn("Test");
 

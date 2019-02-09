@@ -27,6 +27,7 @@ import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.AddCellToColumnException;
 import tech.tablesaw.io.ColumnTypeDetector;
+import tech.tablesaw.io.ReadOptions;
 import tech.tablesaw.io.TableBuildingUtils;
 
 import javax.annotation.concurrent.Immutable;
@@ -300,8 +301,13 @@ public class CsvReader {
                 csvParser.parseNext();
             }
 
+            if (options.minimizeColumnSizes()) {
+                typeArrayOverrides = ReadOptions.EXTENDED_TYPE_ARRAY;
+            }
+
             ColumnTypeDetector detector = typeArrayOverrides == null
         	    ? new ColumnTypeDetector() : new ColumnTypeDetector(typeArrayOverrides);
+
             return detector.detectColumnTypes(new Iterator<String[]>() {
 
         	String[] nextRow = csvParser.parseNext();

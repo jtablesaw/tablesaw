@@ -15,14 +15,48 @@
 package tech.tablesaw.io;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import tech.tablesaw.api.ColumnType;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
+import static tech.tablesaw.api.ColumnType.BOOLEAN;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
+import static tech.tablesaw.api.ColumnType.LONG;
+import static tech.tablesaw.api.ColumnType.SHORT;
+import static tech.tablesaw.api.ColumnType.STRING;
+import static tech.tablesaw.api.ColumnType.TEXT;
+
 public class ReadOptions {
+
+    /**
+     * An extended list of types that are used if minimizeColumnSizes is true. By including extra types like Short
+     * the resulting table size is reduced at the cost of some additional complexity for the programmer if, for example,
+     * they will subsequently modify the data in a way that exceeds the range of the type.
+     */
+    public static final List<ColumnType> EXTENDED_TYPE_ARRAY =
+            Lists.newArrayList(
+                    LOCAL_DATE_TIME,
+                    LOCAL_TIME,
+                    LOCAL_DATE,
+                    BOOLEAN,
+                    SHORT,
+                    INTEGER,
+                    LONG,
+                    FLOAT,
+                    DOUBLE,
+                    STRING,
+                    TEXT);
 
     // we always have one of these (file, reader, or inputStream)
     protected final File file;
@@ -36,6 +70,7 @@ public class ReadOptions {
     protected final String timeFormat;
     protected final Locale locale;
     protected final String missingValueIndicator;
+    private final boolean minimizeColumnSizes;
 
     protected ReadOptions(ReadOptions.Builder builder) {
 
@@ -59,6 +94,7 @@ public class ReadOptions {
         timeFormat = builder.timeFormat;
         dateTimeFormat = builder.dateTimeFormat;
         missingValueIndicator = builder.missingValueIndicator;
+        minimizeColumnSizes = builder.minimizeColumnSizes;
 
         if (builder.locale == null) {
             locale = Locale.getDefault();
@@ -121,6 +157,10 @@ public class ReadOptions {
         return sample;
     }
 
+    public boolean minimizeColumnSizes() {
+        return minimizeColumnSizes;
+    }
+
     public String missingValueIndicator() {
         return missingValueIndicator;
     }
@@ -162,6 +202,7 @@ public class ReadOptions {
         protected String dateTimeFormat;
         protected Locale locale;
         protected String missingValueIndicator;
+        protected boolean minimizeColumnSizes = false;
 
         public Builder(File file) {
             this.file = file;
@@ -224,6 +265,11 @@ public class ReadOptions {
 
         public Builder locale(Locale locale) {
             this.locale = locale;
+            return this;
+        }
+
+        public Builder minimizeColumnSizes(boolean minimize) {
+            this.minimizeColumnSizes = minimize;
             return this;
         }
 
