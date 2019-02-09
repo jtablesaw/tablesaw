@@ -3,7 +3,7 @@ package tech.tablesaw.columns.strings;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 public class TextColumnType extends AbstractColumnType {
 
@@ -29,7 +29,7 @@ public class TextColumnType extends AbstractColumnType {
     }
 
     @Override
-    public StringParser customParser(CsvReadOptions options) {
+    public StringParser customParser(ReadOptions options) {
         return new StringParser(this, options);
     }
 

@@ -12,11 +12,9 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.io.csv;
+package tech.tablesaw.io;
 
 import com.google.common.base.Strings;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.io.ReadOptions;
 
 import java.io.File;
 import java.io.InputStream;
@@ -24,22 +22,49 @@ import java.io.Reader;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class CsvReadOptions extends ReadOptions {
+public class ReadOptions {
 
-    private final ColumnType[] columnTypes;
-    private final boolean header;
-    private final Character separator;
-    private final String lineEnding;
-    private final Integer maxNumberOfColumns;
+    // we always have one of these (file, reader, or inputStream)
+    protected final File file;
+    protected final Reader reader;
+    protected final InputStream inputStream;
 
-    private CsvReadOptions(CsvReadOptions.Builder builder) {
-	super(builder);
+    protected final String tableName;
+    protected final boolean sample;
+    protected final String dateFormat;
+    protected final String dateTimeFormat;
+    protected final String timeFormat;
+    protected final Locale locale;
+    protected final String missingValueIndicator;
 
-        columnTypes = builder.columnTypes;
-        header = builder.header;
-        separator = builder.separator;
-        lineEnding = builder.lineEnding;
-        maxNumberOfColumns = builder.maxNumberOfColumns;
+    protected ReadOptions(ReadOptions.Builder builder) {
+
+        int sourceCount = 0;
+        if (builder.file != null) sourceCount++;
+        if (builder.reader != null) sourceCount++;
+        if (builder.inputStream != null) sourceCount++;
+
+        if (sourceCount == 0) {
+            throw new IllegalArgumentException("CsvReadOptions Builder configured with no data source");
+        } else if (sourceCount > 1) {
+            throw new IllegalArgumentException("CsvReadOptions Builder configured with more than one data source");
+        }
+
+        file = builder.file;
+        reader = builder.reader;
+        inputStream = builder.inputStream;
+        tableName = builder.tableName;
+        sample = builder.sample;
+        dateFormat = builder.dateFormat;
+        timeFormat = builder.timeFormat;
+        dateTimeFormat = builder.dateTimeFormat;
+        missingValueIndicator = builder.missingValueIndicator;
+
+        if (builder.locale == null) {
+            locale = Locale.getDefault();
+        } else {
+            locale = builder.locale;
+        }
     }
 
     public static Builder builder(File file) {
@@ -92,22 +117,6 @@ public class CsvReadOptions extends ReadOptions {
         return tableName;
     }
 
-    public ColumnType[] columnTypes() {
-        return columnTypes;
-    }
-
-    public boolean header() {
-        return header;
-    }
-
-    public Character separator() {
-        return separator;
-    }
-
-    public String lineEnding() {
-        return lineEnding;
-    }
-
     public boolean sample() {
         return sample;
     }
@@ -141,20 +150,22 @@ public class CsvReadOptions extends ReadOptions {
         return DateTimeFormatter.ofPattern(dateFormat, locale);
     }
 
-    public Integer maxNumberOfColumns() {
-        return maxNumberOfColumns;
-    }
+    public static class Builder {
 
-    public static class Builder extends ReadOptions.Builder {
-
-        private boolean header = true;
-        private Character separator = ',';
-        private String lineEnding;
-        private ColumnType[] columnTypes;
-        private Integer maxNumberOfColumns = 10_000;
+        protected InputStream inputStream;
+        protected File file;
+        protected Reader reader;
+        protected String tableName = "";
+        protected boolean sample = true;
+        protected String dateFormat;
+        protected String timeFormat;
+        protected String dateTimeFormat;
+        protected Locale locale;
+        protected String missingValueIndicator;
 
         public Builder(File file) {
-            super(file);
+            this.file = file;
+            this.tableName = file.getName();
         }
 
         /**
@@ -166,7 +177,7 @@ public class CsvReadOptions extends ReadOptions {
          * we skip type detection and can avoid reading the entire file
          */
         public Builder(Reader reader) {
-            super(reader);
+            this.reader = reader;
         }
 
         /**
@@ -178,7 +189,7 @@ public class CsvReadOptions extends ReadOptions {
          * we skip type detection and can avoid reading the entire file
          */
         public Builder(InputStream stream) {
-            super(stream);
+            this.inputStream = stream;
         }
 
         public Builder tableName(String tableName) {
@@ -201,23 +212,8 @@ public class CsvReadOptions extends ReadOptions {
             return this;
         }
 
-        public Builder header(boolean header) {
-            this.header = header;
-            return this;
-        }
-
         public Builder missingValueIndicator(String missingValueIndicator) {
             this.missingValueIndicator = missingValueIndicator;
-            return this;
-        }
-
-        public Builder separator(char separator) {
-            this.separator = separator;
-            return this;
-        }
-
-        public Builder lineEnding(String lineEnding) {
-            this.lineEnding = lineEnding;
             return this;
         }
 
@@ -231,22 +227,8 @@ public class CsvReadOptions extends ReadOptions {
             return this;
         }
 
-        public Builder columnTypes(ColumnType[] columnTypes) {
-            this.columnTypes = columnTypes;
-            return this;
-        }
-
-        /**
-         * Defines maximal value of columns in csv file.
-         * @param maxNumberOfColumns - must be positive integer. Default is 512.         *
-         */
-        public Builder maxNumberOfColumns(Integer maxNumberOfColumns) {
-            this.maxNumberOfColumns = maxNumberOfColumns;
-            return this;
-        }
-
-        public CsvReadOptions build() {
-            return new CsvReadOptions(this);
+        public ReadOptions build() {
+            return new ReadOptions(this);
         }
     }
 

@@ -3,7 +3,7 @@ package tech.tablesaw.columns.datetimes;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 public class DateTimeColumnType extends AbstractColumnType {
 
@@ -31,7 +31,7 @@ public class DateTimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public DateTimeParser customParser(CsvReadOptions options) {
+    public DateTimeParser customParser(ReadOptions options) {
         return new DateTimeParser(this, options);
     }
 

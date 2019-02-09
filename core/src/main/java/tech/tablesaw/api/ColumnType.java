@@ -15,7 +15,7 @@ import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +64,7 @@ public interface ColumnType {
 
     String getPrinterFriendlyName();
 
-    AbstractParser<?> customParser(CsvReadOptions options);
+    AbstractParser<?> customParser(ReadOptions options);
 
     default boolean compare(int rowNumber, Column<?> temp, Column<?> original) {
         return original.get(rowNumber).equals(temp.get(temp.size() - 1));

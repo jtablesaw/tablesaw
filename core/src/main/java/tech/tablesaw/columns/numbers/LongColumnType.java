@@ -3,7 +3,7 @@ package tech.tablesaw.columns.numbers;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 public class LongColumnType extends AbstractColumnType {
 
@@ -33,7 +33,7 @@ public class LongColumnType extends AbstractColumnType {
     }
 
     @Override
-    public LongParser customParser(CsvReadOptions options) {
+    public LongParser customParser(ReadOptions options) {
         return new LongParser(this, options);
     }
 
