@@ -273,8 +273,23 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testLineEndings() throws Exception {
+    public void testWindowsAndLinuxLineEndings() throws Exception {
+        Reader reader = new StringReader(
+              "TestCol\n"
+            + "foobar1\n"
+            + "foobar2\n"
+            + "foobar3\n"
+            + "foobar4\r\n"
+            + "foobar5\r\n"
+            + "foobar6\r\n");
 
+        Table t = Table.read().csv(reader, "test table");
+        assertEquals(1, t.columnCount());
+        assertEquals(6, t.rowCount());
+    }
+
+    @Test
+    public void testCustomLineEndings() throws Exception {
         CsvReadOptions options = CsvReadOptions.builder("../data/alt_line_endings.csv")
                 .lineEnding("~")
                 .header(true)
