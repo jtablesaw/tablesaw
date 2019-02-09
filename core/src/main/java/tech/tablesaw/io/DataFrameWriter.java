@@ -14,15 +14,17 @@
 
 package tech.tablesaw.io;
 
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvWriteOptions;
-import tech.tablesaw.io.csv.CsvWriter;
-import tech.tablesaw.io.html.HtmlTableWriter;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
+
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvWriteOptions;
+import tech.tablesaw.io.csv.CsvWriter;
+import tech.tablesaw.io.html.HtmlTableWriter;
+import tech.tablesaw.io.json.JsonWriteOptions;
+import tech.tablesaw.io.json.JsonWriter;
 
 public class DataFrameWriter {
 
@@ -58,5 +60,13 @@ public class DataFrameWriter {
 
     public void html(OutputStream stream) {
         HtmlTableWriter.write(table, stream);
+    }
+
+    public String json() throws IOException {
+        return json(JsonWriteOptions.builder().build());
+    }
+
+    public String json(JsonWriteOptions options) throws IOException {
+        return new JsonWriter(options).write(table);
     }
 }
