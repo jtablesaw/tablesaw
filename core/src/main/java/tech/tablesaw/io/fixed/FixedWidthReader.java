@@ -39,6 +39,7 @@ import static tech.tablesaw.api.ColumnType.SKIP;
 public class FixedWidthReader {
 
     private List<ColumnType> typeArrayOverrides = null;
+
     /**
      * Constructs a FixedWidthReader
      */
@@ -216,7 +217,7 @@ public class FixedWidthReader {
      *
      * @throws IOException if file cannot be read
      */
-        public String printColumnTypes(FixedWidthReadOptions options) throws IOException {
+    public String printColumnTypes(FixedWidthReadOptions options) throws IOException {
 
         Table structure = read(options, true).structure();
 
@@ -272,17 +273,6 @@ public class FixedWidthReader {
         }
         String[] result = new String[header.size()];
         return header.toArray(result);
-    }
-
-    /**
-     * Provides placeholder column names for when the file read has no header
-     */
-    private String[] makeColumnNames(ColumnType[] types) {
-        String[] header = new String[types.length];
-        for (int i = 0; i < types.length; i++) {
-            header[i] = "C" + i;
-        }
-        return header;
     }
 
     /**

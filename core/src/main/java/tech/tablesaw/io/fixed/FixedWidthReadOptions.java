@@ -41,18 +41,18 @@ public class FixedWidthReadOptions extends ReadOptions {
     private final Integer maxNumberOfColumns;
 
     private FixedWidthReadOptions(FixedWidthReadOptions.Builder builder) {
-        super(builder);
+    super(builder);
 
-            columnTypes = builder.columnTypes;
-            header = builder.header;
-            columnSpecs = builder.columnSpecs;
-            padding = builder.padding;
-            lookupWildcard = builder.lookupWildcard;
-            skipTrailingCharsUntilNewline = builder.skipTrailingCharsUntilNewline;
-            recordEndsOnNewline = builder.recordEndsOnNewline;
-            skipInvalidRows = builder.skipInvalidRows;
-            lineEnding = builder.lineEnding;
-            maxNumberOfColumns = builder.maxNumberOfColumns;
+        columnTypes = builder.columnTypes;
+        header = builder.header;
+        columnSpecs = builder.columnSpecs;
+        padding = builder.padding;
+        lookupWildcard = builder.lookupWildcard;
+        skipTrailingCharsUntilNewline = builder.skipTrailingCharsUntilNewline;
+        recordEndsOnNewline = builder.recordEndsOnNewline;
+        skipInvalidRows = builder.skipInvalidRows;
+        lineEnding = builder.lineEnding;
+        maxNumberOfColumns = builder.maxNumberOfColumns;
     }
 
     public static Builder builder(File file) {
