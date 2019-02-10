@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.io.csv;
+package tech.tablesaw.io;
 
 import java.io.PrintStream;
 import java.util.List;

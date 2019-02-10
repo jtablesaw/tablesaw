@@ -20,26 +20,21 @@ import com.google.common.io.CharStreams;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
+import org.apache.commons.lang3.tuple.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.AddCellToColumnException;
 import tech.tablesaw.io.ColumnTypeDetector;
 import tech.tablesaw.io.TableBuildingUtils;
 
 import javax.annotation.concurrent.Immutable;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.SKIP;
 
 @Immutable
 public class CsvReader {

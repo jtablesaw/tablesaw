@@ -14,24 +14,22 @@
 
 package tech.tablesaw.io;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.csv.CsvReader;
+import tech.tablesaw.io.fixed.FixedWidthReadOptions;
+import tech.tablesaw.io.fixed.FixedWidthReader;
+import tech.tablesaw.io.html.HtmlTableReader;
+import tech.tablesaw.io.jdbc.SqlResultSetReader;
+import tech.tablesaw.io.json.JsonReader;
+
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
-
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.io.csv.CsvReader;
-import tech.tablesaw.io.html.HtmlTableReader;
-import tech.tablesaw.io.jdbc.SqlResultSetReader;
-import tech.tablesaw.io.json.JsonReader;
 
 public class DataFrameReader {
 
@@ -76,6 +74,38 @@ public class DataFrameReader {
 
     public Table json(Reader contents, String tableName) throws IOException {
 	return new JsonReader().read(ReadOptions.builder(contents, tableName).build());
+    }
+
+    public Table fwf(String file) throws IOException {
+        return fwf(FixedWidthReadOptions.builder(file));
+    }
+
+    public Table fwf(String contents, String tableName) {
+        try {
+            return fwf(new StringReader(contents), tableName);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public Table fwf(File file) throws IOException {
+        return fwf(FixedWidthReadOptions.builder(file));
+    }
+
+    public Table fwf(InputStream stream, String tableName) throws IOException {
+        return fwf(FixedWidthReadOptions.builder(stream, tableName));
+    }
+
+    public Table fwf(Reader reader, String tableName) throws IOException {
+        return fwf(FixedWidthReadOptions.builder(reader, tableName));
+    }
+
+    public Table fwf(FixedWidthReadOptions.Builder options) throws IOException {
+        return fwf(options.build());
+    }
+
+    public Table fwf(FixedWidthReadOptions options) throws IOException {
+        return new FixedWidthReader().read(options);
     }
 
     public Table db(ResultSet resultSet, String tableName) throws SQLException {

@@ -1,16 +1,9 @@
 package tech.tablesaw.io;
 
-import static tech.tablesaw.api.ColumnType.BOOLEAN;
-import static tech.tablesaw.api.ColumnType.DOUBLE;
-import static tech.tablesaw.api.ColumnType.FLOAT;
-import static tech.tablesaw.api.ColumnType.INTEGER;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
-import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
-import static tech.tablesaw.api.ColumnType.LONG;
-import static tech.tablesaw.api.ColumnType.SHORT;
-import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.TEXT;
+import com.google.common.collect.Lists;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.strings.StringColumnType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -18,11 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.google.common.collect.Lists;
-
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.columns.strings.StringColumnType;
+import static tech.tablesaw.api.ColumnType.*;
 
 public class ColumnTypeDetector {
 
