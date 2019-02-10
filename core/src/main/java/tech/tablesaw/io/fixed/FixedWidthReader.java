@@ -17,62 +17,28 @@ package tech.tablesaw.io.fixed;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
-import com.univocity.parsers.fixed.FixedWidthFields;
 import com.univocity.parsers.fixed.FixedWidthFormat;
 import com.univocity.parsers.fixed.FixedWidthParser;
 import com.univocity.parsers.fixed.FixedWidthParserSettings;
+import org.apache.commons.lang3.tuple.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.io.AddCellToColumnException;
+import tech.tablesaw.io.ColumnTypeDetector;
+import tech.tablesaw.io.TableBuildingUtils;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.SKIP;
 
 @Immutable
 public class FixedWidthReader {
 
-    /**
-     * Consider using TextColumn instead of StringColumn for string data after this many rows
-     */
-    private static final int STRING_COLUMN_ROW_COUNT_CUTOFF = 50_000;
-
-    /**
-     * Use a TextColumn if at least this proportion of values are found to be unique in the type detection sample
-     * <p>
-     * Note: This number is based on an assumption that as more records are considered, a smaller proportion of these
-     * new records will be found to be unique
-     * <p>
-     * Sample calculation;
-     * 10 character string = 2 bytes * 10 + 38 extra bytes = 58; rounded up to 64 so it's a multiple of 8
-     * <p>
-     * With dictionary encoding, we have 2*64 + 2*4 = 136 byte per unique value plus 4 bytes for each value
-     * For text columns we have 64 bytes per string
-     * <p>
-     * So, if every value is unique, using dictionary encoding wastes about 70 bytes per value.
-     * If there are only two unique values, dictionary encoding saves about 62 bytes per value.
-     * <p>
-     * Of course, it all depends on the lengths of the strings.
-     */
-    private static final double STRING_COLUMN_CUTOFF = 0.50;
-
-    /**
-     * Types to choose from. When more than one would work, we pick the first of the options. The order these appear in
-     * is critical. The broadest must go last, which is why String is at the end of the list. Any String read from
-     * a FixedWidthWriter will match string. If it were first on the list, you would get nothing but strings in your table.
-     * <p>
-     * As another example, an integer type, should go before double. Otherwise double would match integers so
-     * the integer test would never be evaluated and all the ints would be read as doubles.
-     */
-    private List<ColumnType> typeArray =
-            Lists.newArrayList(LOCAL_DATE_TIME, LOCAL_TIME, LOCAL_DATE, BOOLEAN, SHORT, INTEGER, LONG, FLOAT, DOUBLE, STRING, TEXT);
-
+    private List<ColumnType> typeArrayOverrides = null;
     /**
      * Constructs a FixedWidthReader
      */
@@ -85,40 +51,50 @@ public class FixedWidthReader {
      * These are the only types that the FixedWidthReader can detect and parse
      */
     public FixedWidthReader(List<ColumnType> typeDetectionList) {
-        this.typeArray = typeDetectionList;
+        this.typeArrayOverrides = typeDetectionList;
+    }
+
+    /**
+     * Determines column types if not provided by the user
+     * Reads all input into memory unless File was provided
+     */
+    private Pair<Reader, ColumnType[]> getReaderAndColumnTypes(FixedWidthReadOptions options) throws IOException {
+        ColumnType[] types = options.columnTypes();
+        byte[] bytesCache = null;
+
+        if (types == null) {
+            Reader reader = TableBuildingUtils.createReader(options, bytesCache);
+            if (options.file() == null) {
+                bytesCache = CharStreams.toString(reader).getBytes();
+                // create a new reader since we just exhausted the existing one
+                reader = TableBuildingUtils.createReader(options, bytesCache);
+            }
+            types = detectColumnTypes(reader, options);
+        }
+
+        return Pair.of(TableBuildingUtils.createReader(options, bytesCache), types);
     }
 
     public Table read(FixedWidthReadOptions options) throws IOException {
+        return read(options, false);
+    }
 
-        ColumnType[] types = options.columnTypes();
-        byte[] bytes = null;
+    private Table read(FixedWidthReadOptions options, boolean headerOnly) throws IOException {
+        Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options);
+        Reader reader = pair.getLeft();
+        ColumnType[] types = pair.getRight();
 
-        if (types == null) {
-            if (options.reader() != null) {
-                bytes = CharStreams.toString(options.reader()).getBytes();
-            }
-            types = getColumnTypes(options, bytes);
-        }
-
-        Reader reader = getReader(options, bytes);
         FixedWidthParser parser = fixedWidthParser(options);
 
         try {
             parser.beginParsing(reader);
             Table table = Table.create(options.tableName());
 
-            String[] headerNames = getHeaderNames(options, types, parser);
-            if (headerNames == null) {
-                return table;
-            }
-            List<String> headerRow = Lists.newArrayList(headerNames);
+            List<String> headerRow = Lists.newArrayList(getHeaderNames(options, types, parser));
 
-            String[] columnNames = selectColumnNames(headerRow, types);
-
-            cleanNames(headerRow);
             for (int x = 0; x < types.length; x++) {
                 if (types[x] != SKIP) {
-                    String columnName = headerRow.get(x);
+                    String columnName = cleanName(headerRow.get(x));
                     if (Strings.isNullOrEmpty(columnName)) {
                         columnName = "Column " + table.columnCount();
                     }
@@ -126,13 +102,17 @@ public class FixedWidthReader {
                     table.addColumns(newColumn);
                 }
             }
-            int[] columnIndexes = new int[columnNames.length];
-            for (int i = 0; i < columnIndexes.length; i++) {
-                // get the index in the original table, which includes skipped fields
-                columnIndexes[i] = headerRow.indexOf(columnNames[i]);
+
+            if (!headerOnly) {
+                String[] columnNames = selectColumnNames(headerRow, types);
+                int[] columnIndexes = new int[columnNames.length];
+                for (int i = 0; i < columnIndexes.length; i++) {
+                    // get the index in the original table, which includes skipped fields
+                    columnIndexes[i] = headerRow.indexOf(columnNames[i]);
+                }
+                addRows(options, types, parser, table, columnIndexes);
             }
 
-            addRows(options, types, parser, table, columnNames, columnIndexes);
             return table;
         } finally {
             if (options.reader() == null) {
@@ -145,101 +125,62 @@ public class FixedWidthReader {
     }
 
     private String[] getHeaderNames(FixedWidthReadOptions options, ColumnType[] types, FixedWidthParser parser) {
-        String[] headerNames;
         if (options.header()) {
-            headerNames = parser.parseNext();
+            String[] headerNames = parser.parseNext();
             // work around issue where Univocity returns null if a column has no header.
             for (int i = 0; i < headerNames.length; i++) {
                 if (headerNames[i] == null) {
                     headerNames[i] = "C" + i;
                 }
             }
+            return headerNames;
         } else {
-            headerNames = makeColumnNames(types);
+            // Placeholder column names for when the file read has no header
+            String[] headerNames = new String[types.length];
+            for (int i = 0; i < types.length; i++) {
+                headerNames[i] = "C" + i;
+            }
+            return headerNames;
         }
-        return headerNames;
     }
 
-    private Reader getReader(FixedWidthReadOptions options, byte[] bytes)
-            throws FileNotFoundException {
-        if (bytes != null) {
-            return new InputStreamReader(new ByteArrayInputStream(bytes));
-        }
-
-        if (options.inputStream() != null) {
-            return new InputStreamReader(options.inputStream());
-        } else if (options.reader() != null) {
-            return options.reader();
-        }
-        return new InputStreamReader(new FileInputStream(options.file()));
-    }
-
-    /**
-     * Returns column types for this table as an array, the types are either provided in read options, or calculated by
-     * scanning the data
-     *
-     * @throws IOException
-     */
-    private ColumnType[] getColumnTypes(FixedWidthReadOptions options, byte[] bytes) throws IOException {
-        ColumnType[] types;
-        try (InputStream detectTypesStream = options.reader() != null
-                ? new ByteArrayInputStream(bytes)
-                : new FileInputStream(options.file())) {
-            types = detectColumnTypes(detectTypesStream, options);
-        }
-        return types;
-    }
-
-    private void addRows(FixedWidthReadOptions options, ColumnType[] types, FixedWidthParser reader, Table table, String[] columnNames, int[] columnIndexes) {
-        long rowNumber = options.header() ? 1L : 0L;
+    private void addRows(FixedWidthReadOptions options, ColumnType[] types, FixedWidthParser reader, Table table, int[] columnIndexes) {
         String[] nextLine;
 
         Map<String, AbstractParser<?>> parserMap = getParserMap(options, table);
 
         // Add the rows
-        while ((nextLine = reader.parseNext()) != null) {
-
+        for (long rowNumber = options.header() ? 1L : 0L; (nextLine = reader.parseNext()) != null; rowNumber++) {
+            // validation
             if (nextLine.length < types.length) {
                 if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
-                    System.err.println("Warning: Invalid FixedWidthWriter file. Row "
+                    System.err.println("Warning: Invalid Fixed Width file. Row "
                             + rowNumber
                             + " is empty. Continuing.");
+                    continue;
                 } else {
-                    if (options.skipInvalidRows()) {
-                        System.err.println("Warning: Invalid FixedWidthWriter file. Row "
-                                + rowNumber
-                                + " is too short. Continuing.");
-                    } else {
-                        Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " is too short.");
-                        throw new AddCellToColumnException(e, 0, rowNumber, table.columnNames(), nextLine);
-                    }
-
-
+                    Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " contains " + nextLine.length + " columns. "
+                            + types.length + " expected.");
+                    throw new AddCellToColumnException(e, 0, rowNumber, table.columnNames(), nextLine);
                 }
             } else if (nextLine.length > types.length) {
-                if (options.skipInvalidRows()) {
-                    System.err.println("Warning: Invalid FixedWidthWriter file. Row "
-                            + rowNumber
-                            + " is too long. Continuing.");
-                } else {
-                    throw new IllegalArgumentException("Row number " + rowNumber + " is too long.");
-                }
-            } else {
-                // for each column that we're including (not skipping)
-                int cellIndex = 0;
-                for (int columnIndex : columnIndexes) {
-                    Column<?> column = table.column(cellIndex);
-                    AbstractParser<?> parser = parserMap.get(column.name());
-                    try {
-                        String value = nextLine[columnIndex];
-                        column.appendCell(value, parser);
-                    } catch (Exception e) {
-                        throw new AddCellToColumnException(e, 0, rowNumber, table.columnNames(), nextLine);
-                    }
-                    cellIndex++;
-                }
+                throw new IllegalArgumentException("Row number " + rowNumber + " contains " + nextLine.length + " columns. "
+                        + types.length + " expected.");
             }
-            rowNumber++;
+
+            // append each column that we're including (not skipping)
+            int cellIndex = 0;
+            for (int columnIndex : columnIndexes) {
+                Column<?> column = table.column(cellIndex);
+                AbstractParser<?> parser = parserMap.get(column.name());
+                try {
+                    String value = nextLine[columnIndex];
+                    column.appendCell(value, parser);
+                } catch (Exception e) {
+                    throw new AddCellToColumnException(e, columnIndex, rowNumber, table.columnNames(), nextLine);
+                }
+                cellIndex++;
+            }
         }
     }
 
@@ -252,10 +193,8 @@ public class FixedWidthReader {
         return parserMap;
     }
 
-    private void cleanNames(List<String> headerRow) {
-        for (int i = 0; i < headerRow.size(); i++) {
-            headerRow.set(i, headerRow.get(i).trim());
-        }
+    private String cleanName(String name) {
+        return name.trim();
     }
 
     /**
@@ -270,7 +209,7 @@ public class FixedWidthReader {
      * @return A Relation containing the data in the fixed width file.
      * @throws IOException if file cannot be read
      */
-    public Table headerOnly(ColumnType[] types, boolean header, FixedWidthReadOptions options, File file)
+    private Table headerOnly(ColumnType[] types, boolean header, FixedWidthReadOptions options, File file)
             throws IOException {
 
         FileInputStream fis = new FileInputStream(file);
@@ -321,26 +260,6 @@ public class FixedWidthReader {
         return table;
     }
 
-    /**
-     * Returns the structure of the table given by {@code fixedWidthFileName} as detected by analysis of a sample of the data
-     *
-     * @throws IOException if file cannot be read
-     */
-    private Table detectedColumnTypes(String fixedWidthFileName, boolean header, FixedWidthFields columnSpecs, Locale locale) throws IOException {
-        File file = new File(fixedWidthFileName);
-        try (InputStream stream = new FileInputStream(file)) {
-
-            FixedWidthReadOptions options = FixedWidthReadOptions.builder(stream, "")
-                    .columnSpecs(columnSpecs)
-                    .header(header)
-                    .locale(locale)
-                    .sample(true)
-                    .build();
-            ColumnType[] types = detectColumnTypes(stream, options);
-            Table t = headerOnly(types, header, options, file);
-            return t.structure();
-        }
-    }
 
     /**
      * Returns a string representation of the column types in file {@code fixed widthFilename},
@@ -361,13 +280,13 @@ public class FixedWidthReader {
      *
      * @throws IOException if file cannot be read
      */
-    public String printColumnTypes(String fixedWidthFileName, boolean header, FixedWidthFields columnSpecs, Locale locale) throws IOException {
+    public String printColumnTypes(FixedWidthReadOptions options) throws IOException {
 
-        Table structure = detectedColumnTypes(fixedWidthFileName, header, columnSpecs, locale);
+        Table structure = read(options, true).structure();
 
         StringBuilder buf = new StringBuilder();
         buf.append("ColumnType[] columnTypes = {");
-        buf.append('\n');
+        buf.append(System.lineSeparator());
 
         Column<?> typeCol = structure.column("Column Type");
         Column<?> indxCol = structure.column("Index");
@@ -396,10 +315,10 @@ public class FixedWidthReader {
             buf.append(cell);
             buf.append(' ');
 
-            buf.append('\n');
+            buf.append(System.lineSeparator());
         }
         buf.append("}");
-        buf.append('\n');
+        buf.append(System.lineSeparator());
         return buf.toString();
     }
 
@@ -441,115 +360,43 @@ public class FixedWidthReader {
      * corrected and
      * used to explicitly specify the correct column types.
      */
-    public ColumnType[] detectColumnTypes(InputStream stream, FixedWidthReadOptions options) throws IOException {
+    public ColumnType[] detectColumnTypes(Reader reader, FixedWidthReadOptions options) throws IOException {
 
         boolean header = options.header();
-        boolean useSampling = options.sample();
-
         int linesToSkip = header ? 1 : 0;
-
-        // to hold the results
-        List<ColumnType> columnTypes = new ArrayList<>();
-
-        // to hold the data read from the file
-        List<List<String>> columnData = new ArrayList<>();
-
-        int rowCount = 0; // make sure we don't go over maxRows
 
         FixedWidthParser fixedWidthParser = fixedWidthParser(options);
 
         try {
-            fixedWidthParser.beginParsing(new InputStreamReader(stream));
+            fixedWidthParser.beginParsing(reader);
 
             for (int i = 0; i < linesToSkip; i++) {
                 fixedWidthParser.parseNext();
             }
 
-            String[] nextLine;
-            int nextRow = 0;
-            while ((nextLine = fixedWidthParser.parseNext()) != null) {
-                // initialize the arrays to hold the strings. we don't know how many we need until we read the first row
-                if (rowCount == 0) {
-                    for (int i = 0; i < nextLine.length; i++) {
-                        columnData.add(new ArrayList<>());
-                    }
+            ColumnTypeDetector detector = typeArrayOverrides == null
+                    ? new ColumnTypeDetector() : new ColumnTypeDetector(typeArrayOverrides);
+            return detector.detectColumnTypes(new Iterator<String[]>() {
+
+                String[] nextRow = fixedWidthParser.parseNext();
+
+                @Override
+                public boolean hasNext() {
+                    return nextRow != null;
                 }
-                int columnNumber = 0;
-                if (rowCount == nextRow) {
-                    for (String field : nextLine) {
-                        columnData.get(columnNumber).add(field);
-                        columnNumber++;
-                    }
-                    if (useSampling) {
-                        nextRow = nextRow(nextRow);
-                    } else {
-                        nextRow = nextRowWithoutSampling(nextRow);
-                    }
+
+                @Override
+                public String[] next() {
+                    String[] tmp = nextRow;
+                    nextRow = fixedWidthParser.parseNext();
+                    return tmp;
                 }
-                rowCount++;
-            }
+
+            }, options);
         } finally {
             fixedWidthParser.stopParsing();
             // we don't close the reader since we didn't create it
         }
-
-        // now detect
-        for (List<String> valuesList : columnData) {
-            ColumnType detectedType = detectType(valuesList, options);
-            if (detectedType.equals(StringColumnType.STRING) && rowCount > STRING_COLUMN_ROW_COUNT_CUTOFF) {
-                HashSet<String> unique = new HashSet<>(valuesList);
-                double uniquePct = unique.size() / (valuesList.size() * 1.0);
-                if (uniquePct > STRING_COLUMN_CUTOFF) {
-                    detectedType = TEXT;
-                }
-            }
-            columnTypes.add(detectedType);
-        }
-        return columnTypes.toArray(new ColumnType[0]);
-    }
-
-    private int nextRowWithoutSampling(int nextRow) {
-        return nextRow + 1;
-    }
-
-    private int nextRow(int nextRow) {
-        if (nextRow < 10_000) {
-            return nextRow + 1;
-        }
-        if (nextRow < 100_000) {
-            return nextRow + 1000;
-        }
-        if (nextRow < 1_000_000) {
-            return nextRow + 10_000;
-        }
-        if (nextRow < 10_000_000) {
-            return nextRow + 100_000;
-        }
-        if (nextRow < 100_000_000) {
-            return nextRow + 1_000_000;
-        }
-        return nextRow + 10_000_000;
-    }
-
-    /**
-     * Returns a predicted ColumnType derived by analyzing the given list of undifferentiated strings read from a
-     * column in the file and applying the given Locale and options
-     */
-    private ColumnType detectType(List<String> valuesList, FixedWidthReadOptions options) {
-
-        CopyOnWriteArrayList<AbstractParser<?>> parsers = new CopyOnWriteArrayList<>(getParserList(typeArray, options));
-
-        CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
-
-        for (String s : valuesList) {
-            for (AbstractParser<?> parser : parsers) {
-                if (!parser.canParse(s)) {
-                    typeCandidates.remove(parser.columnType());
-                    parsers.remove(parser);
-                }
-            }
-        }
-        return selectType(typeCandidates);
     }
 
     /**
@@ -611,10 +458,4 @@ public class FixedWidthReader {
         return format;
     }
 
-    /**
-     * Returns the list of types that specifies the order in which types are tested in the detection algorithm.
-     */
-    public List<ColumnType> getTypeArray() {
-        return typeArray;
-    }
 }

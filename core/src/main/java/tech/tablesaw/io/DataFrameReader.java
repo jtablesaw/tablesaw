@@ -76,35 +76,35 @@ public class DataFrameReader {
 	return new JsonReader().read(ReadOptions.builder(contents, tableName).build());
     }
 
-    public Table fwf(String file) throws IOException {
-        return fwf(FixedWidthReadOptions.builder(file));
+    public Table fixedWidth(String file) throws IOException {
+        return fixedWidth(FixedWidthReadOptions.builder(file));
     }
 
-    public Table fwf(String contents, String tableName) {
+    public Table fixedWidth(String contents, String tableName) {
         try {
-            return fwf(new StringReader(contents), tableName);
+            return fixedWidth(new StringReader(contents), tableName);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public Table fwf(File file) throws IOException {
-        return fwf(FixedWidthReadOptions.builder(file));
+    public Table fixedWidth(File file) throws IOException {
+        return fixedWidth(FixedWidthReadOptions.builder(file));
     }
 
-    public Table fwf(InputStream stream, String tableName) throws IOException {
-        return fwf(FixedWidthReadOptions.builder(stream, tableName));
+    public Table fixedWidth(InputStream stream, String tableName) throws IOException {
+        return fixedWidth(FixedWidthReadOptions.builder(stream, tableName));
     }
 
-    public Table fwf(Reader reader, String tableName) throws IOException {
-        return fwf(FixedWidthReadOptions.builder(reader, tableName));
+    public Table fixedWidth(Reader reader, String tableName) throws IOException {
+        return fixedWidth(FixedWidthReadOptions.builder(reader, tableName));
     }
 
-    public Table fwf(FixedWidthReadOptions.Builder options) throws IOException {
-        return fwf(options.build());
+    public Table fixedWidth(FixedWidthReadOptions.Builder options) throws IOException {
+        return fixedWidth(options.build());
     }
 
-    public Table fwf(FixedWidthReadOptions options) throws IOException {
+    public Table fixedWidth(FixedWidthReadOptions options) throws IOException {
         return new FixedWidthReader().read(options);
     }
 

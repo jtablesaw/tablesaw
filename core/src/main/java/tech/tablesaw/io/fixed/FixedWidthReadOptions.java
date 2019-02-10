@@ -33,11 +33,11 @@ public class FixedWidthReadOptions extends ReadOptions {
     private final boolean header;
     private final FixedWidthFields columnSpecs;
     private final String lineEnding;
-    private char padding;
-    private char lookupWildcard;
-    private boolean skipTrailingCharsUntilNewline;
-    private boolean recordEndsOnNewline;
-    private boolean skipInvalidRows;
+    private final char padding;
+    private final char lookupWildcard;
+    private final boolean skipTrailingCharsUntilNewline;
+    private final boolean recordEndsOnNewline;
+    private final boolean skipInvalidRows;
     private final Integer maxNumberOfColumns;
 
     private FixedWidthReadOptions(FixedWidthReadOptions.Builder builder) {
