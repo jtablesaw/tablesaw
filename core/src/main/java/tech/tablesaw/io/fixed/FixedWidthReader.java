@@ -198,70 +198,6 @@ public class FixedWidthReader {
     }
 
     /**
-     * Returns a Table constructed from a FixedWidthWriter File with the given file name
-     * <p>
-     * The @code{fileName} is used as the initial table name for the new table
-     *
-     * @param types   An array of the types of columns in the file, in the order they appear
-     * @param header  Is the first row in the file a header?
-     * @param options Sets the format for and instructions for parsing
-     * @param file    The fully specified file name. It is used to provide a default name for the table
-     * @return A Relation containing the data in the fixed width file.
-     * @throws IOException if file cannot be read
-     */
-    private Table headerOnly(ColumnType[] types, boolean header, FixedWidthReadOptions options, File file)
-            throws IOException {
-
-        FileInputStream fis = new FileInputStream(file);
-
-        Reader reader = new InputStreamReader(fis);
-
-        Table table;
-
-        FixedWidthParser fixedWidthParser = fixedWidthParser(options);
-        try (BufferedReader streamReader = new BufferedReader(reader)) {
-            fixedWidthParser.beginParsing(streamReader);
-
-            String[] columnNames;
-            List<String> headerRow;
-
-            String[] headerNames;
-            if (header) {
-                headerNames = fixedWidthParser.parseNext();
-                // work around issue where Univocity returns null if a column has no header.
-                for (int i = 0; i < headerNames.length; i++) {
-                    if (headerNames[i] == null) {
-                        headerNames[i] = "C" + i;
-                    }
-                }
-            } else {
-                headerNames = makeColumnNames(types);
-            }
-
-            headerRow = Lists.newArrayList(headerNames);
-            columnNames = selectColumnNames(headerRow, types);
-
-            table = Table.create(file.getName());
-            for (int x = 0; x < types.length; x++) {
-                if (types[x] != SKIP) {
-                    Column<?> newColumn = types[x].create(headerRow.get(x).trim());
-                    table.addColumns(newColumn);
-                }
-            }
-            int[] columnIndexes = new int[columnNames.length];
-            for (int i = 0; i < columnIndexes.length; i++) {
-                // get the index in the original table, which includes skipped fields
-                columnIndexes[i] = headerRow.indexOf(columnNames[i]);
-            }
-        } finally {
-            // the stream is already closed
-            fixedWidthParser.stopParsing();
-        }
-        return table;
-    }
-
-
-    /**
      * Returns a string representation of the column types in file {@code fixed widthFilename},
      * as determined by the type-detection algorithm
      * <p>
@@ -280,7 +216,7 @@ public class FixedWidthReader {
      *
      * @throws IOException if file cannot be read
      */
-    public String printColumnTypes(FixedWidthReadOptions options) throws IOException {
+        public String printColumnTypes(FixedWidthReadOptions options) throws IOException {
 
         Table structure = read(options, true).structure();
 
@@ -397,32 +333,6 @@ public class FixedWidthReader {
             fixedWidthParser.stopParsing();
             // we don't close the reader since we didn't create it
         }
-    }
-
-    /**
-     * Returns the selected candidate for a column of data, by picking the first value in the given list
-     *
-     * @param typeCandidates a possibly empty list of candidates. This list should be sorted in order of preference
-     */
-    private ColumnType selectType(List<ColumnType> typeCandidates) {
-        return typeCandidates.get(0);
-    }
-
-    /**
-     * Returns the list of parsers to use for type detection
-     *
-     * @param typeArray Array of column types. The order specifies the order the types are applied
-     * @param options   FixedWidthReadOptions to use to modify the default parsers for each type
-     * @return A list of parsers in the order they should be used for type detection
-     */
-    private List<AbstractParser<?>> getParserList(List<ColumnType> typeArray, FixedWidthReadOptions options) {
-        // Types to choose from. When more than one would work, we pick the first of the options
-
-        List<AbstractParser<?>> parsers = new ArrayList<>();
-        for (ColumnType type : typeArray) {
-            parsers.add(type.customParser(options));
-        }
-        return parsers;
     }
 
     private FixedWidthParser fixedWidthParser(FixedWidthReadOptions options) {
