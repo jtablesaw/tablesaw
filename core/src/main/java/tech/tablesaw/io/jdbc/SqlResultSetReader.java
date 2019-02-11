@@ -16,7 +16,13 @@ package tech.tablesaw.io.jdbc;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import tech.tablesaw.api.*;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.FloatColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.ShortColumnType;
 

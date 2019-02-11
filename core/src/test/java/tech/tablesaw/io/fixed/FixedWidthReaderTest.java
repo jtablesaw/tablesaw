@@ -24,9 +24,12 @@ import tech.tablesaw.api.Table;
 import java.io.*;
 import java.util.Locale;
 
+import static tech.tablesaw.api.ColumnType.SHORT;
+import static tech.tablesaw.api.ColumnType.STRING;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.SKIP;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static tech.tablesaw.api.ColumnType.*;
 
 /**
  * Tests for CSV Reading

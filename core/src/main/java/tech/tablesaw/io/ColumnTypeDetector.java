@@ -11,7 +11,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static tech.tablesaw.api.ColumnType.*;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
+import static tech.tablesaw.api.ColumnType.BOOLEAN;
+import static tech.tablesaw.api.ColumnType.SHORT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+import static tech.tablesaw.api.ColumnType.LONG;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.STRING;
+import static tech.tablesaw.api.ColumnType.TEXT;
+
 
 public class ColumnTypeDetector {
 

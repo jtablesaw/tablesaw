@@ -123,45 +123,56 @@ final public class FixedWidthWriter {
         if (options.autoConfigurationEnabled()) {
             settings.setAutoConfigurationEnabled(options.autoConfigurationEnabled());
         } else {
-            if (options.errorContentLength() <= -1) {
-                settings.setErrorContentLength(options.errorContentLength());
-            }
-            if (options.nullValue() != null) {
-                settings.setNullValue(options.nullValue());
-            }
-            if (options.emptyValue() != null) {
-                settings.setEmptyValue(options.emptyValue());
-            }
-            if (options.defaultAlignmentForHeaders() != null) {
-                settings.setDefaultAlignmentForHeaders(options.defaultAlignmentForHeaders());
-            }
-            if (options.columnReorderingEnabled()) {
-                settings.setColumnReorderingEnabled(options.columnReorderingEnabled());
-            }
-            if (options.expandIncompleteRows()) {
-                settings.setExpandIncompleteRows(options.expandIncompleteRows());
-            }
-            if (!options.defaultPaddingForHeaders()) {
-                settings.setUseDefaultPaddingForHeaders(options.defaultPaddingForHeaders());
-            }
-            if (!options.writeLineSeparatorAfterRecord()) {
-                settings.setWriteLineSeparatorAfterRecord(options.writeLineSeparatorAfterRecord());
-            }
-            if (!options.ignoreTrailingWhitespaces()) {
-                settings.setIgnoreTrailingWhitespaces(options.ignoreTrailingWhitespaces());
-            }
-            if (!options.ignoreLeadingWhitespaces()) {
-                settings.setIgnoreLeadingWhitespaces(options.ignoreLeadingWhitespaces());
-            }
-            if (!options.skipBitsAsWhitespace()) {
-                settings.setSkipBitsAsWhitespace(options.skipBitsAsWhitespace());
-            }
-            if (!options.skipEmptyLines()) {
-                settings.setSkipEmptyLines(options.skipEmptyLines());
-            }
+            columnRowSettings(settings, options);
+            errorSettings(settings, options);
+            SkipIgnoreSettings(settings, options);
         }
         return settings;
     }
 
+    private void columnRowSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
+        if (options.defaultAlignmentForHeaders() != null) {
+            settings.setDefaultAlignmentForHeaders(options.defaultAlignmentForHeaders());
+        }
+        if (options.columnReorderingEnabled()) {
+            settings.setColumnReorderingEnabled(options.columnReorderingEnabled());
+        }
+        if (options.expandIncompleteRows()) {
+            settings.setExpandIncompleteRows(options.expandIncompleteRows());
+        }
+        if (!options.defaultPaddingForHeaders()) {
+            settings.setUseDefaultPaddingForHeaders(options.defaultPaddingForHeaders());
+        }
+        if (!options.writeLineSeparatorAfterRecord()) {
+            settings.setWriteLineSeparatorAfterRecord(options.writeLineSeparatorAfterRecord());
+        }
+    }
+
+    private void errorSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
+        if (options.errorContentLength() <= -1) {
+            settings.setErrorContentLength(options.errorContentLength());
+        }
+        if (options.nullValue() != null) {
+            settings.setNullValue(options.nullValue());
+        }
+        if (options.emptyValue() != null) {
+            settings.setEmptyValue(options.emptyValue());
+        }
+    }
+
+    private void SkipIgnoreSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
+        if (!options.ignoreTrailingWhitespaces()) {
+            settings.setIgnoreTrailingWhitespaces(options.ignoreTrailingWhitespaces());
+        }
+        if (!options.ignoreLeadingWhitespaces()) {
+            settings.setIgnoreLeadingWhitespaces(options.ignoreLeadingWhitespaces());
+        }
+        if (!options.skipBitsAsWhitespace()) {
+            settings.setSkipBitsAsWhitespace(options.skipBitsAsWhitespace());
+        }
+        if (!options.skipEmptyLines()) {
+            settings.setSkipEmptyLines(options.skipEmptyLines());
+        }
+    }
 }
 
