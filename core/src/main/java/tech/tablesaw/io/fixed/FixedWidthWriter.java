@@ -125,7 +125,7 @@ final public class FixedWidthWriter {
         } else {
             columnRowSettings(settings, options);
             errorSettings(settings, options);
-            SkipIgnoreSettings(settings, options);
+            skipIgnoreSettings(settings, options);
         }
         return settings;
     }
@@ -160,7 +160,7 @@ final public class FixedWidthWriter {
         }
     }
 
-    private void SkipIgnoreSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
+    private void skipIgnoreSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
         if (!options.ignoreTrailingWhitespaces()) {
             settings.setIgnoreTrailingWhitespaces(options.ignoreTrailingWhitespaces());
         }
