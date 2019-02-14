@@ -182,7 +182,7 @@ You can create a table in code. Here we create a table and add two new columns t
 String[] animals = {"bear", "cat", "giraffe"};
 double[] cuteness = {90.1, 84.3, 99.7};
 
-Table cuteAnimals = Table.create("Cute Animals)
+Table cuteAnimals = Table.create("Cute Animals")
 	.addColumns(
 		StringColumn.create("Animal types", animals),
 		DoubleColumn.create("rating", cuteness));
