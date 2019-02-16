@@ -80,6 +80,15 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
         return indexColumn;
     }
 
+    @Override
+    public String getString(final int row) {
+        final long value = getLong(row);
+        if (LongColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(printFormatter.format(value));
+    }
+
     public static boolean valueIsMissing(long value) {
         return value == LongColumnType.missingValueIndicator();
     }

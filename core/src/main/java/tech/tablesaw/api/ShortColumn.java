@@ -231,6 +231,15 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
+    public String getString(final int row) {
+        final short value = getShort(row);
+        if (ShortColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(printFormatter.format(value));
+    }
+
+    @Override
     public ShortColumn append(Column<Short> column, int row) {
         Preconditions.checkArgument(column.type() == this.type());
         return append(((ShortColumn) column).getShort(row));

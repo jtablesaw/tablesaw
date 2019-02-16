@@ -262,6 +262,15 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     }
 
     @Override
+    public String getString(final int row) {
+        final int value = getInt(row);
+        if (IntColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(printFormatter.format(value));
+    }
+
+    @Override
     public int countUnique() {
         IntSet uniqueElements = new IntOpenHashSet();
         for (int i = 0; i < size(); i++) {

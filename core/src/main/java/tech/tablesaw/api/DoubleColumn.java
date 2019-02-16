@@ -47,6 +47,15 @@ public class DoubleColumn extends NumberColumn<Double> implements NumberFillers<
     }
 
     @Override
+    public String getString(final int row) {
+        final double value = getDouble(row);
+        if (DoubleColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(printFormatter.format(value));
+    }
+
+    @Override
     public int size() {
         return data.size();
     }

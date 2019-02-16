@@ -36,6 +36,16 @@ public class FloatColumn extends NumberColumn<Float> {
         this.data = data;
     }
 
+    @Override
+    public String getString(final int row) {
+        final float value = getFloat(row);
+        if (FloatColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(printFormatter.format(value));
+    }
+
+
     public static FloatColumn create(final String name) {
         return new FloatColumn(name, new FloatArrayList());
     }
