@@ -1,3 +1,5 @@
+[Contents](https://jtablesaw.github.io/tablesaw/userguide/toc)
+
 # Introduction to Plotting with Tablesaw
 
 From the beginning, Tablesaw supported plots for quick, basic, exploratory data analysis. It served its purpose, but fell far short of what the best visualization tools provide. Unfortunately, none of those tools are written in Java. 
@@ -29,22 +31,13 @@ The api package contains simplified interfaces for producing a number of common 
 
 ![bubbleplot](https://jtablesaw.github.io/tablesaw/userguide/images/eda/wine_bubble.png)
 
-And here's the code to create and display it. In the simple API, rendering a bubble plot requires two steps. First, a call to BubblePlot.create() returns a Figure object: 
+And here's the code to create and display it. In the simple API, rendering a bubble plot requires two steps. First, a call to BubblePlot.create() returns a Figure object, and then the figure is rendered by passing it to a *Plot.show()* method. 
 
-```Java
-Figure fig = BubblePlot.create("Average retail price for champagnes by year and rating",
-                champagne,					// table name
-                "highest pro score",		// x variable column name
-                "year",						// y variable column name
-                "Mean Retail"				// bubble size
-               ));
-```
+### Finding Example Code
 
-This figure is rendered by passing it to a *Plot.show()* method.
+You can find example code for all kinds of plots in the test folder of the jsplot project. The code for this specific plot is in the class BubbleExample2:
 
-```java
-Plot.show(fig);
-```
+https://://github.com/jtablesaw/tablesaw/tree/master/jsplot/src/test/java/tech/tablesaw/examples/BubbleExample2.java
 
 This writes a generated HTML page containing the necessary JavaScript to a file on the local filesystem, and opens it in a browser window.
 

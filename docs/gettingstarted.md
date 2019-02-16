@@ -231,7 +231,7 @@ Table tail = myTable.last(3);
 
 Table's *toString()* method returns a String representation like those shown above. It returns a limited number of rows by default, but you can also use *table.printAll()*, or *table.print(n)* to get the output you want.
 
-Of course, this is just the beginning of exploratory data analysis. You can also use numeric and visual tools to explore your data. These facilities are described in the documentation on statistics and [plotting](https://jtablesaw.github.io/tablesaw/userguide/jsplots), respectively.
+Of course, this is just the beginning of exploratory data analysis. You can also use numeric and visual tools to explore your data. These facilities are described in the documentation on statistics and [plotting](https://jtablesaw.github.io/tablesaw/userguide/Introduction_to_plotting), respectively.
 
 #### Working with a table's columns
 
