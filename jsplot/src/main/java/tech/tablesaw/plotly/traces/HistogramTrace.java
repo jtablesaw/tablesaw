@@ -71,9 +71,6 @@ public class HistogramTrace extends AbstractTrace {
         private int nBinsY;
         private boolean autoBinX;
         private boolean autoBinY;
-        private String barMode;
-        private String histFunction;
-        private String histNorm;
         private final double[] x;
 
         private HistogramBuilder(double[] values) {
@@ -94,11 +91,6 @@ public class HistogramTrace extends AbstractTrace {
             return this;
         }
 
-        public HistogramBuilder barMode(String barMode) {
-            this.barMode = barMode;
-            return this;
-        }
-
         /**
          * Determines whether or not the x axis bin attributes are picked by an algorithm.
          * Note that this should be set to False if you want to manually set the number of bins using the attributes
@@ -113,16 +105,6 @@ public class HistogramTrace extends AbstractTrace {
 
         public HistogramBuilder autoBinY(boolean autoBinY) {
             this.autoBinY = autoBinY;
-            return this;
-        }
-
-        public HistogramBuilder histFunction(String histFunction) {
-            this.histFunction = histFunction;
-            return this;
-        }
-
-        public HistogramBuilder histNorm(String histNorm) {
-            this.histNorm = histNorm;
             return this;
         }
 
