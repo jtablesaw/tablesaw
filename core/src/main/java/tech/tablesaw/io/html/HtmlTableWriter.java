@@ -22,7 +22,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import static tech.tablesaw.io.ParsingUtils.*;
+import static tech.tablesaw.io.ParsingUtils.splitCamelCase;
+import static tech.tablesaw.io.ParsingUtils.splitOnUnderscore;
 
 /**
  * Static utility that writes Tables in HTML format for display

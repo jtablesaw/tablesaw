@@ -12,14 +12,14 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.io.csv;
+package tech.tablesaw.io.fixed;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
-import com.univocity.parsers.csv.CsvFormat;
-import com.univocity.parsers.csv.CsvParser;
-import com.univocity.parsers.csv.CsvParserSettings;
+import com.univocity.parsers.fixed.FixedWidthFormat;
+import com.univocity.parsers.fixed.FixedWidthParser;
+import com.univocity.parsers.fixed.FixedWidthParserSettings;
 import org.apache.commons.lang3.tuple.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
@@ -30,28 +30,28 @@ import tech.tablesaw.io.ColumnTypeDetector;
 import tech.tablesaw.io.TableBuildingUtils;
 
 import javax.annotation.concurrent.Immutable;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.util.*;
 
 import static tech.tablesaw.api.ColumnType.SKIP;
 
 @Immutable
-public class CsvReader {
+public class FixedWidthReader {
 
     private List<ColumnType> typeArrayOverrides = null;
 
     /**
-     * Constructs a CsvReader
+     * Constructs a FixedWidthReader
      */
-    public CsvReader() {}
+    public FixedWidthReader() {
+    }
 
     /**
-     * Constructs a CsvReader with the given list of ColumnTypes
-     *
-     * These are the only types that the CsvReader can detect and parse
+     * Constructs a FixedWidthReader with the given list of ColumnTypes
+     * <p>
+     * These are the only types that the FixedWidthReader can detect and parse
      */
-    public CsvReader(List<ColumnType> typeDetectionList) {
+    public FixedWidthReader(List<ColumnType> typeDetectionList) {
         this.typeArrayOverrides = typeDetectionList;
     }
 
@@ -59,16 +59,16 @@ public class CsvReader {
      * Determines column types if not provided by the user
      * Reads all input into memory unless File was provided
      */
-    private Pair<Reader, ColumnType[]> getReaderAndColumnTypes(CsvReadOptions options) throws IOException {
+    private Pair<Reader, ColumnType[]> getReaderAndColumnTypes(FixedWidthReadOptions options) throws IOException {
         ColumnType[] types = options.columnTypes();
         byte[] bytesCache = null;
 
         if (types == null) {
             Reader reader = TableBuildingUtils.createReader(options, bytesCache);
             if (options.file() == null) {
-        	bytesCache = CharStreams.toString(reader).getBytes();
-        	// create a new reader since we just exhausted the existing one
-        	reader = TableBuildingUtils.createReader(options, bytesCache);
+                bytesCache = CharStreams.toString(reader).getBytes();
+                // create a new reader since we just exhausted the existing one
+                reader = TableBuildingUtils.createReader(options, bytesCache);
             }
             types = detectColumnTypes(reader, options);
         }
@@ -76,16 +76,16 @@ public class CsvReader {
         return Pair.of(TableBuildingUtils.createReader(options, bytesCache), types);
     }
 
-    public Table read(CsvReadOptions options) throws IOException {
+    public Table read(FixedWidthReadOptions options) throws IOException {
         return read(options, false);
     }
 
-    private Table read(CsvReadOptions options, boolean headerOnly) throws IOException {
-	Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options);
-	Reader reader = pair.getLeft();
-	ColumnType[] types = pair.getRight();
+    private Table read(FixedWidthReadOptions options, boolean headerOnly) throws IOException {
+        Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options);
+        Reader reader = pair.getLeft();
+        ColumnType[] types = pair.getRight();
 
-        CsvParser parser = csvParser(options);
+        FixedWidthParser parser = fixedWidthParser(options);
 
         try {
             parser.beginParsing(reader);
@@ -125,7 +125,7 @@ public class CsvReader {
         }
     }
 
-    private String[] getHeaderNames(CsvReadOptions options, ColumnType[] types, CsvParser parser) {
+    private String[] getHeaderNames(FixedWidthReadOptions options, ColumnType[] types, FixedWidthParser parser) {
         if (options.header()) {
             String[] headerNames = parser.parseNext();
             // work around issue where Univocity returns null if a column has no header.
@@ -139,13 +139,13 @@ public class CsvReader {
             // Placeholder column names for when the file read has no header
             String[] headerNames = new String[types.length];
             for (int i = 0; i < types.length; i++) {
-        	headerNames[i] = "C" + i;
+                headerNames[i] = "C" + i;
             }
             return headerNames;
         }
     }
 
-    private void addRows(CsvReadOptions options, ColumnType[] types, CsvParser reader, Table table, int[] columnIndexes) {
+    private void addRows(FixedWidthReadOptions options, ColumnType[] types, FixedWidthParser reader, Table table, int[] columnIndexes) {
         String[] nextLine;
 
         Map<String, AbstractParser<?>> parserMap = getParserMap(options, table);
@@ -155,18 +155,18 @@ public class CsvReader {
             // validation
             if (nextLine.length < types.length) {
                 if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
-                    System.err.println("Warning: Invalid CSV file. Row "
+                    System.err.println("Warning: Invalid Fixed Width file. Row "
                             + rowNumber
                             + " is empty. Continuing.");
                     continue;
                 } else {
                     Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " contains " + nextLine.length + " columns. "
-                    	+ types.length + " expected.");
+                            + types.length + " expected.");
                     throw new AddCellToColumnException(e, 0, rowNumber, table.columnNames(), nextLine);
                 }
             } else if (nextLine.length > types.length) {
                 throw new IllegalArgumentException("Row number " + rowNumber + " contains " + nextLine.length + " columns. "
-                	+ types.length + " expected.");
+                        + types.length + " expected.");
             }
 
             // append each column that we're including (not skipping)
@@ -185,7 +185,7 @@ public class CsvReader {
         }
     }
 
-    private Map<String, AbstractParser<?>> getParserMap(CsvReadOptions options, Table table) {
+    private Map<String, AbstractParser<?>> getParserMap(FixedWidthReadOptions options, Table table) {
         Map<String, AbstractParser<?>> parserMap = new HashMap<>();
         for (Column<?> column : table.columns()) {
             AbstractParser<?> parser = column.type().customParser(options);
@@ -195,11 +195,11 @@ public class CsvReader {
     }
 
     private String cleanName(String name) {
-	return name.trim();
+        return name.trim();
     }
 
     /**
-     * Returns a string representation of the column types in file {@code csvFilename},
+     * Returns a string representation of the column types in file {@code fixed widthFilename},
      * as determined by the type-detection algorithm
      * <p>
      * This method is intended to help analysts quickly fix any erroneous types, by printing out the types in a format
@@ -217,7 +217,7 @@ public class CsvReader {
      *
      * @throws IOException if file cannot be read
      */
-    public String printColumnTypes(CsvReadOptions options) throws IOException {
+    public String printColumnTypes(FixedWidthReadOptions options) throws IOException {
 
         Table structure = read(options, true).structure();
 
@@ -286,58 +286,71 @@ public class CsvReader {
      * corrected and
      * used to explicitly specify the correct column types.
      */
-    protected ColumnType[] detectColumnTypes(Reader reader, CsvReadOptions options) {
+    public ColumnType[] detectColumnTypes(Reader reader, FixedWidthReadOptions options) throws IOException {
 
         boolean header = options.header();
         int linesToSkip = header ? 1 : 0;
 
-        CsvParser csvParser = csvParser(options);
+        FixedWidthParser fixedWidthParser = fixedWidthParser(options);
 
         try {
-            csvParser.beginParsing(reader);
+            fixedWidthParser.beginParsing(reader);
 
             for (int i = 0; i < linesToSkip; i++) {
-                csvParser.parseNext();
+                fixedWidthParser.parseNext();
             }
 
             ColumnTypeDetector detector = typeArrayOverrides == null
-        	    ? new ColumnTypeDetector() : new ColumnTypeDetector(typeArrayOverrides);
+                    ? new ColumnTypeDetector() : new ColumnTypeDetector(typeArrayOverrides);
             return detector.detectColumnTypes(new Iterator<String[]>() {
 
-        	String[] nextRow = csvParser.parseNext();
+                String[] nextRow = fixedWidthParser.parseNext();
 
-		@Override
-		public boolean hasNext() {
-		    return nextRow != null;
-		}
+                @Override
+                public boolean hasNext() {
+                    return nextRow != null;
+                }
 
-		@Override
-		public String[] next() {
-		    String[] tmp = nextRow;
-		    nextRow = csvParser.parseNext();
-		    return tmp;
-		}
-        	
+                @Override
+                public String[] next() {
+                    String[] tmp = nextRow;
+                    nextRow = fixedWidthParser.parseNext();
+                    return tmp;
+                }
+
             }, options);
         } finally {
-            csvParser.stopParsing();
+            fixedWidthParser.stopParsing();
             // we don't close the reader since we didn't create it
         }
     }
 
-    private CsvParser csvParser(CsvReadOptions options) {
-        CsvParserSettings settings = new CsvParserSettings();
-        settings.setFormat(csvFormat(options));
+    private FixedWidthParser fixedWidthParser(FixedWidthReadOptions options) {
+        FixedWidthParserSettings settings = new FixedWidthParserSettings();
+
+        if (options.columnSpecs() != null) {
+            settings = new FixedWidthParserSettings(options.columnSpecs());
+        }
+        settings.setFormat(fixedWidthFormat(options));
+        if (options.skipTrailingCharsUntilNewline()) {
+            settings.setSkipTrailingCharsUntilNewline(options.skipTrailingCharsUntilNewline());
+        }
         if (options.maxNumberOfColumns() != null) {
             settings.setMaxColumns(options.maxNumberOfColumns());
         }
-        return new CsvParser(settings);
+        if (options.recordEndsOnNewline()) {
+            settings.setRecordEndsOnNewline(true);
+        }
+        return new FixedWidthParser(settings);
     }
 
-    private CsvFormat csvFormat(CsvReadOptions options) {
-        CsvFormat format = new CsvFormat();
-        if (options.separator() != null) {
-            format.setDelimiter(options.separator());
+    private FixedWidthFormat fixedWidthFormat(FixedWidthReadOptions options) {
+        FixedWidthFormat format = new FixedWidthFormat();
+        if (options.padding() != ' ') {
+            format.setPadding(options.padding());
+        }
+        if (options.lookupWildcard() != '?') {
+            format.setLookupWildcard(options.lookupWildcard());
         }
         if (options.lineEnding() != null) {
             format.setLineSeparator(options.lineEnding());

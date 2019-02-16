@@ -14,17 +14,19 @@
 
 package tech.tablesaw.io;
 
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvWriteOptions;
+import tech.tablesaw.io.csv.CsvWriter;
+import tech.tablesaw.io.fixed.FixedWidthWriteOptions;
+import tech.tablesaw.io.fixed.FixedWidthWriter;
+import tech.tablesaw.io.html.HtmlTableWriter;
+import tech.tablesaw.io.json.JsonWriteOptions;
+import tech.tablesaw.io.json.JsonWriter;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
-
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvWriteOptions;
-import tech.tablesaw.io.csv.CsvWriter;
-import tech.tablesaw.io.html.HtmlTableWriter;
-import tech.tablesaw.io.json.JsonWriteOptions;
-import tech.tablesaw.io.json.JsonWriter;
 
 public class DataFrameWriter {
 
@@ -57,6 +59,31 @@ public class DataFrameWriter {
         CsvWriteOptions options = new CsvWriteOptions.Builder(writer).build();
         new CsvWriter(table, options).write();
     }
+
+    public void fwf(String file) throws IOException {
+        FixedWidthWriteOptions options = new FixedWidthWriteOptions.Builder(file).build();
+        new FixedWidthWriter(table, options).write();
+    }
+
+    public void fwf(File file) throws IOException {
+        FixedWidthWriteOptions options = new FixedWidthWriteOptions.Builder(file).build();
+        new FixedWidthWriter(table, options).write();
+    }
+
+    public void fwf(FixedWidthWriteOptions options) {
+        new FixedWidthWriter(table, options).write();
+    }
+
+    public void fwf(OutputStream stream) {
+        FixedWidthWriteOptions options = new FixedWidthWriteOptions.Builder(stream).build();
+        new FixedWidthWriter(table, options).write();
+    }
+
+    public void fwf(Writer writer) {
+        FixedWidthWriteOptions options = new FixedWidthWriteOptions.Builder(writer).build();
+        new FixedWidthWriter(table, options).write();
+    }
+
 
     public void html(OutputStream stream) {
         HtmlTableWriter.write(table, stream);

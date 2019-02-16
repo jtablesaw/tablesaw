@@ -24,6 +24,7 @@ import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.AddCellToColumnException;
 
 import java.io.File;
 import java.io.FileInputStream;

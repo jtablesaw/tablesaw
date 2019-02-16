@@ -12,9 +12,13 @@
  * limitations under the License.
  */
 
-package tech.tablesaw.io;
+package tech.tablesaw.io.fixed;
+
 
 import com.google.common.base.Strings;
+import com.univocity.parsers.fixed.FixedWidthFields;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.io.ReadOptions;
 
 import java.io.File;
 import java.io.InputStream;
@@ -22,49 +26,33 @@ import java.io.Reader;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class ReadOptions {
+public class FixedWidthReadOptions extends ReadOptions {
 
     // we always have one of these (file, reader, or inputStream)
-    protected final File file;
-    protected final Reader reader;
-    protected final InputStream inputStream;
+    private final ColumnType[] columnTypes;
+    private final boolean header;
+    private final FixedWidthFields columnSpecs;
+    private final String lineEnding;
+    private final char padding;
+    private final char lookupWildcard;
+    private final boolean skipTrailingCharsUntilNewline;
+    private final boolean recordEndsOnNewline;
+    private final boolean skipInvalidRows;
+    private final Integer maxNumberOfColumns;
 
-    protected final String tableName;
-    protected final boolean sample;
-    protected final String dateFormat;
-    protected final String dateTimeFormat;
-    protected final String timeFormat;
-    protected final Locale locale;
-    protected final String missingValueIndicator;
+    private FixedWidthReadOptions(FixedWidthReadOptions.Builder builder) {
+    super(builder);
 
-    protected ReadOptions(ReadOptions.Builder builder) {
-
-        int sourceCount = 0;
-        if (builder.file != null) sourceCount++;
-        if (builder.reader != null) sourceCount++;
-        if (builder.inputStream != null) sourceCount++;
-
-        if (sourceCount == 0) {
-            throw new IllegalArgumentException("ReadOptions Builder configured with no data source");
-        } else if (sourceCount > 1) {
-            throw new IllegalArgumentException("ReadOptions Builder configured with more than one data source");
-        }
-
-        file = builder.file;
-        reader = builder.reader;
-        inputStream = builder.inputStream;
-        tableName = builder.tableName;
-        sample = builder.sample;
-        dateFormat = builder.dateFormat;
-        timeFormat = builder.timeFormat;
-        dateTimeFormat = builder.dateTimeFormat;
-        missingValueIndicator = builder.missingValueIndicator;
-
-        if (builder.locale == null) {
-            locale = Locale.getDefault();
-        } else {
-            locale = builder.locale;
-        }
+        columnTypes = builder.columnTypes;
+        header = builder.header;
+        columnSpecs = builder.columnSpecs;
+        padding = builder.padding;
+        lookupWildcard = builder.lookupWildcard;
+        skipTrailingCharsUntilNewline = builder.skipTrailingCharsUntilNewline;
+        recordEndsOnNewline = builder.recordEndsOnNewline;
+        skipInvalidRows = builder.skipInvalidRows;
+        lineEnding = builder.lineEnding;
+        maxNumberOfColumns = builder.maxNumberOfColumns;
     }
 
     public static Builder builder(File file) {
@@ -74,6 +62,7 @@ public class ReadOptions {
     public static Builder builder(String fileName) {
         return new Builder(new File(fileName));
     }
+
 
     /**
      * This method may cause tablesaw to buffer the entire InputStream.
@@ -86,7 +75,6 @@ public class ReadOptions {
     public static Builder builder(InputStream stream, String tableName) {
         return new Builder(stream).tableName(tableName);
     }
-
     /**
      * This method may cause tablesaw to buffer the entire InputStream.
      *
@@ -115,6 +103,42 @@ public class ReadOptions {
 
     public String tableName() {
         return tableName;
+    }
+
+    public ColumnType[] columnTypes() {
+        return columnTypes;
+    }
+
+    public boolean header() {
+        return header;
+    }
+
+    public FixedWidthFields columnSpecs() {
+        return columnSpecs;
+    }
+
+    public String lineEnding() {
+        return lineEnding;
+    }
+
+    public char padding() {
+        return padding;
+    }
+
+    public char lookupWildcard() {
+        return lookupWildcard;
+    }
+
+    public boolean skipTrailingCharsUntilNewline() {
+        return skipTrailingCharsUntilNewline;
+    }
+
+    public boolean recordEndsOnNewline() {
+        return recordEndsOnNewline;
+    }
+
+    public boolean skipInvalidRows() {
+        return skipInvalidRows;
     }
 
     public boolean sample() {
@@ -150,22 +174,25 @@ public class ReadOptions {
         return DateTimeFormatter.ofPattern(dateFormat, locale);
     }
 
-    public static class Builder {
+    public Integer maxNumberOfColumns() {
+        return maxNumberOfColumns;
+    }
 
-        protected InputStream inputStream;
-        protected File file;
-        protected Reader reader;
-        protected String tableName = "";
-        protected boolean sample = true;
-        protected String dateFormat;
-        protected String timeFormat;
-        protected String dateTimeFormat;
-        protected Locale locale;
-        protected String missingValueIndicator;
+    public static class Builder extends ReadOptions.Builder {
+
+        private boolean header = true;
+        private FixedWidthFields columnSpecs;
+        private String lineEnding;
+        private char padding = ' ';
+        private char lookupWildcard = '?';
+        private boolean skipTrailingCharsUntilNewline = false;
+        private boolean recordEndsOnNewline = false;
+        private boolean skipInvalidRows = false;
+        private ColumnType[] columnTypes;
+        private Integer maxNumberOfColumns = 10_000;
 
         public Builder(File file) {
-            this.file = file;
-            this.tableName = file.getName();
+            super(file);
         }
 
         /**
@@ -177,7 +204,7 @@ public class ReadOptions {
          * we skip type detection and can avoid reading the entire file
          */
         public Builder(Reader reader) {
-            this.reader = reader;
+            super(reader);
         }
 
         /**
@@ -189,7 +216,7 @@ public class ReadOptions {
          * we skip type detection and can avoid reading the entire file
          */
         public Builder(InputStream stream) {
-            this.inputStream = stream;
+            super(stream);
         }
 
         public Builder tableName(String tableName) {
@@ -197,23 +224,49 @@ public class ReadOptions {
             return this;
         }
 
-        public Builder dateFormat(String dateFormat) {
-            this.dateFormat = dateFormat;
-            return this;
-        }
-
-        public Builder timeFormat(String timeFormat) {
-            this.timeFormat = timeFormat;
-            return this;
-        }
-
-        public Builder dateTimeFormat(String dateTimeFormat) {
-            this.dateTimeFormat = dateTimeFormat;
+        public Builder header(boolean header) {
+            this.header = header;
             return this;
         }
 
         public Builder missingValueIndicator(String missingValueIndicator) {
             this.missingValueIndicator = missingValueIndicator;
+            return this;
+        }
+
+        public Builder columnSpecs(FixedWidthFields columnSpecs) {
+            this.columnSpecs = columnSpecs;
+            return this;
+        }
+
+
+        public Builder lineEnding(String lineEnding) {
+            this.lineEnding = lineEnding;
+            return this;
+        }
+
+        public Builder padding(char padding) {
+            this.padding = padding;
+            return this;
+        }
+
+        public Builder lookupWildcard(char lookupWildcard) {
+            this.lookupWildcard = lookupWildcard;
+            return this;
+        }
+
+        public Builder skipTrailingCharsUntilNewline(boolean skipTrailingCharsUntilNewline) {
+            this.skipTrailingCharsUntilNewline = skipTrailingCharsUntilNewline;
+            return this;
+        }
+
+        public Builder recordEndsOnNewline(boolean recordEndsOnNewline) {
+            this.recordEndsOnNewline = recordEndsOnNewline;
+            return this;
+        }
+
+        public Builder skipInvalidRows(boolean skipInvalidRows) {
+            this.skipInvalidRows = skipInvalidRows;
             return this;
         }
 
@@ -227,8 +280,23 @@ public class ReadOptions {
             return this;
         }
 
-        public ReadOptions build() {
-            return new ReadOptions(this);
+        public Builder columnTypes(ColumnType[] columnTypes) {
+            this.columnTypes = columnTypes;
+            return this;
+        }
+
+        /**
+         * Defines maximal value of columns in fixed-width file.
+         *
+         * @param maxNumberOfColumns - must be positive integer. Default is 512.         *
+         */
+        public Builder maxNumberOfColumns(Integer maxNumberOfColumns) {
+            this.maxNumberOfColumns = maxNumberOfColumns;
+            return this;
+        }
+
+        public FixedWidthReadOptions build() {
+            return new FixedWidthReadOptions(this);
         }
     }
 

@@ -1,13 +1,12 @@
 package tech.tablesaw.io.html;
 
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.TableBuildingUtils;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.TableBuildingUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
