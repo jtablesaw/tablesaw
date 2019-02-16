@@ -1,14 +1,13 @@
 package tech.tablesaw.aggregate;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
-
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Row;
 import tech.tablesaw.api.Table;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CrossTabTest {
 
@@ -65,6 +64,7 @@ public class CrossTabTest {
         Table bush = Table.read().csv("../data/bush.csv");
         bush.addColumns(bush.dateColumn("date").year());
         Table xtab = CrossTab.columnPercents(bush, "who", "date year");
+        assertEquals(6, xtab.columnCount());
         assertEquals(1.0, xtab.doubleColumn(1).getDouble(xtab.rowCount() - 1), 0.00001);
     }
 

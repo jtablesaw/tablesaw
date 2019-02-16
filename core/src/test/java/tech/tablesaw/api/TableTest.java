@@ -72,6 +72,15 @@ public class TableTest {
         assertNotNull(column1);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testColumnSizeCheck() {
+        double[] a = {3, 4};
+        double[] b = {3, 4, 5};
+        Table.create("test",
+                DoubleColumn.create("a", a),
+                DoubleColumn.create("b", b));
+    }
+
     @Test
     public void testRowWiseAddition() {
         double[] a = {3, 4, 5};
@@ -365,8 +374,9 @@ public class TableTest {
         table.addColumns(column);
         DoubleColumn first = f1.emptyCopy();
         DoubleColumn second = column.emptyCopy();
-        int firstColumnSize = populateColumn(first);
-        int secondColumnSize = populateColumn(second);
+        int rowCount = RANDOM.nextInt(ROWS_BOUNDARY);
+        int firstColumnSize = populateColumn(first, rowCount);
+        int secondColumnSize = populateColumn(second, rowCount);
         Table tableToAppend = Table.create("populated", first, second);
         table.append(tableToAppend);
         assertTableColumnSize(table, f1, firstColumnSize);
@@ -441,6 +451,10 @@ public class TableTest {
 
     private int populateColumn(DoubleColumn floatColumn) {
         int rowsCount = RANDOM.nextInt(ROWS_BOUNDARY);
+        return populateColumn(floatColumn, rowsCount);
+    }
+
+    private int populateColumn(DoubleColumn floatColumn, int rowsCount) {
         for (int i = 0; i < rowsCount; i++) {
             floatColumn.append(RANDOM.nextFloat());
         }

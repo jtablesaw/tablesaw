@@ -3,10 +3,12 @@ package tech.tablesaw.joining;
 import com.google.common.base.Joiner;
 import org.junit.Test;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.api.TextColumn;
+import tech.tablesaw.selection.Selection;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DataFrameJoinerTest {
 
@@ -529,7 +531,9 @@ public class DataFrameJoinerTest {
         Table feed = ANIMAL_FEED.copy();
         Table names = ANIMAL_NAMES.copy();
         feed.replaceColumn("Animal", feed.stringColumn("Animal").asTextColumn());
-        feed.replaceColumn("Animal", names.stringColumn("Animal").asTextColumn());
+        TextColumn nameCol = names.stringColumn("Animal").asTextColumn();
+        nameCol = nameCol.where(Selection.withRange(0, feed.rowCount()));
+        feed.replaceColumn("Animal", nameCol);
         Table joined = ANIMAL_FEED.join("Animal").inner(ANIMAL_NAMES, "Animal");
         assertEquals(3, joined.columnCount());
         assertEquals(4, joined.rowCount());

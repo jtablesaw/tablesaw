@@ -148,7 +148,8 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
-     * Throws an IllegalArgumentException if a column with the given name is already in the table
+     * Throws an IllegalArgumentException if a column with the given name is already in the table, or if the number of
+     * rows in the column does not match the number of rows in the table
      */
     private void validateColumn(final Column<?> newColumn) {
         Preconditions.checkNotNull(newColumn, "Attempted to add a null to the columns in table " + name);
@@ -159,6 +160,19 @@ public class Table extends Relation implements Iterable<Row> {
         if (stringList.contains(newColumn.name().toLowerCase())) {
             String message = String.format("Cannot add column with duplicate name %s to table %s", newColumn, name);
             throw new IllegalArgumentException(message);
+        }
+
+        checkColumnSize(newColumn);
+    }
+
+    /**
+     * Throws an IllegalArgumentException if the column size doesn't match the rowCount() for the table
+     */
+    private void checkColumnSize(Column<?> newColumn) {
+        if (columnCount() != 0) {
+            Preconditions.checkArgument(newColumn.size() == rowCount(),
+                    "Column " + newColumn.name() +
+                            " does not have the same number of rows as the other columns in the table.");
         }
     }
 
@@ -182,8 +196,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public Table replaceColumn(final int colIndex, final Column<?> newColumn) {
         removeColumns(column(colIndex));
-        insertColumn(colIndex, newColumn);
-        return this;
+        return insertColumn(colIndex, newColumn);
     }
 
     /**
@@ -194,8 +207,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public Table replaceColumn(final String columnName, final Column<?> newColumn) {
         int colIndex = columnIndex(columnName);
-        replaceColumn(colIndex, newColumn);
-        return this;
+        return replaceColumn(colIndex, newColumn);
     }
 
     /**
