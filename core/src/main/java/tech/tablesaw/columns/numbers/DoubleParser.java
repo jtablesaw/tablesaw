@@ -2,10 +2,10 @@ package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
 
-public class DoubleParser extends AbstractParser<Double> {
+public class DoubleParser extends AbstractColumnParser<Double> {
 
     public DoubleParser(ColumnType columnType) {
         super(columnType);
@@ -24,7 +24,7 @@ public class DoubleParser extends AbstractParser<Double> {
             return true;
         }
         try {
-            Double.parseDouble(AbstractParser.remove(s, ','));
+            Double.parseDouble(AbstractColumnParser.remove(s, ','));
             return true;
         } catch (NumberFormatException e) {
             // it's all part of the plan
@@ -42,6 +42,6 @@ public class DoubleParser extends AbstractParser<Double> {
         if (isMissing(s)) {
             return DoubleColumnType.missingValueIndicator();
         }
-        return Double.parseDouble(AbstractParser.remove(s, ','));
+        return Double.parseDouble(AbstractColumnParser.remove(s, ','));
     }
 }

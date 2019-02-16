@@ -27,7 +27,6 @@ import java.util.Locale;
 public class CsvReadOptions extends ReadOptions {
 
     private final ColumnType[] columnTypes;
-    private final boolean header;
     private final Character separator;
     private final String lineEnding;
     private final Integer maxNumberOfColumns;
@@ -36,7 +35,6 @@ public class CsvReadOptions extends ReadOptions {
 	super(builder);
 
         columnTypes = builder.columnTypes;
-        header = builder.header;
         separator = builder.separator;
         lineEnding = builder.lineEnding;
         maxNumberOfColumns = builder.maxNumberOfColumns;
@@ -96,10 +94,6 @@ public class CsvReadOptions extends ReadOptions {
         return columnTypes;
     }
 
-    public boolean header() {
-        return header;
-    }
-
     public Character separator() {
         return separator;
     }
@@ -147,7 +141,6 @@ public class CsvReadOptions extends ReadOptions {
 
     public static class Builder extends ReadOptions.Builder {
 
-        private boolean header = true;
         private Character separator = ',';
         private String lineEnding;
         private ColumnType[] columnTypes;
@@ -202,7 +195,7 @@ public class CsvReadOptions extends ReadOptions {
         }
 
         public Builder header(boolean header) {
-            this.header = header;
+            super.header(header);
             return this;
         }
 

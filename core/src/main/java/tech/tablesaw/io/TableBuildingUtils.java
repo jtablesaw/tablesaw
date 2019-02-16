@@ -3,7 +3,11 @@ package tech.tablesaw.io;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 
-import java.io.*;
+import java.io.Reader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ByteArrayInputStream;
+import java.io.FileReader;
 import java.util.Iterator;
 import java.util.List;
 

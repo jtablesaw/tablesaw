@@ -2,7 +2,7 @@ package tech.tablesaw.io;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.strings.StringColumnType;
 
 import java.util.ArrayList;
@@ -160,12 +160,12 @@ public class ColumnTypeDetector {
      */
     private ColumnType detectType(List<String> valuesList, ReadOptions options) {
 
-        CopyOnWriteArrayList<AbstractParser<?>> parsers = new CopyOnWriteArrayList<>(getParserList(typeArray, options));
+        CopyOnWriteArrayList<AbstractColumnParser<?>> parsers = new CopyOnWriteArrayList<>(getParserList(typeArray, options));
 
         CopyOnWriteArrayList<ColumnType> typeCandidates = new CopyOnWriteArrayList<>(typeArray);
 
         for (String s : valuesList) {
-            for (AbstractParser<?> parser : parsers) {
+            for (AbstractColumnParser<?> parser : parsers) {
                 if (!parser.canParse(s)) {
                     typeCandidates.remove(parser.columnType());
                     parsers.remove(parser);
@@ -191,10 +191,10 @@ public class ColumnTypeDetector {
      * @param options CsvReadOptions to use to modify the default parsers for each type
      * @return  A list of parsers in the order they should be used for type detection
      */
-    private List<AbstractParser<?>> getParserList(List<ColumnType> typeArray, ReadOptions options) {
+    private List<AbstractColumnParser<?>> getParserList(List<ColumnType> typeArray, ReadOptions options) {
         // Types to choose from. When more than one would work, we pick the first of the options
 
-        List<AbstractParser<?>> parsers = new ArrayList<>();
+        List<AbstractColumnParser<?>> parsers = new ArrayList<>();
         for (ColumnType type : typeArray) {
             parsers.add(type.customParser(options));
         }

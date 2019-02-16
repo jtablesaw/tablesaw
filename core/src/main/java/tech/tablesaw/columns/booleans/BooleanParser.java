@@ -2,7 +2,7 @@ package tech.tablesaw.columns.booleans;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
 
 import java.util.Arrays;
@@ -12,7 +12,7 @@ import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_FALSE;
 import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_TRUE;
 import static tech.tablesaw.columns.booleans.BooleanColumnType.MISSING_VALUE;
 
-public class BooleanParser extends AbstractParser<Boolean> {
+public class BooleanParser extends AbstractColumnParser<Boolean> {
 
     // A more restricted set of 'false' strings that is used for column type detection
     private static final List<String> FALSE_STRINGS_FOR_DETECTION =

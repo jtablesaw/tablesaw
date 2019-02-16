@@ -23,7 +23,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.columns.times.TimeColumnFormatter;
 import tech.tablesaw.columns.times.TimeColumnType;
@@ -363,7 +363,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     @Override
-    public TimeColumn appendCell(String object, AbstractParser<?> parser) {
+    public TimeColumn appendCell(String object, AbstractColumnParser<?> parser) {
         return appendObj(parser.parse(object));
     }
 

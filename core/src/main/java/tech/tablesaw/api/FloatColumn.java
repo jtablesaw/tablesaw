@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.selection.Selection;
 
@@ -326,7 +326,7 @@ public class FloatColumn extends NumberColumn<Float> {
     }
 
     @Override
-    public FloatColumn appendCell(final String value, AbstractParser<?> parser) {
+    public FloatColumn appendCell(final String value, AbstractColumnParser<?> parser) {
         try {
             return append(parser.parseFloat(value));
         } catch (final NumberFormatException e) {

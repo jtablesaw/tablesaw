@@ -3,7 +3,7 @@ package tech.tablesaw.columns.times;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
 
 import java.time.LocalTime;
@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
-public class TimeParser extends AbstractParser<LocalTime> {
+public class TimeParser extends AbstractColumnParser<LocalTime> {
 
     private static final DateTimeFormatter timef1 = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
     private static final DateTimeFormatter timef2 = DateTimeFormatter.ofPattern("hh:mm:ss a");

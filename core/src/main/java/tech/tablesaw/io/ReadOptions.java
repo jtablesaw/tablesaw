@@ -70,7 +70,8 @@ public class ReadOptions {
     protected final String timeFormat;
     protected final Locale locale;
     protected final String missingValueIndicator;
-    private final boolean minimizeColumnSizes;
+    protected final boolean minimizeColumnSizes;
+    protected final boolean header;
 
     protected ReadOptions(ReadOptions.Builder builder) {
 
@@ -95,6 +96,7 @@ public class ReadOptions {
         dateTimeFormat = builder.dateTimeFormat;
         missingValueIndicator = builder.missingValueIndicator;
         minimizeColumnSizes = builder.minimizeColumnSizes;
+        header = builder.header;
 
         if (builder.locale == null) {
             locale = Locale.getDefault();
@@ -169,6 +171,10 @@ public class ReadOptions {
         return locale;
     }
 
+    public boolean header() {
+        return header;
+    }
+
     public DateTimeFormatter dateTimeFormatter() {
         if (Strings.isNullOrEmpty(dateTimeFormat)) {
             return null;
@@ -192,7 +198,7 @@ public class ReadOptions {
 
     public static class Builder {
 
-        protected InputStream inputStream;
+        InputStream inputStream;
         protected File file;
         protected Reader reader;
         protected String tableName = "";
@@ -203,6 +209,7 @@ public class ReadOptions {
         protected Locale locale;
         protected String missingValueIndicator;
         protected boolean minimizeColumnSizes = false;
+        private boolean header = true;
 
         public Builder(File file) {
             this.file = file;
@@ -240,6 +247,11 @@ public class ReadOptions {
 
         public Builder dateFormat(String dateFormat) {
             this.dateFormat = dateFormat;
+            return this;
+        }
+
+        public Builder header(boolean hasHeader) {
+            this.header = hasHeader;
             return this;
         }
 

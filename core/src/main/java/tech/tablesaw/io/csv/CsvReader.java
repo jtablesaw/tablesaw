@@ -14,46 +14,39 @@
 
 package tech.tablesaw.io.csv;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.io.CharStreams;
+import com.univocity.parsers.common.AbstractParser;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 import org.apache.commons.lang3.tuple.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.AddCellToColumnException;
-import tech.tablesaw.io.ColumnTypeDetector;
-import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.FileReader;
 import tech.tablesaw.io.TableBuildingUtils;
 
 import javax.annotation.concurrent.Immutable;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
-
-import static tech.tablesaw.api.ColumnType.SKIP;
+import java.util.List;
 
 @Immutable
-public class CsvReader {
-
-    private List<ColumnType> typeArrayOverrides = null;
+public class CsvReader extends FileReader {
 
     /**
      * Constructs a CsvReader
      */
-    public CsvReader() {}
+    public CsvReader() {
+        super();
+    }
 
     /**
      * Constructs a CsvReader with the given list of ColumnTypes
-     *
+     * <p>
      * These are the only types that the CsvReader can detect and parse
      */
     public CsvReader(List<ColumnType> typeDetectionList) {
-        this.typeArrayOverrides = typeDetectionList;
+        super(typeDetectionList);
     }
 
     /**
@@ -67,9 +60,9 @@ public class CsvReader {
         if (types == null) {
             Reader reader = TableBuildingUtils.createReader(options, bytesCache);
             if (options.file() == null) {
-        	bytesCache = CharStreams.toString(reader).getBytes();
-        	// create a new reader since we just exhausted the existing one
-        	reader = TableBuildingUtils.createReader(options, bytesCache);
+                bytesCache = CharStreams.toString(reader).getBytes();
+                // create a new reader since we just exhausted the existing one
+                reader = TableBuildingUtils.createReader(options, bytesCache);
             }
             types = detectColumnTypes(reader, options);
         }
@@ -82,40 +75,14 @@ public class CsvReader {
     }
 
     private Table read(CsvReadOptions options, boolean headerOnly) throws IOException {
-	Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options);
-	Reader reader = pair.getLeft();
-	ColumnType[] types = pair.getRight();
+        Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options);
+        Reader reader = pair.getLeft();
+        ColumnType[] types = pair.getRight();
 
-        CsvParser parser = csvParser(options);
+        AbstractParser<?> parser = csvParser(options);
 
         try {
-            parser.beginParsing(reader);
-            Table table = Table.create(options.tableName());
-
-            List<String> headerRow = Lists.newArrayList(getHeaderNames(options, types, parser));
-
-            for (int x = 0; x < types.length; x++) {
-                if (types[x] != SKIP) {
-                    String columnName = cleanName(headerRow.get(x));
-                    if (Strings.isNullOrEmpty(columnName)) {
-                        columnName = "Column " + table.columnCount();
-                    }
-                    Column<?> newColumn = types[x].create(columnName);
-                    table.addColumns(newColumn);
-                }
-            }
-
-            if (!headerOnly) {
-                String[] columnNames = selectColumnNames(headerRow, types);
-                int[] columnIndexes = new int[columnNames.length];
-                for (int i = 0; i < columnIndexes.length; i++) {
-                    // get the index in the original table, which includes skipped fields
-                    columnIndexes[i] = headerRow.indexOf(columnNames[i]);
-                }
-                addRows(options, types, parser, table, columnIndexes);
-            }
-
-            return table;
+            return parseRows(options, headerOnly, reader, types, parser);
         } finally {
             if (options.reader() == null) {
                 // if we get a reader back from options it means the client opened it, so let the client close it
@@ -124,79 +91,6 @@ public class CsvReader {
                 reader.close();
             }
         }
-    }
-
-    private String[] getHeaderNames(CsvReadOptions options, ColumnType[] types, CsvParser parser) {
-        if (options.header()) {
-            String[] headerNames = parser.parseNext();
-            // work around issue where Univocity returns null if a column has no header.
-            for (int i = 0; i < headerNames.length; i++) {
-                if (headerNames[i] == null) {
-                    headerNames[i] = "C" + i;
-                }
-            }
-            return headerNames;
-        } else {
-            // Placeholder column names for when the file read has no header
-            String[] headerNames = new String[types.length];
-            for (int i = 0; i < types.length; i++) {
-        	headerNames[i] = "C" + i;
-            }
-            return headerNames;
-        }
-    }
-
-    private void addRows(CsvReadOptions options, ColumnType[] types, CsvParser reader, Table table, int[] columnIndexes) {
-        String[] nextLine;
-
-        Map<String, AbstractParser<?>> parserMap = getParserMap(options, table);
-
-        // Add the rows
-        for (long rowNumber = options.header() ? 1L : 0L; (nextLine = reader.parseNext()) != null; rowNumber++) {
-            // validation
-            if (nextLine.length < types.length) {
-                if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
-                    System.err.println("Warning: Invalid CSV file. Row "
-                            + rowNumber
-                            + " is empty. Continuing.");
-                    continue;
-                } else {
-                    Exception e = new IndexOutOfBoundsException("Row number " + rowNumber + " contains " + nextLine.length + " columns. "
-                    	+ types.length + " expected.");
-                    throw new AddCellToColumnException(e, 0, rowNumber, table.columnNames(), nextLine);
-                }
-            } else if (nextLine.length > types.length) {
-                throw new IllegalArgumentException("Row number " + rowNumber + " contains " + nextLine.length + " columns. "
-                	+ types.length + " expected.");
-            }
-
-            // append each column that we're including (not skipping)
-            int cellIndex = 0;
-            for (int columnIndex : columnIndexes) {
-                Column<?> column = table.column(cellIndex);
-                AbstractParser<?> parser = parserMap.get(column.name());
-                try {
-                    String value = nextLine[columnIndex];
-                    column.appendCell(value, parser);
-                } catch (Exception e) {
-                    throw new AddCellToColumnException(e, columnIndex, rowNumber, table.columnNames(), nextLine);
-                }
-                cellIndex++;
-            }
-        }
-    }
-
-    private Map<String, AbstractParser<?>> getParserMap(CsvReadOptions options, Table table) {
-        Map<String, AbstractParser<?>> parserMap = new HashMap<>();
-        for (Column<?> column : table.columns()) {
-            AbstractParser<?> parser = column.type().customParser(options);
-            parserMap.put(column.name(), parser);
-        }
-        return parserMap;
-    }
-
-    private String cleanName(String name) {
-	return name.trim();
     }
 
     /**
@@ -221,59 +115,7 @@ public class CsvReader {
     public String printColumnTypes(CsvReadOptions options) throws IOException {
 
         Table structure = read(options, true).structure();
-
-        StringBuilder buf = new StringBuilder();
-        buf.append("ColumnType[] columnTypes = {");
-        buf.append(System.lineSeparator());
-
-        Column<?> typeCol = structure.column("Column Type");
-        Column<?> indxCol = structure.column("Index");
-        Column<?> nameCol = structure.column("Column Name");
-
-        // add the column headers
-        int typeColIndex = structure.columnIndex(typeCol);
-        int indxColIndex = structure.columnIndex(indxCol);
-        int nameColIndex = structure.columnIndex(nameCol);
-
-        int typeColWidth = typeCol.columnWidth();
-        int indxColWidth = indxCol.columnWidth();
-        int nameColWidth = nameCol.columnWidth();
-
-        final char padChar = ' ';
-        for (int r = 0; r < structure.rowCount(); r++) {
-            String cell = Strings.padEnd(structure.get(r, typeColIndex) + ",", typeColWidth, padChar);
-            buf.append(cell);
-            buf.append(" // ");
-
-            cell = Strings.padEnd(structure.getUnformatted(r, indxColIndex), indxColWidth, padChar);
-            buf.append(cell);
-            buf.append(' ');
-
-            cell = Strings.padEnd(structure.getUnformatted(r, nameColIndex), nameColWidth, padChar);
-            buf.append(cell);
-            buf.append(' ');
-
-            buf.append(System.lineSeparator());
-        }
-        buf.append("}");
-        buf.append(System.lineSeparator());
-        return buf.toString();
-    }
-
-    /**
-     * Reads column names from header, skipping any for which the type == SKIP
-     */
-    private String[] selectColumnNames(List<String> names, ColumnType[] types) {
-        List<String> header = new ArrayList<>();
-        for (int i = 0; i < types.length; i++) {
-            if (types[i] != SKIP) {
-                String name = names.get(i);
-                name = name.trim();
-                header.add(name);
-            }
-        }
-        String[] result = new String[header.size()];
-        return header.toArray(result);
+        return getTypeString(structure);
     }
 
     /**
@@ -292,41 +134,12 @@ public class CsvReader {
         boolean header = options.header();
         int linesToSkip = header ? 1 : 0;
 
-        CsvParser csvParser = csvParser(options);
+        CsvParser parser = csvParser(options);
 
         try {
-            csvParser.beginParsing(reader);
-
-            for (int i = 0; i < linesToSkip; i++) {
-                csvParser.parseNext();
-            }
-
-            if (options.minimizeColumnSizes()) {
-                typeArrayOverrides = ReadOptions.EXTENDED_TYPE_ARRAY;
-            }
-
-            ColumnTypeDetector detector = typeArrayOverrides == null
-        	    ? new ColumnTypeDetector() : new ColumnTypeDetector(typeArrayOverrides);
-
-            return detector.detectColumnTypes(new Iterator<String[]>() {
-
-        	String[] nextRow = csvParser.parseNext();
-
-		@Override
-		public boolean hasNext() {
-		    return nextRow != null;
-		}
-
-		@Override
-		public String[] next() {
-		    String[] tmp = nextRow;
-		    nextRow = csvParser.parseNext();
-		    return tmp;
-		}
-        	
-            }, options);
+            return getTypes(reader, options, linesToSkip, parser);
         } finally {
-            csvParser.stopParsing();
+            parser.stopParsing();
             // we don't close the reader since we didn't create it
         }
     }

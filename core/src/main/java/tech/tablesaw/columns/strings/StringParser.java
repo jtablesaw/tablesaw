@@ -2,10 +2,10 @@ package tech.tablesaw.columns.strings;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
 
-public class StringParser extends AbstractParser<String> {
+public class StringParser extends AbstractColumnParser<String> {
 
     public StringParser(ColumnType columnType) {
         super(columnType);

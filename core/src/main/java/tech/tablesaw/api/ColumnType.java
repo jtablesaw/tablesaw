@@ -1,7 +1,7 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.SkipColumnType;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
@@ -64,7 +64,7 @@ public interface ColumnType {
 
     String getPrinterFriendlyName();
 
-    AbstractParser<?> customParser(ReadOptions options);
+    AbstractColumnParser<?> customParser(ReadOptions options);
 
     default boolean compare(int rowNumber, Column<?> temp, Column<?> original) {
         return original.get(rowNumber).equals(temp.get(temp.size() - 1));

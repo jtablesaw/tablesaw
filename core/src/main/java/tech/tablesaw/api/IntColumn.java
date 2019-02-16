@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -354,7 +354,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     }
 
     @Override
-    public IntColumn appendCell(final String value, AbstractParser<?> parser) {
+    public IntColumn appendCell(final String value, AbstractColumnParser<?> parser) {
         try {
             return append(parser.parseInt(value));
         } catch (final NumberFormatException e) {

@@ -30,7 +30,6 @@ public class FixedWidthReadOptions extends ReadOptions {
 
     // we always have one of these (file, reader, or inputStream)
     private final ColumnType[] columnTypes;
-    private final boolean header;
     private final FixedWidthFields columnSpecs;
     private final String lineEnding;
     private final char padding;
@@ -44,7 +43,6 @@ public class FixedWidthReadOptions extends ReadOptions {
     super(builder);
 
         columnTypes = builder.columnTypes;
-        header = builder.header;
         columnSpecs = builder.columnSpecs;
         padding = builder.padding;
         lookupWildcard = builder.lookupWildcard;
@@ -107,10 +105,6 @@ public class FixedWidthReadOptions extends ReadOptions {
 
     public ColumnType[] columnTypes() {
         return columnTypes;
-    }
-
-    public boolean header() {
-        return header;
     }
 
     public FixedWidthFields columnSpecs() {
@@ -180,7 +174,6 @@ public class FixedWidthReadOptions extends ReadOptions {
 
     public static class Builder extends ReadOptions.Builder {
 
-        private boolean header = true;
         private FixedWidthFields columnSpecs;
         private String lineEnding;
         private char padding = ' ';
@@ -225,7 +218,7 @@ public class FixedWidthReadOptions extends ReadOptions {
         }
 
         public Builder header(boolean header) {
-            this.header = header;
+            super.header(header);
             return this;
         }
 
@@ -285,6 +278,11 @@ public class FixedWidthReadOptions extends ReadOptions {
             return this;
         }
 
+        public Builder minimizeColumnSizes(boolean minimize) {
+            this.minimizeColumnSizes = minimize;
+            return this;
+        }
+
         /**
          * Defines maximal value of columns in fixed-width file.
          *
@@ -299,5 +297,4 @@ public class FixedWidthReadOptions extends ReadOptions {
             return new FixedWidthReadOptions(this);
         }
     }
-
 }

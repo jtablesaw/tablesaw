@@ -18,7 +18,7 @@ import com.google.common.base.Preconditions;
 
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.DictionaryMap;
@@ -342,7 +342,7 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     @Override
-    public StringColumn appendCell(String object, AbstractParser<?> parser) {
+    public StringColumn appendCell(String object, AbstractColumnParser<?> parser) {
         return appendObj(parser.parse(object));
     }
 

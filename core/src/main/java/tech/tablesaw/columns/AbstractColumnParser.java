@@ -15,13 +15,13 @@ import java.util.List;
  *
  * @param <T>   The Class of object to be inserted: String for StringColumn, LocalDate for DateColumn, etc.
  */
-public abstract class AbstractParser<T> {
+public abstract class AbstractColumnParser<T> {
 
     private final ColumnType columnType;
 
     protected List<String> missingValueStrings = TypeUtils.MISSING_INDICATORS;
 
-    public AbstractParser(ColumnType columnType) {
+    public AbstractColumnParser(ColumnType columnType) {
         this.columnType = columnType;
     }
 

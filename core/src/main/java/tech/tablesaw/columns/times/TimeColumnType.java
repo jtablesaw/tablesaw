@@ -3,7 +3,7 @@ package tech.tablesaw.columns.times;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.io.ReadOptions;
 
 import java.time.LocalTime;
@@ -33,7 +33,7 @@ public class TimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public AbstractParser<LocalTime> customParser(ReadOptions options) {
+    public AbstractColumnParser<LocalTime> customParser(ReadOptions options) {
         return new TimeParser(this, options);
     }
 
