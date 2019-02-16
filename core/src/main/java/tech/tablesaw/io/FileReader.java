@@ -133,7 +133,7 @@ public abstract class FileReader {
             // validation
             if (nextLine.length < types.length) {
                 if (nextLine.length == 1 && Strings.isNullOrEmpty(nextLine[0])) {
-                    System.err.println("Warning: Invalid Fixed Width file. Row "
+                    System.err.println("Warning: Invalid file. Row "
                             + rowNumber
                             + " is empty. Continuing.");
                     continue;
