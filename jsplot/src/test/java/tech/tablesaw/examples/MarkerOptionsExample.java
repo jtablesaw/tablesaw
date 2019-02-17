@@ -5,6 +5,7 @@ import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
+import tech.tablesaw.plotly.components.ColorBar;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Gradient;
 import tech.tablesaw.plotly.components.Layout;
@@ -27,7 +28,6 @@ public class MarkerOptionsExample {
         this.y = baseball.nCol("W");
     }
 
-
     public static void main(String[] args) throws Exception {
 
         MarkerOptionsExample example = new MarkerOptionsExample();
@@ -41,6 +41,8 @@ public class MarkerOptionsExample {
         example.showCustomLine();
         example.showMarkerGradient();
         example.showColorScale();
+        example.showColorScaleWithBar();
+        example.showColorScaleWithCustomBar();
     }
 
     /**
@@ -67,7 +69,7 @@ public class MarkerOptionsExample {
      * of wins the team has.
      */
     private void showColorScale() {
-        Layout layout = Layout.builder().title("color scaled on YL_GN_BU palette by # of wins")
+        Layout layout = Layout.builder().title("color scaled by # of wins")
                 .xAxis(Axis.builder().title("Batting Average").build())
                 .yAxis(Axis.builder().title("Wins").build())
                 .build();
@@ -81,6 +83,64 @@ public class MarkerOptionsExample {
                         .build())
                 .build();
         Plot.show(new Figure(layout, trace));
+    }
+
+    /**
+     * Shows a scatter with color set as a color scale
+     *
+     * The color scale requires that an array of numeric values be provided, here we just scale according to the number
+     * of wins the team has.
+     */
+    private void showColorScaleWithBar() {
+        Layout layout = Layout.builder().title("color scaled with color bar")
+                .xAxis(Axis.builder().title("Batting Average").build())
+                .yAxis(Axis.builder().title("Wins").build())
+                .build();
+
+        IntColumn wins = baseball.intColumn("W");
+        Trace trace = ScatterTrace.builder(x, y)
+                .marker(Marker.builder()
+                        .color(wins.asDoubleArray())
+                        .cMinAndMax(wins.min(), wins.max())
+                        .colorScale(Marker.Palette.YL_GN_BU)
+                        .showScale(true)
+                        .build())
+                .build();
+        Plot.show(new Figure(layout, trace));
+    }
+
+    /**
+     * Shows a scatter with color set as a color scale
+     *
+     * The color scale requires that an array of numeric values be provided, here we just scale according to the number
+     * of wins the team has.
+     */
+    private void showColorScaleWithCustomBar() {
+        Layout layout = Layout.builder().title("color scaled with custom color bar")
+                .xAxis(Axis.builder().title("Batting Average").build())
+                .yAxis(Axis.builder().title("Wins").build())
+                .build();
+
+        IntColumn wins = baseball.intColumn("W");
+        Trace trace = ScatterTrace.builder(x, y)
+                .marker(Marker.builder()
+                        .color(wins.asDoubleArray())
+                        .cMinAndMax(wins.min(), wins.max())
+                        .colorScale(Marker.Palette.YL_GN_BU)
+                        .colorBar(ColorBar.builder()
+                                .borderColor("blue")
+                                .thickness(40)
+                                .borderWidth(2)
+                                .lenMode(ColorBar.LenMode.PIXELS)
+                                .len(200)
+                                .bgColor("rgb(255,255,204)")
+                                .thicknessMode(ColorBar.ThicknessMode.PIXELS)
+                                .build())
+                        .showScale(true)
+                        .build())
+                .build();
+        Figure figure = new Figure(layout, trace);
+        Plot.show(figure);
     }
 
     /**

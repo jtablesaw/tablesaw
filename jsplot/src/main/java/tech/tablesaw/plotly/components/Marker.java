@@ -89,6 +89,7 @@ public class Marker extends Component {
     private final SizeMode sizeMode;
     private final Gradient gradient;
     private final double[] colorArray;
+    private final ColorBar colorBar;
 
     public static MarkerBuilder builder() {
         return new MarkerBuilder();
@@ -110,6 +111,7 @@ public class Marker extends Component {
         reverseScale = builder.reverseScale;
         opacity = builder.opacity;
         sizeMode = builder.sizeMode;
+        colorBar = builder.colorBar;
     }
 
     @Override
@@ -151,6 +153,7 @@ public class Marker extends Component {
         if (opacity != DEFAULT_OPACITY) context.put("opacity", opacity);
         if (sizeMode != DEFAULT_SIZE_MODE) context.put("sizeMode", sizeMode);
         if (gradient != null) context.put("gradient", gradient);
+        if (colorBar != null) context.put("colorBar", colorBar.asJavascript());
         context.put("symbol", symbol);
         return context;
     }
@@ -175,6 +178,7 @@ public class Marker extends Component {
         private double opacity = DEFAULT_OPACITY;
         private Symbol symbol;
         private SizeMode sizeMode = DEFAULT_SIZE_MODE;
+        private ColorBar colorBar;
 
         public MarkerBuilder size(double ... size) {
             String errorMessage = "All sizes in size array must be greater than 0.";
@@ -220,10 +224,18 @@ public class Marker extends Component {
         }
 
         /**
-         *
+         *  Sets a gradient for the marker
          */
         public MarkerBuilder gradient(Gradient gradient) {
             this.gradient = gradient;
+            return this;
+        }
+
+        /**
+         *  Sets the ColorBar to display the scale for the marker
+         */
+        public MarkerBuilder colorBar(ColorBar colorBar) {
+            this.colorBar = colorBar;
             return this;
         }
 

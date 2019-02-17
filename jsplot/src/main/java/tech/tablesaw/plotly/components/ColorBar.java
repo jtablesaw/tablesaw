@@ -162,7 +162,7 @@ public class ColorBar extends Component {
         PebbleTemplate compiledTemplate;
 
         try {
-            compiledTemplate = engine.getTemplate("axis_template.html");
+            compiledTemplate = engine.getTemplate("colorbar_template.html");
             compiledTemplate.evaluate(writer, getContext());
         } catch (PebbleException | IOException e) {
             e.printStackTrace();
@@ -199,7 +199,7 @@ public class ColorBar extends Component {
         return context;
     }
 
-    public static ColorBarBuilder colorBarBuilder() {
+    public static ColorBarBuilder builder() {
         return new ColorBarBuilder();
     }
 
@@ -233,7 +233,7 @@ public class ColorBar extends Component {
 
         private int borderWidth = DEFAULT_BORDER_WIDTH;
 
-        private final String bgColor = DEFAULT_BG_COLOR;
+        private String bgColor = DEFAULT_BG_COLOR;
 
         private TickSettings tickSettings;
 
@@ -351,7 +351,7 @@ public class ColorBar extends Component {
          * Sets the color of padded area.
          */
         public ColorBarBuilder bgColor(String color) {
-            this.borderColor = color;
+            this.bgColor = color;
             return this;
         }
 
@@ -376,6 +376,10 @@ public class ColorBar extends Component {
         public ColorBarBuilder tickSettings(TickSettings tickSettings) {
             this.tickSettings = tickSettings;
             return this;
+        }
+
+        public ColorBar build() {
+            return new ColorBar(this);
         }
     }
 }

@@ -11,6 +11,9 @@
 {% if colorScale is not null %}
     colorscale: '{{colorScale | raw}}',
 {% endif %}
+{% if colorBar is not null %}
+    colorbar: {{colorBar | raw}},
+{% endif %}
 {% if gradient is not null %}
     gradient: {{gradient | raw}},
 {% endif %}
