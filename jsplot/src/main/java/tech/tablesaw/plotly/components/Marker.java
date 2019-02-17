@@ -75,6 +75,7 @@ public class Marker extends Component {
     private static final SizeMode DEFAULT_SIZE_MODE = DIAMETER;
 
     private final double[] size;
+    private final Line line;
     private final String[] color;
     private final Palette colorScalePalette;
     private final boolean cAuto;
@@ -86,6 +87,8 @@ public class Marker extends Component {
     private final double opacity;
     private final Symbol symbol;
     private final SizeMode sizeMode;
+    private final Gradient gradient;
+    private final double[] colorArray;
 
     public static MarkerBuilder builder() {
         return new MarkerBuilder();
@@ -93,8 +96,11 @@ public class Marker extends Component {
 
     private Marker(MarkerBuilder builder) {
         symbol = builder.symbol;
+        line = builder.line;
         size = builder.size;
         color = builder.color;
+        colorArray = builder.colorArray;
+        gradient = builder.gradient;
         colorScalePalette = builder.colorScalePalette;
         cAuto = builder.cAuto;
         cMin = builder.cMin;
@@ -135,12 +141,16 @@ public class Marker extends Component {
             } else {
                 context.put("color", Utils.quote(color[0]));
             }
+        } else if (colorArray != null){
+            context.put("color", Utils.dataAsString(colorArray));
         }
+        if (line != null) context.put("line", line.asJavascript());
         if (autoColorScale != DEFAULT_AUTO_COLOR_SCALE) context.put("autoColorScale", autoColorScale);
         if (showScale != DEFAULT_SHOW_SCALE) context.put("showScale",showScale);
         if (reverseScale != DEFAULT_REVERSE_SCALE) context.put("reverseScale", reverseScale);
         if (opacity != DEFAULT_OPACITY) context.put("opacity", opacity);
         if (sizeMode != DEFAULT_SIZE_MODE) context.put("sizeMode", sizeMode);
+        if (gradient != null) context.put("gradient", gradient);
         context.put("symbol", symbol);
         return context;
     }
@@ -148,11 +158,17 @@ public class Marker extends Component {
     public static class MarkerBuilder {
 
         private double[] size = {6};
+
+        // Note, a marker can have a color, or color array, but not both
         private String[] color;
+        private double[] colorArray;
+
+        private Gradient gradient;
         private Palette colorScalePalette;
         private boolean cAuto = DEFAULT_C_AUTO;
         private double cMin;
         private double cMax;
+        private Line line;
         private boolean autoColorScale = DEFAULT_AUTO_COLOR_SCALE;
         private boolean showScale = DEFAULT_SHOW_SCALE;
         private boolean reverseScale = DEFAULT_REVERSE_SCALE;
@@ -192,6 +208,22 @@ public class Marker extends Component {
          */
         public MarkerBuilder reverseScale(boolean b) {
             this.reverseScale = b;
+            return this;
+        }
+
+        /**
+         * Sets an outline around the marker
+         */
+        public MarkerBuilder line(Line line) {
+            this.line = line;
+            return this;
+        }
+
+        /**
+         *
+         */
+        public MarkerBuilder gradient(Gradient gradient) {
+            this.gradient = gradient;
             return this;
         }
 
@@ -259,13 +291,25 @@ public class Marker extends Component {
         public MarkerBuilder color(String color) {
             this.color = new String[1];
             this.color[0] = color;
+            this.colorArray = null;
             return this;
         }
+
         /**
          * Sets the marker color to an array of color values
          */
         public MarkerBuilder color(String[] color) {
             this.color = color;
+            this.colorArray = null;
+            return this;
+        }
+
+        /**
+         * Sets the marker color to an array of numeric values for use when a color scale is provided
+         */
+        public MarkerBuilder color(double[] color) {
+            this.colorArray = color;
+            this.color = null;
             return this;
         }
 

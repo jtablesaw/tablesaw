@@ -20,7 +20,6 @@ public class MarkerTest {
         assertTrue(x.asJavascript().contains("color"));
         assertTrue(x.asJavascript().contains("symbol"));
         assertTrue(x.asJavascript().contains("size"));
-
     }
 
 }
