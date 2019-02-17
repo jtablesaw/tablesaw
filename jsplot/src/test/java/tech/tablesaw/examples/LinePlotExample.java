@@ -38,6 +38,5 @@ public class LinePlotExample {
                 .mode(ScatterTrace.Mode.LINE)
                 .build();
         Plot.show(new Figure(layout, trace));
-
     }
 }

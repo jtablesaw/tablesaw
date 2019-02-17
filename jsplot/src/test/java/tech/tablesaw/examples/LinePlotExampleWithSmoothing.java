@@ -40,7 +40,7 @@ public class LinePlotExampleWithSmoothing {
                 .mode(ScatterTrace.Mode.LINE)
                 .line(Line.builder()
                         .shape(Line.Shape.SPLINE)
-                        .smoothing(1.2f)
+                        .smoothing(1.2)
                         .build())
                 .build();
 

@@ -21,7 +21,7 @@ public class MarkerOptionsExample {
     private final NumberColumn<?> y;
 
 
-    public MarkerOptionsExample() throws Exception {
+    private MarkerOptionsExample() throws Exception {
         this.baseball = Table.read().csv("../data/baseball.csv");
         this.x = baseball.nCol("BA");
         this.y = baseball.nCol("W");
