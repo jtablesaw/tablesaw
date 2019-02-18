@@ -12,7 +12,8 @@ __Tablesaw__ is Java for data science. It includes a dataframe and a visualizati
 ### Tablesaw features
 
 #### Data processing & transformation
-* Import data from RDBMS and CSV files, local or remote (http, S3, etc.)
+* Import data from RDBMS, CSV, JSON, HTML, or Fixed Width text files, whether they are local or remote (http, S3, etc.)
+* Export data to CSV, JSON, HTML or Fixed Width files. 
 * Combine tables by appending or joining
 * Add and remove columns or rows
 * Sort, Group, Query 
