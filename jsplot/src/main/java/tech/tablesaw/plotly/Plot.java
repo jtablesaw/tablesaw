@@ -5,8 +5,11 @@ import tech.tablesaw.plotly.components.Page;
 import tech.tablesaw.plotly.display.Browser;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,8 +31,8 @@ public class Plot {
         String output = page.asJavascript();
 
         try {
-            try (FileWriter fileWriter = new FileWriter(outputFile)) {
-                fileWriter.write(output);
+            try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8)) {
+                writer.write(output);
             }
             new Browser().browse(outputFile);
         } catch (IOException e) {
