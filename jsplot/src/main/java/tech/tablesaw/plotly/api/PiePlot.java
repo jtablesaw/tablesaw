@@ -19,7 +19,7 @@ public class PiePlot {
                 .build();
 
         PieTrace trace = PieTrace.builder(
-                table.categoricalColumn(groupColName),
+                table.column(groupColName),
                 table.numberColumn(numberColName))
                 .showLegend(true)
                 .build();

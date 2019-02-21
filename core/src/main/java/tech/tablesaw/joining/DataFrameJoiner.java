@@ -29,6 +29,7 @@ import tech.tablesaw.columns.times.TimeColumnType;
 import tech.tablesaw.index.ByteIndex;
 import tech.tablesaw.index.DoubleIndex;
 import tech.tablesaw.index.FloatIndex;
+import tech.tablesaw.index.Index;
 import tech.tablesaw.index.IntIndex;
 import tech.tablesaw.index.LongIndex;
 import tech.tablesaw.index.ShortIndex;
@@ -37,7 +38,9 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DataFrameJoiner {
@@ -45,7 +48,7 @@ public class DataFrameJoiner {
     private static final String TABLE_ALIAS = "T";
 
     private final Table table;
-    private final Column<?>[] columns;
+    private Column<?>[] joinColumns;
     private final String[] columnNames;
     private AtomicInteger joinTableId = new AtomicInteger(2);
 
@@ -56,11 +59,11 @@ public class DataFrameJoiner {
      */
     public DataFrameJoiner(Table table, String... columnNames) {
         this.table = table;
-        columns = new Column<?>[columnNames.length];
+        joinColumns = new Column<?>[columnNames.length];
         this.columnNames = columnNames;
         for (int i = 0; i < this.columnNames.length; i++) {
             String colName = this.columnNames[i];
-            this.columns[i] = table.column(colName);
+            this.joinColumns[i] = table.column(colName);
         }
     }
 
@@ -171,75 +174,83 @@ public class DataFrameJoiner {
      * @return The resulting table
      */
     private Table joinInternal(Table table1, Table table2, boolean outer, boolean allowDuplicates, String... col2Names) {
+
         if (allowDuplicates) {
             renameColumnsWithDuplicateNames(table1, table2, col2Names);
         }
         Table result = emptyTableFromColumns(table1, table2, col2Names);
+        Map<Column<?>, Index> columnIndexMap = new HashMap<>();
+
+        for (int i = 0; i < joinColumns.length; i++) {
+            Column<?> col = joinColumns[i];
+            String col2Name = col2Names[i];
+            columnIndexMap.put(col, indexFor(table2, col2Name, col));
+        }
+
         for (Row row : table1) {
             int ri = row.getRowNumber();
             Table table1Rows = table1.where(Selection.with(ri));
             Selection rowBitMapMultiCol = null;
-            for (int i = 0; i < columns.length; i++) {
+            for (int i = 0; i < joinColumns.length; i++) {
 
                 // Need to use the column from table1 that is the same column originally
                 // defined for this DataFrameJoiner. Column names must be unique within the
                 // same table, so use the original column's name to get the corresponding
                 // column out of the table1 input Table.
-                Column<?> column = columns[i];
+                Column<?> column = joinColumns[i];
                 Column<?> table1Column = table1.column(column.name());
 
                 ColumnType type = table1Column.type();
                 // relies on both arrays, columns, and col2Names,
                 // having corresponding values at same index
-                String col2Name = col2Names[i];
                 Selection rowBitMapOneCol = null;
                 if (type instanceof DateColumnType) {
-                    IntIndex index = new IntIndex(table2.dateColumn(col2Name));
+                    IntIndex index = (IntIndex) columnIndexMap.get(column);
                     DateColumn col1 = (DateColumn) table1Column;
                     int value = col1.getIntInternal(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof DateTimeColumnType) {
-                    LongIndex index = new LongIndex(table2.dateTimeColumn(col2Name));
+                    LongIndex index = (LongIndex) columnIndexMap.get(column);
                     DateTimeColumn col1 = (DateTimeColumn) table1Column;
                     long value = col1.getLongInternal(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof TimeColumnType) {
-                    IntIndex index = new IntIndex(table2.timeColumn(col2Name));
+                    IntIndex index = (IntIndex) columnIndexMap.get(column);
                     TimeColumn col1 = (TimeColumn) table1Column;
                     int value = col1.getIntInternal(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof StringColumnType || type instanceof TextColumnType) {
-                    StringIndex index = new StringIndex(table2.stringColumn(col2Name));
+                    StringIndex index = (StringIndex) columnIndexMap.get(column);
                     StringColumn col1 = (StringColumn) table1Column;
                     String value = col1.get(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof IntColumnType) {
-                    IntIndex index = new IntIndex(table2.intColumn(col2Name));
+                    IntIndex index = (IntIndex) columnIndexMap.get(column);
                     IntColumn col1 = (IntColumn) table1Column;
                     int value = col1.getInt(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof LongColumnType) {
-                    LongIndex index = new LongIndex(table2.longColumn(col2Name));
+                    LongIndex index = (LongIndex) columnIndexMap.get(column);
                     LongColumn col1 = (LongColumn) table1Column;
                     long value = col1.getLong(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof ShortColumnType) {
-                    ShortIndex index = new ShortIndex(table2.shortColumn(col2Name));
+                    ShortIndex index = (ShortIndex) columnIndexMap.get(column);
                     ShortColumn col1 = (ShortColumn) table1Column;
                     short value = col1.getShort(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof BooleanColumnType) {
-                    ByteIndex index = new ByteIndex(table2.booleanColumn(col2Name));
+                    ByteIndex index = (ByteIndex) columnIndexMap.get(column);
                     BooleanColumn col1 = (BooleanColumn) table1Column;
                     byte value = col1.getByte(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof DoubleColumnType) {
-                    DoubleIndex index = new DoubleIndex(table2.doubleColumn(col2Name));
+                    DoubleIndex index = (DoubleIndex) columnIndexMap.get(column);
                     DoubleColumn col1 = (DoubleColumn) table1Column;
                     double value = col1.getDouble(ri);
                     rowBitMapOneCol = index.get(value);
                 } else if (type instanceof FloatColumnType) {
-                    FloatIndex index = new FloatIndex(table2.floatColumn(col2Name));
+                    FloatIndex index = (FloatIndex) columnIndexMap.get(column);
                     FloatColumn col1 = (FloatColumn) table1Column;
                     float value = col1.getFloat(ri);
                     rowBitMapOneCol = index.get(value);
@@ -266,6 +277,42 @@ public class DataFrameJoiner {
             }
         }
         return result;
+    }
+
+    private Index indexFor(Table table2, String col2Name, Column<?> col) {
+        ColumnType type = col.type();
+        if (type instanceof DateColumnType) {
+            return new IntIndex(table2.dateColumn(col2Name));
+        }
+        if (type instanceof DateTimeColumnType) {
+            return new LongIndex(table2.dateTimeColumn(col2Name));
+        }
+        if (type instanceof TimeColumnType) {
+            return new IntIndex(table2.timeColumn(col2Name));
+        }
+        if (type instanceof StringColumnType || type instanceof TextColumnType) {
+            return new StringIndex(table2.stringColumn(col2Name));
+        }
+        if (type instanceof IntColumnType) {
+            return new IntIndex(table2.intColumn(col2Name));
+        }
+        if (type instanceof LongColumnType) {
+            return new LongIndex(table2.longColumn(col2Name));
+        }
+        if (type instanceof ShortColumnType) {
+            return new ShortIndex(table2.shortColumn(col2Name));
+        }
+        if (type instanceof BooleanColumnType) {
+            return new ByteIndex(table2.booleanColumn(col2Name));
+        }
+        if (type instanceof DoubleColumnType) {
+            return new DoubleIndex(table2.doubleColumn(col2Name));
+        }
+        if (type instanceof FloatColumnType) {
+            return new FloatIndex(table2.floatColumn(col2Name));
+        }
+        throw new IllegalArgumentException(
+                    "Joining attempted on unsupported column type " + col.type());
     }
 
     private void renameColumnsWithDuplicateNames(Table table1, Table table2, String... col2Names) {
@@ -342,13 +389,13 @@ public class DataFrameJoiner {
             int ri = row.getRowNumber();
             Selection rowBitMapMultiCol = null;
 
-            for (int i = 0; i < columns.length; i++) {
+            for (int i = 0; i < joinColumns.length; i++) {
 
                 // Need to use the column from table1 that is the same column originally
                 // defined for this DataFrameJoiner. Column names must be unique within the
                 // same table, so use the original column's name to get the corresponding
                 // column out of the table1 input Table.
-                Column<?> column = columns[i];
+                Column<?> column = joinColumns[i];
                 Column<?> table1Column = table1.column(column.name());
 
                 ColumnType type = table1Column.type();

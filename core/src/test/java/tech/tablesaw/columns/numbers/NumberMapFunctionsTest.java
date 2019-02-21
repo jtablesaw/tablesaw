@@ -1,16 +1,16 @@
 package tech.tablesaw.columns.numbers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.Test;
-
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
 
+import static org.junit.Assert.*;
+
 public class NumberMapFunctionsTest {
+
+    private final static String LINE_END = System.lineSeparator();
 
     @Test
     public void testNormalize() {
@@ -134,12 +134,12 @@ public class NumberMapFunctionsTest {
 	IntColumn n1 = IntColumn.indexColumn("index", 4, 0);
         Table t = Table.create("tst");
         t.addColumns(n1, n1.lag(-2));
-        assertEquals("            tst            \n" +
-                " index  |  index lag(-2)  |\n" +
-                "---------------------------\n" +
-                "     0  |              2  |\n" +
-                "     1  |              3  |\n" +
-                "     2  |                 |\n" +
+        assertEquals("            tst            " + LINE_END +
+                " index  |  index lag(-2)  |" + LINE_END +
+                "---------------------------" + LINE_END +
+                "     0  |              2  |" + LINE_END +
+                "     1  |              3  |" + LINE_END +
+                "     2  |                 |" + LINE_END +
                 "     3  |                 |", t.print());
     }
 
@@ -148,12 +148,12 @@ public class NumberMapFunctionsTest {
 	IntColumn n1 = IntColumn.indexColumn("index", 4, 0);
         Table t = Table.create("tst");
         t.addColumns(n1, n1.lead(1));
-        assertEquals("            tst            \n" +
-                " index  |  index lead(1)  |\n" +
-                "---------------------------\n" +
-                "     0  |              1  |\n" +
-                "     1  |              2  |\n" +
-                "     2  |              3  |\n" +
+        assertEquals("            tst            " + LINE_END +
+                " index  |  index lead(1)  |" + LINE_END +
+                "---------------------------" + LINE_END +
+                "     0  |              1  |" + LINE_END +
+                "     1  |              2  |" + LINE_END +
+                "     2  |              3  |" + LINE_END +
                 "     3  |                 |", t.print());
     }
 

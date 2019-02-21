@@ -3,7 +3,7 @@ package tech.tablesaw.columns.datetimes;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 public class DateTimeColumnType extends AbstractColumnType {
 
@@ -11,11 +11,18 @@ public class DateTimeColumnType extends AbstractColumnType {
 
     public static final DateTimeParser DEFAULT_PARSER = new DateTimeParser(ColumnType.LOCAL_DATE_TIME);
 
-    public static final DateTimeColumnType INSTANCE =
+    private static DateTimeColumnType INSTANCE =
             new DateTimeColumnType(BYTE_SIZE, "LOCAL_DATE_TIME", "DateTime");
 
     private DateTimeColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
+    }
+
+    public static DateTimeColumnType instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new DateTimeColumnType(BYTE_SIZE, "LOCAL_DATE_TIME", "DateTime");
+        }
+        return INSTANCE;
     }
 
     @Override
@@ -24,7 +31,7 @@ public class DateTimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public DateTimeParser customParser(CsvReadOptions options) {
+    public DateTimeParser customParser(ReadOptions options) {
         return new DateTimeParser(this, options);
     }
 

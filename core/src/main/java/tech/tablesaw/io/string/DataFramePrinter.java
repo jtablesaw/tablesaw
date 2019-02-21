@@ -14,12 +14,12 @@
 
 package tech.tablesaw.io.string;
 
+import tech.tablesaw.table.Relation;
+import tech.tablesaw.util.StringUtils;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.stream.IntStream;
-
-import tech.tablesaw.table.Relation;
-import tech.tablesaw.util.StringUtils;
 
 /**
  * A class that can pretty print a DataFrame to text for visualization in a console
@@ -127,15 +127,15 @@ public class DataFramePrinter {
                 capacity = 0;
             }
             final StringBuilder text = new StringBuilder(capacity);
-            text.append(tableName(frame, totalWidth)).append("\n");
+            text.append(tableName(frame, totalWidth)).append(System.lineSeparator());
             final String headerLine = String.format(headerTemplate, (Object[]) headers);
-            text.append(headerLine).append("\n");
+            text.append(headerLine).append(System.lineSeparator());
             for (int j = 0; j < totalWidth; j++) {
                 text.append("-");
             }
             for (String[] row : data) {
                 final String dataLine = String.format(dataTemplate, (Object[]) row);
-                text.append("\n");
+                text.append(System.lineSeparator());
                 text.append(dataLine);
             }
             final byte[] bytes = text.toString().getBytes();

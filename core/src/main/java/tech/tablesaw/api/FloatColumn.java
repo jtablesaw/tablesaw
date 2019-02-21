@@ -12,8 +12,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.numbers.FloatColumnType;
 import tech.tablesaw.selection.Selection;
 
@@ -25,8 +24,6 @@ import java.util.function.Predicate;
 
 public class FloatColumn extends NumberColumn<Float> {
 
-    private static final FloatColumnType COLUMN_TYPE = ColumnType.FLOAT;
-
     /**
      * Compares two doubles, such that a sort based on this comparator would sort in descending order
      */
@@ -35,9 +32,19 @@ public class FloatColumn extends NumberColumn<Float> {
     private final FloatArrayList data;    
 
     private FloatColumn(final String name, FloatArrayList data) {
-        super(COLUMN_TYPE, name);
+        super(FloatColumnType.instance(), name);
         this.data = data;
     }
+
+    @Override
+    public String getString(final int row) {
+        final float value = getFloat(row);
+        if (FloatColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(printFormatter.format(value));
+    }
+
 
     public static FloatColumn create(final String name) {
         return new FloatColumn(name, new FloatArrayList());
@@ -97,7 +104,7 @@ public class FloatColumn extends NumberColumn<Float> {
                 values.add(getFloat(i));
             }
         }
-        final FloatColumn column = FloatColumn.create(name() + " Unique values", values.size());
+        final FloatColumn column = FloatColumn.create(name() + " Unique values");
         for (float value : values) {
             column.append(value);
         }
@@ -188,7 +195,7 @@ public class FloatColumn extends NumberColumn<Float> {
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public Float[] asObjectArray() {
         final Float[] output = new Float[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getFloat(i);
@@ -236,7 +243,7 @@ public class FloatColumn extends NumberColumn<Float> {
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putFloat(getFloat(rowNumber)).array();
+        return ByteBuffer.allocate(FloatColumnType.instance().byteSize()).putFloat(getFloat(rowNumber)).array();
     }
 
     @Override
@@ -254,7 +261,7 @@ public class FloatColumn extends NumberColumn<Float> {
     public double getDouble(int row) {
         float value = data.getFloat(row);
         if (isMissingValue(value)) {
-            return DoubleColumnType.missingValueIndicator();
+            return FloatColumnType.missingValueIndicator();
         }
         return value;
     }
@@ -319,7 +326,7 @@ public class FloatColumn extends NumberColumn<Float> {
     }
 
     @Override
-    public FloatColumn appendCell(final String value, AbstractParser<?> parser) {
+    public FloatColumn appendCell(final String value, AbstractColumnParser<?> parser) {
         try {
             return append(parser.parseFloat(value));
         } catch (final NumberFormatException e) {

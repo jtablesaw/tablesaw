@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntCollection;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import it.unimi.dsi.fastutil.ints.IntListIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -110,21 +109,6 @@ public class IntDictionaryMap implements DictionaryMap {
         return valueToKey.keySet();
     }
 
-    /**
-     * Returns the strings in the dictionary as an array in order of the numeric key
-     *
-     * @deprecated This is an implementation detail that should not be public.
-     * If you need the strings you can get them by calling unique() or asSet() on the column,
-     */
-    @Deprecated
-    String[] categoryArray() {
-        return keyToValue.values().toArray(new String[size()]);
-    }
-
-    private IntCollection values() {
-        return valueToKey.values();
-    }
-
     private Int2ObjectMap<String> keyToValueMap() {
         return keyToValue;
     }
@@ -166,21 +150,12 @@ public class IntDictionaryMap implements DictionaryMap {
         return categories();
     }
 
-    @Override
-    public IntArrayList dataAsIntArray() {
-        IntArrayList copy = new IntArrayList(size());
-        for (int i = 0; i < size(); i++) {
-            copy.add(values.getInt(i));
-        }
-        return copy;
-    }
-
     public int firstIndexOf(String value) {
         return values.indexOf(getKeyForValue(value));
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public String[] asObjectArray() {
         final String[] output = new String[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getValueForIndex(i);
@@ -236,7 +211,7 @@ public class IntDictionaryMap implements DictionaryMap {
         int key;
         if (value == null || StringColumnType.missingValueIndicator().equals(value)) {
             key = MISSING_VALUE;
-            put(key, value);
+            put(key, StringColumnType.missingValueIndicator());
         } else {
             key = getKeyForValue(value);
         }
@@ -414,7 +389,7 @@ public class IntDictionaryMap implements DictionaryMap {
             append(StringColumnType.missingValueIndicator());
         } catch (NoKeysAvailableException e) {
             // This can't happen because missing value key is the first one allocated
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

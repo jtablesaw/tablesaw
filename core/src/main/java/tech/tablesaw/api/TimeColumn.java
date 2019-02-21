@@ -23,7 +23,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.times.PackedLocalTime;
 import tech.tablesaw.columns.times.TimeColumnFormatter;
 import tech.tablesaw.columns.times.TimeColumnType;
@@ -39,16 +39,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static tech.tablesaw.api.ColumnType.LOCAL_TIME;
 import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 /**
@@ -56,8 +53,6 @@ import static tech.tablesaw.columns.DateAndTimePredicates.*;
  */
 public class TimeColumn extends AbstractColumn<LocalTime>
         implements CategoricalColumn<LocalTime>, TimeFilters, TimeFillers<TimeColumn>, TimeMapFunctions {
-
-    public static final int MISSING_VALUE = (Integer) TimeColumnType.missingValueIndicator();
 
     private final IntComparator descendingIntComparator = DescendingIntComparator.instance();
 
@@ -72,17 +67,17 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     };
 
     private TimeColumn(String name, IntArrayList times) {
-        super(LOCAL_TIME, name);
+        super(TimeColumnType.instance(), name);
         data = times;
     }
 
     private TimeColumn(String name) {
-        super(LOCAL_TIME, name);
+        super(TimeColumnType.instance(), name);
         data = new IntArrayList(DEFAULT_ARRAY_SIZE);
     }
 
     public static boolean valueIsMissing(int i) {
-        return i == MISSING_VALUE;
+        return i == TimeColumnType.missingValueIndicator();
     }
 
     public static TimeColumn create(String name) {
@@ -115,7 +110,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
 
     @Override
     public TimeColumn appendMissing() {
-        appendInternal(MISSING_VALUE);
+        appendInternal(TimeColumnType.missingValueIndicator());
         return this;
     }
 
@@ -136,7 +131,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = MISSING_VALUE;
+            dest[i] = TimeColumnType.missingValueIndicator();
         }
 
         System.arraycopy(data.toIntArray(), srcPos, dest, destPos, length);
@@ -164,7 +159,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     public TimeColumn append(LocalTime time) {
         int value;
         if (time == null) {
-            value = MISSING_VALUE;
+            value = TimeColumnType.missingValueIndicator();
         } else {
             value = PackedLocalTime.pack(time);
         }
@@ -277,7 +272,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
             max = (max > aData) ? max : aData;
         }
 
-        if (max == MISSING_VALUE) {
+        if (max == TimeColumnType.missingValueIndicator()) {
             return null;
         }
         return PackedLocalTime.asLocalTime(max);
@@ -292,7 +287,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         int min = Integer.MAX_VALUE;
 
         for (int aData : data) {
-            if (aData != MISSING_VALUE) {
+            if (aData != TimeColumnType.missingValueIndicator()) {
                 min = (min < aData) ? min : aData;
             }
         }
@@ -333,7 +328,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (getIntInternal(i) == MISSING_VALUE) {
+            if (getIntInternal(i) == TimeColumnType.missingValueIndicator()) {
                 count++;
             }
         }
@@ -343,7 +338,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     @Override
     public int countUnique() {
         IntOpenHashSet hashSet = new IntOpenHashSet(data);
-        hashSet.remove(MISSING_VALUE);
+        hashSet.remove(TimeColumnType.missingValueIndicator());
         return hashSet.size();
     }
 
@@ -368,7 +363,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     @Override
-    public TimeColumn appendCell(String object, AbstractParser<?> parser) {
+    public TimeColumn appendCell(String object, AbstractColumnParser<?> parser) {
         return appendObj(parser.parse(object));
     }
 
@@ -377,7 +372,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         return data.getInt(index);
     }
 
-    int getPackedTime(int index) {
+    protected int getPackedTime(int index) {
         return getIntInternal(index);
     }
 
@@ -404,6 +399,10 @@ public class TimeColumn extends AbstractColumn<LocalTime>
             doubles[i] = data.getInt(i);
         }
         return doubles;
+    }
+
+    public DoubleColumn asDoubleColumn() {
+	return DoubleColumn.create(name(), asDoubleArray());
     }
 
     @Override
@@ -466,7 +465,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
         int validCount = 0;
         while (validCount < n && rowCount < size()) {
             int value = values[rowCount];
-            if (value != MISSING_VALUE) {
+            if (value != TimeColumnType.missingValueIndicator()) {
                 bottom.add(PackedLocalTime.asLocalTime(value));
                 validCount++;
             }
@@ -501,15 +500,6 @@ public class TimeColumn extends AbstractColumn<LocalTime>
 
     public IntIterator intIterator() {
         return data.iterator();
-    }
-
-    Set<LocalTime> asSet() {
-        Set<LocalTime> times = new HashSet<>();
-        TimeColumn unique = unique();
-        for (LocalTime t : unique) {
-            times.add(t);
-        }
-        return times;
     }
 
     public boolean contains(LocalTime time) {
@@ -588,7 +578,7 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public LocalTime[] asObjectArray() {
         final LocalTime[] output = new LocalTime[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = get(i);
@@ -604,9 +594,9 @@ public class TimeColumn extends AbstractColumn<LocalTime>
     }
 
     private TimeColumn fillWith(int count, Iterable<LocalTime> iterable, Consumer<LocalTime> acceptor) {
-        Iterator<LocalTime> iterator = null;
+        Iterator<LocalTime> iterator = iterable.iterator();
         for (int r = 0; r < count; r++) {
-            if (iterator == null || (!iterator.hasNext())) {
+            if (!iterator.hasNext()) {
                 iterator = iterable.iterator();
                 if (!iterator.hasNext()) {
                     break;

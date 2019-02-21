@@ -3,8 +3,8 @@ package tech.tablesaw.columns.times;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.io.ReadOptions;
 
 import java.time.LocalTime;
 
@@ -13,11 +13,18 @@ public class TimeColumnType extends AbstractColumnType {
     public static final int BYTE_SIZE = 4;
 
     public static final TimeParser DEFAULT_PARSER = new TimeParser(ColumnType.LOCAL_TIME);
-    public static final TimeColumnType INSTANCE =
-            new TimeColumnType(BYTE_SIZE, "LOCAL_TIME", "Time");
+
+    private static TimeColumnType INSTANCE;
 
     private TimeColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
+    }
+
+    public static TimeColumnType instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new TimeColumnType(BYTE_SIZE, "LOCAL_TIME", "Time");
+        }
+        return INSTANCE;
     }
 
     @Override
@@ -26,7 +33,7 @@ public class TimeColumnType extends AbstractColumnType {
     }
 
     @Override
-    public AbstractParser<LocalTime> customParser(CsvReadOptions options) {
+    public AbstractColumnParser<LocalTime> customParser(ReadOptions options) {
         return new TimeParser(this, options);
     }
 

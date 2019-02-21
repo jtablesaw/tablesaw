@@ -11,7 +11,7 @@ import static tech.tablesaw.columns.datetimes.fillers.TemporalRangeIterable.rang
 
 public class DateTimeFillersTest {
 
-    private void testValues(Iterable<LocalDateTime> times, LocalDateTime... expected) {
+    private void assertContentEquals(Iterable<LocalDateTime> times, LocalDateTime... expected) {
         int num = 0;
         for (LocalDateTime value : times) {
             assertEquals(expected[num], value);
@@ -22,7 +22,7 @@ public class DateTimeFillersTest {
 
     @Test
     public void testFromToBy() {
-        testValues(create("datetimes", new LocalDateTime[5]).fillWith(range(LocalDateTime.of(2018, 3, 1, 12, 30), // year, month, day, hour,
+        assertContentEquals(create("datetimes", new LocalDateTime[5]).fillWith(range(LocalDateTime.of(2018, 3, 1, 12, 30), // year, month, day, hour,
                                                                                           // minute
                 LocalDateTime.of(2019, 3, 1, 12, 30), 1, ChronoUnit.DAYS)), LocalDateTime.of(2018, 3, 1, 12, 30), // year,
                                                                                                                   // month,
@@ -32,7 +32,7 @@ public class DateTimeFillersTest {
                 LocalDateTime.of(2018, 3, 2, 12, 30), LocalDateTime.of(2018, 3, 3, 12, 30),
                 LocalDateTime.of(2018, 3, 4, 12, 30), LocalDateTime.of(2018, 3, 5, 12, 30));
 
-        testValues(create("datetimes", new LocalDateTime[5]).fillWith(range(LocalDateTime.of(2018, 3, 1, 12, 30), // year, month, day, hour,
+        assertContentEquals(create("datetimes", new LocalDateTime[5]).fillWith(range(LocalDateTime.of(2018, 3, 1, 12, 30), // year, month, day, hour,
                                                                                           // minute
                 LocalDateTime.of(2019, 3, 1, 12, 30), 1, ChronoUnit.MONTHS)), LocalDateTime.of(2018, 3, 1, 12, 30), // year,
                                                                                                                     // month,
@@ -41,7 +41,7 @@ public class DateTimeFillersTest {
                                                                                                                     // minute
                 LocalDateTime.of(2018, 4, 1, 12, 30), LocalDateTime.of(2018, 5, 1, 12, 30),
                 LocalDateTime.of(2018, 6, 1, 12, 30), LocalDateTime.of(2018, 7, 1, 12, 30));
-        testValues(create("datetimes", new LocalDateTime[5]).fillWith(range(LocalDateTime.of(2018, 3, 1, 12, 30), // year, month, day, hour,
+        assertContentEquals(create("datetimes", new LocalDateTime[5]).fillWith(range(LocalDateTime.of(2018, 3, 1, 12, 30), // year, month, day, hour,
                                                                                           // minute
                 LocalDateTime.of(2019, 3, 1, 12, 30), 2, ChronoUnit.HOURS)), LocalDateTime.of(2018, 3, 1, 12, 30), // year,
                                                                                                                    // month,

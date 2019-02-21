@@ -14,6 +14,17 @@
 
 package tech.tablesaw.columns.dates;
 
+import org.junit.Before;
+import org.junit.Test;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
+
+import java.time.LocalDate;
+import java.time.Month;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -21,18 +32,6 @@ import static tech.tablesaw.columns.dates.PackedLocalDate.asLocalDate;
 import static tech.tablesaw.columns.dates.PackedLocalDate.minusDays;
 import static tech.tablesaw.columns.dates.PackedLocalDate.pack;
 import static tech.tablesaw.columns.dates.PackedLocalDate.plusDays;
-
-import java.time.LocalDate;
-import java.time.Month;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.IntColumn;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.Selection;
 
 
 public class DateFiltersTest {
@@ -217,7 +216,7 @@ public class DateFiltersTest {
     public void testIsMissing() {
         DateColumn column = DateColumn.create("test");
         column.append(LocalDate.now());
-        column.appendInternal(DateColumn.MISSING_VALUE);
+        column.appendInternal(DateColumnType.missingValueIndicator());
 
         assertTrue(column.isMissing().contains(1));
         assertTrue(column.isNotMissing().contains(0));

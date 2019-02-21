@@ -3,7 +3,7 @@ package tech.tablesaw.columns.numbers;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 public class LongColumnType extends AbstractColumnType {
 
@@ -11,13 +11,18 @@ public class LongColumnType extends AbstractColumnType {
 
     private static final int BYTE_SIZE = 8;
 
-    public static final LongColumnType INSTANCE =
-            new LongColumnType(BYTE_SIZE, "LONG", "Long");
+    private static LongColumnType INSTANCE;
 
     private LongColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
     }
 
+    public static LongColumnType instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LongColumnType(BYTE_SIZE, "LONG", "Long");
+        }
+        return INSTANCE;
+    }
     @Override
     public LongColumn create(String name) {
         return LongColumn.create(name);
@@ -28,7 +33,7 @@ public class LongColumnType extends AbstractColumnType {
     }
 
     @Override
-    public LongParser customParser(CsvReadOptions options) {
+    public LongParser customParser(ReadOptions options) {
         return new LongParser(this, options);
     }
 

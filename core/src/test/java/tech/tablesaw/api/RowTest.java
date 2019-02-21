@@ -1,7 +1,9 @@
 package tech.tablesaw.api;
 
 import org.junit.Test;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 
@@ -46,7 +48,9 @@ public class RowTest {
 
     @Test
     public void testGetShort() throws IOException {
-        Table table = Table.read().csv("../data/bush.csv");
+        Table table = Table.read().csv(
+                CsvReadOptions.builder(new File("../data/bush.csv"))
+                    .minimizeColumnSizes(true));
         Row row = new Row(table);
         while (row.hasNext()) {
             row.next();

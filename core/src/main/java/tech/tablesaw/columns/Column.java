@@ -17,6 +17,7 @@ package tech.tablesaw.columns;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.table.RollingColumn;
@@ -44,7 +45,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
     Table summary();
 
-    Object[] asObjectArray();
+    T[] asObjectArray();
 
     /**
      * Returns the count of missing values in this column.
@@ -136,7 +137,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
 
     default String title() {
-        return "Column: " + name() + '\n';
+        return "Column: " + name() + System.lineSeparator();
     }
 
     Selection isMissing();
@@ -174,7 +175,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         builder.append(title());
         for (int i = 0; i < size(); i++) {
             builder.append(getString(i));
-            builder.append('\n');
+            builder.append(System.lineSeparator());
         }
         return builder.toString();
     }
@@ -492,7 +493,7 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
 
     Column<T> appendCell(String stringValue);
 
-    Column<T> appendCell(String stringValue, AbstractParser<?> parser);
+    Column<T> appendCell(String stringValue, AbstractColumnParser<?> parser);
 
     Column<T> set(int row, T value);
 
@@ -574,4 +575,6 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
         int tableSize = (int) Math.round(size() * proportion);
         return where(selectNRowsAtRandom(tableSize, size()));
     }
+
+    StringColumn asStringColumn();
 }

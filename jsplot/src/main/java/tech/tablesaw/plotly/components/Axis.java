@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.plotly.Utils;
+import tech.tablesaw.plotly.traces.ScatterTrace;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -11,7 +12,6 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static tech.tablesaw.plotly.components.Axis.AutoRange.*;
 import static tech.tablesaw.plotly.components.Axis.Spikes.SpikeSnap.DATA;
 
 public class Axis extends Component {
@@ -158,6 +158,27 @@ public class Axis extends Component {
         }
     }
 
+    /**
+     * Determines whether an x (y) axis is positioned at the "bottom" ("left") or "top" ("right") of the plotting area.
+     */
+    public enum Side {
+        left("left"), // DEFAULT
+        right("right"),
+        top("top"),
+        bottom("bottom");
+
+        private final String value;
+
+        Side(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
     private static final String DEFAULT_COLOR = "#444";
     private static final String DEFAULT_ZERO_LINE_COLOR = "#444";
     private static final String DEFAULT_LINE_COLOR = "#444";
@@ -205,6 +226,9 @@ public class Axis extends Component {
     private final boolean zeroLine;
     private final boolean showGrid;
 
+    private final Side side;
+    private final ScatterTrace.YAxis overlaying;
+
     private final TickSettings tickSettings;
 
     public static AxisBuilder builder() {
@@ -223,7 +247,8 @@ public class Axis extends Component {
         rangeMode = builder.rangeMode;
         fixedRange = builder.fixedRange;
         tickSettings = builder.tickSettings;
-
+        side = builder.side;
+        overlaying = builder.overlaying;
         spikes = builder.spikes;
 
         showLine = builder.showLine;
@@ -266,6 +291,12 @@ public class Axis extends Component {
         if (font != null) {
             context.put("font", font);
         }
+        if (side != null) {
+            context.put("side", side);
+        }
+        if (overlaying != null) {
+            context.put("overlaying", overlaying);
+        }
         if (!autoRange.equals(DEFAULT_AUTO_RANGE)) context.put("autoRange", autoRange);
         context.put("rangeMode", rangeMode);
         if (range != null) {
@@ -299,37 +330,40 @@ public class Axis extends Component {
 
     public static class AxisBuilder {
 
-        Constrain constrain = DEFAULT_CONSTRAIN_RANGE;
-        ConstrainToward constrainToward;
-        double scaleRatio = DEFAULT_SCALE_RATIO;
+        private Constrain constrain = DEFAULT_CONSTRAIN_RANGE;
+        private ConstrainToward constrainToward;
+        private double scaleRatio = DEFAULT_SCALE_RATIO;
 
-        Font titleFont;
-        String title = "";
-        boolean visible = DEFAULT_VISIBLE;
-        String color = DEFAULT_COLOR;
-        Font font;
+        private Font titleFont;
+        private String title = "";
+        private boolean visible = DEFAULT_VISIBLE;
+        private String color = DEFAULT_COLOR;
+        private Font font;
+        private Side side;
 
-        Type type = DEFAULT_TYPE;
-        RangeMode rangeMode = RangeMode.NORMAL;
-        AutoRange autoRange = DEFAULT_AUTO_RANGE;
-        Object[] range;
-        boolean fixedRange = true;  // true means the axis cannot be zoomed
+        private Type type = DEFAULT_TYPE;
+        private RangeMode rangeMode = RangeMode.NORMAL;
+        private AutoRange autoRange = DEFAULT_AUTO_RANGE;
+        private Object[] range;
+        private boolean fixedRange = true;  // true means the axis cannot be zoomed
 
-        TickSettings tickSettings;
+        private TickSettings tickSettings;
 
-        Spikes spikes = null;
+        private Spikes spikes = null;
 
-        boolean showLine = DEFAULT_SHOW_LINE;
-        String lineColor = DEFAULT_LINE_COLOR;
-        int lineWidth = DEFAULT_LINE_WIDTH;
+        private boolean showLine = DEFAULT_SHOW_LINE;
+        private String lineColor = DEFAULT_LINE_COLOR;
+        private int lineWidth = DEFAULT_LINE_WIDTH;
 
-        boolean zeroLine = DEFAULT_ZERO_LINE;
-        String zeroLineColor = DEFAULT_ZERO_LINE_COLOR;
-        int zeroLineWidth = DEFAULT_ZERO_LINE_WIDTH;
+        private boolean zeroLine = DEFAULT_ZERO_LINE;
+        private String zeroLineColor = DEFAULT_ZERO_LINE_COLOR;
+        private int zeroLineWidth = DEFAULT_ZERO_LINE_WIDTH;
 
-        boolean showGrid = DEFAULT_SHOW_GRID;
-        String gridColor = DEFAULT_GRID_COLOR;
-        int gridWidth = DEFAULT_GRID_WIDTH;
+        private boolean showGrid = DEFAULT_SHOW_GRID;
+        private String gridColor = DEFAULT_GRID_COLOR;
+        private int gridWidth = DEFAULT_GRID_WIDTH;
+
+        private ScatterTrace.YAxis overlaying;
 
         private AxisBuilder() {}
 
@@ -350,6 +384,21 @@ public class Axis extends Component {
 
         public AxisBuilder visible(boolean visible) {
             this.visible = visible;
+            return this;
+        }
+
+        public AxisBuilder side(Side side) {
+            this.side = side;
+            return this;
+        }
+
+        /**
+         * Instructs plotly to overly the trace with this axis on top of a trace with another axis
+         * @param axisToOverlay The axis we want to overlay
+         * @return  this AxisBuilder
+         */
+        public AxisBuilder overlaying(ScatterTrace.YAxis axisToOverlay) {
+            this.overlaying = axisToOverlay;
             return this;
         }
 
@@ -394,8 +443,8 @@ public class Axis extends Component {
          */
         public AxisBuilder autoRange(AutoRange autoRange) {
             this.autoRange = autoRange;
-            if (range != null && autoRange != FALSE) {
-                throw new RuntimeException("Can't set autoRange to anything but FALSE after specifying a range.");
+            if (range != null && autoRange != AutoRange.FALSE) {
+                throw new IllegalArgumentException("Can't set autoRange to anything but FALSE after specifying a range.");
             }
             return this;
         }
@@ -584,11 +633,11 @@ public class Axis extends Component {
         }
 
         public static class SpikesBuilder {
-            String color = null;
-            int thickness = 3;
-            String dash = "dash";
-            SpikeMode mode = SpikeMode.TO_AXIS;
-            SpikeSnap snap = DATA;
+            private String color = null;
+            private int thickness = 3;
+            private String dash = "dash";
+            private SpikeMode mode = SpikeMode.TO_AXIS;
+            private SpikeSnap snap = DATA;
 
             private SpikesBuilder() {}
 

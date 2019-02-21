@@ -22,7 +22,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
 
-import static tech.tablesaw.io.ParsingUtils.*;
+import static tech.tablesaw.io.ParsingUtils.splitCamelCase;
+import static tech.tablesaw.io.ParsingUtils.splitOnUnderscore;
 
 /**
  * Static utility that writes Tables in HTML format for display
@@ -39,7 +40,7 @@ public final class HtmlTableWriter {
         StringBuilder builder = new StringBuilder();
         builder.append(header(table.columnNames()));
         builder.append("<tbody>")
-                .append('\n');
+                .append(System.lineSeparator());
         for (int row = 0; row < table.rowCount(); row++) {
             builder.append(row(row, table));
         }
@@ -69,7 +70,7 @@ public final class HtmlTableWriter {
         }
         builder
                 .append("</tr>")
-                .append('\n');
+                .append(System.lineSeparator());
         return builder.toString();
     }
 
@@ -77,7 +78,7 @@ public final class HtmlTableWriter {
     private static String header(List<String> columnNames) {
         StringBuilder builder = new StringBuilder()
                 .append("<thead>")
-                .append('\n')
+                .append(System.lineSeparator())
                 .append("<tr>");
         for (String name : columnNames) {
             builder
@@ -87,9 +88,9 @@ public final class HtmlTableWriter {
         }
         builder
                 .append("</tr>")
-                .append('\n')
+                .append(System.lineSeparator())
                 .append("</thead>")
-                .append('\n');
+                .append(System.lineSeparator());
 
         return builder.toString();
     }

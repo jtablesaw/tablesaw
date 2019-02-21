@@ -28,21 +28,21 @@ public class UnicodeBomHandlingTest {
 
         Table t = new CsvReader().read(CsvReadOptions.builder(
                 new InputStreamReader(new ByteArrayInputStream(CONTENT)), "R").header(false).build());
-        assertEquals((short) 1, t.get(0, 0));
+        assertEquals(1, t.get(0, 0));
         t = new CsvReader().read(CsvReadOptions.builder(
                 new InputStreamReader(new ByteArrayInputStream(UTF8_BOM_CONTENT)), "R").header(false).build());
-        assertEquals((short) 1, t.get(0, 0));
+        assertEquals(1, t.get(0, 0));
     }
 
-    static final class BOM {
+    protected static final class BOM {
         /**
          * UTF-8 BOM (EF BB BF).
          */
-        static final BOM UTF_8 = new BOM(new byte[]{(byte) 0xEF,
+        protected static final BOM UTF_8 = new BOM(new byte[]{(byte) 0xEF,
                 (byte) 0xBB,
                 (byte) 0xBF},
                 "UTF-8");
-        final byte bytes[];
+        private final byte bytes[];
         private final String description;
 
         private BOM(final byte bom[], final String description) {
@@ -65,7 +65,7 @@ public class UnicodeBomHandlingTest {
         /**
          * Returns the bytes corresponding to this <code>BOM</code> value.
          */
-        final byte[] getBytes() {
+        private final byte[] getBytes() {
             final int length = bytes.length;
             final byte[] result = new byte[length];
 

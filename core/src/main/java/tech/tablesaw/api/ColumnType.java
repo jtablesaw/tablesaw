@@ -1,9 +1,9 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.SkipColumnType;
-import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.dates.DateColumnType;
 import tech.tablesaw.columns.datetimes.DateTimeColumnType;
@@ -15,7 +15,7 @@ import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.TextColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,18 +25,18 @@ public interface ColumnType {
     Map<String, ColumnType> values = new HashMap<>();
 
     // standard column types
-    ShortColumnType SHORT = ShortColumnType.INSTANCE;
-    IntColumnType INTEGER = IntColumnType.INSTANCE;
-    LongColumnType LONG = LongColumnType.INSTANCE;
-    FloatColumnType FLOAT = FloatColumnType.INSTANCE;
-    BooleanColumnType BOOLEAN = BooleanColumnType.INSTANCE;
-    StringColumnType STRING = StringColumnType.INSTANCE;
-    DoubleColumnType DOUBLE = DoubleColumnType.INSTANCE;
-    DateColumnType LOCAL_DATE = DateColumnType.INSTANCE;
-    DateTimeColumnType LOCAL_DATE_TIME = DateTimeColumnType.INSTANCE;
-    TimeColumnType LOCAL_TIME = TimeColumnType.INSTANCE;
-    TextColumnType TEXT = TextColumnType.INSTANCE;
-    SkipColumnType SKIP = SkipColumnType.INSTANCE;
+    ShortColumnType SHORT = ShortColumnType.instance();
+    IntColumnType INTEGER = IntColumnType.instance();
+    LongColumnType LONG = LongColumnType.instance();
+    FloatColumnType FLOAT = FloatColumnType.instance();
+    BooleanColumnType BOOLEAN = BooleanColumnType.instance();
+    StringColumnType STRING = StringColumnType.instance();
+    DoubleColumnType DOUBLE = DoubleColumnType.instance();
+    DateColumnType LOCAL_DATE = DateColumnType.instance();
+    DateTimeColumnType LOCAL_DATE_TIME = DateTimeColumnType.instance();
+    TimeColumnType LOCAL_TIME = TimeColumnType.instance();
+    TextColumnType TEXT = TextColumnType.instance();
+    SkipColumnType SKIP = SkipColumnType.instance();
 
     static void register(ColumnType type) {
         values.put(type.name(), type);
@@ -64,7 +64,7 @@ public interface ColumnType {
 
     String getPrinterFriendlyName();
 
-    AbstractParser<?> customParser(CsvReadOptions options);
+    AbstractColumnParser<?> customParser(ReadOptions options);
 
     default boolean compare(int rowNumber, Column<?> temp, Column<?> original) {
         return original.get(rowNumber).equals(temp.get(temp.size() - 1));

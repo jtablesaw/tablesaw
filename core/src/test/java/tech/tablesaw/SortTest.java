@@ -43,7 +43,7 @@ public class SortTest {
         // sort ascending by date and then an integer
         Table sortedTable = unsortedTable.sortAscendingOn("IQ", "DOB");
         Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-        compareTables(sortedTable, expectedResults);
+        assertTablesEquals(expectedResults, sortedTable);
     }
 
     /**
@@ -54,7 +54,7 @@ public class SortTest {
         unsortedTable = TestData.SIMPLE_UNSORTED_DATA.getTable();
         Table sortedTable = unsortedTable.sortDescendingOn("IQ", "DOB");
         Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_DESCENDING.getTable();
-        compareTables(sortedTable, expectedResults);
+        assertTablesEquals(expectedResults, sortedTable);
     }
 
     /**
@@ -65,55 +65,69 @@ public class SortTest {
     public void sortDescendingNegative() {
         Table sortedTable = unsortedTable.sortDescendingOn("IQ", "DOB");
         Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-        compareTables(sortedTable, expectedResults);
+        assertTablesEquals(expectedResults, sortedTable);
     }
 
     @Test
     public void testMultipleSortOrdersVerifyMinus() {
         Table sortedTable = unsortedTable.sortOn("-" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
         Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_DESCENDING.getTable();
-        compareTables(expectedResults, sortedTable);
+        assertTablesEquals(expectedResults, sortedTable);
     }
 
     @Test
     public void testAscendingAndDescending() {
         Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
         Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_ASCENDING_AND_THEN_DATE_DESCENDING.getTable();
-        compareTables(expectedResults, sortedTable);
+        assertTablesEquals(expectedResults, sortedTable);
     }
 
     @Test
     public void testMultipleSortOrdersVerifyPlus() {
         Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "+" + columnNames[DOB_INDEX]);
         Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-        compareTables(expectedResults, sortedTable);
+        assertTablesEquals(expectedResults, sortedTable);
 
         sortedTable = unsortedTable.sortOn(columnNames[IQ_INDEX], columnNames[DOB_INDEX]);
         expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-        compareTables(expectedResults, sortedTable);
+        assertTablesEquals(expectedResults, sortedTable);
     }
 
     @Test
     public void testAscendingWithPlusSign() {
         Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX]);
         Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
-        compareTables(expectedResults, sortedTable);
+        assertTablesEquals(expectedResults, sortedTable);
+    }
+
+    @Test
+    public void testSortOnIndices() {
+        Table sortedTable = unsortedTable.sortOn(IQ_INDEX, DOB_INDEX);
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
+        assertTablesEquals(expectedResults, sortedTable);
+    }
+
+    @Test
+    public void testSortOnIndicesAscendingAndDescending() {
+        Table sortedTable = unsortedTable.sortOn(IQ_INDEX, -DOB_INDEX);
+        Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_ASCENDING_AND_THEN_DATE_DESCENDING.getTable();
+        assertTablesEquals(expectedResults, sortedTable);
     }
 
     @Ignore
     public void testAscendingWithPlusSignNegative() {
         Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
         Table expectedResults = TestData.SIMPLE_DATA_WITH_CANONICAL_DATE_FORMAT.getTable();
-        compareTables(expectedResults, sortedTable);
+        assertTablesEquals(expectedResults, sortedTable);
     }
 
     /**
      * Make sure each row in each table match
      *
-     * @param sortedTable the table that was sorted with Airframe
      * @param compareWith the table that was sorted using some external means e.g. excel. i.e known good data
+     * @param sortedTable the table that was sorted with Tablesaw
      */
-    private void compareTables(Table sortedTable, Table compareWith) {
+    private void assertTablesEquals(Table compareWith, Table sortedTable) {
         assertEquals("both tables have the same number of rows", sortedTable.rowCount(), compareWith.rowCount());
         int maxRows = sortedTable.rowCount();
         int numberOfColumns = sortedTable.columnCount();

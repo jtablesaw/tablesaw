@@ -52,8 +52,8 @@ public class ChangeLine extends Component {
 
     public static class LineBuilder {
 
-        String color = DEFAULT_COLOR;
-        int width = DEFAULT_WIDTH;
+        private String color = DEFAULT_COLOR;
+        private int width = DEFAULT_WIDTH;
 
         /**
          * Sets the color of line bounding the box(es).

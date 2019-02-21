@@ -14,15 +14,22 @@
 
 package tech.tablesaw.io.jdbc;
 
-import org.junit.Assert;
-import org.junit.Test;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.util.TestDb;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.FloatColumnType;
+import tech.tablesaw.columns.numbers.IntColumnType;
+import tech.tablesaw.columns.numbers.LongColumnType;
+import tech.tablesaw.columns.numbers.ShortColumnType;
+import tech.tablesaw.columns.strings.StringColumnType;
+import tech.tablesaw.util.TestDb;
 
 /**
  * Tests for creating Tables from JDBC result sets using SqlResutSetReader
@@ -51,8 +58,12 @@ public class SqlResultSetReaderTest {
         // Build the UnpaidInvoice table.
         TestDb.buildUnpaidOrderTable(conn);
 
+        // Build the OracleNumbers table.
+        TestDb.buildNumbersTable(conn);
+        
         try (Statement stmt = conn.createStatement()) {
             String sql;
+
             sql = "SELECT * FROM coffee";
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 Table coffee = SqlResultSetReader.read(rs, "Coffee");
@@ -63,7 +74,7 @@ public class SqlResultSetReaderTest {
             sql = "SELECT * FROM Customer";
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 Table customer = SqlResultSetReader.read(rs, "Customer");
-                Assert.assertEquals(6, customer.columnCount());
+                Assert.assertEquals(7, customer.columnCount());
                 Assert.assertEquals(3, customer.rowCount());
             }
 
@@ -73,6 +84,26 @@ public class SqlResultSetReaderTest {
                 Assert.assertEquals(5, unpaidInvoice.columnCount());
                 Assert.assertEquals(0, unpaidInvoice.rowCount());
             }
+
+            sql = "SELECT * FROM Numbers";
+            try (ResultSet rs = stmt.executeQuery(sql)) {
+                Table numbers = SqlResultSetReader.read(rs, "Numbers");
+                Assert.assertEquals(13, numbers.columnCount());
+                Assert.assertEquals(3, numbers.rowCount());
+                Assert.assertTrue(numbers.column("Description").type() instanceof StringColumnType);
+                Assert.assertTrue(numbers.column("NumInt").type() instanceof IntColumnType);
+                Assert.assertTrue(numbers.column("NumInt6_0").type() instanceof IntColumnType);
+                Assert.assertTrue(numbers.column("NumLong").type() instanceof LongColumnType);
+                Assert.assertTrue(numbers.column("NumShort").type() instanceof ShortColumnType);
+                Assert.assertTrue(numbers.column("NumNumber").type() instanceof DoubleColumnType);
+                Assert.assertTrue(numbers.column("NumBigInt").type() instanceof DoubleColumnType);
+                Assert.assertTrue(numbers.column("NumBigDec").type() instanceof DoubleColumnType);
+                Assert.assertTrue(numbers.column("NumFloat7_1").type() instanceof FloatColumnType);
+                Assert.assertTrue(numbers.column("NumFloat7_7").type() instanceof FloatColumnType);
+                Assert.assertTrue(numbers.column("NumDouble7_8").type() instanceof DoubleColumnType);
+                Assert.assertTrue(numbers.column("NumDouble7_16").type() instanceof DoubleColumnType);
+            }
+
         }
     }
 }

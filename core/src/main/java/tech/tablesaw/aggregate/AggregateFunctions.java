@@ -378,11 +378,11 @@ public class AggregateFunctions {
         }
     };
 
+    public static final NumericAggregateFunction standardDeviation = stdDev;
+
     public static Double percentile(NumericColumn<?> data, Double percentile) {
         return StatUtils.percentile(removeMissing(data), percentile);
     }
-
-    public static final NumericAggregateFunction standardDeviation = stdDev;
 
     private static double[] removeMissing(NumericColumn<?> column) {
         NumericColumn<?> numericColumn = (NumericColumn<?>) column.removeMissing();

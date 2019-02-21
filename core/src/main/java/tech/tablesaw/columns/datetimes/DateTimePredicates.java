@@ -14,16 +14,15 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.filtering.predicates.LongBiPredicate;
 
 import java.util.function.LongPredicate;
 
 public class DateTimePredicates {
 
-    public static final LongPredicate isMissing = i -> i == DateTimeColumn.MISSING_VALUE;
+    public static final LongPredicate isMissing = i -> i == DateTimeColumnType.missingValueIndicator();
 
-    public static final LongPredicate isNotMissing = i -> i != DateTimeColumn.MISSING_VALUE;
+    public static final LongPredicate isNotMissing = i -> i != DateTimeColumnType.missingValueIndicator();
 
     public static final LongBiPredicate isGreaterThan = (valueToTest, valueToCompareAgainst) -> valueToTest > valueToCompareAgainst;
 

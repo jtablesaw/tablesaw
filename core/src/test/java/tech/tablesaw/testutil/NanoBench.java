@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class NanoBench {
 
     private static final Logger logger = Logger.getLogger(NanoBench.class.getSimpleName());
-    static int[] arrayStress = new int[10000];
+    private static int[] arrayStress = new int[10000];
     private int numberOfMeasurement = 50;
     private int numberOfWarmUp = 20;
     private List<MeasureListener> listeners;
@@ -328,7 +328,7 @@ public class NanoBench {
                 finalTotal = total / 1000000000.0;
                 finalTps = state.getMeasurements() / (total / BY_SECONDS);
 
-                StringBuilder sb = new StringBuilder("\n");
+                StringBuilder sb = new StringBuilder(System.lineSeparator());
                 sb.append(state.getLabel()).append("\t").append("avg: ").append(decimalFormat.format(finalAvg))
                         .append(" ms\t")
                         .append("total: ").append(integerFormat.format(finalTotal)).append(" s\t").append("   tps: ")
@@ -380,9 +380,9 @@ public class NanoBench {
             bytesUsed += state.getBytesMeasure();
 
             if (isEnd(state)) {
-                StringBuilder sb = new StringBuilder("\n");
+                StringBuilder sb = new StringBuilder(System.lineSeparator());
                 sb.append("bytes-usage: ").append(state.getLabel()).append("\t").append(format((bytesUsed / count)))
-                        .append(" Bytes\t").append(format((bytesUsed / count) / (1024.0 * 1024.0))).append(" Mb\n");
+                        .append(" Bytes\t").append(format((bytesUsed / count) / (1024.0 * 1024.0))).append(" Mb" + System.lineSeparator());
                 count = 0;
                 bytesUsed = 0;
 
@@ -433,9 +433,10 @@ public class NanoBench {
             if (isEnd(state)) {
                 finalBytes = memoryUsed / count;
 
-                StringBuilder sb = new StringBuilder("\n");
+                StringBuilder sb = new StringBuilder(System.lineSeparator());
                 sb.append("memory-usage: ").append(state.getLabel()).append("\t").append(format(finalBytes / (1024.0 * 1024.0)))
-                        .append(" Mb\n");
+                        .append(" Mb")
+                        .append(System.lineSeparator());
                 count = 0;
                 memoryUsed = 0;
 

@@ -7,6 +7,8 @@ import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Font;
 import tech.tablesaw.plotly.components.HoverLabel;
 import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.components.Marker;
+import tech.tablesaw.plotly.components.Symbol;
 import tech.tablesaw.plotly.components.TickSettings;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 
@@ -37,13 +39,17 @@ public class ScatterTest {
     public void showScatter() {
 
         ScatterTrace trace = ScatterTrace.builder(x, y)
+                .marker(Marker.builder()
+                        .size(12.0)
+                        .symbol(Symbol.DIAMOND_TALL)
+                        .color("#c68486")
+                        .build())
                 .mode(ScatterTrace.Mode.MARKERS)
                 .text(labels)
                 .build();
 
         Figure figure = new Figure(trace);
         File outputFile = Paths.get("testoutput/output.html").toFile();
-
         Plot.show(figure, "target", outputFile);
     }
 

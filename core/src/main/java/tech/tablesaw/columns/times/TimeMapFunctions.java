@@ -32,7 +32,6 @@ import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.SECONDS;
-import static tech.tablesaw.api.TimeColumn.MISSING_VALUE;
 
 public interface TimeMapFunctions extends Column<LocalTime> {
 
@@ -88,7 +87,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
             if (TimeColumn.valueIsMissing(c1)) {
-                newColumn.appendInternal(MISSING_VALUE);
+                newColumn.appendInternal(TimeColumnType.missingValueIndicator());
             } else {
                 switch (unit) {
                     case HOURS:
@@ -123,7 +122,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
             if (TimeColumn.valueIsMissing(c1)) {
-                newColumn.appendInternal(MISSING_VALUE);
+                newColumn.appendInternal(TimeColumnType.missingValueIndicator());
             } else {
                 switch (unit) {
                     case HOURS:
@@ -157,7 +156,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
             if (TimeColumn.valueIsMissing(c1)) {
-                newColumn.appendInternal(MISSING_VALUE);
+                newColumn.appendInternal(TimeColumnType.missingValueIndicator());
             } else {
                 switch (unit) {
                     case HOURS:
@@ -238,7 +237,7 @@ public interface TimeMapFunctions extends Column<LocalTime> {
         for (int r = 0; r < size(); r++) {
             int c1 = this.getIntInternal(r);
             if (TimeColumn.valueIsMissing(c1)) {
-                newColumn.appendInternal(MISSING_VALUE);
+                newColumn.appendInternal(TimeColumnType.missingValueIndicator());
             } else {
                 newColumn.appendInternal(PackedLocalTime.truncatedTo(unit, c1));
             }

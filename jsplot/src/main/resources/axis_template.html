@@ -85,6 +85,12 @@
     type: '{{type}}',
 {% endif %}
 {% if visible is not null %}
-    visible: {{visible}}
+    visible: {{visible}},
+{% endif %}
+{% if side is not null %}
+    side: '{{side}}',
+{% endif %}
+{% if overlaying is not null %}
+    overlaying: '{{overlaying}}'
 {% endif %}
     }

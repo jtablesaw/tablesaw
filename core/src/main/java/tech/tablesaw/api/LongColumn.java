@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.LongColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -28,8 +28,6 @@ import java.util.function.Predicate;
 
 public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<Long> {
 
-    private static final LongColumnType COLUMN_TYPE = ColumnType.LONG;
-
     /**
      * Compares two ints, such that a sort based on this comparator would sort in descending order
      */
@@ -38,7 +36,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     private final LongArrayList data;
 
     private LongColumn(final String name, LongArrayList data) {
-        super(COLUMN_TYPE, name);
+        super(LongColumnType.instance(), name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
     }
@@ -82,6 +80,15 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
         return indexColumn;
     }
 
+    @Override
+    public String getString(final int row) {
+        final long value = getLong(row);
+        if (LongColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(printFormatter.format(value));
+    }
+
     public static boolean valueIsMissing(long value) {
         return value == LongColumnType.missingValueIndicator();
     }
@@ -118,7 +125,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
                 values.add(getLong(i));
             }
         }
-        final LongColumn column = LongColumn.create(name() + " Unique values", values.size());
+        final LongColumn column = LongColumn.create(name() + " Unique values");
         for (long value : values) {
             column.append(value);
         }
@@ -234,7 +241,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public Long[] asObjectArray() {
         final Long[] output = new Long[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getLong(i);
@@ -287,7 +294,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putLong(getLong(rowNumber)).array();
+        return ByteBuffer.allocate(LongColumnType.instance().byteSize()).putLong(getLong(rowNumber)).array();
     }
 
     @Override
@@ -381,7 +388,7 @@ public class LongColumn extends NumberColumn<Long> implements CategoricalColumn<
     }
 
     @Override
-    public LongColumn appendCell(final String value, AbstractParser<?> parser) {
+    public LongColumn appendCell(final String value, AbstractColumnParser<?> parser) {
         try {
             return append(parser.parseLong(value));
         } catch (final NumberFormatException e) {

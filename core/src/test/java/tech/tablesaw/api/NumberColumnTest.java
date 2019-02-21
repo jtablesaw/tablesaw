@@ -47,6 +47,9 @@ import static tech.tablesaw.aggregate.AggregateFunctions.*;
 public class NumberColumnTest {
 
     private static final double MISSING = DoubleColumnType.missingValueIndicator();
+    private static final DoublePredicate isPositiveOrZeroD = d -> d >= 0, isNegativeD = d -> d < 0;
+    private static final DoubleFunction<String> toStringD = d -> String.valueOf(d);
+    private static final DoubleBinaryOperator sumD = (d1, d2) -> d1 + d2;
 
     @Ignore
     @Test
@@ -287,6 +290,15 @@ public class NumberColumnTest {
         numberColumn.append(48392.2932);
         numberColumn.setPrintFormatter(NumberColumnFormatter.intsWithGrouping());
         assertEquals("48,392", numberColumn.getString(0));
+    }
+
+    @Test
+    public void testAsString() {
+        DoubleColumn numberColumn =  DoubleColumn.create("test");
+        numberColumn.append(48392.2932);
+        StringColumn sc = numberColumn.asStringColumn();
+        assertEquals("test strings", sc.name());
+        assertEquals("48392.2932", sc.get(0));
     }
 
     @Test
@@ -610,8 +622,6 @@ public class NumberColumnTest {
     
     // Functional methods
 
-    private DoublePredicate isPositiveOrZeroD = d -> d >= 0, isNegativeD = d -> d < 0;
-
     @Test
     public void testCountAtLeast() {
         assertEquals(2, DoubleColumn.create("t1", new double[] {0, 1, 2}).count(isPositiveOrZeroD, 2));
@@ -657,8 +667,6 @@ public class NumberColumnTest {
         Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZeroD);
         check(filtered, 0.0, 1.0);
     }
-    
-    private DoubleFunction<String> toStringD = d -> String.valueOf(d);
 
     @Test
     public void testMapInto() {
@@ -676,8 +684,6 @@ public class NumberColumnTest {
         assertEquals(Double.valueOf(-1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).min(Double::compare).get());
         assertFalse(DoubleColumn.create("t1").min((d1, d2) -> (int) (d1 - d2)).isPresent());
     }
-
-    private DoubleBinaryOperator sumD = (d1, d2) -> d1 + d2;
 
     @Test
     public void testReduceTDoubleBinaryOperator() {

@@ -50,6 +50,9 @@ public class TestDb {
             // Build the UnpaidInvoice table.
             buildUnpaidOrderTable(conn);
 
+            // Build the OracleNumbers table.
+            buildNumbersTable(conn);
+            
             // Close the connection.
             conn.close();
         } catch (Exception e) {
@@ -87,6 +90,13 @@ public class TestDb {
             try {
                 // Drop the Coffee table.
                 stmt.execute("DROP TABLE Coffee");
+            } catch (SQLException ex) {
+                // No need to report an error.
+                // The table simply did not exist.
+            }
+            try {
+                // Drop the OracleNumbers table.
+                stmt.execute("DROP TABLE OracleNumbers");
             } catch (SQLException ex) {
                 // No need to report an error.
                 // The table simply did not exist.
@@ -257,6 +267,7 @@ public class TestDb {
             stmt.execute("CREATE TABLE Customer" +
                     "( CustomerNumber CHAR(10) NOT NULL PRIMARY KEY, " +
                     "  Name CHAR(25)," +
+                    "  RegistrationDate DATE," +
                     "  Address CHAR(25)," +
                     "  City CHAR(12)," +
                     "  State CHAR(2)," +
@@ -264,16 +275,16 @@ public class TestDb {
 
             // Add some rows to the new table.
             stmt.executeUpdate("INSERT INTO Customer VALUES" +
-                    "('101', 'Downtown Cafe', '17 N. Main Street'," +
+                    "('101', 'Downtown Cafe', '2004-01-29', '17 N. Main Street'," +
                     " 'Asheville', 'NC', '55515')");
 
             stmt.executeUpdate("INSERT INTO Customer VALUES" +
-                    "('102', 'Main Street Grocery'," +
+                    "('102', 'Main Street Grocery', '2005-02-10'," +
                     " '110 E. Main Street'," +
                     " 'Canton', 'NC', '55555')");
 
             stmt.executeUpdate("INSERT INTO Customer VALUES" +
-                    "('103', 'The Coffee Place', '101 Center Plaza'," +
+                    "('103', 'The Coffee Place', '2006-08-31', '101 Center Plaza'," +
                     " 'Waynesville', 'NC', '55516')");
         } catch (SQLException ex) {
             System.out.println("ERROR: " + ex.getMessage());
@@ -301,4 +312,83 @@ public class TestDb {
             System.out.println("ERROR: " + ex.getMessage());
         }
     }
+
+    /**
+     * The buildNumbersTable method creates the
+     * Numbers table and adds some rows to it.
+     */
+    public static void buildNumbersTable(Connection conn) {
+        try {
+            // Get a Statement object.
+            Statement stmt = conn.createStatement();
+            // Create the table.
+            stmt.execute("CREATE TABLE Numbers (" +
+                    "Description CHAR(25), " +
+                    "NumInt NUMBER(9), " +
+                    "NumInt6_0 NUMBER(6,0), " +
+                    "NumLong NUMBER(10), " +
+                    "NumShort NUMBER(4), " +
+                    "NumNumber NUMBER(38), " +
+                    "NumBigInt NUMBER(38), " +
+                    "NumBigDec NUMBER(38), " +
+                    "NumFloat NUMBER(19,4), " +
+                    "NumFloat7_1 NUMBER(7,1), " +
+                    "NumFloat7_7 NUMBER(12,7), " +
+                    "NumDouble7_8 NUMBER(13,8), " +
+                    "NumDouble7_16 NUMBER(21,16)" +
+                    ")");
+
+            // Insert row #1.
+            stmt.execute("INSERT INTO Numbers VALUES ( " +
+                    "'RowOne', " +
+                    "99999, " +
+                    "999999, " +
+                    "2000000000, " +
+                    "5555, " +
+                    "111111111133333333334444444444, " +
+                    "555555555566666666667777777777, " +
+                    "888888888899999999990000000000, " +
+                    "911222333444555.6677, " +
+                    "77777.1, " +
+                    "77777.1234567, " +
+                    "77777.12345678, " +
+                    "77777.1234567890123456)");
+
+            // Insert row #2.
+            stmt.execute("INSERT INTO Numbers VALUES ( " +
+                    "'RowTwo', " +
+                    "89999, " +
+                    "900001, " +
+                    "3000000000, " +
+                    "4555, " +
+                    "911111111133333333334444444444, " +
+                    "455555555566666666667777777777, " +
+                    "788888888899999999990000000000, " +
+                    "911222333444555.6667, " +
+                    "67777.1, " +
+                    "67777.1234567, " +
+                    "67777.12345678, " +
+                    "67777.1234567890123456)");
+
+            // Insert row #3.
+            stmt.execute("INSERT INTO Numbers VALUES ( " +
+                    "'RowThree', " +
+                    "79999, " +
+                    "800001, " +
+                    "2000000000, " +
+                    "3555, " +
+                    "811111111133333333334444444444, " +
+                    "355555555566666666667777777777, " +
+                    "688888888899999999990000000000, " +
+                    "811222333444555.6667, " +
+                    "57777.1, " +
+                    "57777.1234567, " +
+                    "57777.12345678, " +
+                    "57777.1234567890123456)");
+        } catch (SQLException ex) {
+            System.out.println("ERROR: " + ex.getMessage());
+        }
+    }
+
+
 }

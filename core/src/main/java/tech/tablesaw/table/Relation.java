@@ -39,6 +39,7 @@ import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -264,15 +265,15 @@ public abstract class Relation {
 
     public String summary() {
         StringBuilder builder = new StringBuilder();
-        builder.append("\n")
+        builder.append(System.lineSeparator())
                 .append("Table summary for: ")
                 .append(name())
-                .append("\n");
+                .append(System.lineSeparator());
         for (Column<?> column : columns()) {
             builder.append(column.summary().print());
-            builder.append("\n");
+            builder.append(System.lineSeparator());
         }
-        builder.append("\n");
+        builder.append(System.lineSeparator());
         return builder.toString();
     }
 
@@ -295,11 +296,15 @@ public abstract class Relation {
     public NumberColumn<?> numberColumn(int columnIndex) {
         Column<?> c = column(columnIndex);
         if (c.type() == ColumnType.STRING) {
-            StringColumn stringColumn = (StringColumn) c;
-            return stringColumn.asNumberColumn();
+            return ((StringColumn) c).asDoubleColumn();
         } else if (c.type() == ColumnType.BOOLEAN) {
-            BooleanColumn booleanColumn = (BooleanColumn) c;
-            return booleanColumn.asNumberColumn();
+            return ((BooleanColumn) c).asDoubleColumn();
+        } else if (c.type() == ColumnType.LOCAL_DATE) {
+            return ((DateColumn) c).asDoubleColumn();
+        } else if (c.type() == ColumnType.LOCAL_DATE_TIME) {
+            return ((DateTimeColumn) c).asDoubleColumn();
+        } else if (c.type() == ColumnType.LOCAL_TIME) {
+            return ((TimeColumn) c).asDoubleColumn();
         }
         return (NumberColumn<?>) column(columnIndex);
     }
@@ -328,11 +333,7 @@ public abstract class Relation {
      * Returns all the NumericColumns in the relation
      */
     public List<NumericColumn<?>> numericColumns() {
-        List<NumericColumn<?>> cols = new ArrayList<>();
-        for (NumericColumn<?> c : numberColumns()) {
-            cols.add(c);
-        }
-        return cols;
+        return Arrays.asList(numberColumns());
     }
 
     /**

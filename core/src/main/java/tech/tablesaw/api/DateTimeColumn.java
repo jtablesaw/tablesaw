@@ -14,7 +14,25 @@
 
 package tech.tablesaw.api;
 
-import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongArrays;
+import it.unimi.dsi.fastutil.longs.LongComparator;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import tech.tablesaw.columns.AbstractColumn;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
+import tech.tablesaw.columns.datetimes.DateTimeColumnType;
+import tech.tablesaw.columns.datetimes.DateTimeFillers;
+import tech.tablesaw.columns.datetimes.DateTimeFilters;
+import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.sorting.comparators.DescendingLongComparator;
 
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
@@ -33,35 +51,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import com.google.common.base.Preconditions;
-
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongArrays;
-import it.unimi.dsi.fastutil.longs.LongComparator;
-import it.unimi.dsi.fastutil.longs.LongIterator;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.datetimes.DateTimeColumnFormatter;
-import tech.tablesaw.columns.datetimes.DateTimeColumnType;
-import tech.tablesaw.columns.datetimes.DateTimeFillers;
-import tech.tablesaw.columns.datetimes.DateTimeFilters;
-import tech.tablesaw.columns.datetimes.DateTimeMapFunctions;
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.sorting.comparators.DescendingLongComparator;
-
 /**
  * A column in a table that contains long-integer encoded (packed) local date-time values
  */
 public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     implements DateTimeMapFunctions, DateTimeFilters, DateTimeFillers<DateTimeColumn>,
         CategoricalColumn<LocalDateTime> {
-
-    public static final long MISSING_VALUE = DateTimeColumnType.missingValueIndicator();
 
     private final LongComparator reverseLongComparator = DescendingLongComparator.instance();
 
@@ -76,12 +71,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     private DateTimeColumnFormatter printFormatter = new DateTimeColumnFormatter();
 
     private DateTimeColumn(String name, LongArrayList data) {
-        super(LOCAL_DATE_TIME, name);
+        super(DateTimeColumnType.instance(), name);
         this.data = data;
     }
 
     public static DateTimeColumn create(String name) {
-        return  new DateTimeColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
+        return new DateTimeColumn(name, new LongArrayList(DEFAULT_ARRAY_SIZE));
     }
 
     public static DateTimeColumn create(String name, int initialSize) {
@@ -109,7 +104,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     public static boolean valueIsMissing(long value) {
-        return MISSING_VALUE == value;
+        return DateTimeColumnType.missingValueIndicator() == value;
     }
 
     @Override
@@ -177,7 +172,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = MISSING_VALUE;
+            dest[i] = DateTimeColumnType.missingValueIndicator();
         }
 
         System.arraycopy(data.toLongArray(), srcPos, dest, destPos, length);
@@ -194,7 +189,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public DateTimeColumn appendCell(String stringValue, AbstractParser<?> parser) {
+    public DateTimeColumn appendCell(String stringValue, AbstractColumnParser<?> parser) {
         return appendObj(parser.parse(stringValue));
     }
 
@@ -203,7 +198,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
             final long dt = PackedLocalDateTime.pack(dateTime);
             appendInternal(dt);
         } else {
-            appendInternal(MISSING_VALUE);
+            appendInternal(DateTimeColumnType.missingValueIndicator());
         }
         return this;
     }
@@ -335,7 +330,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
         return data.getLong(index);
     }
 
-    long getPackedDateTime(int index) {
+    protected long getPackedDateTime(int index) {
         return getLongInternal(index);
     }
 
@@ -369,7 +364,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (getPackedDateTime(i) == MISSING_VALUE) {
+            if (getPackedDateTime(i) == DateTimeColumnType.missingValueIndicator()) {
                 count++;
             }
         }
@@ -464,12 +459,12 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
             return null;
         }
         for (long aData : data) {
-            if (MISSING_VALUE != aData) {
+            if (DateTimeColumnType.missingValueIndicator() != aData) {
                 max = (max > aData) ? max : aData;
             }
         }
 
-        if (MISSING_VALUE == max) {
+        if (DateTimeColumnType.missingValueIndicator() == max) {
             return null;
         }
         return PackedLocalDateTime.asLocalDateTime(max);
@@ -477,7 +472,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     @Override
     public DateTimeColumn appendMissing() {
-        appendInternal(MISSING_VALUE);
+        appendInternal(DateTimeColumnType.missingValueIndicator());
         return this;
     }
 
@@ -491,7 +486,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
             return null;
         }
         for (long aData : data) {
-            if (MISSING_VALUE != aData) {
+            if (DateTimeColumnType.missingValueIndicator() != aData) {
                 min = (min < aData) ? min : aData;
             }
         }
@@ -577,10 +572,15 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
 
     public double[] asDoubleArray() {
         double[] doubles = new double[size()];
-        for (int i = 0; i < size(); i++) {
-            doubles[i] = data.getLong(i);
+        long[] millis = asEpochSecondArray();
+        for (int i = 0; i < millis.length; i++) {
+            doubles[i] = millis[i];
         }
         return doubles;
+    }
+
+    public DoubleColumn asDoubleColumn() {
+	return DoubleColumn.create(name(), asEpochSecondArray());
     }
 
     /**
@@ -627,9 +627,9 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     private DateTimeColumn fillWith(int count, Iterable<LocalDateTime> iterable, Consumer<LocalDateTime> acceptor) {
-        Iterator<LocalDateTime> iterator = null;
+        Iterator<LocalDateTime> iterator = iterable.iterator();
         for (int r = 0; r < count; r++) {
-            if (iterator == null || (!iterator.hasNext())) {
+            if (!iterator.hasNext()) {
                 iterator = iterable.iterator();
                 if (!iterator.hasNext()) {
                     break;
@@ -666,7 +666,7 @@ public class DateTimeColumn extends AbstractColumn<LocalDateTime>
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public LocalDateTime[] asObjectArray() {
         final LocalDateTime[] output = new LocalDateTime[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = get(i);

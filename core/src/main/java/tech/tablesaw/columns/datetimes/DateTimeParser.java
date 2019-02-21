@@ -2,9 +2,10 @@ package tech.tablesaw.columns.datetimes;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.io.ReadOptions;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +13,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
-public class DateTimeParser extends AbstractParser<LocalDateTime> {
+public class DateTimeParser extends AbstractColumnParser<LocalDateTime> {
 
     private static final DateTimeFormatter dtTimef0 =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");     // 2014-07-09 13:03:44
@@ -55,7 +56,7 @@ public class DateTimeParser extends AbstractParser<LocalDateTime> {
         super(columnType);
     }
 
-    public DateTimeParser(DateTimeColumnType dateTimeColumnType, CsvReadOptions readOptions) {
+    public DateTimeParser(DateTimeColumnType dateTimeColumnType, ReadOptions readOptions) {
         super(dateTimeColumnType);
         DateTimeFormatter readCsvFormatter = readOptions.dateFormatter();
         if (readCsvFormatter != null) {

@@ -472,4 +472,6 @@ public interface NumericColumn<T> extends Column<T>, NumberMapFunctions, NumberF
     default ShortColumn asShortColumn() {
         return (ShortColumn) this.copy();
     }
+
+    StringColumn asStringColumn();
 }

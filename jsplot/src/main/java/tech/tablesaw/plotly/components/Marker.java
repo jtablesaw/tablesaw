@@ -36,36 +36,36 @@ public class Marker extends Component {
      * Predefined palettes
      */
     public enum Palette {
-    GREYS("Greys"),
-    GREENS("Greens"),
-    YL_GN_BU("YlGnBu"),
-    YL_OR_RD("YlOrRd"),
-    BLUE_RED("Bluered"),
-    RD_BU("RdBu"),
-    REDS("Reds"),
-    BLUES("Blues"),
-    PICNIC("Picnic"),
-    RAINBOW("Rainbow"),
-    PORTLAND("Portland"),
-    JET("Jet"),
-    HOT("Hot"),
-    BLACKBODY("Blackbody"),
-    EARTH("Earth"),
-    ELECTRIC("Electric"),
-    VIRIDIS("Viridis"),
-    CIVIDIS("Cividis");
+        GREYS("Greys"),
+        GREENS("Greens"),
+        YL_GN_BU("YlGnBu"),
+        YL_OR_RD("YlOrRd"),
+        BLUE_RED("Bluered"),
+        RD_BU("RdBu"),
+        REDS("Reds"),
+        BLUES("Blues"),
+        PICNIC("Picnic"),
+        RAINBOW("Rainbow"),
+        PORTLAND("Portland"),
+        JET("Jet"),
+        HOT("Hot"),
+        BLACKBODY("Blackbody"),
+        EARTH("Earth"),
+        ELECTRIC("Electric"),
+        VIRIDIS("Viridis"),
+        CIVIDIS("Cividis");
 
-    private final String value;
+        private final String value;
 
-    Palette(String value) {
-        this.value = value;
+        Palette(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
-
-    @Override
-    public String toString() {
-        return value;
-    }
-}
 
     private static final boolean DEFAULT_C_AUTO = true;
     private static final boolean DEFAULT_AUTO_COLOR_SCALE = true;
@@ -75,6 +75,7 @@ public class Marker extends Component {
     private static final SizeMode DEFAULT_SIZE_MODE = DIAMETER;
 
     private final double[] size;
+    private final Line line;
     private final String[] color;
     private final Palette colorScalePalette;
     private final boolean cAuto;
@@ -86,6 +87,9 @@ public class Marker extends Component {
     private final double opacity;
     private final Symbol symbol;
     private final SizeMode sizeMode;
+    private final Gradient gradient;
+    private final double[] colorArray;
+    private final ColorBar colorBar;
 
     public static MarkerBuilder builder() {
         return new MarkerBuilder();
@@ -93,8 +97,11 @@ public class Marker extends Component {
 
     private Marker(MarkerBuilder builder) {
         symbol = builder.symbol;
+        line = builder.line;
         size = builder.size;
         color = builder.color;
+        colorArray = builder.colorArray;
+        gradient = builder.gradient;
         colorScalePalette = builder.colorScalePalette;
         cAuto = builder.cAuto;
         cMin = builder.cMin;
@@ -104,6 +111,7 @@ public class Marker extends Component {
         reverseScale = builder.reverseScale;
         opacity = builder.opacity;
         sizeMode = builder.sizeMode;
+        colorBar = builder.colorBar;
     }
 
     @Override
@@ -123,37 +131,54 @@ public class Marker extends Component {
     private Map<String, Object> getContext() {
         Map<String, Object> context = new HashMap<>();
         context.put("size", size.length == 1? size[0]: Utils.dataAsString(size));
-
-        context.put("color", color);
-        context.put("colorScale", colorScalePalette);
-        if(cAuto != DEFAULT_C_AUTO) context.put("cAuto", cAuto);
-        if (color != null && color.length > 1) {
-            context.put("cMin", cMin);
-            context.put("cMax", cMax);
+        if (colorScalePalette != null) {
+            context.put("colorScale", colorScalePalette);
         }
+        if(cAuto != DEFAULT_C_AUTO) context.put("cAuto", cAuto);
+        if (color != null && color.length > 0)  {
+            if (color.length > 1) {
+                context.put("color", Utils.dataAsString(color));
+                context.put("cMin", cMin);
+                context.put("cMax", cMax);
+            } else {
+                context.put("color", Utils.quote(color[0]));
+            }
+        } else if (colorArray != null){
+            context.put("color", Utils.dataAsString(colorArray));
+        }
+        if (line != null) context.put("line", line.asJavascript());
         if (autoColorScale != DEFAULT_AUTO_COLOR_SCALE) context.put("autoColorScale", autoColorScale);
         if (showScale != DEFAULT_SHOW_SCALE) context.put("showScale",showScale);
         if (reverseScale != DEFAULT_REVERSE_SCALE) context.put("reverseScale", reverseScale);
         if (opacity != DEFAULT_OPACITY) context.put("opacity", opacity);
         if (sizeMode != DEFAULT_SIZE_MODE) context.put("sizeMode", sizeMode);
+        if (gradient != null) context.put("gradient", gradient);
+        if (colorBar != null) context.put("colorBar", colorBar.asJavascript());
         context.put("symbol", symbol);
         return context;
     }
 
     public static class MarkerBuilder {
 
-        double[] size = {6};
-        String[] color;
-        Palette colorScalePalette;
-        boolean cAuto = DEFAULT_C_AUTO;
-        double cMin;
-        double cMax;
-        boolean autoColorScale = DEFAULT_AUTO_COLOR_SCALE;
-        boolean showScale = DEFAULT_SHOW_SCALE;
-        boolean reverseScale = DEFAULT_REVERSE_SCALE;
-        double opacity = DEFAULT_OPACITY;
-        Symbol symbol;
-        SizeMode sizeMode = DEFAULT_SIZE_MODE;
+        private double[] size = {6};
+
+        // Note, a marker can have a color, or color array, but not both
+        private String[] color;
+        private double[] colorArray;
+
+        private Gradient gradient;
+        private Palette colorScalePalette;
+        private boolean cAuto = DEFAULT_C_AUTO;
+        private double cMin;
+        private double cMax;
+        private Line line;
+        private boolean autoColorScale = DEFAULT_AUTO_COLOR_SCALE;
+        private boolean showScale = DEFAULT_SHOW_SCALE;
+        private boolean reverseScale = DEFAULT_REVERSE_SCALE;
+        private double opacity = DEFAULT_OPACITY;
+        private Symbol symbol;
+        private SizeMode sizeMode = DEFAULT_SIZE_MODE;
+        private ColorBar colorBar;
 
         public MarkerBuilder size(double ... size) {
             String errorMessage = "All sizes in size array must be greater than 0.";
@@ -187,6 +212,30 @@ public class Marker extends Component {
          */
         public MarkerBuilder reverseScale(boolean b) {
             this.reverseScale = b;
+            return this;
+        }
+
+        /**
+         * Sets an outline around the marker
+         */
+        public MarkerBuilder line(Line line) {
+            this.line = line;
+            return this;
+        }
+
+        /**
+         *  Sets a gradient for the marker
+         */
+        public MarkerBuilder gradient(Gradient gradient) {
+            this.gradient = gradient;
+            return this;
+        }
+
+        /**
+         *  Sets the ColorBar to display the scale for the marker
+         */
+        public MarkerBuilder colorBar(ColorBar colorBar) {
+            this.colorBar = colorBar;
             return this;
         }
 
@@ -254,13 +303,25 @@ public class Marker extends Component {
         public MarkerBuilder color(String color) {
             this.color = new String[1];
             this.color[0] = color;
+            this.colorArray = null;
             return this;
         }
+
         /**
          * Sets the marker color to an array of color values
          */
         public MarkerBuilder color(String[] color) {
             this.color = color;
+            this.colorArray = null;
+            return this;
+        }
+
+        /**
+         * Sets the marker color to an array of numeric values for use when a color scale is provided
+         */
+        public MarkerBuilder color(double[] color) {
+            this.colorArray = color;
+            this.color = null;
             return this;
         }
 

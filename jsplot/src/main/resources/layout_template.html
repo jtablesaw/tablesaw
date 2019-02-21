@@ -37,9 +37,20 @@ var layout = {
 {% if xAxis is not null %}
     xaxis: {{xAxis | raw}},
 {% endif %}
+
 {% if yAxis is not null %}
     yaxis: {{yAxis | raw}},
 {% endif %}
+{% if yAxis1 is not null %}
+    yaxis1: {{yAxis1 | raw}},
+{% endif %}
+{% if yAxis2 is not null %}
+    yaxis2: {{yAxis2 | raw}},
+{% endif %}
+{% if yAxis3 is not null %}
+    yaxis3: {{yAxis3 | raw}},
+{% endif %}
+
 {% if zAxis is not null %}
     zaxis: {{zAxis | raw}},
 {% endif %}

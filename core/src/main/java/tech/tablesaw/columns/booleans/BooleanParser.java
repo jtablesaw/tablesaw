@@ -2,15 +2,17 @@ package tech.tablesaw.columns.booleans;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.io.ReadOptions;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static tech.tablesaw.api.BooleanColumn.*;
+import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_FALSE;
+import static tech.tablesaw.columns.booleans.BooleanColumnType.BYTE_TRUE;
+import static tech.tablesaw.columns.booleans.BooleanColumnType.MISSING_VALUE;
 
-public class BooleanParser extends AbstractParser<Boolean> {
+public class BooleanParser extends AbstractColumnParser<Boolean> {
 
     // A more restricted set of 'false' strings that is used for column type detection
     private static final List<String> FALSE_STRINGS_FOR_DETECTION =
@@ -32,7 +34,7 @@ public class BooleanParser extends AbstractParser<Boolean> {
         super(columnType);
     }
 
-    public BooleanParser(BooleanColumnType booleanColumnType, CsvReadOptions readOptions) {
+    public BooleanParser(BooleanColumnType booleanColumnType, ReadOptions readOptions) {
         super(booleanColumnType);
         if (readOptions.missingValueIndicator() != null) {
             missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());

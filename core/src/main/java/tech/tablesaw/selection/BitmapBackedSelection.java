@@ -193,7 +193,7 @@ public class BitmapBackedSelection implements Selection {
         };
     }
 
-    static Selection with(int... rows) {
+    protected static Selection with(int... rows) {
         BitmapBackedSelection selection = new BitmapBackedSelection();
         for (int i : rows) {
             selection.add(i);
@@ -201,13 +201,13 @@ public class BitmapBackedSelection implements Selection {
         return selection;
     }
 
-    static Selection withRange(int start, int end) {
+    protected static Selection withRange(int start, int end) {
         BitmapBackedSelection selection = new BitmapBackedSelection();
         selection.addRange(start, end);
         return selection;
     }
 
-    static Selection withoutRange(int totalRangeStart, int totalRangeEnd, int excludedRangeStart, int excludedRangeEnd) {
+    protected static Selection withoutRange(int totalRangeStart, int totalRangeEnd, int excludedRangeStart, int excludedRangeEnd) {
         Preconditions.checkArgument(excludedRangeStart >= totalRangeStart);
         Preconditions.checkArgument(excludedRangeEnd <= totalRangeEnd);
         Preconditions.checkArgument(totalRangeEnd >= totalRangeStart);
@@ -221,7 +221,7 @@ public class BitmapBackedSelection implements Selection {
     /**
      * Returns an randomly generated selection of size N where Max is the largest possible value
      */
-    static Selection selectNRowsAtRandom(int n, int max) {
+    protected static Selection selectNRowsAtRandom(int n, int max) {
         Selection selection = new BitmapBackedSelection();
         if (n > max) {
             throw new IllegalArgumentException("Illegal arguments: N (" + n + ") greater than Max (" + max + ")");

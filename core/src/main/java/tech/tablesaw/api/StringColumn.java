@@ -15,10 +15,10 @@
 package tech.tablesaw.api;
 
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
+
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.ByteDictionaryMap;
 import tech.tablesaw.columns.strings.DictionaryMap;
@@ -32,6 +32,7 @@ import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -39,8 +40,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import static tech.tablesaw.api.ColumnType.STRING;
 
 /**
  * A column that contains String values. They are assumed to be 'categorical' rather than free-form text, so are
@@ -94,18 +93,18 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     private StringColumn(String name, List<String> strings) {
-        super(STRING, name);
+        super(StringColumnType.instance(), name);
         for (String string : strings) {
             append(string);
         }
     }
 
     private StringColumn(String name) {
-        super(STRING, name);
+        super(StringColumnType.instance(), name);
     }
 
     private StringColumn(String name, String[] strings) {
-        super(STRING, name);
+        super(StringColumnType.instance(), name);
         for (String string : strings) {
             append(string);
         }
@@ -265,7 +264,7 @@ public class StringColumn extends AbstractColumn<String>
                 lookupTable.set(rowIndex, stringValue);
             } catch (NoKeysAvailableException e) {
                 // this can't happen
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         }
         return this;
@@ -343,7 +342,7 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     @Override
-    public StringColumn appendCell(String object, AbstractParser<?> parser) {
+    public StringColumn appendCell(String object, AbstractColumnParser<?> parser) {
         return appendObj(parser.parse(object));
     }
 
@@ -390,22 +389,8 @@ public class StringColumn extends AbstractColumn<String>
         return StringColumn.create(name() + " Unique values", strings);
     }
 
-    /**
-     * Returns the integers that back this column.
-     *
-     * @return data as {@link IntArrayList}
-     */
-    public IntArrayList data() {
-        return lookupTable.dataAsIntArray();
-    }
-
-    public IntColumn asNumberColumn() {
-        IntColumn numberColumn = IntColumn.create(this.name() + ": codes", size());
-        IntArrayList data = data();
-        for (int i = 0; i < size(); i++) {
-            numberColumn.append(data.getInt(i));
-        }
-        return numberColumn;
+    public DoubleColumn asDoubleColumn() {
+        return DoubleColumn.create(this.name(), asDoubleArray());
     }
 
     public StringColumn where(Selection selection) {
@@ -456,7 +441,7 @@ public class StringColumn extends AbstractColumn<String>
     public StringColumn removeMissing() {
         StringColumn noMissing = emptyCopy();
         for (String v : this) {
-            if (valueIsMissing(v)) {
+            if (!valueIsMissing(v)) {
                 noMissing.append(v);
             }
         }
@@ -486,15 +471,11 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     public double getDouble(int i) {
-        return lookupTable.getKeyForIndex(i);
+        return lookupTable.uniqueValuesAt(lookupTable.firstIndexOf(lookupTable.getValueForIndex(i))) - 1;
     }
 
     public double[] asDoubleArray() {
-        double[] doubles = new double[data().size()];
-        for (int i = 0; i < size(); i++) {
-            doubles[i] = data().getInt(i);
-        }
-        return doubles;
+        return Arrays.stream(lookupTable.asIntArray()).asDoubleStream().toArray();
     }
 
     /**
@@ -509,7 +490,7 @@ public class StringColumn extends AbstractColumn<String>
                 lookupTable.append(value);
             } catch (NoKeysAvailableException e) {
                 // this can't happen
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         }
         return this;
@@ -561,7 +542,7 @@ public class StringColumn extends AbstractColumn<String>
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public String[] asObjectArray() {
         return lookupTable.asObjectArray();
     }
 
@@ -633,6 +614,11 @@ public class StringColumn extends AbstractColumn<String>
     @Override
     public StringColumn sampleX(double proportion) {
         return (StringColumn) super.sampleX(proportion);
+    }
+
+    @Override
+    public StringColumn asStringColumn() {
+        return copy();
     }
 
     public TextColumn asTextColumn() {

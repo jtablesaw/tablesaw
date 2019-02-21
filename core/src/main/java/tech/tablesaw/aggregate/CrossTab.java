@@ -139,22 +139,26 @@ public final class CrossTab {
             labels.append(xTabCounts.column(0).getString(i));
         }
 
+        // create the new cols
+        DoubleColumn[] newColumns = new DoubleColumn[xTabCounts.columnCount() - 1];
+
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column<?> column = xTabCounts.column(i);
-            pctTable.addColumns(DoubleColumn.create(column.name()));
+            newColumns[i - 1] = DoubleColumn.create(column.name());
         }
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
             double rowTotal = xTabCounts.numberColumn(xTabCounts.columnCount() - 1).getDouble(i);
 
-            for (int c = 1; c < xTabCounts.columnCount(); c++) {
+            for (int c = 0; c < newColumns.length; c++) {
                 if (rowTotal == 0) {
-                    pctTable.doubleColumn(c).append(Float.NaN);
+                    newColumns[c].append(Double.NaN);
                 } else {
-                    pctTable.doubleColumn(c).append(xTabCounts.numberColumn(c).getDouble(i) / rowTotal);
+                    newColumns[c].append(xTabCounts.numberColumn(c + 1).getDouble(i) / rowTotal);
                 }
             }
         }
+        pctTable.addColumns(newColumns);
         return pctTable;
     }
 
@@ -171,20 +175,24 @@ public final class CrossTab {
             labels.append(xTabCounts.column(0).getString(i));
         }
 
+        // create the new cols
+        DoubleColumn[] newColumns = new DoubleColumn[xTabCounts.columnCount() - 1];
+
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column<?> column = xTabCounts.column(i);
-            pctTable.addColumns(DoubleColumn.create(column.name()));
+            newColumns[i - 1] = DoubleColumn.create(column.name());
         }
 
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
-            for (int c = 1; c < xTabCounts.columnCount(); c++) {
+            for (int c = 0; c < newColumns.length; c++) {
                 if (grandTotal == 0) {
-                    pctTable.doubleColumn(c).append(Double.NaN);
+                    newColumns[c].append(Double.NaN);
                 } else {
-                    pctTable.doubleColumn(c).append(xTabCounts.numberColumn(c).getDouble(i) / grandTotal);
+                    newColumns[c].append(xTabCounts.numberColumn(c + 1).getDouble(i) / grandTotal);
                 }
             }
         }
+        pctTable.addColumns(newColumns);
         return pctTable;
     }
 
@@ -201,13 +209,15 @@ public final class CrossTab {
         }
 
         // create the new cols
+        DoubleColumn[] newColumns = new DoubleColumn[xTabCounts.columnCount() - 1];
+
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             Column<?> column = xTabCounts.column(i);
-            pctTable.addColumns(DoubleColumn.create(column.name()));
+            newColumns[i - 1] = DoubleColumn.create(column.name());
         }
 
         // get the column totals
-        double[] columnTotals = new double[xTabCounts.columnCount() - 1];
+        double[] columnTotals = new double[newColumns.length];
         int totalRow = xTabCounts.rowCount() - 1;
         for (int i = 1; i < xTabCounts.columnCount(); i++) {
             columnTotals[i - 1] = xTabCounts.numberColumn(i).getDouble(totalRow);
@@ -215,14 +225,15 @@ public final class CrossTab {
 
         // calculate the column pcts and update the new table
         for (int i = 0; i < xTabCounts.rowCount(); i++) {
-            for (int c = 1; c < xTabCounts.columnCount(); c++) {
-                if (columnTotals[c - 1] == 0) {
-                    pctTable.doubleColumn(c).append(Float.NaN);
+            for (int c = 0; c < newColumns.length; c++) {
+                if (columnTotals[c] == 0) {
+                   newColumns[c].append(Double.NaN);
                 } else {
-                    pctTable.doubleColumn(c).append(xTabCounts.numberColumn(c).getDouble(i) / columnTotals[c - 1]);
+                    newColumns[c].append(xTabCounts.numberColumn(c + 1).getDouble(i) / columnTotals[c]);
                 }
             }
         }
+        pctTable.addColumns(newColumns);
         return pctTable;
     }
 

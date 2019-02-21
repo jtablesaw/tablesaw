@@ -10,10 +10,9 @@ import it.unimi.dsi.fastutil.shorts.ShortComparator;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
 import it.unimi.dsi.fastutil.shorts.ShortSet;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.AbstractParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.numbers.ShortColumnType;
 import tech.tablesaw.selection.Selection;
@@ -26,8 +25,6 @@ import java.util.function.Predicate;
 
 public class ShortColumn extends NumberColumn<Short> implements CategoricalColumn<Short> {
 
-    private static final ShortColumnType COLUMN_TYPE = ColumnType.SHORT;
-
     /**
      * Compares two ints, such that a sort based on this comparator would sort in descending order
      */
@@ -36,7 +33,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     private final ShortArrayList data;
 
     protected ShortColumn(final String name, ShortArrayList data) {
-        super(COLUMN_TYPE, name);
+        super(ShortColumnType.instance(), name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
     }
@@ -107,7 +104,8 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
                 values.add(getShort(i));
             }
         }
-        final ShortColumn column = ShortColumn.create(name() + " Unique values", values.size());
+        final ShortColumn column = ShortColumn.create(name() + " Unique values");
+
         for (short value : values) {
             column.append(value);
         }
@@ -198,7 +196,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public Short[] asObjectArray() {
         final Short[] output = new Short[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getShort(i);
@@ -233,6 +231,15 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
+    public String getString(final int row) {
+        final short value = getShort(row);
+        if (ShortColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(printFormatter.format(value));
+    }
+
+    @Override
     public ShortColumn append(Column<Short> column, int row) {
         Preconditions.checkArgument(column.type() == this.type());
         return append(((ShortColumn) column).getShort(row));
@@ -251,7 +258,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putShort(getShort(rowNumber)).array();
+        return ByteBuffer.allocate(ShortColumnType.instance().byteSize()).putShort(getShort(rowNumber)).array();
     }
 
     @Override
@@ -345,7 +352,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     }
 
     @Override
-    public ShortColumn appendCell(final String value, AbstractParser<?> parser) {
+    public ShortColumn appendCell(final String value, AbstractColumnParser<?> parser) {
         try {
             return append(parser.parseShort(value));
         } catch (final NumberFormatException e) {
@@ -356,7 +363,7 @@ public class ShortColumn extends NumberColumn<Short> implements CategoricalColum
     @Override
     public String getUnformattedString(final int row) {
         final int value = getInt(row);
-        if (IntColumnType.isMissingValue(value)) {
+        if (ShortColumnType.isMissingValue(value)) {
             return "";
         }
         return String.valueOf(value);

@@ -14,9 +14,9 @@ import java.util.Map;
 
 public abstract class AbstractTrace implements Trace {
 
-    static final double DEFAULT_OPACITY = 1.0;
-    static final Visibility DEFAULT_VISIBILITY = Visibility.TRUE;
-    static final boolean DEFAULT_SHOW_LEGEND = false;
+    protected static final double DEFAULT_OPACITY = 1.0;
+    protected static final Visibility DEFAULT_VISIBILITY = Visibility.TRUE;
+    protected static final boolean DEFAULT_SHOW_LEGEND = false;
 
     protected final PebbleEngine engine = TemplateUtils.getNewEngine();
 

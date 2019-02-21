@@ -47,13 +47,9 @@ To summarize:
 ### "Help Wanted" labels
 Among the open bugs and feature requests, we've tagged some as "Help Wanted". This indicates that a fix should be relatively straightforward to address. We would, of course, LOVE help on some of the more challenging issues. Help Wanted simply means that this is a good place for a developer with limited knowlege of the library and/or limited experience with Java to jump in. 
 
-### Javascript visualisation libraries
+### Javascript visualization libraries
 Implement an interface for a Javascript plotting library (big job, we know), but the best Javascript libraries are awesome.
 Email larry@tablesaw.tech if you have any questions, or use the comments for the issue.
-
-## Working on the code in Eclipse
-
-* Install e(fx)clipse. Choose the update site that came with your installation of Eclipse. E.g. "Oxygen - http://download.eclipse.org/releases/oxygen". Then install "e(fx)clipse" under "General Purpose Tools"
 
 ## Become a Maintainer/Committer
 

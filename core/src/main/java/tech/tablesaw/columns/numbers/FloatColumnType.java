@@ -3,7 +3,7 @@ package tech.tablesaw.columns.numbers;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.FloatColumn;
 import tech.tablesaw.columns.AbstractColumnType;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.io.ReadOptions;
 
 public class FloatColumnType extends AbstractColumnType {
 
@@ -11,11 +11,17 @@ public class FloatColumnType extends AbstractColumnType {
 
     public static final FloatParser DEFAULT_PARSER = new FloatParser(ColumnType.FLOAT);
 
-    public static final FloatColumnType INSTANCE =
-            new FloatColumnType(BYTE_SIZE, "FLOAT", "Float");
+    private static FloatColumnType INSTANCE;
 
     private FloatColumnType(int byteSize, String name, String printerFriendlyName) {
         super(byteSize, name, printerFriendlyName);
+    }
+
+    public static FloatColumnType instance() {
+        if (INSTANCE == null) {
+            INSTANCE = new FloatColumnType(BYTE_SIZE, "FLOAT", "float");
+        }
+        return INSTANCE;
     }
 
     @Override
@@ -24,7 +30,7 @@ public class FloatColumnType extends AbstractColumnType {
     }
 
     @Override
-    public FloatParser customParser(CsvReadOptions options) {
+    public FloatParser customParser(ReadOptions options) {
         return new FloatParser(this, options);
     }
 

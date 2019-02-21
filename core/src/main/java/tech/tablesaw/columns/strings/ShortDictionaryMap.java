@@ -1,6 +1,5 @@
 package tech.tablesaw.columns.strings;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ShortOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.Short2IntMap;
 import it.unimi.dsi.fastutil.shorts.Short2IntOpenHashMap;
@@ -8,7 +7,6 @@ import it.unimi.dsi.fastutil.shorts.Short2ObjectMap;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrays;
-import it.unimi.dsi.fastutil.shorts.ShortCollection;
 import it.unimi.dsi.fastutil.shorts.ShortComparator;
 import it.unimi.dsi.fastutil.shorts.ShortListIterator;
 import it.unimi.dsi.fastutil.shorts.ShortOpenHashSet;
@@ -111,21 +109,6 @@ public class ShortDictionaryMap implements DictionaryMap {
         return valueToKey.keySet();
     }
 
-    /**
-     * Returns the strings in the dictionary as an array in order of the numeric key
-     *
-     * @deprecated This is an implementation detail that should not be public.
-     * If you need the strings you can get them by calling unique() or asSet() on the column,
-     */
-    @Deprecated
-    String[] categoryArray() {
-        return keyToValue.values().toArray(new String[size()]);
-    }
-
-    private ShortCollection values() {
-        return valueToKey.values();
-    }
-
     private Short2ObjectMap<String> keyToValueMap() {
         return keyToValue;
     }
@@ -171,21 +154,12 @@ public class ShortDictionaryMap implements DictionaryMap {
         return categories();
     }
 
-    @Override
-    public IntArrayList dataAsIntArray() {
-        IntArrayList copy = new IntArrayList(size());
-        for (int i = 0; i < size(); i++) {
-            copy.add(values.getShort(i));
-        }
-        return copy;
-    }
-
     public int firstIndexOf(String value) {
         return values.indexOf(getKeyForValue(value));
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public String[] asObjectArray() {
         final String[] output = new String[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getValueForIndex(i);
@@ -241,7 +215,7 @@ public class ShortDictionaryMap implements DictionaryMap {
         short key;
         if (value == null || StringColumnType.missingValueIndicator().equals(value)) {
             key = MISSING_VALUE;
-            put(key, value);
+            put(key, StringColumnType.missingValueIndicator());
         } else {
             key = getKeyForValue(value);
         }
@@ -419,7 +393,7 @@ public class ShortDictionaryMap implements DictionaryMap {
             append(StringColumnType.missingValueIndicator());
         } catch (NoKeysAvailableException e) {
             // This can't happen because missing value key is the first one allocated
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -437,7 +411,7 @@ public class ShortDictionaryMap implements DictionaryMap {
             dictionaryMap = new IntDictionaryMap(this);
         } catch (NoKeysAvailableException e) {
             // this should never happen;
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
 
         return dictionaryMap;

@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -40,11 +41,9 @@ import static org.junit.Assert.assertTrue;
 import static tech.tablesaw.aggregate.AggregateFunctions.mean;
 import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
-/**
- * Tests for Table
- */
 public class TableTest {
 
+    private static final String LINE_END = System.lineSeparator();
     private static final int ROWS_BOUNDARY = 1000;
     private static final Random RANDOM = new Random();
 
@@ -71,6 +70,15 @@ public class TableTest {
     public void testColumn() {
         Column<?> column1 = table.column(0);
         assertNotNull(column1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testColumnSizeCheck() {
+        double[] a = {3, 4};
+        double[] b = {3, 4, 5};
+        Table.create("test",
+                DoubleColumn.create("a", a),
+                DoubleColumn.create("b", b));
     }
 
     @Test
@@ -130,11 +138,11 @@ public class TableTest {
     @Test
     public void printEmptyTable() {
         Table t = Table.create("Test");
-        assertEquals("Test\n\n", t.print());
+        assertEquals("Test" + LINE_END + LINE_END, t.print());
 
         StringColumn c1 = StringColumn.create("SC");
         t.addColumns(c1);
-        assertEquals(" Test \n SC  |\n------", t.print());
+        assertEquals(" Test " + LINE_END + " SC  |" + LINE_END + "------", t.print());
     }
 
     @Test
@@ -208,7 +216,7 @@ public class TableTest {
 
     @Test
     public void testDoWithEachRow() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv").first(10);
+        Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes(true)).first(10);
         Short[] ratingsArray = {53, 58};
         List<Short> ratings = Lists.asList((short) 52, ratingsArray);
 
@@ -222,7 +230,7 @@ public class TableTest {
 
     @Test
     public void testDoWithEachRow2() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv");
+        Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes(true));
         int dateTarget = PackedLocalDate.pack(LocalDate.of(2002, 1, 1));
         double ratingTarget = 75;
         AtomicInteger count = new AtomicInteger(0);
@@ -238,7 +246,7 @@ public class TableTest {
 
     @Test
     public void testDetect() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv");
+        Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes(true));
         int dateTarget = PackedLocalDate.pack(LocalDate.of(2002, 1, 1));
         double ratingTarget = 75;
         Predicate<Row> doable = row ->
@@ -252,22 +260,22 @@ public class TableTest {
         Table t = Table.read().csv("../data/bush.csv");
         Row row = new Row(t);
         row.at(0);
-        assertEquals("             bush.csv              \n" +
-                "    date     |  approval  |  who  |\n" +
-                "-----------------------------------\n" +
+        assertEquals("             bush.csv              " + LINE_END +
+                "    date     |  approval  |  who  |" + LINE_END +
+                "-----------------------------------" + LINE_END +
                 " 2004-02-04  |        53  |  fox  |", row.toString());
     }
 
     @Test
     public void testPairs() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv");
+        Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes(true));
         PairChild pairs = new PairChild();
         t.doWithRows(pairs);
     }
 
     @Test
     public void testPairs2() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv");
+        Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes(true));
 
         Table.Pairs runningAvg =  new Table.Pairs() {
 
@@ -291,7 +299,7 @@ public class TableTest {
 
     @Test
     public void testRollWithNrows2() throws Exception {
-        Table t = Table.read().csv("../data/bush.csv").first(4);
+        Table t = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes(true)).first(4);
         ShortColumn approval = t.shortColumn("approval");
 
         List<Integer> sums = new ArrayList<>();
@@ -310,7 +318,7 @@ public class TableTest {
 
     private class PairChild implements Table.Pairs {
 
-        List<Double> runningAverage = new ArrayList<>();
+        private List<Double> runningAverage = new ArrayList<>();
 
         @Override
         public void doWithPair(Row row1, Row row2) {
@@ -366,8 +374,9 @@ public class TableTest {
         table.addColumns(column);
         DoubleColumn first = f1.emptyCopy();
         DoubleColumn second = column.emptyCopy();
-        int firstColumnSize = populateColumn(first);
-        int secondColumnSize = populateColumn(second);
+        int rowCount = RANDOM.nextInt(ROWS_BOUNDARY);
+        int firstColumnSize = populateColumn(first, rowCount);
+        int secondColumnSize = populateColumn(second, rowCount);
         Table tableToAppend = Table.create("populated", first, second);
         table.append(tableToAppend);
         assertTableColumnSize(table, f1, firstColumnSize);
@@ -442,6 +451,10 @@ public class TableTest {
 
     private int populateColumn(DoubleColumn floatColumn) {
         int rowsCount = RANDOM.nextInt(ROWS_BOUNDARY);
+        return populateColumn(floatColumn, rowsCount);
+    }
+
+    private int populateColumn(DoubleColumn floatColumn, int rowsCount) {
         for (int i = 0; i < rowsCount; i++) {
             floatColumn.append(RANDOM.nextFloat());
         }
@@ -467,7 +480,7 @@ public class TableTest {
 
     @Test
     public void testRowSort() throws Exception {
-        Table bush = Table.read().csv("../data/bush.csv");
+        Table bush = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes(true));
 
         Comparator<Row> rowComparator = Comparator.comparingDouble(o -> o.getShort("approval"));
 

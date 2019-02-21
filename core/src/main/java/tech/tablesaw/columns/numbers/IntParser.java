@@ -2,16 +2,16 @@ package tech.tablesaw.columns.numbers;
 
 import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.columns.AbstractParser;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import tech.tablesaw.columns.AbstractColumnParser;
+import tech.tablesaw.io.ReadOptions;
 
-public class IntParser extends AbstractParser<Integer> {
+public class IntParser extends AbstractColumnParser<Integer> {
 
     public IntParser(ColumnType columnType) {
         super(columnType);
     }
 
-    public IntParser(IntColumnType columnType, CsvReadOptions readOptions) {
+    public IntParser(IntColumnType columnType, ReadOptions readOptions) {
         super(columnType);
         if (readOptions.missingValueIndicator() != null) {
             missingValueStrings = Lists.newArrayList(readOptions.missingValueIndicator());
@@ -28,7 +28,7 @@ public class IntParser extends AbstractParser<Integer> {
             if (s.endsWith(".0")) {
                 s = s.substring(0, s.length() - 2);
             }
-            Integer.parseInt(AbstractParser.remove(s, ','));
+            Integer.parseInt(AbstractColumnParser.remove(s, ','));
             return true;
         } catch (NumberFormatException e) {
             // it's all part of the plan
@@ -55,6 +55,6 @@ public class IntParser extends AbstractParser<Integer> {
         if (s.endsWith(".0")) {
             s = s.substring(0, s.length() - 2);
         }
-        return Integer.parseInt(AbstractParser.remove(s, ','));
+        return Integer.parseInt(AbstractColumnParser.remove(s, ','));
     }
 }

@@ -22,7 +22,7 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.DateColumnFormatter;
 import tech.tablesaw.columns.dates.DateColumnType;
@@ -53,8 +53,6 @@ import java.util.function.Supplier;
  */
 public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters, DateFillers<DateColumn>,
             DateMapFunctions, CategoricalColumn<LocalDate> {
-
-    public static final int MISSING_VALUE = (Integer) DateColumnType.missingValueIndicator();
 
     private final IntComparator reverseIntComparator = DescendingIntComparator.instance();
 
@@ -97,7 +95,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     private DateColumn(String name, IntArrayList data) {
-        super(ColumnType.LOCAL_DATE, name);
+        super(DateColumnType.instance(), name);
         this.data = data;
     }
 
@@ -198,7 +196,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
         int length = n >= 0 ? size() - n : size() + n;
 
         for (int i = 0; i < size(); i++) {
-            dest[i] = MISSING_VALUE;
+            dest[i] = DateColumnType.missingValueIndicator();
         }
 
         System.arraycopy(data.toIntArray(), srcPos, dest, destPos, length);
@@ -271,7 +269,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
 
         Integer max = null;
         for (int aData : data) {
-            if (DateColumn.MISSING_VALUE != aData) {
+            if (DateColumnType.missingValueIndicator() != aData) {
                 if (max == null) {
                     max = aData;
                 } else {
@@ -294,7 +292,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
 
         Integer min = null;
         for (int aData : data) {
-            if (DateColumn.MISSING_VALUE != aData) {
+            if (DateColumnType.missingValueIndicator() != aData) {
                 if (min == null) {
                     min = aData;
                 } else {
@@ -325,7 +323,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
 
     @Override
     public DateColumn appendMissing() {
-        appendInternal(MISSING_VALUE);
+        appendInternal(DateColumnType.missingValueIndicator());
         return this;
     }
 
@@ -354,10 +352,13 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
         if (obj == null) {
             return appendMissing();
         }
-        if (!(obj instanceof LocalDate)) {
-            throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to DateColumn");
+        if (obj instanceof java.sql.Date) {
+            return append(((java.sql.Date) obj).toLocalDate());
         }
-        return append((LocalDate) obj);
+        if (obj instanceof LocalDate) {
+            return append((LocalDate) obj);
+        }
+        throw new IllegalArgumentException("Cannot append " + obj.getClass().getName() + " to DateColumn");
     }
 
     @Override
@@ -366,7 +367,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     @Override
-    public DateColumn appendCell(String string, AbstractParser<?> parser) {
+    public DateColumn appendCell(String string, AbstractColumnParser<?> parser) {
         return appendObj(parser.parse(string));
     }
 
@@ -375,7 +376,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
         return data.getInt(index);
     }
 
-    int getPackedDate(int index) {
+    protected int getPackedDate(int index) {
         return getIntInternal(index);
     }
 
@@ -409,7 +410,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     public static boolean valueIsMissing(int i) {
-        return i == MISSING_VALUE;
+        return i == DateColumnType.missingValueIndicator();
     }
 
     /**
@@ -419,7 +420,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (getPackedDate(i) == MISSING_VALUE) {
+            if (getPackedDate(i) == DateColumnType.missingValueIndicator()) {
                 count++;
             }
         }
@@ -517,6 +518,10 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
         return doubles;
     }
 
+    public DoubleColumn asDoubleColumn() {
+	return DoubleColumn.create(name(), asDoubleArray());
+    }
+
     @Override
     public boolean isMissing(int rowNumber) {
         return valueIsMissing(getIntInternal(rowNumber));
@@ -585,9 +590,9 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     private DateColumn fillWith(int count, Iterable<LocalDate> iterable, Consumer<LocalDate> acceptor) {
-        Iterator<LocalDate> iterator = null;
+        Iterator<LocalDate> iterator = iterable.iterator();
         for (int r = 0; r < count; r++) {
-            if (iterator == null || (!iterator.hasNext())) {
+            if (!iterator.hasNext()) {
                 iterator = iterable.iterator();
                 if (!iterator.hasNext()) {
                     break;
@@ -624,7 +629,7 @@ public class DateColumn extends AbstractColumn<LocalDate> implements DateFilters
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public LocalDate[] asObjectArray() {
         final LocalDate[] output = new LocalDate[data.size()];
         for (int i = 0; i < data.size(); i++) {
             output[i] = get(i);

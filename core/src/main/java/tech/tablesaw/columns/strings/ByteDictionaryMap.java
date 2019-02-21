@@ -6,11 +6,9 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.bytes.ByteArrayList;
 import it.unimi.dsi.fastutil.bytes.ByteArrays;
-import it.unimi.dsi.fastutil.bytes.ByteCollection;
 import it.unimi.dsi.fastutil.bytes.ByteComparator;
 import it.unimi.dsi.fastutil.bytes.ByteListIterator;
 import it.unimi.dsi.fastutil.bytes.ByteOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.IntColumn;
@@ -103,21 +101,6 @@ public class ByteDictionaryMap implements DictionaryMap {
         return valueToKey.keySet();
     }
 
-    /**
-     * Returns the strings in the dictionary as an array in order of the numeric key
-     *
-     * @deprecated This is an implementation detail that should not be public.
-     * If you need the strings you can get them by calling unique() or asSet() on the column,
-     */
-    @Deprecated
-    String[] categoryArray() {
-        return keyToValue.values().toArray(new String[size()]);
-    }
-
-    private ByteCollection values() {
-        return valueToKey.values();
-    }
-
     private Byte2ObjectMap<String> keyToValueMap() {
         return keyToValue;
     }
@@ -163,21 +146,12 @@ public class ByteDictionaryMap implements DictionaryMap {
         return categories();
     }
 
-    @Override
-    public IntArrayList dataAsIntArray() {
-        IntArrayList copy = new IntArrayList(size());
-        for (int i = 0; i < size(); i++) {
-            copy.add(values.getByte(i));
-        }
-        return copy;
-    }
-
     public int firstIndexOf(String value) {
         return values.indexOf(getKeyForValue(value));
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public String[] asObjectArray() {
         final String[] output = new String[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getValueForIndex(i);
@@ -229,7 +203,7 @@ public class ByteDictionaryMap implements DictionaryMap {
         byte key;
         if (value == null || StringColumnType.missingValueIndicator().equals(value)) {
             key = MISSING_VALUE;
-            put(key, value);
+            put(key, StringColumnType.missingValueIndicator());
         } else {
             key = getKeyForValue(value);
         }
@@ -413,7 +387,7 @@ public class ByteDictionaryMap implements DictionaryMap {
             append(StringColumnType.missingValueIndicator());
         } catch (NoKeysAvailableException e) {
             // This can't happen because missing value key is the first one allocated
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -431,7 +405,7 @@ public class ByteDictionaryMap implements DictionaryMap {
             dictionaryMap = new ShortDictionaryMap(this);
         } catch (NoKeysAvailableException e) {
             // this should never happen;
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
         return dictionaryMap;
     }

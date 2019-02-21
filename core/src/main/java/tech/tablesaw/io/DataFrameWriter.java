@@ -17,7 +17,11 @@ package tech.tablesaw.io;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvWriteOptions;
 import tech.tablesaw.io.csv.CsvWriter;
+import tech.tablesaw.io.fixed.FixedWidthWriteOptions;
+import tech.tablesaw.io.fixed.FixedWidthWriter;
 import tech.tablesaw.io.html.HtmlTableWriter;
+import tech.tablesaw.io.json.JsonWriteOptions;
+import tech.tablesaw.io.json.JsonWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +41,7 @@ public class DataFrameWriter {
         new CsvWriter(table, options).write();
     }
 
-    public void csv(File file) {
+    public void csv(File file) throws IOException {
         CsvWriteOptions options = new CsvWriteOptions.Builder(file).build();
         new CsvWriter(table, options).write();
     }
@@ -56,7 +60,40 @@ public class DataFrameWriter {
         new CsvWriter(table, options).write();
     }
 
+    public void fixedWidth(String file) throws IOException {
+        FixedWidthWriteOptions options = new FixedWidthWriteOptions.Builder(file).build();
+        new FixedWidthWriter(table, options).write();
+    }
+
+    public void fixedWidth(File file) throws IOException {
+        FixedWidthWriteOptions options = new FixedWidthWriteOptions.Builder(file).build();
+        new FixedWidthWriter(table, options).write();
+    }
+
+    public void fixedWidth(FixedWidthWriteOptions options) {
+        new FixedWidthWriter(table, options).write();
+    }
+
+    public void fixedWidth(OutputStream stream) {
+        FixedWidthWriteOptions options = new FixedWidthWriteOptions.Builder(stream).build();
+        new FixedWidthWriter(table, options).write();
+    }
+
+    public void fixedWidth(Writer writer) {
+        FixedWidthWriteOptions options = new FixedWidthWriteOptions.Builder(writer).build();
+        new FixedWidthWriter(table, options).write();
+    }
+
+
     public void html(OutputStream stream) {
         HtmlTableWriter.write(table, stream);
+    }
+
+    public String json() throws IOException {
+        return json(JsonWriteOptions.builder().build());
+    }
+
+    public String json(JsonWriteOptions options) throws IOException {
+        return new JsonWriter(options).write(table);
     }
 }

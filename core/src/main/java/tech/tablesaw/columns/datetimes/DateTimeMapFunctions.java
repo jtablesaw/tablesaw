@@ -23,9 +23,11 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.booleans.BooleanColumnType;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.columns.strings.StringColumnType;
+import tech.tablesaw.columns.times.TimeColumnType;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -33,7 +35,25 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.asLocalDateTime;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.daysUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfMonth;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfWeek;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfYear;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getHour;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinute;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinuteOfDay;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMonthValue;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getQuarter;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getSecondOfDay;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getWeekOfYear;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getYear;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.hoursUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.minutesUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.monthsUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.pack;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.weeksUntil;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.yearsUntil;
 
 public interface DateTimeMapFunctions extends Column<LocalDateTime> {
 
@@ -140,7 +160,7 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
         for (int r = 0; r < this.size(); r++) {
             long c1 = getLongInternal(r);
             if (DateTimeColumn.valueIsMissing(c1)) {
-                newColumn.appendInternal(TimeColumn.MISSING_VALUE);
+                newColumn.appendInternal(TimeColumnType.missingValueIndicator());
             } else {
                 newColumn.appendInternal(PackedLocalDateTime.time(c1));
             }
@@ -380,9 +400,9 @@ public interface DateTimeMapFunctions extends Column<LocalDateTime> {
 	BooleanColumn newColumn = BooleanColumn.create(this.name() + " missing?");
         for (int r = 0; r < this.size(); r++) {
             if (isMissing(r)) {
-                newColumn.append(BooleanColumn.BYTE_TRUE);
+                newColumn.append(BooleanColumnType.BYTE_TRUE);
             } else {
-                newColumn.append(BooleanColumn.BYTE_FALSE);
+                newColumn.append(BooleanColumnType.BYTE_FALSE);
             }
         }
         return newColumn;

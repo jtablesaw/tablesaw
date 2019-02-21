@@ -1,11 +1,12 @@
 package tech.tablesaw.columns.datetimes;
 
+import tech.tablesaw.columns.times.TimeColumnType;
+
 import javax.annotation.concurrent.Immutable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static tech.tablesaw.api.TimeColumn.*;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.asLocalDateTime;
 
 @Immutable
 public class DateTimeColumnFormatter {
@@ -27,7 +28,7 @@ public class DateTimeColumnFormatter {
     }
 
     public String format(long value) {
-        if (value == MISSING_VALUE) {
+        if (value == TimeColumnType.missingValueIndicator()) {
             return missingValueString;
         }
         if (format == null) {

@@ -97,12 +97,10 @@ public class SearchPerformanceTest {
         row.at(dateIndex.get(testPackedDateTime).get(0));
         while (row.hasNext()) {
             row.next();
-            if (row.getPackedDateTime("date") >= testPackedDateTime) {
-                if (row.getDouble("lowValue") <= testLow
-                        || row.getDouble("highValue") >= testHigh) {
-                    rowNumber = row.getRowNumber();
-                    break;
-                }
+            if (row.getPackedDateTime("date") >= testPackedDateTime
+                    && (row.getDouble("lowValue") <= testLow || row.getDouble("highValue") >= testHigh)) {
+                rowNumber = row.getRowNumber();
+                break;
             }
         }
         return rowNumber;

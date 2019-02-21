@@ -284,8 +284,8 @@ public class DateTimeMapFunctionsTest {
         DateTimeColumn lead = startCol.lead(1);
         DateTimeColumn lag = startCol.lag(1);
         assertEquals(startCol.get(0), lag.get(1));
-        assertEquals(DateTimeColumn.MISSING_VALUE, lag.getLongInternal(0));
+        assertEquals(DateTimeColumnType.missingValueIndicator(), lag.getLongInternal(0));
         assertEquals(startCol.get(1), lead.get(0));
-        assertEquals(DateTimeColumn.MISSING_VALUE, lead.getLongInternal(2));
+        assertEquals(DateTimeColumnType.missingValueIndicator(), lead.getLongInternal(2));
     }
 }

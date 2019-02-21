@@ -37,7 +37,7 @@ import java.util.Map;
 public class TableSliceGroup implements Iterable<TableSlice> {
 
     // A string that is used internally as a delimiter in creating a column name from all the grouping columns
-    static final String SPLIT_STRING = "~~~";
+    protected static final String SPLIT_STRING = "~~~";
 
     // A function that splits the group column name back into the original column names for the grouping columns
     private static final Splitter SPLITTER = Splitter.on(SPLIT_STRING);
@@ -67,11 +67,11 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         this.splitColumnNames = groupColumnNames;
     }
 
-    String[] getSplitColumnNames() {
+    protected String[] getSplitColumnNames() {
         return splitColumnNames;
     }
 
-    int getByteSize(List<Column<?>> columns) {
+    protected int getByteSize(List<Column<?>> columns) {
         int byteSize = 0;
         for (Column<?> c : columns) {
             byteSize += c.byteSize();
@@ -79,7 +79,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return byteSize;
     }
 
-    void addSlice(TableSlice slice) {
+    protected void addSlice(TableSlice slice) {
         subTables.add(slice);
     }
 
@@ -211,7 +211,7 @@ public class TableSliceGroup implements Iterable<TableSlice> {
         return tableList;
     }
 
-    void setSourceTable(Table sourceTable) {
+    protected void setSourceTable(Table sourceTable) {
         this.sourceTable = sourceTable;
     }
 }

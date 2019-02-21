@@ -5,7 +5,7 @@
     <parent>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-parent</artifactId>
-        <version>0.25.3-SNAPSHOT</version>
+        <version>0.31.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>tablesaw-core</artifactId>
@@ -91,6 +91,16 @@
             <version>25.1-jre</version>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.wnameless</groupId>
+            <artifactId>json-flattener</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+        <dependency>
             <groupId>com.univocity</groupId>
             <artifactId>univocity-parsers</artifactId>
             <version>2.7.5</version>
@@ -118,7 +128,7 @@
         <dependency>
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-data</artifactId>
-            <version>1.5.1 </version>
+            <version>1.5.2 </version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -142,6 +152,12 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.197</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.haifengl</groupId>
+            <artifactId>smile-core</artifactId>
+            <version>1.5.2 </version>
             <scope>test</scope>
         </dependency>
     </dependencies>

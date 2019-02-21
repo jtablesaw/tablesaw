@@ -3,10 +3,12 @@ package tech.tablesaw.joining;
 import com.google.common.base.Joiner;
 import org.junit.Test;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.api.TextColumn;
+import tech.tablesaw.selection.Selection;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class DataFrameJoinerTest {
 
@@ -357,21 +359,17 @@ public class DataFrameJoinerTest {
     }
 
     @Test
-    public void innerJoinWithDoubleBirdsCatsFishException() {
-        try {
-            DOUBLE_INDEXED_BIRDS.join("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_FISH);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("Joining is supported on integral, string, and date-like columns."));
-        }
+    public void innerJoinWithDoubleBirdsCatsFishDouble() {
+    	Table joined = DOUBLE_INDEXED_BIRDS.join("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_FISH);
+    	assertEquals(4, joined.columnCount());
+    	assertEquals(1, joined.rowCount());
     }
 
     @Test
-    public void innerJoinWithDoubleDogsCatsBirdsException() {
-        try {
-            DOUBLE_INDEXED_FISH.join("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_BIRDS);
-        } catch (ClassCastException e) {
-            assertTrue(e.getMessage().contains("FloatColumn cannot be cast to tech.tablesaw.api.ShortColumn"));
-        }
+    public void innerJoinWithDoubleDogsCatsBirdsDouble() {
+    	Table joined = DOUBLE_INDEXED_FISH.join("ID").inner(DOUBLE_INDEXED_CATS, DOUBLE_INDEXED_BIRDS);
+    	assertEquals(4, joined.columnCount());
+    	assertEquals(1, joined.rowCount());
     }
 
     @Test
@@ -533,7 +531,9 @@ public class DataFrameJoinerTest {
         Table feed = ANIMAL_FEED.copy();
         Table names = ANIMAL_NAMES.copy();
         feed.replaceColumn("Animal", feed.stringColumn("Animal").asTextColumn());
-        feed.replaceColumn("Animal", names.stringColumn("Animal").asTextColumn());
+        TextColumn nameCol = names.stringColumn("Animal").asTextColumn();
+        nameCol = nameCol.where(Selection.withRange(0, feed.rowCount()));
+        feed.replaceColumn("Animal", nameCol);
         Table joined = ANIMAL_FEED.join("Animal").inner(ANIMAL_NAMES, "Animal");
         assertEquals(3, joined.columnCount());
         assertEquals(4, joined.rowCount());
@@ -1053,19 +1053,6 @@ public class DataFrameJoinerTest {
     }
 
     @Test
-    public void innerJoinFootballSoccerOnHomeGameException() {
-        Table table1 = createFOOTBALLSCHEDULEDateTime();
-        Table table2 = createSOCCERSCHEDULEDateTime();
-        try {
-            Table joined = table1.join("HomeGame")
-                    .inner(true, table2);
-            assertEquals(9, joined.columnCount());
-        } catch (IllegalStateException e) {
-            assertTrue(e.getMessage().contains("Column HomeGame does not exist in table SoccerSchedule2"));
-        }
-    }
-
-    @Test
     public void fullOuterJoinFootballSoccerOnPlayDateTimeSeasonRevenue() {
         Table table1 = createFOOTBALLSCHEDULEDateTime();
         Table table2 = createSOCCERSCHEDULEDateTime();
@@ -1120,14 +1107,11 @@ public class DataFrameJoinerTest {
     }
 
     @Test
-    public void fullOuterJoinFootballBaseballException() {
+    public void fullOuterJoinFootballBaseballBoolean() {
         Table table1 = createFOOTBALLSCHEDULE();
         Table table2 = createBASEBALLSCHEDULEDateTime();
-        try {
-            table1.join("HomeGame")
-                .fullOuter(true, table2);
-        } catch (IllegalArgumentException e) {
-            assertTrue(e.getMessage().contains("Joining is supported on integral, string, and date-like columns."));
-        }
+        Table joined = table1.join("HomeGame").fullOuter(true, table2);
+        assertEquals(10, joined.columnCount());
+        assertEquals(8, joined.rowCount());
     }
 }

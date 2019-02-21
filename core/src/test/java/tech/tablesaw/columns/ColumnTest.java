@@ -18,12 +18,14 @@ import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
@@ -41,6 +43,12 @@ public class ColumnTest {
             ColumnType.DOUBLE,         // approval rating (pct)
             ColumnType.STRING          // polling org
     };
+
+    private static final BinaryOperator<Double> sum = (d1, d2) -> d1 + d2;
+    private static final Predicate<Double> isPositiveOrZero = d -> d >= 0, isNegative = isPositiveOrZero.negate();
+    private static final Function<Double, String> toString = Object::toString;
+    private static final Function<Double, Double> negate = d -> -d;
+    private static final Function<LocalDateTime, String> toSeason = d -> getSeason(d.toLocalDate());
 
     private Table table;
 
@@ -143,10 +151,8 @@ public class ColumnTest {
         assertTrue(dc3.contains(0.0));
         assertTrue(dc3.contains(3.0));
     }
-    
-    // Functional methods
 
-    private Predicate<Double> isPositiveOrZero = d -> d >= 0, isNegative = isPositiveOrZero.negate();
+    // Functional methods
 
     @Test
     public void testCountAtLeast() {
@@ -173,45 +179,80 @@ public class ColumnTest {
         assertTrue(DoubleColumn.create("t1", new double[] {-1, 0, -1}).anyMatch(isPositiveOrZero));
         assertFalse(DoubleColumn.create("t1", new double[] {0, 1, 2}).anyMatch(isNegative));
     }
-    
+
     @Test
     public void noneMatch() {
         assertTrue(DoubleColumn.create("t1", new double[] {0, 1, 2}).noneMatch(isNegative));
         assertFalse(DoubleColumn.create("t1", new double[] {-1, 0, 1}).noneMatch(isNegative));
         assertFalse(DoubleColumn.create("t1", new double[] {1, 0, -1}).noneMatch(isNegative));
     }
-    
-    private <T> void check(Column<T> column, @SuppressWarnings("unchecked") T... ts) {
+
+    private <T> void assertContentEquals(Column<T> column, @SuppressWarnings("unchecked") T... ts) {
         assertEquals(ts.length, column.size());
         for (int i = 0; i < ts.length; i++) {
             assertEquals(ts[i], column.get(i));
         }
     }
-    
+
     @Test
     public void testFilter() {
         Column<Double> filtered = DoubleColumn.create("t1", new double[] {-1, 0, 1}).filter(isPositiveOrZero);
-        check(filtered, 0.0, 1.0);
+        assertContentEquals(filtered, 0.0, 1.0);
     }
-    
-    private Function<Double, String> toString = Object::toString;
-    
+
+    private static String getSeason(LocalDate date) {
+        String season = "";
+        int month = date.getMonthValue();
+        int day = date.getDayOfMonth();
+
+        if ( month == 1 || month == 2 
+                || ( month == 3 && day <= 15 )
+                || ( month == 12 && day >= 16 ))
+            season = "WINTER";
+        else if ( month == 4 || month == 5 
+                || ( month == 3 && day >= 16 )
+                || ( month == 6 && day <= 15 ))
+            season = "SPRING";
+        else if ( month == 7 || month == 8
+                || ( month == 6 && day >= 16 )
+                || ( month == 9 && day <= 15 ))
+            season = "SUMMER";
+        else if ( month == 10|| month == 11
+                || ( month == 9 && day >= 16 )
+                || ( month == 12 && day <= 15 ))
+            season = "FALL";
+        
+        return season;
+    }
+
     @Test
     public void testMapInto() {
         String[] strings = new String[] {"-1.0", "0.0", "1.0"};
         DoubleColumn doubleColumn = DoubleColumn.create("t1", new double[] {-1, 0, 1});
         StringColumn stringColumn1 =
                 (StringColumn) doubleColumn.mapInto(toString, StringColumn.create("T", doubleColumn.size()));
-        check(stringColumn1, strings);
+        assertContentEquals(stringColumn1, strings);
     }
 
-    private Function<Double, Double> negate = d -> -d;
-    
+    @Test
+    public void testMapIntoSeason() {
+            String[] strings = new String[] {"WINTER", "SPRING", "SUMMER"};
+            DateTimeColumn dateColumn = DateTimeColumn.create("Date", new LocalDateTime[] {
+                            LocalDateTime.of(2018, 1, 26, 12, 15),
+                            LocalDateTime.of(2018, 5, 31, 10, 38),
+                            LocalDateTime.of(2018, 9, 2, 21, 42)
+            });
+            StringColumn stringColumn1 =
+                            (StringColumn) dateColumn.mapInto(toSeason, 
+                                            StringColumn.create("Season", dateColumn.size()));
+            assertContentEquals(stringColumn1, strings);
+    }
+
     @Test
     public void testMap() {
-        check(DoubleColumn.create("t1", new double[] {-1, 0, 1}).map(negate), 1.0, -0.0, -1.0);
+        assertContentEquals(DoubleColumn.create("t1", new double[] {-1, 0, 1}).map(negate), 1.0, -0.0, -1.0);
     }
-    
+
     @Test
     public void testMaxComparator() {
         assertEquals(Double.valueOf(1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).max(Double::compare).get());
@@ -224,21 +265,20 @@ public class ColumnTest {
         assertFalse(DoubleColumn.create("t1").min((d1, d2) -> (int) (d1 - d2)).isPresent());
     }
 
-    private BinaryOperator<Double> sum = (d1, d2) -> d1 + d2;
-   
     @Test
     public void testReduceTBinaryOperator() {
         assertEquals(Double.valueOf(1.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduce(1.0, sum));
     }
-    
+
     @Test
     public void testReduceBinaryOperator() {
         assertEquals(Double.valueOf(0.0), DoubleColumn.create("t1", new double[] {-1, 0, 1}).reduce(sum).get());
         assertFalse(DoubleColumn.create("t1", new double[] {}).reduce(sum).isPresent());
     }
-    
+
     @Test
     public void sorted() {
-        check(DoubleColumn.create("t1", new double[] {1, -1, 0}).sorted(Double::compare), -1.0, 0.0, 1.0);
+        assertContentEquals(DoubleColumn.create("t1", new double[] {1, -1, 0}).sorted(Double::compare), -1.0, 0.0, 1.0);
     }
+
 }

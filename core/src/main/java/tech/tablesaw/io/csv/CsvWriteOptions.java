@@ -1,11 +1,6 @@
 package tech.tablesaw.io.csv;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Paths;
 
 public class CsvWriteOptions {
@@ -26,35 +21,35 @@ public class CsvWriteOptions {
         this.lineEnd = builder.lineEnd;
     }
 
-    Writer writer() {
+    public Writer writer() {
         return writer;
     }
 
-    boolean header() {
+    public boolean header() {
         return header;
     }
 
-    char separator() {
+    public char separator() {
         return separator;
     }
 
-    char escapeChar() {
+    public char escapeChar() {
         return escapechar;
     }
 
-    char quoteChar() {
+    public char quoteChar() {
         return quotechar;
     }
 
-    String lineEnd() {
+    public String lineEnd() {
         return lineEnd;
     }
 
-    public static Builder builder(File file) {
+    public static Builder builder(File file) throws IOException {
         return new Builder(file);
     }
 
-    public static Builder builder(String fileName) {
+    public static Builder builder(String fileName) throws IOException {
         return builder(new File(fileName));
     }
 
@@ -63,7 +58,7 @@ public class CsvWriteOptions {
         private Writer writer;
         private boolean header = true;
         private char separator = ',';
-        private String lineEnd = "\n";
+        private String lineEnd = System.lineSeparator();
         private char escapeChar = '\\';
         private char quoteChar = '"';
 
@@ -72,13 +67,8 @@ public class CsvWriteOptions {
             this.writer = new FileWriter(file);
         }
 
-        public Builder(File file) {
-            try {
-                this.writer = new FileWriter(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
+        public Builder(File file) throws IOException {
+            this.writer = new FileWriter(file);
         }
 
         public Builder(Writer writer) {

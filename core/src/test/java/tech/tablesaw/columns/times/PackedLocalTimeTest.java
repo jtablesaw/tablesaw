@@ -143,7 +143,7 @@ public class PackedLocalTimeTest {
                 getMillisecondOfDay(packedTime),
                 getMillisecondOfDay(packedTime2)
                 );
-        check(localTime, packedTime2);
+        assertTimeEquals(localTime, packedTime2);
     }
 
     @Test
@@ -153,7 +153,7 @@ public class PackedLocalTimeTest {
 
         int packedTime = pack(localTime);
         int packedTime2 = withHour(7, packedTime);
-        check(localTime2, packedTime2);
+        assertTimeEquals(localTime2, packedTime2);
     }
 
     @Test
@@ -163,7 +163,7 @@ public class PackedLocalTimeTest {
 
         int packedTime = pack(localTime);
         int packedTime2 = withMinute(7, packedTime);
-        check(localTime2, packedTime2);
+        assertTimeEquals(localTime2, packedTime2);
     }
 
     @Test
@@ -172,7 +172,7 @@ public class PackedLocalTimeTest {
         LocalTime localTime2 = localTime.withSecond(42);
         int packedTime = pack(localTime);
         int packedTime2 = withSecond(42, packedTime);
-        check(localTime2, packedTime2);
+        assertTimeEquals(localTime2, packedTime2);
     }
 
     @Test
@@ -182,10 +182,10 @@ public class PackedLocalTimeTest {
 
         int packedTime = pack(localTime);
         int packedTime2 = plusSeconds(4340, packedTime);
-        check(localTime2, packedTime2);
+        assertTimeEquals(localTime2, packedTime2);
 
         int packedTime3 = minusSeconds(4340, packedTime2);
-        check(localTime, packedTime3);
+        assertTimeEquals(localTime, packedTime3);
     }
 
     @Test
@@ -195,10 +195,10 @@ public class PackedLocalTimeTest {
 
         int packedTime = pack(localTime);
         int packedTime2 = plusMinutes(77, packedTime);
-        check(localTime2, packedTime2);
+        assertTimeEquals(localTime2, packedTime2);
 
         int packedTime3 = minusMinutes(77, packedTime2);
-        check(localTime, packedTime3);
+        assertTimeEquals(localTime, packedTime3);
     }
 
     @Test
@@ -208,10 +208,10 @@ public class PackedLocalTimeTest {
 
         int packedTime = pack(localTime);
         int packedTime2 = plusHours(3, packedTime);
-        check(localTime2, packedTime2);
+        assertTimeEquals(localTime2, packedTime2);
 
         int packedTime3 = minusHours(3, packedTime2);
-        check(localTime, packedTime3);
+        assertTimeEquals(localTime, packedTime3);
     }
 
     @Test
@@ -221,10 +221,10 @@ public class PackedLocalTimeTest {
 
         int packedTime = pack(localTime);
         int packedTime2 = plusHours(20, packedTime);
-        check(localTime2, packedTime2);
+        assertTimeEquals(localTime2, packedTime2);
 
         int packedTime3 = minusHours(20, packedTime2);
-        check(localTime, packedTime3);
+        assertTimeEquals(localTime, packedTime3);
     }
 
     @Test
@@ -270,7 +270,7 @@ public class PackedLocalTimeTest {
         assertEquals(time.get(ChronoField.MILLI_OF_SECOND), t1.get(ChronoField.MILLI_OF_SECOND));
     }
 
-    private void check(LocalTime localTime2, int packedTime2) {
+    private void assertTimeEquals(LocalTime localTime2, int packedTime2) {
         assertEquals(localTime2.getHour(), getHour(packedTime2));
         assertEquals(localTime2.getMinute(), getMinute(packedTime2));
         assertEquals(localTime2.getSecond(), getSecond(packedTime2));

@@ -16,6 +16,7 @@ package tech.tablesaw.io.csv;
 
 import com.google.common.base.Strings;
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.io.ReadOptions;
 
 import java.io.File;
 import java.io.InputStream;
@@ -23,45 +24,20 @@ import java.io.Reader;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class CsvReadOptions {
+public class CsvReadOptions extends ReadOptions {
 
-    // we always have one of these (file, reader, or inputStream)
-    private final File file;
-    private final Reader reader;
-    private final InputStream inputStream;
-
-    private final String tableName;
     private final ColumnType[] columnTypes;
-    private final boolean header;
     private final Character separator;
     private final String lineEnding;
-    private final boolean sample;
-    private final String dateFormat;
-    private final String dateTimeFormat;
-    private final String timeFormat;
-    private final Locale locale;
-    private final String missingValueIndicator;
+    private final Integer maxNumberOfColumns;
 
     private CsvReadOptions(CsvReadOptions.Builder builder) {
-        file = builder.file;
-        reader = builder.reader;
-        inputStream = builder.inputStream;
-        tableName = builder.tableName;
-        columnTypes = builder.columnTypes;
-        header = builder.header;
-        separator = builder.separator;
-        sample = builder.sample;
-        dateFormat = builder.dateFormat;
-        timeFormat = builder.timeFormat;
-        dateTimeFormat = builder.dateTimeFormat;
-        lineEnding = builder.lineEnding;
-        missingValueIndicator = builder.missingValueIndicator;
+	super(builder);
 
-        if (builder.locale == null) {
-            locale = Locale.getDefault();
-        } else {
-            locale = builder.locale;
-        }
+        columnTypes = builder.columnTypes;
+        separator = builder.separator;
+        lineEnding = builder.lineEnding;
+        maxNumberOfColumns = builder.maxNumberOfColumns;
     }
 
     public static Builder builder(File file) {
@@ -118,10 +94,6 @@ public class CsvReadOptions {
         return columnTypes;
     }
 
-    public boolean header() {
-        return header;
-    }
-
     public Character separator() {
         return separator;
     }
@@ -163,26 +135,19 @@ public class CsvReadOptions {
         return DateTimeFormatter.ofPattern(dateFormat, locale);
     }
 
-    public static class Builder {
+    public Integer maxNumberOfColumns() {
+        return maxNumberOfColumns;
+    }
 
-        private InputStream inputStream;
-        private File file;
-        private Reader reader;
-        private String tableName = "";
-        private boolean header = true;
+    public static class Builder extends ReadOptions.Builder {
+
         private Character separator = ',';
         private String lineEnding;
-        private boolean sample = true;
         private ColumnType[] columnTypes;
-        private String dateFormat;
-        private String timeFormat;
-        private String dateTimeFormat;
-        private Locale locale;
-        private String missingValueIndicator;
+        private Integer maxNumberOfColumns = 10_000;
 
         public Builder(File file) {
-            this.file = file;
-            this.tableName = file.getName();
+            super(file);
         }
 
         /**
@@ -194,7 +159,7 @@ public class CsvReadOptions {
          * we skip type detection and can avoid reading the entire file
          */
         public Builder(Reader reader) {
-            this.reader = reader;
+            super(reader);
         }
 
         /**
@@ -206,7 +171,7 @@ public class CsvReadOptions {
          * we skip type detection and can avoid reading the entire file
          */
         public Builder(InputStream stream) {
-            this.inputStream = stream;
+            super(stream);
         }
 
         public Builder tableName(String tableName) {
@@ -230,7 +195,7 @@ public class CsvReadOptions {
         }
 
         public Builder header(boolean header) {
-            this.header = header;
+            super.header(header);
             return this;
         }
 
@@ -254,6 +219,12 @@ public class CsvReadOptions {
             return this;
         }
 
+        public Builder minimizeColumnSizes(boolean minimize) {
+            this.minimizeColumnSizes = minimize;
+            return this;
+        }
+
+
         public Builder locale(Locale locale) {
             this.locale = locale;
             return this;
@@ -264,8 +235,18 @@ public class CsvReadOptions {
             return this;
         }
 
+        /**
+         * Defines maximal value of columns in csv file.
+         * @param maxNumberOfColumns - must be positive integer. Default is 512.         *
+         */
+        public Builder maxNumberOfColumns(Integer maxNumberOfColumns) {
+            this.maxNumberOfColumns = maxNumberOfColumns;
+            return this;
+        }
+
         public CsvReadOptions build() {
             return new CsvReadOptions(this);
         }
     }
+
 }

@@ -18,10 +18,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.columns.AbstractColumn;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
-import tech.tablesaw.columns.strings.StringColumnType;
 import tech.tablesaw.columns.strings.StringFilters;
 import tech.tablesaw.columns.strings.StringMapFunctions;
 import tech.tablesaw.columns.strings.StringReduceUtils;
@@ -46,9 +45,7 @@ import java.util.Set;
  * of missing values in this class's methods.
  */
 public class TextColumn extends AbstractColumn<String>
-        implements StringFilters, StringMapFunctions, StringReduceUtils {
-
-    public static final String MISSING_VALUE = TextColumnType.missingValueIndicator();
+        implements CategoricalColumn<String>, StringFilters, StringMapFunctions, StringReduceUtils {
 
     // holds each element in the column.
     private List<String> values;
@@ -64,7 +61,7 @@ public class TextColumn extends AbstractColumn<String>
     private final Comparator<String> descendingStringComparator = Comparator.reverseOrder();
 
     private TextColumn(String name, List<String> strings) {
-        super(TextColumnType.INSTANCE, name);
+        super(TextColumnType.instance(), name);
         values = new ArrayList<>(strings.size());
         for (String string : strings) {
             append(string);
@@ -72,12 +69,12 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     private TextColumn(String name) {
-        super(TextColumnType.INSTANCE, name);
+        super(TextColumnType.instance(), name);
         values = new ArrayList<>(DEFAULT_ARRAY_SIZE);
     }
 
     private TextColumn(String name, String[] strings) {
-        super(TextColumnType.INSTANCE, name);
+        super(TextColumnType.instance(), name);
         values = new ArrayList<>(strings.length);
         for (String string : strings) {
             append(string);
@@ -85,12 +82,12 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     public static boolean valueIsMissing(String string) {
-        return MISSING_VALUE.equals(string);
+        return TextColumnType.missingValueIndicator().equals(string);
     }
 
     @Override
     public TextColumn appendMissing() {
-        append(MISSING_VALUE);
+        append(TextColumnType.missingValueIndicator());
         return this;
     }
 
@@ -109,14 +106,14 @@ public class TextColumn extends AbstractColumn<String>
     public static TextColumn create(String name, int size) {
         ArrayList<String> strings = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            strings.add(StringColumnType.missingValueIndicator());
+            strings.add(TextColumnType.missingValueIndicator());
         }
         return new TextColumn(name, strings);
     }
 
     @Override
     public boolean isMissing(int rowNumber) {
-        return get(rowNumber).equals(MISSING_VALUE);
+        return get(rowNumber).equals(TextColumnType.missingValueIndicator());
     }
 
     public void setPrintFormatter(StringColumnFormatter formatter) {
@@ -224,7 +221,7 @@ public class TextColumn extends AbstractColumn<String>
 
         if (n >= 0) {
             for (int m = 0; m < n; m++) {
-                copy.appendCell(MISSING_VALUE);
+                copy.appendCell(TextColumnType.missingValueIndicator());
             }
             for (int i = 0; i < size(); i++) {
                 if (i + n >= size()) {
@@ -237,7 +234,7 @@ public class TextColumn extends AbstractColumn<String>
                 copy.appendCell(get(i));
             }
             for (int m = 0; m > n; m--) {
-                copy.appendCell(MISSING_VALUE);
+                copy.appendCell(TextColumnType.missingValueIndicator());
             }
         }
 
@@ -260,7 +257,7 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     public TextColumn set(int rowIndex, String stringValue) {
-        String str = MISSING_VALUE;
+        String str = TextColumnType.missingValueIndicator();
         if (stringValue != null) {
             str = stringValue;
         }
@@ -319,7 +316,7 @@ public class TextColumn extends AbstractColumn<String>
 
     @Override
     public Column<String> setMissing(int i) {
-        return set(i, StringColumnType.missingValueIndicator());
+        return set(i, TextColumnType.missingValueIndicator());
     }
 
     /**
@@ -336,12 +333,12 @@ public class TextColumn extends AbstractColumn<String>
 
     @Override
     public TextColumn appendCell(String object) {
-        values.add(StringColumnType.DEFAULT_PARSER.parse(object));
+        values.add(TextColumnType.DEFAULT_PARSER.parse(object));
         return this;
     }
 
     @Override
-    public TextColumn appendCell(String object, AbstractParser<?> parser) {
+    public TextColumn appendCell(String object, AbstractColumnParser<?> parser) {
         return appendObj(parser.parse(object));
     }
 
@@ -410,7 +407,7 @@ public class TextColumn extends AbstractColumn<String>
     public int countMissing() {
         int count = 0;
         for (int i = 0; i < size(); i++) {
-            if (MISSING_VALUE.equals(get(i))) {
+            if (TextColumnType.missingValueIndicator().equals(get(i))) {
                 count++;
             }
         }
@@ -423,7 +420,7 @@ public class TextColumn extends AbstractColumn<String>
         Iterator<String> iterator = iterator();
         while(iterator.hasNext()) {
             String v = iterator.next();
-            if (valueIsMissing(v)) {
+            if (!valueIsMissing(v)) {
                 noMissing.append(v);
             }
         }
@@ -519,7 +516,7 @@ public class TextColumn extends AbstractColumn<String>
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public String[] asObjectArray() {
         final String[] output = new String[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = get(i);
@@ -527,6 +524,7 @@ public class TextColumn extends AbstractColumn<String>
         return output;
     }
 
+    @Override
     public StringColumn asStringColumn() {
         StringColumn textColumn = StringColumn.create(name(), size());
         for (int i = 0; i < size(); i++) {

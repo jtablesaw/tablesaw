@@ -12,11 +12,31 @@ import java.util.Map;
 
 public class Line extends Component {
 
+    public enum Dash {
+        SOLID("solid"),
+        DASH("dash"),
+        DOT("dot"),
+        LONG_DASH("longdash"),
+        LONG_DASH_DOT("longdashdot"),
+        DASH_DOT("dashdot");
+
+        private final String value;
+
+        Dash(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
     private final String color;
     private final double width;
     private final double smoothing;
     private final Shape shape;
-    private final String dash;
+    private final Dash dash;
     private final boolean simplify;
 
     private Line(LineBuilder builder) {
@@ -54,6 +74,12 @@ public class Line extends Component {
         return writer.toString();
     }
 
+    /**
+     * Determines the shape of the line
+     * Linear (i.e. straight lines) is the default.
+     * With "spline" the lines are drawn using spline interpolation.
+     * The other available values correspond to step-wise line shapes.
+     */
     public enum Shape {
         LINEAR("linear"),
         SPLINE("spline"),
@@ -74,68 +100,64 @@ public class Line extends Component {
         }
     }
 
-    public String getColor() {
-        return color;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public double getSmoothing() {
-        return smoothing;
-    }
-
-    public Shape getShape() {
-        return shape;
-    }
-
-    public String getDash() {
-        return dash;
-    }
-
-    public boolean isSimplify() {
-        return simplify;
-    }
-
     public static LineBuilder builder() {
         return new LineBuilder();
     }
 
     public static class LineBuilder {
-        private String color = "gray";
+        private String color;
         private double width = 2;
         private double smoothing = 1;
         private Shape shape = Shape.LINEAR;
-        private String dash = "solid";
+        private Dash dash = Dash.SOLID;
         private boolean simplify = true;
 
+        /**
+         * Sets the line color
+         */
         public LineBuilder color(String color) {
             this.color = color;
             return this;
         }
+
         public LineBuilder width(double width) {
-            Preconditions.checkArgument(width >= 0);
+            Preconditions.checkArgument(width >= 0, "Line width must be >= 0.");
             this.width = width;
             return this;
         }
+
+        /**
+         * Sets the smoothing parameter
+         * @param smoothing a value between 0 and 1.3, inclusive
+         */
         public LineBuilder smoothing(double smoothing) {
-            Preconditions.checkArgument(smoothing >= 0 && smoothing <= 1.3);
+            Preconditions.checkArgument(smoothing >= 0 && smoothing <= 1.3,
+                    "Smoothing parameter must be between 0 and 1.3, inclusive.");
             this.smoothing = smoothing;
             return this;
         }
-        public LineBuilder dash(String dash) {
+
+        public LineBuilder dash(Dash dash) {
             this.dash = dash;
             return this;
         }
+
+        /**
+         * Simplifies lines by removing nearly-collinear points.
+         * When transitioning lines, it may be desirable to disable this so that the number of points along
+         * the resulting SVG path is unaffected.
+         * @param b     true if you want to simplify. True is the default
+         */
         public LineBuilder simplify(boolean b) {
             this.simplify = b;
             return this;
         }
+
         public LineBuilder shape(Shape shape) {
             this.shape = shape;
             return this;
         }
+
         public Line build() {
             return new Line(this);
         }

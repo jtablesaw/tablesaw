@@ -12,6 +12,8 @@ import static org.junit.Assert.assertEquals;
 
 public class DataFrameWriterTest {
 
+    private static final String LINE_END = System.lineSeparator();
+
     private double[] v1 = {1, 2, 3, 4, 5, NaN};
     private double[] v2 = {1, 2, 3, 4, 5, NaN};
     private Table table = Table.create("t",
@@ -20,33 +22,33 @@ public class DataFrameWriterTest {
     );
 
     @Test
-    public void csv() throws Exception {
+    public void csv() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         table.write().csv(baos);
         String output = baos.toString();
-        assertEquals("v,v2\n" +
-                "1.0,1.0\n" +
-                "2.0,2.0\n" +
-                "3.0,3.0\n" +
-                "4.0,4.0\n" +
-                "5.0,5.0\n" +
-                ",\n" +
+        assertEquals("v,v2" + LINE_END +
+                "1.0,1.0" + LINE_END +
+                "2.0,2.0" + LINE_END +
+                "3.0,3.0" + LINE_END +
+                "4.0,4.0" + LINE_END +
+                "5.0,5.0" + LINE_END +
+                "," + LINE_END +
                 "", output);
     }
 
     @Test
-    public void csv2() throws Exception {
+    public void csv2() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter osw = new OutputStreamWriter(baos);
         table.write().csv(osw);
         String output = baos.toString();
-        assertEquals("v,v2\n" +
-                "1.0,1.0\n" +
-                "2.0,2.0\n" +
-                "3.0,3.0\n" +
-                "4.0,4.0\n" +
-                "5.0,5.0\n" +
-                ",\n" +
+        assertEquals("v,v2" + LINE_END +
+                "1.0,1.0" + LINE_END +
+                "2.0,2.0" + LINE_END +
+                "3.0,3.0" + LINE_END +
+                "4.0,4.0" + LINE_END +
+                "5.0,5.0" + LINE_END +
+                "," + LINE_END +
                 "", output);
     }
 
@@ -55,16 +57,16 @@ public class DataFrameWriterTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         table.write().html(baos);
         String output = baos.toString();
-        assertEquals("<thead>\n" +
-                "<tr><th>v</th><th>v 2</th></tr>\n" +
-                "</thead>\n" +
-                "<tbody>\n" +
-                "<tr><td>1.0</td><td>1.0</td></tr>\n" +
-                "<tr><td>2.0</td><td>2.0</td></tr>\n" +
-                "<tr><td>3.0</td><td>3.0</td></tr>\n" +
-                "<tr><td>4.0</td><td>4.0</td></tr>\n" +
-                "<tr><td>5.0</td><td>5.0</td></tr>\n" +
-                "<tr><td></td><td></td></tr>\n" +
-                "</tbody>\n", output);
+        assertEquals("<thead>" + LINE_END +
+                "<tr><th>v</th><th>v 2</th></tr>" + LINE_END +
+                "</thead>" + LINE_END +
+                "<tbody>" + LINE_END +
+                "<tr><td>1.0</td><td>1.0</td></tr>" + LINE_END +
+                "<tr><td>2.0</td><td>2.0</td></tr>" + LINE_END +
+                "<tr><td>3.0</td><td>3.0</td></tr>" + LINE_END +
+                "<tr><td>4.0</td><td>4.0</td></tr>" + LINE_END +
+                "<tr><td>5.0</td><td>5.0</td></tr>" + LINE_END +
+                "<tr><td></td><td></td></tr>" + LINE_END +
+                "</tbody>" + LINE_END, output);
     }
 }

@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * An index for four-byte integer and Date columns
  */
-public class StringIndex {
+public class StringIndex implements Index {
 
     private final Map<String, IntArrayList> index;
 

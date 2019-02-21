@@ -34,10 +34,10 @@ To create a column you can use one of its static *create()* methods:
 
 ```java
 double[] numbers = {1, 2, 3, 4};
-NumberColumn nc = NumberColumn.create("Test", numbers);
-out(nc.print());
+DoubleColumn nc = DoubleColumn.create("Test", numbers);
+System.out.println(nc.print());
 ```
-which produces: [^1]
+which produces:
 ```java
 Column: Test
 1.0
@@ -56,9 +56,10 @@ which returns 3.0.
 Tablesaw makes columns easy to work with. Operations that work on numbers in standard Java, for example, often work on *columns* of numbers in Tablesaw. To multiply every value in a column by 4, we use the *multiply()* method, which returns a new column like the original.
 
 ```java
-NumberColumn nc2 = nc.multiply(4);
+DoubleColumn nc2 = nc.multiply(4);
+System.out.println(nc2.print());
 ```
-producing: [^1] 
+producing:
 
 ```java
 Column: Test * 4.0
@@ -81,7 +82,7 @@ This just covers the most basic information about columns. You can find more in 
 
 ### Selections
 
-Before going on to tables, we should talk about *selections*. *Selections* are used to filter both tables and columns. Often they work behind the scenes, but you can use them directly. For example, consider our NumberColumn containing the values {1, 2, 3, 4}. You can filter that column by sending it a message. For example: 
+Before going on to tables, we should talk about *selections*. *Selections* are used to filter both tables and columns. Often they work behind the scenes, but you can use them directly. For example, consider our `DoubleColumn` containing the values {1, 2, 3, 4}. You can filter that column by sending it a message. For example: 
 
 ```java
 nc.isLessThan(3);
@@ -89,10 +90,10 @@ nc.isLessThan(3);
 
 This operation returns a *Selection*. Logically, it's a bitmap of the same size as the original column. The method above, effectively, returns 1, 1, 0, 0, since the first two values in the column are less than three, and the last two are not. 
 
-What you probably wanted was not a Selection object, but a new NumberColumn that contains only the values that passed the filter. To get this, you use the *where(aSelection)* method to apply the selection:
+What you probably wanted was not a `Selection` object, but a new `DoubleColumn` that contains only the values that passed the filter. To get this, you use the *where(aSelection)* method to apply the selection:
 
 ```java
-NumberColumn filtered = nc.where(nc.isLessThan(3));
+DoubleColumn filtered = nc.where(nc.isLessThan(3));
 > Column: Test < 3.0
 1.0
 2.0
@@ -101,7 +102,7 @@ NumberColumn filtered = nc.where(nc.isLessThan(3));
 Doing this in two steps provides many benefits. For one, it lets us combine filters. For example: 
 
 ```java
-NumberColumn filtered = nc.where(nc.isLessThan(3).and(nc.isOdd());
+DoubleColumn filtered = nc.where(nc.isLessThan(3).and(nc.isOdd());
 ```
 
 If the methods returned columns directly, they couldn't be combined this way.  It also lets us use the same method for filtering both tables and columns, as you'll see below.
@@ -120,17 +121,17 @@ nc.where(Selection.withoutRange(1, 3));		// returns row 0
 If you have several columns of the same length as you would in a table of data, you can make a selection with one column and use it to filter another:
 
 ```java
-NumberColumn result = firstColumn.where(someOtherColumn.startsWith("foo"));
+DoubleColumn result = firstColumn.where(someOtherColumn.startsWith("foo"));
 ```
 
-> **Key point:** Note the methods *startsWith(aString)*, *isLessThan(aNumber)*, and *isOdd()*. These were predefined for your use. There are many such methods that can be used in building queries. For StringColumn, they're defined in the [tech.tablesaw.columns.strings.StringFilters interface](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/columns/strings/StringFilters.html). It also includes *endsWith()*, *isEmpty()*, *isAlpha()*, *containsString()*[^2], etc. Each column has a similar set of filter operations. They can all be found in the filter interfaces located in sub-folders of tech.tablesaw.columns (e.g. tech.tablesaw.columns.dates.DateFilters). 
+> **Key point:** Note the methods *startsWith(aString)*, *isLessThan(aNumber)*, and *isOdd()*. These were predefined for your use. There are many such methods that can be used in building queries. For StringColumn, they're defined in the [tech.tablesaw.columns.strings.StringFilters interface](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/columns/strings/StringFilters.html). It also includes *endsWith()*, *isEmpty()*, *isAlpha()*, *containsString()*[^1], etc. Each column has a similar set of filter operations. They can all be found in the filter interfaces located in sub-folders of tech.tablesaw.columns (e.g. tech.tablesaw.columns.dates.DateFilters). 
 
 #### Map functions
 
 Map functions are methods defined on columns that return other new Columns as their result. You've already seen one: The column *multiply(aNumber)* method above is a map function with a scalar argument. To multiple the values in two columns, use *multiply(aNumberColumn)*:
 
 ```java
-NumberColumn newColumn = nc1.multiply(nc2);
+DoubleColumn newColumn = nc1.multiply(nc2);
 ```
 
 Each value in column nc1 is multiplied by the corresponding value in nc2, rather than by a scalar value in the earlier example.
@@ -165,7 +166,7 @@ NumberColumn has many more aggregate functions. For example, to calculate the st
 double stdDev = nc.standardDeviation();	
 ```
 
-> **Key point:** NumberColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and so on. These are defined in the [NumberColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/NumberColumn.html) class. 
+> **Key point:** NumberColumn supports many aggregation functions, including many of the most useful. Among those available are *sum*, *count*, *mean*, *median*, *percentile(n)*, *range*, *variance*, *sumOfLogs*, and so on. These are defined in the [NumericColumn](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/api/NumericColumn.html) class. 
 >
 
 When we discuss tables below, we'll show how to calculate sub-totals in one or more numeric columns by the values in one or more grouping columns.
@@ -181,10 +182,10 @@ You can create a table in code. Here we create a table and add two new columns t
 String[] animals = {"bear", "cat", "giraffe"};
 double[] cuteness = {90.1, 84.3, 99.7};
 
-Table cuteAnimals = Table.create("Cute Animals)
+Table cuteAnimals = Table.create("Cute Animals")
 	.addColumns(
 		StringColumn.create("Animal types", animals),
-		NumberColumn.create("rating", cuteness));
+		DoubleColumn.create("rating", cuteness));
 ```
 
 #### Importing data
@@ -230,7 +231,7 @@ Table tail = myTable.last(3);
 
 Table's *toString()* method returns a String representation like those shown above. It returns a limited number of rows by default, but you can also use *table.printAll()*, or *table.print(n)* to get the output you want.
 
-Of course, this is just the beginning of exploratory data analysis. You can also use numeric and visual tools to explore your data. These facilities are described in the documentation on statistics and [plotting](https://jtablesaw.github.io/tablesaw/userguide/jsplots), respectively.
+Of course, this is just the beginning of exploratory data analysis. You can also use numeric and visual tools to explore your data. These facilities are described in the documentation on statistics and [plotting](https://jtablesaw.github.io/tablesaw/userguide/Introduction_to_plotting), respectively.
 
 #### Working with a table's columns
 
@@ -268,22 +269,22 @@ Column nc = table.column("Foo"); // returns the column named 'Foo' if it's in th
 // or 
 Column nc = table.column(0);  // returns the first column
 
-// To work with a NumberColumn you can cast the return value
-NumberColumn nc = (NumberColumn) table.column(0); 
+// To work with a StringColumn you can cast the return value
+StringColumn nc = (StringColumn) table.column(0); 
 // Now you can do some numeric stuff with the column nc
 ```
 
 Table also supports methods that return columns of the desired type directly:
 
 ```Java
-NumberColumn nc = table.numberColumn(0); 
+StringColumn nc = table.stringColumn(0); 
 DateColumn dc = table.dateColumn("start date");
 ```
 
 If you want all the columns of specific type, you can get those as well. The method columnsOfType(aColumnType) returns them as a List, but you still have to cast the results. For example, to format all columns as ints when you print them, you could do this. 
 
 ```Java
-table.columnOfType(ColumnType.DOUBLE).forEach(x ->                                               		((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
+table.columnOfType(ColumnType.DOUBLE).forEach(x ->                                               		((DoubleColumn)x).setPrintFormatter(NumberColumnFormatter.ints()));
 ```
 
 > **Key point:** You may want a specific kind of column to work with. Either use the standard *column()* method and cast the result or use one of the type specific methods (like *numberColumn()*) that handle the cast for you. There are also methods or getting columns of a specific type. 
@@ -434,7 +435,7 @@ Table percents = table.xTabTablePercents("month", "who");
 
 // make table print as percents with no decimals instead of the raw doubles it holds
 percents.columnsOfType(ColumnType.DOUBLE)
-    .forEach(x -> ((NumberColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
+    .forEach(x -> ((DoubleColumn)x).setPrintFormatter(NumberColumnFormatter.percent(0)));
 System.out.println(percents);
 ```
 The formatted output is shown below.
@@ -457,16 +458,10 @@ The formatted output is shown below.
      Total  |  20%  |     37%  |       17%  |        9%  |     3%  |    14%  |   100%  |
 ```
 
-See the section on [Cross Tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs), and the JavaDocs for the [CrostTab](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/aggregate/CrossTab.html) class. 
+See the section on [Cross Tabs](https://jtablesaw.github.io/tablesaw/userguide/crosstabs), and the JavaDocs for the [CrossTab](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/aggregate/CrossTab.html) class. 
 
 ## Conclusion
 
 We've covered a lot of ground. To learn more, please take a look at the [User Guide](https://jtablesaw.github.io/tablesaw/userguide/toc) or API documentation ([Java Docs](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/index)).
 
-[^1]: The method shown does not actually "produce" any output For that you would call *System.out.println()*. For brevity, this "faux" output will be shown indented by one tab beneath the code that produced it.
-[^2]: Note that containsString(String subString) is different from contains(). The first method looks at each string in the column to see if it conains the substring. The second method looks at every row in the column and returns true if any matches the entire string. In other words, contains is like contains as defined on List<String>. , etc.
-
-
-
-
-
+[^1]: Note that containsString(String subString) is different from contains(). The first method looks at each string in the column to see if it conains the substring. The second method looks at every row in the column and returns true if any matches the entire string. In other words, contains is like contains as defined on List<String>. , etc.

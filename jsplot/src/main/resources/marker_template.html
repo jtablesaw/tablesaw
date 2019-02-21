@@ -3,10 +3,19 @@
     size: {{size}},
 {% endif %}
 {% if color is not null %}
-    color: '{{color | raw}}',
+    color: {{color | raw}},
+{% endif %}
+{% if colorArray is not null %}
+    color: {{colorArray | raw}},
 {% endif %}
 {% if colorScale is not null %}
     colorscale: '{{colorScale | raw}}',
+{% endif %}
+{% if colorBar is not null %}
+    colorbar: {{colorBar | raw}},
+{% endif %}
+{% if gradient is not null %}
+    gradient: {{gradient | raw}},
 {% endif %}
 {% if cMax is not null %}
     cmax: {{cMax}},
@@ -16,6 +25,9 @@
 {% endif %}
 {% if symbol is not null %}
     symbol: '{{symbol | raw}}',
+{% endif %}
+{% if line is not null %}
+    line: {{line | raw}},
 {% endif %}
 {% if cAuto is not null %}
     cauto: {{cAuto}},

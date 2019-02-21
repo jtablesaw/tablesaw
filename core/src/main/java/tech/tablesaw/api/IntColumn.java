@@ -12,7 +12,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.shorts.ShortArrayList;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.AbstractParser;
+import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
@@ -26,8 +26,6 @@ import java.util.function.Predicate;
 
 public class IntColumn extends NumberColumn<Integer> implements CategoricalColumn<Integer> {
 
-    private static final IntColumnType COLUMN_TYPE = ColumnType.INTEGER;
-
     /**
      * Compares two ints, such that a sort based on this comparator would sort in descending order
      */
@@ -36,7 +34,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     private final IntArrayList data;
 
     protected IntColumn(final String name, IntArrayList data) {
-        super(COLUMN_TYPE, name);
+        super(IntColumnType.instance(), name);
         this.printFormatter = NumberColumnFormatter.ints();
         this.data = data;
     }
@@ -116,7 +114,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
                 values.add(getInt(i));
             }
         }
-        final IntColumn column = IntColumn.create(name() + " Unique values", values.size());
+        final IntColumn column = IntColumn.create(name() + " Unique values");
         for (int value : values) {
             column.append(value);
         }
@@ -207,7 +205,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     }
 
     @Override
-    public Object[] asObjectArray() {
+    public Integer[] asObjectArray() {
         final Integer[] output = new Integer[size()];
         for (int i = 0; i < size(); i++) {
             output[i] = getInt(i);
@@ -260,7 +258,16 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
 
     @Override
     public byte[] asBytes(int rowNumber) {
-        return ByteBuffer.allocate(COLUMN_TYPE.byteSize()).putInt(getInt(rowNumber)).array();
+        return ByteBuffer.allocate(IntColumnType.instance().byteSize()).putInt(getInt(rowNumber)).array();
+    }
+
+    @Override
+    public String getString(final int row) {
+        final int value = getInt(row);
+        if (IntColumnType.isMissingValue(value)) {
+            return "";
+        }
+        return String.valueOf(printFormatter.format(value));
     }
 
     @Override
@@ -347,7 +354,7 @@ public class IntColumn extends NumberColumn<Integer> implements CategoricalColum
     }
 
     @Override
-    public IntColumn appendCell(final String value, AbstractParser<?> parser) {
+    public IntColumn appendCell(final String value, AbstractColumnParser<?> parser) {
         try {
             return append(parser.parseInt(value));
         } catch (final NumberFormatException e) {

@@ -15,7 +15,7 @@
 package tech.tablesaw.examples;
 
 import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
@@ -126,7 +126,7 @@ public class TornadoExample extends AbstractExample {
         // calculate the difference between a date and the prior date using the lagged column
         DateColumn summerDate = summer.dateColumn("Date");
         DateColumn laggedDate = summer.dateColumn("Date lag(1)");
-        NumberColumn delta = laggedDate.daysUntil(summerDate);  // the lagged date is earlier
+        IntColumn delta = laggedDate.daysUntil(summerDate);  // the lagged date is earlier
         summer.addColumns(delta);
 
         out(summer.first(4));

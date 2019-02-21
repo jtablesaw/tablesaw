@@ -31,7 +31,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.time.temporal.UnsupportedTemporalTypeException;
 
-import static tech.tablesaw.api.DateColumn.MISSING_VALUE;
 import static tech.tablesaw.api.DateColumn.valueIsMissing;
 
 /**
@@ -63,7 +62,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
 	IntColumn newColumn = IntColumn.create(this.name() + " day of month");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (DateColumn.valueIsMissing(c1)) {
+            if (valueIsMissing(c1)) {
         	newColumn.appendMissing();
             } else {
                 newColumn.append(PackedLocalDate.getDayOfMonth(c1));
@@ -76,7 +75,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
 	IntColumn newColumn = IntColumn.create(this.name() + " day of year");
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (DateColumn.valueIsMissing(c1)) {
+            if (valueIsMissing(c1)) {
         	newColumn.appendMissing();
             } else {
                 newColumn.append((short) PackedLocalDate.getDayOfYear(c1));
@@ -377,7 +376,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
 
         for (int r = 0; r < column1.size(); r++) {
             int packedDate = column1.getIntInternal(r);
-            if (packedDate == MISSING_VALUE) {
+            if (packedDate == DateColumnType.missingValueIndicator()) {
         	newColumn.appendMissing();
             } else {
                 newColumn.appendInternal(PackedLocalDate.plus(value, unit, packedDate));

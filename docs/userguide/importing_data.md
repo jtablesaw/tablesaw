@@ -21,7 +21,7 @@ You can create an options object with a builder:
 
 ```Java
 CsvReadOptionsBuilder builder = 
-	CsvReadOptions.builder()
+	CsvReadOptions.builder("myFile.csv")
 		.separator('\t')			// table is tab-delimited
 		.header(false)				// no header
 		.dateFormat("yyyy.MM.dd");  // the date format to use. 
