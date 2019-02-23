@@ -32,9 +32,10 @@ public class XlsxReaderTest {
 
     private Table[] readN(final String name, final int expectedCount) {
         try {
-            final Table[] tables = Table.read().xlsx(XlsxReadOptions.builder("../data/" + name + ".xlsx"));
-            Assert.assertNotNull(tables);
-            Assert.assertEquals(expectedCount, tables.length);
+        	String fileName = name + ".xlsx";
+            final Table[] tables = Table.read().xlsx(XlsxReadOptions.builder("../data/" + fileName));
+            Assert.assertNotNull("No tables read from " + fileName, tables);
+            Assert.assertEquals("Wrong number of tables in " + fileName, expectedCount, tables.length);
             return tables;
         } catch (final IOException e) {
             fail(e.getMessage());
@@ -45,8 +46,8 @@ public class XlsxReaderTest {
         final Table table = readN(name, 1)[0];
         int colNum = 0;
         for (final Column<?> column : table.columns()) {
-            Assert.assertEquals(columnNames[colNum], column.name());
-            Assert.assertEquals(size, column.size());
+            Assert.assertEquals("Wrong column name", columnNames[colNum], column.name());
+            Assert.assertEquals("Wrong column size", size, column.size());
             colNum++;
         }
         return table;
@@ -54,7 +55,7 @@ public class XlsxReaderTest {
 
     private <T> void checkColumnValues(final Column<T> column, final T... ts) {
         for (int i = 0; i < column.size(); i++) {
-            Assert.assertEquals(ts[i], column.get(i));
+            Assert.assertEquals("Wrong value in row " + i + " of column " + column.name(), ts[i], column.get(i));
         }
     }
 
