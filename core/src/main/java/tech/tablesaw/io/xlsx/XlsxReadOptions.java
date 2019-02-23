@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.ReadOptions.Builder;
 
 public class XlsxReadOptions extends ReadOptions {
 
@@ -13,6 +12,16 @@ public class XlsxReadOptions extends ReadOptions {
         super(builder);
     }
 
+    public static Builder builder(File file) {
+        Builder builder = new Builder(file);
+		builder.tableName(file.getName());
+		return builder;
+    }
+
+    public static Builder builder(String fileName) {
+        return new Builder(new File(fileName));
+    }
+    
     public static class Builder extends ReadOptions.Builder {
 
         public Builder(final File file) {

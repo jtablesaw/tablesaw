@@ -17,7 +17,6 @@ package tech.tablesaw.io.xlsx;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 
 import org.junit.Assert;
@@ -33,10 +32,7 @@ public class XlsxReaderTest {
 
     private Table[] readN(final String name, final int expectedCount) {
         try {
-            String fileName = name + ".xlsx";
-			final InputStream resource = getClass().getResourceAsStream(fileName);
-            Assert.assertNotNull("Didn't find " + fileName + " in the context of " + this.getClass(), resource);
-            final Table[] tables = Table.read().xlsx(new XlsxReadOptions.Builder(resource));
+            final Table[] tables = Table.read().xlsx(XlsxReadOptions.builder("../data/" + name + ".xlsx"));
             Assert.assertNotNull(tables);
             Assert.assertEquals(expectedCount, tables.length);
             return tables;
