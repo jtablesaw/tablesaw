@@ -33,8 +33,9 @@ public class XlsxReaderTest {
 
     private Table[] readN(final String name, final int expectedCount) {
         try {
-            final InputStream resource = getClass().getResourceAsStream(name + ".xlsx");
-            Assert.assertNotNull(resource);
+            String fileName = name + ".xlsx";
+			final InputStream resource = getClass().getResourceAsStream(fileName);
+            Assert.assertNotNull("Didn't find " + fileName + " in the context of " + this.getClass(), resource);
             final Table[] tables = Table.read().xlsx(new XlsxReadOptions.Builder(resource));
             Assert.assertNotNull(tables);
             Assert.assertEquals(expectedCount, tables.length);

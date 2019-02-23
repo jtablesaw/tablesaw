@@ -23,9 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -39,9 +37,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.AbstractColumnParser;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.io.ReadOptions;
 
 @Immutable
 public class XlsxReader {
