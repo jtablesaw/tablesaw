@@ -205,8 +205,11 @@ public class XlsxReader {
                         column = altColumn;
                         columns.set(colNum, column);
                     }
-                } else if (column != null) {
-                    column.appendMissing();
+                }
+                if (column != null) {
+                	while (columns.size() < rowNum) {
+                		column.appendMissing();
+                	}
                 }
             }
         }
