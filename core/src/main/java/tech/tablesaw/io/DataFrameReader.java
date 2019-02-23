@@ -22,6 +22,8 @@ import tech.tablesaw.io.fixed.FixedWidthReader;
 import tech.tablesaw.io.html.HtmlTableReader;
 import tech.tablesaw.io.jdbc.SqlResultSetReader;
 import tech.tablesaw.io.json.JsonReader;
+import tech.tablesaw.io.xlsx.XlsxReadOptions;
+import tech.tablesaw.io.xlsx.XlsxReader;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -114,5 +116,15 @@ public class DataFrameReader {
 
     public Table html(String url) throws IOException {
         return new HtmlTableReader().read(url);
+    }
+    
+    // xlsx
+    
+    public Table[] xlsx(XlsxReadOptions options) throws IOException {
+        return new XlsxReader().read(options);
+    }
+
+    public Table[] xlsx(XlsxReadOptions.Builder options) throws IOException {
+        return xlsx(options.build());
     }
 }
