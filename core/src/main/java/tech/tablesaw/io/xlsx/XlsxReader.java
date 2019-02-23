@@ -46,14 +46,7 @@ import tech.tablesaw.io.ReadOptions;
 @Immutable
 public class XlsxReader {
 
-    /**
-     * Constructs an XslxReader
-     */
-    public XlsxReader() {
-    }
-
     public Table[] read(final XlsxReadOptions options) throws IOException {
-
         final byte[] bytes = null;
         final InputStream input = getInputStream(options, bytes);
         final Collection<Table> tables = new ArrayList<Table>();
@@ -313,14 +306,5 @@ public class XlsxReader {
         }
         column = columnType.create(name);
         return column;
-    }
-
-    private Map<String, AbstractColumnParser<?>> getParserMap(final ReadOptions options, final Table table) {
-        final Map<String, AbstractColumnParser<?>> parserMap = new HashMap<>();
-        for (final Column<?> column : table.columns()) {
-            final AbstractColumnParser<?> parser = column.type().customParser(options);
-            parserMap.put(column.name(), parser);
-        }
-        return parserMap;
     }
 }

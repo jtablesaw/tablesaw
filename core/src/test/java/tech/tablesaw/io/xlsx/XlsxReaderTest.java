@@ -75,8 +75,4 @@ public class XlsxReaderTest {
         checkColumnValues((Column<Boolean>) table.column("booleancol"), true, false);
         checkColumnValues((Column<LocalDateTime>) table.column("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), LocalDateTime.of(2020, 3, 23, 21, 55, 10));
     }
-
-    public static void main(final String[] args) {
-        System.out.println(((long) Integer.MAX_VALUE) + 1);
-    }
 }
