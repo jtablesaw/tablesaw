@@ -36,6 +36,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 
@@ -196,7 +199,7 @@ public class XlsxReader {
                     if (column == null) {
                         column = createColumn(headerNames.get(colNum), cell);
                         columns.set(colNum, column);
-                        while (columns.size() < rowNum) {
+                        while (column.size() < rowNum - tableArea[0]) {
                             column.appendMissing();
                         }
                     }
@@ -207,7 +210,7 @@ public class XlsxReader {
                     }
                 }
                 if (column != null) {
-                	while (columns.size() < rowNum) {
+                	while (column.size() <= rowNum - tableArea[0]) {
                 		column.appendMissing();
                 	}
                 }
@@ -237,17 +240,17 @@ public class XlsxReader {
                         shortColumn.append((short) num);
                         return null;
                     } else if ((int) num == num) {
-                        Column<Integer> altColumn = ColumnType.INTEGER.create(column.name());
+                        Column<Integer> altColumn = IntColumn.create(column.name(), column.size());
                         altColumn = shortColumn.mapInto(s -> (int) s, altColumn);
                         altColumn.append((int) num);
                         return altColumn;
                     } else if ((long) num == num) {
-                        Column<Long> altColumn = ColumnType.LONG.create(column.name());
+                        Column<Long> altColumn = LongColumn.create(column.name(), column.size());
                         altColumn = shortColumn.mapInto(s -> (long) s, altColumn);
                         altColumn.append((long) num);
                         return altColumn;
                     } else {
-                        Column<Double> altColumn = ColumnType.DOUBLE.create(column.name());
+                        Column<Double> altColumn = DoubleColumn.create(column.name(), column.size());
                         altColumn = shortColumn.mapInto(s -> (double) s, altColumn);
                         altColumn.append(num);
                         return altColumn;
@@ -258,12 +261,12 @@ public class XlsxReader {
                         intColumn.append((int) num);
                         return null;
                     } else if ((long) num == num) {
-                        Column<Long> altColumn = ColumnType.LONG.create(column.name());
+                        Column<Long> altColumn = LongColumn.create(column.name(), column.size());
                         altColumn = intColumn.mapInto(s -> (long) s, altColumn);
                         altColumn.append((long) num);
                         return altColumn;
                     } else {
-                        Column<Double> altColumn = ColumnType.DOUBLE.create(column.name());
+                        Column<Double> altColumn = DoubleColumn.create(column.name(), column.size());
                         altColumn = intColumn.mapInto(s -> (double) s, altColumn);
                         altColumn.append(num);
                         return altColumn;
@@ -274,7 +277,7 @@ public class XlsxReader {
                         longColumn.append((long) num);
                         return null;
                     } else {
-                        Column<Double> altColumn = ColumnType.DOUBLE.create(column.name());
+                        Column<Double> altColumn = DoubleColumn.create(column.name(), column.size());
                         altColumn = longColumn.mapInto(s -> (double) s, altColumn);
                         altColumn.append(num);
                         return altColumn;

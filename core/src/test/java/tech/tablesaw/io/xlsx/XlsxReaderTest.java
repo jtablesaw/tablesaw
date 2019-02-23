@@ -47,7 +47,7 @@ public class XlsxReaderTest {
         int colNum = 0;
         for (final Column<?> column : table.columns()) {
             Assert.assertEquals("Wrong column name", columnNames[colNum], column.name());
-            Assert.assertEquals("Wrong column size", size, column.size());
+            Assert.assertEquals("Wrong size for column " + columnNames[colNum], size, column.size());
             colNum++;
         }
         return table;
@@ -55,7 +55,11 @@ public class XlsxReaderTest {
 
     private <T> void checkColumnValues(final Column<T> column, final T... ts) {
         for (int i = 0; i < column.size(); i++) {
-            Assert.assertEquals("Wrong value in row " + i + " of column " + column.name(), ts[i], column.get(i));
+        	if (ts[i] == null) {
+        		Assert.assertTrue("Should be missing value in row " + i + " of column " + column.name() + ", but it was " + column.get(i), column.isMissing(i));
+        	} else {
+        		Assert.assertEquals("Wrong value in row " + i + " of column " + column.name(), ts[i], column.get(i));
+        	}
         }
     }
 
@@ -72,5 +76,20 @@ public class XlsxReaderTest {
         checkColumnValues((Column<Double>) table.column("doublecol"), 12.34, 13.35);
         checkColumnValues((Column<Boolean>) table.column("booleancol"), true, false);
         checkColumnValues((Column<LocalDateTime>) table.column("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), LocalDateTime.of(2020, 3, 23, 21, 55, 10));
+    }
+
+    @Test
+    public void testColumnsWithMissingValues() {
+    	final Table table = read1("columns-with-missing-values", 2, "stringcol", "shortcol", "intcol", "longcol", "doublecol", "booleancol", "datecol");
+//    	stringcol	shortcol	intcol		longcol		doublecol	booleancol	datecol
+//    	Hallvard				12345678	12345678900				TRUE		22/02/2019 20:54:09
+//    				124			12345679				13,35
+    	checkColumnValues((Column<String>) table.column("stringcol"), "Hallvard", null);
+    	checkColumnValues((Column<Short>) table.column("shortcol"), null, (short) 124);
+    	checkColumnValues((Column<Integer>) table.column("intcol"), 12345678, 12345679);
+    	checkColumnValues((Column<Long>) table.column("longcol"), 12345678900L, null);
+    	checkColumnValues((Column<Double>) table.column("doublecol"), null, 13.35);
+    	checkColumnValues((Column<Boolean>) table.column("booleancol"), true, null);
+    	checkColumnValues((Column<LocalDateTime>) table.column("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
     }
 }
