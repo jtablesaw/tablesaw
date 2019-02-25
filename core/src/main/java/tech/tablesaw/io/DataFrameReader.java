@@ -14,6 +14,19 @@
 
 package tech.tablesaw.io;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Scanner;
+
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvReader;
@@ -24,14 +37,6 @@ import tech.tablesaw.io.jdbc.SqlResultSetReader;
 import tech.tablesaw.io.json.JsonReader;
 import tech.tablesaw.io.xlsx.XlsxReadOptions;
 import tech.tablesaw.io.xlsx.XlsxReader;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Scanner;
 
 public class DataFrameReader {
 
@@ -118,13 +123,11 @@ public class DataFrameReader {
         return new HtmlTableReader().read(url);
     }
     
-    // xlsx
-    
-    public Table[] xlsx(XlsxReadOptions options) throws IOException {
+    public List<Table> xlsx(XlsxReadOptions options) throws IOException {
         return new XlsxReader().read(options);
     }
 
-    public Table[] xlsx(XlsxReadOptions.Builder options) throws IOException {
+    public List<Table> xlsx(XlsxReadOptions.Builder options) throws IOException {
         return xlsx(options.build());
     }
 }

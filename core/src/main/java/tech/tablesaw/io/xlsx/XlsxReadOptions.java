@@ -14,8 +14,8 @@ public class XlsxReadOptions extends ReadOptions {
 
     public static Builder builder(File file) {
         Builder builder = new Builder(file);
-		builder.tableName(file.getName());
-		return builder;
+        builder.tableName(file.getName());
+        return builder;
     }
 
     public static Builder builder(String fileName) {

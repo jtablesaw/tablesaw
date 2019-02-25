@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -45,10 +44,10 @@ import tech.tablesaw.columns.Column;
 @Immutable
 public class XlsxReader {
 
-    public Table[] read(final XlsxReadOptions options) throws IOException {
+    public List<Table> read(final XlsxReadOptions options) throws IOException {
         final byte[] bytes = null;
         final InputStream input = getInputStream(options, bytes);
-        final Collection<Table> tables = new ArrayList<Table>();
+        final List<Table> tables = new ArrayList<Table>();
         try (XSSFWorkbook workbook = new XSSFWorkbook(input)) {
             for (final Sheet sheet : workbook) {
                 final int[] tableArea = findTableArea(sheet);
@@ -57,10 +56,11 @@ public class XlsxReader {
                     tables.add(table);
                 }
             }
-            return tables.toArray(new Table[tables.size()]);
+            return tables;
         } finally {
             if (options.reader() == null) {
-                // if we get a reader back from options it means the client opened it, so let the client close it
+                // if we get a reader back from options it means the client opened it, so let
+                // the client close it
                 // if it's null, we close it here.
                 input.close();
             }
@@ -75,7 +75,8 @@ public class XlsxReader {
             }
             break;
         case NUMERIC:
-            if (DateUtil.isCellDateFormatted(cell) ? cell.getDateCellValue() != null : cell.getNumericCellValue() != 0) {
+            if (DateUtil.isCellDateFormatted(cell) ? cell.getDateCellValue() != null
+                    : cell.getNumericCellValue() != 0) {
                 return false;
             }
             break;
@@ -84,8 +85,10 @@ public class XlsxReader {
                 return false;
             }
             break;
-        case BLANK: return true;
-        default: break;
+        case BLANK:
+            return true;
+        default:
+            break;
         }
         return null;
     }
@@ -98,9 +101,10 @@ public class XlsxReader {
             return (DateUtil.isCellDateFormatted(cell) ? ColumnType.LOCAL_DATE_TIME : ColumnType.SHORT);
         case BOOLEAN:
             return ColumnType.BOOLEAN;
-            //		case BLANK:
-            //			return ColumnType.SKIP;
-        default: break;
+        // case BLANK:
+        // return ColumnType.SKIP;
+        default:
+            break;
         }
         return null;
     }
@@ -108,7 +112,7 @@ public class XlsxReader {
     private int[] findTableArea(final Sheet sheet) {
         // find first row and column with contents
         int row1 = -1;
-		int row2 = -1;
+        int row2 = -1;
         int[] lastRowArea = null;
         for (final Row row : sheet) {
             final int[] rowArea = findRowArea(row);
@@ -133,7 +137,7 @@ public class XlsxReader {
                 row2 = row.getRowNum();
             }
         }
-        return (row1 >= 0 && lastRowArea != null ? new int[]{row1, row2, lastRowArea[0], lastRowArea[1]} : null);
+        return (row1 >= 0 && lastRowArea != null ? new int[] { row1, row2, lastRowArea[0], lastRowArea[1] } : null);
     }
 
     private int[] findRowArea(final Row row) {
@@ -152,11 +156,10 @@ public class XlsxReader {
                 }
             }
         }
-        return (col1 >= 0 && col2 >= col1 ? new int[]{col1, col2} : null);
+        return (col1 >= 0 && col2 >= col1 ? new int[] { col1, col2 } : null);
     }
 
-    private InputStream getInputStream(final XlsxReadOptions options, final byte[] bytes)
-            throws FileNotFoundException {
+    private InputStream getInputStream(final XlsxReadOptions options, final byte[] bytes) throws FileNotFoundException {
         if (bytes != null) {
             return new ByteArrayInputStream(bytes);
         }
@@ -210,13 +213,14 @@ public class XlsxReader {
                     }
                 }
                 if (column != null) {
-                	while (column.size() <= rowNum - tableArea[0]) {
-                		column.appendMissing();
-                	}
+                    while (column.size() <= rowNum - tableArea[0]) {
+                        column.appendMissing();
+                    }
                 }
             }
         }
-        while (columns.remove(null));
+        while (columns.remove(null))
+            ;
         table.addColumns(columns.toArray(new Column<?>[columns.size()]));
         return table;
     }
@@ -229,7 +233,8 @@ public class XlsxReader {
         case NUMERIC:
             if (DateUtil.isCellDateFormatted(cell)) {
                 final Date date = cell.getDateCellValue();
-                final LocalDateTime localDate = LocalDateTime.of(date.getYear() + 1900, date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
+                final LocalDateTime localDate = LocalDateTime.of(date.getYear() + 1900, date.getMonth() + 1,
+                        date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
                 column.appendCell(localDate.toString());
                 return null;
             } else {
@@ -295,7 +300,8 @@ public class XlsxReader {
                 booleanColumn.append(cell.getBooleanCellValue());
                 return null;
             }
-        default: break;
+        default:
+            break;
         }
         return null;
     }
