@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -98,11 +99,9 @@ public class XlsxReader {
         case STRING:
             return ColumnType.STRING;
         case NUMERIC:
-            return (DateUtil.isCellDateFormatted(cell) ? ColumnType.LOCAL_DATE_TIME : ColumnType.SHORT);
+            return DateUtil.isCellDateFormatted(cell) ? ColumnType.LOCAL_DATE_TIME : ColumnType.SHORT;
         case BOOLEAN:
             return ColumnType.BOOLEAN;
-        // case BLANK:
-        // return ColumnType.SKIP;
         default:
             break;
         }
@@ -189,10 +188,7 @@ public class XlsxReader {
             }
         }
         final Table table = Table.create(options.tableName());
-        final List<Column<?>> columns = new ArrayList<>();
-        while (columns.size() < headerNames.size()) {
-            columns.add(null);
-        }
+        final List<Column<?>> columns = new ArrayList<>(Collections.nCopies(headerNames.size(), null));
         for (int rowNum = tableArea[0]; rowNum <= tableArea[1]; rowNum++) {
             row = sheet.getRow(rowNum);
             for (int colNum = 0; colNum < headerNames.size(); colNum++) {
@@ -219,8 +215,7 @@ public class XlsxReader {
                 }
             }
         }
-        while (columns.remove(null))
-            ;
+        columns.removeAll(Collections.singleton(null));
         table.addColumns(columns.toArray(new Column<?>[columns.size()]));
         return table;
     }
