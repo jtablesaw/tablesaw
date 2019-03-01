@@ -136,7 +136,7 @@ public class XlsxReader {
                 row2 = row.getRowNum();
             }
         }
-        return (row1 >= 0 && lastRowArea != null ? new int[] { row1, row2, lastRowArea[0], lastRowArea[1] } : null);
+        return row1 >= 0 && lastRowArea != null ? new int[] { row1, row2, lastRowArea[0], lastRowArea[1] } : null;
     }
 
     private int[] findRowArea(Row row) {
@@ -301,7 +301,7 @@ public class XlsxReader {
         return null;
     }
 
-    public Column<?> createColumn(String name, Cell cell) {
+    private Column<?> createColumn(String name, Cell cell) {
         Column<?> column;
         ColumnType columnType = getColumnType(cell);
         if (columnType == null) {

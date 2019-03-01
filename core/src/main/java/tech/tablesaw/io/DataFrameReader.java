@@ -123,13 +123,16 @@ public class DataFrameReader {
         return new HtmlTableReader().read(url);
     }
     
-    // The xlsx methods use the optional dependency org.apache.poi:poi-ooxml.
-    // A modules that use them must itself add this dependency.
-    
+    /**
+     * Modules that call this method must add the optional dependency org.apache.poi:poi-ooxml
+     */
     public List<Table> xlsx(XlsxReadOptions options) throws IOException {
         return new XlsxReader().read(options);
     }
 
+    /**
+     * Modules that call this method must add the optional dependency org.apache.poi:poi-ooxml
+     */
     public List<Table> xlsx(XlsxReadOptions.Builder options) throws IOException {
         return xlsx(options.build());
     }
