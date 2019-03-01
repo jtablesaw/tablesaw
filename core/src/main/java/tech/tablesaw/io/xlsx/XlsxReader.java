@@ -45,15 +45,15 @@ import tech.tablesaw.columns.Column;
 @Immutable
 public class XlsxReader {
 
-    public List<Table> read(final XlsxReadOptions options) throws IOException {
-        final byte[] bytes = null;
-        final InputStream input = getInputStream(options, bytes);
-        final List<Table> tables = new ArrayList<Table>();
+    public List<Table> read(XlsxReadOptions options) throws IOException {
+        byte[] bytes = null;
+        InputStream input = getInputStream(options, bytes);
+        List<Table> tables = new ArrayList<Table>();
         try (XSSFWorkbook workbook = new XSSFWorkbook(input)) {
-            for (final Sheet sheet : workbook) {
-                final int[] tableArea = findTableArea(sheet);
+            for (Sheet sheet : workbook) {
+                int[] tableArea = findTableArea(sheet);
                 if (tableArea != null) {
-                    final Table table = createTable(sheet, tableArea, options);
+                    Table table = createTable(sheet, tableArea, options);
                     tables.add(table);
                 }
             }
@@ -68,7 +68,7 @@ public class XlsxReader {
         }
     }
 
-    private Boolean isBlank(final Cell cell) {
+    private Boolean isBlank(Cell cell) {
         switch (cell.getCellType()) {
         case STRING:
             if (cell.getRichStringCellValue().length() > 0) {
@@ -94,7 +94,7 @@ public class XlsxReader {
         return null;
     }
 
-    private ColumnType getColumnType(final Cell cell) {
+    private ColumnType getColumnType(Cell cell) {
         switch (cell.getCellType()) {
         case STRING:
             return ColumnType.STRING;
@@ -108,13 +108,13 @@ public class XlsxReader {
         return null;
     }
 
-    private int[] findTableArea(final Sheet sheet) {
+    private int[] findTableArea(Sheet sheet) {
         // find first row and column with contents
         int row1 = -1;
         int row2 = -1;
         int[] lastRowArea = null;
-        for (final Row row : sheet) {
-            final int[] rowArea = findRowArea(row);
+        for (Row row : sheet) {
+            int[] rowArea = findRowArea(row);
             if (lastRowArea == null && rowArea != null) {
                 if (row1 < 0) {
                     lastRowArea = rowArea;
@@ -139,11 +139,11 @@ public class XlsxReader {
         return (row1 >= 0 && lastRowArea != null ? new int[] { row1, row2, lastRowArea[0], lastRowArea[1] } : null);
     }
 
-    private int[] findRowArea(final Row row) {
+    private int[] findRowArea(Row row) {
         int col1 = -1;
         int col2 = -1;
-        for (final Cell cell : row) {
-            final Boolean blank = isBlank(cell);
+        for (Cell cell : row) {
+            Boolean blank = isBlank(cell);
             if (col1 < 0 && Boolean.FALSE.equals(blank)) {
                 col1 = cell.getColumnIndex();
                 col2 = col1;
@@ -158,7 +158,7 @@ public class XlsxReader {
         return (col1 >= 0 && col2 >= col1 ? new int[] { col1, col2 } : null);
     }
 
-    private InputStream getInputStream(final XlsxReadOptions options, final byte[] bytes) throws FileNotFoundException {
+    private InputStream getInputStream(XlsxReadOptions options, byte[] bytes) throws FileNotFoundException {
         if (bytes != null) {
             return new ByteArrayInputStream(bytes);
         }
@@ -168,11 +168,11 @@ public class XlsxReader {
         return new FileInputStream(options.file());
     }
 
-    private Table createTable(final Sheet sheet, final int[] tableArea, final XlsxReadOptions options) {
+    private Table createTable(Sheet sheet, int[] tableArea, XlsxReadOptions options) {
         // assume header row if all cells are of type String
         Row row = sheet.getRow(tableArea[0]);
-        final List<String> headerNames = new ArrayList<>();
-        for (final Cell cell : row) {
+        List<String> headerNames = new ArrayList<>();
+        for (Cell cell : row) {
             if (cell.getCellType() == CellType.STRING) {
                 headerNames.add(cell.getRichStringCellValue().getString());
             } else {
@@ -187,12 +187,12 @@ public class XlsxReader {
                 headerNames.add("col" + col);
             }
         }
-        final Table table = Table.create(options.tableName());
-        final List<Column<?>> columns = new ArrayList<>(Collections.nCopies(headerNames.size(), null));
+        Table table = Table.create(options.tableName());
+        List<Column<?>> columns = new ArrayList<>(Collections.nCopies(headerNames.size(), null));
         for (int rowNum = tableArea[0]; rowNum <= tableArea[1]; rowNum++) {
             row = sheet.getRow(rowNum);
             for (int colNum = 0; colNum < headerNames.size(); colNum++) {
-                final Cell cell = row.getCell(colNum + tableArea[2], MissingCellPolicy.RETURN_BLANK_AS_NULL);
+                Cell cell = row.getCell(colNum + tableArea[2], MissingCellPolicy.RETURN_BLANK_AS_NULL);
                 Column<?> column = columns.get(colNum);
                 if (cell != null) {
                     if (column == null) {
@@ -202,7 +202,7 @@ public class XlsxReader {
                             column.appendMissing();
                         }
                     }
-                    final Column<?> altColumn = appendValue(column, cell);
+                    Column<?> altColumn = appendValue(column, cell);
                     if (altColumn != null && altColumn != column) {
                         column = altColumn;
                         columns.set(colNum, column);
@@ -220,22 +220,22 @@ public class XlsxReader {
         return table;
     }
 
-    private Column<?> appendValue(final Column<?> column, final Cell cell) {
+    private Column<?> appendValue(Column<?> column, Cell cell) {
         switch (cell.getCellType()) {
         case STRING:
             column.appendCell(cell.getRichStringCellValue().getString());
             return null;
         case NUMERIC:
             if (DateUtil.isCellDateFormatted(cell)) {
-                final Date date = cell.getDateCellValue();
-                final LocalDateTime localDate = LocalDateTime.of(date.getYear() + 1900, date.getMonth() + 1,
+                Date date = cell.getDateCellValue();
+                LocalDateTime localDate = LocalDateTime.of(date.getYear() + 1900, date.getMonth() + 1,
                         date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
                 column.appendCell(localDate.toString());
                 return null;
             } else {
-                final double num = cell.getNumericCellValue();
+                double num = cell.getNumericCellValue();
                 if (column.type() == ColumnType.SHORT) {
-                    final Column<Short> shortColumn = (Column<Short>) column;
+                    Column<Short> shortColumn = (Column<Short>) column;
                     if ((short) num == num) {
                         shortColumn.append((short) num);
                         return null;
@@ -256,7 +256,7 @@ public class XlsxReader {
                         return altColumn;
                     }
                 } else if (column.type() == ColumnType.INTEGER) {
-                    final Column<Integer> intColumn = (Column<Integer>) column;
+                    Column<Integer> intColumn = (Column<Integer>) column;
                     if ((int) num == num) {
                         intColumn.append((int) num);
                         return null;
@@ -272,7 +272,7 @@ public class XlsxReader {
                         return altColumn;
                     }
                 } else if (column.type() == ColumnType.LONG) {
-                    final Column<Long> longColumn = (Column<Long>) column;
+                    Column<Long> longColumn = (Column<Long>) column;
                     if ((long) num == num) {
                         longColumn.append((long) num);
                         return null;
@@ -283,7 +283,7 @@ public class XlsxReader {
                         return altColumn;
                     }
                 } else if (column.type() == ColumnType.DOUBLE) {
-                    final Column<Double> doubleColumn = (Column<Double>) column;
+                    Column<Double> doubleColumn = (Column<Double>) column;
                     doubleColumn.append(num);
                     return null;
                 }
@@ -291,7 +291,7 @@ public class XlsxReader {
             break;
         case BOOLEAN:
             if (column.type() == ColumnType.BOOLEAN) {
-                final Column<Boolean> booleanColumn = (Column<Boolean>) column;
+                Column<Boolean> booleanColumn = (Column<Boolean>) column;
                 booleanColumn.append(cell.getBooleanCellValue());
                 return null;
             }
@@ -301,7 +301,7 @@ public class XlsxReader {
         return null;
     }
 
-    public Column<?> createColumn(final String name, final Cell cell) {
+    public Column<?> createColumn(String name, Cell cell) {
         Column<?> column;
         ColumnType columnType = getColumnType(cell);
         if (columnType == null) {

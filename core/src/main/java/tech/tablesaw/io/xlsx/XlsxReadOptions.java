@@ -8,14 +8,12 @@ import tech.tablesaw.io.ReadOptions;
 
 public class XlsxReadOptions extends ReadOptions {
 
-    protected XlsxReadOptions(final Builder builder) {
+    protected XlsxReadOptions(Builder builder) {
         super(builder);
     }
 
     public static Builder builder(File file) {
-        Builder builder = new Builder(file);
-        builder.tableName(file.getName());
-        return builder;
+        return new Builder(file);
     }
 
     public static Builder builder(String fileName) {
@@ -24,15 +22,15 @@ public class XlsxReadOptions extends ReadOptions {
     
     public static class Builder extends ReadOptions.Builder {
 
-        public Builder(final File file) {
+        public Builder(File file) {
             super(file);
         }
 
-        public Builder(final InputStream stream) {
+        public Builder(InputStream stream) {
             super(stream);
         }
 
-        public Builder(final Reader reader) {
+        public Builder(Reader reader) {
             super(reader);
         }
 
