@@ -51,7 +51,7 @@ public class XlsxReaderTest {
         return table;
     }
 
-    private <T> void checkColumnValues(final Column<T> column, final T... ts) {
+    private <T> void assertColumnValues(final Column<T> column, final T... ts) {
         for (int i = 0; i < column.size(); i++) {
             if (ts[i] == null) {
                 Assert.assertTrue("Should be missing value in row " + i + " of column " + column.name() + ", but it was " + column.get(i), column.isMissing(i));
@@ -67,13 +67,13 @@ public class XlsxReaderTest {
         //        stringcol   shortcol    intcol  longcol doublecol   booleancol  datecol
         //        Hallvard    123 12345678    12345678900 12,34   TRUE    22/02/2019 20:54:09
         //        Marit       124 12345679    12345678901 13,35   FALSE   23/03/2020 21:55:10
-        checkColumnValues((Column<String>) table.column("stringcol"), "Hallvard", "Marit");
-        checkColumnValues((Column<Short>) table.column("shortcol"), (short) 123, (short) 124);
-        checkColumnValues((Column<Integer>) table.column("intcol"), 12345678, 12345679);
-        checkColumnValues((Column<Long>) table.column("longcol"), 12345678900L, 12345678901L);
-        checkColumnValues((Column<Double>) table.column("doublecol"), 12.34, 13.35);
-        checkColumnValues((Column<Boolean>) table.column("booleancol"), true, false);
-        checkColumnValues((Column<LocalDateTime>) table.column("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), LocalDateTime.of(2020, 3, 23, 21, 55, 10));
+        assertColumnValues((Column<String>) table.column("stringcol"), "Hallvard", "Marit");
+        assertColumnValues((Column<Integer>) table.column("shortcol"), 123, 124);
+        assertColumnValues((Column<Integer>) table.column("intcol"), 12345678, 12345679);
+        assertColumnValues((Column<Long>) table.column("longcol"), 12345678900L, 12345678901L);
+        assertColumnValues((Column<Double>) table.column("doublecol"), 12.34, 13.35);
+        assertColumnValues((Column<Boolean>) table.column("booleancol"), true, false);
+        assertColumnValues((Column<LocalDateTime>) table.column("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), LocalDateTime.of(2020, 3, 23, 21, 55, 10));
     }
 
     @Test
@@ -82,12 +82,12 @@ public class XlsxReaderTest {
 //        stringcol    shortcol    intcol        longcol        doublecol    booleancol    datecol
 //        Hallvard                12345678    12345678900                TRUE        22/02/2019 20:54:09
 //                    124            12345679                13,35
-        checkColumnValues((Column<String>) table.column("stringcol"), "Hallvard", null);
-        checkColumnValues((Column<Short>) table.column("shortcol"), null, (short) 124);
-        checkColumnValues((Column<Integer>) table.column("intcol"), 12345678, 12345679);
-        checkColumnValues((Column<Long>) table.column("longcol"), 12345678900L, null);
-        checkColumnValues((Column<Double>) table.column("doublecol"), null, 13.35);
-        checkColumnValues((Column<Boolean>) table.column("booleancol"), true, null);
-        checkColumnValues((Column<LocalDateTime>) table.column("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
+        assertColumnValues((Column<String>) table.column("stringcol"), "Hallvard", null);
+        assertColumnValues((Column<Integer>) table.column("shortcol"), null, 124);
+        assertColumnValues((Column<Integer>) table.column("intcol"), 12345678, 12345679);
+        assertColumnValues((Column<Long>) table.column("longcol"), 12345678900L, null);
+        assertColumnValues((Column<Double>) table.column("doublecol"), null, 13.35);
+        assertColumnValues((Column<Boolean>) table.column("booleancol"), true, null);
+        assertColumnValues((Column<LocalDateTime>) table.column("datecol"), LocalDateTime.of(2019, 2, 22, 20, 54, 9), null);
     }
 }

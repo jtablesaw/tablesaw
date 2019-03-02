@@ -37,7 +37,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -51,7 +50,7 @@ public class XlsxReader {
         List<Table> tables = new ArrayList<Table>();
         try (XSSFWorkbook workbook = new XSSFWorkbook(input)) {
             for (Sheet sheet : workbook) {
-                int[] tableArea = findTableArea(sheet);
+                TableRange tableArea = findTableArea(sheet);
                 if (tableArea != null) {
                     Table table = createTable(sheet, tableArea, options);
                     tables.add(table);
@@ -99,7 +98,7 @@ public class XlsxReader {
         case STRING:
             return ColumnType.STRING;
         case NUMERIC:
-            return DateUtil.isCellDateFormatted(cell) ? ColumnType.LOCAL_DATE_TIME : ColumnType.SHORT;
+            return DateUtil.isCellDateFormatted(cell) ? ColumnType.LOCAL_DATE_TIME : ColumnType.INTEGER;
         case BOOLEAN:
             return ColumnType.BOOLEAN;
         default:
@@ -108,13 +107,23 @@ public class XlsxReader {
         return null;
     }
 
-    private int[] findTableArea(Sheet sheet) {
+    private static class TableRange {
+        int startRow, endRow, startColumn, endColumn;
+        TableRange(int startRow, int endRow, int startColumn, int endColumn) {
+            this.startRow = startRow;
+            this.endRow = endRow;
+            this.startColumn = startColumn;
+            this.endColumn = endColumn;
+        }
+    }
+    
+    private TableRange findTableArea(Sheet sheet) {
         // find first row and column with contents
         int row1 = -1;
         int row2 = -1;
-        int[] lastRowArea = null;
+        TableRange lastRowArea = null;
         for (Row row : sheet) {
-            int[] rowArea = findRowArea(row);
+            TableRange rowArea = findRowArea(row);
             if (lastRowArea == null && rowArea != null) {
                 if (row1 < 0) {
                     lastRowArea = rowArea;
@@ -129,17 +138,17 @@ public class XlsxReader {
                 }
             } else if (lastRowArea == null && rowArea == null) {
                 row1 = -1;
-            } else if (rowArea[0] < lastRowArea[0] || rowArea[1] > lastRowArea[1]) {
+            } else if (rowArea.startColumn < lastRowArea.startColumn || rowArea.endColumn > lastRowArea.endColumn) {
                 lastRowArea = null;
                 row2 = -1;
             } else {
                 row2 = row.getRowNum();
             }
         }
-        return row1 >= 0 && lastRowArea != null ? new int[] { row1, row2, lastRowArea[0], lastRowArea[1] } : null;
+        return row1 >= 0 && lastRowArea != null ? new TableRange(row1, row2, lastRowArea.startColumn, lastRowArea.endColumn) : null;
     }
 
-    private int[] findRowArea(Row row) {
+    private TableRange findRowArea(Row row) {
         int col1 = -1;
         int col2 = -1;
         for (Cell cell : row) {
@@ -155,7 +164,7 @@ public class XlsxReader {
                 }
             }
         }
-        return (col1 >= 0 && col2 >= col1 ? new int[] { col1, col2 } : null);
+        return col1 >= 0 && col2 >= col1 ? new TableRange(0, 0, col1, col2) : null;
     }
 
     private InputStream getInputStream(XlsxReadOptions options, byte[] bytes) throws FileNotFoundException {
@@ -168,9 +177,9 @@ public class XlsxReader {
         return new FileInputStream(options.file());
     }
 
-    private Table createTable(Sheet sheet, int[] tableArea, XlsxReadOptions options) {
+    private Table createTable(Sheet sheet, TableRange tableArea, XlsxReadOptions options) {
         // assume header row if all cells are of type String
-        Row row = sheet.getRow(tableArea[0]);
+        Row row = sheet.getRow(tableArea.startRow);
         List<String> headerNames = new ArrayList<>();
         for (Cell cell : row) {
             if (cell.getCellType() == CellType.STRING) {
@@ -179,26 +188,26 @@ public class XlsxReader {
                 break;
             }
         }
-        if (headerNames.size() == tableArea[3] - tableArea[2] + 1) {
-            tableArea[0]++;
+        if (headerNames.size() == tableArea.endColumn - tableArea.startColumn + 1) {
+            tableArea.startRow++;
         } else {
             headerNames.clear();
-            for (int col = tableArea[2]; col <= tableArea[3]; col++) {
+            for (int col = tableArea.startColumn; col <= tableArea.endColumn; col++) {
                 headerNames.add("col" + col);
             }
         }
         Table table = Table.create(options.tableName());
         List<Column<?>> columns = new ArrayList<>(Collections.nCopies(headerNames.size(), null));
-        for (int rowNum = tableArea[0]; rowNum <= tableArea[1]; rowNum++) {
+        for (int rowNum = tableArea.startRow; rowNum <= tableArea.endRow; rowNum++) {
             row = sheet.getRow(rowNum);
             for (int colNum = 0; colNum < headerNames.size(); colNum++) {
-                Cell cell = row.getCell(colNum + tableArea[2], MissingCellPolicy.RETURN_BLANK_AS_NULL);
+                Cell cell = row.getCell(colNum + tableArea.startColumn, MissingCellPolicy.RETURN_BLANK_AS_NULL);
                 Column<?> column = columns.get(colNum);
                 if (cell != null) {
                     if (column == null) {
                         column = createColumn(headerNames.get(colNum), cell);
                         columns.set(colNum, column);
-                        while (column.size() < rowNum - tableArea[0]) {
+                        while (column.size() < rowNum - tableArea.startRow) {
                             column.appendMissing();
                         }
                     }
@@ -209,7 +218,7 @@ public class XlsxReader {
                     }
                 }
                 if (column != null) {
-                    while (column.size() <= rowNum - tableArea[0]) {
+                    while (column.size() <= rowNum - tableArea.startRow) {
                         column.appendMissing();
                     }
                 }
@@ -234,28 +243,7 @@ public class XlsxReader {
                 return null;
             } else {
                 double num = cell.getNumericCellValue();
-                if (column.type() == ColumnType.SHORT) {
-                    Column<Short> shortColumn = (Column<Short>) column;
-                    if ((short) num == num) {
-                        shortColumn.append((short) num);
-                        return null;
-                    } else if ((int) num == num) {
-                        Column<Integer> altColumn = IntColumn.create(column.name(), column.size());
-                        altColumn = shortColumn.mapInto(s -> (int) s, altColumn);
-                        altColumn.append((int) num);
-                        return altColumn;
-                    } else if ((long) num == num) {
-                        Column<Long> altColumn = LongColumn.create(column.name(), column.size());
-                        altColumn = shortColumn.mapInto(s -> (long) s, altColumn);
-                        altColumn.append((long) num);
-                        return altColumn;
-                    } else {
-                        Column<Double> altColumn = DoubleColumn.create(column.name(), column.size());
-                        altColumn = shortColumn.mapInto(s -> (double) s, altColumn);
-                        altColumn.append(num);
-                        return altColumn;
-                    }
-                } else if (column.type() == ColumnType.INTEGER) {
+                if (column.type() == ColumnType.INTEGER) {
                     Column<Integer> intColumn = (Column<Integer>) column;
                     if ((int) num == num) {
                         intColumn.append((int) num);
