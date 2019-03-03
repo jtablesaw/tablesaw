@@ -3,17 +3,26 @@
 Importing data
 ==============
 
-The most common way to get data into Tablesaw is from a CSV file, and the simplest way to do that is:
+To minimize the size of the core library, the dependencies for each reader are optional. You will need to include them in your project to use the `Table.read()` methods.
+
+See the Javadoc for [DataFrameReader](http://static.javadoc.io/tech.tablesaw/tablesaw-core/0.31.0/tech/tablesaw/io/DataFrameReader.html) for a listing of all the `Table.read()` methods that are available.
+
+## Reading CSV files
+
+Add `univocity-parsers` to your project to read CSV or fixed-width files:
+```
+<dependency>
+  <groupId>com.univocity</groupId>
+  <artifactId>univocity-parsers</artifactId>
+  <version>2.7.5</version>
+</dependency>
+```
+
+The easiest way to load data from a CSV file on disk is to use:
 
 ```Java
 Table t = Table.read().csv("myFile.csv");
 ```
-
-You can also load data from a relational database using a JDBC ResultSet. This option is described below, along with variations on the read().csv() syntax, and some helpful utilities.
-
-## Reading CSV files
-
-As shown above, the easiest way to load data from a CSV file on disk is to use ```Table t = Table.read().csv(aFileName);```.
 
 This method supplies defaults for everything but the filename. We assume that columns are separated by commas, and that the file has a header row, which we use to create column names. If one or more defaults are incorrect, you can customize the loading process using the class CsvReadOptions. 
 
@@ -170,7 +179,7 @@ Table restaurants = Table.read()
 		.csv(CsvReadOptions.builder(reader, "restaurants"));
 ```
 
-## Working with Databases
+## Importing from a Database
 
 It's equally easy to create a table from the results of a database query. In this case, you never need to specify the column types, because they are inferred from the database column types. 
 
@@ -191,8 +200,43 @@ try (Statement stmt = conn.createStatement()) {
 }
 ```
 
-## Working with HTML Tables
+## Importing HTML Tables
 
-Tablesaw supports converting data from well-formed HTML tables into CSV files, when there is a single table on a page. See the Javadoc for [HtmlTableReader](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/io/html/HtmlTableReader.html) for more info.
+Tablesaw supports importing data from HTML tables into Tablesaw tables, when there is a single table on a page. See the Javadoc for [Table.read().html(...)](http://static.javadoc.io/tech.tablesaw/tablesaw-core/0.31.0/tech/tablesaw/io/DataFrameReader.html) for more info. You will need to add the optional dependency:
 
-That covers the major ways to get data into a Tablesaw data set. 
+```
+<dependency>
+  <groupId>org.jsoup</groupId>
+  <artifactId>jsoup</artifactId>
+  <version>1.11.3</version>
+</dependency>
+```
+
+## Importing JSON
+
+Tablesaw supports importing data from JSON into Tablesaw tables. See the Javadoc for [Table.read().json(...)](http://www.javadoc.io/page/tech.tablesaw/tablesaw-core/latest/tech/tablesaw/io/html/HtmlTableReader.html) for more info. You will need to add the optional dependencies:
+
+```
+<dependency>
+  <groupId>com.fasterxml.jackson.core</groupId>
+  <artifactId>jackson-databind</artifactId>
+  <version>2.9.8</version>
+</dependency>
+<dependency>
+  <groupId>com.github.wnameless</groupId>
+  <artifactId>json-flattener</artifactId>
+  <version>0.6.0</version>
+</dependency>
+```
+
+## Importing data from Excel
+
+Tablesaw supports importing data from Excel spreadsheets into Tablesaw tables. See the Javadoc for [Table.read().xlsx(...)](http://static.javadoc.io/tech.tablesaw/tablesaw-core/0.31.0/tech/tablesaw/io/DataFrameReader.html) for more info. You will need to add the optional dependency:
+
+```
+<dependency>
+  <groupId>org.apache.poi</groupId>
+  <artifactId>poi-ooxml</artifactId>
+  <version>4.0.1</version>
+</dependency>
+```

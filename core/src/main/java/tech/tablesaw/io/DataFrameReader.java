@@ -40,10 +40,16 @@ import tech.tablesaw.io.xlsx.XlsxReader;
 
 public class DataFrameReader {
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table csv(String file) throws IOException {
         return csv(CsvReadOptions.builder(file));
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table csv(String contents, String tableName) {
         try {
             return csv(new StringReader(contents), tableName);
@@ -52,26 +58,46 @@ public class DataFrameReader {
         }
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table csv(File file) throws IOException {
         return csv(CsvReadOptions.builder(file));
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table csv(InputStream stream, String tableName) throws IOException {
         return csv(CsvReadOptions.builder(stream, tableName));
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table csv(Reader reader, String tableName) throws IOException {
         return csv(CsvReadOptions.builder(reader, tableName));
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table csv(CsvReadOptions.Builder options) throws IOException {
         return csv(options.build());
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table csv(CsvReadOptions options) throws IOException {
         return new CsvReader().read(options);
     }
 
+    /**
+     * Optional dependencies must be added to call this method:
+     * com.fasterxml.jackson.core:jackson-databind
+     * com.github.wnameless:json-flattener
+     */
     public Table json(String url) throws MalformedURLException, IOException {
         try (Scanner scanner = new Scanner(new URL(url).openStream(), StandardCharsets.UTF_8.toString())) {
             scanner.useDelimiter("\\A");
@@ -79,38 +105,64 @@ public class DataFrameReader {
 	}
     }
 
+    /**
+     * Optional dependencies must be added to call this method:
+     * com.fasterxml.jackson.core:jackson-databind
+     * com.github.wnameless:json-flattener
+     */
     public Table json(Reader contents, String tableName) throws IOException {
 	return new JsonReader().read(ReadOptions.builder(contents, tableName).build());
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table fixedWidth(String file) throws IOException {
         return fixedWidth(FixedWidthReadOptions.builder(file));
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table fixedWidth(String contents, String tableName) {
         try {
             return fixedWidth(new StringReader(contents), tableName);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table fixedWidth(File file) throws IOException {
         return fixedWidth(FixedWidthReadOptions.builder(file));
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table fixedWidth(InputStream stream, String tableName) throws IOException {
         return fixedWidth(FixedWidthReadOptions.builder(stream, tableName));
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table fixedWidth(Reader reader, String tableName) throws IOException {
         return fixedWidth(FixedWidthReadOptions.builder(reader, tableName));
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table fixedWidth(FixedWidthReadOptions.Builder options) throws IOException {
         return fixedWidth(options.build());
     }
 
+    /**
+     * Optional dependencies must be added to call this method: com.univocity:univocity-parsers
+     */
     public Table fixedWidth(FixedWidthReadOptions options) throws IOException {
         return new FixedWidthReader().read(options);
     }
@@ -119,19 +171,22 @@ public class DataFrameReader {
         return SqlResultSetReader.read(resultSet, tableName);
     }
 
+    /**
+     * Optional dependencies must be added to call this method: org.jsoup:jsoup
+     */
     public Table html(String url) throws IOException {
         return new HtmlTableReader().read(url);
     }
-    
+
     /**
-     * Modules that call this method must add the optional dependency org.apache.poi:poi-ooxml
+     * Optional dependencies must be added to call this method: org.apache.poi:poi-ooxml
      */
     public List<Table> xlsx(XlsxReadOptions options) throws IOException {
         return new XlsxReader().read(options);
     }
 
     /**
-     * Modules that call this method must add the optional dependency org.apache.poi:poi-ooxml
+     * Optional dependencies must be added to call this method: org.apache.poi:poi-ooxml
      */
     public List<Table> xlsx(XlsxReadOptions.Builder options) throws IOException {
         return xlsx(options.build());
