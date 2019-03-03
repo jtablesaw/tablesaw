@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -229,6 +230,7 @@ public class XlsxReader {
         return table;
     }
 
+    @SuppressWarnings("unchecked")
     private Column<?> appendValue(Column<?> column, Cell cell) {
         switch (cell.getCellType()) {
         case STRING:
@@ -237,8 +239,8 @@ public class XlsxReader {
         case NUMERIC:
             if (DateUtil.isCellDateFormatted(cell)) {
                 Date date = cell.getDateCellValue();
-                LocalDateTime localDate = LocalDateTime.of(date.getYear() + 1900, date.getMonth() + 1,
-                        date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
+                // This will return inconsistent results across time zones, but that matches Excel's behavior
+                LocalDateTime localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
                 column.appendCell(localDate.toString());
                 return null;
             } else {
