@@ -14,14 +14,7 @@
 
 package tech.tablesaw.columns;
 
-import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.ints.IntComparator;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.Selection;
-import tech.tablesaw.table.RollingColumn;
-import tech.tablesaw.util.StringUtils;
+import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -31,7 +24,15 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
+import com.google.common.base.Preconditions;
+
+import it.unimi.dsi.fastutil.ints.IntComparator;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.selection.Selection;
+import tech.tablesaw.table.RollingColumn;
+import tech.tablesaw.util.StringUtils;
 
 /**
  * The general interface for columns.
@@ -332,10 +333,14 @@ public interface Column<T> extends Iterable<T>, Comparator<T> {
      */
     default <R> Column<R> mapInto(Function<? super T, ? extends R> fun, Column<R> into) {
         for (int i = 0; i < size(); i++) {
-            try {
-                into.set(i, fun.apply(get(i)));
-            } catch (Exception e) {
+            if (isMissing(i)) {
                 into.setMissing(i);
+            } else {
+                try {
+                    into.set(i, fun.apply(get(i)));
+                } catch (Exception e) {
+                    into.setMissing(i);
+                }
             }
         }
         return into;
