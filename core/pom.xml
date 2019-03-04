@@ -114,21 +114,24 @@
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-excel</artifactId>
             <version>0.31.1-SNAPSHOT</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-html</artifactId>
             <version>0.31.1-SNAPSHOT</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-json</artifactId>
             <version>0.31.1-SNAPSHOT</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.github.haifengl</groupId>
-            <artifactId>smile-data</artifactId>
-            <version>1.5.2 </version>
+            <groupId>tech.tablesaw</groupId>
+            <artifactId>tablesaw-smile</artifactId>
+            <version>0.31.1-SNAPSHOT</version>
             <optional>true</optional>
         </dependency>
         <dependency>

@@ -50,6 +50,7 @@
         <module>html</module>
         <module>json</module>
         <module>jsplot</module>
+        <module>smile</module>
     </modules>
 
     <profiles>
