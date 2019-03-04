@@ -12,6 +12,15 @@ In baseball, you make the playoffs by winning more games than your rivals, but y
 
 Specifically, they wanted to know how to spend their salary dollars to produce the most wins. Statistics like "Batting Average" are available for individual players so if you knew Batting Average had the greatest impact, you can trade for players with high batting averages, and thus improve your odds of success. 
 
+To do regression modeling in Tablesaw, we'll first need to import the optional `tablesaw-smile` module:
+
+```
+<dependency>
+  <groupId>tech.tablesaw</groupId>
+  <artifactId>tablesaw-smile</artifactId>
+</dependency>
+```
+
 To connect player stats to making the playoffs, they systematically decomposed their high-level goal. They started by asking how many wins they'd need to make the playoffs. They decided that 95 wins would give them a strong chance. Here's how we might check that assumption in Tablesaw.
 
 ```Java
