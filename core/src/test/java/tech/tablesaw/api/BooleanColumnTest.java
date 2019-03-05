@@ -15,10 +15,10 @@
 package tech.tablesaw.api;
 
 import tech.tablesaw.columns.booleans.BooleanFormatter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests for BooleanColumn
@@ -29,7 +29,7 @@ public class BooleanColumnTest {
 
     private final BooleanColumn column = BooleanColumn.create("Test");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         column.append(false);
         column.append(false);

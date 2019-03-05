@@ -14,7 +14,7 @@
 
 package tech.tablesaw.columns.times;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
 
@@ -26,8 +26,8 @@ import java.util.List;
 
 import static java.time.temporal.ChronoUnit.*;
 import static tech.tablesaw.columns.times.PackedLocalTime.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Tests for PackedLocalTime

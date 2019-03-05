@@ -14,14 +14,14 @@
 
 package tech.tablesaw.table;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
 import org.apache.commons.math3.stat.StatUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.tablesaw.aggregate.NumericAggregateFunction;
 import tech.tablesaw.api.NumericColumn;
@@ -41,7 +41,7 @@ public class TableSliceGroupTest {
 
     private Table table;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
     }

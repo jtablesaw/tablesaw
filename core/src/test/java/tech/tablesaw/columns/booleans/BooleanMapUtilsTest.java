@@ -1,9 +1,9 @@
 package tech.tablesaw.columns.booleans;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BooleanMapUtilsTest {
     private BooleanColumn singleFalse = BooleanColumn.create("", new boolean[]{false});

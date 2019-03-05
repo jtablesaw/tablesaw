@@ -14,8 +14,8 @@
 
 package tech.tablesaw.columns.dates;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
@@ -23,13 +23,13 @@ import tech.tablesaw.api.TimeColumn;
 
 import java.time.LocalTime;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DateMapFunctionsTest {
 
     private DateColumn column1;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Table table = Table.create("Test");
         column1 = DateColumn.create("Game date");

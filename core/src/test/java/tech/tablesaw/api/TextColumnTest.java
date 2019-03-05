@@ -14,8 +14,8 @@
 
 package tech.tablesaw.api;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.TestDataUtil;
 import tech.tablesaw.columns.strings.StringColumnFormatter;
 import tech.tablesaw.selection.Selection;
@@ -23,14 +23,14 @@ import tech.tablesaw.selection.Selection;
 import java.util.List;
 import java.util.function.Function;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 
 public class TextColumnTest {
 
     private final TextColumn column = TextColumn.create("testing");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         column.append("Value 1");
         column.append("Value 2");

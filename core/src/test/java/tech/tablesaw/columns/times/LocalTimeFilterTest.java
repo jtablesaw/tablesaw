@@ -18,13 +18,13 @@ import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 
 import static tech.tablesaw.columns.times.PackedLocalTime.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class LocalTimeFilterTest {
 
@@ -33,7 +33,7 @@ public class LocalTimeFilterTest {
 
     private Table table = Table.create("test");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         localTimeColumn.appendInternal(of(10, 2, 28));
         localTimeColumn.appendInternal(of(12, 0, 0));

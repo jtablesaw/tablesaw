@@ -14,8 +14,8 @@
 
 package tech.tablesaw.index;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.DateAndTimePredicates;
@@ -26,7 +26,7 @@ import tech.tablesaw.selection.Selection;
 
 import java.time.LocalDate;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class IntIndexTest {
 
@@ -40,7 +40,7 @@ public class IntIndexTest {
     private IntIndex dateIndex;
     private Table table;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").columnTypes(types));
         index = new DoubleIndex(table.doubleColumn("approval"));

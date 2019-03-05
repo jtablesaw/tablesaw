@@ -14,8 +14,8 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
@@ -25,14 +25,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DateTimeFiltersTest {
 
     private DateTimeColumn localDateTimeColumn = DateTimeColumn.create("testing");
     private Table table = Table.create("test");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         localDateTimeColumn.append(LocalDate.of(2016, 2, 28).atStartOfDay()); // sunday
         localDateTimeColumn.append(LocalDate.of(2016, 2, 29).atStartOfDay()); // monday

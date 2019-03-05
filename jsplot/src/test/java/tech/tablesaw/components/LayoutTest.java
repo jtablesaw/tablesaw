@@ -1,12 +1,12 @@
 package tech.tablesaw.components;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.components.Margin;
 
-@Ignore
+@Disabled
 public class LayoutTest {
 
     @Test

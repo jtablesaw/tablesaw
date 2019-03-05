@@ -1,6 +1,6 @@
 package tech.tablesaw.table;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
@@ -9,7 +9,7 @@ import tech.tablesaw.columns.numbers.DoubleColumnType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 public class RollingColumnTest {

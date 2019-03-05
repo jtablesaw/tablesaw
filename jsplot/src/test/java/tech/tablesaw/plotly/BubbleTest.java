@@ -13,15 +13,15 @@
  */
 package tech.tablesaw.plotly;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.components.Symbol;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 
 
-@Ignore
+@Disabled
 public class BubbleTest {
 
     private final double[] x = {1, 2, 3, 4, 5, 6};

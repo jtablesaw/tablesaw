@@ -1,13 +1,13 @@
 package tech.tablesaw.api;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * TODO All the methods on this class should be tested carefully

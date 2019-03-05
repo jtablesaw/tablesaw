@@ -14,16 +14,16 @@
 
 package tech.tablesaw.columns.dates;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 
-import static junit.framework.TestCase.assertTrue;
 import static tech.tablesaw.columns.dates.PackedLocalDate.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *

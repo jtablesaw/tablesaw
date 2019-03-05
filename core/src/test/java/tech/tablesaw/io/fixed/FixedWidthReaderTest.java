@@ -15,9 +15,7 @@
 package tech.tablesaw.io.fixed;
 
 import com.univocity.parsers.fixed.FixedWidthFields;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 
@@ -28,16 +26,13 @@ import static tech.tablesaw.api.ColumnType.SHORT;
 import static tech.tablesaw.api.ColumnType.STRING;
 import static tech.tablesaw.api.ColumnType.FLOAT;
 import static tech.tablesaw.api.ColumnType.SKIP;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for CSV Reading
  */
 public class FixedWidthReaderTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     private final FixedWidthFields car_fields_specs = new FixedWidthFields(4, 5, 40, 40, 8);
     private final ColumnType[] car_types = {SHORT, STRING, STRING, STRING, FLOAT};

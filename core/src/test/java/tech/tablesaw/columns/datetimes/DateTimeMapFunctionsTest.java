@@ -15,7 +15,7 @@
 package tech.tablesaw.columns.datetimes;
 
 import com.google.common.base.Strings;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.IntColumn;
@@ -30,7 +30,7 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests for DateTimeMapFunctions

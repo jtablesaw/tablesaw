@@ -1,10 +1,9 @@
 package tech.tablesaw.columns;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.junit.experimental.theories.DataPoints;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import tech.tablesaw.api.*;
 
 import java.time.LocalDate;
@@ -12,10 +11,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(Theories.class)
 public class ColumnAppendTest {
 
     private static class Scenario<T extends Column<?>> {
@@ -34,9 +33,8 @@ public class ColumnAppendTest {
         }
     }
 
-    @DataPoints
-    public static Scenario<?>[] scenarios() {
-        return new Scenario[]{
+    public static Stream<Scenario<?>> scenarios() {
+        return Stream.of(
                 new Scenario<>(
                         FloatColumn.create("floatCol1", new float[]{1f, 2f, 3f}),
                         FloatColumn.create("floatCol2", new float[]{4f})
@@ -117,10 +115,11 @@ public class ColumnAppendTest {
                 new Scenario<>(
                         TimeColumn.create("timeCol1", new LocalTime[]{LocalTime.now()})
                 )
-        };
+        );
     }
 
-    @Theory
+    @ParameterizedTest
+    @MethodSource("scenarios")
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void testColumnAppend(Scenario scenario) {
         assertEquals(scenario.col1col2Appended, scenario.col1.append(scenario.col2).asList());
