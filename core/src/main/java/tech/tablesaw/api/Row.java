@@ -1,5 +1,6 @@
 package tech.tablesaw.api;
 
+//import jdk.vm.ci.meta.Local;
 import tech.tablesaw.columns.Column;
 
 import java.time.LocalDate;
@@ -101,7 +102,7 @@ public class Row implements Iterator<Row> {
     }
 
     public int getInt(String columnName) {
-    	return intColumnMap.get(columnName).getInt(rowNumber);
+        return intColumnMap.get(columnName).getInt(rowNumber);
     }
 
     public int getInt(int columnIndex) {
@@ -109,7 +110,7 @@ public class Row implements Iterator<Row> {
     }
 
     public long getLong(String columnName) {
-	return longColumnMap.get(columnName).getLong(rowNumber);
+        return longColumnMap.get(columnName).getLong(rowNumber);
     }
 
     public long getLong(int columnIndex) {
@@ -117,21 +118,30 @@ public class Row implements Iterator<Row> {
     }
 
     public short getShort(String columnName) {
-	return shortColumnMap.get(columnName).getShort(rowNumber);
+        return shortColumnMap.get(columnName).getShort(rowNumber);
     }
 
     public short getShort(int columnIndex) {
         return getShort(columnNames[columnIndex]);
     }
 
+    public void setShort(String columnName, short value) {
+        shortColumnMap.get(columnName).set(rowNumber, value);
+    }
+
+    public void setShort(int columnIndex, short value ) {
+        setShort(columnNames[columnIndex], value);
+
+    }
+
     public float getFloat(String columnName) {
-	return floatColumnMap.get(columnName).getFloat(rowNumber);
+        return floatColumnMap.get(columnName).getFloat(rowNumber);
     }
 
     public float getFloat(int columnIndex) {
         return getFloat(columnNames[columnIndex]);
     }
-    
+
     public String getString(String columnName) {
         return stringColumnMap.get(columnName).get(rowNumber);
     }
@@ -139,6 +149,15 @@ public class Row implements Iterator<Row> {
     public String getString(int columnIndex) {
         return getString(columnNames[columnIndex]);
     }
+
+    public void setString(int columnIndex, String value) {
+        setString(columnNames[columnIndex], value);
+    }
+
+    public void setString(String columnName, String value) {
+        stringColumnMap.get(columnName).set(rowNumber, value);
+    }
+
 
     public String getText(String columnName) {
         return stringColumnMap.get(columnName).get(rowNumber);
@@ -152,8 +171,20 @@ public class Row implements Iterator<Row> {
         return dateColumnMap.get(columnName).get(rowNumber);
     }
 
+    public void setDate(String columnName, LocalDate value) {
+
+        dateColumnMap.get(columnName).set(rowNumber, value);
+
+    }
+
     public LocalDate getDate(int columnIndex) {
         return dateColumnMap.get(columnNames[columnIndex]).get(rowNumber);
+    }
+
+    public void setDate(int columnIndex, LocalDate value) {
+
+        dateColumnMap.get(columnNames[columnIndex]).set(rowNumber, value);
+
     }
 
     public int getPackedDate(String columnName) {
@@ -220,6 +251,15 @@ public class Row implements Iterator<Row> {
         return columnMap.get(columnNames[columnIndex]).get(rowNumber);
     }
 
+//    public <T> void setObject(String columnName,  T value) {
+//        return columnMap.get(columnName).set(rowNumber, value);
+//    }
+//
+//    public <T> void setObject(int columnIndex, T value) {
+//        return columnMap.get(columnNames[columnIndex]).set(rowNumber, value);
+//    }
+
+
     @Override
     public String toString() {
         Table t = table.emptyCopy();
@@ -229,4 +269,5 @@ public class Row implements Iterator<Row> {
         t.addRow(this);
         return t.print();
     }
+
 }
