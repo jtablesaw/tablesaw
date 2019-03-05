@@ -1,6 +1,5 @@
 package tech.tablesaw.table;
 
-import org.junit.Assert;
 import org.junit.Test;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.DoubleColumn;
@@ -17,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class SliceBugTests {
 
@@ -59,7 +59,7 @@ public class SliceBugTests {
             DoubleColumn priceColFromIndex = slice.doubleColumn(2);
             DoubleColumn priceColFromName = slice.doubleColumn("price");
 
-            Assert.assertTrue("Columns should have same data",
+            assertTrue("Columns should have same data",
                     Arrays.equals(priceColFromName.asDoubleArray(), priceColFromIndex.asDoubleArray()));
         }
     }

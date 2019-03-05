@@ -14,12 +14,14 @@
 
 package tech.tablesaw.io.jdbc;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import tech.tablesaw.api.Table;
@@ -67,41 +69,41 @@ public class SqlResultSetReaderTest {
             sql = "SELECT * FROM coffee";
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 Table coffee = SqlResultSetReader.read(rs, "Coffee");
-                Assert.assertEquals(4, coffee.columnCount());
-                Assert.assertEquals(18, coffee.rowCount());
+                assertEquals(4, coffee.columnCount());
+                assertEquals(18, coffee.rowCount());
             }
 
             sql = "SELECT * FROM Customer";
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 Table customer = SqlResultSetReader.read(rs, "Customer");
-                Assert.assertEquals(7, customer.columnCount());
-                Assert.assertEquals(3, customer.rowCount());
+                assertEquals(7, customer.columnCount());
+                assertEquals(3, customer.rowCount());
             }
 
             sql = "SELECT * FROM UnpaidOrder";
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 Table unpaidInvoice = SqlResultSetReader.read(rs, "Unpaid Invoice");
-                Assert.assertEquals(5, unpaidInvoice.columnCount());
-                Assert.assertEquals(0, unpaidInvoice.rowCount());
+                assertEquals(5, unpaidInvoice.columnCount());
+                assertEquals(0, unpaidInvoice.rowCount());
             }
 
             sql = "SELECT * FROM Numbers";
             try (ResultSet rs = stmt.executeQuery(sql)) {
                 Table numbers = SqlResultSetReader.read(rs, "Numbers");
-                Assert.assertEquals(13, numbers.columnCount());
-                Assert.assertEquals(3, numbers.rowCount());
-                Assert.assertTrue(numbers.column("Description").type() instanceof StringColumnType);
-                Assert.assertTrue(numbers.column("NumInt").type() instanceof IntColumnType);
-                Assert.assertTrue(numbers.column("NumInt6_0").type() instanceof IntColumnType);
-                Assert.assertTrue(numbers.column("NumLong").type() instanceof LongColumnType);
-                Assert.assertTrue(numbers.column("NumShort").type() instanceof ShortColumnType);
-                Assert.assertTrue(numbers.column("NumNumber").type() instanceof DoubleColumnType);
-                Assert.assertTrue(numbers.column("NumBigInt").type() instanceof DoubleColumnType);
-                Assert.assertTrue(numbers.column("NumBigDec").type() instanceof DoubleColumnType);
-                Assert.assertTrue(numbers.column("NumFloat7_1").type() instanceof FloatColumnType);
-                Assert.assertTrue(numbers.column("NumFloat7_7").type() instanceof FloatColumnType);
-                Assert.assertTrue(numbers.column("NumDouble7_8").type() instanceof DoubleColumnType);
-                Assert.assertTrue(numbers.column("NumDouble7_16").type() instanceof DoubleColumnType);
+                assertEquals(13, numbers.columnCount());
+                assertEquals(3, numbers.rowCount());
+                assertTrue(numbers.column("Description").type() instanceof StringColumnType);
+                assertTrue(numbers.column("NumInt").type() instanceof IntColumnType);
+                assertTrue(numbers.column("NumInt6_0").type() instanceof IntColumnType);
+                assertTrue(numbers.column("NumLong").type() instanceof LongColumnType);
+                assertTrue(numbers.column("NumShort").type() instanceof ShortColumnType);
+                assertTrue(numbers.column("NumNumber").type() instanceof DoubleColumnType);
+                assertTrue(numbers.column("NumBigInt").type() instanceof DoubleColumnType);
+                assertTrue(numbers.column("NumBigDec").type() instanceof DoubleColumnType);
+                assertTrue(numbers.column("NumFloat7_1").type() instanceof FloatColumnType);
+                assertTrue(numbers.column("NumFloat7_7").type() instanceof FloatColumnType);
+                assertTrue(numbers.column("NumDouble7_8").type() instanceof DoubleColumnType);
+                assertTrue(numbers.column("NumDouble7_16").type() instanceof DoubleColumnType);
             }
 
         }

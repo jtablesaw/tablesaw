@@ -15,7 +15,6 @@
 package tech.tablesaw.api;
 
 import com.google.common.collect.Lists;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import tech.tablesaw.columns.Column;
@@ -63,7 +62,7 @@ public class TableTest {
         Table result = table.summarize("Injuries", mean, stdDev).by("State");
         assertEquals(49, result.rowCount());
         assertEquals(3, result.columnCount());
-        Assert.assertEquals("4.580805569368455", result.column(1).getString(0));
+        assertEquals("4.580805569368455", result.column(1).getString(0));
     }
 
     @Test
