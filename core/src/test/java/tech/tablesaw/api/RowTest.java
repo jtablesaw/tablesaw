@@ -86,4 +86,35 @@ public class RowTest {
                     row.getPackedDate("date"));
         }
     }
+
+    @Test
+    public void testSetDate() throws IOException {
+        Table table = Table.read().csv("../data/bush.csv");
+        Row row = new Row(table);
+        while (row.hasNext()) {
+            row.next();
+            Integer idx = row.getRowNumber();
+            LocalDate date = table.dateColumn("date").get(row.getRowNumber());
+
+            // test setDate(index, value)
+            LocalDate dateIncrementedByOne = date.plusDays(1);
+            row.setDate(0, dateIncrementedByOne);
+            assertEquals(dateIncrementedByOne, row.getDate(0));
+
+            // test setDate(key, value)
+            LocalDate dateIncrementedByTwo = date.plusDays(2);
+            row.setDate("date", dateIncrementedByTwo);
+            assertEquals(dateIncrementedByTwo, row.getDate("date"));
+
+            // test setObject(key, value)
+            LocalDate dateIncrementedByThree = date.plusDays(3);
+            row.setObject("date", dateIncrementedByThree);
+            assertEquals(dateIncrementedByThree, row.getObject("date"));
+
+            // test setObject(index, value)
+            LocalDate dateIncrementedByFour = date.plusDays(4);
+            row.setObject(0, dateIncrementedByFour);
+            assertEquals(dateIncrementedByFour, row.getObject(0));
+        }
+    }
 }
