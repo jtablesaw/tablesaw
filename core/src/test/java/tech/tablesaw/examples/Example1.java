@@ -14,12 +14,21 @@
 
 package tech.tablesaw.examples;
 
-import tech.tablesaw.api.*;
+import static tech.tablesaw.aggregate.AggregateFunctions.max;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.min;
+import static tech.tablesaw.aggregate.AggregateFunctions.range;
+
 import tech.tablesaw.aggregate.CrossTab;
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.IntColumn;
+import tech.tablesaw.api.NumberColumn;
+import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.NumberColumnFormatter;
 import tech.tablesaw.selection.Selection;
-
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * Example code for:

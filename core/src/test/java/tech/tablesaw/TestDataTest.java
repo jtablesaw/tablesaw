@@ -14,9 +14,10 @@
 
 package tech.tablesaw;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Make sure our test data is available
@@ -32,13 +33,13 @@ public class TestDataTest {
 
     private void verify(TestData testData) {
 
-        assertNotNull("Table available", testData.getTable());
+        assertNotNull(testData.getTable(), "Table available");
 
         // cheap attempt at testing data integrity
-        assertEquals("Column name count matches column type count", testData.getColumnNames().length,
-                testData.getColumnTypes().length);
+        assertEquals(testData.getColumnNames().length, testData.getColumnTypes().length,
+                "Column name count matches column type count");
 
-        assertNotNull("Data path available", testData.getSource());
+        assertNotNull(testData.getSource(), "Data path available");
     }
 
 }

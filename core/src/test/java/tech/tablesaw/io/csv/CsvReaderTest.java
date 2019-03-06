@@ -14,17 +14,20 @@
 
 package tech.tablesaw.io.csv;
 
-import com.univocity.parsers.common.TextParsingException;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.AddCellToColumnException;
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.SHORT;
+import static tech.tablesaw.api.ColumnType.SKIP;
+import static tech.tablesaw.api.ColumnType.STRING;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,10 +41,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static tech.tablesaw.api.ColumnType.*;
+import org.junit.jupiter.api.Test;
+
+import com.univocity.parsers.common.TextParsingException;
+
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.AddCellToColumnException;
 
 /**
  * Tests for CSV Reading
@@ -52,9 +62,6 @@ public class CsvReaderTest {
 
     private final ColumnType[] bus_types = {SHORT, STRING, STRING, FLOAT, FLOAT};
     private final ColumnType[] bus_types_with_SKIP = {SHORT, STRING, SKIP, DOUBLE, DOUBLE};
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testWithBusData() throws Exception {
@@ -171,7 +178,7 @@ public class CsvReaderTest {
 
         final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
-        assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE))));
+        assertEquals(actual, Collections.singletonList(LOCAL_DATE));
     }
 
     @Test
@@ -199,7 +206,7 @@ public class CsvReaderTest {
 
         final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
-        assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE_TIME))));
+        assertEquals(actual, Collections.singletonList(LOCAL_DATE_TIME));
 
     }
 
@@ -228,7 +235,7 @@ public class CsvReaderTest {
 
         final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
-        assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE))));
+        assertEquals(actual, Collections.singletonList(LOCAL_DATE));
     }
 
     @Test
@@ -256,7 +263,7 @@ public class CsvReaderTest {
 
         final List<ColumnType> actual = asList(new CsvReader().detectColumnTypes(reader, options));
 
-        assertThat(actual, is(equalTo(Collections.singletonList(LOCAL_DATE_TIME))));
+        assertEquals(actual, Collections.singletonList(LOCAL_DATE_TIME));
     }
 
     @Test
@@ -331,11 +338,11 @@ public class CsvReaderTest {
                         "}" + LINE_END;
         assertEquals(output, new CsvReader()
                 .printColumnTypes(CsvReadOptions.builder("../data/bush.csv")
-                	.header(true)
-                	.separator(',')
-                	.locale(Locale.getDefault())
-                	.sample(true)
-                	.build()));
+                        .header(true)
+                        .separator(',')
+                        .locale(Locale.getDefault())
+                        .sample(true)
+                        .build()));
     }
 
     @Test
@@ -420,15 +427,17 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testShortRow() throws Exception {
-        thrown.expect(AddCellToColumnException.class);
-        Table.read().csv("../data/short_row.csv");
+    public void testShortRow() {
+        assertThrows(AddCellToColumnException.class, () -> {
+            Table.read().csv("../data/short_row.csv");
+        });
     }
 
     @Test
-    public void testLongRow() throws Exception {
-        thrown.expect(RuntimeException.class);
-        Table.read().csv("../data/long_row.csv");
+    public void testLongRow() {
+        assertThrows(RuntimeException.class, () -> {
+            Table.read().csv("../data/long_row.csv");
+        });
     }
 
     @Test
@@ -482,11 +491,12 @@ public class CsvReaderTest {
         assertEquals("0 rows X 0 cols", table1.shape());
     }
 
-    @Test(expected = TextParsingException.class)
-    public void testReadMaxColumnsExceeded() throws Exception {
-        Table.read().csv(CsvReadOptions
+    public void testReadMaxColumnsExceeded() {
+        assertThrows(TextParsingException.class, () -> {
+            Table.read().csv(CsvReadOptions
                 .builder("../data/10001_columns.csv")
                 .header(false));
+        });
     }
 
     @Test

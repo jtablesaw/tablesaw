@@ -1,12 +1,14 @@
 package tech.tablesaw.columns.datetimes;
 
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongIterator;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.filtering.predicates.LongBiPredicate;
-import tech.tablesaw.selection.BitmapBackedSelection;
-import tech.tablesaw.selection.Selection;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isEqualTo;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isGreaterThan;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isGreaterThanOrEqualTo;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isInYear;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isLessThan;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isLessThanOrEqualTo;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isMissing;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isNotEqualTo;
+import static tech.tablesaw.columns.datetimes.DateTimePredicates.isNotMissing;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,7 +16,13 @@ import java.util.function.BiPredicate;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 
-import static tech.tablesaw.columns.datetimes.DateTimePredicates.*;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.filtering.predicates.LongBiPredicate;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 public interface DateTimeFilters extends Column<LocalDateTime> {
 

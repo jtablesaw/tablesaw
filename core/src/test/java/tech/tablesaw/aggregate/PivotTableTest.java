@@ -1,11 +1,11 @@
 package tech.tablesaw.aggregate;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PivotTableTest {
 

@@ -1,12 +1,11 @@
 package tech.tablesaw.components;
 
-
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Font;
 
-@Ignore
+@Disabled
 public class AxisTest {
 
     @Test

@@ -1,10 +1,10 @@
 package tech.tablesaw.columns.numbers;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.tablesaw.api.DoubleColumn.create;
 import static tech.tablesaw.columns.numbers.fillers.DoubleRangeIterable.range;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NumberFillersTest {
 

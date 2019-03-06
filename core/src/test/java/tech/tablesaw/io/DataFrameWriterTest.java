@@ -1,6 +1,6 @@
 package tech.tablesaw.io;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 
@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 
 import static java.lang.Double.NaN;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DataFrameWriterTest {
 

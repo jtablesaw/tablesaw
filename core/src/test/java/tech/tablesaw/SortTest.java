@@ -14,11 +14,11 @@
 
 package tech.tablesaw;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import tech.tablesaw.api.Table;
 
@@ -33,7 +33,7 @@ public class SortTest {
     private final static String[] columnNames = TestData.SIMPLE_UNSORTED_DATA.getColumnNames();
     private Table unsortedTable;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         unsortedTable = TestData.SIMPLE_UNSORTED_DATA.getTable();
     }
@@ -61,7 +61,7 @@ public class SortTest {
      * Verify data that is not sorted descending does match data that has been
      * (this test verifies the accuracy of our positive tests)
      */
-    @Ignore
+    @Disabled
     public void sortDescendingNegative() {
         Table sortedTable = unsortedTable.sortDescendingOn("IQ", "DOB");
         Table expectedResults = TestData.SIMPLE_SORTED_DATA_BY_DOUBLE_AND_DATE_ASCENDING.getTable();
@@ -114,7 +114,7 @@ public class SortTest {
         assertTablesEquals(expectedResults, sortedTable);
     }
 
-    @Ignore
+    @Disabled
     public void testAscendingWithPlusSignNegative() {
         Table sortedTable = unsortedTable.sortOn("+" + columnNames[IQ_INDEX], "-" + columnNames[DOB_INDEX]);
         Table expectedResults = TestData.SIMPLE_DATA_WITH_CANONICAL_DATE_FORMAT.getTable();
@@ -128,13 +128,13 @@ public class SortTest {
      * @param sortedTable the table that was sorted with Tablesaw
      */
     private void assertTablesEquals(Table compareWith, Table sortedTable) {
-        assertEquals("both tables have the same number of rows", sortedTable.rowCount(), compareWith.rowCount());
+        assertEquals(sortedTable.rowCount(), compareWith.rowCount(), "both tables have the same number of rows");
         int maxRows = sortedTable.rowCount();
         int numberOfColumns = sortedTable.columnCount();
         for (int rowIndex = 0; rowIndex < maxRows; rowIndex++) {
             for (int columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
-                assertEquals("cells[" + rowIndex + ", " + columnIndex + "] do not match",
-                        sortedTable.get(rowIndex, columnIndex), compareWith.get(rowIndex, columnIndex));
+                assertEquals(sortedTable.get(rowIndex, columnIndex), compareWith.get(rowIndex, columnIndex),
+                	"cells[" + rowIndex + ", " + columnIndex + "] do not match");
             }
         }
     }

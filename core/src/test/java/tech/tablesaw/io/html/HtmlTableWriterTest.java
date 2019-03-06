@@ -14,8 +14,8 @@
 
 package tech.tablesaw.io.html;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.StringColumn;
@@ -28,7 +28,7 @@ public class HtmlTableWriterTest {
 
     private Table table;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
     }

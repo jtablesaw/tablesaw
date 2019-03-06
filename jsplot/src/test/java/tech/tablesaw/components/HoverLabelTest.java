@@ -1,11 +1,11 @@
 package tech.tablesaw.components;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Font;
 import tech.tablesaw.plotly.components.HoverLabel;
 
-@Ignore
+@Disabled
 public class HoverLabelTest {
 
     @Test

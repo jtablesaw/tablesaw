@@ -14,16 +14,36 @@
 
 package tech.tablesaw.columns.datetimes;
 
-import org.junit.Test;
-import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.columns.times.PackedLocalTime;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.asLocalDateTime;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.date;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfMonth;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getDayOfWeek;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getHour;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMillisecondOfDay;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinute;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMinuteOfDay;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getMonthValue;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getSecond;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getSecondOfDay;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.getYear;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.ofEpochMilli;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.pack;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.time;
+import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.toEpochMilli;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoField;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static tech.tablesaw.columns.datetimes.PackedLocalDateTime.*;
+import org.junit.jupiter.api.Test;
+
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.columns.times.PackedLocalTime;
 
 public class PackedLocalDateTimeTest {
 
