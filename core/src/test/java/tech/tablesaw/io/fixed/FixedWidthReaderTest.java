@@ -14,20 +14,26 @@
 
 package tech.tablesaw.io.fixed;
 
-import com.univocity.parsers.fixed.FixedWidthFields;
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-
-import java.io.*;
-import java.util.Locale;
-
-import static tech.tablesaw.api.ColumnType.SHORT;
-import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.FLOAT;
-import static tech.tablesaw.api.ColumnType.SKIP;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.SHORT;
+import static tech.tablesaw.api.ColumnType.SKIP;
+import static tech.tablesaw.api.ColumnType.STRING;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.Locale;
+
+import org.junit.jupiter.api.Test;
+
+import com.univocity.parsers.fixed.FixedWidthFields;
+
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
 
 /**
  * Tests for CSV Reading

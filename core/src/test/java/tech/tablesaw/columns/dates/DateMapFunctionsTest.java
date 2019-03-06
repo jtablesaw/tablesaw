@@ -14,16 +14,18 @@
 
 package tech.tablesaw.columns.dates;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalTime;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DateTimeColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TimeColumn;
-
-import java.time.LocalTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class DateMapFunctionsTest {
 

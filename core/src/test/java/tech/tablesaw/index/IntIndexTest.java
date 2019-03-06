@@ -14,8 +14,14 @@
 
 package tech.tablesaw.index;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.DateAndTimePredicates;
@@ -23,10 +29,6 @@ import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.columns.numbers.NumberPredicates;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
-
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class IntIndexTest {
 

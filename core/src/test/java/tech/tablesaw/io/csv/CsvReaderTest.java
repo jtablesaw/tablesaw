@@ -14,15 +14,20 @@
 
 package tech.tablesaw.io.csv;
 
-import com.univocity.parsers.common.TextParsingException;
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.DateColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.LongColumn;
-import tech.tablesaw.api.ShortColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.AddCellToColumnException;
+import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static tech.tablesaw.api.ColumnType.DOUBLE;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.INTEGER;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE;
+import static tech.tablesaw.api.ColumnType.LOCAL_DATE_TIME;
+import static tech.tablesaw.api.ColumnType.SHORT;
+import static tech.tablesaw.api.ColumnType.SKIP;
+import static tech.tablesaw.api.ColumnType.STRING;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,9 +41,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
-import static tech.tablesaw.api.ColumnType.*;
+import org.junit.jupiter.api.Test;
+
+import com.univocity.parsers.common.TextParsingException;
+
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.DateColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.LongColumn;
+import tech.tablesaw.api.ShortColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.AddCellToColumnException;
 
 /**
  * Tests for CSV Reading

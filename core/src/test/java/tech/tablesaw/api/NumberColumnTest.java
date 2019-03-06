@@ -14,20 +14,18 @@
 
 package tech.tablesaw.api;
 
-import com.devskiller.jfairy.Fairy;
-import com.google.common.base.Stopwatch;
-import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.math3.stat.StatUtils;
-import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
-import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
-import tech.tablesaw.columns.numbers.NumberColumnFormatter;
-import tech.tablesaw.selection.Selection;
+import static java.lang.Double.NaN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.median;
+import static tech.tablesaw.aggregate.AggregateFunctions.percentile;
+import static tech.tablesaw.aggregate.AggregateFunctions.percentile90;
+import static tech.tablesaw.aggregate.AggregateFunctions.percentile95;
+import static tech.tablesaw.aggregate.AggregateFunctions.percentile99;
+import static tech.tablesaw.aggregate.AggregateFunctions.quartile1;
+import static tech.tablesaw.aggregate.AggregateFunctions.quartile3;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -37,9 +35,22 @@ import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleFunction;
 import java.util.function.DoublePredicate;
 
-import static java.lang.Double.NaN;
-import static org.junit.jupiter.api.Assertions.*;
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.correlation.KendallsCorrelation;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.commons.math3.stat.correlation.SpearmansCorrelation;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import com.devskiller.jfairy.Fairy;
+import com.google.common.base.Stopwatch;
+
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.NumberColumnFormatter;
+import tech.tablesaw.selection.Selection;
 
 /**
  * Unit tests for the NumberColumn class

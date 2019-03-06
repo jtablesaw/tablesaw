@@ -14,17 +14,20 @@
 
 package tech.tablesaw.api;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.TestDataUtil;
-import tech.tablesaw.columns.strings.StringColumnFormatter;
-import tech.tablesaw.selection.Selection;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
 
 import java.util.List;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import tech.tablesaw.TestDataUtil;
+import tech.tablesaw.columns.strings.StringColumnFormatter;
+import tech.tablesaw.selection.Selection;
 
 public class TextColumnTest {
 

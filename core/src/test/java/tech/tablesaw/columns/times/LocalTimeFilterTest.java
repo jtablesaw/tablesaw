@@ -14,17 +14,22 @@
 
 package tech.tablesaw.columns.times;
 
-import tech.tablesaw.api.TimeColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.selection.Selection;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.columns.times.PackedLocalTime.of;
+import static tech.tablesaw.columns.times.PackedLocalTime.pack;
+import static tech.tablesaw.columns.times.PackedLocalTime.toShortTimeString;
+
+import java.time.LocalTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalTime;
-
-import static tech.tablesaw.columns.times.PackedLocalTime.*;
-import static org.junit.jupiter.api.Assertions.*;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.api.TimeColumn;
+import tech.tablesaw.selection.Selection;
 
 public class LocalTimeFilterTest {
 

@@ -1,13 +1,14 @@
 package tech.tablesaw.api;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.tablesaw.columns.dates.PackedLocalDate.asLocalDate;
+import static tech.tablesaw.columns.dates.PackedLocalDate.pack;
 
 import java.time.DayOfWeek;
 import java.time.temporal.ChronoUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static tech.tablesaw.columns.dates.PackedLocalDate.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class DateColumnMapTest {
     private DateColumn column1;
