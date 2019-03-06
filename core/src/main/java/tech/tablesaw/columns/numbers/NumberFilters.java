@@ -14,17 +14,28 @@
 
 package tech.tablesaw.columns.numbers;
 
+import static tech.tablesaw.columns.numbers.NumberPredicates.isBetweenExclusive;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isBetweenInclusive;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isEqualTo;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isGreaterThan;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isGreaterThanOrEqualTo;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isLessThan;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isLessThanOrEqualTo;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isNegative;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isNonNegative;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isNotEqualTo;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isPositive;
+import static tech.tablesaw.columns.numbers.NumberPredicates.isZero;
+
+import java.util.function.BiPredicate;
+import java.util.function.DoublePredicate;
+
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.filtering.predicates.DoubleBiPredicate;
 import tech.tablesaw.filtering.predicates.DoubleRangePredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import java.util.function.BiPredicate;
-import java.util.function.DoublePredicate;
-
-import static tech.tablesaw.columns.numbers.NumberPredicates.*;
 
 public interface NumberFilters {
 

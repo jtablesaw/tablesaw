@@ -14,13 +14,17 @@
 
 package tech.tablesaw.examples;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.countNonMissing;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.median;
+import static tech.tablesaw.aggregate.AggregateFunctions.min;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.selection.Selection;
-
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * Usage example using a Tornado data set

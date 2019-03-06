@@ -14,15 +14,15 @@
 
 package tech.tablesaw.index;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.selection.Selection;
 import tech.tablesaw.columns.numbers.NumberPredicates;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -32,7 +32,7 @@ public class DoubleIndexTest {
     private DoubleIndex index;
     private Table table;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         table = Table.read().csv(

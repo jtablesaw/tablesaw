@@ -1,11 +1,11 @@
 package tech.tablesaw.columns.datetimes;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.tablesaw.api.DateTimeColumn.create;
 import static tech.tablesaw.columns.datetimes.fillers.TemporalRangeIterable.range;
 

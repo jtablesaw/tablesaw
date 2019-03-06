@@ -14,12 +14,12 @@
 
 package tech.tablesaw.io.json;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;

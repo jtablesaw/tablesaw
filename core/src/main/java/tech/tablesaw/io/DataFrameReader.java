@@ -14,6 +14,19 @@
 
 package tech.tablesaw.io;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Scanner;
+
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvReader;
@@ -22,14 +35,8 @@ import tech.tablesaw.io.fixed.FixedWidthReader;
 import tech.tablesaw.io.html.HtmlTableReader;
 import tech.tablesaw.io.jdbc.SqlResultSetReader;
 import tech.tablesaw.io.json.JsonReader;
-
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Scanner;
+import tech.tablesaw.io.xlsx.XlsxReadOptions;
+import tech.tablesaw.io.xlsx.XlsxReader;
 
 public class DataFrameReader {
 
@@ -63,17 +70,6 @@ public class DataFrameReader {
 
     public Table csv(CsvReadOptions options) throws IOException {
         return new CsvReader().read(options);
-    }
-
-    public Table json(String url) throws MalformedURLException, IOException {
-        try (Scanner scanner = new Scanner(new URL(url).openStream(), StandardCharsets.UTF_8.toString())) {
-            scanner.useDelimiter("\\A");
-            return json(new StringReader(scanner.hasNext() ? scanner.next() : ""), url);
-	}
-    }
-
-    public Table json(Reader contents, String tableName) throws IOException {
-	return new JsonReader().read(ReadOptions.builder(contents, tableName).build());
     }
 
     public Table fixedWidth(String file) throws IOException {
@@ -112,7 +108,41 @@ public class DataFrameReader {
         return SqlResultSetReader.read(resultSet, tableName);
     }
 
+    /**
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-json
+     */
+    public Table json(String url) throws MalformedURLException, IOException {
+        try (Scanner scanner = new Scanner(new URL(url).openStream(), StandardCharsets.UTF_8.toString())) {
+            scanner.useDelimiter("\\A");
+            return json(new StringReader(scanner.hasNext() ? scanner.next() : ""), url);
+	}
+    }
+
+    /**
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-json
+     */
+    public Table json(Reader contents, String tableName) throws IOException {
+	return new JsonReader().read(ReadOptions.builder(contents, tableName).build());
+    }
+
+    /**
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-html
+     */
     public Table html(String url) throws IOException {
         return new HtmlTableReader().read(url);
+    }
+    
+    /**
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-excel
+     */
+    public List<Table> xlsx(XlsxReadOptions options) throws IOException {
+        return new XlsxReader().read(options);
+    }
+
+    /**
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-excel
+     */
+    public List<Table> xlsx(XlsxReadOptions.Builder options) throws IOException {
+        return xlsx(options.build());
     }
 }

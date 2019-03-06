@@ -1,11 +1,11 @@
 package tech.tablesaw.plotly;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.traces.BoxTrace;
 
-@Ignore
+@Disabled
 public class BoxTest {
 
     private final Object[] x = {"sheep", "cows", "fish", "tree sloths", "sheep", "cows", "fish", "tree sloths", "sheep", "cows", "fish", "tree sloths"};

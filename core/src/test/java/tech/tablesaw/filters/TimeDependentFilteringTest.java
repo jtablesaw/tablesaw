@@ -21,7 +21,6 @@ import com.google.common.collect.TreeRangeSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.text.RandomStringGenerator;
-import org.junit.Assert;
 
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
@@ -42,6 +41,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.out;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests manipulation of large (but not big) data sets
@@ -125,7 +125,7 @@ public class TimeDependentFilteringTest {
             if (independentConstraintFilter == DependencyFilter.FIRST) {
                 if (eventDates.isEmpty()) {
                     // this is an error
-                    Assert.fail("There are no event dates");
+                    fail("There are no event dates");
                 } else {  //Get the first event for the current patient and createFromCsv a date range around it
                     LocalDate date = eventDates.get(0);
                     result.addRange(Range.closed(date.minusDays(daysConstraint.lowerEndpoint()),

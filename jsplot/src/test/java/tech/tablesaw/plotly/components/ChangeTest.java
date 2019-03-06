@@ -1,10 +1,10 @@
 package tech.tablesaw.plotly.components;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.change.ChangeLine;
 import tech.tablesaw.plotly.components.change.Increasing;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChangeTest {
 

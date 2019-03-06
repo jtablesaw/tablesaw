@@ -1,6 +1,5 @@
+dist: xenial
 language: java
-jdk:
-- oraclejdk8
 
 # Codacy download uses hardcoded version instead of latest version
 # Codacy coverage reporter README at https://github.com/codacy/codacy-coverage-reporter documents a new method for fetching latest binary
@@ -8,9 +7,6 @@ jdk:
 before_install:
   - sudo apt-get install jq
   - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://oss.sonatype.org/service/local/repositories/releases/content/com/codacy/codacy-coverage-reporter/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
-  - "export DISPLAY=:99.0"
-  - "export TERM=dumb"
-  - "sh -e /etc/init.d/xvfb start"
 install: mvn install -DskipTests -Dgpg.skip
 script: mvn -B verify
 after_success: java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter report --language Java --coverage-report aggregate/target/site/jacoco-aggregate/jacoco.xml
