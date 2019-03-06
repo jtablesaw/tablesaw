@@ -6,7 +6,6 @@ import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.List;
 import java.util.Map;
 
 import static tech.tablesaw.plotly.Utils.dataAsString;
@@ -51,7 +50,7 @@ public class HeatmapTrace extends AbstractTrace {
         return context;
     }
 
-    public static HeatmapBuilder heatmapBuilder(List<String> x, Object[] y, double[][] z) {
+    public static HeatmapBuilder builder(Object[] x, Object[] y, double[][] z) {
         return new HeatmapBuilder(x, y, z);
     }
 
@@ -62,8 +61,8 @@ public class HeatmapTrace extends AbstractTrace {
         private final Object[] y;
         private final double[][] z;
 
-        HeatmapBuilder(List<String> x, Object[] y, double[][] z) {
-            this.x = x.toArray(new String[0]);
+        HeatmapBuilder(Object[] x, Object[] y, double[][] z) {
+            this.x = x;
             this.y = y;
             this.z = z;
         }
