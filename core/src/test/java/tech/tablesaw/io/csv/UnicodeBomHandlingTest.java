@@ -24,7 +24,7 @@ public class UnicodeBomHandlingTest {
 
 
     @Test
-    public void test_JavaBehaviour() throws IOException {
+    public void javaBehaviour() throws IOException {
 
         Table t = new CsvReader().read(CsvReadOptions.builder(
                 new InputStreamReader(new ByteArrayInputStream(CONTENT)), "R").header(false).build());

@@ -89,7 +89,7 @@ public class DateTimeParser extends AbstractColumnParser<LocalDateTime> {
         if (isMissing(value)) {
             return null;
         }
-        value = Strings.padStart(value, 4, '0');
-        return LocalDateTime.parse(value, formatter);
+        String paddedValue = Strings.padStart(value, 4, '0');
+        return LocalDateTime.parse(paddedValue, formatter);
     }
 }

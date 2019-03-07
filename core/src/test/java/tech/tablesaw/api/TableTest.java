@@ -311,9 +311,10 @@ public class TableTest {
         assertEquals(sum1, rowConsumer.getSum());
 
     }
+
     private static class RowConsumer implements Consumer<Row[]> {
 
-        int sum = 0;
+        private int sum = 0;
 
         public int getSum() {
             return sum;
