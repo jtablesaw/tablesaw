@@ -69,30 +69,6 @@
                 <configuration>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>shaded</shadedClassifierName>
-                    <artifactSet>
-                        <excludes>
-                            <exclude>tech.tablesaw:tablesaw-excel</exclude>
-                            <exclude>org.apache.poi:*</exclude>
-                            <exclude>commons-codec:commons-codec</exclude>
-                            <exclude>org.apache.commons:commons-collections4</exclude>
-                            <exclude>org.apache.xmlbeans:xmlbeans</exclude>
-                            <exclude>org.apache.commons:commons-compress</exclude>
-                            <exclude>com.github.virtuald:curvesapi</exclude>
-
-                            <exclude>tech.tablesaw:tablesaw-html</exclude>
-                            <exclude>org.jsoup:jsoup</exclude>
-                            
-                            <exclude>tech.tablesaw:tablesaw-json</exclude>
-                            <exclude>com.fasterxml.jackson.core:*</exclude>
-                            <exclude>com.github.wnameless:json-flattener</exclude>
-                            <exclude>com.eclipsesource.minimal-json:minimal-json</exclude>
-
-                            <exclude>tech.tablesaw:tablesaw-smile</exclude>
-                            <exclude>com.github.haifengl:smile-data</exclude>
-                            <exclude>org.apache.commons:commons-text</exclude>
-                            <exclude>com.github.haifengl:smile-math</exclude>
-                        </excludes>
-                    </artifactSet>
                 </configuration>
                 <executions>
                     <execution>
@@ -113,6 +89,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>25.1-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.8.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -139,24 +120,28 @@
             <artifactId>tablesaw-excel</artifactId>
             <version>0.31.1-SNAPSHOT</version>
             <optional>true</optional>
+            <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-html</artifactId>
             <version>0.31.1-SNAPSHOT</version>
             <optional>true</optional>
+            <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-json</artifactId>
             <version>0.31.1-SNAPSHOT</version>
             <optional>true</optional>
+            <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-smile</artifactId>
             <version>0.31.1-SNAPSHOT</version>
             <optional>true</optional>
+            <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
