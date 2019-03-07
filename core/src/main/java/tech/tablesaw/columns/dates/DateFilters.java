@@ -1,5 +1,15 @@
 package tech.tablesaw.columns.dates;
 
+import static tech.tablesaw.columns.DateAndTimePredicates.isEqualTo;
+import static tech.tablesaw.columns.DateAndTimePredicates.isGreaterThanOrEqualTo;
+import static tech.tablesaw.columns.DateAndTimePredicates.isMissing;
+import static tech.tablesaw.columns.DateAndTimePredicates.isNotMissing;
+
+import java.time.LocalDate;
+import java.util.function.BiPredicate;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import tech.tablesaw.api.DateColumn;
@@ -7,13 +17,6 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.filtering.predicates.IntBiPredicate;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
-
-import java.time.LocalDate;
-import java.util.function.BiPredicate;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
-
-import static tech.tablesaw.columns.DateAndTimePredicates.*;
 
 public interface DateFilters extends Column<LocalDate> {
 

@@ -412,7 +412,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         DateTimeColumn newColumn = DateTimeColumn.create(this.name() + " " + time.toString());
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
-            if (DateColumn.valueIsMissing(c1)) {
+            if (valueIsMissing(c1)) {
         	newColumn.appendMissing();
             } else {
                 LocalDate value1 = PackedLocalDate.asLocalDate(c1);
@@ -431,7 +431,7 @@ public interface DateMapFunctions extends Column<LocalDate> {
         for (int r = 0; r < this.size(); r++) {
             int c1 = this.getIntInternal(r);
             int c2 = timeColumn.getIntInternal(r);
-            if (DateColumn.valueIsMissing(c1) || DateColumn.valueIsMissing(c2)) {
+            if (valueIsMissing(c1) || valueIsMissing(c2)) {
         	newColumn.appendMissing();
             } else {
                 newColumn.appendInternal(PackedLocalDateTime.create(c1, c2));

@@ -144,8 +144,7 @@ public class SearchPerformanceTest {
         }
 
         while (dates.size() <= numberOfRecordsInTable) {
-            dateTime = dateTime.plusMinutes(1);
-            dates.add(PackedLocalDateTime.pack(dateTime));
+            dates.add(PackedLocalDateTime.pack(dateTime.plusMinutes(1)));
         }
 
         DateTimeColumn dateColumn = table.dateTimeColumn("date");

@@ -14,7 +14,7 @@
 
 package tech.tablesaw.io;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.dates.DateParser;
 import tech.tablesaw.columns.datetimes.DateTimeParser;
 
@@ -23,8 +23,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TypeUtilsTest {
 
@@ -32,7 +31,7 @@ public class TypeUtilsTest {
     public void testDateFormaterWithLocaleEN() {
         String anotherDate = "12-May-2015";
         LocalDate result = LocalDate.parse(anotherDate, DateParser.DEFAULT_FORMATTER.withLocale(Locale.ENGLISH));
-        assertThat(result, notNullValue());
+        assertNotNull(result);
     }
 
     @Test
@@ -43,6 +42,6 @@ public class TypeUtilsTest {
         String anotherDate = "10/2/2016 8:18:03 AM";
         dtTimef8.parse(anotherDate);
         LocalDateTime result = LocalDateTime.parse(anotherDate, DateTimeParser.DEFAULT_FORMATTER);
-        assertThat(result, notNullValue());
+        assertNotNull(result);
     }
 }

@@ -97,8 +97,8 @@ public class TimeParser extends AbstractColumnParser<LocalTime> {
         if (isMissing(value)) {
             return null;
         }
-        value = Strings.padStart(value, 4, '0');
-        return LocalTime.parse(value, parserFormatter);
+        String paddedValue = Strings.padStart(value, 4, '0');
+        return LocalTime.parse(paddedValue, parserFormatter);
     }
 
 }

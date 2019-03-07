@@ -964,7 +964,7 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
-     * Applies the operation in {@code doable} to every row in the table
+     * Applies the operation in {@code rowConsumer} to every series of n rows in the table
      */
     public void stepWithRows(Consumer<Row[]> rowConsumer, int n) {
         if (isEmpty()) {
@@ -975,10 +975,12 @@ public class Table extends Relation implements Iterable<Row> {
             rows[i] = new Row(this);
         }
 
-        int max = rowCount() - n;
-        for (int i = 0; i <= max; i++) {
-            for (int r = 0; r < n; r++) {
-                rows[r].at(i + r);
+        int max = rowCount() / n;
+
+        for (int i = 0; i < max; i++) {  //0, 1
+            for (int r = 1; r <= n; r++) {
+                int row = i*n + r - 1;
+                rows[r-1].at(row);
             }
             rowConsumer.accept(rows);
         }
@@ -1002,7 +1004,7 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
-     * Applies the function in {@code pairs} to each consecutive pairs of rows in the table
+     * Applies the function in {@code pairConsumer} to each consecutive pairs of rows in the table
      */
     public void doWithRowPairs(Consumer<RowPair> pairConsumer) {
         if (isEmpty()) {
@@ -1020,7 +1022,7 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
-     * Applies the function in {@code pairs} to each group of contiguous rows of size n in the table
+     * Applies the function in {@code rowConsumer} to each group of contiguous rows of size n in the table
      * This can be used, for example, to calculate a running average of in rows
      */
     public void rollWithRows(Consumer<Row[]> rowConsumer, int n) {

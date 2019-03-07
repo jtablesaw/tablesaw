@@ -1,9 +1,9 @@
 package tech.tablesaw.columns.booleans;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.BooleanColumn;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.tablesaw.api.BooleanColumn.create;
 import static tech.tablesaw.columns.booleans.fillers.BooleanIterable.bits;
 

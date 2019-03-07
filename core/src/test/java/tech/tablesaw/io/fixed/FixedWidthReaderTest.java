@@ -14,30 +14,31 @@
 
 package tech.tablesaw.io.fixed;
 
-import com.univocity.parsers.fixed.FixedWidthFields;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.tablesaw.api.ColumnType.FLOAT;
+import static tech.tablesaw.api.ColumnType.SHORT;
+import static tech.tablesaw.api.ColumnType.SKIP;
+import static tech.tablesaw.api.ColumnType.STRING;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.Locale;
 
-import static tech.tablesaw.api.ColumnType.SHORT;
-import static tech.tablesaw.api.ColumnType.STRING;
-import static tech.tablesaw.api.ColumnType.FLOAT;
-import static tech.tablesaw.api.ColumnType.SKIP;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+
+import com.univocity.parsers.fixed.FixedWidthFields;
+
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
 
 /**
  * Tests for CSV Reading
  */
 public class FixedWidthReaderTest {
-
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     private final FixedWidthFields car_fields_specs = new FixedWidthFields(4, 5, 40, 40, 8);
     private final ColumnType[] car_types = {SHORT, STRING, STRING, STRING, FLOAT};

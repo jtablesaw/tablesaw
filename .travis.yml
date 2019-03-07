@@ -6,7 +6,7 @@ language: java
 # However, we had difficulty using it: https://github.com/codacy/codacy-coverage-reporter/issues/75#issuecomment-409585275
 before_install:
   - sudo apt-get install jq
-  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://oss.sonatype.org/service/local/repositories/releases/content/com/codacy/codacy-coverage-reporter/4.0.1/codacy-coverage-reporter-4.0.1-assembly.jar
+  - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://oss.sonatype.org/service/local/repositories/releases/content/com/codacy/codacy-coverage-reporter/4.0.5/codacy-coverage-reporter-4.0.5-assembly.jar
 install: mvn install -DskipTests -Dgpg.skip
 script: mvn -B verify
 after_success: java -cp ~/codacy-coverage-reporter-assembly-latest.jar com.codacy.CodacyCoverageReporter report --language Java --coverage-report aggregate/target/site/jacoco-aggregate/jacoco.xml

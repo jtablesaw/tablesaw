@@ -16,6 +16,24 @@ import static tech.tablesaw.plotly.components.Axis.Spikes.SpikeSnap.DATA;
 
 public class Axis extends Component {
 
+    public enum CategoryOrder {
+        TRACE("trace"),
+        CATEGORY_ASCENDING("category ascending"),
+        CATEGORY_DESCENDING("category descending"),
+        ARRAY("array");
+
+        private final String value;
+
+        CategoryOrder(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
+    }
+
     /**
      * Sets the axis type. By default, plotly attempts to determined the axis type by looking into the data
      * of the traces that referenced the axis in question.
@@ -229,6 +247,8 @@ public class Axis extends Component {
     private final Side side;
     private final ScatterTrace.YAxis overlaying;
 
+    private final CategoryOrder categoryOrder;
+
     private final TickSettings tickSettings;
 
     public static AxisBuilder builder() {
@@ -266,6 +286,7 @@ public class Axis extends Component {
         constrain = builder.constrain;
         constrainToward = builder.constrainToward;
         scaleRatio = builder.scaleRatio;
+        categoryOrder = builder.categoryOrder;
     }
 
     public String asJavascript() {
@@ -314,6 +335,10 @@ public class Axis extends Component {
 
         if (tickSettings != null) {
             tickSettings.updateContext(context);
+        }
+
+        if (categoryOrder != null) {
+            context.put("categoryOrder", categoryOrder);
         }
 
         if(gridWidth != DEFAULT_GRID_WIDTH) context.put("gridWidth", gridWidth);
@@ -365,6 +390,8 @@ public class Axis extends Component {
 
         private ScatterTrace.YAxis overlaying;
 
+        private CategoryOrder categoryOrder;
+
         private AxisBuilder() {}
 
         public AxisBuilder title(String title) {
@@ -379,6 +406,11 @@ public class Axis extends Component {
 
         public AxisBuilder type(Type type) {
             this.type = type;
+            return this;
+        }
+
+        public AxisBuilder categoryOrder(CategoryOrder categoryOrder) {
+            this.categoryOrder = categoryOrder;
             return this;
         }
 

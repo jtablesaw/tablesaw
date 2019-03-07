@@ -1,10 +1,10 @@
 package tech.tablesaw.components;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.components.Symbol;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MarkerTest {
 

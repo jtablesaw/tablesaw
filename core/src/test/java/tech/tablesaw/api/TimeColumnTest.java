@@ -14,8 +14,8 @@
 
 package tech.tablesaw.api;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.columns.times.TimeColumnType;
@@ -26,11 +26,11 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.columns.times.PackedLocalTime.getMinuteOfDay;
 import static tech.tablesaw.columns.times.PackedLocalTime.getSecondOfDay;
 import static tech.tablesaw.columns.times.PackedLocalTime.of;
@@ -39,7 +39,7 @@ public class TimeColumnTest {
 
     private TimeColumn column1;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Table table = Table.create("Test");
         column1 = TimeColumn.create("Game time");

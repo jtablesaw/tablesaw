@@ -1,6 +1,5 @@
 package tech.tablesaw.examples;
 
-import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.IntColumnType;
@@ -11,6 +10,7 @@ import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.BarTrace;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
 import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
 public class BarPieAndParetoExample {
@@ -31,7 +31,7 @@ public class BarPieAndParetoExample {
 
         // Sum the number of fatalities from each tornado, grouping by scale
         Table fatalities1 =
-                tornadoes.summarize("fatalities", AggregateFunctions.sum).by("scale");
+                tornadoes.summarize("fatalities", sum).by("scale");
 
         // Plot
         Plot.show(
@@ -42,7 +42,7 @@ public class BarPieAndParetoExample {
                         "sum [fatalities]"));		// numeric column name
 
         // Plot the mean injuries rather than a sum.
-        Table injuries1 = tornadoes.summarize("injuries", AggregateFunctions.mean).by("scale");
+        Table injuries1 = tornadoes.summarize("injuries", mean).by("scale");
 
         Plot.show(
                 HorizontalBarPlot.create("Average number of tornado injuries by scale",
