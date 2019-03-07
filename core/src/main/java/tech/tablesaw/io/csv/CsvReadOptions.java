@@ -30,6 +30,7 @@ public class CsvReadOptions extends ReadOptions {
     private final Character separator;
     private final String lineEnding;
     private final Integer maxNumberOfColumns;
+    private final Character commentPrefix;
 
     private CsvReadOptions(CsvReadOptions.Builder builder) {
 	super(builder);
@@ -38,6 +39,7 @@ public class CsvReadOptions extends ReadOptions {
         separator = builder.separator;
         lineEnding = builder.lineEnding;
         maxNumberOfColumns = builder.maxNumberOfColumns;
+        commentPrefix = builder.commentPrefix;
     }
 
     public static Builder builder(File file) {
@@ -139,13 +141,18 @@ public class CsvReadOptions extends ReadOptions {
         return maxNumberOfColumns;
     }
 
+    public Character commentPrefix() {
+        return commentPrefix;
+    }
+
     public static class Builder extends ReadOptions.Builder {
 
         private Character separator = ',';
         private String lineEnding;
         private ColumnType[] columnTypes;
         private Integer maxNumberOfColumns = 10_000;
-
+        private Character commentPrefix;
+        
         public Builder(File file) {
             super(file);
         }
@@ -241,6 +248,11 @@ public class CsvReadOptions extends ReadOptions {
          */
         public Builder maxNumberOfColumns(Integer maxNumberOfColumns) {
             this.maxNumberOfColumns = maxNumberOfColumns;
+            return this;
+        }
+
+        public Builder commentPrefix(char commentPrefix) {
+            this.commentPrefix = commentPrefix;
             return this;
         }
 
