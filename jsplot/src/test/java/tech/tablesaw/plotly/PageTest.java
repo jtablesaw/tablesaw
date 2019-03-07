@@ -13,7 +13,16 @@ public class PageTest {
     private final double[] y = {1, 4, 9, 16};
 
     @Test
-    public void testPlotlyJsLocation() {
+    public void testDefaultPlotlyJsLocation() {
+        BarTrace trace = BarTrace.builder(x, y).build();
+        Page page = Page.pageBuilder(new Figure(trace), "plot")
+                .build();
+        String html = page.asJavascript();
+        Assert.assertTrue(html.indexOf("\"" + "https://cdn.plot.ly/plotly-latest.min.js" + "\"") > 0);
+    }
+    
+    @Test
+    public void testCustomPlotlyJsLocation() {
         BarTrace trace = BarTrace.builder(x, y).build();
         String location = this.getClass().getResource(this.getClass().getSimpleName() + ".class").toString();
         Page page = Page.pageBuilder(new Figure(trace), "plot")
