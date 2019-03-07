@@ -72,17 +72,6 @@ public class DataFrameReader {
         return new CsvReader().read(options);
     }
 
-    public Table json(String url) throws MalformedURLException, IOException {
-        try (Scanner scanner = new Scanner(new URL(url).openStream(), StandardCharsets.UTF_8.toString())) {
-            scanner.useDelimiter("\\A");
-            return json(new StringReader(scanner.hasNext() ? scanner.next() : ""), url);
-	}
-    }
-
-    public Table json(Reader contents, String tableName) throws IOException {
-	return new JsonReader().read(ReadOptions.builder(contents, tableName).build());
-    }
-
     public Table fixedWidth(String file) throws IOException {
         return fixedWidth(FixedWidthReadOptions.builder(file));
     }
@@ -119,19 +108,39 @@ public class DataFrameReader {
         return SqlResultSetReader.read(resultSet, tableName);
     }
 
+    /**
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-json
+     */
+    public Table json(String url) throws MalformedURLException, IOException {
+        try (Scanner scanner = new Scanner(new URL(url).openStream(), StandardCharsets.UTF_8.toString())) {
+            scanner.useDelimiter("\\A");
+            return json(new StringReader(scanner.hasNext() ? scanner.next() : ""), url);
+	}
+    }
+
+    /**
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-json
+     */
+    public Table json(Reader contents, String tableName) throws IOException {
+	return new JsonReader().read(ReadOptions.builder(contents, tableName).build());
+    }
+
+    /**
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-html
+     */
     public Table html(String url) throws IOException {
         return new HtmlTableReader().read(url);
     }
     
     /**
-     * Modules that call this method must add the optional dependency org.apache.poi:poi-ooxml
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-excel
      */
     public List<Table> xlsx(XlsxReadOptions options) throws IOException {
         return new XlsxReader().read(options);
     }
 
     /**
-     * Modules that call this method must add the optional dependency org.apache.poi:poi-ooxml
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-excel
      */
     public List<Table> xlsx(XlsxReadOptions.Builder options) throws IOException {
         return xlsx(options.build());

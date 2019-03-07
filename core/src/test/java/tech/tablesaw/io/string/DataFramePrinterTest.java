@@ -1,11 +1,10 @@
 package tech.tablesaw.io.string;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DataFramePrinterTest {
 
@@ -17,7 +16,7 @@ public class DataFramePrinterTest {
         col.append(3.0);
         Table table = Table.create("nullCellTable", col);
         String out = table.print();
-        assertThat(out, containsString("          "));
+        assertTrue(out.contains("          "));
     }
 
 }

@@ -14,15 +14,32 @@
 
 package tech.tablesaw.columns.strings;
 
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.selection.BitmapBackedSelection;
-import tech.tablesaw.selection.Selection;
+import static tech.tablesaw.columns.strings.StringPredicates.endsWith;
+import static tech.tablesaw.columns.strings.StringPredicates.hasEqualLengthTo;
+import static tech.tablesaw.columns.strings.StringPredicates.isAlpha;
+import static tech.tablesaw.columns.strings.StringPredicates.isAlphaNumeric;
+import static tech.tablesaw.columns.strings.StringPredicates.isEmpty;
+import static tech.tablesaw.columns.strings.StringPredicates.isEqualTo;
+import static tech.tablesaw.columns.strings.StringPredicates.isEqualToIgnoringCase;
+import static tech.tablesaw.columns.strings.StringPredicates.isLongerThan;
+import static tech.tablesaw.columns.strings.StringPredicates.isLowerCase;
+import static tech.tablesaw.columns.strings.StringPredicates.isMissing;
+import static tech.tablesaw.columns.strings.StringPredicates.isNotEqualTo;
+import static tech.tablesaw.columns.strings.StringPredicates.isNotMissing;
+import static tech.tablesaw.columns.strings.StringPredicates.isNumeric;
+import static tech.tablesaw.columns.strings.StringPredicates.isShorterThan;
+import static tech.tablesaw.columns.strings.StringPredicates.isUpperCase;
+import static tech.tablesaw.columns.strings.StringPredicates.matchesRegex;
+import static tech.tablesaw.columns.strings.StringPredicates.startsWith;
+import static tech.tablesaw.columns.strings.StringPredicates.stringContains;
 
 import java.util.Collection;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-import static tech.tablesaw.columns.strings.StringPredicates.*;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.selection.BitmapBackedSelection;
+import tech.tablesaw.selection.Selection;
 
 public interface StringFilters extends Column<String> {
 

@@ -32,8 +32,8 @@ import tech.tablesaw.api.Table;
 import tech.tablesaw.api.TextColumn;
 import tech.tablesaw.api.TimeColumn;
 import tech.tablesaw.columns.Column;
-import tech.tablesaw.conversion.SmileConverter;
 import tech.tablesaw.conversion.TableConverter;
+import tech.tablesaw.conversion.smile.SmileConverter;
 import tech.tablesaw.io.string.DataFramePrinter;
 import tech.tablesaw.sorting.comparators.DescendingIntComparator;
 

@@ -14,8 +14,15 @@
 
 package tech.tablesaw;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.LocalDate;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.ShortColumn;
@@ -25,10 +32,6 @@ import tech.tablesaw.columns.Column;
 import tech.tablesaw.columns.dates.PackedLocalDate;
 import tech.tablesaw.io.csv.CsvReadOptions;
 
-import java.time.LocalDate;
-
-import static org.junit.Assert.*;
-
 /**
  * Tests for filtering on the T class
  */
@@ -36,7 +39,7 @@ public class TableFilteringTest {
 
     private Table table;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv").minimizeColumnSizes(true));
     }

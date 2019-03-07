@@ -14,8 +14,9 @@
 
 package tech.tablesaw.api;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
 
 public class FloatColumnTest {
 
@@ -24,7 +25,7 @@ public class FloatColumnTest {
         final FloatColumn floatColumn = FloatColumn.create("floats");
         final Float floatValue = 2.5f;
         floatColumn.append(floatValue);
-        Assert.assertEquals(floatValue, floatColumn.get(0));
+        assertEquals(floatValue, floatColumn.get(0));
     }
 
     @Test
@@ -32,6 +33,6 @@ public class FloatColumnTest {
         final FloatColumn floatColumn = FloatColumn.create("floats");
         final Float floatObject = 2.5f;
         floatColumn.append(floatObject);
-        Assert.assertEquals(floatObject, floatColumn.get(0));
+        assertEquals(floatObject, floatColumn.get(0));
     }
 }

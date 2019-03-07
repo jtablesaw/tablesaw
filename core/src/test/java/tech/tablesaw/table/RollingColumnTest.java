@@ -1,16 +1,19 @@
 package tech.tablesaw.table;
 
-import org.junit.Test;
-import tech.tablesaw.api.BooleanColumn;
-import tech.tablesaw.api.DateTimeColumn;
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.tablesaw.aggregate.AggregateFunctions.countTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.latestDateTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.*;
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
+import org.junit.jupiter.api.Test;
+
+import tech.tablesaw.api.BooleanColumn;
+import tech.tablesaw.api.DateTimeColumn;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.columns.numbers.DoubleColumnType;
 
 public class RollingColumnTest {
 

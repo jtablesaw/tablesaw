@@ -1,25 +1,26 @@
 package tech.tablesaw.table;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.selection.Selection;
 
-import static org.junit.Assert.*;
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
-
 public class TableSliceTest {
 
     private Table source;
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         source = Table.read().csv("../data/bush.csv");
     }
@@ -94,18 +95,20 @@ public class TableSliceTest {
 
     @Test
     public void addColumn() {
-        TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
-        thrown.expect(UnsupportedOperationException.class);
-        thrown.expectMessage("Class TableSlice does not support the addColumns operation");
-        slice.addColumns(StringColumn.create("test"));
+	UnsupportedOperationException thrown = assertThrows(UnsupportedOperationException.class, () -> {
+            TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
+            slice.addColumns(StringColumn.create("test"));
+        });
+	assertTrue(thrown.getMessage().contains("Class TableSlice does not support the addColumns operation"));
     }
 
     @Test
     public void removeColumns() {
-        TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
-        thrown.expect(UnsupportedOperationException.class);
-        thrown.expectMessage("Class TableSlice does not support the removeColumns operation");
-        slice.removeColumns("who");
+	UnsupportedOperationException thrown = assertThrows(UnsupportedOperationException.class, () -> {
+            TableSlice slice = new TableSlice(source, Selection.withRange(0, source.rowCount()));
+            slice.removeColumns("who");
+        });
+	assertTrue(thrown.getMessage().contains("Class TableSlice does not support the removeColumns operation"));
     }
 
     @Test

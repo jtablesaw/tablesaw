@@ -14,6 +14,9 @@
 
 package tech.tablesaw.examples;
 
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.numbers.DoubleColumnType;
@@ -21,8 +24,6 @@ import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.HorizontalBarPlot;
 import tech.tablesaw.plotly.api.ParetoPlot;
 import tech.tablesaw.plotly.api.PiePlot;
-
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
 
 /**
  * Usage example using a Tornado data set

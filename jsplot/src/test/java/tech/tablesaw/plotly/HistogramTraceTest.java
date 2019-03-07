@@ -1,12 +1,12 @@
 package tech.tablesaw.plotly;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.HistogramTrace;
 
-@Ignore
+@Disabled
 public class HistogramTraceTest {
 
     private final double[] y1 = {1, 4, 9, 16, 11, 4, -1, 20, 4, 7, 9, 12, 8, 6, 28, 12};

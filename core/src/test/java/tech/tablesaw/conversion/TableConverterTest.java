@@ -14,13 +14,13 @@
 
 package tech.tablesaw.conversion;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TableConverterTest {
 

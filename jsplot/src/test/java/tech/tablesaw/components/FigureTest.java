@@ -1,7 +1,7 @@
 package tech.tablesaw.components;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
@@ -14,7 +14,7 @@ import tech.tablesaw.plotly.traces.Trace;
 import java.io.File;
 import java.nio.file.Paths;
 
-@Ignore
+@Disabled
 public class FigureTest {
 
     private String divName = "target";

@@ -1,4 +1,4 @@
-package tech.tablesaw.conversion;
+package tech.tablesaw.conversion.smile;
 
 import java.text.ParseException;
 import java.util.List;

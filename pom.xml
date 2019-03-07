@@ -44,9 +44,13 @@
 
     <modules>
         <module>core</module>
-        <module>beakerx</module>
         <module>aggregate</module>
+        <module>beakerx</module>
+        <module>excel</module>
+        <module>html</module>
+        <module>json</module>
         <module>jsplot</module>
+        <module>smile</module>
     </modules>
 
     <profiles>
@@ -104,6 +108,11 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.22.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -220,9 +229,14 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>5.4.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-params</artifactId>
+                <version>5.4.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

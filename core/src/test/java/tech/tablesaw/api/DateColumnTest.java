@@ -1,19 +1,19 @@
 package tech.tablesaw.api;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.columns.dates.DateColumnType;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateColumnTest {
     private DateColumn column1;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Table table = Table.create("Test");
         column1 = DateColumn.create("Game date");

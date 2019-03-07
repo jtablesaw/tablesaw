@@ -1,6 +1,6 @@
 package tech.tablesaw.plotly.display;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;

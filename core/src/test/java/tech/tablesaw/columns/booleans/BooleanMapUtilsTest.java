@@ -1,9 +1,10 @@
 package tech.tablesaw.columns.booleans;
 
-import org.junit.Test;
-import tech.tablesaw.api.BooleanColumn;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import tech.tablesaw.api.BooleanColumn;
 
 public class BooleanMapUtilsTest {
     private BooleanColumn singleFalse = BooleanColumn.create("", new boolean[]{false});
