@@ -17,7 +17,7 @@ public class Page extends Component {
     private final Figure figure;
     private final String divName;
 
-    private String plotlyJsLocation = null;
+    private final String plotlyJsLocation;
 
     private Page(PageBuilder builder) {
         this.figure = builder.figure;
@@ -57,7 +57,7 @@ public class Page extends Component {
         private final Figure figure;
         private final String divName;
 
-        private String plotlyJsLocation;
+        private String plotlyJsLocation = null;
 
         public PageBuilder(Figure figure, String divName) {
             this.figure = figure;
