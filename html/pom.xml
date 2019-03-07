@@ -57,12 +57,6 @@
          <configuration>
              <shadedArtifactAttached>true</shadedArtifactAttached>
              <shadedClassifierName>shaded</shadedClassifierName>
-             <artifactSet>
-                 <includes>
-                     <include>tech.tablesaw:tablesaw-html</include>
-                     <include>org.jsoup:jsoup</include>
-                 </includes>
-             </artifactSet>
          </configuration>
          <executions>
              <execution>

@@ -57,17 +57,6 @@
            <configuration>
                <shadedArtifactAttached>true</shadedArtifactAttached>
                <shadedClassifierName>shaded</shadedClassifierName>
-               <artifactSet>
-                   <includes>
-                       <include>tech.tablesaw:tablesaw-excel</include>
-                       <include>org.apache.poi:*</include>
-                       <include>commons-codec:commons-codec</include>
-                       <include>org.apache.commons:commons-collections4</include>
-                       <include>org.apache.xmlbeans:xmlbeans</include>
-                       <include>org.apache.commons:commons-compress</include>
-                       <include>com.github.virtuald:curvesapi</include>
-                   </includes>
-               </artifactSet>
            </configuration>
            <executions>
                <execution>

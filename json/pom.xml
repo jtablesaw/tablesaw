@@ -57,13 +57,6 @@
           <configuration>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <shadedClassifierName>shaded</shadedClassifierName>
-              <artifactSet>
-                  <includes>
-                      <include>com.fasterxml.jackson.core:*</include>
-                      <include>com.github.wnameless:json-flattener</include>
-                      <include>com.eclipsesource.minimal-json:minimal-json</include>
-                  </includes>
-              </artifactSet>
           </configuration>
           <executions>
               <execution>
