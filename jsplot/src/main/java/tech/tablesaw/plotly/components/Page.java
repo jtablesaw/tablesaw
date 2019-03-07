@@ -25,10 +25,6 @@ public class Page extends Component {
         this.plotlyJsLocation = builder.plotlyJsLocation;
     }
 
-    public void setPlotlyJsLocation(String plotlyJsLocation) {
-        this.plotlyJsLocation = plotlyJsLocation;
-    }
-    
     @Override
     public String asJavascript() {
         Writer writer = new StringWriter();
