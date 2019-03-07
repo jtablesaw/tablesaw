@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>{{figureTitle}}</title>
-<!--
-    <script src="src/main/resources/plotly-latest.min.js"></script>
--->
+{% if plotlyJsLocation is not null %}
+    <script src="{{plotlyJsLocation}}"></script>
+{% else %}
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endif %}
 </head>
 <body>
 {% if targetDiv is not null %}

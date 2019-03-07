@@ -1,13 +1,13 @@
 package tech.tablesaw.plotly.components;
 
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.mitchellbosecke.pebble.error.PebbleException;
+import com.mitchellbosecke.pebble.template.PebbleTemplate;
 
 /**
  * Represents an entire html page that contains a figure
@@ -17,11 +17,18 @@ public class Page extends Component {
     private final Figure figure;
     private final String divName;
 
+    private String plotlyJsLocation = null;
+
     private Page(PageBuilder builder) {
         this.figure = builder.figure;
         this.divName = builder.divName;
+        this.plotlyJsLocation = builder.plotlyJsLocation;
     }
 
+    public void setPlotlyJsLocation(String plotlyJsLocation) {
+        this.plotlyJsLocation = plotlyJsLocation;
+    }
+    
     @Override
     public String asJavascript() {
         Writer writer = new StringWriter();
@@ -41,6 +48,7 @@ public class Page extends Component {
         context.put("figureScript", figure.asJavascript(divName));
         context.put("targetDiv", figure.divString(divName));
         context.put("figureTitle", figure.getLayout() != null? figure.getLayout().getTitle() : null);
+        context.put("plotlyJsLocation", plotlyJsLocation);
         return context;
     }
 
@@ -53,6 +61,8 @@ public class Page extends Component {
         private final Figure figure;
         private final String divName;
 
+        private String plotlyJsLocation;
+
         public PageBuilder(Figure figure, String divName) {
             this.figure = figure;
             this.divName = divName;
@@ -60,6 +70,11 @@ public class Page extends Component {
 
         public Page build() {
             return new Page(this);
+        }
+        
+        public PageBuilder plotlyJsLocation(String location) {
+            this.plotlyJsLocation = location;
+            return this;
         }
     }
 }
