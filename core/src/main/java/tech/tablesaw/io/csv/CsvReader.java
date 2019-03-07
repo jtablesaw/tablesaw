@@ -19,13 +19,15 @@ import com.univocity.parsers.common.AbstractParser;
 import com.univocity.parsers.csv.CsvFormat;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
-import org.apache.commons.lang3.tuple.Pair;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.FileReader;
 import tech.tablesaw.io.TableBuildingUtils;
 
 import javax.annotation.concurrent.Immutable;
+
+import org.apache.commons.math3.util.Pair;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
@@ -67,7 +69,7 @@ public class CsvReader extends FileReader {
             types = detectColumnTypes(reader, options);
         }
 
-        return Pair.of(TableBuildingUtils.createReader(options, bytesCache), types);
+        return Pair.create(TableBuildingUtils.createReader(options, bytesCache), types);
     }
 
     public Table read(CsvReadOptions options) throws IOException {
@@ -76,8 +78,8 @@ public class CsvReader extends FileReader {
 
     private Table read(CsvReadOptions options, boolean headerOnly) throws IOException {
         Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options);
-        Reader reader = pair.getLeft();
-        ColumnType[] types = pair.getRight();
+        Reader reader = pair.getKey();
+        ColumnType[] types = pair.getValue();
 
         AbstractParser<?> parser = csvParser(options);
 
