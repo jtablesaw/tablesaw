@@ -1,7 +1,7 @@
 package tech.tablesaw.plotly;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Page;
@@ -18,7 +18,7 @@ public class PageTest {
         Page page = Page.pageBuilder(new Figure(trace), "plot")
                 .build();
         String html = page.asJavascript();
-        Assert.assertTrue(html.indexOf("\"" + "https://cdn.plot.ly/plotly-latest.min.js" + "\"") > 0);
+        Assertions.assertTrue(html.indexOf("\"" + "https://cdn.plot.ly/plotly-latest.min.js" + "\"") > 0);
     }
     
     @Test
@@ -29,6 +29,6 @@ public class PageTest {
                 .plotlyJsLocation(location)
                 .build();
         String html = page.asJavascript();
-        Assert.assertTrue(html.indexOf("\"" + location + "\"") > 0);
+        Assertions.assertTrue(html.indexOf("\"" + location + "\"") > 0);
     }
 }
