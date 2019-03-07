@@ -69,6 +69,30 @@
                 <configuration>
                     <shadedArtifactAttached>true</shadedArtifactAttached>
                     <shadedClassifierName>shaded</shadedClassifierName>
+                    <artifactSet>
+                        <excludes>
+                            <exclude>tech.tablesaw:tablesaw-excel</exclude>
+                            <exclude>org.apache.poi:*</exclude>
+                            <exclude>commons-codec:commons-codec</exclude>
+                            <exclude>org.apache.commons:commons-collections4</exclude>
+                            <exclude>org.apache.xmlbeans:xmlbeans</exclude>
+                            <exclude>org.apache.commons:commons-compress</exclude>
+                            <exclude>com.github.virtuald:curvesapi</exclude>
+
+                            <exclude>tech.tablesaw:tablesaw-html</exclude>
+                            <exclude>org.jsoup:jsoup</exclude>
+                            
+                            <exclude>tech.tablesaw:tablesaw-json</exclude>
+                            <exclude>com.fasterxml.jackson.core:*</exclude>
+                            <exclude>com.github.wnameless:json-flattener</exclude>
+                            <exclude>com.eclipsesource.minimal-json:minimal-json</exclude>
+
+                            <exclude>tech.tablesaw:tablesaw-smile</exclude>
+                            <exclude>com.github.haifengl:smile-data</exclude>
+                            <exclude>org.apache.commons:commons-text</exclude>
+                            <exclude>com.github.haifengl:smile-math</exclude>
+                        </excludes>
+                    </artifactSet>
                 </configuration>
                 <executions>
                     <execution>

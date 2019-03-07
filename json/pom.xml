@@ -49,6 +49,32 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
+      
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.1.0</version>
+          <configuration>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>shaded</shadedClassifierName>
+              <artifactSet>
+                  <includes>
+                      <include>com.fasterxml.jackson.core:*</include>
+                      <include>com.github.wnameless:json-flattener</include>
+                      <include>com.eclipsesource.minimal-json:minimal-json</include>
+                  </includes>
+              </artifactSet>
+          </configuration>
+          <executions>
+              <execution>
+                  <phase>package</phase>
+                  <goals>
+                      <goal>shade</goal>
+                  </goals>
+              </execution>
+          </executions>
+      </plugin>
+      
     </plugins>
   </build>
 
