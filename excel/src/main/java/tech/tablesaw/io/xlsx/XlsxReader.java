@@ -109,7 +109,7 @@ public class XlsxReader {
     }
 
     private static class TableRange {
-        int startRow, endRow, startColumn, endColumn;
+        private int startRow, endRow, startColumn, endColumn;
         TableRange(int startRow, int endRow, int startColumn, int endColumn) {
             this.startRow = startRow;
             this.endRow = endRow;
@@ -117,7 +117,7 @@ public class XlsxReader {
             this.endColumn = endColumn;
         }
     }
-    
+
     private TableRange findTableArea(Sheet sheet) {
         // find first row and column with contents
         int row1 = -1;

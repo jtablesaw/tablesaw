@@ -14,8 +14,8 @@
 
 package tech.tablesaw.columns.dates;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.StringColumn;
@@ -25,9 +25,9 @@ import tech.tablesaw.selection.Selection;
 import java.time.LocalDate;
 import java.time.Month;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.tablesaw.columns.dates.PackedLocalDate.asLocalDate;
 import static tech.tablesaw.columns.dates.PackedLocalDate.minusDays;
 import static tech.tablesaw.columns.dates.PackedLocalDate.pack;
@@ -39,7 +39,7 @@ public class DateFiltersTest {
     private DateColumn localDateColumn = DateColumn.create("testing");
     private Table table = Table.create("test");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         localDateColumn.append(LocalDate.of(2016, 2, 28)); // sunday
         localDateColumn.append(LocalDate.of(2016, 2, 29)); // monday

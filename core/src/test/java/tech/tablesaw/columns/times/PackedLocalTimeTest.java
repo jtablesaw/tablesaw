@@ -14,20 +14,47 @@
 
 package tech.tablesaw.columns.times;
 
-import org.junit.Test;
-
-import com.google.common.collect.ImmutableList;
-
-import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HALF_DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+import static java.time.temporal.ChronoUnit.MINUTES;
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static tech.tablesaw.columns.times.PackedLocalTime.asLocalTime;
+import static tech.tablesaw.columns.times.PackedLocalTime.getHour;
+import static tech.tablesaw.columns.times.PackedLocalTime.getMillisecondOfDay;
+import static tech.tablesaw.columns.times.PackedLocalTime.getMinute;
+import static tech.tablesaw.columns.times.PackedLocalTime.getMinuteOfDay;
+import static tech.tablesaw.columns.times.PackedLocalTime.getNano;
+import static tech.tablesaw.columns.times.PackedLocalTime.getSecond;
+import static tech.tablesaw.columns.times.PackedLocalTime.getSecondOfDay;
+import static tech.tablesaw.columns.times.PackedLocalTime.hoursUntil;
+import static tech.tablesaw.columns.times.PackedLocalTime.minusHours;
+import static tech.tablesaw.columns.times.PackedLocalTime.minusMinutes;
+import static tech.tablesaw.columns.times.PackedLocalTime.minusSeconds;
+import static tech.tablesaw.columns.times.PackedLocalTime.minutesUntil;
+import static tech.tablesaw.columns.times.PackedLocalTime.of;
+import static tech.tablesaw.columns.times.PackedLocalTime.pack;
+import static tech.tablesaw.columns.times.PackedLocalTime.plusHours;
+import static tech.tablesaw.columns.times.PackedLocalTime.plusMinutes;
+import static tech.tablesaw.columns.times.PackedLocalTime.plusSeconds;
+import static tech.tablesaw.columns.times.PackedLocalTime.secondsUntil;
+import static tech.tablesaw.columns.times.PackedLocalTime.toNanoOfDay;
+import static tech.tablesaw.columns.times.PackedLocalTime.truncatedTo;
+import static tech.tablesaw.columns.times.PackedLocalTime.withHour;
+import static tech.tablesaw.columns.times.PackedLocalTime.withMinute;
+import static tech.tablesaw.columns.times.PackedLocalTime.withSecond;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoField;
 import java.util.List;
 
-import static java.time.temporal.ChronoUnit.*;
-import static tech.tablesaw.columns.times.PackedLocalTime.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.ImmutableList;
+
+import tech.tablesaw.columns.datetimes.PackedLocalDateTime;
 
 /**
  * Tests for PackedLocalTime

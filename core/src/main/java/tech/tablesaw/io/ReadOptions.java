@@ -198,7 +198,7 @@ public class ReadOptions {
 
     public static class Builder {
 
-        InputStream inputStream;
+	protected InputStream inputStream;
         protected File file;
         protected Reader reader;
         protected String tableName = "";

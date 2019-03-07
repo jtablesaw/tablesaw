@@ -14,20 +14,63 @@
 
 package tech.tablesaw.columns.dates;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.columns.dates.PackedLocalDate.asLocalDate;
+import static tech.tablesaw.columns.dates.PackedLocalDate.daysUntil;
+import static tech.tablesaw.columns.dates.PackedLocalDate.getDayOfMonth;
+import static tech.tablesaw.columns.dates.PackedLocalDate.getDayOfWeek;
+import static tech.tablesaw.columns.dates.PackedLocalDate.getMonth;
+import static tech.tablesaw.columns.dates.PackedLocalDate.getMonthValue;
+import static tech.tablesaw.columns.dates.PackedLocalDate.getYear;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isAfter;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isBefore;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isEqualTo;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isFriday;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInApril;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInAugust;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInDecember;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInFebruary;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInJanuary;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInJuly;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInJune;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInMarch;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInMay;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInNovember;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInOctober;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInQ1;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInQ2;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInQ3;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInQ4;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isInSeptember;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isMonday;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isSaturday;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isSunday;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isThursday;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isTuesday;
+import static tech.tablesaw.columns.dates.PackedLocalDate.isWednesday;
+import static tech.tablesaw.columns.dates.PackedLocalDate.lengthOfMonth;
+import static tech.tablesaw.columns.dates.PackedLocalDate.lengthOfYear;
+import static tech.tablesaw.columns.dates.PackedLocalDate.minusDays;
+import static tech.tablesaw.columns.dates.PackedLocalDate.minusMonths;
+import static tech.tablesaw.columns.dates.PackedLocalDate.minusWeeks;
+import static tech.tablesaw.columns.dates.PackedLocalDate.minusYears;
+import static tech.tablesaw.columns.dates.PackedLocalDate.pack;
+import static tech.tablesaw.columns.dates.PackedLocalDate.plusDays;
+import static tech.tablesaw.columns.dates.PackedLocalDate.plusMonths;
+import static tech.tablesaw.columns.dates.PackedLocalDate.plusWeeks;
+import static tech.tablesaw.columns.dates.PackedLocalDate.plusYears;
+import static tech.tablesaw.columns.dates.PackedLocalDate.withDayOfMonth;
+import static tech.tablesaw.columns.dates.PackedLocalDate.withMonth;
+import static tech.tablesaw.columns.dates.PackedLocalDate.withYear;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 
-import static junit.framework.TestCase.assertTrue;
-import static tech.tablesaw.columns.dates.PackedLocalDate.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
 public class PackedLocalDateTest {
 
     @Test

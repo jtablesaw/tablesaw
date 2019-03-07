@@ -1,13 +1,13 @@
 package tech.tablesaw.io.csv;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Table;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.tablesaw.io.csv.UnicodeBomHandlingTest.BOM.UTF_8;
 
 public class UnicodeBomHandlingTest {
@@ -24,7 +24,7 @@ public class UnicodeBomHandlingTest {
 
 
     @Test
-    public void test_JavaBehaviour() throws IOException {
+    public void javaBehaviour() throws IOException {
 
         Table t = new CsvReader().read(CsvReadOptions.builder(
                 new InputStreamReader(new ByteArrayInputStream(CONTENT)), "R").header(false).build());

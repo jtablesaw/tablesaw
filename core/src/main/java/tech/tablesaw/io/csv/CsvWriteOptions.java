@@ -1,6 +1,11 @@
 package tech.tablesaw.io.csv;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Paths;
 
 public class CsvWriteOptions {

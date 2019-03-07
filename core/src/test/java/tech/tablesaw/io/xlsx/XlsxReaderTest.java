@@ -14,16 +14,16 @@
 
 package tech.tablesaw.io.xlsx;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
@@ -34,8 +34,8 @@ public class XlsxReaderTest {
         try {
             String fileName = name + ".xlsx";
             List<Table> tables = Table.read().xlsx(XlsxReadOptions.builder("../data/" + fileName));
-            assertNotNull("No tables read from " + fileName, tables);
-            assertEquals("Wrong number of tables in " + fileName, expectedCount, tables.size());
+            assertNotNull(tables, "No tables read from " + fileName);
+            assertEquals(expectedCount, tables.size(), "Wrong number of tables in " + fileName);
             return tables;
         } catch (final IOException e) {
             fail(e.getMessage());
@@ -46,8 +46,8 @@ public class XlsxReaderTest {
         Table table = readN(name, 1).get(0);
         int colNum = 0;
         for (final Column<?> column : table.columns()) {
-            assertEquals("Wrong column name", columnNames[colNum], column.name());
-            assertEquals("Wrong size for column " + columnNames[colNum], size, column.size());
+            assertEquals(columnNames[colNum], column.name(), "Wrong column name");
+            assertEquals(size, column.size(), "Wrong size for column " + columnNames[colNum]);
             colNum++;
         }
         return table;
@@ -57,9 +57,9 @@ public class XlsxReaderTest {
     private final <T> void assertColumnValues(Column<T> column, T... ts) {
         for (int i = 0; i < column.size(); i++) {
             if (ts[i] == null) {
-                assertTrue("Should be missing value in row " + i + " of column " + column.name() + ", but it was " + column.get(i), column.isMissing(i));
+                assertTrue(column.isMissing(i), "Should be missing value in row " + i + " of column " + column.name() + ", but it was " + column.get(i));
             } else {
-                assertEquals("Wrong value in row " + i + " of column " + column.name(), ts[i], column.get(i));
+                assertEquals(ts[i], column.get(i), "Wrong value in row " + i + " of column " + column.name());
             }
         }
     }

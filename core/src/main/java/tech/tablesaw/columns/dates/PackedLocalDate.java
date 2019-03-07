@@ -466,18 +466,19 @@ public class PackedLocalDate {
     }
 
     private static int resolvePreviousValid(int year, int month, int day) {
+	int dayResult = day;
         switch (month) {
             case 2:
-                day = Math.min(day, IsoChronology.INSTANCE.isLeapYear(year) ? 29 : 28);
+        	dayResult = Math.min(day, IsoChronology.INSTANCE.isLeapYear(year) ? 29 : 28);
                 break;
             case 4:
             case 6:
             case 9:
             case 11:
-                day = Math.min(day, 30);
+        	dayResult = Math.min(day, 30);
                 break;
         }
-        return pack((short) year, (byte) month, (byte) day);
+        return pack((short) year, (byte) month, (byte) dayResult);
     }
 
     public static int getWeekOfYear(int packedDateTime) {

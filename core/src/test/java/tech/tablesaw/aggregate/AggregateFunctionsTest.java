@@ -14,9 +14,33 @@
 
 package tech.tablesaw.aggregate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.allTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.anyTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.countFalse;
+import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
+import static tech.tablesaw.aggregate.AggregateFunctions.countTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.countUnique;
+import static tech.tablesaw.aggregate.AggregateFunctions.countWithMissing;
+import static tech.tablesaw.aggregate.AggregateFunctions.earliestDate;
+import static tech.tablesaw.aggregate.AggregateFunctions.latestDate;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.noneTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.percentile90;
+import static tech.tablesaw.aggregate.AggregateFunctions.percentile95;
+import static tech.tablesaw.aggregate.AggregateFunctions.percentile99;
+import static tech.tablesaw.aggregate.AggregateFunctions.proportionFalse;
+import static tech.tablesaw.aggregate.AggregateFunctions.proportionTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.standardDeviation;
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
+
 import org.apache.commons.math3.stat.StatUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import tech.tablesaw.api.BooleanColumn;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.DoubleColumn;
@@ -27,14 +51,11 @@ import tech.tablesaw.table.SelectionTableSliceGroup;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
 
-import static org.junit.Assert.*;
-import static tech.tablesaw.aggregate.AggregateFunctions.*;
-
 public class AggregateFunctionsTest {
 
     private Table table;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
     }
