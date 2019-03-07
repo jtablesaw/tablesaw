@@ -3,7 +3,6 @@ package tech.tablesaw.plotly.api;
 import tech.tablesaw.api.DateColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
 import tech.tablesaw.plotly.traces.ScatterTrace;
@@ -13,14 +12,11 @@ import java.util.List;
 
 public class TimeSeriesPlot {
 
-    private static final int HEIGHT = 600;
-    private static final int WIDTH = 800;
-
     public static Figure create(String title, Table table, String dateColX, String yCol, String groupCol) {
 
         TableSliceGroup tables = table.splitOn(table.categoricalColumn(groupCol));
 
-        Layout layout = standardLayout(title, dateColX, yCol);
+        Layout layout = Layout.builder(title, dateColX, yCol).build();
 
         ScatterTrace[] traces  = new ScatterTrace[tables.size()];
         for (int i = 0; i < tables.size(); i++) {
@@ -38,9 +34,7 @@ public class TimeSeriesPlot {
     }
 
     public static Figure create(String title, Table table, String dateColXName, String yColName) {
-
-        Layout layout = standardLayout(title, dateColXName, yColName);
-
+        Layout layout = Layout.builder(title, dateColXName, yColName).build();
         ScatterTrace trace = ScatterTrace.builder(
                 table.column(dateColXName),
                 table.numberColumn(yColName))
@@ -50,26 +44,11 @@ public class TimeSeriesPlot {
     }
 
     public static Figure create(String title, String xTitle, DateColumn xCol, String yTitle, NumberColumn<?> yCol) {
-
-        Layout layout = standardLayout(title, xTitle, yTitle);
-
+        Layout layout = Layout.builder(title, xTitle, yTitle).build();
         ScatterTrace trace = ScatterTrace.builder(xCol, yCol)
                 .mode(ScatterTrace.Mode.LINE)
                 .build();
         return new Figure(layout, trace);
     }
 
-    private static Layout standardLayout(String title, String xTitle, String yTitle) {
-        return Layout.builder()
-                .title(title)
-                .height(HEIGHT)
-                .width(WIDTH)
-                .xAxis(Axis.builder()
-                        .title(xTitle)
-                        .build())
-                .yAxis(Axis.builder()
-                        .title(yTitle)
-                        .build())
-                .build();
-    }
 }

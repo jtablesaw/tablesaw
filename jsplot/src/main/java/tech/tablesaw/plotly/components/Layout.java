@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class Layout {
 
+    private static final int DEFAULT_HEIGHT = 600;
+    private static final int DEFAULT_WIDTH = 800;
     private final static String DEFAULT_TITLE = "";
     private final static String DEFAULT_PAPER_BG_COLOR = "#fff";
     private final static String DEFAULT_PLOT_BG_COLOR = "#fff";
@@ -285,6 +287,27 @@ public class Layout {
 
     public static LayoutBuilder builder() {
         return new LayoutBuilder();
+    }
+
+    public static LayoutBuilder builder(String title) {
+      return Layout.builder()
+          .title(title)
+          .height(DEFAULT_HEIGHT)
+          .width(DEFAULT_WIDTH);
+    }
+
+    public static LayoutBuilder builder(String title, String xTitle) {
+      return Layout.builder(title)
+          .xAxis(Axis.builder()
+                  .title(xTitle)
+                  .build());
+    }
+
+    public static LayoutBuilder builder(String title, String xTitle, String yTitle) {
+      return Layout.builder(title, xTitle)
+          .yAxis(Axis.builder()
+                  .title(yTitle)
+                  .build());
     }
 
     public static class LayoutBuilder {
