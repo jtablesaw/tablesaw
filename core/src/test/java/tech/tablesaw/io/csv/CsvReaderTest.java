@@ -508,4 +508,13 @@ public class CsvReaderTest {
         assertEquals("1 rows X 10001 cols", table1.shape());
     }
 
+    @Test
+    public void testSkipLinesWithComments() throws Exception {
+        Table table1 = Table.read().csv(CsvReadOptions
+                .builder("../data/with_comments.csv")
+                .maxNumberOfColumns(3)
+                .commentPrefix('#')
+                .header(true));
+        assertEquals("3 rows X 3 cols", table1.shape());
+    }
 }

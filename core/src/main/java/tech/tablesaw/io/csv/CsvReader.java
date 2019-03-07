@@ -161,6 +161,9 @@ public class CsvReader extends FileReader {
         if (options.lineEnding() != null) {
             format.setLineSeparator(options.lineEnding());
         }
+        if(options.commentPrefix() != null) {
+            format.setComment(options.commentPrefix());
+        }
         return format;
     }
 

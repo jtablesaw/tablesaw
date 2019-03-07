@@ -72,6 +72,7 @@ public class ReadOptions {
     protected final String missingValueIndicator;
     protected final boolean minimizeColumnSizes;
     protected final boolean header;
+    protected final Character commentPrefix;
 
     protected ReadOptions(ReadOptions.Builder builder) {
 
@@ -97,6 +98,7 @@ public class ReadOptions {
         missingValueIndicator = builder.missingValueIndicator;
         minimizeColumnSizes = builder.minimizeColumnSizes;
         header = builder.header;
+        commentPrefix = builder.commentPrefix;
 
         if (builder.locale == null) {
             locale = Locale.getDefault();
@@ -210,6 +212,7 @@ public class ReadOptions {
         protected String missingValueIndicator;
         protected boolean minimizeColumnSizes = false;
         private boolean header = true;
+        protected char commentPrefix;
 
         public Builder(File file) {
             this.file = file;
@@ -282,6 +285,11 @@ public class ReadOptions {
 
         public Builder minimizeColumnSizes(boolean minimize) {
             this.minimizeColumnSizes = minimize;
+            return this;
+        }
+
+        public Builder commentPrefix(char commentPrefix) {
+            this.commentPrefix = commentPrefix;
             return this;
         }
 

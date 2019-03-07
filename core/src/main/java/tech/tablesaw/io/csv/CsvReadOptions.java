@@ -139,6 +139,10 @@ public class CsvReadOptions extends ReadOptions {
         return maxNumberOfColumns;
     }
 
+    public Character commentPrefix() {
+        return commentPrefix;
+    }
+
     public static class Builder extends ReadOptions.Builder {
 
         private Character separator = ',';
@@ -241,6 +245,11 @@ public class CsvReadOptions extends ReadOptions {
          */
         public Builder maxNumberOfColumns(Integer maxNumberOfColumns) {
             this.maxNumberOfColumns = maxNumberOfColumns;
+            return this;
+        }
+
+        public Builder commentPrefix(char commentPrefix) {
+            this.commentPrefix = commentPrefix;
             return this;
         }
 
