@@ -63,8 +63,8 @@
                         <include>com.github.haifengl:smile-data</include>
                         <include>com.github.haifengl:smile-math</include>
                         <include>org.apache.commons:commons-text</include>
-                        <!-- included in core 
                         <include>org.apache.commons:commons-lang3</include>
+                        <!-- included in core 
                         <include>org.slf4j:slf4j-api</include>
                          -->
                    </includes>
