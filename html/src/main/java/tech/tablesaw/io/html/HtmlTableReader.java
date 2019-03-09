@@ -1,23 +1,24 @@
 package tech.tablesaw.io.html;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.ReadOptions;
-import tech.tablesaw.io.TableBuildingUtils;
-
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
+import org.jsoup.select.Elements;
+
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.TableBuildingUtils;
+
 public class HtmlTableReader {
 
-    public Table read(String url) throws IOException { // TODO: take ReaderOptions. Add a test using a File
-        Document doc = Jsoup.connect(url).get();
+    public Table read(HtmlReadOptions options) throws IOException {
+        Reader reader = TableBuildingUtils.createReader(options, null);
+        Document doc = Parser.htmlParser().parseInput(reader, "");
         Elements tables = doc.select("table");
         if (tables.size() != 1) {
             throw new IllegalStateException(
@@ -36,13 +37,12 @@ public class HtmlTableReader {
             rows.add(nextLine);
         }
 
-        Table table = Table.create(url);
+        Table table = Table.create(options.tableName());
 
         if (rows.size() == 0) {
             return table;
         }
 
-        ReadOptions options = ReadOptions.builder(new StringReader(""), url).build(); // TODO: this should be passed in
         String[] headerRow = rows.get(0);
         List<String> columnNames = new ArrayList<>();
         for (int i = 0; i < headerRow.length; i++) {

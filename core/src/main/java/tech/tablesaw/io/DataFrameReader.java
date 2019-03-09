@@ -32,8 +32,10 @@ import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvReader;
 import tech.tablesaw.io.fixed.FixedWidthReadOptions;
 import tech.tablesaw.io.fixed.FixedWidthReader;
+import tech.tablesaw.io.html.HtmlReadOptions;
 import tech.tablesaw.io.html.HtmlTableReader;
 import tech.tablesaw.io.jdbc.SqlResultSetReader;
+import tech.tablesaw.io.json.JsonReadOptions;
 import tech.tablesaw.io.json.JsonReader;
 import tech.tablesaw.io.xlsx.XlsxReadOptions;
 import tech.tablesaw.io.xlsx.XlsxReader;
@@ -112,26 +114,30 @@ public class DataFrameReader {
      * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-json
      */
     public Table json(String url) throws MalformedURLException, IOException {
-        try (Scanner scanner = new Scanner(new URL(url).openStream(), StandardCharsets.UTF_8.toString())) {
-            scanner.useDelimiter("\\A");
-            return json(new StringReader(scanner.hasNext() ? scanner.next() : ""), url);
-	}
+        return json(new StringReader(loadUrl(url)), url);
     }
 
     /**
      * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-json
      */
     public Table json(Reader contents, String tableName) throws IOException {
-	return new JsonReader().read(ReadOptions.builder(contents, tableName).build());
+	return new JsonReader().read(JsonReadOptions.builder(contents, tableName).build());
     }
 
     /**
      * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-html
      */
     public Table html(String url) throws IOException {
-        return new HtmlTableReader().read(url);
+        return html(HtmlReadOptions.builder(new StringReader(loadUrl(url)), url).build());
     }
-    
+
+    /**
+     * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-html
+     */
+    public Table html(HtmlReadOptions options) throws IOException {
+        return new HtmlTableReader().read(options);
+    }
+
     /**
      * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-excel
      */
@@ -144,5 +150,12 @@ public class DataFrameReader {
      */
     public List<Table> xlsx(XlsxReadOptions.Builder options) throws IOException {
         return xlsx(options.build());
+    }
+    
+    private String loadUrl(String url) throws IOException {
+        try (Scanner scanner = new Scanner(new URL(url).openStream(), StandardCharsets.UTF_8.toString())) {
+            scanner.useDelimiter("\\A");
+            return scanner.hasNext() ? scanner.next() : "";
+	}
     }
 }

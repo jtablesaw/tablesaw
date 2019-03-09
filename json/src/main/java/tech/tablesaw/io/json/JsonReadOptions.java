@@ -1,18 +1,4 @@
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package tech.tablesaw.io.csv;
+package tech.tablesaw.io.json;
 
 import java.io.File;
 import java.io.InputStream;
@@ -22,26 +8,12 @@ import java.util.Locale;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
 
-@Getter @Accessors(chain = true, fluent = true)
-public class CsvReadOptions extends ReadOptions {
+public class JsonReadOptions extends ReadOptions {
 
-    private final ColumnType[] columnTypes;
-    private final Character separator;
-    private final String lineEnding;
-    private final Integer maxNumberOfColumns;
-    private final Character commentPrefix;
-
-    private CsvReadOptions(CsvReadOptions.Builder builder) {
-	super(builder);
-
-        columnTypes = builder.columnTypes;
-        separator = builder.separator;
-        lineEnding = builder.lineEnding;
-        maxNumberOfColumns = builder.maxNumberOfColumns;
-        commentPrefix = builder.commentPrefix;
+    protected JsonReadOptions(Builder builder) {
+        super(builder);
     }
 
     public static Builder builder(File file) {
@@ -81,14 +53,20 @@ public class CsvReadOptions extends ReadOptions {
     @Getter @Setter @Accessors(chain = true, fluent = true)
     public static class Builder extends ReadOptions.Builder {
 
-        // specific fields
-        protected Character separator = ',';
-        protected String lineEnding;
-        protected ColumnType[] columnTypes;
-        protected Integer maxNumberOfColumns = 10_000;
-        protected Character commentPrefix;
+        // inherited fields. including here to override setters to return this class
+        protected InputStream inputStream;
+        protected File file;
+        protected Reader reader;
+        protected String tableName = "";
+        protected boolean sample = true;
+        protected String dateFormat;
+        protected String timeFormat;
+        protected String dateTimeFormat;
+        protected Locale locale;
+        protected String missingValueIndicator;
+        protected boolean minimizeColumnSizes = false;
 
-        protected Builder(File file) {
+        public Builder(File file) {
             super(file);
         }
 
@@ -99,20 +77,11 @@ public class CsvReadOptions extends ReadOptions {
         protected Builder(InputStream stream) {
             super(stream);
         }
-        
-        /**
-         * Defines maximal value of columns in csv file.
-         * @param maxNumberOfColumns - must be positive integer. Default is 512.
-         */
-        public Builder maxNumberOfColumns(Integer maxNumberOfColumns) {
-            this.maxNumberOfColumns = maxNumberOfColumns;
-            return this;
+
+        public JsonReadOptions build() {
+            return new JsonReadOptions(this);
         }
 
-        public CsvReadOptions build() {
-            return new CsvReadOptions(this);
-        }
-        
         // Override super-class setters to return an instance of this class
 
         @Override
