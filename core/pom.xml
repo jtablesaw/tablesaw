@@ -5,7 +5,7 @@
     <parent>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-parent</artifactId>
-        <version>0.31.1-SNAPSHOT</version>
+        <version>0.32.0</version>
     </parent>
 
     <artifactId>tablesaw-core</artifactId>
@@ -113,28 +113,28 @@
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-excel</artifactId>
-            <version>0.31.1-SNAPSHOT</version>
+            <version>0.32.0</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-html</artifactId>
-            <version>0.31.1-SNAPSHOT</version>
+            <version>0.32.0</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-json</artifactId>
-            <version>0.31.1-SNAPSHOT</version>
+            <version>0.32.0</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-smile</artifactId>
-            <version>0.31.1-SNAPSHOT</version>
+            <version>0.32.0</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
