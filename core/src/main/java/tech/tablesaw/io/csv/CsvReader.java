@@ -148,6 +148,7 @@ public class CsvReader extends FileReader {
 
     private CsvParser csvParser(CsvReadOptions options) {
         CsvParserSettings settings = new CsvParserSettings();
+        settings.setLineSeparatorDetectionEnabled(options.lineSeparatorDetectionEnabled());
         settings.setFormat(csvFormat(options));
         if (options.maxNumberOfColumns() != null) {
             settings.setMaxColumns(options.maxNumberOfColumns());
