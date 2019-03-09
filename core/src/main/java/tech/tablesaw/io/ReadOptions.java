@@ -16,6 +16,7 @@ package tech.tablesaw.io;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+
 import tech.tablesaw.api.ColumnType;
 
 import java.io.File;
@@ -105,40 +106,6 @@ public class ReadOptions {
         }
     }
 
-    public static Builder builder(File file) {
-        return new Builder(file).tableName(file.getName());
-    }
-
-    public static Builder builder(String fileName) {
-        return new Builder(new File(fileName));
-    }
-
-    /**
-     * This method may cause tablesaw to buffer the entire InputStream.
-     * <p>
-     * If you have a large amount of data, you can do one of the following:
-     * 1. Use the method taking a File instead of a stream, or
-     * 2. Provide the array of column types as an option. If you provide the columnType array,
-     * we skip type detection and can avoid reading the entire file
-     */
-    public static Builder builder(InputStream stream, String tableName) {
-        return new Builder(stream).tableName(tableName);
-    }
-
-    /**
-     * This method may cause tablesaw to buffer the entire InputStream.
-     *
-     * <p>
-     * If you have a large amount of data, you can do one of the following:
-     * 1. Use the method taking a File instead of a reader, or
-     * 2. Provide the array of column types as an option. If you provide the columnType array,
-     * we skip type detection and can avoid reading the entire file
-     */
-    public static Builder builder(Reader reader, String tableName) {
-        Builder builder = new Builder(reader);
-        return builder.tableName(tableName);
-    }
-
     public File file() {
         return file;
     }
@@ -173,7 +140,7 @@ public class ReadOptions {
 
     public boolean header() {
         return header;
-    }
+    }    
 
     public DateTimeFormatter dateTimeFormatter() {
         if (Strings.isNullOrEmpty(dateTimeFormat)) {
@@ -196,11 +163,11 @@ public class ReadOptions {
         return DateTimeFormatter.ofPattern(dateFormat, locale);
     }
 
-    public static class Builder {
+    protected static class Builder {
 
-	protected InputStream inputStream;
-        protected File file;
-        protected Reader reader;
+        protected final InputStream inputStream;
+        protected final File file;
+        protected final Reader reader;
         protected String tableName = "";
         protected boolean sample = true;
         protected String dateFormat;
@@ -209,35 +176,39 @@ public class ReadOptions {
         protected Locale locale;
         protected String missingValueIndicator;
         protected boolean minimizeColumnSizes = false;
-        private boolean header = true;
+        protected boolean header = true;
 
-        public Builder(File file) {
+        protected Builder(File file) {
+      	    this.inputStream = null;
             this.file = file;
+            this.reader = null;
             this.tableName = file.getName();
         }
 
-        /**
-         * This method may cause tablesaw to buffer the entire InputStream.
-         * <p>
-         * If you have a large amount of data, you can do one of the following:
-         * 1. Use the method taking a File instead of a reader, or
-         * 2. Provide the array of column types as an option. If you provide the columnType array,
-         * we skip type detection and can avoid reading the entire file
-         */
-        public Builder(Reader reader) {
+        protected Builder(Reader reader) {
+      	    this.inputStream = null;
+            this.file = null;
             this.reader = reader;
         }
 
-        /**
-         * This method may cause tablesaw to buffer the entire InputStream.
-         * <p>
-         * If you have a large amount of data, you can do one of the following:
-         * 1. Use the method taking a File instead of a stream, or
-         * 2. Provide the array of column types as an option. If you provide the columnType array,
-         * we skip type detection and can avoid reading the entire file
-         */
-        public Builder(InputStream stream) {
+        protected Builder(InputStream stream) {
             this.inputStream = stream;
+            this.file = null;
+            this.reader = null;
+        }
+
+        protected Builder(Reader reader, String tableName) {
+            this.inputStream = null;
+            this.file = null;
+            this.reader = reader;
+            this.tableName = tableName;
+        }
+
+        protected Builder(InputStream stream, String tableName) {
+            this.inputStream = stream;
+            this.file = null;
+            this.reader = null;
+            this.tableName = tableName;
         }
 
         public Builder tableName(String tableName) {
@@ -283,10 +254,6 @@ public class ReadOptions {
         public Builder minimizeColumnSizes(boolean minimize) {
             this.minimizeColumnSizes = minimize;
             return this;
-        }
-
-        public ReadOptions build() {
-            return new ReadOptions(this);
         }
     }
 

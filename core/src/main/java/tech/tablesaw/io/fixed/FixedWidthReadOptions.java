@@ -14,16 +14,14 @@
 
 package tech.tablesaw.io.fixed;
 
-
-import com.google.common.base.Strings;
 import com.univocity.parsers.fixed.FixedWidthFields;
+
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
 
 import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
-import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class FixedWidthReadOptions extends ReadOptions {
@@ -40,7 +38,7 @@ public class FixedWidthReadOptions extends ReadOptions {
     private final Integer maxNumberOfColumns;
 
     private FixedWidthReadOptions(FixedWidthReadOptions.Builder builder) {
-    super(builder);
+        super(builder);
 
         columnTypes = builder.columnTypes;
         columnSpecs = builder.columnSpecs;
@@ -87,22 +85,6 @@ public class FixedWidthReadOptions extends ReadOptions {
         return builder.tableName(tableName);
     }
 
-    public File file() {
-        return file;
-    }
-
-    public Reader reader() {
-        return reader;
-    }
-
-    public InputStream inputStream() {
-        return inputStream;
-    }
-
-    public String tableName() {
-        return tableName;
-    }
-
     public ColumnType[] columnTypes() {
         return columnTypes;
     }
@@ -135,96 +117,32 @@ public class FixedWidthReadOptions extends ReadOptions {
         return skipInvalidRows;
     }
 
-    public boolean sample() {
-        return sample;
-    }
-
-    public String missingValueIndicator() {
-        return missingValueIndicator;
-    }
-
-    public Locale locale() {
-        return locale;
-    }
-
-    public DateTimeFormatter dateTimeFormatter() {
-        if (Strings.isNullOrEmpty(dateTimeFormat)) {
-            return null;
-        }
-        return DateTimeFormatter.ofPattern(dateTimeFormat, locale);
-    }
-
-    public DateTimeFormatter timeFormatter() {
-        if (Strings.isNullOrEmpty(timeFormat)) {
-            return null;
-        }
-        return DateTimeFormatter.ofPattern(timeFormat, locale);
-    }
-
-    public DateTimeFormatter dateFormatter() {
-        if (Strings.isNullOrEmpty(dateFormat)) {
-            return null;
-        }
-        return DateTimeFormatter.ofPattern(dateFormat, locale);
-    }
-
     public Integer maxNumberOfColumns() {
         return maxNumberOfColumns;
     }
-
+    
     public static class Builder extends ReadOptions.Builder {
 
-        private FixedWidthFields columnSpecs;
-        private String lineEnding;
-        private char padding = ' ';
-        private char lookupWildcard = '?';
-        private boolean skipTrailingCharsUntilNewline = false;
-        private boolean recordEndsOnNewline = false;
-        private boolean skipInvalidRows = false;
-        private ColumnType[] columnTypes;
-        private Integer maxNumberOfColumns = 10_000;
+        protected FixedWidthFields columnSpecs;
+        protected String lineEnding;
+        protected char padding = ' ';
+        protected char lookupWildcard = '?';
+        protected boolean skipTrailingCharsUntilNewline = false;
+        protected boolean recordEndsOnNewline = false;
+        protected boolean skipInvalidRows = false;
+        protected ColumnType[] columnTypes;
+        protected Integer maxNumberOfColumns = 10_000;
 
-        public Builder(File file) {
+        protected Builder(File file) {
             super(file);
         }
 
-        /**
-         * This method may cause tablesaw to buffer the entire InputStream.
-         * <p>
-         * If you have a large amount of data, you can do one of the following:
-         * 1. Use the method taking a File instead of a reader, or
-         * 2. Provide the array of column types as an option. If you provide the columnType array,
-         * we skip type detection and can avoid reading the entire file
-         */
-        public Builder(Reader reader) {
+        protected Builder(Reader reader) {
             super(reader);
         }
 
-        /**
-         * This method may cause tablesaw to buffer the entire InputStream.
-         * <p>
-         * If you have a large amount of data, you can do one of the following:
-         * 1. Use the method taking a File instead of a stream, or
-         * 2. Provide the array of column types as an option. If you provide the columnType array,
-         * we skip type detection and can avoid reading the entire file
-         */
-        public Builder(InputStream stream) {
+        protected Builder(InputStream stream) {
             super(stream);
-        }
-
-        public Builder tableName(String tableName) {
-            this.tableName = tableName;
-            return this;
-        }
-
-        public Builder header(boolean header) {
-            super.header(header);
-            return this;
-        }
-
-        public Builder missingValueIndicator(String missingValueIndicator) {
-            this.missingValueIndicator = missingValueIndicator;
-            return this;
         }
 
         public Builder columnSpecs(FixedWidthFields columnSpecs) {
@@ -263,23 +181,8 @@ public class FixedWidthReadOptions extends ReadOptions {
             return this;
         }
 
-        public Builder sample(boolean sample) {
-            this.sample = sample;
-            return this;
-        }
-
-        public Builder locale(Locale locale) {
-            this.locale = locale;
-            return this;
-        }
-
         public Builder columnTypes(ColumnType[] columnTypes) {
             this.columnTypes = columnTypes;
-            return this;
-        }
-
-        public Builder minimizeColumnSizes(boolean minimize) {
-            this.minimizeColumnSizes = minimize;
             return this;
         }
 
@@ -295,6 +198,62 @@ public class FixedWidthReadOptions extends ReadOptions {
 
         public FixedWidthReadOptions build() {
             return new FixedWidthReadOptions(this);
+        }
+
+        // Override super-class setters to return an instance of this class
+
+        @Override
+        public Builder header(boolean header) {
+            super.header(header);
+            return this;
+        }
+
+        @Override
+        public Builder tableName(String tableName) {
+            super.tableName(tableName);
+            return this;
+        }
+
+        @Override
+        public Builder sample(boolean sample) {
+            super.sample(sample);
+            return this;
+        }
+
+        @Override
+        public Builder dateFormat(String dateFormat) {
+            super.dateFormat(dateFormat);
+            return this;
+        }
+
+        @Override
+        public Builder timeFormat(String timeFormat) {
+            super.timeFormat(timeFormat);
+            return this;
+        }
+
+        @Override
+        public Builder dateTimeFormat(String dateTimeFormat) {
+            super.dateTimeFormat(dateTimeFormat);
+            return this;
+        }
+
+        @Override
+        public Builder locale(Locale locale) {
+            super.locale(locale);
+            return this;
+        }
+
+        @Override
+        public Builder missingValueIndicator(String missingValueIndicator) {
+            super.missingValueIndicator(missingValueIndicator);
+            return this;
+        }
+
+        @Override
+        public Builder minimizeColumnSizes(boolean minimizeColumnSizes) {
+            super.minimizeColumnSizes(minimizeColumnSizes);
+            return this;
         }
     }
 }

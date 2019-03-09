@@ -19,7 +19,7 @@ public class JsonReader {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public Table read(ReadOptions options) throws IOException {
+    public Table read(JsonReadOptions options) throws IOException {
         JsonNode jsonObj = mapper.readTree(TableBuildingUtils.createReader(options, null));
         if (!jsonObj.isArray()) {
             throw new IllegalStateException(
