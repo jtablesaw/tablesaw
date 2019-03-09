@@ -423,8 +423,9 @@ public class CsvReaderTest {
 
     @Test
     public void testEmptyRow() throws IOException {
-        Table.read().csv("../data/empty_row.csv");
+        Table table = Table.read().csv("../data/empty_row.csv");
         // Note: tried capturing std err output and asserting on it, but it failed when running as mvn target
+        assertEquals(5, table.rowCount());
     }
 
     @Test
@@ -443,14 +444,14 @@ public class CsvReaderTest {
 
     @Test
     public void testBoundary1() throws IOException {
-        Table table1 = Table.read().csv("../data/boundaryTest1.csv");
-        table1.structure();  // just make sure the import completed
+        Table table = Table.read().csv("../data/boundaryTest1.csv");
+        assertEquals(2, table.rowCount());
     }
 
     @Test
     public void testBoundary2() throws IOException {
-        Table table1 = Table.read().csv("../data/boundaryTest2.csv");
-        table1.structure(); // just make sure the import completed
+        Table table = Table.read().csv("../data/boundaryTest2.csv");
+        assertEquals(2, table.rowCount());
     }
 
     @Test
