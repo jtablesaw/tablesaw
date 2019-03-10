@@ -59,11 +59,7 @@ public class ReadOptions {
                     STRING,
                     TEXT);
 
-    // we always have one of these (file, reader, or inputStream)
-    protected final File file;
-    protected final Reader reader;
-    protected final InputStream inputStream;
-
+    protected final Source source;
     protected final String tableName;
     protected final boolean sample;
     protected final String dateFormat;
@@ -75,21 +71,7 @@ public class ReadOptions {
     protected final boolean header;
 
     protected ReadOptions(ReadOptions.Builder builder) {
-
-        int sourceCount = 0;
-        if (builder.file != null) sourceCount++;
-        if (builder.reader != null) sourceCount++;
-        if (builder.inputStream != null) sourceCount++;
-
-        if (sourceCount == 0) {
-            throw new IllegalArgumentException("ReadOptions Builder configured with no data source");
-        } else if (sourceCount > 1) {
-            throw new IllegalArgumentException("ReadOptions Builder configured with more than one data source");
-        }
-
-        file = builder.file;
-        reader = builder.reader;
-        inputStream = builder.inputStream;
+	source = builder.source;
         tableName = builder.tableName;
         sample = builder.sample;
         dateFormat = builder.dateFormat;
@@ -106,16 +88,23 @@ public class ReadOptions {
         }
     }
 
+    public Source source() {
+        return source;
+    }
+
+    @Deprecated
     public File file() {
-        return file;
+        return source.file();
     }
 
+    @Deprecated
     public Reader reader() {
-        return reader;
+        return source.reader();
     }
 
+    @Deprecated
     public InputStream inputStream() {
-        return inputStream;
+        return source.inputStream();
     }
 
     public String tableName() {
@@ -165,9 +154,7 @@ public class ReadOptions {
 
     protected static class Builder {
 
-        protected final InputStream inputStream;
-        protected final File file;
-        protected final Reader reader;
+        protected final Source source;
         protected String tableName = "";
         protected boolean sample = true;
         protected String dateFormat;
@@ -178,36 +165,34 @@ public class ReadOptions {
         protected boolean minimizeColumnSizes = false;
         protected boolean header = true;
 
+        protected Builder() {
+            source = null;
+        }
+        
+        protected Builder(Source source) {
+      	    this.source = source;
+        }
+
         protected Builder(File file) {
-      	    this.inputStream = null;
-            this.file = file;
-            this.reader = null;
+      	    this.source = new Source(file);
             this.tableName = file.getName();
         }
 
         protected Builder(Reader reader) {
-      	    this.inputStream = null;
-            this.file = null;
-            this.reader = reader;
+      	    this.source = new Source(reader);
         }
 
         protected Builder(InputStream stream) {
-            this.inputStream = stream;
-            this.file = null;
-            this.reader = null;
+            this.source = new Source(stream);
         }
 
         protected Builder(Reader reader, String tableName) {
-            this.inputStream = null;
-            this.file = null;
-            this.reader = reader;
+            this.source = new Source(reader);
             this.tableName = tableName;
         }
 
         protected Builder(InputStream stream, String tableName) {
-            this.inputStream = stream;
-            this.file = null;
-            this.reader = null;
+            this.source = new Source(stream);
             this.tableName = tableName;
         }
 
@@ -254,6 +239,10 @@ public class ReadOptions {
         public Builder minimizeColumnSizes(boolean minimize) {
             this.minimizeColumnSizes = minimize;
             return this;
+        }
+        
+        public ReadOptions build() {
+            return new ReadOptions(this);
         }
     }
 

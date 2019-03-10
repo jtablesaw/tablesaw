@@ -111,6 +111,11 @@
             <version>2.7.5</version>
         </dependency>
         <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
+        </dependency>
+        <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-excel</artifactId>
             <version>0.32.1-SNAPSHOT</version>

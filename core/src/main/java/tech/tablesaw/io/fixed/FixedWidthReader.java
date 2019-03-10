@@ -22,7 +22,6 @@ import com.univocity.parsers.fixed.FixedWidthParserSettings;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.FileReader;
-import tech.tablesaw.io.TableBuildingUtils;
 
 import javax.annotation.concurrent.Immutable;
 
@@ -60,16 +59,16 @@ public class FixedWidthReader extends FileReader {
         byte[] bytesCache = null;
 
         if (types == null) {
-            Reader reader = TableBuildingUtils.createReader(options, bytesCache);
-            if (options.file() == null) {
+            Reader reader = options.source().createReader(bytesCache);
+            if (options.source().file() == null) {
                 bytesCache = CharStreams.toString(reader).getBytes();
                 // create a new reader since we just exhausted the existing one
-                reader = TableBuildingUtils.createReader(options, bytesCache);
+                reader = options.source().createReader(bytesCache);
             }
             types = detectColumnTypes(reader, options);
         }
 
-        return Pair.create(TableBuildingUtils.createReader(options, bytesCache), types);
+        return Pair.create(options.source().createReader(bytesCache), types);
     }
 
     public Table read(FixedWidthReadOptions options) throws IOException {
@@ -86,7 +85,7 @@ public class FixedWidthReader extends FileReader {
         try {
             return parseRows(options, headerOnly, reader, types, parser);
         } finally {
-            if (options.reader() == null) {
+            if (options.source().reader() == null) {
                 // if we get a reader back from options it means the client opened it, so let the client close it
                 // if it's null, we close it here.
                 parser.stopParsing();

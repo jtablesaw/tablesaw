@@ -53,6 +53,7 @@ import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.ShortColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.AddCellToColumnException;
+import tech.tablesaw.io.Source;
 
 /**
  * Tests for CSV Reading
@@ -338,7 +339,7 @@ public class CsvReaderTest {
                         "STRING,     // 2     who         " + LINE_END +
                         "}" + LINE_END;
         assertEquals(output, new CsvReader()
-                .printColumnTypes(CsvReadOptions.builder("../data/bush.csv")
+                .printColumnTypes(Source.fromFile("../data/bush.csv"), CsvReadOptions.builder()
                         .header(true)
                         .separator(',')
                         .locale(Locale.getDefault())

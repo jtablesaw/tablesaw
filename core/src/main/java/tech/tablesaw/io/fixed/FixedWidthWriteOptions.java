@@ -156,6 +156,14 @@ public class FixedWidthWriteOptions {
         return builder(new File(fileName));
     }
 
+    public static Builder builder(OutputStream stream) {
+        return new Builder(stream);
+    }
+
+    public static Builder builder(Writer writer) {
+        return new Builder(writer);
+    }
+
     public static class Builder {
 
         private Writer writer;
@@ -181,21 +189,20 @@ public class FixedWidthWriteOptions {
         private char lookupWildcard = '?';
         private char normalizedNewline = '\n';
 
-
-        public Builder(String fileName) throws IOException {
+        protected Builder(String fileName) throws IOException {
             File file = Paths.get(fileName).toFile();
             this.writer = new FileWriter(file);
         }
 
-        public Builder(File file) throws IOException {
+        protected Builder(File file) throws IOException {
             this.writer = new FileWriter(file);
         }
 
-        public Builder(Writer writer) {
+        protected Builder(Writer writer) {
             this.writer = writer;
         }
 
-        public Builder(OutputStream stream) {
+        protected Builder(OutputStream stream) {
             this.writer = new OutputStreamWriter(stream);
         }
 

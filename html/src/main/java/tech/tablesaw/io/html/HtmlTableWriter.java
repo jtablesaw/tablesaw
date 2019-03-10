@@ -14,7 +14,6 @@
 
 package tech.tablesaw.io.html;
 
-import com.google.common.annotations.VisibleForTesting;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 
@@ -25,18 +24,9 @@ import java.util.List;
 import static tech.tablesaw.io.ParsingUtils.splitCamelCase;
 import static tech.tablesaw.io.ParsingUtils.splitOnUnderscore;
 
-/**
- * Static utility that writes Tables in HTML format for display
- */
-public final class HtmlTableWriter {
+public class HtmlTableWriter {
 
-    /**
-     * Private constructor to prevent instantiation
-     */
-    private HtmlTableWriter() {
-    }
-
-    public static String write(Table table) {
+    public String write(Table table) {
         StringBuilder builder = new StringBuilder();
         builder.append(header(table.columnNames()));
         builder.append("<tbody>")
@@ -48,7 +38,7 @@ public final class HtmlTableWriter {
         return builder.toString();
     }
 
-    public static void write(Table table, OutputStream outputStream) {
+    public void write(Table table, OutputStream outputStream) {
         try (PrintWriter p = new PrintWriter(outputStream)) {
             p.println(write(table));
         }
@@ -57,7 +47,6 @@ public final class HtmlTableWriter {
     /**
      * Returns a string containing the html output of one table row
      */
-    @VisibleForTesting
     private static String row(int row, Table table) {
         StringBuilder builder = new StringBuilder()
                 .append("<tr>");
@@ -74,7 +63,6 @@ public final class HtmlTableWriter {
         return builder.toString();
     }
 
-    @VisibleForTesting
     private static String header(List<String> columnNames) {
         StringBuilder builder = new StringBuilder()
                 .append("<thead>")

@@ -1,29 +1,18 @@
 package tech.tablesaw.io;
 
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-
-import java.io.Reader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ByteArrayInputStream;
-import java.io.FileReader;
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+
 public class TableBuildingUtils {
 
-    public static Reader createReader(ReadOptions options, byte[] cachedBytes) throws IOException {
-	if (cachedBytes != null) {
-	    return new InputStreamReader(new ByteArrayInputStream(cachedBytes));
-	}
-        if (options.inputStream() != null) {
-            return new InputStreamReader(options.inputStream());
-        }
-        if (options.reader() != null) {
-            return options.reader();
-        }
-        return new FileReader(options.file());
+    @Deprecated
+    public static Reader createReader(ReadOptions options, byte[] cachedBytes) throws IOException {	
+	return options.source().createReader(cachedBytes);
     }
 
     public static Table build(List<String> columnNames, List<String[]> dataRows, ReadOptions options) {

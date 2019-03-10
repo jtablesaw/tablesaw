@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.Source;
 
 public class CsvReadOptions extends ReadOptions {
 
@@ -40,6 +41,14 @@ public class CsvReadOptions extends ReadOptions {
         maxNumberOfColumns = builder.maxNumberOfColumns;
         commentPrefix = builder.commentPrefix;
         lineSeparatorDetectionEnabled = builder.lineSeparatorDetectionEnabled;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static Builder builder(Source source) {
+        return new Builder(source);
     }
 
     public static Builder builder(File file) {
@@ -108,6 +117,14 @@ public class CsvReadOptions extends ReadOptions {
         private Integer maxNumberOfColumns = 10_000;
         private Character commentPrefix;
         private boolean lineSeparatorDetectionEnabled = true;
+
+        protected Builder() {
+            super();
+        }
+
+        protected Builder(Source source) {
+            super(source);
+        }
 
         protected Builder(File file) {
             super(file);

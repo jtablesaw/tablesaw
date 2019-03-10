@@ -45,7 +45,15 @@ import tech.tablesaw.columns.Column;
 @Immutable
 public class XlsxReader {
 
-    public List<Table> read(XlsxReadOptions options) throws IOException {
+    public Table read(XlsxReadOptions options) throws IOException {
+        List<Table> tables = readMultiple(options);
+        if (tables.isEmpty()) {
+            throw new IllegalArgumentException("No tables found.");            
+        }
+        return tables.get(0);
+    }
+
+    public List<Table> readMultiple(XlsxReadOptions options) throws IOException {
         byte[] bytes = null;
         InputStream input = getInputStream(options, bytes);
         List<Table> tables = new ArrayList<Table>();

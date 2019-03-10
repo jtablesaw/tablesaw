@@ -38,6 +38,6 @@ public class HtmlTableWriterTest {
         StringColumn byColumn = table.stringColumn("who");
         TableSliceGroup group = StandardTableSliceGroup.create(table, byColumn);
         Table result = group.aggregate("approval", AggregateFunctions.mean);
-        HtmlTableWriter.write(result);
+        new HtmlTableWriter().write(result);
     }
 }

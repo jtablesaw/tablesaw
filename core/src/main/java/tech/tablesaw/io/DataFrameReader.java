@@ -21,11 +21,14 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
+
+import com.google.common.io.Files;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -42,6 +45,50 @@ import tech.tablesaw.io.xlsx.XlsxReader;
 
 public class DataFrameReader {
 
+    private final ReaderRegistry registry;
+
+    public DataFrameReader(ReaderRegistry registry) {
+	this.registry = registry;
+    }
+
+    public Table url(String url) throws IOException {
+	return url(new URL(url));
+    }
+
+    public Table url(URL url) throws IOException {
+	URLConnection connection = url.openConnection();
+	String mimeType = connection.getContentType();
+	DataReader<?> reader = registry.getReaderForMimeType(mimeType);
+	return reader.read(new Source(connection.getInputStream()));
+    }
+
+    public Table string(String s, String extension) throws IOException {
+	DataReader<?> reader = registry.getReaderForExtension(extension);
+	return reader.read(Source.fromString(s));
+    }
+
+    public Table file(String file) throws IOException {
+        return file(new File(file));
+    }
+
+    public Table file(File file) throws IOException {
+	String extension = Files.getFileExtension(file.getCanonicalPath());
+	DataReader<?> reader = registry.getReaderForExtension(extension);
+	return reader.read(new Source(file));
+    }
+
+    public Table usingOptions(ReadOptions options) throws IOException {
+	DataReader<?> reader = registry.getReaderForOptions(options);
+	return reader.read(options.source());
+    }
+
+    public Table usingOptions(ReadOptions.Builder builder) throws IOException {
+	return usingOptions(builder.build());
+    }
+
+
+    // Legacy reader methods for backwards-compatibility
+    
     public Table csv(String file) throws IOException {
         return csv(CsvReadOptions.builder(file));
     }
@@ -71,7 +118,7 @@ public class DataFrameReader {
     }
 
     public Table csv(CsvReadOptions options) throws IOException {
-        return new CsvReader().read(options);
+	return new CsvReader().read(options.source(), options);
     }
 
     public Table fixedWidth(String file) throws IOException {
@@ -142,7 +189,7 @@ public class DataFrameReader {
      * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-excel
      */
     public List<Table> xlsx(XlsxReadOptions options) throws IOException {
-        return new XlsxReader().read(options);
+        return new XlsxReader().readMultiple(options);
     }
 
     /**
