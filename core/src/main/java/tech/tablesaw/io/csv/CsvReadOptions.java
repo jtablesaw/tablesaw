@@ -31,7 +31,6 @@ public class CsvReadOptions extends ReadOptions {
     private final String lineEnding;
     private final Integer maxNumberOfColumns;
     private final Character commentPrefix;
-    private final boolean lineSeparatorDetectionEnabled;
 
     private CsvReadOptions(CsvReadOptions.Builder builder) {
 	super(builder);
@@ -41,7 +40,6 @@ public class CsvReadOptions extends ReadOptions {
         lineEnding = builder.lineEnding;
         maxNumberOfColumns = builder.maxNumberOfColumns;
         commentPrefix = builder.commentPrefix;
-        lineSeparatorDetectionEnabled = builder.lineSeparatorDetectionEnabled;
     }
 
     public static Builder builder(File file) {
@@ -118,10 +116,6 @@ public class CsvReadOptions extends ReadOptions {
         return locale;
     }
 
-    public boolean lineSeparatorDetectionEnabled() {
-	return lineSeparatorDetectionEnabled;
-    }
-
     public DateTimeFormatter dateTimeFormatter() {
         if (Strings.isNullOrEmpty(dateTimeFormat)) {
             return null;
@@ -158,8 +152,7 @@ public class CsvReadOptions extends ReadOptions {
         private ColumnType[] columnTypes;
         private Integer maxNumberOfColumns = 10_000;
         private Character commentPrefix;
-        private boolean lineSeparatorDetectionEnabled = true;
-
+        
         public Builder(File file) {
             super(file);
         }
@@ -225,7 +218,6 @@ public class CsvReadOptions extends ReadOptions {
 
         public Builder lineEnding(String lineEnding) {
             this.lineEnding = lineEnding;
-            this.lineSeparatorDetectionEnabled = false;
             return this;
         }
 
