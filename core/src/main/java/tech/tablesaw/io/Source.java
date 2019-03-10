@@ -60,6 +60,10 @@ public class Source {
 	return inputStream;
     }
 
+    /**
+     * If cachedBytes are not null, returns a Reader created from the cachedBytes.
+     * Otherwise, returns a Reader from the underlying source.
+     */
     public Reader createReader(byte[] cachedBytes) throws IOException {
 	if (cachedBytes != null) {
 	    return new InputStreamReader(new ByteArrayInputStream(cachedBytes));

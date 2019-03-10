@@ -17,10 +17,6 @@ public class WriteOptions {
 	return dest;
     }
 
-    public Writer writer() {
-	return dest.writer();
-    }
-
     public static class Builder {
 
 	protected Destination dest;

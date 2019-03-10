@@ -47,8 +47,8 @@ final public class CsvWriter implements DataWriter<CsvWriteOptions> {
         com.univocity.parsers.csv.CsvWriter csvWriter = null;
         // Creates a writer with the above settings;
         try {
+            csvWriter = new com.univocity.parsers.csv.CsvWriter(options.destination().createWriter(), settings);
 
-            csvWriter = new com.univocity.parsers.csv.CsvWriter(options.writer(), settings);
             if (options.header()) {
                 String[] header = new String[table.columnCount()];
                 for (int c = 0; c < table.columnCount(); c++) {
