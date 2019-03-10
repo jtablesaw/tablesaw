@@ -7,16 +7,9 @@ import tech.tablesaw.plotly.traces.PieTrace;
 
 public class PiePlot {
 
-    private static final int HEIGHT = 600;
-    private static final int WIDTH = 800;
-
     public static Figure create(String title, Table table, String groupColName, String numberColName) {
 
-        Layout layout = Layout.builder()
-                .title(title)
-                .height(HEIGHT)
-                .width(WIDTH)
-                .build();
+        Layout layout = Layout.builder(title).build();
 
         PieTrace trace = PieTrace.builder(
                 table.column(groupColName),

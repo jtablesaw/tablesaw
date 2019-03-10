@@ -14,16 +14,16 @@
 
 package tech.tablesaw.examples;
 
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.sum;
-
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.HorizontalBarPlot;
 import tech.tablesaw.plotly.api.ParetoPlot;
 import tech.tablesaw.plotly.api.PiePlot;
+
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.sum;
 
 /**
  * Usage example using a Tornado data set
@@ -39,8 +39,8 @@ public class TornadoVisualizations extends AbstractExample {
         // filter out a bad data point
         tornadoes = tornadoes.where(tornadoes.numberColumn("Start Lat").isGreaterThan(20f));
 
-        DoubleColumn scale = tornadoes.doubleColumn("scale");
-        scale.set(scale.isEqualTo(-9), DoubleColumnType.missingValueIndicator());
+        IntColumn scale = tornadoes.intColumn("scale");
+        scale.set(scale.isEqualTo(-9), IntColumnType.missingValueIndicator());
 
         Table fatalities1 = tornadoes.summarize("fatalities", sum).by("scale");
 

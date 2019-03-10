@@ -5,7 +5,7 @@
   <parent>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.31.1-SNAPSHOT</version>
+    <version>0.32.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>tablesaw-beakerx</artifactId>
@@ -63,7 +63,7 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.31.1-SNAPSHOT</version>
+      <version>0.32.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.github.twosigma</groupId>
