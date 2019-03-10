@@ -32,6 +32,7 @@ import static tech.tablesaw.api.ColumnType.STRING;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
@@ -64,7 +65,7 @@ public class CsvReaderTest {
     private final ColumnType[] bus_types_with_SKIP = {SHORT, STRING, SKIP, DOUBLE, DOUBLE};
 
     @Test
-    public void testWithBusData() throws Exception {
+    public void testWithBusData() throws IOException {
         // Read the CSV file
         Table table = Table.read().csv(CsvReadOptions
                 .builder("../data/bus_stop_test.csv")
@@ -78,7 +79,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testWithColumnSKIP() throws Exception {
+    public void testWithColumnSKIP() throws IOException {
         // Read the CSV file
         Table table = Table.read().csv(CsvReadOptions
                 .builder("../data/bus_stop_test.csv")
@@ -90,7 +91,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testWithColumnSKIPWithoutHeader() throws Exception {
+    public void testWithColumnSKIPWithoutHeader() throws IOException {
         // Read the CSV file
         Table table = Table.read().csv(CsvReadOptions
                 .builder("../data/bus_stop_noheader_test.csv")
@@ -103,7 +104,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testWithBushData() throws Exception {
+    public void testWithBushData() throws IOException {
         // Read the CSV file
         ColumnType[] types = {LOCAL_DATE, DOUBLE, STRING};
         Table table = Table.read().csv(
@@ -117,7 +118,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testBushDataWithoutSamplingForTypeDetection() throws Exception {
+    public void testBushDataWithoutSamplingForTypeDetection() throws IOException {
         // Read the CSV file
         Table table = Table.read().csv(CsvReadOptions
                 .builder("../data/bush.csv")
@@ -131,7 +132,7 @@ public class CsvReaderTest {
 
 
     @Test
-    public void testDataTypeDetection() throws Exception {
+    public void testDataTypeDetection() throws IOException {
         Reader reader = new FileReader("../data/bus_stop_test.csv");
         CsvReadOptions options = CsvReadOptions.builder(reader, "")
                 .header(true)
@@ -267,7 +268,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testWithMissingValue() throws Exception {
+    public void testWithMissingValue() throws IOException {
 
         CsvReadOptions options = CsvReadOptions.builder("../data/missing_values.csv")
                 .dateFormat("yyyy.MM.dd")
@@ -282,7 +283,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testWindowsAndLinuxLineEndings() throws Exception {
+    public void testWindowsAndLinuxLineEndings() throws IOException {
         Reader reader = new StringReader(
               "TestCol\n"
             + "foobar1\n"
@@ -298,7 +299,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testCustomLineEndings() throws Exception {
+    public void testCustomLineEndings() throws IOException {
         CsvReadOptions options = CsvReadOptions.builder("../data/alt_line_endings.csv")
                 .lineEnding("~")
                 .header(true)
@@ -310,7 +311,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testDateWithFormatter2() throws Exception {
+    public void testDateWithFormatter2() throws IOException {
 
         final boolean header = false;
         final char delimiter = ',';
@@ -329,7 +330,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testPrintStructure() throws Exception {
+    public void testPrintStructure() throws IOException {
         String output =
                 "ColumnType[] columnTypes = {" + LINE_END +
                         "LOCAL_DATE, // 0     date        " + LINE_END +
@@ -346,7 +347,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testDataTypeDetection2() throws Exception {
+    public void testDataTypeDetection2() throws IOException {
         Reader reader = new FileReader("../data/bush.csv");
         CsvReadOptions options = CsvReadOptions.builder(reader, "")
                 .header(true)
@@ -362,7 +363,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testLoadFromUrlWithColumnTypes() throws Exception {
+    public void testLoadFromUrlWithColumnTypes() throws IOException {
         ColumnType[] types = {LOCAL_DATE, DOUBLE, STRING};
         Table table;
         try (InputStream input = new File("../data/bush.csv").toURI().toURL().openStream()) {
@@ -378,7 +379,7 @@ public class CsvReaderTest {
      * Read from a url while performing column type inference
      */
     @Test
-    public void testLoadFromUrl() throws Exception {
+    public void testLoadFromUrl() throws IOException {
         Table table;
         try (InputStream input = new File("../data/bush.csv").toURI().toURL().openStream()) {
             table = Table.read().csv(CsvReadOptions
@@ -392,7 +393,7 @@ public class CsvReaderTest {
      * Read from a file input stream while performing column type inference
      */
     @Test
-    public void testLoadFromFileStream() throws Exception {
+    public void testLoadFromFileStream() throws IOException {
         String location = "../data/bush.csv";
         Table table;
         File file = Paths.get(location).toFile();
@@ -408,7 +409,7 @@ public class CsvReaderTest {
      * Read from a file input stream while performing column type inference
      */
     @Test
-    public void testLoadFromFileStreamReader() throws Exception {
+    public void testLoadFromFileStreamReader() throws IOException {
         String location = "../data/bush.csv";
         Table table;
         File file = Paths.get(location).toFile();
@@ -421,9 +422,10 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testEmptyRow() throws Exception {
-        Table.read().csv("../data/empty_row.csv");
+    public void testEmptyRow() throws IOException {
+        Table table = Table.read().csv("../data/empty_row.csv");
         // Note: tried capturing std err output and asserting on it, but it failed when running as mvn target
+        assertEquals(5, table.rowCount());
     }
 
     @Test
@@ -441,19 +443,19 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testBoundary1() throws Exception {
-        Table table1 = Table.read().csv("../data/boundaryTest1.csv");
-        table1.structure();  // just make sure the import completed
+    public void testBoundary1() throws IOException {
+        Table table = Table.read().csv("../data/boundaryTest1.csv");
+        assertEquals(2, table.rowCount());
     }
 
     @Test
-    public void testBoundary2() throws Exception {
-        Table table1 = Table.read().csv("../data/boundaryTest2.csv");
-        table1.structure(); // just make sure the import completed
+    public void testBoundary2() throws IOException {
+        Table table = Table.read().csv("../data/boundaryTest2.csv");
+        assertEquals(2, table.rowCount());
     }
 
     @Test
-    public void testReadFailure() throws Exception {
+    public void testReadFailure() throws IOException {
         // TODO (lwhite): These tests don't fail. What was their intent?
         Table table1 = Table.read().csv(CsvReadOptions.builder("../data/read_failure_test.csv")
                 .minimizeColumnSizes(true));
@@ -464,7 +466,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testReadFailure2() throws Exception {
+    public void testReadFailure2() throws IOException {
         Table table1 = Table.read().csv(
                 CsvReadOptions.builder("../data/read_failure_test2.csv")
                 .minimizeColumnSizes(true));
@@ -476,7 +478,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testEmptyFileHeaderEnabled() throws Exception {
+    public void testEmptyFileHeaderEnabled() throws IOException {
         Table table1 = Table.read().csv(CsvReadOptions
                 .builder("../data/empty_file.csv")
                 .header(false));
@@ -484,7 +486,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testEmptyFileHeaderDisabled() throws Exception {
+    public void testEmptyFileHeaderDisabled() throws IOException {
         Table table1 = Table.read().csv(CsvReadOptions
                 .builder("../data/empty_file.csv")
                 .header(false));
@@ -500,7 +502,7 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testReadWithMaxColumnsSetting() throws Exception {
+    public void testReadWithMaxColumnsSetting() throws IOException {
         Table table1 = Table.read().csv(CsvReadOptions
                 .builder("../data/10001_columns.csv")
                 .maxNumberOfColumns(10001)
@@ -509,12 +511,18 @@ public class CsvReaderTest {
     }
 
     @Test
-    public void testSkipLinesWithComments() throws Exception {
+    public void testSkipLinesWithComments() throws IOException {
         Table table1 = Table.read().csv(CsvReadOptions
                 .builder("../data/with_comments.csv")
                 .maxNumberOfColumns(3)
                 .commentPrefix('#')
                 .header(true));
         assertEquals("3 rows X 3 cols", table1.shape());
+    }
+    
+    @Test
+    public void carriageReturnLineEnding() throws IOException {
+	Table table = Table.read().csv(CsvReadOptions.builder("../data/sacramento_real_estate_transactions.csv"));
+	assertEquals(985, table.rowCount());
     }
 }
