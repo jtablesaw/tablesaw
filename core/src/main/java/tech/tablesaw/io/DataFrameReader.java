@@ -21,11 +21,14 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
+
+import com.google.common.io.Files;
 
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
@@ -42,13 +45,82 @@ import tech.tablesaw.io.xlsx.XlsxReader;
 
 public class DataFrameReader {
 
+    private final ReaderRegistry registry;
+
+    public DataFrameReader(ReaderRegistry registry) {
+	this.registry = registry;
+    }
+
+    /**
+     * Reads the given URL into a table using default options
+     * Uses appropriate converter based on mime-type
+     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     */
+    public Table url(String url) throws IOException {
+	return url(new URL(url));
+    }
+
+    /**
+     * Reads the given URL into a table using default options
+     * Uses appropriate converter based on mime-type
+     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     */
+    public Table url(URL url) throws IOException {
+	URLConnection connection = url.openConnection();
+	String mimeType = connection.getContentType();
+	DataReader<?> reader = registry.getReaderForMimeType(mimeType);
+	return reader.read(new Source(connection.getInputStream()));
+    }
+
+    /**
+     * Reads the given string contents into a table using default options
+     * Uses converter specified based on given file extension
+     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     */
+    public Table string(String s, String fileExtension) throws IOException {
+	DataReader<?> reader = registry.getReaderForExtension(fileExtension);
+	return reader.read(Source.fromString(s));
+    }
+
+    /**
+     * Reads the given file into a table using default options
+     * Uses converter specified based on given file extension
+     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     */
+    public Table file(String file) throws IOException {
+        return file(new File(file));
+    }
+
+    /**
+     * Reads the given file into a table using default options
+     * Uses converter specified based on given file extension
+     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     */
+    public Table file(File file) throws IOException {
+	String extension = Files.getFileExtension(file.getCanonicalPath());
+	DataReader<?> reader = registry.getReaderForExtension(extension);
+	return reader.read(new Source(file));
+    }
+
+    public Table usingOptions(ReadOptions options) throws IOException {
+	DataReader<?> reader = registry.getReaderForOptions(options);
+	return reader.read(options.source());
+    }
+
+    public Table usingOptions(ReadOptions.Builder builder) throws IOException {
+	return usingOptions(builder.build());
+    }
+
+
+    // Legacy reader methods for backwards-compatibility
+    
     public Table csv(String file) throws IOException {
         return csv(CsvReadOptions.builder(file));
     }
 
     public Table csv(String contents, String tableName) {
         try {
-            return csv(new StringReader(contents), tableName);
+            return csv(CsvReadOptions.builder(new StringReader(contents)).tableName(tableName));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -58,12 +130,12 @@ public class DataFrameReader {
         return csv(CsvReadOptions.builder(file));
     }
 
-    public Table csv(InputStream stream, String tableName) throws IOException {
-        return csv(CsvReadOptions.builder(stream, tableName));
+    public Table csv(InputStream stream) throws IOException {
+        return csv(CsvReadOptions.builder(stream));
     }
 
-    public Table csv(Reader reader, String tableName) throws IOException {
-        return csv(CsvReadOptions.builder(reader, tableName));
+    public Table csv(Reader reader) throws IOException {
+        return csv(CsvReadOptions.builder(reader));
     }
 
     public Table csv(CsvReadOptions.Builder options) throws IOException {
@@ -71,31 +143,23 @@ public class DataFrameReader {
     }
 
     public Table csv(CsvReadOptions options) throws IOException {
-        return new CsvReader().read(options);
+	return new CsvReader().read(options);
     }
 
     public Table fixedWidth(String file) throws IOException {
         return fixedWidth(FixedWidthReadOptions.builder(file));
     }
 
-    public Table fixedWidth(String contents, String tableName) {
-        try {
-            return fixedWidth(new StringReader(contents), tableName);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
     public Table fixedWidth(File file) throws IOException {
         return fixedWidth(FixedWidthReadOptions.builder(file));
     }
 
-    public Table fixedWidth(InputStream stream, String tableName) throws IOException {
-        return fixedWidth(FixedWidthReadOptions.builder(stream, tableName));
+    public Table fixedWidth(InputStream stream) throws IOException {
+        return fixedWidth(FixedWidthReadOptions.builder(stream));
     }
 
-    public Table fixedWidth(Reader reader, String tableName) throws IOException {
-        return fixedWidth(FixedWidthReadOptions.builder(reader, tableName));
+    public Table fixedWidth(Reader reader) throws IOException {
+        return fixedWidth(FixedWidthReadOptions.builder(reader));
     }
 
     public Table fixedWidth(FixedWidthReadOptions.Builder options) throws IOException {
@@ -106,8 +170,14 @@ public class DataFrameReader {
         return new FixedWidthReader().read(options);
     }
 
+    public Table db(ResultSet resultSet) throws SQLException {
+        return SqlResultSetReader.read(resultSet);
+    }
+
     public Table db(ResultSet resultSet, String tableName) throws SQLException {
-        return SqlResultSetReader.read(resultSet, tableName);
+        Table table = SqlResultSetReader.read(resultSet);
+        table.setName(tableName);
+        return table;
     }
 
     /**
@@ -142,7 +212,7 @@ public class DataFrameReader {
      * Modules that call this method must add the optional dependency tech.tablesaw:tablesaw-excel
      */
     public List<Table> xlsx(XlsxReadOptions options) throws IOException {
-        return new XlsxReader().read(options);
+        return new XlsxReader().readMultiple(options);
     }
 
     /**

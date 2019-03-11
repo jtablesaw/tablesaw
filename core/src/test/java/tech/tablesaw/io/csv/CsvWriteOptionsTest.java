@@ -7,19 +7,14 @@ import java.io.ByteArrayOutputStream;
 
 import org.junit.jupiter.api.Test;
 
-import tech.tablesaw.api.StringColumn;
-import tech.tablesaw.api.Table;
+import com.univocity.parsers.csv.CsvWriterSettings;
 
 public class CsvWriteOptionsTest {
 
     @Test
     public void testSettingsPropagation() {
-
-        Table test = Table.create("test", StringColumn.create("t"));
-        test.stringColumn(0).appendCell("testing");
-
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        CsvWriteOptions options = new CsvWriteOptions.Builder(stream)
+        CsvWriteOptions options = CsvWriteOptions.builder(stream)
                 .escapeChar('~')
                 .header(true)
                 .lineEnd("\r\n")
@@ -30,12 +25,12 @@ public class CsvWriteOptionsTest {
         assertTrue(options.header());
         assertEquals('"', options.quoteChar());
         assertEquals('.', options.separator());
+        
+        CsvWriterSettings settings = CsvWriter.createSettings(options);
 
-        CsvWriter writer = new CsvWriter(test, options);
-        assertEquals('~', writer.getEscapeChar());
-        assertTrue(writer.getHeader());
-        assertEquals("\r\n", writer.getLineEnd());
-        assertEquals('"', writer.getQuoteCharacter());
-        assertEquals('.', writer.getSeparator());
+        assertEquals('~', settings.getFormat().getQuoteEscape());
+        assertEquals("\r\n", settings.getFormat().getLineSeparatorString());
+        assertEquals('"', settings.getFormat().getQuote());
+        assertEquals('.', settings.getFormat().getDelimiter());
     }
 }

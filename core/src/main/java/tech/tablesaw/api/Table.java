@@ -14,8 +14,24 @@
 
 package tech.tablesaw.api;
 
+import static java.util.stream.Collectors.toList;
+import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
+import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+import org.reflections.Reflections;
+
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
+
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import tech.tablesaw.aggregate.AggregateFunction;
@@ -25,7 +41,10 @@ import tech.tablesaw.aggregate.Summarizer;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataFrameReader;
 import tech.tablesaw.io.DataFrameWriter;
-import tech.tablesaw.io.html.HtmlTableWriter;
+import tech.tablesaw.io.DataReader;
+import tech.tablesaw.io.DataWriter;
+import tech.tablesaw.io.ReaderRegistry;
+import tech.tablesaw.io.WriterRegistry;
 import tech.tablesaw.joining.DataFrameJoiner;
 import tech.tablesaw.selection.BitmapBackedSelection;
 import tech.tablesaw.selection.Selection;
@@ -37,18 +56,6 @@ import tech.tablesaw.table.Rows;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import static java.util.stream.Collectors.toList;
-import static tech.tablesaw.aggregate.AggregateFunctions.countMissing;
-import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
-
 /**
  * A table of data, consisting of some number of columns, each of which has the same number of rows.
  * All the data in a column has the same type: integer, float, category, etc., but a table may contain an arbitrary
@@ -57,6 +64,13 @@ import static tech.tablesaw.selection.Selection.selectNRowsAtRandom;
  * Tables are the main data-type and primary focus of Airframe.
  */
 public class Table extends Relation implements Iterable<Row> {
+
+    public static final ReaderRegistry defaultReaderRegistry = new ReaderRegistry();
+    public static final WriterRegistry defaultWriterRegistry = new WriterRegistry();
+
+    static {
+	autoRegisterReadersAndWriters();
+    }
 
     /**
      * The columns that hold the data in this table
@@ -68,10 +82,25 @@ public class Table extends Relation implements Iterable<Row> {
     private String name;
 
     /**
+     * Returns a new table
+     */
+    private Table() {
+    }
+
+    /**
      * Returns a new table initialized with the given name
      */
     private Table(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns a new Table initialized with the given columns
+     *
+     * @param columns One or more columns, all of which must have either the same length or size 0
+     */
+    protected Table(Column<?>... columns) {
+        this(null, columns);
     }
 
     /**
@@ -87,6 +116,35 @@ public class Table extends Relation implements Iterable<Row> {
         }
     }
 
+    private static void autoRegisterReadersAndWriters() {
+	Reflections reflections = new Reflections("tech.tablesaw.io");
+	@SuppressWarnings("rawtypes")
+	Set<Class<? extends DataWriter>> writerClasses = reflections.getSubTypesOf(DataWriter.class);
+	for (Class<?> clazz : writerClasses) {
+	    try {
+		Class.forName(clazz.getCanonicalName());
+	    } catch (ClassNotFoundException e) {
+		new IllegalStateException(e);
+	    }
+	}	
+	@SuppressWarnings("rawtypes")
+	Set<Class<? extends DataReader>> readerClasses = reflections.getSubTypesOf(DataReader.class);
+	for (Class<?> clazz : readerClasses) {
+	    try {
+		Class.forName(clazz.getCanonicalName());
+	    } catch (ClassNotFoundException e) {
+		new IllegalStateException(e);
+	    }
+	}	
+    }
+
+    /**
+     * Returns a new, empty table (without rows or columns)
+     */
+    public static Table create() {
+        return new Table();
+    }
+
     /**
      * Returns a new, empty table (without rows or columns) with the given name
      */
@@ -95,12 +153,22 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
+     * Returns a new table with the given columns
+     *
+     * @param columns one or more columns, all of the same @code{column.size()}
+     */
+    public static Table create(Column<?>... columns) {
+        return new Table(columns);
+    }
+
+    /**
      * Returns a new table with the given columns and given name
      *
-     * @param columns One or more columns, all of the same @code{column.size()}
+     * @param name the name for this table 
+     * @param columns one or more columns, all of the same @code{column.size()}
      */
-    public static Table create(final String tableName, final Column<?>... columns) {
-        return new Table(tableName, columns);
+    public static Table create(String name, Column<?>... columns) {
+        return new Table(name, columns);
     }
 
     /**
@@ -128,11 +196,11 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     public static DataFrameReader read() {
-        return new DataFrameReader();
+        return new DataFrameReader(defaultReaderRegistry);
     }
 
     public DataFrameWriter write() {
-        return new DataFrameWriter(this);
+        return new DataFrameWriter(defaultWriterRegistry, this);
     }
 
     /**
@@ -688,10 +756,6 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public TableSliceGroup splitOn(CategoricalColumn<?>... columns) {
         return StandardTableSliceGroup.create(this, columns);
-    }
-
-    public String printHtml() {
-        return HtmlTableWriter.write(this);
     }
 
     public Table structure() {

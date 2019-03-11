@@ -1,16 +1,16 @@
 package tech.tablesaw.io.csv;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Paths;
 
-public class CsvWriteOptions {
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriteOptions;
 
-    private final Writer writer;
+public class CsvWriteOptions extends WriteOptions {
+
     private final boolean header;
     private final char separator;
     private final char quotechar;
@@ -18,16 +18,12 @@ public class CsvWriteOptions {
     private final String lineEnd;
 
     private CsvWriteOptions(Builder builder) {
-        this.writer = builder.writer;
+        super(builder);
         this.header = builder.header;
         this.separator = builder.separator;
         this.quotechar = builder.quoteChar;
         this.escapechar = builder.escapeChar;
         this.lineEnd = builder.lineEnd;
-    }
-
-    public Writer writer() {
-        return writer;
     }
 
     public boolean header() {
@@ -50,38 +46,52 @@ public class CsvWriteOptions {
         return lineEnd;
     }
 
-    public static Builder builder(File file) throws IOException {
-        return new Builder(file);
+    public static Builder builder(Destination dest) {
+	return new Builder(dest);
+    }
+
+    public static Builder builder(OutputStream dest) {
+	return new Builder(dest);
+    }
+
+    public static Builder builder(Writer dest) {
+	return new Builder(dest);
+    }
+
+    public static Builder builder(File dest) throws IOException {
+	return new Builder(dest);
     }
 
     public static Builder builder(String fileName) throws IOException {
         return builder(new File(fileName));
     }
 
-    public static class Builder {
+    public static class Builder extends WriteOptions.Builder {
 
-        private Writer writer;
         private boolean header = true;
         private char separator = ',';
         private String lineEnd = System.lineSeparator();
         private char escapeChar = '\\';
         private char quoteChar = '"';
 
-        public Builder(String fileName) throws IOException {
-            File file = Paths.get(fileName).toFile();
-            this.writer = new FileWriter(file);
+        protected Builder(String fileName) throws IOException {
+            super(Paths.get(fileName).toFile());
         }
 
-        public Builder(File file) throws IOException {
-            this.writer = new FileWriter(file);
+        protected Builder(Destination dest) {
+            super(dest);
         }
 
-        public Builder(Writer writer) {
-            this.writer = writer;
+        protected Builder(File file) throws IOException {
+            super(file);
         }
 
-        public Builder(OutputStream stream) {
-            this.writer = new OutputStreamWriter(stream);
+        protected Builder(Writer writer) {
+            super(writer);
+        }
+
+        protected Builder(OutputStream stream) {
+            super(stream);
         }
 
         public CsvWriteOptions.Builder separator(char separator) {

@@ -20,8 +20,10 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.io.ReadOptions;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URL;
 import java.util.Locale;
 
 public class FixedWidthReadOptions extends ReadOptions {
@@ -68,8 +70,8 @@ public class FixedWidthReadOptions extends ReadOptions {
      * 2. Provide the array of column types as an option. If you provide the columnType array,
      * we skip type detection and can avoid reading the entire file
      */
-    public static Builder builder(InputStream stream, String tableName) {
-        return new Builder(stream).tableName(tableName);
+    public static Builder builder(InputStream stream) {
+        return new Builder(stream);
     }
     /**
      * This method may cause tablesaw to buffer the entire InputStream.
@@ -80,9 +82,8 @@ public class FixedWidthReadOptions extends ReadOptions {
      * 2. Provide the array of column types as an option. If you provide the columnType array,
      * we skip type detection and can avoid reading the entire file
      */
-    public static Builder builder(Reader reader, String tableName) {
-        Builder builder = new Builder(reader);
-        return builder.tableName(tableName);
+    public static Builder builder(Reader reader) {
+        return new Builder(reader);
     }
 
     public ColumnType[] columnTypes() {
@@ -132,6 +133,10 @@ public class FixedWidthReadOptions extends ReadOptions {
         protected boolean skipInvalidRows = false;
         protected ColumnType[] columnTypes;
         protected Integer maxNumberOfColumns = 10_000;
+
+        protected Builder(URL url) throws IOException {
+            super(url);
+        }
 
         protected Builder(File file) {
             super(file);

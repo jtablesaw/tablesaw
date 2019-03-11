@@ -27,7 +27,6 @@ import java.io.Writer;
 @Immutable
 final public class FixedWidthWriter {
 
-    private final Table table;
     private final boolean header;
     private final Writer writer;
     private final FixedWidthWriterSettings settings;
@@ -36,8 +35,7 @@ final public class FixedWidthWriter {
     /**
      * Private constructor to prevent instantiation
      */
-    public FixedWidthWriter(Table table, FixedWidthWriteOptions options) {
-        this.table = table;
+    public FixedWidthWriter(FixedWidthWriteOptions options) {
         this.header = options.header();
         this.writer = options.writer();
         this.settings = fixedWidthWriterSettings(options);
@@ -45,7 +43,7 @@ final public class FixedWidthWriter {
         settings.setFormat(format);
     }
 
-    public void write() {
+    public void write(Table table) {
 
         com.univocity.parsers.fixed.FixedWidthWriter fixedWidthWriter = null;
         // Creates a writer with the above settings;
@@ -75,10 +73,6 @@ final public class FixedWidthWriter {
         }
     }
 
-    public Table getTable() {
-        return table;
-    }
-
     public boolean getHeader() {
         return header;
     }
@@ -90,7 +84,6 @@ final public class FixedWidthWriter {
     public FixedWidthFormat getFormat() {
         return format;
     }
-
 
     private FixedWidthFormat fixedWidthFormat(FixedWidthWriteOptions options) {
         FixedWidthFormat format = new FixedWidthFormat();

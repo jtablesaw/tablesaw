@@ -14,53 +14,42 @@
 
 package tech.tablesaw.io.csv;
 
-import com.univocity.parsers.csv.CsvWriterSettings;
-import tech.tablesaw.api.Table;
-
 import javax.annotation.concurrent.Immutable;
-import java.io.Writer;
+
+import com.univocity.parsers.csv.CsvWriterSettings;
+
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.DataWriter;
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriterRegistry;
 
 /**
  * Class that writes tables and individual columns to CSV files
  */
 @Immutable
-final public class CsvWriter {
+final public class CsvWriter implements DataWriter<CsvWriteOptions> {
 
+    private static final CsvWriter INSTANCE = new CsvWriter();
     private static final String nullValue = "";
 
-    private final Table table;
-    private final boolean header;
-    private final Writer writer;
-    private final CsvWriterSettings settings;
-
-    /**
-     * Private constructor to prevent instantiation
-     */
-    public CsvWriter(Table table, CsvWriteOptions options) {
-        this.table = table;
-        this.header = options.header();
-        this.writer = options.writer();
-
-        this.settings = new CsvWriterSettings();
-        // Sets the character sequence to write for the values that are null.
-        settings.setNullValue(nullValue);
-        settings.getFormat().setDelimiter(options.separator());
-        settings.getFormat().setQuote(options.quoteChar());
-        settings.getFormat().setQuoteEscape(options.escapeChar());
-        settings.getFormat().setLineSeparator(options.lineEnd());
-        // writes empty lines as well.
-        settings.setSkipEmptyLines(false);
-
+    static {
+	register(Table.defaultWriterRegistry);
     }
 
-    public void write() {
+    public static void register(WriterRegistry registry) {
+	registry.registerExtension("csv", INSTANCE);
+	registry.registerOptions(CsvWriteOptions.class, INSTANCE);
+    }
 
+    public void write(Table table, CsvWriteOptions options) {
+	CsvWriterSettings settings = createSettings(options);
+	
         com.univocity.parsers.csv.CsvWriter csvWriter = null;
         // Creates a writer with the above settings;
         try {
+            csvWriter = new com.univocity.parsers.csv.CsvWriter(options.destination().createWriter(), settings);
 
-            csvWriter = new com.univocity.parsers.csv.CsvWriter(writer, settings);
-            if (header) {
+            if (options.header()) {
                 String[] header = new String[table.columnCount()];
                 for (int c = 0; c < table.columnCount(); c++) {
                     header[c] = table.column(c).name();
@@ -83,32 +72,23 @@ final public class CsvWriter {
         }
     }
 
-    public String getNullValue() {
-        return settings.getNullValue();
+    protected static CsvWriterSettings createSettings(CsvWriteOptions options) {
+	CsvWriterSettings settings = new CsvWriterSettings();
+        // Sets the character sequence to write for the values that are null.
+        settings.setNullValue(nullValue);
+        settings.getFormat().setDelimiter(options.separator());
+        settings.getFormat().setQuote(options.quoteChar());
+        settings.getFormat().setQuoteEscape(options.escapeChar());
+        settings.getFormat().setLineSeparator(options.lineEnd());
+        // writes empty lines as well.
+        settings.setSkipEmptyLines(false);
+        return settings;
     }
 
-    public Table getTable() {
-        return table;
+    @Override
+    public void write(Table table, Destination dest) {
+	write(table, CsvWriteOptions.builder(dest).build());
     }
-
-    public char getQuoteCharacter() {
-        return settings.getFormat().getQuote();
-    }
-
-    public boolean getHeader() {
-        return header;
-    }
-
-    public char getEscapeChar() {
-        return settings.getFormat().getQuoteEscape();
-    }
-
-    public char getSeparator() {
-        return settings.getFormat().getDelimiter();
-    }
-
-    public String getLineEnd() {
-        return new String(settings.getFormat().getLineSeparator());
-    }
+    
 }
 
