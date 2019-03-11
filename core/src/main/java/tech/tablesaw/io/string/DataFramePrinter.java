@@ -127,7 +127,9 @@ public class DataFramePrinter {
                 capacity = 0;
             }
             final StringBuilder text = new StringBuilder(capacity);
-            text.append(tableName(frame, totalWidth)).append(System.lineSeparator());
+            if (frame.name() != null) {
+                text.append(tableName(frame, totalWidth)).append(System.lineSeparator());
+            }
             final String headerLine = String.format(headerTemplate, (Object[]) headers);
             text.append(headerLine).append(System.lineSeparator());
             for (int j = 0; j < totalWidth; j++) {

@@ -106,7 +106,7 @@ public class FixedWidthReaderTest {
     public void testDataTypeDetection() throws Exception {
 
         InputStream stream = new FileInputStream(new File("../data/fixed_width_cars_test.txt"));
-        FixedWidthReadOptions options = FixedWidthReadOptions.builder(stream, "")
+        FixedWidthReadOptions options = FixedWidthReadOptions.builder(stream)
                 .header(true)
                 .columnSpecs(car_fields_specs)
                 .padding('_')
@@ -125,7 +125,7 @@ public class FixedWidthReaderTest {
     public void testWithMissingValue() throws Exception {
 
         Reader reader = new FileReader("../data/fixed_width_missing_values.txt");
-        FixedWidthReadOptions options = FixedWidthReadOptions.builder(reader, "")
+        FixedWidthReadOptions options = FixedWidthReadOptions.builder(reader)
                 .header(true)
                 .columnSpecs(car_fields_specs)
                 .padding('_')

@@ -20,8 +20,10 @@ import com.google.common.collect.Lists;
 import tech.tablesaw.api.ColumnType;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -178,22 +180,17 @@ public class ReadOptions {
             this.tableName = file.getName();
         }
 
-        protected Builder(Reader reader) {
-      	    this.source = new Source(reader);
+        protected Builder(URL url) throws IOException {
+      	    this.source = new Source(url.openStream());
+            this.tableName = url.toString();
         }
 
         protected Builder(InputStream stream) {
             this.source = new Source(stream);
         }
 
-        protected Builder(Reader reader, String tableName) {
+        protected Builder(Reader reader) {
             this.source = new Source(reader);
-            this.tableName = tableName;
-        }
-
-        protected Builder(InputStream stream, String tableName) {
-            this.source = new Source(stream);
-            this.tableName = tableName;
         }
 
         public Builder tableName(String tableName) {

@@ -51,10 +51,20 @@ public class DataFrameReader {
 	this.registry = registry;
     }
 
+    /**
+     * Reads the given URL into a table using default options
+     * Uses appropriate converter based on mime-type
+     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     */
     public Table url(String url) throws IOException {
 	return url(new URL(url));
     }
 
+    /**
+     * Reads the given URL into a table using default options
+     * Uses appropriate converter based on mime-type
+     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     */
     public Table url(URL url) throws IOException {
 	URLConnection connection = url.openConnection();
 	String mimeType = connection.getContentType();
@@ -62,15 +72,30 @@ public class DataFrameReader {
 	return reader.read(new Source(connection.getInputStream()));
     }
 
-    public Table string(String s, String extension) throws IOException {
-	DataReader<?> reader = registry.getReaderForExtension(extension);
+    /**
+     * Reads the given string contents into a table using default options
+     * Uses converter specified based on given file extension
+     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     */
+    public Table string(String s, String fileExtension) throws IOException {
+	DataReader<?> reader = registry.getReaderForExtension(fileExtension);
 	return reader.read(Source.fromString(s));
     }
 
+    /**
+     * Reads the given file into a table using default options
+     * Uses converter specified based on given file extension
+     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     */
     public Table file(String file) throws IOException {
         return file(new File(file));
     }
 
+    /**
+     * Reads the given file into a table using default options
+     * Uses converter specified based on given file extension
+     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     */
     public Table file(File file) throws IOException {
 	String extension = Files.getFileExtension(file.getCanonicalPath());
 	DataReader<?> reader = registry.getReaderForExtension(extension);
@@ -95,7 +120,7 @@ public class DataFrameReader {
 
     public Table csv(String contents, String tableName) {
         try {
-            return csv(new StringReader(contents), tableName);
+            return csv(CsvReadOptions.builder(new StringReader(contents)).tableName(tableName));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -105,12 +130,12 @@ public class DataFrameReader {
         return csv(CsvReadOptions.builder(file));
     }
 
-    public Table csv(InputStream stream, String tableName) throws IOException {
-        return csv(CsvReadOptions.builder(stream, tableName));
+    public Table csv(InputStream stream) throws IOException {
+        return csv(CsvReadOptions.builder(stream));
     }
 
-    public Table csv(Reader reader, String tableName) throws IOException {
-        return csv(CsvReadOptions.builder(reader, tableName));
+    public Table csv(Reader reader) throws IOException {
+        return csv(CsvReadOptions.builder(reader));
     }
 
     public Table csv(CsvReadOptions.Builder options) throws IOException {
@@ -125,24 +150,16 @@ public class DataFrameReader {
         return fixedWidth(FixedWidthReadOptions.builder(file));
     }
 
-    public Table fixedWidth(String contents, String tableName) {
-        try {
-            return fixedWidth(new StringReader(contents), tableName);
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
     public Table fixedWidth(File file) throws IOException {
         return fixedWidth(FixedWidthReadOptions.builder(file));
     }
 
-    public Table fixedWidth(InputStream stream, String tableName) throws IOException {
-        return fixedWidth(FixedWidthReadOptions.builder(stream, tableName));
+    public Table fixedWidth(InputStream stream) throws IOException {
+        return fixedWidth(FixedWidthReadOptions.builder(stream));
     }
 
-    public Table fixedWidth(Reader reader, String tableName) throws IOException {
-        return fixedWidth(FixedWidthReadOptions.builder(reader, tableName));
+    public Table fixedWidth(Reader reader) throws IOException {
+        return fixedWidth(FixedWidthReadOptions.builder(reader));
     }
 
     public Table fixedWidth(FixedWidthReadOptions.Builder options) throws IOException {
@@ -153,8 +170,14 @@ public class DataFrameReader {
         return new FixedWidthReader().read(options);
     }
 
+    public Table db(ResultSet resultSet) throws SQLException {
+        return SqlResultSetReader.read(resultSet);
+    }
+
     public Table db(ResultSet resultSet, String tableName) throws SQLException {
-        return SqlResultSetReader.read(resultSet, tableName);
+        Table table = SqlResultSetReader.read(resultSet);
+        table.setName(tableName);
+        return table;
     }
 
     /**

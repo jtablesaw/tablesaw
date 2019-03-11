@@ -27,10 +27,10 @@ public class UnicodeBomHandlingTest {
     public void javaBehaviour() throws IOException {
 
         Table t = Table.read().csv(CsvReadOptions.builder(
-                new InputStreamReader(new ByteArrayInputStream(CONTENT)), "R").header(false).build());
+                new InputStreamReader(new ByteArrayInputStream(CONTENT))).tableName("R").header(false).build());
         assertEquals(1, t.get(0, 0));
         t = Table.read().csv(CsvReadOptions.builder(
-                new InputStreamReader(new ByteArrayInputStream(UTF8_BOM_CONTENT)), "R").header(false).build());
+                new InputStreamReader(new ByteArrayInputStream(UTF8_BOM_CONTENT))).tableName("R").header(false).build());
         assertEquals(1, t.get(0, 0));
     }
 

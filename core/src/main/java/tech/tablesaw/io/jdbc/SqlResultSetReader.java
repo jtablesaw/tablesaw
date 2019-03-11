@@ -87,10 +87,10 @@ public class SqlResultSetReader {
      *
      * @throws SQLException if there is a problem detected in the database
      */
-    public static Table read(ResultSet resultSet, String tableName) throws SQLException {
+    public static Table read(ResultSet resultSet) throws SQLException {
 
         ResultSetMetaData metaData = resultSet.getMetaData();
-        Table table = Table.create(tableName);
+        Table table = Table.create();
 
         // Setup the columns and add to the table
         for (int i = 1; i <= metaData.getColumnCount(); i++) {

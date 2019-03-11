@@ -82,10 +82,25 @@ public class Table extends Relation implements Iterable<Row> {
     private String name;
 
     /**
+     * Returns a new table
+     */
+    private Table() {
+    }
+
+    /**
      * Returns a new table initialized with the given name
      */
     private Table(String name) {
         this.name = name;
+    }
+
+    /**
+     * Returns a new Table initialized with the given columns
+     *
+     * @param columns One or more columns, all of which must have either the same length or size 0
+     */
+    protected Table(Column<?>... columns) {
+        this(null, columns);
     }
 
     /**
@@ -124,6 +139,13 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
+     * Returns a new, empty table (without rows or columns)
+     */
+    public static Table create() {
+        return new Table();
+    }
+
+    /**
      * Returns a new, empty table (without rows or columns) with the given name
      */
     public static Table create(String tableName) {
@@ -131,12 +153,22 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     /**
+     * Returns a new table with the given columns
+     *
+     * @param columns one or more columns, all of the same @code{column.size()}
+     */
+    public static Table create(Column<?>... columns) {
+        return new Table(columns);
+    }
+
+    /**
      * Returns a new table with the given columns and given name
      *
-     * @param columns One or more columns, all of the same @code{column.size()}
+     * @param name the name for this table 
+     * @param columns one or more columns, all of the same @code{column.size()}
      */
-    public static Table create(final String tableName, final Column<?>... columns) {
-        return new Table(tableName, columns);
+    public static Table create(String name, Column<?>... columns) {
+        return new Table(name, columns);
     }
 
     /**
