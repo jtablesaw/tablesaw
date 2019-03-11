@@ -118,7 +118,7 @@ public class DataFrameReader {
     }
 
     public Table csv(CsvReadOptions options) throws IOException {
-	return new CsvReader().read(options.source(), options);
+	return new CsvReader().read(options);
     }
 
     public Table fixedWidth(String file) throws IOException {

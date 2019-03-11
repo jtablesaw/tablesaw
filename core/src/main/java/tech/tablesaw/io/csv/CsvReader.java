@@ -87,12 +87,12 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
         return Pair.create(source.createReader(bytesCache), types);
     }
 
-    public Table read(Source source, CsvReadOptions options) throws IOException {
-        return read(source, options, false);
+    public Table read(CsvReadOptions options) throws IOException {
+        return read(options, false);
     }
 
-    private Table read(Source source, CsvReadOptions options, boolean headerOnly) throws IOException {
-        Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(source, options);
+    private Table read(CsvReadOptions options, boolean headerOnly) throws IOException {
+        Pair<Reader, ColumnType[]> pair = getReaderAndColumnTypes(options.source(), options);
         Reader reader = pair.getKey();
         ColumnType[] types = pair.getValue();
 
@@ -101,7 +101,7 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
         try {
             return parseRows(options, headerOnly, reader, types, parser);
         } finally {
-            if (source.reader() == null) {
+            if (options.source().reader() == null) {
                 // if we get a reader back from options it means the client opened it, so let the client close it
                 // if it's null, we close it here.
                 parser.stopParsing();
@@ -129,8 +129,8 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
      *
      * @throws IOException if file cannot be read
      */
-    public String printColumnTypes(Source source, CsvReadOptions options) throws IOException {
-        Table structure = read(source, options, true).structure();
+    public String printColumnTypes(CsvReadOptions options) throws IOException {
+        Table structure = read(options, true).structure();
         return getTypeString(structure);
     }
 
@@ -185,7 +185,7 @@ public class CsvReader extends FileReader implements DataReader<CsvReadOptions> 
 
     @Override
     public Table read(Source source) throws IOException {
-	return read(source, CsvReadOptions.builder().build());
+	return read(CsvReadOptions.builder(source).build());
     }
 
 }

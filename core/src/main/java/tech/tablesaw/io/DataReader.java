@@ -8,6 +8,6 @@ public interface DataReader<O extends ReadOptions> {
 
     Table read(Source source) throws IOException;
 
-    Table read(Source source, O options) throws IOException;
+    Table read(O options) throws IOException;
 
 }
