@@ -5,7 +5,7 @@
   <parent>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.32.2-SNAPSHOT</version>
+    <version>0.32.2</version>
   </parent>
 
   <!--
@@ -50,32 +50,32 @@
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-core</artifactId>
-      <version>0.32.2-SNAPSHOT</version>
+      <version>0.32.2</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-beakerx</artifactId>
-      <version>0.32.2-SNAPSHOT</version>
+      <version>0.32.2</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-excel</artifactId>
-      <version>0.32.2-SNAPSHOT</version>
+      <version>0.32.2</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-html</artifactId>
-      <version>0.32.2-SNAPSHOT</version>
+      <version>0.32.2</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-json</artifactId>
-      <version>0.32.2-SNAPSHOT</version>
+      <version>0.32.2</version>
     </dependency>
     <dependency>
       <groupId>tech.tablesaw</groupId>
       <artifactId>tablesaw-jsplot</artifactId>
-      <version>0.32.2-SNAPSHOT</version>
+      <version>0.32.2</version>
     </dependency>
   </dependencies>
 </project>
