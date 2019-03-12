@@ -1,13 +1,17 @@
 package tech.tablesaw.io.json;
 
-import java.io.IOException;
+import java.io.Writer;
 
-public class JsonWriteOptions {
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriteOptions;
+
+public class JsonWriteOptions extends WriteOptions {
 
     private final boolean asObjects;
     private final boolean header;
 
     private JsonWriteOptions(Builder builder) {
+        super(builder);
         this.asObjects = builder.asObjects;
         this.header = builder.header;
     }
@@ -20,15 +24,23 @@ public class JsonWriteOptions {
         return header;
     }
 
-    public static Builder builder() throws IOException {
-        return new Builder();
+    public static Builder builder(Writer writer) {
+        return new Builder(new Destination(writer));
     }
 
-    public static class Builder {
+    public static Builder builder(Destination destination) {
+        return new Builder(destination);
+    }
+
+    protected static class Builder extends WriteOptions.Builder {
 
         private boolean asObjects = true;
         private boolean header = false;
 
+        public Builder(Destination destination) {
+          super(destination);
+        }
+        
         /**
          * If true writes each row as an object. If false writes each row as an array.
          */

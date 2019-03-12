@@ -5,6 +5,7 @@ import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 
 import static java.lang.Double.NaN;
@@ -53,11 +54,12 @@ public class DataFrameWriterTest {
     }
 
     @Test
-    public void html() {
+    public void html() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        table.write().html(baos);
+        table.write().toStream(baos, "html");
         String output = baos.toString();
-        assertEquals("<thead>" + LINE_END +
+        assertEquals("<table>" + LINE_END +
+        	"<thead>" + LINE_END +
                 "<tr><th>v</th><th>v 2</th></tr>" + LINE_END +
                 "</thead>" + LINE_END +
                 "<tbody>" + LINE_END +
@@ -67,6 +69,7 @@ public class DataFrameWriterTest {
                 "<tr><td>4.0</td><td>4.0</td></tr>" + LINE_END +
                 "<tr><td>5.0</td><td>5.0</td></tr>" + LINE_END +
                 "<tr><td></td><td></td></tr>" + LINE_END +
-                "</tbody>" + LINE_END, output);
+                "</tbody>" + LINE_END +
+                "</table>", output);
     }
 }

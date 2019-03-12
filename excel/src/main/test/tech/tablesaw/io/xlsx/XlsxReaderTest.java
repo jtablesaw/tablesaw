@@ -33,7 +33,7 @@ public class XlsxReaderTest {
     private List<Table> readN(String name, int expectedCount) {
         try {
             String fileName = name + ".xlsx";
-            List<Table> tables = Table.read().xlsx(XlsxReadOptions.builder("../data/" + fileName));
+            List<Table> tables = new XlsxReader().readMultiple(XlsxReadOptions.builder("../data/" + fileName).build());
             assertNotNull(tables, "No tables read from " + fileName);
             assertEquals(expectedCount, tables.size(), "Wrong number of tables in " + fileName);
             return tables;

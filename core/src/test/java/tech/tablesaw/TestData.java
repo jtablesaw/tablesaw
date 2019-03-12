@@ -79,7 +79,7 @@ public enum TestData {
         this.columnNames = columnNames;
         try {
             this.table = Table.read().csv(CsvReadOptions
-                    .builder(new FileInputStream(csvSource),"")
+                    .builder(new FileInputStream(csvSource))
                     .columnTypes(columnTypes));
         } catch (IOException e) {
             throw new IllegalStateException("Unable to read from CSV file", e);

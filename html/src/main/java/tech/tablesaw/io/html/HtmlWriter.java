@@ -14,50 +14,52 @@
 
 package tech.tablesaw.io.html;
 
-import com.google.common.annotations.VisibleForTesting;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
-
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.List;
-
 import static tech.tablesaw.io.ParsingUtils.splitCamelCase;
 import static tech.tablesaw.io.ParsingUtils.splitOnUnderscore;
 
-/**
- * Static utility that writes Tables in HTML format for display
- */
-public final class HtmlTableWriter {
+import java.io.IOException;
+import java.io.Writer;
+import java.util.List;
 
-    /**
-     * Private constructor to prevent instantiation
-     */
-    private HtmlTableWriter() {
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.DataWriter;
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriterRegistry;
+
+public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
+
+    private static final HtmlWriter INSTANCE = new HtmlWriter();
+
+    static {
+        register(Table.defaultWriterRegistry);
     }
 
-    public static String write(Table table) {
+    public static void register(WriterRegistry registry) {
+        registry.registerExtension("html", INSTANCE);
+        registry.registerOptions(HtmlWriteOptions.class, INSTANCE);
+    }
+
+    public void write(Table table, HtmlWriteOptions options) throws IOException {
         StringBuilder builder = new StringBuilder();
+        builder.append("<table>").append(System.lineSeparator());
         builder.append(header(table.columnNames()));
-        builder.append("<tbody>")
-                .append(System.lineSeparator());
+        builder.append("<tbody>").append(System.lineSeparator());
         for (int row = 0; row < table.rowCount(); row++) {
             builder.append(row(row, table));
         }
-        builder.append("</tbody>");
-        return builder.toString();
-    }
+        builder.append("</tbody>").append(System.lineSeparator());
+        builder.append("</table>");
+        String str = builder.toString();
 
-    public static void write(Table table, OutputStream outputStream) {
-        try (PrintWriter p = new PrintWriter(outputStream)) {
-            p.println(write(table));
-        }
+        Writer writer = options.destination().createWriter();
+        writer.write(str);
+        writer.flush();
     }
 
     /**
      * Returns a string containing the html output of one table row
      */
-    @VisibleForTesting
     private static String row(int row, Table table) {
         StringBuilder builder = new StringBuilder()
                 .append("<tr>");
@@ -74,7 +76,6 @@ public final class HtmlTableWriter {
         return builder.toString();
     }
 
-    @VisibleForTesting
     private static String header(List<String> columnNames) {
         StringBuilder builder = new StringBuilder()
                 .append("<thead>")
@@ -93,5 +94,10 @@ public final class HtmlTableWriter {
                 .append(System.lineSeparator());
 
         return builder.toString();
+    }
+
+    @Override
+    public void write(Table table, Destination dest) throws IOException {
+        write(table, HtmlWriteOptions.build(dest).build());
     }
 }

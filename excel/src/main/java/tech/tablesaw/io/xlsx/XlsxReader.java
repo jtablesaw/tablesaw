@@ -41,11 +41,35 @@ import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.LongColumn;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.DataReader;
+import tech.tablesaw.io.ReaderRegistry;
+import tech.tablesaw.io.Source;
 
 @Immutable
-public class XlsxReader {
+public class XlsxReader implements DataReader<XlsxReadOptions> {
 
-    public List<Table> read(XlsxReadOptions options) throws IOException {
+    private static final XlsxReader INSTANCE = new XlsxReader();
+
+    static {
+        register(Table.defaultReaderRegistry);
+    }
+
+    public static void register(ReaderRegistry registry) {
+        registry.registerExtension("xlsx", INSTANCE);
+        registry.registerMimeType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", INSTANCE);
+        registry.registerOptions(XlsxReadOptions.class, INSTANCE);
+    }
+
+    @Override
+    public Table read(XlsxReadOptions options) throws IOException {
+        List<Table> tables = readMultiple(options);
+        if (tables.isEmpty()) {
+            throw new IllegalArgumentException("No tables found.");            
+        }
+        return tables.get(0);
+    }
+
+    public List<Table> readMultiple(XlsxReadOptions options) throws IOException {
         byte[] bytes = null;
         InputStream input = getInputStream(options, bytes);
         List<Table> tables = new ArrayList<Table>();
@@ -59,7 +83,7 @@ public class XlsxReader {
             }
             return tables;
         } finally {
-            if (options.reader() == null) {
+            if (options.source().reader() == null) {
                 // if we get a reader back from options it means the client opened it, so let
                 // the client close it
                 // if it's null, we close it here.
@@ -172,10 +196,10 @@ public class XlsxReader {
         if (bytes != null) {
             return new ByteArrayInputStream(bytes);
         }
-        if (options.inputStream() != null) {
-            return options.inputStream();
+        if (options.source().inputStream() != null) {
+            return options.source().inputStream();
         }
-        return new FileInputStream(options.file());
+        return new FileInputStream(options.source().file());
     }
 
     private Table createTable(Sheet sheet, TableRange tableArea, XlsxReadOptions options) {
@@ -299,5 +323,10 @@ public class XlsxReader {
         }
         column = columnType.create(name);
         return column;
+    }
+
+    @Override
+    public Table read(Source source) throws IOException {
+      return read(XlsxReadOptions.builder(source).build());
     }
 }

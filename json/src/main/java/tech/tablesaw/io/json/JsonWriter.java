@@ -14,26 +14,34 @@
 
 package tech.tablesaw.io.json;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.io.IOException;
+import java.io.Writer;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.DataWriter;
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriterRegistry;
 
-import javax.annotation.concurrent.Immutable;
+public class JsonWriter implements DataWriter<JsonWriteOptions> {
 
-@Immutable
-final public class JsonWriter {
-
+    private static final JsonWriter INSTANCE = new JsonWriter();
     private static final ObjectMapper mapper = new ObjectMapper();
-    private final JsonWriteOptions options;
 
-    public JsonWriter(JsonWriteOptions options) {
-        this.options = options;
+    static {
+        register(Table.defaultWriterRegistry);
     }
 
-    public String write(Table table) throws JsonProcessingException {
+    public static void register(WriterRegistry registry) {
+        registry.registerExtension("json", INSTANCE);
+        registry.registerOptions(JsonWriteOptions.class, INSTANCE);
+    }
+
+    public void write(Table table, JsonWriteOptions options) throws IOException {
         ArrayNode output = mapper.createArrayNode();
         if (options.asObjects()) {
             for (int r = 0; r < table.rowCount(); r++) {
@@ -59,7 +67,16 @@ final public class JsonWriter {
                 output.add(row);
             }            
         }
-        return mapper.writeValueAsString(output);
+
+        String str = mapper.writeValueAsString(output);
+        Writer writer = options.destination().createWriter();
+        writer.write(str);
+        writer.flush();
+    }
+
+    @Override
+    public void write(Table table, Destination dest) throws IOException {
+        write(table, JsonWriteOptions.builder(dest).build());
     }
 
 }

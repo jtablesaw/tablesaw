@@ -17,7 +17,7 @@ package tech.tablesaw.io.json;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.io.StringReader;
+import java.io.StringWriter;
 
 import org.junit.jupiter.api.Test;
 
@@ -28,24 +28,26 @@ public class JsonWriterTest {
     @Test
     public void arrayOfArraysWithHeader() throws IOException {
 	String json = "[[\"Date\",\"Value\"],[1453438800000,-2.144],[1454043600000,-2.976],[1454648400000,-2.9541]]";
-	Table table = Table.read().json(new StringReader(json), "jsonTable");
-	String output = table.write().json(JsonWriteOptions.builder().asObjects(false).header(true).build());
-        assertEquals(json, output);
+	Table table = Table.read().string(json, "json");
+	StringWriter writer = new StringWriter();
+	table.write().usingOptions(JsonWriteOptions.builder(writer).asObjects(false).header(true).build());
+        assertEquals(json, writer.toString());
     }
 
     @Test
     public void arrayOfArraysNoHeader() throws IOException {
 	String json = "[[1453438800000,-2.144],[1454043600000,-2.976],[1454648400000,-2.954]]";
-	Table table = Table.read().json(new StringReader(json), "jsonTable");
-	String output = table.write().json(JsonWriteOptions.builder().asObjects(false).header(false).build());
-        assertEquals(json, output);
+	Table table = Table.read().string(json, "json");
+	StringWriter writer = new StringWriter();
+	table.write().usingOptions(JsonWriteOptions.builder(writer).asObjects(false).header(false).build());
+        assertEquals(json, writer.toString());
     }
 
     @Test
-    public void arrayOfObjects() throws IOException {
+    public void arrayOfObjects() {
 	String json = "[{\"a\":1453438800000,\"b\":-2.144},{\"a\":1454043600000,\"b\":-2.976},{\"a\":1454648400000,\"b\":-2.954}]";
-	Table table = Table.read().json(new StringReader(json), "jsonTable");
-	String output = table.write().json();
+	Table table = Table.read().string(json, "json");
+	String output = table.write().toString("json");
         assertEquals(json, output);
     }
 

@@ -12,15 +12,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.wnameless.json.flattener.JsonFlattener;
 
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.DataReader;
 import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.ReaderRegistry;
+import tech.tablesaw.io.Source;
 import tech.tablesaw.io.TableBuildingUtils;
 
-public class JsonReader {
+public class JsonReader implements DataReader<JsonReadOptions> {
 
+    private static final JsonReader INSTANCE = new JsonReader();
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    static {
+        register(Table.defaultReaderRegistry);
+    }
+
+    public static void register(ReaderRegistry registry) {
+        registry.registerExtension("json", INSTANCE);
+        registry.registerMimeType("application/json", INSTANCE);
+        registry.registerOptions(JsonReadOptions.class, INSTANCE);
+    }
+
+    @Override
     public Table read(JsonReadOptions options) throws IOException {
-        JsonNode jsonObj = mapper.readTree(TableBuildingUtils.createReader(options, null));
+        JsonNode jsonObj = mapper.readTree(options.source().createReader(null));
         if (!jsonObj.isArray()) {
             throw new IllegalStateException(
                     "Only reading a json array or arrays or objects is currently supported");
@@ -94,5 +109,10 @@ public class JsonReader {
         }
 
         return TableBuildingUtils.build(columnNames, dataRows, options);
+    }
+
+    @Override
+    public Table read(Source source) throws IOException {
+      return read(JsonReadOptions.builder(source).build());
     }
 }

@@ -14,45 +14,46 @@
 
 package tech.tablesaw.io.fixed;
 
-import com.univocity.parsers.fixed.FixedWidthFormat;
-import com.univocity.parsers.fixed.FixedWidthWriterSettings;
-import tech.tablesaw.api.Table;
+import java.io.IOException;
+import java.io.Writer;
 
 import javax.annotation.concurrent.Immutable;
-import java.io.Writer;
+
+import com.univocity.parsers.fixed.FixedWidthFormat;
+import com.univocity.parsers.fixed.FixedWidthWriterSettings;
+
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.DataWriter;
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriterRegistry;
 
 /**
  * Class that writes tables and individual columns to FixedWidth files
  */
 @Immutable
-final public class FixedWidthWriter {
+final public class FixedWidthWriter implements DataWriter<FixedWidthWriteOptions> {
 
-    private final Table table;
-    private final boolean header;
-    private final Writer writer;
-    private final FixedWidthWriterSettings settings;
-    private final FixedWidthFormat format;
+    private static final FixedWidthWriter INSTANCE = new FixedWidthWriter();
 
-    /**
-     * Private constructor to prevent instantiation
-     */
-    public FixedWidthWriter(Table table, FixedWidthWriteOptions options) {
-        this.table = table;
-        this.header = options.header();
-        this.writer = options.writer();
-        this.settings = fixedWidthWriterSettings(options);
-        this.format = fixedWidthFormat(options);
-        settings.setFormat(format);
+    static {
+	register(Table.defaultWriterRegistry);
     }
 
-    public void write() {
+    public static void register(WriterRegistry registry) {
+	registry.registerOptions(FixedWidthWriteOptions.class, INSTANCE);
+    }
 
+    public void write(Table table, FixedWidthWriteOptions options) {
+
+	FixedWidthWriterSettings settings = fixedWidthWriterSettings(options);
+        settings.setFormat(fixedWidthFormat(options));
+	
         com.univocity.parsers.fixed.FixedWidthWriter fixedWidthWriter = null;
         // Creates a writer with the above settings;
         try {
-
+            Writer writer = options.destination().createWriter();
             fixedWidthWriter = new com.univocity.parsers.fixed.FixedWidthWriter(writer, settings);
-            if (header) {
+            if (options.header()) {
                 String[] header = new String[table.columnCount()];
                 for (int c = 0; c < table.columnCount(); c++) {
                     header[c] = table.column(c).name();
@@ -75,24 +76,7 @@ final public class FixedWidthWriter {
         }
     }
 
-    public Table getTable() {
-        return table;
-    }
-
-    public boolean getHeader() {
-        return header;
-    }
-
-    public FixedWidthWriterSettings getSettings() {
-        return settings;
-    }
-
-    public FixedWidthFormat getFormat() {
-        return format;
-    }
-
-
-    private FixedWidthFormat fixedWidthFormat(FixedWidthWriteOptions options) {
+    protected FixedWidthFormat fixedWidthFormat(FixedWidthWriteOptions options) {
         FixedWidthFormat format = new FixedWidthFormat();
 
         if (options.padding() != ' ') {
@@ -117,7 +101,7 @@ final public class FixedWidthWriter {
         return format;
     }
 
-    private FixedWidthWriterSettings fixedWidthWriterSettings(FixedWidthWriteOptions options) {
+    protected FixedWidthWriterSettings fixedWidthWriterSettings(FixedWidthWriteOptions options) {
         FixedWidthWriterSettings settings = new FixedWidthWriterSettings();
 
         if (options.autoConfigurationEnabled()) {
@@ -130,7 +114,7 @@ final public class FixedWidthWriter {
         return settings;
     }
 
-    private void columnRowSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
+    protected void columnRowSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
         if (options.defaultAlignmentForHeaders() != null) {
             settings.setDefaultAlignmentForHeaders(options.defaultAlignmentForHeaders());
         }
@@ -148,7 +132,7 @@ final public class FixedWidthWriter {
         }
     }
 
-    private void errorSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
+    protected void errorSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
         if (options.errorContentLength() <= -1) {
             settings.setErrorContentLength(options.errorContentLength());
         }
@@ -160,7 +144,7 @@ final public class FixedWidthWriter {
         }
     }
 
-    private void skipIgnoreSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
+    protected void skipIgnoreSettings(FixedWidthWriterSettings settings, FixedWidthWriteOptions options) {
         if (!options.ignoreTrailingWhitespaces()) {
             settings.setIgnoreTrailingWhitespaces(options.ignoreTrailingWhitespaces());
         }
@@ -173,6 +157,11 @@ final public class FixedWidthWriter {
         if (!options.skipEmptyLines()) {
             settings.setSkipEmptyLines(options.skipEmptyLines());
         }
+    }
+
+    @Override
+    public void write(Table table, Destination dest) throws IOException {
+	write(table, FixedWidthWriteOptions.builder(dest).build());
     }
 }
 

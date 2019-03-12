@@ -14,26 +14,39 @@
 
 package tech.tablesaw.io.fixed;
 
-import com.google.common.io.CharStreams;
-import com.univocity.parsers.common.AbstractParser;
-import com.univocity.parsers.fixed.FixedWidthFormat;
-import com.univocity.parsers.fixed.FixedWidthParser;
-import com.univocity.parsers.fixed.FixedWidthParserSettings;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.FileReader;
-import tech.tablesaw.io.TableBuildingUtils;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.math3.util.Pair;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.List;
+import com.google.common.io.CharStreams;
+import com.univocity.parsers.common.AbstractParser;
+import com.univocity.parsers.fixed.FixedWidthFormat;
+import com.univocity.parsers.fixed.FixedWidthParser;
+import com.univocity.parsers.fixed.FixedWidthParserSettings;
+
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.DataReader;
+import tech.tablesaw.io.FileReader;
+import tech.tablesaw.io.ReaderRegistry;
+import tech.tablesaw.io.Source;
 
 @Immutable
-public class FixedWidthReader extends FileReader {
+public class FixedWidthReader extends FileReader implements DataReader<FixedWidthReadOptions> {
+
+    private static final FixedWidthReader INSTANCE = new FixedWidthReader();
+
+    static {
+	register(Table.defaultReaderRegistry);
+    }
+
+    public static void register(ReaderRegistry registry) {
+	registry.registerOptions(FixedWidthReadOptions.class, INSTANCE);
+    }
 
     /**
      * Constructs a FixedWidthReader
@@ -60,16 +73,16 @@ public class FixedWidthReader extends FileReader {
         byte[] bytesCache = null;
 
         if (types == null) {
-            Reader reader = TableBuildingUtils.createReader(options, bytesCache);
-            if (options.file() == null) {
+            Reader reader = options.source().createReader(bytesCache);
+            if (options.source().file() == null) {
                 bytesCache = CharStreams.toString(reader).getBytes();
                 // create a new reader since we just exhausted the existing one
-                reader = TableBuildingUtils.createReader(options, bytesCache);
+                reader = options.source().createReader(bytesCache);
             }
             types = detectColumnTypes(reader, options);
         }
 
-        return Pair.create(TableBuildingUtils.createReader(options, bytesCache), types);
+        return Pair.create(options.source().createReader(bytesCache), types);
     }
 
     public Table read(FixedWidthReadOptions options) throws IOException {
@@ -86,7 +99,7 @@ public class FixedWidthReader extends FileReader {
         try {
             return parseRows(options, headerOnly, reader, types, parser);
         } finally {
-            if (options.reader() == null) {
+            if (options.source().reader() == null) {
                 // if we get a reader back from options it means the client opened it, so let the client close it
                 // if it's null, we close it here.
                 parser.stopParsing();
@@ -178,6 +191,11 @@ public class FixedWidthReader extends FileReader {
             format.setLineSeparator(options.lineEnding());
         }
         return format;
+    }
+
+    @Override
+    public Table read(Source source) throws IOException {
+	return read(FixedWidthReadOptions.builder(source).build());
     }
 
 }

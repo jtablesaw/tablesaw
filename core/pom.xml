@@ -5,7 +5,7 @@
     <parent>
         <groupId>tech.tablesaw</groupId>
         <artifactId>tablesaw-parent</artifactId>
-        <version>0.32.1-SNAPSHOT</version>
+        <version>0.32.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>tablesaw-core</artifactId>
@@ -111,30 +111,35 @@
             <version>2.7.5</version>
         </dependency>
         <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.haifengl</groupId>
+            <artifactId>smile-data</artifactId>
+            <version>1.5.2 </version>
+            <optional>true</optional>
+            <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
+        </dependency>
+        <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-excel</artifactId>
-            <version>0.32.1-SNAPSHOT</version>
+            <version>0.32.4-SNAPSHOT</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-html</artifactId>
-            <version>0.32.1-SNAPSHOT</version>
+            <version>0.32.4-SNAPSHOT</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>
             <artifactId>tablesaw-json</artifactId>
-            <version>0.32.1-SNAPSHOT</version>
-            <optional>true</optional>
-            <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
-        </dependency>
-        <dependency>
-            <groupId>tech.tablesaw</groupId>
-            <artifactId>tablesaw-smile</artifactId>
-            <version>0.32.1-SNAPSHOT</version>
+            <version>0.32.4-SNAPSHOT</version>
             <optional>true</optional>
             <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>

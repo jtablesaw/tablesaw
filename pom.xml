@@ -4,7 +4,7 @@
 
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-parent</artifactId>
-    <version>0.32.1-SNAPSHOT</version>
+    <version>0.32.4-SNAPSHOT</version>
     <name>Tablesaw</name>
     <description>High-performance Java Dataframe</description>
     <url>https://github.com/jtablesaw/tablesaw</url>
@@ -50,7 +50,6 @@
         <module>html</module>
         <module>json</module>
         <module>jsplot</module>
-        <module>smile</module>
     </modules>
 
     <profiles>

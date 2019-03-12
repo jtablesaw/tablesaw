@@ -1,11 +1,14 @@
 package tech.tablesaw.io.xlsx;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.URL;
 import java.util.Locale;
 
 import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.Source;
 
 public class XlsxReadOptions extends ReadOptions {
 
@@ -13,15 +16,39 @@ public class XlsxReadOptions extends ReadOptions {
         super(builder);
     }
 
+    public static Builder builder(Source source) {
+        return new Builder(source);
+    }
+
     public static Builder builder(File file) {
-        return new Builder(file);
+        return new Builder(file).tableName(file.getName());
     }
 
     public static Builder builder(String fileName) {
         return new Builder(new File(fileName));
     }
-    
+
+    public static Builder builder(URL url) throws IOException {
+        return new Builder(url);
+    }
+
+    public static Builder builderFromFile(String fileName) {
+        return new Builder(new File(fileName));
+    }
+
+    public static Builder builderFromUrl(String url) throws IOException {
+        return new Builder(new URL(url));
+    }
+
     public static class Builder extends ReadOptions.Builder {
+
+        protected Builder(Source source) {
+            super(source);
+        }
+
+        protected Builder(URL url) throws IOException {
+            super(url);
+        }
 
         public Builder(File file) {
             super(file);

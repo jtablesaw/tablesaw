@@ -14,17 +14,21 @@
 
 package tech.tablesaw.io.html;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import tech.tablesaw.aggregate.AggregateFunctions;
 import tech.tablesaw.api.StringColumn;
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.Destination;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.table.StandardTableSliceGroup;
 import tech.tablesaw.table.TableSliceGroup;
 
-public class HtmlTableWriterTest {
+public class HtmlWriterTest {
 
     private Table table;
 
@@ -34,10 +38,10 @@ public class HtmlTableWriterTest {
     }
 
     @Test
-    public void testWrite() {
+    public void testWrite() throws IOException {
         StringColumn byColumn = table.stringColumn("who");
         TableSliceGroup group = StandardTableSliceGroup.create(table, byColumn);
         Table result = group.aggregate("approval", AggregateFunctions.mean);
-        HtmlTableWriter.write(result);
+        new HtmlWriter().write(result, new Destination(new StringWriter()));
     }
 }

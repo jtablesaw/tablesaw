@@ -134,7 +134,7 @@ public class CsvReaderTest {
     @Test
     public void testDataTypeDetection() throws IOException {
         Reader reader = new FileReader("../data/bus_stop_test.csv");
-        CsvReadOptions options = CsvReadOptions.builder(reader, "")
+        CsvReadOptions options = CsvReadOptions.builder(reader)
                 .header(true)
                 .minimizeColumnSizes(true)
                 .separator(',')
@@ -170,7 +170,7 @@ public class CsvReaderTest {
         final char delimiter = ',';
         final boolean useSampling = true;
 
-        CsvReadOptions options = CsvReadOptions.builder(reader, "")
+        CsvReadOptions options = CsvReadOptions.builder(reader)
                 .header(header)
                 .separator(delimiter)
                 .sample(useSampling)
@@ -198,7 +198,7 @@ public class CsvReaderTest {
         final char delimiter = ',';
         final boolean useSampling = true;
 
-        CsvReadOptions options = CsvReadOptions.builder(reader, "")
+        CsvReadOptions options = CsvReadOptions.builder(reader)
                 .header(header)
                 .separator(delimiter)
                 .sample(useSampling)
@@ -227,7 +227,7 @@ public class CsvReaderTest {
         final char delimiter = ',';
         final boolean useSampling = true;
 
-        CsvReadOptions options = CsvReadOptions.builder(reader, "")
+        CsvReadOptions options = CsvReadOptions.builder(reader)
                 .header(header)
                 .separator(delimiter)
                 .sample(useSampling)
@@ -255,7 +255,7 @@ public class CsvReaderTest {
         final char delimiter = ',';
         final boolean useSampling = true;
 
-        CsvReadOptions options = CsvReadOptions.builder(reader, "")
+        CsvReadOptions options = CsvReadOptions.builder(reader)
                 .header(header)
                 .separator(delimiter)
                 .sample(useSampling)
@@ -293,7 +293,7 @@ public class CsvReaderTest {
             + "foobar5\r\n"
             + "foobar6\r\n");
 
-        Table t = Table.read().csv(reader, "test table");
+        Table t = Table.read().csv(reader);
         assertEquals(1, t.columnCount());
         assertEquals(6, t.rowCount());
     }
@@ -349,7 +349,7 @@ public class CsvReaderTest {
     @Test
     public void testDataTypeDetection2() throws IOException {
         Reader reader = new FileReader("../data/bush.csv");
-        CsvReadOptions options = CsvReadOptions.builder(reader, "")
+        CsvReadOptions options = CsvReadOptions.builder(reader)
                 .header(true)
                 .separator(',')
                 .sample(false)
@@ -368,7 +368,8 @@ public class CsvReaderTest {
         Table table;
         try (InputStream input = new File("../data/bush.csv").toURI().toURL().openStream()) {
             table = Table.read().csv(CsvReadOptions
-                    .builder(input, "Bush approval ratings")
+                    .builder(input)
+                    .tableName("Bush approval ratings")
                     .columnTypes(types));
         }
         assertNotNull(table);
@@ -383,7 +384,8 @@ public class CsvReaderTest {
         Table table;
         try (InputStream input = new File("../data/bush.csv").toURI().toURL().openStream()) {
             table = Table.read().csv(CsvReadOptions
-                    .builder(input, "Bush approval ratings"));
+                    .builder(input)
+                    .tableName("Bush approval ratings"));
         }
         assertNotNull(table);
         assertEquals(3, table.columnCount());
@@ -399,7 +401,8 @@ public class CsvReaderTest {
         File file = Paths.get(location).toFile();
         try (InputStream input = new FileInputStream(file)) {
             table = Table.read().csv(CsvReadOptions
-                    .builder(input, "Bush approval ratings"));
+                    .builder(input)
+                    .tableName("Bush approval ratings"));
         }
         assertNotNull(table);
         assertEquals(3, table.columnCount());
@@ -415,7 +418,8 @@ public class CsvReaderTest {
         File file = Paths.get(location).toFile();
         try (Reader reader = new FileReader(file)) {
             table = Table.read().csv(CsvReadOptions
-                    .builder(reader, "Bush approval ratings"));
+                    .builder(reader)
+                    .tableName("Bush approval ratings"));
         }
         assertNotNull(table);
         assertEquals(3, table.columnCount());
