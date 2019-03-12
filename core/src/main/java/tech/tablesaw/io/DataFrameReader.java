@@ -29,8 +29,6 @@ import com.google.common.io.Files;
 import tech.tablesaw.api.Table;
 import tech.tablesaw.io.csv.CsvReadOptions;
 import tech.tablesaw.io.csv.CsvReader;
-import tech.tablesaw.io.fixed.FixedWidthReadOptions;
-import tech.tablesaw.io.fixed.FixedWidthReader;
 import tech.tablesaw.io.jdbc.SqlResultSetReader;
 
 public class DataFrameReader {
@@ -148,30 +146,6 @@ public class DataFrameReader {
 
     public Table csv(CsvReadOptions options) throws IOException {
 	return new CsvReader().read(options);
-    }
-
-    public Table fixedWidth(String file) throws IOException {
-        return fixedWidth(FixedWidthReadOptions.builder(file));
-    }
-
-    public Table fixedWidth(File file) throws IOException {
-        return fixedWidth(FixedWidthReadOptions.builder(file));
-    }
-
-    public Table fixedWidth(InputStream stream) throws IOException {
-        return fixedWidth(FixedWidthReadOptions.builder(stream));
-    }
-
-    public Table fixedWidth(Reader reader) throws IOException {
-        return fixedWidth(FixedWidthReadOptions.builder(reader));
-    }
-
-    public Table fixedWidth(FixedWidthReadOptions.Builder options) throws IOException {
-        return fixedWidth(options.build());
-    }
-
-    public Table fixedWidth(FixedWidthReadOptions options) throws IOException {
-        return new FixedWidthReader().read(options);
     }
 
 }

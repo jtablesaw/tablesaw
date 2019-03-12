@@ -47,7 +47,7 @@ public class FixedWidthReaderTest {
     @Test
     public void testWithCarsData() throws Exception {
 
-        Table table = Table.read().fixedWidth(FixedWidthReadOptions
+        Table table = Table.read().usingOptions(FixedWidthReadOptions
                 .builder("../data/fixed_width_cars_test.txt")
                 .header(true)
                 .columnTypes(car_types)
@@ -69,7 +69,7 @@ public class FixedWidthReaderTest {
     @Test
     public void testWithColumnSKIP() throws Exception {
 
-        Table table = Table.read().fixedWidth(FixedWidthReadOptions
+        Table table = Table.read().usingOptions(FixedWidthReadOptions
                 .builder("../data/fixed_width_cars_test.txt")
                 .header(true)
                 .columnTypes(car_types_with_SKIP)
@@ -86,7 +86,7 @@ public class FixedWidthReaderTest {
     @Test
     public void testWithColumnSKIPWithoutHeader() throws Exception {
 
-        Table table = Table.read().fixedWidth(FixedWidthReadOptions
+        Table table = Table.read().usingOptions(FixedWidthReadOptions
                 .builder("../data/fixed_width_cars_no_header_test.txt")
                 .header(false)
                 .columnTypes(car_types_with_SKIP)
@@ -135,7 +135,7 @@ public class FixedWidthReaderTest {
                 .sample(false)
                 .build();
 
-        Table t = Table.read().fixedWidth(options);
+        Table t = Table.read().usingOptions(options);
 
         assertEquals(2, t.shortColumn(0).countMissing());
         assertEquals(2, t.stringColumn(1).countMissing());
@@ -147,7 +147,7 @@ public class FixedWidthReaderTest {
     @Test
     public void testWithSkipTrailingCharsUntilNewline() throws Exception {
 
-        Table table = Table.read().fixedWidth(FixedWidthReadOptions
+        Table table = Table.read().usingOptions(FixedWidthReadOptions
                 .builder("../data/fixed_width_wrong_line_length.txt")
                 .header(true)
                 .columnTypes(car_types)
