@@ -119,7 +119,8 @@
             <groupId>com.github.haifengl</groupId>
             <artifactId>smile-data</artifactId>
             <version>1.5.2 </version>
-            <scope>provided</scope>
+            <optional>true</optional>
+            <scope>provided</scope> <!-- because the shade plugin doesn't exclude optional dependencies -->
         </dependency>
         <dependency>
             <groupId>tech.tablesaw</groupId>

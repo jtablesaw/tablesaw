@@ -41,7 +41,7 @@ public class JsonWriter implements DataWriter<JsonWriteOptions> {
         registry.registerOptions(JsonWriteOptions.class, INSTANCE);
     }
 
-    public void write(Table table, JsonWriteOptions options) {
+    public void write(Table table, JsonWriteOptions options) throws IOException {
         ArrayNode output = mapper.createArrayNode();
         if (options.asObjects()) {
             for (int r = 0; r < table.rowCount(); r++) {
@@ -67,18 +67,15 @@ public class JsonWriter implements DataWriter<JsonWriteOptions> {
                 output.add(row);
             }            
         }
-        try {
-          String str = mapper.writeValueAsString(output);
-          Writer writer = options.destination().createWriter();
-          writer.write(str);
-          writer.flush();
-        } catch (IOException e) {
-          throw new IllegalStateException(e);
-        }
+
+        String str = mapper.writeValueAsString(output);
+        Writer writer = options.destination().createWriter();
+        writer.write(str);
+        writer.flush();
     }
 
     @Override
-    public void write(Table table, Destination dest) {
+    public void write(Table table, Destination dest) throws IOException {
         write(table, JsonWriteOptions.builder(dest).build());
     }
 

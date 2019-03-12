@@ -40,7 +40,7 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
         registry.registerOptions(HtmlWriteOptions.class, INSTANCE);
     }
 
-    public void write(Table table, HtmlWriteOptions options) {
+    public void write(Table table, HtmlWriteOptions options) throws IOException {
         StringBuilder builder = new StringBuilder();
         builder.append("<table>").append(System.lineSeparator());
         builder.append(header(table.columnNames()));
@@ -51,13 +51,10 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
         builder.append("</tbody>").append(System.lineSeparator());
         builder.append("</table>");
         String str = builder.toString();
-        try {
-            Writer writer = options.destination().createWriter();
-            writer.write(str);
-            writer.flush();
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
+
+        Writer writer = options.destination().createWriter();
+        writer.write(str);
+        writer.flush();
     }
 
     /**
@@ -100,7 +97,7 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
     }
 
     @Override
-    public void write(Table table, Destination dest) {
+    public void write(Table table, Destination dest) throws IOException {
         write(table, HtmlWriteOptions.build(dest).build());
     }
 }

@@ -14,6 +14,7 @@
 
 package tech.tablesaw.io.html;
 
+import java.io.IOException;
 import java.io.StringWriter;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ public class HtmlWriterTest {
     }
 
     @Test
-    public void testWrite() {
+    public void testWrite() throws IOException {
         StringColumn byColumn = table.stringColumn("who");
         TableSliceGroup group = StandardTableSliceGroup.create(table, byColumn);
         Table result = group.aggregate("approval", AggregateFunctions.mean);
