@@ -1,19 +1,18 @@
 package tech.tablesaw.io.fixed;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.file.Paths;
 
 import com.univocity.parsers.fixed.FieldAlignment;
 import com.univocity.parsers.fixed.FixedWidthFields;
 
-public class FixedWidthWriteOptions {
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriteOptions;
 
-    private final Writer writer;
+public class FixedWidthWriteOptions extends WriteOptions {
+
     private final boolean header;
     private final char[] lineSeparator;
     private final String lineSeparatorString;
@@ -37,7 +36,7 @@ public class FixedWidthWriteOptions {
     private final char normalizedNewline;
 
     private FixedWidthWriteOptions(Builder builder) {
-        this.writer = builder.writer;
+        super(builder);
         this.header = builder.header;
         this.lineSeparator = builder.lineSeparator;
         this.lineSeparatorString = builder.lineSeparatorString;
@@ -59,10 +58,6 @@ public class FixedWidthWriteOptions {
         this.padding = builder.padding;
         this.lookupWildcard = builder.lookupWildcard;
         this.normalizedNewline = builder.normalizedNewline;
-    }
-
-    public Writer writer() {
-        return writer;
     }
 
     public boolean header() {
@@ -148,6 +143,10 @@ public class FixedWidthWriteOptions {
         return normalizedNewline;
     }
 
+    public static Builder builder(Destination destination) throws IOException {
+        return new Builder(destination);
+    }
+
     public static Builder builder(File file) throws IOException {
         return new Builder(file);
     }
@@ -164,9 +163,8 @@ public class FixedWidthWriteOptions {
         return new Builder(writer);
     }
 
-    public static class Builder {
+    public static class Builder extends WriteOptions.Builder {
 
-        private Writer writer;
         private boolean header = true;
         private char[] lineSeparator;
         private String lineSeparatorString;
@@ -189,21 +187,20 @@ public class FixedWidthWriteOptions {
         private char lookupWildcard = '?';
         private char normalizedNewline = '\n';
 
-        protected Builder(String fileName) throws IOException {
-            File file = Paths.get(fileName).toFile();
-            this.writer = new FileWriter(file);
+        protected Builder(Destination destination) throws IOException {
+            super(destination);
         }
 
         protected Builder(File file) throws IOException {
-            this.writer = new FileWriter(file);
+            super(file);
         }
 
         protected Builder(Writer writer) {
-            this.writer = writer;
+            super(writer);
         }
 
         protected Builder(OutputStream stream) {
-            this.writer = new OutputStreamWriter(stream);
+            super(stream);
         }
 
         public FixedWidthWriteOptions.Builder lineSeparator(char[] lineSeparator) {

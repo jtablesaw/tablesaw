@@ -24,8 +24,9 @@ public class ReaderRegistry {
 	mimeTypesRegistry.put(mimeType, reader);
     }
 
-    public DataReader<?> getReaderForOptions(ReadOptions options) {
-	return optionTypesRegistry.get(options.getClass().getCanonicalName());
+    @SuppressWarnings("unchecked")
+    public <T extends ReadOptions> DataReader<T> getReaderForOptions(T options) {
+	return (DataReader<T>) optionTypesRegistry.get(options.getClass().getCanonicalName());
     }
 
     public DataReader<?> getReaderForExtension(String extension) {

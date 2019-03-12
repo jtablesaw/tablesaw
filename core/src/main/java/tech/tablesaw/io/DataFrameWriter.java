@@ -14,21 +14,17 @@
 
 package tech.tablesaw.io;
 
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.csv.CsvWriteOptions;
-import tech.tablesaw.io.csv.CsvWriter;
-import tech.tablesaw.io.fixed.FixedWidthWriteOptions;
-import tech.tablesaw.io.fixed.FixedWidthWriter;
-import tech.tablesaw.io.html.HtmlTableWriter;
-import tech.tablesaw.io.json.JsonWriteOptions;
-import tech.tablesaw.io.json.JsonWriter;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.io.Writer;
 
 import com.google.common.io.Files;
+
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.csv.CsvWriteOptions;
+import tech.tablesaw.io.csv.CsvWriter;
 
 public class DataFrameWriter {
 
@@ -50,20 +46,33 @@ public class DataFrameWriter {
 	dataWriter.write(table, new Destination(file));
     }
 
-    public void toStream(OutputStream stream, String extension) {
+    public void toStream(OutputStream stream, String extension) throws IOException {
 	DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
 	dataWriter.write(table, new Destination(stream));
     }
 
-    public void toWriter(Writer writer, String extension) {
+    public void toWriter(Writer writer, String extension) throws IOException {
 	DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
 	dataWriter.write(table, new Destination(writer));
     }
  
-    public void usingOptions(WriteOptions options) {
-	DataWriter<?> dataWriter = registry.getWriterForOptions(options);
-	dataWriter.write(table, options.destination());
+    public <T extends WriteOptions> void usingOptions(T options) throws IOException {
+	DataWriter<T> dataWriter = registry.getWriterForOptions(options);
+	dataWriter.write(table, options);
     }
+
+    public String toString(String extension) {
+	StringWriter writer = new StringWriter();
+	DataWriter<?> dataWriter = registry.getWriterForExtension(extension);
+	try {
+	    dataWriter.write(table, new Destination(writer));
+	} catch (IOException e) {
+	    new IllegalStateException(e);
+	}
+	return writer.toString();
+    }
+
+    // legacy methods left for backwards compatibility
 
     public void csv(String file) throws IOException {
         CsvWriteOptions options = CsvWriteOptions.builder(file).build();
@@ -89,39 +98,4 @@ public class DataFrameWriter {
         new CsvWriter().write(table, options);
     }
 
-    public void fixedWidth(String file) throws IOException {
-        FixedWidthWriteOptions options = FixedWidthWriteOptions.builder(file).build();
-        new FixedWidthWriter(options).write(table);
-    }
-
-    public void fixedWidth(File file) throws IOException {
-        FixedWidthWriteOptions options = FixedWidthWriteOptions.builder(file).build();
-        new FixedWidthWriter(options).write(table);
-    }
-
-    public void fixedWidth(FixedWidthWriteOptions options) {
-        new FixedWidthWriter(options).write(table);
-    }
-
-    public void fixedWidth(OutputStream stream) {
-        FixedWidthWriteOptions options = FixedWidthWriteOptions.builder(stream).build();
-        new FixedWidthWriter(options).write(table);
-    }
-
-    public void fixedWidth(Writer writer) {
-        FixedWidthWriteOptions options = FixedWidthWriteOptions.builder(writer).build();
-        new FixedWidthWriter(options).write(table);
-    }
-
-    public void html(OutputStream stream) {
-        new HtmlTableWriter().write(table, stream);
-    }
-
-    public String json() throws IOException {
-        return json(JsonWriteOptions.builder().build());
-    }
-
-    public String json(JsonWriteOptions options) throws IOException {
-        return new JsonWriter(options).write(table);
-    }
 }

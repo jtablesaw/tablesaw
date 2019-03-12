@@ -77,10 +77,5 @@
       <artifactId>tablesaw-jsplot</artifactId>
       <version>0.32.2-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>tech.tablesaw</groupId>
-      <artifactId>tablesaw-smile</artifactId>
-      <version>0.32.2-SNAPSHOT</version>
-    </dependency>
   </dependencies>
 </project>

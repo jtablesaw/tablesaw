@@ -94,21 +94,6 @@ public class ReadOptions {
         return source;
     }
 
-    @Deprecated
-    public File file() {
-        return source.file();
-    }
-
-    @Deprecated
-    public Reader reader() {
-        return source.reader();
-    }
-
-    @Deprecated
-    public InputStream inputStream() {
-        return source.inputStream();
-    }
-
     public String tableName() {
         return tableName;
     }

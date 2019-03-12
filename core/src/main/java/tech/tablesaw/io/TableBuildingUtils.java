@@ -1,7 +1,5 @@
 package tech.tablesaw.io;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 
@@ -9,11 +7,6 @@ import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.Table;
 
 public class TableBuildingUtils {
-
-    @Deprecated
-    public static Reader createReader(ReadOptions options, byte[] cachedBytes) throws IOException {	
-	return options.source().createReader(cachedBytes);
-    }
 
     public static Table build(List<String> columnNames, List<String[]> dataRows, ReadOptions options) {
         Table table = Table.create(options.tableName());

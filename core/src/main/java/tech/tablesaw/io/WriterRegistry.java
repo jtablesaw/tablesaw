@@ -17,8 +17,9 @@ public class WriterRegistry {
 	extensionsRegistry.put(extension, writer);
     }
 
-    public DataWriter<?> getWriterForOptions(WriteOptions options) {
-	return optionTypesRegistry.get(options.getClass().getCanonicalName());
+    @SuppressWarnings("unchecked")
+    public <T extends WriteOptions> DataWriter<T> getWriterForOptions(T options) {
+	return (DataWriter<T>) optionTypesRegistry.get(options.getClass().getCanonicalName());
     }
 
     public DataWriter<?> getWriterForExtension(String extension) {

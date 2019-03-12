@@ -12,12 +12,28 @@ import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import tech.tablesaw.api.Table;
+import tech.tablesaw.io.DataReader;
+import tech.tablesaw.io.ReaderRegistry;
+import tech.tablesaw.io.Source;
 import tech.tablesaw.io.TableBuildingUtils;
 
-public class HtmlTableReader {
+public class HtmlReader implements DataReader<HtmlReadOptions> {
 
+    private static final HtmlReader INSTANCE = new HtmlReader();
+
+    static {
+        register(Table.defaultReaderRegistry);
+    }
+
+    public static void register(ReaderRegistry registry) {
+        registry.registerExtension("html", INSTANCE);
+        registry.registerMimeType("text/html", INSTANCE);
+        registry.registerOptions(HtmlReadOptions.class, INSTANCE);
+    }
+
+    @Override
     public Table read(HtmlReadOptions options) throws IOException {
-        Reader reader = TableBuildingUtils.createReader(options, null);
+        Reader reader = options.source().createReader(null);
         Document doc = Parser.htmlParser().parseInput(reader, "");
         Elements tables = doc.select("table");
         if (tables.size() != 1) {
@@ -50,6 +66,11 @@ public class HtmlTableReader {
         }
 
         return TableBuildingUtils.build(columnNames, rows, options);
+    }
+
+    @Override
+    public Table read(Source source) throws IOException {
+      return read(HtmlReadOptions.builder(source).build());
     }
 
 }

@@ -46,10 +46,6 @@ public class CsvReadOptions extends ReadOptions {
         lineSeparatorDetectionEnabled = builder.lineSeparatorDetectionEnabled;
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     public static Builder builder(Source source) {
         return new Builder(source);
     }
@@ -135,10 +131,6 @@ public class CsvReadOptions extends ReadOptions {
         private Integer maxNumberOfColumns = 10_000;
         private Character commentPrefix;
         private boolean lineSeparatorDetectionEnabled = true;
-
-        protected Builder() {
-            super();
-        }
 
         protected Builder(Source source) {
             super(source);

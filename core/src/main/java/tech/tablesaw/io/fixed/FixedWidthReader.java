@@ -14,25 +14,39 @@
 
 package tech.tablesaw.io.fixed;
 
-import com.google.common.io.CharStreams;
-import com.univocity.parsers.common.AbstractParser;
-import com.univocity.parsers.fixed.FixedWidthFormat;
-import com.univocity.parsers.fixed.FixedWidthParser;
-import com.univocity.parsers.fixed.FixedWidthParserSettings;
-import tech.tablesaw.api.ColumnType;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.List;
 
 import javax.annotation.concurrent.Immutable;
 
 import org.apache.commons.math3.util.Pair;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.util.List;
+import com.google.common.io.CharStreams;
+import com.univocity.parsers.common.AbstractParser;
+import com.univocity.parsers.fixed.FixedWidthFormat;
+import com.univocity.parsers.fixed.FixedWidthParser;
+import com.univocity.parsers.fixed.FixedWidthParserSettings;
+
+import tech.tablesaw.api.ColumnType;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.DataReader;
+import tech.tablesaw.io.FileReader;
+import tech.tablesaw.io.ReaderRegistry;
+import tech.tablesaw.io.Source;
 
 @Immutable
-public class FixedWidthReader extends FileReader {
+public class FixedWidthReader extends FileReader implements DataReader<FixedWidthReadOptions> {
+
+    private static final FixedWidthReader INSTANCE = new FixedWidthReader();
+
+    static {
+	register(Table.defaultReaderRegistry);
+    }
+
+    public static void register(ReaderRegistry registry) {
+	registry.registerOptions(FixedWidthReadOptions.class, INSTANCE);
+    }
 
     /**
      * Constructs a FixedWidthReader
@@ -177,6 +191,11 @@ public class FixedWidthReader extends FileReader {
             format.setLineSeparator(options.lineEnding());
         }
         return format;
+    }
+
+    @Override
+    public Table read(Source source) throws IOException {
+	return read(FixedWidthReadOptions.builder(source).build());
     }
 
 }

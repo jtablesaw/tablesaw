@@ -1,16 +1,24 @@
 package tech.tablesaw.io.json;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.StringReader;
+import java.net.URL;
 import java.util.Locale;
 
 import tech.tablesaw.io.ReadOptions;
+import tech.tablesaw.io.Source;
 
 public class JsonReadOptions extends ReadOptions {
 
     protected JsonReadOptions(Builder builder) {
         super(builder);
+    }
+
+    public static Builder builder(Source source) {
+        return new Builder(source);
     }
 
     public static Builder builder(File file) {
@@ -21,6 +29,22 @@ public class JsonReadOptions extends ReadOptions {
         return new Builder(new File(fileName));
     }
 
+    public static Builder builder(URL url) throws IOException {
+        return new Builder(url);
+    }
+
+    public static Builder builderFromFile(String fileName) {
+        return new Builder(new File(fileName));
+    }
+
+    public static Builder builderFromString(String contents) {
+        return new Builder(new StringReader(contents));
+    }
+
+    public static Builder builderFromUrl(String url) throws IOException {
+        return new Builder(new URL(url));
+    }
+
     /**
      * This method may cause tablesaw to buffer the entire InputStream.
      * <p>
@@ -29,8 +53,8 @@ public class JsonReadOptions extends ReadOptions {
      * 2. Provide the array of column types as an option. If you provide the columnType array,
      * we skip type detection and can avoid reading the entire file
      */
-    public static Builder builder(InputStream stream, String tableName) {
-        return new Builder(stream).tableName(tableName);
+    public static Builder builder(InputStream stream) {
+        return new Builder(stream);
     }
 
     /**
@@ -42,12 +66,19 @@ public class JsonReadOptions extends ReadOptions {
      * 2. Provide the array of column types as an option. If you provide the columnType array,
      * we skip type detection and can avoid reading the entire file
      */
-    public static Builder builder(Reader reader, String tableName) {
-        Builder builder = new Builder(reader);
-        return builder.tableName(tableName);
+    public static Builder builder(Reader reader) {
+        return new Builder(reader);
     }
 
     public static class Builder extends ReadOptions.Builder {
+
+        protected Builder(Source source) {
+            super(source);
+        }
+
+        protected Builder(URL url) throws IOException {
+            super(url);
+        }
 
         public Builder(File file) {
             super(file);

@@ -14,33 +14,49 @@
 
 package tech.tablesaw.io.html;
 
-import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.Column;
-
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.List;
-
 import static tech.tablesaw.io.ParsingUtils.splitCamelCase;
 import static tech.tablesaw.io.ParsingUtils.splitOnUnderscore;
 
-public class HtmlTableWriter {
+import java.io.IOException;
+import java.io.Writer;
+import java.util.List;
 
-    public String write(Table table) {
+import tech.tablesaw.api.Table;
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.io.DataWriter;
+import tech.tablesaw.io.Destination;
+import tech.tablesaw.io.WriterRegistry;
+
+public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
+
+    private static final HtmlWriter INSTANCE = new HtmlWriter();
+
+    static {
+        register(Table.defaultWriterRegistry);
+    }
+
+    public static void register(WriterRegistry registry) {
+        registry.registerExtension("html", INSTANCE);
+        registry.registerOptions(HtmlWriteOptions.class, INSTANCE);
+    }
+
+    public void write(Table table, HtmlWriteOptions options) {
         StringBuilder builder = new StringBuilder();
+        builder.append("<table>").append(System.lineSeparator());
         builder.append(header(table.columnNames()));
-        builder.append("<tbody>")
-                .append(System.lineSeparator());
+        builder.append("<tbody>").append(System.lineSeparator());
         for (int row = 0; row < table.rowCount(); row++) {
             builder.append(row(row, table));
         }
-        builder.append("</tbody>");
-        return builder.toString();
-    }
-
-    public void write(Table table, OutputStream outputStream) {
-        try (PrintWriter p = new PrintWriter(outputStream)) {
-            p.println(write(table));
+        builder.append("</tbody>").append(System.lineSeparator());
+        builder.append("</table>");
+        String str = builder.toString();
+        try {
+            Writer writer = options.destination().createWriter();
+            writer.write(str);
+            writer.flush();
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -81,5 +97,10 @@ public class HtmlTableWriter {
                 .append(System.lineSeparator());
 
         return builder.toString();
+    }
+
+    @Override
+    public void write(Table table, Destination dest) {
+        write(table, HtmlWriteOptions.build(dest).build());
     }
 }
