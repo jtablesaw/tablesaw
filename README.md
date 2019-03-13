@@ -43,12 +43,12 @@ Add tablesaw-core and tablesaw-jsplot to your project:
 <dependency>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-core</artifactId>
-    <version>0.31.0</version>
+    <version>0.32.3</version>
 </dependency>
 <dependency>
     <groupId>tech.tablesaw</groupId>
     <artifactId>tablesaw-jsplot</artifactId>
-    <version>0.31.0</version>
+    <version>0.32.3</version>
 </dependency>
 ```
 
