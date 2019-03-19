@@ -4,6 +4,7 @@ import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.api.CategoricalColumn;
 import tech.tablesaw.api.NumericColumn;
+import tech.tablesaw.plotly.components.Marker;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -17,12 +18,14 @@ public class BarTrace extends AbstractTrace {
     private final Object[] x;
     private final double[] y;
     private final Orientation orientation;
+    private final Marker marker;
 
     private BarTrace(BarBuilder builder) {
         super(builder);
         this.orientation = builder.orientation;
         this.x = builder.x;
         this.y = builder.y;
+        this.marker = builder.marker;
     }
 
     public static BarBuilder builder(Object[] x, double[] y) {
@@ -59,7 +62,9 @@ public class BarTrace extends AbstractTrace {
             context.put("x", dataAsString(x));
         }
         context.put("orientation", orientation.value);
-
+        if (marker != null) {
+            context.put("marker", marker);
+        }
         return context;
     }
 
@@ -85,6 +90,7 @@ public class BarTrace extends AbstractTrace {
         private final Object[] x;
         private final double[] y;
         private Orientation orientation = Orientation.VERTICAL;
+        private Marker marker;
 
         BarBuilder(Object[] x, double[] y) {
             this.x = x;
@@ -121,6 +127,11 @@ public class BarTrace extends AbstractTrace {
 
         public BarBuilder showLegend(boolean b) {
             super.showLegend(b);
+            return this;
+        }
+
+        public BarBuilder marker(Marker marker) {
+            this.marker = marker;
             return this;
         }
 

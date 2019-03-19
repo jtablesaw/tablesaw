@@ -183,10 +183,11 @@ public class DataFramePrinter {
         final int rowCount = Math.min(maxRows, frame.rowCount());
         final boolean truncated = frame.rowCount() > maxRows;
         final int colCount = frame.columnCount();
-        final String[][] data = new String[rowCount][colCount];
+        final String[][] data;
         if (truncated) {
+            data = new String[rowCount + 1][colCount];
             int i;
-            for (i = 0; i < rowCount / 2; i++) {
+            for (i = 0; i < Math.ceil((double) rowCount / 2); i++) {
                 for (int j = 0; j < colCount; j++) {
                     data[i][j] = frame.getString(i, j);
                 }
@@ -194,12 +195,13 @@ public class DataFramePrinter {
             for (int j = 0; j < colCount; j++) {
                 data[i][j] = "...";
             }
-            for (i++; i < rowCount; i++) {
+            for (++i; i <= rowCount; i++) {
                 for (int j = 0; j < colCount; j++) {
-                    data[i][j] = frame.getString(frame.rowCount() - maxRows + i, j);
+                    data[i][j] = frame.getString(frame.rowCount() - maxRows + i - 1, j);
                 }
             }
         } else {
+            data = new String[rowCount][colCount];
             for (int i = 0; i < rowCount; i++) {
                 for (int j = 0; j < colCount; j++) {
                     String value = frame.getString(i, j);

@@ -4,6 +4,7 @@ import com.mitchellbosecke.pebble.error.PebbleException;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import tech.tablesaw.api.NumericColumn;
 import tech.tablesaw.plotly.Utils;
+import tech.tablesaw.plotly.components.Marker;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -18,6 +19,7 @@ public class HistogramTrace extends AbstractTrace {
     private final int nBinsY;
     private final boolean autoBinX;
     private final boolean autoBinY;
+    private final Marker marker;
 
     public static HistogramBuilder builder(double[] values) {
         return new HistogramBuilder(values);
@@ -35,6 +37,7 @@ public class HistogramTrace extends AbstractTrace {
         this.autoBinX = builder.autoBinX;
         this.autoBinY = builder.autoBinY;
         this.opacity = builder.opacity;
+        this.marker = builder.marker;
     }
 
     @Override
@@ -61,6 +64,9 @@ public class HistogramTrace extends AbstractTrace {
         context.put("nBinsY", nBinsY);
         context.put("autoBinX", autoBinX);
         context.put("autoBinY", autoBinY);
+        if (marker != null) {
+            context.put("marker", marker);
+        }
         return context;
     }
 
@@ -72,6 +78,7 @@ public class HistogramTrace extends AbstractTrace {
         private boolean autoBinX;
         private boolean autoBinY;
         private final double[] x;
+        private Marker marker;
 
         private HistogramBuilder(double[] values) {
             this.x = values;
@@ -105,6 +112,11 @@ public class HistogramTrace extends AbstractTrace {
 
         public HistogramBuilder autoBinY(boolean autoBinY) {
             this.autoBinY = autoBinY;
+            return this;
+        }
+
+        public HistogramBuilder marker(Marker marker) {
+            this.marker = marker;
             return this;
         }
 

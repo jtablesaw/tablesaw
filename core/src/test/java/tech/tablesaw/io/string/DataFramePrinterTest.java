@@ -6,6 +6,8 @@ import tech.tablesaw.api.Table;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+
 public class DataFramePrinterTest {
 
     @Test
@@ -19,4 +21,14 @@ public class DataFramePrinterTest {
         assertTrue(out.contains("          "));
     }
 
+    @Test
+    public void printOneRow() throws IOException {
+	Table table = Table.read().csv("../data/bush.csv");
+        String out = table.print(1);
+        assertTrue(out.contains("2004-02-04"));
+        assertTrue(out.contains("53"));
+        assertTrue(out.contains("fox"));
+    }
+
+    
 }
