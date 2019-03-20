@@ -14,12 +14,15 @@
 
 package tech.tablesaw.api;
 
-import com.google.common.collect.Lists;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import tech.tablesaw.columns.Column;
-import tech.tablesaw.columns.dates.PackedLocalDate;
-import tech.tablesaw.io.csv.CsvReadOptions;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.tablesaw.aggregate.AggregateFunctions.mean;
+import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -31,15 +34,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static tech.tablesaw.aggregate.AggregateFunctions.mean;
-import static tech.tablesaw.aggregate.AggregateFunctions.stdDev;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.google.common.collect.Lists;
+
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.columns.dates.PackedLocalDate;
+import tech.tablesaw.io.csv.CsvReadOptions;
 
 public class TableTest {
 
@@ -546,5 +549,57 @@ public class TableTest {
             result.set(r, sum);
         }
         return result;
+    }
+
+    private void assertSizeAndMissingAtEnd(int expectedSize, IntColumn col, int expectedMissing) {
+        assertEquals(expectedSize, col.size());        
+        int count = 0;
+        for (int i = col.size() - 1; i >= 0; i--) {
+            if (col.isMissing(i)) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        assertEquals(expectedMissing, count);        
+    }
+
+    @Test
+    public void testPadColumnsWithMissing() {
+        IntColumn col11 = IntColumn.create("col1");
+        IntColumn col12 = IntColumn.create("col2");
+        Table t1 = Table.create("t1", col11, col12);
+        col11.append(1);
+        col12.append(1).append(2);
+        IntColumn col13 = IntColumn.create("col3").append(1).append(2).append(3);
+        t1.padColumnsWithMissing(col13);
+        assertSizeAndMissingAtEnd(3, col11, 2);
+        assertSizeAndMissingAtEnd(3, col12, 1);
+        assertSizeAndMissingAtEnd(3, col13, 0);
+
+        IntColumn col21 = IntColumn.create("col1");
+        IntColumn col22 = IntColumn.create("col2");
+        Table t2 = Table.create("t1", col21, col22);
+        col21.append(1).append(2).append(3);
+        col22.append(1).append(2);
+        IntColumn col23 = IntColumn.create("col3").append(1);
+        t2.padColumnsWithMissing(col23);
+        assertSizeAndMissingAtEnd(3, col21, 0);
+        assertSizeAndMissingAtEnd(3, col22, 1);
+        assertSizeAndMissingAtEnd(3, col23, 2);
+    }
+
+    @Test
+    public void testToStringColumnsWithVaryingSizes() {
+        IntColumn col11 = IntColumn.create("col1");
+        IntColumn col12 = IntColumn.create("col2");
+        Table t1 = Table.create("t1", col11, col12);
+        col11.append(1).append(2);
+        col12.append(1);
+        try {
+            t1.toString();
+        } catch (Exception e) {
+            Assertions.fail("toString shouldn't throw " + e);
+        }
     }
 }

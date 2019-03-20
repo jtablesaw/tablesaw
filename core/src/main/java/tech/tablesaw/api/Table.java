@@ -203,6 +203,35 @@ public class Table extends Relation implements Iterable<Row> {
         return new DataFrameWriter(defaultWriterRegistry, this);
     }
 
+    private void padColumnWithMissing(final Column<?> col, int newSize) {
+        while (col.size() < newSize) {
+            col.appendMissing();
+        }
+    }
+
+    /**
+     * Appends missing values to columns in the table and/or the Column argument,
+     * so their sizes end up being the same.
+     * @param cols
+     * @return this Table
+     */
+    public Table padColumnsWithMissing(final Column<?>... cols) {
+        int max = 0;
+        for (int i = 0; i < columnList.size(); i++) {
+            max = Math.max(max, columnList.get(i).size());
+        }
+        for (int i = 0; i < cols.length; i++) {
+            max = Math.max(max, cols[i].size());
+        }
+        for (int i = 0; i < columnList.size(); i++) {
+            padColumnWithMissing(columnList.get(i), max);
+        }
+        for (int i = 0; i < cols.length; i++) {
+            padColumnWithMissing(cols[i], max);
+        }
+        return this;
+    }
+
     /**
      * Adds the given column to this table
      */

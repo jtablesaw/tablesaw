@@ -14,12 +14,13 @@
 
 package tech.tablesaw.io.string;
 
-import tech.tablesaw.table.Relation;
-import tech.tablesaw.util.StringUtils;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.stream.IntStream;
+
+import tech.tablesaw.columns.Column;
+import tech.tablesaw.table.Relation;
+import tech.tablesaw.util.StringUtils;
 
 /**
  * A class that can pretty print a DataFrame to text for visualization in a console
@@ -189,7 +190,8 @@ public class DataFramePrinter {
             int i;
             for (i = 0; i < Math.ceil((double) rowCount / 2); i++) {
                 for (int j = 0; j < colCount; j++) {
-                    data[i][j] = frame.getString(i, j);
+                    Column<?> col = frame.column(j);
+                    data[i][j] = (col.size() > i ? col.getString(i) : "?");
                 }
             }
             for (int j = 0; j < colCount; j++) {
@@ -197,14 +199,16 @@ public class DataFramePrinter {
             }
             for (++i; i <= rowCount; i++) {
                 for (int j = 0; j < colCount; j++) {
-                    data[i][j] = frame.getString(frame.rowCount() - maxRows + i - 1, j);
+                    Column<?> col = frame.column(j);
+                    data[i][j] = (col.size() > frame.rowCount() - maxRows + i - 1 ? col.getString(frame.rowCount() - maxRows + i - 1) : "?");
                 }
             }
         } else {
             data = new String[rowCount][colCount];
             for (int i = 0; i < rowCount; i++) {
                 for (int j = 0; j < colCount; j++) {
-                    String value = frame.getString(i, j);
+                    Column<?> col = frame.column(j);
+                    String value = (col.size() > i ? col.getString(i) : "?");
                     data[i][j] = value == null ? "" : value;
                 }
             }
@@ -213,4 +217,3 @@ public class DataFramePrinter {
     }
 
 }
-
