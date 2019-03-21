@@ -203,33 +203,47 @@ public class Table extends Relation implements Iterable<Row> {
         return new DataFrameWriter(defaultWriterRegistry, this);
     }
 
-    private void padColumnWithMissing(final Column<?> col, int newSize) {
-        while (col.size() < newSize) {
-            col.appendMissing();
+    private Table padColumnsWithMissing(boolean addColumns, final Column<?>... cols) {
+        int max = 0;
+        for (Column<?> col : columnList) {
+            max = Math.max(max, col.size());
         }
+        for (Column<?> col : cols) {
+            max = Math.max(max, col.size());
+        }
+        for (Column<?> col : columnList) {
+            while (col.size() < max) {
+                col.appendMissing();
+            }
+        }
+        for (Column<?> col : cols) {
+            while (col.size() < max) {
+                col.appendMissing();
+            }
+        }
+        if (addColumns) {
+            addColumns(cols);
+        }
+        return this;
     }
 
     /**
-     * Appends missing values to columns in the table and/or the Column argument,
-     * so their sizes end up being the same.
-     * @param cols
+     * Appends missing values to columns in this table,
+     * to ensure the table is rectangular.
      * @return this Table
      */
-    public Table padColumnsWithMissing(final Column<?>... cols) {
-        int max = 0;
-        for (int i = 0; i < columnList.size(); i++) {
-            max = Math.max(max, columnList.get(i).size());
-        }
-        for (int i = 0; i < cols.length; i++) {
-            max = Math.max(max, cols[i].size());
-        }
-        for (int i = 0; i < columnList.size(); i++) {
-            padColumnWithMissing(columnList.get(i), max);
-        }
-        for (int i = 0; i < cols.length; i++) {
-            padColumnWithMissing(cols[i], max);
-        }
-        return this;
+    public Table padColumnsWithMissing() {
+        return padColumnsWithMissing(false);
+    }
+
+    /**
+     * Appends missing values to columns in this table and to the columns given as arguments,
+     * before adding the columns. This ensures the table is rectangular.
+     * @param cols the columns to pad and add 
+     * @return this Table
+     */
+    public Table padWithMissingAndAddColumns(final Column<?>... cols) {
+        return padColumnsWithMissing(true, cols);
     }
 
     /**
