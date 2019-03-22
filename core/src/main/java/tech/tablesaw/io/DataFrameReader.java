@@ -42,7 +42,7 @@ public class DataFrameReader {
     /**
      * Reads the given URL into a table using default options
      * Uses appropriate converter based on mime-type
-     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     * Use {@link #usingOptions(ReadOptions) usingOptions} to use non-default options
      */
     public Table url(String url) throws IOException {
 	return url(new URL(url));
@@ -51,7 +51,7 @@ public class DataFrameReader {
     /**
      * Reads the given URL into a table using default options
      * Uses appropriate converter based on mime-type
-     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     * Use {@link #usingOptions(ReadOptions) usingOptions} to use non-default options
      */
     public Table url(URL url) throws IOException {
 	URLConnection connection = url.openConnection();
@@ -63,7 +63,7 @@ public class DataFrameReader {
     /**
      * Reads the given string contents into a table using default options
      * Uses converter specified based on given file extension
-     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     * Use {@link #usingOptions(ReadOptions) usingOptions} to use non-default options
      */
     public Table string(String s, String fileExtension) {
 	DataReader<?> reader = registry.getReaderForExtension(fileExtension);
@@ -77,7 +77,7 @@ public class DataFrameReader {
     /**
      * Reads the given file into a table using default options
      * Uses converter specified based on given file extension
-     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     * Use {@link #usingOptions(ReadOptions) usingOptions} to use non-default options
      */
     public Table file(String file) throws IOException {
         return file(new File(file));
@@ -86,7 +86,7 @@ public class DataFrameReader {
     /**
      * Reads the given file into a table using default options
      * Uses converter specified based on given file extension
-     * Use {@link #withOptions(ReadOptions) withOptions} to use non-default options
+     * Use {@link #usingOptions(ReadOptions) usingOptions} to use non-default options
      */
     public Table file(File file) throws IOException {
 	String extension = Files.getFileExtension(file.getCanonicalPath());
