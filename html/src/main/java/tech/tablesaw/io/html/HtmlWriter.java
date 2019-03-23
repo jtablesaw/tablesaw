@@ -14,21 +14,17 @@
 
 package tech.tablesaw.io.html;
 
-import static tech.tablesaw.io.ParsingUtils.splitCamelCase;
-import static tech.tablesaw.io.ParsingUtils.splitOnUnderscore;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.util.List;
-
 import org.jsoup.nodes.Element;
-
 import tech.tablesaw.api.Table;
 import tech.tablesaw.columns.Column;
 import tech.tablesaw.io.DataWriter;
 import tech.tablesaw.io.Destination;
 import tech.tablesaw.io.WriterRegistry;
 import tech.tablesaw.io.html.HtmlWriteOptions.ElementCreator;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.List;
 
 public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
 
@@ -77,7 +73,7 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
         thead.appendChild(tr);
         for (Column<?> col : cols) {
             tr.appendChild(elements.create("th", col, null)
-                .append(splitCamelCase(splitOnUnderscore(col.name()))));
+                .append(col.name()));
         }
         return thead;
     }
