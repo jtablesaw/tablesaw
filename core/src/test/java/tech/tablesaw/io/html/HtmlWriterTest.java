@@ -14,19 +14,18 @@
 
 package tech.tablesaw.io.html;
 
-import static java.lang.Double.NaN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.Test;
+import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.Table;
+import tech.tablesaw.io.html.HtmlWriteOptions.ElementCreator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.jsoup.nodes.Element;
-import org.junit.jupiter.api.Test;
-
-import tech.tablesaw.api.DoubleColumn;
-import tech.tablesaw.api.Table;
-import tech.tablesaw.io.html.HtmlWriteOptions.ElementCreator;
+import static java.lang.Double.NaN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HtmlWriterTest {
 
@@ -46,7 +45,7 @@ public class HtmlWriterTest {
                 " <thead>" + LINE_END +
                 "  <tr>" + LINE_END +
                 "   <th>v</th>" + LINE_END +
-                "   <th>v 2</th>" + LINE_END +
+                "   <th>v2</th>" + LINE_END +
                 "  </tr>" + LINE_END +
                 " </thead>" + LINE_END +
                 " <tbody>" + LINE_END +
@@ -82,7 +81,7 @@ public class HtmlWriterTest {
                 " <thead>" + LINE_END +
                 "  <tr>" + LINE_END +
                 "   <th>v</th>" + LINE_END +
-                "   <th>v 2</th>" + LINE_END +
+                "   <th>v2</th>" + LINE_END +
                 "  </tr>" + LINE_END +
                 " </thead>" + LINE_END +
                 " <tbody>" + LINE_END +
