@@ -14,34 +14,92 @@
 
 package tech.tablesaw.io.html;
 
-import java.io.IOException;
-import java.io.StringWriter;
+import static java.lang.Double.NaN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeEach;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Test;
 
-import tech.tablesaw.aggregate.AggregateFunctions;
-import tech.tablesaw.api.StringColumn;
+import tech.tablesaw.api.DoubleColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.io.Destination;
-import tech.tablesaw.io.csv.CsvReadOptions;
-import tech.tablesaw.table.StandardTableSliceGroup;
-import tech.tablesaw.table.TableSliceGroup;
+import tech.tablesaw.io.html.HtmlWriteOptions.ElementCreator;
 
 public class HtmlWriterTest {
 
-    private Table table;
+    private static final String LINE_END = System.lineSeparator();
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        table = Table.read().csv(CsvReadOptions.builder("../data/bush.csv"));
+    private double[] v1 = {1, 2, NaN};
+    private double[] v2 = {1, 2, NaN};
+    private Table table = Table.create("t",
+            DoubleColumn.create("v", v1),
+            DoubleColumn.create("v2", v2)
+    );
+
+    @Test
+    public void basic() {
+        String output = table.write().toString("html");
+        assertEquals("<table>" + LINE_END +
+                " <thead>" + LINE_END +
+                "  <tr>" + LINE_END +
+                "   <th>v</th>" + LINE_END +
+                "   <th>v 2</th>" + LINE_END +
+                "  </tr>" + LINE_END +
+                " </thead>" + LINE_END +
+                " <tbody>" + LINE_END +
+                "  <tr>" + LINE_END +
+                "   <td>1.0</td>" + LINE_END +
+                "   <td>1.0</td>" + LINE_END +
+                "  </tr>" + LINE_END +
+                "  <tr>" + LINE_END +
+                "   <td>2.0</td>" + LINE_END +
+                "   <td>2.0</td>" + LINE_END +
+                "  </tr>" + LINE_END +
+                "  <tr>" + LINE_END +
+                "   <td></td>" + LINE_END +
+                "   <td></td>" + LINE_END +
+                "  </tr>" + LINE_END +
+                " </tbody>" + LINE_END +
+                "</table>", output);
     }
 
     @Test
-    public void testWrite() throws IOException {
-        StringColumn byColumn = table.stringColumn("who");
-        TableSliceGroup group = StandardTableSliceGroup.create(table, byColumn);
-        Table result = group.aggregate("approval", AggregateFunctions.mean);
-        new HtmlWriter().write(result, new Destination(new StringWriter()));
+    public void alternatingRows() throws IOException {
+        OutputStream baos = new ByteArrayOutputStream();
+        ElementCreator elementCreator = (elementName, column, row) -> {
+            Element element = new Element(elementName);
+            if (elementName.equals("tr") && row != null) {
+                return element.addClass(row % 2 == 0 ? "even" : "odd");
+            }
+            return element;
+        };
+        table.write().usingOptions(HtmlWriteOptions.builder(baos).elementCreator(elementCreator).build());
+        String output = baos.toString();
+        assertEquals("<table>" + LINE_END +
+                " <thead>" + LINE_END +
+                "  <tr>" + LINE_END +
+                "   <th>v</th>" + LINE_END +
+                "   <th>v 2</th>" + LINE_END +
+                "  </tr>" + LINE_END +
+                " </thead>" + LINE_END +
+                " <tbody>" + LINE_END +
+                "  <tr class=\"even\">" + LINE_END +
+                "   <td>1.0</td>" + LINE_END +
+                "   <td>1.0</td>" + LINE_END +
+                "  </tr>" + LINE_END +
+                "  <tr class=\"odd\">" + LINE_END +
+                "   <td>2.0</td>" + LINE_END +
+                "   <td>2.0</td>" + LINE_END +
+                "  </tr>" + LINE_END +
+                "  <tr class=\"even\">" + LINE_END +
+                "   <td></td>" + LINE_END +
+                "   <td></td>" + LINE_END +
+                "  </tr>" + LINE_END +
+                " </tbody>" + LINE_END +
+                "</table>", output);
     }
+
 }
