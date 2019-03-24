@@ -62,7 +62,7 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
         Element tr = elements.create("tr", null, row);
         for (Column<?> col : table.columns()) {
           tr.appendChild(elements.create("td", col, row)
-              .append(String.valueOf(col.getString(row))));
+              .appendText(String.valueOf(col.getString(row))));
         }
         return tr;
     }
@@ -73,7 +73,7 @@ public class HtmlWriter implements DataWriter<HtmlWriteOptions> {
         thead.appendChild(tr);
         for (Column<?> col : cols) {
             tr.appendChild(elements.create("th", col, null)
-                .append(col.name()));
+                .appendText(col.name()));
         }
         return thead;
     }
