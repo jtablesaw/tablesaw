@@ -69,7 +69,7 @@ public class Table extends Relation implements Iterable<Row> {
     public static final WriterRegistry defaultWriterRegistry = new WriterRegistry();
 
     static {
-	autoRegisterReadersAndWriters();
+        autoRegisterReadersAndWriters();
     }
 
     /**
@@ -117,25 +117,25 @@ public class Table extends Relation implements Iterable<Row> {
     }
 
     private static void autoRegisterReadersAndWriters() {
-	Reflections reflections = new Reflections("tech.tablesaw.io");
-	@SuppressWarnings("rawtypes")
-	Set<Class<? extends DataWriter>> writerClasses = reflections.getSubTypesOf(DataWriter.class);
-	for (Class<?> clazz : writerClasses) {
-	    try {
-		Class.forName(clazz.getCanonicalName());
-	    } catch (ClassNotFoundException e) {
-		new IllegalStateException(e);
-	    }
-	}	
-	@SuppressWarnings("rawtypes")
-	Set<Class<? extends DataReader>> readerClasses = reflections.getSubTypesOf(DataReader.class);
-	for (Class<?> clazz : readerClasses) {
-	    try {
-		Class.forName(clazz.getCanonicalName());
-	    } catch (ClassNotFoundException e) {
-		new IllegalStateException(e);
-	    }
-	}	
+        Reflections reflections = new Reflections("tech.tablesaw.io");
+        @SuppressWarnings("rawtypes")
+        Set<Class<? extends DataWriter>> writerClasses = reflections.getSubTypesOf(DataWriter.class);
+        for (Class<?> clazz : writerClasses) {
+            try {
+                Class.forName(clazz.getCanonicalName());
+            } catch (ClassNotFoundException e) {
+                new IllegalStateException(e);
+            }
+        }
+        @SuppressWarnings("rawtypes")
+        Set<Class<? extends DataReader>> readerClasses = reflections.getSubTypesOf(DataReader.class);
+        for (Class<?> clazz : readerClasses) {
+            try {
+                Class.forName(clazz.getCanonicalName());
+            } catch (ClassNotFoundException e) {
+                new IllegalStateException(e);
+            }
+        }
     }
 
     /**
@@ -979,7 +979,7 @@ public class Table extends Relation implements Iterable<Row> {
      */
     public DataFrameJoiner join(String... columnNames) {
         return new DataFrameJoiner(this, columnNames);
-	}
+    }
 
     public Table missingValueCounts() {
         return summarize(columnNames(), countMissing).apply();
