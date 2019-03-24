@@ -67,10 +67,16 @@ public class HtmlReader implements DataReader<HtmlReadOptions> {
             return table;
         }
 
-        String[] headerRow = rows.get(0);
         List<String> columnNames = new ArrayList<>();
-        for (int i = 0; i < headerRow.length; i++) {
-            columnNames.add(headerRow[i]); // TODO: cleansing and fallback name
+        if (options.header()) {
+            String[] headerRow = rows.remove(0);
+            for (int i = 0; i < headerRow.length; i++) {
+                columnNames.add(headerRow[i]);
+            }
+        } else {
+            for (int i = 0; i < rows.get(0).length; i++) {
+                columnNames.add("C" + i);
+            }
         }
 
         return TableBuildingUtils.build(columnNames, rows, options);
