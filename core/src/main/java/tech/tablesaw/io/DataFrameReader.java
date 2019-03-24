@@ -21,6 +21,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -55,9 +56,12 @@ public class DataFrameReader {
      */
     public Table url(URL url) throws IOException {
 	URLConnection connection = url.openConnection();
-	String mimeType = connection.getContentType();
+	String contentType = connection.getContentType();
+	String[] pair = contentType.split(";");
+	String mimeType = pair[0].trim();
+	Charset charset = pair.length == 0 ? Charset.defaultCharset() : Charset.forName(pair[1].split("=")[1].trim());
 	DataReader<?> reader = registry.getReaderForMimeType(mimeType);
-	return reader.read(new Source(connection.getInputStream()));
+	return reader.read(new Source(connection.getInputStream(), charset));
     }
 
     /**
