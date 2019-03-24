@@ -136,6 +136,10 @@ public class DataFrameReader {
         return csv(CsvReadOptions.builder(stream));
     }
 
+    public Table csv(InputStream stream, String name) throws IOException {
+        return csv(CsvReadOptions.builder(stream).tableName(name));
+    }
+
     public Table csv(Reader reader) throws IOException {
         return csv(CsvReadOptions.builder(reader));
     }
