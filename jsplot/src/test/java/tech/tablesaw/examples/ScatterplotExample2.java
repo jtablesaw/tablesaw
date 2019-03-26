@@ -26,7 +26,6 @@ import tech.tablesaw.plotly.traces.Trace;
 /**
  *
  */
-
 public class ScatterplotExample2 {
 
     public static void main(String[] args) throws Exception {

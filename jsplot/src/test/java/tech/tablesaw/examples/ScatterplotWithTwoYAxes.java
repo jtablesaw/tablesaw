@@ -20,6 +20,7 @@ import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.components.Axis;
 import tech.tablesaw.plotly.components.Figure;
 import tech.tablesaw.plotly.components.Layout;
+import tech.tablesaw.plotly.components.Marker;
 import tech.tablesaw.plotly.traces.ScatterTrace;
 import tech.tablesaw.plotly.traces.Trace;
 
@@ -53,14 +54,18 @@ public class ScatterplotWithTwoYAxes {
                         .overlaying(ScatterTrace.YAxis.Y)
                         .build())
                 .build();
+
         Trace trace = ScatterTrace.builder(x, y)
                 .name("Batting avg.")
+                .marker(Marker.builder().opacity(.7).color("#01FF70").build())
                 .build();
 
         Trace trace2 = ScatterTrace.builder(x, y2)
                 .yAxis(ScatterTrace.YAxis.Y2)
                 .name("Slugging pct.")
+                .marker(Marker.builder().opacity(.7).color("rgb(17, 157, 255)").build())
                 .build();
+
         Figure figure = new Figure(layout, trace2, trace);
         Plot.show(figure);
     }
