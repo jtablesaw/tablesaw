@@ -14,10 +14,10 @@
 
 package tech.tablesaw.examples;
 
-import tech.tablesaw.api.DoubleColumn;
+import tech.tablesaw.api.IntColumn;
 import tech.tablesaw.api.NumberColumn;
 import tech.tablesaw.api.Table;
-import tech.tablesaw.columns.numbers.DoubleColumnType;
+import tech.tablesaw.columns.numbers.IntColumnType;
 import tech.tablesaw.plotly.Plot;
 import tech.tablesaw.plotly.api.HorizontalBarPlot;
 import tech.tablesaw.plotly.api.VerticalBarPlot;
@@ -35,8 +35,8 @@ public class BarExample {
         NumberColumn<?> logNInjuries = table.numberColumn("injuries").add(1).logN();
         logNInjuries.setName("log injuries");
         table.addColumns(logNInjuries);
-        DoubleColumn scale = table.doubleColumn("scale");
-        scale.set(scale.isLessThan(0), DoubleColumnType.missingValueIndicator());
+        IntColumn scale = table.intColumn("scale");
+        scale.set(scale.isLessThan(0), IntColumnType.missingValueIndicator());
 
         Table s = table.summarize("fatalities", "log injuries", sum).by("Scale");
         System.out.println(s);
