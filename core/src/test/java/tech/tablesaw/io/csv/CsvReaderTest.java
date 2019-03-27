@@ -15,7 +15,6 @@
 package tech.tablesaw.io.csv;
 
 import com.univocity.parsers.common.TextParsingException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.ColumnType;
 import tech.tablesaw.api.DateColumn;
@@ -70,20 +69,14 @@ public class CsvReaderTest {
                         + "\"short\"" + LINE_END
                         + "1234567890" + LINE_END);
 
-        final boolean header = true;
         final int maxCharsPerColumn = 12;
-
-        CsvReadOptions options = CsvReadOptions.builder(reader)
-                .header(header)
-                .maxCharsPerColumn(maxCharsPerColumn)
-                .build();
-
+        
         Table result = Table.read().csv(CsvReadOptions.builder(reader).maxCharsPerColumn(maxCharsPerColumn));
         assertEquals(2, result.rowCount());
     }
 
     @Test
-    public void testMaxCharsPerColumnException() throws IOException {
+    public void testMaxCharsPerColumnException() {
         final Reader reader = new StringReader(
                 "Text" + LINE_END
                         + "\"short\"" + LINE_END
@@ -91,7 +84,7 @@ public class CsvReaderTest {
 
         final int maxCharsPerColumn = 8;
 
-        Assertions.assertThrows(com.univocity.parsers.common.TextParsingException.class, () -> {
+        assertThrows(TextParsingException.class, () -> {
             Table.read().csv(CsvReadOptions.builder(reader).maxCharsPerColumn(maxCharsPerColumn));
         });
     }
